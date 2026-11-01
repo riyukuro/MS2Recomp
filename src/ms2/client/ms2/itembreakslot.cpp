@@ -39,11 +39,13 @@ public:
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 bool FUN_140633bf0(MS2Ptr<CItem> spItem);               // the item can be broken
-void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -84,7 +86,7 @@ int ItemBreakSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
             ((class Unk_BrkMgr*)FUN_1409c4b20())->FUN_140532de0(spItem, GetIndex());
     }
@@ -154,7 +156,7 @@ int ItemBreakSlot::vfunc_8(void* p)
 // @0x141410480
 int ItemBreakSlot::FUN_141410480(__int64 nItemUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (!spItem)
         return 0;
     if (FUN_140633bf0(spItem) == false)

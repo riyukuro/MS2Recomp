@@ -26,6 +26,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
@@ -68,10 +69,10 @@ public:
     PCBase* FUN_141bd1200(int nId);
     PCBase* FUN_141bd1290(int nId);
 };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HoldBuffs                                                      // the actor's buff list
 {
 public:
-    NiPoint3 FUN_141683290();                                            // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -83,12 +84,9 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
-class Unk_HoldSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
 void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
-PCBase* FUN_140974230(GameObject* pObject);                              // 0x140974230 the actor as a player
 void FUN_1409989e0(void* pOut, const char* psz);                         // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                                          // 0x1408a8900 ~efd::utf8string
-void* FUN_14096e110(GameObject* pObject);                                // 0x14096e110 the actor as an npc
 void* FUN_14025e7c0();                                                   // 0x14025e7c0 the key-binding table
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -168,7 +166,7 @@ void StateHoldData::vfunc_2(Unk_StateDataArg* p)
 // @0x1417cbb50
 MS2Ptr<SkillData> StateHoldData::FUN_1417cbb50()
 {
-    return reinterpret_cast<Unk_HoldSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(m_nSkill);
+    return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(m_nSkill);
 }
 
 // ---- StateHold ----
@@ -294,7 +292,7 @@ void StateHold::vfunc_8(double fTime)
             return;
         else
         {
-            efd::Point3 kVel = pBuff->FUN_141683290();
+            efd::Point3 kVel = reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()));
             m_pOwner->vfunc_22(kVel);
             FUN_1417ccca0(m_nFallbackState, 0);
         }
@@ -315,7 +313,7 @@ void StateHold::vfunc_9(double fTime)
     {
     if (pTarget->GetClassID() == 0x6200028)
     {
-        void* pNpc = FUN_14096e110(pTarget);
+        void* pNpc = reinterpret_cast<void*>(efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pTarget)));
         if (pNpc != 0)
         {
             const int& nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
@@ -335,7 +333,7 @@ void StateHold::vfunc_9(double fTime)
     }
     else if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
     {
-        PCBase* pPlayer = FUN_140974230(pTarget);
+        PCBase* pPlayer = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pTarget));
         Ridee* pRidee = pPlayer->FUN_1416764a0();
         if (pRidee == 0)
             return;

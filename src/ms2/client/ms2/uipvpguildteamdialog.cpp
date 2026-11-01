@@ -43,6 +43,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- header statics (dynamic initializers 0x1400ef900..) ----
 #ifndef MS2_HOOK_DLL
@@ -69,7 +70,6 @@ class Unk_PgtWorld                                                  // the world
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
     PCBase* FUN_141bd1420(CStringW strName);                        // a player by name
-    PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
     MS2Ptr<Unk_PgtActorRef> FUN_141bc9d60(const CStringW& strName);
 };
 
@@ -91,7 +91,6 @@ class Unk_140acd6e0 : public ASDisplayObject                        // the obser
 {
 public:
     void FUN_1422c1fe0(unsigned int bVisible);
-    void FUN_1422ce090(int bSelected);
 };
 
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
@@ -344,7 +343,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         }
         for (size_t i = 0; i < info.m_characters.size(); i++) {
             const __int64& nCharId = info.m_characters[i];
-            PCBase* pPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
+            PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
             if (pPC == 0)
                 continue;
             if (FUN_14133b830(*FUN_141656be0(pPC))) {
@@ -517,7 +516,7 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
     }
     else {
         spButton->FUN_1422c1fe0(1);
-        spButton->FUN_1422ce090(bObserved);
+        reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(bObserved);
     }
 }
 MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FUN_14133bab0, 710, 0x4FB65197);
@@ -561,9 +560,9 @@ void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
         if (spButton == 0)
             continue;
         if (pTarget != 0 && it->first == ((class PCBase*)(class PCBase*)(pTarget))->FUN_141656a80())
-            spButton->FUN_1422ce090(1);
+            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(1);
         else
-            spButton->FUN_1422ce090(0);
+            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(0);
     }
 }
 MS2_REPLACE_METHOD(0x14133BF60, UIPvPGuildTeamDialog, FUN_14133bf60, 323, 0x506F141D);
@@ -593,12 +592,12 @@ template <class T> MS2Ptr<T> UIDialog::FUN_141926e30(const CString& strName)
 template <class T> MS2Ptr<T> Unk_ASChildFinder::FUN_14133c5f0(const Scaleform::GFx::Value& v, const CString& strName)
 {
     MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
-    if (!spObj->FUN_1422ba9f0("getChildByName"))
+    if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
     if (child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, child);
-    if (!spObj->FUN_1422ba9f0("numChildren"))
+    if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount = spObj->FUN_1422c6670();
     for (int i = 0; i < nCount; i++) {

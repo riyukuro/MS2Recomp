@@ -15,7 +15,7 @@
 #include "hook/ms2hook.h"
 
 // @0x140cd7ce0
-MS2Ptr<Unk_WsPtred298> FUN_140cd7ce0()
+MS2Ptr<CFieldDataCli> FUN_140cd7ce0()
 {
     return WorldService::GetInstance()->FUN_141bd30a0();
 }

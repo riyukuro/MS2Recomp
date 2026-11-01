@@ -103,7 +103,7 @@ template <class T>
 T* GetDialog(int nUIType)
 {
     if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -201,7 +201,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         p->FUN_141924680();
     } else if (strMethod == "isEnableLocale") {
         CStringW strLocale = pArgs->FUN_1422b8f40();
-        bool bEnable = FUN_140166410()->FUN_14036d750(strLocale);
+        bool bEnable = FUN_140166410()->IsLocaleInList(strLocale);
         Scaleform::GFx::Value value(bEnable);
         *pRetVal = value;
     } else if (strMethod == "isEnableLanguage") {
@@ -296,9 +296,9 @@ void UIObject::vfunc_51(const Scaleform::GFx::FunctionHandler::Params& params)
     if (g_nDebugUI) {
         CStringW strText = FUN_1402a5170(L"[Debug SWF Name]\nUI{0}.swf", vfunc_7());
         ASTooltip tooltip(1, 2);
-        tooltip.FUN_1409c6dc0(5);
-        tooltip.FUN_1409c6e90(0x14);
-        if (tooltip.FUN_1409e26b0(strText))
+        tooltip.SetTooltipAlign(5);
+        tooltip.SetOffsetY(0x14);
+        if (tooltip.ApplyTextTooltip(strText))
             *params.pRetVal = tooltip.FUN_1422bb870();
     }
 }

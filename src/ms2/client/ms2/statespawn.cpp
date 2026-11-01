@@ -33,18 +33,9 @@ struct Unk_SpawnEntry
     char m_pad_00[0x550];
     CString m_strEffect;                                                   // +0x550
 };
-class Unk_SpawnProxy
-{
-public:
-    ~Unk_SpawnProxy();                                                     // 0x1406d5390
-    Unk_SpawnEntry* operator->() const;                                    // 0x140965990
-    void* m_pad_00;
-    void* m_p;
-};
 class Unk_SpawnMount : public PCBase
 {
 public:
-    Unk_SpawnProxy FUN_141093270();                                        // 0x141093270 the mount's proxy handle
 };
 
 // The effect request (NoticeMessage) and its transform.
@@ -56,7 +47,6 @@ struct Unk_SpawnXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
-class Unk_SpawnEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
 void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
 struct Unk_SpawnNiPoint3 : public Vector3
 {
@@ -84,7 +74,7 @@ void StateSpawn::vfunc_4(StateData* pData)
     m_fDuration = 0;
     m_spSpawn.AssignRaw(dynamic_cast<StateSpawnData*>(pData));
     m_pOwner->FUN_14123cb20(false);
-    m_pOwner->FUN_14166ca20(10);
+    m_pOwner->AddHideReason(10);
     Unk_Random kRandom(m_pOwner->FUN_14123c580());
     int nDelay = (int)(kRandom.FUN_1407684c0() % 300) + 100;
     m_timer.FUN_140868750(nDelay);
@@ -134,10 +124,10 @@ void StateSpawn::vfunc_3(double fTime)
             Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());
             FUN_14097faa0(xf.m_translate, &niPt);
             NoticeMessage request;
-            request.m_strName = ((Unk_SpawnMount*)pMount)->FUN_141093270()->m_strEffect;
+            request.m_strName = reinterpret_cast<Unk_SpawnEntry*>(reinterpret_cast<CNpc*>(((Unk_SpawnMount*)pMount))->GetNpcData().operator->())->m_strEffect;
             request.m_nObject = 0;
             request.m_p18 = &xf;
-            reinterpret_cast<Unk_SpawnEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
         }
     }
     m_fElapsed += (float)fTime;

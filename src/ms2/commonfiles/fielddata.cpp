@@ -304,18 +304,17 @@ public:
 };
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vector<Unk_140165cf0*>&);
-CString FUN_14015f710(Unk_140165cf0*,const char*,CString);
 CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
 CString FUN_14071a5b0(const CString&,const CString&);
 bool FUN_1401c0090(const CString&,const CString&);
-void FUN_14025a680(const CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
+void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-int FUN_1408733e0(Unk_140165cf0*,const char*,CString&);
+
 int FUN_140873420(Unk_140165cf0*,const char*,CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_140178670(Unk_140165cf0*,const char*,ATL::CAtlArray<int>&);
@@ -497,7 +496,7 @@ void LoadMapSpawnTag()
             TiXmlDocument doc;
             if (GetFileSystem()->FUN_1403974b0(&doc,path,0,true,false)) {
                 s_spawnCache.FUN_1401d1160(path);
-                Unk_140165cf0* root=reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+                Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
                 if (root) {
                     std::vector<Unk_140165cf0*> nodes;
                     FUN_14028fd90(root,"region","mapCode","spawnPointID",nodes);
@@ -575,7 +574,7 @@ void CFieldData::LoadFieldData()
     if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.RemoveAll(); }
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
-    Unk_140165cf0* root=reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (!root) {
         Unk_FieldLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
         return;

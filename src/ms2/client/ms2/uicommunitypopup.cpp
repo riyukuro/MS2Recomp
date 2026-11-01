@@ -28,7 +28,6 @@ static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Crea
 class Unk_PopupField : public ASDisplayObject {
 public:
     float FUN_1422c1110();
-    void FUN_1422bffe0(int,int);
     void FUN_1422c4f00(const CStringW&);
     double FUN_1422c5970();
     void FUN_1422c0e20(int);
@@ -51,7 +50,7 @@ class Unk_PopupUIManager { public: };
 // @0x140beafe0
 UIWebBrowserPopup* FUN_140beafe0(int id) {
     if (reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
+        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (obj.get())
             return dynamic_cast<UIWebBrowserPopup*>((UIObject*)obj);
     }

@@ -148,9 +148,7 @@ int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
 class Unk_BingoMsgBox : public CMsgBoxData { public: void FUN_141a01c30(const CString&); };
 #define BINGO_MSGBOX(p) static_cast<Unk_BingoMsgBox*>((p).operator->())
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
-CStringW FUN_1401ceea0(const wchar_t*, const int&);
 CStringW FUN_140275590(const wchar_t*, const CStringW&, const int&);
-CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1401cdae0(ATL::CAtlArray<int>&, unsigned);
 size_t FUN_140412ed0(void* table);
@@ -220,7 +218,6 @@ CString FUN_14052ea30(const char*, const unsigned&);
 CString FUN_1401d9af0(const char*, const unsigned long long&);
 CStringW StringFormat(const wchar_t*);
 CStringW FUN_140292a70(const wchar_t*, const unsigned&);
-CStringW FUN_140656190(const wchar_t*, const CStringW&, const CStringW&);
 
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 __int64 GetServerTime();
@@ -253,7 +250,7 @@ MS2Ptr<ASItemSlot> FUN_140bb4a60(int nMovieId, const Scaleform::GFx::Value& v)
 // @0x140bb4ba0
 MS2Ptr<ASItemSlot> Unk_BingoClip::FUN_140bb4ba0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140bb4a60(m_nMovieId, v);
     return MS2Ptr<ASItemSlot>(0);
@@ -405,7 +402,7 @@ void UIBingoEventDialog::OnLoadComplete()
                         break;
                     slots->Add(slot);
                     ItemEntity item(FUN_1404111b0(FUN_140412e10(rewards, i)).FUN_140412d50(k));
-                    BINGO_SLOT(slot)->FUN_1409ba5d0(item.m_itemId, item.vfunc_o18_1(), item.m_count);
+                    BINGO_SLOT(slot)->SetItem(item.m_itemId, item.vfunc_o18_1(), item.m_count);
                     BINGO_SLOT(slot)->FUN_1409ba6d0();
                 }
             }
@@ -440,14 +437,14 @@ void UIBingoEventDialog::OnLoadComplete()
     if (m_free.m_slot.get() != 0)
     {
         int id = ref.FUN_1403e8b90()->m_freeItemId;
-        BINGO_SLOT(m_free.m_slot)->FUN_1409ba5d0(id, FUN_14053feb0(id), 1);
+        BINGO_SLOT(m_free.m_slot)->SetItem(id, FUN_14053feb0(id), 1);
         BINGO_SLOT(m_free.m_slot)->FUN_1409ba6d0();
     }
     m_cash.m_slot = GetChild<ASItemSlot>("m_cashItemSlot");
     if (m_cash.m_slot.get() != 0)
     {
         int id = ref.FUN_1403e8b90()->m_cashItemId;
-        BINGO_SLOT(m_cash.m_slot)->FUN_1409ba5d0(id, FUN_14053feb0(id), 1);
+        BINGO_SLOT(m_cash.m_slot)->SetItem(id, FUN_14053feb0(id), 1);
         BINGO_SLOT(m_cash.m_slot)->FUN_1409ba6d0();
     }
     m_free.FUN_140bb7fd0();
@@ -459,7 +456,7 @@ void UIBingoEventDialog::OnLoadComplete()
         if (ref2.FUN_1403e8340())
             return;
         CStringW str = FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_description");
-        str = FUN_140656190((const wchar_t*)str, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2.FUN_1403e8b90()->m_freeItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2.FUN_1403e8b90()->m_cashItemId));
+        str = StringFormat<CStringW, CStringW>((const wchar_t*)str, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2.FUN_1403e8b90()->m_freeItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2.FUN_1403e8b90()->m_cashItemId));
         desc->FUN_1422c4cd0(str);
     }
     FUN_140bb14d0();
@@ -655,7 +652,7 @@ void UIBingoEventDialog::vfunc_72()
         FUN_140bb3bd0();
         FUN_141276180(s_sndLineComplete, "");
         if ((size_t)FUN_140bb3f80() == 12)
-            FUN_140bb4040();
+            PlayFireworkEffect();
     }
 }
 
@@ -687,7 +684,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
         if (nCount <= 0)
             return;
-        CStringW strTag = FUN_1401ceea0(L"{0}", nIndex);
+        CStringW strTag = StringFormat<int>(L"{0}", nIndex);
         strMsg = FUN_140275590(strMsg, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, key.m_id), m_board[nIndex]);
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strMsg, this, strTag);
@@ -706,7 +703,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
         if (nCount <= 0)
             return;
-        CStringW strTag = FUN_1401ceea0(L"{0}", nIndex);
+        CStringW strTag = StringFormat<int>(L"{0}", nIndex);
         strMsg = FUN_140275590(strMsg, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, key.m_id), m_board[nIndex]);
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strMsg, this, strTag);
@@ -750,7 +747,7 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
         Unk_BingoRef ref = FUN_1403ed060(FUN_140302b00())->FUN_140429c80();
         if (ref.FUN_1403e8340())
             return;
-        CStringW strMsg = FUN_1401e8510(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref.FUN_1403e8b90()->m_cashItemId));
+        CStringW strMsg = StringFormat<CStringW>(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref.FUN_1403e8b90()->m_cashItemId));
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 0);
         if (box.IsNull())
@@ -978,7 +975,7 @@ void UIBingoEventDialog::FUN_140bb2310()
         MS2Ptr<ASTextField> text = card->FUN_1409b4620("textField");
         if (text.IsNull())
             break;
-        text->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_called[i]));
+        text->FUN_1422c4cd0(StringFormat<int>(L"{0}", m_called[i]));
     }
 }
 
@@ -1219,7 +1216,7 @@ unsigned UIBingoEventDialog::FUN_140bb3f80()
 }
 
 // @0x140bb4040
-void UIBingoEventDialog::FUN_140bb4040()
+void UIBingoEventDialog::PlayFireworkEffect()
 {
     if (m_30 == 0)
         return;
@@ -1317,7 +1314,7 @@ void UIBingoEventDialog::FUN_140bb46e0()
         m_steps.pop();
     }
     if ((size_t)FUN_140bb3f80() == 12)
-        FUN_140bb4040();
+        PlayFireworkEffect();
 }
 
 // @0x140bb69a0

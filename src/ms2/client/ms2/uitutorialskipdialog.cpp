@@ -11,6 +11,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/ms2format.h"              // C3: StringFormat<T> (was FUN_1401ceea0 / FUN_141615b70)
+#include "ms2/commonfiles/jobtable.h"     // C3: Unk_JobCode
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -18,9 +20,7 @@ class Unk_TsWorld;
 class Unk_TsActor;                                              // the local player
    // Invoke(name)
 
-int FUN_141654700(Unk_TsActor* pActor);                         // job
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
-CStringW FUN_141615b70(const wchar_t* szFormat, const int& nArg);
+class PC { public: int FUN_141654700(); };   // C3: member view (0x141654700, the job)
 CStringW GetStringCommonByKey(const CStringW& strKey);                        // localized
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
@@ -54,9 +54,9 @@ void UITutorialSkipDialog::OnLoadComplete()
         return;
     FUN_141923680(1);
     reinterpret_cast<AScript*>(m_30.operator->())->Invoke("showOnDelay");
-    int nJob = FUN_141654700(pActor);
-    FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_message_job{0}", nJob)));
-    FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_button_job{0}", nJob)));
+    int nJob = ((PC*)pActor)->FUN_141654700();
+    FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(StringFormat(L"s_tutorial_skip_message_job{0}", nJob)));
+    FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", GetStringCommonByKey(StringFormat(L"s_tutorial_skip_button_job{0}", nJob)));
 }
 
 // @0x141b33ad0
@@ -69,8 +69,8 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)
     {
-        int nJob = FUN_141654700(pActor);
-        CStringW strMsg = GetStringCommonByKey(FUN_141615b70(L"s_tutorial_skip_job{0}", nJob));
+        int nJob = ((PC*)pActor)->FUN_141654700();
+        CStringW strMsg = GetStringCommonByKey(StringFormat(L"s_tutorial_skip_job{0}", reinterpret_cast<const Unk_JobCode&>(nJob)));
         FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UITutorialSkipDialog::FUN_141b33ca0));
     }
     return 0;

@@ -107,10 +107,10 @@ void UIGambleDialog::vfunc_43()
         UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
         if (pUI != 0)
         {
-            int n = pUI->FUN_141b1d3d0();
+            int n = pUI->GetLowerCutGlobalY();
             if (n != -1)
             {
-                pDlg->vfunc_2(1, 0, n - pDlg->FUN_1422c13b0());
+                pDlg->vfunc_2(1, 0, n - pDlg->GetHeightCeil());
                 return;
             }
         }
@@ -175,13 +175,13 @@ int UIGambleDialog::FUN_141935710()
                 continue;
             CString strBind;
             strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
-            unsigned nCount = spItem->FUN_140526c50();
+            unsigned nCount = spItem->GetCount();
             CStringW strName = FUN_1402758a0(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
             FUN_141415450(strBind, spItem, i, 0x415, 0);
             int nFlag = 1;
             int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
             if (nPayType != 0x11) {
-                strName = FUN_1418fec00(nPayType, (unsigned)spItem->FUN_140526c50(), 0);
+                strName = FUN_1418fec00(nPayType, (unsigned)spItem->GetCount(), 0);
                 if (!strName.IsEmpty())
                     nFlag = 0;
             }

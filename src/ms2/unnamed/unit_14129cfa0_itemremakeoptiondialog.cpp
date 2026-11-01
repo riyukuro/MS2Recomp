@@ -110,8 +110,6 @@ public:
 // AS script views.
 class Unk_EnButton : public ASDisplayObject
 {
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, size_t n);
 };
 class Unk_EnBag : public ASObj
 {
@@ -149,7 +147,6 @@ void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids)
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140298ea0(CStringW key);
 CStringW FUN_14062b4f0(CStringW key, const int* v);
-bool FUN_140841300(const CStringW& s, const char* c);
 unsigned __int64 FUN_140718350(const CString& s);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
@@ -221,6 +218,7 @@ int FUN_140526470(CItem* item, unsigned mode);
 
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 extern template class MS2Ptr<CMsgBoxData>;
@@ -382,7 +380,7 @@ void UIItemRemakeOptionDialog::FUN_14129dc60(NotifyObject* pNotify)
     if (GetState() != 2 || m_cur == 0)
         return;
     NotifyGameEventChanged* changed = dynamic_cast<NotifyGameEventChanged*>(pNotify);
-    if (changed != 0 && FUN_140841300(changed->m_eventName, "SaleRemake"))
+    if (changed != 0 && operator==(changed->m_eventName, "SaleRemake"))
         FUN_1412a1600(MS2Ptr<CItem>(m_cur));
 }
 
@@ -399,7 +397,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
         if (item == 0)
             continue;
         if (FUN_140526470(item.get(), m_remakeMode) != 0) {
-            unsigned __int64 uid = items.GetAt(i)->FUN_140526a50();
+            unsigned __int64 uid = items.GetAt(i)->GetItemUid();
             uids.Add(uid);
         }
     }
@@ -415,7 +413,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
             if (!item)
                 continue;
             if (FUN_140526470(item.get(), m_remakeMode) != 0) {
-                unsigned __int64 uid = item->FUN_140526a50();
+                unsigned __int64 uid = item->GetItemUid();
                 uids.Add(uid);
             }
         }
@@ -534,8 +532,8 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
     MS2Ptr<CMsgBoxData> box = FUN_140d74230(
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a2a50), CStringW(ask));
     if (box.get() != 0) {
-        box->FUN_1405340b0(uid);
-        box->FUN_140533ff0(option);
+        box->Append<__int64>(uid);
+        box->Append<int>(option);
     }
 }
 
@@ -556,7 +554,7 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
         MS2Ptr<CItem> picked = (select == 0) ? m_cur : m_new;
         if (picked == m_new.get()) {
             CCItemRemakeOptionPacket::ApplyOptionClient apply;
-            apply.m_uid = picked->FUN_140526a50();
+            apply.m_uid = picked->GetItemUid();
             COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
             pkt.Encode1(2);
             apply.vfunc_1(pkt);
@@ -641,7 +639,7 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(4);
-    pkt.Encode8(item->FUN_140526a50());
+    pkt.Encode8(item->GetItemUid());
     FUN_140710590(pkt);
 }
 
@@ -650,7 +648,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
 {
     unsigned __int64 uid = pPacket->ReadInt64();
     CIngredientContainer ingredients;
-    ingredients.FUN_14026c0b0(*pPacket);
+    ingredients.Read(*pPacket);
     FUN_1412a2ac0();
     SetState(2);
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
@@ -697,15 +695,15 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
             if (m_debugBtnFillIngredientUnit.get() != 0) {
                 m_debugBtnFillIngredientUnit->vfunc_3(bDebug);
                 if (bDebug)
-                    m_debugBtnFillIngredientUnit->FUN_1422ce240(
-                        Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0550), 0);
+                    reinterpret_cast<ASButton*>(m_debugBtnFillIngredientUnit.operator->())->FUN_1422ce240(
+                        Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0550), (void*)0);
             }
             m_debugBtnFillIngredient = info->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredient");
             if (m_debugBtnFillIngredient.get() != 0) {
                 m_debugBtnFillIngredient->vfunc_3(bDebug);
                 if (bDebug)
-                    m_debugBtnFillIngredient->FUN_1422ce240(
-                        Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0460), 0);
+                    reinterpret_cast<ASButton*>(m_debugBtnFillIngredient.operator->())->FUN_1422ce240(
+                        Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0460), (void*)0);
             }
         }
     }
@@ -721,7 +719,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0460(const Scaleform::GFx::FunctionHandl
     if (GetState() != 2)
         return;
     CCItemRemakeOptionPacket::ForceFillIngredient fill;
-    fill.m_uid = m_cur->FUN_140526a50();
+    fill.m_uid = m_cur->GetItemUid();
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(8);
     fill.vfunc_1(pkt);
@@ -738,7 +736,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0550(const Scaleform::GFx::FunctionHandl
     if (GetState() != 2)
         return;
     CCItemRemakeOptionPacket::ForceFillIngredient fill;
-    fill.m_uid = m_cur->FUN_140526a50();
+    fill.m_uid = m_cur->GetItemUid();
     fill.m_count = 10;
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(8);
@@ -814,7 +812,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
         MS2Ptr<CItem> slotItem = slot->vfunc_25();
         if (slotItem == 0 || slotItem->FUN_140527840() == 0)
             continue;
-        int need = slotItem->FUN_140526c50();
+        int need = slotItem->GetCount();
         int price = bSale != 0 ? FUN_140616d40(need, discount) : need;
         int have = FUN_1412a1c80(MS2Ptr<CItem>(slotItem));
         if (have < price) {
@@ -858,14 +856,14 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     ASArray list(2);
     for (size_t i = 0; i < ingredients->FUN_14026bf10(); ++i) {
         Unk_IngRef ref = ingredients->FUN_14026be50(i);
-        if (ref == 0 || ref->FUN_14026b350())
+        if (ref == 0 || ref->IsEmpty())
             continue;
         unsigned itemId = ref->FUN_14026b500();
         int count = ref->m_c;
         int type = ref->m_b;
         int rank = FUN_14053feb0(itemId);
         MS2Ptr<CItem> ingredient(new CItem());
-        if (ingredient->FUN_14052b2e0(itemId, rank, 0, count) != 0) {
+        if (ingredient->InitWithCount(itemId, rank, 0, count) != 0) {
             int have = FUN_1412a1c80(MS2Ptr<CItem>(ingredient));
             CString bagKey = StringFormat("{0}.ingredient.{1}", GetTypeName(), i);
             ASObj entry(2);
@@ -893,19 +891,19 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
 // @0x1412a1600
 void UIItemRemakeOptionDialog::FUN_1412a1600(MS2Ptr<CItem> item)
 {
-    SendChangeAttributesMode4(item->FUN_140526a50());
+    SendChangeAttributesMode4(item->GetItemUid());
 }
 
 // @0x1412a1650
 void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
 {
     if (item.get() != 0) {
-        if (FUN_1419beef0(item->FUN_140526a50()) != 0) {
+        if (FUN_1419beef0(item->GetItemUid()) != 0) {
             g_143ab2a90.FUN_140a5d530(item.get());
         } else {
             MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
-                MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->FUN_140526a50());
+                MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->GetItemUid());
                 if (equip.get() != 0) {
                     equip->FUN_1411dd6d0(item.get());
                     equip->FUN_1411dd280();
@@ -957,7 +955,7 @@ int UIItemRemakeOptionDialog::FUN_1412a1c80(MS2Ptr<CItem> item)
     if (item == 0 || item->FUN_140527840() == 0)
         return 0;
     int have = 0;
-    int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->FUN_14053c6f0();
+    int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->GetStringTag();
     if (itemId != 0)
         have = g_143ab2a90.FUN_140a5f7b0(itemId, 0);
     return have;
@@ -994,11 +992,11 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(text), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0650));
-            box->FUN_141a01600(item->FUN_140526a50());
+            box->FUN_141a01600(item->GetItemUid());
             box->FUN_141a01ee0(MS2Ptr<CItem>(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->FUN_141a01700(0x475, 0x476, 0);
-            box->FUN_1405340b0(uid);
-            box->FUN_140533ff0(nOption);
+            box->Append<__int64>(uid);
+            box->Append<int>(nOption);
             FUN_140f73320(box.operator->(), bConfirm);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
@@ -1118,10 +1116,10 @@ void UIItemRemakeOptionDialog::FUN_1412a2c50(CInPacket* pPacket)
     SetState(3);
     m_cur = item;
     ASObj obj(2);
-    CString strGuid = FUN_140719530(m_cur->FUN_140526a50());
+    CString strGuid = FUN_140719530(m_cur->GetItemUid());
     obj.FUN_1407cba60("lastItemGUID", strGuid);
     m_enchantAni->Invoke("setLastItemGUID", obj);
-    m_new = m_cur->FUN_140524250();
+    m_new = m_cur->Clone();
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_new;
     apply.vfunc_2(*pPacket);
@@ -1132,7 +1130,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2c50(CInPacket* pPacket)
 // @0x1412a30f0
 void UIItemRemakeOptionDialog::FUN_1412a30f0(CInPacket* pPacket)
 {
-    m_new = m_cur->FUN_140524250();
+    m_new = m_cur->Clone();
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_new;
     apply.vfunc_2(*pPacket);
@@ -1154,7 +1152,7 @@ void UIItemRemakeOptionDialog::FUN_1412a3330(CInPacket* pPacket)
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_new;
     apply.vfunc_2(*pPacket);
-    if (apply.m_uid != m_new->FUN_140526a50())
+    if (apply.m_uid != m_new->GetItemUid())
         return;
     FUN_1412a1650(MS2Ptr<CItem>(m_new));
     m_new = 0;

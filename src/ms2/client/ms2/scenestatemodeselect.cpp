@@ -65,7 +65,7 @@ void CSceneStateModeSelect::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
     FUN_141bbae80(FUN_1403ed2d0(), this);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f6e);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f6e);
 }
 
 // @0x140aae1d0

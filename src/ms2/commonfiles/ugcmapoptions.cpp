@@ -680,7 +680,7 @@ int FUN_1408b5a00(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return 0;
-    if (spItem->FUN_14053c600() == 0x31)
+    if (spItem->GetIconCode() == 0x31)
         return 1;
     return 0;
 }
@@ -812,11 +812,11 @@ int FUN_1408b6020(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return 0;
-    if (spItem->FUN_14053c600() == 0x1c)
+    if (spItem->GetIconCode() == 0x1c)
         return 1;
-    if (spItem->FUN_14053c600() == 0x1d)
+    if (spItem->GetIconCode() == 0x1d)
         return 1;
-    if (spItem->FUN_14053c600() == 0x1e)
+    if (spItem->GetIconCode() == 0x1e)
         return 1;
     return 0;
 }

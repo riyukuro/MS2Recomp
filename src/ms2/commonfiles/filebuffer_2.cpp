@@ -50,7 +50,7 @@ CFileLogger::~CFileLogger()
 }
 
 // @0x140392110
-int CFileLogger::FUN_140392110(const wchar_t* pszName)
+int CFileLogger::OpenLog(const wchar_t* pszName)
 {
     if (ms_bInit == 0)
     {
@@ -67,7 +67,7 @@ int CFileLogger::FUN_140392110(const wchar_t* pszName)
 }
 
 // @0x140392200
-void CFileLogger::FUN_140392200(int nId, unsigned int nLimit)
+void CFileLogger::SetLogFileLimit(int nId, unsigned int nLimit)
 {
     if (ms_bInit == 0)
         return;
@@ -91,7 +91,7 @@ void CFileLogger::FUN_140392270(int nId)
 }
 
 // @0x1403922d0
-void CFileLogger::FUN_1403922d0(int nId)
+void CFileLogger::FlushLog(int nId)
 {
     if (ms_bInit == 0)
         return;
@@ -106,7 +106,7 @@ void CFileLogger::FUN_1403922d0(int nId)
 }
 
 // @0x140392350
-void CFileLogger::FUN_140392350()
+void CFileLogger::FlushAndClearAll()
 {
     if (ms_bInit == 0)
         return;

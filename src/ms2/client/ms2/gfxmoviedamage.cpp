@@ -49,7 +49,7 @@ class Unk_DmgGFxUIManager
 public:
     void FUN_1422b0790(int nMovieId);
 };
-Unk_DmgGFxUIManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_DmgGFxUIManager (calls cast back)
 
 class Unk_DmgSceneManager
 {
@@ -94,7 +94,7 @@ template <class T> T* Unk_DmgFindUI(int nId)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -153,7 +153,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
             Scaleform::GFx::Value vThird(pArgs[2]);
             FUN_1422be510(FUN_140b62400(m_18, vStage));
             FUN_1422be5b0(FUN_140b62350(m_18, vLoader));
-            FUN_14025e7a0()->FUN_1422b0790(m_18);
+            reinterpret_cast<Unk_DmgGFxUIManager*>(FUN_14025e7a0())->FUN_1422b0790(m_18);
         }
         m_128.AssignRaw(Unk_DmgFindUI<UIDamageText>(0x4e32));
         FUN_140b62270();

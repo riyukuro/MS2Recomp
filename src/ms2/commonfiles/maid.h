@@ -53,13 +53,13 @@ public:
     void SetTimes(__int64 t38, __int64 t40);    // 0x14067d4c0
     void SetProfile(const MaidProfile& profile);   // 0x14067d500
     void Write(COutputStream* pStream);         // 0x14067d540
-    void FUN_14067d730(CInPacket* pPacket);     // 0x14067d730 Read: the maid's fields from the packet
+    void ReadFromPacket(CInPacket* pPacket);     // 0x14067d730 Read: the maid's fields from the packet
     int GetRemainDays();                        // 0x14067daa0 days to the contract end, -1 when over
     int GetOverDays();                          // 0x14067db20 days past the contract end (>= 1), -1 when not over
     int IsExpired();                            // 0x14067dbc0
     int IsTime38Over(int nSeconds);             // 0x14067dc00
     int IsTime40Over(int nSeconds);             // 0x14067dc50
-    int FUN_14067dca0();                        // 0x14067dca0 the affinity level is at its maximum
+    int IsAffinityLevelAtMax();                        // 0x14067dca0 the affinity level is at its maximum
     int GetMoodGrade();                         // 0x14067dd10 0 (<= 30), 1 (<= 70), 2
     void ResetLevel();                          // 0x14067dd50
     void AddLevel(int nDelta, int bIgnoreLimit);   // 0x14067dd80

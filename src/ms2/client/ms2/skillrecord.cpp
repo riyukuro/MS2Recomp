@@ -13,6 +13,8 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
@@ -64,9 +66,6 @@ public:
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int nFlags);    // the item of an equip slot
 };
 class Unk_SrPC;
-void* FUN_14096e110(Unk_SrEntity* pEntity);                 // as an npc (0 for a player)
-Unk_SrPC* FUN_140974230(Unk_SrEntity* pEntity);             // as a player
-Unk_SrEquipSet* FUN_1416561a0(Unk_SrPC* pPC);               // the equipment of a player
 
 // The buffs of an actor (AdditionalCli is RTTI CPtred, ?\additionalcli.cpp; only its level data is read).
 struct Unk_SrBuffLevel
@@ -115,13 +114,13 @@ bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long l
 }
 
 // @0x141759010
-SkillMotionData* SkillTargetRecord::FUN_141759010()
+SkillMotionData* SkillTargetRecord::GetMotionData()
 {
     return m_spLevel->FUN_140803f00(m_nMotion);
 }
 
 // @0x141759050
-SkillAttackData* SkillTargetRecord::FUN_141759050()
+SkillAttackData* SkillTargetRecord::GetAttackData()
 {
     return m_spLevel->FUN_140803f60(m_nMotion, m_nAttack);
 }
@@ -136,7 +135,7 @@ int SkillTargetRecord::FUN_141759090()
 const CString& SkillTargetRecord::FUN_1417590d0()
 {
     static CString s_strEmpty;
-    SkillAttackData* pAttack = FUN_141759050();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return s_strEmpty;
     if (pAttack->GetAttackMethodType() != 1)
@@ -218,7 +217,7 @@ bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
 }
 
 // @0x141759830
-SkillMotionData* CSkillRecord::FUN_141759830()
+SkillMotionData* CSkillRecord::GetMotionData()
 {
     return m_spLevel ? m_spLevel->FUN_140803f00(m_nMotion) : 0;
 }
@@ -281,7 +280,7 @@ bool CSkillRecord::FUN_141759a50()
 // @0x141759ad0
 float CSkillRecord::FUN_141759ad0()
 {
-    SkillMotionData* pMotion = FUN_141759830();
+    SkillMotionData* pMotion = GetMotionData();
     if (pMotion == 0)
         return 0;
     if (pMotion->m_fB8 != 0)
@@ -297,7 +296,7 @@ float CSkillRecord::FUN_141759ad0()
 // @0x141759b60
 float CSkillRecord::FUN_141759b60(double dDelta)
 {
-    SkillMotionData* pMotion = FUN_141759830();
+    SkillMotionData* pMotion = GetMotionData();
     if (pMotion == 0)
         return 0;
     float fResult = 0;
@@ -357,7 +356,7 @@ int CSkillRecord::FUN_141759eb0()
 }
 
 // @0x141759f20
-int CSkillRecord::FUN_141759f20()
+int CSkillRecord::IsLastMotion()
 {
     if (m_nMotion + 1 >= m_spLevel->FUN_140804270())
         return 1;
@@ -384,7 +383,7 @@ void CSkillRecord::FUN_141759fe0()
 }
 
 // @0x14175a000
-SkillAttackData* CSkillRecord::FUN_14175a000()
+SkillAttackData* CSkillRecord::GetCurrentAttackData()
 {
     return m_spLevel->FUN_140803f60(m_nMotion, m_nAttackIndex);
 }
@@ -396,15 +395,15 @@ SkillAttackData* CSkillRecord::FUN_14175a050(int nAttack)
 }
 
 // @0x14175a0a0
-SkillAttackData* CSkillRecord::FUN_14175a0a0(CString strName)
+SkillAttackData* CSkillRecord::GetAttackDataByName(CString strName)
 {
     return m_spLevel->FUN_140803fb0(m_nMotion, strName);
 }
 
 // @0x14175a130
-int CSkillRecord::FUN_14175a130()
+int CSkillRecord::GetBrokenOffence()
 {
-    SkillAttackData* pAttack = FUN_14175a000();
+    SkillAttackData* pAttack = GetCurrentAttackData();
     if (pAttack == 0)
         return 0;
     return pAttack->m_nBrokenOffence;
@@ -413,7 +412,7 @@ int CSkillRecord::FUN_14175a130()
 // @0x14175a170
 float CSkillRecord::FUN_14175a170()
 {
-    SkillAttackData* pAttack = FUN_14175a000();
+    SkillAttackData* pAttack = GetCurrentAttackData();
     if (pAttack == 0)
         return 0;
     return pAttack->m_fBrokenForce;
@@ -430,7 +429,7 @@ float CSkillRecord::FUN_14175a1b0()
 }
 
 // @0x14175a210
-int CSkillRecord::FUN_14175a210()
+int CSkillRecord::GetSuperArmor()
 {
     if (AdditionalCliList::FUN_1409726e0(m_spSkill->m_nSuperArmor, m_spSkill->m_eSuperArmorApplyFieldType))
         return m_spSkill->m_nSuperArmor;
@@ -515,13 +514,13 @@ SkillData* CDamageRecord::FUN_14175a820()
 }
 
 // @0x14175a850
-SkillMotionData* CDamageRecord::FUN_14175a850()
+SkillMotionData* CDamageRecord::GetMotionData()
 {
     return m_spLevel ? m_spLevel->FUN_140803f00(m_nMotion) : 0;
 }
 
 // @0x14175a8b0
-SkillAttackData* CDamageRecord::FUN_14175a8b0()
+SkillAttackData* CDamageRecord::GetAttackData()
 {
     return m_spLevel ? m_spLevel->FUN_140803f60(m_nMotion, m_nAttack) : 0;
 }
@@ -529,7 +528,7 @@ SkillAttackData* CDamageRecord::FUN_14175a8b0()
 // @0x14175a920
 int CDamageRecord::FUN_14175a920()
 {
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return 0;
     return pAttack->m_damage.m_nNameIndex;
@@ -539,7 +538,7 @@ int CDamageRecord::FUN_14175a920()
 CString CDamageRecord::FUN_14175a960()
 {
     static CString s_strEmpty;
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return s_strEmpty;
     return pAttack->m_damage.m_strEffectHit;
@@ -549,32 +548,32 @@ CString CDamageRecord::FUN_14175a960()
 CString CDamageRecord::FUN_14175aa50()
 {
     static CString s_strEmpty;
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return s_strEmpty;
     return pAttack->m_damage.m_strEffectRemain;
 }
 
 // @0x14175ab40
-bool CDamageRecord::FUN_14175ab40()
+bool CDamageRecord::IsIgnoreOptimalHideHitEffect()
 {
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return false;
     return pAttack->m_damage.m_bIgnoreOptimalHideDamageHitEffect;
 }
 
 // @0x14175ab80
-bool CDamageRecord::FUN_14175ab80()
+bool CDamageRecord::IsIgnoreOptimalHideRemainEffect()
 {
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return false;
     return pAttack->m_damage.m_bIgnoreOptimalHideDamageRemainEffect;
 }
 
 // @0x14175abc0
-void CDamageRecord::FUN_14175abc0(int nType, __int64 nDamage)
+void CDamageRecord::AddDamage(int nType, __int64 nDamage)
 {
     if (nType == 8) {
         m_nD0 = 8;
@@ -606,17 +605,17 @@ int CDamageRecord::FUN_14175ad50()
     Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
     if (pOwner == 0)
         return nMaterial;
-    nMaterial = FUN_14175a8b0()->m_damage.m_nAttackMaterial;
-    void* pNpc = FUN_14096e110(pOwner);
+    nMaterial = GetAttackData()->m_damage.m_nAttackMaterial;
+    void* pNpc = reinterpret_cast<void*>(efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pOwner)));
     if (pNpc != 0) {
         return nMaterial;
     }
     else {
-        Unk_SrPC* pPC = FUN_140974230(pOwner);
+        Unk_SrPC* pPC = reinterpret_cast<Unk_SrPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pOwner)));
         if (pPC != 0) {
             if (nMaterial != 0)
                 return nMaterial;
-            MS2Ptr<CEquipItem> spWeapon = FUN_1416561a0(pPC)->FUN_1411e1860(5, 6, 0);
+            MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<Unk_SrEquipSet*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1860(5, 6, 0);
             if (spWeapon.get() != 0)
                 nMaterial = spWeapon->GetItem()->FUN_140527840()->m_nAttackMaterial;
         }
@@ -642,7 +641,7 @@ int CDamageRecord::FUN_14175aee0(int nIndex, int& nType)
 // @0x14175af50
 int CDamageRecord::vfunc_1()
 {
-    SkillAttackData* pAttack = FUN_14175a8b0();
+    SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
         return 0;
     return pAttack->m_nHitImmuneBreak;

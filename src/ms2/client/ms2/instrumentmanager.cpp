@@ -111,7 +111,6 @@ class Unk_ImWorld : public WorldService
 public:
     Unk_ImActor* FUN_141bd0cc0();                                           // the local player
     Unk_ImActor* FUN_141bd1290(int nId);                                    // an actor by object id
-    Unk_ImActor* FUN_141bd1530(__int64 nId);                                // an actor by character id
     void FUN_141bbae40(IWorldServiceCallback* pCallback);                  // register a callback
 };
 
@@ -282,10 +281,10 @@ void CInstrumentManager::vfunc_4(int nMap)
 void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
 {
     UpdateVolume(false);
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
-    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1530(spBuddy->FUN_1401cc230());
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(spBuddy->FUN_1401cc230()));
     if (pActor == 0)
         return;
     if (pActor->FUN_14166c930() != 0x2f)
@@ -298,7 +297,7 @@ void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
 void CInstrumentManager::vfunc_buddy_7(__int64 nId)
 {
     UpdateVolume(false);
-    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1530(nId);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (pActor == 0)
         return;
     if (pActor->FUN_14166c930() != 0x2f)
@@ -312,7 +311,7 @@ template <class T> T* Unk_ImGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_ImUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -532,7 +531,7 @@ int CInstrumentManager::CanPlayEnsemble()
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
-    return pMe->FUN_1416749a0()->FUN_1409701d0(4);
+    return pMe->FUN_1416749a0()->HasEnabledWithEventBuffType(4);
 }
 
 // @0x140d07200
@@ -618,7 +617,7 @@ void CInstrumentManager::NoteOn(int nNote)
         m_playing = true;
         COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.Encode1(0);
-        packet.Encode8(spItem->FUN_140526a50());
+        packet.Encode8(spItem->GetItemUid());
         FUN_140710590(packet);
         CMidiMessage msg;
         msg.ProgramChange(nSlot, spCategory->m_nGMId);
@@ -692,7 +691,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
     m_scoreUid = nScoreUid;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(3);
-    packet.Encode8(spInstrument->FUN_140526a50());
+    packet.Encode8(spInstrument->GetItemUid());
     packet.Encode8(nScoreUid);
     FUN_140710590(packet);
     return true;
@@ -745,7 +744,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
     m_scoreUid = nScoreUid;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(5);
-    packet.Encode8(spInstrument->FUN_140526a50());
+    packet.Encode8(spInstrument->GetItemUid());
     packet.Encode8(nScoreUid);
     FUN_140710590(packet);
     SetPcState(0x80);
@@ -1103,7 +1102,7 @@ bool CInstrumentManager::IsBlocked(int nOwner)
     Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nOwner);
     if (pActor == 0)
         return false;
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(pActor->FUN_141656a80());
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(pActor->FUN_141656a80());
     if (spBuddy == 0)
         return false;
     if (spBuddy->FUN_1401cc5b0() == 0)
@@ -1318,7 +1317,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
             Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(pVoice->m_owner);
             if (pActor != 0)
             {
-                CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(pActor->FUN_141656a80());
+                CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(pActor->FUN_141656a80());
                 if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
                     bActive = false;
             }

@@ -18,7 +18,6 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 float FUN_140968970(float f);                                                       // sqrtf
 
 class NxBounds3   // C3: member view for the former free stand-ins
@@ -64,11 +63,11 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
     Vector3 ptPos;
     Vector3 ptRot;
     Vector3 ptSize;
-    if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0x68c7c29d, &ptRot) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot)) != 0)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
@@ -129,9 +128,9 @@ CCameraTargetBoundingSphere::~CCameraTargetBoundingSphere()
 int CCameraTargetBoundingSphere::InitFromEntity(egf::Entity* pEntity)
 {
     Vector3 ptSize;
-    if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0xfd95ca52, &m_center) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_center)) != 0)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
     m_radius = ptSize.x * 0.5f;
@@ -175,9 +174,9 @@ CCameraTargetBoundingCylinder::~CCameraTargetBoundingCylinder()
 int CCameraTargetBoundingCylinder::InitFromEntity(egf::Entity* pEntity)
 {
     Vector3 ptSize;
-    if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0xfd95ca52, &m_center) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_center)) != 0)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
     m_radius = ptSize.x * 0.5f;

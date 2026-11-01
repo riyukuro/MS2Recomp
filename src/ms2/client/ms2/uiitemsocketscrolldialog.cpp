@@ -73,6 +73,8 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
 
 // ---- unit-local views of exe objects ----
 
@@ -135,7 +137,6 @@ int FUN_140627450(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow);   // 0 
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // notice
 void FUN_1412752d0(const CStringW& strKey, int nType);          // notice by string key
@@ -166,13 +167,13 @@ UIItemSocketScrollDialog::UIItemSocketScrollDialog()
     FUN_141924170(1);
     m_164 = 1;
     m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
-    ((class Unk_SsPackets*)FUN_140bccd50())->FUN_140da5180(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
 // @0x140f64840
 UIItemSocketScrollDialog::~UIItemSocketScrollDialog()
 {
-    ((class Unk_SsPackets*)FUN_140bccd50())->FUN_140da51e0(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
 // @0x140f64940
@@ -307,7 +308,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
             CItemSocket* pSocket = spTarget->FUN_1405279c0();
             unsigned nMax = pSocket->GetMaxSlot();
             unsigned nShown = nMax < m_nCount ? nMax : m_nCount;
-            unsigned nOpen = pSocket->FUN_140620a20();
+            unsigned nOpen = pSocket->GetOpenSlotCount();
             strResult = FUN_140e63450(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
         }
         ASObj obj(2);
@@ -388,7 +389,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
             unsigned nRank = arrRank[i];
             CStringW strOne = FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank);
             if (i != 0)
-                strRanks.Append(FUN_1401e8510(strSep, strOne));
+                strRanks.Append(StringFormat<CStringW>(strSep, strOne));
             else
                 strRanks.Append(strOne);
         }
@@ -403,7 +404,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
             if (strOne.IsEmpty())
                 continue;
             if (!strSlots.IsEmpty())
-                strSlots.Append(FUN_1401e8510(strSep, strOne));
+                strSlots.Append(StringFormat<CStringW>(strSep, strOne));
             else
                 strSlots.Append(strOne);
         }
@@ -416,7 +417,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
         if ((spRow->m_nUnk1c & 2) != 0)
         {
             if (!strUse.IsEmpty())
-                strUse.Append(FUN_1401e8510(strSep, GetStringCommon(0x594)));
+                strUse.Append(StringFormat<CStringW>(strSep, GetStringCommon(0x594)));
             else
                 strUse.Append(GetStringCommon(0x594));
         }
@@ -487,7 +488,7 @@ void UIItemSocketScrollDialog::OnClickAction()
                                                     1, SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f65a40), nTargetUid);
             return;
         }
-        if (!pSocket->FUN_140621cf0(nCount))
+        if (!pSocket->CanExpandSlotsTo(nCount))
         {
             FUN_140d73aa0(FUN_14028dfa0<unsigned int>(CStringW(L"s_itemsocket_scroll_error_already_socket_unlock_msgbox"), m_nCount), 0, 0, CStringW(L""));
             return;

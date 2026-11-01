@@ -31,7 +31,7 @@
 
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
-int FUN_14028d260(float f);                                // 0x14028d260 round to ms
+__int64 FUN_14028d260(float f);                                // 0x14028d260 round to ms
 class Unk_CubeSelection;
         // the cube selection is in the craft mode
 int* FUN_1404eb7e0(int* pA, int* pB);                      // 0x1404eb7e0 the larger of two ints
@@ -43,7 +43,8 @@ public:
     unsigned FUN_140b7f6a0(const egf::EntityID& kId);
     efd::utf8string FUN_141206030(const egf::EntityID& kId);
 };
-Unk_WkAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
 class Unk_WkPlayback { public: bool FUN_1406af100(); };
@@ -55,10 +56,11 @@ struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a5
 void* FUN_1409a8b10();
 
 // The actor's buff set: the movement direction and the buff tests.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_WkBuff
 {
 public:
-    efd::Point3 FUN_141683900();
     bool FUN_141683100(int nKey);
     bool FUN_141682fe0(int nKey);
     bool FUN_141683200(int nKey);
@@ -227,8 +229,8 @@ void StateWalk::vfunc_8(double fTime)
         return;
     }
     Unk_WkBuff* pBuff = (Unk_WkBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683900();
-    reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+    Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+    reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
     if (m_pOwner->FUN_141676b70() != 0)
     {
         m_n10 = 0x17;
@@ -360,7 +362,7 @@ void StateWalk::vfunc_9(double fTime)
     if (m_n10 == 0x17)
         nKey = 0x1f;
     bool bChanged = !(m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2 && m_n50 == 0);
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = reinterpret_cast<Unk_WkAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(nKey, nSeq) || bChanged)
     {
         Unk_Vec4 kSpeed = *(Unk_Vec4*)m_pOwner->FUN_141671920();
@@ -466,7 +468,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         pMount->vfunc_95();
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        const efd::utf8string& strName = FUN_141b6f910()->FUN_141206030(m_pOwner->FUN_14123c460());
+        const efd::utf8string& strName = reinterpret_cast<Unk_WkAnimSvc*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460());
         efd::utf8string strAnim(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strName))->c_str());
         m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
     }

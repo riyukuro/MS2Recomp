@@ -250,6 +250,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/client/ms2/trademanagerex.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- unit-local views of exe objects (names assumed; layouts only as far as this unit reads them) ----------------------
 
@@ -325,7 +327,6 @@ extern __int64 DAT_143ab2898;                                       // the mesos
 
 // The bag bound to a name.
 class Unk_InvBagBind;
-Unk_InvBagBind* FUN_1422c8e90(const CString& strName);
 InventorySlotBag* FUN_14140fb30(Unk_InvBagBind* pBind);             // DynamicCast<InventorySlotBag>
 DragSlotBag* FUN_140c544d0(Unk_InvBagBind* pBind);
 
@@ -351,7 +352,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The key state.
-class Unk_InvKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_InvKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The localized "$s_..." strings.
@@ -415,7 +416,6 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 #ifdef __clang__
 CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b (ATL operator+)
 #endif
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
@@ -659,7 +659,7 @@ void UIInventoryDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (vfunc_55() != 0)
         return;
-    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+    if (InventorySlotBag* pBag = FUN_14140fb30(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188))))
         ((class DragSlotBag*)(class InventorySlotBag*)(pBag))->FUN_1422cca90();
 }
 MS2_REPLACE_METHOD_VIA(0x141997800, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_9, 115, 0);
@@ -669,7 +669,7 @@ void UIInventoryDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (vfunc_55() != 0)
         return;
-    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+    if (InventorySlotBag* pBag = FUN_14140fb30(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188))))
         ((class DragSlotBag*)(class InventorySlotBag*)(pBag))->FUN_1422cca90();
 }
 MS2_REPLACE_METHOD_VIA(0x141997880, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_7, 151, 0);
@@ -677,7 +677,7 @@ MS2_REPLACE_METHOD_VIA(0x141997880, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997920
 void UIInventoryDialog::vfunc_oa0_25(void* a1)
 {
-    if (DragSlotBag* pBag = FUN_140c544d0(FUN_1422c8e90(m_188)))
+    if (DragSlotBag* pBag = FUN_140c544d0(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188))))
         pBag->vfunc_11(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141997920, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_25, 78, 0);
@@ -685,7 +685,7 @@ MS2_REPLACE_METHOD_VIA(0x141997920, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997980
 void UIInventoryDialog::vfunc_oa0_26(void* a1)
 {
-    if (DragSlotBag* pBag = FUN_140c544d0(FUN_1422c8e90(m_188)))
+    if (DragSlotBag* pBag = FUN_140c544d0(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188))))
         pBag->vfunc_12(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141997980, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_26, 78, 0);
@@ -738,7 +738,7 @@ void UIInventoryDialog::vfunc_80(void* pRequest)
         {
             if (entry.m_nFlags == 0)
             {
-                CStringW strLower = FUN_1413fa9b0(m_1e0->FUN_1422e0b00());
+                CStringW strLower = FUN_1413fa9b0(m_1e0->GetText());
                 FUN_14199c2b0(strLower);
             }
             else
@@ -1063,7 +1063,7 @@ int UIInventoryDialog::vfunc_13()
             {
                 if (m_1e0->FUN_1422c76c0() != 0)
                 {
-                    FUN_14199b800(m_1e0->FUN_1422e0b00());
+                    FUN_14199b800(m_1e0->GetText());
                     pDlg->FUN_1422c7630(1);
                     m_1e0->FUN_1422c7630(0);
                     return 1;
@@ -1103,7 +1103,7 @@ void UIInventoryDialog::FUN_141999d40(int nTab)
     if (m_1c8.get())
     {
         int nIdx = FUN_14199d920(nTab);
-        m_1c8->FUN_1422e31e0(nIdx);
+        m_1c8->SetSelectedIndex(nIdx);
         m_1c8->vfunc_24(true);
     }
     else
@@ -1198,7 +1198,7 @@ void UIInventoryDialog::FUN_141999f60()
         state.FUN_1407cbbe0("bRemakeOption", true);
         state.FUN_1407cbbe0("bUnlimitedEnchant", true);
         state.FUN_1407cbbe0("bGem", true);
-        state.FUN_1407cbb20("slotExpandToolTip", FUN_14199ddd0());
+        state.FUN_1407cbb20("slotExpandToolTip", GetExpandTooltip());
         state.FUN_1407cb9c0("bOpenBank", bBank);
         state.FUN_1407cbb20("openBankTooltip", FUN_14199deb0(bBank));
         pAs->Invoke("updateButtonState", state);
@@ -1214,7 +1214,7 @@ void UIInventoryDialog::FUN_14199a3f0(__int64 nItemUid)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (!spItem)
         return;
-    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+    if (InventorySlotBag* pBag = FUN_14140fb30(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188))))
         pBag->FUN_14140f5b0(spItem.get());
 }
 MS2_REPLACE_METHOD(0x14199A3F0, UIInventoryDialog, FUN_14199a3f0, 179, 0);
@@ -1231,7 +1231,7 @@ void UIInventoryDialog::FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Par
         return;
     ASObj obj(item, 2);
     m_1a0 = m_194;
-    m_194 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.FUN_1422baa20("tabIndex")))->GetInt();
+    m_194 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("tabIndex")))->GetInt();
     m_19c = 7;
     FUN_141999f60();
 }
@@ -1244,7 +1244,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
         return;
     if (m_1e0->FUN_1422c76c0() == 0)
         return;
-    CStringW strText = m_1e0->FUN_1422e0b00();
+    CStringW strText = m_1e0->GetText();
     if (strText.IsEmpty())
         return;
     strText.TrimRight();
@@ -1262,7 +1262,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
             candidates.FUN_1422bbf00(row);
         }
     }
-    int nRows = candidates.FUN_1422bc5d0() > 5 ? 5 : (int)candidates.FUN_1422bc5d0();
+    int nRows = candidates.GetLength() > 5 ? 5 : (int)candidates.GetLength();
     static_cast<ASObj*>(static_cast<AScript*>(m_1e0.operator->()))->FUN_1407cb9c0("m_rowCount", nRows);
     m_1e0->Invoke("setCandidates", candidates);
 }
@@ -1286,7 +1286,7 @@ void UIInventoryDialog::OnClickOpenBank()
         if (nElapsed < nCooltime)
         {
             int nRemain = nCooltime - nElapsed;
-            FUN_1412751f0(FUN_1401ceea0(GetStringCommonByKey(L"s_inventory_err_open_bank_remain_time"), nRemain), 1, 1);
+            FUN_1412751f0(StringFormat<int>(GetStringCommonByKey(L"s_inventory_err_open_bank_remain_time"), nRemain), 1, 1);
         }
         else
         {
@@ -1483,7 +1483,7 @@ void UIInventoryDialog::FUN_14199ba10()
     InventorySlotBag* pBag = FUN_14140eca0(m_188, m_194, nCount);
     if (pBag == 0)
         return;
-    m_210->vfunc_25(pBag->FUN_14140f7a0().FUN_1422bb890());
+    m_210->vfunc_25(pBag->GetSlotNames().FUN_1422bb890());
     m_210->vfunc_24(true);
     m_19c &= ~4;
 }
@@ -1621,7 +1621,7 @@ void UIInventoryDialog::FUN_14199c2b0(CStringW strText)
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188));
+        InventorySlotBag* pBag = FUN_14140fb30(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
         if (pBag != 0)
         {
             int nSlot = pBag->FUN_14140f620(CStringW(strText));
@@ -1695,7 +1695,7 @@ void UIInventoryDialog::FUN_14199c8a0(int* pWidth, int* pHeight)
     if (MS2Ptr<ASMovieClip> spPanel = GetChild<ASMovieClip>("m_panel"))
     {
         *pWidth = spPanel->FUN_1422c1340();
-        *pHeight = spPanel->FUN_1422c13b0();
+        *pHeight = spPanel->GetHeightCeil();
         if (MS2Ptr<ASMovieClip> spEmblem = GetChild<ASMovieClip>("m_emblem"))
         {
             int nAdd = 0;
@@ -1758,7 +1758,7 @@ void UIInventoryDialog::FUN_14199ca90()
         m_1a8.SetAt(nTab, (int)i);
         nIndex++;
     }
-    static_cast<Unk_InvTabBar*>(m_1c8.operator->())->FUN_1422e2db0(buttons.FUN_1422bb870());
+    static_cast<Unk_InvTabBar*>(m_1c8.operator->())->SetDataProvider(buttons.FUN_1422bb870());
     m_1c8->FUN_1422e4190(ParamsDelegate(this, &UIInventoryDialog::FUN_14199a4b0), 0);
 }
 MS2_REPLACE_METHOD(0x14199CA90, UIInventoryDialog, FUN_14199ca90, 1831, 0);
@@ -1798,7 +1798,7 @@ int UIInventoryDialog::FUN_14199d840(int)
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items.GetAt(i);
-        if (spItem->FUN_140528930())
+        if (spItem->IsExpired())
             ++nCount;
     }
     return nCount;
@@ -1850,14 +1850,14 @@ CStringW UIInventoryDialog::FUN_14199d9c0()
 MS2_REPLACE_METHOD(0x14199D9C0, UIInventoryDialog, FUN_14199d9c0, 1030, 0);
 
 // @0x14199ddd0
-CStringW UIInventoryDialog::FUN_14199ddd0()
+CStringW UIInventoryDialog::GetExpandTooltip()
 {
     CStringW strFormat = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_slotexpand_tooltip");
     unsigned nSlots = FUN_140a66510(m_194) + FUN_140a66750(m_194);
     int nStep = 6;
     return StringFormat(strFormat, nStep, nSlots);
 }
-MS2_REPLACE_METHOD(0x14199DDD0, UIInventoryDialog, FUN_14199ddd0, 207, 0);
+MS2_REPLACE_METHOD(0x14199DDD0, UIInventoryDialog, GetExpandTooltip, 207, 0);
 
 // @0x14199deb0
 CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
@@ -2006,7 +2006,7 @@ int UIInviteGroupDialog::vfunc_13()
     if (((class Unk_InvKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
-            TSingleton<CGroupChatManager>::GetInstance()->Invite(m_180, spInput->FUN_1422e0b00());
+            TSingleton<CGroupChatManager>::GetInstance()->Invite(m_180, spInput->GetText());
         return 1;
     }
     return 0;
@@ -2040,7 +2040,7 @@ int UIInviteGroupDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nCount = data.FUN_1422b8b10();
-            FUN_1419a0160(nCount);
+            SetUserCount(nCount);
         }
     }
     return 0;
@@ -2102,7 +2102,7 @@ MS2_REPLACE_METHOD(0x14199FE30, UIInviteGroupDialog, FUN_14199fe30, 58, 0);
 // @0x14199fe70
 void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
 {
-    FUN_1419a0160(nCount);
+    SetUserCount(nCount);
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_inviteFromComunity"))
     {
         unsigned nTotal = nCount;
@@ -2128,12 +2128,12 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
 MS2_REPLACE_METHOD(0x14199FE70, UIInviteGroupDialog, FUN_14199fe70, 735, 0);
 
 // @0x1419a0160
-void UIInviteGroupDialog::FUN_1419a0160(unsigned nCount)
+void UIInviteGroupDialog::SetUserCount(unsigned nCount)
 {
     if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount"))
         spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, nCount));
 }
-MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, FUN_1419a0160, 204, 0);
+MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, SetUserCount, 204, 0);
 
 // @0x1419a0240
 void UIInviteGroupDialog::FUN_1419a0240()
@@ -2141,7 +2141,7 @@ void UIInviteGroupDialog::FUN_1419a0240()
     EntryList entries(10);
     FUN_1419a06d0(entries);
     FUN_1419a07d0(entries);
-    FUN_1419a08f0(entries);
+    AddBuddyEntries(entries);
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_userList"))
     {
         spList->FUN_1422dd1d0();
@@ -2154,9 +2154,9 @@ void UIInviteGroupDialog::FUN_1419a0240()
             row.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
             row.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
             if (entry.FUN_141483d80() != 0)
-                spList->FUN_1422dd230(row);
+                spList->AddItem(row);
         }
-        spList->FUN_1422dd000(spList->FUN_1422dd150() > 8 ? 8 : spList->FUN_1422dd150());
+        spList->SetRowCount(spList->GetItemCount() > 8 ? 8 : spList->GetItemCount());
         spList->vfunc_24(true);
     }
     if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
@@ -2169,7 +2169,7 @@ MS2_REPLACE_METHOD(0x1419A0240, UIInviteGroupDialog, FUN_1419a0240, 1149, 0);
 // @0x1419a06d0
 void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
 {
-    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2204,10 +2204,10 @@ void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
 MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, FUN_1419a07d0, 268, 0);
 
 // @0x1419a08f0
-void UIInviteGroupDialog::FUN_1419a08f0(EntryList& entries)
+void UIInviteGroupDialog::AddBuddyEntries(EntryList& entries)
 {
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-    TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4df0(buddies);
+    TSingleton<CBuddyManager>::GetInstance()->GetAllBuddies(buddies);
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2220,7 +2220,7 @@ void UIInviteGroupDialog::FUN_1419a08f0(EntryList& entries)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, FUN_1419a08f0, 268, 0);
+MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, AddBuddyEntries, 268, 0);
 
 // @0x1419a0a10
 int UIInviteGroupDialog::FUN_1419a0a10(__int64 nCharacterId, EntryList& entries)
@@ -2275,7 +2275,7 @@ void FUN_141410780(const CString& strName);                         // drop the 
 void FUN_1414106d0(const CString& strName);                         // create the item break bag of a name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nFlags, int b);   // bind an item slot to a name
 void FUN_141415600(const CString& strName);                         // release an item slot name
-void FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
 int FUN_14053feb0(int nItemId);                                     // the default rarity of an item
 CStringW FUN_141425950(int nItemId);                                // the item name
 CStringW FUN_140b99450(CStringW strKey, const CStringW& strName, const int& nCount);   // the localized "{name} x{n}"
@@ -2283,7 +2283,8 @@ CStringW FUN_140e9fe10(CStringW strKey, const CStringW& strName, const int& nLow
 CStringW FUN_140298ea0(CStringW strKey);                            // a localized string
 void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
-UIInventoryDialog* FUN_1405344f0(int nUiId);                        // the inventory window
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0                        // the inventory window
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -2378,7 +2379,7 @@ void UIItemBreakBase::OnLoadComplete()
     FUN_1419a1430();
     ((class Unk_InvItemEvents*)FUN_140a6a840())->FUN_1419cae20(this);
     ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode0(vfunc_88());
-    if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+    if (UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d))
     {
         pInventory->FUN_141999f60();
         pInventory->FUN_141999e00();
@@ -2390,7 +2391,7 @@ MS2_REPLACE_METHOD(0x1419A1770, UIItemBreakBase, OnLoadComplete, 172, 0);
 void UIItemBreakBase::vfunc_26()
 {
     UIDialog::vfunc_26();
-    if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+    if (UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d))
     {
         pInventory->FUN_141999f60();
         pInventory->FUN_141999e00();
@@ -2414,7 +2415,7 @@ void UIItemBreakBase::vfunc_67()
     FUN_141410780(GetTypeName());
     FUN_1419a1fb0();
     ((class Unk_InvItemEvents*)FUN_140a6a840())->FUN_1419caeb0(this);
-    ((class CItemBreakManager*)FUN_1409c4b20())->FUN_140531cc0();
+    ((class CItemBreakManager*)FUN_1409c4b20())->ResetBreakMode();
 }
 MS2_REPLACE_METHOD(0x1419A18C0, UIItemBreakBase, vfunc_67, 167, 0);
 
@@ -2450,7 +2451,7 @@ void UIItemBreakBase::vfunc_15()
 {
     if (vfunc_55() != 0)
         return;
-    ((class CItemBreakManager*)FUN_1409c4b20())->FUN_140531ed0();
+    ((class CItemBreakManager*)FUN_1409c4b20())->RemoveMissingItems();
 }
 MS2_REPLACE_METHOD(0x1419A1A40, UIItemBreakBase, vfunc_15, 52, 0);
 
@@ -2458,15 +2459,15 @@ MS2_REPLACE_METHOD(0x1419A1A40, UIItemBreakBase, vfunc_15, 52, 0);
 void UIItemBreakBase::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0 && pInventory->vfunc_55() != 0)
     {
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
         {
             Unk_IbUIMsg msg;
-            msg.FUN_1422b82b0("openWindowPos");
-            msg.FUN_1422b7f70(vfunc_48());
+            msg.AddString("openWindowPos");
+            msg.AddInt(vfunc_48());
             pInventory->OnMessage(this, &msg);
         }
     }
@@ -2476,7 +2477,7 @@ MS2_REPLACE_METHOD(0x1419A1A80, UIItemBreakBase, vfunc_66, 283, 0);
 // @0x1419a1bb0
 void UIItemBreakBase::vfunc_43()
 {
-    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0 && pInventory->FUN_141924630())
     {
         float fX = 0.0f;
@@ -2502,7 +2503,7 @@ MS2_REPLACE_METHOD(0x1419A1BB0, UIItemBreakBase, vfunc_43, 361, 0);
 // @0x1419a1d20
 void UIItemBreakBase::FUN_1419a1d20(int nIndex)
 {
-    Unk_IbBreakBag* pBag = FUN_1414109f0(FUN_1422c8e90(GetTypeName()));
+    Unk_IbBreakBag* pBag = FUN_1414109f0(reinterpret_cast<Unk_InvBagBind*>(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())));
     if (pBag != 0)
         FUN_1414109a0((class DragSlotBag*)(pBag), nIndex);
     vfunc_85(false, nIndex);
@@ -2539,7 +2540,7 @@ void UIItemBreakBase::FUN_1419a1fb0()
 MS2_REPLACE_METHOD(0x1419A1FB0, UIItemBreakBase, FUN_1419a1fb0, 163, 0);
 
 // @0x1419a2060
-void UIItemBreakBase::FUN_1419a2060()
+void UIItemBreakBase::StartBreak()
 {
     if (m_30 != 0)
     {
@@ -2548,10 +2549,10 @@ void UIItemBreakBase::FUN_1419a2060()
     }
     FUN_141276180(s_strExtractProgress, "");
 }
-MS2_REPLACE_METHOD(0x1419A2060, UIItemBreakBase, FUN_1419a2060, 155, 0);
+MS2_REPLACE_METHOD(0x1419A2060, UIItemBreakBase, StartBreak, 155, 0);
 
 // @0x1419a2110
-void UIItemBreakBase::FUN_1419a2110()
+void UIItemBreakBase::EndBreak()
 {
     if (m_30 != 0)
     {
@@ -2560,7 +2561,7 @@ void UIItemBreakBase::FUN_1419a2110()
     }
     FUN_141276180(s_strExtractEnd, "");
 }
-MS2_REPLACE_METHOD(0x1419A2110, UIItemBreakBase, FUN_1419a2110, 155, 0);
+MS2_REPLACE_METHOD(0x1419A2110, UIItemBreakBase, EndBreak, 155, 0);
 
 // @0x1419a21c0
 UIItemBreakDialog::UIItemBreakDialog()
@@ -2636,7 +2637,7 @@ void UIItemBreakDialog::OnLoadComplete()
         std::map<int, int>::iterator it = m_200.find(m_1f8);
         if (it != m_200.end())
             nSelect = it->second;
-        spType->FUN_1422df690(nSelect);
+        spType->SetSelectedIndex(nSelect);
         spType->vfunc_24(1);
     }
     if (MS2Ptr<Unk_IbDropdown> spRank = GetChild<Unk_IbDropdown>("m_bundleRankDropdown"))
@@ -2652,7 +2653,7 @@ void UIItemBreakDialog::OnLoadComplete()
         }
         unsigned nRows = spRank->FUN_1422dfb90();
         spRank->FUN_1422df5f0(nRows > 1 ? nRows : 1);
-        spRank->FUN_1422df690(m_1fc - 1);
+        spRank->SetSelectedIndex(m_1fc - 1);
         spRank->vfunc_24(1);
     }
 }
@@ -2698,7 +2699,7 @@ MS2_REPLACE_METHOD(0x1419A2E10, UIItemBreakDialog, vfunc_88, 17, 0);
 void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
 {
     if (MS2Ptr<ASButton> spBreak = GetChild<ASButton>("m_break"))
-        spBreak->FUN_1422c1fe0(((class CItemBreakManager*)FUN_1409c4b20())->FUN_140532b60());
+        spBreak->FUN_1422c1fe0(((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems());
     if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
         if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
@@ -2731,7 +2732,7 @@ int UIItemBreakDialog::vfunc_46()
         return 0;
     if (MS2Ptr<ASTextField> spDesc = m_30->FUN_1409b4620("m_desc"))
     {
-        CStringW strDesc = spDesc->FUN_1422c4da0();
+        CStringW strDesc = spDesc->GetTextW();
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a) == true)
             strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_skin"));
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
@@ -2778,7 +2779,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
     }
     data.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
     m_30->Invoke("setResult", data);
-    FUN_1419a2110();
+    EndBreak();
 }
 MS2_REPLACE_METHOD(0x1419A36B0, UIItemBreakDialog, vfunc_84, 957, 0);
 
@@ -2789,13 +2790,13 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp(szMethod, "onClickBreak") == 0)
     {
-        if (((class CItemBreakManager*)FUN_1409c4b20())->FUN_140532b60() == 0)
+        if (((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems() == 0)
         {
             FUN_1412751b0(BlockFormat(0xe6), 0x14);
         }
         else
         {
-            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->FUN_140532c30();
+            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->GetMaxItemRarity();
             if (nRarity == 6 || nRarity == 5)
             {
                 bool bLegendary = nRarity != 6;
@@ -2809,7 +2810,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a026f0(1);
                     spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a024e0(strCheck, 0);
+                    spBox->SetCheckbox0(strCheck, 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
@@ -2825,7 +2826,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             else
             {
-                FUN_1419a2060();
+                StartBreak();
             }
         }
         return 1;
@@ -2834,7 +2835,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode3();
     if (_stricmp(szMethod, "onResetBreak") == 0)
     {
-        if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+        if (UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d))
             ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->FUN_140c3fe30(7);
         return 1;
     }
@@ -2866,20 +2867,20 @@ bool UIItemBreakDialog::vfunc_87(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    FUN_1419a2060();
+    StartBreak();
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A4420, UIItemBreakDialog, vfunc_87, 46, 0);
 
 // @0x1419a4460
-void UIItemBreakDialog::FUN_1419a4460()
+void UIItemBreakDialog::ResetBreak()
 {
     if (!m_30)
         return;
     m_188 = 0;
     m_30->Invoke("resetBreak");
 }
-MS2_REPLACE_METHOD(0x1419A4460, UIItemBreakDialog, FUN_1419a4460, 102, 0);
+MS2_REPLACE_METHOD(0x1419A4460, UIItemBreakDialog, ResetBreak, 102, 0);
 
 // @0x1419a44d0
 void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
@@ -3032,7 +3033,7 @@ void UIItemBreakDonationDialog::vfunc_84(CInPacket* pPacket)
     if (m_30 == 0)
         return;
     FUN_1419a1fb0();
-    FUN_1419a2110();
+    EndBreak();
 }
 MS2_REPLACE_METHOD(0x1419A5160, UIItemBreakDonationDialog, vfunc_84, 67, 0);
 
@@ -3043,13 +3044,13 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp(szMethod, "onClickBreak") == 0)
     {
-        if (((class CItemBreakManager*)FUN_1409c4b20())->FUN_140532b60() == 0)
+        if (((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems() == 0)
         {
             FUN_1412751b0(BlockFormat(0xe6), 0x14);
         }
         else
         {
-            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->FUN_140532c30();
+            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->GetMaxItemRarity();
             if (nRarity == 6 || nRarity == 5)
             {
                 bool bLegendary = nRarity != 6;
@@ -3063,7 +3064,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a026f0(1);
                     spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a024e0(strCheck, 0);
+                    spBox->SetCheckbox0(strCheck, 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
@@ -3079,7 +3080,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
             }
             else
             {
-                FUN_1419a2060();
+                StartBreak();
             }
         }
         return 1;
@@ -3095,7 +3096,7 @@ bool UIItemBreakDonationDialog::vfunc_87(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    FUN_1419a2060();
+    StartBreak();
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A5980, UIItemBreakDonationDialog, vfunc_87, 46, 0);

@@ -24,6 +24,8 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cgameoption.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // ---- callees outside this unit ----
 
@@ -39,8 +41,7 @@ template <class A, class B> inline void Unk_SoundLog(CLogString* log, int level,
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp); they return 0 on success.
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 CLogString* GetLogString();                                        // the logger
 // The sound service (?\soundservice.cpp) and its FMOD event system.
@@ -79,12 +80,12 @@ CSoundMusicEffectParam::CSoundMusicEffectParam()
 void CSoundMusicEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408731e0(pNode, "cueID", m_nCueID);
-    FUN_1408731e0(pNode, "paramID", m_nParamID);
-    FUN_140873360(pNode, "paramValue", m_fParamValue);
-    FUN_1408731e0(pNode, "priority", m_nPriority);
-    FUN_140873360(pNode, "volume", m_fVolume);
-    FUN_1408733e0(pNode, "reverb", m_strReverb);
+    XmlGetAttr((class TiXmlElement*)(pNode), "cueID", reinterpret_cast<int&>(m_nCueID));
+    XmlGetAttr((class TiXmlElement*)(pNode), "paramID", reinterpret_cast<int&>(m_nParamID));
+    XmlGetAttr((class TiXmlElement*)(pNode), "paramValue", reinterpret_cast<float&>(m_fParamValue));
+    XmlGetAttr((class TiXmlElement*)(pNode), "priority", reinterpret_cast<int&>(m_nPriority));
+    XmlGetAttr((class TiXmlElement*)(pNode), "volume", reinterpret_cast<float&>(m_fVolume));
+    XmlGetAttr((class TiXmlElement*)(pNode), "reverb", m_strReverb);
 }
 
 // Loads the music cue of the param into the music system so that it can be prompted without a hitch. A cue that is

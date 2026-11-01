@@ -52,7 +52,6 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73bc0(int nStringId, int a2, int a3, CStringW strText);
 void FUN_140d73aa0(CStringW strText, int a2, IMessageListener* pListener, CStringW strTag);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // case-insensitive equal
 void FUN_14151f200();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +195,7 @@ int UIHomePasswordDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         if (nResult == 0)
         {
-            if (FUN_1403b3c40(strTag, L"onStop"))
+            if (operator==(strTag, L"onStop"))
                 FUN_1412c97c0();
             return 1;
         }

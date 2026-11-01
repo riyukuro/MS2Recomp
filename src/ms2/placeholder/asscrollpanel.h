@@ -11,6 +11,6 @@ class ASScrollPanel : public ASUIComponent
 public:
     ASScrollPanel(const Scaleform::GFx::Value& v, int nMovieId);
     virtual ~ASScrollPanel();                                   // 0
-    void FUN_1409c1ba0(int nHeight);                            // setContentsHeight
+    void SetContentsHeight(int nHeight);                            // setContentsHeight
 };
 MS2_CHECK_SIZE(ASScrollPanel, 0x88);

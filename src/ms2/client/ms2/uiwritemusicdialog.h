@@ -91,18 +91,18 @@ public:
     void FUN_140ff2700(const CStringW& strPath);                            // 0x140ff2700 load an .ms2mml file
     void FUN_140ff2cf0(const CStringW& strPath);                            // 0x140ff2cf0 save an .ms2mml file
     bool FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& strOut, int* pnTotal);   // 0x140ff3230 one tab of the file
-    void FUN_140ff3350(bool bVisible);                                      // 0x140ff3350 "setPlayStartButtonVisible"
-    bool FUN_140ff33c0();                                                   // 0x140ff33c0 "m_dirtyMusicScore"
-    void FUN_140ff3450(bool bDirty);                                        // 0x140ff3450 set "m_dirtyMusicScore"
-    int FUN_140ff34b0();                                                    // 0x140ff34b0 "m_totalLength"
-    void FUN_140ff3540();                                                   // 0x140ff3540 reset the play state
+    void SetPlayStartButtonVisible(bool bVisible);                                      // 0x140ff3350 "setPlayStartButtonVisible"
+    bool IsMusicScoreDirty();                                                   // 0x140ff33c0 "m_dirtyMusicScore"
+    void SetMusicScoreDirty(bool bDirty);                                        // 0x140ff3450 set "m_dirtyMusicScore"
+    int GetTotalLength();                                                    // 0x140ff34b0 "m_totalLength"
+    void ResetPlayState();                                                   // 0x140ff3540 reset the play state
     void FUN_140ff35a0();                                                   // 0x140ff35a0 m_bPlaying = false
     void FUN_140ff35c0(int nOffset, int nLength);                           // 0x140ff35c0 the play window
     void FUN_140ff3610(int nTime);                                          // 0x140ff3610 the current time text / play bar
     void FUN_140ff38f0(int nLength);                                        // 0x140ff38f0 the total time text / play bar
-    void FUN_140ff3d10(unsigned nTime);                                     // 0x140ff3d10 the playing line
+    void UpdatePlayLine(unsigned nTime);                                     // 0x140ff3d10 the playing line
     bool FUN_140ff3e50(MS2Ptr<ASDataProvider> spTabs, CString& strOut);     // 0x140ff3e50 the tabs as one MML text (unused result)
-    int FUN_140ff40b0();                                                    // 0x140ff40b0 the score's max length
+    int GetMaxNoteLength();                                                    // 0x140ff40b0 the score's max length
     void FUN_140ff41a0();                                                   // 0x140ff41a0 fill the tabs from m_strText
     void FUN_140ff43a0(const CString& strMelody, ASArray& chords, const CStringW& strTitle, int nInstrument);   // 0x140ff43a0
     void SetItem(MS2Ptr<CItem> spItem);                               // 0x140ff4500 m_spItem = spItem

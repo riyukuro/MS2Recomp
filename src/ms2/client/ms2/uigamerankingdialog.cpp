@@ -99,6 +99,11 @@
 #include "ms2/commonfiles/seasondatatable.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
@@ -129,7 +134,6 @@ public:
 class Unk_RankInput : public ASDisplayObject
 {
 public:
-    CStringW FUN_1422e0b00();                               // the text
 };
 
 // The AS array (ctor 0x1422deec0, dtor 0x1422df070) of the tab objects.
@@ -148,7 +152,6 @@ public:
     void FUN_1422bbc60(int n);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 
 // The root object of the movie: invoke helpers (the originals are inline COMDATs of this unit).
 class Unk_RankAS : public AScript
@@ -165,7 +168,7 @@ class ASDialog : public ASDisplayObject {};
 
 // The options / input state / flags singletons.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_RankInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
+class Unk_RankInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_RankFlag { public: int FUN_1402c4c90(int); };
 class Unk_RankFlags { public: void* p0; Unk_RankFlag flags; };
@@ -175,7 +178,9 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 CString FUN_14071a5b0(const CString&, const CString&);
 struct Unk_RankFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-struct Unk_RankLog { void FUN_14015eb90(int, int, const wchar_t*, const CString&); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+struct Unk_RankLog { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -196,7 +201,6 @@ CStringW FUN_140298ea0(CStringW);                                       // local
 CStringW FUN_14062b4f0(CStringW, const int*);
 CStringW FUN_14062b4f0(CStringW, const int&);
 CStringW FUN_140bfa7f0(CStringW, const CStringW&, const int*);
-CStringW FUN_140656190(const wchar_t*, const CStringW&, const CStringW&);
 CStringW FUN_1401d0160(const wchar_t*, const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1401aa6a0(int);
@@ -453,7 +457,7 @@ int UIGameRankingDialog::vfunc_13()
             if (MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0("m_searchInput"))
             {
                 if (((class ASUIComponent*)(class Unk_RankInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
-                    FUN_140e34d50(spInput->FUN_1422e0b00());
+                    FUN_140e34d50(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
             }
             return 1;
         }
@@ -564,19 +568,19 @@ void UIGameRankingDialog::LoadGameRankingCategory()
     void* pRoot = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        ((struct Unk_RankLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("gameRankingCategory")); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("gameRankingCategory")))
     {
         CStringW strFeature;
-        FUN_140873420(pNode, "feature", strFeature);
+        XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_RankCatPtr spCategory((Unk_RankNewTag(0)));
         XmlGetAttr((class TiXmlElement*)(pNode), "categoryid", spCategory->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "type", spCategory->m_nType);
-        FUN_1408733e0(pNode, "url", spCategory->m_strUrl);
+        XmlGetAttr((class TiXmlElement*)(pNode), "url", spCategory->m_strUrl);
         spCategory->m_strUrl.MakeLower();
         spCategory->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, spCategory->m_nType);
         FUN_140e305a0(spCategory);
@@ -946,7 +950,7 @@ void UIGameRankingDialog::FUN_140e31b00()
             row.FUN_1407cba60("charSN", FUN_140719530(RANK_ROW->m_nCharSN));
         if (RANK_ROW->m_nRankPoint != 0)
             row.FUN_1407cba60("rankPoint", FUN_140719530((__int64)RANK_ROW->m_nRankPoint));
-        m_items->FUN_1422dd230(row);
+        m_items->AddItem(row);
     }
     m_items->vfunc_24(1);
 }
@@ -1025,7 +1029,7 @@ void UIGameRankingDialog::FUN_140e32eb0()
     if (m_items == 0)
         return;
     m_items->FUN_1422dd1d0();
-    m_items->FUN_1422dcca0(-1);
+    m_items->SetSelectedIndex(-1);
 }
 
 // @0x140e32f30 // MS2-FUNCTIONAL: code identical; the showSearchResult Value temp gets a lower frame slot (exe rsp+0x140, ours 0xa0)
@@ -1102,7 +1106,7 @@ Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
         CStringW strEnd = FUN_14083bdc0(tEnd, true, CStringW(L"/"), CStringW(L":"));
         strStart = strStart.Left(strStart.GetLength() - 3);
         strEnd = strEnd.Left(strEnd.GetLength() - 3);
-        CStringW strRange = FUN_140656190(L"{0} ~ {1}", strStart, strEnd);
+        CStringW strRange = StringFormat<CStringW, CStringW>(L"{0} ~ {1}", strStart, strEnd);
         spTabs->Add(FUN_140e304c0(CStringW(strLabel), CStringW(strRange), spSeason.FUN_1404f0bf0()->m_nSeason));
     }
     return spTabs;
@@ -1161,7 +1165,7 @@ void UIGameRankingDialog::FUN_140e33e20()
             {
                 if (spCat->m_nId == m_nCategory)
                 {
-                    spList->FUN_1422dcca0(nIndex);
+                    spList->SetSelectedIndex(nIndex);
                     spList->FUN_1422e17f0(nIndex);
                     return;
                 }
@@ -1178,7 +1182,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
     Unk_RankInfoPtr info = CGameRankingCli::FUN_140b2e980()->FUN_140b2ac30(key, nFlag);
     int nRank = info.FUN_140b2e180() ? info.FUN_140b2e210()->vfunc_3() : 0;
     int nKeyType = key.FUN_140b357e0();
-    MS2Ptr<UgcMapCommendationGMEvent> spRec = ((class CGameRule*)FUN_1401c0d90())->FUN_1404786b0(1);
+    MS2Ptr<UgcMapCommendationGMEvent> spRec = ((class CGameRule*)FUN_1401c0d90())->GetUgcMapCommendationEvent(1);
     if ((spRec.get() ? true : false) && nKeyType == 6)
     {
         obj.FUN_1407cbbe0("recommender", true);
@@ -1417,10 +1421,10 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
     if (m_rows.GetCount() <= (size_t)nRow)
         return;
     ASTooltip tooltip(1, 2);
-    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tooltip.FUN_1409c6e00(0);
-    tooltip.FUN_1409c6dc0(3);
-    tooltip.FUN_1409c6e60(5);
+    tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tooltip.SetOnDelay(0);
+    tooltip.SetTooltipAlign(3);
+    tooltip.SetOffsetX(5);
     CStringW strText;
     switch (nType)
     {
@@ -1440,8 +1444,8 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
                                  m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name,
                                  m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nLevel);
     }
-    tooltip.FUN_1409c6cb0(strText);
-    FUN_1409b4bc0(pRet, tooltip.FUN_1422bb870());
+    tooltip.SetText(strText);
+    *pRet = tooltip.FUN_1422bb870();
 }
 
 // @0x140e359e0
@@ -1480,7 +1484,7 @@ Scaleform::GFx::Value Unk_RankAS::FUN_140e35c60(const char* szMethod, int n)
 void ASObj::FUN_140e35d00(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -1488,7 +1492,7 @@ void ASObj::FUN_140e35d00(const char* szName, int n)
 void ASObj::FUN_140e35da0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

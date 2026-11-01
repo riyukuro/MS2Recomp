@@ -23,11 +23,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
 
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 // The tree the home map information service collects the visitors into (24 bytes).
 struct Unk_ChTree
@@ -53,7 +56,6 @@ class Unk_HoServicePtr
 public:
     Unk_HoServicePtr(Unk_HoService* p);                         // 0x1401cd0b0
     ~Unk_HoServicePtr();                                        // 0x1401cd150
-    Unk_HoService* FUN_1401cd1a0() const;                       // operator->
 private:
     Unk_HoService* m_p;
 };
@@ -105,7 +107,7 @@ void UIConstructHelpDialog::OnLoadComplete()
     if (FUN_140ef4cb0(&spService, 0))
         return;
     if (m_30.get() != 0)
-        m_30->Invoke("setMode", !spService.FUN_1401cd1a0()->FUN_1410c35c0());
+        m_30->Invoke("setMode", !reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c35c0());
 }
 
 // @0x1419060e0
@@ -140,7 +142,7 @@ void UIConstructHelpDialog::vfunc_43()
         if (FUN_1403ed2d0()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
         {
             Unk_ChTree kVisitors;
-            spService.FUN_1401cd1a0()->FUN_1410d5930(&kVisitors);
+            reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5930(&kVisitors);
             if (kVisitors.FUN_1404bd700() != 0)
                 pEntity->vfunc_2(6, 0, 0x21);
             else

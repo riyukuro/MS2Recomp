@@ -50,14 +50,14 @@ public:
     CItemEnchantTransformTable();                           // 0x140591410
     virtual ~CItemEnchantTransformTable();                  // 0x140591510 (??_G 0x140593170)
 
-    int FUN_1405915b0();                                    // loads the xml (CValidData init)
+    int Init();                                    // loads the xml (CValidData init)
     int LoadItemEnchantTransform();                                    // parses the xml into the maps
     static int FUN_140592110(MS2Ptr<CItem> spItem);        // the item can be transformed
-    CEnchantTransformDataPtr FUN_140592330(const CString& strKey);   // the row of a key (reloads when the xml changed)
-    CEnchantTransformDataPtr FUN_140592430(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);
-    CEnchantTransformDataPtr FUN_1405924d0(MS2Ptr<CItem> spItem);   // the row of an item
-    unsigned int FUN_140592620(unsigned int nItemId);       // the lowest input enchant level of an item id
-    static CString FUN_140592090(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot);   // row key
+    CEnchantTransformDataPtr FindByKey(const CString& strKey);   // the row of a key (reloads when the xml changed)
+    CEnchantTransformDataPtr Find(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);
+    CEnchantTransformDataPtr FindByItem(MS2Ptr<CItem> spItem);   // the row of an item
+    unsigned int GetLowestLimitLevel(unsigned int nItemId);       // the lowest input enchant level of an item id
+    static CString MakeKey(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot);   // row key
     static void CheckInit();                                // 0x1405931f0
     static void SetInit(bool b);                            // 0x1405940e0
     static bool s_bInit;                                    // DAT_143aafb58

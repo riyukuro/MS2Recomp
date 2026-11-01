@@ -24,7 +24,8 @@ const NiRTTI GFxMovieUgc::ms_RTTI("GFxMovieUgc", &GFxMovieEventHandler::ms_RTTI)
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern int DAT_1439f7358;                                                   // edge length of the UGC render texture
 ecr::RenderService* Unk_GetRenderService(char* pCell);                      // the render service (gfxmoviebackground.cpp)
 

@@ -89,8 +89,8 @@ public:
     int FUN_141336de0(int nTab);                                        // 0x141336de0 tab -> equip kind (6 = none)
     void FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& strLabel, const CStringW& strFrame,
                        const CStringW& strTooltip);                     // 0x141336e40 add a tab
-    void FUN_141337560();                                               // 0x141337560 "loadRenderTarget"
-    void FUN_1413375c0();                                               // 0x1413375c0 "unloadRenderTarget"
+    void LoadRenderTarget();                                               // 0x141337560 "loadRenderTarget"
+    void UnloadRenderTarget();                                               // 0x1413375c0 "unloadRenderTarget"
     
     MS2_LAYOUT_FRIEND;
     __int64 m_188;                                                      // +0x188 the character asked for

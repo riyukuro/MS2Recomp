@@ -45,7 +45,7 @@ void* FUN_1403ed280();
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1411a7db0();
+    void DestroyRain();
 };
 Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
 
@@ -78,7 +78,7 @@ void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {
     int oldHeight=INT_MIN;
     m_heights.find(key,oldHeight);
     if(oldHeight<z) m_heights[key]=z;
-    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7db0();
+    ((class CEffectService*)(void*)(FUN_1403ed280()))->DestroyRain();
 }
 MS2_REPLACE_METHOD(0x1410b2510, Unk_CubeHeightIndex, FUN_1410b2510, 123, 0xd1ba07bc);
 // MS2-FUNCTIONAL: ID argument register transfer differs; calls and control flow verified.
@@ -92,7 +92,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
     int height=z;
     while(--height>0) {
         Unk_Int3 position; FUN_1408a85a0(&position,x,y,height);
-        Cube* cube=((class CubeMapInformationService*)(service))->FUN_1410b8a60(position);
+        Cube* cube=((class CubeMapInformationService*)(service))->GetCubeAtCell(position);
         if(cube!=0) {
             if((egf::Entity*)cube->entity!=0) {
                 MS2Ptr<Unk_WsB_Vibrator> vibrator=WorldService::GetInstance()->FUN_141bc8f60(cube->entity->GetEntityIDValue());
@@ -104,7 +104,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
         }
     }
     m_heights[key]=height;
-    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7db0();
+    ((class CEffectService*)(void*)(FUN_1403ed280()))->DestroyRain();
 }
 MS2_REPLACE_METHOD(0x1410b25a0, Unk_CubeHeightIndex, FUN_1410b25a0, 440, 0xff7f5236);
 // @0x1410b2760

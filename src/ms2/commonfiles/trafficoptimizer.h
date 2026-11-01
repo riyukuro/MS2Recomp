@@ -47,8 +47,8 @@ public:
     unsigned FUN_14087d410(Unk_TOEntity* entity);
     unsigned FUN_14087d500(Unk_TOEntity* entity);
     unsigned FUN_14087d540(Unk_TOEntity* entity);
-    void FUN_14087d5b0(unsigned key, unsigned value);
-    unsigned FUN_14087d5f0(unsigned key);
+    void SetTraffic(unsigned key, unsigned value);
+    unsigned GetTraffic(unsigned key);
     int FUN_14087d630(unsigned id);
 private:
     Map m_map;

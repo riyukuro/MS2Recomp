@@ -35,6 +35,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 // ---- unit-local views of callees emitted in other units ----
 
@@ -44,7 +50,6 @@ CString FUN_14071ae20(const CString& strFile);                              // p
 CString FUN_14016a5c0(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);       // attribute text
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
 CReservedWordTable* FUN_1403b4750();
 unsigned char FUN_1401d1320(CCacheData* pCache);                            // file changed since load
@@ -172,9 +177,9 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
         {
             Unk_140165cf0* pNode = nodes[i];
             CLoadingDescriptionCache::DescPtr spDesc(new CLoadingDescription);
-            spDesc->m_strId = FUN_14086f4b0(pNode, "id");
-            spDesc->m_strStart = FUN_14086f4b0(pNode, "startTime");
-            spDesc->m_strEnd = FUN_14086f4b0(pNode, "endTime");
+            spDesc->m_strId = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("id");
+            spDesc->m_strStart = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("startTime");
+            spDesc->m_strEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("endTime");
             spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
             spDesc->m_strText.Replace(L"\\n", L"\n");
             FUN_1403b4750()->FUN_1416fb380(spDesc->m_strText);

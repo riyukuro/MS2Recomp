@@ -31,7 +31,6 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
 
 // @0x1412d1400
 UIItemEnchantSimulateDialog::UIItemEnchantSimulateDialog()
@@ -110,13 +109,13 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
             float fReset = static_cast<CInPacket*>(p)->ReadFloat();
             CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
             CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfSuccess"))
+            if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfSuccess"))
                 spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fSuccess));
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReset"))
+            if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfReset"))
                 spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fReset));
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReturn"))
+            if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfReturn"))
                 spText->FUN_1422c4cd0(strReturn);
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfIngredient"))
+            if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfIngredient"))
                 spText->FUN_1422c4cd0(strIngredient);
         } else if (nKind == 0xe) {
             unsigned int nSuccess = static_cast<CInPacket*>(p)->ReadInt32();
@@ -125,9 +124,9 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
             CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
             CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
             CStringW strResult = StringFormat(L"{0}번 성공\n{1}번 손상\n{2}번 하락\n", nSuccess, nBroken, nDown);
-            strResult += FUN_1401e8510(L"총 재료 갯수 : {0}\n", strIngredient);
-            strResult += FUN_1401e8510(L"총 위로금 갯수 : {0}\n", strReturn);
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_result"))
+            strResult += StringFormat<CStringW>(L"총 재료 갯수 : {0}\n", strIngredient);
+            strResult += StringFormat<CStringW>(L"총 위로금 갯수 : {0}\n", strReturn);
+            if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_result"))
                 spText->FUN_1422c4cd0(strResult);
         }
     }

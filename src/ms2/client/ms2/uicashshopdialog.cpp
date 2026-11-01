@@ -166,6 +166,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ccashmarketman.h"
 #include "ms2/client/ms2/usercommandcli.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
@@ -308,7 +310,6 @@ void FUN_141275260(int nStringId, int a, int b);                    // a notice
 int FUN_1407181d0(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
-void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);   // pRetVal = v
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASMovieClip>* pOut);   // bind a child of the root
 void FUN_140b05680(const CString& strMovie);                        // close the shop movie of the manager
 void FUN_140b055c0(const CString& strMovie, int nCategory);         // open the inventory movie
@@ -317,7 +318,7 @@ bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 void FUN_14151f200();
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* szSeparators);   // split
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* szSeparators);   // split
 void FUN_1418fe1c0(const CString& strUrl);                          // open a link
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CString FUN_1401d4330(const wchar_t* sz, int nCodePage);
@@ -328,7 +329,6 @@ __int64 GetServerTime();                                            // the serve
 CString FUN_140c84fc0(__int64 nAddress);                            // the charge url (checked)
 int FUN_1415c3b50(const char* szUrl, char* szOut, int a, int b, int nLen);
 void* FUN_140aadf80();
-HWND FUN_14209c720(void* pService);
 void* FUN_140c7fa70(size_t nSize);                                  // operator new of CCashUnlockDialog
 
 CString FUN_1402bb1c0(const char* szFormat, const int& n);          // StringFormat<int>
@@ -339,7 +339,6 @@ CStringW FUN_1409404f0(__int64 nPrice);
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14052bd00(int nId, const CStringW& str);
 int FUN_1402912d0(CStringW strName);                                // the inventory tab of a name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -496,7 +495,7 @@ void UICashShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
-        FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+        *pRetVal = tip.FUN_1422bb870();
 }
 
 // @0x141033930
@@ -613,7 +612,7 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 int nCount = FUN_140718200(values[1]);
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa58, 0, CStringW(L""));
                 if (spBox.get() != 0) {
-                    spBox->FUN_140533ff0(nSerial);
+                    spBox->Append<int>(nSerial);
                     spBox->FUN_140534050(nCount);
                     spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
                     FUN_140d73c60(spBox);
@@ -738,7 +737,7 @@ int UICashShopDialog::FUN_141034dc0(int nId)
 void UICashShopDialog::FUN_141034e00(int nCash)
 {
     m_nCash = nCash;
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_cash"))
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_cash"))
         spText->FUN_1422c4cd0(FUN_140763e10(nCash));
 }
 
@@ -845,7 +844,7 @@ void UICashShopDialog::FUN_1410356f0()
     char szUrl[1024];
     if (FUN_1415c3b50("http://maplestory2.nexon.com/Auth/CashCertify", szUrl, 0, 0, 0x10000)) {
         m_pUnlockDialog = new CCashUnlockDialog(0);
-        if (m_pUnlockDialog->Create(0x96, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80()))) != 0) {
+        if (m_pUnlockDialog->Create(0x96, CWnd::FromHandle(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef())) != 0) {
             SetUnlockState(1);
             m_pUnlockDialog->Navigate(CString(szUrl));
             m_pUnlockDialog->CenterOnScreen();
@@ -891,10 +890,10 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
         if (spItem == 0)
             continue;
         MS2Ptr<ASCashShopBillData> spBill(new ASCashShopBillData());
-        spBill->FUN_1409ab990(spItem, spProduct->m_nRank);
-        spBill->FUN_1409aba80(GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
-        spBill->FUN_1409abad0(FUN_1418fec00(nZero, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
-        spBill->FUN_1409abc90(spProduct->m_nDiscount == 1);
+        spBill->SetIconFromItem(spItem, spProduct->m_nRank);
+        spBill->SetItemName(GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
+        spBill->SetSalePrice(FUN_1418fec00(nZero, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
+        spBill->SetEnableGift(spProduct->m_nDiscount == 1);
         spBill->FUN_1409abcd0(nZero);
         spBill->FUN_14103fba0(nProductId);
         bills.Add(spBill);
@@ -915,7 +914,7 @@ void UICashShopDialog::FUN_141035e40()
     }
     if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
         spPrev->FUN_1422c1fe0(m_nCategory > 1);
-    if (MS2Ptr<ASTextField> spPage = FUN_140bb4cf0("m_page"))
+    if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
         spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_nCategory));
 }
 
@@ -946,7 +945,7 @@ void UICashShopDialog::FUN_1410360c0()
         MS2Ptr<AScript> spRow(new AScript(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
         spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
-        spRow->FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
+        spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
         __int64 nSalePrice = spProduct->m_nSalePrice;
@@ -1008,7 +1007,7 @@ void UICashShopDialog::FUN_141036ca0()
         MS2Ptr<ASObj> spRow(new ASObj(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
         spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
-        spRow->FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
+        spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
         __int64 nSalePrice = spProduct->m_nSalePrice;
@@ -1030,7 +1029,7 @@ void UICashShopDialog::FUN_141037360()
     for (size_t i = 0; i < pRows->FUN_140b05be0(); i++) {
         MS2Ptr<Unk_CashInvItem> spRow = pRows->FUN_140b05b10(i);
         if (spRow->m_nState == 0 && spRow->m_strSender.GetLength() != 0) {
-            CStringW strText = FUN_140656190(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
+            CStringW strText = StringFormat<CStringW, CStringW>(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
             MS2Ptr<CItem> spGift(new CItem());
             if (spGift->FUN_140523c40(spRow->m_nItemId, 1, 0) == 0)
                 continue;
@@ -1038,7 +1037,7 @@ void UICashShopDialog::FUN_141037360()
             if (spBox.get() != 0) {
                 spGift->FUN_140526c70(1);
                 spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
-                spBox->FUN_140533ff0(spRow->m_nSerial);
+                spBox->Append<int>(spRow->m_nSerial);
                 spBox->FUN_140534050(spRow->m_nId);
                 spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
                 FUN_140d73c60(spBox);
@@ -1103,8 +1102,8 @@ bool UICashShopDialog::FUN_141037cd0(int nItemId, int* pnReason, int* pnTab)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return true;
-    if (spItem->FUN_14053e010() == 0) {
-        if (spItem->FUN_14053e070() != 0 && DAT_1439f4a88 <= DAT_1439f4a84) {
+    if (spItem->HasExpandInvenFunction() == 0) {
+        if (spItem->HasExpandCharacterSlotFunction() != 0 && DAT_1439f4a88 <= DAT_1439f4a84) {
             *pnReason = 0xa5c;
             return false;
         }
@@ -1323,7 +1322,7 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
         return false;
     ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
-        FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+        *pRetVal = tip.FUN_1422bb870();
     return true;
 }
 
@@ -1504,12 +1503,12 @@ MS2Ptr<Unk_CashList> UICashShopDialog::FUN_14103a890(const CString& strName)
 template <class T> MS2Ptr<T> Unk_CashChildFinder::FUN_14103a9d0(const Scaleform::GFx::Value& v, const CString& strName)
 {
     MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
-    if (!spObj->FUN_1422ba9f0("getChildByName"))
+    if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
     if (child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, child);
-    if (!spObj->FUN_1422ba9f0("numChildren"))
+    if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount = spObj->FUN_1422c6670();
     for (int i = 0; i < nCount; i++) {

@@ -19,11 +19,11 @@ public:
     CFileLogger();                                          // 0x1403920a0
     virtual ~CFileLogger();                                 // 0x1403920e0
 
-    int FUN_140392110(const wchar_t* pszName);              // open a log file, returns its id
-    void FUN_140392200(int nId, unsigned int nLimit);                // set the file's byte limit
+    int OpenLog(const wchar_t* pszName);              // open a log file, returns its id
+    void SetLogFileLimit(int nId, unsigned int nLimit);                // set the file's byte limit
     void FUN_140392270(int nId);                            // clear the file's second list
-    void FUN_1403922d0(int nId);                            // remember the file's name and write it out
-    void FUN_140392350();                                   // write every file out and forget them
+    void FlushLog(int nId);                            // remember the file's name and write it out
+    void FlushAndClearAll();                                   // write every file out and forget them
     void FUN_140392430();                                   // delete the remembered files
     void FUN_140392600(int nId, const char* pszLine);       // add a line to the first list
     void FUN_140392670(int nId, const char* pszLine);       // add a line to the second list

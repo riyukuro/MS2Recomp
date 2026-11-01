@@ -15,6 +15,17 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/placeholder/cgameoption.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // D3DCOLOR_XRGB (d3d9types.h), spelled out: the game does not include d3d9 here.
 #define MS2_D3DCOLOR_XRGB(r, g, b) \
@@ -28,7 +39,6 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);  // split to uints
@@ -61,11 +71,11 @@ CFogEffectParam::CFogEffectParam()
 void CFogEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    Unk_140165cf0* pFog = pNode->FUN_140165cf0("fog");
+    Unk_140165cf0* pFog = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("fog"));
     if (pFog)
     {
         ATL::CAtlArray<unsigned int> arrColor;
-        CString strColor = FUN_140188f50(FUN_14086f4b0(pFog, "color"), 0);
+        CString strColor = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFog))->Attribute("color"), 0);
         FUN_140177e10(strColor, arrColor, ",");
         m_dwColor = arrColor.GetCount() < 3 ? 0xffffffff
                                              : MS2_D3DCOLOR_XRGB(arrColor[0], arrColor[1], arrColor[2]);

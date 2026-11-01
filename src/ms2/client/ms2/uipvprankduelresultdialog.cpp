@@ -32,6 +32,8 @@ static CString s_strGuildBattleReward = "guildBattle_Reward";
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -43,7 +45,6 @@ class Unk_PrdWorld                                                  // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
@@ -53,7 +54,6 @@ class Unk_PrdItemPtr
 public:
     ~Unk_PrdItemPtr() { FUN_1401b50d0(); }
     void* FUN_140203c60() const;
-    Unk_PrdItemData* FUN_1401b52a0() const;
     void FUN_1401b50d0();
 private:
     void* unknown;
@@ -69,10 +69,10 @@ public:
     Scaleform::GFx::Value FUN_140f919d0(const char* szMethod, bool a1, bool a2, int a3, CStringW a4, CStringW a5);
 };
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
-CStringW FUN_1408116a0(int nId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
  // the profile key of the player
 CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
@@ -175,7 +175,7 @@ void UIPvPRankDuelResultDialog::FUN_140f90b10(CInPacket* pIn)
     m_result.m_nMinR = pIn->ReadInt32();
     m_result.m_nSecR = pIn->ReadInt32();
     m_result.m_nRewardR = pIn->ReadInt32();
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     FUN_140f91120(&m_result);
 }
@@ -187,7 +187,7 @@ void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
         return;
     if (nCharId == 0)
         return;
-    PCBase* pPC = reinterpret_cast<Unk_PrdWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
+    PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
     if (pPC == 0)
         return;
     CStringW strUrl = FUN_14016a730(FUN_141028be0(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80(), reinterpret_cast<PC*>(pPC)->FUN_1416612e0(), 1, ""), 0);
@@ -219,7 +219,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         {
             strTextL = FUN_1401ceea0(L"{0}", pResult->m_nMinL);
             if (pResult->m_nSecL < 0)
-                strTextL += FUN_1408116a0(0x400, pResult->m_nSecL);
+                strTextL += BlockFormat<int>(0x400, pResult->m_nSecL);
         }
         static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setLeftData", bLeftWins,
             ((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() == pResult->m_nCharIdL, pResult->m_nScoreL, pResult->m_strNameL, strTextL);
@@ -234,7 +234,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         {
             strTextR = FUN_1401ceea0(L"{0}", pResult->m_nMinR);
             if (pResult->m_nSecR < 0)
-                strTextR += FUN_1408116a0(0x400, pResult->m_nSecR);
+                strTextR += BlockFormat<int>(0x400, pResult->m_nSecR);
         }
         static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setRightData", bRightWins,
             ((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() == pResult->m_nCharIdR, pResult->m_nScoreR, pResult->m_strNameR, strTextR);
@@ -258,7 +258,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
     Unk_PrdItemPtr spItem = FUN_14053f870(0x55d4a86);
     if (spItem.FUN_140203c60() != 0)
     {
-        m_30->Invoke("setRewardIcon", spItem.FUN_1401b52a0()->FUN_14053fdd0());
+        m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrdItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
         return;
     }
     FUN_141276180(s_strGuildBattleReward, "");

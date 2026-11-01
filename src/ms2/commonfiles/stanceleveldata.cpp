@@ -18,6 +18,13 @@
 #include <algorithm>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
@@ -38,10 +45,10 @@ StanceLevelData::~StanceLevelData()
 // @0x140829150
 bool StanceLevelData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "level", m_nLevel);
-    FUN_140873220(pNode, "hitCount", m_nHitCount);
-    FUN_140873220(pNode, "multiplyDamageRate", m_nMultiplyDamageRate);
-    FUN_140873220(pNode, "maxAccDamageRate", m_nMaxAccDamageRate);
+    XmlGetAttr((class TiXmlElement*)(pNode), "level", m_nLevel);
+    XmlGetAttr((class TiXmlElement*)(pNode), "hitCount", m_nHitCount);
+    XmlGetAttr((class TiXmlElement*)(pNode), "multiplyDamageRate", m_nMultiplyDamageRate);
+    XmlGetAttr((class TiXmlElement*)(pNode), "maxAccDamageRate", m_nMaxAccDamageRate);
     return true;
 }
 MS2_REPLACE_METHOD(0x140829150, StanceLevelData, Load, 137, 0x1D384741);
@@ -69,11 +76,11 @@ StanceData::~StanceData()
 // @0x140829330
 bool StanceData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "stanceAdditionalID", m_nStanceAdditionalID);
-    FUN_140873220(pNode, "hitCountAdditinoalID", m_nHitCountAdditionalID);
+    XmlGetAttr((class TiXmlElement*)(pNode), "stanceAdditionalID", m_nStanceAdditionalID);
+    XmlGetAttr((class TiXmlElement*)(pNode), "hitCountAdditinoalID", m_nHitCountAdditionalID);
     XmlTokenList(pNode, "damageSkillIDs", m_damageSkillIDs);
     XmlTokenList(pNode, "finishStanceSkillIDs", m_finishStanceSkillIDs);
-    for (Unk_140165cf0* pLevel = pNode->FUN_140165cf0("level"); pLevel != 0; pLevel = pLevel->FUN_140168650("level"))
+    for (Unk_140165cf0* pLevel = pNode->FUN_140165cf0("level"); pLevel != 0; pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLevel))->NextSibling("level")))
     {
         MS2Ptr<StanceLevelData> spLevel(new StanceLevelData);
         if (spLevel->Load(pLevel) == 0)
@@ -147,7 +154,7 @@ bool StanceTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         DataPtr spData(new StanceData);
         if (spData->Load(pNode) == 0)

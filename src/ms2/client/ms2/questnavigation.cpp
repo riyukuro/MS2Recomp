@@ -169,7 +169,7 @@ CQuestNavigationMap::~CQuestNavigationMap()
 }
 
 // @0x140c909a0
-void CQuestNavigationMap::FUN_140c909a0()
+void CQuestNavigationMap::Rebuild()
 {
     BuildMapPaths();
     m_8 = 1;
@@ -263,7 +263,7 @@ int CQuestNavigationMap::FindMapPath(int nFrom, int nTo, ATL::CAtlArray<unsigned
 }
 
 // @0x140c912d0
-int CQuestNavigationMap::FUN_140c912d0(int nFrom, int nTo)
+int CQuestNavigationMap::GetNextMapOnPath(int nFrom, int nTo)
 {
     ATL::CAtlArray<unsigned> path;
     if (FindMapPath(nFrom, nTo, path) && path.GetCount() > 1)
@@ -318,7 +318,7 @@ int CQuestNavigationMap::InitTraceTable()
     if (FUN_1412755a0())
         return 1;
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cad0(quests, 0xb);
+    TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(quests, 0xb);
     for (size_t q = 0; q < quests.GetCount(); q++)
     {
         MS2Ptr<CQuestData> spQuest(quests[q]);

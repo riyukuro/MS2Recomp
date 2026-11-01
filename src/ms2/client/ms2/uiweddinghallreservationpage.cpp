@@ -53,7 +53,7 @@ bool UIWeddingHallReservationPage::vfunc_1()
 {
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
-    Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
+    Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)
         return false;
     m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);

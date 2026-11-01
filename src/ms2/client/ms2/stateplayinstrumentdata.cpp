@@ -7,6 +7,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateplayinstrumentdata.cpp"    // assumed
 #define NOMINMAX                        // NxPhysics (avatarpc.h)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <string.h>
@@ -48,7 +49,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // A player seen with the slots after PCBase's last declared one (123): the held item of the player.
@@ -87,17 +88,10 @@ public:
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-// The effect manager: plays an effect for a request (returns its id), stops it by id.
-class Unk_PiEffectMgr
-{
-public:
-    unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
-    void FUN_1411a4a00(Unk_EffectQuery* pQuery);
-};
-
 // The animation service of an entity: plays an animation on an entity id.
 class Unk_PiAnimSvc { public: };
-Unk_PiAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 void FUN_1409a1fc0(Unk_PiAnimSvc* pSvc, const egf::EntityID* pEntityId, const efd::utf8string* pAnim, float fSpeed, bool bFlag);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 egf::Entity* FUN_1408a9280(const efd::SmartPointer<egf::Entity>* p);   // folded copy of operator Entity*
@@ -208,7 +202,7 @@ StatePlayInstrumentData::StatePlayInstrumentData(MS2Ptr<CItemData> spItem, __int
 void StatePlayInstrumentData::vfunc_1(Unk_StateDataArg* p)
 {
     StateData::vfunc_1(p);
-    p->m_n64 = m_spItem->FUN_14053c510();
+    p->m_n64 = m_spItem->GetItemId();
 }
 
 // @0x140dde180
@@ -328,16 +322,16 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
             }
         }
     }
-    if (spItemData->FUN_14053ec50() != 0)
+    if (spItemData->GetItemPreset() != 0)
     {
         Unk_PiPC* pPC = static_cast<Unk_PiPC*>(FUN_1417b8370());
         if (pPC != 0)
         {
             MS2Ptr<CItem> spNew(new CItem);
-            if (spNew->FUN_140523c40(spItemData->FUN_14053c510(), 1, 0))
+            if (spNew->FUN_140523c40(spItemData->GetItemId(), 1, 0))
             {
-                spNew->FUN_140526b30(m_pOwner->FUN_14123c580());
-                spNew->FUN_140526a70(FUN_14028d0e0());
+                spNew->SetObjectId(m_pOwner->FUN_14123c580());
+                spNew->SetItemUid(FUN_14028d0e0());
                 spNew->FUN_14052a130(5);
                 pPC->vfunc_127(spNew.get(), 0);
                 m_spItem = spNew;
@@ -353,7 +347,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str588;
     kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
-    reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     FUN_140de04a0();
     FUN_140ddfc00();
 }
@@ -397,15 +391,15 @@ void StatePlayInstrument::vfunc_5(int n)
         TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(m_spEntity);
         m_spEntity = 0;
     }
-    reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect68);
-    reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect6c);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect68);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect6c);
     m_nEffect68 = 0;
     m_nEffect6c = 0;
     Unk_EffectQuery kQuery;
     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str590;
     kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
-    reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     if (FUN_1417b8560() != 0)
         ((class Unk_PiCounter*)FUN_140c8dac0())->Stop();
 }
@@ -513,7 +507,7 @@ void StatePlayInstrument::FUN_140ddfc00()
 {
     if (m_spInstrument.IsNull())
         return;
-    reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect68);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect68);
     m_nEffect68 = 0;
     bool bExpensive = m_spInstrument->m_bExpensive;
     if (m_n10 == 0x7d)
@@ -529,7 +523,7 @@ void StatePlayInstrument::FUN_140ddfc00()
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(FUN_1417b8370()->FUN_141656a80());
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
@@ -538,7 +532,7 @@ void StatePlayInstrument::FUN_140ddfc00()
                     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str538;
             }
         }
-        m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect68 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
     else if (m_n10 == 0x7f)
     {
@@ -550,7 +544,7 @@ void StatePlayInstrument::FUN_140ddfc00()
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(FUN_1417b8370()->FUN_141656a80());
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
@@ -559,7 +553,7 @@ void StatePlayInstrument::FUN_140ddfc00()
                     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str540;
             }
         }
-        m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect68 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
     else if (m_n10 == 0x80)
     {
@@ -570,7 +564,7 @@ void StatePlayInstrument::FUN_140ddfc00()
             kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str528;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
-        m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect68 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
     else if (m_n10 == 0x81)
     {
@@ -582,7 +576,7 @@ void StatePlayInstrument::FUN_140ddfc00()
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(FUN_1417b8370()->FUN_141656a80());
             if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
                 if (bExpensive)
@@ -591,9 +585,9 @@ void StatePlayInstrument::FUN_140ddfc00()
                     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str548;
             }
         }
-        m_nEffect68 = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect68 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
-    reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect6c);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect6c);
     m_nEffect6c = 0;
     CString strEffect;
     if (m_n10 == 0x7d || m_n10 == 0x80)
@@ -612,7 +606,7 @@ void StatePlayInstrument::FUN_140ddfc00()
         kQuery.m_strName = strEffect;
         kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
-        m_nEffect6c = reinterpret_cast<Unk_PiEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect6c = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
 }
 
@@ -667,7 +661,7 @@ void StatePlayInstrument::FUN_140de05a0(int nLevel)
     if (pPC == 0)
         return;
     CString strAnim = m_spInstrument->m_strAnimationPlayIdle;
-    int nPeers = reinterpret_cast<PC*>(pPC)->FUN_1416627d0(2);
+    int nPeers = reinterpret_cast<PC*>(pPC)->GetMasteryGrade(2);
     if (nLevel == 0)
     {
         FUN_140de0780(m_spInstrument->m_strAnimationReady);
@@ -696,7 +690,7 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     m_pOwner->FUN_14166dd20(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
     m_strLastAnim = strAnim;
     if (m_spEntity)
-        FUN_1409a1fc0(FUN_141b6f910(), FUN_1408b76f0(FUN_1408a9280(&m_spEntity)), &kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
+        FUN_1409a1fc0(reinterpret_cast<Unk_PiAnimSvc*>(FUN_141b6f910()), FUN_1408b76f0(FUN_1408a9280(&m_spEntity)), &kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
 }
 
 // @0x140de0c00

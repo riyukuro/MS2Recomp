@@ -196,6 +196,11 @@
 
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -1304,11 +1309,11 @@ class Unk_ConstFileSystem : public CFileSystem
 CFileSystem* GetFileSystem();
 unsigned char FUN_1401d1320(CCacheData* cacheData);
 CLogString* GetLogString();
-void FUN_14015eb90(void* log, int level, int category, const wchar_t* fmt, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& dir, const CString& file);
 CString FUN_14071a6f0(const CString& file);
-void FUN_14028faa0(Unk_ConstXmlNode* parent, const char* name, const char* attr, Unk_ConstXmlList* out);
-int FUN_1408733e0(Unk_ConstXmlNode* node, const char* name, CString& out);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // One xml file to read; `required` makes a missing file an error.
 struct Unk_ConstFile
@@ -1357,7 +1362,7 @@ bool Common::Constants::LoadFiles()
         {
             if (required)
             {
-                FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+                Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
                 return false;
             }
             continue;
@@ -1371,15 +1376,15 @@ bool Common::Constants::LoadFiles()
                 cacheRefs.Add(ref);
             }
         }
-        Unk_ConstXmlNode* root = reinterpret_cast<Unk_ConstXmlNode*>(&doc)->FUN_140165cf0("ms2");
+        Unk_ConstXmlNode* root = ((class Unk_ConstXmlNode*)((class Unk_XmlNode*)(reinterpret_cast<Unk_ConstXmlNode*>(&doc)))->FirstChild("ms2"));
         if (root == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
             return false;
         }
         Unk_ConstXmlList list;
         list.FUN_140163e20();
-        FUN_14028faa0(root, "v", "key", &list);
+        FUN_14028faa0((struct Unk_XmlElement*)(root), "v", "key", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
         for (unsigned __int64 n = 0; n < list.FUN_14016d900(); n++)
         {
             Unk_ConstXmlNode* node = list.FUN_140164a30(n);
@@ -1387,8 +1392,8 @@ bool Common::Constants::LoadFiles()
             {
                 CString key;
                 CString value;
-                FUN_1408733e0(node, "key", key);
-                FUN_1408733e0(node, "value", value);
+                XmlGetAttr((class TiXmlElement*)(node), "key", key);
+                XmlGetAttr((class TiXmlElement*)(node), "value", value);
                 values.SetAt(key, value);
             }
         }

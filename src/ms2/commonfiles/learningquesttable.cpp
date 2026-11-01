@@ -12,6 +12,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -21,7 +26,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 
 // The <learning> children of a parent (24 bytes) with index access.
@@ -34,14 +39,14 @@ public:
     Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);              // operator[]
     void *m_a, *m_b, *m_c;
 };
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, Unk_ElemArray* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // @0x14064ca50
 int CLearningQuestData::Read(Unk_140165cf0* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "category", m_nCategory);
-    FUN_1408733e0(pElem, "movie", m_strMovie);
+    XmlGetAttr((class TiXmlElement*)(pElem), "movie", m_strMovie);
     XmlGetAttr((class TiXmlElement*)(pElem), "reqLevel", m_nReqLevel);
     XmlGetAttr((class TiXmlElement*)(pElem), "reqQuest", *(unsigned int*)&static_cast<int&>(m_nReqQuest));
     XmlGetAttr((class TiXmlElement*)(pElem), "reqField", *(unsigned int*)&static_cast<int&>(m_nReqField));
@@ -74,14 +79,14 @@ int CLearningQuestTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     Unk_ElemArray list;
-    FUN_14028faa0(pRoot, "learning", "id", &list);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "learning", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.FUN_14016d900(); i++)
     {
         Unk_140165cf0* pNode = list.FUN_140164a30(i);

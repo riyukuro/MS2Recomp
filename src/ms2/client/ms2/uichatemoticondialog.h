@@ -79,11 +79,11 @@ public:
     void FUN_140bd1a60();                                           // send the emoticons of the selected tab ("buildItem")
     void FUN_140bd1fc0();                                           // rebuild the tab model from the owned packs
     void FUN_140bd2620();                                           // reload: model, tabs, items
-    void FUN_140bd2660();                                           // forget the model and the new flags
-    void FUN_140bd26c0(unsigned nGroupId);                          // flag a pack "new"
-    CStringW FUN_140bd2720(int nEmoticonId);                        // the chat command of an emoticon (":name:")
-    void FUN_140bd27e0(int nTab);                                   // swf onSelectTab
-    void FUN_140bd28b0(int nEmoticonId);                            // swf onSelectEmoticon: post the notice
+    void ClearEmoticonData();                                           // forget the model and the new flags
+    void AddNewGroup(unsigned nGroupId);                          // flag a pack "new"
+    CStringW GetEmoticonCommand(int nEmoticonId);                        // the chat command of an emoticon (":name:")
+    void SelectTab(int nTab);                                   // swf onSelectTab
+    void PostEmoticonSelected(int nEmoticonId);                            // swf onSelectEmoticon: post the notice
     void OnClickShopButton();                                           // open the Merat market on the emoticon page
 
     std::set<unsigned> m_setNewGroups;                              // +0x178 packs received since the dialog was last opened

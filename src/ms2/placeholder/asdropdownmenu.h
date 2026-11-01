@@ -15,21 +15,21 @@ public:
     ASDropdownMenu(const Scaleform::GFx::Value& v, int nMovieId);  // 0x1422df570
     virtual ~ASDropdownMenu();                                      // 0 0x1422df5c0 (scalar deleting 0x1422e0780)
     virtual void vfunc_23();                                        // 23 0x1422dfb50 invalidateSelectedIndex()
-    void FUN_1422df5f0(unsigned nRows);                             // set "menuRowCount"
-    unsigned FUN_1422df620();                                       // "menuRowCount"
-    void FUN_1422df690(int nIndex);                                 // set "selectedIndex"
-    int FUN_1422df6c0();                                            // "selectedIndex"
-    void FUN_1422df720(const Scaleform::GFx::Value& v);             // set "dataProvider"
-    MS2Ptr<ASDataProvider> FUN_1422df770();                         // "dataProvider"
-    void FUN_1422df7e0(const CStringW& strField);                   // set "labelField"
-    CStringW FUN_1422df830();                                       // "labelField"
-    void FUN_1422df8c0(const CStringW& strScrollBar);               // set "scrollBar"
-    CStringW FUN_1422df910();                                       // "scrollBar"
+    void SetMenuRowCount(unsigned nRows);                             // set "menuRowCount"
+    unsigned GetMenuRowCount();                                       // "menuRowCount"
+    void SetSelectedIndex(int nIndex);                                 // set "selectedIndex"
+    int GetSelectedIndex();                                            // "selectedIndex"
+    void SetDataProvider(const Scaleform::GFx::Value& v);             // set "dataProvider"
+    MS2Ptr<ASDataProvider> GetDataProvider();                         // "dataProvider"
+    void SetLabelField(const CStringW& strField);                   // set "labelField"
+    CStringW GetLabelField();                                       // "labelField"
+    void SetScrollBar(const CStringW& strScrollBar);               // set "scrollBar"
+    CStringW GetScrollBar();                                       // "scrollBar"
     void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add the "listIndexChange" listener
     void FUN_1422dfa20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove it
-    void FUN_1422dfa80(const CStringW& strTitle);                   // set "title"
-    void FUN_1422dfad0();                                           // open()
-    void FUN_1422dfb10();                                           // close()
+    void SetTitle(const CStringW& strTitle);                   // set "title"
+    void Open();                                           // open()
+    void Close();                                           // close()
     unsigned FUN_1422dfb90();                                       // the row count (0 without a data provider)
     void FUN_1422dfc10();                                           // remove every row
     void FUN_1422dfc70(const ASObj& row);                           // add a row

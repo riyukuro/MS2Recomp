@@ -29,6 +29,12 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers -----------------------------------------------------------------------------------------
 
@@ -58,7 +64,7 @@ MS2_CHECK_SIZE(Unk_StringArgFormatter, 0x10);
 CReservedWordTable* FUN_1403b4750();
 
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);                          // path below the Table folder
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // widens a narrow string
@@ -165,19 +171,19 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     } while (0);
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
         return 0;
     }
     pMap = new ValueMap(10);
     std::auto_ptr<KeyMap> names = m_factory30();
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = pElem->FUN_140168650("key"))
+    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
         CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));
         typename KeyMap::CPair* pPair = names->Lookup(strName);
         if (pPair == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
             delete pMap;
             pMap = 0;
             return 0;

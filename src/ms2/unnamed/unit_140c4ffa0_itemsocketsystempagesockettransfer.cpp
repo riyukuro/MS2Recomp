@@ -224,7 +224,7 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
             int index = data.FUN_1422b8a10();
-            MS2Ptr<CItem> item = FUN_140f6d840(m_sourceItems, index);
+            MS2Ptr<CItem> item = GetItemAt(m_sourceItems, index);
             FUN_140c51680(item);
         }
         return 1;
@@ -232,7 +232,7 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
             int index = data.FUN_1422b8a10();
-            MS2Ptr<CItem> item = FUN_140f6d840(m_targetItems, index);
+            MS2Ptr<CItem> item = GetItemAt(m_targetItems, index);
             FUN_140c51a60(item);
         }
         return 1;
@@ -327,7 +327,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
         return;
-    __int64 uid = item->FUN_140526a50();
+    __int64 uid = item->GetItemUid();
     if (FUN_141425750(uid, 0) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
@@ -344,7 +344,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
     FUN_140c52b20(data);
     m_root->Invoke("playSelect", data.FUN_1422bb870());
     m_state = 1;
-    m_sourceUid = m_source->FUN_140526a50();
+    m_sourceUid = m_source->GetItemUid();
     FUN_140c51410();
     FUN_140f6dbe0(m_targetControl);
 }
@@ -368,7 +368,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
         FUN_140c527d0();
         return;
     }
-    __int64 uid = item->FUN_140526a50();
+    __int64 uid = item->GetItemUid();
     if (FUN_141425750(uid, 0) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
@@ -395,7 +395,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
 {
     if (m_source == 0 || m_source->FUN_140527840() == 0)
         return;
-    __int64 sourceUid = m_source->FUN_140526a50();
+    __int64 sourceUid = m_source->GetItemUid();
     if (FUN_141425750(sourceUid, 0) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
@@ -408,14 +408,14 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer_null", 1);
         return;
     }
-    targetUid = m_target->FUN_140526a50();
+    targetUid = m_target->GetItemUid();
     if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
     MS2Ptr<CItemData> sourceData(m_source->FUN_140527840());
-    unsigned level = sourceSocket->FUN_140620a20();
-    int flag = sourceData->FUN_14053de40();
+    unsigned level = sourceSocket->GetOpenSlotCount();
+    int flag = sourceData->GetSkinType();
     int itemId = 0;
     int price = 0;
     FUN_1406284a0(level, flag, &itemId, &price);
@@ -446,14 +446,14 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
-    if (targetData->FUN_14053cf90()) {
-        if (reinterpret_cast<CItemTransfer*>(m_target->FUN_140527930())->FUN_140635120() == 0 && targetSocket->FUN_140620a20() == 0) {
+    if (targetData->HasSkinType()) {
+        if (reinterpret_cast<CItemTransfer*>(m_target->FUN_140527930())->FUN_140635120() == 0 && targetSocket->GetOpenSlotCount() == 0) {
             MS2Ptr<CMsgBoxData> box = FUN_140d74090(
                 Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageSocketTransfer::FUN_140c54210),
                 L"s_itemsocketsystem_socketunlock_msg_ask_transfer_skin_first");
             if (box.get() != 0) {
-                box->FUN_1405340b0(sourceUid);
-                box->FUN_1405340b0(targetUid);
+                box->Append<__int64>(sourceUid);
+                box->Append<__int64>(targetUid);
             }
             return;
         }
@@ -524,8 +524,8 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     if (socket == 0)
         return;
     MS2Ptr<CItemData> sourceData(m_source->FUN_140527840());
-    unsigned level = socket->FUN_140620a20();
-    int flag = sourceData->FUN_14053de40();
+    unsigned level = socket->GetOpenSlotCount();
+    int flag = sourceData->GetSkinType();
     int itemId = 0;
     int price = 0;
     FUN_1406284a0(level, flag, &itemId, &price);
@@ -553,13 +553,13 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
     if (socket->GetMaxSlot() == 0)
         return;
     ASArray rows(2);
-    unsigned open = socket->FUN_140620a20();
+    unsigned open = socket->GetOpenSlotCount();
     CStringW emptyText;
     CStringW rowStat = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_stat");
     for (unsigned i = 0; i < open; ++i) {
         CStringW text;
         MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
-        if (info == 0 || info->FUN_14061fab0()) {
+        if (info == 0 || info->IsEmpty()) {
             if (emptyText.IsEmpty())
                 emptyText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_empty");
             text = emptyText;
@@ -591,7 +591,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
     CItemSocket* socket = m_source->FUN_1405279c0();
     if (socket == 0)
         return;
-    __int64 uid = m_source->FUN_140526a50();
+    __int64 uid = m_source->GetItemUid();
     Unk_SockItemPair result;
     result.m_spA = m_source;
     result.m_spB = m_target;
@@ -606,15 +606,15 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
         data.FUN_1407cbb20("itemName", m_target->FUN_140528160());
     }
     m_sourceUid = 0;
-    uid = m_target->FUN_140526a50();
+    uid = m_target->GetItemUid();
     FUN_141276180(s_strSuccessSound, "");
     m_root->Invoke("playSuccess", data.FUN_1422bb870());
     m_state = 2;
     FUN_140f6dbe0(m_targetControl);
     FUN_140f6dbe0(m_sourceControl);
     FUN_140c54030();
-    FUN_140f6e700(m_source->FUN_140526a50());
-    FUN_140f6e700(m_target->FUN_140526a50());
+    FUN_140f6e700(m_source->GetItemUid());
+    FUN_140f6e700(m_target->GetItemUid());
     FUN_140c51050();
     DragSlotBag* bag = FUN_140c54570(m_slots0Name);
     if (bag != 0) {
@@ -650,7 +650,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         return;
     if (m_source == 0 || m_source->FUN_140527840() == 0)
         return;
-    __int64 sourceUid = m_source->FUN_140526a50();
+    __int64 sourceUid = m_source->GetItemUid();
     if (FUN_141425750(sourceUid, 0) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
@@ -663,7 +663,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer_null", 1);
         return;
     }
-    targetUid = m_target->FUN_140526a50();
+    targetUid = m_target->GetItemUid();
     if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
@@ -694,7 +694,7 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scalef
         return;
     CCItemSocketSystemPacket::ForceFillIngredient fill;
     fill.m_nType = 0xc;
-    fill.m_nUid = m_source->FUN_140526a50();
+    fill.m_nUid = m_source->GetItemUid();
     COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(*(struct Unk_SockMsgIIL*)&static_cast<class CCItemSocketSystemPacket::ForceFillIngredient&>(fill), out);
@@ -720,7 +720,7 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode12(Unk_SockUidP
 void ItemSocketSystemPageSocketTransfer::FUN_140c54030()
 {
     int index = -1;
-    MS2Ptr<CItem> found = FUN_140f6d6b0(m_sourceUid, m_sourceItems, &index);
+    MS2Ptr<CItem> found = FindItemByUid(m_sourceUid, m_sourceItems, &index);
     FUN_140f6dbe0(m_sourceControl);
     if (found == 0)
         m_sourceUid = 0;
@@ -732,15 +732,15 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c54100(__int64 uid)
     __int64 previous = m_highlightUid;
     if (previous != uid && previous != 0) {
         int index = -1;
-        FUN_140f6d6b0(previous, m_sourceItems, &index);
+        FindItemByUid(previous, m_sourceItems, &index);
         if (index >= 0)
-            FUN_140f6e500(index, false);
+            SetSlotNew(index, false);
     }
     if (uid != 0) {
         int index = -1;
-        FUN_140f6d6b0(uid, m_sourceItems, &index);
+        FindItemByUid(uid, m_sourceItems, &index);
         if (index >= 0)
-            FUN_140f6e500(index, true);
+            SetSlotNew(index, true);
     }
     m_highlightUid = uid;
 }

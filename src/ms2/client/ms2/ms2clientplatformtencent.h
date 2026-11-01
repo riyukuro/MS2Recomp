@@ -43,8 +43,8 @@ public:
     virtual bool vfunc_41(__int64 a1) override;
     virtual void vfunc_42(void* a1) override;                   // a CInPacket*: the merat/blue merat notice
     virtual bool vfunc_43(int a1, bool a2, int a3) override;
-    virtual const CStringA& vfunc_44() override;
-    virtual const CStringA& vfunc_45() override;
+    virtual void vfunc_44() override;
+    virtual void vfunc_45() override;
     virtual void vfunc_48(MS2Ptr<CUserReportData> spReport) override;
     virtual int vfunc_49() override;
     virtual void vfunc_50() override;

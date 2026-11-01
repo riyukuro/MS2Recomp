@@ -49,7 +49,6 @@ class ASDialog : public ASDisplayObject {};
 
 // The xml reader of the exe (see achievemanager.cpp).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class Unk_JcFileSystem : public CFileSystem { };
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -73,10 +72,9 @@ Unk_JcSkillTable* FUN_1401958b0();
 CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);     // formatted string table entry
 
 class Unk_JcUi { public: float FUN_1422afec0(int nUiId); };
-Unk_JcUi* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_JcUi (calls cast back)
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 struct Unk_JcInvokeS { Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2); };
@@ -87,7 +85,6 @@ extern unsigned DAT_143af62d8;                                  // client area h
 
 // The tooltip of a skill (a member of ASTooltip in the exe).
 int FUN_1409e1b80(ASTooltip* pTip, int nSkillId, int n);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 
 static bool s_bValid;                                           // 0x143af3588 the tables were read
 
@@ -172,7 +169,7 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
         {
             tip.FUN_1409c69b0(L"");
-            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            *pRetVal = tip.FUN_1422bb870();
         }
     }
 }
@@ -195,15 +192,15 @@ void UIJobChangeDialog::vfunc_43()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pUI;
     int n;
-    if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->FUN_141b1d3d0()) != -1)
+    if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->GetLowerCutGlobalY()) != -1)
     {
-        n = (int)((double)(n - pDlg->FUN_1422c13b0()) * 0.5);
+        n = (int)((double)(n - pDlg->GetHeightCeil()) * 0.5);
         pDlg->vfunc_2(1, 0, n);
         return;
     }
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
-        reinterpret_cast<AScript*>(FUN_1409ee290(&m_30))->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
-                      FUN_14025e7a0()->FUN_1422afec0(m_28));
+        reinterpret_cast<AScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
+                      reinterpret_cast<Unk_JcUi*>(FUN_14025e7a0())->FUN_1422afec0(m_28));
 }
 
 // @0x1419db600
@@ -221,11 +218,11 @@ void UIJobChangeDialog::LoadJobPreview()
     bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* root = ((class Unk_140165cf0*)((class Unk_XmlNode*)(((Unk_140165cf0*)&doc)))->FirstChild("ms2"));
     if (root == 0)
         return;
     for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
-         node = (Unk_140165cf0*)((Unk_140168650*)node)->FUN_140168650("job"))
+         node = ((Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("job")))
     {
         int nJob = 0;
         int nDifficulty = 0;
@@ -234,7 +231,7 @@ void UIJobChangeDialog::LoadJobPreview()
         MS2Ptr<JobPreview> sp(new JobPreview());
         sp->m_nDifficulty = nDifficulty;
         for (Unk_140165cf0* skill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("skill")); skill != 0;
-             skill = (Unk_140165cf0*)((Unk_140168650*)skill)->FUN_140168650("skill"))
+             skill = ((Unk_140165cf0*)((class Unk_XmlNode*)(skill))->NextSibling("skill")))
         {
             int nSkill = 0;
             int nLevel = 0;
@@ -254,11 +251,11 @@ void UIJobChangeDialog::LoadJobDescription()
     bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* root = ((class Unk_140165cf0*)((class Unk_XmlNode*)(((Unk_140165cf0*)&doc)))->FirstChild("ms2"));
     if (root == 0)
         return;
     for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
-         node = (Unk_140165cf0*)((Unk_140168650*)node)->FUN_140168650("job"))
+         node = ((Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("job")))
     {
         int nJob = 0;
         XmlGetAttr((class TiXmlElement*)(node), "code", nJob);
@@ -315,9 +312,9 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
         MS2Ptr<JobDescription> spDesc(0);
         if (m_descs.Lookup(nJob, spDesc))
         {
-            if (MS2Ptr<ASTextField> spDescText = FUN_140bb4cf0("m_jobDesc"))
+            if (MS2Ptr<ASTextField> spDescText = GetChild<ASTextField>("m_jobDesc"))
                 spDescText->FUN_1422c4cd0(spDesc->m_strSpecific);
-            if (MS2Ptr<ASTextField> spHistoryText = FUN_140bb4cf0("m_jobHistory"))
+            if (MS2Ptr<ASTextField> spHistoryText = GetChild<ASTextField>("m_jobHistory"))
                 spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
             reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strMain, spDesc->m_strSub);
             reinterpret_cast<AScript*>(pDlg)->Invoke("setJob", nJob);

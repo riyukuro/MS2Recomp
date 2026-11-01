@@ -64,10 +64,11 @@ class Unk_LandBody { public: Unk_LandHitReport* FUN_141240f20(); };
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The actor's buff set.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_LandBuff
 {
 public:
-    efd::Point3 FUN_141683290();                            // knock-back direction
     bool FUN_141682fe0(int nBuff);
 };
 // The owner seen through its vftable where gameobject.h declares slot 22 by reference: the exe passes the point by
@@ -144,7 +145,7 @@ void StateLand::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     Unk_LandBuff* pBuff = (Unk_LandBuff*)m_pOwner->FUN_14166d240();
-    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
+    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))

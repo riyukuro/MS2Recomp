@@ -501,11 +501,11 @@ void MS2SceneGraphService::FUN_1414f1d00(MS2SceneGraphService* pService, int iBu
 MS2_REPLACE(0x1414F1D00, MS2SceneGraphService::FUN_1414f1d00, 297, 0xB30B4D87);
 
 // @0x1414f1e30
-void MS2SceneGraphService::FUN_1414f1e30(NiAVObject* pkSceneGraph)
+void MS2SceneGraphService::AddAlwaysUpdated(NiAVObject* pkSceneGraph)
 {
     m_alwaysUpdated.insert(pkSceneGraph);
 }
-MS2_REPLACE_METHOD(0x1414F1E30, MS2SceneGraphService, FUN_1414f1e30, 48, 0xA04A05A5);
+MS2_REPLACE_METHOD(0x1414F1E30, MS2SceneGraphService, AddAlwaysUpdated, 48, 0xA04A05A5);
 
 // @0x1414f1e70
 void MS2SceneGraphService::FUN_1414f1e70(const egf::EntityID& entityID, int iBucket)

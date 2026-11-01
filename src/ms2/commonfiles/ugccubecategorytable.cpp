@@ -49,6 +49,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -220,13 +226,13 @@ void UGCCubeCategoryTable::LoadMenus()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            Unk_140165cf0* pMenus = pRoot->FUN_140165cf0("menus");
+            Unk_140165cf0* pMenus = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("menus"));
             if (pMenus != 0)
             {
-                for (Unk_140165cf0* pMenu = pMenus->FUN_140165cf0("menu"); pMenu != 0; pMenu = pMenu->FUN_140168650("menu"))
+                for (Unk_140165cf0* pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenus))->FirstChild("menu")); pMenu != 0; pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
                 {
                     if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                         continue;
@@ -246,10 +252,10 @@ void UGCCubeCategoryTable::LoadMenus()
                     m_menus->Add(menu);
                 }
             }
-            Unk_140165cf0* pSorts = pRoot->FUN_140165cf0("sort");
+            Unk_140165cf0* pSorts = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("sort"));
             if (pSorts != 0)
             {
-                for (Unk_140165cf0* pSort = pSorts->FUN_140165cf0("sort"); pSort != 0; pSort = pSort->FUN_140168650("sort"))
+                for (Unk_140165cf0* pSort = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSorts))->FirstChild("sort")); pSort != 0; pSort = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSort))->NextSibling("sort")))
                 {
                     int nName = 0;
                     XmlGetAttr((class TiXmlElement*)(pSort), "name", *(unsigned int*)&static_cast<int&>(nName));
@@ -262,8 +268,8 @@ void UGCCubeCategoryTable::LoadMenus()
                 }
             }
             int nIndex = 0;
-            for (Unk_140165cf0* pCategory = pRoot->FUN_140165cf0("category"); pCategory != 0;
-                 pCategory = pCategory->FUN_140168650("category"))
+            for (Unk_140165cf0* pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0;
+                 pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
             {
                 nIndex = nIndex + 1;
                 TabArrayPtr tabs((Unk_CubeNewTag(0)));
@@ -282,10 +288,10 @@ void UGCCubeCategoryTable::LoadInteriors()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            for (Unk_140165cf0* pList = pRoot->FUN_140165cf0("list"); pList != 0; pList = pList->FUN_140168650("list"))
+            for (Unk_140165cf0* pList = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pList != 0; pList = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pList))->NextSibling("list")))
             {
                 InteriorPtr interior((Unk_CubeNewTag(0)));
                 int nCategory = 0;
@@ -310,7 +316,7 @@ void UGCCubeCategoryTable::ReadTabChildren(int nCategory, Unk_140165cf0* pElem, 
     MenuPtr menu = FindMenu(nCategory);
     if (menu == 0)
         return;
-    for (Unk_140165cf0* pTab = pElem->FUN_140165cf0("tab"); pTab != 0; pTab = pTab->FUN_140168650("tab"))
+    for (Unk_140165cf0* pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
     {
         TabPtr child = ReadTab(pTab);
         if (child == 0)
@@ -325,7 +331,7 @@ void UGCCubeCategoryTable::ReadTabChildren(int nCategory, Unk_140165cf0* pElem, 
 // @0x140887430
 void UGCCubeCategoryTable::ReadTabsInto(int nCategory, Unk_140165cf0* pElem, TabArray* pOut)
 {
-    for (Unk_140165cf0* pTab = pElem->FUN_140165cf0("tab"); pTab != 0; pTab = pTab->FUN_140168650("tab"))
+    for (Unk_140165cf0* pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
     {
         TabPtr tab = ReadTab(pTab);
         if (tab == 0)

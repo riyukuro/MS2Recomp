@@ -95,7 +95,7 @@ public:
     int FUN_14199d920(int nTab);                                // the button of a tab
     int FUN_14199d980();                                        // the tab can be expanded
     CStringW FUN_14199d9c0();                                   // the item break button tooltip
-    CStringW FUN_14199ddd0();                                   // the slot expand tooltip
+    CStringW GetExpandTooltip();                                   // the slot expand tooltip
     CStringW FUN_14199deb0(int bBank);                          // the open bank tooltip
     void FUN_14199e2a0();                                       // expand the slots (or tell why not)
 

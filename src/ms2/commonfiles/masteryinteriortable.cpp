@@ -27,6 +27,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -37,7 +43,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-CStringA FUN_14015f710(Unk_140165cf0*, const char*, CStringA strDefault);
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 void FUN_140177e10(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);         // split into unsigneds
 void FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>& rOut);                // list attribute
 void FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>& rOut);                     // list attribute
@@ -111,16 +117,16 @@ bool CMasteryInteriorTable::LoadMastery()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_140165cf0* pMastery = pRoot->FUN_140165cf0("masteryUGCHousing");
+    Unk_140165cf0* pMastery = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("masteryUGCHousing"));
     if (pMastery == 0)
         return false;
-    for (Unk_140165cf0* pRow = pMastery->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
+    for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMastery))->FirstChild("v")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("v")))
     {
         MS2Ptr<MasteryInteriorInfo> spInfo(new MasteryInteriorInfo);
         XmlGetAttr((class TiXmlElement*)(pRow), "value", spInfo->m_nValue);
@@ -157,13 +163,13 @@ bool CMasteryInteriorTable::LoadHeight()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
+    for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("v")))
     {
         MS2Ptr<ExtendHeightInfo> spInfo(new ExtendHeightInfo);
         XmlGetAttr((class TiXmlElement*)(pRow), "height", spInfo->m_nHeight);
@@ -182,18 +188,18 @@ bool CMasteryInteriorTable::LoadArea()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
+    for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("v")))
     {
         MS2Ptr<ExtendAreaInfo> spInfo(new ExtendAreaInfo);
         XmlGetAttr((class TiXmlElement*)(pRow), "area", spInfo->m_nArea);
         XmlGetAttr((class TiXmlElement*)(pRow), "price", spInfo->m_nPrice);
-        CStringA strValue = FUN_14015f710(pRow, "value", CStringA(""));
+        CStringA strValue = Unk_ReadString((class Unk_XmlNode*)(pRow), "value", CStringA(""));
         ATL::CAtlArray<unsigned> sizes;
         FUN_140177e10(strValue, sizes, ",");
         if (sizes.GetCount() != 2)
@@ -220,19 +226,19 @@ bool CMasteryInteriorTable::LoadRewards()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
+    for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("v")))
     {
         MS2Ptr<InteriorPointReward> spInfo(new InteriorPointReward);
         XmlGetAttr((class TiXmlElement*)(pRow), "housingPoint", spInfo->m_nPoint);
         XmlGetAttr((class TiXmlElement*)(pRow), "individualDropBoxId", spInfo->m_nDropBox);
-        spInfo->m_strIcon = FUN_14015f710(pRow, "icon", CStringA(""));
-        spInfo->m_strKey = FUN_14015f710(pRow, "stringKey", CStringA(""));
+        spInfo->m_strIcon = Unk_ReadString((class Unk_XmlNode*)(pRow), "icon", CStringA(""));
+        spInfo->m_strKey = Unk_ReadString((class Unk_XmlNode*)(pRow), "stringKey", CStringA(""));
         m_mapReward.SetAt(spInfo->m_nPoint, spInfo);
     }
     return true;
@@ -283,7 +289,7 @@ void CMasteryInteriorTable::GetInteriorItems(int nLevel, int nJob, ATL::CAtlArra
                 MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_itemId);
                 if (spData.IsNull())
                     continue;
-                if (!spData->limit.FUN_140545da0(nJob))
+                if (!spData->limit.IsJobRecommended(nJob))
                     continue;
                 rItems.Add(spItem);
             }

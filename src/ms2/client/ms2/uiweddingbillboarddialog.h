@@ -41,8 +41,6 @@ public:
 
     void FUN_140fc3300(CInPacket& packet);                              // the list packet (0x12a)
     void FUN_140fc3680();                                               // show the current page
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // 0x140bb4cf0 text field child lookup
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);           // 0x140c02900 bind a list child
 
 private:

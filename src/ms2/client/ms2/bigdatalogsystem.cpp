@@ -152,7 +152,7 @@ void CBigDataLogSystem::Update()
     AddSample(SAMPLE_FPS, (__int64)fFrameRate);
     unsigned __int64 nMemory = ((class Unk_BdMemory*)FUN_1409f7c90())->FUN_14161bdc0();
     AddSample(SAMPLE_MEMORY, (__int64)(float)nMemory);
-    unsigned nLatency = FUN_140714f90()->FUN_141538f60();
+    unsigned nLatency = FUN_140714f90()->GetAverageLatency();
     AddSample(SAMPLE_LATENCY, nLatency);
 }
 MS2_REPLACE_METHOD(0x140A1F8A0, CBigDataLogSystem, Update, 199, 0x15B837EF);

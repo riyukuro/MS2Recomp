@@ -59,10 +59,10 @@ void CSetItemManager::AddItemCount(int nItemId, __int64 nUid, eSetItemLayer::T n
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return;
-    if (!SetItemTable::GetInstance()->HasSetItem(spItem->FUN_14053c560()))
+    if (!SetItemTable::GetInstance()->HasSetItem(spItem->GetOriginOrItemId()))
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
-    SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
+    SetItemTable::GetInstance()->GetSetItemInfos(spItem->GetOriginOrItemId(), sets);
     Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
@@ -95,10 +95,10 @@ void CSetItemManager::RemoveItem(int nItemId, __int64 nUid, eSetItemLayer::T nLa
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return;
-    if (!SetItemTable::GetInstance()->HasSetItem(spItem->FUN_14053c560()))
+    if (!SetItemTable::GetInstance()->HasSetItem(spItem->GetOriginOrItemId()))
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
-    SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
+    SetItemTable::GetInstance()->GetSetItemInfos(spItem->GetOriginOrItemId(), sets);
     Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
@@ -130,10 +130,10 @@ void CSetItemManager::AddItem(int nItemId, __int64 nUid, eSetItemLayer::T nLayer
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return;
-    if (!SetItemTable::GetInstance()->HasSetItem(spItem->FUN_14053c560()))
+    if (!SetItemTable::GetInstance()->HasSetItem(spItem->GetOriginOrItemId()))
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
-    SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
+    SetItemTable::GetInstance()->GetSetItemInfos(spItem->GetOriginOrItemId(), sets);
     Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
@@ -181,10 +181,10 @@ void CSetItemManager::RemoveItemByUid(int nItemId, __int64 nUid, eSetItemLayer::
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return;
-    if (!SetItemTable::GetInstance()->HasSetItem(spItem->FUN_14053c560()))
+    if (!SetItemTable::GetInstance()->HasSetItem(spItem->GetOriginOrItemId()))
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
-    SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
+    SetItemTable::GetInstance()->GetSetItemInfos(spItem->GetOriginOrItemId(), sets);
     Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {

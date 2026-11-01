@@ -63,7 +63,7 @@ class UISwfEntity;          // uiswfentity.h (+0xad8, unregistered by the dtor)
 class Unk_PCBaseBody;       // +0x150 physics/controller body (0xf8; ctor 0x14123f2d0, dtor 0x14123f460), pcbase.cpp
 
 // +0xc08: an 11-bit set (commonfiles\bitset.inl instance, the same as unit_140d73aa0's Unk_BitSet11): the reasons the
-// actor is hidden (FUN_14166ca20 / RemoveHideReason / ApplyHideReasons).
+// actor is hidden (AddHideReason / RemoveHideReason / ApplyHideReasons).
 // +0x648: CColorBoostManager (0x48; FUN_14109be00 adds a CColorBoostData).
 class CColorBoostData;
 class Unk_PCBaseColorBoostMgr
@@ -305,7 +305,7 @@ public:
     int FUN_140976780() { return m_unk_118; }               // sound pitch (additionalcli.cpp)
     // @0x1409788b0
     void FUN_1409788b0(int n) { m_unk_118 = n; }
-    float FUN_14166da40();                                  // 0x14166da40
+    float GetTargetYaw();                                  // 0x14166da40
     void FUN_14166d820();                                   // 0x14166d820
     void FUN_14166e0a0();                                   // 0x14166e0a0
     void FUN_141670d50(efd::Point2 kSize);                  // 0x141670d50 (25, 105 for a Ridee)
@@ -322,17 +322,17 @@ public:
     void FUN_141678360();                                   // 0x141678360
     class Ridee* FUN_1416764a0();                           // 0x1416764a0 the ridee this actor rides (scenestategame, w86)
     void FUN_14166ce70(int nEmotion);                       // 0x14166ce70 (scenestategame packet 0x3f, w86)
-    __int64 FUN_141670990(int nKind, int nStat);            // 0x141670990 stat value (kind 0..2, stat 0..0x22; scenestategame w109)
+    __int64 GetStat(int nKind, int nStat);            // 0x141670990 stat value (kind 0..2, stat 0..0x22; scenestategame w109)
     // pcbase.cpp (w112)
     void FUN_141670ed0(Unk_PCBaseEntity* pEntity);          // 0x141670ed0 ground material of the entity under the actor
     CString FUN_141671480();                                // 0x141671480 footstep material
-    BOOL FUN_1416719c0();                                   // 0x1416719c0 model is a "Dash" model
+    BOOL IsDashModel();                                   // 0x1416719c0 model is a "Dash" model
     int FUN_141671a30();                                    // 0x141671a30 standing on ground
     void FUN_1416700b0(int nType);                          // 0x1416700b0 banner
     void FUN_141670180(bool bShow);                         // 0x141670180 refresh the hp bar
     void FUN_141670260(int nShield, bool bShow);            // 0x141670260 refresh the shield bar
     float FUN_141670390();                                  // 0x141670390 height (+ mount)
-    void FUN_141670540(int nKind, int nStat, __int64 nValue);   // 0x141670540 set a stat value
+    void SetStat(int nKind, int nStat, __int64 nValue);   // 0x141670540 set a stat value
     void FUN_1416705c0(int nStat, __int64 nValue);          // 0x1416705c0
     void FUN_1416708a0(int nStat, __int64 nValue);          // 0x1416708a0
     void FUN_141670920(int nStat, __int64 nValue);          // 0x141670920
@@ -377,7 +377,7 @@ public:
     void FUN_141679090(int n);
     int FUN_14166c960();                                    // 0x14166c960 queued state (m_unk_c48)
     int GetPrevState();                                    // 0x14166c980 previous state id
-    void FUN_14166ca20(unsigned int nReason);               // 0x14166ca20 hide for a reason
+    void AddHideReason(unsigned int nReason);               // 0x14166ca20 hide for a reason
     void RemoveHideReason(unsigned int nReason);               // 0x14166ca80 clear a hide reason
     bool FUN_14166cad0();                                   // 0x14166cad0 hidden for any reason
     bool FUN_14166cb00(unsigned int nReason);               // 0x14166cb00
@@ -391,13 +391,13 @@ public:
     void FUN_14166d2d0(efd::Point3 kTarget, int bTurn);          // 0x14166d2d0 face a point (by value: the callers copy)
     void FUN_14166d430(efd::Point3 kDir, int bTurn, int bResetTilt);   // 0x14166d430 face a direction
     void FUN_14166d630(float fTime);                        // 0x14166d630 turn toward m_f934
-    void FUN_14166d8b0(float fAngle);                       // 0x14166d8b0 target yaw
+    void SetTargetYaw(float fAngle);                       // 0x14166d8b0 target yaw
     void FUN_14166d8e0(efd::Point3 kTilt);                  // 0x14166d8e0
     void FUN_14166d970(const efd::Point3& kRot);            // 0x14166d970
     void FUN_14166d9d0(const NiPoint3& kPos);               // 0x14166d9d0
-    void FUN_14166da10(float fSpeed);                       // 0x14166da10 turn speed
+    void SetTurnSpeed(float fSpeed);                       // 0x14166da10 turn speed
     float FUN_14166da60();                                  // 0x14166da60
-    float FUN_14166dab0();                                  // 0x14166dab0 turn speed
+    float GetTurnSpeed();                                  // 0x14166dab0 turn speed
     float FUN_14166dad0(const efd::Point3& kLook, const efd::Point3& kDir);   // 0x14166dad0 yaw (degrees)
     efd::Point3 FUN_141674a10(efd::Point3 kDir, float* pYaw);   // 0x141674a10 local dir -> world dir (+ its yaw)
     int FUN_141673b40(MS2Ptr<Unk_PCBaseComp_b18> spItem);   // 0x141673b40 (by value)
@@ -433,7 +433,7 @@ public:
     void FUN_141676ab0(__int64 nUid);                        // 0x141676ab0 +0xca8 RemoveKey
     int FUN_141676b00(__int64 nUid);                         // 0x141676b00 +0xca8 has it
     void FUN_141678160(const NiPoint3& kPos);                // 0x141678160 m_posBF4 = kPos
-    unsigned int FUN_141678680();                            // 0x141678680 skill-use disable mask (buffs | field)
+    unsigned int GetSkillUseDisableMask();                            // 0x141678680 skill-use disable mask (buffs | field)
     int FUN_141678820();                                     // 0x141678820 +0xc68 when the field checks climbing
     void FUN_141679120(int n);                               // 0x141679120 (+0xd00 slot 4)
     efd::utf8string FUN_141679170(int a, int b);             // 0x141679170 (+0xd00 slot 6)
@@ -475,7 +475,7 @@ public:
     Unk_Vec4 m_unk_190;                 // +0x190 (ctor 0x140266620; m_x = turn speed in degrees per second, 1800.0)
     Unk_Vec7 m_unk_1a0;                 // +0x1a0 (ctor 0x1402666f0; m_a = 50.0)
     int m_unk_1bc;                      // +0x1bc
-    __int64 m_unk_1c0[3][0x23];         // +0x1c0 stat values (kind 0..2, stat 0..0x22; FUN_141670990)
+    __int64 m_unk_1c0[3][0x23];         // +0x1c0 stat values (kind 0..2, stat 0..0x22; GetStat)
     __int64 m_unk_508[0x23];            // +0x508 zero-filled record
     efd::Point2 m_unk_620;              // +0x620 (init 0x140a0a600(p, 25.0, 105.0)) model size
     MS2Ptr<CBoxCollision> m_sp628;      // +0x628 collision box (FUN_141670fd0)

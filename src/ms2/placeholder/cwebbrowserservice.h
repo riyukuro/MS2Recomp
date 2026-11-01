@@ -9,7 +9,7 @@
 #pragma once
 
 // Storage class of webbrowserservice.cpp's s_app (the CCefMS2ClientApp, exe 0x143af7bd8). In the hook DLL it must be the
-// exe's object: the hooked MS2::RegisterServices runs the DLL copy of FUN_141b77e10 -> InitializeCef, and a DLL-private
+// exe's object: the hooked MS2::RegisterServices runs the DLL copy of EnsureCefInitialized -> InitializeCef, and a DLL-private
 // s_app left the exe's null (null deref in FUN_141b78650 at the title screen, hk1 2026-10-20). The DLL declares it extern
 // and progress/symbols-manual.tsv binds ?s_app@@3V?$scoped_refptr@VCCefMS2ClientApp@@@@A to 0x143af7bd8.
 #ifdef MS2_HOOK_DLL
@@ -33,7 +33,7 @@
 #include "ms2/atlserver/atlrx.h"
 #pragma warning(pop)
 
-// A process message queued for the browsers (FUN_141b78570 -> OnTick): the browser index (-1 = every browser) and the
+// A process message queued for the browsers (QueueBrowserMessage -> OnTick): the browser index (-1 = every browser) and the
 // message. Initialised member-wise (aggregate), copied by the implicit copy ctor 0x141b7b090.
 struct Unk_WebBrowserMessage
 {
@@ -59,16 +59,16 @@ public:
     const char* GetDisplayName() const override;
 
     static void InitializeCef(HINSTANCE hInstance);                 // 0x141b77c20 CefInitialize
-    void FUN_141b77e10();                                           // initialises CEF unless it already runs
-    static void FUN_141b77e50(const CStringA& strUrl);              // sets the maview (news page) url
-    static void FUN_141b77e90(const CStringA& strUrl);              // sets the web api url
-    static void FUN_141b77ed0(const CStringA& strUrls);             // adds space-separated allowed-url patterns
+    void EnsureCefInitialized();                                           // initialises CEF unless it already runs
+    static void SetMaviewUrl(const CStringA& strUrl);              // sets the maview (news page) url
+    static void SetWebApiUrl(const CStringA& strUrl);              // sets the web api url
+    static void AddAllowedUrls(const CStringA& strUrls);             // adds space-separated allowed-url patterns
     bool AddAllowedURL(const CStringA& strPattern);                 // 0x141b77fa0
     bool IsAllowedURL(const CStringA& strUrl);                      // 0x141b78090
     static bool MatchURL(const CStringA& strUrl, ATL::CAtlRegExp<>* pRegExp);   // 0x141b78140
     void FUN_141b781e0(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk); // creates / shows a browser
     void FUN_141b784f0(int nIndex);                                 // closes a browser
-    void FUN_141b78570(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message);  // queues a message
+    void QueueBrowserMessage(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message);  // queues a message
     BOOL FUN_141b78650();
     void* FUN_141b786a0(int nIndex);                                // the browser's texture
     void FUN_141b786f0(int nIndex, const char* pszUrl);             // navigates a browser
@@ -79,9 +79,9 @@ public:
     void FUN_141b789d0(int nIndex);
     void FUN_141b78a10(int nIndex);
     bool FUN_141b78a50(int nIndex);
-    void FUN_141b78aa0(int nIndex, bool bUnk);
-    void FUN_141b78af0(int nIndex, int nUnk);
-    void FUN_141b78b40(bool bUnk, int nUnk);                        // sends packet 0x63
+    void SetBrowserKeyboard(int nIndex, bool bUnk);
+    void SetBrowserWindowType(int nIndex, int nUnk);
+    void SendNewsNotification(bool bUnk, int nUnk);                        // sends packet 0x63
     void FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback);  // the token callback
     void FUN_141b78cf0(int nIndex, const CStringA& strToken);       // sends a "token" process message
     void FUN_141b78e70(CefRefPtr<CefProcessMessage> message);       // calls the token callback

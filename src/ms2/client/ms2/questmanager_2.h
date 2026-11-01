@@ -37,7 +37,7 @@ struct Unk_QmNpcQuestState
 {
     Unk_QmNpcQuestState();
     ~Unk_QmNpcQuestState();
-    void FUN_1409669c0();               // Reset: icon 11, state 4, quest 0, text "", npc 0
+    void Reset();               // Reset: icon 11, state 4, quest 0, text "", npc 0
     int m_icon;                         // +0x00 quest kind of the best quest (FUN_14074bc90)
     int m_state;                        // +0x04 0 completable, 1 in progress, 2 acceptable, 4 none
     unsigned m_questId;                 // +0x08
@@ -93,7 +93,7 @@ public:
     __int64 vfunc_o10_22() override;
     unsigned vfunc_o10_23(const Unk_QuestCondition&) override;
 
-    void FUN_1416ca2f0();
+    void MarkItemsDirty();
     void FUN_1416ca730(NotifyObject*);
     void FUN_1416ca760(NotifyObject*);
     void FUN_1416ca780(NotifyObject*);
@@ -104,7 +104,7 @@ public:
     void FUN_1416ca670();
     CQuest* FUN_1416ca9d0(int questId);
     void FUN_1416cb0d0(int questId, int force);
-    int FUN_1416d0610();
+    int IsPortalSummonRequestActive();
     int FUN_1416d0e20();
     void SendQuestMode14();
     void FUN_1416d0920(ATL::CAtlArray<unsigned>& out);
@@ -113,7 +113,7 @@ public:
     void FUN_1416d3010();
     void FUN_1416d3250();
     void FUN_1416ca850(NotifyObject*);
-    int FUN_1416cae20(int);
+    int GetQuestState(int);
     void FUN_1416caec0(Unk_PayloadPtr<CQuest>);
     void FUN_1416cb260(ATL::CAtlArray<unsigned>&, int, int, int);
     void FUN_1416cb4d0(std::vector<unsigned>&, std::vector<Unk_QmQuestState>, int, int);
@@ -128,7 +128,7 @@ public:
     int FUN_1416ce6a0(MS2Ptr<CItem>);
     void FUN_1416ce860(MS2Ptr<CItem>, ATL::CAtlArray<Unk_QuestItemLink>&);
     int FUN_1416ce340(int);
-    int FUN_1416cebf0(int);
+    int HasTalkScriptForNpc(int);
     int FUN_1416cede0(int, unsigned*);
     void FUN_1416cef90(int);
     void SendQuestMode12(int);
@@ -143,7 +143,7 @@ public:
     int FUN_1416cff70();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int FUN_1416d0530();
-    struct Vector3 FUN_1416d0690();
+    struct Vector3 GetTargetObjectPosition();
     void SendQuestMode15(int);
     int FUN_1416d0f60(int);
     unsigned FUN_1416d1100(int, int, int*);
@@ -153,7 +153,7 @@ public:
     void FUN_1416d1a30(unsigned questId);
     std::pair<unsigned, __int64> FUN_1416d1e90();   // nearest live user of a tracked quest (quest id, user id)
     const std::set<unsigned __int64>& FUN_1416d2510(unsigned questId);   // users found for the quest (empty set if none)
-    unsigned FUN_1416d2600(int questId, int checkAccept);   // first available follow-up quest
+    unsigned GetNextQuestId(int questId, int checkAccept);   // first available follow-up quest
     int FUN_1416d26c0(int questId, std::list<unsigned>& out, int checkAccept);
     int FUN_1416d2910(unsigned toQuestId, std::list<std::list<unsigned>>& paths, int verbose);
     void OnQuest(CInPacket& packet);                 // the quest packet

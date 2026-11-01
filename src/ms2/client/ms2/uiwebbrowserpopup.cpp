@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 // ---- unit-local views of exe objects ----
 class Unk_WpInt { public: int m_n; char m_pad_04[0x54]; };          // one value of the client constants
@@ -23,10 +24,7 @@ class Unk_WpConsts { public:
     Unk_WpInt m_8a50;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_WpConsts*)
-int* FUN_1402056b0(Unk_WpInt* p);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-class Unk_WpScript { public: Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg); };
+class Unk_RewardClip { public: Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg); };   // C3: view (uidungeonrewarddialog.h)
 
 // @0x140fc1e20
 UIWebBrowserPopup::UIWebBrowserPopup()
@@ -43,13 +41,13 @@ UIWebBrowserPopup::~UIWebBrowserPopup()
 void UIWebBrowserPopup::OnLoadInit()
 {
     UIWebBrowser::OnLoadInit();
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((m_30 == 0) != 0)
         return;
     {
-        m_nMinWidth = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_8948);
-        m_nMinHeight = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_89f8);
-        m_nMaxWidth = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_89a0);
-        m_nMaxHeight = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_8a50);
+        m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_8948)->Get();
+        m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_89f8)->Get();
+        m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_89a0)->Get();
+        m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_8a50)->Get();
         m_nWidth = m_nMaxWidth;
         m_nHeight = m_nMaxHeight;
     }
@@ -60,7 +58,7 @@ void UIWebBrowserPopup::OnLoadComplete()
 {
     UIWebBrowser::OnLoadComplete();
     if (m_30.get() != 0)
-        reinterpret_cast<Unk_WpScript*>(FUN_1409ee290(&m_30))->FUN_140e262c0("changeTitle", "$s_webbrowserpopup_title2");
+        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("changeTitle", "$s_webbrowserpopup_title2");
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

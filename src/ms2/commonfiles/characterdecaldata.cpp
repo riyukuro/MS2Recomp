@@ -11,6 +11,12 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // @0x1401e4000
 CharacterDecalData::CharacterDecalData()
@@ -26,7 +32,7 @@ void CharacterDecalData::FUN_1401e4090(Unk_140165cf0* pElem)
     {
         FUN_1408733e0(pDecal, "texture", unknown18);
         for (Unk_140165cf0* pCustom = pDecal->FUN_140165cf0("custom"); pCustom != 0;
-             pCustom = pCustom->FUN_140168650("custom"))
+             pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
         {
             MS2Ptr<ItemCustom> spCustom(new ItemCustom);
             spCustom->FUN_140266aa0(pCustom);

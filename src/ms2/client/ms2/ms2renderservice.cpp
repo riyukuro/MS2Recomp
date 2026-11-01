@@ -626,7 +626,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
     if (settings.m_bVSync) {
-        ((class COptimizer*)FUN_1409f7c90())->FUN_14161c3f0();
+        ((class COptimizer*)FUN_1409f7c90())->ClearFrameLimit();
     }
     if (((class Unk_RsApp*)FUN_140aadf80())->IsWindowHidden()) {
         settings.m_bFullscreen = false;

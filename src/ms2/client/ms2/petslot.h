@@ -43,7 +43,7 @@ public:
 
     float FUN_140dbaeb0();                              // cooldown left of the item's skill (0: no player)
     int FUN_140dbaf10();                                // item type of the pet item (0: gone)
-    int FUN_140dbafc0();                                // item id of the pet item (0: gone)
+    int GetPetItemId();                                // item id of the pet item (0: gone)
     unsigned __int64 GetPetItemUid();                   // return m_nPetItemUid
     void SetPetItemUid(unsigned __int64 nUid);          // m_nPetItemUid = nUid
     void FUN_140dbc010();                               // re-check the item (the listener slots)

@@ -197,7 +197,7 @@ BOOL CNodeViewerDlg::OnInitDialog()
     ShowWindow(5);
     if (m_pTree == 0)
     {
-        m_pTree = new CToolTreeNodesDialog(Unk_NvSelectFunctor(this, &CNodeViewerDlg::FUN_140c7f5b0), this);
+        m_pTree = new CToolTreeNodesDialog(Unk_NvSelectFunctor(this, &CNodeViewerDlg::SetNodeName), this);
         m_pTree->Create(0x80, this);
         m_pTree->ShowWindow(0);
     }
@@ -205,7 +205,7 @@ BOOL CNodeViewerDlg::OnInitDialog()
 }
 
 // @0x140c7f5b0
-void CNodeViewerDlg::FUN_140c7f5b0(CString kName)
+void CNodeViewerDlg::SetNodeName(CString kName)
 {
     if (kName == "NodeViewer")
         return;

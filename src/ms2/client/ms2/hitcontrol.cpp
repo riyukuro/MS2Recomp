@@ -10,6 +10,8 @@
 #include "ms2/client/ms2/physxhelper.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // Easing distance calculator interface (same shape as in commonutil.cpp); the push owns one (plain operator delete).
 class IDistanceCalculator
@@ -20,8 +22,6 @@ public:
 
 IDistanceCalculator* FUN_14028e960(int nType);                      // commonutil: calculator for a curve kind
 bool FUN_14028d470(float a, float b);                               // approx equal
-PCBase* FUN_14096e110(PCBase* pObject);                         // cast to the mount/npc-side class (null if none)
-PCBase* FUN_140974230(PCBase* pObject);                         // cast to the player class
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // @0x1413fc9d0
@@ -91,9 +91,9 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
         static_cast<PCBase*>(pActor)->GetPrevState() == 0x20 || m_n34 != 0) {
         efd::Point3 kMove = m_kDir * fDist;
         int nFlags = 0;
-        if (FUN_14096e110(static_cast<PCBase*>(pActor)) != 0)
+        if (efd::DynamicCast<CNpc, PCBase>(static_cast<PCBase*>(pActor)) != 0)
             nFlags = 4;
-        else if (FUN_140974230(static_cast<PCBase*>(pActor)) != 0)
+        else if (efd::DynamicCast<PC, PCBase>(static_cast<PCBase*>(pActor)) != 0)
             nFlags = 0x10;
         static_cast<PCBase*>(pActor)->vfunc_106(kMove, dTime, nFlags);
     } else {

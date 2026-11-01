@@ -25,7 +25,7 @@ class CItemExtraData;               // citemextradata.h
 struct ItemSkill                    // <skill skillID skillLevel>
 {
     ItemSkill();                    // 0x140546740
-    int FUN_140546770(Unk_140165cf0* pElem);        // XML read (the <skill> child of pElem)
+    int LoadXml(Unk_140165cf0* pElem);        // XML read (the <skill> child of pElem)
     int FUN_1405467f0(void* pParent);               // XML write (nothing)
     bool FUN_140546810(const ItemSkill* pOther);    // operator!=
     unsigned skillId;               // +0x00 "skillID"
@@ -111,11 +111,11 @@ struct ItemLimit                    // <limit ...>
     int Save(void* pParent);               // XML write (nothing when equal to the default)
     bool FUN_140545a80(const ItemLimit* pOther);    // operator==
     bool FUN_140545ad0(const ItemLimit* pOther);    // operator!=
-    bool FUN_140545c80(int nJob);                   // job allowed
-    bool FUN_140545da0(int nJob);                   // job recommended (true when none are)
+    bool IsJobAllowed(int nJob);                   // job allowed
+    bool IsJobRecommended(int nJob);                   // job recommended (true when none are)
     bool FUN_140545e40();                           // the item has a job restriction
     bool FUN_140545f30();                           // transfer type 0, 3, 4 or 5
-    unsigned FUN_140545f70();                       // job flags of the recommended jobs (0xfff when none)
+    unsigned GetRecommendJobMask();                       // job flags of the recommended jobs (0xfff when none)
     unsigned FUN_140546030();                       // job flags of the job limit (0xfff when it allows all)
     unsigned levelLimit;            // +0x00 "levelLimit" (default 1)
     unsigned genderLimit;           // +0x04 "genderLimit" (default 2 = both)
@@ -181,8 +181,8 @@ struct ItemUccMesh                  // <ucc mesh> block: the mesh name (cubecraf
 {
     ItemUccMesh();                  // 0x1405495a0
     ~ItemUccMesh();                 // 0x1405410a0
-    int FUN_1405495d0(Unk_140165cf0* pElem);
-    int FUN_140549630(void* pParent);
+    int LoadXml(Unk_140165cf0* pElem);
+    int SaveXml(void* pParent);
     CString mesh;                   // +0x00 "mesh"
 };
 MS2_CHECK_SIZE(ItemUccMesh, 0x8);
@@ -214,8 +214,8 @@ class ItemMusicScore : public CPtred
 {
 public:
     ItemMusicScore();                                       // 0x14054a720
-    int FUN_14054a7b0(Unk_140165cf0* pElem);                // XML read (the <MusicScore> child of pElem)
-    int FUN_14054a8c0(Unk_140165cf0* pElem);                // XML read (the attributes of pElem)
+    int LoadXml(Unk_140165cf0* pElem);                // XML read (the <MusicScore> child of pElem)
+    int LoadElement(Unk_140165cf0* pElem);                // XML read (the attributes of pElem)
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_14054abd0(const ItemMusicScore* pOther);       // operator!=
     bool FUN_14054aca0();                                   // isCustomNote
@@ -243,8 +243,8 @@ class ItemHousing : public CPtred
 {
 public:
     ItemHousing();                                          // 0x140548d90
-    int FUN_140548e50(Unk_140165cf0* pElem, int nItemId);   // XML read (the <housing> child of pElem)
-    void FUN_140548fe0(Unk_140165cf0* pElem, int nItemId);  // XML read (the attributes of pElem)
+    int LoadXml(Unk_140165cf0* pElem, int nItemId);   // XML read (the <housing> child of pElem)
+    void LoadElement(Unk_140165cf0* pElem, int nItemId);  // XML read (the attributes of pElem)
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_140549380(const ItemHousing* pOther);          // operator!=
     int FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc);     // the item can be placed
@@ -270,7 +270,7 @@ MS2_CHECK_OFFSET(ItemHousing, itemId, 0x58);
 struct ItemFusion                   // <fusion fusionable>
 {
     ItemFusion();                   // 0x140549500
-    int FUN_140549520(Unk_140165cf0* pElem);
+    int LoadXml(Unk_140165cf0* pElem);
     int FUN_140549580(void* pParent);
     int fusionable;
     int unknown4;
@@ -336,23 +336,23 @@ public:
     bool Load(Unk_140165cf0* pElem);    // 0x14053b830 XML read
     bool Save(void* pParent);    // 0x14053be30 XML write
     bool FUN_14053c170(const CItemData* pOther);    // 0x14053c170 operator!=
-    int FUN_14053c560();     // 0x14053c560 (uiitemenchantdialog.cpp)
+    int GetOriginOrItemId();     // 0x14053c560 (uiitemenchantdialog.cpp)
     bool FUN_14053d510();    // 0x14053d510
-    int FUN_14053c6f0();     // 0x14053c6f0
-    int FUN_14053c510();     // 0x14053c510 return the item id (+0x20; sb4, clonecube)
+    int GetStringTag();     // 0x14053c6f0
+    int GetItemId();     // 0x14053c510 return the item id (+0x20; sb4, clonecube)
     int FUN_14053fdb0();     // 0x14053fdb0 (ugccubepalette.cpp) required level, 0 when none
-    bool FUN_14053cde0();    // 0x14053cde0 unique (non-stacking) item
+    bool HasMaidId();    // 0x14053cde0 unique (non-stacking) item
     int FUN_14053dd30();     // 0x14053dd30 the id of the npc the item summons
-    bool FUN_14053d6f0();    // 0x14053d6f0 UGC item
+    bool HasCubeTextureMesh();    // 0x14053d6f0 UGC item
     bool FUN_14053cb80();    // 0x14053cb80
-    CString FUN_14053fdd0(); // 0x14053fdd0 the item's display name
+    CString GetIconPath(); // 0x14053fdd0 the item's display name
     // @ITEMDATA-MEMBERS-BEGIN (added by itemdata.cpp)
-    void FUN_14053c4f0(int nId);    // 0x14053c4f0
+    void SetItemId(int nId);    // 0x14053c4f0
     void FUN_14053c530();    // 0x14053c530
-    int FUN_14053c5a0();    // 0x14053c5a0
-    int FUN_14053c5c0();    // 0x14053c5c0
-    int FUN_14053c5e0();    // 0x14053c5e0
-    int FUN_14053c600();    // 0x14053c600
+    int GetRank();    // 0x14053c5a0
+    int GetType();    // 0x14053c5c0
+    int GetSubtype();    // 0x14053c5e0
+    int GetIconCode();    // 0x14053c600
     int FUN_14053c620();    // 0x14053c620
     int FUN_14053c650();    // 0x14053c650
     int FUN_14053c670();    // 0x14053c670
@@ -363,25 +363,25 @@ public:
     bool FUN_14053c870();    // 0x14053c870
     bool FUN_14053c8b0();    // 0x14053c8b0
     int IsJobAllowed(int nJob);    // 0x14053c8e0
-    int FUN_14053c940(int nGender);     // 0x14053c940 wearable by the gender
-    int FUN_14053c9a0(unsigned short nLevel);    // 0x14053c9a0
+    int IsGenderAllowed(int nGender);     // 0x14053c940 wearable by the gender
+    int IsLevelAllowed(unsigned short nLevel);    // 0x14053c9a0
     int FUN_14053c9e0(int nGender, int nB);    // 0x14053c9e0
     int FUN_14053cae0(int nGender, int nCategory);    // 0x14053cae0
     bool FUN_14053cb40();    // 0x14053cb40
     bool FUN_14053cbc0();    // 0x14053cbc0
     bool FUN_14053cc00();    // 0x14053cc00
-    bool FUN_14053cc40();    // 0x14053cc40
-    bool FUN_14053cc80();    // 0x14053cc80
+    bool IsPetItem();    // 0x14053cc40
+    bool IsRideItem();    // 0x14053cc80
     bool FUN_14053ccc0();    // 0x14053ccc0
     bool FUN_14053cd10();    // 0x14053cd10
     bool FUN_14053cd50();    // 0x14053cd50
     bool FUN_14053cd90();    // 0x14053cd90
-    bool FUN_14053ce20();    // 0x14053ce20
+    bool IsPCBangItem();    // 0x14053ce20
     bool FUN_14053ce40();    // 0x14053ce40
     bool FUN_14053ce80();    // 0x14053ce80
-    bool FUN_14053cf00();    // 0x14053cf00
+    bool IsAvatarColorItem();    // 0x14053cf00
     bool FUN_14053cf40();    // 0x14053cf40
-    bool FUN_14053cf90();    // 0x14053cf90
+    bool HasSkinType();    // 0x14053cf90
     bool FUN_14053cfd0();    // 0x14053cfd0
     bool FUN_14053d020();    // 0x14053d020
     bool FUN_14053d070();    // 0x14053d070
@@ -389,8 +389,8 @@ public:
     bool FUN_14053d110();    // 0x14053d110
     bool FUN_14053d150();    // 0x14053d150
     bool FUN_14053d1f0();    // 0x14053d1f0
-    bool FUN_14053d210();    // 0x14053d210
-    bool FUN_14053d230();    // 0x14053d230
+    bool HasWeddingLimit();    // 0x14053d210
+    bool HasVipLevelLimit();    // 0x14053d230
     bool FUN_14053d270();    // 0x14053d270
     bool FUN_14053d2b0();    // 0x14053d2b0
     bool FUN_14053d2f0();    // 0x14053d2f0
@@ -399,42 +399,42 @@ public:
     bool FUN_14053d550();    // 0x14053d550
     bool FUN_14053d5c0();    // 0x14053d5c0
     bool FUN_14053d600();    // 0x14053d600
-    int FUN_14053d640();    // 0x14053d640
-    int FUN_14053d660();    // 0x14053d660
-    bool FUN_14053d740();    // 0x14053d740
+    int IsFatiguePenaltyApplied();    // 0x14053d640
+    int HasPeriod();    // 0x14053d660
+    bool IsMeratMarketRegisterable();    // 0x14053d740
     bool FUN_14053d760();    // 0x14053d760
     bool FUN_14053d7c0();    // 0x14053d7c0
     bool FUN_14053d800();    // 0x14053d800
     bool FUN_14053d840();    // 0x14053d840
     bool FUN_14053d880();    // 0x14053d880
-    bool FUN_14053d8c0();    // 0x14053d8c0
+    bool IsLapenshardType();    // 0x14053d8c0
     bool FUN_14053d900();    // 0x14053d900
     bool FUN_14053d940();    // 0x14053d940
-    bool FUN_14053d990();    // 0x14053d990
-    bool FUN_14053d9d0();    // 0x14053d9d0
-    bool FUN_14053da20();    // 0x14053da20
-    bool FUN_14053dad0();    // 0x14053dad0
-    int FUN_14053db80();    // 0x14053db80
+    bool IsPieceItem();    // 0x14053d990
+    bool IsGachaCoinItem();    // 0x14053d9d0
+    bool HasOpenGachaBoxFunction();    // 0x14053da20
+    bool HasQuestStartFunction();    // 0x14053dad0
+    int CanRegisterMeratMarket();    // 0x14053db80
     int FUN_14053dc20();    // 0x14053dc20
     unsigned short FUN_14053dc40();    // 0x14053dc40
-    int FUN_14053dc60();    // 0x14053dc60
+    int GetPetId();    // 0x14053dc60
     int FUN_14053dc90();    // 0x14053dc90
     int FUN_14053dce0();    // 0x14053dce0
-    int FUN_14053dd80();    // 0x14053dd80
+    int GetRideeId();    // 0x14053dd80
     int FUN_14053ddb0();    // 0x14053ddb0
     int FUN_14053dde0();    // 0x14053dde0
     int FUN_14053de10();    // 0x14053de10
-    int FUN_14053de40();    // 0x14053de40
-    int FUN_14053de60();    // 0x14053de60
-    int FUN_14053de80();    // 0x14053de80
-    int FUN_14053dec0();    // 0x14053dec0
-    int FUN_14053df20();    // 0x14053df20
-    int FUN_14053df80();    // 0x14053df80
-    bool FUN_14053dfd0(const CStringW& strName);    // 0x14053dfd0
-    int FUN_14053e010();    // 0x14053e010
-    int FUN_14053e070();    // 0x14053e070
-    int FUN_14053e0d0();    // 0x14053e0d0
-    bool FUN_14053e130();    // 0x14053e130
+    int GetSkinType();    // 0x14053de40
+    int GetSlotMax();    // 0x14053de60
+    int GetInstrumentId();    // 0x14053de80
+    int GetOpenGachaBoxParam0();    // 0x14053dec0
+    int GetOpenGachaBoxParam1();    // 0x14053df20
+    int GetQuestStartQuestId();    // 0x14053df80
+    bool IsFunctionName(const CStringW& strName);    // 0x14053dfd0
+    int HasExpandInvenFunction();    // 0x14053e010
+    int HasExpandCharacterSlotFunction();    // 0x14053e070
+    int HasUGCMapPackageFunction();    // 0x14053e0d0
+    bool IsCashItem();    // 0x14053e130
     bool FUN_14053e170();    // 0x14053e170
     bool FUN_14053e210();    // 0x14053e210
     int FUN_14053e260();    // 0x14053e260
@@ -445,18 +445,18 @@ public:
     int FUN_14053e410();    // 0x14053e410
     bool FUN_14053e460();    // 0x14053e460
     int FUN_14053e530();    // 0x14053e530
-    bool FUN_14053e670();    // 0x14053e670
-    Unk_PayloadPtr<CItemExtraData> FUN_14053e6c0();    // 0x14053e6c0
-    bool FUN_14053e8e0();    // 0x14053e8e0
+    bool HasAdditionalEffect();    // 0x14053e670
+    Unk_PayloadPtr<CItemExtraData> CreateExtraData();    // 0x14053e6c0
+    bool IsMoveDisabled();    // 0x14053e8e0
     int FUN_14053e900();    // 0x14053e900
     bool FUN_14053e940();    // 0x14053e940
-    int FUN_14053e9e0();    // 0x14053e9e0
-    unsigned long long FUN_14053ea00(int nRank);    // 0x14053ea00
-    void FUN_14053eb20();    // 0x14053eb20
+    int GetUnlimitedEnchantMaxGrade();    // 0x14053e9e0
+    unsigned long long GetSellPrice(int nRank);    // 0x14053ea00
+    void LoadModel();    // 0x14053eb20
     ItemModelData* FUN_14053eba0();    // 0x14053eba0
-    int FUN_14053ec50();    // 0x14053ec50
+    int GetItemPreset();    // 0x14053ec50
     void FUN_14053ec70();    // 0x14053ec70
-    CString FUN_14053eca0();    // 0x14053eca0
+    CString GetMaterialSoundName();    // 0x14053eca0
     bool FUN_14053ecf0();    // 0x14053ecf0 always true
     void FUN_14053ed00();    // 0x14053ed00
     bool FUN_14053ef40();    // 0x14053ef40

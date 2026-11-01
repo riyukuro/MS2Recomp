@@ -69,7 +69,7 @@ template <> inline TPtr<PCBase>::TPtr(const TPtr& o)
 void ASObj::FUN_140c1f8b0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

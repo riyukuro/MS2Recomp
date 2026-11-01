@@ -206,6 +206,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 #pragma intrinsic(memset, memcpy)                                       // template code below expands them inline again
 
@@ -215,9 +216,7 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);                 // narro
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
 void FUN_14083d990(CStringA strText);                                   // copy to the clipboard
 void FUN_1412751b0(const CStringW& strText, int nType);                 // HUD system message
-struct Unk_DcApp;
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-HWND FUN_14209c720(Unk_DcApp* pApp);                                    // its main window
 
 // MS2Ptr<CLogDialog>: CLogDialog's CPtred base is at +0x138, so the exe's pointer converts through CPtred* (the
 // reference helpers take a CPtred* tag computed from a null CLogDialog*).
@@ -550,14 +549,14 @@ void CLogDialog::OnLvnGetdispinfoList(NMHDR* pNMHDR, LRESULT* pResult)
 // @0x141451410
 ClientLogManager::ClientLogManager() : m_bQuiet(false), m_itPending(m_logs.end())
 {
-    TSingleton<CLogString>::GetInstance()->FUN_140653b80(
+    TSingleton<CLogString>::GetInstance()->AddCallback(
         Delegate<void(CLogStringCtx*)>(this, &ClientLogManager::OnLogString));
 }
 
 // @0x141451500
 ClientLogManager::~ClientLogManager()
 {
-    TSingleton<CLogString>::GetInstance()->FUN_140653bf0(
+    TSingleton<CLogString>::GetInstance()->RemoveCallback(
         Delegate<void(CLogStringCtx*)>(this, &ClientLogManager::OnLogString));
 }
 
@@ -581,7 +580,7 @@ void ClientLogManager::ToggleDialog()
     {
         m_spDialog.AssignRaw(new CLogDialog);
         m_spDialog->SetLogContexts(m_logs);
-        m_spDialog->Create(0x8c, CWnd::FromHandle(FUN_14209c720(((struct Unk_DcApp*)FUN_140aadf80()))));
+        m_spDialog->Create(0x8c, CWnd::FromHandle(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef()));
         m_itPending = m_logs.end();
     }
 }

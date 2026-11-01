@@ -5368,10 +5368,10 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     BP_BIND("m_addImage", m_addImage, 45);
     BP_BIND("m_create", m_create, 46);
     BP_BIND("m_inputName", m_input, 47);
-    if (m_addIcon.get()) m_addIcon->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37540), 0);
-    if (m_addImage.get()) m_addImage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37620), 0);
+    if (m_addIcon.get()) m_addIcon->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddIconClick), 0);
+    if (m_addImage.get()) m_addImage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddImageClick), 0);
     if (m_create.get()) m_create->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37700), 0);
-    if (m_input.get()) m_input->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37c60));
+    if (m_input.get()) m_input->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
     Unk_BpASObj data(2);
     int minLength = ((class Unk_BpSettings*)FUN_1401d3200())->minLength.FUN_1402056b0();
     int maxLength = ((class Unk_BpSettings*)FUN_1401d3200())->maxLength.FUN_1402056b0();
@@ -5421,24 +5421,24 @@ void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     MS2Ptr<Unk_BpMessage> message = FUN_140d73d20(0x11, text, 0, L"");
     if (message == NULL) return;
     FUN_1412750f0(item, item->FUN_140526c50(), 0x2ba, 0x2b9);
-    CStringW name = FUN_140c38080();
+    CStringW name = GetTrimmedName();
     message->FUN_141a01ee0(m_item, name, 1, 0, -1, -1, 1);
     message->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));
     FUN_140d73c60(message);
 }
 MS2_REPLACE_METHOD(0x140C36B40, UIItemBlueprintCreateDialog, FUN_140c36b40, 1174, 0xC8EB1C6A);
 // @0x140c36fe0
-void UIItemBlueprintCreateDialog::FUN_140c36fe0(__int64 itemId) {
+void UIItemBlueprintCreateDialog::OpenForItem(__int64 itemId) {
     m_itemId = itemId;
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f7b)));
 }
-MS2_REPLACE_METHOD(0x140C36FE0, UIItemBlueprintCreateDialog, FUN_140c36fe0, 54, 0xE4918E1E);
+MS2_REPLACE_METHOD(0x140C36FE0, UIItemBlueprintCreateDialog, OpenForItem, 54, 0xE4918E1E);
 // @0x140c37020
 void UIItemBlueprintCreateDialog::vfunc_72() {
     UIDialog::vfunc_72();
     if (m_30 == NULL) return;
     if (FUN_1418ffe80(m_dirty, 1)) {
-        FUN_140c374b0();
+        UpdateCreateButtonEnabled();
         FUN_1418ffef0(m_dirty, 1);
     }
 }
@@ -5467,36 +5467,36 @@ void UIItemBlueprintCreateDialog::FUN_140c37360(Unk_BpPtr<Unk_BpImage> image, co
 }
 MS2_REPLACE_METHOD(0x140C37360, UIItemBlueprintCreateDialog, FUN_140c37360, 315, 0xEDCB99AB);
 // @0x140c374b0
-void UIItemBlueprintCreateDialog::FUN_140c374b0() {
+void UIItemBlueprintCreateDialog::UpdateCreateButtonEnabled() {
     if (m_create == NULL) return;
     bool enabled = m_ready >= 7;
     m_create->FUN_1422c1fe0(enabled);
 }
-MS2_REPLACE_METHOD(0x140C374B0, UIItemBlueprintCreateDialog, FUN_140c374b0, 125, 0x6F5399D4);
+MS2_REPLACE_METHOD(0x140C374B0, UIItemBlueprintCreateDialog, UpdateCreateButtonEnabled, 125, 0x6F5399D4);
 // @0x140c37540
-void UIItemBlueprintCreateDialog::FUN_140c37540(const Scaleform::GFx::FunctionHandler::Params&) {
+void UIItemBlueprintCreateDialog::OnAddIconClick(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_30 == NULL) return;
     if (((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141880490(m_upload)) {
         m_type = 0xd1;
         m_upload->image = m_icon;
     }
 }
-MS2_REPLACE_METHOD(0x140C37540, UIItemBlueprintCreateDialog, FUN_140c37540, 204, 0x4CD43E20);
+MS2_REPLACE_METHOD(0x140C37540, UIItemBlueprintCreateDialog, OnAddIconClick, 204, 0x4CD43E20);
 // @0x140c37620
-void UIItemBlueprintCreateDialog::FUN_140c37620(const Scaleform::GFx::FunctionHandler::Params&) {
+void UIItemBlueprintCreateDialog::OnAddImageClick(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_30 == NULL) return;
     if (((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141880490(m_upload)) {
         m_type = 9;
         m_upload->image = m_image;
     }
 }
-MS2_REPLACE_METHOD(0x140C37620, UIItemBlueprintCreateDialog, FUN_140c37620, 204, 0x9FDE9E9E);
+MS2_REPLACE_METHOD(0x140C37620, UIItemBlueprintCreateDialog, OnAddImageClick, 204, 0x9FDE9E9E);
 // @0x140c37700
 void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_30 == NULL) return;
     if (m_input == NULL) return;
     FUN_140c38150();
-    CStringW name = FUN_140c38080();
+    CStringW name = GetTrimmedName();
     CStringW& nameRef = name;
     if (Unk_BpFilter* filter = ((class Unk_BpFilterManager*)FUN_14025e7d0())->FUN_140229a50().get()) {
         CStringW error;
@@ -5517,20 +5517,20 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
 }
 MS2_REPLACE_METHOD(0x140C37700, UIItemBlueprintCreateDialog, FUN_140c37700, 1359, 0x69405210);
 // @0x140c37c60
-void UIItemBlueprintCreateDialog::FUN_140c37c60(const Scaleform::GFx::FunctionHandler::Params&) {
+void UIItemBlueprintCreateDialog::OnNameInputChanged(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_input == NULL) return;
-    if (!m_input->FUN_1422e0b00().IsEmpty()) FUN_1418ffec0(m_ready, 1);
+    if (!m_input->GetText().IsEmpty()) FUN_1418ffec0(m_ready, 1);
     else FUN_1418ffef0(m_ready, 1);
     FUN_1418ffec0(m_dirty, 1);
 }
-MS2_REPLACE_METHOD(0x140C37C60, UIItemBlueprintCreateDialog, FUN_140c37c60, 228, 0xF42A0CB1);
+MS2_REPLACE_METHOD(0x140C37C60, UIItemBlueprintCreateDialog, OnNameInputChanged, 228, 0xF42A0CB1);
 // @0x140c37d50
 bool UIItemBlueprintCreateDialog::FUN_140c37d50(int result, const CMsgBoxData&) {
     if (result == 1) return true;
     if (m_upload == NULL) return true;
     Unk_BpViewerBase* viewer = m_upload->viewer.get();
     if (!viewer) return true;
-    viewer->m_name = FUN_140c38080();
+    viewer->m_name = GetTrimmedName();
     MS2Ptr<Unk_BpItem> item = g_blueprintItems.FUN_140a5d680(m_upload->itemId);
     if (item.get()) {
         viewer->m_30 = item->FUN_140528540();
@@ -5551,7 +5551,7 @@ bool UIItemBlueprintCreateDialog::FUN_140c37f90(int result, const CMsgBoxData&) 
         if (m_item.get()) m_item->FUN_140529fd0("");
         m_item = 0;
         m_itemId = 0;
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
     }
     return true;
 }
@@ -5566,13 +5566,13 @@ Scaleform::GFx::Value Unk_BpAScript::FUN_140c38f00(const char* method, CString k
 }
 MS2_REPLACE_METHOD(0x140C38F00, Unk_BpAScript, FUN_140c38f00, 253, 0x727A8E79);
 // @0x140c38080
-CStringW UIItemBlueprintCreateDialog::FUN_140c38080() {
+CStringW UIItemBlueprintCreateDialog::GetTrimmedName() {
     if (m_input == NULL) return L"";
-    CStringW name = m_input->FUN_1422e0b00();
+    CStringW name = m_input->GetText();
     name.Trim();
     return name;
 }
-MS2_REPLACE_METHOD(0x140C38080, UIItemBlueprintCreateDialog, FUN_140c38080, 187, 0x744C77F7);
+MS2_REPLACE_METHOD(0x140C38080, UIItemBlueprintCreateDialog, GetTrimmedName, 187, 0x744C77F7);
 // @0x140c38150
 void UIItemBlueprintCreateDialog::FUN_140c38150() {
     Unk_BpImageDialog* dialog = FUN_140c38e50();

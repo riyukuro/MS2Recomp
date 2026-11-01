@@ -21,7 +21,8 @@ class Unk_Clock;
 void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);   // show the entity's scene graph
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);   // hide the entity's scene graph
 ecr::SceneGraphService* FUN_1410a68f0(char* pCell);             // scene graph service lookup
-extern char DAT_143b059e8;                                      // service lookup cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
 // @0x14176f2a0
 CMeshUpdateGate::CMeshUpdateGate()

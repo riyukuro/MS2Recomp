@@ -16,14 +16,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
 // The child controls bound by name. All four share the display-object base (FUN_1422c1fe0 = set enabled).
-class Unk_PsDisplay : public ASDisplayObject
+class Unk_PsDisplay : public ASMovieClip
 {
 public:
-    void FUN_1422c1fe0(unsigned int nEnabled);
 };
 class Unk_PsCombo : public Unk_PsDisplay            // m_maxUserCountCombo
 {
@@ -38,12 +40,10 @@ class Unk_PsInput : public Unk_PsDisplay            // m_inputTitle
 {
 public:
     void FUN_1422e0ab0(const CStringW& strText);
-    CStringW FUN_1422e0b00();
 };
 class Unk_PsCheck : public Unk_PsDisplay            // m_checkAllowAutoJoin
 {
 public:
-    void FUN_1422ce090(unsigned int nChecked);
     unsigned char FUN_1422ce0e0();
 };
 class Unk_PsButton : public Unk_PsDisplay           // m_btnRegister / m_btnRemove
@@ -72,7 +72,6 @@ CStringW FUN_140719630(int n);                      // "%d"
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& strArg, const int& nArg);
 bool FUN_140164830(const CStringW& a, const CStringW& b);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
@@ -94,11 +93,7 @@ public:
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // Keyboard state.
-class Unk_PsKeys
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);
-};
+class Unk_PsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // Dialog manager: the top dialog of a layer.
@@ -125,7 +120,6 @@ class Unk_PsUIManager
 public:
     Unk_PsUIRef FUN_141adcea0(int nUiId);
 };
-UIObject* FUN_1403ed9e0(Unk_PsUIRef& ref);
 
 // The party search list dialog (UI id 0x4eda); only its RTTI is needed here.
 class UIPartySearchDialog : public UIObject
@@ -151,7 +145,7 @@ UIPartySearchDialog* FUN_1413226d0(int nUiId)
     {
         Unk_PsUIRef ref = reinterpret_cast<Unk_PsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIPartySearchDialog*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIPartySearchDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -258,7 +252,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
             m_1c0->FUN_1422e0ab0(m_190.m_text);
-            m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
+            reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090((unsigned int)m_190.m_flag);
             m_1b0->FUN_1422df690((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0() - 1));
             m_1e0->vfunc_4(1);
             m_1f0->vfunc_4(0);
@@ -269,7 +263,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
             m_1d0->FUN_1422c1fe0(0);
             m_1b0->FUN_1422c1fe0(0);
             m_1c0->FUN_1422e0ab0(pRecruit->title);
-            m_1d0->FUN_1422ce090(pRecruit->minimumLevel);
+            reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090(pRecruit->minimumLevel);
             m_1b0->FUN_1422df690(FUN_141322380(pRecruit->members));
             m_1e0->vfunc_4(0);
             m_1f0->vfunc_4(1);
@@ -324,12 +318,12 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         if (nAnswer == 0)
         {
-            if (FUN_1403b3c40(strTag, L"remove"))
+            if (operator==(strTag, L"remove"))
             {
                 TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode1();
                 vfunc_67();
             }
-            else if (FUN_1403b3c40(strTag, L"modify") && FUN_1413220d0(&m_180, 1) != 0)
+            else if (operator==(strTag, L"modify") && FUN_1413220d0(&m_180, 1) != 0)
             {
                 vfunc_67();
             }
@@ -428,7 +422,7 @@ void UIPartySearchRegisterDialog::FUN_141322400(const Scaleform::GFx::FunctionHa
 {
     if (m_1c0 == 0 || m_1d0 == 0)
         return;
-    m_180.m_text = m_1c0->FUN_1422e0b00();
+    m_180.m_text = reinterpret_cast<ASTextInput*>(m_1c0.operator->())->GetText();
     m_180.m_text.Trim();
     m_180.m_flag = m_1d0->FUN_1422ce0e0();
     if (FUN_1413220d0(&m_180, 0) != 0)

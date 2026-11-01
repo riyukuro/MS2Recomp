@@ -24,6 +24,7 @@
 #include "ms2/client/ms2/itemloadinfo.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/fielddatacli.h"  // CFieldDataCli (WorldService::FUN_141bd30a0)
 
 enum Unk_GemSlot { Unk_GemSlot_0 };
 static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                                      // 0x143ad5fb0
@@ -41,8 +42,6 @@ class Unk_GmWorld
 public:
     void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
         int nOwner);                                    // play a sound event
-    int FUN_1411a49c0(NoticeMessage& kQuery);           // spawn an effect, returns the handle
-    void FUN_1411a6060(int nHandle);                    // stop it
 };
 
 class Unk_GemBinding
@@ -64,7 +63,7 @@ class WorldService   // C3: local view (worldservice.h redefines Unk_WsPtred298)
 public:
     static WorldService* GetInstance();             // 0x1403ed2d0
     void* FUN_141bd0cc0();                          // the local player's actor
-    MS2Ptr<Unk_WsPtred298> FUN_141bd30a0();         // the world's field record
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();          // the world's field record (m_298, viewed as Unk_WsPtred298)
 };
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
@@ -106,10 +105,10 @@ void PCGemEquip::FUN_14126fea0(CInputStream& stream, int nOwner)
     for (int i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = kWire.FUN_1401fce40(stream);
-        if (spItem == 0 || spItem->FUN_140527900() == 0)
+        if (spItem == 0 || spItem->GetGem() == 0)
             continue;
-        spItem->FUN_140526b30(nOwner);
-        int nGemType = spItem->FUN_140527900()->vfunc_1();
+        spItem->SetObjectId(nOwner);
+        int nGemType = spItem->GetGem()->vfunc_1();
         FUN_141270030(nGemType, spItem);
         FUN_141271780(nGemType, spItem);
     }
@@ -129,7 +128,7 @@ unsigned PCGemEquip::FUN_1412700b0()
 }
 
 // @0x1412700e0
-int PCGemEquip::FUN_1412700e0(ATL::CAtlArray<MS2Ptr<CItem> >& out)
+int PCGemEquip::GetItems(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 {
     out.Copy(m_items);
     return out.GetCount() > 0;
@@ -150,7 +149,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_141270140(int nGemType)
 }
 
 // @0x141270290
-bool PCGemEquip::FUN_141270290(int nItemId)
+bool PCGemEquip::HasItemId(int nItemId)
 {
     size_t nCount = m_items.GetCount();
     for (size_t i = 0; i < nCount; i++)
@@ -171,9 +170,9 @@ CGemTransparency* PCGemEquip::FUN_141270360(unsigned char nIndex)
     CItem* pItem = FUN_141271630(nIndex).get();
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527900() == 0)
+    if (pItem->GetGem() == 0)
         return 0;
-    CGemBase* pGem = pItem->FUN_140527900()->GetGem().get();
+    CGemBase* pGem = pItem->GetGem()->GetGem().get();
     if (pGem == 0)
         return 0;
     if (pGem->vfunc_1() != 1)
@@ -201,11 +200,11 @@ void PCGemEquip::FUN_1412704d0()
     for (unsigned char i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = FUN_141271630(i);
-        if (spItem == 0 || spItem->FUN_140527900() == 0)
+        if (spItem == 0 || spItem->GetGem() == 0)
             continue;
         if (m_pOwner->FUN_141662eb0(spItem) == 0)
             continue;
-        spItem->FUN_140527900()->vfunc_5(m_pOwner, spItem);
+        spItem->GetGem()->vfunc_5(m_pOwner, spItem);
     }
 }
 
@@ -231,7 +230,7 @@ int PCGemEquip::FUN_1412706f0(int nSlot)
     CGemTransparency* pGem = FUN_141270460();
     if (pGem == 0)
         return 0;
-    return pGem->FUN_1405a4140(nSlot);
+    return pGem->IsSlotHidden(nSlot);
 }
 
 // @0x141270740
@@ -244,7 +243,7 @@ MS2Ptr<CGemBase> PCGemEquip::FUN_141270740(int nGemType)
         return MS2Ptr<CGemBase>(0);
     if (m_pOwner->FUN_141662eb0(pItem) == 0)
         return MS2Ptr<CGemBase>(0);
-    CItemGem* pGem = pItem->FUN_140527900();
+    CItemGem* pGem = pItem->GetGem();
     bool bNone = pGem == 0 || pGem->GetGem() == 0;
     if (bNone)
         return MS2Ptr<CGemBase>(0);
@@ -257,9 +256,9 @@ MS2Ptr<CGemBase> PCGemEquip::FUN_141270740(int nGemType)
 // @0x1412709d0
 MS2Ptr<CItem> PCGemEquip::FUN_1412709d0(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || spItem->FUN_140527900() == 0)
+    if (spItem == 0 || spItem->GetGem() == 0)
         return MS2Ptr<CItem>(0);
-    int nGemType = spItem->FUN_140527900()->vfunc_1();
+    int nGemType = spItem->GetGem()->vfunc_1();
     return FUN_141270ab0(nGemType);
 }
 
@@ -279,9 +278,9 @@ MS2Ptr<CItem> PCGemEquip::FUN_141270ab0(int nGemType)
 // @0x141270bf0
 bool PCGemEquip::FUN_141270bf0(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || spItem->FUN_140527900() == 0)
+    if (spItem == 0 || spItem->GetGem() == 0)
         return false;
-    int nGemType = spItem->FUN_140527900()->vfunc_1();
+    int nGemType = spItem->GetGem()->vfunc_1();
     FUN_141270cd0(nGemType, spItem);
     return true;
 }
@@ -301,7 +300,7 @@ bool PCGemEquip::FUN_141270cd0(int nGemType, MS2Ptr<CItem> spItem)
 }
 
 // @0x141270e00
-void PCGemEquip::FUN_141270e00(PCGemEquip& other)
+void PCGemEquip::CopyFrom(PCGemEquip& other)
 {
     size_t nCount = other.FUN_1412700b0();
     for (size_t i = 0; i < nCount; i++)
@@ -309,7 +308,7 @@ void PCGemEquip::FUN_141270e00(PCGemEquip& other)
         MS2Ptr<CItem> spItem = other.FUN_141271630((int)i);
         if (spItem.IsNull())
             continue;
-        MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+        MS2Ptr<CItem> spCopy = spItem->Clone();
         if (spCopy)
             FUN_1412716d0((int)i, spCopy);
     }
@@ -326,10 +325,10 @@ void PCGemEquip::FUN_141270f10(ATL::CAtlArray<MS2Ptr<CItem> >& items, int nOwner
         MS2Ptr<CItem> spItem = items[i];
         if (spItem)
         {
-            MS2Ptr<CItemGem> spGem(spItem->FUN_140527900());
+            MS2Ptr<CItemGem> spGem(spItem->GetGem());
             if (spGem)
             {
-                spItem->FUN_140526b30(nOwner);
+                spItem->SetObjectId(nOwner);
                 FUN_141270030(spGem->vfunc_1(), spItem);
             }
         }
@@ -339,16 +338,16 @@ void PCGemEquip::FUN_141270f10(ATL::CAtlArray<MS2Ptr<CItem> >& items, int nOwner
 // @0x141271090
 bool PCGemEquip::FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect)
 {
-    if (m_mapEffect.Lookup(spItem->FUN_140526a50()) != 0)
+    if (m_mapEffect.Lookup(spItem->GetItemUid()) != 0)
         return false;
     NoticeMessage kQuery;
     kQuery.m_strName = strEffect;
     kQuery.m_nObject = 0;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
-    int nHandle = reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kQuery);
+    int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
     if (nHandle == 0)
         return false;
-    m_mapEffect[spItem->FUN_140526a50()] = nHandle;
+    m_mapEffect[spItem->GetItemUid()] = nHandle;
     return true;
 }
 
@@ -356,11 +355,11 @@ bool PCGemEquip::FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect)
 void PCGemEquip::FUN_1412711e0(MS2Ptr<CItem> spItem)
 {
     int nHandle = 0;
-    if (!m_mapEffect.Lookup(spItem->FUN_140526a50(), nHandle))
+    if (!m_mapEffect.Lookup(spItem->GetItemUid(), nHandle))
         return;
     if (nHandle != 0)
-        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
-    m_mapEffect.RemoveKey(spItem->FUN_140526a50());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
+    m_mapEffect.RemoveKey(spItem->GetItemUid());
 }
 
 // @0x141271290
@@ -380,14 +379,14 @@ int PCGemEquip::FUN_141271290(int nGemType)
 MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
 {
     MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
-    if (spItem == 0 || spItem->FUN_140527900() == 0)
+    if (spItem == 0 || spItem->GetGem() == 0)
         return MS2Ptr<CItem>(0);
     if (m_pOwner->FUN_141662eb0(spItem) == 0)
         return MS2Ptr<CItem>(0);
-    bool bOff = WorldService::GetInstance()->FUN_141bd30a0()->m_bFlag152 == false;
+    bool bOff = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_bFlag152 == false;
     if (bOff)
         return MS2Ptr<CItem>(0);
-    spItem->FUN_140527900()->vfunc_6(m_pOwner, spItem);
+    spItem->GetGem()->vfunc_6(m_pOwner, spItem);
     return spItem;
 }
 
@@ -395,9 +394,9 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
 MS2Ptr<CItem> PCGemEquip::FUN_141271500(int nIndex)
 {
     MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
-    if (spItem == 0 || spItem->FUN_140527900() == 0)
+    if (spItem == 0 || spItem->GetGem() == 0)
         return MS2Ptr<CItem>(0);
-    spItem->FUN_140527900()->vfunc_7(m_pOwner, spItem);
+    spItem->GetGem()->vfunc_7(m_pOwner, spItem);
     return spItem;
 }
 
@@ -468,8 +467,8 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
         if (spBox)
         {
-            spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->Append<int>(nSlot);
+            spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01700(1143, 1144, 0);
             FUN_140d73c60(spBox);
@@ -477,7 +476,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         }
     }
     Unk_GemEquipReq kReq;
-    kReq.m_nItemUid = spItem->FUN_140526a50();
+    kReq.m_nItemUid = spItem->GetItemUid();
     kReq.m_nSlot = (unsigned char)nSlot;
     COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
     kPacket.WriteUInt8(0);
@@ -486,7 +485,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }
@@ -513,7 +512,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }

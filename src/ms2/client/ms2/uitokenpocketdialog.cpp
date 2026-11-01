@@ -77,8 +77,8 @@ void UITokenPocketDialog::OnLoadComplete()
         m_1f0 = FUN_141352cf0(0xf, L"$s_token_pocket_star_point_tooltip");
     if (FUN_140166410()->FUN_14036d570(0xf3))
         m_200 = FUN_141352cf0(0x10, L"$s_token_pocket_meso_market_token_tooltip");
-    MS2Ptr<ASMovieClip> spBgWhite = FUN_140ba7930("m_bgWhite");
-    MS2Ptr<ASMovieClip> spBgBlack = FUN_140ba7930("m_bgBlack");
+    MS2Ptr<ASMovieClip> spBgWhite = GetChild<ASMovieClip>("m_bgWhite");
+    MS2Ptr<ASMovieClip> spBgBlack = GetChild<ASMovieClip>("m_bgBlack");
     int nBlackY = m_178 - 0x2c;
     int nWhiteY = nBlackY + 0x37;
     static_cast<Unk_TpClip*>(spBgWhite.get())->FUN_1422c0ec0(nWhiteY);
@@ -154,8 +154,8 @@ MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const C
     m_178 += 0x17;
     m_90->FUN_1422c6900(spSlot->FUN_1422bb890());
     ASTooltip tooltip(2);
-    tooltip.FUN_1409e26b0(strTooltip);
-    tooltip.FUN_1409c6dc0(5);
+    tooltip.ApplyTextTooltip(strTooltip);
+    tooltip.SetTooltipAlign(5);
     static_cast<Unk_TpComp*>(spSlot.get())->FUN_1422c7cd0(tooltip.FUN_1422bb870());
     return spSlot;
 }

@@ -12,6 +12,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- unit-local views of exe objects ----
 
@@ -24,7 +25,7 @@ class Unk_DmgPlayer : public PCBase
 class Unk_DmgWorld { };
 
 // The settings singleton: two float options at +0xc818 and +0xc870.
-class Unk_DmgFloatVar { public: float FUN_1402bac70(); };
+class Unk_DmgFloatVar { public: };
 class Unk_DmgGlobals
 {
 public:
@@ -147,8 +148,8 @@ void UIDamageEffect::OnLoadComplete()
 // @0x141910ab0
 void UIDamageEffect::FUN_141910ab0()
 {
-    m_fLowHpPercent = ((class Unk_DmgGlobals*)FUN_1401d3200())->m_c818.FUN_1402bac70();
-    m_fOption80 = ((class Unk_DmgGlobals*)FUN_1401d3200())->m_c870.FUN_1402bac70();
+    m_fLowHpPercent = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)FUN_1401d3200())->m_c818)->Read();
+    m_fOption80 = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)FUN_1401d3200())->m_c870)->Read();
 }
 
 // @0x141910b10

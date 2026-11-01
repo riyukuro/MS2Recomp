@@ -27,6 +27,7 @@
 #include "ms2/placeholder/crashmanagercli.h"
 #include "bigdatalogsystem.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 #pragma comment(lib, "user32.lib")
 
 // Statics of the unit's header (initialized in this order in .text$di).
@@ -169,7 +170,8 @@ float FUN_14028aed0(float f);                                       // floor(flo
 struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
 struct Unk_HudCursor : public ASMouseCursor { };   // ASMouseCursor (0x1422cec40)
 void FUN_14209cc20(void*, void*);
-CStringW FUN_1408116a0(int, const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(unsigned);
 CStringW FUN_1401d0080(const CStringW&, const CStringW&);
 CStringW FUN_14052bd00(unsigned, const CStringW&);
@@ -476,27 +478,27 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     else if (uMsg == 0x465)
     {
         if (FUN_140714f90() != 0)
-            FUN_140714f90()->FUN_141538f80();
+            FUN_140714f90()->ProcessReceivedPackets();
         if (TSingleton<CStateService>::GetInstance() != 0)
         {
             int nCode = (int)wParam;
             bool bHandled = false;
             if (FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
             {
-                if (FUN_140e800e0()->FUN_140aacf50(nCode))
+                if (FUN_140e800e0()->ShouldReconnect(nCode))
                 {
-                    if (!FUN_140e800e0()->FUN_140aad1e0())
-                        FUN_140e800e0()->FUN_140aad340(nCode);
+                    if (!FUN_140e800e0()->IsReconnecting())
+                        FUN_140e800e0()->BeginReconnect(nCode);
                     bHandled = true;
                 }
-                if (FUN_140e800e0()->FUN_140aad1e0() == 1)
+                if (FUN_140e800e0()->IsReconnecting() == 1)
                 {
                     int nKey = FUN_140e800e0()->FUN_140aad2b0();
-                    if (FUN_140e800e0()->FUN_140aad2d0(nKey))
+                    if (FUN_140e800e0()->IsFatalReconnectError(nKey))
                         bHandled = false;
-                    if (FUN_140e800e0()->FUN_140aad220())
+                    if (FUN_140e800e0()->IsReconnectTimedOut())
                     {
-                        FUN_140e800e0()->FUN_140aad5c0(0xc9);
+                        FUN_140e800e0()->OnReconnectResult(0xc9);
                         bHandled = false;
                     }
                 }
@@ -587,14 +589,14 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
                 {
                     bFlag = false;
-                    FUN_140e800e0()->FUN_140aad6e0(0xcc);
+                    FUN_140e800e0()->OnReconnectFailed(0xcc);
                 }
             }
             if (bFlag)
             {
-                bool bBusy = FUN_140e800e0()->FUN_140aad450();
+                bool bBusy = FUN_140e800e0()->AttemptReconnect();
                 if (!bBusy)
-                    FUN_140e800e0()->FUN_140aad6e0(200);
+                    FUN_140e800e0()->OnReconnectFailed(200);
             }
         }
     }
@@ -604,20 +606,20 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         bool bHandled = false;
         if (TSingleton<CStateService>::GetInstance() != 0 && FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
         {
-            if (FUN_140e800e0()->FUN_140aacf50(nCode))
+            if (FUN_140e800e0()->ShouldReconnect(nCode))
             {
-                if (!FUN_140e800e0()->FUN_140aad1e0())
-                    FUN_140e800e0()->FUN_140aad340(nCode);
+                if (!FUN_140e800e0()->IsReconnecting())
+                    FUN_140e800e0()->BeginReconnect(nCode);
                 bHandled = true;
             }
-            if (FUN_140e800e0()->FUN_140aad1e0() == 1)
+            if (FUN_140e800e0()->IsReconnecting() == 1)
             {
                 int nKey = FUN_140e800e0()->FUN_140aad2b0();
-                if (FUN_140e800e0()->FUN_140aad2d0(nKey))
+                if (FUN_140e800e0()->IsFatalReconnectError(nKey))
                     bHandled = false;
-                if (FUN_140e800e0()->FUN_140aad220())
+                if (FUN_140e800e0()->IsReconnectTimedOut())
                 {
-                    FUN_140e800e0()->FUN_140aad5c0(0xc9);
+                    FUN_140e800e0()->OnReconnectResult(0xc9);
                     bHandled = false;
                 }
             }
@@ -629,15 +631,15 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         bool bFlag = false;
         if (FUN_140e800e0() != 0)
-            bFlag = FUN_140e800e0()->FUN_140aad1e0();
+            bFlag = FUN_140e800e0()->IsReconnecting();
         if (bFlag)
         {
-            FUN_140e800e0()->FUN_140aad6e0(200);
+            FUN_140e800e0()->OnReconnectFailed(200);
         }
         else
         {
             int nCode = (int)wParam;
-            FUN_140d74390(FUN_1408116a0(0x20e, nCode), 0, FUN_140b76b10(FUN_141902530));
+            FUN_140d74390(BlockFormat<int>(0x20e, nCode), 0, FUN_140b76b10(FUN_141902530));
             if (GetClientPlatform() != 0)
                 GetClientPlatform()->vfunc_58(0x20e, nCode);
         }
@@ -656,7 +658,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         int bFlag = 0;
         if (FUN_140e800e0() != 0)
-            bFlag = FUN_140e800e0()->FUN_140aad1e0();
+            bFlag = FUN_140e800e0()->IsReconnecting();
         if (FUN_140714f90() != 0)
             FUN_140714f90()->FUN_141538480(bFlag);
     }
@@ -1004,7 +1006,7 @@ void FUN_141b93a20(unsigned nArg)
 void FUN_141b93aa0()
 {
     TSingleton<CUIService>::GetInstance()->FUN_141adbea0();
-    FUN_140d73aa0(FUN_1408116a0(0x20f, 0), 0, 0, s_forceLogin);
+    FUN_140d73aa0(BlockFormat<int>(0x20f, 0), 0, 0, s_forceLogin);
     GetClientPlatform()->vfunc_58(0x20f, 0);
 }
 

@@ -22,13 +22,20 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // @0x1401adea0
 AttendGiftDataGroup::AttendGiftDataGroup()
@@ -38,7 +45,7 @@ AttendGiftDataGroup::AttendGiftDataGroup()
 // @0x1401adef0
 bool AttendGiftDataGroup::Load(Unk_140165cf0* pNode, const CString& strContext)
 {
-    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("v"); pElem != 0; pElem = pElem->FUN_140168650("v"))
+    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("v"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("v")))
     {
         Unk_AttendPtr<ItemGift> spGift(new ItemGift());
         spGift->vfunc_2(pElem);
@@ -56,10 +63,10 @@ AttendGiftData::AttendGiftData()
 // @0x1401ae040
 bool AttendGiftData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "giftID", m_nGiftId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "giftID", m_nGiftId);
     CString strContext;
     strContext.Format("giftID=%u", m_nGiftId);
-    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("group"); pElem != 0; pElem = pElem->FUN_140168650("group"))
+    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("group"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("group")))
     {
         AttendGiftDataGroupPtr spGroup(new AttendGiftDataGroup());
         if (!spGroup->Load(pElem, strContext))
@@ -105,7 +112,7 @@ bool AttendGiftDataTable::Load()
     if (pRoot == 0)
         return false;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "AttendGiftData", "giftID", nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "AttendGiftData", "giftID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         AttendGiftDataPtr spData(new AttendGiftData());

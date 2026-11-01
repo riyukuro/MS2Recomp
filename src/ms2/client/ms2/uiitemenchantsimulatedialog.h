@@ -27,6 +27,5 @@ public:
     virtual int vfunc_48();                                     // 48 0x1412d2530
     // The destructor is implicit (0x1412d24d0: just ~UIDialog), ??_G 0x1412d24f0.
 
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
 };
 MS2_CHECK_SIZE(UIItemEnchantSimulateDialog, 0x178);

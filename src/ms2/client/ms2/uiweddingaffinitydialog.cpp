@@ -56,7 +56,6 @@ __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
 CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
 CStringW FUN_140c160b0(CStringW strKey, const __int64* pValue);
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 
 // @0x140fc2090
 UIWeddingAffinityDialog::UIWeddingAffinityDialog()
@@ -110,7 +109,7 @@ void UIWeddingAffinityDialog::OnLoadComplete()
         CStringW strDate = FUN_140b8e850(kTime);
         CStringW strText = FUN_140c160b0(StringFormat(L"s_wedding_dialog_exp_{0}", pNode->m_kind), &pNode->m_event.m_nExp);
         strHistory += L"\n";
-        strHistory += FUN_140656190(L"[{0}] {1}", strDate, strText);
+        strHistory += StringFormat<CStringW, CStringW>(L"[{0}] {1}", strDate, strText);
     }
     if (m_30.get() != 0)
         m_30->Invoke("setHistory", strHistory);

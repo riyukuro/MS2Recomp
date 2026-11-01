@@ -21,14 +21,14 @@ public:
     CMentoringManager();                                    // 0x140b71440
     virtual ~CMentoringManager();                           // 0x140b714b0
 
-    void FUN_140b71500();                                   // reset the state and both lists
+    void Reset();                                   // reset the state and both lists
     unsigned FUN_140b71580();                               // the local player's mentoring state (0 without a player)
     int FUN_140b715c0();                                    // m_n18 while the m_n20 date is still in the future
     bool FUN_140b71610();                                   // m_n20 has passed
     int FUN_140b71650();                                    // m_nC while m_n10 has not passed
-    MentorPtr FUN_140b71680(int nIndex);                    // the nIndex-th accepted mentee
-    size_t FUN_140b71720();                                 // number of accepted mentees
-    size_t FUN_140b71750();                                 // number of waiting mentors
+    MentorPtr GetMentee(int nIndex);                    // the nIndex-th accepted mentee
+    size_t GetMenteeCount();                                 // number of accepted mentees
+    size_t GetMentorCount();                                 // number of waiting mentors
     CStringW FUN_140b71780();                               // the character name with the id m_n28
     CStringW FUN_140b718b0();                               // the character name with the id m_n30
     void OnPacket(CInPacket& packet);                       // 0x140b719e0 dispatch on the protocol byte

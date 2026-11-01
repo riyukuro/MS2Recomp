@@ -104,7 +104,6 @@ MS2_CHECK_SIZE(Unk_GcUIRef, 0x10);
 void* FUN_1403ed2b0();                                      // the UI manager
 struct Unk_GcUiMgrId { Unk_GcUIRef FUN_141adcea0(int nUIId); };
 struct Unk_GcUiMgrName { Unk_GcUIRef FUN_141adcf50(const CString& strName); };
-UIObject* FUN_1403ed9e0(Unk_GcUIRef& ref);
 
 // A GFx value for a dialog tree node (0x20 bytes; the destructor is 0x140614800).
 class Unk_GcNode
@@ -140,7 +139,7 @@ void* FUN_1413b1b20(unsigned nUIId)
     {
         Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIChatEmoticonDialog*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIChatEmoticonDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -152,7 +151,7 @@ void* FUN_1413b1bc0(unsigned nUIId)
     {
         Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIItemEnchantDialog*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIItemEnchantDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -164,7 +163,7 @@ void* FUN_1413b1c60(const CStringA& strName)
     {
         Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrName*>(FUN_1403ed2b0())->FUN_141adcf50(strName);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIPartyDialog*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIPartyDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

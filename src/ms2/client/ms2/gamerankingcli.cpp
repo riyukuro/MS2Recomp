@@ -30,6 +30,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -702,7 +703,7 @@ MS2_REPLACE_METHOD(0x140b2bbf0, CGameRankingCli, BuildMyRankKey, 822, 0xFEE617A6
 // @0x140b2bf30
 void CGameRankingCli::Request(const CGameRankingParam* pParam)
 {
-    if (((struct Unk_GrConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x32) == 1)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_GrConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x32)) == 1)
         return;
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
         return;
@@ -833,7 +834,7 @@ MS2_REPLACE_METHOD(0x140b2c9d0, CGameRankingCli, RemoveParam, 100, 0xB2407F34);
 UIGameRankingDialog* FUN_140b2d030(int nClass)
 {
     if (reinterpret_cast<Unk_GrUIManager*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIGameRankingDialog*>(spObj.operator->());
     }

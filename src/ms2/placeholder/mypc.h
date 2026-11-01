@@ -37,11 +37,11 @@ public:
     void FUN_14152f620(int nA);                             // remove entry nA
     int FUN_1416595d0();                                    // PC member: the cube craft mode (actionkeyobject.cpp)
     class Unk_MyPCEmotion* FUN_14165f100();                 // PC member: the playing emotion (stateemotionidle.cpp)
-    class Unk_PCCubeCraft* FUN_141530290();                 // the cube craft (housing build) controller (scenestategame 0x69)
+    class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft (housing build) controller (scenestategame 0x69)
     int FUN_141659690();                                    // PC member
     class UserUGCMapInfo* FUN_141523c50();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
     void FUN_141524880(Unk_BmPtr<UserUGCMapInfo> spInfo);   // set it
-    int FUN_141527e00();
+    int HasNoHome();
     void FUN_141530200();
     void FUN_141530700(int bFlag);
     void FUN_14152a2d0(int n);

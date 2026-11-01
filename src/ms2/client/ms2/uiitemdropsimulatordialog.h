@@ -35,6 +35,5 @@ public:
     void FUN_14192a9a0(CStringW strText);                       // 0x14192a9a0 show the result text
     CStringW FUN_14192aa50(int nId);                        // 0x14192aa50 the rank string (CStringTable::FUN_141813150)
 
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
 };
 MS2_CHECK_SIZE(UIItemDropSimulatorDialog, 0x178);

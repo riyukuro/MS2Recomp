@@ -69,7 +69,7 @@ public:
     void FUN_14196b0e0();                                       // open "guild_house_page"
     void FUN_14196b160();                                       // open "guild_storage_page"
     void FUN_14196b1d0();                                       // open "guild_raid_page"
-    void FUN_14196b250();
+    void SetupCategory();
     void FUN_14196b2f0();
     void FUN_14196b3a0();
     void FUN_14196b620();
@@ -80,8 +80,8 @@ public:
     void FUN_14196d0c0(int nPage);                              // "buildSearchGuild" (9 per page)
     void FUN_14196d660();                                       // "buildSearchMy": my join requests
     void FUN_14196da70();                                       // the request member page
-    void FUN_14196e0a0();                                       // "setGuildExp"
-    void FUN_14196e230(bool bEvent);                            // "setGuildExpEvent"
+    void UpdateGuildExp();                                       // "setGuildExp"
+    void SetGuildExpEvent(bool bEvent);                            // "setGuildExpEvent"
     void FUN_14196e2c0();                                       // "setGuildFund"
     void FUN_14196e590();
     void FUN_14196f830();
@@ -100,7 +100,6 @@ public:
     void FUN_141974120(const CString& strCode);                 // set the mark from a code
     void FUN_141974190(const CStringW& strName);                // "setGuildName"
     void FUN_141974240();                                       // the pvp history page
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
     void FUN_141974640();                                       // the pvp season history
     void FUN_141974930();                                       // confirm the championship guild
     bool FUN_141974ba0(int nResult, const CMsgBoxData& box);    // confirm boxes: forward the box's number to the manager
@@ -121,7 +120,7 @@ public:
     void FUN_141975620();
     void FUN_1419758a0();
     void FUN_141975c80();
-    void FUN_1419760c0();
+    void PurgeExpiredRequests();
     void FUN_1419761f0();                                       // update the buttons
     void FUN_141976380(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_1419763d0(const Scaleform::GFx::FunctionHandler::Params& params);

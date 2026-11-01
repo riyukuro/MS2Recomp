@@ -82,7 +82,7 @@ void CWebBrowserService::InitializeCef(HINSTANCE hInstance)
 }
 
 // @0x141b77e10
-void CWebBrowserService::FUN_141b77e10()
+void CWebBrowserService::EnsureCefInitialized()
 {
     if (s_app.get()) {
         return;
@@ -91,7 +91,7 @@ void CWebBrowserService::FUN_141b77e10()
 }
 
 // @0x141b77e50
-void CWebBrowserService::FUN_141b77e50(const CStringA& strUrl)
+void CWebBrowserService::SetMaviewUrl(const CStringA& strUrl)
 {
     if (strUrl.GetLength() > 0) {
         g_strMaviewURL = strUrl;
@@ -99,7 +99,7 @@ void CWebBrowserService::FUN_141b77e50(const CStringA& strUrl)
 }
 
 // @0x141b77e90
-void CWebBrowserService::FUN_141b77e90(const CStringA& strUrl)
+void CWebBrowserService::SetWebApiUrl(const CStringA& strUrl)
 {
     if (strUrl.GetLength() > 0) {
         g_strWebApiURL = strUrl;
@@ -107,7 +107,7 @@ void CWebBrowserService::FUN_141b77e90(const CStringA& strUrl)
 }
 
 // @0x141b77ed0
-void CWebBrowserService::FUN_141b77ed0(const CStringA& strUrls)
+void CWebBrowserService::AddAllowedUrls(const CStringA& strUrls)
 {
     if (strUrls.GetLength() == 0) {
         return;
@@ -136,8 +136,8 @@ bool CWebBrowserService::AddAllowedURL(const CStringA& strPattern)
 // @0x141b78090
 bool CWebBrowserService::IsAllowedURL(const CStringA& strUrl)
 {
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e560()
-        || TSingleton<CFeatureManager>::GetInstance()->FUN_14036e5b0()) {
+    if (TSingleton<CFeatureManager>::GetInstance()->IsRegionNA()
+        || TSingleton<CFeatureManager>::GetInstance()->IsRegionJP()) {
         return true;
     }
     for (size_t i = 0; i < m_aAllowedURLs.GetCount(); i++) {
@@ -189,9 +189,9 @@ void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const cha
         m_aBrowsers[nIndex] = browser;
     } else {
         browser->FUN_1416124e0(pszUnk, nUnk);
-        browser->FUN_141611c90(strUrl);
+        browser->LoadUrl(strUrl);
     }
-    browser->FUN_141611be0(true);
+    browser->SetFocus(true);
 }
 
 // @0x141b784f0
@@ -199,16 +199,16 @@ void CWebBrowserService::FUN_141b784f0(int nIndex)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
-        pBrowser->FUN_141611b80();
-        pBrowser->FUN_141611be0(false);
+        pBrowser->StopLoad();
+        pBrowser->SetFocus(false);
         s_app->FUN_140cc0150();
-        pBrowser->FUN_141611a70();
+        pBrowser->Close();
         m_aBrowsers[nIndex] = NULL;
     }
 }
 
 // @0x141b78570
-void CWebBrowserService::FUN_141b78570(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message)
+void CWebBrowserService::QueueBrowserMessage(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message)
 {
     Unk_WebBrowserMessage item = { FindBrowserIndex(context), message };
     if (Unk_LockGuard guard = m_messageLock) {
@@ -242,7 +242,7 @@ void CWebBrowserService::FUN_141b786f0(int nIndex, const char* pszUrl)
         return;
     }
     CStringA strUrl(pszUrl);
-    pBrowser->FUN_141611c90(strUrl);
+    pBrowser->LoadUrl(strUrl);
 }
 MS2_REPLACE_METHOD(0x141B786F0, CWebBrowserService, FUN_141b786f0, 105, 0x3FC9B551);
 
@@ -260,7 +260,7 @@ void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
         if (pBrowser == NULL) {
             return;
         }
-        pBrowser->FUN_141611d50(nPage);
+        pBrowser->Navigate(nPage);
     }
 }
 
@@ -271,7 +271,7 @@ void CWebBrowserService::FUN_141b78840(int nIndex, bool bShow)
     if (pBrowser == NULL) {
         return;
     }
-    pBrowser->FUN_141611be0(bShow);
+    pBrowser->SetFocus(bShow);
     s_app->FUN_140cbff60(bShow);
 }
 
@@ -282,7 +282,7 @@ void CWebBrowserService::FUN_141b788b0(int nIndex, int nWidth, int nHeight)
     if (pBrowser == NULL) {
         return;
     }
-    pBrowser->FUN_1416123d0(nWidth, nHeight);
+    pBrowser->SetViewSize(nWidth, nHeight);
 }
 MS2_REPLACE_METHOD(0x141B788B0, CWebBrowserService, FUN_141b788b0, 76, 0x1560CF1E);
 
@@ -338,27 +338,27 @@ bool CWebBrowserService::FUN_141b78a50(int nIndex)
 MS2_REPLACE_METHOD(0x141B78A50, CWebBrowserService, FUN_141b78a50, 59, 0x317860A6);
 
 // @0x141b78aa0
-void CWebBrowserService::FUN_141b78aa0(int nIndex, bool bUnk)
+void CWebBrowserService::SetBrowserKeyboard(int nIndex, bool bUnk)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
         pBrowser->SetKeyboard(bUnk);
     }
 }
-MS2_REPLACE_METHOD(0x141B78AA0, CWebBrowserService, FUN_141b78aa0, 65, 0x8AADAA9C);
+MS2_REPLACE_METHOD(0x141B78AA0, CWebBrowserService, SetBrowserKeyboard, 65, 0x8AADAA9C);
 
 // @0x141b78af0
-void CWebBrowserService::FUN_141b78af0(int nIndex, int nUnk)
+void CWebBrowserService::SetBrowserWindowType(int nIndex, int nUnk)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
         pBrowser->SetWindowType(nUnk);
     }
 }
-MS2_REPLACE_METHOD(0x141B78AF0, CWebBrowserService, FUN_141b78af0, 64, 0x90148246);
+MS2_REPLACE_METHOD(0x141B78AF0, CWebBrowserService, SetBrowserWindowType, 64, 0x90148246);
 
 // @0x141b78b40
-void CWebBrowserService::FUN_141b78b40(bool bUnk, int nUnk)
+void CWebBrowserService::SendNewsNotification(bool bUnk, int nUnk)
 {
     COutPacket packet(static_cast<int>(SendOp::NewsNotification), 0);
     packet.WriteUInt8(0);
@@ -366,7 +366,7 @@ void CWebBrowserService::FUN_141b78b40(bool bUnk, int nUnk)
     packet.WriteInt32(nUnk);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141B78B40, CWebBrowserService, FUN_141b78b40, 146, 0xF1A79B50);
+MS2_REPLACE_METHOD(0x141B78B40, CWebBrowserService, SendNewsNotification, 146, 0xF1A79B50);
 
 // @0x141b78be0
 void CWebBrowserService::FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback)
@@ -393,7 +393,7 @@ void CWebBrowserService::FUN_141b78cf0(int nIndex, const CStringA& strToken)
     CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(g_szCefMessageToken);
     CefRefPtr<CefListValue> args = message->GetArgumentList();
     args->SetString(0, token);
-    m_aBrowsers[nIndex]->FUN_141611e20(message);
+    m_aBrowsers[nIndex]->SendRendererMessage(message);
 }
 MS2_REPLACE_METHOD(0x141B78CF0, CWebBrowserService, FUN_141b78cf0, 372, 0x4E1DE1B4);
 
@@ -457,7 +457,7 @@ efd::AsyncResult CWebBrowserService::OnShutdown()
 {
     for (int i = 0; i < kMaxBrowsers; i++) {
         if (m_aBrowsers[i].get()) {
-            m_aBrowsers[i]->FUN_141611a70();
+            m_aBrowsers[i]->Close();
             m_aBrowsers[i] = NULL;
         }
     }

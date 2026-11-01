@@ -33,8 +33,6 @@ public:
     void FUN_140fc17d0();                                       // reset the camera
     void FUN_140fc1850(int nEmotion);                           // play an emotion on the own player
 
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);          // 0x140ba7930 bind a movie clip child
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child
 
 private:
     MS2_LAYOUT_FRIEND;

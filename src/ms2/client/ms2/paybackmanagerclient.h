@@ -20,17 +20,17 @@ public:
 
     PaybackManagerClient();                                         // 0x140a8af50
 
-    void FUN_140a8afb0(CInPacket& packet);                          // 0x140a8afb0 the 0x12d packet: 0 level / merat, 1 the product list
-    void FUN_140a8b240(CStringW& strButton, bool& bShow);           // 0x140a8b240 the payback button of the merat market
-    void FUN_140a8b290();                                           // 0x140a8b290 click on that button: open / toggle the dialog
+    void OnPaybackPacket(CInPacket& packet);                          // 0x140a8afb0 the 0x12d packet: 0 level / merat, 1 the product list
+    void GetMenuButton(CStringW& strButton, bool& bShow);           // 0x140a8b240 the payback button of the merat market
+    void TogglePaybackDialog();                                           // 0x140a8b290 click on that button: open / toggle the dialog
     int FUN_140a8b320() const { return m_nLevel; }                  // 0x140a8b320
     unsigned GetMerat() const;             // 0x140a8b340
     MS2Ptr<CMeratMarketProduct> FUN_140a8b360() const;              // 0x140a8b360 the first product that is on sale
     void FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam);       // 0x140a8b490 text of the bottom line of the bill
     CStringW FUN_140a8ba00();                                       // 0x140a8ba00 "from y/m/d to y/m/d"
-    bool FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140a8bcc0 a payback product is bought: tell the player
-    bool FUN_140a8be20(unsigned char bNotify);                      // 0x140a8be20 the payback is open
-    bool FUN_140a8be80(unsigned char bNotify);                               // 0x140a8be80 the payback event is on and not blocked
+    bool NotifyResetWindow(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140a8bcc0 a payback product is bought: tell the player
+    bool IsAvailable(unsigned char bNotify);                      // 0x140a8be20 the payback is open
+    bool IsEnabled(unsigned char bNotify);                               // 0x140a8be80 the payback event is on and not blocked
     bool FUN_140a8bf50(MS2Ptr<CMeratMarketProduct> spProduct) const;   // 0x140a8bf50 the product is in the list
 
 private:

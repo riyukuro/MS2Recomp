@@ -15,6 +15,7 @@
 // The exe's memmove_s is a plain call (no /Oi expansion); the pragma must precede the inline copy below.
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <errno.h>
 #include <new>
@@ -64,15 +65,6 @@ struct Unk_TalkNpcData
     unsigned char m_bTalkable;                             // +0x8a
 };
 MS2_CHECK_OFFSET(Unk_TalkNpcData, m_bTalkable, 0x8a);
-class Unk_TalkNpcDataPtr
-{
-public:
-    ~Unk_TalkNpcDataPtr() { FUN_1406d5390(); }
-    Unk_TalkNpcData* FUN_140965990() const;                // operator->
-    void FUN_1406d5390();                                  // release
-    void* m_pad_00;
-    Unk_TalkNpcData* m_p;
-};
 
 // The talk manager and the npc it is talking to (cinematiccomponent.cpp owns the full view).
 class Unk_CinNpc;
@@ -87,10 +79,11 @@ public:
     static class Unk_AkoCutscene* GetInstance();
 };
 
+class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
+class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_CinNpc : public PCBase
 {
 public:
-    Unk_TalkNpcDataPtr FUN_141093270();                    // the npc's data record
 };
 
 // The animation service: an animation name resolves to the model's sequence id (the config's sentinel without one).
@@ -117,7 +110,7 @@ public:
 class Unk_PCBaseComp_aa8 : public CPtred { };
 int FUN_140f48d40(void* pComp);                            // 0x140f48d40 the component's flag
 
-extern Vector3 DAT_143b01a60;                      // 0x143b01a60 the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // The effect-spawn request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and the manager that takes it.
 struct Unk_TalkEffectReq
@@ -132,12 +125,6 @@ struct Unk_TalkEffectReq
 };
 MS2_CHECK_SIZE(Unk_TalkEffectReq, 0x70);
 MS2_CHECK_OFFSET(Unk_TalkEffectReq, m_nObject, 0x08);
-class Unk_TalkEffectMgr
-{
-public:
-    int FUN_1411a49c0(Unk_TalkEffectReq* pRequest);        // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                       // release
-};
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // ---- StateTalk ----
@@ -162,7 +149,7 @@ void StateTalk::vfunc_4(StateData* pData)
     Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
     int bFirst = 0;
     int bSecond = 0;
-    bool bTalk = pNpc != 0 && pNpc->FUN_141093270().FUN_140965990()->m_bTalkable != 0;
+    bool bTalk = pNpc != 0 && reinterpret_cast<Unk_TalkNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_bTalkable != 0;
     if (FUN_1417b8560())
     {
         {
@@ -202,7 +189,7 @@ void StateTalk::vfunc_5(int n)
     if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking() && FUN_1417b8560())
         ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
     if (m_n44 != 0)
-        reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n44);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_n44);
 }
 
 // @0x1417fc4e0
@@ -234,14 +221,14 @@ void StateTalk::vfunc_9(double fTime)
     }
     if (m_n40 != m_n10)
     {
-        reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n44);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_n44);
         if (m_n10 == 0x4a)
         {
             Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x290);
             kReq.m_nObject = 0;
             reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
-            m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+            m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         else if (m_n10 == 0x4b)
         {
@@ -249,7 +236,7 @@ void StateTalk::vfunc_9(double fTime)
             kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x298);
             kReq.m_nObject = 0;
             reinterpret_cast<NoticeMessage*>(&kReq)->SetActor(m_pOwner->FUN_14123c580());
-            m_n44 = reinterpret_cast<Unk_TalkEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+            m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         m_n40 = m_n10;
     }

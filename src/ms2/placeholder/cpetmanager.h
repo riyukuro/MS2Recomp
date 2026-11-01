@@ -32,35 +32,35 @@ public:
     CPetInventory();                                        // 0x140c86860
     ~CPetInventory();                                       // 0x140c8d680
 
-    void FUN_140c868d0();                                   // reset: drop all items, size the slot array to the summoned pet's row
-    int FUN_140c869e0(CItem* pItem);                        // add (0 ok, 0x11 occupied, 0xd full, 0x1d bad slot)
-    void FUN_140c86bb0(unsigned __int64 nUid);              // remove by uid
-    ItemPtr FUN_140c86c90(int nSlot);                       // the item of a slot
-    ItemPtr FUN_140c86d90(int nItemId);                     // a usable item of an item id
-    size_t FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
-    ItemPtr FUN_140c87250(unsigned __int64 nUid);           // by uid
+    void ResetSlots();                                   // reset: drop all items, size the slot array to the summoned pet's row
+    int AddItem(CItem* pItem);                        // add (0 ok, 0x11 occupied, 0xd full, 0x1d bad slot)
+    void RemoveItem(unsigned __int64 nUid);              // remove by uid
+    ItemPtr GetItemBySlot(int nSlot);                       // the item of a slot
+    ItemPtr FindUsableItemById(int nItemId);                     // a usable item of an item id
+    size_t CollectItemsById(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
+    ItemPtr GetItemByUid(unsigned __int64 nUid);           // by uid
     ItemPtr FUN_140c87300(int nItemId, int bAnyUsability);  // by item data id
-    int FUN_140c874f0();                                    // occupied slots
-    int FUN_140c875e0();                                    // slot count
-    int FUN_140c87610();                                    // any free slot (scanned from both ends)
-    int FUN_140c87780(int nItemId, int nCount);           // BOOL
+    int GetUsedSlotCount();                                    // occupied slots
+    int GetSlotCount();                                    // slot count
+    int HasEmptySlot();                                    // any free slot (scanned from both ends)
+    int HasEnoughItems(int nItemId, int nCount);           // BOOL
     int FUN_140c877e0(int nItemId, int nRarity, int nCount); // BOOL
-    int FUN_140c87840(int nItemId, int nRarity);            // owned count of an item id (usable ones)
-    int FUN_140c87a00(int nItemId);                         // room left in the stacks of an item id
-    unsigned FUN_140c87b90();                               // first free slot (-1: none)
-    int FUN_140c87c80(ItemPtr spItem, int nNeed);           // slot a stack of the item can go to
-    void FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result);    // all items
-    bool FUN_140c87fb0(int nItemId);                        // use the usable item of that id
+    int GetItemCount(int nItemId, int nRarity);            // owned count of an item id (usable ones)
+    int GetStackRoom(int nItemId);                         // room left in the stacks of an item id
+    unsigned FindEmptySlot();                               // first free slot (-1: none)
+    int FindSlotForItem(ItemPtr spItem, int nNeed);           // slot a stack of the item can go to
+    void GetAllItems(ATL::CAtlArray<ItemPtr>& result);    // all items
+    bool UseItemById(int nItemId);                        // use the usable item of that id
     bool FUN_140c88050(int nItemId);                        // use the item of that data id
     void SendRequestPetInventoryMode7();                                   // packet 0x79 mode 7
     void SendRequestPetInventoryMode3(__int64 nUid, int nSlot);            // packet 0x79 mode 3 (move)
-    void FUN_140c88200(__int64 nUid, int nSlot, int nCount);   // packet 0x79 mode 0 (take out)
+    void SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nCount);   // packet 0x79 mode 0 (take out)
     void SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nCount); // packet 0x79 mode 1 (put in)
-    bool FUN_140c88650(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88200
-    bool FUN_140c88700(int nButton, const CMsgBoxData& box);   // count box result of SendRequestPetInventoryMode1
-    static void FUN_140c887b0(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); take an item out of the pet inventory (count box when stacked)
-    static void FUN_140c88c30(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); put an item into the pet inventory
-    bool FUN_140c88f70(ItemPtr spItem);                     // use the item's skill
+    bool OnMoveToPetCountResult(int nButton, const CMsgBoxData& box);   // count box result of SendRequestPetInventoryMode0
+    bool OnMoveFromPetCountResult(int nButton, const CMsgBoxData& box);   // count box result of SendRequestPetInventoryMode1
+    static void MoveItemToPetInventory(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); take an item out of the pet inventory (count box when stacked)
+    static void MoveItemFromPetInventory(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); put an item into the pet inventory
+    bool UseItemSkill(ItemPtr spItem);                     // use the item's skill
 
     CLockCriticalSection m_lock;                            // +0x00
     ItemMap m_items;                                        // +0x30
@@ -89,45 +89,45 @@ public:
 
     // dispatch and handlers of the pet packet (sub-mode = the first byte)
     void OnResponsePet(CInPacket& in);
-    void FUN_140c89810(CInPacket& in);                      // mode 7: counts of all pets
-    void FUN_140c898f0(CInPacket& in);                      // mode 8: count of one pet
-    void FUN_140c89980(CInPacket& in);                      // mode 9: info
-    void FUN_140c89b20(CInPacket& in);                      // mode 0: summon
-    void FUN_140c89d00(CInPacket& in);                      // mode 1: recall
-    void FUN_140c89ea0(CInPacket& in);                      // mode 2: summon effect
-    void FUN_140c8a140(CInPacket& in);                      // mode 4: name
-    void FUN_140c8a390(CInPacket& in);                      // mode 6: flags
-    void FUN_140c8a420(CInPacket& in);                      // mode 5: options
+    void OnPetCountList(CInPacket& in);                      // mode 7: counts of all pets
+    void OnPetCountUpdate(CInPacket& in);                      // mode 8: count of one pet
+    void OnPetInfo(CInPacket& in);                      // mode 9: info
+    void OnPetSummoned(CInPacket& in);                      // mode 0: summon
+    void OnPetUnsummoned(CInPacket& in);                      // mode 1: recall
+    void OnPetSummonSound(CInPacket& in);                      // mode 2: summon effect
+    void OnPetRenamed(CInPacket& in);                      // mode 4: name
+    void OnPetFlagsUpdate(CInPacket& in);                      // mode 6: flags
+    void OnPetOptionsUpdate(CInPacket& in);                      // mode 5: options
     void FUN_140c8a4b0(CInPacket& in);                      // mode 10: pet item value
     void FUN_140c8a640(CInPacket& in);                      // mode 0x12: pet item level
     void FUN_140c8a7a0(CInPacket& in);                      // mode 0x11: pet item data
-    void FUN_140c8a940(CInPacket& in);                      // mode 0xb: level up
+    void OnPetLevelUp(CInPacket& in);                      // mode 0xb: level up
     void FUN_140c8ab80(CInPacket& in);                      // mode 0xc: pet exp
     void FUN_140c8ac50(CInPacket& in);                      // mode 0x10: new pet item
-    void FUN_140c8ae50(CInPacket& in);                      // mode 0x13: error
+    void OnPetError(CInPacket& in);                      // mode 0x13: error
     void FUN_140c8afa0(CInPacket& in);                      // mode 0x15: apply the pet to a player
-    void FUN_140c8b070(CInPacket& in);                      // mode 0xf: auto flag
-    void FUN_140c8b0c0(CInPacket& in);                      // mode 0x14: trap skill consume notice
+    void OnPetAutoChanged(CInPacket& in);                      // mode 0xf: auto flag
+    void OnPetTrapSkillConsumed(CInPacket& in);                      // mode 0x14: trap skill consume notice
 
-    void FUN_140c8b1f0();                                   // clear the counts
-    int FUN_140c8b220(int nKey);                            // count of a key
-    int FUN_140c8b2b0();                                    // has a summoned pet item
+    void ClearCounts();                                   // clear the counts
+    int GetCountByKey(int nKey);                            // count of a key
+    int HasSummonedPet();                                    // has a summoned pet item
     __int64 GetSummonUid();                                // the summoned pet item uid
     void SetSummonUid(__int64 nUid);
     int GetAuto();                                    // auto flag
     int SendRequestPet();                                    // toggle the auto flag (sends it)
-    CPetInventory* FUN_140c8b410();                         // &m_inv
+    CPetInventory* GetInventory();                         // &m_inv
     Unk_PetManagerEmpty* FUN_140c8b430();                   // &m_a0
-    CCPetInfoPacket::Info* FUN_140c8b450();                 // &m_info
-    MS2Ptr<Unk_PetRow> FUN_140c8b470();                     // the table row of the summoned pet item
-    void* FUN_140c8b5c0(int nObjectId);                     // the pet (CPet) of a player object, or null
+    CCPetInfoPacket::Info* GetInfo();                 // &m_info
+    MS2Ptr<Unk_PetRow> GetSummonedPetRow();                     // the table row of the summoned pet item
+    void* GetPlayerPet(int nObjectId);                     // the pet (CPet) of a player object, or null
 
     // item use entry points (the callers pass an item data id)
-    int FUN_140c89220(int nItemId);
+    int UseItemById(int nItemId);
     int FUN_140c89270(int nItemId);
-    MS2Ptr<CItem> FUN_140c892c0(int nItemId);
-    MS2Ptr<CItem> FUN_140c89380(unsigned __int64 nUid);
-    int FUN_140c89440(int nItemId, int nRarity);
+    MS2Ptr<CItem> FindItemById(int nItemId);
+    MS2Ptr<CItem> FindItemByUid(unsigned __int64 nUid);
+    int CountItems(int nItemId, int nRarity);
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -87,21 +87,21 @@ CMeshUVPicker::CMeshUVPicker()
 // @0x14147e840
 CMeshUVPicker::~CMeshUVPicker()
 {
-    FUN_14147fbb0();
+    ReleaseResources();
 }
 
 // @0x14147e900
 int CMeshUVPicker::FUN_14147e900()
 {
-    if (!FUN_14147f570())
+    if (!CreateResources())
         return 0;
-    FUN_14147fa80();
+    CreatePropertyState();
     return 1;
 }
 MS2_REPLACE_METHOD(0x14147E900, CMeshUVPicker, FUN_14147e900, 50, 0xB8E8B77C);
 
 // @0x14147e940
-bool CMeshUVPicker::FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
+bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
                                   CAtlArray<NiRenderObject*>* pExtras)
 {
     if (!m_14)
@@ -116,7 +116,7 @@ bool CMeshUVPicker::FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, floa
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x14147E940, CMeshUVPicker, FUN_14147e940, 259, 0x6D4483DA);
+MS2_REPLACE_METHOD(0x14147E940, CMeshUVPicker, PickUV, 259, 0x6D4483DA);
 
 // @0x14147ea50
 bool CMeshUVPicker::FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0,
@@ -246,7 +246,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
 MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, FUN_14147ec90, 2260, 0x30E905BA);
 
 // @0x14147f570
-bool CMeshUVPicker::FUN_14147f570()
+bool CMeshUVPicker::CreateResources()
 {
     NiRenderer* pRenderer = GetNiRenderer();
     NiDX9Renderer* pDX9 = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(pRenderer));
@@ -264,7 +264,7 @@ bool CMeshUVPicker::FUN_14147f570()
         m_50[i].Assign(FUN_141d61a80(DAT_1439f7cb4, DAT_1439f7cb8, pRenderer, &kPrefs, 0x100));
         if (FUN_140c8f680(&m_50[i]) == 0)
         {
-            FUN_14147fbb0();
+            ReleaseResources();
             return false;
         }
     }
@@ -272,7 +272,7 @@ bool CMeshUVPicker::FUN_14147f570()
     m_38 = NiRenderTargetGroup::Create(3, pRenderer);
     if (!m_38)
     {
-        FUN_14147fbb0();
+        ReleaseResources();
         return false;
     }
     for (int i = 0; i < 3; i++)
@@ -284,7 +284,7 @@ bool CMeshUVPicker::FUN_14147f570()
     NiDepthStencilBuffer* pDepth = NiDepthStencilBuffer::CreateCompatible(FUN_14127c9b0(&m_50[0])->GetBuffer(), pRenderer);
     if (pDepth == NULL)
     {
-        FUN_14147fbb0();
+        ReleaseResources();
         return false;
     }
     m_38->AttachDepthStencilBuffer(pDepth);
@@ -292,7 +292,7 @@ bool CMeshUVPicker::FUN_14147f570()
     m_40 = NiRenderTargetGroup::Create(FUN_14127c9b0(&m_50[2])->GetBuffer(), pRenderer, true, true);
     if (!m_40)
     {
-        FUN_14147fbb0();
+        ReleaseResources();
         return false;
     }
 
@@ -305,17 +305,17 @@ bool CMeshUVPicker::FUN_14147f570()
         m_10 = kDesc.Format;
         if (m_48->CreateTexture(kDesc.Width, kDesc.Height, 1, 0, kDesc.Format, D3DPOOL_SYSTEMMEM, &m_80[i], NULL) != 0)
         {
-            FUN_14147fbb0();
+            ReleaseResources();
             return false;
         }
     }
     m_14 = true;
     return true;
 }
-MS2_REPLACE_METHOD(0x14147F570, CMeshUVPicker, FUN_14147f570, 1280, 0xB4DD6A90);
+MS2_REPLACE_METHOD(0x14147F570, CMeshUVPicker, CreateResources, 1280, 0xB4DD6A90);
 
 // @0x14147fa80
-void CMeshUVPicker::FUN_14147fa80()
+void CMeshUVPicker::CreatePropertyState()
 {
     m_20 = NiNew NiPropertyState;
     NiZBufferProperty* pZBuffer = NiNew NiZBufferProperty;
@@ -323,10 +323,10 @@ void CMeshUVPicker::FUN_14147fa80()
     pZBuffer->SetZBufferWrite(true);
     m_20->SetProperty(pZBuffer);
 }
-MS2_REPLACE_METHOD(0x14147FA80, CMeshUVPicker, FUN_14147fa80, 287, 0x53A05DBE);
+MS2_REPLACE_METHOD(0x14147FA80, CMeshUVPicker, CreatePropertyState, 287, 0x53A05DBE);
 
 // @0x14147fbb0
-void CMeshUVPicker::FUN_14147fbb0()
+void CMeshUVPicker::ReleaseResources()
 {
     NiDX9Renderer* pDX9 = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(GetNiRenderer()));
     if (m_18 != -1)
@@ -351,7 +351,7 @@ void CMeshUVPicker::FUN_14147fbb0()
     m_38 = NULL;
     m_14 = false;
 }
-MS2_REPLACE_METHOD(0x14147FBB0, CMeshUVPicker, FUN_14147fbb0, 341, 0xFEA91836);
+MS2_REPLACE_METHOD(0x14147FBB0, CMeshUVPicker, ReleaseResources, 341, 0xFEA91836);
 
 // @0x14147fd10
 bool CMeshUVPicker::FUN_14147fd10(bool bBeforeReset, void* pPicker)

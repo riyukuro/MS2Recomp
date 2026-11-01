@@ -37,7 +37,8 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
-extern char DAT_143b059e8;                                      // service lookup cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 void FUN_1413d78e0(HardwareInstancingService* pSvc, egf::Entity* pEntity);   // refresh the entity's instancing
 bool FUN_14028d470(float a, float b);                           // nearly equal
@@ -53,7 +54,6 @@ struct Unk_CmEaseIn { float FUN_1410af700(float t); };
 class Unk_CmEntity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Vector3* pOut);          // get a point property
     void FUN_140a38a50(unsigned nProp, const Vector3* pValue);  // set a point property
     void FUN_1409457c0(unsigned nProp, const float* pValue);            // set a float property
     void FUN_14098c6e0(unsigned nProp, const bool* pValue);             // set a bool property
@@ -76,13 +76,14 @@ public:
 };
 
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
-struct Unk_CmWalker
+struct Unk_NodeQueue
 {
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
-    Unk_CmWalker(NiObject* pRoot);                    // 0x14098cb80
-    ~Unk_CmWalker();                                  // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                    // 0x14098cb80
+    ~Unk_NodeQueue();                                  // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bDescend);
 };
+typedef Unk_NodeQueue Unk_CmWalker;   // C3: was a local stand-in for Unk_NodeQueue
 extern char DAT_143afa7d0;                                         // NiRTTI of the mesh type
 extern char DAT_143d69198;                                         // material table
 int* FUN_140876480(int* pOut, int nCat);                          // memory category helper
@@ -169,7 +170,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
         efd::SmartPointer<NiNode> spRoot(FUN_1413fa070(id));
         if (spRoot != 0)
         {
-            Unk_CmWalker walker(spRoot);
+            Unk_CmWalker walker((NiAVObject*)(spRoot));
             while (NiAVObject* pObject = walker.FUN_14098e0d0(true))
             {
                 NiObject* pMesh = NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pObject));
@@ -312,7 +313,7 @@ void CCubeMotionManager::Update()
             float fRatio = Unk_CmEaseOut().FUN_140cd8c20(rotate.m_timer.FUN_140868940());
             float fValue = rotate.m_fFrom + (rotate.m_fTo - rotate.m_fFrom) * fRatio;
             Vector3 pt;
-            ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0x68c7c29d, &pt);
+            reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(pt));
             pt.z = fValue;
             ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0x68c7c29d, &pt);
             if (rotate.m_timer.FUN_140868c00() != 0)
@@ -354,7 +355,7 @@ void CCubeMotionManager::Update()
                 float fRatio = Unk_CmEaseOut().FUN_140cd8c20(bounce.m_timer.FUN_140868940() * 2.0f);
                 float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
                 Vector3 pt;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
+                reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
                 pt.z = fValue;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
             }
@@ -363,7 +364,7 @@ void CCubeMotionManager::Update()
                 float fRatio = Unk_CmEaseIn().FUN_1410af700((bounce.m_timer.FUN_140868940() - 0.5f) * 2.0f);
                 float fValue = bounce.m_fTo + (bounce.m_fFrom - bounce.m_fTo) * fRatio;
                 Vector3 pt;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
+                reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
                 pt.z = fValue;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
                 if (bounce.m_timer.FUN_140868c00() != 0)

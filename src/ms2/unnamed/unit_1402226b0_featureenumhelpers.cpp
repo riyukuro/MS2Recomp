@@ -9,6 +9,7 @@
 #include <atlcoll.h>
 #include <windows.h>
 #include <errno.h>
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItemData>::operator->
 
 static CString s_marketSortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 #ifndef MS2_HOOK_DLL   // s_emptyNarrow: the exe's object at 0x143aacc88, which other units reach as DAT_143aacc88 (the hook DLL binds it)
@@ -44,7 +45,6 @@ struct Unk_StateHandle
     void* m_pRecord;                                    // +0x08
     ~Unk_StateHandle();                                 // 0x1401b50d0
     bool FUN_1401b5240(void* pCmp) const;               // the record equals pCmp
-    void* FUN_1401b52a0() const;                        // the record
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -55,7 +55,7 @@ public:
 class CItemData   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14053cf90();
+    bool HasSkinType();
     bool FUN_14053d2f0();
     bool FUN_14053d5c0();
     bool FUN_14053d600();
@@ -210,13 +210,13 @@ unsigned FUN_140222ce0(Unk_StateHandle h)
 {
     if (h.FUN_1401b5240(0))
         return 0;
-    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053cf90())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->HasSkinType())
         return 8;
-    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d2f0())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d2f0())
         return 1;
-    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d600())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d600())
         return 2;
-    if (((class CItemData*)(void*)(h.FUN_1401b52a0()))->FUN_14053d5c0())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d5c0())
         return 4;
     return 0xf;
 }

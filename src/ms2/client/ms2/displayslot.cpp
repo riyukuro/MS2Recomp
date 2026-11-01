@@ -22,11 +22,8 @@ CStringW GetStringCommonByKey(const CStringW& str);            // string table l
 void FUN_1412751f0(const CStringW& str, int a, int b);  // show a notice
 
 // The inventory singleton: the item of a uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 DisplaySlot* FUN_140a50b00(NotifyContext::BindData* p);
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
@@ -35,6 +32,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(DisplaySlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 // The exe's .text$di holds a second full copy of the header statics after the first.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
@@ -56,7 +54,7 @@ int DisplaySlot::vfunc_18(void* p)
         MS2Ptr<CItem> spItem = pFrom->vfunc_25();
         if (spItem.get() != 0 && m_nSlotType != 0)
         {
-            if (!spItem->FUN_1405277e0(m_nSlotType))
+            if (!spItem->HasStringTag(m_nSlotType))
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_item_err_not_match_slot_item"), 1, 1);
                 return static_cast<DragSlot*>((DragSlot*)p)->vfunc_10();
@@ -105,12 +103,12 @@ int DisplaySlot::vfunc_8(void* p)
         return 0;
     if (m_spItem == 0)
         return 0;
-    if (DAT_143ab2a90.FUN_140a5d680(m_spItem->FUN_140526a50()) == 0)
+    if (g_143ab2a90.FUN_140a5d680(m_spItem->GetItemUid()) == 0)
         m_spItem = 0;
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415))
     {
-        slot.FUN_1409c3750(true);
+        slot.SetUseRightClick(true);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }
@@ -122,7 +120,7 @@ __int64 FUN_140a50980(DisplaySlot* pSlot)
 {
     if (pSlot->m_spItem == 0)
         return 0;
-    return pSlot->m_spItem->FUN_140526a50();
+    return pSlot->m_spItem->GetItemUid();
 }
 
 // @0x140a509d0
@@ -130,15 +128,15 @@ void FUN_140a509d0(const CString& strName, MS2Ptr<CItem> spItem, int nSlotType)
 {
     DisplaySlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) DisplaySlot(strName, spItem, nSlotType);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x140a50ac0
 void FUN_140a50ac0(const CString& strName)
 {
-    DisplaySlot* pSlot = FUN_140a50b00(FUN_1422c8e90(strName));
+    DisplaySlot* pSlot = FUN_140a50b00(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140a50b00

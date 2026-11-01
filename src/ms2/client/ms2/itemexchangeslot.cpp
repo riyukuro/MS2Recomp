@@ -30,7 +30,7 @@ class Unk_InvenSlot : public InvenSlot
 Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The inventory's bag of items by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The dialog this slot lives on (uiitemexchangescrolldialog.cpp).
 class UIItemExchangeScrollDialog : public UIDialog
@@ -45,16 +45,12 @@ class Unk_IesUIRef
 public:
     ~Unk_IesUIRef();                                    // FUN_1403e5630
     UIObject* FUN_1403e8a70() const;
-    UIObject* FUN_1403ed9e0();
 private:
     void* unknown;
     UIObject* object;
 };
 class Unk_IesUIMgr { public: Unk_IesUIRef FUN_141adcea0(int nId); };
 
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 ItemExchangeSlot* FUN_140b6cde0(NotifyContext::BindData* p);
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId);
@@ -63,21 +59,22 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemExchangeSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x140b6c7a0
 void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem)
 {
     ItemExchangeSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemExchangeSlot(strName, nTarget, spItem);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x140b6c890
 void FUN_140b6c890(const CString& strName)
 {
-    ItemExchangeSlot* pSlot = FUN_140b6cde0(FUN_1422c8e90(strName));
+    ItemExchangeSlot* pSlot = FUN_140b6cde0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140b6c8d0
@@ -102,13 +99,13 @@ int ItemExchangeSlot::vfunc_18(void* p)
     Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
         if (spItem.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
             packet.WriteUInt8(0);
             packet.WriteInt64(m_nTarget);
-            packet.WriteInt64(spItem->FUN_140526a50());
+            packet.WriteInt64(spItem->GetItemUid());
             FUN_140710590(packet);
         }
     }
@@ -183,7 +180,7 @@ UIItemExchangeScrollDialog* FUN_140b6ce30(int nId)
     {
         Unk_IesUIRef ref = reinterpret_cast<Unk_IesUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIItemExchangeScrollDialog*>(ref.FUN_1403ed9e0());
+            return dynamic_cast<UIItemExchangeScrollDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

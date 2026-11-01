@@ -86,14 +86,12 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
 bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
-bool FUN_140841300(const CStringW& str, const char* sz);        // the string equals sz
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the item's lock kind
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 // @0x140fb7dc0
 UIVIPDialog::UIVIPDialog()
@@ -190,7 +188,7 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
-    if (FUN_140841300(strType, "benefitItem")) {
+    if (operator==(strType, "benefitItem")) {
         unsigned nBenefitId = pArgs->FUN_1422b8b10();
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
@@ -203,10 +201,10 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
                 if (spBenefit->m_nItemPeriod > 0)
                     ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), spBenefit->m_nItemPeriod);
-                FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+                *pRetVal = tip.FUN_1422bb870();
             }
         }
-    } else if (FUN_140841300(strType, "effectIcon")) {
+    } else if (operator==(strType, "effectIcon")) {
         MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
         if (effect == 0)
             return;
@@ -285,7 +283,7 @@ void UIVIPDialog::FUN_140fb8d10()
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<ASTextField> spTime = FUN_140bb4cf0("m_remainTime");
+    MS2Ptr<ASTextField> spTime = GetChild<ASTextField>("m_remainTime");
     if (spTime == 0)
         return;
     if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() == 0) {
@@ -301,11 +299,11 @@ void UIVIPDialog::FUN_140fb8d10()
             strRemain = FUN_1405c2690(L"s_vip_dialog_remain_time", strRemain);
         spTime->FUN_1422c4f00(strRemain);
     }
-    unsigned nTextWidth = spTime->FUN_1422c5970();
+    unsigned nTextWidth = spTime->GetTextWidth();
     float fX, fY;
-    spTime->FUN_1422c0f60(&fX, &fY);
+    spTime->GetPosition(&fX, &fY);
     fX = fX + (float)((spTime->FUN_1422c1340() - nTextWidth) - 0x1e);
-    if (MS2Ptr<ASMovieClip> spIcon = FUN_140ba7930("m_timerIcon"))
+    if (MS2Ptr<ASMovieClip> spIcon = GetChild<ASMovieClip>("m_timerIcon"))
         spIcon->FUN_1422c00f0(fX, fY);
 }
 
@@ -340,7 +338,7 @@ void UIVIPDialog::FUN_140fb9150()
         row.FUN_1407cbb20("label", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spBenefit->m_nItemId));
         row.FUN_1409adc90("itemGrade", spBenefit->m_nItemRank);
         row.FUN_1409c0d20("itemCount", spBenefit->m_nItemCount);
-        row.FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
+        row.FUN_1407cba60("iconPath", spData->GetIconPath());
         row.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
         row.FUN_1407cb9c0("itemVIP", spItem->FUN_140525db0());
         int nLock = FUN_141275a10(spItem.get());

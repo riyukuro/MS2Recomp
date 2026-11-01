@@ -1248,14 +1248,20 @@ def exe_is_code_ptr(exe, va):
 LOOKALIKE_HOW = ("auto-order", "auto-leaf", "auto-guess")
 
 
+def guess_stub_on():
+    """MS2_GATE_PASS_GUESS_STUB: on by default since merge 47 (c67da57c3, +1917 exact over the first pass); =0 turns it
+    off. Read only by the merge-mode gate pass (unit_score / needs_gate_pass / stamps); report mode never calls it."""
+    return os.environ.get("MS2_GATE_PASS_GUESS_STUB", "1") not in ("", "0")
+
+
 def unit_score(u, res, starts):
     """(stubs, -exact, -vftables ok) of a process_unit result over the unit's ranges: lower is better."""
     byva = {}
-    # MS2_GATE_PASS_GUESS_STUB=1: an auto-guess pair (byte-identical copy, owner chosen by name order, never exact) is
+    # MS2_GATE_PASS_GUESS_STUB (default on): an auto-guess pair (byte-identical copy, owner chosen by name order, never exact) is
     # scored as a stub. Otherwise a first pass that guesses every look-alike (0 stubs) beats a gate pass that pairs
     # them exactly but leaves one stub, and the merge keeps the guesses: merge 47 cubemapinformationservice_tail2
     # 541 -> 375 exact (gate 540/31/1) after a header-only recompile
-    guess_stub = bool(os.environ.get("MS2_GATE_PASS_GUESS_STUB"))
+    guess_stub = guess_stub_on()
     for p in res["pairs"].values():
         if guess_stub and p["how"] == "auto-guess":
             continue
@@ -1278,10 +1284,10 @@ def needs_gate_pass(u, res, starts):
         return True
     if any(p["how"] in LOOKALIKE_HOW for p in res["pairs"].values()):
         return True
-    # MS2_GATE_PASS_GUESS_STUB=1: failed pairs too. A callee the symbols-manual table has no row for passes the
+    # MS2_GATE_PASS_GUESS_STUB (default on): failed pairs too. A callee the symbols-manual table has no row for passes the
     # lenient check, so a same-shape wrong name can take the VA with no stub left behind (merge 47 uiguideeventarrow:
     # static GuideAS took ~UIGuideEventArrow's 0x1419609a0, ~CPtred unbound; its two tag callers failed, 127 -> 125)
-    if os.environ.get("MS2_GATE_PASS_GUESS_STUB") and any(not p["ok"] for p in res["pairs"].values()):
+    if guess_stub_on() and any(not p["ok"] for p in res["pairs"].values()):
         return True
     return any(n.startswith("ambiguous") for n in res["notes"])
 
@@ -1447,7 +1453,7 @@ def main():
             if not c or not c.get("res"):
                 continue
             stamp = mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)    # only the committed rows this unit can read
-            if os.environ.get("MS2_GATE_PASS_GUESS_STUB"):
+            if guess_stub_on():
                 if c.get("res2") and c.get("key2") == [c["key"], stamp]:
                     c["key2"] = [c["key"], stamp + "g"]             # gate pairing already kept: nothing to re-score
                 stamp += "g"
@@ -1460,7 +1466,7 @@ def main():
             else:
                 c["key2"] = [c["key"], stamp]
         def stamp2(u):
-            return mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV) + ("g" if os.environ.get("MS2_GATE_PASS_GUESS_STUB") else "")
+            return mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV) + ("g" if guess_stub_on() else "")
         if gate_todo:
             print(f"gate pass: re-matching {len(gate_todo)} unit(s) against the committed symbols.tsv ...", flush=True)
             load_table(bm.SYMBOLS_TSV)

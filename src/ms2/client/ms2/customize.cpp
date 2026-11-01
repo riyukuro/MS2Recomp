@@ -111,7 +111,7 @@ MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+    MS2Ptr<CItem> spCopy = spItem->Clone();
     if (spCopy.get()) {
         int nVariant = spItem->FUN_14052a150();
         if (nVariant >= 0)
@@ -155,7 +155,7 @@ inline int FUN_140cd4560(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
     if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
         return 0;
     CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
-    return static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()))->FUN_140599830(pB);
+    return static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()))->HasSameKindAndRgb(pB);
 }
 
 // @0x140cd3e30
@@ -243,7 +243,7 @@ inline bool FUN_140cd46e0(MS2Ptr<CItem> spItem, bool bPreview)
 inline UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass)
 {
     if (TSingleton<CUIService>::GetInstance()) {
-        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject(nClass);
         if (spObject.get())
             return dynamic_cast<UICameraEditDialog*>(spObject.operator->());
     }
@@ -291,7 +291,7 @@ unsigned Customize::EditItems::GetItemId()
     if (m_spItem.get())
         return m_spItem->FUN_1405276c0();
     if (m_spData.get())
-        return m_spData->FUN_14053c510();
+        return m_spData->GetItemId();
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCAFA0, Customize::EditItems, GetItemId, 114, 0x582343C9);
@@ -300,7 +300,7 @@ MS2_REPLACE_METHOD(0x140CCAFA0, Customize::EditItems, GetItemId, 114, 0x582343C9
 unsigned __int64 Customize::EditItems::GetItemUid()
 {
     if (m_spItem.get())
-        return m_spItem->FUN_140526a50();
+        return m_spItem->GetItemUid();
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCB020, Customize::EditItems, GetItemUid, 65, 0xB2B8DCEC);
@@ -394,7 +394,7 @@ void Customize::EditItems::SelectId(int nItemId)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return;
-    if (spData->FUN_14053cf00()) {
+    if (spData->IsAvatarColorItem()) {
         if (m_spController) {
             m_spController->Close();
             m_spController = 0;
@@ -449,7 +449,7 @@ int Customize::EditItems::ApplyColor(int nIndex, int n)
     MS2Ptr<ItemColorEx> spColor = FUN_140f022f0(nPalette, nIndex);
     if (spColor == 0)
         return 0;
-    if (m_spData->FUN_14053cf00())
+    if (m_spData->IsAvatarColorItem())
         return FUN_141423760(*spColor, pPc);
     return FUN_141423cf0(GetItemUid(), *(struct Unk_UgcExtra const*)&static_cast<class ItemColorEx const&>(*spColor), (struct Unk_UgcPlayer*)(pPc), n);
 }
@@ -470,7 +470,7 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
     MS2Ptr<ItemColorEx> spColor = ((class Unk_CustomizeColorTable*)TSingleton<CItemDataTable>::GetInstance())->GetPaletteColorBySN(nUsePalette, nIndex); // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
     if (spColor == 0)
         return 0;
-    if (m_spData->FUN_14053cf00())
+    if (m_spData->IsAvatarColorItem())
         return FUN_141423760(*spColor, pPc);
     return FUN_141423cf0(GetItemUid(), *(struct Unk_UgcExtra const*)&static_cast<class ItemColorEx const&>(*spColor), (struct Unk_UgcPlayer*)(pPc), n);
 }
@@ -483,7 +483,7 @@ int Customize::EditItems::SetColors(const int& nColor, int nSlot, int n)
     PC* pPc = GetPC();
     if (pPc == 0)
         return 0;
-    if (m_spData->FUN_14053cf00())
+    if (m_spData->IsAvatarColorItem())
         return FUN_141423650((unsigned int*)(&nColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
     return FUN_141423fb0(GetItemUid(), (void*)(&nColor), nSlot, (struct Unk_UgcPlayer*)(pPc), n);
 }
@@ -497,7 +497,7 @@ int Customize::EditItems::GetColors(int* pnColor, int nSlot)
     PC* pPc = GetPC();
     if (pPc == 0)
         return 0;
-    if (m_spData->FUN_14053cf00())
+    if (m_spData->IsAvatarColorItem())
         return FUN_1414239e0((unsigned int*)(pnColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
     return FUN_141424760(m_spItem, pnColor, nSlot, pPc);
 }
@@ -586,7 +586,7 @@ void Customize::CloneItems::RestoreUid(__int64 nUid)
     POSITION pos = m_mapItems.GetStartPosition();
     while (pos != 0) {
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
-        if ((((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false) && ((CItem*)spItem)->FUN_140526a50() == nUid) {
+        if ((((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false) && ((CItem*)spItem)->GetItemUid() == nUid) {
             MS2Ptr<CItem> spClone = FUN_140cd4650(spItem);
             pPc->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spClone))->get(), 1);
             return;
@@ -595,7 +595,7 @@ void Customize::CloneItems::RestoreUid(__int64 nUid)
     {
         MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
         if ((((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false) && ((CItem*)spItem)->FUN_140527840()) {
-            if (((CItem*)spItem)->FUN_140527840()->FUN_14053cf00()) {
+            if (((CItem*)spItem)->FUN_140527840()->IsAvatarColorItem()) {
             } else {
                 pPc->vfunc_128(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 1);
             }
@@ -699,7 +699,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
             if (bWorn) {
                 MS2Ptr<CItem> spOther(0);
                 if (m_mapSlots.Lookup(eOther, spOther)) {
-                    bEquip = spOther->FUN_140526a50() == spEquip->GetItem()->FUN_140526a50();
+                    bEquip = spOther->GetItemUid() == spEquip->GetItem()->GetItemUid();
                 } else {
                     CItemData* pData = static_cast<CItemData*>(spEquip->FUN_1411dc7f0());
                     if (pData)
@@ -709,7 +709,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
                 bEquip = true;
             }
         } else {
-            MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(spCur->FUN_140526a50());
+            MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(spCur->GetItemUid());
             if ((spEquip.get() ? true : false) && spEquip->FUN_1411dc820() == spCur->FUN_1405276c0())
                 bEquip = false;
         }
@@ -746,7 +746,7 @@ int Customize::CloneItems::IsAddedUid(__int64 nUid)
             MS2Ptr<CItem> spItem = items.GetNextValue(pos);
             if (spItem == 0)
                 continue;
-            if (spItem->FUN_140526a50() == nUid)
+            if (spItem->GetItemUid() == nUid)
                 return 1;
         }
     }
@@ -763,7 +763,7 @@ int Customize::CloneItems::IsModifiedUid(__int64 nUid)
             MS2Ptr<CItem> spItem = items.GetNextValue(pos);
             if (spItem == 0)
                 continue;
-            if (spItem->FUN_140526a50() == nUid)
+            if (spItem->GetItemUid() == nUid)
                 return 1;
         }
     }
@@ -780,7 +780,7 @@ int Customize::CloneItems::IsRemovedUid(__int64 nUid)
             MS2Ptr<CItem> spItem = items.GetNextValue(pos);
             if (spItem == 0)
                 continue;
-            if (spItem->FUN_140526a50() == nUid)
+            if (spItem->GetItemUid() == nUid)
                 return 1;
         }
     }
@@ -870,9 +870,9 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
         if (spItem == 0)
             continue;
         MS2Ptr<CItem> spClone(0);
-        if (!m_mapItems.Lookup(spItem->FUN_140526a50(), spClone)) {
+        if (!m_mapItems.Lookup(spItem->GetItemUid(), spClone)) {
             MS2Ptr<CItem> spNew = FUN_140cd4650(spItem);
-            out.SetAt(spItem->FUN_140526a50(), spNew);
+            out.SetAt(spItem->GetItemUid(), spNew);
         }
     }
     return out.GetCount() > 0;
@@ -889,12 +889,12 @@ int Customize::CloneItems::GetModified(ItemMap& out)
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
         if (spItem == 0)
             continue;
-        MS2Ptr<CItem> spCur = pPc->FUN_141655b80(spItem->FUN_140526a50());
+        MS2Ptr<CItem> spCur = pPc->FUN_141655b80(spItem->GetItemUid());
         if (spCur == 0)
             continue;
         if (FUN_140cd4310(spItem, spCur))
             continue;
-        out.SetAt(spCur->FUN_140526a50(), spCur);
+        out.SetAt(spCur->GetItemUid(), spCur);
     }
     return out.GetCount() > 0;
 }
@@ -910,9 +910,9 @@ int Customize::CloneItems::GetRemoved(ItemMap& out)
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
         if (spItem == 0)
             continue;
-        MS2Ptr<CItem> spCur = pPc->FUN_141655b80(spItem->FUN_140526a50());
+        MS2Ptr<CItem> spCur = pPc->FUN_141655b80(spItem->GetItemUid());
         if (spCur == 0)
-            out.SetAt(spItem->FUN_140526a50(), spItem);
+            out.SetAt(spItem->GetItemUid(), spItem);
     }
     return out.GetCount() > 0;
 }
@@ -928,7 +928,7 @@ int Customize::CloneItems::GetAddedUid(ItemMap& out, __int64 nUid)
         MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
         if (spItem == 0)
             return 0;
-        out.SetAt(spItem->FUN_140526a50(), spItem);
+        out.SetAt(spItem->GetItemUid(), spItem);
         return 1;
     }
     return 0;
@@ -945,7 +945,7 @@ int Customize::CloneItems::GetModifiedUid(ItemMap& out, __int64 nUid)
         MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
         if (spItem == 0)
             return 0;
-        out.SetAt(spItem->FUN_140526a50(), spItem);
+        out.SetAt(spItem->GetItemUid(), spItem);
         return 1;
     }
     return 0;
@@ -958,7 +958,7 @@ int Customize::CloneItems::GetRemovedUid(ItemMap& out, __int64 nUid)
     if (IsRemovedUid(nUid)) {
         MS2Ptr<CItem> spItem(0);
         if (m_mapItems.Lookup(nUid, spItem)) {
-            out.SetAt(spItem->FUN_140526a50(), spItem);
+            out.SetAt(spItem->GetItemUid(), spItem);
             return 1;
         }
     }
@@ -977,7 +977,7 @@ int Customize::CloneItems::GetAddedSlot(ItemMap& out, Unk_InventoryEquipSlot eSl
         if (spEquip == 0 || spEquip->GetItem() == 0)
             return 0;
         MS2Ptr<CItem> spItem = spEquip->GetItem();
-        out.SetAt(spItem->FUN_140526a50(), spItem);
+        out.SetAt(spItem->GetItemUid(), spItem);
         return 1;
     }
     return 0;
@@ -995,7 +995,7 @@ int Customize::CloneItems::GetModifiedSlot(ItemMap& out, Unk_InventoryEquipSlot 
         if (spEquip == 0 || spEquip->GetItem() == 0)
             return 0;
         MS2Ptr<CItem> spItem = spEquip->GetItem();
-        out.SetAt(spItem->FUN_140526a50(), spItem);
+        out.SetAt(spItem->GetItemUid(), spItem);
         return 1;
     }
     return 0;
@@ -1027,8 +1027,8 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
         }
     }
     if (spItem.get()) {
-        spItem->FUN_140526a70(FUN_14028d0e0());
-        spItem->FUN_140526b30(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
+        spItem->SetItemUid(FUN_14028d0e0());
+        spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
         if (m_pOwner)
             FUN_140cd46e0(spItem, m_pOwner->IsPreview());
     }
@@ -1066,7 +1066,7 @@ void Customize::CloneItems::UpdateItem(MS2Ptr<CItem> spItem)
     if (spItem == 0 || ((CItem*)spItem)->FUN_140527870() == 0)
         return;
     MS2Ptr<CItem> spClone(0);
-    if (m_mapItems.Lookup(((CItem*)spItem)->FUN_140526a50(), spClone) && (((MS2Ptr<CItem>*)(void*)(&spClone))->get() ? true : false) && ((CItem*)spClone)->FUN_140527870())
+    if (m_mapItems.Lookup(((CItem*)spItem)->GetItemUid(), spClone) && (((MS2Ptr<CItem>*)(void*)(&spClone))->get() ? true : false) && ((CItem*)spClone)->FUN_140527870())
         static_cast<CItemExtraData*>(static_cast<CPtred*>(spClone->FUN_140527870()))->vfunc_3(
             static_cast<CItemExtraData*>(static_cast<CPtred*>(spItem->FUN_140527870())));
 }
@@ -1120,7 +1120,7 @@ int Customize::CloneItems::Init()
         MS2Ptr<CItem> spClone = FUN_140cd4650(spItem);
         if (spClone == 0)
             continue;
-        m_mapItems.SetAt(spItem->FUN_140526a50(), spClone);
+        m_mapItems.SetAt(spItem->GetItemUid(), spClone);
         Unk_InventoryEquipSlot eSlot = static_cast<Unk_InventoryEquipSlot>(spClone->FUN_140526c30());
         if (m_mapSlots.Lookup(eSlot) == 0)
             m_mapSlots.SetAt(eSlot, spClone);
@@ -1499,7 +1499,7 @@ void Customize::Equipment::SendModified(MS2Ptr<CItem> spItem)
     packet.WriteUInt8(5);
     packet.WriteUInt8(m_pListener->GetShopId());
     packet.WriteUInt8(m_pListener->UseFreeTry());
-    packet.WriteInt64(spItem->FUN_140526a50());
+    packet.WriteInt64(spItem->GetItemUid());
     spItem->WriteItemBody(reinterpret_cast<__int64>(&packet));
     FUN_140710590(packet);
 }
@@ -1516,7 +1516,7 @@ void Customize::Equipment::SendRemoved(MS2Ptr<CItem> spItem)
         return;
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.WriteUInt8(4);
-    packet.WriteInt64(spItem->FUN_140526a50());
+    packet.WriteInt64(spItem->GetItemUid());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140CD0FD0, Customize::Equipment, SendRemoved, 210, 0x4531DD36);
@@ -1685,34 +1685,34 @@ MS2_REPLACE_METHOD(0x140CD1BF0, Customize, FUN_140cd1bf0, 142, 0x8CAD08D5);
 
 // @0x140cd1c90
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-bool Customize::FUN_140cd1c90(CItem* pItem)
+bool Customize::EquipItem(CItem* pItem)
 {
     if (m_spEquipment == 0 || pItem == 0 || pItem->FUN_140527840() == 0)
         return false;
-    PC* pPc = FUN_140cd3df0();
+    PC* pPc = GetPlayer();
     if (pPc) {
-        if (!pItem->FUN_140527840()->FUN_14053c940(pPc->FUN_141658e60()))
+        if (!pItem->FUN_140527840()->IsGenderAllowed(pPc->FUN_141658e60()))
             return false;
     }
     m_spEquipment->Equip(pItem);
     return true;
 }
-MS2_REPLACE_METHOD(0x140CD1C90, Customize, FUN_140cd1c90, 173, 0x8E5B3BC6);
+MS2_REPLACE_METHOD(0x140CD1C90, Customize, EquipItem, 173, 0x8E5B3BC6);
 
 // @0x140cd1d50
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-bool Customize::FUN_140cd1d50(int nItemId)
+bool Customize::EquipItemId(int nItemId)
 {
     if (m_spEquipment == 0)
         return false;
-    PC* pPc = FUN_140cd3df0();
+    PC* pPc = GetPlayer();
     if (pPc) {
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return false;
-        if (spData->FUN_14053cf00())
+        if (spData->IsAvatarColorItem())
             return false;
-        if (!spData->FUN_14053c940(pPc->FUN_141658e60()))
+        if (!spData->IsGenderAllowed(pPc->FUN_141658e60()))
             return false;
     }
     m_spEquipment->EquipId(nItemId);
@@ -1720,43 +1720,43 @@ bool Customize::FUN_140cd1d50(int nItemId)
 }
 
 // @0x140cd1e80
-void Customize::FUN_140cd1e80()
+void Customize::ClearPreview()
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->ClearPreview();
 }
-MS2_REPLACE_METHOD(0x140CD1E80, Customize, FUN_140cd1e80, 67, 0x10719BB5);
+MS2_REPLACE_METHOD(0x140CD1E80, Customize, ClearPreview, 67, 0x10719BB5);
 
 // @0x140cd1ed0
-void Customize::FUN_140cd1ed0(CItem* pItem)
+void Customize::Unequip(CItem* pItem)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->Unequip(pItem);
 }
-MS2_REPLACE_METHOD(0x140CD1ED0, Customize, FUN_140cd1ed0, 77, 0x39D579D5);
+MS2_REPLACE_METHOD(0x140CD1ED0, Customize, Unequip, 77, 0x39D579D5);
 
 // @0x140cd1f30
-void Customize::FUN_140cd1f30(int nItemId)
+void Customize::UnequipId(int nItemId)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->UnequipId(nItemId);
 }
-MS2_REPLACE_METHOD(0x140CD1F30, Customize, FUN_140cd1f30, 75, 0xA8080D76);
+MS2_REPLACE_METHOD(0x140CD1F30, Customize, UnequipId, 75, 0xA8080D76);
 
 // @0x140cd1f90
-void Customize::FUN_140cd1f90(__int64 nUid)
+void Customize::UnequipUid(__int64 nUid)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->UnequipUid(nUid);
 }
-MS2_REPLACE_METHOD(0x140CD1F90, Customize, FUN_140cd1f90, 77, 0x52D9372F);
+MS2_REPLACE_METHOD(0x140CD1F90, Customize, UnequipUid, 77, 0x52D9372F);
 
 // @0x140cd1ff0
-void Customize::FUN_140cd1ff0()
+void Customize::CommitAll()
 {
     if (m_spEquipment == 0)
         return;
@@ -1765,12 +1765,12 @@ void Customize::FUN_140cd1ff0()
         return;
     int nItemId = spEdit->GetItemId();
     m_spEquipment->CommitAll();
-    FUN_140cd3a70();
-    FUN_140cd2660(nItemId);
+    ReapplyHiddenSlots();
+    SelectId(nItemId);
 }
 
 // @0x140cd20c0
-void Customize::FUN_140cd20c0()
+void Customize::RestoreAll()
 {
     if (m_spEquipment == 0)
         return;
@@ -1779,73 +1779,73 @@ void Customize::FUN_140cd20c0()
         return;
     int nItemId = spEdit->GetItemId();
     m_spEquipment->RestoreAll(m_lstHiddenSlots);
-    FUN_140cd3a70();
-    FUN_140cd2660(nItemId);
+    ReapplyHiddenSlots();
+    SelectId(nItemId);
 }
 
 // @0x140cd21a0
-void Customize::FUN_140cd21a0(__int64 nUid)
+void Customize::CommitUid(__int64 nUid)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->CommitUid(nUid);
-    FUN_140cd3a70();
-    FUN_140cd2700(nUid);
+    ReapplyHiddenSlots();
+    SelectUid(nUid);
 }
 
 // @0x140cd2210
-void Customize::FUN_140cd2210(__int64 nUid)
+void Customize::RestoreUid(__int64 nUid)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->RestoreUid(nUid);
-    FUN_140cd3a70();
-    FUN_140cd2700(nUid);
+    ReapplyHiddenSlots();
+    SelectUid(nUid);
 }
 
 // @0x140cd2280
-void Customize::FUN_140cd2280(int nSlot)
+void Customize::CommitSlot(int nSlot)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->CommitSlot(static_cast<Unk_InventoryEquipSlot>(nSlot));
-    FUN_140cd3a70();
-    FUN_140cd25c0(nSlot);
+    ReapplyHiddenSlots();
+    SelectSlot(nSlot);
 }
 
 // @0x140cd22f0
-void Customize::FUN_140cd22f0(int nSlot)
+void Customize::RestoreSlot(int nSlot)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->RestoreSlot(static_cast<Unk_InventoryEquipSlot>(nSlot));
-    FUN_140cd3a70();
-    FUN_140cd25c0(nSlot);
+    ReapplyHiddenSlots();
+    SelectSlot(nSlot);
 }
 
 // @0x140cd2360
-void Customize::FUN_140cd2360(__int64 nUid, MS2Ptr<CItem>& spOut)
+void Customize::GetModifiedAndSelect(__int64 nUid, MS2Ptr<CItem>& spOut)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->GetModified(nUid, spOut);
-    FUN_140cd3a70();
-    FUN_140cd2700(nUid);
+    ReapplyHiddenSlots();
+    SelectUid(nUid);
 }
 
 // @0x140cd23e0
-void Customize::FUN_140cd23e0(MS2Ptr<CItem> spItem, int nSlot)
+void Customize::ApplyItem(MS2Ptr<CItem> spItem, int nSlot)
 {
     if (m_spEquipment == 0)
         return;
     m_spEquipment->Apply(spItem, static_cast<Unk_InventoryEquipSlot>(nSlot));
-    FUN_140cd3a70();
-    FUN_140cd25c0(nSlot);
+    ReapplyHiddenSlots();
+    SelectSlot(nSlot);
 }
 
 // @0x140cd24a0
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-void Customize::FUN_140cd24a0(int nSlot)
+void Customize::ShowSlot(int nSlot)
 {
     if (m_spEquipment == 0)
         return;
@@ -1857,7 +1857,7 @@ void Customize::FUN_140cd24a0(int nSlot)
 
 // @0x140cd2530
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-void Customize::FUN_140cd2530(int nSlot)
+void Customize::HideSlot(int nSlot)
 {
     if (m_spEquipment == 0)
         return;
@@ -1868,7 +1868,7 @@ void Customize::FUN_140cd2530(int nSlot)
 }
 
 // @0x140cd25c0
-void Customize::FUN_140cd25c0(int nSlot)
+void Customize::SelectSlot(int nSlot)
 {
     if (m_spEquipment == 0)
         return;
@@ -1877,10 +1877,10 @@ void Customize::FUN_140cd25c0(int nSlot)
         return;
     spEdit->SelectSlot(static_cast<Unk_InventoryEquipSlot>(nSlot));
 }
-MS2_REPLACE_METHOD(0x140CD25C0, Customize, FUN_140cd25c0, 150, 0x4BA30437);
+MS2_REPLACE_METHOD(0x140CD25C0, Customize, SelectSlot, 150, 0x4BA30437);
 
 // @0x140cd2660
-void Customize::FUN_140cd2660(int nItemId)
+void Customize::SelectId(int nItemId)
 {
     if (m_spEquipment == 0)
         return;
@@ -1889,10 +1889,10 @@ void Customize::FUN_140cd2660(int nItemId)
         return;
     spEdit->SelectId(nItemId);
 }
-MS2_REPLACE_METHOD(0x140CD2660, Customize, FUN_140cd2660, 150, 0x2A135BD2);
+MS2_REPLACE_METHOD(0x140CD2660, Customize, SelectId, 150, 0x2A135BD2);
 
 // @0x140cd2700
-void Customize::FUN_140cd2700(__int64 nUid)
+void Customize::SelectUid(__int64 nUid)
 {
     if (m_spEquipment == 0)
         return;
@@ -1901,10 +1901,10 @@ void Customize::FUN_140cd2700(__int64 nUid)
         return;
     spEdit->SelectUid(nUid);
 }
-MS2_REPLACE_METHOD(0x140CD2700, Customize, FUN_140cd2700, 152, 0x81E9CD15);
+MS2_REPLACE_METHOD(0x140CD2700, Customize, SelectUid, 152, 0x81E9CD15);
 
 // @0x140cd27a0
-void Customize::FUN_140cd27a0()
+void Customize::ResetEdit()
 {
     if (m_spEquipment == 0)
         return;
@@ -1912,7 +1912,7 @@ void Customize::FUN_140cd27a0()
 }
 
 // @0x140cd27f0
-int Customize::FUN_140cd27f0()
+int Customize::IsDragging()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -1921,10 +1921,10 @@ int Customize::FUN_140cd27f0()
         return 0;
     return spEdit->GetDragging();
 }
-MS2_REPLACE_METHOD(0x140CD27F0, Customize, FUN_140cd27f0, 163, 0xBC58C82F);
+MS2_REPLACE_METHOD(0x140CD27F0, Customize, IsDragging, 163, 0xBC58C82F);
 
 // @0x140cd28a0
-int Customize::FUN_140cd28a0()
+int Customize::IsEditItemAdded()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -1939,7 +1939,7 @@ int Customize::FUN_140cd28a0()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140CD28A0, Customize, FUN_140cd28a0, 336, 0xE5853838);
+MS2_REPLACE_METHOD(0x140CD28A0, Customize, IsEditItemAdded, 336, 0xE5853838);
 
 // @0x140cd2a00
 int Customize::FUN_140cd2a00()
@@ -1994,7 +1994,7 @@ int Customize::FUN_140cd2c20()
 MS2_REPLACE_METHOD(0x140CD2C20, Customize, FUN_140cd2c20, 623, 0x02724285);
 
 // @0x140cd2ea0
-int Customize::FUN_140cd2ea0()
+int Customize::IsEditItemColorChanged()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2009,10 +2009,10 @@ int Customize::FUN_140cd2ea0()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140CD2EA0, Customize, FUN_140cd2ea0, 339, 0x97CC4F2C);
+MS2_REPLACE_METHOD(0x140CD2EA0, Customize, IsEditItemColorChanged, 339, 0x97CC4F2C);
 
 // @0x140cd3000
-int Customize::FUN_140cd3000()
+int Customize::HasSelectedChangeFlag2()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2027,10 +2027,10 @@ int Customize::FUN_140cd3000()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140CD3000, Customize, FUN_140cd3000, 339, 0x5B75FB50);
+MS2_REPLACE_METHOD(0x140CD3000, Customize, HasSelectedChangeFlag2, 339, 0x5B75FB50);
 
 // @0x140cd3160
-int Customize::FUN_140cd3160(int nIndex, int n)
+int Customize::ApplyColor(int nIndex, int n)
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2039,10 +2039,10 @@ int Customize::FUN_140cd3160(int nIndex, int n)
         return 0;
     return spEdit->ApplyColor(nIndex, n);
 }
-MS2_REPLACE_METHOD(0x140CD3160, Customize, FUN_140cd3160, 181, 0xF6DBB63E);
+MS2_REPLACE_METHOD(0x140CD3160, Customize, ApplyColor, 181, 0xF6DBB63E);
 
 // @0x140cd3220
-int Customize::FUN_140cd3220(int nPalette, int nColor, int n)
+int Customize::ApplyPalette(int nPalette, int nColor, int n)
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2051,10 +2051,10 @@ int Customize::FUN_140cd3220(int nPalette, int nColor, int n)
         return 0;
     return spEdit->ApplyPalette(nPalette, nColor, n);
 }
-MS2_REPLACE_METHOD(0x140CD3220, Customize, FUN_140cd3220, 191, 0x1DDB03AE);
+MS2_REPLACE_METHOD(0x140CD3220, Customize, ApplyPalette, 191, 0x1DDB03AE);
 
 // @0x140cd32f0
-int Customize::FUN_140cd32f0(const int& nPalette, int nColor, int n)
+int Customize::SetColors(const int& nPalette, int nColor, int n)
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2063,10 +2063,10 @@ int Customize::FUN_140cd32f0(const int& nPalette, int nColor, int n)
         return 0;
     return spEdit->SetColors(nPalette, nColor, n);
 }
-MS2_REPLACE_METHOD(0x140CD32F0, Customize, FUN_140cd32f0, 193, 0xF366EAE5);
+MS2_REPLACE_METHOD(0x140CD32F0, Customize, SetColors, 193, 0xF366EAE5);
 
 // @0x140cd33c0
-int Customize::FUN_140cd33c0(int* pnColor, int nSlot)
+int Customize::GetColors(int* pnColor, int nSlot)
 {
     if (m_spEquipment == 0)
         return 0;
@@ -2075,12 +2075,12 @@ int Customize::FUN_140cd33c0(int* pnColor, int nSlot)
         return 0;
     return spEdit->GetColors(pnColor, nSlot);
 }
-MS2_REPLACE_METHOD(0x140CD33C0, Customize, FUN_140cd33c0, 183, 0x3E0EE1BE);
+MS2_REPLACE_METHOD(0x140CD33C0, Customize, GetColors, 183, 0x3E0EE1BE);
 
 // @0x140cd3480
 void Customize::FUN_140cd3480(int bApply, int nPalette)
 {
-    PC* pPc = FUN_140cd3df0();
+    PC* pPc = GetPlayer();
     if (pPc == 0)
         return;
     if (bApply != 0) {
@@ -2106,7 +2106,7 @@ void Customize::FUN_140cd3480(int bApply, int nPalette)
 }
 
 // @0x140cd3750
-void Customize::FUN_140cd3750(ItemMap& out)
+void Customize::GetAddedItems(ItemMap& out)
 {
     out.RemoveAll();
     if (m_spEquipment == 0)
@@ -2116,7 +2116,7 @@ void Customize::FUN_140cd3750(ItemMap& out)
         return;
     spClone->GetAdded(out);
 }
-MS2_REPLACE_METHOD(0x140CD3750, Customize, FUN_140cd3750, 162, 0x0EACAFFA);
+MS2_REPLACE_METHOD(0x140CD3750, Customize, GetAddedItems, 162, 0x0EACAFFA);
 
 // @0x140cd3800
 bool Customize::IsPreview()
@@ -2133,7 +2133,7 @@ void Customize::FUN_140cd3820()
     MS2Ptr<CloneItems> spClone = m_spEquipment->GetCloneItems();
     if (spClone == 0)
         return;
-    FUN_140cd3990();
+    RebuildEquipment();
 }
 
 // @0x140cd38b0
@@ -2165,21 +2165,21 @@ MS2Ptr<Customize::BeautyShopContext> Customize::FUN_140cd3940()
 MS2_REPLACE_METHOD(0x140CD3940, Customize, FUN_140cd3940, 65, 0xC5BCF492);
 
 // @0x140cd3990
-void Customize::FUN_140cd3990()
+void Customize::RebuildEquipment()
 {
     if (m_spEquipment == 0)
         return;
-    PC* pPc = FUN_140cd3df0();
+    PC* pPc = GetPlayer();
     if (pPc == 0)
         return;
     int nItemId = FUN_140cd17e0();
     int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
     m_spEquipment.AssignRaw(new Equipment(nObjectId, this));
-    FUN_140cd2660(nItemId);
+    SelectId(nItemId);
 }
 
 // @0x140cd3a70
-void Customize::FUN_140cd3a70()
+void Customize::ReapplyHiddenSlots()
 {
     for (POSITION pos = m_lstHiddenSlots.GetHeadPosition(); pos != 0;) {
         Unk_InventoryEquipSlot eSlot = m_lstHiddenSlots.GetNext(pos);
@@ -2199,7 +2199,7 @@ void Customize::vfunc_21(void* p)
     MS2Ptr<CloneItems> spClone = m_spEquipment->GetCloneItems();
     if (spClone == 0)
         return;
-    FUN_140cd3990();
+    RebuildEquipment();
 }
 
 // @0x140cd3ba0
@@ -2214,7 +2214,7 @@ void Customize::vfunc_22(void* p)
     MS2Ptr<CloneItems> spClone = m_spEquipment->GetCloneItems();
     if (spClone == 0)
         return;
-    FUN_140cd3990();
+    RebuildEquipment();
 }
 
 // @0x140cd3c60
@@ -2246,13 +2246,13 @@ void Customize::vfunc_25(void* p)
 MS2_REPLACE_METHOD(0x140CD3D40, Customize, vfunc_25, 161, 0x36B7DD73);
 
 // @0x140cd3df0
-PC* Customize::FUN_140cd3df0()
+PC* Customize::GetPlayer()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
         return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     return 0;
 }
-MS2_REPLACE_METHOD(0x140CD3DF0, Customize, FUN_140cd3df0, 50, 0x4666D5B3);
+MS2_REPLACE_METHOD(0x140CD3DF0, Customize, GetPlayer, 50, 0x4666D5B3);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3ef0-0x142ca3f10 .text$yd
 // MS2-RANGE: 0x142ca4090-0x142ca4180 .text$yd

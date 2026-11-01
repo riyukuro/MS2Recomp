@@ -73,6 +73,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/commonstringtable.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
@@ -149,7 +155,7 @@ public:
     float Calc(float fTime, float fDuration, float fDistance); // 0x1402922c0
 };
 
-void FUN_14015f050(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 bool FUN_14036e510(void* pFeatures);
 void* FUN_140166410();
 
@@ -161,7 +167,7 @@ bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
 Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);         // next sibling
 void FUN_140873420(Unk_XmlElement* pElem, const char* pszName, CStringW& strOut);
-void FUN_1408733e0(Unk_XmlElement* pElem, const char* pszName, CString& strOut);
+
 struct Unk_XmlElementList;
 Unk_XmlElementList* FUN_14036e160(void* pFeatures, Unk_XmlElementList* pList, Unk_XmlElement* pElem);
 int FUN_1406516b0();
@@ -745,7 +751,7 @@ bool FUN_14028d780(unsigned char c)
 CString FUN_14028d7a0(const CString& strPath)
 {
     CAtlArray<CString> arrParts;
-    FUN_14015f050(strPath, arrParts, "/");
+    Unk_SplitA(const_cast<CStringA&>(strPath), (ATL::CAtlArray<CStringA>*)&(arrParts), "/");
     if (arrParts.GetCount() == 0)
         return "";
     int nLast = (int)arrParts.GetCount() - 1;
@@ -758,7 +764,7 @@ CString FUN_14028d7a0(const CString& strPath)
 CString FUN_14028d890(const CString& strPath)
 {
     CAtlArray<CString> arrParts;
-    FUN_14015f050(strPath, arrParts, "/");
+    Unk_SplitA(const_cast<CStringA&>(strPath), (ATL::CAtlArray<CStringA>*)&(arrParts), "/");
     if (arrParts.GetCount() < 2)
         return "";
     int nLast = (int)arrParts.GetCount() - 2;
@@ -1016,7 +1022,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem);
 // @0x14028f5d0
 void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut)
 {
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem != 0; pElem = FUN_140168650(pElem, pszChild))
+    for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem != 0; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
         if (!FUN_14028f650(pElem))
             continue;
@@ -1042,7 +1048,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
     CString strLocale = Unk_ReadString((class Unk_XmlNode*)(pElem), "locale", CString(""));
-    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
+    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
     if (bMatch)
         return false;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
@@ -1059,13 +1065,13 @@ bool FUN_14028f710(Unk_XmlElement* pElem)
 Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
 {
     Unk_XmlElementList* pResult = 0;
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, "environment"); pElem; pElem = FUN_140168650(pElem, "environment"))
+    for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild("environment")); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("environment")))
     {
         CStringW strFeature;
         CString strLocale;
         XmlGetAttr((class TiXmlElement*)(pElem), "feature", strFeature);
         XmlGetAttr((class TiXmlElement*)(pElem), "locale", strLocale);
-        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
+        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
         if (bLocale)
             continue;
         if (!FUN_14036d4b0(FUN_140166410(), strFeature))
@@ -1754,7 +1760,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     Unk_XmlSlotMap mapByKey;
     Unk_XmlSlotSet setOrdered;
     int nIndex = 0;
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
+    for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
         if (!FUN_14028f710(pElem))
             continue;
@@ -1789,11 +1795,11 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     Unk_XmlSlotMap mapByKey;
     Unk_XmlSlotSet setOrdered;
     int nIndex = 0;
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
+    for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
         if (!FUN_14028f710(pElem))
             continue;
-        Unk_XmlElement* pSub = FUN_140165cf0(pElem, pszSub);
+        Unk_XmlElement* pSub = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild(pszSub));
         if (!pSub)
             continue;
         ++nIndex;
@@ -2137,7 +2143,7 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     Unk_XmlSlotMap mapByKey;
     Unk_XmlSlotSet setOrdered;
     int nIndex = 0;
-    for (Unk_XmlElement* pElem = FUN_140165cf0(pParent, pszChild); pElem; pElem = FUN_140168650(pElem, pszChild))
+    for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
         if (!FUN_14028f710(pElem))
             continue;

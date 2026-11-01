@@ -145,7 +145,6 @@ private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<Unk_CashBag> FUN_140ba4b70(const CString& strName);      // child lookup (shared COMDAT)
     MS2Ptr<Unk_CashButton> FUN_140bb4b10(const CString& strName);   // child lookup (shared COMDAT)
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // child lookup (shared COMDAT)
 
     int m_nCash;                                                    // +0x178 the cash balance
     int m_nCategory;                                                // +0x17c the page

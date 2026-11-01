@@ -386,6 +386,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/placeholder/formatstringid.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);         // CStringW + CStringW
@@ -431,9 +432,9 @@ public:
 class ASDropdownMenu : public ASUIComponent
 {
 public:
-    unsigned FUN_1422df620();                                       // the entry count
-    void FUN_1422df690(int nIndex);                                 // select an entry
-    int FUN_1422df6c0();                                            // the selected entry
+    unsigned GetMenuRowCount();                                       // the entry count
+    void SetSelectedIndex(int nIndex);                                 // select an entry
+    int GetSelectedIndex();                                            // the selected entry
     void FUN_1422df5f0(int nRowCount);                              // the number of visible rows
     unsigned FUN_1422dfb90();                                       // the item count
     void FUN_1422dfc10();                                           // remove every entry
@@ -560,7 +561,6 @@ void* FUN_1422bb8b0(int nMovieId);                                  // the movie
 CStringW FUN_140298ea0(CStringW strKey);                            // the string of a key
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& a, const int& b);
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);  // StringFormat
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 int FUN_140718200(const CStringW& str);                             // to int
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);        // a system message
@@ -693,7 +693,7 @@ int UIMessenger::vfunc_53(void* pCfg)
         return 0;
     FUN_141a0f180();
     XmlSetAttr((class TiXmlElement*)(pCfg), "width", m_90->FUN_1422c1340());
-    XmlSetAttr((class TiXmlElement*)(pCfg), "height", m_90->FUN_1422c13b0());
+    XmlSetAttr((class TiXmlElement*)(pCfg), "height", m_90->GetHeightCeil());
     XmlSetAttr((class TiXmlElement*)(pCfg), "offsetX", m_fOffsetX);
     XmlSetAttr((class TiXmlElement*)(pCfg), "offsetY", m_fOffsetY);
     XmlSetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
@@ -774,11 +774,11 @@ void UIMessenger::OnLoadComplete()
     FUN_141923680(1);
     FUN_141a14dc0();
     if (m_textInput)
-        m_textInput->FUN_1422e0d60(*Client::Constants::GetInstance()->MaxChatLength.Get());
+        m_textInput->SetMaxChars(*Client::Constants::GetInstance()->MaxChatLength.Get());
     if (m_buttonBar)
     {
         m_buttonBar->FUN_1422c7630(1);
-        m_buttonBar->FUN_1422e31e0(m_nTabSelectedIndex);
+        m_buttonBar->SetSelectedIndex(m_nTabSelectedIndex);
     }
     m_90->FUN_1422c7490(
         Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMessenger::FUN_141a0f520), 0);
@@ -879,10 +879,10 @@ void UIMessenger::vfunc_15()
     {
         if (m_textOutput.get())
         {
-            MS2Ptr<ASTextField> spField = m_textOutput->FUN_1422e1490();
+            MS2Ptr<ASTextField> spField = m_textOutput->GetTextField();
             if (spField)
             {
-                if (m_textOutput->FUN_1422e4620() != spField->FUN_1422c58b0())
+                if (m_textOutput->FUN_1422e4620() != spField->GetMaxScrollV())
                     m_textOutput->FUN_1422e4720();
             }
         }
@@ -920,20 +920,20 @@ bool UIMessenger::LoadDebugChatCommand()
     for (void* pSet = FUN_140165cf0(pRoot, "CommandSet"); pSet != 0; pSet = ((void*)((class Unk_XmlNode*)(void*)(pSet))->NextSibling("CommandSet")))
     {
         CStringW strCmd;
-        FUN_140873420(pSet, "cmd", &strCmd);
+        XmlGetAttr((class TiXmlElement*)(pSet), "cmd", strCmd);
         if (strCmd.IsEmpty())
             continue;
         MS2Ptr<TDebugCommand> spCmd = new TDebugCommand;
         if (spCmd == 0)
             continue;
-        FUN_140873420(pSet, "desc", &spCmd->m_strDesc);
-        FUN_140873420(pSet, "arg", &spCmd->m_strArg);
-        FUN_140873420(pSet, "ex", &spCmd->m_strEx);
+        XmlGetAttr((class TiXmlElement*)(pSet), "desc", spCmd->m_strDesc);
+        XmlGetAttr((class TiXmlElement*)(pSet), "arg", spCmd->m_strArg);
+        XmlGetAttr((class TiXmlElement*)(pSet), "ex", spCmd->m_strEx);
         spCmd->m_strDesc.Replace(L"\\n", L"\n");
         spCmd->m_strEx.Replace(L"\\n", L"\n");
         spCmd->m_strArg.Replace(L"\\n", L"\n");
         CStringW strTags;
-        FUN_140873420(pSet, "searchTag", &strTags);
+        XmlGetAttr((class TiXmlElement*)(pSet), "searchTag", strTags);
         ATL::CAtlArray<CStringW> tags;
         if (!strTags.IsEmpty())
             FUN_14025a680(strTags, tags, L",");
@@ -980,15 +980,15 @@ CStringW UIMessenger::FUN_141a0dfc0()
 }
 
 // @0x141a0e050
-TalkTab* UIMessenger::FUN_141a0e050()
+TalkTab* UIMessenger::GetCurrentTab()
 {
     if (m_tabs.GetCount() == 1)
         return m_tabs[0].get();
-    return FUN_141a0e0f0(FUN_141a0dfc0());
+    return FindTabByName(FUN_141a0dfc0());
 }
 
 // @0x141a0e0f0
-TalkTab* UIMessenger::FUN_141a0e0f0(const CStringW& strName)
+TalkTab* UIMessenger::FindTabByName(const CStringW& strName)
 {
     for (unsigned i = 0; i < m_tabs.GetCount(); i++)
     {
@@ -1008,7 +1008,7 @@ int UIMessenger::FUN_141a0e1f0(int nIndex)
     if (m_buttonBar)
     {
         m_buttonBar->FUN_1422c7630(1);
-        m_buttonBar->FUN_1422e31e0(nIndex);
+        m_buttonBar->SetSelectedIndex(nIndex);
         m_buttonBar->vfunc_24(1);
     }
     return 1;
@@ -1029,7 +1029,7 @@ int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
 // @0x141a0e350
 int UIMessenger::FUN_141a0e350(const CStringW& strName)
 {
-    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    MS2Ptr<TalkTab> spTab = FindTabByName(strName);
     if (!spTab)
         return 0;
     for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
@@ -1063,7 +1063,7 @@ int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
             item.FUN_1407cbb20("label", pTab->m_strName);
             item.FUN_1407cb9c0("close", pTab->m_nClose);
             item.FUN_1407cb9c0("detach", pTab->m_nDetach);
-            m_buttonBar->FUN_1422e3460(item);
+            m_buttonBar->AddItem(item);
         }
         return 1;
     }
@@ -1084,7 +1084,7 @@ int UIMessenger::FUN_141a0e650(TalkTab* pTab)
             item.FUN_1407cbb20("label", pTab->m_strName);
             item.FUN_1407cb9c0("close", pTab->m_nClose);
             item.FUN_1407cb9c0("detach", pTab->m_nDetach);
-            m_buttonBar->FUN_1422e3460(item);
+            m_buttonBar->AddItem(item);
             m_buttonBar->vfunc_24(1);
             FUN_141a13ac0();
         }
@@ -1101,7 +1101,7 @@ int UIMessenger::FUN_141a0e810(const CStringW& strName, int nClose, int nDetach,
 }
 
 // @0x141a0e900
-size_t UIMessenger::FUN_141a0e900(ATL::CAtlArray<MS2Ptr<TalkTab> >& tabs)
+size_t UIMessenger::GetTabs(ATL::CAtlArray<MS2Ptr<TalkTab> >& tabs)
 {
     tabs.Copy(m_tabs);
     return tabs.GetCount();
@@ -1126,11 +1126,11 @@ void UIMessenger::FUN_141a0e990()
 }
 
 // @0x141a0e9f0
-void UIMessenger::FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew)
+void UIMessenger::RenameTab(const CStringW& strOld, const CStringW& strNew)
 {
     if (strOld == strNew)
         return;
-    TalkTab* pTab = FUN_141a0e0f0(strOld);
+    TalkTab* pTab = FindTabByName(strOld);
     if (pTab == 0)
         return;
     if (m_buttonBar)
@@ -1142,7 +1142,7 @@ void UIMessenger::FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew)
 }
 
 // @0x141a0ead0
-void UIMessenger::FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml)
+void UIMessenger::ReplaceFontSize(unsigned nFontSize, CStringW& strHtml)
 {
     for (unsigned i = 12; static_cast<int>(i) <= 18; ++i)
     {
@@ -1155,7 +1155,7 @@ void UIMessenger::FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml)
 }
 
 // @0x141a0ebb0
-void UIMessenger::FUN_141a0ebb0(unsigned nAlpha)
+void UIMessenger::SetBackgroundAlpha(unsigned nAlpha)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
@@ -1167,23 +1167,23 @@ void UIMessenger::FUN_141a0ec30(const CStringW& strText)
 {
     if (m_textInput == 0)
         return;
-    CStringW strCurrent = m_textInput->FUN_1422e0b00();
-    if (strCurrent.GetLength() >= m_textInput->FUN_1422e0da0())
+    CStringW strCurrent = m_textInput->GetText();
+    if (strCurrent.GetLength() >= m_textInput->GetMaxChars())
         return;
     CStringW strSpace(L" ");
-    CStringW strHtml = m_textInput->FUN_1422e0c20();
+    CStringW strHtml = m_textInput->GetHtmlText();
 #ifdef __clang__
     // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-    if (FUN_141a14ce0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace), m_textInput->FUN_1422e0da0()))
+    if (FUN_141a14ce0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace), m_textInput->GetMaxChars()))
     {
         m_textInput->FUN_1422e0bd0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
 #else
-    if (FUN_141a14ce0(strHtml + strText + strSpace, m_textInput->FUN_1422e0da0()))
+    if (FUN_141a14ce0(strHtml + strText + strSpace, m_textInput->GetMaxChars()))
     {
         m_textInput->FUN_1422e0bd0(strHtml + strText + strSpace);
 #endif
         m_textInput->vfunc_24(1);
-        int nLength = m_textInput->FUN_1422e0b00().GetLength();
+        int nLength = m_textInput->GetText().GetLength();
         if (0 < nLength)
         {
             vfunc_78();
@@ -1363,7 +1363,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
     {
-        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b0 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
@@ -1384,7 +1384,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
     {
-        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b1 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
@@ -1405,7 +1405,7 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
     {
-        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b2 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
@@ -1461,7 +1461,7 @@ void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
     {
         if (m_textInput.IsNull())
             break;
-        CStringW strInput = m_textInput->FUN_1422e0b00();
+        CStringW strInput = m_textInput->GetText();
         strInput.Trim();
         if (strInput.IsEmpty())
             break;
@@ -1555,8 +1555,8 @@ void UIMessenger::FUN_141a11e30()
     if (m_textInput->FUN_1422c76c0() != 0)
     {
         FUN_140d2c2a0(m_textInput, m_inputHistory);
-        CStringW strText = FUN_141842320(m_textInput->FUN_1422e0b00());
-        CStringW strHtml = m_textInput->FUN_1422e0c20();
+        CStringW strText = FUN_141842320(m_textInput->GetText());
+        CStringW strHtml = m_textInput->GetHtmlText();
         FUN_140d2c650(strHtml);
         strText = strText.Trim();
         if (strText.IsEmpty())
@@ -1585,7 +1585,7 @@ void UIMessenger::FUN_141a11e30()
         }
         else
         {
-            int nLength = m_textInput->FUN_1422e0b00().GetLength();
+            int nLength = m_textInput->GetText().GetLength();
             m_textInput->FUN_1422c7630(1);
             m_textInput->FUN_1422e1500(nLength, nLength);
             m_textInput->vfunc_24(1);
@@ -1681,7 +1681,7 @@ void UIMessenger::FUN_141a13210()
         MS2_ASSERT_AT(0x720, 0);
         return;
     }
-    CStringW strText = spInput->FUN_1422e0b00();
+    CStringW strText = spInput->GetText();
     strText.Trim();
     std::list<ChatEmoticonDataPtr> found;
     std::list<ChatEmoticonDataPtr> aliases;
@@ -1736,7 +1736,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
         item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
         item.FUN_1407cb9c0("width", spEmo->m_nWidth);
         item.FUN_1407cb9c0("height", spEmo->m_nHeight);
-        item.FUN_1407cbbe0("favorite", spCli->FUN_140a39fa0(spEmo->m_nId));
+        item.FUN_1407cbbe0("favorite", spCli->IsEmoticonFavorite(spEmo->m_nId));
         arr.PushBack(item.FUN_1422bb870());
     }
     if (arr.GetArraySize() <= 0)
@@ -1883,7 +1883,7 @@ int UIMessenger::FUN_141a14250()
 {
     if (MS2Ptr<ASTextInput> spInput = m_textInput)
     {
-        CStringW strText = spInput->FUN_1422e0b00();
+        CStringW strText = spInput->GetText();
         strText.Trim();
         if (strText.GetLength() < 2)
             return 0x1b;
@@ -1915,7 +1915,7 @@ int UIMessenger::FUN_141a14250()
 int UIMessenger::FUN_141a144a0()
 {
     if (m_subject)
-        return FUN_141a14580(m_subject->FUN_1422df6c0());
+        return FUN_141a14580(m_subject->GetSelectedIndex());
     return FUN_141a14500();
 }
 
@@ -1968,7 +1968,7 @@ void UIMessenger::FUN_141a146d0(int nType)
         return;
     if (m_subject.get())
     {
-        m_subject->FUN_1422df690(FUN_141a141c0(nType));
+        m_subject->SetSelectedIndex(FUN_141a141c0(nType));
         vfunc_93();
     }
 }
@@ -1981,8 +1981,8 @@ void UIMessenger::FUN_141a14760()
         return;
     if (m_subject.get() != 0)
     {
-        unsigned nCount = m_subject->FUN_1422df620();
-        unsigned nNext = m_subject->FUN_1422df6c0() + 1;
+        unsigned nCount = m_subject->GetMenuRowCount();
+        unsigned nNext = m_subject->GetSelectedIndex() + 1;
         if (nNext >= nCount)
             nNext = 0;
         int nType = FUN_141a14580(nNext);
@@ -2094,11 +2094,11 @@ void UIMessenger::FUN_141a15970()
 {
     if (m_buttonBar)
     {
-        unsigned nCount = m_buttonBar->FUN_1422e3380();
+        unsigned nCount = m_buttonBar->GetItemCount();
         ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
         for (unsigned i = 0; i < nCount; i++)
         {
-            TalkTab* pTab = FUN_141a0e0f0(m_buttonBar->FUN_1422e37e0(i));
+            TalkTab* pTab = FindTabByName(m_buttonBar->FUN_1422e37e0(i));
             if (pTab == 0)
                 return;
             MS2Ptr<TalkTab> spTab(pTab);
@@ -2127,7 +2127,7 @@ void UIMessenger::vfunc_87(const CStringW& strMsg, const CString& strWindow)
             MS2Ptr<TalkTab> spTab = m_tabs[i];
             if ((spTab.get() ? true : false) && spTab->m_panel.FUN_141482200()->m_nWhisper != 0)
             {
-                if (spTab == FUN_141a0e050())
+                if (spTab == GetCurrentTab())
                     continue;
                 names.PushBack(Scaleform::GFx::Value((const wchar_t*)spTab->m_strName));
             }
@@ -2146,13 +2146,13 @@ void UIMessenger::vfunc_89(const CStringW& strText, int nChannel)
 // @0x141a15dc0
 int UIMessenger::vfunc_88(const CStringW& strText, int nType)
 {
-    TalkTab* pTab = FUN_141a0e050();
+    TalkTab* pTab = GetCurrentTab();
     if (pTab == 0)
         return 0;
     if (FUN_141a131a0(pTab, nType))
         return 1;
     CStringW strLine(strText);
-    FUN_141a0ead0(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strLine);
+    ReplaceFontSize(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strLine);
     FUN_141a139c0(strLine, 0);
     return 1;
 }
@@ -2191,8 +2191,8 @@ void UIMessenger::vfunc_93()
 {
     if (!FUN_1422dc2d0())
         return;
-    CStringW strHtml = m_textInput->FUN_1422e0c20();
-    CStringW strText = m_textInput->FUN_1422e0b00();
+    CStringW strHtml = m_textInput->GetHtmlText();
+    CStringW strText = m_textInput->GetText();
     if (strText.GetAt(0) == L'/')
     {
         int nSpace = strText.Find(L" ", 0);
@@ -2209,7 +2209,7 @@ void UIMessenger::vfunc_93()
     FUN_141a17830(strHtml, 1);
     if (m_subject)
     {
-        m_nTargetSelectedIndex = m_subject->FUN_1422df6c0();
+        m_nTargetSelectedIndex = m_subject->GetSelectedIndex();
         const int& nType = FUN_141a14580(m_nTargetSelectedIndex);
         if (!m_pBrowser->FUN_141a264c0(nType) && (nType == 0x10 || nType == 0xb || nType == 0xc))
             GetClientPlatform()->vfunc_43(2, false, 1000);
@@ -2255,7 +2255,7 @@ void UIMessenger::vfunc_96(int nMenu)
 // @0x141a16400
 void UIMessenger::vfunc_97(const CStringW& strName)
 {
-    TalkTab* pTab = FUN_141a0e0f0(strName);
+    TalkTab* pTab = FindTabByName(strName);
     if (pTab == 0)
         return;
     CStringW strHtml;
@@ -2267,11 +2267,11 @@ void UIMessenger::vfunc_97(const CStringW& strName)
             continue;
         strHtml += log.m_strMsg;
     }
-    FUN_141a0ead0(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strHtml);
-    FUN_141a0ebb0(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+    ReplaceFontSize(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strHtml);
+    SetBackgroundAlpha(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
     FUN_141a139c0(strHtml, 1);
     if (m_buttonBar)
-        m_nTabSelectedIndex = m_buttonBar->FUN_1422e3210();
+        m_nTabSelectedIndex = m_buttonBar->GetSelectedIndex();
     m_pBrowser->m_194 = (int)m_pBrowser->m_logs.GetCount();
     m_pBrowser->m_pendingLogs.RemoveAll();
 }
@@ -2279,7 +2279,7 @@ void UIMessenger::vfunc_97(const CStringW& strName)
 // @0x141a165c0
 void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
 {
-    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    MS2Ptr<TalkTab> spTab = FindTabByName(strName);
     if (!spTab)
         return;
     UIMessenger* pWindow = FUN_141a184c0(CString(strWindow));
@@ -2301,7 +2301,7 @@ void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
 // @0x141a16730
 void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWidth, int nHeight, int nTarget)
 {
-    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    MS2Ptr<TalkTab> spTab = FindTabByName(strName);
     if (!spTab)
         return;
     if (m_tabs.GetCount() < 2)
@@ -2502,7 +2502,7 @@ void UIMessenger::FUN_141a17900(const CStringW& strTarget)
 {
     CStringW strText;
     if (strTarget.IsEmpty())
-        strText = FUN_1401e8510(L"{0} ", GetStringCommon(0xaa5));
+        strText = StringFormat<CStringW>(L"{0} ", GetStringCommon(0xaa5));
     else
         strText = FUN_140656190(L"{0} {1} ", GetStringCommon(0xaa5), strTarget);
     FUN_141a17830(strText, 1);
@@ -2555,7 +2555,7 @@ void UIMessenger::FUN_141a17a60(const CStringW& strTarget)
 {
     CStringW strText;
     if (strTarget.IsEmpty())
-        strText = FUN_1401e8510(L"{0} ", GetStringCommon(0xaa6));
+        strText = StringFormat<CStringW>(L"{0} ", GetStringCommon(0xaa6));
     else
         strText = FUN_140656190(L"{0} {1} ", GetStringCommon(0xaa6), strTarget);
     FUN_141a17830(strText, 1);
@@ -2858,7 +2858,7 @@ void UIMessengerBrowser::vfunc_43()
                     {
                         pDialog->vfunc_2(nAlign, (int)fX, (int)fY);
                         pWindow->FUN_141a0f180();
-                        fY = fY - (float)(pDialog->FUN_1422c13b0() + 10);
+                        fY = fY - (float)(pDialog->GetHeightCeil() + 10);
                         if (fY < (float)nTop)
                         {
                             fX = fX + 100.0f;
@@ -3021,8 +3021,8 @@ void UIMessengerBrowser::vfunc_85(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->FUN_140526a70(nUid);
-            spItem->FUN_140526b30(DAT_143ab2864);
+            spItem->SetItemUid(nUid);
+            spItem->SetObjectId(DAT_143ab2864);
             spItem->FUN_140524eb0(packet);
             m_linkedItems.SetAt(nUid, spItem);
         }
@@ -3327,13 +3327,13 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
             strFormat = GetStringCommon(699);
         else
             strFormat = GetStringCommon(nOneId);
-        strText = FUN_1401e8510(strFormat, strItem);
+        strText = StringFormat<CStringW>(strFormat, strItem);
     }
-    int nBefore = pItem->FUN_140526c50() - nCount;
+    int nBefore = pItem->GetCount() - nCount;
     if (((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
     {
         CStringW strDebug;
-        unsigned nNow = pItem->FUN_140526c50();
+        unsigned nNow = pItem->GetCount();
         strDebug = StringFormat(L"[Count:{0}] [ {1} -> {2} ]", nCount, nBefore, nNow);
         strText.AppendFormat(strDebug);
     }
@@ -3365,7 +3365,7 @@ void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
     if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
-    unsigned nCount = pItem->FUN_140526c50();
+    unsigned nCount = pItem->GetCount();
     Unk_MbLog(GetLogString(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
 }
 
@@ -3375,7 +3375,7 @@ void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
     if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
     CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
-    unsigned nCount = pItem->FUN_140526c50();
+    unsigned nCount = pItem->GetCount();
     Unk_MbLog(GetLogString(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
 }
 
@@ -3404,7 +3404,7 @@ void UIMessengerBrowser::FUN_141a25160(unsigned nAlpha)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
-            pWindow->FUN_141a0ebb0(nAlpha);
+            pWindow->SetBackgroundAlpha(nAlpha);
     }
 }
 
@@ -3570,7 +3570,7 @@ void UIMessengerBrowser::vfunc_3(void* pItem, bool bMoved)
 // @0x141a25dc0
 void UIMessengerBrowser::vfunc_4(void* pItem, int nOld)
 {
-    FUN_141275150((CItem*)pItem, ((CItem*)pItem)->FUN_140526c50(), nOld, 0x2ba, 0x2b9);
+    FUN_141275150((CItem*)pItem, ((CItem*)pItem)->GetCount(), nOld, 0x2ba, 0x2b9);
 }
 
 // @0x141a25e10
@@ -4157,7 +4157,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
         return 0;
     if (!m_textInput->FUN_1422c76c0())
         return 0;
-    CStringW strText = m_textInput->FUN_1422e0b00();
+    CStringW strText = m_textInput->GetText();
     if (!FUN_1418fccc0(a1, p2, p3, &strText))
         return 0;
     m_strLastWhisper.Empty();
@@ -4177,7 +4177,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
             int nWidth = m_textInput->FUN_1422c1340() + 0x1e;
             m_2e0->FUN_1422c79e0(nWidth, nHeight);
             float fY = m_textInput->FUN_1422c1110();
-            float fTop = fY - (float)((ASDialog*)(ASUIComponent*)m_2e0)->FUN_1422c13b0();
+            float fTop = fY - (float)((ASDialog*)(ASUIComponent*)m_2e0)->GetHeightCeil();
             float fX = m_textInput->FUN_1422c10a0();
             m_2e0->FUN_1422c00f0(fX, fTop);
             ((Unk_MsgPopup*)(ASUIComponent*)m_2e0)->vfunc_24(false);
@@ -4227,7 +4227,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
                         m_strLastWhisper = spCmd->m_strName;
                         bFirst = true;
                     }
-                    strLine = FUN_1401e8510(L"<font color='#FFD200'>{0}</font> ", spCmd->m_strName);
+                    strLine = StringFormat<CStringW>(L"<font color='#FFD200'>{0}</font> ", spCmd->m_strName);
                     strLine += spCmd->m_strArg;
                     strLine += L"\n";
                     strLine += spCmd->m_strDesc;
@@ -4375,7 +4375,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             {
                 FUN_141275260(0x388, 1, 1);
             }
-            else if (!TSingleton<CGuildManager>::GetInstance()->FUN_1404d0600(pMe->vfunc_77(), 0x800))
+            else if (!TSingleton<CGuildManager>::GetInstance()->HasMemberPermission(pMe->vfunc_77(), 0x800))
             {
                 FUN_141275260(0x415, 1, 1);
             }
@@ -4528,12 +4528,12 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01600(spItem->GetItemUid());
             CStringW strName = spItem->FUN_140527b10();
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), strName, 1, 1, 1, -1, 1);
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
+            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
@@ -4547,8 +4547,8 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
+            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
@@ -4562,8 +4562,8 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
+            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
@@ -4665,7 +4665,7 @@ void UIMessenger::FUN_141a14dc0()
         m_nTargetSelectedIndex = FUN_141a14110();
     unsigned nRows = Unk_HpxMin(spSubject->FUN_1422dfb90(), 8u);
     spSubject->FUN_1422df5f0(nRows);
-    spSubject->FUN_1422df690(m_nTargetSelectedIndex);
+    spSubject->SetSelectedIndex(m_nTargetSelectedIndex);
     ((Unk_MsgPopup*)(ASUIComponent*)spSubject)->vfunc_24(true);
     FUN_141a15890();
 }

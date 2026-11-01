@@ -25,6 +25,7 @@ static CStringW s_strRecallConfirm(L"recallscrollconfirm");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ public:
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
-class Unk_RsWorld { public: MS2Ptr<CFieldDataCli> FUN_141bd30a0(); };
+class Unk_RsWorld : public WorldService { };
 CStringTable* GetStringTable();
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
@@ -162,7 +163,7 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {
-                    box->FUN_140533ff0(nSlot);
+                    box->Append<int>(nSlot);
                     box->FUN_140b76940(CStringW(m_names[nSlot]));
                     box->FUN_140534050(m_fields[nSlot]);
                     box->FUN_141a02460(1);
@@ -184,7 +185,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (FUN_1422dc2d0() == 0)
         return;
-    if (m_tick.FUN_140268870(1000) != 0) {
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000) != 0) {
         CMsTime now(GetServerTime());
         int nActive = 0;
         for (int i = 0; i < 3; i++) {

@@ -52,6 +52,7 @@
 #include <efd/StdContainers.h>
 #include <vector>
 #include <new>
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // ---- externs -----------------------------------------------------------------------------------------------------
 class CMsgBoxData;
@@ -116,7 +117,8 @@ extern unsigned char DAT_1430e3b20;
 
 // Reconnect (same as CSceneStateMove::OnUpdate)
 CString FUN_14016a600(const wchar_t*, int);
-CStringW FUN_1408116a0(int, const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
 
@@ -191,8 +193,6 @@ Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
-bool FUN_1403b3c40(const CStringW&, const wchar_t*) throw();
-bool FUN_140841300(const CStringW&, const char*);
 
 class Unk_LobbyChar;
 void FUN_1413fb630(void*, efd::vector<unsigned long long>&);
@@ -213,6 +213,12 @@ void* FUN_1401c0d90();
 #include "ms2/client/ms2/uiloadingprogress.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 __int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
 class Unk_LobbyScanner { public: void FUN_141b90e30(float* pfX, float* pfY); };   // cursor position inside the window
@@ -295,7 +301,7 @@ int LobbyFieldTable::Load()
         CString strSelectMap("selectMap");
         CString strCreateMap("createMap");
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0;
-             pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650(strKey)))
+             pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling(strKey))))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
@@ -393,7 +399,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
-        Unk_NotifyDelegate(this, &CSceneStateMulti::FUN_14174ffb0));
+        Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
     m_lobbyField.Load();
     FUN_141275500();
     ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbae40(this);
@@ -404,7 +410,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_bReconnecting = 0;
     m_nRetry = 0;
     m_reconnectTimer.FUN_1408687f0();
-    if (reinterpret_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036e560())
+    if (reinterpret_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsRegionNA())
     {
         reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_8 = 0;
         reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_0 = true;
@@ -424,7 +430,7 @@ void CSceneStateMulti::OnLeave(int nNextState)
     FUN_14174fd00();
     ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbae80(this);
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
-        Unk_NotifyDelegate(this, &CSceneStateMulti::FUN_14174ffb0));
+        Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
 }
 
 // @0x14174e150
@@ -454,12 +460,12 @@ void CSceneStateMulti::OnUpdate(double fTime)
             m_reconnectTimer.FUN_1408687f0();
             m_nRetry = 6;
             if (DAT_143b03490)
-                DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(FUN_1408116a0(0x20f, 7), 0)));
+                DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(BlockFormat<int>(0x20f, 7), 0)));
             FUN_140d86260()->vfunc_58(0x20f, 7);
             FUN_140d86260()->vfunc_63(false, m_nRetry, 7);
             {
                 CStringW title(L"MS2");
-                FUN_141b6fcf0(FUN_1408116a0(0x20f, 7), title, 0);
+                FUN_141b6fcf0(BlockFormat<int>(0x20f, 7), title, 0);
             }
             TerminateProcess(GetCurrentProcess(), 2);
         }
@@ -566,7 +572,7 @@ int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             int nResult = pMsg->FUN_1422b8a10();
             CStringW strTag = pMsg->FUN_1422b8f40();
-            if (FUN_1403b3c40(strTag, L"waitingticketdialog")) {}  // empty body: the exe tests the result and does nothing
+            if (operator==(strTag, L"waitingticketdialog")) {}  // empty body: the exe tests the result and does nothing
         }
     }
     return 0;
@@ -799,7 +805,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         Unk_MessageBoxPtr current = pBox->FUN_1419f8470();
         if (FUN_140534fc0(current) != 0)
         {
-            if (FUN_1403b3c40(FUN_141a02ce0(FUN_140534fe0(current)), L"waitingticketdialog"))
+            if (operator==(FUN_141a02ce0(FUN_140534fe0(current)), L"waitingticketdialog"))
             {
                 pBox->UpdateMessage(text);
                 return;
@@ -886,12 +892,12 @@ unsigned int CSceneStateMulti::FUN_14174ff70()
 }
 
 // @0x14174ffb0
-void CSceneStateMulti::FUN_14174ffb0(NotifyObject* pNotify)
+void CSceneStateMulti::OnGameEventChanged(NotifyObject* pNotify)
 {
     if (m_nMode == 0)
         return;
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
-    if (pEvent != 0 && FUN_140841300(pEvent->m_eventName, "LobbyMap"))
+    if (pEvent != 0 && operator==(pEvent->m_eventName, "LobbyMap"))
     {
         if (m_nMode == 1)
             FUN_14174fea0();

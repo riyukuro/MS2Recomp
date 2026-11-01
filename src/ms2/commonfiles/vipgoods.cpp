@@ -31,12 +31,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_14028fd90(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
                    std::vector<Unk_140165cf0*>* pOut);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);           // string attribute
-int FUN_140873890(Unk_140165cf0*, const char*, int&);               // enum attribute
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_1406e8ac0(Unk_140165cf0*, const char*, int*);               // saleTag
 int FUN_1406e8a30(Unk_140165cf0*, const char*, int*);               // buyLimitResetType
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -184,7 +184,7 @@ int CVIPTable::LoadGoods()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "goods", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "goods", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
@@ -263,7 +263,7 @@ int CVIPTable::LoadBenefitItems()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "benefit", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "benefit", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];

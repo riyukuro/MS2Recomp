@@ -23,8 +23,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned int nHash, bool* pbOut);                // property read (bool)
-void FUN_1409618c0(egf::Entity* pEntity, unsigned int nHash, efd::Point3* pOut);          // property read (point)
 bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                           // string compare
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
@@ -88,12 +86,13 @@ public:
     virtual void vfunc_22(efd::Point3 kDir);                                // 22 0x14123c3a0
 };
 // The actor's move-key state (PCBase::FUN_14166d240).
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_LadderMove
 {
 public:
     bool FUN_141682fe0(int nKey);
     bool FUN_141683100(int nKey);
-    efd::Point3 FUN_141683290();                                                           // the move direction of the keys
 };
 
 // @0x1417d79e0
@@ -174,8 +173,8 @@ void StateLadder::vfunc_4(StateData* pData)
         efd::Point3 kRot;
         efd::Point3 kBase;
         float fDist;
-        FUN_1409618c0(pLadder, 0xfd95ca52, &kBase);
-        FUN_1409618c0(pLadder, 0x68c7c29d, &kRot);
+        reinterpret_cast<egf::Entity*>(pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBase));
+        reinterpret_cast<egf::Entity*>(pLadder)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kRot));
         FUN_140961880(pLadder, 0xf8b99313, &fDist);
         kRot.z = kRot.z + 180.0f;
         FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
@@ -210,7 +209,7 @@ void StateLadder::vfunc_4(StateData* pData)
 void StateLadder::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_pOwner->FUN_14166d8b0(m_pOwner->vfunc_20().z);
+    m_pOwner->SetTargetYaw(m_pOwner->vfunc_20().z);
     ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240730();
     m_pOwner->FUN_14123cb20(true);
     m_n10 = 0x2a;
@@ -253,12 +252,12 @@ void StateLadder::vfunc_8(double fTime)
     Unk_LadderMove* pMove = (Unk_LadderMove*)m_pOwner->FUN_14166d240();
     efd::Point3 kDir = efd::Point3::ZERO;
     if (m_timerPos.FUN_140868c00() != 0)
-        kDir = pMove->FUN_141683290();
+        kDir = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290()));
     reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
     if (pMove->FUN_141683100(0x493e1) || m_n28 != 0)
     {
         m_n28 = 0;
-        reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(pMove->FUN_141683290());
+        reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290())));
         if (m_pOwner->FUN_1416749c0() && !pMove->FUN_141682fe0(0x30d43) && !pMove->FUN_141682fe0(0x30d44)
             && pMove->FUN_141682fe0(0x30d41))
             reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
@@ -359,9 +358,9 @@ egf::Entity* StateLadder::FUN_1417d8b20(int nSide, unsigned int nKey)
         if (pFound != m_pLadder)
         {
             efd::Point3 kNew;
-            FUN_1409618c0(pFound, 0x68c7c29d, &kNew);
+            reinterpret_cast<egf::Entity*>(pFound)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kNew));
             efd::Point3 kOld;
-            FUN_1409618c0(m_pLadder, 0x68c7c29d, &kOld);
+            reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kOld));
             if (kNew != kOld)
                 return 0;
         }
@@ -375,7 +374,7 @@ float StateLadder::FUN_1417d8c00()
 {
     bool bFlag = false;
     if (m_pLadder != 0)
-        FUN_1408a20a0(m_pLadder, 0x4df0c0de, &bFlag);
+        m_pLadder->GetPropertyValue(0x4df0c0de, bFlag);
     float fMove = 0.0f;
     if (bFlag == false)
     {
@@ -443,7 +442,7 @@ float StateLadder::FUN_1417d8c00()
                 if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
                 {
                     float fHit = kPos.z - fGround;
-                    FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
+                    reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));
                     if (kPos.z - fMove <= fHit && fGround != FLT_MAX)
                     {
                         m_n10 = 0x2e;
@@ -461,7 +460,7 @@ float StateLadder::FUN_1417d8c00()
                 }
                 else
                 {
-                    FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
+                    reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));
                     if (FUN_14028d470(kPos.z, kProp.z) != 0)
                         m_n10 = 0x2e;
                 }
@@ -569,7 +568,7 @@ float StateLadder::FUN_1417d9880(egf::Entity* pLadder)
     const float fDrop = 5.0f;
     efd::Point3 kProp = efd::Point3::ZERO;
     efd::Point3 kAbove = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
-    FUN_1409618c0(pLadder, 0xfd95ca52, &kProp);
+    reinterpret_cast<egf::Entity*>(pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));
     float fNear = FUN_14059d930((kAbove.z - kProp.z) + 56.0f);
     float fFar = FUN_14059d930((kAbove.z - kProp.z) + 131.0f);
     float fZ;

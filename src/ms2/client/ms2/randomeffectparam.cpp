@@ -37,10 +37,11 @@ CEffectParamPtr FUN_1411a04e0(const CString& strOwner, Unk_140165cf0* pNode);
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
 
 // Game log (commonfiles singleton 0x140166440).
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_GameLog
 {
 public:
-    void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
@@ -107,7 +108,7 @@ bool CRandomEffectParam::vfunc_2()
         return false;
     if (!m_arrEffects.GetCount())
     {
-        ((class Unk_GameLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"데이터가 없습니다[RandomEffect - Effect count 0] [{0}]", m_str20);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"데이터가 없습니다[RandomEffect - Effect count 0] [{0}]", m_str20);
         return false;
     }
     return true;

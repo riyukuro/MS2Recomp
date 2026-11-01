@@ -15,6 +15,7 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 void FUN_140930150(int);
 void* FUN_1403ed2d0();
@@ -28,7 +29,8 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140353fc0(void*, int, int, const wchar_t*, const int&);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
 bool FUN_141902530(int, const CMsgBoxData&);
-CStringW FUN_1408116a0(int, const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 class Unk_MsgBoxData {};
 MS2Ptr<Unk_MsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 void* FUN_140aa6d30();
@@ -120,7 +122,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         else
         {
             FUN_140353fc0(((void*)GetLogString()), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
-            FUN_140d74390(FUN_1408116a0(0x20e, 0), 0, FUN_140b76b10(FUN_141902530));
+            FUN_140d74390(BlockFormat<int>(0x20e, 0), 0, FUN_140b76b10(FUN_141902530));
             FUN_140d86260()->vfunc_58(0x20e, 0);
         }
         break;

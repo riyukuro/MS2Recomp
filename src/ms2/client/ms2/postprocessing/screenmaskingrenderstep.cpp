@@ -27,7 +27,7 @@ public:
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
-    class PostProcessEffect* FUN_1416a3a90(int);
+    class PostProcessEffect* GetStep(int);
 };
 bool FUN_1416ba600(void* a, void* b);
 bool FUN_1416ba620(void* a, void* b);
@@ -93,7 +93,7 @@ void FUN_1416ba640(Unk_PPSmartC tex);
 void FUN_1416ba640(Unk_PPSmartC tex)
 {
     if (s_pkScreenMaskProp != 0) {
-        void* r = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416a3a90(8));
+        void* r = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(8));
         if (r != 0) {
             s_screenMaskTexture = tex;
             NiTexturingProperty::ShaderMap* sm = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap((NiTexture*)s_screenMaskTexture.Get(), 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);

@@ -64,8 +64,8 @@ public:
     // ~CIngredientInfo (0x14027e620) is implicit.
     void FUN_14026b1e0(COutputStream&);
     void FUN_14026b250(CInPacket&);
-    bool FUN_14026b2f0(CIngredientInfo*);
-    bool FUN_14026b350();
+    bool IsDifferent(CIngredientInfo*);
+    bool IsEmpty();
     void FUN_14026b3a0(COutputStream&);
     void FUN_14026b410(CInPacket&);
     unsigned FUN_14026b4b0();
@@ -95,10 +95,10 @@ public:
     CIngredientContainer(size_t reserve);  // 0x14026b640
     CIngredientContainer(CIngredientContainer* other);   // 0x14026b6b0
     virtual ~CIngredientContainer();       // 0x14026b980
-    bool FUN_14026b890(CIngredientContainer* other);
+    bool IsDifferentFrom(CIngredientContainer* other);
     void FUN_14026b9d0(const CStringW& text);
     void FUN_14026bbf0(int a, int b);
-    void FUN_14026bca0(Unk_IngRef r);
+    void AddIngredient(Unk_IngRef r);
     void FUN_14026bd10(int a, int b);
     Unk_IngRef FUN_14026bdc0(size_t index);
     Unk_IngRef FUN_14026be50(size_t index);
@@ -107,8 +107,8 @@ public:
     bool FUN_14026bf40();
     bool FUN_14026bf70();
     void FUN_14026bfa0(size_t n);
-    void FUN_14026bfd0(COutputStream& out);
-    void FUN_14026c0b0(CInPacket& in);
+    void Write(COutputStream& out);
+    void Read(CInPacket& in);
     Unk_IngVec* FUN_14026c230();
     void FUN_14026c250(CIngredientContainer* other);
     Unk_IngRef FUN_14026c450(unsigned key);
@@ -170,7 +170,7 @@ public:
     unsigned FUN_14026cc70();
     unsigned FUN_14026ccf0();
     unsigned FUN_14026cd70(unsigned key);
-    void FUN_14026cdf0();
+    void Clear();
     bool FUN_14026ce30();
     void FUN_14026ce80(unsigned key, int delta);
     Unk_RewardMap m_rewards;
@@ -184,11 +184,11 @@ public:
     WeddingHallReservationFee();           // 0x14026e700
     virtual ~WeddingHallReservationFee();  // 0x14026e750
     WeddingHallReservationFee& FUN_14026e780(const WeddingHallReservationFee& other);
-    void FUN_14026e7b0();
-    void FUN_14026e7e0(const WeddingHallReservationFee& other);
-    void FUN_14026e860(const WeddingHallReservationFee& other);
-    void FUN_14026e8c0(COutputStream& out);
-    void FUN_14026e940(CInputStream& in);
+    void Reset();
+    void AddFee(const WeddingHallReservationFee& other);
+    void Assign(const WeddingHallReservationFee& other);
+    void WriteTo(COutputStream& out);
+    void ReadFrom(CInputStream& in);
     __int64 m_values[4];
     __int64 m_total;
 };
@@ -234,14 +234,14 @@ class NpcShopItemLife : public CPtred {
 public:
     NpcShopItemLife();                     // 0x14026e9b0
     // ~NpcShopItemLife (0x14027e8e0) is implicit: the exe dtor stores no vptr.
-    bool FUN_14026ea20(NpcShopItemLife* other);
-    Unk_ShopLifeRef FUN_14026eab0();
+    bool IsDifferentFrom(NpcShopItemLife* other);
+    Unk_ShopLifeRef Clone();
     bool FUN_14026ebc0(void* xml);
-    void FUN_14026ee70(COutputStream& out);
-    void FUN_14026ef20(CInPacket& in);
+    void Write(COutputStream& out);
+    void Read(CInPacket& in);
     bool FUN_14026f000();
     bool FUN_14026f040(const CMsTime& now);
-    bool FUN_14026f080(const CMsTime& now);
+    bool IsNotExpired(const CMsTime& now);
     bool FUN_14026f0f0();
     __int64 FUN_14026f170();
     int m_type, m_value;

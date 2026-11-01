@@ -54,11 +54,7 @@ UIMeratMarketDialog* FUN_140bfed50(int nId);                        // find the 
 class Unk_RcUIManager { public: };
 
 // The input keys.
-class Unk_RcKeys : public CInputKeyHandler
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);
-};
+class Unk_RcKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
@@ -173,7 +169,7 @@ void UIRandomCoupon::vfunc_2()
     UIHeadUpDisplay::vfunc_2();
     FUN_140bfec40();
     FUN_141901470(0, 0x4f99);
-    FUN_140b632f0()->FUN_1422d4780(this, 4);
+    FUN_140b632f0()->AddToLayer(this, 4);
 }
 
 // @0x140bfea90
@@ -182,7 +178,7 @@ void UIRandomCoupon::vfunc_3()
     UIHeadUpDisplay::vfunc_3();
     FUN_140bfeae0();
     FUN_141901470(1, 0x4f99);
-    FUN_140b632f0()->FUN_1422d4840(this, 4);
+    FUN_140b632f0()->RemoveFromLayer(this, 4);
 }
 
 // @0x140bfeae0
@@ -241,7 +237,7 @@ UIMeratMarketDialog* FUN_140bfed50(int nId)
 {
     if (reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (ref.get())
             return dynamic_cast<UIMeratMarketDialog*>((UIObject*)ref);
     }

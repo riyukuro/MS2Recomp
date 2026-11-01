@@ -26,11 +26,11 @@ public:
     bool FUN_1406dc810();                                   // after reading: compute the window around the server time
     void FUN_1406dc850(COutputStream& out);                 // write the period
     void FUN_1406dcb40(CInPacket& in);                      // read the period from a packet
-    void FUN_1406dcde0(const CMsTime& tmFrom, const CMsTime& tmTo); // set the window, clipped to [start, end]
+    void SetWindow(const CMsTime& tmFrom, const CMsTime& tmTo); // set the window, clipped to [start, end]
     void FUN_1406dcf10(const CMsTime& tmNow);               // compute the next buy window from tmNow
-    bool FUN_1406dda70() const;                             // the period has a day / time-of-day restriction
-    bool FUN_1406ddad0(const CMsTime& tm) const;            // tm is inside the current window
-    bool FUN_1406ddb40(const CMsTime& tm) const;            // tm is outside the configured dates
+    bool HasSchedule() const;                             // the period has a day / time-of-day restriction
+    bool IsInWindow(const CMsTime& tm) const;            // tm is inside the current window
+    bool IsOutsidePeriod(const CMsTime& tm) const;            // tm is outside the configured dates
     bool IsVisible() const;                             // visible outside the period
     bool FUN_1406ddc50(const CMsTime& tmNow);               // visible now
     bool FUN_1406ddc90(const CMsTime& tmNow);               // tmNow is inside the period

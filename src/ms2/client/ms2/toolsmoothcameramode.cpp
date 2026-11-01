@@ -13,6 +13,7 @@
 
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -111,7 +112,6 @@ float FUN_140ae8910(CString key);
 int LoadTestCamerValue();                                // reloads the camera xml (returns 0 on failure)
 
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 bool FUN_14028d470(float a, float b);               // nearly equal
 const float& FUN_1409ffe80(const float& a, const float& b);   // std::min
 const float& FUN_140805fc0(const float& a, const float& b);   // std::max
@@ -198,7 +198,7 @@ void CToolSmoothCameraMode::vfunc_9()
             {
                 m_13c.x = (float)nX * m_15c * m_160;
                 m_13c.y = (float)nY * m_15c * m_160;
-                m_50 = FUN_140a17940(m_50 + (float)nWheel, m_58, m_54);
+                m_50 = efd::Clamp(m_50 + (float)nWheel, m_58, m_54);
             }
         }
         else if (FUN_14028d470(m_130.x, 0.0f))
@@ -240,7 +240,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     }
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     float fRate = 15.0f;
-    float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+    float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
     float fScale = fStep;
     if (m_148.FUN_140552700(g_143b01a60))
     {

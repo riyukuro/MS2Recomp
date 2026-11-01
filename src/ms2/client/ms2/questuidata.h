@@ -21,9 +21,9 @@ public:
     CQuestUIData();                                     // 0x1416e4010
     virtual ~CQuestUIData();                            // 0x1416e4270
 
-    CStringW FUN_1416e6310(int nIndex);                 // the text of condition nIndex (manual text or the type formatter)
+    CStringW GetConditionText(int nIndex);                 // the text of condition nIndex (manual text or the type formatter)
     void FUN_1416e6610(ATL::CAtlArray<CStringW>& out);  // the texts of every condition
-    CStringW FUN_1416e66f0();                           // the complete text (default: the complete npc line)
+    CStringW GetCompleteText();                           // the complete text (default: the complete npc line)
     CStringW FUN_1416e6860(int nIndex);                 // the manual text of condition nIndex ("" when none)
     CStringW FUN_1416e6900(int nIndex, const CStringW& strText);   // strText with the condition's progress count
 

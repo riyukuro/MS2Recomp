@@ -97,9 +97,9 @@ public:
     void FUN_141938190();
     void FUN_1419381c0();
     void FUN_1419381f0(CInPacket& packet);
-    void FUN_141938270(int bUp, int nA, int nB);
+    void InitPetInfo(int bUp, int nA, int nB);
     void FUN_141938350(int nId, int bUp);
-    void FUN_141938490(int nId, const CStringW& strText);
+    void SetMenuText(int nId, const CStringW& strText);
     void FUN_1419384d0();
     void FUN_141938700();
     void FUN_141938850();
@@ -111,7 +111,7 @@ public:
     void FUN_1419394a0(bool bValue);
     void FUN_1419394e0(bool bValue);
     void FUN_141939620();
-    void FUN_141939770(int nId, int nEnable);
+    void SetMenuEnable(int nId, int nEnable);
     void FUN_1419398d0();
     void FUN_141939910();
     void FUN_141939cf0(int nId);
@@ -121,10 +121,10 @@ public:
     void FUN_14193a120();
     void FUN_14193a140();
     int FUN_14193a7b0(int nId, ASObj* pObj);
-    void FUN_14193ab80();
-    void FUN_14193abe0();
+    void LoadRenderTarget();
+    void UnloadRenderTarget();
     void FUN_14193ac40(int nEnable, int nId);
-    CString FUN_14193ae90(int nId);
+    CString GetMenuName(int nId);
     CString FUN_14193afc0(int nId);
     MS2Ptr<Unk_GmItem> FUN_14193b0f0(int nId);
     MS2Ptr<Unk_GmItem> FUN_14193b180(const CString& strName);
@@ -160,7 +160,7 @@ public:
     void FUN_14193b360();
     void FUN_14193b4a0(void* pQuest);
     int FUN_14193b530(int nId);
-    int FUN_14193b570(int nId);
+    int IsChildMenu(int nId);
     void FUN_14193b750();
     void FUN_14193bbe0();
     void FUN_14193bf70();

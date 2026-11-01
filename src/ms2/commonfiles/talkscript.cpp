@@ -75,6 +75,12 @@
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -101,7 +107,6 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-const char* FUN_14086f4b0(Unk_ScriptXmlNode* pNode, const char* pszName);           // attribute text (null = absent)
 void FUN_14086f600(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut);
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -109,7 +114,6 @@ int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);
 void FUN_1406363a0(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut);       // job condition
-CStringA FUN_14015f710(Unk_ScriptXmlNode* pNode, const char* pszName, CStringA strDefault);
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140767ff0();                                                           // random
@@ -596,7 +600,7 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
 {
     if (pNode == 0)
         return;
-    if (FUN_14086f4b0(pNode, "randomPick") != 0)
+    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("randomPick") != 0)
         XmlGetBool((class TiXmlElement*)(pNode), "randomPick", *(int*)(&script->m_randomPick));
     for (Unk_ScriptXmlNode* child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("content")); child != 0; child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(child))->NextSibling("content")))
     {
@@ -611,9 +615,9 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
 // @0x140859320
 void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 {
-    if (FUN_14086f4b0(pNode, "popupProp") != 0)
+    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupProp") != 0)
         FUN_14086f600(pNode, "popupProp", &script->m_popupProp);
-    if (FUN_14086f4b0(pNode, "popupState") != 0)
+    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupState") != 0)
         FUN_14086f600(pNode, "popupState", &script->m_popupState);
     for (Unk_ScriptXmlNode* child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("content")); child != 0; child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(child))->NextSibling("content")))
     {

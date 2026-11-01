@@ -19,7 +19,9 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/dpsmetersystem.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include <stdlib.h>
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- unit-local views of exe objects ----
 
@@ -29,10 +31,9 @@ public:
     Scaleform::GFx::Value FUN_14192a060(const char* szMethod, CString strTime, __int64 nDamage, CString strDps);   // 0x14192a060 setAttr
 };
 
-class Unk_DpsApp { public: HWND FUN_14209c720(); };                     // the application window holder
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
-class Unk_DpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d950(int nKey, int a, int b); };
+class Unk_DpsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The DPS meter system (dpsmetersystem.cpp): records the measurement window.
@@ -93,7 +94,7 @@ int UIDPSDialog::vfunc_65()
         FUN_14192a260();
     FUN_14192a1e0();
     CToolBaseDialog* pTool = GetToolBaseDialog();
-    pTool->Create(0x91, CWnd::FromHandle(((class Unk_DpsApp*)FUN_140aadf80())->FUN_14209c720()));
+    pTool->Create(0x91, CWnd::FromHandle(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef()));
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
     packet.WriteUInt8(1);
     FUN_140710590(packet);

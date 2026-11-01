@@ -38,18 +38,18 @@ public:
     void FUN_140a39360(CInPacket& packet);              // 2: packs added (with a chat notice)
     void OnEmoticonMovedToEnd(CInPacket& packet);              // 5: one id moved to the end of the owned list
     void OnEmoticonRemoved(CInPacket& packet);              // 6: one id removed from the owned list
-    void FUN_140a39830(CInPacket& packet);              // 3: a pack opened in the messenger browser
-    void FUN_140a39940(CInPacket& packet);              // 4: a pack opened in the group messenger browser
+    void OnEmoticonTypedInMessenger(CInPacket& packet);              // 3: a pack opened in the messenger browser
+    void OnEmoticonSentInGroupMessenger(CInPacket& packet);              // 4: a pack opened in the group messenger browser
     void FUN_140a39a20(CInPacket& packet);              // 7: result notice of a pack operation
     bool FUN_140a39dd0(int nEmoticonId);                // the pack of an emoticon is owned and not expired
-    bool FUN_140a39fa0(int nEmoticonId);                // the emoticon is in the owned id list
+    bool IsEmoticonFavorite(int nEmoticonId);                // the emoticon is in the owned id list
     bool FUN_140a3a0b0(int nEmoticonId);                // the pack of an emoticon is unowned or expired
     bool FUN_140a3a140(unsigned nGroupId);                   // the pack is unowned or expired
-    void FUN_140a3a290(unsigned nGroupId, __int64 nExpire);  // own a pack (replacing an old entry)
-    void FUN_140a3a380(unsigned nGroupId);                   // forget a pack
+    void AddGroup(unsigned nGroupId, __int64 nExpire);  // own a pack (replacing an old entry)
+    void RemoveGroup(unsigned nGroupId);                   // forget a pack
     void SendMessenger();                               // report the expired packs to the server
-    MS2Ptr<ChatEmoticonGroupInfo> FUN_140a3a640(unsigned nGroupId);   // the owned pack, or null
-    void FUN_140a3a700(CInPacket& packet);              // packet dispatcher
+    MS2Ptr<ChatEmoticonGroupInfo> FindGroup(unsigned nGroupId);   // the owned pack, or null
+    void DispatchPacket(CInPacket& packet);              // packet dispatcher
     const std::list<unsigned>& FUN_140bd5ba0() const { return m_ids; }                     // inline (COMDAT 0x140bd5ba0)
     const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& FUN_140bd5bb0() const { return m_groups; }   // inline (COMDAT 0x140bd5bb0)
 

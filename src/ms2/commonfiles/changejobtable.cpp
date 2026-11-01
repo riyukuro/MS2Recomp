@@ -14,6 +14,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Out-of-unit callees.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -65,43 +75,43 @@ void CChangeJobTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("subjob"); pNode != 0; pNode = pNode->FUN_140168650("subjob"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("subjob")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("subjob")))
     {
         CStringW strFeature;
-        FUN_140873420(pNode, "feature", strFeature);
-        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
+        XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
+        if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabledByName(strFeature))
             continue;
         DataPtr spData(Unk_SocketNew(0));
         int nValue = 0;
-        FUN_1408731e0(pNode, "subJobCode", nValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "subJobCode", reinterpret_cast<int&>(nValue));
         spData->m_nSubJobCode = static_cast<Unk_SubJobCode>(nValue);
-        FUN_1408731e0(pNode, "changeSubJobCode", nValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "changeSubJobCode", reinterpret_cast<int&>(nValue));
         spData->m_nChangeSubJobCode = nValue;
-        FUN_1408731e0(pNode, "startquestid", nValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "startquestid", reinterpret_cast<int&>(nValue));
         spData->m_nStartQuestId = nValue;
-        FUN_1408731e0(pNode, "endquestid", nValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "endquestid", reinterpret_cast<int&>(nValue));
         spData->m_nEndQuestId = nValue;
         spData->m_strJobName = GetStringTable()->FUN_141811980(6, spData->m_nChangeSubJobCode);
         FUN_140873ad0(pNode, "movie", spData->m_strMovie);
         int nStringId = 0;
-        FUN_1408731e0(pNode, "desc", nStringId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "desc", reinterpret_cast<int&>(nStringId));
         spData->m_strDesc = GetStringTable()->FUN_141811980(0x4f, nStringId);
-        FUN_1408731e0(pNode, "skilldesc1", nStringId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "skilldesc1", reinterpret_cast<int&>(nStringId));
         spData->m_strSkillDesc1 = GetStringTable()->FUN_141811980(0x4f, nStringId);
-        FUN_1408731e0(pNode, "skilldesc2", nStringId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "skilldesc2", reinterpret_cast<int&>(nStringId));
         spData->m_strSkillDesc2 = GetStringTable()->FUN_141811980(0x4f, nStringId);
         ATL::CAtlArray<CString> tokens1;
         CString strSkills1;
-        FUN_1408733e0(pNode, "skillID1", strSkills1);
-        FUN_14015f050(strSkills1, tokens1, ",");
+        XmlGetAttr((class TiXmlElement*)(pNode), "skillID1", strSkills1);
+        Unk_SplitA(const_cast<CStringA&>(strSkills1), (ATL::CAtlArray<CStringA>*)&(tokens1), ",");
         for (size_t i = 0; i < tokens1.GetCount(); i++)
         {
             spData->m_skills1.Add(atoi(tokens1[i]));
         }
         ATL::CAtlArray<CString> tokens2;
         CString strSkills2;
-        FUN_1408733e0(pNode, "skillID2", strSkills2);
-        FUN_14015f050(strSkills2, tokens2, ",");
+        XmlGetAttr((class TiXmlElement*)(pNode), "skillID2", strSkills2);
+        Unk_SplitA(const_cast<CStringA&>(strSkills2), (ATL::CAtlArray<CStringA>*)&(tokens2), ",");
         for (size_t i = 0; i < tokens2.GetCount(); i++)
         {
             spData->m_skills2.Add(atoi(tokens2[i]));

@@ -39,15 +39,16 @@ public:
 };
 
 // Depth-first walker over a scene graph (0x38 bytes; see nifeffectparam.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);          // 0x14098cb80
-    ~Unk_SceneWalker();                         // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);          // 0x14098cb80
+    ~Unk_NodeQueue();                         // 0x14098cf00
     NiAVObject* Next(bool bDescend);            // 0x14098e0d0
 private:
     void* m_pad[6];
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 void* FUN_140876480(void* pOut, int nCat);      // category hint
@@ -59,7 +60,11 @@ bool FUN_1417741e0(const NiRTTI* pRTTI, const void* pObject);
 
 extern const NiRTTI DAT_143d691b8;              // material kind the soft-particle nodes are filtered by
 extern NiFixedString DAT_143ae5258;             // name of the material created for the view
-PostProcessingService* FUN_1409a8b20();         // the post-processing service singleton
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 void FUN_141773a90(void* pRegistry, void* pNode);
 void FUN_141773cc0(void* pRegistry, void* pNode);
@@ -96,7 +101,7 @@ void FUN_141773630(void* viewSystem)
 void FUN_141773940(void* viewSystem, bool bEnable)
 {
     ((SoftParticlesManager*)viewSystem)->m_spClick->SetActive(bEnable);
-    FUN_1409a8b20()->FUN_1416aa6a0((Unk_PPTexture)1, bEnable);
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa6a0((Unk_PPTexture)1, bEnable);
 
     if (bEnable)
     {
@@ -128,7 +133,7 @@ void FUN_141773940(void* viewSystem, bool bEnable)
 // @0x141773a90
 void FUN_141773a90(void* pRegistry, void* pNode)
 {
-    Unk_SceneWalker kWalker((NiObject*)pNode);
+    Unk_SceneWalker kWalker((NiAVObject*)((NiObject*)pNode));
     NiAVObject* pkNext;
     while ((pkNext = kWalker.Next(true)) != 0)
     {
@@ -149,7 +154,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
             pkObject->AttachProperty(pkTexturing);
         }
 
-        NiRenderedTexture* pkTexture = FUN_1409a8b20()->GetRenderedTexture(1);
+        NiRenderedTexture* pkTexture = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetRenderedTexture(1);
         NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(pkTexture, 0,
             NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST);
         pkTexturing->SetShaderMap(0, pkMap);
@@ -161,7 +166,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
 // @0x141773cc0
 void FUN_141773cc0(void* pRegistry, void* pNode)
 {
-    Unk_SceneWalker kWalker((NiObject*)pNode);
+    Unk_SceneWalker kWalker((NiAVObject*)((NiObject*)pNode));
     NiAVObject* pkNext;
     while ((pkNext = kWalker.Next(true)) != 0)
     {
@@ -205,7 +210,7 @@ void FUN_141773e30(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Ca
 // @0x141773ed0
 void FUN_141773ed0(Unk_PPSecondView* pkSoftParticles)
 {
-    NiRenderedTexture* pkTexture = FUN_1409a8b20()->GetRenderedTexture(1);
+    NiRenderedTexture* pkTexture = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetRenderedTexture(1);
 
     NiTPointerList<NiAVObjectPtr>& kScenes = pkSoftParticles->m_spView->GetScenes();
     NiTListIterator kPos = kScenes.GetHeadPos();
@@ -213,7 +218,7 @@ void FUN_141773ed0(Unk_PPSecondView* pkSoftParticles)
     {
         const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
 
-        Unk_SceneWalker kWalker((NiAVObject*)spScene);
+        Unk_SceneWalker kWalker((NiAVObject*)((NiAVObject*)spScene));
         NiAVObject* pkNext;
         while ((pkNext = kWalker.Next(true)) != 0)
         {

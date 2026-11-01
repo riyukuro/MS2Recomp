@@ -75,14 +75,14 @@ public:
     void FUN_141b1bfa0();                                           // 0x141b1bfa0 default key group
     int GetLoaded();                                            // 0x141b1bfc0
     void FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pContent);   // fill the illustrations of the page
-    void FUN_141b1c4c0(ASObj& rPage, const CCinematicContent* pContent);   // the image plate
+    void SetImagePlate(ASObj& rPage, const CCinematicContent* pContent);   // the image plate
     int FUN_141b1c530();                                            // the next key was pressed
-    CString FUN_141b1c5e0(unsigned nNpcId);                         // illustration path of an npc
-    CString FUN_141b1c670(const CString& strName);                  // illustration path ("empty" when missing)
+    CString GetNpcIllustPath(unsigned nNpcId);                         // illustration path of an npc
+    CString GetIllustPath(const CString& strName);                  // illustration path ("empty" when missing)
     void FUN_141b1c720(ASObj& rPage, int nNpcTalk);                 // illustration of the other npc
     MS2Ptr<CCinematicComponent> FUN_141b1c960(int nButtonSet);      // the component of a button set
-    int FUN_141b1d3d0();                                            // lower cut line y
-    int FUN_141b1d460();                                            // illust x
+    int GetLowerCutGlobalY();                                            // lower cut line y
+    int GetIllustGlobalX();                                            // illust x
 
 private:
     MS2_LAYOUT_FRIEND;

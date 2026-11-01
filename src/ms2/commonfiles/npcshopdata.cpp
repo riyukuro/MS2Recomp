@@ -129,13 +129,26 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- callees of other units -----------------------------------------------------------------------------------------
 
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                       // the item table row (null: unknown id)
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszKey,
-                   std::vector<Unk_140165cf0*>& out);                    // the elements with the overrides merged
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file>
 int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& tOut);
 int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
@@ -151,7 +164,7 @@ void FUN_140177de0(const CString& str, ATL::CAtlArray<unsigned>& out, const char
 void FUN_14015f080(const CString& str, ATL::CAtlArray<CStringW>& out, const char* pszDelim);
 int Parse_14021a030(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
@@ -187,7 +200,7 @@ public:
     {
         const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v0),
                                                        fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v1)};
-        FUN_1406536f0(a, b, nCategory, format, fmt::ArgList(fmt::internal::make_type(v0, v1), args));
+        LogWarning(a, b, nCategory, format, fmt::ArgList(fmt::internal::make_type(v0, v1), args));
     }
 };
 
@@ -333,9 +346,9 @@ void TShopPaymentAttr::FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strTyp
     if (!(pElem))
         return;
     XmlValue(pElem, strType, m_eType);
-    FUN_140873220(pElem, strItem, m_nItemId);
-    FUN_1408733e0(pElem, strIcon, m_strIconTag);
-    FUN_1408732e0(pElem, strPrice, m_nAmount);
+    XmlGetAttr((class TiXmlElement*)(pElem), strItem, m_nItemId);
+    XmlGetAttr((class TiXmlElement*)(pElem), strIcon, m_strIconTag);
+    XmlGetAttr((class TiXmlElement*)(pElem), strPrice, reinterpret_cast<__int64&>(m_nAmount));
 }
 MS2_REPLACE_METHOD(0x1406DC3C0, TShopPaymentAttr, FUN_1406dc3c0, 226, 0xD6E6362F);
 
@@ -418,7 +431,7 @@ MS2_REPLACE_METHOD(0x1406DC810, CNpcShopBuyPeriod, FUN_1406dc810, 49, 0x7096EA85
 void CNpcShopBuyPeriod::FUN_1406dc850(COutputStream& out)
 {
     bool bDates = m_tmStart > 0 || m_tmEnd > 0;
-    bool bParts = FUN_1406dda70();
+    bool bParts = HasSchedule();
     out.WriteBool(bDates);
     if (bDates)
     {
@@ -482,7 +495,7 @@ void CNpcShopBuyPeriod::FUN_1406dcb40(CInPacket& in)
 MS2_REPLACE_METHOD(0x1406DCB40, CNpcShopBuyPeriod, FUN_1406dcb40, 661, 0x7C188D13);
 
 // @0x1406dcde0
-void CNpcShopBuyPeriod::FUN_1406dcde0(const CMsTime& tmFrom, const CMsTime& tmTo)
+void CNpcShopBuyPeriod::SetWindow(const CMsTime& tmFrom, const CMsTime& tmTo)
 {
     if (tmFrom > tmTo)
     {
@@ -500,17 +513,17 @@ void CNpcShopBuyPeriod::FUN_1406dcde0(const CMsTime& tmFrom, const CMsTime& tmTo
     else
         m_tmWindowEnd = tmTo;
 }
-MS2_REPLACE_METHOD(0x1406DCDE0, CNpcShopBuyPeriod, FUN_1406dcde0, 293, 0x8DB927FC);
+MS2_REPLACE_METHOD(0x1406DCDE0, CNpcShopBuyPeriod, SetWindow, 293, 0x8DB927FC);
 
 // MS2-FUNCTIONAL: the exe's temporaries for the calendar values differ (written from the decompile and v2525).
 // @0x1406dcf10
 void CNpcShopBuyPeriod::FUN_1406dcf10(const CMsTime& tmNow)
 {
-    if (FUN_1406ddb40(tmNow))
+    if (IsOutsidePeriod(tmNow))
         return;
-    if (FUN_1406ddad0(tmNow))
+    if (IsInWindow(tmNow))
         return;
-    if (!FUN_1406dda70())
+    if (!HasSchedule())
     {
         m_tmWindowStart = m_tmStart;
         m_tmWindowEnd = m_tmEnd;
@@ -599,26 +612,26 @@ void CNpcShopBuyPeriod::FUN_1406dcf10(const CMsTime& tmNow)
             }
         }
     }
-    FUN_1406dcde0(tmStart.Get(), tmEnd.Get());
+    SetWindow(tmStart.Get(), tmEnd.Get());
 }
 MS2_REPLACE_METHOD(0x1406DCF10, CNpcShopBuyPeriod, FUN_1406dcf10, 2891, 0x5A479539);
 
 // @0x1406dda70
-bool CNpcShopBuyPeriod::FUN_1406dda70() const
+bool CNpcShopBuyPeriod::HasSchedule() const
 {
     return !m_aPartTimes.IsEmpty() || !m_setDays.empty();
 }
-MS2_REPLACE_METHOD(0x1406DDA70, CNpcShopBuyPeriod, FUN_1406dda70, 85, 0x974395DB);
+MS2_REPLACE_METHOD(0x1406DDA70, CNpcShopBuyPeriod, HasSchedule, 85, 0x974395DB);
 
 // @0x1406ddad0
-bool CNpcShopBuyPeriod::FUN_1406ddad0(const CMsTime& tm) const
+bool CNpcShopBuyPeriod::IsInWindow(const CMsTime& tm) const
 {
     return m_tmWindowStart <= tm && tm < m_tmWindowEnd;
 }
-MS2_REPLACE_METHOD(0x1406DDAD0, CNpcShopBuyPeriod, FUN_1406ddad0, 100, 0x91201766);
+MS2_REPLACE_METHOD(0x1406DDAD0, CNpcShopBuyPeriod, IsInWindow, 100, 0x91201766);
 
 // @0x1406ddb40
-bool CNpcShopBuyPeriod::FUN_1406ddb40(const CMsTime& tm) const
+bool CNpcShopBuyPeriod::IsOutsidePeriod(const CMsTime& tm) const
 {
     if (m_tmStart == 0 && m_tmEnd == 0)
         return false;
@@ -626,7 +639,7 @@ bool CNpcShopBuyPeriod::FUN_1406ddb40(const CMsTime& tm) const
         return false;
     return m_tmStart > tm || tm >= m_tmEnd;
 }
-MS2_REPLACE_METHOD(0x1406DDB40, CNpcShopBuyPeriod, FUN_1406ddb40, 231, 0xA26375FC);
+MS2_REPLACE_METHOD(0x1406DDB40, CNpcShopBuyPeriod, IsOutsidePeriod, 231, 0xA26375FC);
 
 // @0x1406ddc30
 bool CNpcShopBuyPeriod::IsVisible() const
@@ -647,12 +660,12 @@ MS2_REPLACE_METHOD(0x1406DDC50, CNpcShopBuyPeriod, FUN_1406ddc50, 55, 0xFAEE57E9
 // @0x1406ddc90
 bool CNpcShopBuyPeriod::FUN_1406ddc90(const CMsTime& tmNow)
 {
-    if (!FUN_1406dda70() && !FUN_1406ddb40(tmNow))
+    if (!HasSchedule() && !IsOutsidePeriod(tmNow))
         return true;
-    if (FUN_1406ddad0(tmNow) == true)
+    if (IsInWindow(tmNow) == true)
         return true;
     FUN_1406dcf10(tmNow);
-    return FUN_1406ddad0(tmNow);
+    return IsInWindow(tmNow);
 }
 MS2_REPLACE_METHOD(0x1406DDC90, CNpcShopBuyPeriod, FUN_1406ddc90, 119, 0xEB52E2AC);
 
@@ -706,7 +719,7 @@ bool CNpcShopItem::operator!=(const CNpcShopItem& o) const
         return true;
     if (m_spLife != 0 && o.m_spLife != 0)
     {
-        if ((*m_spLife).FUN_14026ea20(&*o.m_spLife))
+        if ((*m_spLife).IsDifferentFrom(&*o.m_spLife))
             return true;
     }
     else if (m_spLife != 0 || o.m_spLife != 0)
@@ -748,7 +761,7 @@ bool CNpcShopItem::FUN_1406de410()
     if (m_spLife != 0)
     {
         CMsTime tmNow(GetServerTime());
-        if (!m_spLife->FUN_14026f080(tmNow))
+        if (!m_spLife->IsNotExpired(tmNow))
             return false;
     }
     return true;
@@ -962,30 +975,30 @@ int LoadShopMeratGroup()
         return 0;
     CString strItem("meratItem");
     const CString& strItemTag = strItem;
-    for (Unk_140165cf0* pShop = pRoot->FUN_140165cf0("shop"); pShop != 0; pShop = pShop->FUN_140168650("shop"))
+    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         if (!FUN_1406e5bc0(pShop))
             continue;
         int nGroupId = 0;
-        FUN_1408731e0(pShop, "groupID", nGroupId);
+        XmlGetAttr((class TiXmlElement*)(pShop), "groupID", reinterpret_cast<int&>(nGroupId));
         if (s_meratGroups.Lookup(nGroupId) != 0)
             continue;
         Unk_MeratItemArrayPtr spItems(Unk_SocketNew(0));
         s_meratGroups.SetAt(nGroupId, spItems);
-        for (Unk_140165cf0* pItem = pShop->FUN_140165cf0(strItemTag); pItem != 0;
-             pItem = pItem->FUN_140168650(strItemTag))
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild(strItemTag)); pItem != 0;
+             pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling(strItemTag)))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
             int nSn;
-            FUN_1408731e0(pItem, "sn", nSn);
+            XmlGetAttr((class TiXmlElement*)(pItem), "sn", reinterpret_cast<int&>(nSn));
             MS2Ptr<CNpcShopMeratItemSvr> spMerat(new CNpcShopMeratItemSvr);
             if (spMerat == 0)
                 continue;
             spMerat->m_nSn = nSn;
             spMerat->m_spProduct = 0;
             int nOrder = 0;
-            FUN_1408731e0(pItem, "displayOrder", nOrder);
+            XmlGetAttr((class TiXmlElement*)(pItem), "displayOrder", reinterpret_cast<int&>(nOrder));
             spMerat->m_nDisplayOrder = nOrder > 1 ? nOrder : 1;
             spItems->Add(spMerat);
         }
@@ -1089,10 +1102,10 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     CStringW strErrors;
     std::vector<Unk_140165cf0*> elems;
     if (bOverride)
-        FUN_14028faa0(pRoot, "shop", "shopID", elems);
+        FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "shop", "shopID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(elems));
     else
     {
-        for (Unk_140165cf0* pShop = pRoot->FUN_140165cf0("shop"); pShop != 0; pShop = pShop->FUN_140168650("shop"))
+        for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
         {
             if (!FUN_1406e5bc0(pShop))
                 continue;
@@ -1103,13 +1116,13 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     {
         MS2Ptr<CNpcShopData> spShop(new CNpcShopData);
         int nResetEnable = 0;
-        FUN_140873220(pShop, "shopID", spShop->m_nShopId);
-        FUN_140873220(pShop, "shopVersion", spShop->m_nShopVersion);
-        FUN_1408731e0(pShop, "categoryID", spShop->m_nCategoryId);
-        FUN_1408731e0(pShop, "resetEnable", nResetEnable);
-        FUN_1408731e0(pShop, "isOpenTokenPocket", spShop->m_nOpenTokenPocket);
-        FUN_1408731e0(pShop, "meratItemGroupID", spShop->m_nMeratItemGroupId);
-        FUN_1408730a0(pShop, "isOnlySell", spShop->m_bOnlySell);
+        XmlGetAttr((class TiXmlElement*)(pShop), "shopID", spShop->m_nShopId);
+        XmlGetAttr((class TiXmlElement*)(pShop), "shopVersion", spShop->m_nShopVersion);
+        XmlGetAttr((class TiXmlElement*)(pShop), "categoryID", reinterpret_cast<int&>(spShop->m_nCategoryId));
+        XmlGetAttr((class TiXmlElement*)(pShop), "resetEnable", reinterpret_cast<int&>(nResetEnable));
+        XmlGetAttr((class TiXmlElement*)(pShop), "isOpenTokenPocket", reinterpret_cast<int&>(spShop->m_nOpenTokenPocket));
+        XmlGetAttr((class TiXmlElement*)(pShop), "meratItemGroupID", reinterpret_cast<int&>(spShop->m_nMeratItemGroupId));
+        XmlGetAttr((class TiXmlElement*)(pShop), "isOnlySell", reinterpret_cast<bool&>(spShop->m_bOnlySell));
         FUN_140873710(pShop, "useLuaPremiumItemRandomCount", spShop->m_nUseLuaPremiumItemRandomCount);
         FUN_140873710(pShop, "disableDisplayOrderSort", spShop->m_nDisableDisplayOrderSort);
         FUN_140873710(pShop, "isSmartShopItemList", spShop->m_nSmartShopItemList);
@@ -1117,23 +1130,23 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
         FUN_1408736d0(pShop, "showOnlyUsableItem", spShop->m_bShowOnlyUsableItem);
         FUN_1408736d0(pShop, "hideOptionInfo", spShop->m_bHideOptionInfo);
         FUN_1408736d0(pShop, "showProbInfo", spShop->m_bShowProbInfo);
-        FUN_1408733e0(pShop, "iconName", spShop->m_strIconName);
+        XmlGetAttr((class TiXmlElement*)(pShop), "iconName", spShop->m_strIconName);
         spShop->m_nResetEnable = nResetEnable;
         spShop->m_bResetButtonHide = nResetEnable == 0;
         spShop->m_bResettable = nResetEnable == 1;
         if (nResetEnable != 0)
         {
             XmlValue(pShop, "resetPaymentType", spShop->m_eResetPaymentType);
-            FUN_140873220(pShop, "resetPaymentItemID", spShop->m_nResetPaymentItemId);
-            FUN_140873220(pShop, "resetPrice", spShop->m_nResetPrice);
-            FUN_1408731e0(pShop, "resetListMax", spShop->m_nResetListMax);
-            FUN_1408731e0(pShop, "resetListMin", spShop->m_nResetListMin);
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetPaymentItemID", spShop->m_nResetPaymentItemId);
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetPrice", spShop->m_nResetPrice);
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetListMax", reinterpret_cast<int&>(spShop->m_nResetListMax));
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetListMin", reinterpret_cast<int&>(spShop->m_nResetListMin));
             FUN_140873710(pShop, "useLuaResetPayment", spShop->m_nUseLuaResetPayment);
-            FUN_140873220(pShop, "resetIntervalTime", spShop->m_nResetIntervalTime);
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetIntervalTime", spShop->m_nResetIntervalTime);
             XmlValue(pShop, "resetType", spShop->m_eResetType);
             FUN_1408736d0(pShop, "resetButtonHide", spShop->m_bResetButtonHide);
             FUN_140873600(pShop, "resetFixedTime", spShop->m_tmResetFixed);
-            FUN_1408731e0(pShop, "resetByAccount", spShop->m_nResetByAccount);
+            XmlGetAttr((class TiXmlElement*)(pShop), "resetByAccount", reinterpret_cast<int&>(spShop->m_nResetByAccount));
         }
         if (shops.find(spShop->m_nShopId) != shops.end())
             shops[spShop->m_nShopId] = spShop;
@@ -1162,10 +1175,10 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
         return 0;
     int bFailed = 0;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = pRoot->FUN_140165cf0("shop"); pShop != 0; pShop = pShop->FUN_140168650("shop"))
+    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         unsigned nShopId = 0;
-        FUN_140873220(pShop, "shopID", nShopId);
+        XmlGetAttr((class TiXmlElement*)(pShop), "shopID", nShopId);
         if (nShopId == 0)
             continue;
         MS2Ptr<CNpcShopData> spShop(0);
@@ -1182,10 +1195,10 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             continue;
         std::vector<Unk_140165cf0*> elems;
         if (bOverride)
-            FUN_14028faa0(pShop, "item", "sn", elems);
+            FUN_14028faa0((struct Unk_XmlElement*)(pShop), "item", "sn", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(elems));
         else
         {
-            for (Unk_140165cf0* pItem = pShop->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
             {
                 if (!FUN_1406e5bc0(pItem))
                     continue;
@@ -1195,11 +1208,11 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
         for (Unk_140165cf0* pItem : elems)
         {
             MS2Ptr<CNpcShopItem> spItem(new CNpcShopItem);
-            FUN_140873220(pItem, "sn", spItem->m_nSn);
-            FUN_140873220(pItem, "id", spItem->m_nItemId);
+            XmlGetAttr((class TiXmlElement*)(pItem), "sn", spItem->m_nSn);
+            XmlGetAttr((class TiXmlElement*)(pItem), "id", spItem->m_nItemId);
             XmlValue(pItem, "paymentType", spItem->m_ePaymentType);
             CString strPayment;
-            FUN_1408733e0(pItem, "paymentItemID", strPayment);
+            XmlGetAttr((class TiXmlElement*)(pItem), "paymentItemID", strPayment);
             {
                 std::vector<CString> parts;
                 FUN_140275080(strPayment, parts, ":");
@@ -1209,17 +1222,17 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                     spItem->m_nPaymentItemSub = FUN_140557640(FUN_140281980(), parts[1]);
             }
             FUN_140873ad0(pItem, "paymentIconTag", spItem->m_strPaymentIconTag);
-            FUN_140873220(pItem, "price", spItem->m_nPrice);
-            FUN_140873220(pItem, "OriginalPrice", spItem->m_nOriginalPrice);
-            FUN_140873220(pItem, "prob", spItem->m_nProb);
-            FUN_140873220(pItem, "grade", spItem->m_nGrade);
-            FUN_140873220(pItem, "sellCount", spItem->m_nSellCount);
-            FUN_140873220(pItem, "requireGuildTrophy", spItem->m_nRequireGuildTrophy);
+            XmlGetAttr((class TiXmlElement*)(pItem), "price", spItem->m_nPrice);
+            XmlGetAttr((class TiXmlElement*)(pItem), "OriginalPrice", spItem->m_nOriginalPrice);
+            XmlGetAttr((class TiXmlElement*)(pItem), "prob", spItem->m_nProb);
+            XmlGetAttr((class TiXmlElement*)(pItem), "grade", spItem->m_nGrade);
+            XmlGetAttr((class TiXmlElement*)(pItem), "sellCount", spItem->m_nSellCount);
+            XmlGetAttr((class TiXmlElement*)(pItem), "requireGuildTrophy", spItem->m_nRequireGuildTrophy);
             FUN_140873710(pItem, "premiumItem", spItem->m_nPremiumItem);
             FUN_1408736d0(pItem, "checkGameEvent", spItem->m_bCheckGameEvent);
-            FUN_140873220(pItem, "sellUnit", spItem->m_nSellUnit);
+            XmlGetAttr((class TiXmlElement*)(pItem), "sellUnit", spItem->m_nSellUnit);
             FUN_14035bc20(pItem, "requireAlliance", &spItem->m_nRequireAlliance);
-            FUN_1408731e0(pItem, "requireAllianceGrade", (int&)spItem->m_nRequireAllianceGrade);
+            XmlGetAttr((class TiXmlElement*)(pItem), "requireAllianceGrade", reinterpret_cast<int&>((int&)spItem->m_nRequireAllianceGrade));
             XmlValue(pItem, "frameType", spItem->m_eFrameType);
             XmlValue(pItem, "saleTag", spItem->m_eSaleTag);
             FUN_1408736d0(pItem, "wearForPreview", spItem->m_bWearForPreview);
@@ -1229,7 +1242,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             {
                 CString strValue;
                 ATL::CAtlArray<unsigned> parts;
-                FUN_1408733e0(pItem, "requireAchieve", strValue);
+                XmlGetAttr((class TiXmlElement*)(pItem), "requireAchieve", strValue);
                 FUN_140177e10(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
@@ -1240,7 +1253,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             {
                 CString strValue;
                 ATL::CAtlArray<unsigned> parts;
-                FUN_1408733e0(pItem, "requireChampionshipInfo", strValue);
+                XmlGetAttr((class TiXmlElement*)(pItem), "requireChampionshipInfo", strValue);
                 FUN_140177de0(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
@@ -1251,7 +1264,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             {
                 CString strValue;
                 ATL::CAtlArray<CStringW> parts;
-                FUN_1408733e0(pItem, "requireGuildNpc", strValue);
+                XmlGetAttr((class TiXmlElement*)(pItem), "requireGuildNpc", strValue);
                 FUN_14015f080(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
@@ -1274,7 +1287,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             Unk_ShopLifeRef spLife = FUN_1406e3310(pItem);
             if (spLife != 0)
                 spItem->m_spLife = spLife;
-            spItem->m_strCategory = FUN_14015f710(pItem, "category", CString(""));
+            spItem->m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pItem), "category", CString(""));
             if (spItem->m_eFrameType == 0)
                 spItem->m_eFrameType = (eItemFrameType)(spItem->m_nPremiumItem == 1 ? 2 : 1);
             if (!spItem->m_bCheckGameEvent)
@@ -1311,10 +1324,10 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
         return 0;
     int bFailed = 0;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = pRoot->FUN_140165cf0("shop"); pShop != 0; pShop = pShop->FUN_140168650("shop"))
+    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         unsigned nShopId = 0;
-        FUN_140873220(pShop, "shopID", nShopId);
+        XmlGetAttr((class TiXmlElement*)(pShop), "shopID", nShopId);
         if (nShopId == 0)
             continue;
         MS2Ptr<CNpcShopData> spShop(0);
@@ -1329,13 +1342,13 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
         }
         if (spShop == 0)
             continue;
-        FUN_1408731e0(pShop, "categoryID", spShop->m_nNewCategoryId);
-        for (Unk_140165cf0* pItem = pShop->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+        XmlGetAttr((class TiXmlElement*)(pShop), "categoryID", reinterpret_cast<int&>(spShop->m_nNewCategoryId));
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
             unsigned nItemId = 0;
-            FUN_140873220(pItem, "id", nItemId);
+            XmlGetAttr((class TiXmlElement*)(pItem), "id", nItemId);
             if (nItemId == 0 || FUN_14053f870(nItemId) == 0)
                 continue;
             MS2Ptr<CNpcShopItemNew> spItem(new CNpcShopItemNew);
@@ -1355,7 +1368,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
 #endif
                     bFailed = 1;
                 }
-                spItem->m_strName = FUN_14015f710(pItem, "category", CString(""));
+                spItem->m_strName = Unk_ReadString((class Unk_XmlNode*)(pItem), "category", CString(""));
                 if (spItem->m_nProductType == 0)
                     spItem->m_nProductType = spItem->m_bFlag == true ? 2 : 1;
             }
@@ -1594,11 +1607,11 @@ MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemI
     if (tmStart.Get() > 0 || tmEnd.Get() > 0)
         bPeriod = true;
     CStringW strPartTime;
-    FUN_140873420(pElem, "partTime", strPartTime);
+    XmlGetAttr((class TiXmlElement*)(pElem), "partTime", strPartTime);
     strPartTime.Trim();
     bPeriod = bPeriod || !strPartTime.IsEmpty();
     CStringW strDays;
-    FUN_140873420(pElem, "dayOfWeek", strDays);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dayOfWeek", strDays);
     strDays.Trim();
     bPeriod = bPeriod || !strDays.IsEmpty();
     if (bPeriod == true)
@@ -1607,7 +1620,7 @@ MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemI
         strPartTime.IsEmpty() || FUN_1406e5bf0(strPartTime, spPeriod->m_aPartTimes);
         strDays.IsEmpty() || FUN_1406e5ea0(strDays, spPeriod->m_setDays);
         bool bOnlyVisibleInPeriod = false;
-        FUN_1408730a0(pElem, "onlyVisibleInPeriod", bOnlyVisibleInPeriod);
+        XmlGetAttr((class TiXmlElement*)(pElem), "onlyVisibleInPeriod", reinterpret_cast<bool&>(bOnlyVisibleInPeriod));
         spPeriod->m_bVisible = bOnlyVisibleInPeriod == false;
         spPeriod->m_tmStart = tmStart;
         spPeriod->m_tmEnd = tmEnd;
@@ -2102,14 +2115,14 @@ bool FUN_1406e4fa0(Unk_140165cf0* pElem, unsigned nShopId, CBeautyShopItemGroup*
     if (!FUN_1406e5bc0(pElem))
         return true;
     MS2Ptr<CBeautyShopItem> spItem(new CBeautyShopItem);
-    FUN_140873220(pElem, "id", spItem->m_nItemId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", spItem->m_nItemId);
     TShopPaymentAttr& payment = spItem->m_payment;
     payment.FUN_1406dc3c0(pElem, "paymentType", "paymentItemID", "paymentIconTag", "price");
-    FUN_140873220(pElem, "weight", spItem->m_nWeight);
-    FUN_1408731e0(pElem, "saleTag", spItem->m_nSaleTag);
-    FUN_1408731a0(pElem, "requireLevel", spItem->m_nRequireLevel);
-    FUN_140873220(pElem, "achieveID", spItem->m_nAchieveId);
-    FUN_1408731e0(pElem, "achieveGrade", spItem->m_nAchieveGrade);
+    XmlGetAttr((class TiXmlElement*)(pElem), "weight", spItem->m_nWeight);
+    XmlGetAttr((class TiXmlElement*)(pElem), "saleTag", reinterpret_cast<int&>(spItem->m_nSaleTag));
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireLevel", reinterpret_cast<unsigned short&>(spItem->m_nRequireLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "achieveID", spItem->m_nAchieveId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "achieveGrade", reinterpret_cast<int&>(spItem->m_nAchieveGrade));
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_nItemId);
     if (!spData)
     {
@@ -2181,22 +2194,22 @@ bool FUN_1406e56d0(const CString& strPath)
     if (pRoot == 0)
         return false;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = pRoot->FUN_140165cf0("shop"); pShop != 0; pShop = pShop->FUN_140168650("shop"))
+    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         if (!FUN_1406e5bc0(pShop))
             continue;
         unsigned nShopId = 0;
-        FUN_140873220(pShop, "shopID", nShopId);
+        XmlGetAttr((class TiXmlElement*)(pShop), "shopID", nShopId);
         if (nShopId == 0)
             continue;
         Unk_CouponItemArrayPtr spCoupons(0);
         spCoupons = Unk_SocketNew(0);
-        for (Unk_140165cf0* pItem = pShop->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
             unsigned nItemId = 0;
-            FUN_140873220(pItem, "id", nItemId);
+            XmlGetAttr((class TiXmlElement*)(pItem), "id", nItemId);
             if (nItemId == 0)
                 continue;
             MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -2270,12 +2283,12 @@ bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out)
         return true;
     Unk_DayTime midnight(0, 0, 0);
     ATL::CAtlArray<CStringW> ranges;
-    FUN_14025a680(str, ranges, L",");
+    FUN_14025a680(const_cast<CStringW&>(str), ranges, L",");
     for (int i = 0; i < (int)ranges.GetCount(); i++)
     {
         const CStringW& strRange = ranges[i];
         ATL::CAtlArray<CStringW> bounds;
-        FUN_14025a680(strRange, bounds, L"-");
+        FUN_14025a680(const_cast<CStringW&>(strRange), bounds, L"-");
         if (bounds.GetCount() != 2)
         {
             MS2_ASSERT_AT(0x49, FALSE);

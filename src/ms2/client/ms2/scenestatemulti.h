@@ -97,7 +97,7 @@ public:
     void FUN_14174fea0();                                   // 0x14174fea0
     void FUN_14174ff00();                                   // 0x14174ff00
     unsigned int FUN_14174ff70();                           // 0x14174ff70
-    void FUN_14174ffb0(NotifyObject* pNotify);              // 0x14174ffb0 NotifyGameEventChanged handler
+    void OnGameEventChanged(NotifyObject* pNotify);              // 0x14174ffb0 NotifyGameEventChanged handler
     void OnEventReward(CInPacket& packet);                  // 0x141750050 opcode 0xf7
 
 private:

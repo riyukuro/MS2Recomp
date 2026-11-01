@@ -21,6 +21,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -35,7 +36,7 @@ public:
     void FUN_141999f60();
     void FUN_141999e00();
 };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The item bag control of the movie: "bagId" names the bag shown.
 class Unk_LdItemBag : public ASMovieClip
@@ -46,7 +47,6 @@ public:
     LD_V(16) LD_V(17) LD_V(18) LD_V(19) LD_V(20) LD_V(21) LD_V(22) LD_V(23)
 #undef LD_V
     virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                // set the bag id
 private:
     unsigned char m_pad_80[8];
 };
@@ -95,8 +95,7 @@ typedef UIMsg Unk_LdUIMsg;
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 class Unk_LdStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_LdStringMgr* FUN_14025e7a0();
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_LdStringMgr (calls cast back)
 
 void FUN_140d42100(const CString& strName);
 void FUN_140d42050(const CString& strName);
@@ -175,7 +174,7 @@ void UIItemLockDialog::OnLoadComplete()
     ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f57f40(FUN_140535310(), 0);
     FUN_140535310()->FUN_1406126f0();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         pInv->FUN_141999f60();
@@ -187,7 +186,7 @@ void UIItemLockDialog::OnLoadComplete()
 void UIItemLockDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         pInv->FUN_141999f60();
@@ -228,10 +227,10 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
-                CStringW strMsg = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<Unk_LdStringMgr*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
-                strMsg = FUN_1401ceea0(strMsg, nHours);
+                strMsg = StringFormat<int>(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
             return 1;
@@ -247,10 +246,10 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
-                CStringW strMsg = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<Unk_LdStringMgr*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
-                strMsg = FUN_1401ceea0(strMsg, nHours);
+                strMsg = StringFormat<int>(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
             return 1;
@@ -268,7 +267,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 FUN_140f56c80();
             }
             FUN_140f57f40(FUN_140535310(), nTab);
-            UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+            UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
             if (pInv != 0 && pInv->vfunc_55() == 0)
                 pInv->FUN_141999e00();
         }
@@ -280,7 +279,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIItemLockDialog::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         if (pInv->vfunc_55() != 0)
@@ -289,8 +288,8 @@ void UIItemLockDialog::vfunc_66()
             if (pDlg != 0)
             {
                 Unk_LdUIMsg msg;
-                msg.FUN_1422b82b0("openWindowPos");
-                msg.FUN_1422b7f70(vfunc_48());
+                msg.AddString("openWindowPos");
+                msg.AddInt(vfunc_48());
                 pInv->OnMessage(this, &msg);
             }
         }
@@ -317,7 +316,7 @@ int UIItemLockDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x140f57ab0
 void UIItemLockDialog::vfunc_43()
 {
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0 && pInv->FUN_141924630() != 0)
     {
         float fX = 0.0f;

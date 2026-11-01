@@ -39,6 +39,17 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -56,7 +67,6 @@ struct Unk_MaidRule
     Unk_MaidLimitSlot m_limit;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned* FUN_1402056b0(Unk_MaidLimitSlot* pSlot);   // the level limit
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
@@ -94,11 +104,11 @@ int CMaidGradeJockpotTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Grade"); pNode != 0; pNode = pNode->FUN_140168650("Grade"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Grade")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Grade")))
     {
         int nGrade = 0;
         double dJackpot = 0;
-        FUN_1408731e0(pNode, "Grade", nGrade);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Grade", reinterpret_cast<int&>(nGrade));
         XmlGetAttr((class TiXmlElement*)(pNode), "JackpotRate", dJackpot);
         m_jackpotRates.SetAt(nGrade, dJackpot);
         TPtrValue<ATL::CAtlArray<double> > spRates(Unk_GrNewTag(0));
@@ -201,46 +211,46 @@ int CMaidRecipeTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
-        FUN_140873420(pNode, "locale", strLocale);
-        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
+        if (!TSingleton<CFeatureManager>::GetInstance()->IsLocaleInList(strLocale))
             continue;
         MS2Ptr<CMaidRecipe> spRecipe(new CMaidRecipe);
-        FUN_1408731e0(pNode, "Id", spRecipe->id);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Id", reinterpret_cast<int&>(spRecipe->id));
         CStringA strItem;
         TPtrValue<MaidIngredient> spFirst(Unk_GrNewTag(0));
-        FUN_1408733e0(pNode, "FirstIngredientItemID", strItem);
-        FUN_140873220(pNode, "FirstIngredientCount", spFirst->count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "FirstIngredientItemID", strItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "FirstIngredientCount", spFirst->count);
         spFirst->SetItem(strItem);
         if (spFirst->GetItemId() > 0)
             spRecipe->ingredients.push_back(spFirst);
         TPtrValue<MaidIngredient> spSecond(Unk_GrNewTag(0));
-        FUN_1408733e0(pNode, "SecondIngredientItemID", strItem);
-        FUN_140873220(pNode, "SecondIngredientCount", spSecond->count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SecondIngredientItemID", strItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SecondIngredientCount", spSecond->count);
         spSecond->SetItem(strItem);
         if (spSecond->GetItemId() > 0)
             spRecipe->ingredients.push_back(spSecond);
         TPtrValue<MaidIngredient> spThird(Unk_GrNewTag(0));
-        FUN_1408733e0(pNode, "ThirdIngredientItemID", strItem);
-        FUN_140873220(pNode, "ThirdIngredientCount", spThird->count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ThirdIngredientItemID", strItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ThirdIngredientCount", spThird->count);
         spThird->SetItem(strItem);
         if (spThird->GetItemId() > 0)
             spRecipe->ingredients.push_back(spThird);
-        FUN_1408731e0(pNode, "WorkbenchType", spRecipe->workbenchType);
-        FUN_140873220(pNode, "LeadTimeNormal", spRecipe->leadTimes[0]);
-        FUN_140873220(pNode, "LeadTimeGood", spRecipe->leadTimes[1]);
-        FUN_140873220(pNode, "LeadTimeVeryGood", spRecipe->leadTimes[2]);
-        FUN_1408731e0(pNode, "MaidExp", spRecipe->maidExp);
-        FUN_1408731e0(pNode, "MaidMood", spRecipe->maidMood);
-        FUN_140873220(pNode, "ProductItemID", spRecipe->productItemId);
-        FUN_1408731e0(pNode, "ProductCount", spRecipe->productCount);
-        FUN_140873220(pNode, "ProductsocketDataID", spRecipe->productSocketDataId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "WorkbenchType", reinterpret_cast<int&>(spRecipe->workbenchType));
+        XmlGetAttr((class TiXmlElement*)(pNode), "LeadTimeNormal", spRecipe->leadTimes[0]);
+        XmlGetAttr((class TiXmlElement*)(pNode), "LeadTimeGood", spRecipe->leadTimes[1]);
+        XmlGetAttr((class TiXmlElement*)(pNode), "LeadTimeVeryGood", spRecipe->leadTimes[2]);
+        XmlGetAttr((class TiXmlElement*)(pNode), "MaidExp", reinterpret_cast<int&>(spRecipe->maidExp));
+        XmlGetAttr((class TiXmlElement*)(pNode), "MaidMood", reinterpret_cast<int&>(spRecipe->maidMood));
+        XmlGetAttr((class TiXmlElement*)(pNode), "ProductItemID", spRecipe->productItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ProductCount", reinterpret_cast<int&>(spRecipe->productCount));
+        XmlGetAttr((class TiXmlElement*)(pNode), "ProductsocketDataID", spRecipe->productSocketDataId);
         int nRank = 0;
-        FUN_1408731e0(pNode, "ProductRank", nRank);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ProductRank", reinterpret_cast<int&>(nRank));
         spRecipe->productRank = (std::min)(6, (std::max)(1, nRank));
         m_recipes.SetAt(spRecipe->id, spRecipe);
     }
@@ -298,23 +308,23 @@ int CMaidRecipeGroupTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
-        FUN_140873420(pNode, "locale", strLocale);
-        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
+        if (!TSingleton<CFeatureManager>::GetInstance()->IsLocaleInList(strLocale))
             continue;
         int nGroupId = 0;
-        FUN_1408731e0(pNode, "GroupID", nGroupId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "GroupID", reinterpret_cast<int&>(nGroupId));
         CStringA strRecipeIds;
         ATL::CAtlArray<int> recipeIds;
-        FUN_1408733e0(pNode, "RecipeIDs", strRecipeIds);
+        XmlGetAttr((class TiXmlElement*)(pNode), "RecipeIDs", strRecipeIds);
         FUN_140177e10(strRecipeIds, recipeIds, ",");
         CStringA strLevels;
         ATL::CAtlArray<int> levels;
-        FUN_1408733e0(pNode, "RequireLevels", strLevels);
+        XmlGetAttr((class TiXmlElement*)(pNode), "RequireLevels", strLevels);
         FUN_140177e10(strLevels, levels, ",");
         if (recipeIds.GetCount() != levels.GetCount())
         {
@@ -324,7 +334,7 @@ int CMaidRecipeGroupTable::Load()
         std::vector<TPtrValue<RecipeLevel> > sorted;
         for (size_t i = 0; i < recipeIds.GetCount(); i++)
         {
-            if ((unsigned)levels[i] > *FUN_1402056b0(&((struct Unk_MaidRule*)FUN_1401d3200())->m_limit))
+            if ((unsigned)levels[i] > *reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_MaidRule*)FUN_1401d3200())->m_limit)->Get()))
                 continue;
             TPtrValue<RecipeLevel> spLevel(Unk_GrNewTag(0));
             spLevel->recipeId = recipeIds[i];

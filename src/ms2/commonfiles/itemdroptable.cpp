@@ -160,6 +160,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 class CLogString* GetLogString();
@@ -200,23 +209,23 @@ ItemDropData::ItemDropData() : m_itemID(0), m_itemID2(0)
 // @0x1402e6d60
 bool ItemDropData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "itemID", m_itemID);
-    FUN_140873220(pElem, "itemID2", m_itemID2);
-    FUN_140873220(pElem, "weight", m_weight);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemID", m_itemID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemID2", m_itemID2);
+    XmlGetAttr((class TiXmlElement*)(pElem), "weight", m_weight);
     Unk_ReadRank((class Unk_XmlNode*)(pElem), "uiItemRank", &m_uiItemRank);
     XmlQuery((class TiXmlElement*)(pElem), "assistBonus", m_assistBonus);
     XmlQuery((class TiXmlElement*)(pElem), "constraintsQuest", m_constraintsQuest);
-    FUN_1408731e0(pElem, "enchantLevel", m_enchantLevel);
-    FUN_140873220(pElem, "socketDataID", m_socketDataID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "enchantLevel", reinterpret_cast<int&>(m_enchantLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "socketDataID", m_socketDataID);
     XmlQuery((class TiXmlElement*)(pElem), "tradableCountDeduction", m_tradableCountDeduction);
     XmlQuery((class TiXmlElement*)(pElem), "rePackingLimitCountDeduction", m_rePackingLimitCountDeduction);
     XmlQuery((class TiXmlElement*)(pElem), "disableBreak", m_disableBreak);
-    FUN_1408730a0(pElem, "isBindCharacter", m_isBindCharacter);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isBindCharacter", reinterpret_cast<bool&>(m_isBindCharacter));
     XmlQuery((class TiXmlElement*)(pElem), "showIconOnGachaUI", m_showIconOnGachaUI);
     unsigned nMinCount = 1;
     unsigned nMaxCount = 0;
-    FUN_140873220(pElem, "minCount", nMinCount);
-    FUN_140873220(pElem, "maxCount", nMaxCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minCount", nMinCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxCount", nMaxCount);
     nMaxCount = (std::max)(nMinCount, nMaxCount);
     m_count.Range(nMinCount, nMaxCount);
     XmlTokenList(pElem, "mapDependency", m_mapDependency);
@@ -466,8 +475,8 @@ bool ItemDropDataGlobal::Load(Unk_140165cf0* pElem)
 {
     if (!ItemDropData::Load(pElem))
         return false;
-    FUN_140873220(pElem, "minLevel", m_minLevel);
-    FUN_140873220(pElem, "maxLevel", m_maxLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minLevel", m_minLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxLevel", m_maxLevel);
     return true;
 }
 MS2_REPLACE_METHOD(0x1402E7750, ItemDropDataGlobal, Load, 109, 0xFB87026F);
@@ -501,8 +510,8 @@ bool ItemDropDataIndividual::Load(Unk_140165cf0* pElem)
 {
     if (!ItemDropData::Load(pElem))
         return false;
-    FUN_140873220(pElem, "properJobWeight", m_properJobWeight);
-    FUN_140873220(pElem, "imProperJobWeight", m_imProperJobWeight);
+    XmlGetAttr((class TiXmlElement*)(pElem), "properJobWeight", m_properJobWeight);
+    XmlGetAttr((class TiXmlElement*)(pElem), "imProperJobWeight", m_imProperJobWeight);
     XmlQuery((class TiXmlElement*)(pElem), "isAnnounce", m_isAnnounce);
     XmlValue(pElem, "showTooltip", m_showTooltip);
     return true;
@@ -552,8 +561,8 @@ ItemDropGlobalGroup::ItemDropGlobalGroup() : m_dropGroupID(0)
 // @0x1402e7ad0
 bool ItemDropGlobalGroup::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dropGroupID", m_dropGroupID);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupID", m_dropGroupID);
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -598,12 +607,12 @@ ItemDropGlobalBox::ItemDropGlobalBox()
 // @0x1402e7dc0
 bool ItemDropGlobalBox::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dropGroupIDs", m_dropGroupIDs);
-    FUN_1408730a0(pElem, "isOwnerDrop", m_isOwnerDrop);
-    FUN_1408731e0(pElem, "continentCondition", m_continentCondition);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupIDs", m_dropGroupIDs);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isOwnerDrop", reinterpret_cast<bool&>(m_isOwnerDrop));
+    XmlGetAttr((class TiXmlElement*)(pElem), "continentCondition", reinterpret_cast<int&>(m_continentCondition));
     XmlValue(pElem, "mapTypeCondition", m_mapTypeCondition);
-    FUN_140873220(pElem, "minLevel", m_minLevel);
-    FUN_140873220(pElem, "maxLevel", m_maxLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minLevel", m_minLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxLevel", m_maxLevel);
     std::vector<unsigned> counts;
     std::vector<unsigned> probabilities;
     XmlTokenList(pElem, "dropCount", counts);
@@ -739,8 +748,8 @@ MS2_REPLACE_METHOD(0x1402E86D0, ItemDropGlobalBoxGroup, GetId, 14, 0x72E52537);
 // @0x1402e86f0
 bool ItemDropGlobalBoxGroup::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dropBoxID", m_dropBoxID);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropBoxID", m_dropBoxID);
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -798,11 +807,11 @@ MS2_REPLACE_METHOD(0x1402E8A00, ItemDropIndividualGroup, GetSmartDropRate, 14, 0
 // @0x1402e8a20
 bool ItemDropIndividualGroup::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dropGroupID", m_dropGroupID);
-    FUN_140873220(pElem, "smartDropRate", m_smartDropRate);
-    FUN_1408730a0(pElem, "isApplySmartGenderDrop", m_isApplySmartGenderDrop);
-    FUN_140873220(pElem, "dropGroupMinLevel", m_dropGroupMinLevel);
-    FUN_1408730a0(pElem, "serverDrop", m_serverDrop);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupID", m_dropGroupID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "smartDropRate", m_smartDropRate);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isApplySmartGenderDrop", reinterpret_cast<bool&>(m_isApplySmartGenderDrop));
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupMinLevel", m_dropGroupMinLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "serverDrop", reinterpret_cast<bool&>(m_serverDrop));
     std::vector<unsigned> counts;
     std::vector<unsigned> probabilities;
     XmlTokenList(pElem, "dropCount", counts);
@@ -822,7 +831,7 @@ bool ItemDropIndividualGroup::Load(Unk_140165cf0* pElem)
         for (size_t i = 0; i < counts.size(); ++i)
             m_dropCount.Register(probabilities[i], counts[i]);
     }
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -876,9 +885,9 @@ ItemDropIndividualBox::ItemDropIndividualBox() : m_dropBoxID(0), m_probVer(0)
 // @0x1402e8f80
 bool ItemDropIndividualBox::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dropBoxID", m_dropBoxID);
-    FUN_140873220(pElem, "probVer", m_probVer);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("group"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropBoxID", m_dropBoxID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "probVer", m_probVer);
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -1115,7 +1124,7 @@ void ItemDropTable::DropGlobal(unsigned nBoxId, ItemDropContext& ctx, std::vecto
             MS2Ptr<CItemData> pItem = FUN_14053f870(pData->GetItemId());
             if (!pItem)
                 continue;
-            if (ctx.m_job != 0 && !pItem->limit.FUN_140545da0(ctx.m_job))
+            if (ctx.m_job != 0 && !pItem->limit.IsJobRecommended(ctx.m_job))
                 continue;
             picker.Register(pData->GetWeight(), pData);
         }
@@ -1253,9 +1262,9 @@ bool ItemDropTable::GetBoxItems(unsigned nBoxId, ItemDropContext& ctx, std::vect
                 continue;
             if (bSkipHidden && pData->GetShowTooltip() == 2)
                 continue;
-            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->FUN_14053c940(ctx.m_gender) == 0)
+            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->IsGenderAllowed(ctx.m_gender) == 0)
                 continue;
-            if (pGroup->GetSmartDropRate() > 0 && !pItem->limit.FUN_140545da0(ctx.m_job))
+            if (pGroup->GetSmartDropRate() > 0 && !pItem->limit.IsJobRecommended(ctx.m_job))
                 continue;
             ItemDropResult result(pData->GetItemId(), pData->GetCount(), pData->GetRank(), pData->GetEnchantLevel(),
                                   pData->GetWeight(), pGroup->GetDataPicker()->GetTotal(), pGroup->GetId(),
@@ -1307,9 +1316,9 @@ bool ItemDropTable::GetUniqueBoxItems(unsigned nBoxId, ItemDropContext& ctx, std
                 continue;
             if (pData->GetShowTooltip() == 2)
                 continue;
-            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->FUN_14053c940(ctx.m_gender) == 0)
+            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->IsGenderAllowed(ctx.m_gender) == 0)
                 continue;
-            if (pGroup->GetSmartDropRate() > 0 && !pItem->limit.FUN_140545da0(ctx.m_job))
+            if (pGroup->GetSmartDropRate() > 0 && !pItem->limit.IsJobRecommended(ctx.m_job))
                 continue;
             ItemDropResult result(pData->GetItemId(), 1, pData->GetRank(), pData->GetEnchantLevel(), pData->GetWeight(),
                                   pGroup->GetDataPicker()->GetTotal(), pGroup->GetId(),
@@ -1392,7 +1401,7 @@ bool ItemDropTable::HasItem(unsigned nBoxId, int nItemId, int nRank)
             MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
             if (pItem == 0)
                 continue;
-            if (pItem->FUN_14053cf90())
+            if (pItem->HasSkinType())
             {
                 if (FUN_14053ff30(nItemId, nRank))
                     return true;
@@ -1478,7 +1487,7 @@ bool ItemDropTable::LoadGlobalBoxes()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("dropBox"))
+    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
     {
         MS2Ptr<ItemDropGlobalBoxGroup> pGroup(new ItemDropGlobalBoxGroup);
         if (!pGroup->Load(pElem))
@@ -1503,7 +1512,7 @@ bool ItemDropTable::LoadGlobalGroups()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("dropBox"))
+    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
@@ -1572,13 +1581,13 @@ void ItemDropTable::DropIndividualGroup(ItemDropIndividualGroup* pGroup, ItemDro
             MS2Ptr<CItemData> pItem = FUN_14053f870(pData->GetItemId());
             if (pItem == 0)
                 continue;
-            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->FUN_14053c940(ctx.m_gender) == 0)
+            if (pGroup->IsApplySmartGenderDrop() && static_cast<Unk_DropItemData*>(pItem.operator->())->IsGenderAllowed(ctx.m_gender) == 0)
                 continue;
             if (pGroup->IsServerDrop() && !ctx.m_serverDrop)
                 continue;
             if (bSmartDrop)
             {
-                if (pItem->limit.FUN_140545da0(ctx.m_job))
+                if (pItem->limit.IsJobRecommended(ctx.m_job))
                     picker.Register(pData->GetProperJobWeight(), pData);
                 else
                     picker.Register(pData->GetImProperJobWeight(), pData);
@@ -1605,7 +1614,7 @@ void ItemDropTable::DropIndividualGroup(ItemDropIndividualGroup* pGroup, ItemDro
         MS2Ptr<CItemData> pItem = FUN_14053f870(pData->GetItemId());
         if (pItem == 0)
             break;
-        int nRank = pItem->FUN_14053c5a0();
+        int nRank = pItem->GetRank();
         if (nRank == 0)
             nRank = pData->GetDropRank(ctx.m_rankArg, ctx.m_userLevel, ctx.m_isAssist);
         const int& nSlotMax = pItem->property.slotMax;
@@ -1624,7 +1633,7 @@ void ItemDropTable::DropIndividualGroup(ItemDropIndividualGroup* pGroup, ItemDro
             result.m_itemLife = pData->m_itemLife;
             if (pGroup->IsServerDrop())
                 result.m_bAnnounce = result.m_bServerDrop = true;
-            if (pItem->FUN_14053de60() == 1)
+            if (pItem->GetSlotMax() == 1)
                 result.m_isBindCharacter = pData->IsBindCharacter();
             out.push_back(result);
             nItemCount -= nStack;
@@ -1636,7 +1645,7 @@ void ItemDropTable::DropIndividualGroup(ItemDropIndividualGroup* pGroup, ItemDro
                                        pData->IsRePackingLimitCountDeduction(), pData->IsDisableBreak());
                 result2.m_socketDataId = pData->GetSocketDataId();
                 result2.m_itemLife = pData->m_itemLife;
-                if (pItem->FUN_14053de60() == 1)
+                if (pItem->GetSlotMax() == 1)
                     result2.m_isBindCharacter = pData->IsBindCharacter();
                 out.push_back(result2);
             }

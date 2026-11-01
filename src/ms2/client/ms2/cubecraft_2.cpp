@@ -486,7 +486,7 @@ void Unk_PCCubeCraft::FUN_1410a92c0()
     }
     else
     {
-        NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10();
+        NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
         if (pRoot == 0)
             FUN_1401859c0(((class Unk_C2Log*)GetLogString()), 2, 0x13, L"SceneRoot NULL");
         m_spGuide->vfunc_10(pRoot, 0);
@@ -597,7 +597,7 @@ void Unk_PCCubeCraft::FUN_1410a9e70()
 MS2_REPLACE_METHOD(0x1410A9E70, Unk_PCCubeCraft, FUN_1410a9e70, 103, 0xEEC9DFD1);
 
 // @0x1410a9ee0
-void Unk_PCCubeCraft::FUN_1410a9ee0()
+void Unk_PCCubeCraft::UpdateGuidePositions()
 {
     PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == 0)
@@ -620,14 +620,14 @@ bool Unk_PCCubeCraft::FUN_1410aa010()
 MS2_REPLACE_METHOD(0x1410AA010, Unk_PCCubeCraft, FUN_1410aa010, 59, 0x41CA4560);
 
 // @0x1410aa060
-void Unk_PCCubeCraft::FUN_1410aa060(unsigned char bUp)
+void Unk_PCCubeCraft::AdjustLift(unsigned char bUp)
 {
     if (bUp)
         m_fLift = m_fLift + 150.0f;
     else
         m_fLift = m_fLift - 150.0f;
 }
-MS2_REPLACE_METHOD(0x1410AA060, Unk_PCCubeCraft, FUN_1410aa060, 77, 0x1406CA40);
+MS2_REPLACE_METHOD(0x1410AA060, Unk_PCCubeCraft, AdjustLift, 77, 0x1406CA40);
 
 // @0x1410aa0c0
 void Unk_PCCubeCraft::FUN_1410aa0c0(CubeItemInfo* pInfo)
@@ -708,12 +708,12 @@ bool Unk_PCCubeCraft::FUN_1410aa420()
 MS2_REPLACE_METHOD(0x1410AA420, Unk_PCCubeCraft, FUN_1410aa420, 109, 0x35F71F79);
 
 // @0x1410aa4a0
-void Unk_PCCubeCraft::FUN_1410aa4a0(bool bVisible)
+void Unk_PCCubeCraft::SetGuide2Visible(bool bVisible)
 {
     if (m_spGuide2.get() != 0)
         m_spGuide2->vfunc_6(bVisible == 0);
 }
-MS2_REPLACE_METHOD(0x1410AA4A0, Unk_PCCubeCraft, FUN_1410aa4a0, 109, 0x13D950CB);
+MS2_REPLACE_METHOD(0x1410AA4A0, Unk_PCCubeCraft, SetGuide2Visible, 109, 0x13D950CB);
 
 // @0x1410aa520
 Vector3 Unk_PCCubeCraft::GetPtCell()
@@ -723,12 +723,12 @@ Vector3 Unk_PCCubeCraft::GetPtCell()
 MS2_REPLACE_METHOD(0x1410AA520, Unk_PCCubeCraft, GetPtCell, 41, 0xA7FB2F5C);
 
 // @0x1410aa550
-void Unk_PCCubeCraft::FUN_1410aa550(int nMode)
+void Unk_PCCubeCraft::SetMode(int nMode)
 {
     m_nMode = nMode;
     FUN_1410a9cc0();
 }
-MS2_REPLACE_METHOD(0x1410AA550, Unk_PCCubeCraft, FUN_1410aa550, 43, 0x78B171A4);
+MS2_REPLACE_METHOD(0x1410AA550, Unk_PCCubeCraft, SetMode, 43, 0x78B171A4);
 
 // @0x1410aa590
 void Unk_PCCubeCraft::FUN_1410aa590()
@@ -866,8 +866,8 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         m_spEffectA = 0;
         return;
     }
-    m_spEffectA->FUN_140526b30(m_pOwner->FUN_14123c580());
-    m_spEffectA->FUN_140526a70(FUN_14028d0e0());
+    m_spEffectA->SetObjectId(m_pOwner->FUN_14123c580());
+    m_spEffectA->SetItemUid(FUN_14028d0e0());
     m_spEffectA->FUN_140526c10(6);
     m_spEffectA->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectA.get(), 0);
@@ -879,8 +879,8 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         m_spEffectB = 0;
         return;
     }
-    m_spEffectB->FUN_140526b30(m_pOwner->FUN_14123c580());
-    m_spEffectB->FUN_140526a70(FUN_14028d0e0());
+    m_spEffectB->SetObjectId(m_pOwner->FUN_14123c580());
+    m_spEffectB->SetItemUid(FUN_14028d0e0());
     m_spEffectB->FUN_140526c10(4);
     m_spEffectB->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectB.get(), 0);
@@ -890,8 +890,8 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         m_spEffectC = 0;
         return;
     }
-    m_spEffectC->FUN_140526b30(m_pOwner->FUN_14123c580());
-    m_spEffectC->FUN_140526a70(FUN_14028d0e0());
+    m_spEffectC->SetObjectId(m_pOwner->FUN_14123c580());
+    m_spEffectC->SetItemUid(FUN_14028d0e0());
     m_spEffectC->FUN_140526c10(5);
     m_spEffectC->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectC.get(), 0);
@@ -953,7 +953,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
     }
     MS2Ptr<CItemData> spData = FUN_14053f870(FUN_1410ad610());
     NiPoint3 kAngles = m_pOwner->vfunc_20();
-    kAngles.z = ((class PCBase*)(class PC*)(m_pOwner))->FUN_14166da40();
+    kAngles.z = ((class PCBase*)(class PC*)(m_pOwner))->GetTargetYaw();
     kAngles.z = (float)(int)((kAngles.z + 89.0f) / 90.0f) * 90.0f;
     kAngles.z += m_fYaw;
     NiMatrix3 kRot;
@@ -962,7 +962,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
     if (m_spGuide3.get() != 0)
         FUN_1410af140();
     if (!bNoUpdate)
-        FUN_1410a9ee0();
+        UpdateGuidePositions();
 }
 
 // @0x1410aad50
@@ -991,7 +991,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             return;
         }
     }
-    if (((class CItemData*)(spData.operator->()))->FUN_14053d6f0())
+    if (((class CItemData*)(spData.operator->()))->HasCubeTextureMesh())
     {
         CubeItemInfo* pCur = FUN_1410ad670();
         if (pCur != 0 && pCur->FUN_1408b3860() == 0)
@@ -1222,7 +1222,7 @@ void Unk_PCCubeCraft::FUN_1410ac1c0()
     }
     else
     {
-        FUN_1410aa060(1);
+        AdjustLift(1);
         if (FUN_1410af7a0(pPC) != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
@@ -1250,7 +1250,7 @@ void Unk_PCCubeCraft::FUN_1410ac380()
     }
     else
     {
-        FUN_1410aa060(0);
+        AdjustLift(0);
         if (FUN_1410af7a0(pPC) != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
@@ -1574,14 +1574,14 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         if (((class PCBase*)(class PC*)(pPC))->FUN_14166c930() == 0x10)
         {
             FUN_1410aa380(false);
-            FUN_1410aa4a0(false);
+            SetGuide2Visible(false);
             m_nHud = 0;
             return;
         }
         else if (m_nHud == 0)
         {
             FUN_1410aa380(true);
-            FUN_1410aa4a0(true);
+            SetGuide2Visible(true);
             m_nHud = 1;
         }
         Vector3 kFront;

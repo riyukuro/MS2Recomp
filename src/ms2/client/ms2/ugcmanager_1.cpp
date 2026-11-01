@@ -76,7 +76,6 @@ CStringW FUN_141026920(int nKind);                          // a UGC directory
 int FUN_141027420(CString strName);
 CString FUN_141027200(CString strName);
 void FUN_140841420(CStringW& str);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 CString FUN_14016a5c0(const char* psz, int nCodePage);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
@@ -850,7 +849,7 @@ NiTexturePtr LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng)
     FUN_140841420(strExt);
     CStringW strConverted;
     BOOL bConverted = FALSE;
-    if (FUN_1403b3c40(strExt, L".jpg"))
+    if (operator==(strExt, L".jpg"))
     {
         CUgcImageConverter converter;
         nResult = converter.ConvertTexture(strPath, nSize, bPng);

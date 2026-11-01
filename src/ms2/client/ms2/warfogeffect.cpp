@@ -140,7 +140,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     m_fAlpha = pParam->FUN_140381340();
     m_bFlag24 = pParam->FUN_140381320();
     m_spMesh = NiNew CMesh(false, true, 0, 0xc3, 0x100, 0x15);
-    NiNode* pScene = TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10();
+    NiNode* pScene = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
     pScene->AttachChild(((CMesh*)m_spMesh)->GetMesh(), false);
     float angle = 0.0f;
     for (int i = 0; i < 0x40; ++i) {

@@ -105,15 +105,15 @@ public:
     // non-virtual members
     egf::EntityPtr GetEntity();                         // 0x14143ff20 copy of the entity pointer
     egf::EntityID FUN_14143ff70();                          // 0x14143ff70 id of the model entity (0 when none)
-    efd::AssetID FUN_14143fff0();                           // 0x14143fff0 asset id property of the entity
+    efd::AssetID GetAssetId();                           // 0x14143fff0 asset id property of the entity
     NiActorManager* FUN_1414400d0();                        // 0x1414400d0 actor manager of the entity
     void FUN_141440110(const CString& strBone, float f);    // 0x141440110
     void FUN_1414401b0(const CString& strBone, float x, float y, float z);   // 0x1414401b0
     void FUN_141440270(unsigned int nSeq);                  // 0x141440270
     void FUN_141440380(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
         bool b);                                            // 0x141440380 play first existing animation
-    void FUN_1414408e0();                                   // 0x1414408e0 (re)create the entity
-    void FUN_1414409f0();                                   // 0x1414409f0 destroy the entity
+    void CreateEntity();                                   // 0x1414408e0 (re)create the entity
+    void DestroyEntity();                                   // 0x1414409f0 destroy the entity
     void FUN_141440a70();                                   // 0x141440a70 copy animation names into the entity
     void FUN_141440bc0();                                   // 0x141440bc0 pony-tail joint positions
     bool FUN_141440f20();                                   // 0x141440f20 scale is 1.0

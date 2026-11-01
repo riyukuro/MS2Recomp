@@ -66,14 +66,12 @@ FusionSlotBag* FUN_14123a960(NotifyContext::BindData* p);
 UIItemMergeOptionDialog* FUN_14123a9b0(int nClass);
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(FusionSlotBag);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x14123a080
 void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items)
@@ -83,18 +81,18 @@ void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64
     {
         int nCount = (int)(ceil((float)items.GetCount() / 4.0f) * 4.0f);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount > 12 ? nCount : 12);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14123a190
 void FUN_14123a190(const CString& strName)
 {
-    FusionSlotBag* pBag = FUN_14123a960(FUN_1422c8e90(strName));
+    FusionSlotBag* pBag = FUN_14123a960(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -156,7 +154,7 @@ UIItemMergeOptionDialog* FUN_14123a9b0(int nClass)
 {
     if (reinterpret_cast<Unk_FusionUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIItemMergeOptionDialog*>(spObj.operator->());
     }

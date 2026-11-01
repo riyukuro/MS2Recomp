@@ -17,13 +17,13 @@ public:
     virtual ~UIStatusEventListener();                       //  0 0x141b0cc20 (??_G 0x141b0e560)
     virtual int vfunc_oa0_1();                              //  1 0x141b0cc40 returns 1
     virtual void vfunc_oa0_2();                             //  2 0x140aa6d70
-    virtual void vfunc_oa0_3(int a1, int a2);                             //  3 0x140ba4fc0
-    virtual void vfunc_oa0_4(int a1, int a2);                             //  4 0x140ba4fe0
+    virtual void vfunc_oa0_3(int a1, int a2) {}                          //  3 COMDAT 0x140ba4fc0 (first emitted in ?\uiadventureleveldialog.cpp)
+    virtual void vfunc_oa0_4(int a1, int a2) {}                          //  4 COMDAT 0x140ba4fe0 (first emitted in ?\uiadventureleveldialog.cpp)
     virtual void vfunc_oa0_5(int a1, int a2);                             //  5 0x140aa6d80
     virtual void vfunc_oa0_6(void* a1, void* a2);                             //  6 0x140aa6d90
     virtual void vfunc_oa0_7(int a1, CStringW s);         //  7 0x140aa6de0
     virtual void vfunc_oa0_8(CStringW s);                   //  8 0x140aa6e60
-    virtual void vfunc_oa0_9(unsigned short a1);                             //  9 0x140ba4fd0
+    virtual void vfunc_oa0_9(unsigned short a1) {}                          //  9 COMDAT 0x140ba4fd0 (first emitted in ?\uiadventureleveldialog.cpp)
     virtual void vfunc_oa0_10(CStringW s);                  // 10 0x140aa6da0
     virtual void vfunc_oa0_11(void* a1);                            // 11 0x140aa6e50
     virtual void vfunc_oa0_12(int a1);                            // 12 0x140aa6ed0

@@ -16,6 +16,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_HpMovie : public ASMovieClip
@@ -39,7 +41,7 @@ public:
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
     void FUN_1422c0290(float cx, float cy);
 };
-struct Unk_HpCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_HpCfgFloat { char m_pad[0x58]; };
 struct Unk_HpCfg
 {
     char m_pad_0000[0x2c8];
@@ -59,22 +61,9 @@ CString FUN_1402bb1c0(const char* szFormat, const int& n);                  // S
 const int& FUN_1404eb7e0(const int& a, const int& b);                       // max
 float FUN_140bf4fd0(float f);                                               // ceilf
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-class Unk_NpcData                                                           // npc table row (MS2Ptr<T>; see cubespawnobject.cpp)
-{
-public:
-    bool FUN_1406cd200(int nFlag);
-    int FUN_1406cd040();                                                    // level
-};
-template <> void MS2Ptr<Unk_NpcData>::Reference(Unk_NpcData* p);            // 0x1406d9f40
-template <> void MS2Ptr<Unk_NpcData>::Release();                            // 0x1406db080
-template <> MS2Ptr<Unk_NpcData>::~MS2Ptr();                                 // 0x1406d5390
-template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::operator->() const;           // 0x140965990
-template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::get() const;                  // 0x140a4ff10
 class Unk_HpNpc : public PCBase
 {
 public:
-    MS2Ptr<Unk_NpcData> FUN_141093270();
 };
 class Unk_HpPet : public CPet { };
 struct Unk_HpSeatPos : Unk_GVec3 {};                                    // the returned seat position (copied out through Unk_GVec3)
@@ -112,8 +101,6 @@ public:
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
 class Unk_HpCfgHolder { public: Unk_HpCfgData* FUN_140b123b0(); };
 class Unk_HpWorld;
-Unk_HpActor* FUN_140974230(PCBase* pActor);             // the actor as a player
-Unk_HpNpc* FUN_14096e110(PCBase* pActor);               // the actor as an npc
 Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 class Unk_HpUIMgr { public: };
 UIHpBar* FUN_141742c80(int nUiId);
@@ -133,7 +120,7 @@ UIHpBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActo
     m_bc = 0;
     m_c0 = 0;
     m_c4 = 100;
-    m_54 = ((struct Unk_HpCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HpCfg*)FUN_1401d3200())->m_2c8)->Read();
     FUN_141992680();
     FUN_141992580();
 }
@@ -233,7 +220,7 @@ int UIHpBar::Entity::vfunc_8(int n)
     Unk_HpPet* pPet = FUN_1409ffc60(pActor);
     if (pPet != 0 && pPet->GetKind() != 0)
         return 1;
-    Unk_HpActor* pPc = FUN_140974230(pActor);
+    Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(pActor));
     if (pPc != 0)
     {
         Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -261,10 +248,10 @@ int UIHpBar::Entity::vfunc_8(int n)
     }
     else
     {
-        Unk_HpNpc* pNpc = FUN_14096e110(pActor);
+        Unk_HpNpc* pNpc = reinterpret_cast<Unk_HpNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor));
         if (pNpc != 0)
         {
-            if (pNpc->FUN_141093270()->FUN_1406cd200(2))
+            if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->HasPropertyTag(2))
                 return 0;
         }
     }
@@ -366,7 +353,7 @@ int UIHpBar::Entity::FUN_1419923f0()
     }
     else
     {
-        Unk_HpActor* pPc = FUN_140974230(pActor);
+        Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
         {
             if (pLocal->vfunc_122(pPc) != 0)
@@ -377,7 +364,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         }
         else
         {
-            Unk_HpNpc* pNpc = FUN_14096e110(pActor);
+            Unk_HpNpc* pNpc = reinterpret_cast<Unk_HpNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor));
             if (pNpc != 0)
             {
                 if (pNpc->vfunc_116() == 2)
@@ -415,7 +402,7 @@ int UIHpBar::Entity::FUN_141992580()
 // @0x141992680
 void UIHpBar::Entity::FUN_141992680()
 {
-    Unk_HpActor* pPc = FUN_140974230(FUN_140f49330());
+    Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(FUN_140f49330()));
     if (pPc != 0)
     {
         if (pPc->FUN_14165ef30() != 0)
@@ -425,14 +412,14 @@ void UIHpBar::Entity::FUN_141992680()
     }
     else
     {
-        Unk_HpNpc* pNpc = FUN_14096e110(FUN_140f49330());
+        Unk_HpNpc* pNpc = reinterpret_cast<Unk_HpNpc*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
         if (pNpc != 0)
         {
-            Unk_NpcData* pData = pNpc->FUN_141093270().get();
+            NpcDataCli* pData = reinterpret_cast<CNpc*>(pNpc)->GetNpcData().get();
             if (pData != 0)
             {
-                m_b0 = pData->FUN_1406cd040();
-                if (pNpc->FUN_141093270()->FUN_1406cd200(1))
+                m_b0 = pData->GetClass();
+                if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->HasPropertyTag(1))
                     m_b0 = 10;
             }
         }
@@ -520,7 +507,7 @@ void UITombStoneBar::Entity::vfunc_6(NiPoint3* pPos)
 // @0x141992c30
 int UITombStoneBar::Entity::vfunc_8(int n)
 {
-    Unk_HpActor* pPc = FUN_140974230(FUN_140f49330());
+    Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(FUN_140f49330()));
     if (pPc == 0)
         return 1;
     if (m_50 != 0)
@@ -742,7 +729,7 @@ void UIHpBar::FUN_141993790(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 UIHpBar::Entity* p = new UIHpBar::Entity(m_28, v, 0);
                 if (p)
@@ -764,7 +751,7 @@ void UISlimeEventBar::FUN_141993970(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 UISlimeEventBar::Entity* p = new UISlimeEventBar::Entity(m_28, v, 0);
                 if (p)
@@ -786,7 +773,7 @@ void UITombStoneBar::FUN_141993b50(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 UITombStoneBar::Entity* p = new UITombStoneBar::Entity(m_28, v, 0);
                 if (p)
@@ -814,7 +801,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)
@@ -868,7 +855,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)
@@ -922,7 +909,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)
@@ -966,7 +953,7 @@ UISlimeEventBar* FUN_1419949f0(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UISlimeEventBar*>((UIObject*)p);
     }
@@ -978,7 +965,7 @@ UITombStoneBar* FUN_141994a90(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UITombStoneBar*>((UIObject*)p);
     }

@@ -16,6 +16,17 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -51,13 +62,13 @@ void CItemSocketScrollData::Read(Unk_140165cf0* pElem)
     ItemSocketScrollType eType = ITEM_SOCKET_SCROLL_TYPE_0;
     XmlValue(pElem, "type", eType);
     m_eType = eType;
-    FUN_1408731a0(pElem, "minLv", m_nMinLv);
-    FUN_1408731a0(pElem, "maxLv", m_nMaxLv);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minLv", reinterpret_cast<unsigned short&>(m_nMinLv));
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxLv", reinterpret_cast<unsigned short&>(m_nMaxLv));
     XmlTokenList(pElem, "slot", m_arrSlot);
     XmlTokenList(pElem, "rank", m_arrRank);
-    FUN_1408730a0(pElem, "tradableCountDeduction", m_bTradableCountDeduction);
+    XmlGetAttr((class TiXmlElement*)(pElem), "tradableCountDeduction", reinterpret_cast<bool&>(m_bTradableCountDeduction));
     CString strUsePart;
-    if (FUN_1408733e0(pElem, "usePart", strUsePart) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), "usePart", strUsePart) == 0)
     {
         strUsePart.Trim();
         if (!strUsePart.IsEmpty())
@@ -98,8 +109,8 @@ void CItemSocketScrollDataServer::Read(Unk_140165cf0* pElem)
     CItemSocketScrollData::Read(pElem);
     if (m_eType == ITEM_SOCKET_SCROLL_TYPE_1)
     {
-        FUN_140873220(pElem, "successProb", m_nSuccessProb);
-        FUN_140873220(pElem, "openCount", m_nOpenCount);
+        XmlGetAttr((class TiXmlElement*)(pElem), "successProb", m_nSuccessProb);
+        XmlGetAttr((class TiXmlElement*)(pElem), "openCount", m_nOpenCount);
     }
 }
 
@@ -135,12 +146,12 @@ int CItemSocketScrollTable::Load()
     }
     const CString& strTag = CString("scroll");
     const CString& strKey = CString("id");
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = pNode->FUN_140168650(strTag))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
-        FUN_1408731e0(pNode, strKey, nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), strKey, reinterpret_cast<int&>(nId));
         if (nId == 0)
             continue;
         CItemSocketScrollDataPtr spData(new CItemSocketScrollData);

@@ -17,6 +17,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- dynamic initializers (.text$di, in exe order) ----
 
@@ -132,19 +139,19 @@ bool CUGCDesignTable::Reload()
         // The exe converts the cache's CString to const char* inline (no named pointer local).
         if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) == 0)
             return false;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
             return false;
         __int64 nDefaultMarketMaxPrice =
             FUN_1406a6d50(reinterpret_cast<const char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660);
-        for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0;
-             pNode = pNode->FUN_140168650("list"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
+             pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             CStringW strLocale;
-            FUN_140873420(pNode, "locale", strLocale);
-            if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
+            XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
+            if (!TSingleton<CFeatureManager>::GetInstance()->IsLocaleInList(strLocale))
                 continue;
             int nItemID = 0;
             XmlGetAttr((class TiXmlElement*)(pNode), "itemID", *(unsigned int*)&static_cast<int&>(nItemID));

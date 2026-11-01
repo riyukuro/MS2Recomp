@@ -51,8 +51,8 @@ public:
     virtual int vfunc_o178_2(void*);
     void FUN_140e93e70(int, unsigned short);
     void FUN_140e93ff0();
-    void FUN_140e94150();
-    void FUN_140e941b0();
+    void LoadRenderTarget();
+    void UnloadRenderTarget();
     virtual int vfunc_48() { return 20163; }
 private:
     MS2_LAYOUT_FRIEND;

@@ -71,11 +71,11 @@ public:
     void FUN_1418aa890();                                                               // send the search
     void FUN_1418aa9b0(int nId);                                                        // show the trophy of the id
     CStringW FUN_1418aaaf0(CAchieve* pAchieve);                                         // "", "normal" or "complete"
-    int FUN_1418aaba0(CAchieve* pAchieve);                                              // the reward count
+    int GetRewardCount(CAchieve* pAchieve);                                              // the reward count
     CStringW FUN_1418aabd0(CAchieve* pAchieve);                                         // the description of the current grade
     CStringW FUN_1418aac30(CAchieve* pAchieve, int nGrade);                             // the description of a grade
-    CStringW FUN_1418aad60();                                                           // the text of the search box
-    void FUN_1418aaee0(const CStringW& strText);                                        // set the search box
+    CStringW GetSearchText();                                                           // the text of the search box
+    void SetSearchText(const CStringW& strText);                                        // set the search box
     void FUN_1418ab000(ASObj& rRow, CAchieve* pAchieve);                                // reward text and palette colours
     void FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve);                                // title, progress and grade
     void FUN_1418ab7e0(ASObj& rRow, CAchieve* pAchieve);                                // one row of the hero list
@@ -83,8 +83,8 @@ public:
     void FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve);                                // the required trophies
     void FUN_1418abfa0(ASObj& rRow, CAchieve* pAchieve);                                // the cleared grades
     int FUN_1418ac320(int nId);                                                         // the tab of the trophy
-    int FUN_1418ac480();                                                                // the selected filter
-    void FUN_1418ac5f0(int nIndex);                                                     // select a filter
+    int GetFilterIndex();                                                                // the selected filter
+    void SetFilterIndex(int nIndex);                                                     // select a filter
     void FUN_1418ac710(int nTab);                                                       // select the tab in the movie (the exe passes m_178, the body reads the member)
     int FUN_1418ac780(CAchieve* pAchieve);                                              // locked for a player
     int FUN_1418ac870(CAchieve* pAchieve);                                              // locked and hidden

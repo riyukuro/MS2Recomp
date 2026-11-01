@@ -26,6 +26,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <string.h>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // return types of the getters this unit calls
 class CReservedWordTable;
@@ -38,7 +39,6 @@ class Unk_SingletonObj1;
 class Unk_AdvCfgExp
 {
 public:
-    unsigned int* FUN_1401d7c10();                                  // the value
     __int64 FUN_140ba77c0();                                        // the value, widened
 };
 class Unk_AdvCfgLevel
@@ -290,7 +290,7 @@ void UIAdventureLevelExpBar::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x140ba77c0
 __int64 Unk_AdvCfgExp::FUN_140ba77c0()
 {
-    return *FUN_1401d7c10();
+    return *reinterpret_cast<Common::Constants::Value<unsigned int>*>(this)->Get();
 }
 
 // @0x140ba77e0

@@ -41,14 +41,14 @@ unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {
     }
     unsigned traffic = 0;
     if (FUN_14087d630(FUN_141bd3060(FUN_1403ed2d0())) != 0) {
-        traffic += FUN_14087d5f0(3);
+        traffic += GetTraffic(3);
     } else {
-        traffic += FUN_14087d5f0(4);
+        traffic += GetTraffic(4);
     }
     if (entity->FUN_14166c930() == 1) {
-        traffic += FUN_14087d5f0(5);
+        traffic += GetTraffic(5);
     } else {
-        traffic += FUN_14087d5f0(6);
+        traffic += GetTraffic(6);
     }
     return (std::max)(MIN_TRAFFIC, traffic);
 }
@@ -56,7 +56,7 @@ MS2_REPLACE_METHOD(0x14087D410, CTrafficOptimizer, FUN_14087d410, 220, 0x1D79083
 
 // @0x14087d500
 unsigned CTrafficOptimizer::FUN_14087d500(Unk_TOEntity*) {
-    unsigned traffic = FUN_14087d5f0(0);
+    unsigned traffic = GetTraffic(0);
     return (std::max)(MIN_TRAFFIC, traffic);
 }
 MS2_REPLACE_METHOD(0x14087D500, CTrafficOptimizer, FUN_14087d500, 54, 0x149E8801);
@@ -65,27 +65,27 @@ MS2_REPLACE_METHOD(0x14087D500, CTrafficOptimizer, FUN_14087d500, 54, 0x149E8801
 unsigned CTrafficOptimizer::FUN_14087d540(Unk_TOEntity* entity) {
     unsigned traffic = 0;
     if (entity->FUN_14166c930() == 1) {
-        traffic = FUN_14087d5f0(1);
+        traffic = GetTraffic(1);
     } else {
-        traffic = FUN_14087d5f0(2);
+        traffic = GetTraffic(2);
     }
     return (std::max)(MIN_TRAFFIC, traffic);
 }
 MS2_REPLACE_METHOD(0x14087D540, CTrafficOptimizer, FUN_14087d540, 101, 0xB400A261);
 
 // @0x14087d5b0
-void CTrafficOptimizer::FUN_14087d5b0(unsigned key, unsigned value) {
+void CTrafficOptimizer::SetTraffic(unsigned key, unsigned value) {
     m_map.SetAt(key, value);
 }
-MS2_REPLACE_METHOD(0x14087D5B0, CTrafficOptimizer, FUN_14087d5b0, 50, 0xA097ADE7);
+MS2_REPLACE_METHOD(0x14087D5B0, CTrafficOptimizer, SetTraffic, 50, 0xA097ADE7);
 
 // @0x14087d5f0
-unsigned CTrafficOptimizer::FUN_14087d5f0(unsigned key) {
+unsigned CTrafficOptimizer::GetTraffic(unsigned key) {
     unsigned value = 0;
     m_map.Lookup(key, value);
     return value;
 }
-MS2_REPLACE_METHOD(0x14087D5F0, CTrafficOptimizer, FUN_14087d5f0, 57, 0xDAAB5227);
+MS2_REPLACE_METHOD(0x14087D5F0, CTrafficOptimizer, GetTraffic, 57, 0xDAAB5227);
 
 // @0x14087d630
 int CTrafficOptimizer::FUN_14087d630(unsigned id) {

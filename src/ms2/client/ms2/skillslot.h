@@ -64,13 +64,13 @@ public:
     int FUN_141760190();                                // the item is a skill scroll
     unsigned FUN_141760220(int n);                      // the item count
     int FUN_1417603f0();                                // the recharge count left
-    int FUN_1417604f0();                                // the recharge max count
+    int GetRechargeMaxCount();                                // the recharge max count
     int FUN_141760590();                                // the item's data field a
     int FUN_141760610();                                // the item's data field b
     CString FUN_141760690();                            // the icon path
     CString FUN_1417607f0(int* pSkillId);               // the icon path of a skill
-    CStringW FUN_141760920();                           // the shortcut key text (wide, see the .cpp)
-    int FUN_141760980(int nMode);                       // the key code bound to the slot
+    CStringW GetHotkeyText();                           // the shortcut key text (wide, see the .cpp)
+    int GetHotkey(int nMode);                       // the key code bound to the slot
     __int64 FUN_141760a10();                            // the bind key of the slot index
     float FUN_141760a30();                              // the cooldown total
     float FUN_141760b90();                              // the cooldown left
@@ -81,7 +81,7 @@ public:
     int FUN_1417619d0();                                // the slot index has a key binding
     int FUN_141761a10();                                // the skill (or item) is in the active set
     CStringW FUN_141761c30();                           // the name of the key binding
-    int FUN_141761d90();                                // the effective skill id
+    int GetEffectiveSkillId();                                // the effective skill id
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -123,8 +123,8 @@ public:
     virtual void vfunc_ugc_2(void* pUid, CString str);  // UGC slot 2 0x1417638f0 use the slot of an item uid
 
     void FUN_141763640(int nFlags);                     // refresh every slot
-    SkillSlot* FUN_141763710(int nItemId);              // the slot of an item id
-    SkillSlot* FUN_141763800(__int64 nItemUid);         // the slot of an item uid
+    SkillSlot* FindSlotByItemId(int nItemId);              // the slot of an item id
+    SkillSlot* FindSlotByItemUid(__int64 nItemUid);         // the slot of an item uid
     void FUN_141763b00(int nFlags);                     // refresh the cooldown of every slot
     void FUN_141763bd0(int nSkillId, int nFlags);       // refresh the cooldown of the slots of a skill
 };

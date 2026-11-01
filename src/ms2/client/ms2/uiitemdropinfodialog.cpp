@@ -20,6 +20,8 @@ static CString s_itemCount("itemCount");
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemdroptable.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // Unit-local declarations; Unk names and member names are invented.
 class Unk_ItemData;
@@ -42,8 +44,8 @@ private:
 };
 MS2_CHECK_SIZE(CItem, 0x1a0);
 class Unk_DropText : public ASDisplayObject { public: void FUN_1422c4f00(const CStringW&); };
-class Unk_DropInput : public ASDisplayObject { public: CStringW FUN_1422e0b00(); };
-class Unk_DropButton : public ASDisplayObject { public: void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, void*); };
+class Unk_DropInput : public ASDisplayObject { public: };
+class Unk_DropButton : public ASButton { public: };
 class Unk_DropSlot : public ASDisplayObject {
 public:
     Unk_DropSlot(const Scaleform::GFx::Value&, int);
@@ -168,8 +170,6 @@ public: Unk_DropArray(int); virtual ~Unk_DropArray(); bool FUN_1422bc050(Scalefo
 MS2_CHECK_SIZE(ASObj, 0x40);
 MS2_CHECK_SIZE(Unk_DropArray, 0x40);
 CStringW FUN_1409eb450(int);
-CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
-CStringW FUN_140656190(const wchar_t*, const CStringW&, const CStringW&);
 
 // Unk_DropPtr<T> members whose COMDATs are first instantiated in this unit (the others are declared only).
 #define MS2_DROPPTR_ASSIGN(T) \
@@ -223,8 +223,8 @@ void UIItemDropInfoDialog::OnLoadComplete() {
         if (m_count == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(47), __FUNCTION__));
     } while (0);
-    m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::FUN_140c3b6f0), m_test.get());
-    m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::FUN_140c3b6f0), m_drop.get());
+    m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.get());
+    m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.get());
     FUN_140c3ad20();
     FUN_140c3af70();
 }
@@ -289,8 +289,8 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
         obj.FUN_1407cb9c0(s_itemCount,0);
         {
             CStringW range;
-            if (entry->m_min == entry->m_max) range = FUN_1401e8510(L"{0}",FUN_1409eb450(entry->m_min));
-            else range = FUN_140656190(L"{0} ~ {1}",FUN_1409eb450(entry->m_min),FUN_1409eb450(entry->m_max));
+            if (entry->m_min == entry->m_max) range = StringFormat<CStringW>(L"{0}",FUN_1409eb450(entry->m_min));
+            else range = StringFormat<CStringW, CStringW>(L"{0} ~ {1}",FUN_1409eb450(entry->m_min),FUN_1409eb450(entry->m_max));
             obj.FUN_1407cbb20("rangeCount",range);
         }
         array.FUN_1422bc050(obj.FUN_1422bb870());
@@ -301,23 +301,23 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
 }
 MS2_REPLACE_METHOD(0x140C3AF70, UIItemDropInfoDialog, FUN_140c3af70, 1646, 0x97FF2445);
 // @0x140c3b5f0
-CStringW UIItemDropInfoDialog::FUN_140c3b5f0(int id) {
+CStringW UIItemDropInfoDialog::GetStringById(int id) {
     return TSingleton<CStringTable>::GetInstance()->FUN_141813150(id);
 }
-MS2_REPLACE_METHOD(0x140C3B5F0, UIItemDropInfoDialog, FUN_140c3b5f0, 71, 0xFC4CFB82);
+MS2_REPLACE_METHOD(0x140C3B5F0, UIItemDropInfoDialog, GetStringById, 71, 0xFC4CFB82);
 // @0x140c3b640
-int UIItemDropInfoDialog::FUN_140c3b640() {
+int UIItemDropInfoDialog::GetDropCount() {
     if (m_count == NULL) return 1;
-    return (std::max)(FUN_1407181a0(m_count->FUN_1422e0b00()),1);
+    return (std::max)(FUN_1407181a0(reinterpret_cast<ASTextInput*>(m_count.operator->())->GetText()),1);
 }
-MS2_REPLACE_METHOD(0x140C3B640, UIItemDropInfoDialog, FUN_140c3b640, 163, 0xA12099C5);
+MS2_REPLACE_METHOD(0x140C3B640, UIItemDropInfoDialog, GetDropCount, 163, 0xA12099C5);
 // @0x140c3b6f0
-void UIItemDropInfoDialog::FUN_140c3b6f0(const Scaleform::GFx::FunctionHandler::Params& params) {
-    int count = FUN_140c3b640();
+void UIItemDropInfoDialog::OnClickDropOrTestButton(const Scaleform::GFx::FunctionHandler::Params& params) {
+    int count = GetDropCount();
     if (params.pUserData == m_test.get()) FUN_141361e60(FUN_140323ab0(L"DropBox {0} {1} 0 t",m_box,count));
     else if (params.pUserData == m_drop.get()) FUN_141361e60(FUN_140323ab0(L"DropBox {0} {1}",m_box,count));
 }
-MS2_REPLACE_METHOD(0x140C3B6F0, UIItemDropInfoDialog, FUN_140c3b6f0, 217, 0x7CE52B06);
+MS2_REPLACE_METHOD(0x140C3B6F0, UIItemDropInfoDialog, OnClickDropOrTestButton, 217, 0x7CE52B06);
 // @0x140c3b7d0
 void UIItemDropInfoDialog::FUN_140c3b7d0(int item, int box) {
     if (m_item.get() ? true : false) { if (m_item->FUN_1405276c0() == item) return; }
@@ -328,9 +328,9 @@ void UIItemDropInfoDialog::FUN_140c3b7d0(int item, int box) {
 }
 MS2_REPLACE_METHOD(0x140C3B7D0, UIItemDropInfoDialog, FUN_140c3b7d0, 324, 0x271E3FA9);
 // @0x140c3b920
-int UIItemDropInfoDialog::FUN_140c3b920() {
+int UIItemDropInfoDialog::GetItemId() {
     if (m_item == NULL) return 0;
     return m_item->FUN_1405276c0();
 }
-MS2_REPLACE_METHOD(0x140C3B920, UIItemDropInfoDialog, FUN_140c3b920, 73, 0xAEEFD1E3);
+MS2_REPLACE_METHOD(0x140C3B920, UIItemDropInfoDialog, GetItemId, 73, 0xAEEFD1E3);
 MS2_EMIT_CRT_MEMMOVE_S();

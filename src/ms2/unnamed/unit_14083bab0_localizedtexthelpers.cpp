@@ -24,7 +24,6 @@ class CFileSystem;
 int FUN_1406516a0();                                                    // client language (localepath.cpp)
 void FUN_1406514e0(int nCountry, ATL::CAtlArray<int>& rLanguages);     // fallback language list of a country
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);            // equals
 CStringA FUN_14016a5c0(const char* psz, int n);
 class Unk_Be790Xml;
 Unk_Be790Xml* FUN_140345b40(TiXmlDocument* pDoc);                      // first child element
@@ -36,9 +35,9 @@ double FUN_1407184e0(const CStringW& str);                              // text 
 long long FUN_140718320(const CStringW& str);
 CStringW FUN_140719a00(long long n);                                    // integer text
 CStringW FUN_1405dbf60(const wchar_t* pszFormat, const double& d);      // one double argument
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 extern int DAT_143ab0240;                                               // client language
 extern int DAT_143ab0248;                                               // client country
@@ -56,7 +55,7 @@ CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep)
 {
     int nLang = FUN_1406516a0();
     CStringW strOut;
-    if (FUN_1403b3c40(strSep, L"/"))
+    if (operator==(strSep, L"/"))
         strSep = FUN_14083da90(nLang);
     switch (nLang)
     {
@@ -180,12 +179,12 @@ CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTim
     {
         if (time.GetHour() > 12)
         {
-            strHour = FUN_1401ceea0(L"{0}", time.GetHour() - 12);
+            strHour = StringFormat<int>(L"{0}", time.GetHour() - 12);
             strAmPm = L"PM";
         }
         else
         {
-            strHour = FUN_1401ceea0(L"{0}", time.GetHour());
+            strHour = StringFormat<int>(L"{0}", time.GetHour());
             strAmPm = L"AM";
         }
     }
@@ -313,7 +312,7 @@ CStringW FUN_14083cf50(int nValue, bool bLocalized)
         return bLocalized ? FUN_14028dfa0<CStringW>(L"s_common_percent", strFixed) : CStringW(strFixed);
     }
     CStringW strFormat = bLocalized ? GetStringCommonByKey(L"s_common_percent") : CStringW(L"{0}");
-    return FUN_1401ceea0(strFormat, nInt);
+    return StringFormat<int>(strFormat, nInt);
 }
 
 // @0x14083d2b0
@@ -337,7 +336,7 @@ CStringW FUN_14083d340(CStringW str)
     if (!FUN_14083d7e0(str, L"<ms2>"))
         return str;
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->FUN_140397ab0(&doc, str) == 0)
+    if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->LoadXmlFromString(&doc, str) == 0)
         return str;
     Unk_Be790Xml* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -346,7 +345,7 @@ CStringW FUN_14083d340(CStringW str)
     if (pElem == NULL)
         return str;
     CStringW strText;
-    FUN_140873420(pElem, FUN_14016a5c0(DAT_143ab0250, 0), strText);
+    XmlGetAttr((class TiXmlElement*)(pElem), FUN_14016a5c0(DAT_143ab0250, 0), strText);
     if (!strText.IsEmpty())
         return strText;
     ATL::CAtlArray<int> arrLang;
@@ -355,7 +354,7 @@ CStringW FUN_14083d340(CStringW str)
     {
         int nLang = arrLang[i];
         CStringA strName = FUN_1406522f0(nLang);
-        FUN_140873420(pElem, FUN_14016a5c0(strName, 0), strText);
+        XmlGetAttr((class TiXmlElement*)(pElem), FUN_14016a5c0(strName, 0), strText);
         if (!strText.IsEmpty())
             return strText;
     }

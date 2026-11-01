@@ -42,6 +42,8 @@
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- statics (.text$di): the sort-name table of the shared item header, twice (two headers of the unit pull it in) ----
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -73,7 +75,6 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 // The slot registry (see unit_1400d2c20.cpp / itemexchangeslot.cpp).
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42b70(ItemScrollSlot* pSlot, Unk_MrDropFn fn);        // SetDropFn (the exe's delegate takes ItemScrollSlot&)
 void FUN_140d42bc0(ItemScrollSlot* pSlot, Unk_MrRemoveFn fn);      // SetRemoveFn
@@ -86,7 +87,6 @@ public:
     bool FUN_140630810();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 void FUN_14083d2b0(CStringW& str);
 CStringW FUN_141b71910(__int64 nUid);                               // the uid as text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // notice
@@ -155,7 +155,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
             packet.WriteUInt8(6);
             packet.WriteInt64(m_nItemUid);
-            packet.WriteInt64(spItem->FUN_140526a50());
+            packet.WriteInt64(spItem->GetItemUid());
             FUN_140710590(packet);
         }
     }
@@ -167,7 +167,7 @@ void UIItemMergeRevertDialog::FUN_140e4c440()
 {
     FUN_140d42630(GetTypeName());
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(0));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
     {
         FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
@@ -182,7 +182,7 @@ void UIItemMergeRevertDialog::FUN_140e4c440()
 // @0x140e4c7a0
 void UIItemMergeRevertDialog::FUN_140e4c7a0(CItem* pItem)
 {
-    m_nItemUid = pItem->FUN_140526a50();
+    m_nItemUid = pItem->GetItemUid();
 }
 
 // @0x140e4c7d0
@@ -190,13 +190,13 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 {
     FUN_140d42630(GetTypeName());
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(pItem));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
     {
         FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
-    CStringW strText = FUN_140656190(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
+    CStringW strText = StringFormat<CStringW, CStringW>(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
     int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053c620();
     FUN_14083d2b0(strText);
     ASObj obj(2);
@@ -205,7 +205,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     obj.FUN_1407cbb20("name", pItem->FUN_140528160());
     obj.FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
-    obj.FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->FUN_140526a50()));
+    obj.FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->GetItemUid()));
     obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
     m_30->Invoke("setData", obj);
 }

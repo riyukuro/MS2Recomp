@@ -131,58 +131,58 @@ MS2_REPLACE_METHOD(0x1422C7630, ASUIComponent, FUN_1422c7630, 123, 0xE5086F1E);
 // @0x1422c76c0
 int ASUIComponent::FUN_1422c76c0()
 {
-    return (int)FUN_1422baa20("focused").GetNumber();
+    return (int)GetMember("focused").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422C76C0, ASUIComponent, FUN_1422c76c0, 92, 0x2D3460C1);
 
 // @0x1422c7730
-void ASUIComponent::FUN_1422c7730(int n)
+void ASUIComponent::SetDisplayFocus(int n)
 {
     FUN_1407cb9c0("displayFocus", n);
 }
-MS2_REPLACE_METHOD(0x1422C7730, ASUIComponent, FUN_1422c7730, 40, 0x151993AE);
+MS2_REPLACE_METHOD(0x1422C7730, ASUIComponent, SetDisplayFocus, 40, 0x151993AE);
 
 // @0x1422c7760
 int ASUIComponent::FUN_1422c7760()
 {
-    return FUN_1422baa20("displayFocus").GetBool();
+    return GetMember("displayFocus").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C7760, ASUIComponent, FUN_1422c7760, 91, 0xA1A5AEFB);
 
 // @0x1422c77d0
-int ASUIComponent::FUN_1422c77d0()
+int ASUIComponent::HasFocus()
 {
-    return FUN_1422baa20("hasFocus").GetBool();
+    return GetMember("hasFocus").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C77D0, ASUIComponent, FUN_1422c77d0, 91, 0xE469DD7D);
+MS2_REPLACE_METHOD(0x1422C77D0, ASUIComponent, HasFocus, 91, 0xE469DD7D);
 
 // @0x1422c7840
-void ASUIComponent::FUN_1422c7840(int n)
+void ASUIComponent::SetFocusable(int n)
 {
     FUN_1407cbbe0("focusable", n != 0);
 }
-MS2_REPLACE_METHOD(0x1422C7840, ASUIComponent, FUN_1422c7840, 60, 0xEF61A8B5);
+MS2_REPLACE_METHOD(0x1422C7840, ASUIComponent, SetFocusable, 60, 0xEF61A8B5);
 
 // @0x1422c7890
 int ASUIComponent::FUN_1422c7890()
 {
-    return FUN_1422baa20("focusable").GetBool();
+    return GetMember("focusable").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C7890, ASUIComponent, FUN_1422c7890, 91, 0xB39B1ABD);
 
 // @0x1422c7900
-int ASUIComponent::FUN_1422c7900()
+int ASUIComponent::GetActualWidth()
 {
-    return (int)FUN_1422baa20("actualWidth").GetNumber();
+    return (int)GetMember("actualWidth").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422C7900, ASUIComponent, FUN_1422c7900, 92, 0x7ECAFA1E);
+MS2_REPLACE_METHOD(0x1422C7900, ASUIComponent, GetActualWidth, 92, 0x7ECAFA1E);
 
 // @0x1422c7970
-int ASUIComponent::FUN_1422c7970()
+int ASUIComponent::GetActualHeight()
 {
-    return (int)FUN_1422baa20("actualHeight").GetNumber();
+    return (int)GetMember("actualHeight").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422C7970, ASUIComponent, FUN_1422c7970, 92, 0x2DD6524E);
+MS2_REPLACE_METHOD(0x1422C7970, ASUIComponent, GetActualHeight, 92, 0x2DD6524E);
 
 // @0x1422c79e0
 void ASUIComponent::FUN_1422c79e0(int nWidth, int nHeight)
@@ -210,7 +210,7 @@ MS2_REPLACE_METHOD(0x1422C7A90, ASUIComponent, FUN_1422c7a90, 159, 0x6F761336);
 // @0x1422c7b40
 bool ASUIComponent::FUN_1422c7b40(CStringW strTooltip)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20("_tooltipData");
+    Scaleform::GFx::Value v = GetMember("_tooltipData");
     AScript data(v, 2);
     if (!data.FUN_1422ba9a0()) {
         data.FUN_1407cbb20("text", strTooltip);
@@ -233,7 +233,7 @@ void ASUIComponent::FUN_1422c7cd0(const Scaleform::GFx::Value& data)
 MS2_REPLACE_METHOD(0x1422C7CD0, ASUIComponent, FUN_1422c7cd0, 81, 0x8BF93F08);
 
 // @0x1422c7d30
-void ASUIComponent::FUN_1422c7d30(int nX, int nY)
+void ASUIComponent::SetTooltipOffset(int nX, int nY)
 {
     MS2Ptr<AScript> spData;
     if (FUN_1422c81c0<AScript>("_tooltipData", spData).get()) {
@@ -241,7 +241,7 @@ void ASUIComponent::FUN_1422c7d30(int nX, int nY)
         spData->FUN_1407cb9c0("offsetY", nY);
     }
 }
-MS2_REPLACE_METHOD(0x1422C7D30, ASUIComponent, FUN_1422c7d30, 227, 0x5E5C7A24);
+MS2_REPLACE_METHOD(0x1422C7D30, ASUIComponent, SetTooltipOffset, 227, 0x5E5C7A24);
 
 // @0x1422c7e20
 void ASUIComponent::FUN_1422c7e20()

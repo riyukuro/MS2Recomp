@@ -34,19 +34,29 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CStringA&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);                         // the full path of a table file
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-const char* FUN_14086f4b0(Unk_140165cf0*, const char* pszName);           // attribute text
 CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 
 // A row of the lookup table that FUN_1408a0d30 fills (0xc0 bytes).
 struct Unk_AddressRow
@@ -127,19 +137,19 @@ int CAddressTable::LoadTable()
     TiXmlDocument doc;
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("address"); pNode != 0; pNode = pNode->FUN_140168650("address"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("address")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("address")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_AddressPtr data(new CAddressData);
-        data->m_nMapCode = atoi(FUN_14086f4b0(pNode, "mapcode"));
-        data->m_nBlockCode = atoi(FUN_14086f4b0(pNode, "blockCode"));
+        data->m_nMapCode = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("mapcode"));
+        data->m_nBlockCode = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("blockCode"));
         data->m_strBlockName = FUN_1401bf530(pNode, "blockNameKor", CStringW(L""));
         data->m_strBlockModifier = FUN_1401bf530(pNode, "blockModifierKor", CStringW(L""));
         Unk_AddressBlockMapPtr blocks;
@@ -206,15 +216,15 @@ CStringW CAddressTable::FormatChecked(int nId, int nType, int nUnused, CStringW 
 {
     CStringW strName = GetTextChecked(nId, nType, nUnused);
     if (strName.IsEmpty())
-        return FUN_1401e8510(L"{0}", strArg);
-    return FUN_140656190(L"{0} \x2014 {1}", strName, strArg);
+        return StringFormat<CStringW>(L"{0}", strArg);
+    return StringFormat<CStringW, CStringW>(L"{0} \x2014 {1}", strName, strArg);
 }
 
 // @0x1409797c0
 CStringW CAddressTable::GetBuddyText(__int64 nCharId, int nId, int nType, int nUnused)
 {
     {
-        CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nCharId);
+        CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nCharId);
         if (buddy.get() != 0 && buddy->FUN_1401cc5b0() != 0)
             return CStringW(L"");
     }
@@ -226,8 +236,8 @@ CStringW CAddressTable::FormatBuddy(__int64 nCharId, int nId, int nType, int nUn
 {
     CStringW strName = GetBuddyText(nCharId, nId, nType, nUnused);
     if (strName.IsEmpty())
-        return FUN_1401e8510(L"{0}", strArg);
-    return FUN_140656190(L"{0} \x2014 {1}", strName, strArg);
+        return StringFormat<CStringW>(L"{0}", strArg);
+    return StringFormat<CStringW, CStringW>(L"{0} \x2014 {1}", strName, strArg);
 }
 
 // Shutdown: empties the address map (called from the client's teardown list in ms2.cpp). The atexit destructor of

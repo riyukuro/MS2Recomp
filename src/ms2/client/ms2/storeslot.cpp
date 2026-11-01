@@ -63,7 +63,8 @@ class Unk_SsDialog : public UIStoreDialog
 {
 public:
 };
-Unk_SsDialog* FUN_1405344f0(int nId);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_SsDialog* FUN_1405344f0 (calls cast back)
 class Unk_SSGDlg4e47* FUN_140de48d0(int);   // C3: was FUN_140de48d0
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
@@ -122,7 +123,9 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
-void* FUN_140a50b50(DragSlot* pSlot);                     // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 void FUN_140710590(COutPacket& packet);                   // send the packet
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
@@ -208,7 +211,7 @@ void StoreSlot::vfunc_6(void* p)
     if (spItem == NULL)
         return;
     int nType = spItem->FUN_1405276c0();
-    if (spItem->FUN_140527840()->FUN_14053c5c0() == 2 || spItem->FUN_140527840()->FUN_14053c5c0() == 0x18)
+    if (spItem->FUN_140527840()->GetType() == 2 || spItem->FUN_140527840()->GetType() == 0x18)
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(FUN_140719210(nType));
     FUN_1414049c0(p, FUN_141808910());
 }
@@ -266,12 +269,12 @@ int StoreSlot::vfunc_14()
         FUN_140d73bc0(0xff, 0, 0, CStringW(L""));
         return 0;
     }
-    Unk_SsDialog* pDlg = FUN_1405344f0(0x4e2d);
+    Unk_SsDialog* pDlg = reinterpret_cast<Unk_SsDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pDlg != 0 && pDlg->vfunc_55() == 0)
     {
         int nTab = g_143ab2a90.FUN_140a617f0(spItem);
         BOOL bAll = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
-        int nCount = bAll ? spItem->FUN_140526c50() : 1;
+        int nCount = bAll ? spItem->GetCount() : 1;
         int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
         if (nSlot == -1)
         {
@@ -281,11 +284,11 @@ int StoreSlot::vfunc_14()
         }
         if (spItem->FUN_140526850() == false || bAll)
         {
-            FUN_140de31f0(&MS2_STORE_TABLE, spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50(), (CItemData*)spItem->FUN_140527840());
+            FUN_140de31f0(&MS2_STORE_TABLE, spItem->GetItemUid(), nSlot, spItem->GetCount(), (CItemData*)spItem->FUN_140527840());
         }
         else
         {
-            FUN_1414043e0(spItem->FUN_140526a50(), spItem->FUN_140526c50(), spItem->FUN_1405281e0(), 1, m_nIndex);
+            FUN_1414043e0(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 1, m_nIndex);
         }
     }
     return 1;
@@ -336,9 +339,9 @@ int StoreSlot::vfunc_18(void* p)
         {
             int nAvail = 0;
             nSlot = nAvail;
-            if (spItem->FUN_1405281e0() == 1)
+            if (spItem->GetSlotMax() == 1)
             {
-                nAvail = MS2_STORE_TABLE.AvailableSlot(spItem, spItem->FUN_140526c50());
+                nAvail = MS2_STORE_TABLE.AvailableSlot(spItem, spItem->GetCount());
                 if (nAvail == -1)
                 {
                     FUN_141275260(0xf2, 1, 1);
@@ -355,12 +358,12 @@ int StoreSlot::vfunc_18(void* p)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (spItem->FUN_140526850() == false)
         {
-            FUN_140de2dc0(&MS2_STORE_TABLE, spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50(),
+            FUN_140de2dc0(&MS2_STORE_TABLE, spItem->GetItemUid(), nSlot, spItem->GetCount(),
                 MS2Ptr<CItemData>(0));
         }
         else
         {
-            FUN_1414045d0(spItem->FUN_140526a50(), spItem->FUN_140526c50(), spItem->FUN_1405281e0(), 0, m_nIndex);
+            FUN_1414045d0(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 0, m_nIndex);
         }
     }
     else
@@ -382,7 +385,7 @@ int StoreSlot::vfunc_18(void* p)
                 {
                     if (spItem->FUN_140527840() != 0)
                         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-                            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+                            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
                 }
             }
             return pFrom->vfunc_11();
@@ -405,7 +408,7 @@ int StoreSlot::vfunc_20()
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -416,7 +419,7 @@ int StoreSlot::vfunc_21()
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return vfunc_10();
 }
 
@@ -450,7 +453,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     {
         CStringW strName(param.name);
         bool bAllow = ((struct Unk_SsAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
-        bool bGem = spItem->FUN_1405279c0()->FUN_1406210e0();
+        bool bGem = spItem->FUN_1405279c0()->HasAnyGem();
         if (bAllow && bGem)
         {
             FUN_140d73bc0(0xed, 0, 0, CStringW(L""));
@@ -497,10 +500,10 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01600(GetStoreItemId());
-            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->FUN_140526c50(), -1, -1, 1);
+            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->GetCount(), -1, -1, 1);
             spBox->FUN_141a01800(1);
             spBox->FUN_141a026f0(1);
-            spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
+            spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -680,7 +683,7 @@ void StoreSlotBag::vfunc_9(void* p)
     StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
-        pSlot->SetStoreItemId(static_cast<CItem*>(p)->FUN_140526a50());
+        pSlot->SetStoreItemId(static_cast<CItem*>(p)->GetItemUid());
         pSlot->vfunc_10();
     }
 }
@@ -701,7 +704,7 @@ void StoreSlotBag::vfunc_il11(void* p)
     StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
-        pSlot->SetStoreItemId(static_cast<CItem*>(p)->FUN_140526a50());
+        pSlot->SetStoreItemId(static_cast<CItem*>(p)->GetItemUid());
         pSlot->vfunc_10();
     }
 }
@@ -743,7 +746,7 @@ unsigned __int64 FUN_14180b810(int nIndex)
         if (spItem.get() ? true : false)
         {
             if (spItem->FUN_140526b50() == nIndex)
-                return spItem->FUN_140526a50();
+                return spItem->GetItemUid();
         }
     }
     return 0;

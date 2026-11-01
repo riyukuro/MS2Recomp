@@ -36,11 +36,11 @@ MS2_CHECK_SIZE(ISocketCallBack,8);
 class CSocketBase {
 public:
     explicit CSocketBase(SOCKET s):m_socket(s) {}
-    ~CSocketBase() { FUN_141269780(); }
+    ~CSocketBase() { CloseSocket(); }
     operator SOCKET() const { return m_socket; }
-    void FUN_141269780();
+    void CloseSocket();
     bool operator==(const CSocketBase& o) const { return m_socket==o.m_socket; }
-    void FUN_14126c5c0(int); void FUN_14126c610(int); void FUN_14126c680(int); void FUN_14126c7d0(int); void FUN_14126c840(int); void FUN_14126c8b0(int,int,int);
+    void FUN_14126c5c0(int); void FUN_14126c610(int); void SetNonBlocking(int); void FUN_14126c7d0(int); void SetSendBufferSize(int); void CreateSocket(int,int,int);
 protected: SOCKET m_socket;
 };
 MS2_CHECK_SIZE(CSocketBase,8);
@@ -65,7 +65,7 @@ public:
     virtual int vfunc_3(char*,int);
     virtual int vfunc_4(const char*,int);
     void FUN_1412694d0(int,CSocketThread*);
-    void FUN_141269750(); void FUN_141269990();
+    void Close(); void FUN_141269990();
     int FUN_141269820(const sockaddr*,int);
     int FUN_141269890(const sockaddr* p) { return FUN_141269820(p,16); }
     int FUN_14126c3d0(const char*,int,int);
@@ -82,7 +82,7 @@ class CSocketThread : public CPtred,public CThread {
 public:
     CSocketThread(); virtual ~CSocketThread();
     unsigned int vfunc_1(void*,Unk_140659080&) override;
-    void FUN_1412696b0(); int FUN_141269b30(HANDLE); void FUN_141269dc0();
+    void FUN_1412696b0(); int FUN_141269b30(HANDLE); void ProcessCommands();
     void FUN_14126a000(CSimpleSocket*,int);
     HANDLE FUN_14126b1c0(CSimpleSocket*); int FUN_14126b250(CSimpleSocket*);
     ATL::CAtlArray<HANDLE> m_events;
@@ -106,10 +106,10 @@ public:
     void OnClose(CSimpleSocket*,int) override;
     int FUN_141265420(CString,int,int,int);
     void Reconnect(); void Close(); void FUN_141265960();
-    void SendPacket(COutPacket&); void FUN_141265ae0(); void FUN_141266480(unsigned,unsigned);
-    void FUN_141266500(int); void FUN_141267000(int); void FUN_141267070();
+    void SendPacket(COutPacket&); void FUN_141265ae0(); void SetKeys(unsigned,unsigned);
+    void FUN_141266500(int); void SetDisconnect(int); void FUN_141267070();
     void FUN_1412672a0(const Unk_SocketOptions&); void FUN_1412672d0();void FUN_1412673c0();
-    int GetSequence(); void FUN_141267410(COutPacket&); int GetDisconnect(); int FUN_1412675f0(); CString GetHost(); int GetPort();
+    int GetSequence(); void FUN_141267410(COutPacket&); int GetDisconnect(); int IsConnected(); CString GetHost(); int GetPort();
 private:
     MS2_LAYOUT_FRIEND;
     friend class CNetworkService;   // its logger getters test and use m_logger directly

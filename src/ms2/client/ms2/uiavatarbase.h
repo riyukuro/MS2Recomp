@@ -114,12 +114,12 @@ public:
     int GetKind();                                    // 0x1418b9ba0 m_nKind
     efd::SmartPointer<UIRenderView> GetView();        // 0x1418b9bc0 copy of the view pointer
     void FUN_1418b9c10();                                   // 0x1418b9c10 remembers the current pose, tells the view
-    void FUN_1418b9df0(bool bAngle, bool bPosition);        // 0x1418b9df0
+    void ResetView(bool bAngle, bool bPosition);        // 0x1418b9df0
     void FUN_1418b9e40();                                   // 0x1418b9e40 reads the object's pose and framing
     void SetMode(int nMode);                          // 0x1418ba120 m_nMode = n
     int GetMode();                                    // 0x1418ba140 m_nMode
-    int FUN_1418ba160(int nButton);                         // 0x1418ba160 m_nMode = FUN_1418ba1a0(nButton)
-    int FUN_1418ba1a0(int nButton);                         // 0x1418ba1a0 button -> drag mode
+    int SetModeFromButton(int nButton);                         // 0x1418ba160 m_nMode = GetModeForButton(nButton)
+    int GetModeForButton(int nButton);                         // 0x1418ba1a0 button -> drag mode
     void FUN_1418ba200(Vector3* pDst, float x, float y, float z);       // 0x1418ba200
     void FUN_1418ba250(Vector3* pDst, const Vector3* pSrc);     // 0x1418ba250
     void FUN_1418ba280(int bUpdate);                        // 0x1418ba280 back to the stored position

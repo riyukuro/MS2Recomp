@@ -41,7 +41,6 @@ public:
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 void* FUN_1422bb8b0(int nMovieId);
 void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, int a, int b);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // set Value from Value (callee destroys)
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -55,7 +54,7 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     if (pMovie == 0)
         return;
     FUN_14256e8e0(pMovie, &m_value, "scaleform.ms2.common.CommonDepth", 0, 0);
-    if (FUN_1409b0390(&m_value)) {}
+    if (((Scaleform::GFx::Value*)(void*)(&m_value))->IsUndefined()) {}
 }
 
 // @0x1409b1090

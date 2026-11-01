@@ -77,7 +77,7 @@ MS2_CHECK_SIZE(UIWeddingHallReservationPageConfirm, 0x30);
 class ASDialog : public ASDisplayObjectContainer {};
 
    // the first item of an id
-extern Unk_Inventory DAT_143ab2a90;                             // the local player's inventory
+extern Unk_Inventory g_143ab2a90;                             // the local player's inventory
 
 UITalkCinematic* FUN_140a7b2b0(int nUiId);                      // an open dialog of an id
 UIBillDialog* FUN_140f0a350(int nUiId);
@@ -174,11 +174,11 @@ void UIWeddingHallReservationDialog::vfunc_43()
     UITalkCinematic* pTalk;
     if (pDialog != 0 && (pTalk = FUN_140a7b2b0(0x4e40)) != 0)
     {
-        int nX = pTalk->FUN_141b1d3d0();
-        int nY = pTalk->FUN_141b1d460() - 0x50;
+        int nX = pTalk->GetLowerCutGlobalY();
+        int nY = pTalk->GetIllustGlobalX() - 0x50;
         if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+            pDialog->vfunc_2(5, nY, nX - pDialog->GetHeightCeil());
             return;
         }
     }
@@ -292,7 +292,7 @@ void UIWeddingHallReservationDialog::FUN_140fdbf70()
     if (m_nTab == 0)
         return;
     if (MS2Ptr<ASButtonBar> spTab = GetChild<ASButtonBar>("m_tab"))
-        spTab->FUN_1422e31e0(m_nTab - 1);
+        spTab->SetSelectedIndex(m_nTab - 1);
 }
 MS2_REPLACE_METHOD(0x140fdbf70, UIWeddingHallReservationDialog, FUN_140fdbf70, 184, 0x3EFA11E0);
 
@@ -302,7 +302,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc030()
     if (m_nTab >= (int)(m_tabs.size() - 1))
         return;
     if (MS2Ptr<ASButtonBar> spTab = GetChild<ASButtonBar>("m_tab"))
-        spTab->FUN_1422e31e0(m_nTab + 1);
+        spTab->SetSelectedIndex(m_nTab + 1);
 }
 MS2_REPLACE_METHOD(0x140fdc030, UIWeddingHallReservationDialog, FUN_140fdc030, 205, 0xFF3DDA98);
 
@@ -340,7 +340,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
         return;
     MS2Ptr<CItem> spCoupon(0);
     if (spHall->FUN_140906e80() != 0)
-        spCoupon = DAT_143ab2a90.FUN_140a5e040(spHall->FUN_140906e80());
+        spCoupon = g_143ab2a90.FUN_140a5e040(spHall->FUN_140906e80());
     MS2Ptr<UIBillDialog::TData> spBill(new UIBillDialog::TData());
     MS2Ptr<AScript> spData(new ASObj(2));
     static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("category",
@@ -366,7 +366,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     spBill->m_34 = 4;
     spBill->m_48 = (int)spHall->m_nMerat;
     UIBillDialog* pBillDlg = FUN_140f0a350(0x4e7b);
-    pBillDlg->FUN_1418cda20(spBill);
+    pBillDlg->SetData(spBill);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e7b)));
 }
 // (not hooked: the inline UIBillDialog::TData ctor stores a DLL-local vftable)
@@ -464,11 +464,11 @@ void UIWeddingHallReservationDialog::FUN_140fdccd0(const std::vector<CString>& n
                 ASObj item(2);
                 item.FUN_1407cba60("page", spPage->vfunc_8());
                 item.FUN_1407cbb20("label", spPage->vfunc_9());
-                spTab->FUN_1422e3460(item);
+                spTab->AddItem(item);
                 m_tabs.push_back(spPage);
             }
         }
-        spTab->FUN_1422e31e0(0);
+        spTab->SetSelectedIndex(0);
         spTab->vfunc_24(true);
     }
 }

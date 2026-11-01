@@ -59,12 +59,16 @@ static CString s_strHouseIcon = "System_HouseIcon";                 // the popup
 #include "ms2/client/ms2/uirealestatedialog.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- unit-local views of exe types ----
 
 // The cube map information service (class id 0x06100017).
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 template <int N> struct Unk_CMISTree;                              // the owners tree (Unk_CubeOwners)
 class CubeMapInformationService : public efd::ISystemService {   // C3: member view (the real header brings dynamic initializers)
@@ -79,10 +83,9 @@ public:
 class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
 
 // The house button of the mark.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // click
     void FUN_1422de800(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int a, int b);  // roll over
     void FUN_1422de880(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int a, int b);  // roll out
 };
@@ -96,7 +99,7 @@ Unk_UgcContractDialog* FUN_140961690(int nId);
 
 // The client constants (0x58-byte value cells).
 struct Unk_HouseMarkCfgInt { int* FUN_1402056b0(); char m_pad[0x50]; };
-struct Unk_HouseMarkCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_HouseMarkCfgFloat { char m_pad[0x58]; };
 struct Unk_HouseMarkCfgValue { int FUN_14025a620(); char m_pad[0x58]; };
 struct Unk_HouseMarkCfg
 {
@@ -197,7 +200,7 @@ void UIHouseMarkEntity::FUN_14198b100()
         FUN_14198c610();
         return;
     }
-    if (m_timer.FUN_140268870(500) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(500) == 0)
     {
         if (m_bVisible)
             FUN_14198b340();
@@ -280,12 +283,12 @@ void UIHouseMarkEntity::FUN_14198b340()
     float fHeight = FUN_14029d220(fPcZ - fMarkZ);
     if (fMarkZ > fPcZ)
     {
-        if (fHeight > ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1298.FUN_1402bac70())
+        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1298)->Read())
             bShow = false;
     }
     else
     {
-        if (fHeight > ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_12f0.FUN_1402bac70())
+        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_12f0)->Read())
             bShow = false;
     }
     if (bShow)

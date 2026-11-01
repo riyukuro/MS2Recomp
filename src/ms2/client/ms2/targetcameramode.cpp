@@ -17,6 +17,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
 
@@ -73,7 +75,6 @@ public:
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -119,7 +120,6 @@ public:
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -190,9 +190,9 @@ void CTargetCameraMode::vfunc_6(int n)
         m_d8.m_pos = FUN_1409f2540();
         m_d8.m_rot = FUN_140af8260();
         m_c0 = m_d8;
-        m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-        m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
-        m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+        m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+        m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
+        m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
     }
     m_f8 = 0;
 }
@@ -285,7 +285,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                        FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
@@ -295,7 +295,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
             if (fZoom != 0.0f)
             {
                 m_84 += fZoom * 2000.0f;
-                m_84 = FUN_140a17940(m_84, -150.0f, 150.0f);
+                m_84 = efd::Clamp(m_84, -150.0f, 150.0f);
             }
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
@@ -305,7 +305,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_58, m_54 + m_b4);
+                m_50 = efd::Clamp(m_50, m_58, m_54 + m_b4);
                 m_6c -= fPitch;
                 if (0.15f >= m_6c)
                     m_6c = 0.15f;
@@ -448,7 +448,7 @@ void CTargetCameraMode::vfunc_16(float f)
 {
     m_54 = Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0() ? m_b0 : f;
     if (-1.0f != m_5c)
-        m_98 = FUN_140a17940(m_98, m_58, m_54 + m_b4);
+        m_98 = efd::Clamp(m_98, m_58, m_54 + m_b4);
 }
 MS2_REPLACE_METHOD(0x14183bb70, CTargetCameraMode, vfunc_16, 172, 0x1329D8B0);
 
@@ -530,7 +530,7 @@ void CTargetCameraMode::FUN_14183bfd0(Vector3 ptPos, Vector3 ptRot, Vector3 ptTa
     Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
     m_50 = ptDir.FUN_140967ac0();
     if (bClamp)
-        m_50 = FUN_140a17940(m_50, m_58, m_54 + m_b4);
+        m_50 = efd::Clamp(m_50, m_58, m_54 + m_b4);
     if (0.0f > m_84 && m_50 > m_54 && fPrevDist < m_54)
     {
         m_50 = m_54;
@@ -633,7 +633,7 @@ MS2_REPLACE_METHOD(0x14183c650, CTargetCameraMode, FUN_14183c650, 16, 0x53C444C2
 // @0x14183c670
 void CTargetCameraMode::FUN_14183c670(float fDist, BOOL bSmooth)
 {
-    m_98 = FUN_140a17940(fDist, m_58, m_54 + m_b4);
+    m_98 = efd::Clamp(fDist, m_58, m_54 + m_b4);
     if (m_98 == m_50)
         return;
     if (bSmooth)
@@ -656,7 +656,7 @@ void CTargetCameraMode::FUN_14183c670(float fDist, BOOL bSmooth)
             ptPos.z = ptCenter.z;
             Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
             m_50 = ptDist.FUN_140967ac0();
-            m_50 = FUN_140a17940(m_50, m_58, m_54 + m_b4);
+            m_50 = efd::Clamp(m_50, m_58, m_54 + m_b4);
             ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
             ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
             ptPos.z = m_50 * FUN_1409f2310(m_6c) + ptCenter.z;

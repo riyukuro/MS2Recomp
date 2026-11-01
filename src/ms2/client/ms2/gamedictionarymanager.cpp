@@ -15,6 +15,14 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -56,7 +64,7 @@ void GameDictionaryManager::LoadNpc()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
         LoadEntry(m_npcs, pNode);
 }
 MS2_REPLACE_METHOD(0x1403b7400, GameDictionaryManager, LoadNpc, 477, 0x9A42D2EA);
@@ -77,7 +85,7 @@ void GameDictionaryManager::LoadMob()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
         LoadEntry(m_mobs, pNode);
 }
 MS2_REPLACE_METHOD(0x1403b75f0, GameDictionaryManager, LoadMob, 477, 0x7E8CA427);
@@ -98,7 +106,7 @@ void GameDictionaryManager::LoadItem()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
         LoadEntry(m_items, pNode);
 }
 MS2_REPLACE_METHOD(0x1403b77e0, GameDictionaryManager, LoadItem, 477, 0xA92DA7FB);
@@ -107,14 +115,14 @@ MS2_REPLACE_METHOD(0x1403b77e0, GameDictionaryManager, LoadItem, 477, 0xA92DA7FB
 void GameDictionaryManager::LoadEntry(DataMap& map, Unk_140165cf0* pElem)
 {
     int nValue = 0;
-    FUN_1408731e0(pElem, "value", nValue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value", reinterpret_cast<int&>(nValue));
     if (nValue == 0)
         return;
     DataPtr spData = Unk_GrNewTag(0);
-    FUN_140873220(pElem, "id", spData->m_id);
-    FUN_1408731e0(pElem, "grade", spData->m_grade);
-    FUN_1408731e0(pElem, "invisibleLevel", spData->m_invisibleLevel);
-    FUN_140873220(pElem, "FieldID", spData->m_fieldId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", spData->m_id);
+    XmlGetAttr((class TiXmlElement*)(pElem), "grade", reinterpret_cast<int&>(spData->m_grade));
+    XmlGetAttr((class TiXmlElement*)(pElem), "invisibleLevel", reinterpret_cast<int&>(spData->m_invisibleLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "FieldID", spData->m_fieldId);
     map.SetAt(spData->m_id, spData);
 }
 MS2_REPLACE_METHOD(0x1403b79d0, GameDictionaryManager, LoadEntry, 271, 0x0CECFEDE);

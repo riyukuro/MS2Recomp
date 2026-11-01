@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 // The recovered initializer run contains two copies of the header's static data.
 namespace Unk_UpperHeaderStatics {
 static CString sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -78,12 +79,14 @@ CStringW FUN_140ba7890(const wchar_t*,const __int64&);
 CStringW FUN_1401aa6a0(int);
 class Unk_UpperSub {public:Unk_UpperPtr<Unk_UpperBuff> FUN_140972690();};class Unk_UpperTargetUI : public UIHeadUpDisplay {public:void FUN_140c5f8f0(Unk_UpperPtr<Unk_UpperBuff>);Unk_UpperPtr<Unk_UpperBuff> FUN_140c5f990();void FUN_140c5faf0();};
 Unk_UpperTargetUI* FUN_140974280(int);
-Unk_UpperActor* FUN_1409ffd30(void*);class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
+class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 void FUN_1422bcdd0(Scaleform::GFx::Value*,__int64);void FUN_1422bcea0(Scaleform::GFx::Value*,const wchar_t*);void FUN_1422bccb0(Scaleform::GFx::Value*,int);
 
-class Unk_UpperNpc : public Unk_UpperActor {public:Unk_UpperPtr<Unk_UpperNpcData> FUN_141093270();};
+class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
+class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
+class Unk_UpperNpc : public Unk_UpperActor {};
 class Unk_UpperPC : public PC { };
-Unk_UpperNpc* FUN_14096e110(void*);Unk_UpperPC* FUN_140974230(void*);
+Unk_UpperNpc* FUN_14096e110(void*);
 extern int g_upperTargetId;
 // Remaining target-stat calculation and buff population routines are declarations above.
 // @0x141b4a150
@@ -97,7 +100,7 @@ void FUN_141b4a150(Unk_UpperActor* actor,bool flag,int* stage,__int64* cur,__int
  *stage=0;
  if(flag==true){
  Unk_UpperNpc* npc=FUN_14096e110(actor);
- bool isBoss=npc&&npc->FUN_141093270()->FUN_1406cd200(5);
+ bool isBoss=npc&&reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd200(5);
  if(isBoss){
   const __int64& total=npc->FUN_141095270();
   const __int64& unit=npc->FUN_141670a30(4);
@@ -207,7 +210,7 @@ void UpperHpBarEntity::FUN_141b4b500(){
  if(m_id==0)return;
  if(!GetVisible())return;
  {
-  Unk_UpperActor* actor=FUN_1409ffd30(reinterpret_cast<Unk_UpperPlayer*>(WorldService::GetInstance())->FUN_141bd1180(m_id));
+  Unk_UpperActor* actor=reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(reinterpret_cast<Unk_UpperPlayer*>(WorldService::GetInstance())->FUN_141bd1180(m_id))));
   if(actor==0){m_id=0;m_hp=0;}
   else{
    Unk_UpperPtr<ASDisplayObject> obj;
@@ -309,7 +312,7 @@ MS2_REPLACE_METHOD(0x141B4C3C0, UIUpperHpBar, vfunc_3, 24, 0x9F9232CC);
 // @0x141b4c3e0
 void UIUpperHpBar::vfunc_o70_2(const Unk_UpperEvt& evt){
  if(m_30==0)return;
- Unk_UpperActor* actor=FUN_1409ffd30(reinterpret_cast<Unk_UpperPlayer*>(WorldService::GetInstance())->FUN_141bd0fa0(evt));
+ Unk_UpperActor* actor=reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(reinterpret_cast<Unk_UpperPlayer*>(WorldService::GetInstance())->FUN_141bd0fa0(evt))));
  if(actor==0)return;
  UpperHpBarEntity& entity=FUN_141b4d170(actor);
  int kind=((class GameObject*)(void*)(actor))->FUN_14123c580();
@@ -333,7 +336,7 @@ void UIUpperHpBar::FUN_141b4c510(Unk_UpperActor* actor,int kind){
  FUN_141b4a150(actor,normal,&stage,&cur,&max,&hp,&shield);
  bool timer=true;
  Unk_UpperNpc* npc=FUN_14096e110(actor);
- bool isBoss=npc&&npc->FUN_141093270()->FUN_1406cd200(4);
+ bool isBoss=npc&&reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd200(4);
  if(isBoss)timer=false;
  ASObj args(2);
  args.FUN_1407cba60("id",FUN_141b4d690(actor));
@@ -403,16 +406,16 @@ MS2_REPLACE_METHOD(0x141B4D120, UIUpperHpBar, vfunc_28, 67, 0xCDAB7DE3);
 // @0x141b4d170
 UpperHpBarEntity& UIUpperHpBar::FUN_141b4d170(void* actor){
  Unk_UpperNpc* npc=FUN_14096e110(actor);
- if(npc){if(npc->FUN_141093270()->FUN_1406cd200(5))return m_entities[0];
- int kind=npc->FUN_141093270()->FUN_1406cd040();switch(kind){case 4:case 6:return m_entities[1];case 3:case 7:return m_entities[2];default:return m_entities[3];}}
- Unk_UpperPC* pc=FUN_140974230(actor);if(pc)return m_entities[1];return m_entities[3];
+ if(npc){if(reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd200(5))return m_entities[0];
+ int kind=reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd040();switch(kind){case 4:case 6:return m_entities[1];case 3:case 7:return m_entities[2];default:return m_entities[3];}}
+ Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(pc)return m_entities[1];return m_entities[3];
 }
 MS2_REPLACE_METHOD(0x141B4D170, UIUpperHpBar, FUN_141b4d170, 411, 0xEE28EACC);
 // @0x141b4d320
 bool UIUpperHpBar::FUN_141b4d320(UpperHpBarEntity& target){
  if(m_current!=0&&m_current->GetVisible()==true){
   Unk_UpperNpc* npc=((class Unk_UpperNpc*)FUN_140a38a00((class Unk_BossObject*)(reinterpret_cast<Unk_UpperPlayer*>(WorldService::GetInstance())->FUN_141bd1180(m_current->FUN_141b4bbe0()))));
-  bool isBoss=npc&&npc->FUN_141093270()->FUN_1406cd200(4);
+  bool isBoss=npc&&reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd200(4);
   if(isBoss)return false;
  }
  int kind=target.FUN_141b4bbc0();
@@ -438,14 +441,14 @@ CString UIUpperHpBar::FUN_141b4d690(void* actor){CString id=FUN_140b62550(((clas
 MS2_REPLACE_METHOD(0x141B4D690, UIUpperHpBar, FUN_141b4d690, 107, 0xEA6EC0D6);
 
 // @0x141b4d710
-CStringW UIUpperHpBar::FUN_141b4d710(void* actor){Unk_UpperPC* pc=FUN_140974230(actor);if(pc){return TSingleton<CStringTable>::GetInstance()->FUN_141811980(6,pc->FUN_141654730());}else{Unk_UpperNpc* npc=FUN_14096e110(actor);if(npc)return TSingleton<CStringTable>::GetInstance()->FUN_141811980(17,npc->FUN_141093270()->FUN_1406cd310());}return L"";}
+CStringW UIUpperHpBar::FUN_141b4d710(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(pc){return TSingleton<CStringTable>::GetInstance()->FUN_141811980(6,pc->FUN_141654730());}else{Unk_UpperNpc* npc=FUN_14096e110(actor);if(npc)return TSingleton<CStringTable>::GetInstance()->FUN_141811980(17,reinterpret_cast<Unk_UpperNpcData*>(reinterpret_cast<CNpc*>(npc)->GetNpcData().operator->())->FUN_1406cd310());}return L"";}
 MS2_REPLACE_METHOD(0x141B4D710, UIUpperHpBar, FUN_141b4d710, 322, 0x42472180);
 // @0x141b4d860
 bool UIUpperHpBar::FUN_141b4d860(void* actor){return FUN_14096e110(actor)!=0;}
 MS2_REPLACE_METHOD(0x141B4D860, UIUpperHpBar, FUN_141b4d860, 57, 0xEC468757);
 
 // @0x141b4d8a0
-int UIUpperHpBar::FUN_141b4d8a0(void* actor){Unk_UpperPC* pc=FUN_140974230(actor);if(!pc)return 0;return pc->FUN_141654730();}
+int UIUpperHpBar::FUN_141b4d8a0(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(!pc)return 0;return pc->FUN_141654730();}
 MS2_REPLACE_METHOD(0x141B4D8A0, UIUpperHpBar, FUN_141b4d8a0, 56, 0xE9446796);
 
 // @0x141b4da00

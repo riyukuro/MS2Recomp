@@ -1464,7 +1464,7 @@ bool PostProcessingService::SetStepActive(int nStep, bool bActive)
 MS2_REPLACE_METHOD(0x1416a3920, PostProcessingService, SetStepActive, 213, 0xF825659C);
 
 // @0x1416a3a00
-bool PostProcessingService::FUN_1416a3a00(int nStep)
+bool PostProcessingService::IsStepActive(int nStep)
 {
     bool bActive = false;
     efd::map<int, efd::SmartPointer<PostProcessEffect> >::iterator it = m_kSteps.find(nStep);
@@ -1472,17 +1472,17 @@ bool PostProcessingService::FUN_1416a3a00(int nStep)
         bActive = it->second->GetActive();
     return bActive;
 }
-MS2_REPLACE_METHOD(0x1416a3a00, PostProcessingService, FUN_1416a3a00, 135, 0xF11ED346);
+MS2_REPLACE_METHOD(0x1416a3a00, PostProcessingService, IsStepActive, 135, 0xF11ED346);
 
 // @0x1416a3a90
-PostProcessEffect* PostProcessingService::FUN_1416a3a90(int nStep)
+PostProcessEffect* PostProcessingService::GetStep(int nStep)
 {
     efd::map<int, efd::SmartPointer<PostProcessEffect> >::iterator it = m_kSteps.find(nStep);
     if (it != m_kSteps.end())
         return it->second;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1416a3a90, PostProcessingService, FUN_1416a3a90, 117, 0xACC1F5BE);
+MS2_REPLACE_METHOD(0x1416a3a90, PostProcessingService, GetStep, 117, 0xACC1F5BE);
 
 // @0x1416a3b10
 egf::IBuiltinModel* PostProcessingService::FUN_1416a3b10()
@@ -1558,7 +1558,7 @@ MS2_REPLACE_METHOD(0x1416a3cd0, PostProcessingService, FUN_1416a3cd0, 485, 0x74B
 
 // The first active step.
 // @0x1416a3ec0
-PostProcessEffect* PostProcessingService::FUN_1416a3ec0()
+PostProcessEffect* PostProcessingService::GetFirstActiveStep()
 {
     MS2_FOR_EACH(const auto& kStep, m_kSteps)
     {
@@ -1567,7 +1567,7 @@ PostProcessEffect* PostProcessingService::FUN_1416a3ec0()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1416a3ec0, PostProcessingService, FUN_1416a3ec0, 226, 0x8912E6B3);
+MS2_REPLACE_METHOD(0x1416a3ec0, PostProcessingService, GetFirstActiveStep, 226, 0x8912E6B3);
 
 // @0x1416a3fb0
 efd::SmartPointer<NiRenderTargetGroup> PostProcessingService::FUN_1416a3fb0()
@@ -1690,18 +1690,18 @@ bool PostProcessingService::FUN_1416a4620()
 MS2_REPLACE_METHOD(0x1416a4620, PostProcessingService, FUN_1416a4620, 53, 0x7A4B7694);
 
 // @0x1416a4660
-void PostProcessingService::FUN_1416a4660(int nMode)
+void PostProcessingService::SetDensityMode(int nMode)
 {
     m_spDensity->SetMode(nMode);
 }
-MS2_REPLACE_METHOD(0x1416a4660, PostProcessingService, FUN_1416a4660, 49, 0xB62389FA);
+MS2_REPLACE_METHOD(0x1416a4660, PostProcessingService, SetDensityMode, 49, 0xB62389FA);
 
 // @0x1416a46a0
-int PostProcessingService::FUN_1416a46a0()
+int PostProcessingService::GetDensityMode()
 {
     return m_spDensity->GetMode();
 }
-MS2_REPLACE_METHOD(0x1416a46a0, PostProcessingService, FUN_1416a46a0, 41, 0x16BD3474);
+MS2_REPLACE_METHOD(0x1416a46a0, PostProcessingService, GetDensityMode, 41, 0x16BD3474);
 
 // Toggle the outline click (and its step 16).
 // @0x1416a46d0
@@ -2103,13 +2103,13 @@ void PostProcessingService::FUN_1416aa330()
 }
 
 // @0x1416aa850
-bool PostProcessingService::FUN_1416aa850(int nClick)
+bool PostProcessingService::IsClickActive(int nClick)
 {
     if ((NiViewRenderClick*)m_aspClicks[nClick] != 0)
         return m_aspClicks[nClick]->GetActive();
     return false;
 }
-MS2_REPLACE_METHOD(0x1416aa850, PostProcessingService, FUN_1416aa850, 87, 0xA8DFE426);
+MS2_REPLACE_METHOD(0x1416aa850, PostProcessingService, IsClickActive, 87, 0xA8DFE426);
 
 // @0x1416aa8b0
 bool PostProcessingService::FUN_1416aa8b0(NiRenderStep* pkStep)

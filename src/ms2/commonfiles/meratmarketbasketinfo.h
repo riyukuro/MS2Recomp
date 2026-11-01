@@ -69,7 +69,7 @@ public:
 
     int FUN_14069fe40();                                    // 0 no item, 1 stackable, 2 single
     int FUN_14069fee0();
-    bool FUN_14069ff00();
+    bool HasPointPrice();
     bool FUN_14069ff50();
     int GetCurrencyItemId();                                // 0x14069ff80
     bool FUN_14069ffc0(std::vector<unsigned>& ids, const unsigned& nFlags);

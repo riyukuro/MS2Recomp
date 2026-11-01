@@ -54,16 +54,16 @@ public:
                                                                     // 28 0x1418e11f0 "OnCastingComplete"
     virtual int vfunc_48();                                         // 48 0x1418e1f70
 
-    void FUN_1418e12b0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e12b0 start a cast
+    void StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e12b0 start a cast
     void FUN_1418e12f0(Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bShowTime,
         bool bActive, const CStringW& strEnd);                      // 0x1418e12f0 start a cast from loose arguments
     void FUN_1418e1390();                                           // 0x1418e1390 stop with the end text
     void FUN_1418e13c0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e13c0 stop, start a new cast
     void FUN_1418e1400(const CStringW& strText);                    // 0x1418e1400 set both caption lines
     void FUN_1418e14b0(const CStringW& strText);                    // 0x1418e14b0 set both time lines
-    void FUN_1418e1560(float fValue);                               // 0x1418e1560 movie "updateValue"
+    void UpdateValue(float fValue);                               // 0x1418e1560 movie "updateValue"
     void FUN_1418e15d0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e15d0 start the cast
-    void FUN_1418e18a0(const CStringW& strText);                    // 0x1418e18a0 stopCasting + reset
+    void CancelCasting(const CStringW& strText);                    // 0x1418e18a0 stopCasting + reset
     void FUN_1418e18e0(const CStringW& strText);                    // 0x1418e18e0 movie "stopCasting"
     void FUN_1418e19c0(const CStringW& strText);                    // 0x1418e19c0 stopCasting + completed callback
     void OnCastingComplete();                                           // 0x1418e1a00 completed callback + reset

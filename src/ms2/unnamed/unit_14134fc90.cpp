@@ -18,6 +18,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // return types of the getters this unit calls
 class Unk_SoundSink;
@@ -44,13 +45,13 @@ class Unk_DemolishWorld
 {
 public:
     Unk_DemolishPC* FUN_141bd0cc0();                            // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 // The housing manager (FUN_1409670e0).
@@ -77,7 +78,6 @@ public:
 Unk_SoundSink* FUN_1409331f0();
 
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 int FUN_14053f9c0(int nItemId);
 
 // The notices of this dialog (RTTI names from the exe's dynamic_casts; payload int at +0x18).
@@ -180,7 +180,7 @@ void UIHouseDemolishDialog::vfunc_15()
         return;
     if (m_nDirty == 0)
         return;
-    if (m_tick.FUN_140268870(300) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(300) != 0)
     {
         Refresh(&m_nDirty);
         m_nDirty = 0;
@@ -221,7 +221,7 @@ MS2_REPLACE_METHOD(0x141350440, UIHouseDemolishDialog, Hide, 62, 0xE025C16A);
 // @0x141350490
 void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0 || m_bShown == 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0 || m_bShown == 0)
         return;
     if (*pnFlags == 0)
         return;
@@ -230,7 +230,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            MS2Ptr<CFieldDataCli> spField = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+            MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
             if (spField ? true : false)
             {
                 if (spField->FUN_140375130() == 0)
@@ -238,7 +238,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                     int nCount = 0;
                     int nLimit = 0;
                     ((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit);
-                    MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_textField");
+                    MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textField");
                     if (spText.get() != 0)
                     {
                         CStringW strText = FUN_140811740(0x700, nCount, nLimit);
@@ -250,7 +250,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
     }
     if ((*pnFlags & 2) != 0)
     {
-        MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_textKey");
+        MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textKey");
         if (spText.get() != 0)
         {
             CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
@@ -271,7 +271,7 @@ MS2_REPLACE_METHOD(0x141350740, UIHouseDemolishDialog, AddDirty, 42, 0xDB6FDCAE)
 // @0x141350770
 void UIHouseDemolishDialog::OnNotifyChangeGameOptionInput(NotifyObject* pNotify)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (!m_bShown)
         return;
@@ -287,7 +287,7 @@ void UIHouseDemolishDialog::OnNotifyChangeGameOptionInput(NotifyObject* pNotify)
 // @0x141350810
 void UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount(NotifyObject* pNotify)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (!m_bShown)
         return;

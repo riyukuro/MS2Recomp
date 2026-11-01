@@ -26,9 +26,6 @@ public:
 };
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 BookSlotBag* FUN_140a37100(NotifyContext::BindData* p);
 
@@ -39,6 +36,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(BookSlotBag);
 // the condition object).
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/statemanager_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // @0x140a365c0
@@ -103,18 +101,18 @@ void FUN_140a36c30(const CString& strName, std::vector<MS2Ptr<JobSkill> >& skill
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10((int)skills.size());
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140a36d00
 void FUN_140a36d00(const CString& strName)
 {
-    BookSlotBag* pBag = FUN_140a37100(FUN_1422c8e90(strName));
+    BookSlotBag* pBag = FUN_140a37100(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

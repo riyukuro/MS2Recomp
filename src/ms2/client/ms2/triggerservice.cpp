@@ -137,7 +137,6 @@ struct Unk_TsUiMgrView                                              // UI manage
     Unk_CommandUIRef FUN_141adcea0(int nId);
     Unk_CommandUIRef FUN_141adcf50(const CString& strName);
 };
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef& rRef);
 
 class UITypingGameDialog : public UIDialog
 {
@@ -192,16 +191,24 @@ public:
 };
 bool FUN_140841300(const CStringW& rText, const char* szCompare);
 CStringW XmlWide(const char* pszUtf8);                              // utf8 -> wide
-void FUN_14015f050(CString& rText, ATL::CAtlArray<CString>& rOut, const char* szDelimiter);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 
 // ---- service plumbing ----
 efd::MessageService* FUN_1411d1530(efd::ServiceManager* pManager);
 #include <egf/EntityManager.h>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc { public: efd::Category FUN_141235eb0(); };
-Unk_TrigAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 void FUN_1411ab6e0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 
@@ -292,7 +299,7 @@ efd::AsyncResult CTriggerService::OnInit()
     pMessages->Subscribe(this, pEntities->GetEntityLoadCategory(), 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
 
-    pMessages->Subscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0, false);
+    pMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
@@ -315,7 +322,7 @@ efd::AsyncResult CTriggerService::OnShutdown()
     pMessages->Unsubscribe(this, pEntities->GetEntityLoadCategory(), 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
 
-    pMessages->Unsubscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0);
+    pMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc*>(FUN_141b6f910())->FUN_141235eb0(), 0);
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141861410, CTriggerService, OnShutdown, 512, 0x9DCA81B1);
@@ -375,7 +382,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         FUN_141861ad0(pEvent);
         break;
     case 5:
-        FUN_141861b00(pEvent);
+        OnCameraObjects(pEvent);
         break;
     case 6:
         FUN_141861c20(pEvent);
@@ -436,7 +443,7 @@ void CTriggerService::FUN_141861ad0(CInPacket* pEvent)
 }
 
 // @0x141861b00
-void CTriggerService::FUN_141861b00(CInPacket* pEvent)
+void CTriggerService::OnCameraObjects(CInPacket* pEvent)
 {
     m_listCamera.RemoveAll();
     int nCount = pEvent->ReadUInt8();
@@ -550,7 +557,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         }
         else
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e95);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e95);
         }
     }
     else if (nKind == 2)
@@ -610,8 +617,8 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         }
         else
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e99);
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e9a);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e99);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e9a);
         }
     }
     else if (nKind == 4)
@@ -665,7 +672,7 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
         FUN_1418643c0(pEvent);
         break;
     case 0xc:
-        FUN_141863030(pEvent);
+        OnTypingGame(pEvent);
         break;
     }
 }
@@ -711,7 +718,7 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
     int nState = pEvent->ReadUInt8();
     CStringA strNames = pEvent->ReadString();
     ATL::CAtlArray<CString> aNames;
-    FUN_14015f050(strNames, aNames, ",");
+    Unk_SplitA(strNames, (ATL::CAtlArray<CStringA>*)&(aNames), ",");
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
         Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcf50(aNames[i]);
@@ -741,7 +748,7 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
     }
     else
     {
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f62);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f62);
         FUN_141add040(FUN_1403ed2b0(), 0x4e3d);
     }
 }
@@ -760,13 +767,13 @@ static UITypingGameDialog* FUN_1418644d0(int nId)
     {
         Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcea0(nId);
         if (kRef.FUN_1403e8a70() != 0)
-            return dynamic_cast<UITypingGameDialog*>(FUN_1403ed9e0(kRef));
+            return dynamic_cast<UITypingGameDialog*>(((MS2Ptr<UIObject>*)(&(kRef)))->operator UIObject*());
     }
     return 0;
 }
 
 // @0x141863030
-void CTriggerService::FUN_141863030(CInPacket* pEvent)
+void CTriggerService::OnTypingGame(CInPacket* pEvent)
 {
     int nA = pEvent->ReadInt32();
     int nB = pEvent->ReadInt32();
@@ -890,10 +897,10 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
         int nExisting = 0;
         if (m_mapHandles.Lookup(nId, reinterpret_cast<Unk_TrigHandle&>(nExisting)))
             return;
-        Unk_TrigSvcFxReq kRequest;
-        kRequest.m_strName = strName;
-        kRequest.m_nOwnerId = 0;
-        int nHandle = reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
+        NoticeMessage kRequest;   // C3: was Unk_TrigSvcFxReq
+        ((Unk_TrigSvcFxReq&)(kRequest)).m_strName = strName;
+        ((Unk_TrigSvcFxReq&)(kRequest)).m_nOwnerId = 0;
+        int nHandle = reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&((Unk_TrigSvcFxReq&)(kRequest)));
         if (nHandle != 0)
             m_mapHandles.SetAt(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle));
     }
@@ -1000,7 +1007,7 @@ void CTriggerService::FUN_141863d80(CInPacket* pEvent)
     int nA = pEvent->ReadInt32();
     UIGuideEvent* pGuide = ((class UIGuideEvent*)FUN_14136f3e0(0x4e53));
     if (pGuide != 0)
-        pGuide->FUN_14195b540(nA);
+        pGuide->HideSummary(nA);
 }
 
 // @0x141863df0
@@ -1077,7 +1084,7 @@ void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
         return;
     Vector3 pt = pEvent->ReadVector3Short();
     bool bMove = pEvent->ReadBool();
-    ((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d8b0(pt.z);
+    ((class PCBase*)(class PCBase*)(pPlayer))->SetTargetYaw(pt.z);
     if (bMove)
         pPlayer->vfunc_21(reinterpret_cast<const efd::Point3&>(pt));
 }

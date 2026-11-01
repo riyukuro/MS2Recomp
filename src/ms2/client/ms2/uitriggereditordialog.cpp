@@ -117,7 +117,8 @@ public:
     int FUN_1410b9e90(__int64 nOwnerId, std::vector<Cube*>& rOut);      // the cubes a character installed
 };
 struct Unk_TeFramework { efd::ServiceManagerPtr manager; };
-extern Unk_TeFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_TeFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TeFramework DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_TeWorld
 {
@@ -419,13 +420,13 @@ void UITriggerEditorDialog::FUN_141b2b600()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    if (FUN_14025e7a0()->FUN_1422af2d0(m_28) == 0)
+    if (FUN_14025e7a0()->IsTextFieldFocused(m_28) == 0)
     {
         m_30->Invoke("FoldDialog");
         m_bFolded = 1;
         FUN_1422dc260(0x1a);
-        FUN_140b632f0()->FUN_1422d4840(this, m_e0);
-        FUN_140b632f0()->FUN_1422d4780(this, 3);
+        FUN_140b632f0()->RemoveFromLayer(this, m_e0);
+        FUN_140b632f0()->AddToLayer(this, 3);
     }
 }
 MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FUN_141b2b600, 203, 0xC7D7F041);
@@ -440,8 +441,8 @@ void UITriggerEditorDialog::FUN_141b2b6e0()
         m_30->Invoke("UnfoldDialog");
         m_bFolded = 0;
         FUN_1422dc260(m_2c);
-        FUN_140b632f0()->FUN_1422d4840(this, 3);
-        FUN_140b632f0()->FUN_1422d4780(this, m_e0);
+        FUN_140b632f0()->RemoveFromLayer(this, 3);
+        FUN_140b632f0()->AddToLayer(this, m_e0);
     }
 }
 MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, FUN_141b2b6e0, 242, 0x11538C2C);
@@ -780,7 +781,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
             obj.FUN_1407cb9c0("functionType", spData->m_cube.m_nControlType);
         else
             continue;
-        spList->FUN_1422dd230(obj);
+        spList->AddItem(obj);
         nIndex++;
     }
     m_30->Invoke("initalizeInstallObjects");
@@ -924,7 +925,7 @@ void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
         obj.FUN_1407cbb20("text", msg.m_strText);
         obj.FUN_1407cb9c0("type", msg.m_nKind);
         obj.FUN_1407cbb20("label", msg.FUN_1408f4c40());
-        spList->FUN_1422dd230(obj);
+        spList->AddItem(obj);
         nIndex++;
     }
     m_30->Invoke("initalizeDefaultObjects");
@@ -982,7 +983,7 @@ void UITriggerEditorDialog::FUN_141b2f510()
         nY = (int)state.FUN_1422c1110() + 50;
         if (nX + state.FUN_1422c1340() >= 1500)
             nX = m_30->Invoke("screenCanvasPosX").GetInt();
-        if (nY + state.FUN_1422c13b0() >= 1500)
+        if (nY + state.GetHeightCeil() >= 1500)
             nY = m_30->Invoke("screenCanvasPosY").GetInt();
     }
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
@@ -1027,7 +1028,7 @@ inline Scaleform::GFx::Value Unk_TeScript::FUN_141b2fee0(const char* szMethod, c
 inline void ASObj::FUN_141b2ffc0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

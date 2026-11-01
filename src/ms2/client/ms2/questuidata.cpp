@@ -49,7 +49,7 @@
 
 class Unk_QuiLoader : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string data path of <file>
 CString FUN_140651350();                                                // the locale code
 CString FUN_14028d3c0(CString strPath);                                 // the file name of a path
@@ -59,14 +59,13 @@ bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   // int attribute with default
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 CStringTable* GetStringTable();                                          // the string table singleton
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);          // a common string by id, "{0}" = strArg
 CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strText with the josa of strWord
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the quest table row (null when none)
 int FUN_14074bc90(int nQuestId);                                        // the quest type
@@ -189,7 +188,7 @@ void FUN_1416e4590(CString strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
@@ -232,7 +231,7 @@ CStringW FUN_1416e4df0(int nQuestId)
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
         return L"";
-    MS2Ptr<CQuestData> spData = TSingleton<QuestDataTable>::GetInstance()->FUN_14074c9d0(nQuestId);
+    MS2Ptr<CQuestData> spData = TSingleton<QuestDataTable>::GetInstance()->GetQuestById(nQuestId);
     if (spData == 0)
         return L"";
     CStringW strName;
@@ -305,7 +304,7 @@ CStringW FUN_1416e55b0(int nQuestId)
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
         return L"";
-    return spUI->FUN_1416e66f0();
+    return spUI->GetCompleteText();
 }
 
 CStringW FUN_1416e57d0(int nQuestId, int nIndex);
@@ -333,7 +332,7 @@ CStringW FUN_1416e57d0(int nQuestId, int nIndex)
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
         return L"";
-    return spUI->FUN_1416e6310(nIndex);
+    return spUI->GetConditionText(nIndex);
 }
 
 // @0x1416e5890
@@ -451,7 +450,7 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
             }
             else
             {
-                if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuestId))
+                if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuestId))
                 {
                     return 0x5da;
                 }
@@ -477,7 +476,7 @@ MS2_REPLACE(0x1416E6100, FUN_1416e6100, 480, 0x5BCD3556);
 // ---- CQuestUIData members -------------------------------------------------------------------------------------------
 
 // @0x1416e6310
-CStringW CQuestUIData::FUN_1416e6310(int nIndex)
+CStringW CQuestUIData::GetConditionText(int nIndex)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);
     if (!spData)
@@ -506,11 +505,11 @@ void CQuestUIData::FUN_1416e6610(ATL::CAtlArray<CStringW>& out)
     if (!spData)
         return;
     for (size_t i = 0; i < spData->m_conditions.GetCount(); i++)
-        out.Add(FUN_1416e6310((int)i));
+        out.Add(GetConditionText((int)i));
 }
 
 // @0x1416e66f0
-CStringW CQuestUIData::FUN_1416e66f0()
+CStringW CQuestUIData::GetCompleteText()
 {
     CQuestData* pData = FUN_14074bc40(m_nQuestId).get();
     if (pData == 0)
@@ -521,7 +520,7 @@ CStringW CQuestUIData::FUN_1416e66f0()
     CStringW strText = FUN_14052bd00(0x5e7, FUN_1401aa6a0(nNpcId));
     return strText;
 }
-MS2_REPLACE_METHOD(0x1416E66F0, CQuestUIData, FUN_1416e66f0, 356, 0x7159BD0D);
+MS2_REPLACE_METHOD(0x1416E66F0, CQuestUIData, GetCompleteText, 356, 0x7159BD0D);
 
 // @0x1416e6860
 CStringW CQuestUIData::FUN_1416e6860(int nIndex)
@@ -597,7 +596,7 @@ static CStringW FUN_1416e7000(CQuestUIData* pData, CConditionCommonData* pCond)
     int nNpcId = (int)pCond->m_code.GetFirstValue();
     CStringW strFormat = GetStringCommon(0x5e3);
     CStringW strJosa = FUN_1413fac10(strFormat, FUN_1401aa6a0(nNpcId));
-    CStringW strText = FUN_1401e8510(strJosa, FUN_1401aa6a0(nNpcId));
+    CStringW strText = StringFormat<CStringW>(strJosa, FUN_1401aa6a0(nNpcId));
     return strText;
 }
 
@@ -623,7 +622,7 @@ static CStringW FUN_1416e7270(CQuestUIData* pData, CConditionCommonData* pCond)
     CStringW strText;
     CStringW strFormat = GetStringCommon(0x5e5);
     CStringW strJosa = FUN_1413fac10(strFormat, GetStringTable()->FUN_141811980(3, nMapId));
-    strText = FUN_1401e8510(strJosa, GetStringTable()->FUN_141811980(3, nMapId));
+    strText = StringFormat<CStringW>(strJosa, GetStringTable()->FUN_141811980(3, nMapId));
     return strText;
 }
 
@@ -695,7 +694,7 @@ void FUN_1416e7c00(CString strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("chapter")); pChapter != 0; pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChapter))->NextSibling("chapter")))

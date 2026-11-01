@@ -96,7 +96,6 @@ private:
     void ShowMissingItem(int nItemId);                          // 0x1419d2ca0
     void SetPhase(int nPhase);                                  // 0x1419d2db0
     int GetPhase();                                             // 0x1419d2dd0
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // a movie clip child by name
     MS2Ptr<Unk_MergeButton> FUN_140bb4b10(const CString& strName);   // a button child by name
 
     unsigned __int64 m_188;                                     // +0x188

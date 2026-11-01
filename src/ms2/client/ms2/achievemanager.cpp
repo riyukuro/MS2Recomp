@@ -70,6 +70,13 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/uiservice.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------------------
 class Unk_SingletonObj;
@@ -113,7 +120,8 @@ int ConditionKindOfType(int nConditionType);                    // ConditionKind
 // Strings.
 CStringW GetStringCommon(int nStringId);                          // string table entry
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string by key
-CStringW FUN_1408116a0(int nStringId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
@@ -121,7 +129,7 @@ CStringW FUN_141b720b0(int nItemId, int nUnused);               // item name
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_140719a00(__int64 nValue);
-int FUN_1407181d0(const CStringA& str);                         // number from a string
+unsigned short FUN_1407181d0(const CString& str);                         // number from a string
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 void FUN_141842290(CStringW& str);                              // text post-processing (colour tags)
 
@@ -180,14 +188,14 @@ class Unk_AmSkillTable { public: Unk_AmSkillRef FUN_1407ee1d0(int nSkillId); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class Unk_AmFileSystem : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CStringA& strArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int FUN_140197350(Unk_140165cf0* pNode, const char* pszName, int nDefault);
 unsigned FUN_140197390(Unk_140165cf0* pNode, const char* pszName, unsigned nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CStringA& strValue);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& strValue);
 
 class Unk_ElemArray
@@ -199,7 +207,7 @@ public:
     Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);          // operator[]
     void *m_a, *m_b, *m_c;
 };
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, Unk_ElemArray* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // The localized-string formatters: FormatStringId (0x14028dee0) and the key based back end FUN_14028dfa0 with this unit's
 // own fmt::internal::MakeValue instances (the Unk_WcFormatter of partyvotecli.cpp).
@@ -493,7 +501,7 @@ UIGameMenuDialog* FUN_140938b90(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (pUi.get())
             return dynamic_cast<UIGameMenuDialog*>((UIObject*)pUi);
     }
@@ -504,7 +512,7 @@ UIMyInfoDialog* FUN_140938c30(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (pUi.get())
             return dynamic_cast<UIMyInfoDialog*>((UIObject*)pUi);
     }
@@ -515,7 +523,7 @@ UIRewardNotify* FUN_140938cd0(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> pUi = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (pUi.get())
             return dynamic_cast<UIRewardNotify*>((UIObject*)pUi);
     }
@@ -836,14 +844,14 @@ void CAchieveUIData::LoadDesc()
     CStringA strPath = FUN_14071ae20("achieveDescription.xml");
     if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_ElemArray aElem;
-    FUN_14028faa0(pRoot, "achieve", "id", &aElem);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "achieve", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&aElem));
     for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
     {
         Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
@@ -878,13 +886,13 @@ void CAchieveUIData::LoadSpecialReward()
     CStringA strPath = FUN_14071ae20("achieveSpecialRewardDescription.xml");
     if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("achieve"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pElem)->FUN_140168650("achieve")))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("achieve")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pElem)))->NextSibling("achieve"))))
     {
         MS2Ptr<SpecialRewardDesc> pDesc(new SpecialRewardDesc);
         unsigned nId = FUN_140197390(pElem, "id", 0);
@@ -1314,14 +1322,14 @@ int CAchieveCategory::Load()
     CStringA strPath = FUN_14071a5b0("Table", "achieveCategory.xml");
     if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     Unk_ElemArray aElem;
-    FUN_14028faa0(pRoot, "category", "id", &aElem);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "category", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&aElem));
     for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
     {
         Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
@@ -1329,16 +1337,16 @@ int CAchieveCategory::Load()
         XmlGetAttr((class TiXmlElement*)(pElem), "id", pCat->m_nId);
         FUN_140940370(pElem, "tab", &pCat->m_nTab);
         FUN_140940430(pElem, "tree", &pCat->m_nTree);
-        FUN_1408733e0(pElem, "categoryTag", pCat->m_strCategoryTag);
-        FUN_1408733e0(pElem, "contentsTag", pCat->m_strContentsTag);
-        FUN_140873420(pElem, "eventFilter", pCat->m_strEventFilter);
-        for (Unk_140165cf0* pChildElem = pElem->FUN_140165cf0("child"); pChildElem != 0; pChildElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pChildElem)->FUN_140168650("child")))
+        XmlGetAttr((class TiXmlElement*)(pElem), "categoryTag", pCat->m_strCategoryTag);
+        XmlGetAttr((class TiXmlElement*)(pElem), "contentsTag", pCat->m_strContentsTag);
+        XmlGetAttr((class TiXmlElement*)(pElem), "eventFilter", pCat->m_strEventFilter);
+        for (Unk_140165cf0* pChildElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("child")); pChildElem != 0; pChildElem = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pChildElem)))->NextSibling("child"))))
         {
             MS2Ptr<CAchieveCategory> pChild(new CAchieveCategory);
             XmlGetAttr((class TiXmlElement*)(pChildElem), "id", pChild->m_nId);
             FUN_140940370(pElem, "tab", &pChild->m_nTab);
-            FUN_1408733e0(pChildElem, "categoryTag", pChild->m_strCategoryTag);
-            FUN_1408733e0(pChildElem, "contentsTag", pChild->m_strContentsTag);
+            XmlGetAttr((class TiXmlElement*)(pChildElem), "categoryTag", pChild->m_strCategoryTag);
+            XmlGetAttr((class TiXmlElement*)(pChildElem), "contentsTag", pChild->m_strContentsTag);
             pCat->m_aChildren.Add(pChild);
         }
         s_aCategory.Add(pCat);
@@ -1502,17 +1510,17 @@ CStringW FUN_14093f4d0(int nSeconds)
     int nMinutes = nSeconds / 60;
     int nRest = nSeconds % 60;
     if (nMinutes != 0)
-        strText += FUN_1408116a0(0x801, nMinutes);
+        strText += BlockFormat<int>(0x801, nMinutes);
     if (nRest != 0)
     {
         if (strText.GetLength() != 0)
             strText += " ";
-        strText += FUN_1408116a0(0x802, nRest);
+        strText += BlockFormat<int>(0x802, nRest);
     }
     if (strText.GetLength() == 0)
     {
         int nZero = 0;
-        strText = FUN_1408116a0(0x802, nZero);
+        strText = BlockFormat<int>(0x802, nZero);
     }
     return strText;
 }
@@ -1524,7 +1532,7 @@ CStringW FUN_14093f670(int nValue)
     CStringW strText;
     if (nValue < 1000)
     {
-        strText = FUN_1408116a0(0x778, nValue);
+        strText = BlockFormat<int>(0x778, nValue);
     }
     else if (nValue % 1000 != 0)
     {
@@ -1534,7 +1542,7 @@ CStringW FUN_14093f670(int nValue)
     else
     {
         int nKilo = nValue / 1000;
-        strText = FUN_1408116a0(0x779, nKilo);
+        strText = BlockFormat<int>(0x779, nKilo);
     }
     return strText;
 }
@@ -1581,7 +1589,7 @@ int FUN_140940370(Unk_140165cf0* pNode, const char* pszName, int* pOut)
         return 2;
     }
     CStringA str;
-    int nRet = FUN_1408733e0(pNode, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRet != 0)
         return nRet;
     *pOut = CAchieveCategory::ParseTab(str);
@@ -1598,7 +1606,7 @@ int FUN_140940430(Unk_140165cf0* pNode, const char* pszName, int* pOut)
         return 2;
     }
     CStringA str;
-    int nRet = FUN_1408733e0(pNode, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRet != 0)
         return nRet;
     *pOut = CAchieveCategory::ParseTree(str);

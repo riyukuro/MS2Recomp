@@ -31,12 +31,12 @@ public:
 
     int FUN_1411cba60();                        // per-frame update: 1 while running, 0 when finished
     void MakePhysxActor(Unk_VibParamRef params);  // 0x1411cc570
-    void FUN_1411cd040();                       // release the physics actor
+    void ReleaseActor();                       // release the physics actor
     void FUN_1411cd0c0();                       // copy the actor's pose back to the entity
     void FUN_1411cd3b0();                       // stop: restore the rest pose and remove the actor
     int FUN_1411cd550();                        // physics mode flag
     void FUN_1411cd570(Unk_Entity* pEntity);    // read the entity's properties
-    void FUN_1411cda60(Vector3 pos);    // set the entity position when it changed
+    void SetPosition(Vector3 pos);    // set the entity position when it changed
     void FUN_1411cdb00(Vector3 rot);    // set the entity rotation when it changed
     void FUN_1411cdba0();                       // start the physics fall
     void FUN_1411cdd90();                       // cancel the fall

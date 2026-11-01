@@ -44,12 +44,12 @@ class Unk_FdWorld
 public:
     PCBase* FUN_141bd0cc0();                                // the local player
     PC* FUN_141bd1290(int nId);                             // the actor with the object id
-    PC* FUN_141bd1530(__int64 nEntityId);                   // the actor of an entity id
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, the actor of an entity id)
     static class WorldService* GetInstance();
 };
 
@@ -86,7 +86,9 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
-void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -170,7 +172,7 @@ int FittingDollSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121d330, FittingDollSlot, vfunc_20, 360, 0x8C0A70F5);
@@ -182,7 +184,7 @@ int FittingDollSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121d4a0, FittingDollSlot, vfunc_21, 360, 0x889F2550);
@@ -240,24 +242,24 @@ int FittingDollSlot::vfunc_8(void* p)
     {
         int nLock = FUN_141275a10(vfunc_25().get());
         if (nLock == 1)
-            slot.FUN_1409c1e80(1);
+            slot.SetItemLock(1);
         else if (nLock == 2)
-            slot.FUN_1409c2710(1);
+            slot.SetDisable(1);
         else if (nLock == 3)
-            slot.FUN_1409c1ec0(1);
+            slot.SetItemConditionLock(1);
     }
     if (m_nSlot == 4)
     {
         if (pItem->FUN_140527840()->FUN_14053d460() != false)
         {
-            slot.FUN_1409c2090(1);
+            slot.SetGrayColor(1);
             goto LAB_gray_done;
         }
     }
     if (m_nSlot == 9)
     {
         if (pItem->FUN_140527840()->FUN_14053d2b0() != false)
-            slot.FUN_1409c2090(1);
+            slot.SetGrayColor(1);
     }
 LAB_gray_done:
     *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
@@ -294,7 +296,7 @@ MS2_REPLACE_METHOD(0x14121dc90, FittingDollSlot, vfunc_9, 177, 0x60A25617);
 // @0x14121dd50
 FittingDollPC* FittingDollSlot::FUN_14121dd50()
 {
-    return ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1530(m_nDollId))));
+    return ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_nDollId)))));
 }
 MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, FUN_14121dd50, 47, 0x50AAF435);
 
@@ -354,11 +356,11 @@ int FittingDollSlot::FUN_14121ddc0()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strText, 0, s_strDestroyDollItem);
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01600(((CItem*)spItem)->FUN_140526a50());
-                    spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->FUN_140526c50(), -1, -1, 1);
+                    spBox->FUN_141a01600(((CItem*)spItem)->GetItemUid());
+                    spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->GetCount(), -1, -1, 1);
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a026f0(1);
-                    spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
+                    spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     FUN_140d73c60(spBox);
                 }
             }

@@ -31,11 +31,11 @@
 #include <string>
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 extern char DAT_143d6eb58;
 void* FUN_140aadf80();                                      // the application window object
-HWND FUN_14209c720(void* pkWindow);                         // its HWND
 class Unk_14025e7a0;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -49,7 +49,8 @@ void FUN_140a34190(void* pDst, const void* pSrc, size_t n);   // bounded memcpy 
 int FUN_1416b0b80(unsigned int uiFBMode);                   // frame-buffer mode -> D3DMULTISAMPLE_TYPE
 
 // screenshot plumbing from other units
-extern char DAT_143b059e8;                                  // render-target registry singleton holder
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pkHolder);                        // registry singleton
 void* FUN_140af7da0(void* pkRegistry);                      // its current scene
 NiRenderTargetGroup* FUN_14127cca0(void* pkScene);          // the scene's render-target group
@@ -57,7 +58,6 @@ NiRenderTargetGroup* FUN_14127cca0(void* pkScene);          // the scene's rende
 PostProcessingService* FUN_1409a8b20();
 CStringW FUN_1401d0080(const CStringW& kA, const CStringW& kB);   // CStringW concatenation
 CStringW FUN_14052bd00(int nStringId, const CStringW& kArg);      // localized string with one argument
-CStringW FUN_1401e8510(const wchar_t* pwcFormat, const CStringW& kArg);   // StringFormat(const wchar_t*, const CStringW&)
 void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
 void* FUN_140534fc0(const Unk_MessageBoxPtr& kBox);
@@ -570,7 +570,7 @@ Ni2DBuffer* GetScreenshotBuffer(int nTarget)
 void SaveClientAreaToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int nTarget)
 {
     RECT kClient = { 0, 0, 0, 0 };
-    GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+    GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     SaveBufferToFileW(pkPath, eFormat, nTarget, NiRect<unsigned int>(0, kClient.right, kClient.top, kClient.bottom), 0);
 }
 
@@ -733,7 +733,7 @@ int SaveRenderTargetToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_F
 void SaveClientAreaToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int nTarget)
 {
     RECT kClient = { 0, 0, 0, 0 };
-    GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+    GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     SaveBufferToFileA(pkPath, eFormat, nTarget, NiRect<unsigned int>(0, kClient.right, kClient.top, kClient.bottom), 0);
 }
 
@@ -1015,7 +1015,7 @@ int EnsureScreenshotDirectory(CStringW* pkDirectory)
     {
         return -5;
     }
-    *pkDirectory = FUN_1401e8510(L"{0}\\screenshot", kBase);
+    *pkDirectory = StringFormat<CStringW>(L"{0}\\screenshot", kBase);
     if (!IsDirectory(CStringW(*pkDirectory)) && FUN_1414a5a40(CStringW(*pkDirectory)) == -1)
     {
         return -6;
@@ -1036,7 +1036,7 @@ CStringW TakeScreenshotJpg(int bNotify, int nTarget)
     }
     CStringW kPath = FUN_1401d0080(kDirectory, GetTimestampFileName(D3DXIFF_JPG));
     RECT kClient = { 0, 0, 0, 0 };
-    GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+    GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     Ni2DBuffer* pkBuffer = GetScreenshotBuffer(nTarget);
     if (pkBuffer == NULL)
     {
@@ -1089,7 +1089,7 @@ void TakeSceneScreenshotPng(int bNotify)
         if (pkGroup != NULL)
         {
             RECT kClient = { 0, 0, 0, 0 };
-            GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+            GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
             NiRect<unsigned int> kRect(kClient.left, kClient.right, kClient.top, kClient.bottom);
             SaveRenderTargetToFileW((ATL::CSimpleStringT<wchar_t, 1>*)&kPath, D3DXIFF_PNG, pkGroup, kRect);
             s_iScreenshotCounter = s_iScreenshotCounter + 1;
@@ -1109,7 +1109,7 @@ void TakeScreenshotPng(int bNotify)
     }
     CStringW kPath = FUN_1401d0080(kDirectory, GetTimestampFileName(D3DXIFF_PNG));
     RECT kClient = { 0, 0, 0, 0 };
-    GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+    GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     Ni2DBuffer* pkBuffer = GetScreenshotBuffer(0);
     if (pkBuffer == NULL)
     {
@@ -1152,7 +1152,7 @@ std::string CaptureClientAreaJpg()
         return std::string("");
     }
     RECT kClient = { 0, 0, 0, 0 };
-    GetClientRect(FUN_14209c720(FUN_140aadf80()), &kClient);
+    GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     NiDX92DBufferData* pkData = NiDynamicCast(NiDX92DBufferData, (NiDX92DBufferData*)pkBuffer->GetRendererData());
     if (pkData == NULL)
     {

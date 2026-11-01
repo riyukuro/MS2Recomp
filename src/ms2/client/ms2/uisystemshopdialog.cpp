@@ -74,6 +74,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- statics of the unit's headers (dynamic initializers 0x1400e18a0..) ----
 
@@ -90,7 +91,6 @@ typedef Delegate<void(ItemScrollSlot&, DragSlot*)> SsDropFn;
 typedef Delegate<bool(int, const CMsgBoxData&)> SsMsgBoxFn;
 void FUN_140d42bc0(ItemScrollSlot* pSlot, SsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, SsDropFn fn);        // ItemScrollSlot::SetDropFn
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);   // create the named slot
 void FUN_140d42630(const CString& strName);                    // drop the named slot
@@ -124,7 +124,6 @@ bool FUN_140811640(int nKind);                                  // the first use
 int FUN_1413499b0(int nTab);                                    // open the shop on a tab
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                 // show it
-void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 // CMsgBoxData::SetValue<T> (COMDATs of ?\smartpush.cpp): a named GFx value of the box.
 void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n);
@@ -265,7 +264,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
                         if (spBox.get())
                         {
-                            spBox->FUN_141a024e0(GetStringCommon(0xc65), 1);
+                            spBox->SetCheckbox0(GetStringCommon(0xc65), 1);
                             spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa64a0));
                             FUN_140d73c60(spBox);
                         }
@@ -289,11 +288,11 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa62d0));
                             spBox->FUN_141a029b0(buff);
                             spBox->FUN_141a024a0(0);
-                            int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
+                            int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoFishingName());
                             for (int i = 0; i < nCount; i++)
                             {
                                 CSmartPushTable::PackagePtr pkg =
-                                    CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), i);
+                                    CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), i);
                                 Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
                                 Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
                                 Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
@@ -316,7 +315,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
                     if (spBox.get())
                     {
-                        spBox->FUN_141a024e0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 1);
+                        spBox->SetCheckbox0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 1);
                         spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa6970));
                         FUN_140d73c60(spBox);
                     }
@@ -341,11 +340,11 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa67a0));
                         spBox->FUN_141a029b0(buff);
                         spBox->FUN_141a024a0(0);
-                        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
+                        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoPlayInstrumentName());
                         for (int i = 0; i < nCount; i++)
                         {
                             CSmartPushTable::PackagePtr pkg =
-                                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), i);
+                                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), i);
                             Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
                             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
                             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
@@ -383,8 +382,8 @@ void UISystemShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (strTip.IsEmpty())
         return;
     ASTooltip tip(1, 2);
-    if (tip.FUN_1409e26b0(strTip) != 0)
-        FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+    if (tip.ApplyTextTooltip(strTip) != 0)
+        *pRetVal = tip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x140FA59B0, UISystemShopDialog, vfunc_49, 487, 0xFB754602);
 
@@ -410,7 +409,7 @@ void UISystemShopDialog::FUN_140fa5bc0()
             spBait = g_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
         FUN_140d42630(GetTypeName());
         FUN_140d42540(GetTypeName(), 0, spBait);
-        if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
+        if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
         {
             FUN_140d42bc0(pSlot, SsRemoveFn(this, &UISystemShopDialog::FUN_140fa6ab0));
             FUN_140d42b70(pSlot, SsDropFn(this, &UISystemShopDialog::FUN_140fa6ae0));
@@ -569,7 +568,7 @@ void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());
         if (spItem == 0)
             return;
-        if (!spItem->FUN_1405277e0(100))
+        if (!spItem->HasStringTag(100))
             return;
         if (CFishingManager::GetInstance()->FUN_140cdbbd0(spItem) == 0)
             return;

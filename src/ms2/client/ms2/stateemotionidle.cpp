@@ -29,6 +29,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateemotionidle.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <egf/Entity.h>
 #include <egf/FlatModel.h>
@@ -42,6 +43,8 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+#include "ms2/client/ms2/skilldatatablecli.h"   // C3: SkillDataTable::GetSkillData
 
 // The unit includes the sort-name / skill / stun header statics a second time (without the condition object).
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -50,8 +53,8 @@ static CString s_strStun2 = "stun";
 
 // ---- unit-local placeholders ----
 
-struct Vector3 { float x, y, z; };
-extern Vector3 DAT_143b01a60;                    // the zero point
+struct Vector3 { float x, y, z; Vector3(); };   // declared (never called) ctor: not a /GS buffer
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // StateData slots 1/2 argument: the state-sync record; +0x64 carries the emotion / npc id.
 class Unk_StateDataArg
@@ -98,10 +101,10 @@ public:
 // Buff container of an actor.
 // The knock-back direction (a POD with a declared ctor, so the return temp is not a /GS buffer).
 struct Unk_SeiPoint { float x, y, z; Unk_SeiPoint(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_BuffMgr
 {
 public:
-    Unk_SeiPoint FUN_141683290();                // knock-back direction
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
@@ -122,8 +125,9 @@ class Unk_Skills { public: int FUN_141768fb0(int nSkill, unsigned short nLevel);
 typedef efd::utf8string Unk_AnimName;   // 0x20 bytes (ctor 0x1409989e0, dtor 0x1408a8900)
 
 // The animation service lookup (cached actor manager of a model key) and the sequence table.
-class Unk_FNAnimSvc { public: NiActorManager* FUN_140999440(const Unk_GoModelKey& key); };
-Unk_FNAnimSvc* FUN_141b6f910();
+class Unk_FNAnimSvc { public: };
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 const char* FUN_142087e50(const void* pFixed);
 
 // Casts of the actor class ids.
@@ -163,7 +167,6 @@ egf::Entity* FUN_141659af0(MyPC* p, int n);
 void FUN_141657c80(PCBase* p, bool b);
 
 void* FUN_1401958b0();
-struct Unk_EmoTable { MS2Ptr<Unk_EmoRow> FUN_1407ee1d0(int nEmotion); };   // emotion table view
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -235,14 +238,14 @@ void StateEmotion::vfunc_4(StateData* pData)
     }
     else
     {
-        MS2Ptr<Unk_EmoRow> spRow = ((Unk_EmoTable*)FUN_1401958b0())->FUN_1407ee1d0(m_spData2->m_nEmotion);
+        MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(FUN_1401958b0())->GetSkillData(m_spData2->m_nEmotion);
         if (spRow == 0)
             return;
-        if (spRow->FUN_1407e9a60() != 0xe)
+        if (reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9a60() != 0xe)
             return;
-        m_strAnim = spRow->FUN_1407e9cb0();
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)spRow->m_n30);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)spRow->m_n30);
+        m_strAnim = reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9cb0();
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ef10(m_strAnim, 1, 0, false);
         FUN_1417b92a0();
         m_strLoop.Empty();
@@ -283,7 +286,7 @@ void StateEmotion::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_BuffMgr* pBuff = ((Unk_BuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
+    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
     {
         pPC->vfunc_59(2, 0, 0, 0);
@@ -564,7 +567,7 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
             {
                 Unk_GoModelKey kKey;
                 Unk_GoModelKey& rKey = pActor->FUN_14123c460(kKey);
-                NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(rKey);
+                NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_FNAnimSvc*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_GoModelKey&>(rKey)));
                 if (pMgr != 0)
                 {
                     int nSeq = (int)m_nAnim;
@@ -685,16 +688,16 @@ void StateEmotionIdle::vfunc_4(StateData* pData)
     }
     else
     {
-        MS2Ptr<Unk_EmoRow> spRow = ((Unk_EmoTable*)FUN_1401958b0())->FUN_1407ee1d0(m_spData2->m_nEmotion);
-        if (spRow == 0 || spRow->FUN_1407e9a60() != 0xe)
+        MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(FUN_1401958b0())->GetSkillData(m_spData2->m_nEmotion);
+        if (spRow == 0 || reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9a60() != 0xe)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
         }
-        m_strAnim = spRow->FUN_1407e9cb0();
+        m_strAnim = reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9cb0();
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ef10(m_strAnim, 1, 0, false);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)spRow->m_n30);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)spRow->m_n30);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
         m_strNext.Empty();
         if (FUN_14166f790(m_pOwner, m_strAnim, m_strNext, 1))
         {
@@ -744,7 +747,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_BuffMgr* pBuff = ((Unk_BuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
+    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
         egf::Entity* pEntity = FUN_141659af0(pPC, 1);

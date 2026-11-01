@@ -50,9 +50,7 @@ template void MS2Ptr<GameRankingItem::WorldChampion>::ReleaseImpl(void*);
 
 void FUN_1408a2020(egf::Entity* pEntity, unsigned nProperty, int* pOut);
 int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProperty, bool* pOut);
 void FUN_140961880(egf::Entity* pEntity, unsigned nProperty, float* pOut);
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, efd::Point3* pOut);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140ae1160(egf::Entity* pEntity, unsigned nProperty, unsigned short* pOut);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -77,7 +75,7 @@ float FUN_140b60c90(egf::Entity* pEntity)
 efd::Point3 FUN_140b60cd0(egf::Entity* pEntity)
 {
     efd::Point3 kPoint;
-    FUN_1409618c0(pEntity, 0xfd95ca52, &kPoint);
+    reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPoint));
     return kPoint;
 }
 
@@ -85,7 +83,7 @@ efd::Point3 FUN_140b60cd0(egf::Entity* pEntity)
 efd::Point3 FUN_140b60d30(egf::Entity* pEntity)
 {
     efd::Point3 kPoint;
-    FUN_1409618c0(pEntity, 0x68c7c29d, &kPoint);
+    reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kPoint));
     return kPoint;
 }
 
@@ -101,7 +99,7 @@ int FUN_140b60d90(egf::Entity* pEntity)
 bool FUN_140b60dd0(egf::Entity* pEntity)
 {
     bool bValue = false;
-    FUN_1408a20a0(pEntity, 0xa0b6b179, &bValue);
+    pEntity->GetPropertyValue(0xa0b6b179, bValue);
     return bValue;
 }
 

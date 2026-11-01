@@ -58,7 +58,7 @@ public:
     void FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem);                   // 0x14100ca90 set one score slot
     void FUN_14100d260(int nStart, int nEnd);                               // 0x14100d260 a score starts to play
     void FUN_14100d600();                                                   // 0x14100d600 a score ended
-    bool FUN_14100d8c0();                                                   // 0x14100d8c0 any score chosen
+    bool HasAnyScore();                                                   // 0x14100d8c0 any score chosen
     void FUN_14100d920();                                                   // 0x14100d920 auto start
     int GetAutoPlay();                                                    // 0x14100d9f0 m_nAutoPlay
     void FUN_14100da10();                                                   // 0x14100da10 the play timer text
@@ -68,11 +68,10 @@ public:
     void FUN_14100e9a0(int nMode);                                          // 0x14100e9a0 the play / stop buttons
     int GetMode();                                                    // inline: m_nMode (instrumentmanager.cpp)
     void SetInstrument(int nInstrument);                                    // inline: set m_nInstrument (instrumentmanager.cpp)
-    void FUN_14100f1f0();                                                   // 0x14100f1f0 the slot count
+    void UpdateSlotCount();                                                   // 0x14100f1f0 the slot count
     unsigned char FUN_14100f2e0();                                          // 0x14100f2e0 play the chosen score
 
     MS2Ptr<ASMovieClip> FUN_140c02990(const CString& strName);              // 0x140c02990 bind a movie clip child
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);              // 0x140bb4cf0 bind a text field child
 
 private:
     MS2_LAYOUT_FRIEND;

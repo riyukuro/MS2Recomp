@@ -15,6 +15,7 @@
 // MS2-PIN: ??__Es_handle3@@YAXXZ 0x14011cb10
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiscenegame.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/placeholder/gfxmanager.h"
 
 // The shared header statics of this unit (each header brings its own copies, constructed in include order).
@@ -89,7 +90,6 @@ public:
     void FUN_141adbcd0(int n);
     void FUN_141adbf00();
     void FUN_141add040(int nUiId);
-    int FUN_141adc940(int nUiId);
     void FUN_141add0b0(int nUiId);
 };
 class Unk_GsSettings : public CItemDataTable { public: bool FUN_1401d1320();};
@@ -212,7 +212,7 @@ void UISceneGame::vfunc_49(int n)
     TSingleton<CGuildManager>::GetInstance()->FUN_1413b5f90();
     TSingleton<CGroupChatManager>::GetInstance()->FUN_14137e190();
     TSingleton<CGameRankingCli>::GetInstance()->ClearPersonal();
-    ((class CClubClientManager*)FUN_140e0d900())->ClearClubs();
+    ((class CClubClientManager*)FUN_140e0d900())->ClearClubsAndInvites();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(1);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(0x620001d);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(0x620001d);
@@ -499,7 +499,7 @@ void UISceneGameBeautyShop::vfunc_49(int n)
     FUN_141901390(1, 0x3eb);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)m_ac);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)m_ac);
     m_ac = 0;
     m_b0 = 0;
     m_b4 = 0;
@@ -519,7 +519,6 @@ MS2_REPLACE_METHOD(0x141ac8130, UISceneGameBeautyShop, vfunc_49, 344, 0x482C92FF
 class Unk_GsFn { public: void* m_pad_00[4]; };
 MS2_CHECK_SIZE(Unk_GsFn, 32);
 class Unk_GsAS : public AScript { public: Unk_GsFn FUN_1422bb330(const char* szName); };
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 void FUN_140614800(const Unk_GsFn& fn);
 
 // @0x141ac8290
@@ -528,7 +527,7 @@ void UISceneGameBeautyShop::vfunc_50()
     UISceneEntity::vfunc_50();
     if (m_ac == 0x4e24) {
         if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0) {
-            Unk_GsFn fn = static_cast<Unk_GsAS*>(FUN_1409ee290(&m_30))->FUN_1422bb330("setItemEditMode");
+            Unk_GsFn fn = static_cast<Unk_GsAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("setItemEditMode");
             FUN_140614800(fn);
         }
     }
@@ -558,7 +557,7 @@ int UISceneGameBeautyShop::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("OnExit", szMethod) == 0) {
         if (m_ac != 0) {
             Unk_GsUIMsg msg;
-            ((ASData*)(Unk_GsUIMsg*)&(msg))->FUN_1422b82b0(szMethod);
+            ((ASData*)(Unk_GsUIMsg*)&(msg))->AddString(szMethod);
             Unk_GsServerDlg* pDlg = ((class Unk_GsServerDlg*)FUN_140c300a0(m_ac));
             if (pDlg != 0) pDlg->OnMessage(this, &msg);
         } else {
@@ -799,7 +798,7 @@ public:
 };
 class UISwfEntityManager* FUN_140b632f0();   // C3: was FUN_140b632f0
 float FUN_141ac9b00();
-extern Vector3 DAT_143b01a60;
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
 
@@ -1035,7 +1034,7 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 Unk_GsMapPtr FUN_140a55460(unsigned nFieldId);
 void FUN_141275260(int nId, int a, int b);
-void FUN_141276180(const CString& a, const CString& b);
+int FUN_141276180(const CString& a, const CString& b);
 extern CString DAT_143af6008;
 int FUN_1418fcb70();
 CMyCharacter* FUN_140931510();
@@ -1089,7 +1088,8 @@ extern wchar_t DAT_142fde930[];
 extern wchar_t DAT_142fdea00[];
 extern wchar_t DAT_142fde9f4[];
 extern char DAT_142fdeb28[];
-extern Unk_GsAppG DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_GsAppG*)&egf::g_bapiContext)          // C3: was extern Unk_GsAppG DAT_143b059e8
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
@@ -1127,7 +1127,7 @@ void UISceneGamePlay::vfunc_48(int n)
             ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
         }
         for (unsigned __int64 i = 0; i < m_a8.GetCount(); i++) {
-            if (((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adc940(m_a8[i]) != 0) (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(m_a8[i])));
+            if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)m_a8[i]) != 0) (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(m_a8[i])));
         }
         m_a8.RemoveAll();
         FUN_141b70290();
@@ -1186,7 +1186,7 @@ int UISceneGamePlay::vfunc_14()
         return 1;
     } else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) != 0) {
         Unk_GsPlayer* pPlayer = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
-        if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0 && pPlayer->vfunc_63() != 0) pPlayer->FUN_140a7b810()->FUN_140953310();
+        if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0 && pPlayer->vfunc_63() != 0) pPlayer->FUN_140a7b810()->ActivateCurrentAction();
         return 0;
     }
     return 0;
@@ -1397,7 +1397,7 @@ int UISceneGamePlay::FUN_141aca870()
                 return 1;
             }
             else if (FUN_14025e7c0()->FUN_14116d9c0(0x24, 1, 0) != 0) {
-                reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bdabb0();
+                reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->ShowResearchAndDevelopmentDialog();
                 return 1;
             }
             else if (FUN_14025e7c0()->FUN_14116d9c0(0x3f, 1, 0) != 0) {
@@ -1503,9 +1503,9 @@ int UISceneGamePlay::FUN_141aca870()
     else if (FUN_14025e7c0()->FUN_14116dcb0(0x493e2, 0, 0)) {
         Unk_GsPlayer* pPlayer = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0 && pPlayer->vfunc_63() != 0) {
-            if (pPlayer->FUN_140a7b810()->FUN_140953410()) {
+            if (pPlayer->FUN_140a7b810()->TryActivateCurrentAction()) {
             }
-            else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0)) pPlayer->FUN_140a7b810()->FUN_140953310();
+            else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0)) pPlayer->FUN_140a7b810()->ActivateCurrentAction();
         }
         return 0;
     }

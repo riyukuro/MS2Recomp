@@ -68,7 +68,6 @@ class Unk_PvpWorld                                                  // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
 };
 
 // The player's PvP info proxy (PC method 0x140967420): operator-> 0x140965970, release 0x140964aa0.
@@ -87,13 +86,12 @@ class UIObject;
 class Unk_PvpUiService                                              // the UI service
 {
 public:
-    int FUN_141adc940(int nClass);                                  // dialog closed
     void FUN_141adc530(int nClass);                                 // open a dialog
 };
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142cab370();                                               // the exe's atexit destructor of the marker
 
@@ -164,7 +162,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         int nFrom = FUN_141017f40(nCharId);
         FUN_141018260(nCharId, nScore, nKill, nDeath, n1c);
         int nTo = FUN_141017f40(nCharId);
-        if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9a) != 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9a) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9a)));
         UIPvPRankingDialog* pRanking = FUN_1410189e0(0x4e9a);
         if (pRanking != 0)
@@ -182,7 +180,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         if (pFirst != 0)
             FUN_141018260(pFirst->m_nCharId, pFirst->m_nScore, pFirst->m_nKill, pFirst->m_nDeath, pFirst->m_n1c);
         int nRank = packet.ReadInt32();
-        if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9b) != 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9b) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9b)));
         UIPvPResultDialog* pResult = FUN_141018a80(0x4e9b);
         if (pResult != 0)
@@ -285,7 +283,7 @@ void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill
     else
     {
         CStringW strName(L"Unknown");
-        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
         if (pPlayer != 0)
             strName = pPlayer->vfunc_77();
         pItem = new Unk_PvpTimerItem(nCharId, strName, nScore, nKill, nDeath, n1c);
@@ -293,7 +291,7 @@ void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill
     }
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_items[i]->m_nCharId);
+        PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_items[i]->m_nCharId));
         if (pPlayer != 0)
             m_items[i]->m_bOnline = true;
         else
@@ -315,7 +313,7 @@ void Unk_PvpTimer::FUN_141018540(unsigned __int64 nCharId, unsigned __int64 nDam
     else
     {
         CStringW strName(L"Unknown");
-        PCBase* pPlayer = reinterpret_cast<Unk_PvpWorld*>(WorldService::GetInstance())->FUN_141bd1530(nCharId);
+        PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
         if (pPlayer != 0)
             strName = pPlayer->vfunc_77();
         pItem = new Unk_PvpTimerItem(nCharId, strName, 0, 0, 0, 0);
@@ -387,7 +385,7 @@ UIPvPRankingDialog* FUN_1410189e0(int nClass)
 {
     if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPRankingDialog*>((UIObject*)spObject);
     }
@@ -399,7 +397,7 @@ UIPvPResultDialog* FUN_141018a80(int nClass)
 {
     if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPResultDialog*>((UIObject*)spObject);
     }

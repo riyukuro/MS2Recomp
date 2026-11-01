@@ -135,7 +135,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-int FUN_1408733e0(void* pElement, const char* pszName, CString& rValue);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void FUN_140874050(void* pElement, const char* pszName, const CString& strValue);
 int XmlGetAttr(class TiXmlElement*, class NiTransform&);   // C3: was FUN_140874730
 void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN_140874b10
@@ -318,8 +318,8 @@ void DecoEditService::LoadXml()
         {
             CString strName;
             CString strAsset;
-            FUN_1408733e0(pLayerXml, "name", strName);
-            FUN_1408733e0(pLayerXml, "asset", strAsset);
+            XmlGetAttr((class TiXmlElement*)(pLayerXml), "name", strName);
+            XmlGetAttr((class TiXmlElement*)(pLayerXml), "asset", strAsset);
             AddLayer(strName);
             SelectLayer(strName);
             DecoLayer* pLayer = GetLayer();

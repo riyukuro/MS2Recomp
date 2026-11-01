@@ -36,6 +36,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // ---- unit-local placeholders ----
 
@@ -123,7 +124,8 @@ public:
 MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);
 void FUN_1409c4a30(AScript* pRoot, const char* szName, float f);
 
-extern char DAT_143b059e8;              // the game framework (service lookup cell)
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 efd::ServiceManager* FUN_1413f9850();
 void* FUN_1401cd190(void* p);
 struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
@@ -140,7 +142,6 @@ public:
 };
 
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
-CStringW FUN_1401ceea0(const wchar_t* sz, const int& n);
 CStringW FUN_14016a730(const char* sz, int n);
    // MeshInstancing member (this=rcx, hidden return=rdx)
 
@@ -493,9 +494,9 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
         {
             int nCount = 0;
             if (pInstancing != 0)
-                nCount = pInstancing->FUN_14147cf40();
+                nCount = pInstancing->GetVisibleInstanceCount();
             FUN_141292ca0("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->FUN_14147d2f0()))->c_str(), 0));
-            CStringW strCount = FUN_1401ceea0(L"{0}", nCount);
+            CStringW strCount = StringFormat<int>(L"{0}", nCount);
             FUN_141292ca0("m_modelCount", strCount);
         }
         else

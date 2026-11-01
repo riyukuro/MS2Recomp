@@ -11,6 +11,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
@@ -35,7 +42,7 @@ bool PetGroupInfo::Load(Unk_140165cf0* pNode)
 {
     if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
         return false;
-    FUN_1408731e0(pNode, "groupId", m_nGroupId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "groupId", reinterpret_cast<int&>(m_nGroupId));
     return true;
 }
 
@@ -62,7 +69,7 @@ bool CPetCollectTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("groupInfo"); pNode != 0; pNode = pNode->FUN_140168650("groupInfo"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("groupInfo")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("groupInfo")))
     {
         PetGroupInfoPtr spGroup(new PetGroupInfo());
         if (!spGroup->Load(pNode))

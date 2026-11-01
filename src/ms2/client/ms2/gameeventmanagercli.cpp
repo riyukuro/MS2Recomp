@@ -35,6 +35,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/uiservice.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Namespace-scope statics of a shared game header (see ms2/placeholder/header_statics_a.h; this unit has only these).
 static CString s_strSkill = "skill";
@@ -267,7 +275,7 @@ template <class T> T* FindUIDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -285,13 +293,13 @@ void CGameMenuItem::Load(Unk_140165cf0* pElem)
 {
     XmlEnumName<int, Parse_14021b830>(pElem, "id", m_nId);
     XmlEnumName<EGameMenuFilter, ParseGameMenuFilter>(pElem, "filterType", m_eFilterType);
-    FUN_140873420(pElem, "filterValue", m_strFilterValue);
-    FUN_1408731e0(pElem, "onlyRPG", m_nOnlyRPG);
-    FUN_1408731e0(pElem, "row", m_nRow);
-    FUN_1408731e0(pElem, "col", m_nCol);
+    XmlGetAttr((class TiXmlElement*)(pElem), "filterValue", m_strFilterValue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "onlyRPG", reinterpret_cast<int&>(m_nOnlyRPG));
+    XmlGetAttr((class TiXmlElement*)(pElem), "row", reinterpret_cast<int&>(m_nRow));
+    XmlGetAttr((class TiXmlElement*)(pElem), "col", reinterpret_cast<int&>(m_nCol));
     if (!m_strFilterValue.IsEmpty())
         m_nFilterEventId = FUN_140718200(m_strFilterValue);
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("child"); pChild != 0; pChild = pChild->FUN_140168650("child"))
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("child")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("child")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -335,14 +343,14 @@ bool CGameMenuItem::IsVisible()
     case GAMEMENU_FILTER_ATTEND_GIFT:
     {
         UIAttendGiftDialog* pDialog = FUN_140c053e0(0x4eb8);
-        if (pDialog && pDialog->FUN_14102cb60())
+        if (pDialog && pDialog->HasActiveEvents())
             return true;
         break;
     }
     case GAMEMENU_FILTER_CASH_ATTEND:
     {
         UICashAttendDialog* pDialog = FUN_140ce8130(0x4eb9);
-        if (pDialog && pDialog->FUN_140bc4030())
+        if (pDialog && pDialog->HasActiveEvents())
             return true;
         break;
     }
@@ -1127,14 +1135,14 @@ int CGameMenuTable::LoadXml()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pSet = pRoot->FUN_140165cf0("menuSet"); pSet != 0; pSet = pSet->FUN_140168650("menuSet"))
+    for (Unk_140165cf0* pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("menuSet")); pSet != 0; pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->NextSibling("menuSet")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
             continue;
         {
             EGameMenuSet eSet = GAMEMENU_SET_GAME;
             XmlEnumName<EGameMenuSet, ParseGameMenuSet>(pSet, "type", eSet);
-            for (Unk_140165cf0* pMenu = pSet->FUN_140165cf0("menu"); pMenu != 0; pMenu = pMenu->FUN_140168650("menu"))
+            for (Unk_140165cf0* pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->FirstChild("menu")); pMenu != 0; pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
             {
                 if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                     continue;

@@ -20,18 +20,36 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/creservedwordtable.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 class Unk_140166420 : public CFileSystem { };
-class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+class Unk_CommonLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
 CString FUN_140536a50(const char* pszFormat, const CString& strArg0);       // fmt::format("..{0}", arg)
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
 class Unk_ScriptTextFilter { public: void FUN_1416fb380(CStringW* pText); };
 
@@ -79,7 +97,7 @@ void CStoryBookTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        ((class Unk_CommonLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -90,8 +108,8 @@ void CStoryBookTable::Load()
         CStoryBookDataPtr spData(new CStoryBookData);
         spData->m_nMaxPage = 0;
         int nId = 0;
-        FUN_1408731e0(pBook, "id", nId);
-        CString strType = FUN_14015f710(pBook, "type", CString(""));
+        XmlGetAttr((class TiXmlElement*)(pBook), "id", reinterpret_cast<int&>(nId));
+        CString strType = Unk_ReadString((class Unk_XmlNode*)(pBook), "type", CString(""));
         if (strType.CompareNoCase("book") == 0)
             spData->m_nType = 1;
         else if (strType.CompareNoCase("sketchbook") == 0)
@@ -100,18 +118,18 @@ void CStoryBookTable::Load()
             spData->m_nType = 3;
         else if (strType.CompareNoCase("adpaper") == 0)
             spData->m_nType = 4;
-        for (Unk_140165cf0* pPage = pBook->FUN_140165cf0("page"); pPage != 0; pPage = pPage->FUN_140168650("page"))
+        for (Unk_140165cf0* pPage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBook))->FirstChild("page")); pPage != 0; pPage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPage))->NextSibling("page")))
         {
             CStoryBookData::BookPagePtr spPage(new CStoryBookData::BookPage);
             int nNumber = 0;
-            FUN_1408731e0(pPage, "number", nNumber);
-            FUN_140873420(pPage, "string", spPage->m_strText);
-            FUN_1408733e0(pPage, "valign", spPage->m_strVAlign);
-            CString strImage = FUN_14028d1f0(FUN_14086f4b0(pPage, "image"));
+            XmlGetAttr((class TiXmlElement*)(pPage), "number", reinterpret_cast<int&>(nNumber));
+            XmlGetAttr((class TiXmlElement*)(pPage), "string", spPage->m_strText);
+            XmlGetAttr((class TiXmlElement*)(pPage), "valign", spPage->m_strVAlign);
+            CString strImage = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pPage))->Attribute("image"));
             if (strImage.GetLength() > 0)
             {
                 ATL::CAtlArray<CString> arrPath;
-                FUN_14015f050(strImage, arrPath, "/");
+                Unk_SplitA(const_cast<CStringA&>(strImage), (ATL::CAtlArray<CStringA>*)&(arrPath), "/");
                 if (arrPath.GetCount() != 2)
                     continue;
                 CString strDir = FUN_140536a50("StoryBook/{0}", arrPath[0]);

@@ -47,7 +47,7 @@ void CCefMS2ClientApp::FUN_140cbffc0(bool bImeRequest)
         m_bImeRequest = bImeRequest;
         CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(g_szCefMessageImeRequest);
         message->GetArgumentList()->SetBool(0, bImeRequest);
-        CWebBrowserService::GetInstance()->FUN_141b78570(NULL, message);
+        CWebBrowserService::GetInstance()->QueueBrowserMessage(NULL, message);
     }
 }
 

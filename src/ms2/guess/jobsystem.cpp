@@ -32,7 +32,6 @@
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // Out-of-unit callees.
-class Unk_JobSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
 
 
 // @0x140637b00
@@ -295,7 +294,7 @@ void JobSystem::vfunc_7(CByteBuffer& buf)
 // @0x140639210
 MS2Ptr<SkillData> JobSystem::GetSkillData(unsigned nSkillId)
 {
-    return reinterpret_cast<Unk_JobSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+    return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
 }
 
 // @0x140639260

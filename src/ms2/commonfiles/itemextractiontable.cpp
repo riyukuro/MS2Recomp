@@ -18,6 +18,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
@@ -55,12 +62,12 @@ void CItemExtractionTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         CExtractionItemInfoPtr spInfo(new CExtractionItemInfo);
-        FUN_140873220(pNode, "ScrollCount", spInfo->m_nScrollCount);
-        FUN_140873220(pNode, "TargetItemID", spInfo->m_nTargetItemId);
-        FUN_140873220(pNode, "ResultItemID", spInfo->m_nResultItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ScrollCount", spInfo->m_nScrollCount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "TargetItemID", spInfo->m_nTargetItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ResultItemID", spInfo->m_nResultItemId);
         if (spInfo->m_nScrollCount < 1)
         {
             Unk_AchieveLog<CString>(GetLogString(), 2, 0x13, L"값이 0 입니다.[<ms2> {0}][ScrollCount]", strPath);

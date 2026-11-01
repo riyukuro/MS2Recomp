@@ -35,7 +35,7 @@ public:
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
 };
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 class Unk_BreakRules* FUN_140535310();   // C3: was FUN_140535310
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
@@ -47,9 +47,6 @@ public:
 };
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 ItemLockSlotBag* FUN_140d42380(NotifyContext::BindData* p);
 
@@ -57,6 +54,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemLockSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemLockSlotBag);
 
@@ -79,7 +77,7 @@ int ItemLockSlot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
             ((class CItemLockManager*)FUN_140535310())->FUN_140612e90(spItem);
     }
@@ -91,7 +89,7 @@ int ItemLockSlot::vfunc_14()
 {
     if (m_spItem.IsNull())
         return 0;
-    ((class CItemLockManager*)FUN_140535310())->FUN_1406130e0(((CItem*)m_spItem)->FUN_140526a50());
+    ((class CItemLockManager*)FUN_140535310())->FUN_1406130e0(((CItem*)m_spItem)->GetItemUid());
     return 1;
 }
 
@@ -147,10 +145,10 @@ int ItemLockSlot::vfunc_8(void* p)
 // @0x140d41e00
 int ItemLockSlot::FUN_140d41e00(__int64 nItemUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (!spItem)
         return 0;
-    if (((CItem*)spItem)->FUN_140528cc0() == false)
+    if (((CItem*)spItem)->CanBeItemLocked() == false)
         return 0;
     return 1;
 }
@@ -162,18 +160,18 @@ void FUN_140d42050(const CString& strName)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(0x12);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140d42100
 void FUN_140d42100(const CString& strName)
 {
-    ItemLockSlotBag* pBag = FUN_140d42380(FUN_1422c8e90(strName));
+    ItemLockSlotBag* pBag = FUN_140d42380(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

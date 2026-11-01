@@ -45,7 +45,6 @@ public:
     void FUN_1407cb9c0(const char*, int);
     void FUN_1409c0d20(const char*, unsigned int);
     void FUN_1409adc90(const char*, int);
-    void FUN_1407cba60(const char*, CString);
     void FUN_1407cbb20(const char*, CStringW);
     void FUN_1409eb270(const char*, const Unk_GalleryAS&);
     Scaleform::GFx::Value FUN_140acd130(const char*, CStringW);
@@ -329,7 +328,7 @@ void UIGalleryEventDialog::OnLoadComplete()
     if (context == 0) return;
     FUN_140c176f0(context);
     FUN_140c17d20(context);
-    FUN_140c18330();
+    UpdateOpenCount();
 }
 MS2_REPLACE_METHOD(0x140C16850, UIGalleryEventDialog, OnLoadComplete, 212, 0x3BFE8DD6);
 
@@ -346,8 +345,8 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         if (!FUN_140764020()->state.FUN_140745630(quest) && !FUN_140764020()->state.FUN_140745590(quest)) return;
         CStringW text = FUN_1416e5660(quest);
         ASTooltip tip(1, 2);
-        if (tip.FUN_1409e26b0(text)) {
-            tip.FUN_1409c6dc0(1);
+        if (tip.ApplyTextTooltip(text)) {
+            tip.SetTooltipAlign(1);
             *out = tip.FUN_1422bb870();
         }
     } else if ((method == "getTooltipItem")) {
@@ -372,7 +371,7 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(method, args, count)) return 1;
     if (!_stricmp(method, "onCardOpen")) {
-        if (!FUN_140c18f10()) return 1;
+        if (!CheckEventContext()) return 1;
         auto context = FUN_1401c0d90()->FUN_14047cf60();
         if ((Unk_GalleryContext*)context) {
             int dummy = 0;
@@ -422,7 +421,7 @@ void UIGalleryEventDialog::vfunc_o178_10(void* p)
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
     if (reinterpret_cast<Unk_GalleryQuestView*>(&static_cast<Unk_GalleryQuest*>(p)->data)->vfunc_0()->type != 4) return;
-    FUN_140c181a0(static_cast<Unk_GalleryQuest*>(p)->FUN_140bfc580());
+    UpdateQuestState(static_cast<Unk_GalleryQuest*>(p)->FUN_140bfc580());
     FUN_140c17d20(context);
 }
 MS2_REPLACE_METHOD_VIA(0x140C17020, UIGalleryEventDialog, UIQuestEventListener, vfunc_o178_10, 468, 0x8B363119);
@@ -435,7 +434,7 @@ void UIGalleryEventDialog::FUN_140c17200(unsigned int type, Unk_GalleryPacket* p
     case 7: {
         int index = reinterpret_cast<Unk_GalleryInput*>(&packet->stream)->vfunc_1();
         reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba030("openCard", index);
-        FUN_140c18330();
+        UpdateOpenCount();
         break;
     }
     case 8: {
@@ -501,12 +500,12 @@ void UIGalleryEventDialog::FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext> cont
         Unk_GalleryAS questInfo(2);
         questInfo.FUN_1409c0d20("id", card->quest);
         questInfo.FUN_1407cb9c0("state", FUN_140c18c60((int)i));
-        questInfo.FUN_1407cba60("binding", m_binder.FUN_140d43310(item.id, item.rank, item.count));
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.FUN_140d43310(item.id, item.rank, item.count));
         questInfo.FUN_1407cbb20("desc", FUN_1416e4df0(card->quest));
         questInfo.FUN_1409c0d20("itemID", item.id);
         questInfo.FUN_1409adc90("itemRank", item.rank);
         questInfo.FUN_1407cb9c0("itemCount", item.count);
-        questInfo.FUN_1407cba60("iconPath", FUN_140c189d0(item.id));
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("iconPath", FUN_140c189d0(item.id));
         cardInfo.FUN_1409eb270("questInfo", questInfo);
         reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_140ba4cc0("addCard", cardInfo);
     }
@@ -527,22 +526,22 @@ void UIGalleryEventDialog::FUN_140c17d20(Unk_GalleryPtr<Unk_GalleryContext> cont
     firstInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&first.rank)->vfunc_1());
     firstInfo.FUN_1407cb9c0("active", active);
     firstInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.id));
-    firstInfo.FUN_1407cba60("icon", FUN_140c189d0(first.id));
+    reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cba60("icon", FUN_140c189d0(first.id));
     firstInfo.FUN_1409c0d20("itemCount", first.count);
     Unk_GalleryAS secondInfo(2);
     secondInfo.FUN_1409c0d20("id", second.id);
     secondInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&second.rank)->vfunc_1());
     secondInfo.FUN_1407cb9c0("active", active);
     secondInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.id));
-    secondInfo.FUN_1407cba60("icon", FUN_140c189d0(second.id));
+    reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cba60("icon", FUN_140c189d0(second.id));
     secondInfo.FUN_1409c0d20("itemCount", second.count);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>("setRewardItem", firstInfo, secondInfo);
-    FUN_140c18460();
+    UpdateBoardRewardButton();
 }
 MS2_REPLACE_METHOD(0x140C17D20, UIGalleryEventDialog, FUN_140c17d20, 1139, 0x035C4B59);
 
 // @0x140c181a0
-void UIGalleryEventDialog::FUN_140c181a0(int quest)
+void UIGalleryEventDialog::UpdateQuestState(int quest)
 {
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
@@ -553,10 +552,10 @@ void UIGalleryEventDialog::FUN_140c181a0(int quest)
             reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<size_t, int>("setQuestState", i, FUN_140c18c60((int)i));
     }
 }
-MS2_REPLACE_METHOD(0x140C181A0, UIGalleryEventDialog, FUN_140c181a0, 388, 0xF352F41A);
+MS2_REPLACE_METHOD(0x140C181A0, UIGalleryEventDialog, UpdateQuestState, 388, 0xF352F41A);
 
 // @0x140c18330
-void UIGalleryEventDialog::FUN_140c18330()
+void UIGalleryEventDialog::UpdateOpenCount()
 {
     if (m_30.IsNull()) { MS2_ASSERT_AT(373, "m_ascript" && 0); return; }
     auto context = FUN_1401c0d90()->FUN_14047cf60();
@@ -565,19 +564,19 @@ void UIGalleryEventDialog::FUN_140c18330()
     int opened = g_galleryCounters.FUN_1409617d0(1600, context->id, &dummy);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->maxOpen);
 }
-MS2_REPLACE_METHOD(0x140C18330, UIGalleryEventDialog, FUN_140c18330, 298, 0x6A2711D5);
+MS2_REPLACE_METHOD(0x140C18330, UIGalleryEventDialog, UpdateOpenCount, 298, 0x6A2711D5);
 
 // @0x140c18460
-void UIGalleryEventDialog::FUN_140c18460()
+void UIGalleryEventDialog::UpdateBoardRewardButton()
 {
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba030("enableBoardRewardButton", FUN_140c187e0());
 }
-MS2_REPLACE_METHOD(0x140C18460, UIGalleryEventDialog, FUN_140c18460, 79, 0x4C57278E);
+MS2_REPLACE_METHOD(0x140C18460, UIGalleryEventDialog, UpdateBoardRewardButton, 79, 0x4C57278E);
 
 // @0x140c184c0
 void UIGalleryEventDialog::SendEventRewardMode7(int index)
 {
-    if (!FUN_140c18f10()) return;
+    if (!CheckEventContext()) return;
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
     auto card = context->FUN_1403ff3e0(index);
@@ -592,7 +591,7 @@ MS2_REPLACE_METHOD(0x140C184C0, UIGalleryEventDialog, SendEventRewardMode7, 321,
 // @0x140c18610
 void UIGalleryEventDialog::SendEventRewardMode8(int index)
 {
-    if (!FUN_140c18f10()) return;
+    if (!CheckEventContext()) return;
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
     auto card = context->FUN_1403ff3e0(index);
@@ -607,7 +606,7 @@ MS2_REPLACE_METHOD(0x140C18610, UIGalleryEventDialog, SendEventRewardMode8, 321,
 // @0x140c18760
 void UIGalleryEventDialog::SendEventRewardMode9()
 {
-    if (!FUN_140c18f10()) return;
+    if (!CheckEventContext()) return;
     if (!FUN_140c187e0()) return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(9);
@@ -679,7 +678,7 @@ void UIGalleryEventDialog::FUN_140c18e10(int id, int rank)
 MS2_REPLACE_METHOD(0x140C18E10, UIGalleryEventDialog, FUN_140c18e10, 239, 0x33B18A12);
 
 // @0x140c18f10
-bool UIGalleryEventDialog::FUN_140c18f10()
+bool UIGalleryEventDialog::CheckEventContext()
 {
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) {
@@ -688,6 +687,6 @@ bool UIGalleryEventDialog::FUN_140c18f10()
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140C18F10, UIGalleryEventDialog, FUN_140c18f10, 197, 0x726D60DF);
+MS2_REPLACE_METHOD(0x140C18F10, UIGalleryEventDialog, CheckEventContext, 197, 0x726D60DF);
 
 MS2_EMIT_CRT_MEMMOVE_S();

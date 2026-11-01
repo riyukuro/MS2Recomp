@@ -90,7 +90,7 @@ int PetCardSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x10401) != 0)
     {
-        slot.FUN_1409c2650();
+        slot.DisableDrag();
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }
@@ -211,10 +211,10 @@ int PetConsumeSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x10401) != 0)
     {
-        slot.FUN_1409c2650();
-        slot.FUN_1409c1f00(FUN_140b77be0());
+        slot.DisableDrag();
+        slot.SetItemSeal(IsUnavailable());
         if (1 < (unsigned)m_nCount)
-            slot.FUN_1409c2190(m_nCount);
+            slot.SetItemCountValue(m_nCount);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }
@@ -234,7 +234,7 @@ unsigned __int64 PetConsumeSlot::GetItemUid()
 }
 
 // @0x140b77be0
-int PetConsumeSlot::FUN_140b77be0()
+int PetConsumeSlot::IsUnavailable()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
@@ -336,7 +336,7 @@ MS2_REPLACE_METHOD(0x140B776D0, PetCardSlotBag, vfunc_16, 271, 0x037E7E8A);
 MS2_REPLACE_METHOD(0x140B779F0, PetConsumeSlot, vfunc_8, 374, 0x570CE11F);
 MS2_REPLACE_METHOD(0x140B77B70, PetConsumeSlot, vfunc_25, 72, 0x787A76A4);
 MS2_REPLACE_METHOD(0x140B77BC0, PetConsumeSlot, GetItemUid, 18, 0xB95413A9);
-MS2_REPLACE_METHOD(0x140B77BE0, PetConsumeSlot, FUN_140b77be0, 265, 0xF8714119);
+MS2_REPLACE_METHOD(0x140B77BE0, PetConsumeSlot, IsUnavailable, 265, 0xF8714119);
 MS2_REPLACE(0x140B77CF0, FUN_140b77cf0, 342, 0x02E66DF3);
 MS2_REPLACE(0x140B77E50, FUN_140b77e50, 65, 0xA753BCAF);
 MS2_REPLACE_METHOD(0x140B77F60, PetConsumeSlotBag, vfunc_15, 175, 0xC812C402);

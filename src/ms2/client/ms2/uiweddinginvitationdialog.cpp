@@ -145,8 +145,8 @@ void UIWeddingInvitationDialog::vfunc_43()
         UITalkCinematic* pRef = FUN_140a7b2b0(0x4e40);
         if (pRef != 0)
         {
-            int nX = pRef->FUN_141b1d3d0();
-            int nY = pRef->FUN_141b1d460() - 0x50;
+            int nX = pRef->GetLowerCutGlobalY();
+            int nY = pRef->GetIllustGlobalX() - 0x50;
             if (nX != -1 && nY != -1)
             {
                 pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
@@ -248,7 +248,7 @@ UIWeddingGuestDialog* FUN_140fe6700(int nId)
 {
     if (reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIWeddingGuestDialog*>((UIObject*)spObj);
     }

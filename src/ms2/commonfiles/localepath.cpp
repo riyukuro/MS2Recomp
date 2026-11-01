@@ -13,6 +13,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <locale.h>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers.
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -21,7 +27,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int FUN_1408733e0(void*, const char*, CString&);
-void FUN_14015f050(CString&, ATL::CAtlArray<CString>&, const char* delimiter);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140165270(ATL::CAtlArray<CString>&, CString&);              // Add
 unsigned __int64 FUN_1401662c0(ATL::CAtlArray<CString>&);            // GetCount
 void* FUN_140164930(ATL::CAtlArray<CString>&, unsigned __int64);     // GetAt
@@ -65,24 +71,24 @@ CString DAT_143ab0258("KR");
 // @0x14064ead0
 CLocaleLanguageData::CLocaleLanguageData()
 {
-    FUN_14064ef60();
+    Clear();
 }
 
 // @0x14064eb60
 CLocaleLanguageData::~CLocaleLanguageData()
 {
-    FUN_14064ef60();
+    Clear();
 }
 
 // @0x14064ebf0
-int CLocaleLanguageData::FUN_14064ebf0(int nLanguage)
+int CLocaleLanguageData::HasLanguageId(int nLanguage)
 {
     CString strCode = FUN_140651c00(nLanguage);
-    return FUN_14064ec70(strCode);
+    return HasLanguageCode(strCode);
 }
 
 // @0x14064ec70
-int CLocaleLanguageData::FUN_14064ec70(CString strCode)
+int CLocaleLanguageData::HasLanguageCode(CString strCode)
 {
     int result = 0;
     int nCount = (int)FUN_1401662c0(m_languages);
@@ -99,7 +105,7 @@ int CLocaleLanguageData::FUN_14064ec70(CString strCode)
 }
 
 // @0x14064ed50
-int CLocaleLanguageData::FUN_14064ed50()
+int CLocaleLanguageData::GetDefaultLanguage()
 {
     if (FUN_1401662c0(m_languages) <= 0)
         return 0;
@@ -108,7 +114,7 @@ int CLocaleLanguageData::FUN_14064ed50()
 }
 
 // @0x14064edf0
-void CLocaleLanguageData::FUN_14064edf0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
+void CLocaleLanguageData::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
 {
     out.RemoveAll();
     for (unsigned __int64 i = 0; i < FUN_1401662c0(m_languages); ++i)
@@ -120,7 +126,7 @@ void CLocaleLanguageData::FUN_14064edf0(ATL::CAtlArray<int, ATL::CDefaultElement
 }
 
 // @0x14064eec0
-void CLocaleLanguageData::FUN_14064eec0(ATL::CAtlArray<CString>& out)
+void CLocaleLanguageData::GetLanguageCodes(ATL::CAtlArray<CString>& out)
 {
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->RemoveAll();
     for (unsigned __int64 i = 0; i < FUN_1401662c0(m_languages); ++i)
@@ -131,7 +137,7 @@ void CLocaleLanguageData::FUN_14064eec0(ATL::CAtlArray<CString>& out)
 }
 
 // @0x14064ef60
-void CLocaleLanguageData::FUN_14064ef60()
+void CLocaleLanguageData::Clear()
 {
     m_strLocale.Empty();
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_languages))->RemoveAll();
@@ -152,7 +158,7 @@ CLocaleLanguage::~CLocaleLanguage()
 }
 
 // @0x14064f070
-LocaleLanguageDataPtr CLocaleLanguage::FUN_14064f070(unsigned int nLocale)
+LocaleLanguageDataPtr CLocaleLanguage::GetLocaleData(unsigned int nLocale)
 {
     unsigned int nSel = 0;
     nSel = FUN_14116d720((Unk_14025e7c0 *)(((class Unk_14025e7c0*)FUN_14025e7c0())));
@@ -172,39 +178,39 @@ LocaleLanguageDataPtr CLocaleLanguage::FUN_14064f070(unsigned int nLocale)
 }
 
 // @0x14064f180
-int CLocaleLanguage::FUN_14064f180(int nLanguage)
+int CLocaleLanguage::HasLanguageId(int nLanguage)
 {
-    LocaleLanguageDataPtr p = FUN_14064f070(0);
+    LocaleLanguageDataPtr p = GetLocaleData(0);
     if (p == 0)
         return 0;
-    return p->FUN_14064ebf0(nLanguage);
+    return p->HasLanguageId(nLanguage);
 }
 
 // @0x14064f210
-int CLocaleLanguage::FUN_14064f210()
+int CLocaleLanguage::GetDefaultLanguage()
 {
-    LocaleLanguageDataPtr p = FUN_14064f070(0);
+    LocaleLanguageDataPtr p = GetLocaleData(0);
     if (p == 0)
         return 0;
-    return p->FUN_14064ed50();
+    return p->GetDefaultLanguage();
 }
 
 // @0x14064f290
-void CLocaleLanguage::FUN_14064f290(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
+void CLocaleLanguage::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
 {
-    LocaleLanguageDataPtr p = FUN_14064f070(0);
+    LocaleLanguageDataPtr p = GetLocaleData(0);
     if (p == 0)
         return;
-    p->FUN_14064edf0(out);
+    p->GetLanguages(out);
 }
 
 // @0x14064f310
-void CLocaleLanguage::FUN_14064f310(ATL::CAtlArray<CString>& out)
+void CLocaleLanguage::GetLanguageCodes(ATL::CAtlArray<CString>& out)
 {
-    LocaleLanguageDataPtr p = FUN_14064f070(0);
+    LocaleLanguageDataPtr p = GetLocaleData(0);
     if (p == 0)
         return;
-    p->FUN_14064eec0(out);
+    p->GetLanguageCodes(out);
 }
 
 // @0x14064f390
@@ -221,7 +227,7 @@ int CLocaleLanguage::LoadGameOptionLocale()
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("gameoptionlocale"); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("gameoptionlocale")))
+         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("gameoptionlocale"))))
     {
         LocaleLanguageDataPtr data(new CLocaleLanguageData);
         CString strLanguage;
@@ -231,9 +237,9 @@ int CLocaleLanguage::LoadGameOptionLocale()
         FUN_1408733e0(pNode, "language", strLanguage);
         FUN_1408733e0(pNode, "region", strRegion);
         FUN_1408733e0(pNode, "voice", strVoice);
-        FUN_14015f050(strLanguage, data->m_languages, ",");
-        FUN_14015f050(strRegion, data->m_regions, ",");
-        FUN_14015f050(strVoice, data->m_voices, ",");
+        Unk_SplitA(strLanguage, (ATL::CAtlArray<CStringA>*)&(data->m_languages), ",");
+        Unk_SplitA(strRegion, (ATL::CAtlArray<CStringA>*)&(data->m_regions), ",");
+        Unk_SplitA(strVoice, (ATL::CAtlArray<CStringA>*)&(data->m_voices), ",");
         m_rows.Add(data);
     }
     return 1;

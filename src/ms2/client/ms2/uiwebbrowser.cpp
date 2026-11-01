@@ -46,6 +46,7 @@
 #include "ms2/placeholder/cwebbrowserservice.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 // ---- header statics ----
 static CString s_strMaviewClose("System_MaviewClose");                      // @0x14011f460
@@ -81,12 +82,9 @@ class Unk_WbConsts { public:
     Unk_WbBool m_8780;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_WbInt* p);
 bool* FUN_140336990(Unk_WbBool* p);
 int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
 float FUN_14028aed0(float f);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 AScript* FUN_140ba7c60(void* pRef);                                         // the movie root
 float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
@@ -130,13 +128,13 @@ int UIWebBrowser::vfunc_65()
 void UIWebBrowser::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    m_nSmallSize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(FUN_1409ee290(&m_30)->FUN_1422baa20("m_textureSize")))->GetUInt();
-    m_nMinWidth = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8620);
-    m_nMinHeight = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_86d0);
-    m_nMaxWidth = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8678);
-    m_nMaxHeight = *FUN_1402056b0(&((class Unk_WbConsts*)FUN_1401d3200())->m_8728);
+    m_nSmallSize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(((MS2Ptr<AScript>*)(&m_30))->operator->()->GetMember("m_textureSize")))->GetUInt();
+    m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8620)->Get();
+    m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_86d0)->Get();
+    m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8678)->Get();
+    m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8728)->Get();
     m_bResizable = *FUN_140336990(&((class Unk_WbConsts*)FUN_1401d3200())->m_8780);
     if (m_nWidth == 0 && m_nHeight == 0)
     {
@@ -168,13 +166,13 @@ void UIWebBrowser::OnLoadComplete()
     unsigned nHeight = (unsigned)(m_nSmallSize / fScale);
     FUN_14135eda0(nWidth, nHeight);
     if (m_b18d != 0)
-        reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(1, m_nBrowserId);
+        reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(1, m_nBrowserId);
     ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDlg != 0)
     {
         float x = 0;
         float y = 0;
-        pDlg->FUN_1422c0f60(&x, &y);
+        pDlg->GetPosition(&x, &y);
         x = FUN_14028aed0(x);
         y = FUN_14028aed0(y);
         pDlg->FUN_1422c00f0(x, y);
@@ -285,9 +283,9 @@ void UIWebBrowser::vfunc_89(const CString& strUrl)
 // @0x141b507b0
 void UIWebBrowser::FUN_141b507b0(int nWidth, int nHeight)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    FUN_1409ee290(&m_30)->Invoke("setBrowserSize", nWidth, nHeight);
+    ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("setBrowserSize", nWidth, nHeight);
 }
 
 // @0x141b50830
@@ -303,7 +301,7 @@ void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_141b507b0(m_nMinWidth, m_nMinHeight);
     FUN_141b509b0();
-    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78af0(m_nBrowserId, 2);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SetBrowserWindowType(m_nBrowserId, 2);
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
 
@@ -312,7 +310,7 @@ void UIWebBrowser::FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_141b507b0(m_nMaxWidth, m_nMaxHeight);
     FUN_141b509b0();
-    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78af0(m_nBrowserId, 1);
+    reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SetBrowserWindowType(m_nBrowserId, 1);
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
 
@@ -325,7 +323,7 @@ bool UIWebBrowser::vfunc_91()
 // @0x141b509b0
 void UIWebBrowser::FUN_141b509b0()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (vfunc_91() == 0)
     {

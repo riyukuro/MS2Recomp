@@ -143,7 +143,7 @@ int FUN_140718200(const CStringW& strText);      // text to number
 CStringW FUN_1407196b0(int n);                              // number to text
 CStringW FUN_14083f330(const CStringW& strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
 void FUN_140841420(CStringW& str);                          // lower case
-void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
+void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
 void FUN_14083d890(CStringW strText);                       // copy to the clipboard
 void FUN_1412751b0(const CStringW& strText, int nType);     // system notice
 CStringW FUN_14082f000(int nStat);                          // text of a stat
@@ -158,7 +158,7 @@ CFileSystem* GetFileSystem();
 template <class T> static T* Unk_IcGetDialog(int nId)
 {
     if (CUIService::GetInstance()) {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -455,7 +455,7 @@ unsigned UIItemCreateDialog::FUN_1419b5280(int nItemId, unsigned nLevel)
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
         return 0;
-    unsigned nMax = item->FUN_14053e9e0();
+    unsigned nMax = item->GetUnlimitedEnchantMaxGrade();
     if (nMax == 0)
         return 0;
     unsigned nEnchant = nLevel - 0xf;
@@ -536,17 +536,17 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     bool bJob = checkJob->FUN_1422ce0e0();
     bool bGender = checkGender->FUN_1422ce0e0();
     list->FUN_1422dd1d0();
-    list->FUN_1422dcca0(-1);
+    list->SetSelectedIndex(-1);
     CStringW strFind(strSearch);
     for (size_t i = 0; i < m_items.GetCount(); ++i) {
         MS2Ptr<CItemData> item = m_items[i];
         if (!item)
             continue;
-        if (bJob && !item->limit.FUN_140545da0(pPC->FUN_141654700()))
+        if (bJob && !item->limit.IsJobRecommended(pPC->FUN_141654700()))
             continue;
-        if (bGender && !item->FUN_14053c940(pPC->FUN_141658e60()))
+        if (bGender && !item->IsGenderAllowed(pPC->FUN_141658e60()))
             continue;
-        unsigned nId = item->FUN_14053c510();
+        unsigned nId = item->GetItemId();
         CStringW strId = FUN_1407196b0(nId);
         CStringW strLabel;
         unsigned nLevel = item->limit.levelLimit;
@@ -555,9 +555,9 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
             strType = L"BEAUTY";
         else if (item->FUN_14053d880())
             strType = L"COIN";
-        else if (item->FUN_14053e130())
+        else if (item->IsCashItem())
             strType = L"CASH";
-        else if (item->FUN_14053cf90())
+        else if (item->HasSkinType())
             strType = L"SKIN";
         else if (item->FUN_14053cbc0())
             strType = L"EQUIP";
@@ -575,29 +575,29 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
         if (strFind.IsEmpty()) {
             if (strGroup == "RHLH") {
                 if (item->FUN_14053d460())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "CLPA") {
                 if (item->FUN_14053d2b0())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "CONSUME") {
-                if (item->FUN_14053c5c0() == 2 || item->FUN_14053c5c0() == 0x18)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 2 || item->GetType() == 0x18)
+                    list->AddItem(row);
             } else if (strGroup == "ETC") {
-                if (item->FUN_14053c5c0() == 4)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 4)
+                    list->AddItem(row);
             } else if (strGroup == "MISSION") {
-                if (item->FUN_14053c5c0() == 3)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 3)
+                    list->AddItem(row);
             } else if (strGroup == "SKILL") {
                 if (item->FUN_14053cb40())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "INSTALL") {
                 if (item->FUN_14053cb80())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else {
                 if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
                     if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
-                        list->FUN_1422dd230(row);
+                        list->AddItem(row);
                 }
             }
         } else {
@@ -632,10 +632,10 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
             }
             if (!bMatch)
                 continue;
-            list->FUN_1422dd230(row);
+            list->AddItem(row);
         }
     }
-    list->FUN_1422dcca0(0);
+    list->SetSelectedIndex(0);
     list->vfunc_24(true);
 }
 MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FUN_1419b5730, 3090, 0xA1CFB757);
@@ -661,10 +661,10 @@ void UIItemCreateDialog::FUN_1419b6350()
                 ASObj row(2);
                 row.FUN_1407cbb20("label", item.first);
                 row.FUN_1407cbb20("func", item.second);
-                m_spContextMenu->FUN_1422dd230(row);
+                m_spContextMenu->AddItem(row);
                 nCount++;
             }
-            m_spContextMenu->FUN_1422c79e0(nWidth, m_spContextMenu->FUN_1422dd150() * nRowHeight);
+            m_spContextMenu->FUN_1422c79e0(nWidth, m_spContextMenu->GetItemCount() * nRowHeight);
             m_spContextMenu->vfunc_24(true);
             m_spContextMenu->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4e30), 0);
         } else {
@@ -704,7 +704,7 @@ float ItemOptionDebug::FUN_1419b6940(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -724,7 +724,7 @@ float ItemOptionDebug::FUN_1419b6a90(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -743,7 +743,7 @@ void ItemOptionDebug::FUN_1419b6be0(int nGroup, int nStat, Unk_IcRateCounts& cou
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float fKey = value->FUN_140266e10();
@@ -764,7 +764,7 @@ __int64 ItemOptionDebug::FUN_1419b6d40(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 n = value->GetValue();
@@ -784,7 +784,7 @@ __int64 ItemOptionDebug::FUN_1419b6e80(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 n = value->GetValue();
@@ -803,7 +803,7 @@ void ItemOptionDebug::FUN_1419b6fc0(int nGroup, int nStat, Unk_IcValueCounts& co
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
+        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 nKey = value->GetValue();
@@ -824,7 +824,7 @@ float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -844,7 +844,7 @@ float ItemOptionDebug::FUN_1419b7270(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -863,7 +863,7 @@ void ItemOptionDebug::FUN_1419b73c0(int nGroup, unsigned nSpecial, Unk_IcRateCou
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float fKey = value->FUN_140266e10();
@@ -884,7 +884,7 @@ float ItemOptionDebug::FUN_1419b7520(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = (float)value->GetValue();
@@ -904,7 +904,7 @@ float ItemOptionDebug::FUN_1419b7670(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = (float)value->GetValue();
@@ -923,7 +923,7 @@ void ItemOptionDebug::FUN_1419b77c0(int nGroup, unsigned nSpecial, Unk_IcRateCou
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
+        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float fKey = (float)value->GetValue();
@@ -1215,7 +1215,7 @@ void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
     MS2Ptr<Unk_IcDataProvider> provider = FUN_1422df770();
     if (provider == 0)
         return;
-    if ((unsigned)nSelected >= provider->FUN_1422bc5d0())
+    if ((unsigned)nSelected >= provider->GetLength())
         return;
     provider->FUN_1419b9900(nSelected, strName, nOut);
 }

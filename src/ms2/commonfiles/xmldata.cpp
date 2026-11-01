@@ -10,6 +10,7 @@
 #include <new>
 
 #include "ms2/placeholder/cxmldata.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 
 // TinyXML. This file only walks an element's attribute list; the same unit-local view itemdatastruct.cpp uses.
 class Unk_TiXmlAttribute
@@ -55,7 +56,6 @@ void* FUN_1408782b0(Unk_TiXmlElement* pElement, const char* pszXml, void* pData,
 
 CStringA FUN_14016a600(const wchar_t* psz, int nLength);                // narrows a wide string
 CStringW FUN_14016a730(const char* psz, int nLength);                   // widens a narrow string
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 
 // The module loader at the tail of the file (its two helpers are in the next unit).
 bool FUN_14092edf0(HMODULE* ppModule);
@@ -153,7 +153,7 @@ CStringW CXmlData::FUN_14092c630() const
     {
         const CStringW& strKey = reinterpret_cast<const Values*>(m_unknown18)->GetKeyAt(pos);
         const CStringW& strValue = reinterpret_cast<const Values*>(m_unknown18)->GetValueAt(pos);
-        strValues += FUN_140656190(L" {0}=\"{1}\"", strKey, strValue);
+        strValues += StringFormat<CStringW, CStringW>(L" {0}=\"{1}\"", strKey, strValue);
     }
     strValues += L"/>";
     return strValues;

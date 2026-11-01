@@ -31,6 +31,18 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/cstringtable.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -100,16 +112,16 @@ bool CArcadeDataTable::LoadMain()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         MainPtr pData(new CArcadeMainData);
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         pData->m_nId = nId;
-        FUN_1408731e0(pNode, "sortingOrder", pData->m_nSortingOrder);
-        FUN_140873420(pNode, "arcadeBanner", pData->m_strArcadeBanner);
-        FUN_140873220(pNode, "targetField", pData->m_nTargetField);
-        FUN_1408730a0(pNode, "isEventArcade", pData->m_bIsEventArcade);
+        XmlGetAttr((class TiXmlElement*)(pNode), "sortingOrder", reinterpret_cast<int&>(pData->m_nSortingOrder));
+        XmlGetAttr((class TiXmlElement*)(pNode), "arcadeBanner", pData->m_strArcadeBanner);
+        XmlGetAttr((class TiXmlElement*)(pNode), "targetField", pData->m_nTargetField);
+        XmlGetAttr((class TiXmlElement*)(pNode), "isEventArcade", reinterpret_cast<bool&>(pData->m_bIsEventArcade));
         m_mapMain.SetAt(pData->m_nId, pData);
     }
     return true;
@@ -128,23 +140,23 @@ bool CArcadeDataTable::LoadReward()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         int nArcadeId = 0;
-        FUN_1408731e0(pNode, "arcadeId", nArcadeId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "arcadeId", reinterpret_cast<int&>(nArcadeId));
         int nId = nArcadeId;
         std::vector<RewardPtr> aReward;
         aReward.resize(MAX_ROUND);
         aReward[0] = new CArcadeRewardData;
-        for (Unk_140165cf0* pReward = pNode->FUN_140165cf0("reward"); pReward != 0; pReward = pReward->FUN_140168650("reward"))
+        for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("reward")); pReward != 0; pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pReward)))
                 continue;
             RewardPtr pData(new CArcadeRewardData);
             pData->m_nArcadeId = nId;
-            FUN_1408731e0(pReward, "round", pData->m_nRound);
-            FUN_140873360(pReward, "expRate", pData->m_fExpRate);
-            FUN_1408732e0(pReward, "meso", pData->m_nMeso);
+            XmlGetAttr((class TiXmlElement*)(pReward), "round", reinterpret_cast<int&>(pData->m_nRound));
+            XmlGetAttr((class TiXmlElement*)(pReward), "expRate", reinterpret_cast<float&>(pData->m_fExpRate));
+            XmlGetAttr((class TiXmlElement*)(pReward), "meso", reinterpret_cast<__int64&>(pData->m_nMeso));
             if (pData->m_nRound > MAX_ROUND - 1)
                 continue;
             aReward[pData->m_nRound] = pData;
@@ -167,19 +179,19 @@ bool CArcadeDataTable::LoadRecord()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("arcadeGame"); pNode != 0; pNode = pNode->FUN_140168650("arcadeGame"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         int nArcadeId = 0;
-        FUN_1408731e0(pNode, "id", nArcadeId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nArcadeId));
         int nId = nArcadeId;
         std::vector<Unk_ArcadeRecord> aRecord;
         aRecord.reserve(10);
-        for (Unk_140165cf0* pRank = pNode->FUN_140165cf0("rank"); pRank != 0; pRank = pRank->FUN_140168650("rank"))
+        for (Unk_140165cf0* pRank = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("rank")); pRank != 0; pRank = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRank))->NextSibling("rank")))
         {
             Unk_ArcadeRecord record;
             unsigned nNpcId = 0;
-            FUN_140873220(pRank, "npcID", nNpcId);
-            FUN_1408731e0(pRank, "score", record.first);
+            XmlGetAttr((class TiXmlElement*)(pRank), "npcID", nNpcId);
+            XmlGetAttr((class TiXmlElement*)(pRank), "score", reinterpret_cast<int&>(record.first));
             record.second = FUN_1401aa6a0(nNpcId);
             aRecord.push_back(record);
         }

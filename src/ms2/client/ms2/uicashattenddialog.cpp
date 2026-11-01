@@ -132,6 +132,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -181,7 +182,7 @@ template<> std::vector<MS2Ptr<ItemEntity> >::size_type std::vector<MS2Ptr<ItemEn
 // gameeventcli.cpp (not recovered).
 class GameEventCashAttendCli : public GameEventCashAttend { public:
     bool FUN_140ce3d90();                       // active (always true)
-    unsigned GetDayCount();                   // number of days
+    unsigned GetGroupCount();                   // number of days
     unsigned GetAttendedDays();                   // days attended
     int GetUsablePoints();                        // usable points
     CStringW GetEventName();                   // event name
@@ -192,9 +193,7 @@ class GameEventCashAttendCli : public GameEventCashAttend { public:
 };
 
 // The event button (attendgift: Unk_140acd6e0).
-class Unk_140acd6e0 : public ASDisplayObject { public:
-    void FUN_1422cdfb0(const CStringW&);
-    void FUN_1422ce090(int);
+class Unk_140acd6e0 : public ASButton { public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,void*);
     void FUN_1422c1fe0(unsigned);
     bool FUN_1422c7b40(CStringW strTooltip);
@@ -336,14 +335,14 @@ UICashAttendDialog::UICashAttendDialog() : m_eventId(0)
 {
     FUN_141924170(1);
     m_80=0;
-    FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::FUN_140bc5170));
+    FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
     ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
     ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc2f90
 UICashAttendDialog::~UICashAttendDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::FUN_140bc5170));
+    FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
     ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
     ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
@@ -354,8 +353,8 @@ CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
 void UICashAttendDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bc4f00();
-    FUN_140bc4ff0();
+    RebuildActiveEvents();
+    ResolveSelectedEvent();
     FUN_141925ec0("m_closeButton");
     FUN_141925fa0("m_dragBar");
     do { m_30->FUN_140bbe640("m_usePointButton",m_usePointButton);
@@ -374,7 +373,7 @@ void UICashAttendDialog::OnLoadComplete()
     for(unsigned int i=0;i<7;i++) {
         MS2Ptr<Unk_140acd6e0> spButton;
         if(FUN_140bc6d10(StringFormat("m_eventButton{0}",i),spButton).get()) {
-            spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::FUN_140bc4150),FUN_140bd09d0(i));
+            spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::OnEventTabClick),FUN_140bd09d0(i));
             m_eventButtons.Add(spButton);
         }
     }
@@ -393,7 +392,7 @@ void UICashAttendDialog::vfunc_26()
 }
 
 // @0x140bc3db0
-void UICashAttendDialog::FUN_140bc3db0(MS2Ptr<GameEventCashAttendCli> spEvent)
+void UICashAttendDialog::AddEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
 {
     m_events.insert(std::make_pair(spEvent->FUN_1402e1d00(),spEvent));
     if(spEvent->FUN_140ce3d90()) m_activeEvents.Add(spEvent);
@@ -401,11 +400,11 @@ void UICashAttendDialog::FUN_140bc3db0(MS2Ptr<GameEventCashAttendCli> spEvent)
 }
 
 // @0x140bc3eb0
-void UICashAttendDialog::FUN_140bc3eb0(MS2Ptr<GameEventCashAttendCli> spEvent)
+void UICashAttendDialog::RemoveEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
 {
     m_events.erase(spEvent->FUN_1402e1d00());
     if(m_requested==spEvent.get()) { m_requested=0; vfunc_67(); return; }
-    FUN_140bc4f00();
+    RebuildActiveEvents();
     if(FUN_141924630()) {
         if(m_activeEvents.IsEmpty()) { vfunc_67(); return; }
         if(m_selected==spEvent.get()) { m_selected=m_activeEvents[0]; FUN_140bc4460(); }
@@ -414,10 +413,10 @@ void UICashAttendDialog::FUN_140bc3eb0(MS2Ptr<GameEventCashAttendCli> spEvent)
 }
 
 // @0x140bc4030
-bool UICashAttendDialog::FUN_140bc4030() { return m_activeEvents.GetCount()>0; }
+bool UICashAttendDialog::HasActiveEvents() { return m_activeEvents.GetCount()>0; }
 
 // @0x140bc4080
-int UICashAttendDialog::FUN_140bc4080()
+int UICashAttendDialog::GetTotalUsablePoints()
 {
     int nTotal=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
@@ -428,7 +427,7 @@ int UICashAttendDialog::FUN_140bc4080()
 }
 
 // @0x140bc4150
-void UICashAttendDialog::FUN_140bc4150(const Scaleform::GFx::FunctionHandler::Params& params)
+void UICashAttendDialog::OnEventTabClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if(m_requested.get()!=0) return;
     unsigned int nIndex=FUN_140bd09c0(params.pUserData);
@@ -439,10 +438,10 @@ void UICashAttendDialog::FUN_140bc4150(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140bc4230
-void UICashAttendDialog::FUN_140bc4230(const Scaleform::GFx::FunctionHandler::Params&) { FUN_140bc56a0(); }
+void UICashAttendDialog::FUN_140bc4230(const Scaleform::GFx::FunctionHandler::Params&) { SendSelectedEventRequest(); }
 
 // @0x140bc4260
-bool UICashAttendDialog::FUN_140bc4260(int nButton,const CMsgBoxData& data)
+bool UICashAttendDialog::OnAttendMsgBox(int nButton,const CMsgBoxData& data)
 {
     if(nButton==0) {
         __int64 nItemUid=0;
@@ -457,10 +456,10 @@ bool UICashAttendDialog::FUN_140bc4260(int nButton,const CMsgBoxData& data)
 }
 
 // @0x140bc4340
-void UICashAttendDialog::FUN_140bc4340(int nEventId)
+void UICashAttendDialog::SetEventId(int nEventId)
 {
     m_eventId=nEventId;
-    if(FUN_141924630()) { FUN_140bc4ff0(); FUN_140bc4460(); }
+    if(FUN_141924630()) { ResolveSelectedEvent(); FUN_140bc4460(); }
 }
 
 // @0x140bc4390
@@ -490,13 +489,13 @@ void UICashAttendDialog::FUN_140bc44b0()
         }
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
-        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->FUN_140d9f530(events[i]->FUN_1402e1d00()));
+        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->HasTime(events[i]->FUN_1402e1d00()));
         m_eventButtons[i]->FUN_1422c7b40(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
         if(m_eventButtons[i]->FUN_140bc7100("m_slot",spSlot).get()) {
             int nRarity=FUN_14053feb0(events[i]->FUN_1403fbdc0());
-            spSlot->FUN_1409ba5d0(events[i]->FUN_1403fbdc0(),nRarity,0);
+            spSlot->SetItem(events[i]->FUN_1403fbdc0(),nRarity,0);
         }
     }
 }
@@ -507,9 +506,9 @@ void UICashAttendDialog::FUN_140bc4980()
     if(!FUN_1422dc2d0()) return;
     if(m_selected==NULL) return;
     unsigned nAttended=m_selected->GetAttendedDays();
-    unsigned nDays=m_selected->GetDayCount();
+    unsigned nDays=m_selected->GetGroupCount();
     m_progressGauge->FUN_1409b9f60(nAttended,nDays);
-    m_giftList->FUN_1422dcf40(m_selected->GetDayCount());
+    m_giftList->FUN_1422dcf40(m_selected->GetGroupCount());
     CStringW strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",
         FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
         FUN_14083bdc0(m_selected->FUN_140ce4090(),true,L"/",L":"));
@@ -530,7 +529,7 @@ void UICashAttendDialog::FUN_140bc4d40()
 }
 
 // @0x140bc4f00
-void UICashAttendDialog::FUN_140bc4f00()
+void UICashAttendDialog::RebuildActiveEvents()
 {
     m_activeEvents.RemoveAll();
     for(auto it=m_events.begin();it!=m_events.end();it++) {
@@ -540,7 +539,7 @@ void UICashAttendDialog::FUN_140bc4f00()
 }
 
 // @0x140bc4ff0
-void UICashAttendDialog::FUN_140bc4ff0()
+void UICashAttendDialog::ResolveSelectedEvent()
 {
     m_selected=0;
     if(m_requested.get()) { m_selected=m_requested; return; }
@@ -554,7 +553,7 @@ void UICashAttendDialog::FUN_140bc4ff0()
 }
 
 // @0x140bc5170
-void UICashAttendDialog::FUN_140bc5170(CInPacket& packet)
+void UICashAttendDialog::OnPacket(CInPacket& packet)
 {
     int kind=reinterpret_cast<Unk_CadReader*>(&packet.m_stream)->vfunc_1();
     switch(kind) {
@@ -574,7 +573,7 @@ void UICashAttendDialog::FUN_140bc5280(CInPacket& packet)
 {
     unsigned long nEventId=reinterpret_cast<Unk_CadReader*>(&packet.m_stream)->vfunc_3();
     if(m_events.find(nEventId)==m_events.end()) return;
-    FUN_140bc4340(nEventId);
+    SetEventId(nEventId);
     if(FUN_141924630()) FUN_140bc4460();
     else FUN_141924680();
 }
@@ -600,7 +599,7 @@ void UICashAttendDialog::FUN_140bc5640()
 }
 
 // @0x140bc56a0
-void UICashAttendDialog::FUN_140bc56a0()
+void UICashAttendDialog::SendSelectedEventRequest()
 {
     if(m_selected==NULL) return;
     {
@@ -635,7 +634,7 @@ template<class T> MS2Ptr<T> UICashAttendDialog::FUN_140bc6d10(const CString& str
 // @0x140bc6da0 (gauge; 0x140bc6f20 gift row clip, 0x140bc7280 day list)
 template<class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
-    Scaleform::GFx::Value v=FUN_1422baa20(strName);
+    Scaleform::GFx::Value v=GetMember(strName);
     if(v.IsObject())
         return Unk_ASCreate<T>(m_nMovieId,v);
     return MS2Ptr<T>(0);
@@ -690,12 +689,12 @@ template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc7400(const CString& strName)
 template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName)
 {
     MS2Ptr<ASDisplayObjectContainer> spObj=FUN_140bc5fc0(m_nMovieId,v);
-    if(!spObj->FUN_1422ba9f0("getChildByName"))
+    if(!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child=spObj->FUN_1422c6b00(strName);
     if(child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId,child);
-    if(!spObj->FUN_1422ba9f0("numChildren"))
+    if(!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount=spObj->FUN_1422c6670();
     for(int i=0;i<nCount;i++) {

@@ -993,7 +993,7 @@ void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,Unk_PayloadPtr<CIt
     if(item==static_cast<CItem*>(0))return;
     stream.WriteUInt8(item->FUN_140526b50());
     stream.WriteInt32(item->FUN_1405276c0());
-    stream.WriteInt64(item->FUN_140526a50());
+    stream.WriteInt64(item->GetItemUid());
     stream.WriteInt32(item->FUN_140526bd0());
     item->FUN_140524ad0(stream);
 }
@@ -1011,7 +1011,7 @@ Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
     if(!ok)return Unk_PayloadPtr<CItem>(0);
     item->FUN_140524eb0(stream);
     item->FUN_140526b70(state);
-    item->FUN_140526a70(id);
+    item->SetItemUid(id);
     return item;
 }
 MS2_REPLACE_METHOD(0x1401FCFC0, Unk_PayloadItemWire, FUN_1401fcfc0, 443, 0x5D7C5393);

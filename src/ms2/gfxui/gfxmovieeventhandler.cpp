@@ -19,7 +19,8 @@
 
 #pragma comment(lib, "imm32.lib")
 
-extern char DAT_143b059e8;                                      // the entity app framework
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
 ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
 
@@ -538,7 +539,7 @@ void GFxMovieEventHandler::vfunc_39(int a, int b, int c, bool d, bool e)
         return;
     if (b == 0 && c != 0)
     {
-        if (FUN_14025e7a0()->FUN_1422af2d0(m_18))
+        if (FUN_14025e7a0()->IsTextFieldFocused(m_18))
         {
             Scaleform::GFx::CharEvent kEvent(c, 0);
             m_60->HandleEvent(kEvent);
@@ -592,7 +593,7 @@ void GFxMovieEventHandler::SendKeyEvent(int nKeyboard, int nKeyCode, unsigned nW
 {
     if (!m_60)
         return;
-    if (nKeyCode == Scaleform::Key::Insert && FUN_14025e7a0()->FUN_1422af2d0(m_18))
+    if (nKeyCode == Scaleform::Key::Insert && FUN_14025e7a0()->IsTextFieldFocused(m_18))
         return;
     if (nKeyCode != 0)
     {

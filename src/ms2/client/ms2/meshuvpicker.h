@@ -52,15 +52,15 @@ public:
     virtual ~CMeshUVPicker();                                   // 0x14147e840 (scalar deleting 0x1414804a0)
 
     int FUN_14147e900();                                        // create the targets and the render states
-    bool FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
+    bool PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
                        CAtlArray<NiRenderObject*>* pExtras);    // texel at (fX, fY): the UV
     bool FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0, Unk_FcPoint3* pPos1,
                        NiPoint2* pUV, float* pIndex, CAtlArray<NiRenderObject*>* pExtras);
     void FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObject*>* pExtras, NiCamera* pCamera, float fX, float fY,
                        bool bSecond);                           // render the three targets
-    bool FUN_14147f570();                                       // create the render targets and read-back textures
-    void FUN_14147fa80();                                       // create the property state
-    void FUN_14147fbb0();                                       // release everything
+    bool CreateResources();                                       // create the render targets and read-back textures
+    void CreatePropertyState();                                       // create the property state
+    void ReleaseResources();                                       // release everything
     bool FUN_14147fd50(bool bBeforeReset);                      // device reset notification
     bool FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel);       // read one texel back
     NiMaterial* FUN_1414800a0(bool bSecond);                    // the (lazily created) UV material

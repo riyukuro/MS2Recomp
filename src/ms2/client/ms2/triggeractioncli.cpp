@@ -63,6 +63,7 @@
 // MS2-PIN: ?get@?$MS2Ptr@VTriggerTransitionCli@@@@QEBAPEAVTriggerTransitionCli@@XZ 0x140deb850
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\triggeractioncli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <atlcoll.h>
 #include <string>
 #include <efd/AssetID.h>
@@ -86,6 +87,8 @@
 #include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
 #include "ms2/client/ms2/triggerservice.h"  // C3: was a local member view
 #include "ms2/placeholder/uitalkmanager.h"  // C3: was a local member view
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class UIMinimapDialog;
 class Unk_CachedEntity;
 class Unk_McEntityRules;
@@ -94,7 +97,7 @@ class Unk_SingletonObj1;
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
 extern char DAT_143afa950;      // RTTI of the camera-carrying scene node
-extern Vector3 DAT_143b01a60;   // NiPoint3::ZERO
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- unit-local views of exe objects ----
 
@@ -131,7 +134,6 @@ bool FUN_14034eee0(const CStringW& a, const wchar_t* pszB) throw(); // case-inse
 
 // game config table (limits of the trigger editor)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned* FUN_1401d7c10(void* pSlot);
 
 // registrar of ClassObject factories, atexit helpers
 ClassObject* FUN_140de5570();
@@ -216,12 +218,12 @@ ATL::CAtlArray<CStringW>* TriggerActionCli::GetArgs()
 // @0x140de5010
 void TriggerActionCli::vfunc_2(void* pNode)
 {
-    FUN_140873420(pNode, "name", m_strName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
     const unsigned nArgs = 6;
     for (unsigned i = 0; i < nArgs; i++)
     {
         CStringW str;
-        if (FUN_140873420(pNode, FUN_14052ea30("arg{0}", i + 1), str) == 0)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), FUN_14052ea30("arg{0}", i + 1), str) == 0)
             m_args.SetAtGrow(i, str);
     }
 }
@@ -260,7 +262,7 @@ TriggerConditionCli::TriggerConditionCli() : m_bNot(0)
 MS2Ptr<TriggerConditionCli> TriggerConditionCli::Create(void* pNode)
 {
     CStringW strName;
-    FUN_140873420(pNode, "name", strName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);
     int bNot = 0;
     if (strName.GetLength() > 1)
     {
@@ -340,7 +342,7 @@ void TriggerConditionCli::vfunc_2(void* pNode)
     for (unsigned i = 0; i < nArgs; i++)
     {
         CStringW str;
-        if (FUN_140873420(pNode, FUN_14052ea30("arg{0}", i + 1), str) == 0)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), FUN_14052ea30("arg{0}", i + 1), str) == 0)
             m_args.SetAtGrow(i, str);
     }
 }
@@ -386,7 +388,6 @@ void TriggerObject::Init(int nId, Unk_EntRef ent)
 }
 
 // ---- trigger-box test ----
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);
 class NxBounds3   // C3: member view for the former free stand-ins
 {
 public:
@@ -413,9 +414,9 @@ bool TriggerObject::Contains(const Vector3& pt)
     egf::FlatModel* pModel = FUN_1408a9bd0(TRIG_ENT());
     if (pModel->ContainsModel(0x5fc1ef17))
     {
-        FUN_1409618c0(TRIG_ENT(), 0xfd95ca52, &ptPos);
-        FUN_1409618c0(TRIG_ENT(), 0x9dc22aea, &ptSize);
-        FUN_1409618c0(TRIG_ENT(), 0x68c7c29d, &ptRot);
+        reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos));
+        reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize));
+        reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot));
         Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
         Unk_CtbBounds3 bounds;
         ((class NxBounds3*)(struct Unk_CtbBounds3*)(&bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
@@ -479,7 +480,6 @@ MS2Ptr<TriggerObject> TriggerObject::Create(egf::Entity* pEntity)
 
 // ---- entity / world service views ----
 int FUN_1408a2060(egf::Entity* e, unsigned id, efd::utf8string* out);     // string property
-int FUN_1408a20a0(egf::Entity* e, unsigned id, bool* out);                // bool property
 int FUN_140961880(egf::Entity* e, unsigned id, float* out);               // float property
 int FUN_140ae11a0(egf::Entity* e, unsigned id, int* out);                 // int property
 void FUN_1409457c0(egf::Entity* e, unsigned id, const float& v);
@@ -511,19 +511,11 @@ public:
 };
 void FUN_14177ce30(void* pMgr, Unk_EntRef ent, unsigned bOn);
 
-// effect manager (0x1403ed280); its requests are NoticeMessage (effectquery.h)
-class Unk_TrigFxMgr
-{
-public:
-    int FUN_1411a49c0(NoticeMessage* pRequest);         // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                    // release
-    void FUN_1411a4a00(NoticeMessage* pRequest);        // spawn at the attach node
-};
-
 // world / animation services
 class Unk_TrigWorldSvc { public: bool FUN_141bd8e30(egf::EntityID kId, bool bShow, float fFade); };
 class Unk_TrigAnimSvc { public: void FUN_1409a1fc0(const void* pEntId, const efd::utf8string& kName, float fBlend, bool b); };
-Unk_TrigAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
 void FUN_141851f90(void *, float);  // C3: the definition's signature
 void FUN_141545250(egf::EntityID kId, unsigned b);
@@ -549,7 +541,7 @@ TriggerObjectSound::TriggerObjectSound() : m_nHandle(0)
 TriggerObjectSound::~TriggerObjectSound()
 {
     if (m_nHandle != 0)
-        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nHandle);
 }
 
 // @0x140de6800
@@ -613,7 +605,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 NoticeMessage kReq;
                 kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kName))->c_str();
                 kReq.m_nObject = 0;
-                m_nHandle = reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+                m_nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
             }
         }
         else if (m_nHandle != 0)
@@ -625,7 +617,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 NoticeMessage kReq;
                 kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kName))->c_str();
                 kReq.m_nObject = 0;
-                reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
                 m_nHandle = 0;
             }
         }
@@ -651,7 +643,7 @@ void FUN_140de6d70(TriggerObject* pObj, void* pArg)
 bool FUN_140de6db0(TriggerObject* pObj)
 {
     bool b = false;
-    FUN_1408a20a0(reinterpret_cast<egf::Entity*>(pObj->m_spEntity.FUN_1408a9280()), 0xa0b6b179, &b);
+    (reinterpret_cast<egf::Entity*>(pObj->m_spEntity.FUN_1408a9280()))->GetPropertyValue(0xa0b6b179, b);
     return b;
 }
 
@@ -713,7 +705,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
             FUN_1409fabf0(&kReq.m_spNode, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID())))));
-            reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         void* pUi = FUN_140c9b540(0x4e29);
         if (pUi != 0)
@@ -736,7 +728,7 @@ void TriggerObjectActor::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     FUN_140b60e10(TRIG_ENT_RAW(), bOn);
     {
         efd::utf8string kAnim((const char*)strAnim);
-        FUN_141b6f910()->FUN_1409a1fc0(((void const*)&((egf::Entity*)(void const*)(TRIG_ENT()))->GetEntityID()), kAnim, 1.0f, false);
+        reinterpret_cast<Unk_TrigAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(((void const*)&((egf::Entity*)(void const*)(TRIG_ENT()))->GetEntityID()), kAnim, 1.0f, false);
     }
     void* pUi = FUN_140c9b540(0x4e29);
     if (pUi != 0)
@@ -773,7 +765,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
             FUN_1409fabf0(&kReq.m_spNode, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID())))));
-            reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kReq);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
     }
 }
@@ -789,7 +781,7 @@ TriggerObjectEffect::TriggerObjectEffect() : m_nHandle(0)
 TriggerObjectEffect::~TriggerObjectEffect()
 {
     if (m_nHandle != 0)
-        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nHandle);
 }
 
 efd::Point3 FUN_140b60d30(egf::Entity *);  // C3: the definition's signature
@@ -804,7 +796,7 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     int n1 = (&pEvent->m_arg)->vfunc_1();
     int n3 = (&pEvent->m_arg)->vfunc_3();
     if (m_nHandle != 0)
-        reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nHandle);
     if (bOn)
     {
         efd::Point3 kAngle = FUN_140b60d30(TRIG_ENT_RAW());
@@ -819,7 +811,7 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         kReq.m_strName = FUN_140b60bf0(TRIG_ENT_RAW());
         kReq.m_nObject = 0;
         kReq.m_p18 = &kXform;
-        m_nHandle = reinterpret_cast<Unk_TrigFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+        m_nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
     }
 }
 
@@ -882,9 +874,9 @@ void TriggerObjectCamera::vfunc_3()
     FUN_140961880(TRIG_ENT(), 0x88b558f6, &set.m_0);
     FUN_140961880(TRIG_ENT(), 0xd2c672d5, &set.m_4);
     FUN_140961880(TRIG_ENT(), 0x4b35f1d, &set.m_8);
-    FUN_1409618c0(TRIG_ENT(), 0xfd95ca52, &set.m_c);
-    FUN_1409618c0(TRIG_ENT(), 0x68c7c29d, &set.m_18);
-    FUN_1408a20a0(TRIG_ENT(), 0x2310d55e, &set.m_24);
+    reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(set.m_c));
+    reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(set.m_18));
+    TRIG_ENT()->GetPropertyValue(0x2310d55e, set.m_24);
     FUN_140ae11a0(TRIG_ENT(), 0xc8cafec9, &nType);
     CameraMgr::GetInstance()->FUN_140af0b70(1, set.m_4, set.m_8);
     float fSpeed = 0.0f;
@@ -892,13 +884,13 @@ void TriggerObjectCamera::vfunc_3()
     FUN_140961880(TRIG_ENT(), 0x27bd7e0b, &fSpeed);
     FUN_140961880(TRIG_ENT(), 0x71056578, &fDur);
     bool bApplyNow = false;
-    FUN_1408a20a0(TRIG_ENT(), 0x829fc57a, &bApplyNow);
+    TRIG_ENT()->GetPropertyValue(0x829fc57a, bApplyNow);
     bool bUnknown = true;
-    FUN_1408a20a0(TRIG_ENT(), 0xe6817e96, &bUnknown);
+    TRIG_ENT()->GetPropertyValue(0xe6817e96, bUnknown);
     CameraMgr::GetInstance()->FUN_140af1a90();
     CameraMgr::GetInstance()->FUN_140af7be0(bUnknown);
     if (bApplyNow)
-        CameraMgr::GetInstance()->FUN_140aed180(set);
+        CameraMgr::GetInstance()->RememberSetting(set);
     CActionCameraData::DataPtr spPath;
     int nMode = 5;
     if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(kPath))->empty())
@@ -907,7 +899,7 @@ void TriggerObjectCamera::vfunc_3()
         spPath = CActionCameraData::Get(((efd::utf8string*)&static_cast<class efd::utf8string const&>(kPath))->c_str());
     if (fSpeed != 0.0f)
     {
-        Unk_CameraFlyBy fb = CameraMgr::GetInstance()->FUN_140aeffd0(fSpeed, set);
+        Unk_CameraFlyBy fb = CameraMgr::GetInstance()->MakeFlyBy(fSpeed, set);
         fb.m_nKind = nType;
         CameraMgr::GetInstance()->FUN_140aed580(&fb, nType, 1.0f);
     }
@@ -1076,7 +1068,7 @@ TriggerStateCli::TriggerStateCli(void* pOwner) : m_nPosX(-1), m_nPosY(-1), m_pOw
 // @0x140de9490
 void TriggerStateCli::Load(void* pNode)
 {
-    FUN_140873420(pNode, "name", m_strName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
     XmlGetAttr((class TiXmlElement*)(pNode), "posX", m_nPosX);
     XmlGetAttr((class TiXmlElement*)(pNode), "posY", m_nPosY);
     void* pEnter = ((void*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("onEnter"));
@@ -1149,7 +1141,7 @@ void TriggerStateCli::Save(void* pNode)
 // @0x140de9d40
 int TriggerStateCli::Validate(int* pnReason)
 {
-    if (m_onEnter.GetCount() > *FUN_1401d7c10((char*)((void*)FUN_1401d3200()) + 0x5758))
+    if (m_onEnter.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x5758)->Get())
     {
         *pnReason = 1;
         return 0;
@@ -1172,7 +1164,7 @@ int TriggerStateCli::Validate(int* pnReason)
         *pnReason = 2;
         return 0;
     }
-    if (m_transitions.GetCount() > *FUN_1401d7c10((char*)((void*)FUN_1401d3200()) + 0x57b0))
+    if (m_transitions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x57b0)->Get())
     {
         *pnReason = 3;
         return 0;
@@ -1187,7 +1179,7 @@ int TriggerStateCli::Validate(int* pnReason)
                 *pnReason = 9;
                 return 0;
             }
-            if (pTrans->m_actions.GetCount() > *FUN_1401d7c10((char*)((void*)FUN_1401d3200()) + 0x5808))
+            if (pTrans->m_actions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x5808)->Get())
             {
                 *pnReason = 5;
                 return 0;
@@ -1305,7 +1297,7 @@ void TriggerStateCli::AddTransition(void* pNode)
     CStringW strState(m_strName);
     void* pTrans = ((void*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("transition"));
     if (pTrans != 0)
-        FUN_140873420(pTrans, "state", strState);
+        XmlGetAttr((class TiXmlElement*)(pTrans), "state", strState);
     TransitionPtr spTrans(new TriggerTransitionCli(spCond, actions, CStringW(strState)));
     m_transitions.Add(spTrans);
 }

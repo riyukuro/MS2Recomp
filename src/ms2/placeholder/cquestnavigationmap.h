@@ -98,11 +98,11 @@ public:
 
     CQuestNavigationMap();                                  // 0x140c90840
     virtual ~CQuestNavigationMap();                         // 0x140c90920
-    void FUN_140c909a0();                                   // BuildMapPaths, then m_8 = 1
+    void Rebuild();                                   // BuildMapPaths, then m_8 = 1
     int FUN_140c9b8d0() const { return m_8; }               // 0x140c9b8d0 paths built (inline COMDAT, questnavigator.cpp)
     int BuildMapPaths();                                    // 0x140c909d0 all-pairs shortest portal paths
     int FindMapPath(int nFrom, int nTo, ATL::CAtlArray<unsigned>& path);    // 0x140c91180
-    int FUN_140c912d0(int nFrom, int nTo);                  // the next map on the path (0 = none)
+    int GetNextMapOnPath(int nFrom, int nTo);                  // the next map on the path (0 = none)
     void CollectMapPath(short nFrom, short nTo, ATL::CAtlArray<unsigned>& path, int& nDepth);   // 0x140c91370
     int NearestMap(const ATL::CAtlArray<unsigned>& maps);   // 0x140c915a0
     int InitTraceTable();                                   // 0x140c91690

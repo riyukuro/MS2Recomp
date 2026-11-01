@@ -24,24 +24,31 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 : public CFileSystem { };
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                       // the document's first child element
 Unk_140165cf0* FUN_140345b40(Unk_140165cf0* pNode);                      // first child element
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);    // attribute text (null = absent)
 CString Name_14021a6b0(int n);                                           // int to string
 CString FUN_140540050(const char* pszFormat, const CString& strArg);     // StringFormat with one string
 
 // The animation service (singleton behind FUN_141b6f910): the actor manager of an entity.
-class Unk_CrAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
-Unk_CrAnimSvc* FUN_141b6f910();
+class Unk_CrAnimSvc { public: };
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CommonResource::s_bInit;
@@ -59,7 +66,7 @@ CString FUN_140cc2c70(const CString& strName)
 // @0x140cc2d00
 void FUN_140cc2d00(const egf::EntityID& kId, CString* pOut)
 {
-    NiActorManager* pActorMgr = FUN_141b6f910()->FUN_140999440(kId);
+    NiActorManager* pActorMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_CrAnimSvc*>(FUN_141b6f910()))->GetActorManager(kId);
     if (pActorMgr == 0)
         return;
     NiKFMTool* pKfm = ((class NiActorManager*)(pActorMgr))->GetKFMTool();
@@ -270,7 +277,7 @@ bool CommonResource::LoadXml()
     TiXmlDocument doc;
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     {
@@ -284,7 +291,7 @@ bool CommonResource::LoadXml()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = FUN_140345b40(pRoot); pNode != 0; pNode = ((class Unk_140165cf0*)(pNode))->NextSiblingElement())
@@ -292,7 +299,7 @@ bool CommonResource::LoadXml()
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CString strKey = FUN_140188f50(((class Unk_140165cf0*)(pNode))->Value(), 0);
-        CString strValue = FUN_140188f50(FUN_14086f4b0(pNode, "value"), 0);
+        CString strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("value"), 0);
         m_map.SetAt(strKey, strValue);
     }
     SetInit(true);

@@ -39,7 +39,7 @@ public: Unk_RewardItemIter FUN_140419db0(); Unk_RewardItemIter FUN_14041a4e0();
 private: void* m_0; void* m_8; void* m_10;
 };
 class DungeonRewardInfo {
-public: DungeonRewardInfo(); ~DungeonRewardInfo(); void FUN_14026cdf0(); void FUN_14026c900(CInPacket&);
+public: DungeonRewardInfo(); ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
  __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); int FUN_14026cd70(int); bool FUN_14026ce30();
 private:
  void* m_0;
@@ -102,7 +102,7 @@ public:
  virtual void vfunc_16(); virtual bool vfunc_17(); virtual int vfunc_o178_1(void*);
  // @0x140e26850
  virtual int vfunc_48() { return 20217; }
- void FUN_140e22130(CInPacket&); void FUN_140e22210(CInPacket&);
+ void OnPacket(CInPacket&); void FUN_140e22210(CInPacket&);
  void FUN_140e225a0(CInPacket&); void FUN_140e22650(CInPacket&); void FUN_140e226b0(CInPacket&);
  void FUN_140e22740(const Scaleform::GFx::FunctionHandler::Params&);
  void FUN_140e22780(const Scaleform::GFx::FunctionHandler::Params&);
@@ -117,15 +117,15 @@ public:
  void FUN_140e25050();
  void FUN_140e250e0();
  void FUN_140e25170();
- void FUN_140e25420();
- void FUN_140e25540();
- void FUN_140e255b0();
+ void CreateAvatar();
+ void LoadRenderTarget();
+ void UnloadRenderTarget();
  void FUN_140e25610();
- void FUN_140e25790();
+ void RequestClose();
  void SendDungeonReward();
  void FUN_140e24c50(bool);
  CStringW FUN_140e25840(int);
- void FUN_140e25c30(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);
+ void BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);
  Unk_RewardPtr<Unk_RewardClip> FUN_140ba7930(const CString&);
 private:
  MS2_LAYOUT_FRIEND;

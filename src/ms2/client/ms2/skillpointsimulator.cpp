@@ -19,7 +19,6 @@
 #include "ms2/placeholder/cquestmanagercommon.h"
 
 // Out-of-unit callees.
-class Unk_SpSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
 char* FUN_141523ba0(void*);                             // its quest state holder
 
 // @0x140abc2b0
@@ -163,7 +162,7 @@ int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
         if (!sp->m_bLearned)
             continue;
         *pnBadSkill = sp->GetID();
-        MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
+        MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(sp->GetID());
         if (spSkill == 0)
             return 0;
         if (spSkill->FUN_1407e9ac0() < sp->m_nLevel)
@@ -185,7 +184,7 @@ int CSkillPointSimulator::LevelUp(unsigned nSkillId)
         return 0;
     if (!CanLevelUp(nSkillId))
         return 0;
-    MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
+    MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(sp->GetID());
     if (spSkill == 0)
         return 0;
     if (sp->m_bLearned)
@@ -243,7 +242,7 @@ int CSkillPointSimulator::CanLevelUp(unsigned nSkillId)
         return 0;
     if (!GetRemainPoints(sp->GetJobLevel()))
         return 0;
-    MS2Ptr<SkillData> spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(sp->GetID());
+    MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(sp->GetID());
     if (spSkill == 0)
         return 0;
     if (sp->m_bLearned)

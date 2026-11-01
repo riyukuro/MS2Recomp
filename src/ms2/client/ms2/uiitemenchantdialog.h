@@ -65,7 +65,7 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // 0x1419bfc50
     void FUN_1419bfd70();                                 // 0x1419bfd70
     void FUN_1419bff60();                                 // 0x1419bff60
-    void FUN_1419c02e0(CString name);                                 // 0x1419c02e0
+    void SetModeByName(CString name);                                 // 0x1419c02e0
     void SendRequestItemEnchantMode15(ASData*);                                 // 0x1419c0360
     void SendRequestItemEnchantMode19(ASData*);                                 // 0x1419c03d0
     void FUN_1419c0440(ASData* pData);                                 // 0x1419c0440
@@ -124,7 +124,7 @@ public:
     CStringW FUN_1419c7ec0(int level, int rank);                                 // 0x1419c7ec0
     CStringW FUN_1419c7f50(CItem* item, int count);                                 // 0x1419c7f50
     CStringW FUN_1419c8020();                                 // 0x1419c8020
-    void FUN_1419c8070(CItem* item);                                 // 0x1419c8070
+    void UpdateEnchantIngredient(CItem* item);                                 // 0x1419c8070
     Unk_EnSlot* FUN_1419c8160(const CString& name);                                 // 0x1419c8160
     void FUN_1419c81a0();                                 // 0x1419c81a0
     int FUN_1419c86b0(int itemId);                                 // 0x1419c86b0

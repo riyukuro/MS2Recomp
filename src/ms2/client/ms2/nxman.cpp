@@ -69,7 +69,7 @@ CStringW FUN_14016a730(const char* psz, int n = 0);         // narrow -> wide
 CStringA FUN_14016a5c0(const char* psz, int n = 0);
 CStringA FUN_140188f50(const char* psz, int n = 0);
 CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
-void FUN_14015f050(const CString& rString, CAtlArray<CString>& rArray, const char* pszSep);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 CStringW FUN_140560c00(const wchar_t* pszFmt, const int& rArg);
 CStringW FUN_14136e2e0(const wchar_t* pszFmt, const wchar_t* const& rArg);
 CString  FUN_140540050(const char* pszFmt, const CString& rArg);
@@ -111,7 +111,7 @@ CNXMan::CNXMan()
     m_98 = "";
     m_30 = 0;
     FUN_14160e870();
-    FUN_14160e9b0();
+    SetCommandLine();
 }
 
 // @0x14160d710
@@ -221,12 +221,12 @@ int CNXMan::FUN_14160dd50(CStringW& rResult)
         std::wstring strBody = kRequest.GetResponseContent();
         CString strResponse = FUN_14016a600(strBody.c_str(), 0);
         CAtlArray<CString> kLines;
-        FUN_14015f050(strResponse, kLines, ";");
+        Unk_SplitA(const_cast<CStringA&>(strResponse), (ATL::CAtlArray<CStringA>*)&(kLines), ";");
         int nLines = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(kLines))->GetCount();
         for (int i = 0; i < nLines; ++i)
         {
             CAtlArray<CString> kParts;
-            FUN_14015f050(FUN_140164930(kLines, i), kParts, "=");
+            Unk_SplitA(const_cast<CStringA&>(FUN_140164930(kLines, i)), (ATL::CAtlArray<CStringA>*)&(kParts), "=");
             int nParts = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(kParts))->GetCount();
             if (nParts != 2)
             {
@@ -373,7 +373,7 @@ void CNXMan::FUN_14160e870()
 }
 
 // @0x14160e9b0
-void CNXMan::FUN_14160e9b0()
+void CNXMan::SetCommandLine()
 {
     m_48 = g_strCmdLine;
 }

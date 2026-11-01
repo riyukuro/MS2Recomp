@@ -212,7 +212,6 @@ public:
     Unk_SsItemPtr(const Unk_SsItemPtr& o);               // never called; keeps by-value args constructed in place
     ~Unk_SsItemPtr();                                     // 0x1401b50d0
     bool FUN_1402ffd90() const;                           // is it null
-    CItemData* FUN_1401b52a0() const;                     // get
     void* FUN_140203c60() const;                          // the raw pointer
 private:
     void* m_pad;
@@ -329,6 +328,7 @@ static CString s_strUgcTag = "ugctag";
 #include "ms2/gfxui/notifyhandler.h"
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 static CString s_strButtonClickA = "button_click";
 static CString s_strButtonClickB = "button_click";
@@ -382,7 +382,7 @@ SkillSlot::SkillSlot(const CString& strName, int nIndex, int nSkillId, int nItem
 // @0x14175ca40
 void SkillSlot::vfunc_6(void* p)
 {
-    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(*static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719190(FUN_141760980(0)));
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(*static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719190(GetHotkey(0)));
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(*static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719530(FUN_141760a10()));
     int nValue = 0;
     if (m_kKeys.Lookup(m_nIndex, nValue))
@@ -435,9 +435,9 @@ int SkillSlot::FUN_14175cc60()
 // @0x14175cc70
 void SkillSlot::FUN_14175cc70()
 {
-    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(FUN_141760980(0), 1, FUN_141760a10(), m_nSkillId, 0);
-    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(FUN_141760980(1), 1, FUN_141760a10(), m_nSkillId, 1);
-    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(FUN_141760980(2), 1, FUN_141760a10(), m_nSkillId, 2);
+    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(GetHotkey(0), 1, FUN_141760a10(), m_nSkillId, 0);
+    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(GetHotkey(1), 1, FUN_141760a10(), m_nSkillId, 1);
+    ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142b250(GetHotkey(2), 1, FUN_141760a10(), m_nSkillId, 2);
 }
 
 // @0x14175cd90
@@ -470,17 +470,17 @@ int SkillSlot::vfunc_13()
         PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
         if (pPc != 0)
         {
-            if (spItem->FUN_140526810((unsigned short)pPc->vfunc_78()) == 0)
+            if (spItem->CanUseAtLevel((unsigned short)pPc->vfunc_78()) == 0)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_err_not_enough_level"), 1, 1);
                 return vfunc_10();
             }
         }
     }
-    int nKey = FUN_141760980(0);
+    int nKey = GetHotkey(0);
     if (nKey == 0)
     {
-        int nSkillId = FUN_141761d90();
+        int nSkillId = GetEffectiveSkillId();
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spSkill.IsNull())
             return 0;
@@ -626,15 +626,15 @@ int SkillSlot::vfunc_18(void* p)
                 {
                     int bUsable = 1;
                     nSkillId = FUN_141769320(spItem->FUN_140527840());
-                    if (spItem->FUN_140527840()->FUN_14053cc80())
+                    if (spItem->FUN_140527840()->IsRideItem())
                     {
-                        if (spItem->FUN_140525f10() != 0 && spItem->FUN_140525f60() == 0)
+                        if (spItem->HasCubeTextureMesh() != 0 && spItem->FUN_140525f60() == 0)
                         {
                             bUsable = 0;
                             FUN_140d73bc0(0x2e8, 0, 0, L"");
                         }
                     }
-                    else if (spItem->FUN_140526100() != 0)
+                    else if (spItem->IsLapenshard() != 0)
                     {
                         nItemId = 0;
                         nItemUid = 0;
@@ -755,7 +755,7 @@ void SkillSlot::FUN_14175e310(int nSkillId)
 {
     if (nSkillId != 0)
     {
-        if (FUN_141761d90() == nSkillId)
+        if (GetEffectiveSkillId() == nSkillId)
             FUN_14175f280(7);
     }
 }
@@ -773,7 +773,7 @@ void SkillSlot::FUN_14175e350(int nSkillId)
 int SkillSlot::vfunc_0(void* p)
 {
     MS2Ptr<CItem> spItem = vfunc_25();
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (FUN_140534e50(spItem) && m_nItemId != 0)
     {
         int nRarity = FUN_14053feb0(m_nItemId);
@@ -814,10 +814,10 @@ int SkillSlot::vfunc_0(void* p)
                 if (FUN_1417619d0() != 0)
                 {
                     ASTooltip tip(1, 2);
-                    int nOk = tip.FUN_1409e26b0(FUN_141761c30());
+                    int nOk = tip.ApplyTextTooltip(FUN_141761c30());
                     if (nOk != 0)
                     {
-                        tip.FUN_1409c6dc0(5);
+                        tip.SetTooltipAlign(5);
                         FUN_1409b4bc0(p, tip.FUN_1422bb870());
                     }
                 }
@@ -866,7 +866,7 @@ int SkillSlot::vfunc_8(void* p)
         MS2Ptr<CItem> spItem = vfunc_25();
         if (spItem.get() != 0)
         {
-            int nUgcTag = spItem->FUN_140528840();
+            int nUgcTag = spItem->GetUgcTag();
             if (nUgcTag != 0)
                 slot.FUN_1407cb9c0(s_strUgcTag, nUgcTag);
             slot.FUN_1409adc90(s_strItemGrade, spItem->FUN_140526bd0());
@@ -884,7 +884,7 @@ int SkillSlot::vfunc_8(void* p)
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8c) != 0)
         {
-            if ((spItem.get() ? true : false) && spItem->FUN_140525640() != 0)
+            if ((spItem.get() ? true : false) && spItem->IsPetItem() != 0)
             {
                 slot.FUN_1409adc90(s_strItemPetRank, spItem->FUN_140526bd0());
                 slot.FUN_1407cb9c0(s_strDropShadowDisable, 1);
@@ -899,10 +899,10 @@ int SkillSlot::vfunc_8(void* p)
         slot.FUN_1407cb9c0(s_strItemCount, m_nItemCount);
         slot.FUN_1407cb9c0(s_strItemPcBang, FUN_141760590());
         slot.FUN_1407cb9c0(s_strItemLock, FUN_14175cc60());
-        slot.FUN_1407cbb20(s_strShortcutKey, CStringW(FUN_141760920()));
+        slot.FUN_1407cbb20(s_strShortcutKey, CStringW(GetHotkeyText()));
         slot.FUN_1407cb9c0(s_strItemVIP, FUN_141760610());
         slot.FUN_1407cbbe0(s_strDisableDrag, FUN_14028d780(FUN_141761990()));
-        if (FUN_1417604f0() > 0)
+        if (GetRechargeMaxCount() > 0)
         {
             m_nRecharge = FUN_1417603f0();
             slot.FUN_1407cb9c0(s_strRechargeRemainCount, m_nRecharge);
@@ -911,9 +911,9 @@ int SkillSlot::vfunc_8(void* p)
         {
             m_nRecharge = 0;
         }
-        slot.FUN_1409c2e00(fTotal);
-        slot.FUN_1409c2dc0(fRemain);
-        slot.FUN_1409c2e40();
+        slot.SetTotalTime(fTotal);
+        slot.SetRemainTime(fRemain);
+        slot.SetCooldownStrings();
         if (fRemain > 0.0f)
             m_bCooling = true;
         else
@@ -936,11 +936,11 @@ CStringW SkillSlot::vfunc_22()
 // @0x14175f0c0
 void SkillSlot::vfunc_23(void* p)
 {
-    if (FUN_141404ce0(FUN_141761d90(), p, &m_value18))
+    if (FUN_141404ce0(GetEffectiveSkillId(), p, &m_value18))
     {
         Unk_SsSkillUi* pUi = FUN_140a94350();
         float fRemain = FUN_141760b90();
-        pUi->vfunc_16(m_nIndex, FUN_141761d90(), p, fRemain);
+        pUi->vfunc_16(m_nIndex, GetEffectiveSkillId(), p, fRemain);
         FUN_1419f37f0(5);
     }
 }
@@ -948,7 +948,7 @@ void SkillSlot::vfunc_23(void* p)
 // @0x14175f180
 void SkillSlot::vfunc_24(void* p)
 {
-    if (FUN_1414050c0(FUN_141761d90(), p, &m_value18))
+    if (FUN_1414050c0(GetEffectiveSkillId(), p, &m_value18))
     {
         Unk_SsSkillUi* pUi = FUN_140a94350();
         pUi->vfunc_17(m_nIndex);
@@ -962,7 +962,7 @@ void SkillSlot::FUN_14175f200()
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d7a0(0xf))
         return;
     if (m_spTween.get() != 0)
-        m_spTween->FUN_1422bb3c0();
+        m_spTween->InvokeSelf();
 }
 
 // @0x14175f280
@@ -1096,7 +1096,7 @@ void SkillSlot::FUN_14175f510()
     if (nRecharge != m_nRecharge)
     {
         if (m_spRecharge.get() != 0)
-            static_cast<Unk_SsFn*>(m_spRecharge.operator->())->FUN_141762190(FUN_1417604f0() > 0 ? true : false, nRecharge);
+            static_cast<Unk_SsFn*>(m_spRecharge.operator->())->FUN_141762190(GetRechargeMaxCount() > 0 ? true : false, nRecharge);
         m_nRecharge = nRecharge;
     }
 }
@@ -1105,7 +1105,7 @@ void SkillSlot::FUN_14175f510()
 MS2Ptr<CItem> SkillSlot::vfunc_25()
 {
     MS2Ptr<CItem> spItem(0);
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (m_nItemId != 0)
     {
         if (m_nItemUid != 0)
@@ -1124,7 +1124,7 @@ MS2Ptr<CItem> SkillSlot::vfunc_25()
             bItem = true;
         else
             bItem = false;
-        if (bItem && (spItem->FUN_140525f10() != 0 || spItem->FUN_140526010() != 0))
+        if (bItem && (spItem->HasCubeTextureMesh() != 0 || spItem->FUN_140526010() != 0))
             spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     }
     return spItem;
@@ -1161,7 +1161,7 @@ int SkillSlot::FUN_141760190()
 {
     Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
     if (spData.FUN_140203c60())
-        return spData.FUN_1401b52a0()->FUN_14053cc40();
+        return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->IsPetItem();
     return 0;
 }
 
@@ -1186,9 +1186,9 @@ unsigned SkillSlot::FUN_141760220(int n)
         Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
         if (spData.FUN_1402ffd90())
             return 0;
-        if (!spData.FUN_1401b52a0()->FUN_14053c7c0())
+        if (!(reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->FUN_14053c7c0())
             return 0;
-        if (spData.FUN_1401b52a0()->FUN_14053d270() && !bFlag)
+        if ((reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->FUN_14053d270() && !bFlag)
             return g_143ab2a90.FUN_140a5fbd0(m_nSkillId, n);
         return g_143ab2a90.FUN_140a5f180(m_nItemId, 0);
     }
@@ -1197,7 +1197,7 @@ unsigned SkillSlot::FUN_141760220(int n)
 // @0x1417603f0
 int SkillSlot::FUN_1417603f0()
 {
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
         return 0;
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
@@ -1212,9 +1212,9 @@ int SkillSlot::FUN_1417603f0()
 }
 
 // @0x1417604f0
-int SkillSlot::FUN_1417604f0()
+int SkillSlot::GetRechargeMaxCount()
 {
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
         return 0;
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
@@ -1262,7 +1262,7 @@ CString SkillSlot::FUN_141760690()
     {
         Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
         if (spData.FUN_140203c60())
-            return spData.FUN_1401b52a0()->FUN_14053fdd0();
+            return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetIconPath();
     }
     return CString("");
 }
@@ -1273,7 +1273,7 @@ CString SkillSlot::FUN_1417607f0(int* pSkillId)
     CString strIcon;
     unsigned nSkillId = *pSkillId;
     if (*pSkillId == 0)
-        nSkillId = FUN_141761d90();
+        nSkillId = GetEffectiveSkillId();
     MS2Ptr<SkillData> spSkill(0);
     if (nSkillId > 0)
         spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
@@ -1283,13 +1283,13 @@ CString SkillSlot::FUN_1417607f0(int* pSkillId)
 }
 
 // @0x141760920
-CStringW SkillSlot::FUN_141760920()
+CStringW SkillSlot::GetHotkeyText()
 {
-    return ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142d220(FUN_141760980(0));
+    return ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142d220(GetHotkey(0));
 }
 
 // @0x141760980
-int SkillSlot::FUN_141760980(int nMode)
+int SkillSlot::GetHotkey(int nMode)
 {
     int nAction = 0;
     if (m_kKeys.Lookup(m_nIndex, nAction))
@@ -1309,7 +1309,7 @@ float SkillSlot::FUN_141760a30()
     PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
         return 0;
     MS2Ptr<SkillLevelData> spLevel = static_cast<Unk_SsPc*>(pPc)->FUN_1416546d0()->vfunc_1(nSkillId);
@@ -1330,7 +1330,7 @@ float SkillSlot::FUN_141760b90()
     PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
         return 0;
     return static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
@@ -1348,19 +1348,19 @@ int SkillSlot::FUN_141760c00()
         if (FUN_140534e50(spItem))
         {
             Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-            if (spData.FUN_140203c60() && spData.FUN_1401b52a0()->FUN_14053c6f0() == 0xd9)
+            if (spData.FUN_140203c60() && (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetStringTag() == 0xd9)
                 return 0;
             return 1;
         }
         if (pPc->FUN_141662eb0(spItem.get()) == 0)
             return 1;
-        if (spItem->FUN_140526810((unsigned short)pPc->vfunc_78()) == 0)
+        if (spItem->CanUseAtLevel((unsigned short)pPc->vfunc_78()) == 0)
             return 1;
         if (!spItem->FUN_140527840()->FUN_14053e460())
             return 1;
         return 0;
     }
-    int nSkillId = FUN_141761d90();
+    int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
         return 1;
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
@@ -1374,7 +1374,7 @@ int SkillSlot::FUN_141760c00()
         if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get()) == 0)
             return 1;
     }
-    int nKey = FUN_141760980(0);
+    int nKey = GetHotkey(0);
     if (nKey == 0)
     {
         if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet() == 0)
@@ -1388,7 +1388,7 @@ int SkillSlot::FUN_141760c00()
         MS2Ptr<CItem> spItem = vfunc_25();
         if (spItem.get() != 0)
         {
-            if (spItem->FUN_140527840()->FUN_14053cc80())
+            if (spItem->FUN_140527840()->IsRideItem())
             {
                 if (!reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bcb210())
                     return 1;
@@ -1397,7 +1397,7 @@ int SkillSlot::FUN_141760c00()
             }
             else
             {
-                if (spItem->FUN_140527840()->FUN_14053cc40())
+                if (spItem->FUN_140527840()->IsPetItem())
                 {
                     bool bNoField = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->m_nField == 0;
                     if (bNoField)
@@ -1417,11 +1417,11 @@ int SkillSlot::FUN_141760c00()
     {
         if (!static_cast<Unk_SsPc*>(pPc)->FUN_1416546d0()->vfunc_2(m_nSkillId))
             return 1;
-        int nOld18 = static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765cf0(0);
-        int nOld88 = static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765d30(1);
+        int nOld18 = static_cast<MyPC*>(pPc)->FUN_141523bc0()->SetShowError(0);
+        int nOld88 = static_cast<MyPC*>(pPc)->FUN_141523bc0()->SetCastAllowed(1);
         int bOk = static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765a70(nSkillId);
-        static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765cf0(nOld18);
-        static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141765d30(nOld88);
+        static_cast<MyPC*>(pPc)->FUN_141523bc0()->SetShowError(nOld18);
+        static_cast<MyPC*>(pPc)->FUN_141523bc0()->SetCastAllowed(nOld88);
         return bOk == 0;
     }
     unsigned nMask = reinterpret_cast<Unk_SsBuffs*>(pPc->FUN_1416749a0())->FUN_140970bf0();
@@ -1483,7 +1483,7 @@ int SkillSlot::FUN_141761900()
     Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
     if (spData.FUN_1402ffd90())
         return 0;
-    return spData.FUN_1401b52a0()->FUN_14053cd90();
+    return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->FUN_14053cd90();
 }
 
 // @0x141761990
@@ -1537,7 +1537,7 @@ CStringW SkillSlot::FUN_141761c30()
 }
 
 // @0x141761d90
-int SkillSlot::FUN_141761d90()
+int SkillSlot::GetEffectiveSkillId()
 {
     MS2Ptr<SkillData> spReplace;
     if (FUN_141761530(&spReplace) != 0)
@@ -1654,7 +1654,7 @@ void SkillSlotBag::FUN_141763640(int nFlags)
 }
 
 // @0x141763710
-SkillSlot* SkillSlotBag::FUN_141763710(int nItemId)
+SkillSlot* SkillSlotBag::FindSlotByItemId(int nItemId)
 {
     for (std::pair<const int, CString> entry : m_slots)
     {
@@ -1666,7 +1666,7 @@ SkillSlot* SkillSlotBag::FUN_141763710(int nItemId)
 }
 
 // @0x141763800
-SkillSlot* SkillSlotBag::FUN_141763800(__int64 nItemUid)
+SkillSlot* SkillSlotBag::FindSlotByItemUid(__int64 nItemUid)
 {
     for (std::pair<const int, CString> entry : m_slots)
     {
@@ -1683,7 +1683,7 @@ void SkillSlotBag::vfunc_ugc_2(void* pUid, CString str)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680((__int64)pUid);
     if (spItem == (CItem*)0)
         return;
-    SkillSlot* pSlot = FUN_141763800((__int64)pUid);
+    SkillSlot* pSlot = FindSlotByItemUid((__int64)pUid);
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -1908,7 +1908,7 @@ int CSkillSystem::FUN_141764a80(MyPC* pOwner)
 }
 
 // @0x141765cf0
-int CSkillSystem::FUN_141765cf0(int n)
+int CSkillSystem::SetShowError(int n)
 {
     int nOld = m_nShowError;
     m_nShowError = n;
@@ -1916,7 +1916,7 @@ int CSkillSystem::FUN_141765cf0(int n)
 }
 
 // @0x141765d30
-int CSkillSystem::FUN_141765d30(int n)
+int CSkillSystem::SetCastAllowed(int n)
 {
     int nOld = m_nCastAllowed;
     m_nCastAllowed = n;
@@ -2963,13 +2963,13 @@ unsigned FUN_1417692f0(unsigned __int64 nKey)
 // @0x141769320
 int FUN_141769320(Unk_SsItemPtr kPtr)
 {
-    if (kPtr.FUN_1401b52a0()->FUN_14053cc80())
+    if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->IsRideItem())
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemA;
-    else if (kPtr.FUN_1401b52a0()->FUN_14053cc40())
+    else if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->IsPetItem())
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemC;
-    else if (kPtr.FUN_1401b52a0()->FUN_14053c5c0() == 5)
+    else if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->GetType() == 5)
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemB;
-    return kPtr.FUN_1401b52a0()->FUN_14053dc20();
+    return (reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->FUN_14053dc20();
 }
 
 // @0x141769410
@@ -3381,7 +3381,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
             {
                 if (pWeapon->m_nRightHand != 0)
                 {
-                    if (reinterpret_cast<Unk_SsBuffs*>(m_pOwner->FUN_1416749a0())->FUN_1409703d0(5))
+                    if (reinterpret_cast<Unk_SsBuffs*>(m_pOwner->FUN_1416749a0())->IsItemSlotDisabled(5))
                     {
                         bBlocked = 1;
                         continue;
@@ -3389,7 +3389,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
                 }
                 if (pWeapon->m_nLeftHand != 0)
                 {
-                    if (reinterpret_cast<Unk_SsBuffs*>(m_pOwner->FUN_1416749a0())->FUN_1409703d0(4))
+                    if (reinterpret_cast<Unk_SsBuffs*>(m_pOwner->FUN_1416749a0())->IsItemSlotDisabled(4))
                     {
                         bBlocked = 1;
                         continue;
@@ -3408,7 +3408,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         if (pObj != 0)
             return 0x1d;
     }
-    unsigned nMask = m_pOwner->FUN_141678680();
+    unsigned nMask = m_pOwner->GetSkillUseDisableMask();
     if (nMask != 0)
     {
         int nType = pData->GetMainType();

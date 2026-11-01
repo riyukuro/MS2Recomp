@@ -36,11 +36,11 @@ public:
     virtual __int64 vfunc_o10_22() = 0;
     virtual unsigned vfunc_o10_23(const Unk_QuestCondition&);
     int FUN_140745590(int questId);     // 0x140745590
-    int FUN_140745630(int questId);     // 0x140745630
+    int IsQuestActive(int questId);     // 0x140745630
     int FUN_140746850(int questId, int npcId, int);    // 0x140746850
     int FUN_140746ba0(int questId, int npcId, bool bSkip);    // 0x140746ba0
     int FUN_140746e60(int questId);     // 0x140746e60
-    int FUN_1407456d0(int questId);     // 0x1407456d0 quest is complete
+    int IsQuestComplete(int questId);     // 0x1407456d0 quest is complete
     bool FUN_140745770(int questId);    // 0x140745770
     int FUN_140745820(int questId, int flag);   // 0x140745820 the quest can be accepted
     int FUN_140747000(int questId);     // 0x140747000 the quest group's pick seed

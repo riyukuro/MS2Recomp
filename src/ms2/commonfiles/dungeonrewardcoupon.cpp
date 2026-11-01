@@ -20,9 +20,8 @@ public:
     Unk_140165cf0* FUN_14086e7e0(const char* pszName);     // next sibling element
 };
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 unsigned FUN_140540000(const CString& strTag);              // ticket tag name -> value
 
 // tinyxmlhelper.h: an attribute converted from its string form.
@@ -37,7 +36,7 @@ inline int ReadTicketTagAttr(Unk_140165cf0* pElem, const char* pszName, unsigned
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pElem, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = FUN_140540000(str);
@@ -54,7 +53,7 @@ inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArr
     for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild; pChild = pChild->FUN_14086e7e0(pszName))
     {
         unsigned nValue;
-        FUN_140873220(pChild, "v", nValue);
+        XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<unsigned int&>(nValue));
         rOut.Add(nValue);
         nCount++;
     }
@@ -77,10 +76,10 @@ MS2_REPLACE_METHOD(0x14031C590, DungeonRewardCoupon, GetId, 14, 0x72E52537);
 // @0x14031c5b0
 void DungeonRewardCoupon::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_id);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
     ReadTicketTagAttr(pElem, "ticketTag", &m_ticketTag);
-    FUN_140873220(pElem, "baseItemID", m_baseItemID);
-    FUN_140873220(pElem, "maxExtraCount", m_maxExtraCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "baseItemID", reinterpret_cast<unsigned int&>(m_baseItemID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxExtraCount", reinterpret_cast<unsigned int&>(m_maxExtraCount));
     ReadValueList(pElem, "baseRate", m_baseRate);
     XmlGetAttr((class TiXmlElement*)(pElem), "canBuyInMeratMarket", m_canBuyInMeratMarket);
 }

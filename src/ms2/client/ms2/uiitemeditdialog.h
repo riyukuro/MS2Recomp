@@ -48,7 +48,6 @@ public:
     int FUN_1419bdb90();                                          // the save button is enabled
     void FUN_1419bdc40(int bEnable);                              // save button
     void FUN_1419bdce0(int bEnable);                              // reset button
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);  // bind a button child (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

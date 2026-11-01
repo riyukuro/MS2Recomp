@@ -23,8 +23,8 @@ public:
     // Parses the font config file szPath, selects config strConfig and applies it to pLoader (false if the
     // loader has no font lib, the file is missing or holds no config).
     bool FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const char* szPath, const CString& strConfig);
-    void FUN_1422eb790(const CString& strKey, const CStringW& strText);         // add a string (and a translator mapping)
-    CStringW FUN_1422eb860(const CString& strKey);                              // the string of a key ("" if unknown)
+    void AddString(const CString& strKey, const CStringW& strText);         // add a string (and a translator mapping)
+    CStringW GetString(const CString& strKey);                              // the string of a key ("" if unknown)
     void FUN_1422eb920();                                                       // reload the XML string tables
     void FUN_1422eb940();                                                       // load the four XML string tables
     bool FUN_1422ebb80(Scaleform::GFx::Loader* pLoader, const CString& strConfig);   // select and apply a font config

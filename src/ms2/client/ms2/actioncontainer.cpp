@@ -96,6 +96,8 @@
 // ---- statics (.text$di): two copies of the shared header statics ------------------------------------------------------
 
 #include "ms2/placeholder/header_statics_a.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
@@ -208,7 +210,7 @@ void PCActionGroupDefault::LoadXml(Unk_140165cf0* pNode)
         MS2Ptr<PCActionList> spEmpty(0);
         m_lists.resize(kPCActionTypes, spEmpty);
     }
-    for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         int nType = kPCActionTypes;
         ReadAction(pChild, "type", &nType);
@@ -279,8 +281,8 @@ MS2_REPLACE_METHOD(0x140948B60, PCActionGroupCustom, Id, 14, 0x72E52537);
 // @0x140948b80
 void PCActionGroupCustom::LoadXml(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "groupID", m_nId);
-    for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
+    XmlGetAttr((class TiXmlElement*)(pNode), "groupID", m_nId);
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         int nType = kPCActionTypes;
         ReadAction(pChild, "type", &nType);
@@ -386,7 +388,7 @@ void PCActionDataTable::Loaded()
 MS2Ptr<PCActionGroup> PCActionDataTable::Create(Unk_140165cf0* pNode)
 {
     unsigned nId = 0;
-    FUN_140873220(pNode, "groupID", nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "groupID", nId);
     if (nId == 0)
         return MS2Ptr<PCActionGroup>(new PCActionGroupDefault);
     return MS2Ptr<PCActionGroup>(new PCActionGroupCustom(m_spDefault.get()));
@@ -577,7 +579,7 @@ int ReadAction(Unk_140165cf0* pNode, const char* szName, int* pnType)
         return 2;
     }
     CStringA strName;
-    int nRet = FUN_1408733e0(pNode, szName, strName);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pNode), szName, strName);
     if (nRet != 0)
         return nRet;
     *pnType = ActionType(strName);

@@ -29,9 +29,8 @@ public:
     virtual void vfunc_23();                                        // 23 0x1422c8080 invalidate("selectedIndex")
     virtual void vfunc_24(bool bInvalidate);                        // 24 0x1422c80c0 validateNow (invalidate() first if set)
 #endif
-    // Registers the click callback; nUser comes back in Params (homed as a qword by the callee).
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int nUser);
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // same callee, a pointer-sized user value (uidungeonroomdialog sub tabs)
+    // Registers the click callback; pUser comes back in Params.
+    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // the user value lands in Params (homed as a qword by the callee)
     void FUN_1422ce1f0(int nMode);                                  // the button mode (uidungeonroomdialog: 2)
     void FUN_1422ce090(int bSelected);                              // set "selected"
     bool FUN_1422ce0e0();                                           // "selected"

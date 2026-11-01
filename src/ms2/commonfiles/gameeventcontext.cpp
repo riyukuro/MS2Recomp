@@ -287,6 +287,16 @@
 #include "gameeventcontext.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Out-of-unit helpers.
 // Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
@@ -321,7 +331,7 @@ COutputStream& FUN_1403d7730(COutputStream& out, const ATL::CAtlArray<unsigned>&
 CInputStream& FUN_1403d7440(CInputStream& in, ATL::CAtlArray<unsigned>& arr);          // count + values (gameevent.cpp)
 __int64 GetServerTime();                                                               // server time
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);   // tinyxmlhelper string attribute
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned long& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);  // split into ints
 void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);    // split into ints
 int FUN_140274f40(const CStringW& str);                                                // _wtoi
@@ -564,8 +574,8 @@ BonusGameBlueMarbleSlot::BonusGameBlueMarbleSlot() : m_type((Unk_BlueMarbleSlotT
 void BonusGameBlueMarbleSlot::Load(Unk_140165cf0* pElem)
 {
     XmlEnumName<Unk_BlueMarbleSlotType, FUN_140218100>(pElem, "type", m_type);
-    FUN_1408731e0(pElem, "arg1", m_arg1);
-    FUN_1408731e0(pElem, "arg2", m_arg2);
+    XmlGetAttr((class TiXmlElement*)(pElem), "arg1", reinterpret_cast<int&>(m_arg1));
+    XmlGetAttr((class TiXmlElement*)(pElem), "arg2", reinterpret_cast<int&>(m_arg2));
 }
 MS2_REPLACE_METHOD(0x1403fc6a0, BonusGameBlueMarbleSlot, Load, 106, 0xFB0C60DC);
 
@@ -578,11 +588,11 @@ BlueMarbleEventContext::BlueMarbleEventContext(int eventId, const CMsTime& endTi
 // @0x1403fc7c0
 void BlueMarbleEventContext::LoadRewards(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "consumeItemID", m_consumeItemID);
-    FUN_1408731e0(pElem, "consumeItemCount", m_consumeItemCount);
-    for (Unk_140165cf0* pNode : pElem->FUN_140165cf0("v")) {
+    XmlGetAttr((class TiXmlElement*)(pElem), "consumeItemID", reinterpret_cast<unsigned int&>(m_consumeItemID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "consumeItemCount", reinterpret_cast<int&>(m_consumeItemCount));
+    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v"))) {
         int round = 0;
-        FUN_1408731e0(pNode, "round", round);
+        XmlGetAttr((class TiXmlElement*)(pNode), "round", reinterpret_cast<int&>(round));
         MS2Ptr<ItemEntity> spItem(new ItemEntity);
         spItem->vfunc_2(pNode);
         AddReward(round, spItem);
@@ -593,7 +603,7 @@ MS2_REPLACE_METHOD(0x1403fc7c0, BlueMarbleEventContext, LoadRewards, 455, 0x827C
 // @0x1403fc990
 void BlueMarbleEventContext::LoadSlots(Unk_140165cf0* pElem)
 {
-    for (Unk_140165cf0* pNode : pElem->FUN_140165cf0("v")) {
+    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v"))) {
         MS2Ptr<BonusGameBlueMarbleSlot> spSlot(new BonusGameBlueMarbleSlot);
         spSlot->Load(pNode);
         m_slots.push_back(spSlot);
@@ -712,10 +722,10 @@ DungeonExtraRewardCountCtx::DungeonExtraRewardCountCtx()
 // @0x1403fd750
 void DungeonExtraRewardCountCtx::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dungeonID", m_dungeonID);
-    FUN_140873220(pElem, "count", m_count);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dungeonID", reinterpret_cast<unsigned int&>(m_dungeonID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "count", reinterpret_cast<unsigned int&>(m_count));
     XmlEnumName<Unk_DungeonCooldownType, FUN_1402199e0>(pElem, "cooldownType", m_cooldownType);
-    FUN_1408731e0(pElem, "cooldownValue", m_cooldownValue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "cooldownValue", reinterpret_cast<int&>(m_cooldownValue));
 }
 MS2_REPLACE_METHOD(0x1403fd750, DungeonExtraRewardCountCtx, Load, 135, 0x7AA036E1);
 
@@ -748,11 +758,11 @@ DungeonBonusRewardCtx::DungeonBonusRewardCtx()
 // @0x1403fd930
 void DungeonBonusRewardCtx::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dungeonID", m_dungeonID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dungeonID", reinterpret_cast<unsigned int&>(m_dungeonID));
     XmlValue(pElem, "groupType", m_groupType);
-    FUN_140873360(pElem, "mesoRate", m_mesoRate);
-    FUN_140873360(pElem, "expRate", m_expRate);
-    FUN_1408731e0(pElem, "itemRolls", m_itemRolls);
+    XmlGetAttr((class TiXmlElement*)(pElem), "mesoRate", reinterpret_cast<float&>(m_mesoRate));
+    XmlGetAttr((class TiXmlElement*)(pElem), "expRate", reinterpret_cast<float&>(m_expRate));
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemRolls", reinterpret_cast<int&>(m_itemRolls));
     XmlTokenList(pElem, "customDropBoxIds", m_customDropBoxIds);
 }
 MS2_REPLACE_METHOD(0x1403fd930, DungeonBonusRewardCtx, Load, 193, 0xC7A5F22F);
@@ -831,11 +841,11 @@ ItemBoxEventContext::ItemBoxEventContext() : m_fieldID(0), m_boxItemID(0), m_3c(
 // @0x1403fdde0
 void ItemBoxEventContext::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "fieldID", m_fieldID);
-    FUN_140873220(pElem, "boxItemID", m_boxItemID);
-    FUN_140873420(pElem, "bannerPath", m_bannerPath);
-    FUN_140873420(pElem, "title", m_title);
-    FUN_140873420(pElem, "desc", m_desc);
+    XmlGetAttr((class TiXmlElement*)(pElem), "fieldID", reinterpret_cast<unsigned int&>(m_fieldID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "boxItemID", reinterpret_cast<unsigned int&>(m_boxItemID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "bannerPath", m_bannerPath);
+    XmlGetAttr((class TiXmlElement*)(pElem), "title", m_title);
+    XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_desc);
 }
 MS2_REPLACE_METHOD(0x1403fdde0, ItemBoxEventContext, Load, 164, 0xF3C4745F);
 
@@ -942,21 +952,21 @@ void QuestAdditionalRewardContext::Load(CStringW* pValue)
     } else {
         TiXmlDocument doc;
         Unk_140165cf0* pRoot;
-        if (GetFileSystem()->FUN_140397ab0(&doc, *pValue) != 0 && (pRoot = FUN_140345b40(&doc)) != NULL) {
-            FUN_140873220(pRoot, "exp", m_rates[0]);
-            FUN_140873220(pRoot, "meso", m_rates[1]);
-            FUN_140873220(pRoot, "guild_fund", m_rates[2]);
-            FUN_140873220(pRoot, "guild_exp", m_rates[3]);
-            FUN_140873220(pRoot, "guild_coin", m_rates[4]);
-            FUN_140873220(pRoot, "lu", m_rates[5]);
-            FUN_140873220(pRoot, "karma", m_rates[6]);
-            FUN_140873220(pRoot, "menteeCoin", m_rates[7]);
-            for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("item"); pItem != NULL;
-                 pItem = pItem->FUN_140168650("item")) {
+        if (GetFileSystem()->LoadXmlFromString(&doc, *pValue) != 0 && (pRoot = FUN_140345b40(&doc)) != NULL) {
+            XmlGetAttr((class TiXmlElement*)(pRoot), "exp", reinterpret_cast<unsigned int&>(m_rates[0]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "meso", reinterpret_cast<unsigned int&>(m_rates[1]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "guild_fund", reinterpret_cast<unsigned int&>(m_rates[2]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "guild_exp", reinterpret_cast<unsigned int&>(m_rates[3]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "guild_coin", reinterpret_cast<unsigned int&>(m_rates[4]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "lu", reinterpret_cast<unsigned int&>(m_rates[5]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "karma", reinterpret_cast<unsigned int&>(m_rates[6]));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "menteeCoin", reinterpret_cast<unsigned int&>(m_rates[7]));
+            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL;
+                 pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
                 unsigned id = 0;
                 unsigned itemRate = 0;
-                FUN_140873220(pItem, "id", id);
-                FUN_140873220(pItem, "rate", itemRate);
+                XmlGetAttr((class TiXmlElement*)(pItem), "id", reinterpret_cast<unsigned int&>(id));
+                XmlGetAttr((class TiXmlElement*)(pItem), "rate", reinterpret_cast<unsigned int&>(itemRate));
                 m_itemRates.SetAt(id, itemRate);
             }
         }
@@ -1083,9 +1093,9 @@ DungeonBuffEventCtx::DungeonBuffEventCtx() : m_dungeonID(0), m_isBeginner(false)
 // @0x1403ff720
 bool DungeonBuffEventCtx::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "dungeonID", m_dungeonID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dungeonID", reinterpret_cast<unsigned int&>(m_dungeonID));
     XmlTokenList(pElem, "addifectGUIDs", m_addEffectGUIDs);
-    FUN_1408730a0(pElem, "isBeginner", m_isBeginner);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isBeginner", reinterpret_cast<bool&>(m_isBeginner));
     if (m_addEffectGUIDs.empty())
         return false;
     return true;
@@ -1207,60 +1217,60 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x2df, 0);
         return false;
     }
-    Unk_140165cf0* pPlay = pRoot->FUN_140165cf0("play");
+    Unk_140165cf0* pPlay = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("play"));
     if (pPlay == NULL) {
         MS2_ASSERT_AT(0x2e7, 0);
         return false;
     }
-    Unk_140165cf0* pActions = pPlay->FUN_140165cf0("actions");
+    Unk_140165cf0* pActions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPlay))->FirstChild("actions"));
     if (pActions == NULL) {
         MS2_ASSERT_AT(0x2ee, 0);
         return false;
     }
-    FUN_140873420(pActions, "rock", m_play.m_actionNames[0]);
-    FUN_140873420(pActions, "paper", m_play.m_actionNames[1]);
-    FUN_140873420(pActions, "scissors", m_play.m_actionNames[2]);
-    Unk_140165cf0* pMessages = pPlay->FUN_140165cf0("messages");
+    XmlGetAttr((class TiXmlElement*)(pActions), "rock", m_play.m_actionNames[0]);
+    XmlGetAttr((class TiXmlElement*)(pActions), "paper", m_play.m_actionNames[1]);
+    XmlGetAttr((class TiXmlElement*)(pActions), "scissors", m_play.m_actionNames[2]);
+    Unk_140165cf0* pMessages = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPlay))->FirstChild("messages"));
     if (pMessages == NULL) {
         MS2_ASSERT_AT(0x2f9, 0);
         return false;
     }
     for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
         CStringW strValue;
-        FUN_140873420(pNode, "value", strValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
         m_play.m_messages.Add(strValue);
     }
-    Unk_140165cf0* pResults = pRoot->FUN_140165cf0("result");
+    Unk_140165cf0* pResults = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("result"));
     if (pResults == NULL) {
         MS2_ASSERT_AT(0x309, 0);
         return false;
     }
     for (int i = 0; i < 3; i++) {
         CString strName = FUN_140223380(i);
-        Unk_140165cf0* pResult = pResults->FUN_140165cf0(strName);
+        Unk_140165cf0* pResult = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pResults))->FirstChild(strName));
         if (pResult == NULL) {
             MS2_ASSERT_AT(0x313, 0);
             continue;
         }
         Result& result = m_results[i];
-        Unk_140165cf0* pResultActions = pResult->FUN_140165cf0("actions");
+        Unk_140165cf0* pResultActions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pResult))->FirstChild("actions"));
         if (pResultActions == NULL) {
             MS2_ASSERT_AT(0x31c, 0);
             return false;
         }
         for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultActions); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
             CStringW strValue;
-            FUN_140873420(pNode, "value", strValue);
+            XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_actions.Add(strValue);
         }
-        Unk_140165cf0* pResultMessages = pResult->FUN_140165cf0("messages");
+        Unk_140165cf0* pResultMessages = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pResult))->FirstChild("messages"));
         if (pResultMessages == NULL) {
             MS2_ASSERT_AT(0x32a, 0);
             return false;
         }
         for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
             CStringW strValue;
-            FUN_140873420(pNode, "value", strValue);
+            XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_messages.Add(strValue);
         }
     }
@@ -1337,16 +1347,16 @@ bool CoupleDanceContext::LoadReward(Unk_140165cf0* pElem)
     std::map<int, std::vector<ItemEntity> > dailyItems;
     std::set<int> orders;
     m_dailyItems.clear();
-    for (Unk_140165cf0* pDaily = pElem->FUN_140165cf0("daily"); pDaily != NULL; pDaily = pDaily->FUN_140168650("daily")) {
+    for (Unk_140165cf0* pDaily = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("daily")); pDaily != NULL; pDaily = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDaily))->NextSibling("daily"))) {
         int order = 0;
-        FUN_1408731e0(pDaily, "order", order);
-        Unk_140165cf0* pItems = pDaily->FUN_140165cf0("items");
+        XmlGetAttr((class TiXmlElement*)(pDaily), "order", reinterpret_cast<int&>(order));
+        Unk_140165cf0* pItems = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDaily))->FirstChild("items"));
         if (pItems == NULL) {
             MS2_ASSERT_AT(0x39a, 0);
             return false;
         }
         std::vector<ItemEntity> items;
-        for (Unk_140165cf0* pItem = pItems->FUN_140165cf0("v"); pItem != NULL; pItem = pItem->FUN_140168650("v")) {
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItems))->FirstChild("v")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("v"))) {
             ItemEntity item;
             item.vfunc_2(pItem);
             items.push_back(item);
@@ -1357,18 +1367,18 @@ bool CoupleDanceContext::LoadReward(Unk_140165cf0* pElem)
     for (std::set<int>::iterator it = orders.begin(); it != orders.end(); ++it)
         m_dailyItems.push_back(dailyItems[*it]);
     m_goodEndItems.clear();
-    Unk_140165cf0* pGoodEnd = pElem->FUN_140165cf0("goodEndBonus");
+    Unk_140165cf0* pGoodEnd = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("goodEndBonus"));
     if (pGoodEnd == NULL) {
         MS2_ASSERT_AT(0x3b4, 0);
         return false;
     }
-    FUN_140873220(pGoodEnd, "count", m_goodEndCount);
-    Unk_140165cf0* pItems = pGoodEnd->FUN_140165cf0("items");
+    XmlGetAttr((class TiXmlElement*)(pGoodEnd), "count", reinterpret_cast<unsigned int&>(m_goodEndCount));
+    Unk_140165cf0* pItems = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGoodEnd))->FirstChild("items"));
     if (pItems == NULL) {
         MS2_ASSERT_AT(0x3bc, 0);
         return false;
     }
-    for (Unk_140165cf0* pItem = pItems->FUN_140165cf0("v"); pItem != NULL; pItem = pItem->FUN_140168650("v")) {
+    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItems))->FirstChild("v")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("v"))) {
         ItemEntity item;
         item.vfunc_2(pItem);
         m_goodEndItems.push_back(item);
@@ -1384,28 +1394,28 @@ bool CoupleDanceContext::LoadDance(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x3e6, 0);
         return false;
     }
-    Unk_140165cf0* pDances = pElem->FUN_140165cf0("dances");
+    Unk_140165cf0* pDances = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dances"));
     if (pDances == NULL) {
         MS2_ASSERT_AT(0x3ed, 0);
         return false;
     }
     for (Unk_140165cf0* pDance = FUN_140345b40((TiXmlDocument *)pDances); pDance != NULL; pDance = FUN_1403f0510(pDance)) {
         CStringW strAnim;
-        FUN_140873420(pDance, "anim", strAnim);
+        XmlGetAttr((class TiXmlElement*)(pDance), "anim", strAnim);
         m_dances.push_back(strAnim);
     }
-    Unk_140165cf0* pPlay = pElem->FUN_140165cf0("play");
+    Unk_140165cf0* pPlay = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("play"));
     if (pPlay == NULL) {
         MS2_ASSERT_AT(0x3fa, 0);
         return false;
     }
-    FUN_140873220(pPlay, "maxRound", m_maxRound);
-    Unk_140165cf0* pStart = pElem->FUN_140165cf0("start");
+    XmlGetAttr((class TiXmlElement*)(pPlay), "maxRound", reinterpret_cast<unsigned int&>(m_maxRound));
+    Unk_140165cf0* pStart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("start"));
     if (pStart == NULL) {
         MS2_ASSERT_AT(0x403, 0);
         return false;
     }
-    FUN_140873220(pStart, "fieldID", m_fieldId);
+    XmlGetAttr((class TiXmlElement*)(pStart), "fieldID", reinterpret_cast<unsigned int&>(m_fieldId));
     m_steps.clear();
     m_steps.resize(8);
     for (size_t i = 0; i < 8; i++) {
@@ -1419,26 +1429,26 @@ bool CoupleDanceContext::LoadDance(Unk_140165cf0* pElem)
         Unk_140165cf0* pNode = NULL;
         for (size_t j = 0; j < names.GetCount(); j++) {
             if (pNode == NULL) {
-                pNode = pElem->FUN_140165cf0(names[j]);
+                pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild(names[j]));
                 continue;
             }
-            pNode = pNode->FUN_140165cf0(names[j]);
+            pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild(names[j]));
         }
         if (pNode == NULL) {
             MS2_ASSERT_AT(0x425, 0);
             return false;
         }
         Step& step = m_steps[i];
-        Unk_140165cf0* pAction = pNode->FUN_140165cf0("action");
+        Unk_140165cf0* pAction = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("action"));
         if (pAction != NULL) {
             CStringW strAnim;
-            FUN_140873420(pAction, "anim", strAnim);
+            XmlGetAttr((class TiXmlElement*)(pAction), "anim", strAnim);
             step.m_action = strAnim;
         }
-        Unk_140165cf0* pMessage = pNode->FUN_140165cf0("message");
+        Unk_140165cf0* pMessage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("message"));
         if (pMessage != NULL) {
             CStringW strValue;
-            FUN_140873420(pMessage, "value", strValue);
+            XmlGetAttr((class TiXmlElement*)(pMessage), "value", strValue);
             step.m_message = strValue;
         }
         if (step.m_action.IsEmpty() && step.m_message.IsEmpty()) {
@@ -1552,15 +1562,15 @@ MS2Ptr<CNpcShopGivePointContextBase> CNpcShopGivePointContextBase::Create(int ty
         MS2Ptr<CNpcShopGivePointContextCNSpring> spContext(new CNpcShopGivePointContextCNSpring);
         if (spContext) {
             TiXmlDocument doc;
-            if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
+            if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
                 return 0;
             Unk_140165cf0* pRoot = FUN_140345b40(&doc);
             if (pRoot == NULL)
                 return 0;
             spContext->m_type = type;
-            FUN_140873220(pRoot, "giveItemID", spContext->m_giveItemId);
-            FUN_140873220(pRoot, "normalPercent", spContext->m_normalPercent);
-            FUN_140873220(pRoot, "specialPercent", spContext->m_specialPercent);
+            XmlGetAttr((class TiXmlElement*)(pRoot), "giveItemID", reinterpret_cast<unsigned int&>(spContext->m_giveItemId));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "normalPercent", reinterpret_cast<unsigned int&>(spContext->m_normalPercent));
+            XmlGetAttr((class TiXmlElement*)(pRoot), "specialPercent", reinterpret_cast<unsigned int&>(spContext->m_specialPercent));
         }
         return spContext.get();
     }
@@ -2235,14 +2245,14 @@ BingoContext::BingoContext()
 bool BingoContext::LoadNumbers(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return false;
     ATL::CAtlMap<unsigned, bool> used(17, 0.75f, 0.25f, 2.25f, 10);
-    for (Unk_140165cf0* pNumber = pRoot->FUN_140165cf0("number"); pNumber != NULL;
-         pNumber = pNumber->FUN_140168650("number")) {
+    for (Unk_140165cf0* pNumber = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("number")); pNumber != NULL;
+         pNumber = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNumber))->NextSibling("number"))) {
         CStringW value;
         NumbersPtr spNumbers(Unk_BingoNewTag(0));
         FUN_140873b30(pNumber, "value", value);
@@ -2267,16 +2277,16 @@ bool BingoContext::LoadNumbers(CStringW strPath)
 bool BingoContext::LoadRewards(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return false;
-    for (Unk_140165cf0* pReward = pRoot->FUN_140165cf0("reward"); pReward != NULL;
-         pReward = pReward->FUN_140168650("reward")) {
+    for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward != NULL;
+         pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward"))) {
         RewardPtr spItems(Unk_BingoNewTag(0));
-        for (Unk_140165cf0* pItem = pReward->FUN_140165cf0("item"); pItem != NULL;
-             pItem = pItem->FUN_140168650("item")) {
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->FirstChild("item")); pItem != NULL;
+             pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
             ItemEntity item;
             item.vfunc_2(pItem);
             spItems->Add(item);
@@ -2455,16 +2465,16 @@ bool LimitedQuantityContext::ParseRange(CStringW str)
 bool LimitedQuantityContext::LoadItems(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return false;
-    for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("item"); pItem != NULL; pItem = pItem->FUN_140168650("item")) {
+    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
         unsigned long itemId = 0;
         int quantity = 0;
-        FUN_140873220(pItem, "itemID", itemId);
-        FUN_1408731e0(pItem, "quantity", quantity);
+        XmlGetAttr((class TiXmlElement*)(pItem), "itemID", reinterpret_cast<unsigned int&>(itemId));
+        XmlGetAttr((class TiXmlElement*)(pItem), "quantity", reinterpret_cast<int&>(quantity));
         if (itemId == 0 || quantity < 0)
             return false;
         m_items[itemId] = quantity;

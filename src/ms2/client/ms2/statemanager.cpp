@@ -78,6 +78,14 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 // The unit includes the statics six more times (without the pointer object), then the class-info and skill/stun.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -140,7 +148,6 @@ public:
 class Unk_SMField690 { public: char m_pad[0x18]; efd::Point3 m_pos18; };
 
 // Actor casts (efd TypeCast with a class id) and PCBase helpers.
-PCBase* FUN_140974230(PCBase* p);           // as PC (0x6200003)
 PCBase* FUN_141468360(PCBase* p);           // as Ridee (0x6200045)
 PCBase* FUN_140ddc910(PCBase* p);           // 0x6200064
 PCBase* FUN_140ac06f0(PCBase* p);           // 0x6200081
@@ -395,7 +402,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
 {
     if (pReq == 0)
         return;
-    PCBase* pActor = FUN_140974230(m_pOwner);
+    PCBase* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
     if (pActor != 0)
     {
         pActor->vfunc_22(pReq->m_vel3c);
@@ -432,7 +439,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_19(pReq->m_pos20);
         pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
         FUN_1410a77e0(pActor, pReq->m_fA4);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
@@ -441,7 +448,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         FUN_1417dbd00(pActor, pReq);
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
         if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x10 && pReq->m_nState != 0x10)
         {
             int nForce = 0;
@@ -461,7 +468,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_19(pReq->m_pos20);
         pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
         FUN_1410a77e0(pActor, pReq->m_fA4);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
@@ -470,7 +477,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         FUN_1417dbd00(pActor, pReq);
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
         pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
 }
@@ -499,21 +506,21 @@ void CStateManager::FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq)
 }
 
 // @0x1417dbef0
-void CStateManager::FUN_1417dbef0(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
+void CStateManager::OnAnimActivated(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
     m_pState->AnimActivated(pkManager, eSequenceID, pkSeq, fEventTime);
 }
 
 // @0x1417dbf50
-void CStateManager::FUN_1417dbf50(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
+void CStateManager::OnTextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
     m_pState->TextKeyEvent(pkManager, eSequenceID, kTextKey, pkMatchObject, pkSeq, fEventTime);
 }
 
 // @0x1417dbfc0
-void CStateManager::FUN_1417dbfc0(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
+void CStateManager::OnEndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
     m_pState->EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
@@ -603,7 +610,7 @@ MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
 // @0x1417dc4c0
 void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
 {
-    PCBase* pActor = FUN_140974230(m_pOwner);
+    PCBase* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
     bool bPushed = ((Unk_SMField690*)(reinterpret_cast<PCBase*>(pActor)->FUN_141675eb0()))->m_pos18 != efd::Point3::ZERO;
     if (!bPushed)
     {
@@ -611,7 +618,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
         {
             FUN_1417dbd00(pActor, pReq);
             pActor->vfunc_21(pReq->m_dir2c);
-            reinterpret_cast<PCBase*>(pActor)->FUN_14166d8b0(pReq->m_f58);
+            reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
         }
     }
     if (!pReq->m_str88.IsEmpty())
@@ -794,7 +801,7 @@ bool StateMoveSkill::FUN_1417df6a0()
 {
     if (FUN_1417b8560() == 0)
         return true;
-    if (m_tick.FUN_140268870(1000))
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))
     {
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670a00(10) < FUN_1417df430())
         {
@@ -832,7 +839,7 @@ void StateNone::vfunc_4(StateData* pData)
     bool bPC = FUN_1417b8370() != 0;
     bool b4f = FUN_1417dfaa0(m_pOwner) != 0;
     if (!bPC || b4f)
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca20(4);
+        reinterpret_cast<PCBase*>(m_pOwner)->AddHideReason(4);
 }
 
 // @0x1417df9b0
@@ -939,10 +946,8 @@ class Unk_SMNpc : public PCBase
 {
 public:
     MS2Ptr<Unk_SMNpcData> FUN_141093800();
-    MS2Ptr<Unk_SMNpcTpl> FUN_141093270();
     void FUN_1410943b0(int n);
 };
-Unk_SMNpc* FUN_14096e110(PCBase* p);
 struct Unk_VibEffectReq;
 class Unk_SMEffectSvc { public: int FUN_1411a4a00(const Unk_VibEffectReq& kReq); };
 // Effect request layout shared with entityvibrator.cpp.
@@ -990,7 +995,7 @@ void StateRegen::vfunc_4(StateData* pData)
     }
     else
     {
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca20(9);
+        reinterpret_cast<PCBase*>(m_pOwner)->AddHideReason(9);
         Unk_Random kRandom(m_pOwner->FUN_14123c580());
         int nDelay = kRandom.FUN_1407684c0() % 300 + 100;
         m_timer.FUN_140868750(nDelay);
@@ -1051,11 +1056,11 @@ void StateRegen::vfunc_9(double fTime)
             kXform.m_fScale = 1.0f;
             Unk_SMNiPt3 kPos(m_pOwner->vfunc_18());
             kXform.m_Translate = kPos;
-            Unk_VibEffectReq req;
-            req.m_name = pNpc->FUN_141093270()->m_str550;
-            req.m_type = 0;
-            req.m_pXform = &kXform;
-            reinterpret_cast<Unk_SMEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(req);
+            NoticeMessage req;   // C3: was Unk_VibEffectReq
+            ((Unk_VibEffectReq&)(req)).m_name = reinterpret_cast<Unk_SMNpcTpl*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_str550;
+            ((Unk_VibEffectReq&)(req)).m_type = 0;
+            ((Unk_VibEffectReq&)(req)).m_pXform = &kXform;
+            reinterpret_cast<Unk_SMEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(((Unk_VibEffectReq&)(req)));
             if (m_nSkip == 0)
             {
                 if (m_nVariantB != 0)
@@ -1146,7 +1151,7 @@ StateRide::~StateRide()
 void StateRide::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    PCBase* pPC = FUN_140974230(m_pOwner);
+    PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner);
     if (pPC != 0)
         reinterpret_cast<PC*>(pPC)->FUN_141657c80(false);
     MyPC* pMy = FUN_1417b84b0();
@@ -1252,19 +1257,20 @@ int StateRide::vfunc_1()
 // ---- StateRope ----
 
 // The key / buff state of the owner (the input query object of the PC).
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SMKeys
 {
 public:
     bool FUN_141682fe0(int nKey);               // held
     bool FUN_141683100(int nKey);               // pressed this frame
-    efd::Point3 FUN_141683290();                // pointer direction
 };
 struct Unk_SMExtent { float m_fWidth; float m_fHeight; };
 Unk_SMExtent* FUN_141671390(PCBase* p, Unk_SMExtent* pOut);
 bool FUN_1412410c0(void* pCollider, const efd::Point3* pPos, float fHalfHeight);
 bool FUN_140552700(const efd::Point3& kA, const efd::Point3& kB);    // efd::Point3::operator!=
 void FUN_141240730(void* p);
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProp, const efd::Point3* pValue);
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProp, bool* pOut);
 void FUN_141658fc0(PCBase* p, egf::EntityID kId);      // PC::FUN_141658fc0(const EntityID&); callers pass a copy
 bool FUN_140998dc0(const NiFixedString& kKey, const char* psz);
@@ -1313,8 +1319,8 @@ void StateRope::vfunc_4(StateData* pData)
     {
         NiPoint3 kPos = m_pOwner->vfunc_18();
         efd::Point3 kZero = efd::Point3::ZERO;
-        FUN_1409618c0(m_pRope, 0xfd95ca52, &m_pos54);
-        FUN_1409618c0(m_pRope, 0x68c7c29d, &kZero);
+        reinterpret_cast<egf::Entity*>(m_pRope)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_pos54));
+        reinterpret_cast<egf::Entity*>(m_pRope)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kZero));
         NiPoint3 kOrigin(static_cast<const efd::Point3&>(m_pOwner->vfunc_18()));
         NiPoint3 kFacing(m_pOwner->FUN_14123cc20());
         NiPlane kPlane(kFacing, kOrigin);
@@ -1326,7 +1332,7 @@ void StateRope::vfunc_4(StateData* pData)
         {
             efd::Point3 kDiff = m_pos54 - kPos;
             m_fAngle = GameObject::FUN_14123ce70(kDiff);
-            m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, GameObject::FUN_14123cd50(kDiff)));
+            m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, GameObject::DirectionToYawDegrees(kDiff)));
         }
     }
     else
@@ -1345,7 +1351,7 @@ void StateRope::vfunc_5(int n)
     {
         FUN_141658fc0(FUN_1417b8370(), *FUN_1408b76f0(m_pRope));
     }
-    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d8b0(m_pOwner->vfunc_20().z);
+    reinterpret_cast<PCBase*>(m_pOwner)->SetTargetYaw(m_pOwner->vfunc_20().z);
 }
 
 // @0x1417e1400
@@ -1438,7 +1444,7 @@ void StateRope::vfunc_8(double fTime)
     m_pOwner->vfunc_22(kInput);
     if (pKeys->FUN_141683100(0x493e1))
     {
-        m_pOwner->vfunc_22(pKeys->FUN_141683290());
+        m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pKeys)->FUN_141683290())));
         if (!pKeys->FUN_141682fe0(0x30d43) && !pKeys->FUN_141682fe0(0x30d44) && pKeys->FUN_141682fe0(0x30d41))
             m_pOwner->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0, 0);
@@ -1498,7 +1504,7 @@ void StateRope::FUN_1417e1df0(egf::Entity* pRope)
     if (m_pRope != 0 && m_pRope != pRope)
     {
         m_pRope = pRope;
-        FUN_1409618c0(m_pRope, 0xfd95ca52, &m_pos54);
+        reinterpret_cast<egf::Entity*>(m_pRope)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_pos54));
     }
 }
 
@@ -1655,7 +1661,7 @@ int CStateService::FUN_1417e25a0(int nScene)
         return 0;
     FUN_14151f460(1);
     if (FUN_140e800e0() != 0)
-        FUN_140e800e0()->FUN_140aad970();
+        FUN_140e800e0()->HideProgress();
     int nRet = FUN_1417e2830(nScene);
     return nRet;
 }

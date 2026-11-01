@@ -38,7 +38,7 @@ public:
 };
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut); // TinyXML string attribute
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
 void FUN_1416ba640(Unk_PPSmartC spTexture);                                     // swap the live step's mask texture
 extern NiFixedString DAT_143ae5340;                                             // mask blend constant name
@@ -55,7 +55,7 @@ void ScreenMaskingEffectParam::vfunc_1(Unk_140165cf0* pNode)
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "blendingMin", m_fBlendingMin);
     XmlGetAttr((class TiXmlElement*)(pNode), "blendingMax", m_fBlendingMax);
-    FUN_1408733e0(pNode, "texture", m_strTexture);
+    XmlGetAttr((class TiXmlElement*)(pNode), "texture", m_strTexture);
 }
 MS2_REPLACE_METHOD(0x140dca130, ScreenMaskingEffectParam, vfunc_1, 121, 0xE292A065);
 

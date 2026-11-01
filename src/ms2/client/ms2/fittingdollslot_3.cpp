@@ -19,9 +19,6 @@
 #include <efd/MemObject.h>
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 FittingDollSlotBag* FUN_14121ef50(NotifyContext::BindData* p);
 
@@ -29,6 +26,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(FittingDollSlotBag);
 
 // Header-defined statics (the third copy of the shared item header's statics).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x14121e670
 void FUN_14121e670(const CString& strName, int nPcId, unsigned __int64 nDollId, bool bCodi)
@@ -37,18 +35,18 @@ void FUN_14121e670(const CString& strName, int nPcId, unsigned __int64 nDollId, 
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_14121eee0());
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14121e760
 void FUN_14121e760(const CString& strName)
 {
-    FittingDollSlotBag* pBag = FUN_14121ef50(FUN_1422c8e90(strName));
+    FittingDollSlotBag* pBag = FUN_14121ef50(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

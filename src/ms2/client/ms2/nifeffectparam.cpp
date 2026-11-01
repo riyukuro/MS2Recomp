@@ -601,15 +601,16 @@ public:
 MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // Controllers and extra data of a node.
@@ -909,7 +910,7 @@ MS2_REPLACE_METHOD(0x14154ACF0, CNifEffect, vfunc_4, 497, 0x164194E8);
 // @0x14154aef0
 void CNifEffect::vfunc_5()
 {
-    if (FUN_14154b5e0() && vfunc_11() != 0)
+    if (IsNotForceStop() && vfunc_11() != 0)
         return;
     CEffect::vfunc_5();
 }
@@ -925,7 +926,7 @@ void CNifEffect::vfunc_6(float fFadeTime)
     m_fFadeStart = (float)FUN_1413f9850()->GetTime(0xe001001b);
     m_fFadeTime = fFadeTime;
     m_aAlphaCtrls.RemoveAll();
-    Unk_SceneWalker kWalker(static_cast<NiObject*>(MS2_NODEPTR(m_spRoot).operator NiNode*()));
+    Unk_SceneWalker kWalker((NiAVObject*)(static_cast<NiObject*>(MS2_NODEPTR(m_spRoot).operator NiNode*())));
     NiAVObject* pObj;
     while ((pObj = kWalker.Next(true)) != 0)
     {
@@ -1031,13 +1032,13 @@ bool CNifEffect::FUN_14154b4a0(NiObjectNET* pkNode)
 }
 
 // @0x14154b5e0
-bool CNifEffect::FUN_14154b5e0()
+bool CNifEffect::IsNotForceStop()
 {
     if (m_spParam == 0)
         return false;
     return m_spParam->m_bNotForceStop;
 }
-MS2_REPLACE_METHOD(0x14154B5E0, CNifEffect, FUN_14154b5e0, 72, 0x779086E4);
+MS2_REPLACE_METHOD(0x14154B5E0, CNifEffect, IsNotForceStop, 72, 0x779086E4);
 
 // @0x14154b630
 // Adds an alpha controller to the material that fades its current alpha to 0 over fTime.
@@ -1285,7 +1286,7 @@ void CNifEffect::FUN_14154cf20(NiAVObject* pkRoot)
     if (m_nLodLevel != nLevel)
     {
         m_nLodLevel = nLevel;
-        Unk_SceneWalker kWalker(pkRoot);
+        Unk_SceneWalker kWalker((NiAVObject*)(pkRoot));
         while (NiAVObject* pObj = kWalker.Next(true))
         {
             if (((class NiAVObject*)(class NiAVObject*)(pObj))->GetAppCulled() != true)
@@ -1352,7 +1353,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
     if ((spFound).operator==((NiAVObject*)0))
     {
         int nKind = ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetMode48();
-        Unk_SceneWalker kWalker((pT->m_hNode).operator NiAVObject*());
+        Unk_SceneWalker kWalker((NiAVObject*)((pT->m_hNode).operator NiAVObject*()));
         while (NiAVObject* pObj = kWalker.Next(true))
         {
             if (!FUN_141068d50(FUN_1409a8b90(pObj), pszName))
@@ -1657,6 +1658,13 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 // ============================================================================================================
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 extern int DAT_143ae1f20;                                           // the render device is lost
 extern int DAT_1439ed00c;                                           // the caches are enabled
@@ -1969,7 +1977,7 @@ void CNifLoadingService::Sweep()
     if (DAT_143ae1f20 != 1)
     {
         float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
-        if (m_kSweepTimer.FUN_140268870(60000) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Check(60000) != 0)
         {
             m_kNifCount.nNotCache = 0;
             m_kNifCount.nForceKeep = 0;
@@ -2303,11 +2311,10 @@ extern char DAT_142f2d1d8;
 extern char DAT_142f2d1e8;
 extern char DAT_143ae5178;                                          // the weight key
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);                 // root element
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);       // attribute text or 0
 const char* FUN_14086f500(Unk_140165cf0* pNode, const char* pszName, unsigned* pnOut);   // int attribute, 0 when absent
 void FUN_141047ac0(class NiObjectNET*, class NiFixedString const&, float);   // C3: was FUN_141047ac0
 void FUN_1415672e0(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
-void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 
 // @0x141556810
 static void SetWeights(NiAVObject* pObj, int nWeight)
@@ -2361,7 +2368,7 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
         return;
     for (Unk_140165cf0* pItem = pList->FUN_140165cf0(&DAT_142f2d1d0); pItem != 0; pItem = pItem->FUN_140168650(&DAT_142f2d1e8))
     {
-        const char* pszName = FUN_14086f4b0(pItem, &DAT_142f2d1d8);
+        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pItem))->Attribute(&DAT_142f2d1d8);
         if (pszName != 0)
         {
             unsigned nWeight = 0;
@@ -2421,7 +2428,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     NiStream* pStream = ((class CNiStreamLoadThread*)FUN_1414a5720())->Get(CString(strPath));
     if (pStream == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Stream[{0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Stream[{0}]", strPath);
         return 0;
     }
     CCachedNifPtr spEntry = EE_NEW CCachedNif;
@@ -2431,7 +2438,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     spEntry->m_nClass = nClass;
     if ((spEntry->m_spData).operator NiAVObject*() == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Object[{0}] GetObjectAt()", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Object[{0}] GetObjectAt()", strPath);
         delete pStream;
         return 0;
     }

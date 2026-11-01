@@ -37,6 +37,17 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -46,7 +57,8 @@ extern RECT g_rcWindow;                                         // 0x143af7d48: 
 extern ecr::SceneGraphService* DAT_143ab9508;
 class Unk_McEntityRules;
 extern Unk_McEntityRules* DAT_143ab9510;
-extern char DAT_143b059e8;                                      // service lookup cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
 // Reference counted service objects: AddRef / Release are the first virtuals after the destructor.
 class Unk_McRefObj
@@ -211,7 +223,6 @@ public:
             m_p->vfunc_1();
     }
     ~Unk_McPhysSvcPtr();                                        // 0x1401cd150
-    Unk_McPhysSvc* FUN_1401cd1a0() const;                       // operator->
 private:
     Unk_McPhysSvc* m_p;
 };
@@ -247,7 +258,6 @@ class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was
 
 class Unk_McEntityRules : public CTriggerService { };
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 class Unk_McEntityMgr;
@@ -327,7 +337,6 @@ struct Unk_McRequest
     char m_pad_20[0x50];
 };
 MS2_CHECK_SIZE(Unk_McRequest, 0x70);
-class Unk_McEffectMgr { public: void FUN_1411a4a00(Unk_McRequest* pRequest); };
 void* FUN_140a332d0(Unk_McXform* p);                            // NiTransform default ctor
 void FUN_14097fad0(float* pDst, const Unk_NiPoint3* pSrc);      // NiPoint3 assignment
 
@@ -340,7 +349,6 @@ struct Unk_McConstTable
 };
 MS2_CHECK_OFFSET(Unk_McConstTable, m_pickRange, 0xe668);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned* FUN_1401d7c10(Unk_McConstUInt* pSlot);
 
 // The physics helper (singleton) and the camera manager's mode holder.
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -558,11 +566,11 @@ void CMouseController::FUN_140ad2300(const Vector3& pt)
     ((efd::Matrix3*)(struct Unk_McRot*)(&xf.m_rotate))->MakeIdentity();
     Unk_NiPoint3 niPt(pt);
     FUN_14097fad0(xf.m_afTranslate, &niPt);
-    Unk_McRequest request;
-    request.m_strName = "CH/Common/Eff_mouse_click.xml";
-    request.m_pXform = &xf;
-    request.m_nOwnerId = 0;
-    reinterpret_cast<Unk_McEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
+    NoticeMessage request;   // C3: was Unk_McRequest
+    ((Unk_McRequest&)(request)).m_strName = "CH/Common/Eff_mouse_click.xml";
+    ((Unk_McRequest&)(request)).m_pXform = &xf;
+    ((Unk_McRequest&)(request)).m_nOwnerId = 0;
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_McRequest&)(request))));
 }
 MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A);
 
@@ -638,7 +646,7 @@ void CMouseController::FUN_140ad26d0(int nX, int nY)
 {
     if (m_nMode != 3)
         return;
-    if (m_tmHold.FUN_140268870(100) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmHold).Check(100) == 0)
         return;
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0)
     {
@@ -681,7 +689,7 @@ void CMouseController::FUN_140ad2830()
     default:
         return;
     }
-    if (m_tmMove.FUN_140268870(100) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmMove).Check(100) == 0)
         return;
     Unk_RayCastInfo info;
     info.m_origin = pPc->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, 75.0f));
@@ -691,7 +699,7 @@ void CMouseController::FUN_140ad2830()
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
     {
         Unk_McPhysSvcPtr spPhys(((class Unk_McPhysSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-        void* pHit = spPhys.FUN_1401cd1a0()->FUN_1410b8e60(info.m_hitEntity);
+        void* pHit = reinterpret_cast<Unk_McPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spPhys).operator->())->FUN_1410b8e60(info.m_hitEntity);
         if (pHit != 0)
         {
             Unk_McState* pState = pPc->FUN_14166ccb0();
@@ -738,7 +746,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         if (sp->vfunc_1(&ray) != 0)
         {
             float fDist = FUN_140966f00(vPos, reinterpret_cast<const Vector3&>(ray.vPick));
-            if (fDist > (float)*FUN_1401d7c10(&((struct Unk_McConstTable*)FUN_1401d3200())->m_pickRange))
+            if (fDist > (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_McConstTable*)FUN_1401d3200())->m_pickRange)->Get())
                 continue;
             *pStrHint = ray.strCursor;
             return sp->vfunc_6();
@@ -753,7 +761,7 @@ void CMouseController::FUN_140ad2d80()
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe2))
         return;
-    if (m_tmPick.FUN_140268870(100) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmPick).Check(100) != 0)
     {
         float fX, fY;
         if (reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
@@ -1032,7 +1040,7 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
 {
     bool bFlagA = false;
     bool bResult = false;
-    FUN_1408a20a0(pEntity, 0x23f9860e, &bFlagA);
+    pEntity->GetPropertyValue(0x23f9860e, bFlagA);
     if (bFlagA)
     {
         Unk_McInstSvcPtr spSvc(((class Unk_McInstSvc*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
@@ -1048,7 +1056,7 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     }
     else
     {
-        FUN_1408a20a0(pEntity, 0xa0b6b179, &bResult);
+        pEntity->GetPropertyValue(0xa0b6b179, bResult);
     }
     return bResult;
 }

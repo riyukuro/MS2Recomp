@@ -41,7 +41,7 @@ ASListItemRenderer::~ASListItemRenderer()
 // @0x1422e1cd0
 bool ASListItemRenderer::FUN_1422e1cd0()
 {
-    return FUN_1422baa20("focusable").IsBool();
+    return GetMember("focusable").IsBool();
 }
 MS2_REPLACE_METHOD(0x1422E1CD0, ASListItemRenderer, FUN_1422e1cd0, 89, 0x8DF87546);
 
@@ -55,7 +55,7 @@ MS2_REPLACE_METHOD(0x1422E1D30, ASListItemRenderer, FUN_1422e1d30, 41, 0x15EBF5B
 // @0x1422e1d60
 unsigned int ASListItemRenderer::FUN_1422e1d60()
 {
-    return FUN_1422baa20("index").GetUInt();
+    return GetMember("index").GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422E1D60, ASListItemRenderer, FUN_1422e1d60, 88, 0x5AF9C5E4);
 
@@ -69,7 +69,7 @@ MS2_REPLACE_METHOD(0x1422E1DC0, ASListItemRenderer, FUN_1422e1dc0, 40, 0x1A3E3B0
 // @0x1422e1df0
 bool ASListItemRenderer::FUN_1422e1df0()
 {
-    return FUN_1422baa20("selectable").IsBool();
+    return GetMember("selectable").IsBool();
 }
 MS2_REPLACE_METHOD(0x1422E1DF0, ASListItemRenderer, FUN_1422e1df0, 89, 0xC6AE965B);
 

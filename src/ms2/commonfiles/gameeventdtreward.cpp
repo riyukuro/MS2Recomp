@@ -23,10 +23,10 @@ using namespace CommonUserEvent;
 #endif
 
 // Out-of-unit helpers.
-void FUN_14025a680(const CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);   // split
+void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);   // split
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);    // split ids
 bool FUN_1407183f0(const CStringW& value);
-unsigned short FUN_1407181a0(const CStringW& value);
+short FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).
 // CUserEventManager::AddDTReward: the context handle is passed as the exe's own handle type.
 void FUN_1408d7cd0(CUserEventManager* pManager, Unk_DTCtxArg<DTRewardEventContext> spContext);
@@ -92,7 +92,7 @@ void GameEventDTReward::vfunc_4(Unk_GEIn* in)
 void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& levels, const CStringW& flags, const CStringW& last)
 {
     ATL::CAtlArray<CStringW> rows;
-    FUN_14025a680(rewards, rows, L";");
+    FUN_14025a680(const_cast<CStringW&>(rewards), rows, L";");
     if (rows.IsEmpty())
         return;
     m_spContext.AssignRaw(new DTRewardEventContext(FUN_1402e1d00(), FUN_1402e2730()));
@@ -104,7 +104,7 @@ void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& l
         ((class Unk_EventRewardList*)(void*)(m_spContext.operator->()))->FUN_1408d5c30(fields);
     }
     ATL::CAtlArray<CStringW> parts;
-    FUN_14025a680(levels, parts, L",");
+    FUN_14025a680(const_cast<CStringW&>(levels), parts, L",");
     if (parts.GetCount() >= 1)
         m_bShown = FUN_1407183f0(parts[0]);
     if (parts.GetCount() >= 2) {
@@ -112,7 +112,7 @@ void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& l
         m_spContext->m_level = level;
     }
     parts.RemoveAll();
-    FUN_14025a680(flags, parts, L",");
+    FUN_14025a680(const_cast<CStringW&>(flags), parts, L",");
     if (parts.GetCount() >= 1)
         m_spContext->m_b32 = FUN_1407183f0(parts[0]);
     m_spContext->m_b33 = FUN_1407183f0(last);

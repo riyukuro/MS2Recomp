@@ -81,6 +81,7 @@
 // The first obj of the units.tsv range (0x14151f150-0x141520680) is the message box queue (?\messageboxqueue.cpp).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\mypc.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "mypc.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -220,24 +221,20 @@ public:
 class Unk_MyPCHousingSvc : public CubeMapInformationService
 {
 public:
-    int FUN_1410d33a0(int nPlotId, efd::Point3& kPos);
     int FUN_1410cdd80(NiPoint3 kFrom, NiPoint3 kTo, float fRange, efd::Point3 kDir);   // the build reach test
     void FUN_1410d6590(int nNoticeId);
     bool FUN_1410d55d0(int nMapId, int nBlock);             // the player owns the block
-    efd::Point3 FUN_1410b7ad0(PCBase* pPC, float fOffset, efd::Point3& kOut, int bFeet);
-    efd::Point3 FUN_1410b7a20(efd::Point3 kPos, efd::Point3& kCell);   // snap to the cube grid
-    Cube* FUN_1410b8ab0(efd::Point3 kCell);                 // the cube at a grid point
 };
 class Unk_MyPCSvcPtr
 {
 public:
     Unk_MyPCSvcPtr(void* p);
     ~Unk_MyPCSvcPtr();
-    Unk_MyPCHousingSvc* FUN_1401cd1a0() const;
     Unk_MyPCHousingSvc* FUN_140885310() const;              // get
     void* m_p;
 };
-extern char DAT_143b059e8;                                  // service lookup cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 void FUN_141682f60(void* pTracker, PCBase* pOwner);         // PCBase+0x6d8 init
@@ -314,11 +311,10 @@ Unk_MyPCFieldRef FUN_140a55460(int nMapId);
 
 // The world service (FUN_1403ed2d0): the current world id.
 class Unk_RideeFieldObj : public CPtred {};                  // a named field object (Ridee view)
-class Unk_MyPCWorld : public WorldService { public: NiPoint3 FUN_141bd37e0();MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName); int FUN_141bdb5a0(int nObserveMode);PCBase* FUN_141bd1200(int nObjectId); PCBase* FUN_141bd2170(int nType, float fRange, int bFrontOnly, int bBonus);PCBase* FUN_141bd1320(int nObjectId);PCBase* FUN_141bd0cc0(); efd::IBase* FUN_141bd1530(__int64 nId);
-    void FUN_141bd1750(ATL::CAtlList<efd::SmartPointer<GameObject> >& aOut); Unk_MyPCFieldRef FUN_141bd30a0();
+class Unk_MyPCWorld : public WorldService { public: MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName); PCBase* FUN_141bd0cc0();
+    Unk_MyPCFieldRef FUN_141bd30a0();
     egf::Entity* FUN_141bcfd30(unsigned nModelId, Vector3 kPos, float fRange, int bNearest, int nSkip);
-    void FUN_141bd1ed0(std::list<class Unk_MyPCDropItem*>* pOut, std::list<class Unk_MyPCDropItem*>* pOutMeso, int bSkipOwned, int a, int b);
-    class Unk_MyPCDropItem* FUN_141bd1d10(int a, int b); PCBase* FUN_141bd1290(int nObjectId); };
+    };
 
 // The pet table (FUN_14052d210) and the npc table row of a pet.
 class Unk_PetRow : public CPtred { public: int FUN_140728820(); };   // the npc id of the pet
@@ -332,7 +328,6 @@ class Unk_MyPCEntityModel { public: void FUN_140ae1f60(efd::utf8string& strOut);
 class Unk_MyPCEntity
 {
 public:
-    void FUN_1409618c0(unsigned int uiPropId, efd::Point3& out);    // point property
     void FUN_1408a20a0(unsigned int uiPropId, bool* pOut);          // bool property
     void FUN_140ae1160(unsigned int uiPropId, unsigned short* pOut);           // int property
     Unk_MyPCEntityModel* FUN_140ae1be0();
@@ -437,17 +432,8 @@ public:
     void FUN_141adc530(int nId);                            // close
 };
 int FUN_1418fd280();                                        // the home convenience is available
-class Unk_MyPCWidgets : public CGuideManager { public: void FUN_14138d7e0(int nKind, int n); void FUN_14138bf00(int nKind, int nId, int nArg);void FUN_14138b170();};
+class Unk_MyPCWidgets : public CGuideManager { public: };
 Unk_MyPCWidgets* FUN_1409331e0();
-// The HUD notifier (FUN_140a94350); slot 10 takes a state id.
-class Unk_MyPCHud
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int nState);
-};
-Unk_MyPCHud* FUN_140a94350();
 void FUN_141a8a730();
    // UIMainPlayerInfo (0x4e5f)
 UIMainPlayerInfo* FUN_140931900(int nId);
@@ -502,7 +488,7 @@ MS2_CHECK_SIZE(Unk_PCArg125, 0x558);
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;          // the local character's id list
 
 // The game clock (FUN_14086d260).
-class Unk_MyPCGameClock : public CMainSystem { public: unsigned int FUN_141473390(); };
+class Unk_MyPCGameClock : public CMainSystem { public: };
 class CMainSystem;
 template<> CMainSystem* TSingleton<CMainSystem>::GetInstance();
 
@@ -527,7 +513,7 @@ public:
 bool FUN_141682f80(void* pQueue, int nId);                  // the queue holds nId
 // PC members fittingdollpc.h does not declare.
 void* FUN_141659b80(PC* pPC, int nSide, unsigned nType, float fRange);   // the nearest object of nType on a side
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 int FUN_14165b500(PCBase* pPC, int nKind);                  // PCBase member: holds a usable item of nKind
 int FUN_14165c1b0(PCBase* pPC, int* pOut, CString& strOut, float f);   // PCBase member
 extern int DAT_143ab2914;                                   // the local character level
@@ -697,7 +683,7 @@ template<> CDPSMeterSystem* TSingleton<CDPSMeterSystem>::GetInstance();
 int IsPercentStat(int nType);
 class Unk_PCBaseBuffs : public AdditionalCliList { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int nOwner, int nStacks);
 int FUN_140971260(unsigned int nBuffId); };
-class Unk_MyPCPetMgr : public CPartyManager { public: int FUN_14162ae20(void* p); int FUN_14162ae90(void* p);};
+class Unk_MyPCPetMgr : public CPartyManager { public: };
 class Unk_MyPCTalkScript;
 // The npc talk script handle (MS2Ptr-shaped; dtor 0x14078f140, ctor 0x140859c20).
 struct Unk_MyPCTalkScriptPtr
@@ -714,7 +700,6 @@ Unk_MyPCTalkScriptPtr FUN_140856820(int nNpcId, int nKind);   // the talk script
 class Unk_MyPCSurvival : public UITalkManager
 {
 public:
-    void FUN_141b1fcf0(int nObjectId);
     int FUN_141b213f0(Unk_MyPCTalkScriptPtr spScript, int nNpcId, int nMode, int n);   // open the talk
 };
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
@@ -738,9 +723,8 @@ class Unk_MyPCCameraCtl : public CTargetCameraMode
 public:
     // 0x141533e80 (inline)
     Vector3 FUN_141533e80() { return m_c0.m_pos; }
-    Vector3 FUN_140af8260();   // the setting's m_18 (CCameraMode's inline; its harvested name is another copy)
 };
-class Unk_MyPCCamera : public CameraMgr { public: NiPoint3 FUN_140af8290(); void FUN_140aeaf40(PCBase* pTarget, int bReset);Unk_CameraTarget* FUN_140a38d60();Unk_MyPCCameraCtl* FUN_140af2520();};   // the camera target position
+class Unk_MyPCCamera : public CameraMgr { public: NiPoint3 FUN_140af8290(); Unk_CameraTarget* FUN_140a38d60();};   // the camera target position
 // The local character's guild summary (FUN_140d295d0; the guild reading of the fields is a guess).
 struct Unk_MyPCGuildSummary
 {
@@ -860,7 +844,7 @@ class UIDamageEffect* FUN_140ac55a0(int);   // C3: was FUN_140ac55a0
 class UIObserveDialog : public UIDialog { public: void FUN_141a735d0(CStringW strName); void FUN_141a736c0(bool b); };   // 0x4e8a
 class UIPvPObserverDialog : public UIDialog {};             // 0x4e96
 class UIPvPGuildTeamDialog : public UIDialog { public: void FUN_14133b0b0(); };              // 0x4ec4
-class Unk_MyPCad4b90 : public CTriggerService { public: void FUN_141863340(const ATL::CAtlArray<int>& aIds, unsigned nFlags); };
+class Unk_MyPCad4b90 : public CTriggerService { public: };
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 PCBase* FUN_14099eef0(PCBase* pActor);                      // the pc-side view (null for a non-pc)
 
@@ -869,7 +853,7 @@ template <class T> T* MyPCDialog(int nId)
 {
     if (reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -903,6 +887,10 @@ static CStringW s_strUseBindItemSkill = L"useBindItemSkill";                    
 #include "ms2/client/ms2/ms2inputservice.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x1400f9d30
 #ifndef MS2_HOOK_DLL   // s_strUgcEndMode: the exe's object at 0x143ae14b8, which other units reach as DAT_143ae14b8 (the hook DLL binds it)
@@ -1107,7 +1095,7 @@ MS2_REPLACE_METHOD(0x1415216A0, MyPC, vfunc_110, 18, 0x491EF149);
 void MyPC::vfunc_66(int n)
 {
     PC::vfunc_66(n);
-    FUN_1409331e0()->FUN_14138d7e0(0xe, 0);
+    FUN_1409331e0()->QueueOccurrence((CGuideManager::Occurrence)0xe, 0);
     if (n == 0)
     {
         UIKillCount* pKillCount = MyPCDialog<UIKillCount>(0x4e51);
@@ -1180,7 +1168,7 @@ class StateSkill : public State
 {
 public:
     MS2Ptr<CSkillRecord> GetRecord();                   // the record being cast
-    void FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord);      // queue the next record
+    void SetChargeRecord(MS2Ptr<CSkillRecord> spRecord);      // queue the next record
     // @0x141534030
     unsigned int FUN_141534030() { return m_nElapsed; }
     char m_pad_40[0x13c - 0x40];
@@ -1209,7 +1197,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
         StateSkill* pSkill = dynamic_cast<StateSkill*>(FUN_14166ccb0());
         if (pSkill == 0)
             return false;
-        pSkill->FUN_1417ed740(spRecord);
+        pSkill->SetChargeRecord(spRecord);
         MS2Ptr<CSkillRecord> spCur = pSkill->GetRecord();
         if (spCur.get() != 0)
             spCur->m_n90 = 0;
@@ -1224,16 +1212,16 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
             spItem = ((class Unk_MyPCStorageMgr*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(spRecord->FUN_1417599c0());
         if (spItem == 0)
             return false;
-        bool bUnbound = !spItem->FUN_140525640();
+        bool bUnbound = !spItem->IsPetItem();
         if (bUnbound && !spRecord->m_bNoBindCheck
-            && spItem->FUN_140527930()->FUN_140635100() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
+            && spItem->FUN_140527930()->HasBindingRule() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
         {
             // using it binds the item: confirm first
             CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_use", vfunc_77());
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseBindItemSkill);
             if (spBox)
             {
-                spBox->FUN_141a01600(spItem->FUN_140526a50());
+                spBox->FUN_141a01600(spItem->GetItemUid());
                 spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                 unsigned int nSkillId = spRecord->m_spRow->FUN_1407e9a40();
                 spBox->FUN_140534050(nSkillId);
@@ -1397,8 +1385,8 @@ int MyPC::vfunc_137()
     if (FUN_14166ce30() != 0)
     {
         vfunc_59(0xc, 0, 0, 0);
-        FUN_140a94350()->vfunc_10(7);
-        FUN_1409331e0()->FUN_14138d7e0(0xb, 0);
+        ChromaSDK::GetChromaManager()->SetState(7);
+        FUN_1409331e0()->QueueOccurrence((CGuideManager::Occurrence)0xb, 0);
         if (((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_140375570() == 0
             && ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_1403755a0() == 0)
         {
@@ -1428,7 +1416,7 @@ void MyPC::vfunc_135(int a, int b, void* p)
             {
                 int nMapId = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060();
                 int nBlock = FUN_1408a18d0(FUN_141656a80());
-                if (spSvc.FUN_1401cd1a0()->FUN_1410d55d0(nMapId, nBlock)
+                if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410d55d0(nMapId, nBlock)
                     || FUN_1408a07b0(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060(), DAT_1439f4a7c, DAT_143ab2820)
                     || ((class Unk_MyPCGuildHouse*)FUN_1401c0d90())->FUN_14047e150(DAT_143ab2820))
                     m_b15d4 = 1;
@@ -1441,7 +1429,7 @@ void MyPC::vfunc_135(int a, int b, void* p)
         else
         {
             m_b15d4 = 0;
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e85);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e85);
             CString strEmpty("");
             reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae14b8).FUN_141276180(strEmpty);   // this = the sound name
         }
@@ -1469,20 +1457,20 @@ void MyPC::FUN_141523c80()
 {
     Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     efd::Point3 kPos;
-    spSvc.FUN_1401cd1a0()->FUN_1410b7ad0(this, 0.0f, kPos, 1);
+    reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCellInFrontOfActor(this, 0.0f, reinterpret_cast<Vector3*>(&kPos), 1);
     efd::Point3 kCell;
-    spSvc.FUN_1401cd1a0()->FUN_1410b7a20(kPos, kCell);
-    Cube* pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8ab0(kCell);
+    reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCellPosition(*reinterpret_cast<Vector3*>(&kPos), reinterpret_cast<Vector3*>(&kCell));
+    Cube* pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kCell));
     bool bValue = false;
     if (pCube != 0)
         pCube->entity->GetPropertyValue(0x9ea356ad, bValue);
     if (pCube == 0 || !bValue)
     {
         kCell.z -= 150.0f;
-        pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8ab0(kCell);
+        pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kCell));
     }
     if (pCube != 0 && pCube->entity != 0)
-        spSvc.FUN_1401cd1a0()->FUN_1410cab10(pCube);
+        reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410cab10(pCube);
 }
 MS2_REPLACE_METHOD(0x141523C80, MyPC, FUN_141523c80, 463, 0x8A794E2E);
 
@@ -1497,7 +1485,7 @@ void MyPC::FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* p
     if (pItem == 0)
         return;
     int nKind = pItem->FUN_1405258b0() != 0;
-    MS2Ptr<CEquipItem> spWorn = m_kEquipDE0.FUN_1411e1580(pItem->FUN_140526a50());
+    MS2Ptr<CEquipItem> spWorn = m_kEquipDE0.FUN_1411e1580(pItem->GetItemUid());
     if (spWorn.get() != 0)
         return;
     ATL::CAtlArray<MS2Ptr<CItem> > aOld;
@@ -1623,7 +1611,7 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
             if (pSocket != 0)
             {
                 Unk_EnchantMap kStats;
-                bool bHas = pSocket->FUN_140621b10(kStats);
+                bool bHas = pSocket->GetGemStats(kStats);
                 if (bHas)
                 {
                     for (POSITION pos = kStats.GetStartPosition(); pos != 0; kStats.GetNext(pos))
@@ -1639,7 +1627,7 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
                     }
                 }
                 Unk_SocketSpecialMap kSpecials;
-                bHas = pSocket->FUN_140621b80(kSpecials);
+                bHas = pSocket->GetGemSpecialStats(kSpecials);
                 if (bHas)
                 {
                     for (POSITION pos = kSpecials.GetStartPosition(); pos != 0; kSpecials.GetNext(pos))
@@ -1708,7 +1696,7 @@ public:
     void FUN_14142c5d0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut);   // the quick slot keys
     int FUN_14142e6f0(Unk_MyPCLapenSlot eSlot);             // the key is not a quick slot key
 };
-Unk_MyPCQuickSlots* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_MyPCQuickSlots (calls cast back)
 
 // vfunc_104's `MS2Ptr<T>(0)` returns use their own copy (0x141532140), apart from the b18 list element's (0x141532470):
 // the exe's slot-104 return type is another MS2Ptr<T>, but the shared slot is typed MS2Ptr<Unk_PCBaseComp_b18>, so
@@ -1738,7 +1726,7 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
     MS2Ptr<CItem> spItem;
     if (kReq.unknown34 != 0)
     {
-        __int64 nItemUid = FUN_1409331f0()->FUN_14142ded0(kReq.unknown34);
+        __int64 nItemUid = reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142ded0(kReq.unknown34);
         if (nItemUid != 0)
             spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
@@ -1751,7 +1739,7 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
         }
     }
     if (kReq.skill == 0)
-        kReq.skill = FUN_1409331f0()->FUN_14142dad0(kReq.unknown34);
+        kReq.skill = reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142dad0(kReq.unknown34);
     MS2Ptr<Unk_MyPCSkillRow> spRow = reinterpret_cast<Unk_MyPCSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(kReq.skill);
     if (spRow.IsNull())
         return 0;
@@ -1821,13 +1809,13 @@ MS2InputService* FUN_140a58540();
 bool MyPC::FUN_141526730(int bAuto, unsigned* pSlot)
 {
     ATL::CAtlArray<Unk_MyPCKeyId> aSlots;
-    FUN_1409331f0()->FUN_14142c5d0(aSlots);
+    reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142c5d0(aSlots);
     if (FUN_140a58540()->FUN_140d8b370())
     {
         for (unsigned i = 0; i < aSlots.GetCount(); i++)
         {
             Unk_MyPCLapenSlot eSlot = static_cast<Unk_MyPCLapenSlot>(aSlots[i]);
-            if (FUN_1409331f0()->FUN_14142e6f0(eSlot) != 0)
+            if (reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142e6f0(eSlot) != 0)
                 continue;
             if (FUN_141682f80(FUN_14166d240(), eSlot))
             {
@@ -1847,11 +1835,11 @@ bool MyPC::FUN_141526730(int bAuto, unsigned* pSlot)
     for (unsigned i = 0; i < aSlots.GetCount(); i++)
     {
         Unk_MyPCLapenSlot eSlot = static_cast<Unk_MyPCLapenSlot>(aSlots[i]);
-        if (FUN_1409331f0()->FUN_14142e6f0(eSlot) != 0)
+        if (reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142e6f0(eSlot) != 0)
             continue;
         if (((class Unk_PCMove*)(void*)(FUN_14166d240()))->FUN_1416830b0(eSlot))
         {
-            int nSkillId = FUN_1409331f0()->FUN_14142dad0(eSlot);
+            int nSkillId = reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142dad0(eSlot);
             if (nSkillId == 0)
                 continue;
             MS2Ptr<Unk_MyPCSkillRow> spRow = reinterpret_cast<Unk_MyPCSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
@@ -1867,9 +1855,9 @@ bool MyPC::FUN_141526730(int bAuto, unsigned* pSlot)
         for (unsigned i = 0; i < aSlots.GetCount(); i++)
         {
             Unk_MyPCLapenSlot eSlot = static_cast<Unk_MyPCLapenSlot>(aSlots[i]);
-            if (FUN_1409331f0()->FUN_14142e6f0(eSlot) != 0)
+            if (reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142e6f0(eSlot) != 0)
                 continue;
-            int nSkillId = FUN_1409331f0()->FUN_14142dad0(eSlot);
+            int nSkillId = reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142dad0(eSlot);
             if (nSkillId == 0)
                 continue;
             if (FUN_140166410()->FUN_14036d570(0xca))
@@ -1942,7 +1930,7 @@ bool MyPC::FUN_1415272b0()
         return false;
     if (FUN_141662eb0(spWeapon->GetItem().get()) == 0)
         return false;
-    if (!spWeapon->FUN_1411dc7f0()->m_kJobLimit.FUN_140545da0(FUN_141654700()))
+    if (!spWeapon->FUN_1411dc7f0()->m_kJobLimit.IsJobRecommended(FUN_141654700()))
         return false;
     if (!spWeapon->FUN_1411dc7f0()->FUN_14053d460())
     {
@@ -1951,7 +1939,7 @@ bool MyPC::FUN_1415272b0()
             return false;
         if (FUN_141662eb0(spOffHand->GetItem().get()) == 0)
             return false;
-        if (!spOffHand->FUN_1411dc7f0()->m_kJobLimit.FUN_140545da0(FUN_141654700()))
+        if (!spOffHand->FUN_1411dc7f0()->m_kJobLimit.IsJobRecommended(FUN_141654700()))
             return false;
     }
     return true;
@@ -2028,7 +2016,7 @@ int MyPC::FUN_1415278d0(void* p)
 {
     if (!FUN_141527280())
         return 0;
-    if (reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae20(p) != 0)
+    if (reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae20(reinterpret_cast<__int64>(p)) != 0)
         return 1;
     return 0;
 }
@@ -2039,7 +2027,7 @@ int MyPC::FUN_141527920(void* p)
 {
     if (!FUN_141527280())
         return 0;
-    return reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae90(p);
+    return reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae90(reinterpret_cast<__int64>(p));
 }
 MS2_REPLACE_METHOD(0x141527920, MyPC, FUN_141527920, 58, 0x0A28BAB2);
 
@@ -2123,7 +2111,7 @@ int MyPC::FUN_141527c50(int nItemId)
 MS2_REPLACE_METHOD(0x141527c50, MyPC, FUN_141527c50, 420, 0x91669C66);
 
 // @0x141527e00
-int MyPC::FUN_141527e00()
+int MyPC::HasNoHome()
 {
     if (m_sp1618 == 0)
         return 1;
@@ -2131,7 +2119,7 @@ int MyPC::FUN_141527e00()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141527E00, MyPC, FUN_141527e00, 84, 0x692E77E2);
+MS2_REPLACE_METHOD(0x141527E00, MyPC, HasNoHome, 84, 0x692E77E2);
 
 // @0x141527e60
 int MyPC::FUN_141527e60()
@@ -2156,7 +2144,7 @@ int MyPC::FUN_141527ed0()
 {
     if (m_sp1618 == 0)
         return 0;
-    if (FUN_141527e00() != 0)
+    if (HasNoHome() != 0)
         return 0;
     if (m_sp1618->m_nMapId != 0 || m_sp1618->m_nPlotId != 0)
         return 1;
@@ -2173,9 +2161,9 @@ MS2_REPLACE_METHOD(0x141527F60, MyPC, FUN_141527f60, 17, 0x732A24F6);
 
 // The map of the house.
 // @0x141527f80
-int MyPC::FUN_141527f80(int* pMapId)
+int MyPC::GetHomeMapId(int* pMapId)
 {
-    if (FUN_141527e00() == 0)
+    if (HasNoHome() == 0)
     {
         Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         MS2Ptr<Unk_MyPCComp1618> spHouse(FUN_141523c50());
@@ -2184,14 +2172,14 @@ int MyPC::FUN_141527f80(int* pMapId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141527F80, MyPC, FUN_141527f80, 149, 0x84F75207);
+MS2_REPLACE_METHOD(0x141527F80, MyPC, GetHomeMapId, 149, 0x84F75207);
 
 // The position of the house plot (when the house is on the current map).
 // @0x141528020
 int MyPC::FUN_141528020(efd::Point3& kPos)
 {
     kPos = efd::Point3::ZERO;
-    if (FUN_141527e00() == 0)
+    if (HasNoHome() == 0)
     {
         Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         MS2Ptr<Unk_MyPCComp1618> spHouse(FUN_141523c50());
@@ -2200,7 +2188,7 @@ int MyPC::FUN_141528020(efd::Point3& kPos)
             if (((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060() == spHouse->m_nMapId)
             {
                 Unk_MyPCComp1618* pHouse = spHouse.operator->();
-                if (spSvc.FUN_1401cd1a0()->FUN_1410d33a0(pHouse->m_nPlotId, kPos) != 0)
+                if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410d33a0(pHouse->m_nPlotId, reinterpret_cast<Vector3*>(&kPos)) != 0)
                     return 1;
             }
         }
@@ -2227,7 +2215,7 @@ MS2_REPLACE_METHOD(0x141528160, MyPC, FUN_141528160, 84, 0x1A1055F6);
 // @0x1415281c0
 CStringW MyPC::FUN_1415281c0()
 {
-    if (FUN_141527e00() == 0)
+    if (HasNoHome() == 0)
     {
         Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         MS2Ptr<Unk_MyPCComp1618> spHouse(FUN_141523c50());
@@ -2240,14 +2228,14 @@ MS2_REPLACE_METHOD(0x1415281C0, MyPC, FUN_1415281c0, 355, 0x1EBC3119);
 
 // The house name.
 // @0x141528330
-CStringW MyPC::FUN_141528330()
+CStringW MyPC::GetHomeName()
 {
     Unk_MyPCComp1618* pHouse = FUN_141523c50();
     if (pHouse == 0)
         return CStringW(L"");
     return pHouse->m_strName;
 }
-MS2_REPLACE_METHOD(0x141528330, MyPC, FUN_141528330, 125, 0x95244E52);
+MS2_REPLACE_METHOD(0x141528330, MyPC, GetHomeName, 125, 0x95244E52);
 
 // Enter the home convenience state with nKind (get off the ride first).
 // @0x1415283c0
@@ -2278,7 +2266,7 @@ int MyPC::FUN_1415283c0(int nArg)
             return 0;
         }
         NiPoint3 kDir = vfunc_20();
-        FUN_14166d8b0(kDir.z);
+        SetTargetYaw(kDir.z);
         vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
         vfunc_59(0x36, new StateHomeConvenientData(nKind), 0, 0);
     }
@@ -2315,7 +2303,7 @@ int MyPC::FUN_1415286a0()
             return 0;
         }
         NiPoint3 kDir = vfunc_20();
-        FUN_14166d8b0(kDir.z);
+        SetTargetYaw(kDir.z);
         vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
         vfunc_59(0x36, new StateHomeConvenientData(nKind), 0, 0);
     }
@@ -2346,7 +2334,7 @@ void MyPC::FUN_141524a80(bool bForce)
         (&m_kStateCtl)->vfunc_0();
     if (!m_b15d6)
     {
-        if (vfunc_18().z < ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd37e0().z)
+        if (vfunc_18().z < ((class Unk_MyPCWorld*)WorldService::GetInstance())->GetBoundsMin().z)
         {
             m_b15d6 = 1;
             bForce = true;
@@ -2377,7 +2365,7 @@ void MyPC::FUN_141524a80(bool bForce)
     spNew->m_vel3c = m_pos98;
     spNew->m_pos20 = vfunc_18();
     spNew->m_dir2c = vfunc_20();
-    spNew->m_f58 = FUN_14166da40();
+    spNew->m_f58 = GetTargetYaw();
     spNew->m_pos48 = m_posBF4;
     spNew->m_n54 = reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30();
     spNew->m_nAC = nTick;
@@ -2396,7 +2384,7 @@ void MyPC::FUN_141524a80(bool bForce)
             if (pObj != 0)
             {
                 efd::Point3 kObjPos;
-                pEntity->FUN_1409618c0(0xfd95ca52, kObjPos);
+                reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kObjPos));
                 spNew->m_str88 = strName;
                 spNew->m_pos78 = vfunc_18() - kObjPos;
             }
@@ -2409,9 +2397,9 @@ void MyPC::FUN_141524a80(bool bForce)
                 if (bRideable && (nKind == 9 || nKind == 8))
                 {
                     efd::Point3 kPropPos;
-                    pEntity->FUN_1409618c0(0xfd95ca52, kPropPos);
+                    reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
                     Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-                    if (spSvc.FUN_1401cd1a0()->FUN_1410b8ab0(kPropPos) && vfunc_99(0) == 0)
+                    if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kPropPos)) && vfunc_99(0) == 0)
                     {
                         if (FUN_1409f7ca0()->FUN_14168a9b0(pEntity, vfunc_18()))
                             spNew->m_nA0 = FUN_1408a13d0(kPropPos);
@@ -2579,9 +2567,9 @@ float FUN_1417ec0d0(PCBase* pCaster, MS2Ptr<CSkillRecord> spRecord);   // states
 class Unk_MyPCActorRegistry
 {
 public:
-    NiActorManager* FUN_140999440(const egf::EntityID& kId); // NULL when not loaded
 };
-Unk_MyPCActorRegistry* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 float FUN_141b6fee0(NiSequenceData* pSeqData, const NiFixedString& kKey, float fDivisor);   // a text key's time
 
 // Send the skill's cooldown: the cast time scaled by the attack speed, or the times of the motion's text keys
@@ -2606,7 +2594,7 @@ void MyPC::FUN_141525ff0(MS2Ptr<CSkillRecord> spRecord, float fElapsed)
         do
         {
             Unk_MyPCSkillMotion* pMotion = spRecord->FUN_141759830();
-            NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(FUN_14123c460());
+            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_MyPCActorRegistry*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
             if (pMotion == 0 || pMgr == 0)
                 break;
             unsigned int nSeq = pMgr->FindSequenceID(pMotion->m_strSeq);
@@ -2800,7 +2788,7 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
     FUN_141676060(reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
     vfunc_19(kPos);
     vfunc_21(kRot);
-    FUN_14166d8b0(kRot.z);
+    SetTargetYaw(kRot.z);
     if (FUN_14166d220() != 0)
     {
         ::FUN_141240730(FUN_14166d220());
@@ -2811,7 +2799,7 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
     {
         spRidee->vfunc_19(kPos);
         spRidee->vfunc_21(kRot);
-        spRidee->FUN_14166d8b0(kRot.z);
+        spRidee->SetTargetYaw(kRot.z);
         Unk_PCBaseBody* pBody = spRidee->FUN_14166d220();
         if (pBody != 0)
         {
@@ -2824,7 +2812,7 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2 && bFlyCamera != 0)
     {
         static float s_fVelocity = FUN_1401d3200()->CameraVelocityInPortalMove.Read();
-        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCameraCtl*>(reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520());
         Unk_CameraFlyBy kFlyBy;
         kFlyBy.m_nKind = 1;
         kFlyBy.m_fDuration = (kOldPos - kPos).Length() / s_fVelocity;
@@ -2857,7 +2845,7 @@ void MyPC::FUN_141528c90(efd::Point3 kPos, efd::Point3 kDir)
     pRidee->FUN_141676060(reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
     pRidee->vfunc_19(kPos);
     pRidee->vfunc_21(kDir);
-    pRidee->FUN_14166d8b0(kDir.z);
+    pRidee->SetTargetYaw(kDir.z);
     if (pRidee->FUN_14166d220() != 0) {
         ::FUN_141240730(pRidee->FUN_14166d220());
         ::FUN_140cfaf30(::FUN_141240f20(pRidee->FUN_14166d220()));
@@ -2873,20 +2861,20 @@ int MyPC::FUN_141529620()
 MS2_REPLACE_METHOD(0x141529620, MyPC, FUN_141529620, 17, 0xACFFB766);
 
 // @0x141529640
-PCBase* MyPC::FUN_141529640()
+PCBase* MyPC::FindTalkableNpc()
 {
-    PCBase* pNpc = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(2, FUN_1401d3200()->TalkableDistance.Get(400.0f),
-        FUN_1401d3200()->TalkableFrontOnly.Read(), 1);
+    PCBase* pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(2, FUN_1401d3200()->TalkableDistance.Get(400.0f),
+        FUN_1401d3200()->TalkableFrontOnly.Read(), 1));
     if (!pNpc)
-        pNpc = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(1, FUN_1401d3200()->TalkableDistance.Get(400.0f),
-            FUN_1401d3200()->TalkableFrontOnly.Read(), 1);
+        pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(1, FUN_1401d3200()->TalkableDistance.Get(400.0f),
+            FUN_1401d3200()->TalkableFrontOnly.Read(), 1));
     return pNpc;
 }
 // @0x1415293b0
 void MyPC::SendFunctionCube()
 {
     if (FUN_1409331e0()->GetStateChanged() != 0)
-        FUN_1409331e0()->FUN_14138b170();
+        FUN_1409331e0()->SendStates();
     if (FUN_14166c930() == 0x29)
     {
         StateUseFurniture* pState = dynamic_cast<StateUseFurniture*>(FUN_14166ccb0());
@@ -2912,7 +2900,7 @@ void MyPC::FUN_1415294f0(int nObjectId, __int64 nExp)
         return;
     if (nObjectId != 0)
     {
-        Unk_MyPCExpSource* pSource = static_cast<Unk_MyPCExpSource*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(nObjectId));
+        Unk_MyPCExpSource* pSource = static_cast<Unk_MyPCExpSource*>(reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(nObjectId)));
         if (pSource)
         {
             pSource->FUN_141094dc0(nExp);
@@ -2961,7 +2949,7 @@ void MyPC::vfunc_94(int nObjectId)
     int bValid;
     if (nObjectId != 0 && (bValid = 1))   // the exe stores and tests a constant 1 here
     {
-        PCBase* pTarget = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1200(nObjectId);
+        PCBase* pTarget = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1200(nObjectId));
         if (pTarget)
         {
             bool bFace = true;
@@ -3033,9 +3021,9 @@ void MyPC::vfunc_53(float fDelta)
     if (m_pObserved)
     {
         if (m_pObserved->FUN_141674bc0() && reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60())
-            reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(0, 0);
+            reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(0), 0);
         else if (!m_pObserved->FUN_141674bc0() && !reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60())
-            reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(m_pObserved, 0);
+            reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(m_pObserved), 0);
     }
     if (m_spShadow)
     {
@@ -3065,9 +3053,9 @@ int MyPC::FUN_141529a50(int nNpcId)
 {
     PCBase* pNpc = 0;
     if (nNpcId == 0)
-        pNpc = FUN_141529640();
+        pNpc = FindTalkableNpc();
     else
-        pNpc = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(nNpcId);
+        pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(nNpcId));
     if (!pNpc)
         return 0;
     ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b1fcf0(pNpc->FUN_14123c580());
@@ -3195,7 +3183,7 @@ void MyPC::SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStr
 {
     if (FUN_141529ae0(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060(), nA, nB, 0) == 0)
         return;
-    FUN_1409331e0()->FUN_14138bf00(0x19, nD, 0);
+    FUN_1409331e0()->AddTrigger((CGuideManager::TriggerType)0x19, nD, 0);
     Unk_PayloadNames kMove;
     kMove.a = DAT_143ab2870;
     kMove.b = nD;
@@ -3287,7 +3275,7 @@ void MyPC::FUN_14152b8d0(__int64 nItemUid)
         return;
     }
     // the summon is carried as the item's id value
-    vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->FUN_140526a50()), 1), 0, 0);
+    vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->GetItemUid()), 1), 0, 0);
 }
 MS2_REPLACE_METHOD(0x14152b8d0, MyPC, FUN_14152b8d0, 424, 0xB2896AD2);
 
@@ -3318,9 +3306,9 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
         FUN_141275260(0x654, 1, 0);
         return;
     }
-    if (spItem->FUN_140527710() > (unsigned short)vfunc_78())
+    if (spItem->GetRequiredLevel() > (unsigned short)vfunc_78())
     {
-        FUN_1412751f0(FUN_140938ae0(CStringW(L"s_pet_error_summon_level_limit"), spItem->FUN_140527710()), 1, 0);
+        FUN_1412751f0(FUN_140938ae0(CStringW(L"s_pet_error_summon_level_limit"), spItem->GetRequiredLevel()), 1, 0);
         return;
     }
     if (((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_nA8 == 0)
@@ -3337,7 +3325,7 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
             FUN_1412751f0(GetStringCommonByKey(strKey), 1, 0);
         return;
     }
-    vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->FUN_140526a50()), 0), 0, 0);
+    vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->GetItemUid()), 0), 0, 0);
 }
 MS2_REPLACE_METHOD(0x14152B2D0, MyPC, FUN_14152b2d0, 1311, 0x9ABACFC8);
 
@@ -3362,12 +3350,12 @@ void MyPC::vfunc_120(MS2Ptr<RideOnAction> spAction)
         }
         if (FUN_1416764a0()->GetData()->m_nSeats > 1)
         {
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e2d);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f2d);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec8);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x2711);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f76);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec3);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e2d);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f2d);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ec8);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x2711);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f76);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ec3);
         }
     }
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0xc, 1);
@@ -3507,7 +3495,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
             float fRange = fFind + 20.0f;
             if (::FUN_14165c1b0(this, &spHold->m_nTargetId, spHold->m_strTargetName, fRange) != 0)
             {
-                PCBase* pTarget = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1290(spHold->m_nTargetId);
+                PCBase* pTarget = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1290(spHold->m_nTargetId));
                 if (pTarget == 0)
                     return;
                 if (pTarget->GetClassID() == 0x6200003 && pTarget->FUN_1416764a0() != 0)
@@ -3677,7 +3665,7 @@ MS2_REPLACE_METHOD(0x14152dee0, MyPC, SendRequestRideMode3, 143, 0x264E7D90);
 // @0x14152df80
 void MyPC::SendRequestRideMode4()
 {
-    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(this, 1);
+    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(this), 1);
     COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
     packet.Encode1(4);
     FUN_140710590(packet);
@@ -3742,7 +3730,7 @@ void MyPC::FUN_14152a4a0(PCBase* pTarget)
     UIPvPObserverDialog* pObserver = MyPCDialog<UIPvPObserverDialog>(0x4e96);
     if (pObserver && pObserver->FUN_141924630())
         ((class Unk_MyPCad4b90*)FUN_140ad4b90())->FUN_141863460(0.0f);
-    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(pTarget, 0);
+    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(pTarget), 0);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(1);
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));
     if (pExpBar)
@@ -3762,7 +3750,7 @@ MS2_REPLACE_METHOD(0x14152A4A0, MyPC, FUN_14152a4a0, 396, 0x27797A65);
 void MyPC::FUN_14152a960()
 {
     m_pObserved = 0;
-    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(this, 1);
+    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(this), 1);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(0);
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));
     if (pExpBar)
@@ -3771,7 +3759,7 @@ void MyPC::FUN_14152a960()
     if (pObserve)
     {
         pObserve->FUN_141a735d0(L"");
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e8a);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e8a);
     }
     UIPvPObserverDialog* pObserver = MyPCDialog<UIPvPObserverDialog>(0x4e96);
     if (pObserver)
@@ -3791,7 +3779,7 @@ MS2_REPLACE_METHOD(0x14152A960, MyPC, FUN_14152a960, 290, 0x402A4FC1);
 // box was already answered), and a mounted player gets off the ride before the summon.
 void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
 {
-    MS2Ptr<Unk_PetRow> spPet = FUN_14052d210()->FUN_1407290f0(spItem->FUN_140527840()->FUN_14053dc60());
+    MS2Ptr<Unk_PetRow> spPet = FUN_14052d210()->FUN_1407290f0(spItem->FUN_140527840()->GetPetId());
     if (spPet == 0)
         return;
     int nNpcId = spPet->FUN_140728820();
@@ -3809,7 +3797,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         FUN_1412751f0(strText, 1, 0);
         return;
     }
-    if (bConfirmed == 0 && spItem->FUN_140527930()->FUN_140635100() != 0
+    if (bConfirmed == 0 && spItem->FUN_140527930()->HasBindingRule() != 0
         && spItem->FUN_140527930()->FUN_140635120() == 0)
     {
         // summoning binds the pet: confirm first
@@ -3817,7 +3805,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strSummonBindPet);
         if (spBox)
         {
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01700(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
@@ -3830,25 +3818,25 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         if (FUN_1416764d0() != 0)
         {
             MS2Ptr<RideOffActionSummonPetOn> spAction(new RideOffActionSummonPetOn(0));
-            spAction->m_n28 = spItem->FUN_140526a50();
+            spAction->m_n28 = spItem->GetItemUid();
             spAction->m_n30 = 0;
             SendRequestRideMode1(spAction);
         }
         else
-            FUN_14152b2d0(spItem->FUN_140526a50());
+            FUN_14152b2d0(spItem->GetItemUid());
     }
-    else if (nSummoned == spItem->FUN_140526a50())
+    else if (nSummoned == spItem->GetItemUid())
         SendRequestPet(nSummoned);
     else
     {
         if (FUN_1416764d0() != 0)
         {
             MS2Ptr<RideOffActionSummonPetTransfer> spAction(new RideOffActionSummonPetTransfer(0));
-            spAction->m_n28 = spItem->FUN_140526a50();
+            spAction->m_n28 = spItem->GetItemUid();
             SendRequestRideMode1(spAction);
         }
         else
-            FUN_14152b8d0(spItem->FUN_140526a50());
+            FUN_14152b8d0(spItem->GetItemUid());
     }
 }
 MS2_REPLACE_METHOD(0x14152AA90, MyPC, FUN_14152aa90, 2102, 0x48DF18E4);
@@ -3866,13 +3854,13 @@ void MyPC::FUN_14152a360(PCBase* pTarget)
     reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af9b40(FUN_1401d3200()->ConstructionGuideCamDistance.Read());
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2)
     {
-        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(pTarget, 0);
-        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(pTarget), 0);
+        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCameraCtl*>(reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520());
         pCtl->FUN_14183c3b0(-fZoomVelocity);
         pCtl->FUN_14183cc80(0);
     }
     else
-        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(pTarget, 1);
+        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(pTarget), 1);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(1);
 }
 MS2_REPLACE_METHOD(0x14152A360, MyPC, FUN_14152a360, 301, 0xE622FBE9);
@@ -3892,8 +3880,8 @@ void MyPC::FUN_14152a700(PCBase* pTarget)
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bbbda0();
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2)
     {
-        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(this, 0);
-        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(this), 0);
+        Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCameraCtl*>(reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520());
         pCtl->FUN_14183c3b0(fZoomVelocity);
         pCtl->FUN_14183cc80(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3e00());
         Unk_CameraFlyBy kFlyBy;
@@ -3909,7 +3897,7 @@ void MyPC::FUN_14152a700(PCBase* pTarget)
         reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed750(2, 1);
     }
     else
-        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(this, 1);
+        reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(this), 1);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(0);
 }
 MS2_REPLACE_METHOD(0x14152A700, MyPC, FUN_14152a700, 590, 0x52A01046);
@@ -4131,7 +4119,7 @@ MS2_REPLACE_METHOD(0x14152EE60, MyPC, FUN_14152ee60, 309, 0xA4DF11E6);
 // @0x14152efa0
 CItem* MyPC::FUN_14152efa0(__int64 nItemUid, __int64* pOwner)
 {
-    Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1530(DAT_143af25f0))));
+    Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<efd::IBase*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pPC == 0)
         return 0;
     Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
@@ -4152,7 +4140,7 @@ MS2_REPLACE_METHOD(0x14152EFA0, MyPC, FUN_14152efa0, 408, 0x53442F11);
 // @0x14152f140
 void MyPC::FUN_14152f140(__int64 nOwnerId)
 {
-    Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1530(nOwnerId))));
+    Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<efd::IBase*>(WorldService::GetInstance()->FUN_141bd1530(nOwnerId)))));
     if (pPC == 0)
         return;
     Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
@@ -4170,7 +4158,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
         int nReason;
         CStringW strName;
         if (g_143ab2a90.FUN_140a66200(pItem, &nReason, strName) == 0 && (nReason == 4 || nReason == 5))
-            FUN_140714f90()->SendFittingDoll(nOwnerId, pItem->FUN_140526a50());
+            FUN_140714f90()->SendFittingDoll(nOwnerId, pItem->GetItemUid());
     }
     COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
     packet.Encode1(10);
@@ -4184,7 +4172,7 @@ MS2_REPLACE_METHOD(0x14152F140, MyPC, FUN_14152f140, 630, 0xB5C6F78E);
 void MyPC::FUN_14152f3c0()
 {
     ATL::CAtlList<efd::SmartPointer<GameObject> > aObjs(10);
-    ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1750(aObjs);
+    ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1750(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&aObjs));
     Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     for (POSITION pos = aObjs.GetHeadPosition(); pos != 0; aObjs.GetNext(pos))
     {
@@ -4211,7 +4199,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
     if (FUN_14166ce30() != 0 && (nMode == 1 || nMode == 2))
         return 0;
     Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-    spSvc.FUN_1401cd1a0()->FUN_1410cd440();
+    reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410cd440();
     bool bFree = false;
     if (DAT_143ae0fb4 != 0)
         bFree = true;
@@ -4219,9 +4207,9 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
         bFree = true;
     if (!bFree)
     {
-        if (spSvc.FUN_1401cd1a0()->FUN_1410cdd80(vfunc_18(), vfunc_20(), 0.0f, DAT_143ab2398) == 0)
+        if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410cdd80(vfunc_18(), vfunc_20(), 0.0f, DAT_143ab2398) == 0)
         {
-            spSvc.FUN_1401cd1a0()->FUN_1410d6590(0x3c);
+            reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410d6590(0x3c);
             return 0;
         }
     }
@@ -4557,9 +4545,9 @@ MS2_REPLACE_METHOD(0x1415302E0, MyPC, FUN_1415302e0, 1040, 0x6BAA0AD5);
 // @0x141530200
 void MyPC::FUN_141530200()
 {
-    if (FUN_141530290() == 0)
+    if (GetActiveCubeCraft() == 0)
         return;
-    if (FUN_141530290()->FUN_1410aa1f0() == 0)
+    if (GetActiveCubeCraft()->FUN_1410aa1f0() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::RequestSetCraftMode), 0);
     packet.Encode1(0);
@@ -4570,7 +4558,7 @@ MS2_REPLACE_METHOD(0x141530200, MyPC, FUN_141530200, 128, 0x3E56095B);
 
 // The cube craft controller while in the cube craft mode.
 // @0x141530290
-Unk_PCCubeCraft* MyPC::FUN_141530290()
+Unk_PCCubeCraft* MyPC::GetActiveCubeCraft()
 {
     if (FUN_14166ce30() != 0)
         return 0;
@@ -4578,7 +4566,7 @@ Unk_PCCubeCraft* MyPC::FUN_141530290()
         return 0;
     return GetCubeCraft();
 }
-MS2_REPLACE_METHOD(0x141530290, MyPC, FUN_141530290, 60, 0x717F35CD);
+MS2_REPLACE_METHOD(0x141530290, MyPC, GetActiveCubeCraft, 60, 0x717F35CD);
 
 // Reset the debug switches.
 // @0x1415308d0
@@ -4665,7 +4653,7 @@ void MyPC::FUN_14152dbc0()
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spCast->m_nItemUid);
         if (spItem.get() != 0)
         {
-            int nRideeId = ((CItemData*)spItem->FUN_140527840())->FUN_14053dd80();
+            int nRideeId = ((CItemData*)spItem->FUN_140527840())->GetRideeId();
             Unk_MyPCRideePtr spRidee = FUN_1407844b0(nRideeId);
             if (spRidee.FUN_1409f78a0() != 0)
             {
@@ -4676,7 +4664,7 @@ void MyPC::FUN_14152dbc0()
                 }
                 MS2Ptr<RideOnActionUseItem> spAction(new RideOnActionUseItem());
                 spAction->m_n1c = nRideeId;
-                spAction->m_n38 = spItem->FUN_140526a50();
+                spAction->m_n38 = spItem->GetItemUid();
                 spAction->m_b28 = reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_14124ab20()->m_b2;
                 COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                 packet.COutPacket::WriteUInt8(0);
@@ -4710,7 +4698,7 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
         FUN_141275260(0x655, 1, 0);
         return;
     }
-    int nRideeId = spItem->FUN_140527840()->FUN_14053dd80();
+    int nRideeId = spItem->FUN_140527840()->GetRideeId();
     Unk_MyPCRideePtr spRidee = FUN_1407844b0(nRideeId);
     if (spRidee.FUN_1409f78a0() != 0)
     {
@@ -4728,8 +4716,8 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
             if (!((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bcb210())
                 bOk = 0;
             if (bOk != 0)
-                vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->FUN_140526a50()), 0), 0, 0);
-            else if (spItem->FUN_140528930())
+                vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->GetItemUid()), 0), 0, 0);
+            else if (spItem->IsExpired())
                 FUN_141275260(0xe1, 1, 0);
             else if (spItem->FUN_140525ca0() != 0 && ::FUN_141658f30(this) == 0)
                 FUN_141275260(0xe2, 1, 0);
@@ -4764,13 +4752,13 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
                 {
                     Unk_MyPCRideAlongReq kReq;
                     kReq.m_nRideeId = nRideeId;
-                    kReq.m_nItemUid = spItem->FUN_140526a50();
+                    kReq.m_nItemUid = spItem->GetItemUid();
                     COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                     packet.COutPacket::WriteUInt8(2);
                     kReq.FUN_1401fcc90(packet);
                     FUN_140710590(packet);
                 }
-                else if (spItem->FUN_140528930())
+                else if (spItem->IsExpired())
                     FUN_141275260(0xe1, 1, 0);
                 else if (spItem->FUN_140525ca0() != 0 && ::FUN_141658f30(this) == 0)
                     FUN_141275260(0xe2, 1, 0);
@@ -4800,7 +4788,7 @@ void MyPC::FUN_141530db0()
         }
         std::list<Unk_MyPCDropItem*> lstItems;
         std::list<Unk_MyPCDropItem*> lstMesos;
-        ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1ed0(&lstItems, &lstMesos, 0, 1, 0);
+        ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1ed0(reinterpret_cast<std::list<Unk_WsC_GameObj*>*>(&lstItems), reinterpret_cast<std::list<Unk_WsC_GameObj*>*>(&lstMesos), 0, 1, 0);
         for (std::list<Unk_MyPCDropItem*>::iterator it = lstItems.begin(); it != lstItems.end(); ++it)
         {
             Unk_MyPCDropItem* pDrop = *it;
@@ -4819,7 +4807,7 @@ void MyPC::FUN_141530db0()
         if (((Unk_MyPCBuffMgr*)FUN_14166d240())->FUN_141682fe0(0x493e3))
         {
             FUN_1415310e0(lstMesos);
-            Unk_MyPCDropItem* pNear = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1d10(1, 0);
+            Unk_MyPCDropItem* pNear = reinterpret_cast<Unk_MyPCDropItem*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1d10(1, 0));
             if (pNear != 0)
             {
                 if (pNear->FUN_141190640(((Unk_MyPCBuffMgr*)FUN_14166d240())->FUN_141683100(0x493e3)) != 0)
@@ -4827,7 +4815,7 @@ void MyPC::FUN_141530db0()
             }
             else
             {
-                Unk_MyPCDropItem* pFar = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1d10(1, 1);
+                Unk_MyPCDropItem* pFar = reinterpret_cast<Unk_MyPCDropItem*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1d10(1, 1));
                 if (pFar != 0)
                 {
                     FUN_141275260(0x45, 1, 1);
@@ -4963,7 +4951,7 @@ void MyPC::vfunc_127(CItem* pItem, int n)
 {
     if (pItem == 0)
         return;
-    if (((CItemData*)pItem->FUN_140527840())->FUN_14053ec50() != 0)
+    if (((CItemData*)pItem->FUN_140527840())->GetItemPreset() != 0)
     {
         PC::vfunc_127(pItem, n);
         ((class Unk_MyPCItemEvents*)FUN_140a6a840())->vfunc_25(pItem->FUN_1405276c0());
@@ -4976,7 +4964,7 @@ void MyPC::vfunc_128(CItem* pItem, int n)
 {
     if (pItem == 0)
         return;
-    if (((CItemData*)pItem->FUN_140527840())->FUN_14053ec50() != 0)
+    if (((CItemData*)pItem->FUN_140527840())->GetItemPreset() != 0)
     {
         PC::vfunc_128(pItem, n);
         g_143ab2a90.FUN_140a674c0(MS2Ptr<CItem>(pItem));
@@ -4994,12 +4982,12 @@ void MyPC::vfunc_112(void* p, int n)
     {
         UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
         if (pInfo != 0)
-            pInfo->FUN_1419f1820();
+            pInfo->PlayHit();
     }
     Unk_MyPCUpperHpBar* pHpBar = FUN_14096e340(0x4e3d);
     if (pHpBar != 0)
     {
-        PCBase* pActor = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(n);
+        PCBase* pActor = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(n));
         if (pActor != 0 && ((class CNpc*)(class PCBase*)(pActor))->FUN_141092ff0() != 0 && pActor->FUN_14166ce30() == 0)
             pHpBar->FUN_141b4c510(pActor, n);
     }
@@ -5032,7 +5020,7 @@ int MyPC::FUN_1415271e0(PCBase* pActor, Unk_MyPCSkillUse* pSkill)
         return 1;
     if (pSkill->m_nKind == 1 || pSkill->m_nKind == 2)
         return 1;
-    if (FUN_1416749a0()->FUN_1409701d0(3) != 0)
+    if (FUN_1416749a0()->HasEnabledWithEventBuffType(3) != 0)
         return 1;
     return 0;
 }

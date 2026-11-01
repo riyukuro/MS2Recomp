@@ -476,7 +476,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     if (spProduct == 0)
         return;
     Unk_MeratOid oid;
-    spProduct->FUN_1409bc6a0(&oid);
+    spProduct->GetProductOID(&oid);
     unsigned char* pInfo = (unsigned char*)&spItem->m_info;
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
         spItem = ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d578d0(oid);

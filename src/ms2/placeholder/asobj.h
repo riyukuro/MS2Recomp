@@ -105,12 +105,12 @@ public:
     unsigned int FUN_1422bc3b0(const char* sz);
     unsigned int FUN_1422bc420(const wchar_t* sz);
     unsigned int FUN_1422bc490(Scaleform::GFx::Value v);                 // (v by value: destroyed here)
-    Scaleform::GFx::Value FUN_1422bc530();                               // pop()
-    Scaleform::GFx::Value FUN_1422bc580();                               // shift()
-    unsigned int FUN_1422bc5d0();                                        // element count ("length")
+    Scaleform::GFx::Value Pop();                               // pop()
+    Scaleform::GFx::Value Shift();                               // shift()
+    unsigned int GetLength();                                        // element count ("length")
     void FUN_1422bc630();                                                // remove every element (Value::ClearElements)
     void FUN_1422bc660(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
-    Scaleform::GFx::Value FUN_1422bc6b0(unsigned nIndex);                // the element at an index (merat market buy rows)
+    Scaleform::GFx::Value GetElement(unsigned nIndex);                // the element at an index (merat market buy rows)
     void FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element if the index is in range (uiclosetdialog.cpp)
     // the element at an index, converted
     void FUN_1422bc780(unsigned nIndex, int& nOut);

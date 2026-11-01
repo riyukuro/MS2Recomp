@@ -28,12 +28,12 @@ public:
     int FUN_140dba220();
     int FUN_140dba240();
     int FUN_140dba260();
-    void FUN_140dba280(CInPacket* pPacket);                 // reads the stat table (0x23 stats x 3 kinds)
+    void ReadStats(CInPacket* pPacket);                 // reads the stat table (0x23 stats x 3 kinds)
     MS2Ptr<CItem> FUN_140dba560(int nGemType);              // the first item of m_aItems whose gem has the type
-    MS2Ptr<CItem> FUN_140dba700(Unk_InventoryEquipSlot nSlot);  // the item worn in a slot (m_mapEquip0)
+    MS2Ptr<CItem> GetEquipItemSet0(Unk_InventoryEquipSlot nSlot);  // the item worn in a slot (m_mapEquip0)
     MS2Ptr<CItem> FUN_140dba790(Unk_InventoryEquipSlot nSlot);  // (m_mapEquip1)
     MS2Ptr<CItem> FUN_140dba820(Unk_InventoryEquipSlot nSlot);  // (m_mapEquip2)
-    MS2Ptr<CItem> FUN_140dba8b0(int nKind, Unk_InventoryEquipSlot nSlot);    // one of the above by kind
+    MS2Ptr<CItem> GetEquipItemByKind(int nKind, Unk_InventoryEquipSlot nSlot);    // one of the above by kind
     void FUN_140dba990(ATL::CAtlArray<MS2Ptr<CItem> >& aItems);  // appends every item of m_mapEquip0
     int FUN_140dbaa10();                                    // FUN_140526bd0 of the item in slot 5
 

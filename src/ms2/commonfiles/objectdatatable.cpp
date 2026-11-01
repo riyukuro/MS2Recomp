@@ -17,6 +17,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
@@ -24,7 +32,6 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -89,13 +96,13 @@ void CObjectDataTable::Reload()
 // @0x14070c800
 void CObjectDataTable::LoadDisplays(Unk_140165cf0* pRoot)
 {
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("display"); pNode != 0; pNode = pNode->FUN_140168650("display"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("display")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("display")))
     {
         int nId = 0;
         DisplayPtr spDisplay(new Display);
-        FUN_1408731e0(pNode, "id", nId);
-        spDisplay->m_strActionKey = FUN_14015f710(pNode, "actionkey", CString(""));
-        spDisplay->m_strUi = FUN_14015f710(pNode, "ui", CString(""));
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
+        spDisplay->m_strActionKey = Unk_ReadString((class Unk_XmlNode*)(pNode), "actionkey", CString(""));
+        spDisplay->m_strUi = Unk_ReadString((class Unk_XmlNode*)(pNode), "ui", CString(""));
         m_map.SetAt(nId, spDisplay);
     }
 }

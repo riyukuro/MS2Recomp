@@ -11,8 +11,8 @@
 #include "notifybinding.h"
 #include "dragslot.h"
 #include "hook/ms2hook.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);                                  // the bind data of a name (null if none)
 
 // @0x142301060
 NotifyBinding::NotifyBinding(Unk_NotifyContext* pContext)
@@ -28,7 +28,7 @@ void NotifyBinding::CreateBindingImpl(const Params& params)
     const char* szName = params.pArgs[0].GetString();
     const Scaleform::GFx::Value& vTarget = params.pArgs[1];
     const Scaleform::GFx::Value& vData = params.pArgs[2];
-    NotifyContext::BindData* pData = FUN_1422c8e90(szName);
+    NotifyContext::BindData* pData = Unk_NotifyContext::FUN_1422c8e90(szName);
     if (pData != NULL)
     {
         pData->FUN_1422c8cb0(vData);
@@ -43,7 +43,7 @@ void NotifyBinding::DeleteBindingImpl(const Params& params)
 {
     const char* szName = params.pArgs[0].GetString();
     const Scaleform::GFx::Value& vData = params.pArgs[2];
-    NotifyContext::BindData* pData = FUN_1422c8e90(szName);
+    NotifyContext::BindData* pData = Unk_NotifyContext::FUN_1422c8e90(szName);
     if (pData != NULL)
     {
         if (params.pArgs[2].IsNull() || vData == pData->FUN_1422c8d40())

@@ -30,11 +30,11 @@ template<class Map> void CopyEnchantMap(Map& to,const Map& from) {
 
 // @0x1405caed0
 CItemOption::CItemOption(unsigned nItemId) : m_nItemId(nItemId) {
-    FUN_1405cb110();
+    ClearAll();
 }
 
 // @0x1405caf90
-MS2Ptr<CItemOption> CItemOption::FUN_1405caf90() {
+MS2Ptr<CItemOption> CItemOption::Clone() {
     MS2Ptr<CItemOption> spCopy(new CItemOption(m_nItemId));
     for (int i=0;i<5;i++) {
         CopyEnchantMap(spCopy->m_aStat[i],m_aStat[i]);
@@ -45,7 +45,7 @@ MS2Ptr<CItemOption> CItemOption::FUN_1405caf90() {
 }
 
 // @0x1405cb110
-void CItemOption::FUN_1405cb110() {
+void CItemOption::ClearAll() {
     for (int i=0;i<5;i++) {
         m_aStat[i].RemoveAll();
         m_aSpecial[i].RemoveAll();
@@ -54,21 +54,21 @@ void CItemOption::FUN_1405cb110() {
 }
 
 // @0x1405cb190
-void CItemOption::FUN_1405cb190(int nGroup) {
+void CItemOption::ClearGroup(int nGroup) {
     if (nGroup<0 || nGroup>=5) return;
     m_aStat[nGroup].RemoveAll();
     m_aSpecial[nGroup].RemoveAll();
 }
 
 // @0x1405cb200
-bool CItemOption::FUN_1405cb200(int nGroup, int nStat, Unk_EnchantPtr<BaseOption> spOption) {
+bool CItemOption::TrySetStatOption(int nGroup, int nStat, Unk_EnchantPtr<BaseOption> spOption) {
     if (!spOption->HasValue()) return false;
     m_aStat[nGroup].SetAt(nStat,spOption);
     return true;
 }
 
 // @0x1405cb2a0
-bool CItemOption::FUN_1405cb2a0(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseOption> spOption) {
+bool CItemOption::TrySetSpecialOption(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseOption> spOption) {
     if (!spOption->HasValue()) return false;
     m_aSpecial[nGroup].SetAt(reinterpret_cast<const Unk_SocketSpecialStat&>(nStat),spOption);
     return true;
@@ -90,27 +90,27 @@ int CItemOption::FUN_1405cb380() {
 }
 
 // @0x1405cb3a0
-int CItemOption::FUN_1405cb3a0(unsigned nType) {
+int CItemOption::SumStatValue(unsigned nType) {
     int nSum=0;
     for (size_t i=0;i<5;i++) {
-        Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb760((int)i,nType);
+        Unk_EnchantPtr<BaseOption> spOption=GetStatOption((int)i,nType);
         if (spOption.get()!=0) nSum+=spOption->GetValue();
     }
     return nSum;
 }
 
 // @0x1405cb440
-int CItemOption::FUN_1405cb440(unsigned nType) {
+int CItemOption::SumSpecialValue(unsigned nType) {
     int nSum=0;
     for (size_t i=0;i<5;i++) {
-        Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb800((int)i,nType);
+        Unk_EnchantPtr<BaseOption> spOption=GetSpecialOption((int)i,nType);
         if (spOption.get()!=0) nSum+=spOption->GetValue();
     }
     return nSum;
 }
 
 // @0x1405cb4e0
-std::pair<Unk_StatType, int> CItemOption::FUN_1405cb4e0(int nGroup) const {
+std::pair<Unk_StatType, int> CItemOption::GetFirstStat(int nGroup) const {
     if (m_aStat[nGroup].IsEmpty()) return std::make_pair((Unk_StatType)-1,0);
     Unk_StatType eStat=(Unk_StatType)m_aStat[nGroup].GetKeyAt(m_aStat[nGroup].GetStartPosition());
     Unk_EnchantPtr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(m_aStat[nGroup].GetStartPosition());
@@ -119,7 +119,7 @@ std::pair<Unk_StatType, int> CItemOption::FUN_1405cb4e0(int nGroup) const {
 }
 
 // @0x1405cb620
-std::pair<Unk_SocketSpecialStat, int> CItemOption::FUN_1405cb620(int nGroup) const {
+std::pair<Unk_SocketSpecialStat, int> CItemOption::GetFirstSpecialStat(int nGroup) const {
     if (m_aSpecial[nGroup].IsEmpty()) return std::make_pair((Unk_SocketSpecialStat)0,0);
     Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(m_aSpecial[nGroup].GetStartPosition());
     Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(m_aSpecial[nGroup].GetStartPosition());
@@ -128,26 +128,26 @@ std::pair<Unk_SocketSpecialStat, int> CItemOption::FUN_1405cb620(int nGroup) con
 }
 
 // @0x1405cb760
-Unk_EnchantPtr<BaseOption> CItemOption::FUN_1405cb760(int nGroup, int nStat) {
+Unk_EnchantPtr<BaseOption> CItemOption::GetStatOption(int nGroup, int nStat) {
     Unk_EnchantMap::CPair* pPair=m_aStat[nGroup].Lookup(nStat);
     if (pPair==NULL) return Unk_EnchantPtr<BaseOption>(0);
     return pPair->m_value;
 }
 
 // @0x1405cb800
-Unk_EnchantPtr<BaseOption> CItemOption::FUN_1405cb800(int nGroup, unsigned nType) {
+Unk_EnchantPtr<BaseOption> CItemOption::GetSpecialOption(int nGroup, unsigned nType) {
     Unk_SocketSpecialMap::CPair* pPair=m_aSpecial[nGroup].Lookup(reinterpret_cast<const Unk_SocketSpecialStat&>(nType));
     if (pPair==NULL) return Unk_EnchantPtr<BaseOption>(0);
     return pPair->m_value;
 }
 
 // @0x1405cb8a0
-Unk_EnchantMap& CItemOption::FUN_1405cb8a0(int nGroup) {
+Unk_EnchantMap& CItemOption::GetStatMap(int nGroup) {
     return m_aStat[nGroup];
 }
 
 // @0x1405cb8d0
-Unk_SocketSpecialMap& CItemOption::FUN_1405cb8d0(int nGroup) {
+Unk_SocketSpecialMap& CItemOption::GetSpecialMap(int nGroup) {
     return m_aSpecial[nGroup];
 }
 
@@ -172,12 +172,12 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
 }
 
 // @0x1405cbbb0
-int CItemOption::FUN_1405cbbb0(int nGroup) {
+int CItemOption::GetGroupOptionCount(int nGroup) {
     return (int)(m_aStat[nGroup].GetCount()+m_aSpecial[nGroup].GetCount());
 }
 
 // @0x1405cbc10
-BOOL CItemOption::FUN_1405cbc10(int nGroup) const {
+BOOL CItemOption::HasAbilitySpecial(int nGroup) const {
     const Unk_SocketSpecialMap& kMap=m_aSpecial[nGroup];
     for (POSITION pos=kMap.GetStartPosition();pos;kMap.GetNext(pos)) {
         if (FUN_14081d830(kMap.GetKeyAt(pos))!=0) return TRUE;
@@ -186,12 +186,12 @@ BOOL CItemOption::FUN_1405cbc10(int nGroup) const {
 }
 
 // @0x1405cbc90
-int CItemOption::FUN_1405cbc90() {
+int CItemOption::HasSpecialAbility() {
     const Unk_SpecialAbilityMap& kMap=g_kSpecialAbilityMap;
     for (POSITION pos=kMap.GetStartPosition();pos;kMap.GetNext(pos)) {
         Unk_SocketSpecialStat eStat=kMap.GetKeyAt(pos);
         for (size_t i=0;i<5;i++) {
-            Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb800((int)i,eStat);
+            Unk_EnchantPtr<BaseOption> spOption=GetSpecialOption((int)i,eStat);
             if (spOption.get()!=0) return 1;
         }
     }
@@ -199,13 +199,13 @@ int CItemOption::FUN_1405cbc90() {
 }
 
 // @0x1405cbd70
-void CItemOption::FUN_1405cbd70(ATL::CAtlMap<unsigned, unsigned short>& kOut) {
+void CItemOption::CollectSpecialAbilityValues(ATL::CAtlMap<unsigned, unsigned short>& kOut) {
     const Unk_SpecialAbilityMap& kMap=g_kSpecialAbilityMap;
     for (POSITION pos=kMap.GetStartPosition();pos;kMap.GetNext(pos)) {
         Unk_SocketSpecialStat eStat=kMap.GetKeyAt(pos);
         unsigned nAbility=kMap.GetValueAt(pos);
         for (size_t i=0;i<5;i++) {
-            Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb800((int)i,eStat);
+            Unk_EnchantPtr<BaseOption> spOption=GetSpecialOption((int)i,eStat);
             if (spOption.get()!=0) {
                 unsigned short nValue=0;
                 kOut.Lookup(nAbility,nValue);
@@ -217,7 +217,7 @@ void CItemOption::FUN_1405cbd70(ATL::CAtlMap<unsigned, unsigned short>& kOut) {
 }
 
 // @0x1405cbeb0
-void CItemOption::FUN_1405cbeb0(COutputStream& kOut) {
+void CItemOption::Serialize(COutputStream& kOut) {
     for (unsigned i=0;i<5;i++) {
         kOut.WriteInt16((short)m_aStat[i].GetCount());
         for (POSITION pos=m_aStat[i].GetStartPosition();pos;m_aStat[i].GetNext(pos)) {
@@ -238,8 +238,8 @@ void CItemOption::FUN_1405cbeb0(COutputStream& kOut) {
 }
 
 // @0x1405cc190
-void CItemOption::FUN_1405cc190(CInputStream& kIn) {
-    FUN_1405cb110();
+void CItemOption::Deserialize(CInputStream& kIn) {
+    ClearAll();
     for (unsigned i=0;i<5;i++) {
         unsigned nCount=(unsigned short)kIn.ReadInt16();
         for (unsigned j=0;j<nCount;j++) {
@@ -260,12 +260,12 @@ void CItemOption::FUN_1405cc190(CInputStream& kIn) {
 }
 
 // @0x1405cc410
-bool CItemOption::FUN_1405cc410() {
+bool CItemOption::HasGroup4Options() {
     return m_aStat[4].GetCount()!=0 || m_aSpecial[4].GetCount()!=0;
 }
 
 // @0x1405cc480
-bool CItemOption::FUN_1405cc480(MS2Ptr<CItemOption> spSource) {
+bool CItemOption::CopyGroup2From(MS2Ptr<CItemOption> spSource) {
     if (spSource==0) return false;
     m_aStat[2].RemoveAll();
     m_aSpecial[2].RemoveAll();
@@ -275,7 +275,7 @@ bool CItemOption::FUN_1405cc480(MS2Ptr<CItemOption> spSource) {
 }
 
 // @0x1405cc590
-BOOL CItemOption::FUN_1405cc590(int nGroup, const Unk_EnchantMap& kStat, const Unk_SocketSpecialMap& kSpecial) {
+BOOL CItemOption::SetGroup(int nGroup, const Unk_EnchantMap& kStat, const Unk_SocketSpecialMap& kSpecial) {
     m_aStat[nGroup].RemoveAll();
     m_aSpecial[nGroup].RemoveAll();
     CopyEnchantMap(m_aStat[nGroup],kStat);
@@ -287,14 +287,14 @@ BOOL CItemOption::FUN_1405cc590(int nGroup, const Unk_EnchantMap& kStat, const U
 bool CItemOption::FUN_1405cc640(int nGroup, CItemOption* pOther) const {
     for (POSITION pos=m_aStat[nGroup].GetStartPosition();pos;m_aStat[nGroup].GetNext(pos)) {
         int nStat=m_aStat[nGroup].GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spOther=pOther->FUN_1405cb760(nGroup,nStat);
+        Unk_EnchantPtr<BaseOption> spOther=pOther->GetStatOption(nGroup,nStat);
         if (spOther==0) return false;
         Unk_EnchantPtr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(pos);
         if (!spOption->FUN_140266ee0(spOther)) return false;
     }
     for (POSITION pos=m_aSpecial[nGroup].GetStartPosition();pos;m_aSpecial[nGroup].GetNext(pos)) {
         Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spOther=pOther->FUN_1405cb800(nGroup,eStat);
+        Unk_EnchantPtr<BaseOption> spOther=pOther->GetSpecialOption(nGroup,eStat);
         if (spOther==0) return false;
         Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(pos);
         if (!spOption->FUN_140266ee0(spOther)) return false;

@@ -30,6 +30,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/gfxmanager.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local views of exe objects ----
 
@@ -42,19 +43,17 @@ public:
 };
 
 // A button (the wrapper class of 0x140acd6e0).
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422c1fe0(unsigned int bEnabled);          // enable / disable
     void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
-    void FUN_1422ce090(int n);                          // set the state
 };
 
 // A check box (the wrapper class of 0x140a58300).
-class Unk_GpCheck : public ASDisplayObject
+class Unk_GpCheck : public ASButton
 {
 public:
-    void FUN_1422ce090(int n);                          // set the checked state
     unsigned char FUN_1422ce0e0();                      // is checked
 };
 
@@ -181,7 +180,6 @@ void FUN_1422e4a50(Unk_WcTitle* p, const CStringW& str);
 void FUN_1422c1fe0(ASMovieClip* p, unsigned int n);
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
-void FUN_1422ce090(Unk_GpCheck* p, int n);
 unsigned char FUN_1422ce0e0(Unk_GpCheck* p);
 int FUN_1422c1340(ASMovieClip* p);
 
@@ -248,7 +246,7 @@ void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned 
     MS2Ptr<ASTextField> spChild = node.FUN_140d01e20(strName);
     if (spChild == 0)
         return;
-    ((class ASTextField*)(class ASTextField*)(spChild.operator->()))->FUN_1422c50e0(n);
+    ((class ASTextField*)(class ASTextField*)(spChild.operator->()))->SetTextColor(n);
 }
 
 // @0x140cff840
@@ -343,10 +341,10 @@ void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel)
     if (!((Scaleform::GFx::Value*)(void*)(pRoot))->IsDisplayObject())
         return;
     ASMovieClip clip(*pRoot, 2);
-    if (static_cast<Unk_NamedClip&>(clip).FUN_1422ba8c0().IsEmpty())
+    if (static_cast<Unk_NamedClip&>(clip).GetName().IsEmpty())
         return;
     clip.vfunc_13(strLabel);
-    if (!clip.FUN_1422ba9f0("numChildren") || !clip.FUN_1422ba9f0("getChildAt"))
+    if (!clip.HasMember("numChildren") || !clip.HasMember("getChildAt"))
         return;
     int nCount = clip.FUN_1422c6670();
     for (int i = 0; i < nCount; i++)
@@ -425,7 +423,7 @@ void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n)
     MS2Ptr<Unk_GpCheck> spChild = node.FUN_140d01ce0(strName);
     if (spChild == 0)
         return;
-    FUN_1422ce090(spChild.operator->(), n);
+    spChild->FUN_1422ce090(n);
 }
 
 // @0x140d00960
@@ -498,7 +496,7 @@ int FUN_140d00e90(const Scaleform::GFx::Value& root, CString strName)
     MS2Ptr<ASTextField> spChild = node.FUN_140d01e20(strName);
     if (spChild == 0)
         return 0;
-    return (unsigned int)(__int64)((class ASTextField*)(class ASTextField*)(spChild.operator->()))->FUN_1422c5970();
+    return (unsigned int)(__int64)((class ASTextField*)(class ASTextField*)(spChild.operator->()))->GetTextWidth();
 }
 
 // @0x140d00fb0
@@ -655,7 +653,7 @@ MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName)
         return MS2Ptr<AScript>(0);
     if (strName.IsEmpty() == true)
         return MS2Ptr<AScript>(0);
-    MS2Ptr<AScript> sp(new AScript(spObj.operator->()->FUN_1422baa20(strName), 2));
+    MS2Ptr<AScript> sp(new AScript(spObj.operator->()->GetMember(strName), 2));
     if (sp == 0 || sp->FUN_1422ba9a0() == true)
         return MS2Ptr<AScript>(0);
     return sp;
@@ -710,12 +708,12 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
     MS2Ptr<T> Unk_Finder::NAME(const Scaleform::GFx::Value& root, const CString& strName)                           \
     {                                                                                                              \
         MS2Ptr<ASDisplayObjectContainer> spCont = FUN_140bc5fc0(m_nMovieId, root);                                 \
-        if (!spCont->FUN_1422ba9f0("getChildByName"))                                                              \
+        if (!spCont->HasMember("getChildByName"))                                                              \
             return MS2Ptr<T>(0);                                                                                   \
         Scaleform::GFx::Value child = spCont->FUN_1422c6b00(strName);                                              \
         if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(child))->IsObject())                                                                                  \
             return CREATE(m_nMovieId, child);                                                                      \
-        if (!spCont->FUN_1422ba9f0("numChildren"))                                                                 \
+        if (!spCont->HasMember("numChildren"))                                                                 \
             return MS2Ptr<T>(0);                                                                                   \
         int nCount = spCont->FUN_1422c6670();                                                                      \
         for (int i = 0; i < nCount; i++)                                                                           \

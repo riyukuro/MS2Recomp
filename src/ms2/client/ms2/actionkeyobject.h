@@ -69,15 +69,15 @@ public:
     Unk_ActionKeyManager();                             // 0x140951c70
     ~Unk_ActionKeyManager();                            // 0x140952e70
     void FUN_140952ef0();                               // per-frame update: pick the current action
-    void FUN_140953310();                               // run the current action
-    bool FUN_140953410();                               // run the current action if it may be run by the key
+    void ActivateCurrentAction();                               // run the current action
+    bool TryActivateCurrentAction();                               // run the current action if it may be run by the key
     int GetCur();                                // the current action type
-    ActionKeyObject* FUN_140953550();                   // the current action
-    void FUN_1409535c0();                               // drop the current action (re-poll in 2 s)
+    ActionKeyObject* GetCurrentAction();                   // the current action
+    void DeactivateCurrent();                               // drop the current action (re-poll in 2 s)
     int IsEnabled();                                // polling enabled
     void SetEnabled(int bEnable);
     void FUN_1409536d0();                               // vfunc_9 of the current action
-    Unk_ActionKeyMap* FUN_140953770();                  // the action set for the player's state
+    Unk_ActionKeyMap* GetActiveActionMap();                  // the action set for the player's state
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -126,13 +126,13 @@ public:
     CStringW vfunc_6() override;
     Unk_AkoTarget vfunc_12() override;
     int FUN_140956110();                                // the portal moves to another field
-    void FUN_140956160(int nTarget, int nPortalId);     // move through the portal by its type
-    void FUN_140956290(int nPortalId);                  // the dungeon room dialog (type 8)
+    void UsePortal(int nTarget, int nPortalId);     // move through the portal by its type
+    void OpenDungeonRoomDialog(int nPortalId);                  // the dungeon room dialog (type 8)
     void SendRoomDungeon();                               // request the home move (type 9)
     void FUN_140956370(unsigned nTarget, unsigned nPortalId);     // move to another field (confirmation box when asked)
     void FUN_1409569a0(int nPortalId, int nMode);       // the dungeon room dialog in a mode (types 0xc, 0xe)
     void FUN_140956a20(int nPortalId, int nArg);        // the dungeon room dialog (type 0x11)
-    void FUN_140956aa0(Cube* pCell, int nTarget, int nPortalId);   // move inside a house
+    void RequestMoveFromCube(Cube* pCell, int nTarget, int nPortalId);   // move inside a house
     bool FUN_140956be0(int nButton, const CMsgBoxData& data);   // the move confirmation box answer
     CStringW FUN_140956e40();                           // the portal's name
 

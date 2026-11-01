@@ -101,7 +101,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
-void FUN_141276180(const CString& a, const CString& b);
+int FUN_141276180(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
 void FUN_141a759b0(void* pDialog);
 void FUN_141a75a20(void* pDialog);
@@ -203,7 +203,7 @@ void PartyVoteCli::vfunc_6(unsigned __int64) {}
 int PartyVoteCli::FUN_140a894c0() const { return kind; }
 
 // @0x140a894e0
-void PartyVoteCli::FUN_140a894e0(unsigned __int64 member, bool accepted)
+void PartyVoteCli::AddVote(unsigned __int64 member, bool accepted)
 {
     if (accepted)
         yes.insert(member);
@@ -213,13 +213,13 @@ void PartyVoteCli::FUN_140a894e0(unsigned __int64 member, bool accepted)
 }
 
 // @0x140a89560
-size_t PartyVoteCli::FUN_140a89560() { return yes.size(); }
+size_t PartyVoteCli::GetYesCount() { return yes.size(); }
 
 // @0x140a89590
-size_t PartyVoteCli::FUN_140a89590() { return no.size(); }
+size_t PartyVoteCli::GetNoCount() { return no.size(); }
 
 // @0x140a895c0
-bool PartyVoteCli::FUN_140a895c0()
+bool PartyVoteCli::HasVoted()
 {
     // the sets are unsigned; the exe passes &DAT_143ab2828 straight to find (no converted temporary)
     if (yes.find(reinterpret_cast<const unsigned __int64&>(DAT_143ab2828)) != yes.end())
@@ -243,7 +243,7 @@ void PartyVoteCli::SendParty(bool vote)
 void PartyVoteCli::vfunc_7(__int64, bool) {}
 
 // @0x140a89720
-CStringW PartyVoteCli::FUN_140a89720() const
+CStringW PartyVoteCli::GetRemainingTimeText() const
 {
     CMsTime end(expires);
     CMsTime now(GetServerTime());
@@ -287,7 +287,7 @@ void PartyVoteKickUserCli::vfunc_2()
 // @0x140a89a00
 CStringW PartyVoteKickUserCli::vfunc_4()
 {
-    return FUN_14028dfa0(L"s_party_vote_title_kick_user", name, reason, FUN_140a89720());
+    return FUN_14028dfa0(L"s_party_vote_title_kick_user", name, reason, GetRemainingTimeText());
 }
 
 // @0x140a89ae0
@@ -321,10 +321,10 @@ void PartyVoteReadyCli::vfunc_2()
         CString strEmpty("");
         FUN_141276180(s_strReadyPopup, strEmpty);
     }
-    if (!FUN_140a895c0())
+    if (!HasVoted())
     {
         Unk_MsgBoxPtr box = FUN_140d74500(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
-                                          Unk_MsgBoxCallback(this, &PartyVoteReadyCli::FUN_140a8a0b0));
+                                          Unk_MsgBoxCallback(this, &PartyVoteReadyCli::OnMessageBoxResult));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02460(1);
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02480(1);
@@ -353,7 +353,7 @@ void PartyVoteReadyCli::vfunc_6(unsigned __int64 member)
 }
 
 // @0x140a8a0b0
-bool PartyVoteReadyCli::FUN_140a8a0b0(int result, const CMsgBoxData& box)
+bool PartyVoteReadyCli::OnMessageBoxResult(int result, const CMsgBoxData& box)
 {
     if (result == 0)
         SendParty(true);
@@ -413,17 +413,17 @@ void* FUN_140a8a720()
 
 MS2_REPLACE_METHOD(0x140A89380, PartyVoteCli, vfunc_1, 149, 0xE53851CF);
 MS2_REPLACE_METHOD(0x140A894C0, PartyVoteCli, FUN_140a894c0, 14, 0x8AEE455B);
-MS2_REPLACE_METHOD(0x140A894E0, PartyVoteCli, FUN_140a894e0, 116, 0x3FCDCE36);
-MS2_REPLACE_METHOD(0x140A89560, PartyVoteCli, FUN_140a89560, 31, 0x46B95FC3);
-MS2_REPLACE_METHOD(0x140A89590, PartyVoteCli, FUN_140a89590, 31, 0xD8882F4A);
-MS2_REPLACE_METHOD(0x140A895C0, PartyVoteCli, FUN_140a895c0, 176, 0xCA3DA8AC);
+MS2_REPLACE_METHOD(0x140A894E0, PartyVoteCli, AddVote, 116, 0x3FCDCE36);
+MS2_REPLACE_METHOD(0x140A89560, PartyVoteCli, GetYesCount, 31, 0x46B95FC3);
+MS2_REPLACE_METHOD(0x140A89590, PartyVoteCli, GetNoCount, 31, 0xD8882F4A);
+MS2_REPLACE_METHOD(0x140A895C0, PartyVoteCli, HasVoted, 176, 0xCA3DA8AC);
 MS2_REPLACE_METHOD(0x140A89680, PartyVoteCli, SendParty, 112, 0xAA2B2CE1);
-MS2_REPLACE_METHOD(0x140A89720, PartyVoteCli, FUN_140a89720, 152, 0x6206D5F9);
+MS2_REPLACE_METHOD(0x140A89720, PartyVoteCli, GetRemainingTimeText, 152, 0x6206D5F9);
 MS2_REPLACE_METHOD(0x140A89820, PartyVoteKickUserCli, vfunc_1, 138, 0xFF14D4C5);
 MS2_REPLACE_METHOD(0x140A898B0, PartyVoteKickUserCli, vfunc_2, 320, 0x37927C83);
 MS2_REPLACE_METHOD(0x140A89F70, PartyVoteReadyCli, vfunc_3, 194, 0x7D9A2807);
 MS2_REPLACE_METHOD(0x140A8A040, PartyVoteReadyCli, vfunc_6, 100, 0x7070D226);
-MS2_REPLACE_METHOD(0x140A8A0B0, PartyVoteReadyCli, FUN_140a8a0b0, 74, 0x70360213);
+MS2_REPLACE_METHOD(0x140A8A0B0, PartyVoteReadyCli, OnMessageBoxResult, 74, 0x70360213);
 MS2_REPLACE_METHOD(0x140A8A100, PartyVoteReadyCli, vfunc_7, 83, 0x567FCC8A);
 MS2_REPLACE(0x140A8A230, FUN_140a8a230, 111, 0xE8E39513);
 MS2_REPLACE(0x140A8A680, FUN_140a8a680, 147, 0xC0BB06FA);

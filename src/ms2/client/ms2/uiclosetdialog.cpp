@@ -233,7 +233,7 @@ template<class T> MS2Ptr<T> Unk_ClCreate(int nMovieId, const Scaleform::GFx::Val
 // @0x140be23c0
 template<class T> MS2Ptr<T> AScript::FUN_140be23c0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ClCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -260,7 +260,7 @@ template<class T> bool CMsgBoxData::GetArg(unsigned nIndex, T& out) const
 void ASObj::FUN_140be2660(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -518,7 +518,7 @@ void UIClosetDialog::OnLoadComplete()
     }
     m_30->Invoke("initData", obj.FUN_1422bb870());
     if (m_tab.get() != 0)
-        m_tab->FUN_1422e31e0(0);
+        m_tab->SetSelectedIndex(0);
 }
 
 // @0x140bdb360
@@ -574,14 +574,14 @@ int UIClosetDialog::vfunc_13()
                     {
                         m_pendingKey->FUN_140be6250(true);
                         m_pendingKey->FUN_140be6230(reinterpret_cast<const unsigned&>(nKey));
-                        __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
+                        __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
                         CStringW strKey = FUN_1409331f0()->FUN_14142d7e0(nKey);
                         if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
                         {
                             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14052bd00(0x84f, strKey), 1);
                             if (box.get() != 0)
                             {
-                                box->FUN_140533ff0(nIndex);
+                                box->Append<int>(nIndex);
                                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnKeyConfirmed));
                                 FUN_140d73c60(box);
                             }
@@ -664,7 +664,7 @@ void UIClosetDialog::vfunc_72()
             MS2Ptr<UICloset::CSlotData> sp = pPair->m_value;
             if (sp == 0)
                 continue;
-            bool bOwned = FindItem(sp->GetItem()->FUN_140526a50()).get() != 0;
+            bool bOwned = FindItem(sp->GetItem()->GetItemUid()).get() != 0;
             sp->SetOwned(bOwned);
             int nKey = pPair->m_key;
             ASSlot slot(2);
@@ -684,7 +684,7 @@ void UIClosetDialog::vfunc_3(void* pItem, bool bRemoved)
         return;
     if (pItem == 0 || bRemoved == true)
         return;
-    __int64 nUid = static_cast<CItem*>(pItem)->FUN_140526a50();
+    __int64 nUid = static_cast<CItem*>(pItem)->GetItemUid();
     InvalidateItem(nUid);
 }
 
@@ -693,7 +693,7 @@ void UIClosetDialog::vfunc_21(void* pItem)
 {
     if (pItem == 0)
         return;
-    __int64 nUid = static_cast<CItem*>(pItem)->FUN_140526a50();
+    __int64 nUid = static_cast<CItem*>(pItem)->GetItemUid();
     InvalidateItem(nUid);
 }
 
@@ -746,8 +746,8 @@ void UIClosetDialog::BuildTabRow(ASObj& obj, MS2Ptr<UICloset::CTab> spTab)
     obj.FUN_1407cbb20("label", spTab->GetName());
     const CStringW& strTooltip = spTab->TooltipText();
     ASTooltip tooltip(2);
-    tooltip.FUN_1409e26b0(strTooltip);
-    tooltip.FUN_1409c6dc0(5);
+    tooltip.ApplyTextTooltip(strTooltip);
+    tooltip.SetTooltipAlign(5);
     obj.FUN_1409adbe0("tooltipData", tooltip.FUN_1422bb870());
     ASDataProvider menu(2);
     {
@@ -772,11 +772,11 @@ void UIClosetDialog::UpdateTabRow(MS2Ptr<ASButton> spButton, MS2Ptr<UICloset::CT
 {
     if (spButton == 0 || spTab == 0)
         return;
-    if (m_tab == 0 || m_tab->FUN_1422e2e00() == 0)
+    if (m_tab == 0 || m_tab->GetDataProvider() == 0)
         return;
     ASObj obj(2);
     BuildTabRow(obj, spTab);
-    m_tab->FUN_1422e2e00()->FUN_1422bc730(nIndex, obj.FUN_1422bb870());
+    m_tab->GetDataProvider()->FUN_1422bc730(nIndex, obj.FUN_1422bb870());
     m_tab->FUN_1422e4060(nIndex);
 }
 
@@ -798,9 +798,9 @@ void UIClosetDialog::BuildSlot(ASSlot& slot, MS2Ptr<UICloset::CSlotData> spSlot,
         MyPC* pPlayer = Unk_ClPlayer();
         slot.FUN_1409c3860(spSlot->GetItem(), pPlayer, 0x44d);
         if (!spSlot->IsOwned())
-            slot.FUN_1409c2710(1);
+            slot.SetDisable(1);
         if (spSlot->IsChanged())
-            slot.FUN_1409c2090(1);
+            slot.SetGrayColor(1);
     }
     else
     {
@@ -939,9 +939,9 @@ void UIClosetDialog::BuildSlots(ASObj& obj)
                 MyPC* pPlayer = Unk_ClPlayer();
                 slot.FUN_1409c3860(sp->GetItem(), pPlayer, 0x44d);
                 if (!sp->IsOwned())
-                    slot.FUN_1409c2710(1);
+                    slot.SetDisable(1);
                 if (sp->IsChanged())
-                    slot.FUN_1409c2090(1);
+                    slot.SetGrayColor(1);
             }
             else
             {
@@ -1025,8 +1025,8 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_closet_ask_save_tab_not_empty"), 0, CStringW(L""));
         if (box.get() != 0)
         {
-            box->FUN_140533ff0(nIndex);
-            box->FUN_140533ff0(nLayer);
+            box->Append<int>(nIndex);
+            box->Append<int>(nLayer);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnSaveConfirmed));
             FUN_140d73c60(box);
         }
@@ -1048,7 +1048,7 @@ void UIClosetDialog::OnClear(const Scaleform::GFx::FunctionHandler::Params& para
     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_closet_ask_clear_tab_not_empty"), 0, CStringW(L""));
     if (box.get() != 0)
     {
-        box->FUN_140533ff0(nIndex);
+        box->Append<int>(nIndex);
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnClearConfirmed));
         FUN_140d73c60(box);
     }
@@ -1136,7 +1136,7 @@ void UIClosetDialog::OnTabChange(const Scaleform::GFx::FunctionHandler::Params& 
 {
     if (m_30 == 0 || m_tab == 0)
         return;
-    int nIndex = m_tab->FUN_1422e3210();
+    int nIndex = m_tab->GetSelectedIndex();
     SelectTab(nIndex);
 }
 
@@ -1213,10 +1213,10 @@ bool UIClosetDialog::OnAddConfirmed(int nResult, const CMsgBoxData& box)
         return true;
     ASObj obj(2);
     BuildTabRow(obj, sp);
-    m_tab->FUN_1422e3460(obj);
+    m_tab->AddItem(obj);
     m_tab->vfunc_18();
     m_tab->vfunc_24(false);
-    m_tab->FUN_1422e31e0(nIndex);
+    m_tab->SetSelectedIndex(nIndex);
     m_30->Invoke("updateTabAddPos", static_cast<unsigned>(Client::Constants::GetInstance()->MaxClosetMaxCount));
     return true;
 }
@@ -1250,7 +1250,7 @@ bool UIClosetDialog::OnRenameConfirmed(int nResult, const CMsgBoxData& box)
         FUN_140202190((unsigned char*)(&rec), packet);
         FUN_140710590(packet);
         sp->SetName(strName);
-        MS2Ptr<ASButton> spButton = m_tab->FUN_1422e32b0(nIndex);
+        MS2Ptr<ASButton> spButton = m_tab->GetButtonAt(nIndex);
         UpdateTabRow(spButton, sp, nIndex);
     }
     return true;
@@ -1325,7 +1325,7 @@ int UIClosetDialog::CurrentTabIndex()
 {
     if (m_tab == 0)
         return -1;
-    return m_tab->FUN_1422e3210();
+    return m_tab->GetSelectedIndex();
 }
 
 // @0x140be0250
@@ -1442,7 +1442,7 @@ MS2Ptr<UICloset::CSlotData> UIClosetDialog::FindSlot(__int64 nUid, int& nIndex)
         MS2Ptr<UICloset::CSlotData> sp = m_slots[i];
         if (sp == 0 || sp->GetItem() == 0)
             continue;
-        if (sp->GetItem()->FUN_140526a50() == nUid)
+        if (sp->GetItem()->GetItemUid() == nUid)
         {
             nIndex = i;
             return sp;

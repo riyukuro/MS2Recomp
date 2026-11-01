@@ -11,6 +11,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers.
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
@@ -21,7 +27,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_1408733e0(void*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177de0(CString&, ATL::CAtlArray<int>&, const char* delimiter);
 Unk_Int3* FUN_1408a85a0(Unk_Int3*, int, int, int);
@@ -90,7 +96,7 @@ void UGCMapPackageInfo::FUN_1408b98f0(void* pXmlNode)
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemID", *(unsigned int*)&static_cast<int&>(m_nItemId));
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemCount", *(unsigned int*)&static_cast<int&>(m_nItemCount));
     CString strPoint;
-    FUN_1408733e0(pXmlNode, "offsetCubePoint3", strPoint);
+    XmlGetAttr((class TiXmlElement*)(pXmlNode), "offsetCubePoint3", strPoint);
     Unk_Int3 tmp;
     FUN_1408ba3b0(&tmp, strPoint);
     m_offsetCubePoint = tmp;
@@ -160,15 +166,15 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
         return UGCMapPackageDataPtr(0);
     UGCMapPackageDataPtr data(new CUGCMapPackageData);
     ((class CCacheData*)(class CCacheData*)(data.get()))->FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ugcmap");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ugcmap"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]", strPath);
         return UGCMapPackageDataPtr(0);
     }
-    FUN_1408733e0(pRoot, "indoorSizeType", data->m_strIndoorSizeType);
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("cube"); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("cube")))
+    XmlGetAttr((class TiXmlElement*)(pRoot), "indoorSizeType", data->m_strIndoorSizeType);
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("cube")); pNode != 0;
+         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("cube"))))
     {
         UGCMapPackageInfoPtr info(new UGCMapPackageInfo);
         info->FUN_1408b98f0(pNode);

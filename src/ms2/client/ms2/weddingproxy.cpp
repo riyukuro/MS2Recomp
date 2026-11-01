@@ -350,7 +350,7 @@ void WeddingHallTicket::Reset()
     m_nBookingCharSN = 0;
     m_strGroom.Empty();
     m_strBride.Empty();
-    m_fee.FUN_14026e7b0();
+    m_fee.Reset();
     m_nReservationCouponId = 0;
 }
 // @0x1408ffb30
@@ -365,7 +365,7 @@ void WeddingHallTicket::Assign(const WeddingHallTicket& other)
     m_nBookingCharSN = other.m_nBookingCharSN;
     m_strGroom = other.m_strGroom;
     m_strBride = other.m_strBride;
-    m_fee.FUN_14026e860(other.m_fee);
+    m_fee.Assign(other.m_fee);
     m_nReservationCouponId = other.m_nReservationCouponId;
 }
 // @0x1408ffc30
@@ -380,7 +380,7 @@ void WeddingHallTicket::Write(COutputStream& out)
     out.WriteInt64(m_nBookingCharSN);
     out.WriteUnicodeString(m_strGroom);
     out.WriteUnicodeString(m_strBride);
-    m_fee.FUN_14026e8c0(out);
+    m_fee.WriteTo(out);
     out.WriteInt32(m_nReservationCouponId);
 }
 // @0x1408ffd80
@@ -395,7 +395,7 @@ void WeddingHallTicket::Read(CInPacket& in)
     m_nBookingCharSN = in.ReadInt64();
     m_strGroom = in.ReadUnicodeString();
     m_strBride = in.ReadUnicodeString();
-    m_fee.FUN_14026e940(in);
+    m_fee.ReadFrom(in);
     m_nReservationCouponId = in.ReadInt32();
 }
 // @0x140900050

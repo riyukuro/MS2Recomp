@@ -49,6 +49,11 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
@@ -56,7 +61,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
@@ -124,14 +129,14 @@ int ChatEmoticonCachedData::LoadEmoticons()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "chatEmoticon", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "chatEmoticon", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
     {
         ChatEmoticonDataPtr spEmoticon(new ChatEmoticonData);
@@ -162,14 +167,14 @@ int ChatEmoticonCachedData::LoadStrings()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "key", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
     {
         unsigned int nId = FUN_140197390(pNode, "id", 0);
@@ -203,14 +208,14 @@ int ChatEmoticonCachedData::LoadCategories()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "chatEmoticonCategory", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "chatEmoticonCategory", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
     {
         ChatEmoticonCategoryDataPtr spCategory(new ChatEmoticonCategoryData);

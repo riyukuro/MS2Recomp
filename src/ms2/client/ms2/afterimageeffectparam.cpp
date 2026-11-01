@@ -19,7 +19,7 @@ class Unk_140165cf0;
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp); they return 0 on success.
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // "#RRGGBB"-style string to colour.
@@ -46,7 +46,7 @@ void CAfterImageEffectParam::vfunc_1(Unk_140165cf0* pNode)
     if (XmlGetAttr((class TiXmlElement*)(pNode), "lightenMode", m_bLightenMode))
         m_bLightenMode = true;
     CString strColor;
-    if (!FUN_1408733e0(pNode, "color", strColor))
+    if (!XmlGetAttr((class TiXmlElement*)(pNode), "color", strColor))
     {
         m_kColor = FUN_140db93e0(strColor);
     }

@@ -9,6 +9,7 @@
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\editbrush.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/ms2recover.h"
 #include <math.h>
 #include <atlcoll.h>
@@ -32,7 +33,7 @@ float FUN_14028aed0(float f);                                       // floorf
 NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
 extern "C" float (__cdecl* __imp_cosf)(float);
-extern Vector3 DAT_143b01a60;                                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // The detach answered by the parent of an instance (slot 37 of the parent, as in cubecraft_2.cpp).
 struct Unk_BrushHandle { void* m_p; };

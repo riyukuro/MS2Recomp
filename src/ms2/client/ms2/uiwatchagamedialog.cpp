@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/triggerservice.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -30,10 +31,9 @@ static CString s_strStun = "stun";
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> WagClickDelegate;
 
 // The action / fold button.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422ce240(const WagClickDelegate& onClick, void* pUserData);
 };
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
@@ -121,7 +121,7 @@ void UIWatchAGameDialog::OnLoadComplete()
     {
         int nIndex = i + 1;
         CString strName = FUN_1402bad60("m_actionButton{0}", &nIndex);
-        m_clips[i] = FUN_140ba7930(strName);
+        m_clips[i] = GetChild<ASMovieClip>(strName);
         if (m_clips[i] == 0)
             continue;
         m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_140acd6e0>("m_button");
@@ -129,7 +129,7 @@ void UIWatchAGameDialog::OnLoadComplete()
             continue;
         m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), FUN_140bb9630(i));
     }
-    m_foldButton = FUN_140bb4b10("m_foldButton");
+    m_foldButton = GetChild<Unk_140acd6e0>("m_foldButton");
     m_foldButton->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
     {
         CStringW strKey(L"s_watchagame_change_camera");

@@ -29,6 +29,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- out-of-unit callees ----
 
@@ -52,14 +53,13 @@ public:
 
                // the local player
 
-struct Unk_MorphConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_MorphConfigFloat { char m_pad[0x58]; };
 struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; float FUN_141473230(); };   // the app framework
 efd::ServiceManager* FUN_140af8310(char* pManager);
 
-float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 extern const NiRTTI Unk_RenderObjectRTTI;                       // 0x143afa7d0
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
 
@@ -81,6 +81,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;      // header st
 // @0x1400f6350
 const NiRTTI CItemMorphController::ms_RTTI("CItemMorphController", &CItemCustomizeController::ms_RTTI);
 #include "ms2/placeholder/header_statics_a.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 static CString s_sortNames2[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill2("skill");
 static CString s_stun2("stun");
@@ -106,7 +107,7 @@ int CItemMorphController::vfunc_3()
     ReadValues();
     ApplyMorph();
     ResetMeshHighlight();
-    m_fWheelStep = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_2d90.FUN_1402bac70();
+    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_2d90)->Read();
     return 1;
 }
 
@@ -278,7 +279,7 @@ void CItemMorphController::vfunc_42(int nIndex, float fValue, NiInterpController
         if (vfunc_22(nIndex) == fValue)
             return;
         const Unk_CustomizeRange* pRange = vfunc_24(nIndex);
-        m_afValue[nIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
+        m_afValue[nIndex] = efd::Clamp(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow = vfunc_22(nIndex);
         for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
             pCtrl->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), fNow, us);

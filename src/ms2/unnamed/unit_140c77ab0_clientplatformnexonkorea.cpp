@@ -75,7 +75,8 @@ extern int DAT_143ab2858;                       // a login value received from t
 void FUN_1414b1980();                           // parses the launch arguments
 DWORD GetTickCountMs2();
 __int64 GetServerTime();                        // the server time
-CStringW FUN_1408116a0(int nStringId, const int& n);                       // FormatStringId<int>
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
 int FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window (C3: returns int)
@@ -188,7 +189,7 @@ void CClientPlatformNexonKorea::vfunc_6()
                 if (nNotice >= 0 && nNotice <= 2) {
                     CMsTime shutdown(g_nShutdownTime);
                     int nHour = shutdown.GetHour();
-                    FUN_1412751f0(FUN_1408116a0(0x9a5, nHour), 1, 1);
+                    FUN_1412751f0(BlockFormat<int>(0x9a5, nHour), 1, 1);
                     g_aShutdownNoticed[nNotice] = 1;
                 }
             }
@@ -309,7 +310,7 @@ void CClientPlatformNexonKorea::vfunc_18(void* a1)
     if (nResult == 0) {
         {
             CStringW strCaption(L"Error");
-            FUN_141b6fcf0(FUN_1408116a0(0xb21, 0x5b), strCaption, MB_ICONHAND);
+            FUN_141b6fcf0(BlockFormat<int>(0xb21, 0x5b), strCaption, MB_ICONHAND);
         }
         PostQuitMessage(0);
     }

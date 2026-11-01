@@ -91,7 +91,6 @@ template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int n
                                              const T& first, const U& second);      // filesystem.cpp 0x1403a1310
 
 // The background effect play request is the NoticeMessage of effectquery.h (ctor 0x140a52ef0, dtor 0x1405a89e0).
-class Unk_BgEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
 
 // The URN text of an asset id (m_urn.c_str() read straight off the AssetID, +8).
 // @0x14099ad40
@@ -150,7 +149,7 @@ bool Unk_AnimTable::FUN_140996bc0(GameObject* pObj)
         unsigned int nKeys = 0;
         NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
         const char* pszName = pSeqData->GetName();
-        FUN_140997710(CString(pszName));
+        EnsureItem(CString(pszName));
         ItemPtr spItem;
         if (m_items.Lookup(pszName, spItem))
         {
@@ -159,7 +158,7 @@ bool Unk_AnimTable::FUN_140996bc0(GameObject* pObj)
                 const NiFixedString& kText = pKeys[k].GetText();
                 if (kText == "start" || kText == "end")
                     continue;
-                FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
+                AddItemText(ItemPtr(spItem), CString((const char*)kText));
             }
             pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq);
             pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq);
@@ -207,7 +206,7 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
     NiTextKeyExtraData* pTextKeys = pSeqData->GetTextKeys();
     unsigned int nKeys = 0;
     NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
-    FUN_140997710(CString(strName));
+    EnsureItem(CString(strName));
     ItemPtr spItem;
     if (m_items.Lookup((const char*)strName, spItem))
     {
@@ -216,7 +215,7 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
             const NiFixedString& kText = pKeys[k].GetText();
             if (kText == "start" || kText == "end")
                 continue;
-            FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
+            AddItemText(ItemPtr(spItem), CString((const char*)kText));
         }
         pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq);
         pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq);
@@ -251,7 +250,7 @@ void Unk_AnimTable::FUN_1409975a0(GameObject* pObj)
 }
 
 // @0x140997650
-float Unk_AnimTable::FUN_140997650(CString strName)
+float Unk_AnimTable::GetHeightFromGround(CString strName)
 {
     ItemPtr spItem;
     m_items.Lookup((const char*)strName, spItem);
@@ -261,7 +260,7 @@ float Unk_AnimTable::FUN_140997650(CString strName)
 }
 
 // @0x140997710
-bool Unk_AnimTable::FUN_140997710(CString strName)
+bool Unk_AnimTable::EnsureItem(CString strName)
 {
     ItemPtr spItem(0);
     if (!m_items.Lookup((const char*)strName, spItem))
@@ -294,7 +293,7 @@ bool Unk_AnimTable::FUN_1409977f0(CString strName, CString strText)
 }
 
 // @0x140997990
-bool Unk_AnimTable::FUN_140997990(ItemPtr spItem, CString strText)
+bool Unk_AnimTable::AddItemText(ItemPtr spItem, CString strText)
 {
     if (spItem.IsNull())
         return false;
@@ -423,7 +422,7 @@ void CGlobalKeyTextCallback::TextKeyEvent(NiActorManager* pkManager, NiActorMana
             if (pPC != 0)
                 kRequest.SetActor(pPC->FUN_14123c580());
         }
-        reinterpret_cast<Unk_BgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
     }
 }
 

@@ -61,11 +61,10 @@ public:
 };
 
 // A button child of the page.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASMovieClip
 {
 public:
     int FUN_1422c2030();                                        // is enabled
-    void FUN_1422c1fe0(unsigned int bEnabled);                  // enable
 };
 
 // The hair apply effect request.
@@ -79,11 +78,13 @@ struct Unk_IEEffectRequest
     void* m_pad_10[(0x70 - 0x10) / 8];
 };
 MS2_CHECK_SIZE(Unk_IEEffectRequest, 0x70);
-class Unk_IEEffectMgr { public: void FUN_1411a4a00(Unk_IEEffectRequest* pRequest); };
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
 public:
+    NoticeMessage();
+    ~NoticeMessage();
     void SetActor(int);
+    void* m_storage[14];
 };
 struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
@@ -181,7 +182,6 @@ public:
     int FUN_1422b9fd0(int);
 };
 void FUN_14151f200();                           // no arguments
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void* FUN_1405a8e70(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
 class CItemCustomizeController   // C3: member view for the former free stand-ins
@@ -244,7 +244,7 @@ void UIItemEditDialog::OnLoadComplete()
     if (pPc)
     {
         m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
-        m_198->FUN_140cd25c0(6);
+        m_198->SelectSlot(6);
     }
     m_1a8 = FUN_140cd47b0(0x4ef2);
     if (m_30.get())
@@ -277,7 +277,7 @@ void UIItemEditDialog::vfunc_15()
     if (m_198.get())
         m_198->FUN_140cd1bf0();
     if (m_1a8)
-        m_1a8->FUN_1418dda30(m_198->FUN_140cd27f0() == 0);
+        m_1a8->FUN_1418dda30(m_198->IsDragging() == 0);
 }
 
 // The answers of the scene (OnExit) and of the message box (errorEdit).
@@ -299,7 +299,7 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             int nResult = pMsg->FUN_1422b8a10();
             CStringW strTag = pMsg->FUN_1422b8f40();
             FUN_14151f200();
-            if (nResult == 0 && FUN_1403b3c40(strTag, L"errorEdit"))
+            if (nResult == 0 && operator==(strTag, L"errorEdit"))
                 FUN_1419bd860();
             return 1;
         }
@@ -363,11 +363,11 @@ void UIItemEditDialog::vfunc_24(void* p)
     if (pPc->FUN_14166c930() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x4c);
-    Unk_IEEffectRequest effect;
-    effect.m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
-    effect.m_n08 = 1;
-    ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&effect))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580());
-    reinterpret_cast<Unk_IEEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&effect);
+    NoticeMessage effect;   // C3: was Unk_IEEffectRequest
+    ((Unk_IEEffectRequest&)(effect)).m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
+    ((Unk_IEEffectRequest&)(effect)).m_n08 = 1;
+    ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&((Unk_IEEffectRequest&)(effect))))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580());
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_IEEffectRequest&)(effect))));
     FUN_1419bdb50(0);
     m_1b0 = 0;
 }
@@ -448,7 +448,7 @@ bool UIItemEditDialog::FUN_1419bd710()
     if (FUN_1419bd7a0() == false)
         FUN_1419bd860();
     else
-        m_198->FUN_140cd25c0(6);
+        m_198->SelectSlot(6);
     return true;
 }
 
@@ -474,7 +474,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
     if (m_198 == 0)
         return false;
     if (m_198->FUN_140cd2a00() != 0)
-        m_198->FUN_140cd22f0(6);
+        m_198->RestoreSlot(6);
     Unk_IEField* pField = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
@@ -486,7 +486,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
 void UIItemEditDialog::OnSave()
 {
     if (m_198.get())
-        m_198->FUN_140cd2280(6);
+        m_198->CommitSlot(6);
     FUN_1419bdb50(0);
     m_1b0 = 1;
 }
@@ -495,7 +495,7 @@ void UIItemEditDialog::OnSave()
 void UIItemEditDialog::OnReset()
 {
     if (m_198.get())
-        m_198->FUN_140cd22f0(6);
+        m_198->RestoreSlot(6);
     FUN_1419bdb50(0);
 }
 
@@ -526,7 +526,7 @@ void UIItemEditDialog::FUN_1419bdb50(int bEnable)
 // @0x1419bdb90
 int UIItemEditDialog::FUN_1419bdb90()
 {
-    if (MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10("m_save"))
+    if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
         return spSave->FUN_1422c2030();
     return 0;
 }
@@ -534,13 +534,13 @@ int UIItemEditDialog::FUN_1419bdb90()
 // @0x1419bdc40
 void UIItemEditDialog::FUN_1419bdc40(int bEnable)
 {
-    if (MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10("m_save"))
+    if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
         spSave->FUN_1422c1fe0(bEnable);
 }
 
 // @0x1419bdce0
 void UIItemEditDialog::FUN_1419bdce0(int bEnable)
 {
-    if (MS2Ptr<Unk_140acd6e0> spReset = FUN_140bb4b10("m_reset"))
+    if (MS2Ptr<Unk_140acd6e0> spReset = GetChild<Unk_140acd6e0>("m_reset"))
         spReset->FUN_1422c1fe0(bEnable);
 }

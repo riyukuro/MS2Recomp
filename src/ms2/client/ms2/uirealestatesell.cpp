@@ -59,7 +59,8 @@ public:
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
 class Unk_HoService;
 struct Unk_EntityAppFramework;
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_HoServicePtr
 {
 public:
@@ -135,7 +136,7 @@ void UIRealEstateSell::vfunc_67()
 {
     vfunc_47(1);
     if (m_178 != 0)
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e76);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e76);
     UIDialog::vfunc_67();
 }
 
@@ -202,7 +203,7 @@ void UIRealEstateSell::FUN_141ab6230()
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (pPC->FUN_141527e00() != 0)
+    if (pPC->HasNoHome() != 0)
         return;
     if (pPC->FUN_141523c50() == 0)
         return;
@@ -312,15 +313,16 @@ int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 
 extern int DAT_143ae2b34;                                           // 1: the markers are MS2 flag bits instead of extra data (instancing)
 extern NiFixedString DAT_143ae51c0;
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 void FUN_1410865e0(class NiObjectNET*, class NiFixedString const&, bool);   // C3: was FUN_1410865e0
 void FUN_141568d80(NiAVObject* pkObject);
 
@@ -335,7 +337,7 @@ void FUN_141ab6e80(NiAVObject* pRoot)
         }
         else
         {
-            Unk_SceneWalker it(pRoot);
+            Unk_SceneWalker it((NiAVObject*)(pRoot));
             NiAVObject* pObject;
             while ((pObject = it.Next(true)) != 0)
             {

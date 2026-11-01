@@ -7,6 +7,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <map>
 #include <iterator>
 #include "ms2/ms2recover.h"
@@ -171,8 +172,7 @@ void Unk_DkLessAnchor(const void* a, const void* b, const int& c, const int& d)
 }
 
 // Sorts entities by their distance to the player (the lambda's capture) from the banner-style point property 0xfd95ca52.
-extern Vector3 DAT_143b01a60;                       // the zero point
-void FUN_1409618c0(Unk_Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 float FUN_140966f00(NiPoint3 kA, Vector3 kB);       // the distance
 
 struct Unk_DkNearer
@@ -185,8 +185,8 @@ struct Unk_DkNearer
         NiPoint3 kPlayer = m_pPlayer->vfunc_18();
         Vector3 kPosA = DAT_143b01a60;
         Vector3 kPosB = DAT_143b01a60;
-        FUN_1409618c0(kA.FUN_1408a9280(), 0xfd95ca52, &kPosA);
-        FUN_1409618c0(kB.FUN_1408a9280(), 0xfd95ca52, &kPosB);
+        reinterpret_cast<egf::Entity*>(kA.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosA));
+        reinterpret_cast<egf::Entity*>(kB.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosB));
         float fA = FUN_140966f00(kPlayer, kPosA);
         float fB = FUN_140966f00(kPlayer, kPosB);
         return fA < fB;

@@ -54,6 +54,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // The premium market sort names (a header static every includer of the market headers gets a copy of).
 static CString s_premiumSortNames[8] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -72,7 +73,6 @@ extern int DAT_1439f4840;                       // the default code page
 
 void Unk_140657820();                           // invalid call of an empty Delegate (shared)
 void* FUN_140aadf80();                          // the platform service
-HWND FUN_14209c720(void* pPlatform);            // its main window
 void FUN_1418fe1c0(const CStringA& strUrl);     // open an url in the external browser
 CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
@@ -179,7 +179,7 @@ void COffscreenWebBrowser::FUN_1416119d0(const CefRefPtr<CefBrowser>& browser)
 MS2_REPLACE_METHOD(0x1416119D0, COffscreenWebBrowser, FUN_1416119d0, 141, 0);
 
 // @0x141611a70
-void COffscreenWebBrowser::FUN_141611a70()
+void COffscreenWebBrowser::Close()
 {
     if (Unk_LockGuard guard = m_lock) {
     } else {
@@ -192,30 +192,30 @@ void COffscreenWebBrowser::FUN_141611a70()
     m_browser->GetHost()->CloseBrowser(true);
     m_hIMC = NULL;
 }
-MS2_REPLACE_METHOD(0x141611A70, COffscreenWebBrowser, FUN_141611a70, 255, 0);
+MS2_REPLACE_METHOD(0x141611A70, COffscreenWebBrowser, Close, 255, 0);
 
 // @0x141611b80
-void COffscreenWebBrowser::FUN_141611b80()
+void COffscreenWebBrowser::StopLoad()
 {
     if (m_browser.get() == NULL) {
         return;
     }
     m_browser->StopLoad();
 }
-MS2_REPLACE_METHOD(0x141611B80, COffscreenWebBrowser, FUN_141611b80, 76, 0);
+MS2_REPLACE_METHOD(0x141611B80, COffscreenWebBrowser, StopLoad, 76, 0);
 
 // @0x141611be0
-void COffscreenWebBrowser::FUN_141611be0(bool bShow)
+void COffscreenWebBrowser::SetFocus(bool bShow)
 {
     if (m_browser.get() == NULL) {
         return;
     }
     m_browser->GetHost()->SendFocusEvent(bShow);
 }
-MS2_REPLACE_METHOD(0x141611BE0, COffscreenWebBrowser, FUN_141611be0, 158, 0);
+MS2_REPLACE_METHOD(0x141611BE0, COffscreenWebBrowser, SetFocus, 158, 0);
 
 // @0x141611c90
-void COffscreenWebBrowser::FUN_141611c90(const CStringA& strUrl)
+void COffscreenWebBrowser::LoadUrl(const CStringA& strUrl)
 {
     if (m_browser.get() == NULL) {
         return;
@@ -223,10 +223,10 @@ void COffscreenWebBrowser::FUN_141611c90(const CStringA& strUrl)
     CefRefPtr<CefFrame> frame = m_browser->GetMainFrame();
     frame->LoadURL((const char*)strUrl);
 }
-MS2_REPLACE_METHOD(0x141611C90, COffscreenWebBrowser, FUN_141611c90, 179, 0);
+MS2_REPLACE_METHOD(0x141611C90, COffscreenWebBrowser, LoadUrl, 179, 0);
 
 // @0x141611d50
-void COffscreenWebBrowser::FUN_141611d50(int nCommand)
+void COffscreenWebBrowser::Navigate(int nCommand)
 {
     if (m_browser.get() == NULL) {
         return;
@@ -243,10 +243,10 @@ void COffscreenWebBrowser::FUN_141611d50(int nCommand)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x141611D50, COffscreenWebBrowser, FUN_141611d50, 194, 0);
+MS2_REPLACE_METHOD(0x141611D50, COffscreenWebBrowser, Navigate, 194, 0);
 
 // @0x141611e20
-void COffscreenWebBrowser::FUN_141611e20(CefRefPtr<CefProcessMessage> message)
+void COffscreenWebBrowser::SendRendererMessage(CefRefPtr<CefProcessMessage> message)
 {
     m_browser->SendProcessMessage(PID_RENDERER, message);
 }
@@ -318,7 +318,7 @@ void COffscreenWebBrowser::FUN_141612210(unsigned nMsg, WPARAM wParam, LPARAM lP
 MS2_REPLACE_METHOD(0x141612210, COffscreenWebBrowser, FUN_141612210, 435, 0);
 
 // @0x1416123d0
-void COffscreenWebBrowser::FUN_1416123d0(int nWidth, int nHeight)
+void COffscreenWebBrowser::SetViewSize(int nWidth, int nHeight)
 {
     m_nViewWidth = nWidth;
     m_nViewHeight = nHeight;
@@ -333,7 +333,7 @@ void COffscreenWebBrowser::FUN_1416123d0(int nWidth, int nHeight)
     }
     m_browser->GetHost()->WasResized();
 }
-MS2_REPLACE_METHOD(0x1416123D0, COffscreenWebBrowser, FUN_1416123d0, 252, 0);
+MS2_REPLACE_METHOD(0x1416123D0, COffscreenWebBrowser, SetViewSize, 252, 0);
 
 // @0x1416124e0
 void COffscreenWebBrowser::FUN_1416124e0(const char* pszToken, int nWindowType)
@@ -414,7 +414,7 @@ bool COffscreenWebBrowser::FUN_1416129e0()
 MS2_REPLACE_METHOD(0x1416129E0, COffscreenWebBrowser, FUN_1416129e0, 32, 0);
 
 // @0x141612a10
-CefRefPtr<CefBrowserHost> COffscreenWebBrowser::FUN_141612a10()
+CefRefPtr<CefBrowserHost> COffscreenWebBrowser::GetBrowserHost()
 {
     if (m_browser.get() == NULL) {
         return NULL;
@@ -804,10 +804,10 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
 {
     if (message->GetName() == g_szCefMessageImeRequest) {
         if (message->GetArgumentList()->GetBool(0)) {
-            ImmAssociateContext(FUN_14209c720(FUN_140aadf80()), m_hIMC);
+            ImmAssociateContext(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), m_hIMC);
         } else {
-            if (ImmGetContext(FUN_14209c720(FUN_140aadf80())) == m_hIMC) {
-                ImmAssociateContext(FUN_14209c720(FUN_140aadf80()), NULL);
+            if (ImmGetContext(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef()) == m_hIMC) {
+                ImmAssociateContext(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), NULL);
             }
         }
         return true;
@@ -832,7 +832,7 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
             UIAttendGiftDialog* pDialog = FUN_140c053e0(0x4eb8);
             if (pDialog != NULL) {
                 if (nDay != 0) {
-                    pDialog->FUN_14102d5c0(nDay);
+                    pDialog->SetEventId(nDay);
                 }
                 if (pDialog->FUN_141924630() == 0) {
                     pDialog->FUN_141924680();

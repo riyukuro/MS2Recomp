@@ -29,6 +29,7 @@
 #include "ms2/placeholder/fishingmanager.h"
 #include <algorithm>
 #include <stdlib.h>
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // The header statics of the including TU come from header_statics_a.h; then the book's own "open" sound, and the second
 // copy of the header statics the link order puts behind it.
@@ -45,12 +46,10 @@ int FUN_141276180(const CString& strName, const CString& strArg);       // play 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond
-CStringW FUN_1401ceea0(const wchar_t* szFmt, const int& n);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 CStringTable* GetStringTable();
-void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 
 // The record of a fish (the fish table's row).
 class Unk_FbFishRec
@@ -300,8 +299,8 @@ void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     if (pPC == 0)
         return;
     CStringW strText;
-    int nExp = pPC->FUN_141662750(1);
-    int nGrade = pPC->FUN_1416627d0(1);
+    int nExp = pPC->GetMastery(1);
+    int nGrade = pPC->GetMasteryGrade(1);
     if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
     {
         strText = GetStringCommonByKey(L"s_fishing_mastery_tooltip_level_max");
@@ -315,12 +314,12 @@ void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         strText = FUN_1409e9bc0(0xbeb, nCur, nMax);
     }
     ASTooltip tooltip(1, 2);
-    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tooltip.FUN_1409c6e00(300);
-    tooltip.FUN_1409c6e30(60000);
-    tooltip.FUN_1409c6dc0(1);
-    tooltip.FUN_1409c6cb0(strText);
-    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+    tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tooltip.SetOnDelay(300);
+    tooltip.SetOffDelay(60000);
+    tooltip.SetTooltipAlign(1);
+    tooltip.SetText(strText);
+    *pRetVal = tooltip.FUN_1422bb870();
 }
 
 // @0x140f41940
@@ -345,8 +344,8 @@ void UIFishingBookDialog::FUN_140f41a10()
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    int nExp = pPC->FUN_141662750(1);
-    int nGrade = pPC->FUN_1416627d0(1);
+    int nExp = pPC->GetMastery(1);
+    int nGrade = pPC->GetMasteryGrade(1);
     int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
     int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
     int nTitle = FUN_140f42ed0();
@@ -477,7 +476,7 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
     if (Unk_FbTextRef spPage = FUN_140bb4cf0("m_page"))
     {
         int nCur = m_nPage + 1;
-        spPage.FUN_1409b4c70()->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", nCur));
+        spPage.FUN_1409b4c70()->FUN_1422c4cd0(StringFormat<int>(L"{0}", nCur));
     }
     FUN_140f41e90();
 }
@@ -670,7 +669,7 @@ int FUN_140f438b0(const int* pA, const int* pB)
 void ASObj::FUN_140f43b40(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

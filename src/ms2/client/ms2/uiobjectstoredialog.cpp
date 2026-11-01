@@ -29,7 +29,7 @@ class ASDialog : public ASDisplayObject { };
 
 // The inventory dialog (UI id 0x4e2d): the store window is placed next to it.
 class UIInventoryDialog : public UIDialog { };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
 typedef UIMsg Unk_OsUIMsg;
@@ -45,7 +45,6 @@ public:
     OS_V(16) OS_V(17) OS_V(18) OS_V(19) OS_V(20) OS_V(21) OS_V(22) OS_V(23)
 #undef OS_V
     virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                // set the bag id
 private:
     unsigned char m_pad_80[8];
 };
@@ -54,7 +53,6 @@ MS2_CHECK_SIZE(Unk_OsItemBag, 0x88);
 // The bound slot bag of a bag id (StoreSlotBag) and the control state it keeps.
 class Unk_OsBind;
 class Unk_OsSlotBag;
-Unk_OsBind* FUN_1422c8e90(const CString& strBagId);                     // the bound object of the id
 Unk_OsSlotBag* FUN_14180b940(Unk_OsBind* pBind);                        // the slot bag of it (NULL when unbound)
 class DragSlotBag   // C3: member view for the former free stand-ins
 {
@@ -67,6 +65,7 @@ int FUN_1408b6200(int nItemType);                                       // the s
 
 // The object store state (global 0x143ab2d80): the sort button sends packet 0x18 / 8.
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // The item amount shown ("current count" global 0x143ab28f8).
 extern __int64 DAT_143ab28f8;
@@ -144,15 +143,15 @@ int UIObjectStoreDialog::vfunc_65()
 void UIObjectStoreDialog::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0) {
         m_188 = pInv->vfunc_55() == 0 ? 1 : 0;
         if (m_188 == 0) {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0) {
                 Unk_OsUIMsg msg;
-                msg.FUN_1422b82b0("openWindowPos");
-                msg.FUN_1422b7f70(vfunc_48());
+                msg.AddString("openWindowPos");
+                msg.AddInt(vfunc_48());
                 pInv->OnMessage(this, &msg);
             }
         } else {
@@ -248,7 +247,7 @@ int UIObjectStoreDialog::vfunc_oa0_1()
 void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_180));
+        Unk_OsSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_OsBind*>(Unk_NotifyContext::FUN_1422c8e90(m_180)));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -258,7 +257,7 @@ void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_180));
+        Unk_OsSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_OsBind*>(Unk_NotifyContext::FUN_1422c8e90(m_180)));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }

@@ -31,6 +31,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -47,7 +48,9 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's buff set: the knock-back direction.
-class Unk_FallBuff { public: Vector3 FUN_141683290(); };
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_FallBuff { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_FallPointSlots
 {
@@ -109,9 +112,9 @@ void StateFall::vfunc_4(StateData* pData)
         if (pPC != 0)
         {
             CString strRec;
-            bool bHasRec = !FUN_1416561a0(pPC)->FUN_1411eabd0().IsEmpty();
+            bool bHasRec = !reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0().IsEmpty();
             if (bHasRec)
-                strRec = FUN_1416561a0(pPC)->FUN_1411eabd0();
+                strRec = reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0();
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
@@ -163,7 +166,7 @@ void StateFall::vfunc_8(double fTime)
         return;
     Unk_FallBuff* pBuff = (Unk_FallBuff*)m_pOwner->FUN_14166d240();
     reinterpret_cast<Unk_FallPointSlots*>(m_pOwner)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     MS2Ptr<Unk_PCBaseComp_b18> spRec = m_pOwner->vfunc_104(true, false, false);
     if (spRec.get() != 0)
     {

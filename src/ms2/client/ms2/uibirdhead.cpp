@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1418ce5e0-0x1418cf080 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uibirdhead.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uibirdhead.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asgameentity.h"
@@ -12,7 +13,7 @@
 #include "ms2/client/ms2/camera.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Vector3 DAT_143b01a60;                               // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
@@ -139,7 +140,7 @@ void UIBirdHead::vfunc_52()
     if (pClip.get())
     {
         vfunc_8(1);
-        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->FUN_1422bfe00(100.0f);
+        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e78470("setData", m_88, m_98);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e0a8c0("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);

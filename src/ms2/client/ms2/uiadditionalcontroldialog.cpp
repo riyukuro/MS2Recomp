@@ -246,16 +246,16 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             if (strSearch.IsEmpty()) {
                 if (strGroup == "BF") {
                     if (level->IsBuff())
-                        list->FUN_1422dd230(row);
+                        list->AddItem(row);
                 }
                 if (strGroup == "DF") {
                     if (!level->IsBuff())
-                        list->FUN_1422dd230(row);
+                        list->AddItem(row);
                 }
             } else {
                 if (strLabel.Find(strSearch, 0) == -1)
                     continue;
-                list->FUN_1422dd230(row);
+                list->AddItem(row);
             }
         }
     }
@@ -282,10 +282,10 @@ void UIAdditionalControlDialog::FUN_1418b3620()
                 ASObj row(2);
                 row.FUN_1407cbb20("label", item.first);
                 row.FUN_1407cbb20("func", item.second);
-                m_pList->FUN_1422dd230(row);
+                m_pList->AddItem(row);
                 nAdded++;
             }
-            m_pList->FUN_1422c79e0(nWidth, m_pList->FUN_1422dd150() * nHeight);
+            m_pList->FUN_1422c79e0(nWidth, m_pList->GetItemCount() * nHeight);
             m_pList->vfunc_24(true);
             m_pList->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdditionalControlDialog::FUN_1418b2c20), 0);
         } else {

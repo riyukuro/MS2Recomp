@@ -46,6 +46,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/alphacomponent.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local views of exe objects ----
 
@@ -118,10 +119,10 @@ public:
 class Unk_GoAnimSvc
 {
 public:
-    NiActorManager* FUN_140999440(const egf::EntityID& kId);
     void FUN_1409fad80(egf::EntityID kId, bool b);
 };
-Unk_GoAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // The camera manager and its PvP mode.
 class Unk_GoCamMode : public CPVPCameraMode { };
@@ -198,21 +199,21 @@ public:
 };
 
 // Scene graph walk (same iterator as cubecraft_1.cpp).
-class Unk_CubeSceneIterator
+class Unk_NodeQueue
 {
 public:
-    Unk_CubeSceneIterator(NiAVObject* pRoot);
-    ~Unk_CubeSceneIterator();
+    Unk_NodeQueue(NiAVObject* pRoot);
+    ~Unk_NodeQueue();
     NiAVObject* FUN_14098e0d0(bool bDescend);
 private:
     ATL::CAtlList<NiAVObject*> m_kPending;
 };
+typedef Unk_NodeQueue Unk_CubeSceneIterator;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
 extern NiFixedString DAT_143ae50b0;     // extra data key (alpha blending)
 
 // entity helpers
 void FUN_1414737d0(egf::Entity* pEntity);
-int FUN_1409618c0(egf::Entity* pEntity, unsigned int nProp, efd::Point3* pOut);
 void FUN_140a38a50(egf::Entity* pEntity, unsigned int nProp, const efd::Point3& kValue);
 void FUN_1409457c0(egf::Entity* pEntity, unsigned int nProp, const float& fValue);
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int nProp, const bool& bValue);
@@ -407,7 +408,7 @@ NiPoint3 GameObject::vfunc_17()
 {
     NiPoint3 kPos = vfunc_18();
     if (m_unk_80)
-        FUN_1409618c0(GO_ENTITY(), 0xfd95ca52, &kPos);
+        reinterpret_cast<egf::Entity*>(GO_ENTITY())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
     if (m_spField.get())
     {
         Unk_GoField* pField = m_spField.operator->();
@@ -703,12 +704,12 @@ MS2_REPLACE_METHOD(0x14123cb90, GameObject, vfunc_32, 129, 0x9697C5E7);
 // @0x14123cc20
 efd::Point3 GameObject::FUN_14123cc20()
 {
-    return FUN_14123cc80(vfunc_20());
+    return RotationToDirection(vfunc_20());
 }
 MS2_REPLACE_METHOD(0x14123cc20, GameObject, FUN_14123cc20, 85, 0xE0517171);
 
 // @0x14123cc80
-efd::Point3 GameObject::FUN_14123cc80(NiPoint3 kRot)
+efd::Point3 GameObject::RotationToDirection(NiPoint3 kRot)
 {
     efd::Point3 kDir = -efd::Point3::UNIT_Y;
     efd::Matrix3 kMat;
@@ -718,7 +719,7 @@ efd::Point3 GameObject::FUN_14123cc80(NiPoint3 kRot)
 }
 
 // @0x14123cd50
-float GameObject::FUN_14123cd50(efd::Point3 kDir)
+float GameObject::DirectionToYawDegrees(efd::Point3 kDir)
 {
     kDir.z = 0.0f;
     kDir.Unitize();
@@ -738,7 +739,7 @@ float GameObject::FUN_14123cd50(efd::Point3 kDir)
 // @0x14123ce70
 float GameObject::FUN_14123ce70(efd::Point3 kDir)
 {
-    return -(FUN_14123cd50(kDir) * 3.1415927f / 180.0f);
+    return -(DirectionToYawDegrees(kDir) * 3.1415927f / 180.0f);
 }
 
 // @0x14123cec0
@@ -940,7 +941,7 @@ void GameObject::FUN_14123d7a0(CString strKey, int nValue)
     m_mapD8.SetAt(strKey, nValue);
     int nNew = FUN_14123d870();
     if (nOld != nNew)
-        FUN_141b6f910()->FUN_1409fad80(FUN_14123c460(), nNew != 0);
+        reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), nNew != 0);
 }
 MS2_REPLACE_METHOD(0x14123d7a0, GameObject, FUN_14123d7a0, 188, 0x5CCD18FC);
 
@@ -962,9 +963,9 @@ MS2_REPLACE_METHOD(0x14123d870, GameObject, FUN_14123d870, 129, 0x0E8C2EF0);
 void GameObject::FUN_14123d900()
 {
     m_mapD8.RemoveAll();
-    NiPointer<NiActorManager> spManager = FUN_141b6f910()->FUN_140999440(FUN_14123c460());
+    NiPointer<NiActorManager> spManager = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
     if (spManager)
-        FUN_141b6f910()->FUN_1409fad80(FUN_14123c460(), false);
+        reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
 }
 MS2_REPLACE_METHOD(0x14123d900, GameObject, FUN_14123d900, 177, 0x5BE69BE5);
 
@@ -1115,7 +1116,7 @@ MS2_REPLACE_METHOD(0x14123dec0, GameObject, vfunc_52, 337, 0x99EC682A);
 void GameObject::FUN_14123e020(NiAVObject* pNode)
 {
     AlphaShellComposite::MarkScene(pNode, false);
-    Unk_CubeSceneIterator iterator(pNode);
+    Unk_CubeSceneIterator iterator((NiAVObject*)(pNode));
     while (NiAVObject* pObject = iterator.FUN_14098e0d0(true))
     {
         if (FUN_1409943d0(pObject))

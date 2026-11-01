@@ -28,6 +28,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -86,11 +94,11 @@ void CItemDefaultData::Load()
         return;
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key")) {
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key"))) {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         int nJobCode = 0;
-        FUN_140873890(pKey, "jobCode", nJobCode);
+        XmlQuery((class TiXmlElement*)(pKey), "jobCode", reinterpret_cast<int&>(nJobCode));
         MS2Ptr<TDefaultItems> spItems(0);
         if (nJobCode == 0) {
             spItems = spCommon;
@@ -99,10 +107,10 @@ void CItemDefaultData::Load()
             spItems.AssignRaw(new TDefaultItems(nJobCode));
             ms_mapJobItems.SetAt(nJobCode, spItems);
         }
-        for (Unk_140165cf0* pSlot = pKey->FUN_140165cf0("slot"); pSlot != 0; pSlot = pSlot->FUN_140168650("slot")) {
+        for (Unk_140165cf0* pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->FirstChild("slot")); pSlot != 0; pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->NextSibling("slot"))) {
             Unk_ItemDefaultKind eSlot = (Unk_ItemDefaultKind)0;
             ReadSlotAttr(pSlot, "name", (int*)&eSlot);
-            for (Unk_140165cf0* pItem = pSlot->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item")) {
+            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
                 if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                     continue;
                 bool bVisible = false;
@@ -110,7 +118,7 @@ void CItemDefaultData::Load()
                 bool bBase = false;
                 XmlQuery((class TiXmlElement*)(pItem), "base", bBase);
                 int nSaleTag = 0;
-                FUN_1408731e0(pItem, "saleTag", nSaleTag);
+                XmlGetAttr((class TiXmlElement*)(pItem), "saleTag", reinterpret_cast<int&>(nSaleTag));
                 bool bSelect = false;
                 XmlQuery((class TiXmlElement*)(pItem), "select", bSelect);
                 if (!bVisible && !bBase)

@@ -78,10 +78,10 @@ public:
     void FUN_14194a4d0(int nKind, const CStringW& strName);                 // left
     void FUN_14194a540(int nKind, const CStringW& strName);                 // kicked
     void FUN_14194a5b0(int nKind, const CStringW& strName, const CStringW& strMsg);     // a member's line
-    void FUN_14194a650(int nKind, const CStringW& strName, const CStringW& strMsg);     // a notice line
+    void AddSystemMessage(int nKind, const CStringW& strName, const CStringW& strMsg);     // a notice line
     void FUN_14194a6f0(NotifyObject* pNotify);                              // NotifyChatEmoticonSelected
     void FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoticons);    // opens the emoticon preview
-    void FUN_14194ad60();                                                   // closes the emoticon preview
+    void CloseEmoticonPreview();                                                   // closes the emoticon preview
     int SendMessengerMode4(int nEmoticonId);                                     // sends an emoticon
     void FUN_14194afc0(int nEmoticonId);                                    // sends an emoticon as an image line
     int FUN_14194b190(int nEmoticonId, bool bFavorite);                     // (un)marks a favorite emoticon
@@ -148,7 +148,7 @@ public:
     void FUN_1419515c0(int nGroupId);                                       // a chat was created
     void FUN_141951720(int nGroupId, const CStringW& strName, const CStringW& strText);
     void FUN_1419517b0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // invited to a chat
-    void FUN_1419519a0(int nGroupId);                                       // a chat was left
+    void RemoveGroup(int nGroupId);                                       // a chat was left
     void FUN_1419519e0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // a member was invited
     void FUN_141951a70(int nGroupId, const CStringW& strName, int nMode);   // a member joined / refused
     void FUN_141951af0(int nGroupId, const CStringW& strName);              // a member left
@@ -167,8 +167,8 @@ public:
     int FUN_141952b30(unsigned nGroupId);                                   // the unread line count
     int FUN_141952be0();                                                    // opens the windows of the joined chats
     int FUN_141952d80(unsigned nGroupId, int bDeleteSave, int bMinimized);  // opens a chat window
-    UIGroupMessenger* FUN_141952f20(int nGroupId);                          // the window of a chat
-    UIGroupMessenger* FUN_141952fc0(const CStringW& strName);               // the window of a chat name
+    UIGroupMessenger* FindWindowByGroupId(int nGroupId);                          // the window of a chat
+    UIGroupMessenger* FindWindowByName(const CStringW& strName);               // the window of a chat name
     void FUN_141953090(const CStringW& strName);                            // shows a window
     void FUN_141953160(const CStringW& strName);                            // a window was hidden
     void FUN_141953240(const CStringW& strName);                            // toggles a window

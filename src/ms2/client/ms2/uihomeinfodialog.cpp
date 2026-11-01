@@ -111,7 +111,8 @@ public:
 
 // The entity application framework (global at 0x143b059e8) and the cube service (class id 0x06100017).
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 extern __int64 DAT_143ab2898;                                       // wallet: meso
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/mypc.h"
@@ -119,6 +120,7 @@ extern __int64 DAT_143ab2898;                                       // wallet: m
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
 class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
@@ -185,7 +187,6 @@ struct Unk_HiConstTable
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_bank, 0x66d0);
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_doctor, 0x67e0);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned int* FUN_1401d7c10(Unk_HiConstUInt* pSlot);
 
 // The UI manager.
 class Unk_HiUiMgr
@@ -354,7 +355,7 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
         if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank) * 0.001f);
+            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank)->Get() * 0.001f);
         }
     }
 }
@@ -367,7 +368,7 @@ void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
         if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor) * 0.001f);
+            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor)->Get() * 0.001f);
         }
     }
 }
@@ -764,9 +765,9 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01800(2);
-            spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
+            spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
             spBox->SetAgreement(0);
-            spBox->FUN_141a02770(0x1c0, 400);
+            spBox->SetSize(0x1c0, 400);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
             FUN_140d73c60(spBox);
         }
@@ -845,7 +846,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c81d0()
     if (pPc->FUN_141662830() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank) / 1000;
+    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank)->Get() / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662830());
     if (nElapsed > nLimit)
         return 0;
@@ -861,7 +862,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c8280()
     if (pPc->FUN_141662870() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *FUN_1401d7c10(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor) / 1000;
+    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor)->Get() / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662870());
     if (nElapsed > nLimit)
         return 0;

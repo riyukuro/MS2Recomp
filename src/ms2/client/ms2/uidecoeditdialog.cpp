@@ -114,18 +114,18 @@ void UIDecoEditDialog::OnLoadInit()
                     ASObj row(2);
                     row.FUN_1407cba60("label", pLayer->GetName());
                     row.FUN_1407cba60("asset", pLayer->GetAsset());
-                    spLayers->FUN_1422dd230(row);
+                    spLayers->AddItem(row);
                 }
             }
             spLayers->vfunc_24(true);
-            spLayers->FUN_1422dcca0(0);
+            spLayers->SetSelectedIndex(0);
         }
         if (MS2Ptr<ASScrollingList> spBrushes = FUN_140c02900("m_brushes"))
         {
             spBrushes->FUN_1422dd2a0("PaintBrush");
             spBrushes->FUN_1422dd2a0("NoiseBrush");
             spBrushes->vfunc_24(true);
-            spBrushes->FUN_1422dcca0(0);
+            spBrushes->SetSelectedIndex(0);
         }
     }
 }

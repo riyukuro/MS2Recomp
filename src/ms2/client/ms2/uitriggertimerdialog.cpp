@@ -21,6 +21,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -81,10 +88,10 @@ void UITriggerTimerDialog::vfunc_72()
         }
         if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10)
         {
-            Unk_EffectTarget kTarget;
-            kTarget.m_strName = ((struct Unk_TriggerTimerCfg*)FUN_1401d31f0())->m_strEffect;
-            kTarget.m_nKind = 0;
-            m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+            NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TriggerTimerCfg*)FUN_1401d31f0())->m_strEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+            m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
             m_nEffectRunning = 1;
         }
     }

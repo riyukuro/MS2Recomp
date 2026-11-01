@@ -50,6 +50,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
@@ -92,7 +93,6 @@ private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
 class Unk_UIEntityMgr { public: Unk_CommandUIRef FUN_141adcea0(int nId); };
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
@@ -119,7 +119,8 @@ class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UICommunityDialog;
 UICommunityDialog* FUN_140ae5990(int);
 class Unk_GuideInventory;
-Unk_GuideInventory* FUN_1405344f0(int);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_GuideInventory* FUN_1405344f0 (calls cast back)
 class UIGroupMessengerBrowser* FUN_140a3aad0(int);   // C3: was FUN_140a3aad0
 class UIMessengerBrowser   // C3: member view for the former free stand-ins
 {
@@ -175,7 +176,7 @@ void FUN_141274f50()
 {
     FUN_14151f460(0);
     FUN_141a8a730();
-    ((class CUIService*)(void*)(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcd40();
+    ((class CUIService*)(void*)(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())))->CloseAllDialogs();
 }
 MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
 
@@ -334,7 +335,7 @@ void FUN_141275500()
     UICommunityDialog* pCommunity = FUN_140ae5990(0x4e4d);
     if (pCommunity != 0)
         FUN_1418d6410(pCommunity);
-    Unk_GuideInventory* pGuide = FUN_1405344f0(0x4e2d);
+    Unk_GuideInventory* pGuide = reinterpret_cast<Unk_GuideInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pGuide != 0)
         ((class UIInventoryDialog*)(class Unk_GuideInventory*)(pGuide))->FUN_141999e20();
     void* pOther = ((void*)FUN_140a3aad0(0x4e93));
@@ -550,7 +551,6 @@ class ASWindow : public ASDisplayObjectContainer {      // the dialog frame wrap
 public:
     int FUN_1422e6310();                                // width of the frame
     int FUN_1422c1500();                                // width of the whole window
-    void FUN_1422c00f0(float x, float y);               // set the position
 };
 struct Unk_AlignOffset { float x, y; };
 
@@ -1107,7 +1107,6 @@ public:
     Unk_IconItemPtr(const Unk_IconItemPtr&);                     // 0x1403bb3b0
     ~Unk_IconItemPtr();                                          // 0x1401b50d0
     bool FUN_1402ffd90() const;
-    Unk_IconItemData* FUN_1401b52a0() const;
     void* m_00; void* m_08;
 };
 struct Unk_LapenData {
@@ -1133,11 +1132,11 @@ CStringW FUN_141277910(Unk_IconItemPtr item)
 {
     if (item.FUN_1402ffd90() != 0)
         return CStringW(L"");
-    if (item.FUN_1401b52a0()->FUN_14053cbc0() != 0)
-        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, item.FUN_1401b52a0()->FUN_14053c620());
-    if (item.FUN_1401b52a0()->FUN_14053d8c0() != 0)
+    if (reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053cbc0() != 0)
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053c620());
+    if (reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->IsLapenshardType() != 0)
         return FUN_141277be0(item);
-    return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
+    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconCode());
 }
 MS2_REPLACE(0x141277910, FUN_141277910, 365, 0x0A17FA5D);
 
@@ -1171,7 +1170,7 @@ MS2_REPLACE(0x141277b90, FUN_141277b90, 59, 0x41F5801C);
 // @0x141277be0
 CStringW FUN_141277be0(Unk_IconItemPtr item)
 {
-    Unk_LapenPtr lapen = reinterpret_cast<Unk_LapenMgr*>(((class Unk_LapenMgr*)FUN_1409c4b30()))->FUN_1405b56a0(item.FUN_1401b52a0()->FUN_14053c510());
+    Unk_LapenPtr lapen = reinterpret_cast<Unk_LapenMgr*>(((class Unk_LapenMgr*)FUN_1409c4b30()))->FUN_1405b56a0(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetItemId());
     if (lapen.FUN_140c6a370() != 0) {
         switch (lapen.FUN_1405b70e0()->m_nColor)
         {
@@ -1192,7 +1191,7 @@ CStringW FUN_141277be0(Unk_IconItemPtr item)
         }
         }
     }
-    return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
+    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconCode());
 }
 MS2_REPLACE(0x141277be0, FUN_141277be0, 478, 0xA2D611FC);
 
@@ -1258,7 +1257,7 @@ UISystemText* FUN_141278110(int nId)
     if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
         Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISystemText*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UISystemText*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -1270,7 +1269,7 @@ UITopLayerNotify* FUN_1412781b0(int nId)
     if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
         Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UITopLayerNotify*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UITopLayerNotify*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

@@ -49,6 +49,7 @@ int FUN_1408732a0(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);   
 int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64& nOut);
 int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float& fOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0 (0x1408733e0)
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int& nOut);              // int or enum value
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);  // string attribute with default
@@ -127,7 +128,7 @@ template <class C> void XmlSplit(const CString& str, C& out, const char* pszDeli
 template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out)
 {
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet == 0)
         XmlSplit(str, out, ",");
     return nRet;
@@ -136,7 +137,7 @@ template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C
 template <> inline int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out)
 {
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet == 0)
         FUN_14015f050(str, out, ",");
     return nRet;
@@ -173,7 +174,7 @@ int XmlEnumName(Unk_140165cf0* pElem, const char* pszName, E& eOut)
         return 2;
     }
     CStringA str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     eOut = Parse(str);

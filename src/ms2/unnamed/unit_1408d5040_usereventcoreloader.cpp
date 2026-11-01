@@ -11,6 +11,9 @@
 #include "ms2/commonfiles/usereventcontext.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 Unk_EventTime FUN_140718950(const CString&);   // "YYYY-MM-DD hh:mm:ss" text -> time
 __int64 GetServerTime();                        // the current time
@@ -31,44 +34,44 @@ bool Unk_EventCore::FUN_1408d5040(Unk_140165cf0* pNode)
     __int64 nMerat = 0;
     __int64 nMeratRed = 0;
     int nMailType = 0;
-    if (FUN_1408733e0(pNode, "title", strTitle) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "title", strTitle) == 0)
     {
         name = (const char*)strTitle;
     }
-    if (FUN_1408733e0(pNode, "content", strContent) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "content", strContent) == 0)
     {
         text = (const char*)strContent;
     }
-    if (FUN_1408733e0(pNode, "sender", strSender) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "sender", strSender) == 0)
     {
         extra = (const char*)strSender;
     }
-    if (FUN_1408731e0(pNode, "mailtype", nMailType) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "mailtype", reinterpret_cast<int&>(nMailType)) == 0)
     {
         type = nMailType;
     }
-    if (FUN_1408731e0(pNode, "mailcode", nMailCode) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "mailcode", reinterpret_cast<int&>(nMailCode)) == 0)
     {
         id = nMailCode;
     }
-    if (FUN_1408731e0(pNode, "duration", nDuration) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "duration", reinterpret_cast<int&>(nDuration)) == 0)
     {
         FUN_1408d5390(nDuration);
     }
-    if (FUN_1408732e0(pNode, "meso", nMeso) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "meso", reinterpret_cast<__int64&>(nMeso)) == 0)
     {
         a = nMeso;
     }
-    if (FUN_1408732e0(pNode, "merat", nMerat) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "merat", reinterpret_cast<__int64&>(nMerat)) == 0)
     {
         b = nMerat;
     }
-    if (FUN_1408732e0(pNode, "merat_red", nMeratRed) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "merat_red", reinterpret_cast<__int64&>(nMeratRed)) == 0)
     {
         c = nMeratRed;
     }
     CStringA strEndDate;
-    if (FUN_1408733e0(pNode, "enddate", strEndDate) == 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "enddate", strEndDate) == 0)
     {
         if (strEndDate.GetLength() > 0)
         {

@@ -35,6 +35,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitembillboarddialog.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"   // CFieldDataCli (WorldService::FUN_141bd30a0)
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
@@ -57,13 +58,16 @@
 #include "ms2/commonfiles/jobtable.h"   // C3: TSingleton<> needs the class
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x1400cce40
 
 // ---- unit-local placeholders and externals ----
 
 class PCBase;
-class Unk_BbText : public ASDisplayObject { public: CStringW FUN_1422e0b00(); };            // the text input: its text
+class Unk_BbText : public ASDisplayObject { public: };            // the text input: its text
 class Unk_BbCheck : public ASDisplayObject { public: bool FUN_1422ce0e0(); };              // the check box state
 // The advertiser movie with the input / check box lookups.
 class Unk_BbMovie : public ASMovieClip
@@ -163,7 +167,8 @@ void* FUN_140302b00();
 void* FUN_1403f31f0(void* p);
 bool FUN_1407d1d00(class CShutdownEventBillboard*);   // C3: was FUN_1407d1d00
 struct Unk_EntityAppFramework { char m_pad[8]; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_RxCellInfo
 {
 public:
@@ -184,7 +189,6 @@ class Unk_GmGridRef
 public:
     Unk_GmGridRef(void* p);                                     // 0x1401cd0b0
     ~Unk_GmGridRef();                                           // 0x1401cd150
-    Unk_RxGrid* FUN_1401cd1a0();                                // the grid
     void* m_p;
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
@@ -199,8 +203,10 @@ int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
+class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
+class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
-class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
+class Unk_RxNpc : public CPtred { public:  };
 // The five actor ids near which a bill board can't be installed (.rdata, defined in data_rdata_game; passed by address).
 extern const unsigned int DAT_142e03614;
 extern const unsigned int DAT_142e03694;
@@ -217,13 +223,13 @@ UIItemBillBoardDialog::UIItemBillBoardDialog()
     m_nItemUid = 0;
     m_80 = 0;
     FUN_140c337c0();
-    ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da5180(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
 }
 
 // @0x140c30a70
 UIItemBillBoardDialog::~UIItemBillBoardDialog()
 {
-    ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da51e0(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x105, Delegate<void(CInPacket&)>(this, &UIItemBillBoardDialog::FUN_140c32020));
 }
 
 // @0x140c30bd0
@@ -397,7 +403,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    if (WorldService::GetInstance()->FUN_141bd30a0() == (Unk_WsPtred298*)0)
+    if (WorldService::GetInstance()->FUN_141bd30a0() == (CFieldDataCli*)0)
         return false;
     int nError = FUN_1409313b0();
     if (nError != 0) {
@@ -411,7 +417,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         return false;
     }
     if (FUN_140930b10() || !FUN_140930b70()
-        || reinterpret_cast<Unk_RxMapInfo*>(WorldService::GetInstance()->FUN_141bd30a0().get())->m_nKind == 1) {
+        || reinterpret_cast<Unk_RxMapInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nKind == 1) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
@@ -464,7 +470,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             continue;
         if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
             continue;
-        bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
+        bool bNotNpcKind = reinterpret_cast<Unk_RxNpcData*>(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData().operator->())->FUN_1406ccfc0() != 2;
         if (bNotNpcKind)
             continue;
         if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() != 0)
@@ -483,7 +489,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         Unk_GmGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
-        Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
+        Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxGrid*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410b8ab0(ptLow);
         if (pInfo == 0) {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;
@@ -504,7 +510,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         cells.push_back(Unk_Int3(cell.x + 1, cell.y - 1, cell.z - 1));
         cells.push_back(Unk_Int3(cell.x + 1, cell.y + 1, cell.z - 1));
         for (size_t i = 0; i < cells.size(); ++i) {
-            Unk_RxCellInfo* pCell = grid.FUN_1401cd1a0()->FUN_1410b8a60(cells[i]);
+            Unk_RxCellInfo* pCell = reinterpret_cast<Unk_RxGrid*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410b8a60(cells[i]);
             if (pCell == 0)
                 continue;
             if (pCell->m_nCount != 0) {
@@ -556,8 +562,8 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
     MS2Ptr<Unk_BbCheck> spCheck = static_cast<Unk_BbMovie*>(m_advertiserMovie.operator->())->FUN_140c11f50<Unk_BbCheck>("m_homeEnableCheckBox");
     if (spTitle == 0 || spDesc == 0 || spCheck == 0)
         return;
-    CStringW strTitle = spTitle->FUN_1422e0b00();
-    CStringW strDesc = spDesc->FUN_1422e0b00();
+    CStringW strTitle = reinterpret_cast<ASTextInput*>(spTitle.operator->())->GetText();
+    CStringW strDesc = reinterpret_cast<ASTextInput*>(spDesc.operator->())->GetText();
     bool bHome = spCheck->FUN_1422ce0e0();
     strTitle.Replace(L"'", L"`");
     strDesc.Replace(L"'", L"`");

@@ -55,17 +55,17 @@ public:
     virtual void vfunc_72();
     virtual int vfunc_48() { return 0x4f7b; }
     void FUN_140c36b40(Unk_BpItem*);
-    void FUN_140c36fe0(__int64);
+    void OpenForItem(__int64);
     void FUN_140c370a0(const int&, Unk_BpPtr<Unk_BpImage>);
     void FUN_140c37360(Unk_BpPtr<Unk_BpImage>, const int&);
-    void FUN_140c374b0();
-    void FUN_140c37540(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140c37620(const Scaleform::GFx::FunctionHandler::Params&);
+    void UpdateCreateButtonEnabled();
+    void OnAddIconClick(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnAddImageClick(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140c37700(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140c37c60(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnNameInputChanged(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_140c37d50(int, const CMsgBoxData&);
     bool FUN_140c37f90(int, const CMsgBoxData&);
-    CStringW FUN_140c38080();
+    CStringW GetTrimmedName();
     void FUN_140c38150();
     void FUN_140c381b0(Unk_BpPtr<Unk_BpImage>);
     void FUN_140c38240();

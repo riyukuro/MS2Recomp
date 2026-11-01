@@ -26,6 +26,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -53,7 +54,6 @@ public:
     unsigned int FUN_140476ad0();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned* FUN_1401d7c10(void* pConstant);
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg1, const CStringW& strArg2);
@@ -191,7 +191,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *FUN_1401d7c10(((unsigned char*)FUN_1401d3200()) + 0x5910)) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)FUN_1401d3200()) + 0x5910)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
                 strA += GetStringCommon(0x2c5);
         }
     }
@@ -234,7 +234,7 @@ void FUN_1413612c0(__int64 nAmount, int nType)
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *FUN_1401d7c10(((unsigned char*)FUN_1401d3200()) + 0x5968)) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)FUN_1401d3200()) + 0x5968)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
                 strText += FUN_14052bd00(0x2c5, strNum);
         }
         FUN_1412751b0(strText, 5);

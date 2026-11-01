@@ -13,6 +13,10 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 
@@ -31,12 +35,12 @@ ItemDummyInfo::ItemDummyInfo()
 // @0x140314350
 void ItemDummyInfo::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "gender", gender);
-    FUN_1408733e0(pElem, "sequence", sequence);
-    FUN_1408733e0(pElem, "targetnode", targetnode);
-    FUN_1408730a0(pElem, "worldmode", worldmode);
-    FUN_1408730a0(pElem, "worldlerp", worldlerp);
-    FUN_140873360(pElem, "step", step);
+    XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(gender));
+    XmlGetAttr((class TiXmlElement*)(pElem), "sequence", sequence);
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetnode", targetnode);
+    XmlGetAttr((class TiXmlElement*)(pElem), "worldmode", reinterpret_cast<bool&>(worldmode));
+    XmlGetAttr((class TiXmlElement*)(pElem), "worldlerp", reinterpret_cast<bool&>(worldlerp));
+    XmlGetAttr((class TiXmlElement*)(pElem), "step", reinterpret_cast<float&>(step));
     FUN_140874670(pElem, "rotation", rotation);
     FUN_140874670(pElem, "translation", translation);
 }

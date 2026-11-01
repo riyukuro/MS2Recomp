@@ -36,18 +36,18 @@ public:
     void FUN_1410a9cc0();                                               // rebuild the guides for the current mode
     void FUN_1410a9d60();                                               // drop the effect node and the guide
     void FUN_1410a9e70();                                               // drop the second guide
-    void FUN_1410a9ee0();                                               // move the guides to the cell position
+    void UpdateGuidePositions();                                               // move the guides to the cell position
     bool FUN_1410aa010();                                               // the second guide exists
-    void FUN_1410aa060(unsigned char bUp);                                       // lift +- 150
+    void AdjustLift(unsigned char bUp);                                       // lift +- 150
     void FUN_1410aa0c0(CubeItemInfo* pInfo);                            // select an item to place
     int FUN_1410aa1f0();                                                // mode != 2
     int FUN_1410aa220();                                                // mode is 0 or 1
     int FUN_1410aa260();                                               // the six cells below are free
     void FUN_1410aa380(bool bVisible);                                  // show / hide the guide
     bool FUN_1410aa420();                                               // the guide is idle
-    void FUN_1410aa4a0(bool bVisible);                                  // show / hide the second guide
+    void SetGuide2Visible(bool bVisible);                                  // show / hide the second guide
     Vector3 GetPtCell();                                    // the cell position
-    void FUN_1410aa550(int nMode);                                      // set the mode
+    void SetMode(int nMode);                                      // set the mode
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
     void FUN_1410aa5c0(CubeItemInfo* pInfo);                            // set the item (or clear it)
     void FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate);    // place the guide at a cell

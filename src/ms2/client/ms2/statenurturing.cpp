@@ -8,6 +8,7 @@
 // MS2-PIN: ?Read@?$Value@I@Constants@Common@@QEAAIXZ 0x140ac2250
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statenurturing.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <float.h>
 #include <errno.h>
@@ -28,10 +29,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local placeholders ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_NuPos
@@ -107,10 +109,10 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NuUiRef, 0x10);
 class Unk_NuUiMgr { public: Unk_NuUiRef FUN_141adcea0(int nId); };
-UIObject* FUN_1403ed9e0(Unk_NuUiRef& ref);
 UICastingBar* FUN_140ac2270(int nId);
 
-class Unk_NuBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_NuBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_NuSlots
 {
@@ -135,7 +137,7 @@ UICastingBar* FUN_140ac2270(int nId)
     {
         Unk_NuUiRef ref = reinterpret_cast<Unk_NuUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UICastingBar*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UICastingBar*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -307,7 +309,7 @@ void StateNurturing::vfunc_8(double fTime)
     if (pPC)
     {
         Unk_NuBuffMgr* pBuff = ((Unk_NuBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-        reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
+        reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
             pPC->vfunc_59(2, 0, 0, 0);
     }
@@ -558,7 +560,7 @@ void StateIdleSpawnObject::vfunc_3(double fTime)
     CubeSpawnObject* pCube = FUN_140ac21e0();
     if (pCube)
     {
-        if (m_timer.FUN_140268870(60000))
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(60000))
         {
             switch (m_n10)
             {

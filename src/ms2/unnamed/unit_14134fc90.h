@@ -45,7 +45,6 @@ public:
     void AddDirty(const unsigned* pnFlags);                     // 0x141350740
     void OnNotifyChangeGameOptionInput(NotifyObject* pNotify);  // 0x141350770
     void OnNotifyChangeUIBuildingCount(NotifyObject* pNotify);  // 0x141350810
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

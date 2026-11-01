@@ -69,7 +69,6 @@ class Unk_TradeUIManager
 {
 public:
     void FUN_141adc530(int nUiId);                      // open
-    int FUN_141adc940(int nUiId);                       // is open
 };
 Unk_TradeUIManager* FUN_1403ed2b0();
 
@@ -90,7 +89,6 @@ class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_TradeWorld
 {
 public:
-    PCBase* FUN_141bd1530(__int64 uid);                 // find a player by id
 };
 
    // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
@@ -107,7 +105,7 @@ void FUN_141a02460(void*, int);
 void FUN_141a02480(void*, int);
 void FUN_141a024a0(void*, bool);
 int FUN_14025a620(void*);
-void* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);
 CStringW FUN_14052bd00(int id, const CStringW& arg);
 CStringW BlockFormat(int id);
@@ -163,7 +161,7 @@ void Unk_TradeItemTable::FUN_14185b200()
 // @0x14185b2a0
 int Unk_TradeItemTable::FUN_14185b2a0(CItem* pItem)
 {
-    if (m_byUid.Lookup(pItem->FUN_140526a50()) != 0)
+    if (m_byUid.Lookup(pItem->GetItemUid()) != 0)
         return 0;
     int nSlot = pItem->FUN_140526b50();
     if (nSlot >= m_nSlots)
@@ -183,7 +181,7 @@ int Unk_TradeItemTable::FUN_14185b2a0(CItem* pItem)
     }
     {
         MS2Ptr<CItem> spItem(pItem);
-        m_byUid.SetAt(pItem->FUN_140526a50(), spItem);
+        m_byUid.SetAt(pItem->GetItemUid(), spItem);
     }
     m_bySlot[nSlot].AssignRaw(pItem);
     return 1;
@@ -537,13 +535,13 @@ void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 {
     __int64 uid = packet.ReadInt64();
-    PCBase* pPlayer = reinterpret_cast<Unk_TradeWorld*>(WorldService::GetInstance())->FUN_141bd1530(uid);
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(uid));
     if (pPlayer != 0)
     {
         FUN_14185d820(uid, pPlayer->vfunc_77(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0());
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e3b);
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ec1);
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e47);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e3b);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ec1);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e47);
         m_uidLastSent = 0;
         ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e83));
         FUN_1412751b0(FUN_14052bd00(0x846, pPlayer->vfunc_77()), 0x12);
@@ -558,7 +556,7 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
     if (pDlg != 0)
     {
         CStringW strPartner = pDlg->GetPartner();
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e83);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e83);
         if (bAccepted)
             FUN_1412751b0(FUN_14052bd00(0x826, strPartner), 0x12);
         else
@@ -587,7 +585,7 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
         return;
     }
     spItem->FUN_140524eb0(packet);
-    spItem->FUN_140526a70(uid);
+    spItem->SetItemUid(uid);
     spItem->FUN_140526c70(nSlotInItem);
     spItem->FUN_140526b70(nCount);
     if (bMine)
@@ -694,7 +692,7 @@ void CTradeManagerEx::FUN_14185d820(__int64 uid, CStringW strName, CString strCh
 // @0x14185d8b0
 int CTradeManagerEx::FUN_14185d8b0()
 {
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e83) == 0)
+    if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e83) == 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
         return 0;

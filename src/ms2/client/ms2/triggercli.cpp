@@ -51,16 +51,18 @@ void FUN_1401d3700(CString& s);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // attribute or the default
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // path join
 
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_TrgLog
 {
 public:
-    void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // String table and fmt helpers.
 CStringW GetStringCommon(int nId);                            // string table entry
-CStringW FUN_1408116a0(int nId, const int& nArg);           // string table entry with one integer argument
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FormatStringId(int id, const fmt::ArgList& args);  // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
@@ -78,7 +80,8 @@ public:
     Unk_TrgObject* FUN_1410b8b00(unsigned nId);
 };
 struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
-extern Unk_TrgFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_TrgFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TrgFramework DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 int FUN_1407071e0(int nItemId);
 int FUN_140707710(int nItemId);
@@ -158,10 +161,10 @@ int TriggerCli::LoadFile(const CString& strPath)
         return 0;
     CString strNorm(strPath);
     FUN_1401d3700(strNorm);
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
@@ -175,7 +178,7 @@ int TriggerCli::LoadBuffer(CFileSystem::BufferPtr spBuffer)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403979e0(&doc, spBuffer) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
@@ -193,10 +196,10 @@ int TriggerCli::LoadEditorTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
@@ -369,7 +372,7 @@ CStringW TriggerCli::GetErrorText(int nError)
     case 7: case 8: case 9: case 10: case 11: case 12:
     {
         int nIndex = nError;
-        strText = FUN_1408116a0(0xafc, nIndex);
+        strText = BlockFormat<int>(0xafc, nIndex);
     }
         break;
     case 0xd:

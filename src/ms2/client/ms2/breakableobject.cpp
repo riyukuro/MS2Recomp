@@ -39,6 +39,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 namespace ecr { class SceneGraphService; }
 
@@ -59,7 +66,7 @@ void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
 CString FUN_140188f50(const char* pszText, unsigned int nCodePage); // UTF-8 -> CString
 void FUN_1401d3700(CString& str);                                   // normalise an object name
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& aOut, const char* pszDelim);   // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int FUN_14028d260(float fSeconds);                                  // seconds -> milliseconds
 float FUN_14028d280(unsigned int nTicks);                           // milliseconds -> seconds
 void FUN_14098ab60(NiAVObject* pRoot, ATL::CAtlArray<NiPoint2>& aKeys, egf::EntityID idOwner);   // alpha animation
@@ -70,7 +77,7 @@ class Unk_BoAnimService
 public:
     bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& strSeq, float fBlend, bool bLoop);
 };
-Unk_BoAnimService* FUN_141b6f910();
+egmAnimation::AnimationService* FUN_141b6f910();
 // CEffectService as this unit calls it: the entity id by value (effectservice.h declares it const&; same callee bytes)
 class Unk_BoEffectService
 {
@@ -174,7 +181,7 @@ CBreakableObject::~CBreakableObject()
     if (IsTombStone() != 0)
     {
         if (m_spEntity)
-            CMainSystem::FUN_1414737d0(m_spEntity);
+            CMainSystem::DestroyEntity(m_spEntity);
     }
     m_spEntity = 0;
     FUN_140ae0b90();
@@ -289,7 +296,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aRegenAnims.GetCount();
             efd::utf8string strAnim(m_aRegenAnims[nIndex]);
-            FUN_141b6f910()->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
     }
     else if (m_nState == 2)
@@ -301,7 +308,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         }
         MakeNxBoxController();
         if (m_bHasAnim != 0)
-            FUN_141b6f910()->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
         FUN_140ae07d0(1);
     }
     if (m_nState == 6)
@@ -313,7 +320,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aDamageAnims.GetCount();
             efd::utf8string strAnim(m_aDamageAnims[nIndex]);
-            FUN_141b6f910()->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
         FUN_140ae07d0(1);
     }
@@ -326,7 +333,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aReviveAnims.GetCount();
             efd::utf8string strAnim(m_aReviveAnims[nIndex]);
-            FUN_141b6f910()->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
         }
         FUN_140ae07d0(1);
     }
@@ -609,7 +616,7 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
     pEntity->GetPropertyValue(0xc9385319, strRevive);
     str = strRevive.c_str();
     m_aReviveAnims.RemoveAll();
-    FUN_14015f050(str, m_aReviveAnims, ",");
+    Unk_SplitA(str, (ATL::CAtlArray<CStringA>*)&(m_aReviveAnims), ",");
     if (IsTombStone() == 0 || !m_bTombEffects)
     {
         efd::utf8string strEffect;
@@ -800,11 +807,11 @@ void CBreakableObject::FUN_140ae0a90(const CString& strEffect)
 {
     if (strEffect.IsEmpty() || m_spEntity == 0)
         return;
-    Unk_EffectTarget kTarget;
-    kTarget.m_strName = strEffect;
-    kTarget.m_nKind = 1;
-    kTarget.m_spObject = NiDynamicCast(NiNode, FUN_141b6efc0(m_spEntity));
-    unsigned int nId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+    ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
+    ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
+    ((Unk_EffectTarget&)(kTarget)).m_spObject = NiDynamicCast(NiNode, FUN_141b6efc0(m_spEntity));
+    unsigned int nId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     if (nId != 0)
         m_aEffects.Add(nId);
 }
@@ -827,11 +834,11 @@ void CBreakableObject::FUN_140ae0c20(egf::Entity* pEntity)
     efd::utf8string strRegen;
     pEntity->GetPropertyValue(0x2ec0ee97, strRegen);
     str = strRegen.c_str();
-    FUN_14015f050(str, m_aRegenAnims, ",");
+    Unk_SplitA(str, (ATL::CAtlArray<CStringA>*)&(m_aRegenAnims), ",");
     efd::utf8string strDamage;
     pEntity->GetPropertyValue(0x487e2afd, strDamage);
     str = strDamage.c_str();
-    FUN_14015f050(str, m_aDamageAnims, ",");
+    Unk_SplitA(str, (ATL::CAtlArray<CStringA>*)&(m_aDamageAnims), ",");
     pEntity->GetPropertyValue(0x3ff293c8, m_strIdleAnim);
     if (!m_aRegenAnims.IsEmpty())
     {

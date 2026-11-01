@@ -25,10 +25,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe objects ----
 
 // The camera mode button (a button with a label and an "m_icon" movie clip).
-class Unk_UgcCameraButton : public ASDisplayObject
+class Unk_UgcCameraButton : public ASMovieClip
 {
 public:
-    void FUN_1422c1fe0(int bEnable);                           // enable / disable
     void FUN_1422cdf50(const CString& strLabel);                // set the label
 };
 // The screenshot service: slot 2 says whether a screenshot can be taken, slot 54 takes it and returns 1 when it was sent.
@@ -259,7 +258,7 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     {
         const Unk_UgcMode& mode = ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
         TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.m_2);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3e);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
     FUN_140fad2b0();
 }

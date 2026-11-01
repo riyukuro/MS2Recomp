@@ -18,15 +18,13 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- out-of-unit callees ----
 
 void Unk_140657820();                                   // invalid call of an empty Delegate (shared)
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 
@@ -85,15 +83,15 @@ void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 {
     ItemScrollSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemScrollSlot(strName, nOwner, spItem);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x140d42630
 void FUN_140d42630(const CString& strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140d42670
@@ -142,7 +140,7 @@ void ItemScrollSlot::SetItem(MS2Ptr<CItem> spItem)
 __int64 ItemScrollSlot::FUN_140d428f0()
 {
     if (m_spItem.get() != 0)
-        return ((CItem*)m_spItem)->FUN_140526a50();
+        return ((CItem*)m_spItem)->GetItemUid();
     return 0;
 }
 

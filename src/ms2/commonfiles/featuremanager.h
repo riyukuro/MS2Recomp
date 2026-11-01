@@ -49,42 +49,42 @@ public:
     CFeatureManager();                      // 0x14036ca70
     virtual ~CFeatureManager();             // 0x14036cbf0
 
-    bool FUN_14036ccb0();                                       // loads the feature files; false when missing
+    bool Init();                                       // loads the feature files; false when missing
     bool FUN_14036cd30();                                       // the manager is initialised
     bool LoadFeatureSetting();                                       // feature_setting.xml: the level of this locale
     bool LoadFeature();                                       // feature.xml: feature name -> level
-    bool FUN_14036d3d0();                                       // builds the id -> name map
-    bool FUN_14036d4b0(const CStringW& strName);                // the named feature is switched on
+    bool BuildIdNameMap();                                       // builds the id -> name map
+    bool IsFeatureEnabledByName(const CStringW& strName);                // the named feature is switched on
     bool FUN_14036d570(int nFeature);                           // the feature is switched on
     bool FUN_14036d650();                                       // red merat in use
-    bool FUN_14036d690(int nFeature);
+    bool IsRedMeratFeatureEnabled(int nFeature);
     bool FUN_14036d6d0();
     bool FUN_14036d710(int nFeature);
-    bool FUN_14036d750(const CStringW& strList);                // one of a ","-separated list of locales matches
+    bool IsLocaleInList(const CStringW& strList);                // one of a ","-separated list of locales matches
     int FUN_14036d8b0();                                        // the server number of the window title
-    CString FUN_14036d8e0();                                    // the server name of the window title
-    CStringW FUN_14036d960();                                   // the same as a wide string
-    int FUN_14036d9e0(const CStringW& strName);                 // the level of a feature name
-    CStringW FUN_14036da50(int nFeature);                       // the name of a feature id
-    int FUN_14036db20();                                        // the level cap of this server
+    CString GetLocaleName();                                    // the server name of the window title
+    CStringW GetLocaleNameW();                                   // the same as a wide string
+    int GetFeatureIdByName(const CStringW& strName);                 // the level of a feature name
+    CStringW GetFeatureNameById(int nFeature);                       // the name of a feature id
+    int GetLevelCap();                                        // the level cap of this server
     int FUN_14036dc20();
     int FUN_14036dc40();
     unsigned short FUN_14036dc60();
-    unsigned short FUN_14036dc80();                             // the level cap as the smaller of two limits
+    unsigned short GetLevelCapClamped();                             // the level cap as the smaller of two limits
     int FUN_14036de00();
-    CStringW FUN_14036de20(const CStringW& strA, const CStringW& strB);     // the one with the higher feature level
+    CStringW SelectHigherLevelFeatureName(const CStringW& strA, const CStringW& strB);     // the one with the higher feature level
     CStringW FUN_14036dfa0(const CStringW& strA, const CStringW& strB);     // the one matching this locale
     Unk_140165cf0* FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* pB);    // the winner of two <feature> rows
     bool FUN_14036e4c0();                                       // locale KR
     bool FUN_14036e510();                                       // locale CN
-    bool FUN_14036e560();                                       // locale NA
-    bool FUN_14036e5b0();                                       // locale JP
+    bool IsRegionNA();                                       // locale NA
+    bool IsRegionJP();                                       // locale JP
 
-    static CString FUN_14036e600();                             // the server type name ("Live" by default)
-    static void FUN_14036e640(CString strType);                 // sets the server type name and its id
+    static CString GetServerTypeName();                             // the server type name ("Live" by default)
+    static void SetServerTypeName(CString strType);                 // sets the server type name and its id
     static int FUN_14036e6b0();                                 // the server type id
-    static bool FUN_14036e6c0();                                // the server type is 1, 2 or 3
-    static int FUN_14036e700(const CStringW& strName);          // the level of a feature name (1 without a manager)
+    static bool IsTestServerType();                                // the server type is 1, 2 or 3
+    static int GetFeatureIdByNameStatic(const CStringW& strName);          // the level of a feature name (1 without a manager)
 
     // @0x14036f450
     static void CheckInit()

@@ -31,9 +31,9 @@ public:
     virtual int vfunc_2();                                          //  2 0x140db5f40
 
     CStringW FUN_140db5d20();                                       // the item's name ("" when there is no item)
-    int FUN_140db5e20();                                            // the item id (0: no item)
+    int GetItemId();                                            // the item id (0: no item)
     int FUN_140db5e70();                                            // the product serial id
-    MS2Ptr<CItem> FUN_140db5e90();                                  // a copy of the item handle
+    MS2Ptr<CItem> GetItem();                                  // a copy of the item handle
     int FUN_140db5ee0();                                            // the product type
     ATL::CAtlArray<CString>* FUN_140db5f00();                         // the category list
     ATL::CAtlArray<CString>* FUN_140db7040();
@@ -57,20 +57,20 @@ public:
     void FUN_140db6db0(int nIndex);                                 // set the item index
     void FUN_140db6e00(int nBuyCount);                              // m_58 = n, refresh the remainder
     void FUN_140db6e30(unsigned nBuyCount);                         // split a total into packs of m_b8
-    int FUN_140db6e90();                            // remaining
+    int GetRemainingCount();                            // remaining
     int FUN_140db6eb0();                                            // remaining (items)
     int FUN_140db6ef0();                            // limit
     int FUN_140db6f10();                                            // limit (items)
-    int FUN_140db6f50();                            // bought
+    int GetBuyCount();                            // bought
     int FUN_140db6f70();                                            // bought (items)
     int FUN_140db6fb0();
     int FUN_140db6fd0();
     CString FUN_140db6ff0();                                        // the price tag text
-    int FUN_140db7060();                                            // sold out
+    int IsSoldOut();                                            // sold out
     bool FUN_140db70a0(CStringW& strError);                         // can be bought now (fills the reason)
     __int64 FUN_140db8180();                        // sale price
     __int64 FUN_140db81a0();                        // original price
-    void FUN_140db81c0();                                           // m_54 = max(m_5c - m_58, 0)
+    void UpdateRemainingCount();                                           // m_54 = max(m_5c - m_58, 0)
     int FUN_140db8210();                                            // the most that can be bought at once
     int FUN_140db8400();                                            // the most the player can afford
     int FUN_140db8580(int nCount);                                  // pay nCount items; 1 when the payment can be made (exe: xor eax,eax / mov eax,1; callers test eax)
@@ -105,7 +105,7 @@ public:
     virtual int vfunc_1() { return m_item.m_nProductType; }         //  1 0x140db8d20
     virtual int vfunc_2() { return m_item.m_nProductKind; }         //  2 0x140db8d60
 
-    void FUN_140db8840(CInPacket& in);                              // read the product
+    void ReadFromPacket(CInPacket& in);                              // read the product
 
     CNpcShopItemNew m_item;                                         // +0x50
 };
@@ -119,8 +119,8 @@ public:
     virtual void vfunc_1(COutputStream* pOut) {}                    //  1 0x140db89e0
     virtual void vfunc_2(CInPacket* pIn);                           //  2 0x140db8a00
 
-    void FUN_140db8ac0(MS2Ptr<CItem> spItem);                       // set the preview item
-    MS2Ptr<CItem> FUN_140db8b10();                                  // a copy of the preview item
+    void SetItem(MS2Ptr<CItem> spItem);                       // set the preview item
+    MS2Ptr<CItem> GetItem();                                  // a copy of the preview item
 
     MS2Ptr<CItem> m_30;                                             // +0x30
     int m_40;                                                       // +0x40 product type

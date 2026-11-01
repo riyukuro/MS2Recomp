@@ -26,6 +26,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cserverstring.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -63,7 +64,6 @@ class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
 class ASDialog : public ASDisplayObjectContainer {};
 
 int FUN_140f1ffe0(const int& n, int nMin, int nMax);                // clamp
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);      // formats one number argument
 CStringW FUN_14052bd00(int nId, const CStringW& str);               // localized text of an id and a string
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
@@ -77,13 +77,13 @@ FieldGameScoreBoardCli::FieldGameScoreBoardCli()
 {
     m_nMode = 0;
     m_pDlg = 0;
-    FUN_140bccd50()->FUN_140da5180(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
 }
 
 // @0x140f9c280
 FieldGameScoreBoardCli::~FieldGameScoreBoardCli()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
 }
 
 // @0x140f9c300
@@ -144,7 +144,7 @@ MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 89, 0x402
 UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIDarkStreamScoreDialog*>((UIObject*)p);
     }
@@ -155,7 +155,7 @@ UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 UIShadowExpeditionBossBar* FUN_140f9d940(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIShadowExpeditionBossBar*>((UIObject*)p);
     }
@@ -231,7 +231,7 @@ void ASScoreBoardGauge::FUN_140f9ca30(int nCur, int nMax, CStringW strTitle)
     if (m_gauge.get() != 0)
         m_gauge->Invoke("setValue", nCur, nMax, true);
     FUN_140cfee80(FUN_1422bb870(), "m_title", strTitle);
-    FUN_140cfee80(FUN_1422bb870(), "m_progressText", FUN_14052bd00(0x98e, FUN_1401ceea0(L"{0}", nClamped)));
+    FUN_140cfee80(FUN_1422bb870(), "m_progressText", FUN_14052bd00(0x98e, StringFormat<int>(L"{0}", nClamped)));
 }
 MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 548, 0x79062904);
 

@@ -74,7 +74,7 @@ void CrashManagerCli::FUN_140a435a0()
                                      L"ms2_dev_64", L"ms2_devserver", L"ms2_devserver", L"ms2_devserver"};
     __imp_CrashReporter_Init(apszProduct[nPlatform], nReportMode);
     __imp_CrashReporter_RegisterCallback_BeforeDump(FUN_140a43b20);
-    m_nLogId = TSingleton<CFileLogger>::GetInstance()->FUN_140392110(L"MS2Log.txt");
+    m_nLogId = TSingleton<CFileLogger>::GetInstance()->OpenLog(L"MS2Log.txt");
     __imp_CrashReporter_RegisterCallback_AfterDump(FUN_140a43d40);
     g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(FUN_140a43fa0);
     g_dlgCrash.SetMessage(FUN_14016a600(GetStringCommon(0xc3d), 0));

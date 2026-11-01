@@ -39,7 +39,7 @@ public:
     void* m_data; size_t m_count; size_t m_alloc; int m_pad_18;
 };
 MS2_CHECK_SIZE(Unk_TimeStrList,0x20);
-void FUN_14015f050(CString& text, Unk_TimeStrList& out, const char* delimiter);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140177de0(CString& text, ATL::CAtlArray<int>& out, const char* delimiter);
 void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& out, const wchar_t* delimiter);
 CStringW FormatStringId(int id, const fmt::ArgList& args);   // 0x14028dee0
@@ -176,7 +176,7 @@ Unk_TimeRange::Unk_TimeRange() { startHour = 0; startMinute = 0; endHour = 0; en
 // @0x140869b60
 int Unk_TimeRange::Parse(CString text) {
     Unk_TimeStrList halves;
-    FUN_14015f050(text, halves, "-");
+    Unk_SplitA(text, (ATL::CAtlArray<CStringA>*)&(halves), "-");
     if(halves.FUN_1401662c0() != 2) return 0;
     ATL::CAtlArray<int> start;
     ATL::CAtlArray<int> end;

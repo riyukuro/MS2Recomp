@@ -329,10 +329,10 @@ void UILongTermAttendGiftDialog::vfunc_67()
 void UILongTermAttendGiftDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (!FUN_140c6cbf0())
+    if (!LoadEvent())
         vfunc_67();
     else
-        FUN_140c6c8e0();
+        RefreshAll();
 }
 
 // @0x140c6b5b0
@@ -365,8 +365,8 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
         if ((name == "m_infoIcon")) {
             CStringW text = GetStringCommonByKey(L"s_longtermattendgift_dialog_desc");
             ASTooltip tooltip(1, 2);
-            tooltip.FUN_1409c6dc0(1);
-            if (tooltip.FUN_1409e26b0(text))
+            tooltip.SetTooltipAlign(1);
+            if (tooltip.ApplyTextTooltip(text))
                 *result = tooltip.FUN_1422bb870();
         }
     }
@@ -397,7 +397,7 @@ void UILongTermAttendGiftDialog::FUN_140c6b9d0()
 {
     if (m_30.IsNull())
         return;
-    if (!FUN_140c6cbf0())
+    if (!LoadEvent())
         return;
     FUN_140c6c4a0();
 }
@@ -405,7 +405,7 @@ void UILongTermAttendGiftDialog::FUN_140c6b9d0()
 // @0x140c6ba20
 void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 {
-    if (!FUN_140c6cbf0())
+    if (!LoadEvent())
         return;
     if (FUN_141bcb0a0(reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())))
         return;
@@ -423,7 +423,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
         FUN_141924680();
         return;
     }
-    if (!FUN_140c6cbf0()) {
+    if (!LoadEvent()) {
         vfunc_67();
     } else {
         switch (nType) {
@@ -481,7 +481,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
         return;
     int nAttendPoint = FUN_140c6d520();
     unsigned int nPossible = FUN_140c6d570();
-    int nCatchUp = FUN_140c6d130();
+    int nCatchUp = GetMissedDayCount();
     CStringW strPoint = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nAttendPoint);
     CStringW strDays = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nCatchUp);
     ASObj info(2);
@@ -499,13 +499,13 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
     if (m_30.IsNull())
         return;
     unsigned int nCur = FUN_140c6d570();
-    int nCatchUp = FUN_140c6d130();
+    int nCatchUp = GetMissedDayCount();
     ASDataProvider days(2);
     unsigned __int64 nDays = m_178->m_days;
     for (unsigned __int64 i = 1; i <= nDays; ++i) {
         ASObj row(2);
         row.FUN_1407cba60("frame", FUN_140c6d470());
-        row.FUN_1407cba60("state", FUN_140c6d200((unsigned int)i, nCur, nCatchUp));
+        row.FUN_1407cba60("state", GetDayStateFrame((unsigned int)i, nCur, nCatchUp));
         days.FUN_1422bc050(row.FUN_1422bb870());
     }
     m_30->Invoke("setAttendance", days.FUN_1422bb870());
@@ -524,24 +524,24 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
             ASObj row(2);
             row.FUN_1407cb9c0("count", rec->m_day);
             row.FUN_1407cba60("frame", FUN_140c6d470());
-            row.FUN_1407cb9c0("state", FUN_140c6d040(rec->m_day));
+            row.FUN_1407cb9c0("state", GetDayState(rec->m_day));
             row.FUN_1409c0d20("slotID01", rec->m_20.m_itemId);
             row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
             row.FUN_1409adc90("slotRank01", rec->m_20.vfunc_o18_1());
             row.FUN_1409adc90("slotRank02", rec->m_50.vfunc_o18_1());
             row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
-            row.FUN_1407cba60("slotIcon01", FUN_140c6d390(rec->m_20.m_itemId));
-            row.FUN_1407cba60("slotIcon02", FUN_140c6d390(rec->m_50.m_itemId));
+            row.FUN_1407cba60("slotIcon01", GetItemIconPath(rec->m_20.m_itemId));
+            row.FUN_1407cba60("slotIcon02", GetItemIconPath(rec->m_50.m_itemId));
             row.FUN_1409c0d20("slotItemCount01", rec->m_20.m_count);
             row.FUN_1409c0d20("slotItemCount02", rec->m_50.m_count);
-            list->FUN_1422dd230(row);
+            list->AddItem(row);
         }
         list->vfunc_24(true);
     }
 }
 
 // @0x140c6c8e0
-void UILongTermAttendGiftDialog::FUN_140c6c8e0()
+void UILongTermAttendGiftDialog::RefreshAll()
 {
     FUN_140c6bdb0();
     FUN_140c6c250();
@@ -553,17 +553,17 @@ void UILongTermAttendGiftDialog::FUN_140c6c920()
 {
     int nAttendPoint = FUN_140c6d520();
     int nCur = FUN_140c6d570();
-    int nCatchUp = FUN_140c6d130();
+    int nCatchUp = GetMissedDayCount();
     CStringW strPoint = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nAttendPoint);
     CStringW strDays = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nCatchUp);
     ASObj info(2);
     info.FUN_1407cba60("frame", FUN_140c6d470());
-    info.FUN_1407cba60("state", FUN_140c6d200(nCur, nCur, nCatchUp));
+    info.FUN_1407cba60("state", GetDayStateFrame(nCur, nCur, nCatchUp));
     m_30->Invoke("updateAttendance", CStringW(strPoint), CStringW(strDays), nCur - 1, info.FUN_1422bb870());
 }
 
 // @0x140c6cbf0
-bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
+bool UILongTermAttendGiftDialog::LoadEvent()
 {
     m_178 = ((class Unk_LtaEventMgr*)FUN_1401c0d90())->FUN_14047ce70();
     return m_178.get() != 0;
@@ -572,7 +572,7 @@ bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
 // @0x140c6cc80
 void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 {
-    if (FUN_140c6d040(nDay) != 1)
+    if (GetDayState(nDay) != 1)
         return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0x19);
@@ -584,7 +584,7 @@ void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 void UILongTermAttendGiftDialog::FUN_140c6cd00()
 {
     int nAttendPoint = FUN_140c6d520();
-    unsigned int nCatchUp = FUN_140c6d130();
+    unsigned int nCatchUp = GetMissedDayCount();
     if (nAttendPoint == 0) {
         if (nCatchUp > 0) {
             CStringW strMsg = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
@@ -606,10 +606,10 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
 }
 
 // @0x140c6d040
-int UILongTermAttendGiftDialog::FUN_140c6d040(unsigned int nDay)
+int UILongTermAttendGiftDialog::GetDayState(unsigned int nDay)
 {
     unsigned int nCur = FUN_140c6d570();
-    CStringW strDays = FUN_140c6d5c0();
+    CStringW strDays = GetClaimedDays();
     ATL::CAtlArray<int> claimed;
     FUN_1401d9a30(strDays, claimed, L",");
     if (FUN_1402bacf0(claimed, nDay) != -1)
@@ -622,7 +622,7 @@ int UILongTermAttendGiftDialog::FUN_140c6d040(unsigned int nDay)
 }
 
 // @0x140c6d130
-int UILongTermAttendGiftDialog::FUN_140c6d130()
+int UILongTermAttendGiftDialog::GetMissedDayCount()
 {
     unsigned int nCur = FUN_140c6d570();
     int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(GetServerTime())) + 1;
@@ -636,7 +636,7 @@ int UILongTermAttendGiftDialog::FUN_140c6d130()
 }
 
 // @0x140c6d200
-CString UILongTermAttendGiftDialog::FUN_140c6d200(unsigned int nDay, unsigned int nCur, int nCatchUp)
+CString UILongTermAttendGiftDialog::GetDayStateFrame(unsigned int nDay, unsigned int nCur, int nCatchUp)
 {
     CString strState;
     if (nDay <= nCur) {
@@ -661,7 +661,7 @@ CString UILongTermAttendGiftDialog::FUN_140c6d200(unsigned int nDay, unsigned in
 }
 
 // @0x140c6d390
-CString UILongTermAttendGiftDialog::FUN_140c6d390(int nItemId)
+CString UILongTermAttendGiftDialog::GetItemIconPath(int nItemId)
 {
     if (!nItemId)
         return "";
@@ -694,7 +694,7 @@ int UILongTermAttendGiftDialog::FUN_140c6d570()
 }
 
 // @0x140c6d5c0
-CStringW UILongTermAttendGiftDialog::FUN_140c6d5c0()
+CStringW UILongTermAttendGiftDialog::GetClaimedDays()
 {
     return g_ltaTable.FUN_140c6d980(0xa8c, m_178->m_id, (const wchar_t*)0);
 }
@@ -714,18 +714,18 @@ MS2_REPLACE_METHOD(0x140C6BD40, UILongTermAttendGiftDialog, FUN_140c6bd40, 99, 0
 MS2_REPLACE_METHOD(0x140C6BDB0, UILongTermAttendGiftDialog, FUN_140c6bdb0, 1177, 0x034D4258);
 MS2_REPLACE_METHOD(0x140C6C250, UILongTermAttendGiftDialog, FUN_140c6c250, 572, 0xF5C9411B);
 MS2_REPLACE_METHOD(0x140C6C4A0, UILongTermAttendGiftDialog, FUN_140c6c4a0, 1073, 0x584D47AA);
-MS2_REPLACE_METHOD(0x140C6C8E0, UILongTermAttendGiftDialog, FUN_140c6c8e0, 44, 0x62139651);
+MS2_REPLACE_METHOD(0x140C6C8E0, UILongTermAttendGiftDialog, RefreshAll, 44, 0x62139651);
 MS2_REPLACE_METHOD(0x140C6C920, UILongTermAttendGiftDialog, FUN_140c6c920, 714, 0x788EDB50);
-MS2_REPLACE_METHOD(0x140C6CBF0, UILongTermAttendGiftDialog, FUN_140c6cbf0, 138, 0xF668AB87);
+MS2_REPLACE_METHOD(0x140C6CBF0, UILongTermAttendGiftDialog, LoadEvent, 138, 0xF668AB87);
 MS2_REPLACE_METHOD(0x140C6CC80, UILongTermAttendGiftDialog, SendEventRewardMode25, 114, 0x30A3C2F8);
 MS2_REPLACE_METHOD(0x140C6CD00, UILongTermAttendGiftDialog, FUN_140c6cd00, 820, 0xFB296AB6);
-MS2_REPLACE_METHOD(0x140C6D040, UILongTermAttendGiftDialog, FUN_140c6d040, 226, 0x5844E738);
-MS2_REPLACE_METHOD(0x140C6D130, UILongTermAttendGiftDialog, FUN_140c6d130, 202, 0xB29E3DE9);
-MS2_REPLACE_METHOD(0x140C6D200, UILongTermAttendGiftDialog, FUN_140c6d200, 385, 0x4B262771);
-MS2_REPLACE_METHOD(0x140C6D390, UILongTermAttendGiftDialog, FUN_140c6d390, 211, 0xBB8C36B1);
+MS2_REPLACE_METHOD(0x140C6D040, UILongTermAttendGiftDialog, GetDayState, 226, 0x5844E738);
+MS2_REPLACE_METHOD(0x140C6D130, UILongTermAttendGiftDialog, GetMissedDayCount, 202, 0xB29E3DE9);
+MS2_REPLACE_METHOD(0x140C6D200, UILongTermAttendGiftDialog, GetDayStateFrame, 385, 0x4B262771);
+MS2_REPLACE_METHOD(0x140C6D390, UILongTermAttendGiftDialog, GetItemIconPath, 211, 0xBB8C36B1);
 MS2_REPLACE_METHOD(0x140C6D470, UILongTermAttendGiftDialog, FUN_140c6d470, 155, 0x943C6B11);
 MS2_REPLACE_METHOD(0x140C6D520, UILongTermAttendGiftDialog, FUN_140c6d520, 67, 0xCDC430FA);
 MS2_REPLACE_METHOD(0x140C6D570, UILongTermAttendGiftDialog, FUN_140c6d570, 67, 0xD9995042);
-MS2_REPLACE_METHOD(0x140C6D5C0, UILongTermAttendGiftDialog, FUN_140c6d5c0, 133, 0xD53BE508);
+MS2_REPLACE_METHOD(0x140C6D5C0, UILongTermAttendGiftDialog, GetClaimedDays, 133, 0xD53BE508);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca33e0-0x142ca3540 .text$yd

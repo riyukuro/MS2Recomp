@@ -68,7 +68,7 @@ public:
     CMenteeSearchManager();                         // 0x140b6e290
     virtual ~CMenteeSearchManager();                // 0x140b6e340
 
-    void FUN_140b6e3e0();                           // feature 0x3f on: push the answer to the dialog
+    void ProcessResponse();                           // feature 0x3f on: push the answer to the dialog
     void GetMentees(CMentorArray& arrOut);          // 0x140b6e420 the mentors of the answer, shuffled
     void SetParam(const CMenteeSearchParam* pParam);    // 0x140b6e560 keeps a copy of the request
     MS2Ptr<CMenteeSearchParam> GetParam();          // 0x140b6e630

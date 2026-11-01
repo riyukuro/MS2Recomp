@@ -39,9 +39,6 @@ bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box);
 CStringW FUN_14062ad80(MS2Ptr<CItem> spItem);               // the gemstone description of an item
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 
 // gfxutil.h: a Value wrapped as a display object container (ctor 0x1422c6570 with the movie id, dtor 0x1422c65c0) and
@@ -73,6 +70,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemStoneSlotBag);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 // @0x1400d1ba0
 static CString s_strSkill2("skill");
 
@@ -83,7 +81,7 @@ void FUN_140cfd6f0(const CString& strName, MS2Ptr<CGemStoneItem> spGem, int nInd
 {
     GemStoneSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) GemStoneSlot(strName, spGem, nIndex, nIconType, nFlags);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 GemStoneSlot* FUN_140cfe620(NotifyContext::BindData* p);
@@ -93,9 +91,9 @@ ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p);
 // @0x140cfd800
 void FUN_140cfd800(const CString& strName)
 {
-    GemStoneSlot* pSlot = FUN_140cfe620(FUN_1422c8e90(strName));
+    GemStoneSlot* pSlot = FUN_140cfe620(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140cfd840
@@ -198,18 +196,18 @@ void FUN_140cfe0c0(const CString& strName, int nCount, void* pSockets, GemStoneS
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140cfe1b0
 void FUN_140cfe1b0(const CString& strName)
 {
-    GemStoneSlotBag* pBag = FUN_140cfe670(FUN_1422c8e90(strName));
+    GemStoneSlotBag* pBag = FUN_140cfe670(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

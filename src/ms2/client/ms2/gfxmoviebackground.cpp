@@ -663,7 +663,7 @@ int GFxMovieBackground::FUN_14127ac70(CString strLabel)
     return 0;
 }
 // @0x14127ad80
-int GFxMovieBackground::FUN_14127ad80()
+int GFxMovieBackground::Play()
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
     {
@@ -673,7 +673,7 @@ int GFxMovieBackground::FUN_14127ad80()
     return 0;
 }
 // @0x14127ae10
-int GFxMovieBackground::FUN_14127ae10()
+int GFxMovieBackground::Stop()
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
     {
@@ -683,13 +683,13 @@ int GFxMovieBackground::FUN_14127ae10()
     return 0;
 }
 // @0x14127aea0
-void GFxMovieBackground::FUN_14127aea0(int bShow)
+void GFxMovieBackground::ShowBackgroundColor(int bShow)
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
         m_spScript->Invoke("showBackgroundColor", bShow ? true : false);
 }
 // @0x14127af40
-void GFxMovieBackground::FUN_14127af40(unsigned long nColor)
+void GFxMovieBackground::SetBackgroundColor(unsigned long nColor)
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
         m_spScript->Invoke("setBackgroundColor", nColor);
@@ -964,10 +964,10 @@ MS2_REPLACE_METHOD(0x14127aaf0, GFxMovieBackground, GetScript, 67, 0xCFE02519);
 MS2_REPLACE_METHOD(0x14127ab40, GFxMovieBackground, IsLoaded, 17, 0xEA51A84B);
 MS2_REPLACE_METHOD(0x14127ab60, GFxMovieBackground, FUN_14127ab60, 263, 0xE2541036);
 MS2_REPLACE_METHOD(0x14127ac70, GFxMovieBackground, FUN_14127ac70, 263, 0xBD3016D1);
-MS2_REPLACE_METHOD(0x14127ad80, GFxMovieBackground, FUN_14127ad80, 131, 0xE80F1320);
-MS2_REPLACE_METHOD(0x14127ae10, GFxMovieBackground, FUN_14127ae10, 131, 0x1B9AEB70);
-MS2_REPLACE_METHOD(0x14127aea0, GFxMovieBackground, FUN_14127aea0, 151, 0xDE7E9855);
-MS2_REPLACE_METHOD(0x14127af40, GFxMovieBackground, FUN_14127af40, 131, 0x58558EDF);
+MS2_REPLACE_METHOD(0x14127ad80, GFxMovieBackground, Play, 131, 0xE80F1320);
+MS2_REPLACE_METHOD(0x14127ae10, GFxMovieBackground, Stop, 131, 0x1B9AEB70);
+MS2_REPLACE_METHOD(0x14127aea0, GFxMovieBackground, ShowBackgroundColor, 151, 0xDE7E9855);
+MS2_REPLACE_METHOD(0x14127af40, GFxMovieBackground, SetBackgroundColor, 131, 0x58558EDF);
 MS2_REPLACE_METHOD(0x14127afd0, GFxMovieBackground, vfunc_16, 97, 0xEC527B97);
 MS2_REPLACE_METHOD(0x14127b040, GFxMovieBackground, vfunc_39, 177, 0xEF74DFFF);
 MS2_REPLACE_METHOD(0x14127b100, GFxMovieBackground, AppendScene, 386, 0x54963695);

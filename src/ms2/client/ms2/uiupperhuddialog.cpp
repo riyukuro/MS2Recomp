@@ -87,6 +87,10 @@
 #include "ms2/placeholder/cusermaidmanager.h"
 #include <atlcoll.h>
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 class PCBase;
 class UIPcBangDialog;
@@ -233,13 +237,12 @@ public:
     void FUN_1412dd720(void*& pos);                                             // next
 };
 class Unk_HudMaidOwner;
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // Misc.
-class Unk_HudKeys
+class Unk_HudKeys : public CInputKeyHandler   // FUN_14116d9c0 (key pressed) from the base
 {
 public:
-    bool FUN_14116d9c0(int nKey, int a1, int a2);                               // key pressed
     bool FUN_14116d840();                                                       // escape pressed
     CStringW FUN_1422b0570(const CString& strKey);                              // string table text of "$..." keys
     float FUN_1422afec0(int nUiId);                                             // the ui scale of a movie
@@ -260,11 +263,8 @@ CStringW GetStringCommon(int nId);                                              
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 CStringW FUN_140f48210(int nHour, int nMinute);                                 // the clock text
 CStringW FUN_1402761d0(const wchar_t* szFormat, const CStringW& a1, const __int64& a2);
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 CStringW FUN_1409404f0(__int64 n);                                              // the number as text
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                         // has the AS object been released
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);                         // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);
@@ -308,7 +308,7 @@ UIUpperHudDialog::UIUpperHudDialog()
     m_nNoticeWidth = 0;
     FUN_1422dc3b0(1);
     m_2c = 0xb;
-    ((class Unk_HudPackets*)FUN_140bccd50())->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
 }
@@ -316,7 +316,7 @@ UIUpperHudDialog::UIUpperHudDialog()
 // @0x141353a70
 UIUpperHudDialog::~UIUpperHudDialog()
 {
-    ((class Unk_HudPackets*)FUN_140bccd50())->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIUpperHudDialog::FUN_141357ac0));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357300));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357330));
 }
@@ -333,7 +333,7 @@ MS2_REPLACE_METHOD(0x141353E80, UIUpperHudDialog, GetTypeName, 61, 0xF83C7D54);
 void UIUpperHudDialog::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140b632f0()->FUN_1422d4780(this, 4);
+    FUN_140b632f0()->AddToLayer(this, 4);
     do { m_30->FUN_140bc71c0("m_searchDungeon", m_searchDungeon); if (m_searchDungeon == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(85), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bc71c0("m_eventText", m_eventText); if (m_eventText == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(86), __FUNCTION__)); } while (0);
     do { if (m_eventText->FUN_140beaf20("textField", m_noticeText) == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__)); } while (0);
@@ -385,7 +385,7 @@ void UIUpperHudDialog::OnLoadComplete()
             m_gamePadOn->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e50), 0);
         if (FUN_140bc6d10("m_gamePadOff", m_gamePadOff))
             m_gamePadOff->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e90), 0);
-        FUN_1413574a0(*reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500());
+        SetGamePadMode(*reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500());
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc9) == true)
     {
@@ -409,7 +409,7 @@ void UIUpperHudDialog::OnLoadComplete()
     FUN_140cfee80(FUN_1422dbc00(), "maratText", FUN_1409404f0(FUN_140930240()));
     FUN_141358020(1);
     FUN_141359340();
-    FUN_141357af0();
+    ResetClock();
     FUN_141358360();
     FUN_141358420();
     FUN_141358490();
@@ -435,7 +435,7 @@ void UIUpperHudDialog::vfunc_26()
     UIObject::vfunc_26();
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_1413571f0));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyPcBang", Delegate<void(NotifyObject*)>(this, &UIUpperHudDialog::FUN_141357180));
-    FUN_140b632f0()->FUN_1422d4840(this, 4);
+    FUN_140b632f0()->RemoveFromLayer(this, 4);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_tokenPocket = 0;
     m_maidStatus = 0;
@@ -489,7 +489,7 @@ int UIUpperHudDialog::vfunc_13()
         {
             CStringW strText = m_searchInput->FUN_1422e0b00();
             if (!strText.IsEmpty())
-                CUserCommandCli::GetInstance()->Execute(FUN_1401e8510(L"/search {0}", strText));
+                CUserCommandCli::GetInstance()->Execute(StringFormat<CStringW>(L"/search {0}", strText));
             m_searchInput->FUN_1422c7630(0);
             return 1;
         }
@@ -506,7 +506,7 @@ MS2_REPLACE_METHOD(0x141356680, UIUpperHudDialog, vfunc_13, 346, 0x1DB0987E);
 // @0x1413567f0
 void UIUpperHudDialog::vfunc_15()
 {
-    if (m_timer.FUN_140268870(1000))
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000))
     {
         FUN_141357b30();
         FUN_141357d90(0);
@@ -575,7 +575,7 @@ void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Pa
 {
     if (reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecf))
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ecf);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ecf);
     }
     else
     {
@@ -701,7 +701,7 @@ void UIUpperHudDialog::SetNoticeSpeed(float f)
 }
 
 // @0x141357430
-void UIUpperHudDialog::FUN_141357430(CStringW strText)
+void UIUpperHudDialog::SetNotice(CStringW strText)
 {
     m_strNotice = strText;
     m_bNoticeOnce = true;
@@ -710,7 +710,7 @@ void UIUpperHudDialog::FUN_141357430(CStringW strText)
 }
 
 // @0x1413574a0
-void UIUpperHudDialog::FUN_1413574a0(int nMode)
+void UIUpperHudDialog::SetGamePadMode(int nMode)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5))
         return;
@@ -721,7 +721,7 @@ void UIUpperHudDialog::FUN_1413574a0(int nMode)
 }
 
 // @0x141357580
-void UIUpperHudDialog::FUN_141357580(int nMode)
+void UIUpperHudDialog::SetInputMode(int nMode)
 {
     if (m_keyboardMode)
         m_keyboardMode->vfunc_3(nMode);
@@ -765,7 +765,7 @@ void UIUpperHudDialog::FUN_141357ac0(CInPacket& packet)
 }
 
 // @0x141357af0
-void UIUpperHudDialog::FUN_141357af0()
+void UIUpperHudDialog::ResetClock()
 {
     m_nHour = 0;
     m_nMinute = 0;
@@ -819,7 +819,7 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
         if (m_nMaidReady < nReady && nQuiet == 0)
             FUN_141276180(s_maidFinish, "");
         m_nMaidReady = nReady;
-        FUN_1413593d0(m_maidStatus, m_nMaidReady);
+        SetButtonBadge(m_maidStatus, m_nMaidReady);
     }
 }
 
@@ -882,7 +882,7 @@ void UIUpperHudDialog::FUN_141358360()
     if (pDlg != 0)
     {
         nState = pDlg->GetPcBangGrade();
-        FUN_1413593d0(m_pcBang, pDlg->GetReceivableCount());
+        SetButtonBadge(m_pcBang, pDlg->GetReceivableCount());
     }
     if (m_30 == 0)
         return;
@@ -928,11 +928,11 @@ void UIUpperHudDialog::FUN_141358490()
 void UIUpperHudDialog::FUN_1413586c0(Scaleform::GFx::Value* pRetVal)
 {
     ASTooltip tip(1, 2);
-    tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tip.FUN_1409c6e00(0);
-    tip.FUN_1409c6dc0(7);
-    tip.FUN_1409c6e60(5);
-    tip.FUN_1409c6e90(0x16);
+    tip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tip.SetOnDelay(0);
+    tip.SetTooltipAlign(7);
+    tip.SetOffsetX(5);
+    tip.SetOffsetY(0x16);
     CStringW strText = GetStringCommon(0x9c4);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x11))
         strText += FUN_141900120(4, true, true);
@@ -952,7 +952,7 @@ void UIUpperHudDialog::FUN_1413586c0(Scaleform::GFx::Value* pRetVal)
         strText += FUN_141900120(0xf, true, true);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xf3))
         strText += FUN_141900120(0x10, true, true);
-    tip.FUN_1409c6cb0(strText);
+    tip.SetText(strText);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -983,12 +983,12 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
     if (strText.IsEmpty())
         return;
     ASTooltip tip(1, 2);
-    tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tip.FUN_1409c6e00(0);
-    tip.FUN_1409c6dc0(7);
-    tip.FUN_1409c6cb0(strText);
-    tip.FUN_1409c6e60(0x16);
-    tip.FUN_1409c6e90(8);
+    tip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tip.SetOnDelay(0);
+    tip.SetTooltipAlign(7);
+    tip.SetText(strText);
+    tip.SetOffsetX(0x16);
+    tip.SetOffsetY(8);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -999,11 +999,11 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     if (pMerat->FUN_140358390() == 1)
         return;
     ASTooltip tip(1, 2);
-    tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tip.FUN_1409c6e00(0);
-    tip.FUN_1409c6dc0(7);
-    tip.FUN_1409c6e60(5);
-    tip.FUN_1409c6e90(0x19);
+    tip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tip.SetOnDelay(0);
+    tip.SetTooltipAlign(7);
+    tip.SetOffsetX(5);
+    tip.SetOffsetY(0x19);
     CStringW strTitle = GetStringCommon(0x9c9);
     CStringW strLine = GetStringCommon(0x9ca);
     CStringW strFormat = GetStringCommon(0x987);
@@ -1011,8 +1011,8 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     size_t nCount = pMerat->FUN_140358770();
     __int64 nMerat = FUN_140930250();
     CStringW strName = FUN_1418fe590();
-    CStringW strValue = FUN_1401e8510(strFormat, FUN_1409404f0(nMerat));
-    strList.Append(FUN_140656190(strLine, strName, strValue));
+    CStringW strValue = StringFormat<CStringW>(strFormat, FUN_1409404f0(nMerat));
+    strList.Append(StringFormat<CStringW, CStringW>(strLine, strName, strValue));
     for (size_t i = 0; i < nCount; i++)
     {
         if (FUN_140930200((unsigned int)i) == true)
@@ -1021,17 +1021,17 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
         if (nAmount == 0)
             continue;
         CStringW strItemName = FUN_1418fe5d0((unsigned int)i);
-        CStringW strItemValue = FUN_1401e8510(strFormat, FUN_1409404f0(nAmount));
-        strList.Append(FUN_140656190(strLine, strItemName, strItemValue));
+        CStringW strItemValue = StringFormat<CStringW>(strFormat, FUN_1409404f0(nAmount));
+        strList.Append(StringFormat<CStringW, CStringW>(strLine, strItemName, strItemValue));
     }
     if (FUN_1406a5720())
     {
         CStringW strRedName = GetStringCommonByKey(L"s_common_meratname_red");
         CStringW strRedValue = FUN_14028dfa0<CStringW>(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()));
-        strList.Append(FUN_140656190(strLine, strRedName, strRedValue));
+        strList.Append(StringFormat<CStringW, CStringW>(strLine, strRedName, strRedValue));
     }
-    CStringW strText = FUN_1401e8510(strTitle, strList);
-    tip.FUN_1409c6cb0(strText);
+    CStringW strText = StringFormat<CStringW>(strTitle, strList);
+    tip.SetText(strText);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -1041,14 +1041,14 @@ void UIUpperHudDialog::FUN_141359340()
     CStringW strNotice;
     if (!((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_14047d970(strNotice))
         return;
-    FUN_141357430(CStringW(strNotice));
+    SetNotice(CStringW(strNotice));
 }
 
 // @0x1413593d0
-void UIUpperHudDialog::FUN_1413593d0(MS2Ptr<Unk_HudButton> spButton, int nCount)
+void UIUpperHudDialog::SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount)
 {
     FUN_140cff840(spButton->FUN_1422bb890(), "badge", nCount > 0);
-    FUN_140cfee80(spButton->FUN_1422bb890(), "badgeCount", FUN_1401ceea0(L"{0}", nCount));
+    FUN_140cfee80(spButton->FUN_1422bb890(), "badgeCount", StringFormat<int>(L"{0}", nCount));
 }
 
 // @0x141359510
@@ -1057,7 +1057,7 @@ void UIUpperHudDialog::FUN_141359510(int nState)
     m_pcBang->vfunc_3(0);
     m_pcBangCn1->vfunc_3(0);
     m_pcBangCn2->vfunc_3(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0() || ((class CFeatureManager*)FUN_140166410())->FUN_14036e5b0())
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0() || ((class CFeatureManager*)FUN_140166410())->IsRegionJP())
     {
         if (nState >= 0)
             m_pcBang->vfunc_3(1);
@@ -1113,7 +1113,7 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 // @0x14135b1c0
 template <> MS2Ptr<Unk_ASVideoPlayer> AScript::FUN_140accef0<Unk_ASVideoPlayer>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<Unk_ASVideoPlayer>(m_nMovieId, v);
     return MS2Ptr<Unk_ASVideoPlayer>(0);
@@ -1270,7 +1270,6 @@ public:
 };
 void FUN_14272b7f0(void* pTarget, void* pTex);
 
-class Unk_HudApp { public: HWND FUN_14209c720(); };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 float FUN_14028aed0(float f);                                                   // round
 
@@ -1330,13 +1329,13 @@ void UIVisitorsBookDialog::OnLoadComplete()
     int nWidth = (int)(__int64)(1290.0f / fScale);
     int nHeight = (int)(__int64)(1290.0f / fScale);
     FUN_14135eda0(nWidth, nHeight);
-    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(true, m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(true, m_nBrowserId);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
         float fX = 0;
         float fY = 0;
-        pDialog->FUN_1422c0f60(&fX, &fY);
+        pDialog->GetPosition(&fX, &fY);
         fX = FUN_14028aed0(fX);
         fY = FUN_14028aed0(fY);
         pDialog->FUN_1422c00f0(fX, fY);
@@ -1583,7 +1582,7 @@ void UIVisualEffectDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj obj(2);
     bool bEnable = false;
-    bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(7);
+    bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(7);
     obj.FUN_1407cbbe0("blackAndWhiteEnable", bEnable);
     {
         Unk_HudPPEffectPtr spEffect(((class Unk_HudPPEffect*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
@@ -1593,16 +1592,16 @@ void UIVisualEffectDialog::OnLoadComplete()
             bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
         obj.FUN_1407cbbe0("motionBlurAll", bAll);
         obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5450)));
-        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(9);
+        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(9);
         obj.FUN_1407cbbe0("radiarBlurEnable", bEnable);
         obj.FUN_1409c4a30("radiarBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5458)));
-        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(8);
+        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(8);
         obj.FUN_1407cbbe0("screenMaskEnable", bEnable);
         obj.FUN_1409c4a30("hdrBPThreshold", FUN_14135dad0(FUN_142087e50(DAT_143ae5358)));
         obj.FUN_1409c4a30("hdrBPOffset", FUN_14135dad0(FUN_142087e50(DAT_143ae5360)));
         obj.FUN_1409c4a30("hdrBloomScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5370)));
         obj.FUN_1409c4a30("hdrGlowScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5378)));
-        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(0xc);
+        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(0xc);
         obj.FUN_1407cbbe0("shimmerEnable", bEnable);
         obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0(FUN_142087e50(DAT_143ae5430)));
         obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0(FUN_142087e50(DAT_143ae5440)));
@@ -1643,7 +1642,7 @@ void UIVisualEffectDialog::OnLoadComplete()
         }
         obj.FUN_1409c4a30("dofNear", fNear);
         obj.FUN_1409c4a30("dofFar", fFar);
-        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(5);
+        bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(5);
         obj.FUN_1407cbbe0("colorPersEnable", bEnable);
         NiGlobalConstantEntry* pPers = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae53d0);
         if (pPers != 0)
@@ -1823,7 +1822,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             float fRed = data.FUN_1422b8c10();
             float fGreen = data.FUN_1422b8c10();
             float fBlue = data.FUN_1422b8c10();
-            FUN_14135d580(fRed, fGreen, fBlue);
+            SetGlowColor(fRed, fGreen, fBlue);
         }
         return 1;
     }
@@ -1916,7 +1915,7 @@ void UIVisualEffectDialog::OnSelectRadioMotionBlurAll()
 void UIVisualEffectDialog::OnSelectRadioMotionBlurCharacter()
 {
     FUN_14135d9d0(1);
-    bool bEnabled = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(10);
+    bool bEnabled = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(10);
     if (!bEnabled)
     {
         ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(10, bEnabled);
@@ -1956,7 +1955,7 @@ void UIVisualEffectDialog::FUN_14135d4f0(bool bOn)
 }
 
 // @0x14135d580
-void UIVisualEffectDialog::FUN_14135d580(float fRed, float fGreen, float fBlue)
+void UIVisualEffectDialog::SetGlowColor(float fRed, float fGreen, float fBlue)
 {
     Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spEnv.FUN_1409657a0() != 0)
@@ -2005,11 +2004,11 @@ void UIVisualEffectDialog::FUN_14135d730(ASData& data)
     FUN_14135db70(DAT_143ae53d0, &kColor, 1);
     CStringA astrName[4] = {"m_sliderColorPersNearStart", "m_sliderColorPersNearEnd", "m_sliderColorPersFarStart", "m_sliderColorPersFarEnd"};
     for (int i = 0; i < 4; i++)
-        FUN_14135d960(astrName[i], afRange[i]);
+        SetSliderValue(astrName[i], afRange[i]);
 }
 
 // @0x14135d960
-void UIVisualEffectDialog::FUN_14135d960(const CString& strName, float fValue)
+void UIVisualEffectDialog::SetSliderValue(const CString& strName, float fValue)
 {
     MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>(strName);
     if (static_cast<Unk_HudSlider*>(spSlider) != 0)
@@ -2023,7 +2022,7 @@ void FUN_14135d9d0(int nMode)
     Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
     if (FUN_14135dd70(&spBlur) != 0)
         FUN_14135dd80(&spBlur)->SetMode(nMode);
-    bool bOk = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a00(10);
+    bool bOk = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(10);
     if (!bOk)
     {
         bOk = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(10, true);
@@ -2558,7 +2557,7 @@ int UIWebBrowserBase::vfunc_74(int a1, void* p2, void* p3)
     kPoint.x = (short)LOWORD(p3);   // GET_X_LPARAM
     kPoint.y = (short)HIWORD(p3);   // GET_Y_LPARAM
     if ((unsigned int)a1 == 0x20a)
-        ScreenToClient(((class Unk_HudApp*)FUN_140aadf80())->FUN_14209c720(), &kPoint);
+        ScreenToClient(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kPoint);
     kPoint.x *= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
     kPoint.y *= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
     // one bool for the hit test and the forward result (WM_MOUSEFIRST..WM_MOUSELAST, unsigned)

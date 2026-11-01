@@ -51,16 +51,16 @@ public:
     virtual int vfunc_o178_1(void*);
     // @0x140e54120
     virtual int vfunc_48() { return 20268; }
-    void FUN_140e4f6d0(int);
+    void LoadCardRenderTarget(int);
     void FUN_140e4f7d0();
     void FUN_140e4f8e0();
-    void FUN_140e4f9a0();
+    void ClearCards();
     void FUN_140e4f9e0();
     void FUN_140e4fa60(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140e4fb70(const Scaleform::GFx::FunctionHandler::Params&);
     void SetBoxItemId(int);
     bool FUN_140e4fc50(int, const CMsgBoxData&);
-    bool FUN_140e4fc90(const ItemEntity&);
+    bool IsSpecialItem(const ItemEntity&);
     bool FUN_140e4fd60();
     void FUN_140e504e0();
     void FUN_140e511f0();

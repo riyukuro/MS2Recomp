@@ -449,11 +449,11 @@ public:
     void Read(CInPacket& packet);                           // 0x140894420
     void WriteShort(COutputStream& stream) const;           // 0x1408945c0
     void ReadShort(CInputStream& stream);                   // 0x140894670
-    int FUN_140894750() const;                              // page of m_n30 (10 per page), -1 when 0
+    int GetPageIndex() const;                              // page of m_n30 (10 per page), -1 when 0
     int FUN_1408947a0() const;                              // first entry of that page
     int FUN_1408947f0() const;                              // last entry of that page
     int FUN_140894840() const;
-    CStringA FUN_1408948a0() const;                         // name of the order kind m_n20 (0..5)
+    CStringA GetOrderName() const;                         // name of the order kind m_n20 (0..5)
     int FUN_140894960() const;                              // m_n18
     int FUN_140894990() const;                              // m_n18 rounded up to its hundred's last
     int FUN_140894a10(const CUgcMarketSchCond* pOther) const;
@@ -487,9 +487,9 @@ public:
     CStringW GetStr210();                                   // 0x1408960a0
     void SetStr210(CStringW str);                           // 0x140896120
     int FUN_1408961a0() const;                              // m_n88 is set and still in the future
-    int FUN_1408961e0() const;                              // now is inside [m_n58, m_n68]
+    int IsWithinSalePeriod() const;                              // now is inside [m_n58, m_n68]
     bool FUN_140896230(Unk_CommonOwner& owner);             // the content record of this kind belongs to `owner`
-    int FUN_140896310() const;                              // m_n30 is a 4xx kind
+    int IsMusicType() const;                              // m_n30 is a 4xx kind
     int FUN_140896350() const;                              // the item m_n2c is a CItemData::FUN_14053d900 one
     bool FUN_1408963f0(Unk_CommonOwner& owner);
 

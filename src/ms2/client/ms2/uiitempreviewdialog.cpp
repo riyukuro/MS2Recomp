@@ -139,9 +139,9 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
 {
     if (p2.get() == 0 || p3 == 0) return;
     ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40910(p1, p2, p3, p4);
-    if (MS2Ptr<ASTextField> spMessage = FUN_140bb4cf0("m_message")) {
+    if (MS2Ptr<ASTextField> spMessage = GetChild<ASTextField>("m_message")) {
         int bNoSlot = 0;
-        MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40470();
+        MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)FUN_1409bb9e0())->GetPreviewItem();
         if (spItem.get() ? true : false) {
             if (((class Unk_IpPreview*)FUN_1409bb9e0())->GetArg() != 0) {
                 MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
@@ -253,7 +253,7 @@ void UIItemPreviewDialog::FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::P
     if (pPlayer == 0) return;
     ASTooltip tip(pPlayer, 2, 2);
     tip.FUN_1409e0d40(spItem.get());
-    tip.FUN_1409c6dc0(5);
+    tip.SetTooltipAlign(5);
     *params.pRetVal = tip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x1412D66E0, UIItemPreviewDialog, FUN_1412d66e0, 278, 0xD8650525);

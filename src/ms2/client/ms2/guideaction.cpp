@@ -16,6 +16,7 @@
 // MS2-PIN: ??__Es_dialogLimits@@YAXXZ 0x1400f2640
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\guideaction.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <exception>
@@ -48,6 +49,18 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -99,7 +112,7 @@ public:
 class Unk_GaOption { public: const unsigned char* FUN_140a58500(); };   // CGameOption: the gamepad block (+0 the gamepad mode)
 class Unk_GaSound { public: void FUN_1422b9fd0(int nScene); };  // the sound scene manager
 class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   // CKeyTable: the key name of a binding
-Unk_GaKeyTable* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GaKeyTable (calls cast back)
 
 CTriggerService* FUN_140ad4b90();
 UIGuideEvent* FUN_14136f3e0(int nId);                       // the guide event window
@@ -134,7 +147,7 @@ template <class T> T* Unk_GaGetUI()
     CUIService* pService = CUIService::GetInstance();
     if (pService == 0)
         return 0;
-    MS2Ptr<UIObject> spObj = pService->FUN_141adcea0(T::GetUIClassID());
+    MS2Ptr<UIObject> spObj = pService->FindObject(T::GetUIClassID());
     if (spObj.IsNull())
         return 0;
     return dynamic_cast<T*>(spObj.operator->());
@@ -143,7 +156,7 @@ template <class T> T* Unk_GaGetUI(int nId)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get())
             return dynamic_cast<T*>(spObj.operator->());
     }
@@ -153,7 +166,7 @@ template <class T> T* Unk_GaGetUIByName(const CStringA& strName)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FUN_141adcf50(strName);
+        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FindObjectByName(strName);
         if (spObj.get())
             return dynamic_cast<T*>(spObj.operator->());
     }
@@ -168,7 +181,7 @@ inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArr
     for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild != 0; pChild = pChild->FUN_14086e7e0(pszName))
     {
         int nValue;
-        FUN_1408731e0(pChild, "v", nValue);
+        XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<int&>(nValue));
         rOut.Add(nValue);
         nCount++;
     }
@@ -181,7 +194,7 @@ inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArr
     for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild != 0; pChild = pChild->FUN_14086e7e0(pszName))
     {
         CStringA strValue;
-        FUN_1408733e0(pChild, "v", strValue);
+        XmlGetAttr((class TiXmlElement*)(pChild), "v", strValue);
         FUN_140165270(rOut, strValue);
         nCount++;
     }
@@ -295,7 +308,7 @@ MS2_REPLACE_METHOD(0x141382E50, CGuideActionMinimapMaximize, GetTypeName, 61, 0x
 void CGuideActionMinimapMaximize::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
-    FUN_1408731e0(pElem, "isOn", m_isOn);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isOn", reinterpret_cast<int&>(m_isOn));
 }
 MS2_REPLACE_METHOD(0x141382EA0, CGuideActionMinimapMaximize, vfunc_2, 63, 0x5C324EC9);
 
@@ -338,8 +351,8 @@ void CGuideActionOpenDialog::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_dialogID = 0;
-    FUN_140873220(pElem, "dialogID", m_dialogID);
-    FUN_1408733e0(pElem, "dialogName", m_dialogName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_dialogID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogName", m_dialogName);
 }
 MS2_REPLACE_METHOD(0x141383000, CGuideActionOpenDialog, vfunc_2, 104, 0x10CFD07C);
 
@@ -377,14 +390,14 @@ CStringW CGuideActionEffect::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x141383160, CGuideActionEffect, GetTypeName, 61, 0x579BAC8D);
 
-extern const Vector3 DAT_143b01a60;                 // efd::Point3::ZERO
+#define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
 // @0x1413831b0
 void CGuideActionEffect::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
-    FUN_1408733e0(pElem, "path", m_path);
-    for (Unk_140165cf0* pCube = pElem->FUN_140165cf0("cube"); pCube != 0; pCube = pCube->FUN_140168650("cube"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "path", m_path);
+    for (Unk_140165cf0* pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("cube")); pCube != 0; pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
     {
         Cube cube;
         cube.m_pos = DAT_143b01a60;
@@ -393,7 +406,7 @@ void CGuideActionEffect::vfunc_2(Unk_140165cf0* pElem)
         cube.m_handle = 0;
         FUN_140874670(pCube, "pos", cube.m_pos);
         FUN_140874670(pCube, "rotate", cube.m_rotate);
-        FUN_140873360(pCube, "scale", cube.m_scale);
+        XmlGetAttr((class TiXmlElement*)(pCube), "scale", reinterpret_cast<float&>(cube.m_scale));
         m_cubes.Add(cube);
     }
 }
@@ -521,7 +534,7 @@ MS2_REPLACE_METHOD(0x1413838C0, CGuideActionLimitDialog, GetTypeName, 61, 0xD709
 void CGuideActionLimitDialog::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
-    FUN_1408733e0(pElem, "dialogName", m_dialogName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogName", m_dialogName);
     if (m_dialogName.IsEmpty())
         throw std::exception(StringFormat("limitDialog Name is Empty"));
 }
@@ -587,12 +600,12 @@ void CGuideActionUITutorial::vfunc_2(Unk_140165cf0* pElem)
     CGuideAction::vfunc_2(pElem);
     m_index = 0;
     m_entityId = 1;
-    FUN_1408731e0(pElem, "entityId", m_entityId);
-    for (Unk_140165cf0* pText = pElem->FUN_140165cf0("text"); pText != 0; pText = pText->FUN_140168650("text"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "entityId", reinterpret_cast<int&>(m_entityId));
+    for (Unk_140165cf0* pText = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("text")); pText != 0; pText = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pText))->NextSibling("text")))
     {
         Step step;
-        FUN_140873220(pText, "textId", step.m_textId);
-        FUN_140873220(pText, "waitTick", step.m_waitTick);
+        XmlGetAttr((class TiXmlElement*)(pText), "textId", step.m_textId);
+        XmlGetAttr((class TiXmlElement*)(pText), "waitTick", step.m_waitTick);
         m_steps.Add(step);
     }
 }
@@ -617,14 +630,14 @@ void CGuideActionUITutorial::vfunc_4()
     FUN_1413837e0(0x15);
     FUN_1413837e0(0x13);
     if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195b490(m_entityId);
+        pEvent->HideTutorial(m_entityId);
 }
 
 // @0x141383ea0
 int CGuideActionUITutorial::vfunc_5()
 {
     UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53);
-    if (pEvent != 0 && pEvent->FUN_14195b760() != 0)
+    if (pEvent != 0 && pEvent->IsTutorialShowing() != 0)
         return 0;
     if (m_index < m_steps.GetCount())
         FUN_141383f50();
@@ -672,9 +685,9 @@ void CGuideActionUITextBase::vfunc_2(Unk_140165cf0* pElem)
     m_textId = 0;
     m_isNotClose = 0;
     m_controllerType = GuideController_Any;
-    FUN_1408731e0(pElem, "entityId", m_entityId);
-    FUN_140873220(pElem, "textId", m_textId);
-    FUN_1408731e0(pElem, "isNotClose", m_isNotClose);
+    XmlGetAttr((class TiXmlElement*)(pElem), "entityId", reinterpret_cast<int&>(m_entityId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "textId", m_textId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isNotClose", reinterpret_cast<int&>(m_isNotClose));
     XmlEnumName<CGuideControllerType, FUN_14021ade0>(pElem, "controllerType", m_controllerType);
 }
 MS2_REPLACE_METHOD(0x141384130, CGuideActionUITextBase, vfunc_2, 198, 0xED9DD14F);
@@ -737,7 +750,7 @@ void CGuideActionUISummary::vfunc_4()
     if (m_isNotClose != 0)
         return;
     if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195b540(m_entityId);
+        pEvent->HideSummary(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
 
@@ -745,7 +758,7 @@ MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
 int CGuideActionUISummary::vfunc_5()
 {
     if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
-        return pEvent->FUN_14195b810() == 0;
+        return pEvent->IsSummaryShowing() == 0;
     return true;
 }
 MS2_REPLACE_METHOD(0x141384450, CGuideActionUISummary, vfunc_5, 80, 0xD07FF9D9);
@@ -773,8 +786,8 @@ void CGuideActionUIArrow::vfunc_2(Unk_140165cf0* pElem)
     m_direction = 0;
     m_align = 1;
     FUN_140874670(pElem, "offset", m_offset);
-    FUN_140873220(pElem, "direction", m_direction);
-    FUN_140873220(pElem, "align", m_align);
+    XmlGetAttr((class TiXmlElement*)(pElem), "direction", m_direction);
+    XmlGetAttr((class TiXmlElement*)(pElem), "align", m_align);
     if (m_entityId == 0)
         throw std::exception(StringFormat("CGuideActionGuideTextTip Id is Zero"));
 }
@@ -867,15 +880,15 @@ void CGuideActionUIArrowDialog::vfunc_2(Unk_140165cf0* pElem)
     m_dialogID = 0;
     m_customPosValue = 0;
     m_childIndex = -1;
-    FUN_140873220(pElem, "dialogID", m_dialogID);
-    FUN_1408733e0(pElem, "dialogName", m_dialogName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_dialogID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogName", m_dialogName);
     ReadValueList(pElem, "focusDialogName", m_focusDialogName);
-    FUN_1408733e0(pElem, "customPosType", m_customPosType);
-    FUN_1408731e0(pElem, "customPosValue", m_customPosValue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "customPosType", m_customPosType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "customPosValue", reinterpret_cast<int&>(m_customPosValue));
     CStringA strChildName;
-    FUN_1408733e0(pElem, "childName", strChildName);
-    FUN_14015f050(strChildName, m_childName, ".");
-    FUN_1408731e0(pElem, "childIndex", m_childIndex);
+    XmlGetAttr((class TiXmlElement*)(pElem), "childName", strChildName);
+    Unk_SplitA(const_cast<CStringA&>(strChildName), (ATL::CAtlArray<CStringA>*)&(m_childName), ".");
+    XmlGetAttr((class TiXmlElement*)(pElem), "childIndex", reinterpret_cast<int&>(m_childIndex));
 }
 MS2_REPLACE_METHOD(0x141384A70, CGuideActionUIArrowDialog, vfunc_2, 335, 0x65231710);
 
@@ -895,7 +908,7 @@ void CGuideActionUIArrowDialog::vfunc_3()
     pArrow->m_48 = m_childIndex;
     pArrow->m_path.Copy(m_childName);
     pArrow->m_scenes.Copy(m_focusDialogName);
-    pArrow->FUN_14195e2d0(m_customPosType);
+    pArrow->SetKindFromName(m_customPosType);
     pArrow->m_param = m_customPosValue;
     if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
         pEvent->FUN_141959a60(MS2Ptr<UIGuideEventArrow>(pArrow));
@@ -923,8 +936,8 @@ void CGuideActionUIArrowClose::vfunc_2(Unk_140165cf0* pElem)
     CGuideAction::vfunc_2(pElem);
     m_entityId = 0;
     m_isAtOpen = 0;
-    FUN_140873220(pElem, "entityId", m_entityId);
-    FUN_1408731e0(pElem, "isAtOpen", m_isAtOpen);
+    XmlGetAttr((class TiXmlElement*)(pElem), "entityId", m_entityId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isAtOpen", reinterpret_cast<int&>(m_isAtOpen));
 }
 MS2_REPLACE_METHOD(0x141384E80, CGuideActionUIArrowClose, vfunc_2, 116, 0x3A1B089C);
 
@@ -970,19 +983,19 @@ MS2_REPLACE_METHOD(0x141385000, CGuideActionConditionAction, GetTypeName, 61, 0x
 void CGuideActionConditionAction::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
-    if (Unk_140165cf0* pConditions = pElem->FUN_140165cf0("conditions"))
+    if (Unk_140165cf0* pConditions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("conditions")))
     {
-        for (Unk_140165cf0* pChild = pConditions->FUN_140165cf0("condition"); pChild != 0;
-             pChild = pChild->FUN_140168650("condition"))
+        for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pConditions))->FirstChild("condition")); pChild != 0;
+             pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition")))
         {
             MS2Ptr<CGuideCondition> spCondition = FUN_1413a52c0(pConditions);
             if (spCondition.get())
                 m_conditions.Add(spCondition);
         }
     }
-    if (Unk_140165cf0* pActions = pElem->FUN_140165cf0("actions"))
+    if (Unk_140165cf0* pActions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actions")))
     {
-        for (Unk_140165cf0* pChild = pActions->FUN_140165cf0("action"); pChild != 0; pChild = pChild->FUN_140168650("action"))
+        for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pActions))->FirstChild("action")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("action")))
         {
             MS2Ptr<CGuideAction> spAction = FUN_141382b90(pActions);
             m_actions.Add(spAction);
@@ -1040,7 +1053,7 @@ void CGuideActionEquipWeaponTutorial::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_isUse = 0;
-    FUN_1408731e0(pElem, "isUse", m_isUse);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isUse", reinterpret_cast<int&>(m_isUse));
 }
 MS2_REPLACE_METHOD(0x141385400, CGuideActionEquipWeaponTutorial, vfunc_2, 75, 0x63935927);
 
@@ -1080,7 +1093,7 @@ void CGuideActionForceClear::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_id = 0;
-    FUN_1408731e0(pElem, "id", m_id);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<int&>(m_id));
     if (m_id == 0)
         throw std::exception("forceClear id is Zero");
 }
@@ -1114,8 +1127,8 @@ void CGuideActionSequenceCamera::vfunc_2(Unk_140165cf0* pElem)
     CGuideAction::vfunc_2(pElem);
     m_isUseCinematicCutScene = 1;
     m_endInterpolationTime = 0;
-    FUN_1408731e0(pElem, "isUseCinematicCutScene", m_isUseCinematicCutScene);
-    FUN_140873360(pElem, "endInterpolationTime", m_endInterpolationTime);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isUseCinematicCutScene", reinterpret_cast<int&>(m_isUseCinematicCutScene));
+    XmlGetAttr((class TiXmlElement*)(pElem), "endInterpolationTime", reinterpret_cast<float&>(m_endInterpolationTime));
     ReadValueList(pElem, "triggerCameraId", m_triggerCameraId);
 }
 MS2_REPLACE_METHOD(0x1413856D0, CGuideActionSequenceCamera, vfunc_2, 146, 0xFDC7C574);
@@ -1135,7 +1148,7 @@ void CGuideActionSequenceCamera::vfunc_3()
         {
             CStringW strKey = GetStringCommon(0x666);
             if (*reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
-                strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+                strKey = reinterpret_cast<Unk_GaKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
@@ -1199,7 +1212,7 @@ void CGuideActionSmartRecommend::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_recommendCode = 0;
-    FUN_140873220(pElem, "recommendCode", m_recommendCode);
+    XmlGetAttr((class TiXmlElement*)(pElem), "recommendCode", m_recommendCode);
 }
 MS2_REPLACE_METHOD(0x141385C70, CGuideActionSmartRecommend, vfunc_2, 75, 0xAB16872D);
 
@@ -1209,7 +1222,7 @@ void CGuideActionSmartRecommend::vfunc_3()
     if (UISmartRecommendNotifyDialog* pDialog = FUN_14136f5c0(0x4e9e))
         pDialog->FUN_14134dc50(m_recommendCode);
     if (CUIService::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
-        CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e9e);
+        CUIService::GetInstance()->CloseDialog((eUIClassID)0x4e9e);
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e9e);
 }
 MS2_REPLACE_METHOD(0x141385CD0, CGuideActionSmartRecommend, vfunc_3, 113, 0x6D6DCE77);
@@ -1234,7 +1247,7 @@ void CGuideActionServerTriggerEvent::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_eventID = 0;
-    FUN_140873220(pElem, "eventID", m_eventID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "eventID", m_eventID);
 }
 MS2_REPLACE_METHOD(0x141385E00, CGuideActionServerTriggerEvent, vfunc_2, 75, 0xC65AB750);
 
@@ -1269,8 +1282,8 @@ void CGuideActionGameMenuLimit::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_enabled = 0;
-    FUN_140873220(pElem, "menuID", m_menuID);
-    FUN_1408731e0(pElem, "enabled", m_enabled);
+    XmlGetAttr((class TiXmlElement*)(pElem), "menuID", m_menuID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "enabled", reinterpret_cast<int&>(m_enabled));
 }
 MS2_REPLACE_METHOD(0x141385F80, CGuideActionGameMenuLimit, vfunc_2, 104, 0xA1C6CDF7);
 
@@ -1278,7 +1291,7 @@ MS2_REPLACE_METHOD(0x141385F80, CGuideActionGameMenuLimit, vfunc_2, 104, 0xA1C6C
 void CGuideActionGameMenuLimit::vfunc_3()
 {
     if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
-        pMenu->FUN_141939770(m_menuID, m_enabled);
+        pMenu->SetMenuEnable(m_menuID, m_enabled);
     if (UIGamePadMenuDialog* pPadMenu = Unk_GaGetUI<UIGamePadMenuDialog>(0x4f63))
         pPadMenu->FUN_140c1ba90(m_menuID, m_enabled);
 }
@@ -1336,12 +1349,12 @@ void CGuideActionSideNpcTalk::vfunc_2(Unk_140165cf0* pElem)
     m_uiType = 0;
     m_duration = 3000;
     FUN_140e8ecb0(pElem, "uiType", m_uiType);
-    FUN_1408733e0(pElem, "usm", m_usm);
-    FUN_140873220(pElem, "scriptID", m_scriptID);
-    FUN_1408733e0(pElem, "illust", m_illust);
-    FUN_1408732a0(pElem, "duration", m_duration);
-    FUN_1408733e0(pElem, "voice", m_voice);
-    FUN_1408733e0(pElem, "sound", m_sound);
+    XmlGetAttr((class TiXmlElement*)(pElem), "usm", m_usm);
+    XmlGetAttr((class TiXmlElement*)(pElem), "scriptID", m_scriptID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "illust", m_illust);
+    XmlGetAttr((class TiXmlElement*)(pElem), "duration", reinterpret_cast<unsigned long&>(m_duration));
+    XmlGetAttr((class TiXmlElement*)(pElem), "voice", m_voice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "sound", m_sound);
 }
 MS2_REPLACE_METHOD(0x141386250, CGuideActionSideNpcTalk, vfunc_2, 261, 0x87AB5385);
 

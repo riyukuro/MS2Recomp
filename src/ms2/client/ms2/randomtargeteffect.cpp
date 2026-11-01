@@ -136,7 +136,7 @@ void CRandomTargetEffect::Create(CString strName)
         Destroy();
 
     Unk_NodePtr spNode(NiNew NiNode(0));
-    NiNode* pRoot = static_cast<NiNode*>(((void*)((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6b10()));
+    NiNode* pRoot = static_cast<NiNode*>(((void*)((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot()));
     pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     NoticeMessage kRequest;
     kRequest.m_strName = strName;

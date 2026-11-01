@@ -167,47 +167,47 @@ public:
     unsigned GetEditFlags();                   // what the item can customize (EditItems::GetFlags)
     IItemCustomizeEventListener* GetListener();   // the listener
     void FUN_140cd1bf0();                       // per frame
-    bool FUN_140cd1c90(CItem* pItem);           // preview an item (false: not wearable)
-    bool FUN_140cd1d50(int nItemId);            // preview an item id (false: not wearable)
-    void FUN_140cd1e80();                       // take the preview items off
-    void FUN_140cd1ed0(CItem* pItem);           // take an item off
-    void FUN_140cd1f30(int nItemId);            // take an item id off
-    void FUN_140cd1f90(__int64 nUid);           // take an item uid off
-    void FUN_140cd1ff0();                       // commit all
-    void FUN_140cd20c0();                       // restore all
-    void FUN_140cd21a0(__int64 nUid);           // commit the item
-    void FUN_140cd2210(__int64 nUid);           // restore the item
-    void FUN_140cd2280(int nSlot);              // commit the slot
-    void FUN_140cd22f0(int nSlot);              // restore the slot
-    void FUN_140cd2360(__int64 nUid, MS2Ptr<CItem>& spOut);    // the dyed copy of the item
-    void FUN_140cd23e0(MS2Ptr<CItem> spItem, int nSlot);        // apply an item to the slot
-    void FUN_140cd24a0(int nSlot);              // show the cap
-    void FUN_140cd2530(int nSlot);              // hide the cap
-    void FUN_140cd25c0(int nSlot);              // begin on the slot
-    void FUN_140cd2660(int nItemId);            // preview an item id
-    void FUN_140cd2700(__int64 nUid);           // preview the item (0: none)
-    void FUN_140cd27a0();                       // keep the preview
-    int FUN_140cd27f0();                        // the controller is dragging
-    int FUN_140cd28a0();                        // a style is previewed
+    bool EquipItem(CItem* pItem);           // preview an item (false: not wearable)
+    bool EquipItemId(int nItemId);            // preview an item id (false: not wearable)
+    void ClearPreview();                       // take the preview items off
+    void Unequip(CItem* pItem);           // take an item off
+    void UnequipId(int nItemId);            // take an item id off
+    void UnequipUid(__int64 nUid);           // take an item uid off
+    void CommitAll();                       // commit all
+    void RestoreAll();                       // restore all
+    void CommitUid(__int64 nUid);           // commit the item
+    void RestoreUid(__int64 nUid);           // restore the item
+    void CommitSlot(int nSlot);              // commit the slot
+    void RestoreSlot(int nSlot);              // restore the slot
+    void GetModifiedAndSelect(__int64 nUid, MS2Ptr<CItem>& spOut);    // the dyed copy of the item
+    void ApplyItem(MS2Ptr<CItem> spItem, int nSlot);        // apply an item to the slot
+    void ShowSlot(int nSlot);              // show the cap
+    void HideSlot(int nSlot);              // hide the cap
+    void SelectSlot(int nSlot);              // begin on the slot
+    void SelectId(int nItemId);            // preview an item id
+    void SelectUid(__int64 nUid);           // preview the item (0: none)
+    void ResetEdit();                       // keep the preview
+    int IsDragging();                        // the controller is dragging
+    int IsEditItemAdded();                        // a style is previewed
     int FUN_140cd2a00();                        // changed (billable)
     int FUN_140cd2c20();                        // changed
-    int FUN_140cd2ea0();                        // a colour is previewed
-    int FUN_140cd3000();                        // a crop is previewed
-    int FUN_140cd3160(int nIndex, int n);       // apply a palette colour
-    int FUN_140cd3220(int nPalette, int nColor, int n);
-    int FUN_140cd32f0(const int& nPalette, int nColor, int n);
-    int FUN_140cd33c0(int* pnColor, int nSlot);
+    int IsEditItemColorChanged();                        // a colour is previewed
+    int HasSelectedChangeFlag2();                        // a crop is previewed
+    int ApplyColor(int nIndex, int n);       // apply a palette colour
+    int ApplyPalette(int nPalette, int nColor, int n);
+    int SetColors(const int& nPalette, int nColor, int n);
+    int GetColors(int* pnColor, int nSlot);
     void FUN_140cd3480(int bApply, int nPalette);               // dye every added item with the palette
-    void FUN_140cd3750(ItemMap& out);           // the added items
+    void GetAddedItems(ItemMap& out);           // the added items
     bool IsPreview();                       // m_bPreview
     void FUN_140cd3820();                       // forget the kept previews
     unsigned GetPalette();                    // m_nPalette
     void SetPalette(int nPalette);
     void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
     MS2Ptr<BeautyShopContext> FUN_140cd3940();
-    void FUN_140cd3990();                       // rebuild the equipment, keep the selection
-    void FUN_140cd3a70();                       // re-hide the hidden slots
-    PC* FUN_140cd3df0();                        // the player
+    void RebuildEquipment();                       // rebuild the equipment, keep the selection
+    void ReapplyHiddenSlots();                       // re-hide the hidden slots
+    PC* GetPlayer();                        // the player
 
     // UIItemEventListener
     virtual void vfunc_21(void* p);             // 21 0x140cd3ae0

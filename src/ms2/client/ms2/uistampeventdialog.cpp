@@ -136,11 +136,11 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
     UIObject::vfunc_45(pOut, strMethod, pArgs);
     if ((strMethod == "getTooltipQuest")) {
         int nQuest = pArgs->FUN_1422b8b10();
-        if (!((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) && !((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest)) return;
+        if (!((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) && !((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest)) return;
         CStringW strText = FUN_1416e5660(nQuest);
         ASTooltip tip(1, 2);
-        if (tip.FUN_1409e26b0(strText)) {
-            tip.FUN_1409c6dc0(1);
+        if (tip.ApplyTextTooltip(strText)) {
+            tip.SetTooltipAlign(1);
             *pOut = tip.FUN_1422bb870();
         }
     } else if ((strMethod == "getTooltipItem")) {
@@ -237,7 +237,7 @@ void UIStampEventDialog::FUN_140ed81a0(MS2Ptr<StampEventContext> spContext)
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
         CStringW strIcon;
-        if (((class CQuestManager*)FUN_140764020())->FUN_140745630(spStamp->m_id) || ((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id)) {
+        if (((class CQuestManager*)FUN_140764020())->IsQuestActive(spStamp->m_id) || ((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id)) {
             strIcon = FUN_1416e4df0(spStamp->m_id);
         } else {
             strIcon = GetStringCommonByKey(L"s_stampevent_closed_stamp");
@@ -278,7 +278,7 @@ void UIStampEventDialog::FUN_140ed8590(MS2Ptr<StampEventContext> spContext)
             row.FUN_1409c0d20("slotItemCount01", spReward->m_item.m_count);
             row.FUN_1409c0d20("slotItemCount02", spReward->m_item2.m_count);
             row.FUN_1407cba60("eventTag", FUN_140ed9560());
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
         spList->vfunc_24(true);
     }
@@ -318,7 +318,7 @@ void UIStampEventDialog::FUN_140ed8c70()
         if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spContext->m_stamps[i]->m_id)) ++nDone;
     }
     CStringW strText = FUN_14028dfa0<int, int>(CStringW(L"s_stampevent_count"), nDone, nTotal);
-    if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count")) {
+    if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_count")) {
         spCount->FUN_1422c4cd0(strText);
     }
 }

@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // Effect factory (effectservice): create the runtime effect of a param for a target.
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
@@ -50,7 +51,7 @@ MS2_REPLACE_METHOD(0x140A8F300, PendingEffect, Init, 302, 0x19DB2124);
 // @0x140a8f440
 bool PendingEffect::Poll()
 {
-    if (m_tick.FUN_140268870(50) && m_spSet->FUN_14119f680())
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(50) && m_spSet->FUN_14119f680())
         return true;
     return false;
 }

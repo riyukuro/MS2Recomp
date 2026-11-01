@@ -15,6 +15,7 @@
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameRps@@@@YAPEAVUIMicroGameRps@@H@Z 0x140b8b700
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statemicrogame.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <afxbasepane.h>
 #include <new>
@@ -46,7 +47,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cf8;                    // the up axis
 extern char DAT_143ab2a90;                               // the rps event's context table
 
@@ -91,7 +92,6 @@ class Unk_MgWorld
 {
 public:
     PCBase* FUN_141bd1290(int nId);                      // 0x141bd1290
-    PCBase* FUN_141bd1530(__int64 nId);                  // 0x141bd1530
 };
 
 // The UI manager.
@@ -101,7 +101,7 @@ template <class T> T* Unk_MgGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_MgUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -112,7 +112,8 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The animation registry: the default sequence of a model.
 class Unk_MgAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
-Unk_MgAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // This unit's free helpers (defined below).
 bool FUN_140b883c0();
@@ -143,7 +144,8 @@ class Unk_MgGameService { public: Unk_MgEventHolder* FUN_1403ed140(); };
 Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
-class Unk_MgBuffMgr { public: efd::Point3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_MgBuffMgr { public: };
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
 bool FUN_1401647e0(const CString& strA, const CString& strB) noexcept;   // 0x1401647e0 the strings are equal
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
@@ -237,12 +239,12 @@ void StateMicroGameRps::vfunc_3(double fTime)
     PCBase* pActor = FUN_1417b8370();
     if (pActor == 0)
         return;
-    PCBase* pPartner = FUN_140b879d0();
+    PCBase* pPartner = GetRpsPC();
     if (pPartner == 0)
         return;
     Vector3 kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
         reinterpret_cast<Unk_MgPos*>(pActor)->vfunc_18(), DAT_143a08cf8);
-    pActor->FUN_14166d8b0(kLook.z);
+    pActor->SetTargetYaw(kLook.z);
     Vector3 kZero = DAT_143b01a60;
     pActor->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
@@ -268,7 +270,7 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    PCBase* pPartner = FUN_140b879d0();
+    PCBase* pPartner = GetRpsPC();
     if (pPartner == 0)
         return;
     if (m_spRps == 0)
@@ -281,7 +283,7 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
         return;
     if (FUN_1401647e0(pRider->FUN_14166dc50(), strAnim))
         return;
-    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -309,7 +311,7 @@ void StateMicroGameRps::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = ((Unk_MgBuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    m_pOwner->vfunc_22(pBuff->FUN_141683290());
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
@@ -325,7 +327,7 @@ void StateMicroGameRps::vfunc_9(double fTime)
     case 0x99:
     case 0x9a:
     {
-        unsigned int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        unsigned int nSeq = reinterpret_cast<Unk_MgAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
         FUN_140b87a40(nSeq);
         return;
     }
@@ -418,8 +420,8 @@ void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
         MS2_ASSERT_AT(0xb1, 0);
         return;
     }
-    pUI->FUN_140e663b0();
-    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
+    pUI->Hide();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0xba, 0);
@@ -440,7 +442,7 @@ void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
 }
 
 // @0x140b876a0
-void StateMicroGameRps::FUN_140b876a0()
+void StateMicroGameRps::ResetRound()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
@@ -456,7 +458,7 @@ void StateMicroGameRps::FUN_140b876a0()
         MS2_ASSERT_AT(0x81, 0);
         return;
     }
-    pUI->FUN_140e66330();
+    pUI->PopUp();
     m_spRps->m_n1c = -1;
     m_spRps->m_n20 = -1;
     m_spRps->m_str.Empty();
@@ -468,7 +470,7 @@ void StateMicroGameRps::FUN_140b877c0()
 {
     if (FUN_1417b8560() == 0)
         return;
-    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
         return;
     MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
@@ -485,7 +487,7 @@ void StateMicroGameRps::FUN_140b877c0()
 }
 
 // @0x140b879d0
-PCBase* StateMicroGameRps::FUN_140b879d0()
+PCBase* StateMicroGameRps::GetRpsPC()
 {
     Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
@@ -514,7 +516,7 @@ void StateMicroGameRps::FUN_140b87ad0()
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    PCBase* pPartner = FUN_140b879d0();
+    PCBase* pPartner = GetRpsPC();
     if (pPartner == 0)
         return;
     int nResult = FUN_140b8b540(pRider);
@@ -537,7 +539,7 @@ void StateMicroGameRps::FUN_140b87ad0()
 void StateMicroGameRps::FUN_140b87cc0()
 {
     MyPC* pRider = FUN_1417b84b0();
-    PCBase* pPartner = FUN_140b879d0();
+    PCBase* pPartner = GetRpsPC();
     if (pRider == 0 || pPartner == 0)
         return;
     MS2Ptr<Unk_PCBaseComp_a88> spShow = pRider->vfunc_83();
@@ -560,7 +562,7 @@ bool StateMicroGameRps::FUN_140b87e00()
         MS2_ASSERT_AT(0x1a9, 0);
         return false;
     }
-    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
         return false;
     if (m_spRps == 0)
@@ -611,7 +613,7 @@ void StateMicroGameRps::FUN_140b88290(double)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    PCBase* pPartner = FUN_140b879d0();
+    PCBase* pPartner = GetRpsPC();
     if (pPartner == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -633,7 +635,7 @@ void StateMicroGameRps::FUN_140b88290(double)
 // @0x140b883c0
 bool FUN_140b883c0()
 {
-    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
         return false;
     int nCount = ((class Unk_Inventory*)(void const*)(&DAT_143ab2a90))->FUN_140a5f180(spEvent->m_20, 0);
@@ -699,7 +701,7 @@ CStringW FUN_140b887d0(__int64 nActorId, int nWhy)
     CStringW strPartner(L"");
     do
     {
-        PCBase* pPartner = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance())->FUN_141bd1530(nActorId);
+        PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nActorId));
         if (pPartner == 0)
             break;
         strPartner = pPartner->vfunc_77();
@@ -765,12 +767,12 @@ void StateMicroGameCoupleDance::vfunc_3(double fTime)
     PCBase* pActor = FUN_1417b8370();
     if (pActor == 0)
         return;
-    PCBase* pPartner = FUN_140b89dd0();
+    PCBase* pPartner = GetDancePC();
     if (pPartner == 0)
         return;
     Vector3 kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
         reinterpret_cast<Unk_MgPos*>(pActor)->vfunc_18(), DAT_143a08cf8);
-    pActor->FUN_14166d8b0(kLook.z);
+    pActor->SetTargetYaw(kLook.z);
     Vector3 kZero = DAT_143b01a60;
     pActor->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (m_nDeadline != 0 && GetTickCountMs2() >= (unsigned)m_nDeadline)
@@ -816,7 +818,7 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = ((Unk_MgBuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    m_pOwner->vfunc_22(pBuff->FUN_141683290());
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
@@ -829,7 +831,7 @@ void StateMicroGameCoupleDance::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
     {
-        unsigned int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        unsigned int nSeq = reinterpret_cast<Unk_MgAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
         FUN_140b89e40(nSeq);
         return;
     }
@@ -967,7 +969,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
 }
 
 // @0x140b89dd0
-PCBase* StateMicroGameCoupleDance::FUN_140b89dd0()
+PCBase* StateMicroGameCoupleDance::GetDancePC()
 {
     Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
@@ -996,7 +998,7 @@ void StateMicroGameCoupleDance::FUN_140b89ed0(double)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    PCBase* pPartner = FUN_140b89dd0();
+    PCBase* pPartner = GetDancePC();
     if (pPartner == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1225,7 +1227,7 @@ void StateMicroGameCoupleDance::FUN_140b8b020(const std::vector<int>& aStages)
 CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy)
 {
     CStringW strPartner(L"");
-    PCBase* pPartner = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance())->FUN_141bd1530(nActorId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nActorId));
     if (pPartner != 0)
         strPartner = pPartner->vfunc_77();
     CStringW strMessage(L"");

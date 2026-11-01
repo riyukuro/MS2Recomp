@@ -8,6 +8,7 @@
 // The exe's memcpy_s / memmove_s are plain calls (no /Oi expansion); the pragma must precede the inline copies.
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <errno.h>
 #include <new>
 #include <string.h>
@@ -23,6 +24,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local view of the state-sync record (StateData slots 1/2 argument) ----
 
@@ -39,10 +41,10 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 CString FUN_1405a7e80(int nBanner);                     // 0x1405a7e80: banner id -> text
 int FUN_140718170(const CString& strId);                // 0x140718170: text -> id
-void* FUN_141b6f910();                                  // 0x141b6f910: the animation service singleton
-NiActorManager* FUN_140999440(void* pSvc, const egf::EntityID& kId);   // 0x140999440 (ICF: AnimationService)
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                                  // 0x141b6f910: the animation service singleton
 bool FUN_140b73bc0(MyPC* pPlayer);                      // 0x140b73bc0: the player can join the banner micro game
-extern Vector3 DAT_143b01a60;                   // 0x143b01a60: the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 (defined below)
 
 // ---- StateBannerData ----
@@ -147,7 +149,7 @@ void StateBanner::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     efd::UInt64 qwId;                   // the exe never constructs the entity-id out-param
-    int nState = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId)));
+    int nState = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId)));
     FUN_140b7f320(nState);
 }
 
@@ -205,7 +207,7 @@ int StateBanner::vfunc_1()
 // @0x140b7f6a0
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId)
 {
-    NiActorManager* pActor = FUN_140999440(pSvc, kId);
+    NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(pSvc)->GetActorManager(kId);
     if (pActor == 0)
         return (int)NiActorManager::INVALID_SEQUENCE_ID;
     return (int)static_cast<NiActorManager*>(pActor)->GetTargetAnimation();

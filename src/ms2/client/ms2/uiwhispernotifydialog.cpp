@@ -286,10 +286,10 @@ void UIWhisperNotifyDialog::FUN_141b52030(int nItemId, int nGrade, int nCount, c
     if (spData == 0)
         return;
     ASSlot slot(2);
-    slot.FUN_1409c2750(spData->FUN_14053fdd0());
-    slot.FUN_1409c23e0(nGrade);
+    slot.SetIconPathString(spData->GetIconPath());
+    slot.SetItemGrade(nGrade);
     if (1 < reinterpret_cast<Unk_WhisperItemData*>(spData.get())->m_nMaxCount)
-        slot.FUN_1409c2190(nCount);
+        slot.SetItemCountValue(nCount);
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.FUN_1422bb870(), CStringW(strMsg));
 }
 
@@ -307,18 +307,18 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
             strName = strUgcPath;
         if (spItem->FUN_140525f60() != 0)
         {
-            if (spItem->FUN_1405278d0() != 0)
+            if (spItem->GetUgcInfo() != 0)
             {
-                if (((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->FUN_1405278d0())->m_look, MS2Ptr<CItem>(0), 0) != 0)
+                if (((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->GetUgcInfo())->m_look, MS2Ptr<CItem>(0), 0) != 0)
                     strName = "";
             }
         }
-        slot.FUN_1409c28f0(FUN_140719a80(spItem->FUN_140526a50()));
-        slot.FUN_1409c2750(strName);
-        slot.FUN_1409c23e0(spItem->FUN_140526bd0());
-        if (1 < spItem->FUN_1405281e0())
-            slot.FUN_1409c2190(spItem->FUN_140526c50());
-        slot.FUN_1409c2950(spItem->FUN_140528840());
+        slot.SetItemGUID(FUN_140719a80(spItem->GetItemUid()));
+        slot.SetIconPathString(strName);
+        slot.SetItemGrade(spItem->FUN_140526bd0());
+        if (1 < spItem->GetSlotMax())
+            slot.SetItemCountValue(spItem->GetCount());
+        slot.SetUgcTag(spItem->GetUgcTag());
     }
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.FUN_1422bb870(), CStringW(strMsg));
 }

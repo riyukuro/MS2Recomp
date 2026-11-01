@@ -46,7 +46,7 @@ MS2_REPLACE_METHOD(0x1422CDE60, ASButton, FUN_1422cde60, 60, 0x5AFD8831);
 // @0x1422cdeb0
 int ASButton::FUN_1422cdeb0()
 {
-    return FUN_1422baa20("autoRepeat").GetBool();
+    return GetMember("autoRepeat").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422CDEB0, ASButton, FUN_1422cdeb0, 91, 0x47F5C858);
 
@@ -74,7 +74,7 @@ MS2_REPLACE_METHOD(0x1422CDFB0, ASButton, FUN_1422cdfb0, 72, 0x5AA699A2);
 // @0x1422ce000
 CString ASButton::FUN_1422ce000()
 {
-    return FUN_1409a23d0(FUN_1422baa20("label").GetString(), 0);
+    return FUN_1409a23d0(GetMember("label").GetString(), 0);
 }
 MS2_REPLACE_METHOD(0x1422CE000, ASButton, FUN_1422ce000, 125, 0x18300678);
 
@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x1422CE090, ASButton, FUN_1422ce090, 60, 0x0539AE61);
 // @0x1422ce0e0
 bool ASButton::FUN_1422ce0e0()
 {
-    return FUN_1422baa20("selected").GetBool();
+    return GetMember("selected").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422CE0E0, ASButton, FUN_1422ce0e0, 89, 0xD14A87FE);
 
@@ -102,7 +102,7 @@ MS2_REPLACE_METHOD(0x1422CE140, ASButton, FUN_1422ce140, 60, 0x7875B4EC);
 // @0x1422ce190
 bool ASButton::FUN_1422ce190()
 {
-    return FUN_1422baa20("toggle").GetBool();
+    return GetMember("toggle").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422CE190, ASButton, FUN_1422ce190, 89, 0xC524C4EF);
 

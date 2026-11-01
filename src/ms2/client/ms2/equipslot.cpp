@@ -43,7 +43,6 @@ class Unk_EqEquipSet : public CEquipment
 class Unk_EqPlayer
 {
 public:
-    Unk_EqEquipSet* FUN_1416561a0();
 };
 class Unk_EqWorld
 {
@@ -94,6 +93,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(EquipSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(EquipSlotBag);
 
@@ -126,7 +126,7 @@ int EquipSlot::vfunc_14()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        g_143ab2a90.FUN_140a62920(((CItem*)spItem)->FUN_140526a50());
+        g_143ab2a90.FUN_140a62920(((CItem*)spItem)->GetItemUid());
     return 1;
 }
 
@@ -173,7 +173,7 @@ int EquipSlot::vfunc_18(void* p)
             if (FUN_141421230(spFrom, spThis, m_spPC) != 0)
             {
                 Unk_EquipReq req;
-                req.m_nItemUid = ((CItem*)spFrom)->FUN_140526a50();
+                req.m_nItemUid = ((CItem*)spFrom)->GetItemUid();
                 req.m_nSlot = m_nSlot;
                 COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
                 packet.WriteUInt8(2);
@@ -192,7 +192,7 @@ int EquipSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -203,7 +203,7 @@ int EquipSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -253,20 +253,20 @@ int EquipSlot::vfunc_8(void* p)
         {
             if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
             {
-                slot.FUN_1409c2090(1);
+                slot.SetGrayColor(1);
                 goto LAB_gray_done;
             }
         }
         if (m_nSlot == 9)
         {
             if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
-                slot.FUN_1409c2090(1);
+                slot.SetGrayColor(1);
         }
 LAB_gray_done:
         if (bPc != 0 && m_nKind == 2)
         {
-            if (pPlayer->FUN_1416561a0()->FUN_1411ea770() == false)
-                slot.FUN_1409c2710(1);
+            if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411ea770() == false)
+                slot.SetDisable(1);
         }
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
@@ -298,12 +298,12 @@ MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
 {
     if (m_spPC == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CItem> spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)m_nSlot);
+    MS2Ptr<CItem> spItem = m_spPC->GetEquipItemByKind(nKind, (Unk_InventoryEquipSlot)m_nSlot);
     if (spItem.get() != 0)
         return spItem;
     if (m_nSlot == 4)
     {
-        spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)5);
+        spItem = m_spPC->GetEquipItemByKind(nKind, (Unk_InventoryEquipSlot)5);
         if (spItem.get() != 0 ? true : false)
         {
             if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
@@ -312,7 +312,7 @@ MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
     }
     else if (m_nSlot == 9)
     {
-        spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)8);
+        spItem = m_spPC->GetEquipItemByKind(nKind, (Unk_InventoryEquipSlot)8);
         if (spItem.get() != 0 ? true : false)
         {
             if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
@@ -349,7 +349,7 @@ int EquipSlot::FUN_14120d250(CItem* pItem)
 {
     if (FUN_14120d510(pItem) == 0)
         return 0;
-    if (pItem->FUN_140527840()->FUN_14053e130() != false)
+    if (pItem->FUN_140527840()->IsCashItem() != false)
     {
         FUN_140d73bc0(0xd7, 0, 0, CStringW(L""));
         return 0;

@@ -63,6 +63,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- unit-local views of exe objects ----
 
@@ -115,7 +117,8 @@ extern CStringTable* GetStringTable();
 unsigned __int64 FUN_140718370(const CStringW& value);
 void FUN_140710590(COutPacket&);                                    // send
 class Unk_RpInvDlg { public: void FUN_141999e00(); };
-Unk_RpInvDlg* FUN_1405344f0(int nId);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_RpInvDlg* FUN_1405344f0 (calls cast back)
 
 class CMsgBoxData : public CPtred
 {
@@ -138,7 +141,6 @@ void FUN_1412751b0(const CStringW& text, int nA);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
@@ -211,13 +213,13 @@ UIItemRePackingScrollDialog::UIItemRePackingScrollDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    ((class Unk_RpPackets*)FUN_140bccd50())->FUN_140da5180(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
 }
 
 // @0x140f60f50
 UIItemRePackingScrollDialog::~UIItemRePackingScrollDialog()
 {
-    ((class Unk_RpPackets*)FUN_140bccd50())->FUN_140da51e0(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
 }
 
 // @0x140f61050
@@ -245,7 +247,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
         return;
     if (static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
         return;
-    if (MS2Ptr<ASTextField> spTitle = FUN_140bb4cf0("m_title"))
+    if (MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title"))
         spTitle->FUN_1422c4cd0(static_cast<CItem*>(spScroll)->FUN_140527b10());
     MS2Ptr<Unk_RpRow> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
     if (spRow == 0)
@@ -309,7 +311,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
                 return 1;
             }
             int nHave = g_143ab2a90.FUN_140a5f180(static_cast<CItem*>(spScroll)->FUN_1405276c0(), 0);
-            int nNeed = static_cast<CItem*>(spTarget)->FUN_140527530();
+            int nNeed = static_cast<CItem*>(spTarget)->GetRepackConsumeCount();
             if (nHave < nNeed)
             {
                 FUN_140f62710(0xd);
@@ -405,7 +407,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     if (!spItem)
         return;
     static_cast<CItem*>(spItem)->FUN_140524eb0(static_cast<CInputStream&>(packet));
-    Unk_RpInvDlg* pInven = FUN_1405344f0(0x4e2d);
+    Unk_RpInvDlg* pInven = reinterpret_cast<Unk_RpInvDlg*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInven != 0)
         pInven->FUN_141999e00();
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0x11, 0x967, this, CStringW(L"repacking_ok")))
@@ -477,7 +479,7 @@ void UIItemRePackingScrollDialog::FUN_140f628d0(MS2Ptr<CItem> spItem)
 // @0x140f62930
 ItemScrollSlot* UIItemRePackingScrollDialog::FUN_140f62930(CString strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot != 0)
         return pSlot;
     return 0;
@@ -539,13 +541,13 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spItem);
         slot.vfunc_10();
         CStringW strName = static_cast<CItem*>(spItem)->FUN_140528160();
-        int nNeed = static_cast<CItem*>(spItem)->FUN_140527530();
+        int nNeed = static_cast<CItem*>(spItem)->GetRepackConsumeCount();
         unsigned nScrollId = static_cast<CItem*>(spScroll)->FUN_1405276c0();
         CStringW strDesc = FUN_140f63810(0x966, nScrollId, nNeed);
         reinterpret_cast<Unk_RpWorld*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strDesc);
         ASObj obj(2);
         obj.FUN_1407cbb20("itemName", CStringW(strName));
-        obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->FUN_140526a50()));
+        obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->GetItemUid()));
         obj.FUN_1407cbb20("desc", CStringW(strDesc));
         m_spItem = spItem;
         m_30->Invoke("selectItem", obj.FUN_1422bb870());

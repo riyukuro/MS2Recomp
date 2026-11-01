@@ -27,6 +27,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -71,7 +78,7 @@ CItemEnchantTransformTable::~CItemEnchantTransformTable()
 }
 
 // @0x1405915b0
-int CItemEnchantTransformTable::FUN_1405915b0()
+int CItemEnchantTransformTable::Init()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -102,21 +109,21 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("transform"); pNode != 0; pNode = pNode->FUN_140168650("transform"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("transform"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("transform")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nInputRank = 0;
-        FUN_140873220(pNode, "inputRank", nInputRank);
+        XmlGetAttr((class TiXmlElement*)(pNode), "inputRank", nInputRank);
         if (nInputRank == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         unsigned nInputLimitLevel = 0;
-        FUN_140873220(pNode, "inputLimitLevel", nInputLimitLevel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "inputLimitLevel", nInputLimitLevel);
         unsigned nInputEnchantLevel = 0;
-        FUN_140873220(pNode, "inputEnchantLevel", nInputEnchantLevel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "inputEnchantLevel", nInputEnchantLevel);
         CString strSlot;
         FUN_1408733e0(pNode, "inputSlot", strSlot);
         ATL::CAtlArray<unsigned> arrSlot;
@@ -148,9 +155,9 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         unsigned nOutput1Id = 0;
         unsigned nOutput1Rank = 0;
         unsigned nOutput1Count = 0;
-        FUN_140873220(pNode, "output1Id", nOutput1Id);
-        FUN_140873220(pNode, "output1Rank", nOutput1Rank);
-        FUN_140873220(pNode, "output1Count", nOutput1Count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output1Id", nOutput1Id);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output1Rank", nOutput1Rank);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output1Count", nOutput1Count);
         if (nOutput1Id == 0 || nOutput1Rank == 0 || nOutput1Count == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -162,9 +169,9 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         unsigned nOutput2Id = 0;
         unsigned nOutput2Rank = 0;
         unsigned nOutput2Count = 0;
-        FUN_140873220(pNode, "output2Id", nOutput2Id);
-        FUN_140873220(pNode, "output2Rank", nOutput2Rank);
-        FUN_140873220(pNode, "output2Count", nOutput2Count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output2Id", nOutput2Id);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output2Rank", nOutput2Rank);
+        XmlGetAttr((class TiXmlElement*)(pNode), "output2Count", nOutput2Count);
         if (nOutput2Id != 0 && nOutput2Rank != 0 && nOutput2Count != 0)
         {
             spData->m_arrOutputId.Add(nOutput2Id);
@@ -175,7 +182,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         {
             for (unsigned j = 0; j < arrItemId.GetCount(); j++)
             {
-                CString strKey = FUN_140592090(arrItemId[j], (EnchantTransformRank)nInputRank, nInputLimitLevel, nInputEnchantLevel, arrSlot[i]);
+                CString strKey = MakeKey(arrItemId[j], (EnchantTransformRank)nInputRank, nInputLimitLevel, nInputEnchantLevel, arrSlot[i]);
                 m_map.SetAt(strKey, spData);
             }
         }
@@ -184,7 +191,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
 }
 
 // @0x140592090
-CString CItemEnchantTransformTable::FUN_140592090(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot)
+CString CItemEnchantTransformTable::MakeKey(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot)
 {
     return Unk_SocketFormat("{0}-{1}-{2}-{3}-(4)", nItemId, nSlot, nEnchantLevel, eRank, nLimitLevel);
 }
@@ -194,8 +201,8 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    CEnchantTransformDataPtr spData = GetInstance()->FUN_140592430(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(),
-        spItem->FUN_140527710(), spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c620());
+    CEnchantTransformDataPtr spData = GetInstance()->Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(),
+        spItem->GetRequiredLevel(), spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c620());
     if (spData == 0)
         return 0;
     if (spItem->FUN_140528ca0() == 0)
@@ -209,7 +216,7 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
 }
 
 // @0x140592330
-CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_140592330(const CString& strKey)
+CEnchantTransformDataPtr CItemEnchantTransformTable::FindByKey(const CString& strKey)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
@@ -227,23 +234,23 @@ CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_140592330(const CString
 }
 
 // @0x140592430
-CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_140592430(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot)
+CEnchantTransformDataPtr CItemEnchantTransformTable::Find(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot)
 {
-    CString strKey = FUN_140592090(nItemId, eRank, nLimitLevel, nEnchantLevel, nSlot);
-    return FUN_140592330(strKey);
+    CString strKey = MakeKey(nItemId, eRank, nLimitLevel, nEnchantLevel, nSlot);
+    return FindByKey(strKey);
 }
 
 // @0x1405924d0
-CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_1405924d0(MS2Ptr<CItem> spItem)
+CEnchantTransformDataPtr CItemEnchantTransformTable::FindByItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return CEnchantTransformDataPtr(0);
-    return FUN_140592430(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(), spItem->FUN_140527710(),
+    return Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(), spItem->GetRequiredLevel(),
                          spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c620());
 }
 
 // @0x140592620
-unsigned int CItemEnchantTransformTable::FUN_140592620(unsigned int nItemId)
+unsigned int CItemEnchantTransformTable::GetLowestLimitLevel(unsigned int nItemId)
 {
     CheckInit();
     unsigned int nLowest = 0;

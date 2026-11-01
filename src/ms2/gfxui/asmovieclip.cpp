@@ -61,7 +61,7 @@ MS2_REPLACE_METHOD(0x1422C1FE0, ASMovieClip, FUN_1422c1fe0, 60, 0x71A1E927);
 // @0x1422c2030
 int ASMovieClip::FUN_1422c2030()
 {
-    return FUN_1422baa20("enabled").GetBool();
+    return GetMember("enabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C2030, ASMovieClip, FUN_1422c2030, 91, 0xF8A9AD73);
 
@@ -138,14 +138,14 @@ MS2_REPLACE_METHOD(0x1422C22D0, ASMovieClip, vfunc_14, 39, 0x441BCDF7);
 // @0x1422c2300
 int ASMovieClip::FUN_1422c2300()
 {
-    return FUN_1422baa20("currentFrame").GetInt();
+    return GetMember("currentFrame").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422C2300, ASMovieClip, FUN_1422c2300, 88, 0x3860367F);
 
 // @0x1422c2360
 CString ASMovieClip::FUN_1422c2360()
 {
-    Scaleform::GFx::Value v = FUN_1422baa20("currentFrameLabel");
+    Scaleform::GFx::Value v = GetMember("currentFrameLabel");
     if (v.IsString())
         return CString(v.GetString());
     return CString("");
@@ -155,14 +155,14 @@ MS2_REPLACE_METHOD(0x1422C2360, ASMovieClip, FUN_1422c2360, 172, 0x4B3CB78C);
 // @0x1422c2420
 CString ASMovieClip::FUN_1422c2420()
 {
-    return CString(FUN_1422baa20("currentLabel").GetString());
+    return CString(GetMember("currentLabel").GetString());
 }
 MS2_REPLACE_METHOD(0x1422C2420, ASMovieClip, FUN_1422c2420, 123, 0xB3302518);
 
 // @0x1422c24b0
 int ASMovieClip::FUN_1422c24b0()
 {
-    return FUN_1422baa20("totalFrames").GetInt();
+    return GetMember("totalFrames").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422C24B0, ASMovieClip, FUN_1422c24b0, 88, 0x340EE638);
 

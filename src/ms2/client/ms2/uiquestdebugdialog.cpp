@@ -16,6 +16,8 @@
 #include "ms2/commonfiles/questdatatable.h"
 #include <vector>
 #include <algorithm>
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // Unit-local declarations, pending recovery of the quest data and AS wrapper units.
 class Unk_QuestDebugManager
@@ -31,7 +33,7 @@ public:
 };
 class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
 class Unk_QuestDebugCheck { public: unsigned char FUN_1422ce0e0(); };
-class Unk_QuestDebugInput { public: CStringW FUN_1422e0b00(); };
+class Unk_QuestDebugInput { public: };
 class Unk_QuestDebugText { public: void FUN_1422c4cd0(const CStringW&); };
 class Unk_QuestDebugAS : public AScript
 {
@@ -91,8 +93,8 @@ public:
 };
 CString FUN_140bc6280(const char*, const char*, const char*, const int&, const char*);
 class Unk_QuestDebugLocalizer { public: CStringW FUN_1422b0570(const CString&); };
-Unk_QuestDebugLocalizer* FUN_14025e7a0();
-class Unk_QuestDebugAccess { public: bool FUN_14116d9c0(int, int, int); };
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_QuestDebugLocalizer (calls cast back)
+class Unk_QuestDebugAccess : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 bool FUN_140184310(const CString&, const char*);
 class Unk_QuestDebugHandle
@@ -261,7 +263,6 @@ public:
 };
 class Unk_QuestDebugGlobal { public: void* m_0; void* m_8; Unk_QuestDebugState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
-CStringW FUN_1401ceea0(const wchar_t*, const int&);
 class Unk_QuestDebugTime
 {
 public:
@@ -395,10 +396,10 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (!actor) return 1;
             if (Unk_QuestDebugPtr<Unk_QuestDebugDesc> desc = FUN_140c26f60("m_desc")) {
                 CStringW text;
-                CStringW expLabel = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_exp");
-                CStringW mesoLabel = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_meso");
-                CStringW statLabel = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_stat_point");
-                CStringW skillLabel = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_skill_point");
+                CStringW expLabel = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_exp");
+                CStringW mesoLabel = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_meso");
+                CStringW statLabel = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_stat_point");
+                CStringW skillLabel = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_skill_point");
                 text += FUN_140ba7890(expLabel, FUN_140761ba0(id, 1));
                 text += FUN_140ba7890(mesoLabel, FUN_140761cc0(id, 1));
                 if (quest->required.GetCount()) {
@@ -409,11 +410,11 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
                     }
                 }
                 if (quest->beginNpc != 0) {
-                    CStringW label = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_start_npc");
+                    CStringW label = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_start_npc");
                     text += FUN_1402758a0(label, FUN_1401aa6a0(quest->beginNpc), quest->beginNpc);
                 }
                 if (quest->endNpc != 0) {
-                    CStringW label = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_desc_complate_npc");
+                    CStringW label = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_complate_npc");
                     text += FUN_1402758a0(label, FUN_1401aa6a0(quest->endNpc), quest->endNpc);
                 }
                 size_t condCount = quest->conds.FUN_14075ae80();
@@ -636,9 +637,9 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     void* actor = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!actor) return;
     int minLevel = 0;
-    if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchLevelMin")) minLevel = _wtoi(input->FUN_1422e0b00());
+    if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchLevelMin")) minLevel = _wtoi(reinterpret_cast<ASTextInput*>(input.operator->())->GetText());
     int maxLevel = 0;
-    if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchLevelMax")) maxLevel = _wtoi(input->FUN_1422e0b00());
+    if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchLevelMax")) maxLevel = _wtoi(reinterpret_cast<ASTextInput*>(input.operator->())->GetText());
     unsigned int standard = 0;
     if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
     // The count formatter is a separate unrecovered COMDAT; its call and two array arguments are retained below.
@@ -650,7 +651,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 6);
         reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 8);
         reinterpret_cast<Unk_QuestDebugManager*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074cad0(available, 9);
-        CStringW format = FUN_14025e7a0()->FUN_1422b0570("$s_quest_debug_textfield_count");
+        CStringW format = reinterpret_cast<Unk_QuestDebugLocalizer*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_textfield_count");
         text->FUN_1422c4cd0(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
@@ -724,7 +725,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         }
         list->vfunc_24(1);
     }
-    if (Unk_QuestDebugPtr<Unk_QuestDebugText> text = FUN_140bb4cf0("m_currentCount")) text->FUN_1422c4cd0(FUN_1401ceea0(L"Search count : {0}", count));
+    if (Unk_QuestDebugPtr<Unk_QuestDebugText> text = FUN_140bb4cf0("m_currentCount")) text->FUN_1422c4cd0(StringFormat<int>(L"Search count : {0}", count));
 }
 MS2_REPLACE_METHOD(0x141A95310, UIQuestDebugDialog, FUN_141a95310, 4998, 0x217DF313);
 
@@ -735,7 +736,7 @@ CStringW UIQuestDebugDialog::FUN_141a966a0(unsigned int mode)
     if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkFilter")) checked = check->FUN_1422ce0e0();
     CStringW text;
     if (checked == mode) {
-        if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchInput")) text = input->FUN_1422e0b00();
+        if (Unk_QuestDebugPtr<Unk_QuestDebugInput> input = FUN_140e35bd0("m_searchInput")) text = reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
     }
     return text;
 }

@@ -17,6 +17,15 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class CLogString* GetLogString();
@@ -106,7 +115,7 @@ static int FUN_1404c1e80(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pElem, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = ReadMultiType(str);
@@ -132,7 +141,7 @@ bool CGloabalFactor::LoadMultiControl()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("multi"); pNode != 0; pNode = pNode->FUN_140168650("multi"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("multi")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("multi")))
     {
         int nType = 0;
         int nKey = 0;
@@ -146,9 +155,9 @@ bool CGloabalFactor::LoadMultiControl()
         }
         else
         {
-            FUN_1408731e0(pNode, "key", nKey);
+            XmlGetAttr((class TiXmlElement*)(pNode), "key", reinterpret_cast<int&>(nKey));
         }
-        FUN_140873360(pNode, "value", fValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "value", reinterpret_cast<float&>(fValue));
         if (nType == 0 || nType >= 6)
             continue;
         m_multi[nType].insert(std::make_pair(nKey, fValue));

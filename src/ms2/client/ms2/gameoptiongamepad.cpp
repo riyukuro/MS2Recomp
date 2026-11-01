@@ -15,6 +15,7 @@
 #include "hook/ms2hook.h"
 #include <string.h>
 #include <algorithm>
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local placeholders ----
 
@@ -23,7 +24,6 @@ class Unk_GpCheck : public CPtred
 {
 public:
     Unk_GpCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ceac0
-    void FUN_1422ce090(int bChecked);
     unsigned char FUN_1422ce0e0();
 private:
     char m_pad[0x88 - sizeof(CPtred)];
@@ -135,12 +135,12 @@ void CGameOptionGamePad::vfunc_6()
     {
         MS2Ptr<Unk_GpCheck> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
         if (static_cast<Unk_GpCheck*>(spUse) != 0)
-            spUse->FUN_1422ce090(m_state.m_bUse);
+            reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce090(m_state.m_bUse);
     }
     {
         MS2Ptr<Unk_GpCheck> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
         if (static_cast<Unk_GpCheck*>(spSkill) != 0)
-            spSkill->FUN_1422ce090(m_state.m_bShowSkillName);
+            reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce090(m_state.m_bShowSkillName);
     }
     {
         MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
@@ -150,7 +150,7 @@ void CGameOptionGamePad::vfunc_6()
     {
         MS2Ptr<Unk_GpCheck> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
         if (static_cast<Unk_GpCheck*>(spVibration) != 0)
-            spVibration->FUN_1422ce090(m_state.m_bVibration);
+            reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce090(m_state.m_bVibration);
     }
     {
         MS2Ptr<Unk_GpSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);

@@ -155,7 +155,7 @@ NiNode* NoticeMessage::GetRoot()
     AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(m_pOwner);
     if (pAvatar)
         return pAvatar->FUN_1409f62c0();
-    return CEffectService::GetInstance()->FUN_1411a6b10();
+    return CEffectService::GetInstance()->GetLeastLoadedRoot();
 }
 MS2_REPLACE_METHOD(0x140A533D0, NoticeMessage, GetRoot, 66, 0x2B7E420C);
 

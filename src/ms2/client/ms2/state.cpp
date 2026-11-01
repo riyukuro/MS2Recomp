@@ -106,6 +106,8 @@
 #include "ms2/unnamed/unit_140ad1860.h"
 #include "ms2/client/ms2/groundeffectdata.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/client/ms2/effectservice.h"   // C3: CEffectService::FUN_1411a49c0/4a00/6060
 
 // ---- unit statics (.text$di): the shared sort-name / skill / stun / condition header statics, included five times ----
 
@@ -220,7 +222,7 @@ public:
 };
 Unk_StWorld* FUN_1403ed2d0();
 
-// The effect request (0x70) and the client effect manager (FUN_1403ed280).
+// The effect request (0x70) and the client effect manager (TSingleton<CEffectService>).
 struct Unk_ExpTarget
 {
     Unk_ExpTarget();                                    // 0x140a52ef0
@@ -232,16 +234,9 @@ struct Unk_ExpTarget
     void* m_pad_10[12];                                 // pointer-typed: an integer array would draw a /GS cookie the exe lacks
 };
 MS2_CHECK_SIZE(Unk_ExpTarget, 0x70);
-class Unk_StEffects
-{
-public:
-    void FUN_1411a4a00(Unk_ExpTarget* pRequest);        // play once
-    void FUN_1411a6060(int nHandle);                    // release
-};
-Unk_StEffects* FUN_1403ed280();
 
 // Config tables.
-class Unk_StCfgValue { public: float FUN_1402bac70(); };
+class Unk_StCfgValue { public: };
 class Unk_StConsts
 {
 public:
@@ -253,7 +248,6 @@ public:
     Unk_StCfgValue m_climbSpeedH;                       // +0x2918
 };
 MS2_CHECK_OFFSET(Unk_StConsts, m_climbSpeedH, 0x2918);
-Unk_StConsts* FUN_1401d3200();
 class Unk_StEffectCfg
 {
 public:
@@ -306,12 +300,11 @@ public:
     Unk_GmGridRef(void* p);                             // 0x1401cd0b0
     ~Unk_GmGridRef();                                   // 0x1401cd150
     void* FUN_140885310();
-    Unk_StPhysSvc* FUN_1401cd1a0();
     void* m_p;
 };
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_1401cd040(void* pKey);
-int FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, efd::Point3* pOut);
 float FUN_140966ea0(efd::Point3 a, efd::Point3 b);     // distance
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pRight, efd::Point3* pSide);
 
@@ -333,18 +326,29 @@ float FUN_14059d930(float f);                                         // fabs
 float FUN_141240c40(bool b);                                          // the move speed (xmm0)
 
 // The actor's buffs.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class Unk_PCMove { public: Vector3 FUN_141683290(); Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_StBuff
 {
 public:
-    efd::Point3 FUN_141683290();                        // knock-back velocity
-    efd::Point3 FUN_141683900();
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
 
 // The animation service.
 class Unk_StAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
-Unk_StAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // PCBase non-virtuals that return structs (member form) and the free-function helpers.
 class Unk_StPC : public PCBase
@@ -379,9 +383,7 @@ public:
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 struct Unk_StSpeedCfg { float m_f0; float m_f4; float m_f8; };
-PCBase* FUN_140974230(PCBase* pOwner);                  // as PC
 PCBase* FUN_1409ffc60(PCBase* pOwner);                  // as npc
-PCBase* FUN_14096e110(PCBase* pOwner);                  // mount
 MyPC* FUN_14096e160(PCBase* pOwner);                    // as MyPC
 PCBase* FUN_140b10360(PCBase* pNpc);
 PCBase* FUN_141094f60(PCBase* pNpc);
@@ -821,7 +823,7 @@ MS2_REPLACE_METHOD(0x1417b8340, State, FUN_1417b8340, 41, 0x080AADA3);
 // @0x1417b8370
 PCBase* State::FUN_1417b8370()
 {
-    return FUN_140974230(m_pOwner);
+    return efd::DynamicCast<PC, PCBase>(m_pOwner);
 }
 MS2_REPLACE_METHOD(0x1417b8370, State, FUN_1417b8370, 28, 0xC8ECB84E);
 
@@ -849,7 +851,7 @@ MS2_REPLACE_METHOD(0x1417b83d0, State, FUN_1417b83d0, 155, 0x10ECA9CD);
 // @0x1417b8480
 PCBase* State::FUN_1417b8480()
 {
-    return FUN_14096e110(m_pOwner);
+    return efd::DynamicCast<CNpc, PCBase>(m_pOwner);
 }
 MS2_REPLACE_METHOD(0x1417b8480, State, FUN_1417b8480, 28, 0xFE73463C);
 
@@ -974,9 +976,9 @@ MS2_REPLACE_METHOD(0x1417b92a0, State, FUN_1417b92a0, 105, 0x48BDACAF);
 // @0x1417b9310
 void State::FUN_1417b9310()
 {
-    if (FUN_1403ed280()) {
+    if (TSingleton<CEffectService>::GetInstance()) {
         for (std::list<unsigned>::iterator it = m_ids.begin(); it != m_ids.end(); ++it)
-            FUN_1403ed280()->FUN_1411a6060(*it);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(*it);
     }
     m_ids.clear();
 }
@@ -1064,8 +1066,8 @@ void StateClimb::vfunc_4(StateData* pData)
     StateMoveSkill::vfunc_4(pData);
     m_bAltUp = false;
     m_bAltSide = false;
-    m_fSpeedV = FUN_1401d3200()->m_climbSpeedV.FUN_1402bac70();
-    m_fSpeedH = FUN_1401d3200()->m_climbSpeedH.FUN_1402bac70();
+    m_fSpeedV = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbSpeedV)->Read();
+    m_fSpeedH = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbSpeedH)->Read();
     m_timerHit.FUN_140868750(100);
     m_timerHang.FUN_140868750(100);
     m_pOwner->FUN_14123cb20(false);
@@ -1077,7 +1079,7 @@ void StateClimb::vfunc_4(StateData* pData)
     if (kSvc.FUN_140885310()) {
         efd::Point3 kPos;
         m_pOwner->vfunc_18();
-        if (PCBase* pPC = FUN_140974230(m_pOwner)) {
+        if (PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner)) {
             if (FUN_14165b500(pPC, 1))
                 m_n10 = 0x60;
             else
@@ -1120,13 +1122,13 @@ void StateClimb::vfunc_8(double fTime)
     Unk_StBuff* pBuff = ((Unk_StBuff*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kVel = efd::Point3::ZERO;
     if (m_timerHit.FUN_140868c00())
-        kVel = pBuff->FUN_141683290();
+        kVel = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()));
     efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
     if ((kFacing.y == -1.0f || kFacing.x == -1.0f) && kVel.y < 0.0f)
         kVel.y = 0.0f;
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
     if (pBuff->FUN_141683100(0x493e1)) {
-        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
         if (m_pOwner->FUN_1416749c0() && !pBuff->FUN_141682fe0(0x30d43) && !pBuff->FUN_141682fe0(0x30d44)
             && pBuff->FUN_141682fe0(0x30d41))
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
@@ -1228,10 +1230,10 @@ int StateClimb::FUN_1417bcc80()
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
-        Unk_StPhysObj* pWall = kSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity);
-        if (pWall != 0 && kSvc.FUN_1401cd1a0()->FUN_1410b9080(pWall, 0x10000) == 0) {
+        Unk_StPhysObj* pWall = reinterpret_cast<Unk_StPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->FUN_1410b8e60(kInfo.m_hitEntity);
+        if (pWall != 0 && reinterpret_cast<Unk_StPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->FUN_1410b9080(pWall, 0x10000) == 0) {
             efd::Point3 kTop;
-            FUN_1409618c0(pWall->m_spEntity, 0xfd95ca52, &kTop);
+            static_cast<egf::Entity*>(pWall->m_spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kTop));
             float fReach = m_pOwner->vfunc_18().z + 90.0f;
             float fTop = kTop.z + 150.0f;
             if (fReach >= fTop) {
@@ -1275,7 +1277,7 @@ int StateClimb::FUN_1417bd030(int bLeft)
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
-        Unk_StPhysObj* pObj = kSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity);
+        Unk_StPhysObj* pObj = reinterpret_cast<Unk_StPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->FUN_1410b8e60(kInfo.m_hitEntity);
         if (pObj != 0)
             return 1;
     }
@@ -1314,10 +1316,10 @@ int StateClimb::FUN_1417bd420(void* pWall)
             anFlags[1] = 0x10001;
         }
         for (int i = 0; i < 2; i++) {
-            Unk_StPhysObj* pEdge = kSvc.FUN_1401cd1a0()->FUN_1410b9080(static_cast<Unk_StPhysObj*>(pWall), anFlags[i]);
+            Unk_StPhysObj* pEdge = reinterpret_cast<Unk_StPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->FUN_1410b9080(static_cast<Unk_StPhysObj*>(pWall), anFlags[i]);
             if (pEdge != 0) {
                 efd::Point3 kEdge;
-                FUN_1409618c0(pEdge->m_spEntity, 0xfd95ca52, &kEdge);
+                static_cast<egf::Entity*>(pEdge->m_spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEdge));
                 if (anFlags[i] == 0x10100 || anFlags[i] == 0x1ff00)
                     kEdge.x = m_pOwner->vfunc_18().x;
                 else
@@ -1618,7 +1620,7 @@ void StateClimb::FUN_1417beb40()
     kTarget.y = kPos.y;
     kTarget.z = kTarget.z - fDist;
     if (FUN_1417b84b0()) {
-        static float s_fShake = FUN_1401d3200()->m_climbOverShake.FUN_1402bac70();
+        static float s_fShake = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbOverShake)->Read();
         TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(s_fShake, s_fShake / 60.0f, s_fShake / 3.0f);
     }
     m_pOwner->vfunc_19(kTarget);
@@ -1715,8 +1717,8 @@ void StateCrawl::vfunc_8(double fTime)
     if (pMyPC == 0)
         return;
     Unk_StBuff* pBuff = ((Unk_StBuff*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    efd::Point3 kVel = pBuff->FUN_141683900();
-    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
+    Vector3 kVel = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kVel));
     if (!pBuff->FUN_141682fe0(0x493e5))
         m_pOwner->vfunc_59(1, 0, 0, 0);
     else if (m_pOwner->FUN_1416749c0())
@@ -1739,14 +1741,14 @@ void StateCrawl::vfunc_9(double fTime)
     } else {
         switch (m_n10) {
         case 0x1b: {
-            unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+            unsigned nSeq = reinterpret_cast<Unk_StAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
             if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x20, nSeq))
                 reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x20);
             break;
         }
         case 0x1c: {
             CString strAnim("Prostrate_Crawl_A");
-            PCBase* pPC = FUN_140974230(m_pOwner);
+            PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner);
             if (pPC != 0 && FUN_141658e60(pPC) == 1)
                 strAnim = "Prostrate_Crawl_B";
             bool bChanged = strAnim != static_cast<Unk_StPC*>(m_pOwner)->FUN_14166dc50();
@@ -1821,11 +1823,11 @@ void StateDash::vfunc_4(StateData* pData)
     m_pOwner->FUN_141671960(20.0f);
     ((Unk_StBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
     m_tick.FUN_140268840();
-    Unk_ExpTarget kEffect;
-    kEffect.m_strName = FUN_1401d31f0()->m_strDashEffect;
-    kEffect.m_nOwnerId = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
-    kEffect.FUN_140a53190(m_pOwner->FUN_14123c580());
-    FUN_1403ed280()->FUN_1411a4a00(&kEffect);
+    NoticeMessage kEffect;   // C3: was Unk_ExpTarget
+    ((Unk_ExpTarget&)(kEffect)).m_strName = FUN_1401d31f0()->m_strDashEffect;
+    ((Unk_ExpTarget&)(kEffect)).m_nOwnerId = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+    ((Unk_ExpTarget&)(kEffect)).FUN_140a53190(m_pOwner->FUN_14123c580());
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kEffect))));
 }
 MS2_REPLACE_METHOD(0x1417bf9f0, StateDash, vfunc_4, 366, 0x5300BC55);
 
@@ -1885,7 +1887,7 @@ MS2_REPLACE_METHOD(0x1417bfbd0, StateDash, vfunc_3, 1436, 0xB4537625);
 void StateDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = reinterpret_cast<Unk_StAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     switch (m_n10) {
     case 0x1f:
         if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, nSeq)) {
@@ -1940,7 +1942,7 @@ void StateDash::vfunc_6()
     if (m_n10 != 0x1d)
         return;
     m_n10 = 0x20;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = reinterpret_cast<Unk_StAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x35, nSeq))
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x35);
 }

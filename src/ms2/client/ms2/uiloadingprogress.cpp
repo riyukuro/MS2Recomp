@@ -18,6 +18,7 @@
 #include "ms2/placeholder/cloadingdescriptiontable.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/loadingimagetable.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -32,7 +33,6 @@ public:
 class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local player (slot 78 = the level)
 class Unk_LpConstants;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned int* FUN_1401d7c10(void* pEntry);                          // &constant (throws "constants is not set")
 CString FUN_141900b70();
 class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
 class Unk_LpMovie { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
@@ -92,7 +92,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
     if (pPlayer != 0)
     {
         bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
-            < *FUN_1401d7c10((char*)((class Unk_LpConstants*)FUN_1401d3200()) + 0x6e28);   // level below the guide limit
+            < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((class Unk_LpConstants*)FUN_1401d3200()) + 0x6e28)->Get();   // level below the guide limit
     }
     if (m_30.get() != 0)
     {

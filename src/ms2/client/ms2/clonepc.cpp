@@ -40,6 +40,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local stand-ins for the unrecovered pointee types ----
 
@@ -61,7 +63,6 @@ class UIModelView : public NiRefObject
 class Unk_ActorRegistry
 {
 public:
-    NiActorManager* FUN_140999440(const egf::EntityID& kId);        // 0x140999440 NULL when not loaded
 };
 
 // The entity manager (singleton FUN_1403ed2d0): finds PCs by object id.
@@ -140,14 +141,14 @@ extern char DAT_143acdb20;                                          // set while
 void FUN_14098c6e0(void* pObj, unsigned int nKey, char* pVal);
 void* FUN_141659220(PC* pPC, int n);
 void FUN_1416591e0(PC* pPC, int n, void* pData);
-Unk_ActorRegistry* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
 };
 Unk_PCCliList* FUN_1416749a0(PC* pPC);
-Unk_PCEquipSet* FUN_1416561a0(PC* pPC);
 void FUN_1408f3a80(void* pList);
 void FUN_1411e3de0(Unk_PCEquipSet* pSet, int n);
 void FUN_1411e3000(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, int a, int b, bool c);
@@ -335,7 +336,7 @@ MS2_REPLACE_METHOD(0x141086ea0, ClonePC, vfunc_68, 24, 0x75150595);
 // @0x141086ec0
 void ClonePC::vfunc_149()
 {
-    efd::SmartPointer<NiActorManager> spActor(FUN_141b6f910()->FUN_140999440(FUN_14123c460()));
+    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460()));
     if (spActor == 0)
         return;
     {
@@ -344,7 +345,7 @@ void ClonePC::vfunc_149()
             FUN_1408f3a80(&m_kListD48);
             FUN_1411e3de0(&m_kEquipDE0, 1);
             ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
-            vfunc_152(&kEquips, ::FUN_1416561a0(m_pSourcePC));
+            vfunc_152(&kEquips, reinterpret_cast<PC*>(m_pSourcePC)->FUN_1416561a0());
             for (POSITION pos = kEquips.GetHeadPosition(); pos; kEquips.GetNext(pos))
             {
                 MS2Ptr<CEquipItem> spEquip(kEquips.GetAt(pos));
@@ -544,7 +545,7 @@ void ClonePC::FUN_141087850()
 void ClonePC::FUN_1410879c0(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& kOut)
 {
     kOut.RemoveAll();
-    efd::SmartPointer<NiActorManager> spActor(FUN_141b6f910()->FUN_140999440(FUN_14123c460()));
+    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460()));
     if (spActor.operator NiActorManager*() != 0)
         kOut.Add(spActor);
     ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);

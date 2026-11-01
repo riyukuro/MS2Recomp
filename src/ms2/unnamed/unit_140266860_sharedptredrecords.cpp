@@ -92,7 +92,7 @@ MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 class Unk_140165cf0;
 efd::Point3* FUN_14027dda0(efd::Point3* pOut, float x, float y, float z);
 struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3& kIn); float x, y, z; };   // 0x14027dcf0
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
 void FUN_140874ad0(void* pElem, const char* pszName, const Unk_XmlPoint& kValue);
@@ -143,7 +143,7 @@ ItemCustom::ItemCustom()
 // @0x140266aa0
 void ItemCustom::FUN_140266aa0(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "icon", name);
+    XmlGetAttr((class TiXmlElement*)(pElem), "icon", name);
     FUN_140874670(pElem, "position", unknown18);
     FUN_140874670(pElem, "rotation", unknown24);
 }

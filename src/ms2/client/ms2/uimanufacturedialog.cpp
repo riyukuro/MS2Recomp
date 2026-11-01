@@ -100,7 +100,8 @@ class Unk_MfNpc { public: MS2Ptr<Unk_UmMaid> FUN_141093800(); };
 
 // The local player (only its stats).
 class Unk_UmEquipSet { public: float FUN_1411e1110(int nStat); };
-class Unk_UmPC { public: Unk_UmEquipSet* FUN_1416561a0(); };
+class Unk_UmPC { public: };
+class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, the equip holder)
 
 class Unk_UmWorld
 {
@@ -218,7 +219,8 @@ MS2_CHECK_OFFSET(Unk_UmLevels, m_5180, 0x5180);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1408116a0(int nStringId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strArg, const int& nArg);
@@ -261,8 +263,10 @@ public:
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-extern Unk_EntityAppFramework DAT_143b059e8;
-extern Unk_MfInventory DAT_143ab2a90;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MfInventory
 extern __int64 DAT_143ab2820;
 
 // The wallet check of the network callbacks object (slots 40 / 41: the player can pay the amount with meso / merat).
@@ -486,8 +490,8 @@ void UIManufactureDialog::vfunc_43()
     UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x14;
+        int nX = pRef->GetLowerCutGlobalY();
+        int nY = pRef->GetIllustGlobalX() - 0x14;
         if (nX != -1 && nY != -1)
         {
             pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0() - 2);
@@ -606,7 +610,7 @@ void UIManufactureDialog::FUN_1412e34c0()
     int nMax = FUN_1404eb7e0(nOne, nNeed);
     CStringW strExp = FUN_14028dee0(0x7b1, spMaid->m_50, spMaid->m_60, nMax);
     if (spMaid->FUN_14067dca0() != 0)
-        strExp = FUN_1408116a0(0x7b2, spMaid->m_50);
+        strExp = BlockFormat<int>(0x7b2, spMaid->m_50);
     m_30->FUN_1412e80d0("setTitle", CStringW(strName), CStringW(strGrade), CStringW(strExp));
 }
 
@@ -641,9 +645,9 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50));
                 row.FUN_1407cb9c0("recipeID", spRef->m_id);
                 if (spRef->m_level > *reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
-                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->m_level));
                 else
-                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->m_level));
                 m_mapRecipes.SetAt((int)i, spRef->m_id);
                 int bAvailable = spRef->m_level <= spMaid->m_54;
                 if (bAvailable != 0)
@@ -754,8 +758,8 @@ void UIManufactureDialog::FUN_1412e48a0()
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3e), spRecipe->m_2c);
-        CStringW strGrade = FUN_1408116a0(0x7aa, nGrade);
+        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(reinterpret_cast<Unk_UmEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1110(0x3e), spRecipe->m_2c);
+        CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
         ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[spMaid->FUN_14067dd10()]);
         CStringW strTime = FUN_1412e1e50(span, 1, 0);
@@ -786,7 +790,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             if (spData == 0)
                 continue;
             int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->m_nRarity : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3f), spIngredient->m_nCount);
+            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<Unk_UmEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1110(0x3f), spIngredient->m_nCount);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
@@ -797,9 +801,9 @@ void UIManufactureDialog::FUN_1412e48a0()
                 m_aIngredientKeys.Add(strKey);
                 unsigned nHave = 0;
                 if (nGroup == 0)
-                    nHave = DAT_143ab2a90.FUN_140a5f180(nIngItem, 0);
+                    nHave = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f180(nIngItem, 0);
                 else
-                    nHave = DAT_143ab2a90.FUN_140a5f780(nGroup, 0);
+                    nHave = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(nGroup, 0);
                 CStringW strBreak(L"");
                 if (nHave >= 10000 || (nHave >= 1000 && nNeeded >= 100))
                     strBreak = L"\n";
@@ -1091,18 +1095,18 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
             CStringW strExp(L"");
             CStringW strBonus(L"");
             if (nExp > 0)
-                strExp = FUN_1408116a0(0x7c4, nExp);
+                strExp = BlockFormat<int>(0x7c4, nExp);
             else if (nExp < 0)
             {
                 int nAbs = abs(nExp);
-                strExp = FUN_1408116a0(0x7c5, nAbs);
+                strExp = BlockFormat<int>(0x7c5, nAbs);
             }
             if (nBonus != 0)
             {
                 if (nMerat != 0)
-                    strBonus = FUN_140656190(L"{0} {1}", FUN_1408116a0(0x7c2, nBonus), FUN_1408116a0(0x7c3, spMaid->m_54));
+                    strBonus = FUN_140656190(L"{0} {1}", BlockFormat<int>(0x7c2, nBonus), BlockFormat<int>(0x7c3, spMaid->m_54));
                 else
-                    strBonus = FUN_1408116a0(0x7c2, nBonus);
+                    strBonus = BlockFormat<int>(0x7c2, nBonus);
             }
             pTalk->FUN_141b1b000(aItems, nJackpot != 0 ? GetStringCommon(0x7b9) : GetStringCommon(0x7b8), strExp, strBonus, nJackpot);
         }

@@ -132,7 +132,8 @@ class Unk_WsB_Prop : public CInteractObject { };
 class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 the placement box
                       // the item kind
 class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
-Unk_DropAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 class Unk_AvSeqCtl   // C3: member view for the former free stand-ins
 {
 public:
@@ -159,6 +160,14 @@ extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTIT
 static Timer s_kPickTimer;                                          // @0x1400e7300
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CDropItem);                        // @0x1400e7330
 #include "ms2/placeholder/header_statics_a.h"                       // @0x1400e7350..0x1400e7470
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 static CString s_strWarningBag("system_notice_error_warningBag");   // @0x1400e74c0
 
 // ---- helpers ----
@@ -398,12 +407,12 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
                 if (pMap)
                 {
                     CString strPath = m_spItem->FUN_140528590();
-                    if (m_spItem->FUN_140525f10())
+                    if (m_spItem->HasCubeTextureMesh())
                     {
                         if (m_spItem->FUN_140525f60())
                         {
                             if (_access(strPath, 0) != 0)
-                                strPath = reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053fdd0();
+                                strPath = reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->GetIconPath();
                         }
                     }
                     FUN_1401d3700(strPath);
@@ -472,11 +481,11 @@ void CDropItem::FUN_14118d9a0(int nState)
             reinterpret_cast<Vector3&>(kSelf) = m_posOrigin;
             if (m_n298 != 0)
             {
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapDropItemEffect);
-                kTarget.m_nKind = 0;
-                kTarget.FUN_140a53190(FUN_14123c580());
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+                NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapDropItemEffect);
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+                ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
                 m_nFadeTime = GetTickCountMs2() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
                 vfunc_23(1);
             }
@@ -684,8 +693,8 @@ void CDropItem::FUN_14118d9a0(int nState)
     {
         NiPoint3 kPos = vfunc_18();
         m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
-        if (FUN_141b6f910()->FUN_140999440(FUN_14123c460()))
-            ((class Unk_AvSeqCtl*)(class NiActorManager*)(FUN_141b6f910()->FUN_140999440(FUN_14123c460())))->FUN_1409fae00(true);
+        if (reinterpret_cast<Unk_DropAnimSvc*>(FUN_141b6f910())->FUN_140999440(FUN_14123c460()))
+            ((class Unk_AvSeqCtl*)(class NiActorManager*)(reinterpret_cast<Unk_DropAnimSvc*>(FUN_141b6f910())->FUN_140999440(FUN_14123c460())))->FUN_1409fae00(true);
         if (IsMeso())
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
@@ -697,7 +706,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
             }
         }
-        else if (reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053c5c0() == 3)
+        else if (reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->GetType() == 3)
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
@@ -705,7 +714,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             {
                 UIDamageText* pDlg = FUN_140b624b0(0x4e32);
                 if (pDlg)
-                    pDlg->FUN_141913060(pOwner, m_spItem->FUN_140526c50(), m_spItem->FUN_140528590());
+                    pDlg->FUN_141913060(pOwner, m_spItem->GetCount(), m_spItem->FUN_140528590());
             }
         }
         m_pfnState = &CDropItem::FUN_1411920b0;
@@ -722,18 +731,18 @@ void CDropItem::FUN_14118d9a0(int nState)
         kXform.m_fScale = 1.0f;
         kXform.m_Translate = static_cast<const efd::Point3&>(vfunc_18());
         kXform.m_Rotate = DAT_143a09600;
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = CItemDataTable::GetInstance()->GetGradeEffect((ItemGradeKey)m_spItem->FUN_140526bd0());
-        kTarget.m_nKind = 0;
-        kTarget.m_pXform = &kXform;
-        m_nEffectIdA = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = CItemDataTable::GetInstance()->GetGradeEffect((ItemGradeKey)m_spItem->FUN_140526bd0());
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+        ((Unk_EffectTarget&)(kTarget)).m_pXform = &kXform;
+        m_nEffectIdA = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         if (m_spEffect->beEffect.GetLength() != 0)
         {
-            Unk_EffectTarget kTargetB;
-            kTargetB.m_strName = m_spEffect->beEffect;
-            kTargetB.m_nKind = 0;
-            kTargetB.m_pXform = &kXform;
-            m_nEffectIdB = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTargetB);
+            NoticeMessage kTargetB;   // C3: was Unk_EffectTarget
+            ((Unk_EffectTarget&)(kTargetB)).m_strName = m_spEffect->beEffect;
+            ((Unk_EffectTarget&)(kTargetB)).m_nKind = 0;
+            ((Unk_EffectTarget&)(kTargetB)).m_pXform = &kXform;
+            m_nEffectIdB = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTargetB)));
         }
     }
     else if (nState == 5)
@@ -771,7 +780,7 @@ int CDropItem::FUN_14118ff60() { return m_spItem->FUN_1405276c0() == 0x55d4a83; 
 // @0x14118ffb0
 int CDropItem::FUN_14118ffb0()
 {
-    return (m_spItem.get() ? true : false) && m_spItem->FUN_140525640();
+    return (m_spItem.get() ? true : false) && m_spItem->IsPetItem();
 }
 
 // @0x141190030
@@ -940,9 +949,9 @@ int CDropItem::FUN_1411906a0()
             MS2Ptr<CItem> spHave = kHave.GetNext(pos);
             if (spHave.get())
             {
-                unsigned nMax = spHave->FUN_1405281e0();
-                int nHave = spHave->FUN_140526c50();
-                int nMine = m_spItem->FUN_140526c50();
+                unsigned nMax = spHave->GetSlotMax();
+                int nHave = spHave->GetCount();
+                int nMine = m_spItem->GetCount();
                 if ((unsigned)(nHave + nMine) <= nMax)
                     return 1;
             }
@@ -981,7 +990,7 @@ void CDropItem::FUN_141190900(int nPickerId)
         if (spBlock.get())
         {
             static Unk_DropPickTick s_kNoticeTick;
-            if (s_kNoticeTick.FUN_140268870(5000) == 1)
+            if (reinterpret_cast<Unk_IntervalTimer&>(s_kNoticeTick).Check(5000) == 1)
             {
                 CStringW strNotice = FUN_1401ca400(spBlock, 0x20);
                 FUN_1412751b0(strNotice, 0x14);

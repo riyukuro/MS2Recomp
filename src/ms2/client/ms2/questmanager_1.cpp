@@ -91,7 +91,7 @@ public:
 CStringW FUN_1416e5350(int, int);
 CStringW FUN_1416e57d0(int, int);
 void FUN_14083d2b0(CStringW&);
-void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
+void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 extern const wchar_t DAT_142f5515c[];
 UIMainPlayerInfo* FUN_140931900(int);
 
@@ -316,7 +316,7 @@ void CQuest::ShowProgress(int index)
     if (dialog) {
         ATL::CAtlArray<CStringW> lines;
         FUN_14025a680(text, lines, DAT_142f5515c);
-        if (lines.GetCount() > 0) dialog->FUN_1419f0ef0(lines[0], category);
+        if (lines.GetCount() > 0) dialog->AppendMessage(lines[0], category);
     }
 }
 MS2_REPLACE_METHOD(0x1416C6EC0, CQuest, ShowProgress, 609, 0x0BFA9F42);

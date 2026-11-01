@@ -61,7 +61,7 @@ public:
     void FUN_1418e3910();                                       // popdown
     void FUN_1418e3980(CInPacket* pPacket);                     // the CreateCharacter answer
     int FUN_1418e3f50(const CStringW& strName);                 // send the create request
-    void FUN_1418e4250(CItemData* pData, int* pnCategory, int* pnTab);
+    void GetItemTabAndCategory(CItemData* pData, int* pnCategory, int* pnTab);
     int FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData);
     int FUN_1418e4600(int nTab, int nCategory, int nItemId);
     int FUN_1418e46c0(int nTab);                                // tab -> equip slot kind

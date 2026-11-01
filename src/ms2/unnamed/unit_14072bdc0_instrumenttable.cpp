@@ -15,6 +15,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -23,11 +33,10 @@ class CFileSystem;
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);          // formats one number argument into the message
 CString FUN_14016a5c0(const char* pszName, int nFlags);                     // undecorated class name
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -40,20 +49,20 @@ CInstrumentData::CInstrumentData(Unk_140165cf0* pNode)
       m_strReadyEffect(), m_strPlayEffect(), m_strAnimationReady(), m_strAnimationPlayIdle(),
       m_strAnimationPlayLevel1(), m_strAnimationPlayLevel2(), m_strAnimationPlayLevel3(), m_strAnimationPlayLevel4()
 {
-    FUN_1408731e0(pNode, "id", m_nId);
-    FUN_1408731e0(pNode, "category", m_nCategory);
-    FUN_1408733e0(pNode, "asset", m_strAsset);
-    FUN_1408731e0(pNode, "equipItemId", m_nEquipItemId);
-    FUN_1408731e0(pNode, "soloRelayScoreCount", m_nSoloRelayScoreCount);
-    FUN_1408733e0(pNode, "readyEffect", m_strReadyEffect);
-    FUN_1408733e0(pNode, "playEffect", m_strPlayEffect);
-    FUN_1408730a0(pNode, "isExpensive", m_bExpensive);
-    FUN_1408733e0(pNode, "animationReady", m_strAnimationReady);
-    FUN_1408733e0(pNode, "animationPlayIdle", m_strAnimationPlayIdle);
-    FUN_1408733e0(pNode, "animationPlayLevel1", m_strAnimationPlayLevel1);
-    FUN_1408733e0(pNode, "animationPlayLevel2", m_strAnimationPlayLevel2);
-    FUN_1408733e0(pNode, "animationPlayLevel3", m_strAnimationPlayLevel3);
-    FUN_1408733e0(pNode, "animationPlayLevel4", m_strAnimationPlayLevel4);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pNode), "category", reinterpret_cast<int&>(m_nCategory));
+    XmlGetAttr((class TiXmlElement*)(pNode), "asset", m_strAsset);
+    XmlGetAttr((class TiXmlElement*)(pNode), "equipItemId", reinterpret_cast<int&>(m_nEquipItemId));
+    XmlGetAttr((class TiXmlElement*)(pNode), "soloRelayScoreCount", reinterpret_cast<int&>(m_nSoloRelayScoreCount));
+    XmlGetAttr((class TiXmlElement*)(pNode), "readyEffect", m_strReadyEffect);
+    XmlGetAttr((class TiXmlElement*)(pNode), "playEffect", m_strPlayEffect);
+    XmlGetAttr((class TiXmlElement*)(pNode), "isExpensive", reinterpret_cast<bool&>(m_bExpensive));
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationReady", m_strAnimationReady);
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationPlayIdle", m_strAnimationPlayIdle);
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationPlayLevel1", m_strAnimationPlayLevel1);
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationPlayLevel2", m_strAnimationPlayLevel2);
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationPlayLevel3", m_strAnimationPlayLevel3);
+    XmlGetAttr((class TiXmlElement*)(pNode), "animationPlayLevel4", m_strAnimationPlayLevel4);
 }
 
 // @0x14072c080
@@ -90,11 +99,11 @@ CStringW CInstrumentData::GetCategoryName() const
 CInstrumentCategoryData::CInstrumentCategoryData(Unk_140165cf0* pNode)
     : m_nId(0), m_nGMId(0), m_nPercussionId(0), m_strIcon(), m_strDefaultOctave()
 {
-    FUN_1408731e0(pNode, "id", m_nId);
-    FUN_1408731e0(pNode, "GMId", m_nGMId);
-    FUN_1408731e0(pNode, "percussionId", m_nPercussionId);
-    FUN_1408733e0(pNode, "icon", m_strIcon);
-    FUN_1408733e0(pNode, "defaultOctave", m_strDefaultOctave);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pNode), "GMId", reinterpret_cast<int&>(m_nGMId));
+    XmlGetAttr((class TiXmlElement*)(pNode), "percussionId", reinterpret_cast<int&>(m_nPercussionId));
+    XmlGetAttr((class TiXmlElement*)(pNode), "icon", m_strIcon);
+    XmlGetAttr((class TiXmlElement*)(pNode), "defaultOctave", m_strDefaultOctave);
 }
 
 // @0x14072c420
@@ -105,7 +114,7 @@ CInstrumentCategoryData::~CInstrumentCategoryData()
 // @0x14072c480
 CStringW CInstrumentCategoryData::GetName() const
 {
-    CStringW strKey = FUN_1401ceea0(L"s_play_instrument_instrument_category_name_{0}", m_nId);
+    CStringW strKey = StringFormat<int>(L"s_play_instrument_instrument_category_name_{0}", m_nId);
     return GetStringCommonByKey(strKey);
 }
 
@@ -149,10 +158,10 @@ bool CInstrumentDataTable::LoadInstruments()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("instrument"); pNode != 0; pNode = pNode->FUN_140168650("instrument"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("instrument")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("instrument")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -172,10 +181,10 @@ bool CInstrumentDataTable::LoadCategories()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

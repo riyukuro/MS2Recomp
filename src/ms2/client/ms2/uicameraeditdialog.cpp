@@ -91,6 +91,8 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // ---- header statics of the two TUs this file's initializers come from (strings, condition table, key input) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
@@ -358,7 +360,7 @@ void UICameraEditDialog::vfunc_38(void* p, float x, float y)
         pTarget->vfunc_21(reinterpret_cast<const efd::Point3&>(vRotated));
         PCBase* pPlayer = FUN_14099eef0(pTarget);
         if (pPlayer != 0)
-            pPlayer->FUN_14166d8b0(vRotated.z);
+            pPlayer->SetTargetYaw(vRotated.z);
     }
 }
 
@@ -463,10 +465,10 @@ unsigned UICameraEditDialog::LoadCustomizeCamera()
             for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("camera"); pElem != 0; pElem = pElem->FUN_140168650("camera"))
             {
                 CameraDataPtr spData(new CameraData(m_nTargetId));
-                FUN_140873360(pElem, "fov", spData->m_fFov);
-                FUN_140873360(pElem, "distance", spData->m_fDistance);
-                FUN_140873360(pElem, "zoomIn", spData->m_fZoomIn);
-                FUN_140873360(pElem, "zoomOut", spData->m_fZoomOut);
+                XmlGetAttr((class TiXmlElement*)(pElem), "fov", spData->m_fFov);
+                XmlGetAttr((class TiXmlElement*)(pElem), "distance", spData->m_fDistance);
+                XmlGetAttr((class TiXmlElement*)(pElem), "zoomIn", spData->m_fZoomIn);
+                XmlGetAttr((class TiXmlElement*)(pElem), "zoomOut", spData->m_fZoomOut);
                 XmlGetAttr((class TiXmlElement*)(pElem), "direction", *(class NiPoint3*)&static_cast<class efd::Point3&>(spData->m_vDirection));
                 XmlGetAttr((class TiXmlElement*)(pElem), "rotation", *(class NiPoint3*)&static_cast<class efd::Point3&>(spData->m_vRotation));
                 m_aPresets.Add(spData);
@@ -544,7 +546,7 @@ void UICameraEditDialog::FUN_1418de980()
         pTarget->vfunc_21(*reinterpret_cast<efd::Point3*>(&vDirection));
         PCBase* pPlayer = FUN_14099eef0(pTarget);
         if (pPlayer != 0)
-            pPlayer->FUN_14166d8b0(vDirection.z);
+            pPlayer->SetTargetYaw(vDirection.z);
     }
 }
 
@@ -611,13 +613,13 @@ UICartoonDialog::UICartoonDialog()
     : m_nBookId(0), m_nPage(0)
 {
     FUN_141924170(1);
-    ((class Unk_CtPackets*)FUN_140bccd50())->FUN_140da5180(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::OnBookPacket));
 }
 
 // @0x1418df5f0
 UICartoonDialog::~UICartoonDialog()
 {
-    ((class Unk_CtPackets*)FUN_140bccd50())->FUN_140da51e0(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::FUN_1418dfc60));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x88, Delegate<void(CInPacket&)>(this, &UICartoonDialog::OnBookPacket));
 }
 
 // @0x1418df6c0
@@ -696,7 +698,7 @@ int UICartoonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 }
 
 // @0x1418dfb30
-int UICartoonDialog::FUN_1418dfb30(int nBookId, int n2c, int nLayer)
+int UICartoonDialog::OpenBook(int nBookId, int n2c, int nLayer)
 {
     if (nBookId == 0)
         return 0;
@@ -706,8 +708,8 @@ int UICartoonDialog::FUN_1418dfb30(int nBookId, int n2c, int nLayer)
         m_nPage = 0;
         if (n2c != 0)
         {
-            FUN_140b632f0()->FUN_1422d4840(this, m_e0);
-            FUN_140b632f0()->FUN_1422d4780(this, nLayer);
+            FUN_140b632f0()->RemoveFromLayer(this, m_e0);
+            FUN_140b632f0()->AddToLayer(this, nLayer);
             FUN_1422dc260(n2c);
         }
         FUN_1418dfd50();
@@ -730,7 +732,7 @@ int UICartoonDialog::GetBookId()
 }
 
 // @0x1418dfc60
-void UICartoonDialog::FUN_1418dfc60(CInPacket& packet)
+void UICartoonDialog::OnBookPacket(CInPacket& packet)
 {
     m_nPage = 0;
     m_nBookId = packet.ReadInt32();
@@ -822,7 +824,7 @@ void UICartoonDialog::FUN_1418e0230()
             fAlpha = 30.0f;
         else
             fAlpha = 100.0f;
-        spPrev->FUN_1422bfe00(fAlpha);
+        spPrev->SetAlpha(fAlpha);
     }
     if (MS2Ptr<Unk_CtButton> spNext = FUN_140bb4b10("m_next"))
     {
@@ -833,7 +835,7 @@ void UICartoonDialog::FUN_1418e0230()
             fAlpha = 30.0f;
         else
             fAlpha = 100.0f;
-        spNext->FUN_1422bfe00(fAlpha);
+        spNext->SetAlpha(fAlpha);
     }
 }
 
@@ -968,7 +970,7 @@ void UICastingBar::vfunc_15()
 }
 
 // @0x1418e12b0
-void UICastingBar::FUN_1418e12b0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam)
+void UICastingBar::StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam)
 {
     FUN_1418e15d0(pListener, pParam);
 }
@@ -989,7 +991,7 @@ void UICastingBar::FUN_1418e12f0(Unk_CastingListener* pListener, const CStringW&
 // @0x1418e1390
 void UICastingBar::FUN_1418e1390()
 {
-    FUN_1418e18a0(m_strEnd);
+    CancelCasting(m_strEnd);
 }
 
 // @0x1418e13c0
@@ -1020,7 +1022,7 @@ void UICastingBar::FUN_1418e14b0(const CStringW& strText)
 }
 
 // @0x1418e1560
-void UICastingBar::FUN_1418e1560(float fValue)
+void UICastingBar::UpdateValue(float fValue)
 {
     if (m_30.get() != 0)
         m_30->Invoke("updateValue", fValue);
@@ -1045,7 +1047,7 @@ void UICastingBar::FUN_1418e15d0(Unk_CastingListener* pListener, const Unk_Casti
 }
 
 // @0x1418e18a0
-void UICastingBar::FUN_1418e18a0(const CStringW& strText)
+void UICastingBar::CancelCasting(const CStringW& strText)
 {
     FUN_1418e18e0(strText);
     FUN_1418e1a50();
@@ -1132,6 +1134,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // The local player as the lobby sees it (a MyPC): the gender / job / equip accessors of its PC base.
 class Unk_CcPlayer : public PC
@@ -1155,7 +1159,8 @@ extern int DAT_1439f4a84;
 
 // The string tables.
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1408116a0(int nStringId, const int& nValue);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 int FUN_141276a30(const CStringW& strName, CStringW& strError);     // validate a character name
 int FUN_141b71a10(const char* sz);                                  // atoi
@@ -1180,7 +1185,6 @@ UIDialog* FUN_140c300a0(int nClass);                                // the open 
 // The scene / app / popup.
 CSceneStateMulti* FUN_140f30370();
 void* FUN_140aadf80();
-HWND FUN_14209c720(void* p);
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
@@ -1458,7 +1462,7 @@ int UICharacterCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     {
         CSceneStateMulti* pScene = FUN_140f30370();
         if (pScene != 0)
-            PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x4c8, 0, 0);
+            PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x4c8, 0, 0);
         return 1;
     }
     else if (_stricmp("OnClickGuide", szMethod) == 0)
@@ -1478,7 +1482,7 @@ void UICharacterCreateDialog::vfunc_15()
         return;
     m_spCustomize->FUN_140cd1bf0();
     if (m_pCamera != 0)
-        m_pCamera->FUN_1418dda30(m_spCustomize->FUN_140cd27f0() == 0);
+        m_pCamera->FUN_1418dda30(m_spCustomize->IsDragging() == 0);
     if (m_nCurItemId > 0)
     {
         FUN_1418e7380(m_nCurItemId);
@@ -1641,7 +1645,7 @@ void UICharacterCreateDialog::vfunc_67()
     m_aLoaded.RemoveAll();
     m_items.RemoveAll();
     ((class Unk_ItemEventSystem*)(void*)(((void*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ea7);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ea7);
     m_nChangedMask = 0;
 }
 
@@ -1683,7 +1687,7 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
             nMsgId = 10;
             nValue = FUN_140302b00()->FUN_14041cb30()->GetValue();
         }
-        strMsg = FUN_1408116a0(nMsgId, nValue);
+        strMsg = BlockFormat<int>(nMsgId, nValue);
     }
     else if (nKind == 10)
     {
@@ -1708,7 +1712,7 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
     else
     {
         bNotify = 1;
-        strMsg = FUN_1408116a0(0xc, nKind);
+        strMsg = BlockFormat<int>(0xc, nKind);
     }
     if (m_30.get() != 0)
         m_30->Invoke("failCreate");
@@ -1770,7 +1774,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
 
 // The category / tab of an item.
 // @0x1418e4250
-void UICharacterCreateDialog::FUN_1418e4250(CItemData* pData, int* pnTab, int* pnCategory)
+void UICharacterCreateDialog::GetItemTabAndCategory(CItemData* pData, int* pnTab, int* pnCategory)
 {
     *pnTab = 0;
     if (pData->FUN_14053cfd0())
@@ -1779,7 +1783,7 @@ void UICharacterCreateDialog::FUN_1418e4250(CItemData* pData, int* pnTab, int* p
         *pnCategory = 1;
     else if (pData->FUN_14053d0c0())
         *pnCategory = 2;
-    else if (pData->FUN_14053cf00())
+    else if (pData->IsAvatarColorItem())
         *pnCategory = 3;
     else if (pData->FUN_14053c620() == 0xe || pData->FUN_14053d2b0())
         *pnCategory = 4;
@@ -1808,7 +1812,7 @@ int UICharacterCreateDialog::FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItem
         case 2:
             return spData->FUN_14053d0c0();
         case 3:
-            return spData->FUN_14053cf00();
+            return spData->IsAvatarColorItem();
         case 4:
             return spData->FUN_14053c620() == 0xe || spData->FUN_14053d2b0();
         case 5:
@@ -1925,7 +1929,7 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
             if (!spData)
                 continue;
             CStringW strName;
-            if (!spData->FUN_14053cf00())
+            if (!spData->IsAvatarColorItem())
             {
                 if (MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc))
                 {
@@ -1976,7 +1980,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
             continue;
         int nTab;
         int nCategory;
-        FUN_1418e4250(pData, &nTab, &nCategory);
+        GetItemTabAndCategory(pData, &nTab, &nCategory);
         if (nTab == -1)
             continue;
         int nItemId = spItem->FUN_1405276c0();
@@ -2010,7 +2014,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         FUN_1414248a0(spDefault, &nSkin, &nColor);
         int nTab;
         int nCategory;
-        FUN_1418e4250(spDefault, &nTab, &nCategory);
+        GetItemTabAndCategory(spDefault, &nTab, &nCategory);
         ASObj kRow(2);
         kRow.FUN_1409c0e60("itemname", L"");
         kRow.FUN_1407cb9c0("itemid", 0x9a1d21);
@@ -2035,12 +2039,12 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
         Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc == 0)
             return;
-        if (!spData->FUN_14053cf00())
+        if (!spData->IsAvatarColorItem())
         {
             MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
             if (spEquip.get() != 0)
             {
-                int nItemId = spData->FUN_14053c510();
+                int nItemId = spData->GetItemId();
                 MS2Ptr<CItem> spWorn = spEquip->GetItem();
                 bool bSame = spWorn->FUN_1405276c0() == nItemId;
                 if (bSame)
@@ -2136,8 +2140,8 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
                     pList = pDecal->FUN_1401e41c0();
             }
             else if (spData->FUN_14053eba0()->FUN_14054b3d0() > 0
-                && spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_1405450c0() > 1)
-                pList = &spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544fe0(1)->customs;
+                && spData->FUN_14053eba0()->GetGroup(0)->FUN_1405450c0() > 1)
+                pList = &spData->FUN_14053eba0()->GetGroup(0)->FUN_140544fe0(1)->customs;
             if (pList != 0)
             {
                 for (int i = 0; i < (int)pList->size(); i++)
@@ -2352,7 +2356,7 @@ void UICharacterCreateDialog::FUN_1418e6bf0(int nTab, int nCategory)
         m_aLoaded.SetAt(nCategory, 1);
     }
     int nIndex = FUN_1418e46c0(nCategory);
-    m_spCustomize->FUN_140cd25c0(nIndex);
+    m_spCustomize->SelectSlot(nIndex);
 }
 
 // OnChangeItem
@@ -2367,10 +2371,10 @@ void UICharacterCreateDialog::FUN_1418e6d80(int nItemId)
     FUN_1418e7380(m_spCustomize->FUN_140cd17e0());
     MS2Ptr<CItem> spItem;
     if (m_items.Lookup(nItemId, spItem))
-        m_spCustomize->FUN_140cd1c90(spItem.get());
+        m_spCustomize->EquipItem(spItem.get());
     else
-        m_spCustomize->FUN_140cd1d50(nItemId);
-    m_spCustomize->FUN_140cd2660(nItemId);
+        m_spCustomize->EquipItemId(nItemId);
+    m_spCustomize->SelectId(nItemId);
     FUN_1418e5580(MS2Ptr<CItemData>(spData));
     FUN_1418e5a10(MS2Ptr<CItemData>(spData));
     m_bTabChanged = 0;
@@ -2384,7 +2388,7 @@ void UICharacterCreateDialog::FUN_1418e6fc0(int nColor)
 {
     if (m_spCustomize == 0)
         return;
-    ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd3160(nColor, 0);
+    ((class Customize*)(class Customize*)(m_spCustomize))->ApplyColor(nColor, 0);
     m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
@@ -2456,7 +2460,7 @@ void UICharacterCreateDialog::FUN_1418e7380(int nItemId)
         MS2Ptr<CItem> spWorn = spEquip->GetItem();
         if (spWorn.get() != 0)
         {
-            MS2Ptr<CItem> spCopy = spWorn->FUN_140524250();
+            MS2Ptr<CItem> spCopy = spWorn->Clone();
             m_items.SetAt(nItemId, spCopy);
         }
     }
@@ -2499,7 +2503,7 @@ void UICharacterCreateDialog::FUN_1418e74c0(MS2Ptr<CItemData> spData)
             {
                 ASObj kData(2);
                 kData.FUN_1407cb9c0("category", nCategory);
-                kData.FUN_1407cba60("itemId", FUN_140719210(spData->FUN_14053c510()));
+                kData.FUN_1407cba60("itemId", FUN_140719210(spData->GetItemId()));
                 kData.FUN_1407cbbe0("clearItemData", spEquip == 0);
                 m_30->Invoke("updateCurrentItem", Scaleform::GFx::Value(kData.FUN_1422bb870()));
             }
@@ -2535,7 +2539,7 @@ void UICharacterCreateDialog::vfunc_85()
 {
     if (m_spCustomize == 0)
         return;
-    ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd1ff0();
+    ((class Customize*)(class Customize*)(m_spCustomize))->CommitAll();
 }
 
 // @0x1418e8430
@@ -2585,9 +2589,9 @@ MS2_REPLACE_METHOD(0x1418df710, UICartoonDialog, vfunc_67, 117, 0x76CF1088);
 MS2_REPLACE_METHOD(0x1418df790, UICartoonDialog, OnLoadComplete, 70, 0xDC3D700A);
 MS2_REPLACE_METHOD(0x1418df7e0, UICartoonDialog, vfunc_13, 658, 0xBBAF8D9C);
 MS2_REPLACE_METHOD(0x1418dfa90, UICartoonDialog, vfunc_28, 143, 0xF1096833);
-MS2_REPLACE_METHOD(0x1418dfb30, UICartoonDialog, FUN_1418dfb30, 261, 0xB013CD5A);
+MS2_REPLACE_METHOD(0x1418dfb30, UICartoonDialog, OpenBook, 261, 0xB013CD5A);
 MS2_REPLACE_METHOD(0x1418dfc40, UICartoonDialog, GetBookId, 17, 0x24676F72);
-MS2_REPLACE_METHOD(0x1418dfc60, UICartoonDialog, FUN_1418dfc60, 231, 0x4D91903C);
+MS2_REPLACE_METHOD(0x1418dfc60, UICartoonDialog, OnBookPacket, 231, 0x4D91903C);
 MS2_REPLACE_METHOD(0x1418dfd50, UICartoonDialog, FUN_1418dfd50, 608, 0x1AA40152);
 MS2_REPLACE_METHOD(0x1418dffc0, UICartoonDialog, OnNext, 69, 0x2F6F3AAF);
 MS2_REPLACE_METHOD(0x1418e0010, UICartoonDialog, OnPrev, 89, 0x79C2E6D3);
@@ -2599,15 +2603,15 @@ MS2_REPLACE_METHOD(0x1418e1150, UICastingBar, vfunc_3, 117, 0xFA74713B);
 MS2_REPLACE_METHOD(0x1418e11d0, UICastingBar, OnLoadComplete, 24, 0x6B91F9C7);
 MS2_REPLACE_METHOD(0x1418e11f0, UICastingBar, vfunc_28, 105, 0xC05D435C);
 MS2_REPLACE_METHOD(0x1418e1260, UICastingBar, vfunc_15, 61, 0x2B77C6E7);
-MS2_REPLACE_METHOD(0x1418e12b0, UICastingBar, FUN_1418e12b0, 44, 0x68D3FB6D);
+MS2_REPLACE_METHOD(0x1418e12b0, UICastingBar, StartCasting, 44, 0x68D3FB6D);
 MS2_REPLACE_METHOD(0x1418e12f0, UICastingBar, FUN_1418e12f0, 153, 0xEE9E844F);
 MS2_REPLACE_METHOD(0x1418e1390, UICastingBar, FUN_1418e1390, 38, 0x091DAD74);
 MS2_REPLACE_METHOD(0x1418e13c0, UICastingBar, FUN_1418e13c0, 54, 0xA66F9B1F);
 MS2_REPLACE_METHOD(0x1418e1400, UICastingBar, FUN_1418e1400, 165, 0x2F7D49F4);
 MS2_REPLACE_METHOD(0x1418e14b0, UICastingBar, FUN_1418e14b0, 169, 0x402ABC1B);
-MS2_REPLACE_METHOD(0x1418e1560, UICastingBar, FUN_1418e1560, 95, 0x1C8BDDC4);
+MS2_REPLACE_METHOD(0x1418e1560, UICastingBar, UpdateValue, 95, 0x1C8BDDC4);
 MS2_REPLACE_METHOD(0x1418e15d0, UICastingBar, FUN_1418e15d0, 703, 0x64907F5D);
-MS2_REPLACE_METHOD(0x1418e18a0, UICastingBar, FUN_1418e18a0, 44, 0xD6F2152A);
+MS2_REPLACE_METHOD(0x1418e18a0, UICastingBar, CancelCasting, 44, 0xD6F2152A);
 MS2_REPLACE_METHOD(0x1418e18e0, UICastingBar, FUN_1418e18e0, 216, 0x8752FB66);
 MS2_REPLACE_METHOD(0x1418e19c0, UICastingBar, FUN_1418e19c0, 44, 0x94CAE6E6);
 MS2_REPLACE_METHOD(0x1418e1a00, UICastingBar, OnCastingComplete, 59, 0xA6E0FCFA);
@@ -2624,7 +2628,7 @@ MS2_REPLACE_METHOD(0x1418e37d0, UICharacterCreateDialog, vfunc_67, 300, 0xFF6395
 MS2_REPLACE_METHOD(0x1418e3910, UICharacterCreateDialog, FUN_1418e3910, 101, 0xCD333BED);
 MS2_REPLACE_METHOD(0x1418e3980, UICharacterCreateDialog, FUN_1418e3980, 1481, 0x7305A47C);
 MS2_REPLACE_METHOD(0x1418e3f50, UICharacterCreateDialog, FUN_1418e3f50, 750, 0x87D50263);
-MS2_REPLACE_METHOD(0x1418e4250, UICharacterCreateDialog, FUN_1418e4250, 292, 0xD38B1ED8);
+MS2_REPLACE_METHOD(0x1418e4250, UICharacterCreateDialog, GetItemTabAndCategory, 292, 0xD38B1ED8);
 MS2_REPLACE_METHOD(0x1418e4600, UICharacterCreateDialog, FUN_1418e4600, 171, 0x6F10ADBF);
 MS2_REPLACE_METHOD(0x1418e46c0, UICharacterCreateDialog, FUN_1418e46c0, 98, 0xDCB3A746);
 MS2_REPLACE_METHOD(0x1418e4750, UICharacterCreateDialog, FUN_1418e4750, 134, 0x73A66011);

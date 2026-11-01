@@ -78,27 +78,27 @@ EquipColorInfo::EquipColorInfo()
 }
 
 // @0x140598bf0
-void EquipColorInfo::FUN_140598bf0(COutputStream& os)
+void EquipColorInfo::WriteToStream(COutputStream& os)
 {
     for (int i = 0; i < 3; i++)
         os.WriteInt32(m_aRgb[i]);
     os.WriteInt32(m_n24);
     os.WriteInt32(m_n28);
 }
-MS2_REPLACE_METHOD(0x140598BF0, EquipColorInfo, FUN_140598bf0, 136, 0x0DAE7468);
+MS2_REPLACE_METHOD(0x140598BF0, EquipColorInfo, WriteToStream, 136, 0x0DAE7468);
 
 // @0x140598c80
-void EquipColorInfo::FUN_140598c80(CInputStream& is)
+void EquipColorInfo::ReadFromStream(CInputStream& is)
 {
     for (int i = 0; i < 3; i++)
         m_aRgb[i] = is.ReadInt32();
     m_n24 = is.ReadInt32();
     m_n28 = is.ReadInt32();
 }
-MS2_REPLACE_METHOD(0x140598C80, EquipColorInfo, FUN_140598c80, 126, 0x19A61ADF);
+MS2_REPLACE_METHOD(0x140598C80, EquipColorInfo, ReadFromStream, 126, 0x19A61ADF);
 
 // @0x140598d10
-void EquipColorInfo::FUN_140598d10(Unk_SocketPtr<EquipColorInfo> spSrc)
+void EquipColorInfo::CopyFrom(Unk_SocketPtr<EquipColorInfo> spSrc)
 {
     if (spSrc == 0)
         return;
@@ -108,10 +108,10 @@ void EquipColorInfo::FUN_140598d10(Unk_SocketPtr<EquipColorInfo> spSrc)
     m_n28 = spSrc->m_n28;
     m_n2c = spSrc->m_n2c;
 }
-MS2_REPLACE_METHOD(0x140598D10, EquipColorInfo, FUN_140598d10, 196, 0xB205876E);
+MS2_REPLACE_METHOD(0x140598D10, EquipColorInfo, CopyFrom, 196, 0xB205876E);
 
 // @0x140598de0
-void EquipColorInfo::FUN_140598de0(const ItemColorEx& kColor, int nDelay)
+void EquipColorInfo::SetFromColor(const ItemColorEx& kColor, int nDelay)
 {
     for (unsigned i = 0; i < 3; i++)
         m_aRgb[i] = kColor.m_aValues[i];
@@ -119,7 +119,7 @@ void EquipColorInfo::FUN_140598de0(const ItemColorEx& kColor, int nDelay)
     m_n28 = kColor.m_nId;
     m_n2c = nDelay;
 }
-MS2_REPLACE_METHOD(0x140598DE0, EquipColorInfo, FUN_140598de0, 118, 0xE7C7D198);
+MS2_REPLACE_METHOD(0x140598DE0, EquipColorInfo, SetFromColor, 118, 0xE7C7D198);
 
 // ---- CItemExtraData ----
 
@@ -140,7 +140,7 @@ int CItemExtraData::vfunc_1(const CItemExtraData* pOther)
 {
     if (FUN_14059d140() != pOther->FUN_14059d140())
         return 0;
-    if (!FUN_140599830(pOther))
+    if (!HasSameKindAndRgb(pOther))
         return 0;
     if (!vfunc_2(pOther))
         return 0;
@@ -165,9 +165,9 @@ void CItemExtraData::vfunc_4(CItemData* pData)
     if (pData->FUN_14053e370())
     {
         m_bMulti = true;
-        FUN_1405993b0(pData->FUN_14053e3c0());
+        AllocColors(pData->FUN_14053e3c0());
     }
-    FUN_140599ab0(pData);
+    InitColorsFromPalette(pData);
     m_nPick = -1;
 }
 MS2_REPLACE_METHOD(0x140599050, CItemExtraData, vfunc_4, 94, 0xAE5B03FD);
@@ -181,7 +181,7 @@ void CItemExtraData::vfunc_3(const CItemExtraData* pOther)
         if (pOther->m_bMulti)
             nCount = (unsigned)pOther->m_colors.size();
         for (unsigned i = 0; i < nCount; i++)
-            FUN_14059a230(i)->FUN_140598d10(pOther->FUN_14059a230(i));
+            GetSlotColor(i)->CopyFrom(pOther->GetSlotColor(i));
     }
     m_nPick = pOther->m_nPick;
 }
@@ -190,7 +190,7 @@ MS2_REPLACE_METHOD(0x1405990C0, CItemExtraData, vfunc_3, 275, 0x665E5687);
 // @0x1405991e0
 void CItemExtraData::vfunc_5(COutputStream& os)
 {
-    FUN_14059a230(0)->FUN_140598bf0(os);
+    GetSlotColor(0)->WriteToStream(os);
 }
 MS2_REPLACE_METHOD(0x1405991E0, CItemExtraData, vfunc_5, 95, 0x1F21C654);
 
@@ -198,26 +198,26 @@ MS2_REPLACE_METHOD(0x1405991E0, CItemExtraData, vfunc_5, 95, 0x1F21C654);
 void CItemExtraData::vfunc_6(CInputStream& is)
 {
     m_nPick = -1;
-    FUN_14059a230(0)->FUN_140598c80(is);
+    GetSlotColor(0)->ReadFromStream(is);
 }
 MS2_REPLACE_METHOD(0x140599250, CItemExtraData, vfunc_6, 107, 0x28DE9ABA);
 
 // @0x1405992d0
 void CItemExtraData::vfunc_7(COutputStream& os)
 {
-    FUN_14059a230(0)->FUN_140598bf0(os);
+    GetSlotColor(0)->WriteToStream(os);
 }
 MS2_REPLACE_METHOD(0x1405992D0, CItemExtraData, vfunc_7, 95, 0x21DC447E);
 
 // @0x140599340
 void CItemExtraData::vfunc_8(CInputStream& is)
 {
-    FUN_14059a230(0)->FUN_140598c80(is);
+    GetSlotColor(0)->ReadFromStream(is);
 }
 MS2_REPLACE_METHOD(0x140599340, CItemExtraData, vfunc_8, 95, 0xB13713E5);
 
 // @0x1405993b0
-void CItemExtraData::FUN_1405993b0(unsigned nCount)
+void CItemExtraData::AllocColors(unsigned nCount)
 {
     m_colors.clear();
     for (unsigned i = 0; i < nCount; i++)
@@ -226,22 +226,22 @@ void CItemExtraData::FUN_1405993b0(unsigned nCount)
         m_colors.push_back(spColor);
     }
 }
-MS2_REPLACE_METHOD(0x1405993B0, CItemExtraData, FUN_1405993b0, 187, 0xD8265443);
+MS2_REPLACE_METHOD(0x1405993B0, CItemExtraData, AllocColors, 187, 0xD8265443);
 
 // @0x140599480
-bool CItemExtraData::FUN_140599480(const ItemColorEx& kColor, MS2Ptr<CItemData> spData)
+bool CItemExtraData::IsSameColor(const ItemColorEx& kColor, MS2Ptr<CItemData> spData)
 {
-    return FUN_140599510(kColor, spData) == 1;
+    return MatchesColor(kColor, spData) == 1;
 }
-MS2_REPLACE_METHOD(0x140599480, CItemExtraData, FUN_140599480, 130, 0x05239006);
+MS2_REPLACE_METHOD(0x140599480, CItemExtraData, IsSameColor, 130, 0x05239006);
 
 // @0x140599510
-int CItemExtraData::FUN_140599510(const ItemColorEx& kColor, MS2Ptr<CItemData> spData)
+int CItemExtraData::MatchesColor(const ItemColorEx& kColor, MS2Ptr<CItemData> spData)
 {
     int nResult = 1;
     for (unsigned i = 0; i < 3; i++)
     {
-        bool bDiff = FUN_14059a230(0)->m_aRgb[i] != kColor.m_aValues[i];
+        bool bDiff = GetSlotColor(0)->m_aRgb[i] != kColor.m_aValues[i];
         if (bDiff)
         {
             nResult = 0;
@@ -252,40 +252,40 @@ int CItemExtraData::FUN_140599510(const ItemColorEx& kColor, MS2Ptr<CItemData> s
     {
         if (spData == 0 || ((spData.get() != 0 ? true : false) && spData->FUN_14053d020()))
         {
-            bool bSame = FUN_14059a230(0)->m_aRgb[0] == kColor.m_n30 && FUN_14059a230(0)->m_aRgb[1] == kColor.m_aValues[1]
-                && FUN_14059a230(0)->m_aRgb[2] == kColor.m_n34;
+            bool bSame = GetSlotColor(0)->m_aRgb[0] == kColor.m_n30 && GetSlotColor(0)->m_aRgb[1] == kColor.m_aValues[1]
+                && GetSlotColor(0)->m_aRgb[2] == kColor.m_n34;
             if (bSame)
                 nResult = 1;
         }
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x140599510, CItemExtraData, FUN_140599510, 789, 0xBFB0C7A2);
+MS2_REPLACE_METHOD(0x140599510, CItemExtraData, MatchesColor, 789, 0xBFB0C7A2);
 
 // @0x140599830
-int CItemExtraData::FUN_140599830(const CItemExtraData* pOther)
+int CItemExtraData::HasSameKindAndRgb(const CItemExtraData* pOther)
 {
     if (FUN_14059d140() != pOther->FUN_14059d140())
         return 0;
-    int* pOtherRgb = pOther->FUN_14059a230(0)->m_aRgb;
+    int* pOtherRgb = pOther->GetSlotColor(0)->m_aRgb;
     for (unsigned i = 0; i < 3; i++)
     {
-        if (FUN_14059a230(0)->m_aRgb[i] != pOtherRgb[i])
+        if (GetSlotColor(0)->m_aRgb[i] != pOtherRgb[i])
             return 0;
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x140599830, CItemExtraData, FUN_140599830, 300, 0x11708C7C);
+MS2_REPLACE_METHOD(0x140599830, CItemExtraData, HasSameKindAndRgb, 300, 0x11708C7C);
 
 // @0x140599970
 int CItemExtraData::FUN_140599970(const CItemExtraData* pOther)
 {
     if (FUN_14059d130() != pOther->FUN_14059d130())
         return 0;
-    int* pOtherRgb = pOther->FUN_14059a230(0)->m_aRgb;
+    int* pOtherRgb = pOther->GetSlotColor(0)->m_aRgb;
     for (unsigned i = 0; i < 3; i++)
     {
-        if (FUN_14059a230(0)->m_aRgb[i] != pOtherRgb[i])
+        if (GetSlotColor(0)->m_aRgb[i] != pOtherRgb[i])
             return 0;
     }
     return 1;
@@ -295,7 +295,7 @@ MS2_REPLACE_METHOD(0x140599970, CItemExtraData, FUN_140599970, 300, 0xF1923389);
 ItemModelHead* FUN_14053ec70(CItemData* pData);
 
 // @0x140599ab0
-void CItemExtraData::FUN_140599ab0(CItemData* pData)
+void CItemExtraData::InitColorsFromPalette(CItemData* pData)
 {
     if (pData == 0 || pData->FUN_14053e260() == 0)
         return;
@@ -303,81 +303,81 @@ void CItemExtraData::FUN_140599ab0(CItemData* pData)
     {
         MS2Ptr<ItemColorEx> spColor = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
         if (spColor.get() != 0)
-            FUN_140599bc0(spColor.operator->(), 0, pData->FUN_14053e310(i), i);
+            SetSlotColor(spColor.operator->(), 0, pData->FUN_14053e310(i), i);
     }
 }
-MS2_REPLACE_METHOD(0x140599AB0, CItemExtraData, FUN_140599ab0, 258, 0x31D11ED4);
+MS2_REPLACE_METHOD(0x140599AB0, CItemExtraData, InitColorsFromPalette, 258, 0x31D11ED4);
 
 // @0x140599bc0
-void CItemExtraData::FUN_140599bc0(const ItemColorEx* pColor, bool bExtra, int nDelay, unsigned nSlot)
+void CItemExtraData::SetSlotColor(const ItemColorEx* pColor, bool bExtra, int nDelay, unsigned nSlot)
 {
-    FUN_14059a230(nSlot)->FUN_140598de0(*pColor, nDelay);
+    GetSlotColor(nSlot)->SetFromColor(*pColor, nDelay);
     if (bExtra)
     {
-        FUN_14059a230(nSlot)->m_aRgb[0] = pColor->m_n30;
-        FUN_14059a230(nSlot)->m_aRgb[2] = pColor->m_n34;
+        GetSlotColor(nSlot)->m_aRgb[0] = pColor->m_n30;
+        GetSlotColor(nSlot)->m_aRgb[2] = pColor->m_n34;
     }
 }
-MS2_REPLACE_METHOD(0x140599BC0, CItemExtraData, FUN_140599bc0, 316, 0x47C410E4);
+MS2_REPLACE_METHOD(0x140599BC0, CItemExtraData, SetSlotColor, 316, 0x47C410E4);
 
 // @0x140599d10
-void CItemExtraData::FUN_140599d10(ATL::CAtlArray<int>& aValues, unsigned nSlot)
+void CItemExtraData::SetSlotRgbFromArray(ATL::CAtlArray<int>& aValues, unsigned nSlot)
 {
     size_t nCount = aValues.GetCount() < 3 ? aValues.GetCount() : 3;
     for (size_t i = 0; i < nCount; i++)
-        FUN_14059a230(nSlot)->m_aRgb[i] = aValues[i];
-    FUN_14059a230(nSlot)->m_n24 = -1;
-    FUN_14059a230(nSlot)->m_n28 = 0;
+        GetSlotColor(nSlot)->m_aRgb[i] = aValues[i];
+    GetSlotColor(nSlot)->m_n24 = -1;
+    GetSlotColor(nSlot)->m_n28 = 0;
 }
-MS2_REPLACE_METHOD(0x140599D10, CItemExtraData, FUN_140599d10, 383, 0x5601278D);
+MS2_REPLACE_METHOD(0x140599D10, CItemExtraData, SetSlotRgbFromArray, 383, 0x5601278D);
 
 // @0x140599ea0
-void CItemExtraData::FUN_140599ea0(int nIndex, const int& nValue, unsigned nSlot)
+void CItemExtraData::SetSlotRgbComponent(int nIndex, const int& nValue, unsigned nSlot)
 {
     if (nIndex < 0 || nIndex >= 3)
         return;
-    FUN_14059a230(nSlot)->m_aRgb[nIndex] = nValue;
-    FUN_14059a230(nSlot)->m_n24 = -1;
-    FUN_14059a230(nSlot)->m_n28 = 0;
+    GetSlotColor(nSlot)->m_aRgb[nIndex] = nValue;
+    GetSlotColor(nSlot)->m_n24 = -1;
+    GetSlotColor(nSlot)->m_n28 = 0;
 }
-MS2_REPLACE_METHOD(0x140599EA0, CItemExtraData, FUN_140599ea0, 287, 0x2890776D);
+MS2_REPLACE_METHOD(0x140599EA0, CItemExtraData, SetSlotRgbComponent, 287, 0x2890776D);
 
 // @0x140599fd0
-int CItemExtraData::FUN_140599fd0(unsigned nIndex)
+int CItemExtraData::GetCurrentRgbComponent(unsigned nIndex)
 {
     if (nIndex >= 3)
         return 0;
-    return FUN_14059a2c0()->m_aRgb[nIndex];
+    return GetCurrentColor()->m_aRgb[nIndex];
 }
-MS2_REPLACE_METHOD(0x140599FD0, CItemExtraData, FUN_140599fd0, 104, 0x96D99435);
+MS2_REPLACE_METHOD(0x140599FD0, CItemExtraData, GetCurrentRgbComponent, 104, 0x96D99435);
 
 // @0x14059a040
-int CItemExtraData::FUN_14059a040(unsigned nSlot)
+int CItemExtraData::GetSlotColorId(unsigned nSlot)
 {
-    return FUN_14059a230(nSlot)->m_n24;
+    return GetSlotColor(nSlot)->m_n24;
 }
-MS2_REPLACE_METHOD(0x14059A040, CItemExtraData, FUN_14059a040, 93, 0x09AAFA23);
+MS2_REPLACE_METHOD(0x14059A040, CItemExtraData, GetSlotColorId, 93, 0x09AAFA23);
 
 // @0x14059a0b0
 int CItemExtraData::FUN_14059a0b0(unsigned nSlot)
 {
-    return FUN_14059a230(nSlot)->m_n28;
+    return GetSlotColor(nSlot)->m_n28;
 }
 MS2_REPLACE_METHOD(0x14059A0B0, CItemExtraData, FUN_14059a0b0, 93, 0x45D820B0);
 
 // @0x14059a120
-int CItemExtraData::FUN_14059a120()
+int CItemExtraData::GetCurrentDelay()
 {
-    return FUN_14059a2c0()->m_n2c;
+    return GetCurrentColor()->m_n2c;
 }
-MS2_REPLACE_METHOD(0x14059A120, CItemExtraData, FUN_14059a120, 84, 0xF34D474C);
+MS2_REPLACE_METHOD(0x14059A120, CItemExtraData, GetCurrentDelay, 84, 0xF34D474C);
 
 // @0x14059a180
-int* CItemExtraData::FUN_14059a180(unsigned nSlot)
+int* CItemExtraData::GetSlotRgb(unsigned nSlot)
 {
-    return FUN_14059a230(nSlot)->m_aRgb;
+    return GetSlotColor(nSlot)->m_aRgb;
 }
-MS2_REPLACE_METHOD(0x14059A180, CItemExtraData, FUN_14059a180, 96, 0x21C9BAD5);
+MS2_REPLACE_METHOD(0x14059A180, CItemExtraData, GetSlotRgb, 96, 0x21C9BAD5);
 
 // @0x14059a1f0
 void CItemExtraData::SetPick(int n)
@@ -394,24 +394,24 @@ int CItemExtraData::GetPick()
 MS2_REPLACE_METHOD(0x14059A210, CItemExtraData, GetPick, 14, 0x8AEE455B);
 
 // @0x14059a230
-CItemExtraData::ColorPtr CItemExtraData::FUN_14059a230(unsigned nSlot) const
+CItemExtraData::ColorPtr CItemExtraData::GetSlotColor(unsigned nSlot) const
 {
     if (m_bMulti)
         return m_colors[nSlot];
     else
         return m_spColor;
 }
-MS2_REPLACE_METHOD(0x14059A230, CItemExtraData, FUN_14059a230, 134, 0xCF0149B8);
+MS2_REPLACE_METHOD(0x14059A230, CItemExtraData, GetSlotColor, 134, 0xCF0149B8);
 
 // @0x14059a2c0
-CItemExtraData::ColorPtr CItemExtraData::FUN_14059a2c0()
+CItemExtraData::ColorPtr CItemExtraData::GetCurrentColor()
 {
     if (m_bMulti)
         return m_colors[m_nIndex];
     else
         return m_spColor;
 }
-MS2_REPLACE_METHOD(0x14059A2C0, CItemExtraData, FUN_14059a2c0, 135, 0x5AAF8249);
+MS2_REPLACE_METHOD(0x14059A2C0, CItemExtraData, GetCurrentColor, 135, 0x5AAF8249);
 
 // @0x14059a350
 bool CItemExtraData::FUN_14059a350()
@@ -420,7 +420,7 @@ bool CItemExtraData::FUN_14059a350()
         return false;
     if (m_nNextTick < GetTickCountMs2())
     {
-        m_nNextTick = GetTickCountMs2() + FUN_14059a120();
+        m_nNextTick = GetTickCountMs2() + GetCurrentDelay();
         int nCount = (int)m_colors.size();
         if (++m_nIndex >= nCount)
             m_nIndex = 0;
@@ -488,7 +488,7 @@ void CDecalExtraData::vfunc_4(CItemData* pData)
             m_f64 = spCustom->unknown24.z;
         }
         if (pData->FUN_14053eba0()->FUN_14054b3d0() > 0)
-            m_f60 = pData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_1405450f0(0);
+            m_f60 = pData->FUN_14053eba0()->GetGroup(0)->FUN_1405450f0(0);
     }
 }
 MS2_REPLACE_METHOD(0x14059A480, CDecalExtraData, vfunc_4, 408, 0x409B00C4);
@@ -570,7 +570,7 @@ CHairExtraData::CHairExtraData()
 }
 
 // @0x14059aa20
-void CHairExtraData::FUN_14059aa20()
+void CHairExtraData::ClampScales()
 {
     for (int i = 0; i < 2; i++)
     {
@@ -582,7 +582,7 @@ void CHairExtraData::FUN_14059aa20()
         m_fScale[i] = f;
     }
 }
-MS2_REPLACE_METHOD(0x14059AA20, CHairExtraData, FUN_14059aa20, 111, 0x557560E6);
+MS2_REPLACE_METHOD(0x14059AA20, CHairExtraData, ClampScales, 111, 0x557560E6);
 
 // @0x14059aaa0
 void CHairExtraData::vfunc_4(CItemData* pData)
@@ -590,7 +590,7 @@ void CHairExtraData::vfunc_4(CItemData* pData)
     CItemExtraData::vfunc_4(pData);
     if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
         return;
-    const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
+    const ModelGroup* pGroup = pData->FUN_14053eba0()->GetGroup(0);
     int nPick = -1;
     int nSlot = 0;
     for (size_t i = 0; i < pGroup->FUN_1405450c0() && nSlot < 2; i++)
@@ -610,7 +610,7 @@ void CHairExtraData::vfunc_4(CItemData* pData)
     }
     for (int i = 0; i < 2; i++)
         m_fScale[i] = pGroup->FUN_140544f20(i)->FUN_140544c20();
-    FUN_14059aa20();
+    ClampScales();
     m_bUseScale = 1;
     m_bUsePt2 = 1;
     m_bUsePt1 = 1;
@@ -637,7 +637,7 @@ void CHairExtraData::vfunc_3(const CItemExtraData* p)
         m_bUsePt2 = pOther->m_bUsePt2;
         m_bUsePt1 = pOther->m_bUsePt1;
     }
-    FUN_14059aa20();
+    ClampScales();
 }
 MS2_REPLACE_METHOD(0x14059AD20, CHairExtraData, vfunc_3, 283, 0xE6629404);
 
@@ -683,7 +683,7 @@ void CHairExtraData::vfunc_6(CInputStream& is)
         if (m_bUsePt2 != 0)
             m_aPt2[i] = kTemp.m_aPt2[i];
     }
-    FUN_14059aa20();
+    ClampScales();
 }
 MS2_REPLACE_METHOD(0x14059AF30, CHairExtraData, vfunc_6, 678, 0x0721B862);
 
@@ -736,7 +736,7 @@ void CCapExtraData::vfunc_4(CItemData* pData)
     CItemExtraData::vfunc_4(pData);
     if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
         return;
-    const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
+    const ModelGroup* pGroup = pData->FUN_14053eba0()->GetGroup(0);
     for (unsigned int i = 0; i < 1; i++)
     {
         if (i >= pGroup->FUN_1405450c0())

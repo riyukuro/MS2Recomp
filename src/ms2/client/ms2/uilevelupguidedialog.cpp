@@ -44,6 +44,7 @@
 #include <string.h>
 #include <vector>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local views of exe types ----
 
@@ -62,11 +63,10 @@ public:
     void FUN_1422dd230(const ASObj& row);                       // append a row
     void FUN_1422cf4f0(int n);
 };
-class Unk_LgCheck : public ASDisplayObject
+class Unk_LgCheck : public ASButton
 {
 public:
     bool FUN_1422ce0e0();                                       // is checked
-    void FUN_1422ce090(int bChecked);                           // set checked
 };
 // the event dialog child (m_eventDialog): a display object with the same Invoke targets as the movie root
 class Unk_LgEvent : public ASDisplayObject {};
@@ -111,7 +111,6 @@ CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                     // the script behind the pointer
-bool FUN_140841300(const CStringW& str, const char* sz);   // the string equals sz
 
 // message boxes and packets
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* listener, CStringW tag);
@@ -153,13 +152,14 @@ private:
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
 struct Unk_LgUiMgr { Unk_CommandUIRef FUN_141adcf50(const CString& strName); };
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef& ref);
 
 // recommendContents.xml
 CString FUN_14071a5b0(const CString&, const CString&);
 struct Unk_LgFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-struct Unk_LgLog { void FUN_14015eb90(int, int, const wchar_t*, const CString&); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+struct Unk_LgLog { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -295,7 +295,7 @@ void UILevelUpGuideDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     CStringW strType = pArgs->FUN_1422b8f40();
-    if (FUN_140841300(strType, "contents"))
+    if (operator==(strType, "contents"))
     {
         int nId = pArgs->FUN_1422b8a10();
         MS2Ptr<RecommendContnets> spRow(0);
@@ -371,7 +371,7 @@ void UILevelUpGuideDialog::FUN_140f85330(unsigned short nLevel)
     m_188.RemoveAll();
     m_1d8 = 0;
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(quests, 1);
+    TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(quests, 1);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
         if (spData->m_conditions.GetCount() > 0) {
@@ -419,7 +419,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
         pDialog->FUN_141924680();
     }
     else {
-        UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_1403ed9e0(const_cast<Unk_CommandUIRef&>(static_cast<const Unk_CommandUIRef&>(reinterpret_cast<Unk_LgUiMgr*>(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adcf50(spRow->m_link)))));
+        UIDialog* pDialog = dynamic_cast<UIDialog*>(((MS2Ptr<UIObject>*)(&(const_cast<Unk_CommandUIRef&>(static_cast<const Unk_CommandUIRef&>(reinterpret_cast<Unk_LgUiMgr*>(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adcf50(spRow->m_link))))))->operator UIObject*());
         if (pDialog != 0)
             pDialog->FUN_141924680();
     }
@@ -463,7 +463,7 @@ void UILevelUpGuideDialog::FUN_140f85ba0()
         return;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (root == 0) {
-        ((struct Unk_LgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", path);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", path);
         return;
     }
     for (void* node = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("contents")); node; node = ((void*)((class Unk_XmlNode*)(void*)(node))->NextSibling("contents"))) {
@@ -494,7 +494,7 @@ void UILevelUpGuideDialog::FUN_140f85f90()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(quests, 1);
+    TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(quests, 1);
     qsort(quests.GetData(), quests.GetCount(), sizeof(MS2Ptr<CQuestData>), LgQuestOrder);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
@@ -515,7 +515,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    if (MS2Ptr<ASTextField> spLevel = FUN_140bb4cf0("m_contentsLevel")) {
+    if (MS2Ptr<ASTextField> spLevel = GetChild<ASTextField>("m_contentsLevel")) {
         CStringW strTitle;
         if (m_1c8.m_nLow != m_1c8.m_nHigh)
             strTitle = FUN_14028dfa0<unsigned short, unsigned short>(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
@@ -577,7 +577,7 @@ void UILevelUpGuideDialog::FUN_140f869f0()
     if (MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog")) {
         int bAdded = 0;
         ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-        TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(quests, 2);
+        TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(quests, 2);
         for (size_t i = 0; i < quests.GetCount(); i++) {
             MS2Ptr<CQuestData> spData = quests[i];
             Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(FUN_14074b030(spData.operator->()));
@@ -684,10 +684,10 @@ void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scalef
     ((class Unk_LgBossTip*)FUN_140cb17d0())->FUN_141b99dc0(nNpc, &tip);
     tip.FUN_1407cbb20("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), ((class CNpcData*)(class Unk_LgNpc*)(spNpc.get()))->GetLevel()));
     tip.FUN_1409c0e60("enableLClick", L"");
-    tip.FUN_1409c6d70("WorldMapTooltip_Boss");
-    tip.FUN_1409c6e00(300);
-    tip.FUN_1409c6e30(60000);
-    tip.FUN_1409c6dc0(1);
+    tip.SetTooltipClass("WorldMapTooltip_Boss");
+    tip.SetOnDelay(300);
+    tip.SetOffDelay(60000);
+    tip.SetTooltipAlign(1);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -698,11 +698,11 @@ void UILevelUpGuideDialog::FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scalef
     if (strText.GetLength() == 0)
         return;
     ASTooltip tip(1, 2);
-    tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tip.FUN_1409c6e00(300);
-    tip.FUN_1409c6e30(60000);
-    tip.FUN_1409c6dc0(1);
-    tip.FUN_1409c6cb0(strText);
+    tip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tip.SetOnDelay(300);
+    tip.SetOffDelay(60000);
+    tip.SetTooltipAlign(1);
+    tip.SetText(strText);
     *pRetVal = tip.FUN_1422bb870();
 }
 

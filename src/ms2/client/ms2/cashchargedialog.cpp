@@ -153,7 +153,7 @@ UICashShopDialog* FUN_140b04f80(int nId)
 {
     if (reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICashShopDialog*>((UIObject*)p);
     }

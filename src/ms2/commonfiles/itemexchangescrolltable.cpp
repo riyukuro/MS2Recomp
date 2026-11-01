@@ -17,6 +17,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -87,46 +97,46 @@ void CItemExchangeScrollTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("exchange"); pNode != 0; pNode = pNode->FUN_140168650("exchange"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("exchange")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("exchange")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         CExchangeItemInfoPtr spInfo(new CExchangeItemInfo);
         spInfo->m_nId = nId;
         XmlEnumName<ExchangeItemType, FUN_14021a270>(pNode, "type", spInfo->m_eType);
-        FUN_1408731e0(pNode, "maxGrade", spInfo->m_nMaxGrade);
-        FUN_1408731e0(pNode, "tradableCountDeduction", spInfo->m_nTradableCountDeduction);
-        Unk_140165cf0* pReceipe = pNode->FUN_140165cf0("receipe");
+        XmlGetAttr((class TiXmlElement*)(pNode), "maxGrade", reinterpret_cast<int&>(spInfo->m_nMaxGrade));
+        XmlGetAttr((class TiXmlElement*)(pNode), "tradableCountDeduction", reinterpret_cast<int&>(spInfo->m_nTradableCountDeduction));
+        Unk_140165cf0* pReceipe = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("receipe"));
         if (pReceipe != 0)
         {
-            FUN_140873220(pReceipe, "id", spInfo->m_receipe.m_nId);
+            XmlGetAttr((class TiXmlElement*)(pReceipe), "id", spInfo->m_receipe.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pReceipe), "rank", &spInfo->m_receipe.m_nRank);
-            FUN_1408731e0(pReceipe, "count", spInfo->m_receipe.m_nCount);
+            XmlGetAttr((class TiXmlElement*)(pReceipe), "count", reinterpret_cast<int&>(spInfo->m_receipe.m_nCount));
         }
-        Unk_140165cf0* pExchange = pNode->FUN_140165cf0("exchange");
+        Unk_140165cf0* pExchange = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("exchange"));
         if (pExchange != 0)
         {
-            FUN_140873220(pExchange, "id", spInfo->m_exchange.m_nId);
+            XmlGetAttr((class TiXmlElement*)(pExchange), "id", spInfo->m_exchange.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pExchange), "rank", &spInfo->m_exchange.m_nRank);
-            FUN_1408731e0(pExchange, "count", spInfo->m_exchange.m_nCount);
+            XmlGetAttr((class TiXmlElement*)(pExchange), "count", reinterpret_cast<int&>(spInfo->m_exchange.m_nCount));
         }
-        Unk_140165cf0* pEquip = pNode->FUN_140165cf0("requireEquip");
+        Unk_140165cf0* pEquip = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("requireEquip"));
         if (pEquip != 0)
         {
-            FUN_140873220(pEquip, "id", spInfo->m_requireEquip.m_nId);
+            XmlGetAttr((class TiXmlElement*)(pEquip), "id", spInfo->m_requireEquip.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pEquip), "rank", &spInfo->m_requireEquip.m_nRank);
-            FUN_1408731e0(pEquip, "count", spInfo->m_requireEquip.m_nCount);
+            XmlGetAttr((class TiXmlElement*)(pEquip), "count", reinterpret_cast<int&>(spInfo->m_requireEquip.m_nCount));
         }
-        Unk_140165cf0* pRequire = pNode->FUN_140165cf0("require");
+        Unk_140165cf0* pRequire = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("require"));
         if (pRequire != 0)
         {
-            FUN_1408732e0(pRequire, "meso", spInfo->m_nMeso);
-            for (Unk_140165cf0* pItem = pRequire->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+            XmlGetAttr((class TiXmlElement*)(pRequire), "meso", reinterpret_cast<__int64&>(spInfo->m_nMeso));
+            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRequire))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
             {
                 CStringW strItem;
-                FUN_140873420(pItem, "id", strItem);
+                XmlGetAttr((class TiXmlElement*)(pItem), "id", strItem);
                 spInfo->m_require.FUN_14026b9d0(strItem);
             }
         }

@@ -15,7 +15,7 @@
 // ---- out-of-unit callees (bound to the exe by name) ----
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 // Stream primitives (packet.cpp).
@@ -46,7 +46,7 @@ unsigned GameObjectEffectNifCtx::GetGameOID() const
 void GameObjectEffectNifCtx::LoadXml(Unk_140165cf0* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "gameOID", m_nGameOID);
-    FUN_1408733e0(pNode, "nifPath", m_strNifPath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "nifPath", m_strNifPath);
     XmlGetAttr((class TiXmlElement*)(pNode), "isOutline", m_bOutline);
     XmlGetAttr((class TiXmlElement*)(pNode), "scale", m_fScale);
     XmlGetAttr((class TiXmlElement*)(pNode), "rotateZ", m_fRotateZ);

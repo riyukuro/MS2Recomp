@@ -32,11 +32,11 @@ public:
     // Builds the item tooltip and returns its value through *ppOut (slot 25, 0x1409ba800). ppOut is really the
     // tooltip callback's Params (its first member is pRetVal).
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);
-    void FUN_1409ba460();                                       // push the slot data (item id/rarity/count) to AS
-    void FUN_1409ba5d0(int nItemId, int nRarity, int nCount);   // set the item and refresh
+    void UpdateSlotData();                                       // push the slot data (item id/rarity/count) to AS
+    void SetItem(int nItemId, int nRarity, int nCount);   // set the item and refresh
     void FUN_1409ba630(const Unk_ItemSlotSource& item);         // set the item from a reward record (its slots 0-2)
     void FUN_1409ba6d0();                                       // enable the click preview (registers FUN_1409baa60)
-    void FUN_1409ba980(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, __int64 nUser);   // setTooltipFunction
+    void SetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, __int64 nUser);   // setTooltipFunction
     void FUN_1409baa20(const Scaleform::GFx::FunctionHandler::Params& params);   // the tooltip callback: vfunc_25
     void FUN_1409baa60(const Scaleform::GFx::FunctionHandler::Params& params);   // the click callback: item preview
 

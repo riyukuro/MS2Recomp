@@ -51,7 +51,7 @@ int FUN_1405402a0(Unk_140165cf0*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-int FUN_140873360(Unk_140165cf0*, const char*, float&);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void FUN_140873ca0(void*, const char*, int);
@@ -95,6 +95,13 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/placeholder/citemextradata.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 class ItemGachaBoxTable;
 
 // Item table singleton (commonstruct_wa.h declares the free functions): the members this unit calls.
@@ -106,7 +113,7 @@ public:
 };
 unsigned FUN_140557640(Unk_IngTable*, CString*);
 
-class Unk_PriceRow { public: unsigned* FUN_1401d7c10(); };
+class Unk_PriceRow { public: };
 class Unk_PriceHolder
 {
 public:
@@ -130,7 +137,7 @@ class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
 class ItemGachaBoxTable   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14059eec0(int);
+    bool IsCoinItem(int);
 };
 int FUN_1403ba790(unsigned int);  // C3: the definition's signature
 
@@ -200,7 +207,7 @@ bool CItemChangeBeautyTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("beauty"); pNode != 0; pNode = pNode->FUN_140168650("beauty"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("beauty"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("beauty")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -213,7 +220,7 @@ bool CItemChangeBeautyTable::Load()
             continue;
         data->m_nId = nId;
         data->FUN_14053a7c0(pNode);
-        for (Unk_140165cf0* pItem = pNode->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+        for (Unk_140165cf0* pItem = pNode->FUN_140165cf0("item"); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
@@ -350,11 +357,11 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     if (!material.FUN_1405473c0(pElem)) return false;
     if (!period.Load(pElem)) return false;
     if (!limit.Load(pElem)) return false;
-    if (!skill.FUN_140546770(pElem)) return false;
+    if (!skill.LoadXml(pElem)) return false;
     if (!install.Load(pElem)) return false;
-    if (!cubeTextureName.FUN_1405495d0(pElem)) return false;
+    if (!cubeTextureName.LoadXml(pElem)) return false;
     if (!effect.Load(pElem)) return false;
-    if (!fusion.FUN_140549520(pElem)) return false;
+    if (!fusion.LoadXml(pElem)) return false;
     if (!additionalEffect.FUN_140549c00(pElem)) return false;
     if (!function.Load(pElem)) return false;
     Unk_140165cf0* pTool = pElem->FUN_140165cf0("tool");
@@ -372,17 +379,17 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     if (pPCBang) {
         XmlGetAttr((class TiXmlElement*)(pPCBang), "PCBang", bPCBang);
     }
-    if (FUN_14053ec50()) {
-        FUN_14053eb20();
+    if (GetItemPreset()) {
+        LoadModel();
         if (model == 0) {
-            int nModelId = FUN_14053ec50();
-            int nItemId = FUN_14053c510();
+            int nModelId = GetItemPreset();
+            int nItemId = GetItemId();
             FUN_1403d7960(GetLogString(), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}", nItemId, nModelId);
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
         Unk_TableHandle handle;
-        Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, FUN_14053c510());
+        Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, GetItemId());
         Unk_HandleNode* pRow = pNode;
         property.flag09 = reinterpret_cast<CItemChangeBeautyTable::DataPtr*>(pRow)->operator->() != 0;
     }
@@ -405,7 +412,7 @@ bool CItemData::Save(void* pParent)
         this->property.FUN_1405479a0(&property);
         FUN_14086e000(pParent, &property);
     }
-    cubeTextureName.FUN_140549630(pParent);
+    cubeTextureName.SaveXml(pParent);
     period.Save(pParent);
     limit.Save(pParent);
     skill.FUN_1405467f0(pParent);
@@ -456,13 +463,13 @@ bool CItemData::FUN_14053c170(const CItemData* pOther)
 }
 
 // @0x14053c4f0
-void CItemData::FUN_14053c4f0(int nId)
+void CItemData::SetItemId(int nId)
 {
     id = nId;
 }
 
 // @0x14053c510
-int CItemData::FUN_14053c510()
+int CItemData::GetItemId()
 {
     return id;
 }
@@ -470,37 +477,37 @@ int CItemData::FUN_14053c510()
 // @0x14053c530
 void CItemData::FUN_14053c530()
 {
-    FUN_14053c690(FUN_14053c510());
+    FUN_14053c690(GetItemId());
 }
 
 // @0x14053c560
-int CItemData::FUN_14053c560()
+int CItemData::GetOriginOrItemId()
 {
     if (originID != 0)
         return originID;
-    return FUN_14053c510();
+    return GetItemId();
 }
 
 // @0x14053c5a0
-int CItemData::FUN_14053c5a0()
+int CItemData::GetRank()
 {
     return rank;
 }
 
 // @0x14053c5c0
-int CItemData::FUN_14053c5c0()
+int CItemData::GetType()
 {
     return type;
 }
 
 // @0x14053c5e0
-int CItemData::FUN_14053c5e0()
+int CItemData::GetSubtype()
 {
     return subtype;
 }
 
 // @0x14053c600
-int CItemData::FUN_14053c600()
+int CItemData::GetIconCode()
 {
     return iconCode;
 }
@@ -508,7 +515,7 @@ int CItemData::FUN_14053c600()
 // @0x14053c620
 int CItemData::FUN_14053c620()
 {
-    if (FUN_14053c5c0() != 1)
+    if (GetType() != 1)
         return 0;
     return subtype;
 }
@@ -538,7 +545,7 @@ bool CItemData::HasStringTag(int nStringTag)
 }
 
 // @0x14053c6f0
-int CItemData::FUN_14053c6f0()
+int CItemData::GetStringTag()
 {
     return stringTag;
 }
@@ -553,7 +560,7 @@ bool CItemData::FUN_14053c710()
         return false;
     for (size_t i = 0; i < nGroups; ++i)
     {
-        const ModelGroup* pGroup = FUN_14053eba0()->FUN_14054b2f0(i);
+        const ModelGroup* pGroup = FUN_14053eba0()->GetGroup(i);
         if (pGroup->FUN_1405451a0() == 0)
             return false;
     }
@@ -563,7 +570,7 @@ bool CItemData::FUN_14053c710()
 // @0x14053c7c0
 bool CItemData::FUN_14053c7c0()
 {
-    if (FUN_14053c5c0() == 1)
+    if (GetType() == 1)
         return false;
     return 1 < property.slotMax;
 }
@@ -593,7 +600,7 @@ bool CItemData::FUN_14053c870()
 // @0x14053c8b0
 bool CItemData::FUN_14053c8b0()
 {
-    if (FUN_14053c5c0() == 0x13)
+    if (GetType() == 0x13)
         return false;
     return true;
 }
@@ -602,12 +609,12 @@ bool CItemData::FUN_14053c8b0()
 int CItemData::IsJobAllowed(int nJob)
 {
     int nJobType = nJob;
-    bool bAllowed = limit.FUN_140545c80(nJobType);
+    bool bAllowed = limit.IsJobAllowed(nJobType);
     return bAllowed ? 1 : 0;
 }
 
 // @0x14053c940
-int CItemData::FUN_14053c940(int nGender)
+int CItemData::IsGenderAllowed(int nGender)
 {
     if (limit.genderLimit == 2)
         return 1;
@@ -615,7 +622,7 @@ int CItemData::FUN_14053c940(int nGender)
 }
 
 // @0x14053c9a0
-int CItemData::FUN_14053c9a0(unsigned short nLevel)
+int CItemData::IsLevelAllowed(unsigned short nLevel)
 {
     return limit.levelLimit <= nLevel ? 1 : 0;
 }
@@ -627,7 +634,7 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
     {
         for (size_t i = 0; i < FUN_14053eba0()->FUN_14054b3d0(); ++i)
         {
-            const ModelGroup* pGroup = FUN_14053eba0()->FUN_14054b2f0(i);
+            const ModelGroup* pGroup = FUN_14053eba0()->GetGroup(i);
             for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
             {
                 const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -637,7 +644,7 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
         }
         return 0;
     }
-    return FUN_14053c940(nGender);
+    return IsGenderAllowed(nGender);
 }
 
 // @0x14053cae0
@@ -645,62 +652,62 @@ int CItemData::FUN_14053cae0(int nGender, int nCategory)
 {
     if (FUN_14053d2f0() && nCategory != 0 && FUN_14053c620() != nCategory)
         return false;
-    return FUN_14053c940(nGender);
+    return IsGenderAllowed(nGender);
 }
 // @0x14053cb40
 bool CItemData::FUN_14053cb40()
 {
-    return FUN_14053c5c0() == 5;
+    return GetType() == 5;
 }
 
 // @0x14053cb80
 bool CItemData::FUN_14053cb80()
 {
-    return FUN_14053c5c0() == 6;
+    return GetType() == 6;
 }
 
 // @0x14053cbc0
 bool CItemData::FUN_14053cbc0()
 {
-    return FUN_14053c5c0() == 1;
+    return GetType() == 1;
 }
 
 // @0x14053cc00
 bool CItemData::FUN_14053cc00()
 {
-    return FUN_14053c5c0() == 7;
+    return GetType() == 7;
 }
 
 // @0x14053cc40
-bool CItemData::FUN_14053cc40()
+bool CItemData::IsPetItem()
 {
-    return FUN_14053c5c0() == 0xb;
+    return GetType() == 0xb;
 }
 
 // @0x14053cc80
-bool CItemData::FUN_14053cc80()
+bool CItemData::IsRideItem()
 {
-    return FUN_14053c5c0() == 9;
+    return GetType() == 9;
 }
 
 // @0x14053ccc0
 bool CItemData::FUN_14053ccc0()
 {
-    if (!FUN_14053cc80())
+    if (!IsRideItem())
         return false;
-    return FUN_14053c5e0() == 1;
+    return GetSubtype() == 1;
 }
 
 // @0x14053cd10
 bool CItemData::FUN_14053cd10()
 {
-    return FUN_14053c5c0() == 0xc;
+    return GetType() == 0xc;
 }
 
 // @0x14053cd50
 bool CItemData::FUN_14053cd50()
 {
-    return FUN_14053c5c0() == 0x17;
+    return GetType() == 0x17;
 }
 
 // @0x14053cd90
@@ -710,13 +717,13 @@ bool CItemData::FUN_14053cd90()
 }
 
 // @0x14053cde0
-bool CItemData::FUN_14053cde0()
+bool CItemData::HasMaidId()
 {
     return 0 < FUN_14053dd30();
 }
 
 // @0x14053ce20
-bool CItemData::FUN_14053ce20()
+bool CItemData::IsPCBangItem()
 {
     return bPCBang;
 }
@@ -724,7 +731,7 @@ bool CItemData::FUN_14053ce20()
 // @0x14053ce40
 bool CItemData::FUN_14053ce40()
 {
-    return FUN_14053c5c0() == 0x18;
+    return GetType() == 0x18;
 }
 
 // @0x14053ce80
@@ -734,16 +741,16 @@ bool CItemData::FUN_14053ce80()
     {
         if (FUN_14053cfd0() || FUN_14053d070())
             return true;
-        if (FUN_14053d020() || FUN_14053cf00())
+        if (FUN_14053d020() || IsAvatarColorItem())
             return true;
     }
     return false;
 }
 
 // @0x14053cf00
-bool CItemData::FUN_14053cf00()
+bool CItemData::IsAvatarColorItem()
 {
-    return FUN_14053c510() == 0x9a1d21;
+    return GetItemId() == 0x9a1d21;
 }
 
 // @0x14053cf40
@@ -753,7 +760,7 @@ bool CItemData::FUN_14053cf40()
 }
 
 // @0x14053cf90
-bool CItemData::FUN_14053cf90()
+bool CItemData::HasSkinType()
 {
     return skinType != 0;
 }
@@ -798,7 +805,7 @@ bool CItemData::FUN_14053d110()
 // @0x14053d150
 bool CItemData::FUN_14053d150()
 {
-    switch (FUN_14053c5c0())
+    switch (GetType())
     {
     case 2:
     case 3:
@@ -827,13 +834,13 @@ bool CItemData::FUN_14053d1f0()
 }
 
 // @0x14053d210
-bool CItemData::FUN_14053d210()
+bool CItemData::HasWeddingLimit()
 {
     return limit.wedding;
 }
 
 // @0x14053d230
-bool CItemData::FUN_14053d230()
+bool CItemData::HasVipLevelLimit()
 {
     return 0 < limit.vipLevel;
 }
@@ -841,7 +848,7 @@ bool CItemData::FUN_14053d230()
 // @0x14053d270
 bool CItemData::FUN_14053d270()
 {
-    return FUN_14053c5c0() == 2;
+    return GetType() == 2;
 }
 
 // @0x14053d2b0
@@ -859,7 +866,7 @@ bool CItemData::FUN_14053d2f0()
 // @0x14053d340
 bool CItemData::FUN_14053d340()
 {
-    if (FUN_14053c5c0() == 1)
+    if (GetType() == 1)
     {
         switch (FUN_14053c620())
         {
@@ -873,11 +880,11 @@ bool CItemData::FUN_14053d340()
             return true;
         }
     }
-    else if (FUN_14053c5c0() == 8)
+    else if (GetType() == 8)
     {
         return true;
     }
-    else if (FUN_14053c5c0() == 0x17)
+    else if (GetType() == 0x17)
     {
         if (FUN_14053eba0()->FUN_14054b450(5))
         {
@@ -892,7 +899,7 @@ bool CItemData::FUN_14053d340()
 // @0x14053d460
 bool CItemData::FUN_14053d460()
 {
-    if (FUN_14053c5c0() == 1)
+    if (GetType() == 1)
     {
         switch (FUN_14053c620())
         {
@@ -910,7 +917,7 @@ bool CItemData::FUN_14053d460()
             return true;
         }
     }
-    else if (FUN_14053c5c0() == 0x17)
+    else if (GetType() == 0x17)
     {
         if (FUN_14053eba0()->FUN_14054b450(5))
         {
@@ -971,26 +978,26 @@ bool CItemData::FUN_14053d600()
 }
 
 // @0x14053d640
-int CItemData::FUN_14053d640()
+int CItemData::IsFatiguePenaltyApplied()
 {
     return property.applyFatiguePenalty;
 }
 
 // @0x14053d660
-int CItemData::FUN_14053d660()
+int CItemData::HasPeriod()
 {
     return period.usePeriod > 0 || period.expiration > 0 || period.expirationType != 0
         || !period.termTag.IsEmpty();
 }
 
 // @0x14053d6f0
-bool CItemData::FUN_14053d6f0()
+bool CItemData::HasCubeTextureMesh()
 {
     return !cubeTextureName.mesh.IsEmpty();
 }
 
 // @0x14053d740
-bool CItemData::FUN_14053d740()
+bool CItemData::IsMeratMarketRegisterable()
 {
     return limit.enableRegisterMeratMarket;
 }
@@ -998,7 +1005,7 @@ bool CItemData::FUN_14053d740()
 // @0x14053d760
 bool CItemData::FUN_14053d760()
 {
-    if (FUN_14053c5c0() != 1)
+    if (GetType() != 1)
         return false;
     switch (FUN_14053c620())
     {
@@ -1037,51 +1044,51 @@ bool CItemData::FUN_14053d800()
 // @0x14053d840
 bool CItemData::FUN_14053d840()
 {
-    return FUN_14053c5c0() == 0xd;
+    return GetType() == 0xd;
 }
 
 // @0x14053d880
 bool CItemData::FUN_14053d880()
 {
-    return FUN_14053c5c0() == 0x14;
+    return GetType() == 0x14;
 }
 
 // @0x14053d8c0
-bool CItemData::FUN_14053d8c0()
+bool CItemData::IsLapenshardType()
 {
-    return FUN_14053c5c0() == 0x15;
+    return GetType() == 0x15;
 }
 
 // @0x14053d900
 bool CItemData::FUN_14053d900()
 {
-    return FUN_14053c5c0() == 0x16;
+    return GetType() == 0x16;
 }
 
 // @0x14053d940
 bool CItemData::FUN_14053d940()
 {
-    return FUN_14053c5c0() == 6 && FUN_14053c5e0() == 4;
+    return GetType() == 6 && GetSubtype() == 4;
 }
 
 // @0x14053d990
-bool CItemData::FUN_14053d990()
+bool CItemData::IsPieceItem()
 {
-    return FUN_14053c5c0() == 0x1b;
+    return GetType() == 0x1b;
 }
 
 // @0x14053d9d0
-bool CItemData::FUN_14053d9d0()
+bool CItemData::IsGachaCoinItem()
 {
     if (((void*)FUN_14052d230()) != 0)
-        return ((class ItemGachaBoxTable*)(void*)(((void*)FUN_14052d230())))->FUN_14059eec0(FUN_14053c510());
+        return ((class ItemGachaBoxTable*)(void*)(((void*)FUN_14052d230())))->IsCoinItem(GetItemId());
     return false;
 }
 
 // @0x14053da20
-bool CItemData::FUN_14053da20()
+bool CItemData::HasOpenGachaBoxFunction()
 {
-    if (!FUN_14053dfd0(L"OpenGachaBox"))
+    if (!IsFunctionName(L"OpenGachaBox"))
         return false;
     int nValue = function.parameter.FUN_1408d1fd0(0, 0);
     if (nValue == 0)
@@ -1090,9 +1097,9 @@ bool CItemData::FUN_14053da20()
 }
 
 // @0x14053dad0
-bool CItemData::FUN_14053dad0()
+bool CItemData::HasQuestStartFunction()
 {
-    if (!FUN_14053dfd0(L"QuestStart"))
+    if (!IsFunctionName(L"QuestStart"))
         return false;
     int nValue = function.parameter.FUN_1408d1fd0(0, 0);
     if (nValue == 0)
@@ -1101,7 +1108,7 @@ bool CItemData::FUN_14053dad0()
 }
 
 // @0x14053db80
-int CItemData::FUN_14053db80()
+int CItemData::CanRegisterMeratMarket()
 {
     if (FUN_14053d900())
     {
@@ -1131,9 +1138,9 @@ unsigned short CItemData::FUN_14053dc40()
 }
 
 // @0x14053dc60
-int CItemData::FUN_14053dc60()
+int CItemData::GetPetId()
 {
-    if (FUN_14053c5c0() != 0xb)
+    if (GetType() != 0xb)
         return 0;
     return param1;
 }
@@ -1141,9 +1148,9 @@ int CItemData::FUN_14053dc60()
 // @0x14053dc90
 int CItemData::FUN_14053dc90()
 {
-    if (FUN_14053c5c0() != 1)
+    if (GetType() != 1)
         return 0;
-    int nSub = FUN_14053c5e0();
+    int nSub = GetSubtype();
     if (nSub < 0x50 || 0x53 < nSub)
         return 0;
     return param1;
@@ -1152,9 +1159,9 @@ int CItemData::FUN_14053dc90()
 // @0x14053dce0
 int CItemData::FUN_14053dce0()
 {
-    if (FUN_14053c5c0() != 6)
+    if (GetType() != 6)
         return 0;
-    if (FUN_14053c5e0() != 6)
+    if (GetSubtype() != 6)
         return 0;
     return param2;
 }
@@ -1162,17 +1169,17 @@ int CItemData::FUN_14053dce0()
 // @0x14053dd30
 int CItemData::FUN_14053dd30()
 {
-    if (FUN_14053c5c0() != 6)
+    if (GetType() != 6)
         return 0;
-    if (FUN_14053c5e0() != 7)
+    if (GetSubtype() != 7)
         return 0;
     return param2;
 }
 
 // @0x14053dd80
-int CItemData::FUN_14053dd80()
+int CItemData::GetRideeId()
 {
-    if (FUN_14053c5c0() != 9)
+    if (GetType() != 9)
         return 0;
     return param1;
 }
@@ -1180,7 +1187,7 @@ int CItemData::FUN_14053dd80()
 // @0x14053ddb0
 int CItemData::FUN_14053ddb0()
 {
-    if (FUN_14053c5c0() != 0x14)
+    if (GetType() != 0x14)
         return 0;
     return param1;
 }
@@ -1188,7 +1195,7 @@ int CItemData::FUN_14053ddb0()
 // @0x14053dde0
 int CItemData::FUN_14053dde0()
 {
-    if (FUN_14053c5c0() != 5)
+    if (GetType() != 5)
         return 0;
     return param1;
 }
@@ -1196,25 +1203,25 @@ int CItemData::FUN_14053dde0()
 // @0x14053de10
 int CItemData::FUN_14053de10()
 {
-    if (FUN_14053c5c0() != 0x13)
+    if (GetType() != 0x13)
         return 0;
     return param1;
 }
 
 // @0x14053de40
-int CItemData::FUN_14053de40()
+int CItemData::GetSkinType()
 {
     return skinType;
 }
 
 // @0x14053de60
-int CItemData::FUN_14053de60()
+int CItemData::GetSlotMax()
 {
     return property.slotMax;
 }
 
 // @0x14053de80
-int CItemData::FUN_14053de80()
+int CItemData::GetInstrumentId()
 {
     if (!FUN_14053cd50())
         return 0;
@@ -1222,7 +1229,7 @@ int CItemData::FUN_14053de80()
 }
 
 // @0x14053dec0
-int CItemData::FUN_14053dec0()
+int CItemData::GetOpenGachaBoxParam0()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
@@ -1231,7 +1238,7 @@ int CItemData::FUN_14053dec0()
 }
 
 // @0x14053df20
-int CItemData::FUN_14053df20()
+int CItemData::GetOpenGachaBoxParam1()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
@@ -1240,15 +1247,15 @@ int CItemData::FUN_14053df20()
 }
 
 // @0x14053df80
-int CItemData::FUN_14053df80()
+int CItemData::GetQuestStartQuestId()
 {
-    if (!FUN_14053dad0())
+    if (!HasQuestStartFunction())
         return 0;
     return function.parameter.FUN_1408d1fd0(0, 0);
 }
 
 // @0x14053dfd0
-bool CItemData::FUN_14053dfd0(const CStringW& strName)
+bool CItemData::IsFunctionName(const CStringW& strName)
 {
     if (function.name != strName)
         return false;
@@ -1256,28 +1263,28 @@ bool CItemData::FUN_14053dfd0(const CStringW& strName)
 }
 
 // @0x14053e010
-int CItemData::FUN_14053e010()
+int CItemData::HasExpandInvenFunction()
 {
     CStringW strName(L"ExpandInven");
-    return FUN_14053dfd0(strName);
+    return IsFunctionName(strName);
 }
 
 // @0x14053e070
-int CItemData::FUN_14053e070()
+int CItemData::HasExpandCharacterSlotFunction()
 {
     CStringW strName(L"ExpendCharacterSlot");
-    return FUN_14053dfd0(strName);
+    return IsFunctionName(strName);
 }
 
 // @0x14053e0d0
-int CItemData::FUN_14053e0d0()
+int CItemData::HasUGCMapPackageFunction()
 {
     CStringW strName(L"UGCMapPackage");
-    return FUN_14053dfd0(strName);
+    return IsFunctionName(strName);
 }
 
 // @0x14053e130
-bool CItemData::FUN_14053e130()
+bool CItemData::IsCashItem()
 {
     return itemGroup == 4;
 }
@@ -1361,9 +1368,9 @@ bool CItemData::FUN_14053e460()
         return true;
     if (FUN_14053cb40())
         return true;
-    if (FUN_14053cc40())
+    if (IsPetItem())
         return true;
-    if (FUN_14053cc80())
+    if (IsRideItem())
         return true;
     if (FUN_14053cd90())
     {
@@ -1372,7 +1379,7 @@ bool CItemData::FUN_14053e460()
             return false;
         return true;
     }
-    if (FUN_14053c5c0() == 4)
+    if (GetType() == 4)
         return true;
     return false;
 }
@@ -1380,10 +1387,10 @@ bool CItemData::FUN_14053e460()
 // @0x14053e530
 int CItemData::FUN_14053e530()
 {
-    switch (FUN_14053c5c0())
+    switch (GetType())
     {
     case 1:
-        if (FUN_14053cf90())
+        if (HasSkinType())
             return 1;
         return 0;
     case 6:
@@ -1421,13 +1428,13 @@ int CItemData::FUN_14053e530()
 }
 
 // @0x14053e670
-bool CItemData::FUN_14053e670()
+bool CItemData::HasAdditionalEffect()
 {
     return additionalEffect.ids.GetCount() > 0;
 }
 
 // @0x14053e6c0
-Unk_PayloadPtr<CItemExtraData> CItemData::FUN_14053e6c0()
+Unk_PayloadPtr<CItemExtraData> CItemData::CreateExtraData()
 {
     Unk_PayloadPtr<CItemExtraData> pExtra(0);
     if (FUN_14053d070())
@@ -1451,7 +1458,7 @@ Unk_PayloadPtr<CItemExtraData> CItemData::FUN_14053e6c0()
 }
 
 // @0x14053e8e0
-bool CItemData::FUN_14053e8e0()
+bool CItemData::IsMoveDisabled()
 {
     return property.moveDisable;
 }
@@ -1461,7 +1468,7 @@ int CItemData::FUN_14053e900()
 {
     if (!FUN_14053cc00())
         return 0;
-    return FUN_14053c5e0();
+    return GetSubtype();
 }
 
 // @0x14053e940
@@ -1469,7 +1476,7 @@ bool CItemData::FUN_14053e940()
 {
     if (!FUN_14053cbc0())
         return false;
-    if (FUN_14053cf90())
+    if (HasSkinType())
     {
         switch (FUN_14053c620())
         {
@@ -1499,23 +1506,23 @@ bool CItemData::FUN_14053e940()
 }
 
 // @0x14053e9e0
-int CItemData::FUN_14053e9e0()
+int CItemData::GetUnlimitedEnchantMaxGrade()
 {
     return property.unlimitedEnchantMaxGrade;
 }
 
 // @0x14053ea00
-unsigned long long CItemData::FUN_14053ea00(int nRank)
+unsigned long long CItemData::GetSellPrice(int nRank)
 {
     long long nPrice = property.FUN_1405480f0(nRank);
     if (FUN_14053cbc0())
     {
-        if (!FUN_14053cf90() && nPrice == 0)
+        if (!HasSkinType() && nPrice == 0)
         {
             unsigned short nLevel = (unsigned short)limit.levelLimit;
             if (nLevel >= 0x39)
             {
-                unsigned int nSellPrice = *((class Unk_PriceHolder*)FUN_1401d3200())->prices[nRank]->FUN_1401d7c10();
+                unsigned int nSellPrice = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((class Unk_PriceHolder*)FUN_1401d3200())->prices[nRank])->Get();
                 nPrice = nSellPrice;
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }
@@ -1527,9 +1534,9 @@ unsigned long long CItemData::FUN_14053ea00(int nRank)
 }
 
 // @0x14053eb20
-void CItemData::FUN_14053eb20()
+void CItemData::LoadModel()
 {
-    model = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405577f0(FUN_14053ec50());
+    model = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405577f0(GetItemPreset());
 }
 
 // @0x14053eba0
@@ -1542,7 +1549,7 @@ ItemModelData* CItemData::FUN_14053eba0()
 }
 
 // @0x14053ec50
-int CItemData::FUN_14053ec50()
+int CItemData::GetItemPreset()
 {
     return itemPreset;
 }
@@ -1554,7 +1561,7 @@ void CItemData::FUN_14053ec70()
 }
 
 // @0x14053eca0
-CString CItemData::FUN_14053eca0()
+CString CItemData::GetMaterialSoundName()
 {
     return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558690(material.unknown0);
 }
@@ -1632,7 +1639,7 @@ int CItemData::FUN_14053efd0()
 // @0x14053eff0
 int CItemData::FUN_14053eff0(int nType)
 {
-    if (FUN_14053cc40())
+    if (IsPetItem())
     {
         if (FUN_14053efd0() == 0)
             return 0;
@@ -1952,7 +1959,7 @@ int FUN_14053fa40(int nItemId)
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
         return false;
-    return pItem->FUN_14053cde0();
+    return pItem->HasMaidId();
 }
 
 // @0x14053fac0
@@ -1961,7 +1968,7 @@ int FUN_14053fac0(int nItemId)
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)
         return 0;
-    return pItem->FUN_14053d640();
+    return pItem->IsFatiguePenaltyApplied();
 }
 
 // @0x14053fb40
@@ -1970,7 +1977,7 @@ int FUN_14053fb40(int nItemId)
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
         return 0;
-    return pItem->FUN_14053e670();
+    return pItem->HasAdditionalEffect();
 }
 
 // @0x14053fbc0
@@ -2070,12 +2077,12 @@ int CItemData::FUN_14053fdb0()
 CString FUN_14052ea30(const char* pszFormat, const int& nArg);
 
 // @0x14053fdd0
-CString CItemData::FUN_14053fdd0()
+CString CItemData::GetIconPath()
 {
     CString* pIcon = property.FUN_1405481d0();
     if (pIcon->IsEmpty())
     {
-        int nItemId = FUN_14053c510();
+        int nItemId = GetItemId();
         return FUN_14052ea30("./Data/Resource/Image/item/icon/{0}.png", nItemId);
     }
     if ((*pIcon)[0] != '.')
@@ -2089,7 +2096,7 @@ int FUN_14053feb0(int nItemId)
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)
         return 0;
-    return pItem->FUN_14053c5a0();
+    return pItem->GetRank();
 }
 
 // @0x14053ff30
@@ -2098,9 +2105,9 @@ bool FUN_14053ff30(int nItemId, int nRank)
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)
         return false;
-    if (pItem->FUN_14053c5a0() == 0)
+    if (pItem->GetRank() == 0)
         return true;
-    return pItem->FUN_14053c5a0() == nRank;
+    return pItem->GetRank() == nRank;
 }
 
 // @0x140540000

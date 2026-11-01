@@ -165,7 +165,6 @@ MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
 class Unk_G9ItemRef
 {
 public:
-    Unk_G9ItemRec* FUN_1401b52a0();
     ~Unk_G9ItemRef() { FUN_1401b50d0(); }                // 0x1401b50d0 (another obj)
     void FUN_1401b50d0();
     void* m_p0; void* m_p1;
@@ -175,7 +174,7 @@ Unk_G9ItemRef FUN_14053f870(int nItemId);
 
 void* FUN_1406c7600();                                  // the trophy manager
 int FUN_140936740(void* pMgr, unsigned __int64 nPacked);
-void* FUN_1409331f0();                                  // the key binds
+class Unk_SoundSink* FUN_1409331f0();   // the key binds (C3: was void*)
 int FUN_14142dc50(void* pBinds, int nSlot);
 void* FUN_140939a00();                                  // the ugc market
 __int64 FUN_140d56470(void* pMarket);

@@ -12,6 +12,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -27,8 +28,7 @@ public:
 };
 
 // The movie child "m_freeCamera" (a check box).
-class Unk_140acd6e0 : public ASDisplayObject { public: void FUN_1422ce090(int checked); };
-class Unk_PsMovieEntity : public UIDialog { public: MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName); };
+class Unk_140acd6e0 : public ASButton { public: };
 
 class Unk_PsUiMgr
 {
@@ -108,7 +108,7 @@ void UIPhotoStudioMenuDialog::OnFreeCamera()
 // @0x140e761b0
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
-    if (MS2Ptr<Unk_140acd6e0> spCheck = ((Unk_PsMovieEntity*)this)->FUN_140bb4b10("m_freeCamera"))
+    if (MS2Ptr<Unk_140acd6e0> spCheck = GetChild<Unk_140acd6e0>("m_freeCamera"))
         spCheck->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
 }
 
@@ -124,7 +124,7 @@ void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
     else
     {
         FUN_1409478c0()->FUN_140947980(2);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3e);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
 }
 

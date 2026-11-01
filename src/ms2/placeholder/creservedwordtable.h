@@ -28,7 +28,7 @@ public:
     void FUN_1416fb300(CStringW& str);                      // expands the object words, then the value words
     void FUN_1416fb340(CStringW& str);                      // the value words only
     void FUN_1416fb380(CStringW& str);                      // the object words only
-    int FUN_1416fb3c0(CStringW& str);                       // the colour tags "[y" ...
+    int ReplaceColorWords(CStringW& str);                       // the colour tags "[y" ...
     void FUN_1416fb400(CStringW& str, void* pMaid);         // $OwnerName$ / $Maid..$ of a maid (housing) entry
     void FUN_1416fbc20(CStringW& str, class PC* pPc);       // $male..$/$female..$ markers by the gender of pPc (null: local player)
     void FUN_1416fbda0(CStringW& str, int nGender);         // the same by a gender id

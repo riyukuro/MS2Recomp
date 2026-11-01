@@ -13,6 +13,7 @@
 #include <efd/FixedString.h>
 #include <efd/Color.h>
 #include <NiColorExtraData.h>
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
 
@@ -31,7 +32,7 @@ public:
     static class NiMaterial* CreateMaterial(class NiFixedString const&);
 };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
-   Unk_Colc FUN_1408a85e0(unsigned c);   float FUN_1402bac70(void* p);bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+   Unk_Colc FUN_1408a85e0(unsigned c);bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_1402b74f0(void* p);   void FUN_1402b7560(void* p, const char* s);   void FUN_1402c2870(void* arr);   void FUN_1402bf0f0(void* arr, void* src);
 bool FUN_14098dfc0(class NiAVObject*);   // C3: was FUN_14098dfc0
 bool FUN_141568c90(class NiRenderObject*);   // C3: was FUN_141568c90
@@ -90,7 +91,7 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
         col[idx++] = c.y;
         col[idx++] = c.z;
     }
-    float scale = FUN_1402bac70((char*)((void*)FUN_1401d3200()) + 0xb4d0);
+    float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)FUN_1401d3200()) + 0xb4d0)->Read();
     for (unsigned j = 0; j < 9; ++j)
         col[j] = col[j] * scale;
     FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae53c8), (float const*)(col), 9);

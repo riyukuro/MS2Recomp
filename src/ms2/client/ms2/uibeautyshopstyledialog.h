@@ -158,7 +158,7 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual int vfunc_48() { return 0x4e7b; }   // @0x1418ce5d0
     virtual void vfunc_67();
-    void FUN_1418cda20(MS2Ptr<TData> spData);
+    void SetData(MS2Ptr<TData> spData);
     void FUN_1418cda70(int nPrice);
     MS2Ptr<class Unk_BSCheckBox> FUN_140e52670(const CString& strName);     // check box child lookup (a UIDialog member)
     MS2Ptr<class ASTextField> FUN_140bb4cf0(const CString& strName);        // text field child lookup (a UIDialog member)
@@ -234,7 +234,6 @@ public:
     bool FUN_140f09520(int nResult, const CMsgBoxData& data);
     bool FUN_140f09560();
     bool FUN_140f09630();
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

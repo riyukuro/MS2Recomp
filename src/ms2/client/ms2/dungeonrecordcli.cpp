@@ -302,7 +302,7 @@ UIDungeonClosingPhotoDialog* FUN_140b23100(int nId)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIDungeonClosingPhotoDialog*>((UIObject*)p);
     }

@@ -114,30 +114,30 @@ MS2_REPLACE_METHOD(0x140349D00, CBannedWordFilter, FUN_140349d00, 548, 0x609142C
 // @0x140349f30
 CDynamicBanWordManager::CDynamicBanWordManager() : current(0),next(0) {}
 // @0x140349fb0
-void CDynamicBanWordManager::FUN_140349fb0(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { current=value; } }
-MS2_REPLACE_METHOD(0x140349FB0, CDynamicBanWordManager, FUN_140349fb0, 100, 0xF3B3E865);
+void CDynamicBanWordManager::SetCurrent(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { current=value; } }
+MS2_REPLACE_METHOD(0x140349FB0, CDynamicBanWordManager, SetCurrent, 100, 0xF3B3E865);
 // @0x14034a020
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a020() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return current; } }
-MS2_REPLACE_METHOD(0x14034a020, CDynamicBanWordManager, FUN_14034a020, 136, 0xDD3192F5);
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetCurrent() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return current; } }
+MS2_REPLACE_METHOD(0x14034a020, CDynamicBanWordManager, GetCurrent, 136, 0xDD3192F5);
 // @0x14034a0b0
-void CDynamicBanWordManager::FUN_14034a0b0(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { next=value; } }
-MS2_REPLACE_METHOD(0x14034A0B0, CDynamicBanWordManager, FUN_14034a0b0, 100, 0x9E82B8B1);
+void CDynamicBanWordManager::SetNext(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { next=value; } }
+MS2_REPLACE_METHOD(0x14034A0B0, CDynamicBanWordManager, SetNext, 100, 0x9E82B8B1);
 // @0x14034a120
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a120() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return next; } }
-MS2_REPLACE_METHOD(0x14034a120, CDynamicBanWordManager, FUN_14034a120, 136, 0x81959B88);
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetNext() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return next; } }
+MS2_REPLACE_METHOD(0x14034a120, CDynamicBanWordManager, GetNext, 136, 0x81959B88);
 // @0x14034a1b0
-__int64 CDynamicBanWordManager::FUN_14034a1b0() { Ptr value=FUN_14034a020(); if(value==0) return 0; return value->FUN_140349400(); }
-MS2_REPLACE_METHOD(0x14034A1B0, CDynamicBanWordManager, FUN_14034a1b0, 122, 0xE65F8EE1);
+__int64 CDynamicBanWordManager::GetCurrentVersion() { Ptr value=GetCurrent(); if(value==0) return 0; return value->FUN_140349400(); }
+MS2_REPLACE_METHOD(0x14034A1B0, CDynamicBanWordManager, GetCurrentVersion, 122, 0xE65F8EE1);
 // @0x14034a230
-int CDynamicBanWordManager::FUN_14034a230(const CStringW& text,CStringW& result) { Ptr value=FUN_14034a020(); if(value==0) return 0; return value->FUN_140349230(text,result); }
+int CDynamicBanWordManager::FUN_14034a230(const CStringW& text,CStringW& result) { Ptr value=GetCurrent(); if(value==0) return 0; return value->FUN_140349230(text,result); }
 MS2_REPLACE_METHOD(0x14034A230, CDynamicBanWordManager, FUN_14034a230, 138, 0xEA94D0C4);
 // @0x14034a2c0
 void CDynamicBanWordManager::FUN_14034a2c0(Unk_BanReader& input) {
     int mode=input.vfunc_1(); __int64 version=input.vfunc_4();
     switch(mode) {
-    case 0: { Ptr value(0); FUN_140349fb0(value); } break;
-    case 1: { Ptr value(new CBannedWordFilter(version,input)); FUN_140349fb0(value); } break;
-    case 2: { CBannedWordFilter::Changes changes; int count=input.vfunc_2(); for(int i=0;i<count;++i) { Unk_BanChange change; change.FUN_140349090(input); changes.Add(change); } Ptr old=FUN_14034a020(); Ptr value=CBannedWordFilter::FUN_140349800(version,old,changes); FUN_140349fb0(value); } break;
+    case 0: { Ptr value(0); SetCurrent(value); } break;
+    case 1: { Ptr value(new CBannedWordFilter(version,input)); SetCurrent(value); } break;
+    case 2: { CBannedWordFilter::Changes changes; int count=input.vfunc_2(); for(int i=0;i<count;++i) { Unk_BanChange change; change.FUN_140349090(input); changes.Add(change); } Ptr old=GetCurrent(); Ptr value=CBannedWordFilter::FUN_140349800(version,old,changes); SetCurrent(value); } break;
     }
 }
 // Hook deferred: constructs persistent objects with DLL-local vftables/RTTI.

@@ -474,7 +474,6 @@ public:
     void* FUN_1410b8ab0(struct Unk_CellPos pt);
     int FUN_1410cdd80(Vector3 a, Vector3 b, float f, Vector3 c);
 };
-UIObject* FUN_1403ed9e0(Unk_UIRef* p);
 void FUN_140ef2fb0();
 CStringW FUN_140ef4540();
 UIUGCCubePaletteDialog* FUN_140ef4a50(int nId);
@@ -487,7 +486,6 @@ struct Unk_CubeSpRef
     Unk_CubeMgr* m_p;
     Unk_CubeSpRef(Unk_CubeMgr* p) : m_p(p) { if (m_p) m_p->vfunc_1(); }
     ~Unk_CubeSpRef() { if (m_p) m_p->vfunc_2(); }
-    Unk_CubeMgr* FUN_1401cd1a0();
     bool FUN_140ef4cb0(Unk_CubeMgr* p);
 };
 
@@ -528,6 +526,9 @@ public:
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uioxquizdialog.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 extern char DAT_143ab2e50;
 extern Unk_CubeObjMgr DAT_143afbbb0;
 extern Unk_CubeKindMgr DAT_143d69198;
@@ -617,7 +618,7 @@ int FUN_1422d4e20(void* p, CString str);
 class ASCoreList   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1422dcca0(int);
+    void SetSelectedIndex(int);
     void FUN_1422dd000(unsigned int);
     unsigned int FUN_1422dd150();
     void FUN_1422dd1d0();
@@ -633,7 +634,6 @@ int FUN_1409c1720(void* p);
 // ---- items, strings, message boxes ----
 
 bool FUN_1401b5240(RItemInfo* p, int n);
-Unk_InfoRec* FUN_1401b52a0(RItemInfo* p);
 void* FUN_140203c60(RItemInfo* p);
 RItemInfo FUN_14053f870(int nItemId);
 bool FUN_14053cde0(Unk_ItemEquipData* p);
@@ -641,7 +641,6 @@ int FUN_14053feb0(int nItemId);
 void FUN_1405566e0(void* pMgr, RItemMeta* pRet, int nItemId);
 int FUN_140885250(RItemMeta* p, int n);
 Unk_MetaMgr* FUN_14056d580(RItemMeta* p);
-CStringW FUN_1401ceea0(const wchar_t* szFmt, const int& n);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1409e97f0(int nId, const int& n);
 CStringW GetStringCommon(int nStringId);
@@ -732,7 +731,7 @@ class MyPC   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_141530200();
-    class Unk_PCCubeCraft* FUN_141530290();
+    class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
 int FUN_14166ce30(void* pWorld);
 void* FUN_141656ad0(void* pWorld);
@@ -788,7 +787,7 @@ void FUN_140ef44f0();
 void ASObj::FUN_140ef0000(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -796,7 +795,7 @@ void ASObj::FUN_140ef0000(const char* szName, int n)
 void ASObj::FUN_140ef00a0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -969,7 +968,7 @@ int UIUGCCubePaletteDialog::vfunc_il1()
         return 0;
     if (((class PC*)(void*)(pPlayer))->FUN_141659690() != 0)
         return 0;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pEditor == 0)
         return 0;
     return 1;
@@ -993,7 +992,7 @@ void UIUGCCubePaletteDialog::OnLoadComplete()
     void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     if (((class PC*)(void*)(pPlayer))->FUN_141659690() != 0)
@@ -1069,7 +1068,7 @@ int UIUGCCubePaletteDialog::vfunc_13()
         return 0;
     if (((class PC*)(void*)(pPlayer))->FUN_1416595d0() == 0)
         return 0;
-    if (((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->FUN_141530290()) == 0)
+    if (((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft()) == 0)
         return 0;
     if (FUN_14116d9c0(((class Unk_KeySvc*)FUN_14025e7c0()), 0x1c, 0, 0) != 0)
     {
@@ -1112,7 +1111,7 @@ int UIUGCCubePaletteDialog::vfunc_13()
     }
     else if (FUN_14116d9c0(((class Unk_KeySvc*)FUN_14025e7c0()), 0xe, 0, 0) == 0)
     {
-        if (((class GFxManager*)(class Unk_InputSvc*)(((Unk_InputSvc*)FUN_14025e7a0())))->FUN_1422af2d0(m_28) == 0)
+        if (((class GFxManager*)(class Unk_InputSvc*)(((Unk_InputSvc*)FUN_14025e7a0())))->IsTextFieldFocused(m_28) == 0)
         {
             if (((class CInputKeyHandler*)(class Unk_KeySvc*)(((class Unk_KeySvc*)FUN_14025e7c0())))->FUN_14116d840() != 0)
             {
@@ -1200,7 +1199,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
     void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0 || ((class PC*)(void*)(pPlayer))->FUN_1416595d0() == 0)
         return;
-    Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->FUN_141530290());
+    Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pHolder == 0)
         return;
     if (FUN_14053cde0(pItem->FUN_140527840()) != 0)
@@ -1209,7 +1208,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
         return;
     }
     int nItemId = pItem->FUN_1405276c0();
-    __int64 nUid = pItem->FUN_140526a50();
+    __int64 nUid = pItem->GetItemUid();
     UGCCubePalette::CubeArray arr;
     GetUGCCubePalette()->FUN_1410b5030(arr);
     for (unsigned int i = 0; i < arr.GetCount(); i++)
@@ -1219,9 +1218,9 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
         {
             if (spCube->FUN_140def5a0() == nItemId)
             {
-                if (pItem->FUN_140525f10() != 0)
+                if (pItem->HasCubeTextureMesh() != 0)
                 {
-                    if (spCube->FUN_140defba0() != (__int64)pItem->FUN_1405283d0())
+                    if (spCube->FUN_140defba0() != (__int64)pItem->GetUgcUid())
                         continue;
                 }
                 MS2Ptr<CubeItemInfo> spInfo = spCube->FUN_140def3d0();
@@ -1232,7 +1231,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
     CubeItemInfo* pSel = pHolder->FUN_1410ad670();
     if (pSel != 0 && pSel->itemId == nItemId)
     {
-        if (pItem->FUN_140525f10() == 0)
+        if (pItem->HasCubeTextureMesh() == 0)
         {
             pSel->instanceId = nUid;
         }
@@ -1241,7 +1240,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
             MS2Ptr<CUgcItemLook> spLook = pSel->look;
             if (spLook.get() != 0)
             {
-                if (spLook->m_n18 == (__int64)pItem->FUN_1405283d0())
+                if (spLook->m_n18 == (__int64)pItem->GetUgcUid())
                     pSel->instanceId = nUid;
             }
         }
@@ -1283,15 +1282,15 @@ void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(nItemId, nRank, 0) == 0)
         return;
-    spItem->FUN_140526a70(nUid);
+    spItem->SetItemUid(nUid);
     spItem->FUN_1405288e0(nCount);
     MS2Ptr<CUgcItemLook> spLook = spInfo->look;
     if (spLook.get() != 0)
-        spItem->FUN_140528300(spLook.get());
+        spItem->SetUgcLook(spLook.get());
     ASTooltip tooltip(pPlayer, 8, 2);
     if (tooltip.FUN_1409e0d40(spItem.get()) != 0)
     {
-        tooltip.FUN_1409c6dc0(7);
+        tooltip.SetTooltipAlign(7);
         tooltip.FUN_1409db7b0(spItem);
         *pRetVal = tooltip.FUN_1422bb870();
     }
@@ -1393,11 +1392,11 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             MS2Ptr<CItem> spItem(new CItem);
             if (spItem->FUN_140523c40(nItemId, nRank, 0) != 0)
             {
-                spItem->FUN_140526a70(nUid);
+                spItem->SetItemUid(nUid);
                 spItem->FUN_1405288e0(nCount);
                 MS2Ptr<CUgcItemLook> spLook = spInfo->look;
                 if (spLook.get() != 0)
-                    spItem->FUN_140528300(spLook.get());
+                    spItem->SetUgcLook(spLook.get());
                 if (((class ItemPreviewMgr*)(void*)(((void*)FUN_1409bb9e0())))->IsHudOn() != 0)
                     FUN_140d40120(((void*)FUN_1409bb9e0()), spItem, 0);
             }
@@ -1425,7 +1424,7 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
     MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(uid);
     if (spItem == (CItem*)0)
         return;
-    Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->FUN_141530290());
+    Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pHolder == 0)
         return;
     if (FUN_14053cde0(spItem->FUN_140527840()))
@@ -1435,17 +1434,17 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
         if (spCube.get() != 0)
         {
             int nItemId = spItem->FUN_1405276c0();
-            __int64 nItemUid = spItem->FUN_140526a50();
+            __int64 nItemUid = spItem->GetItemUid();
             FUN_140eef560(spCube->FUN_140defff0());
             CubeItemInfo* pSel = pHolder->FUN_1410ad670();
             if (pSel != 0 && pSel->itemId == nItemId)
             {
-                if (spItem->FUN_140525f10())
+                if (spItem->HasCubeTextureMesh())
                 {
                     MS2Ptr<CUgcItemLook> spLook = pSel->look;
                     if (static_cast<bool>(spLook.get()))
                     {
-                        if (spLook->m_n18 == (__int64)spItem->FUN_1405283d0())
+                        if (spLook->m_n18 == (__int64)spItem->GetUgcUid())
                             pSel->instanceId = nItemUid;
                     }
                 }
@@ -1485,7 +1484,7 @@ bool UIUGCCubePaletteDialog::FUN_140eec410(int nBtn, const CMsgBoxData& data)
 {
     if (nBtn == 0)
     {
-        if (const_cast<CMsgBoxData&>(data).FUN_141a04aa0() != 0)
+        if (const_cast<CMsgBoxData&>(data).IsCheckbox0Checked() != 0)
         {
             __int64 n = GetServerTime();
             ((struct Unk_CubeUiData*)((class Unk_QnState*)(void*)(FUN_1409a8b10()))->FUN_140c9b8b0())->m_8 = n;
@@ -1528,16 +1527,16 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
         if ((FUN_140930c50() == 0 || FUN_140889020(&spType)->flag != 0) && FUN_140889020(&spType)->id == nTypeId)
         {
             Unk_CubeCtl* pRoot = FUN_140d03230(&spRoot);
-            *pPos = Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c1180());
+            *pPos = Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->GetZ());
             Unk_CubeCtl* pList = FUN_140bcc3f0(&spList);
-            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c1180()));
+            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->GetZ()));
             Scaleform::GFx::Value vRow = FUN_140bcc3f0(&spList)->FUN_140ba26d0("getRendererAt", i);
             if (((Scaleform::GFx::Value*)(void*)(&vRow))->IsDisplayObject() == 0)
                 return 0;
             RDisp spRow;
             FUN_140d02fa0(&spRow, new Unk_CubeRenderer(vRow, m_28));
             Unk_CubeCtl* pRow = FUN_140d03230(&spRow);
-            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->FUN_1422c1180()));
+            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRow))->GetZ()));
             return 1;
         }
     }
@@ -1641,7 +1640,7 @@ void UIUGCCubePaletteDialog::FUN_140eecfe0()
     if (nSel < 8)
         nIndex = ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->FUN_1422dd150();
     ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->FUN_1422dd000(nIndex);
-    ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->FUN_1422dcca0(0);
+    ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->SetSelectedIndex(0);
     FUN_140bcc3f0(&spList)->vfunc_24(1);
 }
 
@@ -1720,7 +1719,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
             float fRate = (float)nCur / (float)nMax;
             int nSale = (int)((1.0f - fRate) * 100.0f + 0.5f);
             CStringW strSale;
-            strSale = FormatStringId<CStringW>(0x98e, FUN_1401ceea0(L"{0}", nSale));
+            strSale = FormatStringId<CStringW>(0x98e, StringFormat<int>(L"{0}", nSale));
             obj.FUN_1407cbb20("sale", CStringW(strSale));
         }
         __int64 nUgc = spCube->FUN_140defba0();
@@ -1729,7 +1728,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
         if (FUN_14056d580(&spMeta)->FUN_140549470(nId, nUid, nUgc) != 0)
             obj.FUN_1407cbb20((const char*)s_paymentIcon, spCube->FUN_140defd20());
         bool bDoubleClick = false;
-        if (FUN_1401b52a0(&spInfo)->FUN_14053d6f0() != 0)
+        if (reinterpret_cast<Unk_InfoRec*>(reinterpret_cast<const MS2Ptr<CItemData>*>(&spInfo)->operator->())->FUN_14053d6f0() != 0)
         {
             MS2Ptr<CubeItemInfo> spA = spCube->FUN_140def3d0();
             if (spA.get() != 0)
@@ -1750,7 +1749,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
     else
     {
         int nFocus = m_focus.FUN_140ee9d70();
-        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->FUN_1422dcca0(nFocus);
+        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->SetSelectedIndex(nFocus);
         FUN_140acd9f0(&spList)->vfunc_24(1);
         FUN_140ef41b0(nFocus + 1);
         FUN_140eefdd0(nFocus);
@@ -1987,7 +1986,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
     obj.FUN_1407cbbe0((const char*)s_itemLock, spCube->FUN_140def420());
     if (bShowCount)
     {
-        if (FUN_1401b52a0(&spInfo)->FUN_14053cde0() == 0)
+        if (reinterpret_cast<Unk_InfoRec*>(reinterpret_cast<const MS2Ptr<CItemData>*>(&spInfo)->operator->())->FUN_14053cde0() == 0)
         {
             obj.FUN_1409c0d20((const char*)s_itemCount, nMax);
             obj.FUN_1409c0d20((const char*)s_itemMaxCount, nCount);
@@ -2036,12 +2035,12 @@ void UIUGCCubePaletteDialog::OnDestroyCubeItem()
     MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(spSel->instanceId);
     if (spItem == (CItem*)0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_1409e97f0(0xdf, spItem->FUN_140526c50()), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_1409e97f0(0xdf, spItem->GetCount()), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a01600(spItem->FUN_140526a50());
+        spBox->FUN_141a01600(spItem->GetItemUid());
         spBox->FUN_141a024a0(0);
-        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), spItem->FUN_140526bd0(), spItem->FUN_140526c50(), -1, -1, 1);
+        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), spItem->FUN_140526bd0(), spItem->GetCount(), -1, -1, 1);
         spBox->FUN_141a01700(0x475, 0x476, 0);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCCubePaletteDialog::FUN_140eec330));
         FUN_140d73c60(spBox);
@@ -2065,7 +2064,7 @@ void UIUGCCubePaletteDialog::FUN_140eef560(int nRow)
     {
         if ((unsigned)(((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->FUN_1422dd150() - 1) <= (unsigned)(nRow - 1))
             nRow = ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->FUN_1422dd150();
-        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->FUN_1422dcca0(nRow - 1);
+        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->SetSelectedIndex(nRow - 1);
     }
 }
 
@@ -2084,7 +2083,7 @@ void UIUGCCubePaletteDialog::FUN_140eef670(int nRow)
             else
                 FUN_141275260(0x6f7, 1, 1);
         }
-        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->FUN_1422dcca0(nRow - 1);
+        ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140acd9f0(&spList)))->SetSelectedIndex(nRow - 1);
     }
 }
 
@@ -2105,7 +2104,7 @@ void UIUGCCubePaletteDialog::FUN_140eefc50(int nState)
     case 2:
     {
         RItemInfo spInfo = FUN_14053f870(GetUGCCubePalette()->FUN_1410b5bc0());
-        if (FUN_140203c60(&spInfo) == 0 || FUN_1401b52a0(&spInfo)->FUN_14053cde0() == 0)
+        if (FUN_140203c60(&spInfo) == 0 || reinterpret_cast<Unk_InfoRec*>(reinterpret_cast<const MS2Ptr<CItemData>*>(&spInfo)->operator->())->FUN_14053cde0() == 0)
             FUN_140eefdd0(nCount - 1);
         else
             m_focus.FUN_140ee9cf0(0, GetUGCCubePalette()->FUN_1410b5bc0());
@@ -2140,7 +2139,7 @@ UIUGCItemEditDialog* FUN_140eeff60(int nId)
     {
         Unk_UIRef ref = reinterpret_cast<Unk_UIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (((MS2Ptr<UIObject>*)(void*)(&ref))->get() != 0)
-            return dynamic_cast<UIUGCItemEditDialog*>(FUN_1403ed9e0(&ref));
+            return dynamic_cast<UIUGCItemEditDialog*>(((MS2Ptr<UIObject>*)(&ref))->operator UIObject*());
     }
     return 0;
 }
@@ -2158,7 +2157,7 @@ void UIUGCCubePaletteDialog::FUN_140eef7e0(int nCubeIndex)
     RItemInfo spInfo = FUN_14053f870(nId);
     if (FUN_1401b5240(&spInfo, 0) != 0)
         return;
-    if (FUN_1401b52a0(&spInfo)->FUN_14053d6f0() == 0)
+    if (reinterpret_cast<Unk_InfoRec*>(reinterpret_cast<const MS2Ptr<CItemData>*>(&spInfo)->operator->())->FUN_14053d6f0() == 0)
         return;
     MS2Ptr<CubeItemInfo> spCubeInfo = spCube->FUN_140def3d0();
     if (spCubeInfo.get() != 0 && spCubeInfo->FUN_1408b3860() != 1)
@@ -2174,12 +2173,12 @@ void UIUGCCubePaletteDialog::FUN_140eef7e0(int nCubeIndex)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nId, nRank, 0))
         {
-            spItem->FUN_140526a70(nUid);
+            spItem->SetItemUid(nUid);
             spItem->FUN_1405288e0(nCount);
             spItem->FUN_140526c70(spCube->FUN_140defe70());
             MS2Ptr<CUgcItemLook> spLook(spCubeInfo->look);
             if (spLook.get() != 0)
-                spItem->FUN_140528300(spLook.get());
+                spItem->SetUgcLook(spLook.get());
             spEdit.get()->SetEditItem(spItem);
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e69)));
         }
@@ -2266,10 +2265,10 @@ void UGCKeyMode1::vfunc_5(void*, float, float)
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if (spMgr.FUN_140ef4cb0(0) != 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
-    if (spMgr.FUN_1401cd1a0()->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()))
+    if (reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()))
         FUN_140ef3840();
     else
         FUN_140ef2fb0();
@@ -2350,10 +2349,10 @@ void UGCKeyMode2::vfunc_5(void*, float, float)
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if (spMgr.FUN_140ef4cb0(0) != 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
-    if (spMgr.FUN_1401cd1a0()->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()))
+    if (reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()))
         FUN_140ef3840();
     else
         FUN_140ef2fb0();
@@ -2447,7 +2446,7 @@ void FUN_140ef2fb0()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     if (FUN_1410ad5f0(pEditor) != 0)
@@ -2467,8 +2466,8 @@ void FUN_140ef2fb0()
     unsigned int nMax = spCube->FUN_140defed0();
     int nMapId = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FUN_141bd3060();
     int nStyle = FUN_1408a18d0(FUN_141656a80(pWorld));
-    if (((CubeMapInformationService*)(Unk_CubeMgr*)(spMgr.FUN_1401cd1a0()))->FUN_1410c3600(1) == 0 && ((CubeMapInformationService*)(Unk_CubeMgr*)(spMgr.FUN_1401cd1a0()))->FUN_1410c3600(3) == 0 && nCount <= nMax &&
-        spMgr.FUN_1401cd1a0()->FUN_1410d55d0(nMapId, nStyle) == 0 && FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) == 0 &&
+    if (((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(1) == 0 && ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(3) == 0 && nCount <= nMax &&
+        reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410d55d0(nMapId, nStyle) == 0 && FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) == 0 &&
         FUN_140930ce0() == 0 && FUN_140930c50() == 0)
     {
         if (spCube->FUN_140def4f0() == 0)
@@ -2496,12 +2495,12 @@ void FUN_140ef2fb0()
                 MS2Ptr<CItem> spItem(new CItem());
                 if (spItem->FUN_140523c40(spCube->FUN_140def5a0(), 1, 0))
                 {
-                    spItem->FUN_140528300(spCube->FUN_140def3d0()->look.get());
+                    spItem->SetUgcLook(spCube->FUN_140def3d0()->look.get());
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a01600(spItem->FUN_140526a50());
+                    spBox->FUN_141a01600(spItem->GetItemUid());
                     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 1, 1, (int)nPrice, 1);
-                    spBox->FUN_141a02670(FUN_14036e5b0(((class Unk_UserSvc*)FUN_140166410())) == 0);
-                    spBox->FUN_141a024e0(GetStringCommon(0x29f), 0);
+                    spBox->SetCheckbox0Enabled(FUN_14036e5b0(((class Unk_UserSvc*)FUN_140166410())) == 0);
+                    spBox->SetCheckbox0(GetStringCommon(0x29f), 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIUGCCubePaletteDialog::FUN_140eec410));
                     if (nPrice < nOrigin)
                         spBox->SetStrike(strOrigin);
@@ -2523,7 +2522,7 @@ void FUN_140ef37d0()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aad50();
@@ -2537,7 +2536,7 @@ void FUN_140ef3840()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0 || FUN_14166ce30(pWorld) != 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0 || ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410a8ab0() != 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
@@ -2547,12 +2546,12 @@ void FUN_140ef3840()
     if (pDlg == 0)
         return;
     bool bShown = false;
-    if (spMgr.FUN_1401cd1a0()->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()) != 0)
+    if (reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410b7e80(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()) != 0)
     {
-        MS2Ptr<Unk_CubeInfo> spCube((Unk_CubeInfo*)spMgr.FUN_1401cd1a0()->FUN_1410b8ab0(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()));
+        MS2Ptr<Unk_CubeInfo> spCube((Unk_CubeInfo*)reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410b8ab0(static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520()));
         IMessageListener* pOwner = static_cast<IMessageListener*>(pDlg);
         Unk_CubeInfo* pInfo = spCube.get();
-        void* pLayer = spMgr.FUN_1401cd1a0()->FUN_1410c8030(pInfo->m_50, pInfo->m_54);
+        void* pLayer = reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410c8030(pInfo->m_50, pInfo->m_54);
         if (FUN_141656ad0(pWorld) == pLayer)
         {
             int nKind = ((Cube*)(Unk_CubeInfo*)(spCube.get()))->FUN_1408b4f20();
@@ -2563,7 +2562,7 @@ void FUN_140ef3840()
             }
             else if (FUN_1408b54c0(nKind) != 0)
             {
-                if (spMgr.FUN_1401cd1a0()->FUN_1410c35c0() == 0)
+                if (reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                 {
                     int nStr = 0x470;
                     if (((class Unk_UserSvc*)FUN_140166410())->FUN_14036d570(0xd4) != 0)
@@ -2583,7 +2582,7 @@ void FUN_140ef3840()
                 }
                 else if (FUN_1408b5820(nKind) != 0)
                 {
-                    if (spMgr.FUN_1401cd1a0()->FUN_1410c35c0() == 0)
+                    if (reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                     {
                         FUN_140d73bc0(0x473, 1, pOwner, CStringW(L"remove"));
                         bShown = true;
@@ -2609,7 +2608,7 @@ void FUN_140ef3f00()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ab5a0();
@@ -2622,7 +2621,7 @@ void FUN_140ef3f70()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ac1c0();
@@ -2634,7 +2633,7 @@ void FUN_140ef3fc0()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ac380();
@@ -2645,7 +2644,7 @@ void FUN_140ef4010()
 {
     if (reinterpret_cast<Unk_UIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e3b) != 0)
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e3b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e3b);
     }
     else
     {
@@ -2662,7 +2661,7 @@ void FUN_140ef4070(int nIndex)
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410a8ab0() != 0)
@@ -2686,7 +2685,7 @@ void FUN_140ef41b0(int nIndex)
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410a8ab0() != 0)
@@ -2718,7 +2717,7 @@ void FUN_140ef4330()
             pParty->FUN_140e6e610(false);
         if (UIHomeMenuDialog* pHome = FUN_140ef49b0(0x4f7c))
             pHome->FUN_140c29600(false);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f16);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f16);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e28)));
         if (Unk_CubeEditDlg* pEdit = ((class Unk_CubeEditDlg*)FUN_140931900(0x4e5f)))
             pEdit->FUN_1419f1d10(1, true);
@@ -2729,7 +2728,7 @@ void FUN_140ef4330()
             pParty->FUN_140e6e610(true);
         if (UIHomeMenuDialog* pHome = FUN_140ef49b0(0x4f7c))
             pHome->FUN_140c29600(true);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e28);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e28);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f16)));
         if (Unk_CubeEditDlg* pEdit = ((class Unk_CubeEditDlg*)FUN_140931900(0x4e5f)))
             pEdit->FUN_1419f1d10(1, false);
@@ -2746,7 +2745,7 @@ void FUN_140ef44f0()
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->FUN_141530290());
+    void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
     ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ac540();
@@ -2765,7 +2764,7 @@ CStringW FUN_140ef4540()
     __int64 nOrigin = spCube->FUN_140def6c0();
     CStringW strPay = FUN_1418fec00(spCube->FUN_140defcd0(), nPrice, true);
     CStringW strOrigin = FUN_1409404f0(nOrigin);
-    if (FUN_1401b52a0(&spInfo)->FUN_14053cde0() != 0)
+    if (reinterpret_cast<Unk_InfoRec*>(reinterpret_cast<const MS2Ptr<CItemData>*>(&spInfo)->operator->())->FUN_14053cde0() != 0)
     {
         int nHave = ((class CWarehouseItemTable*)(void*)(&DAT_143ab2e20))->FUN_1408fc1b0(spCube->FUN_140def5a0());
         int nHave2 = ((class Unk_CubeStock*)(void*)(&DAT_143ab2e50))->FUN_140dfcb00(spCube->FUN_140def5a0());
@@ -2799,7 +2798,7 @@ UIHomeMenuDialog* FUN_140ef49b0(int nId)
     {
         Unk_UIRef ref = reinterpret_cast<Unk_UIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (((MS2Ptr<UIObject>*)(void*)(&ref))->get() != 0)
-            return dynamic_cast<UIHomeMenuDialog*>(FUN_1403ed9e0(&ref));
+            return dynamic_cast<UIHomeMenuDialog*>(((MS2Ptr<UIObject>*)(&ref))->operator UIObject*());
     }
     return 0;
 }
@@ -2811,7 +2810,7 @@ UIUGCCubePaletteDialog* FUN_140ef4a50(int nId)
     {
         Unk_UIRef ref = reinterpret_cast<Unk_UIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (((MS2Ptr<UIObject>*)(void*)(&ref))->get() != 0)
-            return dynamic_cast<UIUGCCubePaletteDialog*>(FUN_1403ed9e0(&ref));
+            return dynamic_cast<UIUGCCubePaletteDialog*>(((MS2Ptr<UIObject>*)(&ref))->operator UIObject*());
     }
     return 0;
 }
@@ -2823,7 +2822,7 @@ UIUGCHousingPointDialog* FUN_140ef4af0(int nId)
     {
         Unk_UIRef ref = reinterpret_cast<Unk_UIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (((MS2Ptr<UIObject>*)(void*)(&ref))->get() != 0)
-            return dynamic_cast<UIUGCHousingPointDialog*>(FUN_1403ed9e0(&ref));
+            return dynamic_cast<UIUGCHousingPointDialog*>(((MS2Ptr<UIObject>*)(&ref))->operator UIObject*());
     }
     return 0;
 }

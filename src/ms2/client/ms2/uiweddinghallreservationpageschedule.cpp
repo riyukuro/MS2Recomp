@@ -63,7 +63,7 @@ public:
     Unk_SchedGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
     void FUN_1422e8ce0(int nValue, bool bFlag);
 };
-class Unk_SchedButton : public ASDisplayObject { public: void FUN_1422c1fe0(int bEnable); };
+class Unk_SchedButton : public ASMovieClip { public: };
 
 // The smart pointer of the group wrapper (16 bytes, the pointer at +8).
 template <class T> class Unk_WedPtr
@@ -328,7 +328,7 @@ template <class T> Unk_WedPtr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GF
 // @0x140fe4370
 template <class T> Unk_WedPtr<T> Unk_SchedScript::FUN_140fe4370(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140fe42c0<T>(m_nMovieId, v);
     return Unk_WedPtr<T>(0);

@@ -19,6 +19,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // ---- unit-local placeholders ----
 
@@ -108,8 +110,6 @@ extern unsigned char DAT_143ae95e0;
 extern unsigned char DAT_143ae95e1;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_14028d0e0();                // next shape handle
-Unk_EmoPlayer* FUN_14096e110(PCBase* p);
-PCBase* FUN_140974230(PCBase* p);
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 typedef CSkillCollisionManager::CollisionPtr CollisionPtr;
@@ -380,9 +380,9 @@ CollisionPtr CSkillCollisionManager::Get(__int64 nHandle)
 void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSkill, const Unk_SkPoint* pPos,
     const Unk_SkPoint* pDir)
 {
-    if (FUN_14096e110(pActor) == 0)
+    if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) == 0)
     {
-        if ((FUN_140974230(pActor) != 0 || ((void*)FUN_141468360((struct Unk_MagicEntity*)(pActor))) != 0) && DAT_143ae95e0 == 0)
+        if ((efd::DynamicCast<PC, PCBase>(pActor) != 0 || ((void*)FUN_141468360((struct Unk_MagicEntity*)(pActor))) != 0) && DAT_143ae95e0 == 0)
             return;
     }
     else if (DAT_143ae95e1 == 0)

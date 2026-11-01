@@ -36,6 +36,7 @@
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #ifndef MS2_HOOK_DLL   // s_winSound: the exe's object at 0x143ac5988, which other units reach as DAT_143ac5988 (the hook DLL binds it)
 CString DAT_143ac5988="BattleField_Win";
 #else
@@ -162,7 +163,7 @@ class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
  CQuestManager* FUN_140764020();
  CPartyManager* FUN_1409670d0();
 class ASTooltip : public AScript {
-public: ASTooltip(int,int); virtual ~ASTooltip(); int FUN_1409e26b0(const CStringW&);
+public: ASTooltip(int,int); virtual ~ASTooltip(); int ApplyTextTooltip(const CStringW&);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
 };
 class Unk_RewardThing : public PCGemEquip { };
@@ -335,7 +336,8 @@ private:
 MS2_CHECK_SIZE(CItem, 0x1a0);
 class Unk_RewardRoomMgr { public: Unk_RewardPtr<Unk_RewardRoom> FUN_1403206b0(unsigned int); };
 Unk_RewardRoomMgr* FUN_14031c2a0();
-class Unk_RewardSound { public: void FUN_141276180(const CString&); };
+class Unk_RewardSound { };
+int FUN_141276180(const CString& strSound, const CString& strArg);   // C3: this was the sound name
 extern Unk_RewardSound g_unkRewardSound; // 0x143ac5988
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
@@ -392,12 +394,12 @@ MS2_REPLACE_METHOD(0x140E262C0, Unk_RewardClip, FUN_140e262c0, 148, 0x7E9B9EE2);
 // @0x140e20ae0
 UIDungeonRewardDialog::UIDungeonRewardDialog() {
  FUN_140e25610(); m_268="DungeonReward_gainItems"; m_2c=0x1b;
- ((class Unk_RewardPackets*)FUN_140bccd50())->FUN_140da5180(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::FUN_140e22130));
+ ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::OnPacket));
 }
 // @0x140e20da0
 UIDungeonRewardDialog::~UIDungeonRewardDialog() {
  FUN_14141f970(m_268);
- ((class Unk_RewardPackets*)FUN_140bccd50())->FUN_140da51e0(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::FUN_140e22130));
+ ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::OnPacket));
 }
 // @0x140e21000
 CString UIDungeonRewardDialog::GetTypeName() { return "DungeonRewardDialog"; }
@@ -427,7 +429,7 @@ void UIDungeonRewardDialog::OnLoadComplete() {
  }
  m_1b0=FUN_140ba7930("m_title");
  m_timer1.FUN_1408687f0();m_timer2.FUN_1408687f0();
- FUN_140e25420();FUN_140e25170();FUN_140e22820();
+ CreateAvatar();FUN_140e25170();FUN_140e22820();
  switch(m_type) {case 1:FUN_140e22d70();break;case 2:FUN_140e24e80();break;case 3:FUN_140e25050();break;case 4:FUN_140e250e0();break;}
  Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
  if(mission.get()&&mission->FUN_140c9cf50()>0) {FUN_140e24060();FUN_140e24c50(true);}else FUN_140e24c50(false);
@@ -455,7 +457,7 @@ MS2_REPLACE_METHOD(0x140E21BD0, UIDungeonRewardDialog, vfunc_72, 238, 0x43986A41
 // @0x140e21cd0
 void UIDungeonRewardDialog::vfunc_45(Scaleform::GFx::Value* out,const CString& method,ASData* args) {
  if((method == "getTooltip")) { CString name=args->FUN_1422b8d30();
- if((name == "m_bonusDetail")) { ASTooltip tip(1,2); if(tip.FUN_1409e26b0(m_tip)) *out=tip.FUN_1422bb870();return;} }
+ if((name == "m_bonusDetail")) { ASTooltip tip(1,2); if(tip.ApplyTextTooltip(m_tip)) *out=tip.FUN_1422bb870();return;} }
 }
 MS2_REPLACE_METHOD(0x140E21CD0, UIDungeonRewardDialog, vfunc_45, 233, 0xE42702C8);
 
@@ -475,19 +477,19 @@ void UIDungeonRewardDialog::vfunc_25(void* p1,TPtr<Unk_UISwfEntity_25> p2,void* 
  break; }
 }
 // @0x140e220c0
-void UIDungeonRewardDialog::vfunc_16() { UISwfEntity::vfunc_16(); FUN_140e255b0(); }
+void UIDungeonRewardDialog::vfunc_16() { UISwfEntity::vfunc_16(); UnloadRenderTarget(); }
 MS2_REPLACE_METHOD(0x140E220C0, UIDungeonRewardDialog, vfunc_16, 34, 0xEF7B9CCD);
 
 // @0x140e220f0
-bool UIDungeonRewardDialog::vfunc_17() { if(!UIDialog::vfunc_17())return false;FUN_140e25540();return true; }
+bool UIDungeonRewardDialog::vfunc_17() { if(!UIDialog::vfunc_17())return false;LoadRenderTarget();return true; }
 MS2_REPLACE_METHOD(0x140E220F0, UIDungeonRewardDialog, vfunc_17, 47, 0xFB4D1030);
 
 // @0x140e22130
-void UIDungeonRewardDialog::FUN_140e22130(CInPacket& packet) {
+void UIDungeonRewardDialog::OnPacket(CInPacket& packet) {
  if(FUN_141924630()) vfunc_68(); FUN_140e25610();
  int type=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_1();switch(type) {case 0:FUN_140e22210(packet);break;case 1:FUN_140e225a0(packet);break;case 2:FUN_140e22650(packet);break;case 3:FUN_140e226b0(packet);break;}
 }
-MS2_REPLACE_METHOD(0x140E22130, UIDungeonRewardDialog, FUN_140e22130, 207, 0xFEDD4A03);
+MS2_REPLACE_METHOD(0x140E22130, UIDungeonRewardDialog, OnPacket, 207, 0xFEDD4A03);
 
 // @0x140e225a0
 void UIDungeonRewardDialog::FUN_140e225a0(CInPacket& packet) {
@@ -509,7 +511,7 @@ void UIDungeonRewardDialog::FUN_140e226b0(CInPacket& packet) {
 MS2_REPLACE_METHOD(0x140E226B0, UIDungeonRewardDialog, FUN_140e226b0, 129, 0xC00E4923);
 
 // @0x140e22740
-void UIDungeonRewardDialog::FUN_140e22740(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; FUN_140e25790(); }
+void UIDungeonRewardDialog::FUN_140e22740(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; RequestClose(); }
 MS2_REPLACE_METHOD(0x140E22740, UIDungeonRewardDialog, FUN_140e22740, 57, 0x917EAC9F);
 
 // @0x140e22780
@@ -517,7 +519,7 @@ void UIDungeonRewardDialog::FUN_140e22780(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140E22780, UIDungeonRewardDialog, FUN_140e22780, 88, 0x89DB46B2);
 
 // @0x140e227e0
-int UIDungeonRewardDialog::vfunc_o178_1(void* avatar) { if(!avatar)return 0;FUN_140e25540();return 1; }
+int UIDungeonRewardDialog::vfunc_o178_1(void* avatar) { if(!avatar)return 0;LoadRenderTarget();return 1; }
 MS2_REPLACE_METHOD_VIA(0x140E227E0, UIDungeonRewardDialog, IUIAvatarEventListener, vfunc_o178_1, 55, 0x208A69DD);
 
 // @0x140e24060
@@ -624,34 +626,34 @@ void UIDungeonRewardDialog::FUN_140e250e0() { if(m_190==0)return;m_190->vfunc_15
 MS2_REPLACE_METHOD(0x140E250E0, UIDungeonRewardDialog, FUN_140e250e0, 129, 0x95081669);
 
 // @0x140e25420
-void UIDungeonRewardDialog::FUN_140e25420() {
+void UIDungeonRewardDialog::CreateAvatar() {
  void* actor=((Unk_RewardPActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return;
  UIAvatarPC* avatar=new UIAvatarPC(actor,false);
  avatar->FUN_1418bd1d0()->FUN_1410885b0(1);
  avatar->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
  m_avatar=avatar;m_avatar->vfunc_1(this);
 }
-MS2_REPLACE_METHOD(0x140E25420, UIDungeonRewardDialog, FUN_140e25420, 281, 0x730F075B);
+MS2_REPLACE_METHOD(0x140E25420, UIDungeonRewardDialog, CreateAvatar, 281, 0x730F075B);
 
 // @0x140e25540
-void UIDungeonRewardDialog::FUN_140e25540() { if(m_180.get())m_180->FUN_140e262c0("loadRenderTarget",""); }
-MS2_REPLACE_METHOD(0x140E25540, UIDungeonRewardDialog, FUN_140e25540, 94, 0x191710D4);
+void UIDungeonRewardDialog::LoadRenderTarget() { if(m_180.get())m_180->FUN_140e262c0("loadRenderTarget",""); }
+MS2_REPLACE_METHOD(0x140E25540, UIDungeonRewardDialog, LoadRenderTarget, 94, 0x191710D4);
 
 // @0x140e255b0
-void UIDungeonRewardDialog::FUN_140e255b0() { if(m_180.get())m_180->Invoke("unloadRenderTarget"); }
-MS2_REPLACE_METHOD(0x140E255B0, UIDungeonRewardDialog, FUN_140e255b0, 87, 0xC69DB589);
+void UIDungeonRewardDialog::UnloadRenderTarget() { if(m_180.get())m_180->Invoke("unloadRenderTarget"); }
+MS2_REPLACE_METHOD(0x140E255B0, UIDungeonRewardDialog, UnloadRenderTarget, 87, 0xC69DB589);
 
 // @0x140e25610
 void UIDungeonRewardDialog::FUN_140e25610() {
- m_avatar=0; m_1e8.FUN_14026cdf0();m_228.FUN_14026cdf0();m_tip.Empty();FUN_140e255b0();
+ m_avatar=0; m_1e8.Clear();m_228.Clear();m_tip.Empty();UnloadRenderTarget();
  m_180=0;m_190=0;m_1a0=0;m_1b0=0;m_1c0=0;m_1d0=0;m_type=0;m_room=0;m_party=false;
  m_278=0;m_294=0;m_298=0;m_win=true;m_round=0;m_stage=0;m_restore=false;
 }
 MS2_REPLACE_METHOD(0x140E25610, UIDungeonRewardDialog, FUN_140e25610, 376, 0x95F7B099);
 
 // @0x140e25790
-void UIDungeonRewardDialog::FUN_140e25790() { if((m_room.get()?true:false)&&m_room->m_leave)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
-MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, FUN_140e25790, 155, 0xBA656490);
+void UIDungeonRewardDialog::RequestClose() { if((m_room.get()?true:false)&&m_room->m_leave)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
+MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, RequestClose, 155, 0xBA656490);
 
 // @0x140e25ff0
 void UIDungeonRewardDialog::SendDungeonReward() { COutPacket packet(static_cast<int>(SendOp::DungeonReward),0);packet.Encode1(6);FUN_140710590(packet); }
@@ -678,7 +680,7 @@ void UIDungeonRewardDialog::FUN_140e22210(CInPacket& packet) {
    }
   }
  }
- if(m_win) g_unkRewardSound.FUN_141276180("");
+ if(m_win) FUN_141276180(reinterpret_cast<const CString&>(g_unkRewardSound), "");
  FUN_140e22820(); FUN_140e22d70(); FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140E22210, UIDungeonRewardDialog, FUN_140e22210, 896, 0x03E608C4);
@@ -699,7 +701,7 @@ void UIDungeonRewardDialog::FUN_140e22820() {
   if(detail.get()) detail->vfunc_4(normal);
   FUN_140e23e10(false);
   ATL::CAtlArray<MS2Ptr<CItem> > items;
-  FUN_140e25c30(items,m_1e8);
+  BuildRewardItems(items,m_1e8);
   FUN_14141f970(m_268);
   MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&,int)=FUN_141420330;
   FUN_14141f770(m_268,(unsigned)items.GetCount(),items,getter,0x415,0x800);
@@ -762,8 +764,8 @@ void UIDungeonRewardDialog::FUN_140e23690() {
   }
   FUN_140e23e10(true);
   ATL::CAtlArray<MS2Ptr<CItem> > items;
-  FUN_140e25c30(items,m_1e8);
-  FUN_140e25c30(items,m_228);
+  BuildRewardItems(items,m_1e8);
+  BuildRewardItems(items,m_228);
   FUN_14141f970(m_268);
   MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&,int)=FUN_141420330;
   FUN_14141f770(m_268,(unsigned)items.GetCount(),items,getter,0x415,0x800);
@@ -824,7 +826,7 @@ CStringW UIDungeonRewardDialog::FUN_140e25840(int kind) {
 MS2_REPLACE_METHOD(0x140E25840, UIDungeonRewardDialog, FUN_140e25840, 956, 0x2638E62E);
 
 // @0x140e25c30
-void UIDungeonRewardDialog::FUN_140e25c30(ATL::CAtlArray<MS2Ptr<CItem> >& out,DungeonRewardInfo& info) {
+void UIDungeonRewardDialog::BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >& out,DungeonRewardInfo& info) {
  Unk_RewardItemVec& list=info.m_28;
  Unk_RewardItemIter end=list.FUN_14041a4e0();
  for(Unk_RewardItemIter it=list.FUN_140419db0();it!=end;++it) {
@@ -836,7 +838,7 @@ void UIDungeonRewardDialog::FUN_140e25c30(ATL::CAtlArray<MS2Ptr<CItem> >& out,Du
   }
  }
 }
-MS2_REPLACE_METHOD(0x140E25C30, UIDungeonRewardDialog, FUN_140e25c30, 387, 0x4D9708E2);
+MS2_REPLACE_METHOD(0x140E25C30, UIDungeonRewardDialog, BuildRewardItems, 387, 0x4D9708E2);
 
 // @0x140e25dc0
 void UIDungeonRewardDialog::FUN_140e25dc0(size_t count) {

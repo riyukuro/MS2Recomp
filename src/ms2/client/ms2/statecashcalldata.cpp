@@ -82,10 +82,11 @@ public:
 UICastingBar* FUN_140ac2270(int nId);
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_CcBuffMgr { public: efd::Point3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_CcBuffMgr { public: };
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The effect request.
 struct Unk_CcRot { float m_af[9]; };
@@ -106,7 +107,6 @@ struct Unk_CcRequest
     char m_pad_20[0x58];
 };
 MS2_CHECK_SIZE(Unk_CcRequest, 0x78);
-class Unk_CcEffectMgr { public: void FUN_1411a4a00(Unk_CcRequest* pRequest); };
 void FUN_140a52ef0(Unk_CcRequest* p);                    // construct
 void FUN_1405a89e0(Unk_CcRequest* p);                    // destroy
 
@@ -114,7 +114,7 @@ void FUN_1405a89e0(Unk_CcRequest* p);                    // destroy
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
 void FUN_14097faa0(NiPoint3* pDst, const NiPoint3* pSrc);   // NiPoint3 assignment
 extern Vector3 DAT_143a08ce8;                       // the default direction
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- StateCashCallData ----
 
@@ -221,7 +221,7 @@ void StateCashCall::vfunc_5(int n)
         {
             if (m_spCash.get() != 0)
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
                 if (spItem.get() != 0)
                     FUN_1412751f0(FUN_14052bd00(0xa0, spItem->FUN_140527b10()), 1, 1);
             }
@@ -276,7 +276,7 @@ void StateCashCall::vfunc_8(double fTime)
     if (pRider == 0)
         return;
     Unk_CcBuffMgr* pMgr = ((class Unk_CcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    pRider->vfunc_22(pMgr->FUN_141683290());
+    pRider->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -395,9 +395,9 @@ void StateCashCall::SendRequest()
     }
     else
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
         if (spItem.get() != 0)
-            DAT_143ab2a90.FUN_140a63880(spItem.get(), StringFormat(L"{0}", m_spCash->m_nPrice));
+            g_143ab2a90.FUN_140a63880(spItem.get(), StringFormat(L"{0}", m_spCash->m_nPrice));
     }
     m_bSent = 1;
 }
@@ -437,7 +437,7 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
     request.m_pXform = &xf;
-    reinterpret_cast<Unk_CcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
     FUN_1405a89e0(&request);
 }
 MS2_REPLACE_METHOD(0x1410238D0, StateCashCall, SpawnEffect, 623, 0x4B23E957);

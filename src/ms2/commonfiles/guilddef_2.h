@@ -45,11 +45,11 @@ public:
     CGuildNpcShopMgr(){}
     virtual ~CGuildNpcShopMgr(){}
     Unk_PayloadPtr<CGuildNpcShop> FUN_1404d86e0(unsigned id,__int64 time);
-    Unk_PayloadPtr<CGuildNpcShop> FUN_1404d87f0(unsigned id);
-    Unk_PayloadPtr<CGuildNpcShop> FUN_1404d88e0(unsigned id);
+    Unk_PayloadPtr<CGuildNpcShop> GetShop(unsigned id);
+    Unk_PayloadPtr<CGuildNpcShop> GetOrCreateShop(unsigned id);
     int FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created);
-    void FUN_1404d8d50(COutputStream& out);
-    void FUN_1404d8e80(CInPacket* packet);
+    void Write(COutputStream& out);
+    void Read(CInPacket* packet);
     void FUN_1404d8ff0(unsigned id,CInPacket* packet);
     void FUN_1404d9060(unsigned id,CInPacket* packet);
     std::map<unsigned,Unk_PayloadPtr<CGuildNpcShop>> shops;

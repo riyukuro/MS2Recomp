@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x1422DEA80, ASInteractiveObject, FUN_1422dea80, 60, 0x5D5E07
 // @0x1422dead0
 int ASInteractiveObject::FUN_1422dead0()
 {
-    return FUN_1422baa20("doubleClickEnabled").GetBool();
+    return GetMember("doubleClickEnabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422DEAD0, ASInteractiveObject, FUN_1422dead0, 91, 0x551D001D);
 
@@ -105,7 +105,7 @@ MS2_REPLACE_METHOD(0x1422DEB40, ASInteractiveObject, FUN_1422deb40, 41, 0xFE36E9
 // @0x1422deb70
 int ASInteractiveObject::FUN_1422deb70()
 {
-    return FUN_1422baa20("mouseEnabled").GetBool();
+    return GetMember("mouseEnabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422DEB70, ASInteractiveObject, FUN_1422deb70, 91, 0x53E74FF2);
 
@@ -119,7 +119,7 @@ MS2_REPLACE_METHOD(0x1422DEBE0, ASInteractiveObject, FUN_1422debe0, 60, 0x7C5BC5
 // @0x1422dec30
 int ASInteractiveObject::FUN_1422dec30()
 {
-    return FUN_1422baa20("needsSoftKeyboard").GetBool();
+    return GetMember("needsSoftKeyboard").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422DEC30, ASInteractiveObject, FUN_1422dec30, 91, 0x5DAA17D5);
 
@@ -133,7 +133,7 @@ MS2_REPLACE_METHOD(0x1422DECA0, ASInteractiveObject, FUN_1422deca0, 60, 0x3666EB
 // @0x1422decf0
 int ASInteractiveObject::FUN_1422decf0()
 {
-    return FUN_1422baa20("tabEnabled").GetBool();
+    return GetMember("tabEnabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422DECF0, ASInteractiveObject, FUN_1422decf0, 91, 0xB02EB8D8);
 
@@ -147,7 +147,7 @@ MS2_REPLACE_METHOD(0x1422DED60, ASInteractiveObject, FUN_1422ded60, 60, 0x8022D0
 // @0x1422dedb0
 int ASInteractiveObject::FUN_1422dedb0()
 {
-    return FUN_1422baa20("tabIndex").GetBool();
+    return GetMember("tabIndex").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422DEDB0, ASInteractiveObject, FUN_1422dedb0, 91, 0x22BEF5AE);
 

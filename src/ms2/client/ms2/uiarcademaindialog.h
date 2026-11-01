@@ -62,8 +62,6 @@ public:
     void FUN_140ef8040(int nArcadeId, RankingList list);            // 0x140ef8040 the worker stores one board
     void FUN_140ef80f0(CStringW strXml);                            // 0x140ef80f0 parse the web ranking
     void FUN_140ef8380(RankingResults results);                     // 0x140ef8380 apply the in-game ranking
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 bind a movie clip child
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);    // 0x140bb4b10 bind a button child
     static unsigned OnRequestRanking(void* pArg);                   // 0x140ef85b0 worker: the web ranking
     static unsigned OnRequestRankingFromInGameRanking(void* pArg);  // 0x140ef87e0 worker: the in-game ranking service
 

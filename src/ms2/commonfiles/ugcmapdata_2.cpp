@@ -169,6 +169,12 @@
 #include "ms2/ms2recover.h"
 #include <atlcoll.h>
 #include <string>
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 
 class Unk_140163940 {
@@ -194,8 +200,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
-const char* FUN_14086f4b0(void*,const char*);
-CString FUN_14015f710(class Unk_140165cf0*,const char*,CString);
 void FUN_1401782a0(const CString&,std::vector<unsigned>&,const char*);
 void FUN_140178270(const CString&,std::vector<int>&,const char*);
 
@@ -243,7 +247,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     for(auto* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(root))->FirstChild("group"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(node))->NextSibling("group"))) {
         int no=0; XmlGetAttr((class TiXmlElement*)(node), "no", *(int*)(&no));
         int contractPrice=0; XmlGetAttr((class TiXmlElement*)(node), "contractPrice", *(int*)(&contractPrice));
-        CString contractText(FUN_14086f4b0(node,"contractPriceItemCode"));
+        CString contractText(((class TiXmlElement*)(class Unk_140165cf0*)(node))->Attribute("contractPriceItemCode"));
         long contractItemCode=atol(contractText);
         int contractDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeContractDate", *(int*)(&contractDays));
         int extensionDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeExtensionDate", *(int*)(&extensionDays));
@@ -255,7 +259,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         int area=0; XmlGetAttr((class TiXmlElement*)(node), "area", *(int*)(&area));
         int indoorCount=0; XmlGetAttr((class TiXmlElement*)(node), "indoorCount", *(int*)(&indoorCount));
         int extensionPrice=0; XmlGetAttr((class TiXmlElement*)(node), "extensionPrice", *(int*)(&extensionPrice));
-        CString extensionText(FUN_14086f4b0(node,"extensionPriceItemCode"));
+        CString extensionText(((class TiXmlElement*)(class Unk_140165cf0*)(node))->Attribute("extensionPriceItemCode"));
         long extensionItemCode=atol(extensionText);
         int houseNumber=0; XmlGetAttr((class TiXmlElement*)(node), "houseNumber", *(int*)(&houseNumber));
         CString previewIcon=Unk_ReadString((class Unk_XmlNode*)(node), "previewIcon", CString(""));

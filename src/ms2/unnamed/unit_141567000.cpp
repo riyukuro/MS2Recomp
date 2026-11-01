@@ -40,16 +40,17 @@
 // ---- unit-local views of exe objects ----
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class, ?\util.cpp declares it 0x38).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
     void FUN_14098d6d0(NiNode* pNode);              // queue the children of a node
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // Breadth-first walk over a node's subtree (0x30 bytes, as in uichaoslightdialog.h).
@@ -127,7 +128,7 @@ void FUN_141567000(egf::Entity* pEntity, NiAVObject* pRoot, bool bShadow)
             pEntity->GetPropertyValue(0x4c54402f, bICMed);
         if (bICMed)
         {
-            Unk_SceneWalker kWalker(pRoot);
+            Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
             NiAVObject* pObject;
             while ((pObject = kWalker.Next(true)) != 0)
             {
@@ -186,7 +187,7 @@ void FUN_141567330(NiAVObject* pRoot, bool bShadow)
 {
     if (pRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(false)) != 0)
     {
@@ -274,7 +275,7 @@ void FUN_141567760(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -285,7 +286,7 @@ void FUN_141567760(NiAVObject* pRoot)
         {
             if (pTag && !pTag->GetValue().ContainsNoCase("NoDOF"))
                 continue;
-            Unk_SceneWalker kSub(pObject);
+            Unk_SceneWalker kSub((NiAVObject*)(pObject));
             NiAVObject* pChild;
             while ((pChild = kSub.Next(true)) != 0)
             {
@@ -301,7 +302,7 @@ void FUN_141567760(NiAVObject* pRoot)
         {
             if (pTag && !pTag->GetValue().ContainsNoCase(DAT_143ae51b0))
                 continue;
-            Unk_SceneWalker kSub(pObject);
+            Unk_SceneWalker kSub((NiAVObject*)(pObject));
             NiAVObject* pChild;
             while ((pChild = kSub.Next(true)) != 0)
             {
@@ -320,7 +321,7 @@ void FUN_141567a10(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -351,7 +352,7 @@ void FUN_141567b60(NiAVObject* pRoot)
         return;
     NiFogPropertyPtr spFog = NiNew NiFogProperty;
     spFog->SetFog(false);
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(false)) != 0)
     {
@@ -389,7 +390,7 @@ void FUN_141567b60(NiAVObject* pRoot)
         if (pNode)
             kWalker.FUN_14098d6d0(pNode);
     }
-    Unk_SceneWalker kParts(pRoot);
+    Unk_SceneWalker kParts((NiAVObject*)(pRoot));
     NiAVObject* pPart;
     while ((pPart = kParts.Next(true)) != 0)
     {
@@ -426,7 +427,7 @@ MS2_REPLACE(0x141567B60, FUN_141567b60, 1617, 0x60A39AC0);
 // The "shimmer" tagged subtrees get the shimmer marker.
 void FUN_1415681c0(NiAVObject* pRoot)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(false)) != 0)
     {
@@ -446,7 +447,7 @@ MS2_REPLACE(0x1415681C0, FUN_1415681c0, 220, 0x21181327);
 // @0x1415682b0
 void FUN_1415682b0(NiAVObject* pRoot)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -469,7 +470,7 @@ MS2_REPLACE(0x1415682B0, FUN_1415682b0, 191, 0xB31DE793);
 // Clears the shimmer marker of a subtree.
 void FUN_141568380(NiAVObject* pRoot)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -517,7 +518,7 @@ void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
 {
     if (pRoot)
     {
-        Unk_SceneWalker kWalker(pRoot);
+        Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
         NiAVObject* pObject;
         while ((pObject = kWalker.Next(false)) != 0)
         {
@@ -543,7 +544,7 @@ void FUN_1415687f0(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
         pObject->RemoveProperty(NiProperty::FOG);
@@ -557,7 +558,7 @@ void FUN_141568880(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -618,7 +619,7 @@ void FUN_141568ac0(egf::Entity* pEntity, const efd::Color& kTint)
         NiAVObject* pScene = FUN_141b6efc0(pEntity);
         if (pScene == 0)
             return;
-        Unk_SceneWalker kWalker(pScene);
+        Unk_SceneWalker kWalker((NiAVObject*)(pScene));
         NiAVObject* pObject;
         while ((pObject = kWalker.Next(true)) != 0)
         {
@@ -695,7 +696,7 @@ MS2_REPLACE(0x141568DC0, FUN_141568dc0, 27, 0x8B23BDF1);
 // @0x141568df0
 void FUN_141568df0(NiAVObject* pRoot)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -719,7 +720,7 @@ MS2_REPLACE(0x141568E90, FUN_141568e90, 27, 0xF49272D4);
 // @0x141568ec0
 void FUN_141568ec0(NiAVObject* pRoot)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {
@@ -901,7 +902,7 @@ MS2_REPLACE(0x141569310, FUN_141569310, 371, 0x56AF6C66);
 void FUN_141569620(NiAVObject* pRoot, NiProperty* pkProperty)
 {
     int iType = pkProperty->Type();
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = kWalker.Next(true)) != 0)
     {

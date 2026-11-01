@@ -30,7 +30,7 @@ public:
     virtual void vfunc_o178_6(void* pQuest);                // 0x140c99be0
     virtual void vfunc_o178_7(int nQuestId, int a2);        // 0x140c99e00
 
-    void FUN_140c99e30();                                   // drop the beam effect from its parent
+    void RemoveNavigationEffect();                                   // drop the beam effect from its parent
     void FUN_140c99ee0();                                   // per frame: re-trace the selected quest and move the beam
     void OnCreateMyPC(NotifyObject* pNotify);               // 0x140c9a0e0 "NotifyCreateMyPC"
     void OnCompleteMyPC(NotifyObject* pNotify);             // 0x140c9a1c0 "NotifyCompleteMyPC"

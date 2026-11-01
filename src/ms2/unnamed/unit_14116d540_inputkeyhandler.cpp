@@ -253,11 +253,11 @@ bool CInputKeyHandler::FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOn
         return false;
     if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() != 0)
     {
-        FUN_140a58540()->FUN_140d8b130(pnX, pnY, pnZ);
+        FUN_140a58540()->GetMouseDelta(pnX, pnY, pnZ);
         *pnZ = 0;
         return false;
     }
-    return FUN_140a58540()->FUN_140d8b130(pnX, pnY, pnZ);
+    return FUN_140a58540()->GetMouseDelta(pnX, pnY, pnZ);
 }
 MS2_REPLACE_METHOD(0x14116DBF0, CInputKeyHandler, FUN_14116dbf0, 176, 0x7EBD267F);
 
@@ -311,7 +311,7 @@ bool CInputKeyHandler::FUN_14116de30(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    FUN_140a58540()->FUN_140d8b200(nKey);
+    FUN_140a58540()->InjectKeyPress(nKey);
     return true;
 }
 MS2_REPLACE_METHOD(0x14116DE30, CInputKeyHandler, FUN_14116de30, 50, 0xF94EB644);

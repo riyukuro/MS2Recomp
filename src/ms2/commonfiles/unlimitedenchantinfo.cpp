@@ -24,7 +24,7 @@
 // @0x1408bb9d0
 UnlimitedEnchantInfo::UnlimitedEnchantInfo(int nItemId, int nRarity) : m_nItemId(nItemId), m_nRarity(nRarity)
 {
-    FUN_1408bbc00();
+    Reset();
 }
 
 // @0x1408bba60
@@ -38,7 +38,7 @@ MS2Ptr<UnlimitedEnchantInfo> UnlimitedEnchantInfo::FUN_1408bba60()
 }
 
 // @0x1408bbc00
-void UnlimitedEnchantInfo::FUN_1408bbc00()
+void UnlimitedEnchantInfo::Reset()
 {
     m_nLevel = 0;
     m_options.clear();
@@ -53,14 +53,14 @@ int UnlimitedEnchantInfo::GetLevel()
 }
 
 // @0x1408bbc70
-int UnlimitedEnchantInfo::FUN_1408bbc70()
+int UnlimitedEnchantInfo::IncrementLevel()
 {
-    FUN_1408bbcb0(m_nLevel + 1, true);
+    SetLevel(m_nLevel + 1, true);
     return GetLevel();
 }
 
 // @0x1408bbcb0
-void UnlimitedEnchantInfo::FUN_1408bbcb0(int nLevel, bool bChanged)
+void UnlimitedEnchantInfo::SetLevel(int nLevel, bool bChanged)
 {
     if (nLevel < 0)
     {
@@ -134,7 +134,7 @@ bool UnlimitedEnchantInfo::IsChanged()
 }
 
 // @0x1408bc210
-Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FUN_1408bc210(unsigned nType)
+Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FindOption(unsigned nType)
 {
     OptionMap::iterator it = m_options.find(reinterpret_cast<const OptionKey&>(nType));
     if (it == m_options.end())
@@ -149,7 +149,7 @@ UnlimitedEnchantInfo::OptionMap& UnlimitedEnchantInfo::FUN_1408bc2d0()
 }
 
 // @0x1408bc2f0
-Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FUN_1408bc2f0(unsigned nType)
+Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FindSecondaryOption(unsigned nType)
 {
     SecondaryMap::iterator it = m_secondary.find(reinterpret_cast<const Unk_SocketSpecialStat&>(nType)); // the exe's parameter is the key itself
     if (it == m_secondary.end())

@@ -88,6 +88,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -122,10 +123,8 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036e560();
+    bool IsRegionNA();
 };
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);          // formats one number argument into the message
 bool FUN_14025fab0(CStringW& str);                                          // MakeLower
 extern int DAT_143ab2914;                                                   // client build / region level (below 50: checks active)
 extern int DAT_143ab0248;                                                   // client country (0..3)
@@ -446,13 +445,13 @@ CStringW CBanTextChecker::GetLimitErrString(CheckerLimit& limit, unsigned nKind)
         eKind = static_cast<EBanErrKind>(5);
         CStringW format = CBanTextChecker::GetErrString(eKind, limit.m_errs);
         int nCount = limit.m_nMin < 1 ? 1 : limit.m_nMin;
-        return FUN_1401ceea0(format, nCount);
+        return StringFormat<int>(format, nCount);
     }
     case 2: {
         eKind = static_cast<EBanErrKind>(6);
         CStringW format = CBanTextChecker::GetErrString(eKind, limit.m_errs);
         int nCount = limit.m_nMax > 1 ? limit.m_nMax : 1;
-        return FUN_1401ceea0(format, nCount);
+        return StringFormat<int>(format, nCount);
     }
     case 3: {
         eKind = static_cast<EBanErrKind>(limit.m_bAllowSpace ? 7 : 8);
@@ -472,14 +471,14 @@ CStringW CBanTextChecker::GetOptionErrString(CheckerOption& opt, EBanErrKind nKi
     case 9: {
         eKind = static_cast<EBanErrKind>(bFlag ? 1 : 2);
         CStringW format = CBanTextChecker::GetErrString(eKind, opt.m_errs);
-        return FUN_1401e8510(format, strMatched);
+        return StringFormat<CStringW>(format, strMatched);
     }
     case 6:
     case 7:
     case 8: {
         eKind = static_cast<EBanErrKind>(opt.m_bFlag ? 3 : 4);
         CStringW format = CBanTextChecker::GetErrString(eKind, opt.m_errs);
-        return FUN_1401e8510(format, strMatched);
+        return StringFormat<CStringW>(format, strMatched);
     }
     }
     return CStringW(L"");
@@ -749,7 +748,7 @@ unsigned CBanTextChecker::ScanLimit(const CStringW& str, CheckerLimit& limit)
 }
 
 // @0x140225120
-int CBanTextChecker::FUN_140225120(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckPetName(const CStringW& str, CStringW& message)
 {
     int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMin);
     int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMax);
@@ -768,7 +767,7 @@ int CBanTextChecker::FUN_140225210(const CStringW& str, CStringW& message, int b
 }
 
 // @0x1402252f0
-int CBanTextChecker::FUN_1402252f0(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckHomeName(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(1, 0x10, true, false, false, true, false);
@@ -784,7 +783,7 @@ int CBanTextChecker::FUN_1402253b0(const CStringW& str, CStringW& message)
 }
 
 // @0x140225470
-int CBanTextChecker::FUN_140225470(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMaidProfileField(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMax), true, false, false, false, true);
@@ -820,11 +819,11 @@ int CBanTextChecker::CheckGuildName(const CStringW& str, CStringW& message)
 }
 
 // @0x140225810
-int CBanTextChecker::FUN_140225810(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckGuildGradeName(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
     int nMax = 7;
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e560()) nMax = 0xf;
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionNA()) nMax = 0xf;
     CheckerLimit limit(1, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
@@ -864,7 +863,7 @@ int CBanTextChecker::FUN_140225a70(const CStringW& str, CStringW& message)
 }
 
 // @0x140225c90
-int CBanTextChecker::FUN_140225c90(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMailTitleText(const CStringW& str, CStringW& message)
 {
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
     if (pkg.get()) {
@@ -875,7 +874,7 @@ int CBanTextChecker::FUN_140225c90(const CStringW& str, CStringW& message)
 }
 
 // @0x140225de0
-int CBanTextChecker::FUN_140225de0(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckContentText(const CStringW& str, CStringW& message)
 {
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
     if (pkg.get()) {
@@ -930,7 +929,7 @@ int CBanTextChecker::FUN_1402266e0(const CStringW& str, CStringW& message)
 }
 
 // @0x140226830
-int CBanTextChecker::FUN_140226830(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckAutoDistributeEntryName(const CStringW& str, CStringW& message)
 {
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
     if (pkg.get()) {
@@ -989,7 +988,7 @@ int CBanTextChecker::FUN_140226400(const CStringW& str, CStringW& message)
 }
 
 // @0x140226100
-int CBanTextChecker::FUN_140226100(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMarketDescription(const CStringW& str, CStringW& message)
 {
     int nMax = 200;
     if (str.GetLength() > nMax) return 2;
@@ -997,7 +996,7 @@ int CBanTextChecker::FUN_140226100(const CStringW& str, CStringW& message)
 }
 
 // @0x140226160
-int CBanTextChecker::FUN_140226160(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMarketProductName(const CStringW& str, CStringW& message)
 {
     int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_wideTextMax) * 3 + 10;
     if (str.GetLength() > nMax) return 2;
@@ -1005,7 +1004,7 @@ int CBanTextChecker::FUN_140226160(const CStringW& str, CStringW& message)
 }
 
 // @0x140226320
-int CBanTextChecker::FUN_140226320(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckPartySearchText(const CStringW& str, CStringW& message)
 {
     if (str.IsEmpty()) return 0;
     CheckerOption opt(0xdf, true);
@@ -5175,25 +5174,25 @@ MS2_REPLACE_METHOD(0x140229220, CBanTextChecker, FUN_140229220, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x140227890, CBanTextChecker, ClearTries, 145, 0x9B3C9039);
 MS2_REPLACE_METHOD(0x140224F80, CBanTextChecker, HasStartWithWords, 78, 0x43438119);
 MS2_REPLACE_METHOD(0x140224FE0, CBanTextChecker, IsAlnumName, 305, 0x9686387E);
-MS2_REPLACE_METHOD(0x140225120, CBanTextChecker, FUN_140225120, 224, 0xFCE38FF3);
+MS2_REPLACE_METHOD(0x140225120, CBanTextChecker, CheckPetName, 224, 0xFCE38FF3);
 MS2_REPLACE_METHOD(0x140225210, CBanTextChecker, FUN_140225210, 216, 0xE33FE7DC);
-MS2_REPLACE_METHOD(0x1402252F0, CBanTextChecker, FUN_1402252f0, 176, 0x88FCA6B1);
+MS2_REPLACE_METHOD(0x1402252F0, CBanTextChecker, CheckHomeName, 176, 0x88FCA6B1);
 MS2_REPLACE_METHOD(0x1402253B0, CBanTextChecker, FUN_1402253b0, 173, 0x09FEAF57);
-MS2_REPLACE_METHOD(0x140225470, CBanTextChecker, FUN_140225470, 216, 0xE1731069);
+MS2_REPLACE_METHOD(0x140225470, CBanTextChecker, CheckMaidProfileField, 216, 0xE1731069);
 MS2_REPLACE_METHOD(0x140225550, CBanTextChecker, CheckMaidName, 216, 0x29173518);
 MS2_REPLACE_METHOD(0x140225630, CBanTextChecker, FUN_140225630, 224, 0x4D5BA48F);
 MS2_REPLACE_METHOD(0x140225720, CBanTextChecker, CheckGuildName, 224, 0x2840BD6F);
-MS2_REPLACE_METHOD(0x140225810, CBanTextChecker, FUN_140225810, 211, 0x36F09730);
+MS2_REPLACE_METHOD(0x140225810, CBanTextChecker, CheckGuildGradeName, 211, 0x36F09730);
 MS2_REPLACE_METHOD(0x1402258F0, CBanTextChecker, FUN_1402258f0, 176, 0x8AC2EC42);
 MS2_REPLACE_METHOD(0x1402259B0, CBanTextChecker, FUN_1402259b0, 176, 0xC7A7B0EF);
 MS2_REPLACE_METHOD(0x140225A70, CBanTextChecker, FUN_140225a70, 533, 0x4789474A);
-MS2_REPLACE_METHOD(0x140225C90, CBanTextChecker, FUN_140225c90, 322, 0x5177F359);
-MS2_REPLACE_METHOD(0x140225DE0, CBanTextChecker, FUN_140225de0, 322, 0x416B8E3D);
+MS2_REPLACE_METHOD(0x140225C90, CBanTextChecker, CheckMailTitleText, 322, 0x5177F359);
+MS2_REPLACE_METHOD(0x140225DE0, CBanTextChecker, CheckContentText, 322, 0x416B8E3D);
 MS2_REPLACE_METHOD(0x140225F70, CBanTextChecker, FUN_140225f70, 322, 0x1BB88BF2);
 MS2_REPLACE_METHOD(0x140226440, CBanTextChecker, FUN_140226440, 322, 0xFE4EB06B);
 MS2_REPLACE_METHOD(0x140226590, CBanTextChecker, FUN_140226590, 322, 0x92FA53AE);
 MS2_REPLACE_METHOD(0x1402266E0, CBanTextChecker, FUN_1402266e0, 322, 0x659E94EA);
-MS2_REPLACE_METHOD(0x140226830, CBanTextChecker, FUN_140226830, 322, 0x83ADDA52);
+MS2_REPLACE_METHOD(0x140226830, CBanTextChecker, CheckAutoDistributeEntryName, 322, 0x83ADDA52);
 MS2_REPLACE_METHOD(0x140225F30, CBanTextChecker, FUN_140225f30, 58, 0xAF657D4B);
 MS2_REPLACE_METHOD(0x1402260C0, CBanTextChecker, FUN_1402260c0, 58, 0xBB338219);
 MS2_REPLACE_METHOD(0x1402261E0, CBanTextChecker, FUN_1402261e0, 58, 0xD69737A8);
@@ -5202,9 +5201,9 @@ MS2_REPLACE_METHOD(0x140226260, CBanTextChecker, FUN_140226260, 58, 0x75DD8167);
 MS2_REPLACE_METHOD(0x1402262A0, CBanTextChecker, FUN_1402262a0, 58, 0xA084B6AF);
 MS2_REPLACE_METHOD(0x1402262E0, CBanTextChecker, FUN_1402262e0, 58, 0x2D31E9E7);
 MS2_REPLACE_METHOD(0x140226400, CBanTextChecker, FUN_140226400, 58, 0xA1F0E4A6);
-MS2_REPLACE_METHOD(0x140226100, CBanTextChecker, FUN_140226100, 90, 0x0415F78B);
-MS2_REPLACE_METHOD(0x140226160, CBanTextChecker, FUN_140226160, 111, 0x679211E4);
-MS2_REPLACE_METHOD(0x140226320, CBanTextChecker, FUN_140226320, 204, 0x7A9039D6);
+MS2_REPLACE_METHOD(0x140226100, CBanTextChecker, CheckMarketDescription, 90, 0x0415F78B);
+MS2_REPLACE_METHOD(0x140226160, CBanTextChecker, CheckMarketProductName, 111, 0x679211E4);
+MS2_REPLACE_METHOD(0x140226320, CBanTextChecker, CheckPartySearchText, 204, 0x7A9039D6);
 MS2_REPLACE_METHOD(0x140227FB0, CBanTextChecker, CheckTextWithLimit, 201, 0x12BA3C46);
 MS2_REPLACE_METHOD(0x140228080, CBanTextChecker, CheckTypes, 125, 0xBCBD8433);
 MS2_REPLACE_METHOD(0x1402271A0, CBanTextChecker, SetBanWords, 215, 0x174E9D70);

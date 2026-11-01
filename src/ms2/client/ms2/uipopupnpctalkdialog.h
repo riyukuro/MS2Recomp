@@ -55,7 +55,6 @@ public:
     void FUN_140e77300();                                       // 0x140e77300
     int FUN_140e77330();                                        // 0x140e77330 show the current line; 0 no quest, 1 shown, 2 past the end
     int FUN_140e77b80(int nQuest);                              // 0x140e77b80 quest is startable on this map
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
     MS2Ptr<Unk_PnButton> FUN_140bb4b10(const CString& strName); // 0x140bb4b10 bind a button child
 
 private:

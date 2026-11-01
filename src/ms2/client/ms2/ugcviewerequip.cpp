@@ -10,6 +10,7 @@
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ugcviewerequip.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <io.h>
 #include <errno.h>
@@ -75,8 +76,7 @@ class Unk_VwWearer : public PC
 {
 };
 
-extern Vector3 DAT_143b01a60;                       // the zero point
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 float FUN_140966f00(NiPoint3 kA, Vector3 kB);           // the distance
 float FUN_140966ea0(NiPoint3 kA, Vector3 kB);           // the planar distance
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
@@ -213,7 +213,6 @@ private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
 struct Unk_VwUIService { Unk_CommandUIRef FUN_141adcea0(int nId); };  // the UI lookup by class id
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 void FUN_140c381b0(UIItemBlueprintCreateDialog* pDialog, MS2Ptr<CUploadFile> spFile);   // show the uploaded image
 CStringW FUN_14016a730(const char* psz, int n);             // narrow -> wide
 extern __int64 DAT_143ab2820;                               // my account id
@@ -566,7 +565,7 @@ void CUgcViewerBanner::vfunc_1()
         return;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
     Vector3 kBanner = DAT_143b01a60;
-    FUN_1409618c0(spEntity, 0xfd95ca52, &kBanner);
+    static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBanner));
     int bPlanar = 0;
     float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);
     float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
@@ -1292,7 +1291,7 @@ UIItemBlueprintCreateDialog* FUN_1418a6920()
     Unk_CommandUIRef ref = pService->FUN_141adcea0(FUN_1418a7190());
     if (((MS2Ptr<UIObject>*)&(ref))->IsNull())
         return 0;
-    return dynamic_cast<UIItemBlueprintCreateDialog*>(FUN_1403ed9e0(ref));
+    return dynamic_cast<UIItemBlueprintCreateDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
 }
 
 // ---- viewer vfunc_10 getters, base stubs --------------------------------------------------------------------------

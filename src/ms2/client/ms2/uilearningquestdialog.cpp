@@ -32,6 +32,12 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // ---- out-of-unit callees (names describe uses) ----
 class TiXmlElement { public:
@@ -69,7 +75,6 @@ CString FUN_141275640();                                                    // t
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);       // path join
 CString FUN_1402bb1c0(const char* pszFormat, const int& n);                 // StringFormat(format, int)
 CString FUN_1401d9af0(const char* pszFormat, const __int64* pn);            // StringFormat(format, size_t)
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);
 CStringW FUN_1402a5170(const wchar_t* pszFormat, const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
@@ -80,7 +85,7 @@ CStringW FUN_1416e4df0(int nQuestId);                                       // q
 CReservedWordTable* FUN_1403b4750();
 class Unk_LqActor : public MyPC { };
 class Unk_LqWorld { public: Unk_LqActor* FUN_141bd0cc0(); };
-class Unk_LqUIMgr { public: int FUN_141adc940(int nClass); void FUN_141adc530(int nClass); };
+class Unk_LqUIMgr { public: void FUN_141adc530(int nClass); };
 class Unk_LqSceneMgr;
 Unk_LqSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -93,8 +98,7 @@ bool FUN_140930b70();
 UIStatusEventDispatcher* FUN_140aa6d40();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074bd10(int nQuestId);                                            // sort key (a short)
-class Unk_140acd6e0 : public ASDisplayObject { public:
-    void FUN_1422c1fe0(unsigned);
+class Unk_140acd6e0 : public ASMovieClip { public:
 };
 class Unk_LqRoot : public AScript { public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);         // Invoke(method, object)
@@ -170,9 +174,9 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
         if (spData == 0)
             return 0;
-        if (pActor->FUN_141527e00() != 0 && spData->m_nGotoField == 62000000)
+        if (pActor->HasNoHome() != 0 && spData->m_nGotoField == 62000000)
         {
-            if (reinterpret_cast<Unk_LqUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f3f) != 0)
+            if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3f)));
         }
         else
@@ -248,14 +252,14 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         m_1a0 = m_198;
     }
     static_cast<Unk_LqRoot*>(m_30.operator->())->FUN_140ba4cc0("setData", data);
-    CStringW strCategory = GetStringCommonByKey(FUN_1401ceea0(L"s_learning_quest_category_{0}", m_190));
-    if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_name"))
+    CStringW strCategory = GetStringCommonByKey(StringFormat<int>(L"s_learning_quest_category_{0}", m_190));
+    if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
     {
         CStringW strName = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_name"), strCategory);
         FUN_1403b4750()->FUN_1416fb340(strName);
         spName->FUN_1422c4cd0(strName);
     }
-    if (MS2Ptr<Unk_140acd6e0> spOk = FUN_140bb4b10("m_ok"))
+    if (MS2Ptr<Unk_140acd6e0> spOk = GetChild<Unk_140acd6e0>("m_ok"))
     {
         unsigned nState = 0;
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
@@ -368,10 +372,10 @@ void UILearningQuestDialog::LoadLearningQuest()
     int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false);
     if (bCharacterLoaded != 0)
     {
-        TiXmlElement* pRoot = FUN_140165cf0(&m_1e8, "ms2");
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_1e8))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            TiXmlElement* pList = FUN_140165cf0(pRoot, "v1");
+            TiXmlElement* pList = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v1"));
             if (pList != 0)
             {
                 for (size_t i = 0; i < all.GetCount(); i++)
@@ -390,10 +394,10 @@ void UILearningQuestDialog::LoadLearningQuest()
     int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false);
     if (bAccountLoaded != 0)
     {
-        TiXmlElement* pRoot = FUN_140165cf0(&m_258, "ms2");
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            TiXmlElement* pList = FUN_140165cf0(pRoot, "v1");
+            TiXmlElement* pList = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v1"));
             if (pList != 0)
             {
                 for (size_t i = 0; i < all.GetCount(); i++)
@@ -414,7 +418,7 @@ void UILearningQuestDialog::LoadLearningQuest()
 // @0x140ea26e0
 void UILearningQuestDialog::SaveLearningQuest()
 {
-    TiXmlElement* pRoot = FUN_140165cf0(&m_1e8, "ms2");
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_1e8))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
@@ -422,7 +426,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         pRoot = new TiXmlElement("ms2");
         ((void*)((class TiXmlNode*)(void*)(&m_1e8))->LinkEndChild((class TiXmlNode*)(pRoot)));
     }
-    TiXmlElement* pList = FUN_140165cf0(pRoot, "v1");
+    TiXmlElement* pList = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v1"));
     if (pList == 0)
     {
         pList = new TiXmlElement("v1");
@@ -437,7 +441,7 @@ void UILearningQuestDialog::SaveLearningQuest()
             XmlSetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spData->m_nId), nSeen);
     }
     FUN_1408710c0(&m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"));
-    TiXmlElement* pRoot2 = FUN_140165cf0(&m_258, "ms2");
+    TiXmlElement* pRoot2 = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
     if (pRoot2 == 0)
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
@@ -445,7 +449,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         pRoot2 = new TiXmlElement("ms2");
         ((void*)((class TiXmlNode*)(void*)(&m_258))->LinkEndChild((class TiXmlNode*)(pRoot2)));
     }
-    TiXmlElement* pList2 = FUN_140165cf0(pRoot2, "v1");
+    TiXmlElement* pList2 = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot2))->FirstChild("v1"));
     if (pList2 == 0)
     {
         pList2 = new TiXmlElement("v1");
@@ -491,7 +495,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
     {
         int nChapter = chapters[j];
         ATL::CAtlArray<unsigned> quests;
-        TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, quests);
+        TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, quests);
         if (quests.GetCount() == 0)
             continue;
         if (((class CQuestManager*)FUN_140764020())->FUN_1416ce3d0(nChapter) != 0)
@@ -575,8 +579,8 @@ static int FUN_140ea3980(const void* pA, const void* pB)
     const int* pChapterB = (const int*)pB;
     ATL::CAtlArray<unsigned> questsA;
     ATL::CAtlArray<unsigned> questsB;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(*pChapterA, questsA);
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(*pChapterB, questsB);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(*pChapterA, questsA);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(*pChapterB, questsB);
     if (questsA.GetCount() == 0 || questsB.GetCount() == 0)
         return 0;
     unsigned short nKeyA = FUN_14074bd10(questsA[0]);

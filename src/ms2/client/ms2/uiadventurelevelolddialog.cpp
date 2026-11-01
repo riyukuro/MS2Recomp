@@ -187,8 +187,6 @@ public:
     Unk_ALConstU16 m_stat;                                          // +0x9298
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned short* FUN_1401d7c10(Unk_ALConstU16* p);
-unsigned int* FUN_1401d7c10(Unk_ALConstU32* p);
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;

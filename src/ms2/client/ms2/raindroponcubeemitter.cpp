@@ -66,6 +66,7 @@
 // MS2-PIN: ??A?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAAAEAUUnk_Int3@@_K@Z 0x1416f1300
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "raindroponcubeemitter.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -93,7 +94,7 @@ __declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneG
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern const Vector3 g_143a08ce8;   // NiPoint3::ZERO
-extern const Vector3 g_143b01a60;   // the zero point
+#define g_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 g_143b01a60
 extern const efd::Color g_143a09660; // white
 extern const efd::Color g_143b01ef0; // efd::Color::BLACK
 

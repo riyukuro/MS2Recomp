@@ -90,7 +90,7 @@ template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<
 Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
-        MS2Ptr<UIObject> sp = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> sp = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (sp.get() != 0)
             return reinterpret_cast<Unk_CMISDemolishUI*>(dynamic_cast<UIHouseDemolishDialog*>(sp.operator->()));
     }
@@ -104,7 +104,7 @@ Unk_CMISHouseMark* FUN_1410dc020()
     CUIService* pUI = TSingleton<CUIService>::GetInstance();
     if (pUI == 0)
         return 0;
-    MS2Ptr<UIObject> sp = pUI->FUN_141adcea0((eUIClassID)FUN_14112e2a0());
+    MS2Ptr<UIObject> sp = pUI->FindObject((eUIClassID)FUN_14112e2a0());
     if (sp.IsNull())
         return 0;
     return reinterpret_cast<Unk_CMISHouseMark*>(dynamic_cast<UIHouseMark*>(sp.operator->()));

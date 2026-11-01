@@ -242,8 +242,8 @@ public:
     virtual bool vfunc_41(__int64 a1);
     virtual void vfunc_42(void* a1);
     virtual bool vfunc_43(int a1, bool a2, int a3);
-    virtual const CStringA& vfunc_44();
-    virtual const CStringA& vfunc_45();
+    virtual void vfunc_44();
+    virtual void vfunc_45();
     virtual int vfunc_46();
     virtual void vfunc_47(CStringA a1, CStringA a2);
     virtual void vfunc_48(MS2Ptr<CUserReportData> spReport);

@@ -44,7 +44,7 @@ CString FUN_1405a7e80(int n);                            // number -> text
 float FUN_140768090();                                   // random 0..1
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14028d260(float f);                              // seconds -> ms
-void FUN_141276180(CString* pTarget, const CString& str);
+int FUN_141276180(const CString& strTarget, const CString& str);
 int FUN_141b71c00(unsigned short n);
 
 // The strings and constants singletons.
@@ -83,7 +83,8 @@ UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_TcBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_TcBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_TcSlots
 {
@@ -115,14 +116,12 @@ struct Unk_TcRequest
     char m_pad_20[0x58];
 };
 MS2_CHECK_SIZE(Unk_TcRequest, 0x78);
-class Unk_TcEffectMgr { public: void FUN_1411a4a00(Unk_TcRequest* pRequest); };
 void FUN_140a52ef0(Unk_TcRequest* p);                    // construct
 void FUN_1405a89e0(Unk_TcRequest* p);                    // destroy
 
 // The world: the taxi stop entity near a position, its properties.
 class Unk_TcEntity;
 class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, Vector3 kPos, float fRange, int nA, int nB); };
-void FUN_1409618c0(Unk_TcEntity* pEntity, unsigned nHash, Vector3* pOut);   // property read (point)
 
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
@@ -223,7 +222,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
                 pBar->FUN_1418e12f0(0, GetStringCommon(0x64b), nDuration, false, true, strLabel);
             }
             CString strEmpty("");
-            FUN_141276180(&s_strTaxiCall, strEmpty);
+            FUN_141276180(s_strTaxiCall, strEmpty);
         }
     }
 }
@@ -323,7 +322,7 @@ void StateTaxiCall::vfunc_8(double fTime)
     if (pRider == 0)
         return;
     Unk_TcBuffMgr* pBuff = ((class Unk_TcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(pBuff->FUN_141683290());
+    reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -382,8 +381,8 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     }
     else
     {
-        FUN_1409618c0(pStop, 0xfd95ca52, &kPos);
-        FUN_1409618c0(pStop, 0x68c7c29d, &kRot);
+        reinterpret_cast<egf::Entity*>(pStop)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
+        reinterpret_cast<egf::Entity*>(pStop)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kRot));
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
         Vector3 kDir = FUN_1420834e0(DAT_143a08ce8, kMat);
@@ -402,7 +401,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
     request.m_pXform = &xf;
-    reinterpret_cast<Unk_TcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
     FUN_1405a89e0(&request);
 }
 

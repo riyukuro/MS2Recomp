@@ -13,13 +13,20 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // The common log (GetLogString()).
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_CommonLog
 {
 public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
-    void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
 };
 class CLogString* GetLogString();
 
@@ -58,10 +65,10 @@ BOOL DungeonMissionDataTable::ReadFromXml()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        reinterpret_cast<Unk_CommonLog*>(GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return FALSE;
     }
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("DungeonMission"); pElem; pElem = pElem->FUN_140168650("DungeonMission"))
+    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("DungeonMission"); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("DungeonMission")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;

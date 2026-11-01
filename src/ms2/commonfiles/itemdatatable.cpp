@@ -221,7 +221,7 @@ struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was F
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
 Unk_ConstColor FUN_140718770(const CString& str);                       // a hex colour
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 unsigned FUN_14053c690(unsigned nItemId);                               // the itemData file of an item id
 
@@ -640,13 +640,13 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             continue;
         if (!pItem->IsJobAllowed(nJob))
             continue;
-        if (!pItem->FUN_14053c940(nGender))
+        if (!pItem->IsGenderAllowed(nGender))
             continue;
-        if (!pItem->FUN_14053c9a0(nLevel))
+        if (!pItem->IsLevelAllowed(nLevel))
             continue;
         if (!pItem->FUN_14053eba0()->FUN_14054b450(nType))
             continue;
-        if (pItem->FUN_14053e130())
+        if (pItem->IsCashItem())
             continue;
         if (nType == 5)
         {
@@ -732,7 +732,7 @@ void CItemDataTable::LoadItemFile(const CString& strPath, std::vector<ItemDataPt
         ItemDataPtr spItem(new CItemData);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
-        spItem->FUN_14053c4f0(nId);
+        spItem->SetItemId(nId);
         Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
@@ -762,13 +762,13 @@ void CItemDataTable::LoadItemDataFile(unsigned nFile)
         ItemDataPtr spItem(new CItemData);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
-        spItem->FUN_14053c4f0(nId);
+        spItem->SetItemId(nId);
         Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
         spItem->Load(pEnv);
         OnItemLoaded(spItem);
-        m_mapItem.insert(std::make_pair(spItem->FUN_14053c510(), spItem));
+        m_mapItem.insert(std::make_pair(spItem->GetItemId(), spItem));
     }
     m_setItemFile.insert(nFile);
 }
@@ -937,7 +937,7 @@ void CItemDataTable::LoadItemNameIds(std::vector<unsigned>& out)
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "key", "id", nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "id", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
     {
         unsigned nId;
@@ -1204,7 +1204,7 @@ void CItemDataTable::LoadMusicScore()
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         MS2Ptr<ItemMusicScore> spScore(new ItemMusicScore);
-        spScore->FUN_14054a8c0(pNode);
+        spScore->LoadElement(pNode);
         m_mapMusicScore.insert(std::make_pair(nId, spScore));
     }
 }
@@ -1229,7 +1229,7 @@ void CItemDataTable::LoadHousing()
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         MS2Ptr<ItemHousing> spHousing(new ItemHousing);
-        spHousing->FUN_140548fe0(pNode, nId);
+        spHousing->LoadElement(pNode, nId);
         if (spHousing->trophyID > 0)
         {
             Unk_TrophyKey trophy(spHousing->trophyID, spHousing->trophyLevel);
@@ -1506,7 +1506,7 @@ CItemDataTable::ItemDataPtr CItemDataTable::FindItemData(int nItemId)
     if (it != m_mapItem.end())
     {
         if (it->second->FUN_14053ef80())
-            it->second->FUN_14053eb20();
+            it->second->LoadModel();
         return it->second;
     }
     return ItemDataPtr(0);

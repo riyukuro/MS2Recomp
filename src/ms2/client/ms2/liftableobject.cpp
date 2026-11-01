@@ -9,6 +9,16 @@
 #include "ms2/placeholder/cube.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/notifysystem.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
@@ -40,8 +50,6 @@ void FUN_141689ec0(CPhysXHelper* pHelper, Unk_Entity* pEntity, short nKind, int 
 
 // Entity properties read by hash.
 int FUN_140961880(Unk_Entity* pEntity, unsigned nHash, float* pValue);
-int FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, bool* pValue);
-int FUN_1409618c0(Unk_Entity* pEntity, unsigned nHash, Vector3* pValue);
 int FUN_140ae11a0(Unk_Entity* pEntity, unsigned nHash, int* pValue);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
@@ -74,7 +82,6 @@ struct Unk_LiftSvcPtr
 extern char DAT_143b059e8;
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 void FUN_1401cd0b0(Unk_LiftSvcPtr* pThis, Unk_LiftSvc* p);          // construct
-Unk_LiftSvc* FUN_1401cd1a0(Unk_LiftSvcPtr* pThis);                  // operator->
 void FUN_1401cd150(Unk_LiftSvcPtr* pThis);                          // destroy
 Vector3 FUN_1408a1430(Vector3 pt);
 int FUN_1408a03c0(Vector3 pt);
@@ -180,7 +187,7 @@ void CLiftableObject::SetName(CString strName)
 }
 
 // @0x141447340
-int CLiftableObject::FUN_141447340() const
+int CLiftableObject::CanLift() const
 {
     if (m_bC0 == 0)
         return 0;
@@ -192,13 +199,13 @@ int CLiftableObject::FUN_141447340() const
 }
 
 // @0x141447390
-int CLiftableObject::FUN_141447390(Unk_Entity* pEntity, bool bFixed, int nKind)
+int CLiftableObject::Init(Unk_Entity* pEntity, bool bFixed, int nKind)
 {
     m_nKind = nKind;
     m_bC0 = 0;
     m_bC1 = 1;
     m_bFixed = bFixed;
-    FUN_141447b00(0);
+    SetState(0);
     FUN_141447410(pEntity);
     return 1;
 }
@@ -222,9 +229,9 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
         float fRange = 150.0f;
         if (FUN_140961880(m_ent.FUN_1408a9280(), 0xf39fa2a1, &fRange) == 0)
             m_fRange = fRange;
-        FUN_1408a20a0(m_ent.FUN_1408a9280(), 0xd89e9b12, (bool*)&m_b108);
-        FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &m_vC4);
-        FUN_1409618c0(m_ent.FUN_1408a9280(), 0x68c7c29d, &m_v10c);
+        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue(0xd89e9b12, m_b108);
+        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
+        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
         if (m_bFixed == 0)
         {
             FUN_140ae11a0(pEntity, 0x2e687f77, &m_nA8);
@@ -232,12 +239,12 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
         else
         {
             Vector3 pt;
-            FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
+            reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
             Unk_LiftSvcPtr spSvc;
             FUN_1401cd0b0(&spSvc, ((class Unk_LiftSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
             Vector3 cell = FUN_1408a1430(pt);
             int nKey = FUN_1408a03c0(cell);
-            Unk_LiftCube* pCube = FUN_1401cd1a0(&spSvc)->FUN_1410b8b00(nKey);
+            Unk_LiftCube* pCube = reinterpret_cast<Unk_LiftSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>*>(&spSvc)->operator->())->FUN_1410b8b00(nKey);
             if (pCube != 0)
                 m_nA8 = pCube->FUN_1408b4f20();
             FUN_1401cd150(&spSvc);
@@ -283,11 +290,11 @@ void CLiftableObject::FUN_141447910(bool bOn)
         return;
     if (bOn && m_nEffect == 0)
     {
-        Unk_LiftSoundReq kReq;
-        kReq.m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
-        kReq.m_nType = 0;
-        FUN_1409fabf0(kReq.m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
-        m_nEffect = reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kReq);
+        NoticeMessage kReq;   // C3: was Unk_LiftSoundReq
+        ((Unk_LiftSoundReq&)(kReq)).m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
+        ((Unk_LiftSoundReq&)(kReq)).m_nType = 0;
+        FUN_1409fabf0(((Unk_LiftSoundReq&)(kReq)).m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
+        m_nEffect = reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&((Unk_LiftSoundReq&)(kReq)));
     }
     else if (!bOn && m_nEffect != 0)
     {
@@ -327,7 +334,7 @@ int CLiftableObject::GetState() const
 }
 
 // @0x141447b00
-void CLiftableObject::FUN_141447b00(int nState)
+void CLiftableObject::SetState(int nState)
 {
     m_nState = nState;
     if (m_ent.FUN_1408b70b0(0) != 0)
@@ -397,7 +404,7 @@ void CLiftableObject::FUN_141447de0()
         FUN_1414478b0(1);
     else
         FUN_1414478b0(0);
-    if (m_bC2 != 0 && (&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskB) && FUN_141447340() != 0)
+    if (m_bC2 != 0 && (&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskB) && CanLift() != 0)
     {
         FUN_141447910(1);
         return;

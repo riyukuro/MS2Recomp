@@ -20,6 +20,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // The header statics of this unit: the label key of the combo rows, then the game header's sort names and "skill".
 static CString s_strLabel = "label";
@@ -41,7 +43,7 @@ public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);   // click
     void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);   // toggle
 };
-class Unk_DpInput : public Unk_DpControl { public: CStringW FUN_1422e0b00(); };         // the text
+class Unk_DpInput : public Unk_DpControl { public: };         // the text
 class Unk_DpCheck : public Unk_DpControl { };
 class Unk_DpCombo : public Unk_DpControl
 {
@@ -63,7 +65,6 @@ class Unk_DpMovie { public: void FUN_1422c3600(const CString& strEvent, const De
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);
 unsigned FUN_140869420();                                       // the server time
 unsigned int FUN_140768010(int nRange, int nBase);                       // a random number
 void FUN_140710590(COutPacket& packet);                         // send
@@ -109,7 +110,7 @@ void UIDebugPacketDialog::OnLoadInit()
     {
         int nNumber = i + 1;
         CStringA strParam = FUN_1402bb1c0("m_param{0}", nNumber);
-        MS2Ptr<ASMovieClip> spParam = FUN_140ba7930(strParam);
+        MS2Ptr<ASMovieClip> spParam = GetChild<ASMovieClip>(strParam);
         m_type[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe700("m_type");
         m_value[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe880("m_value");
         {
@@ -150,7 +151,7 @@ void UIDebugPacketDialog::OnLoadInit()
     m_randomLoopCount = FUN_140e35bd0("m_randomLoopCount");
     m_randomLoopDelay = FUN_140e35bd0("m_randomLoopDelay");
     m_randomLoopLength = FUN_140e35bd0("m_randomLoopLength");
-    m_randomRemain = FUN_140bb4cf0("m_randomRemain");
+    m_randomRemain = GetChild<ASTextField>("m_randomRemain");
     m_ignoreAdminPacket = FUN_140e52670("m_ignoreAdminPacket");
     m_usePacketCount = FUN_140bb4b10("m_usePacketCount");
     m_usePostClose = FUN_140bb4b10("m_usePostClose");
@@ -253,7 +254,7 @@ void UIDebugPacketDialog::vfunc_72()
             }
             m_nRandomNext += m_nRandomDelay;
             m_nRandomRemain--;
-            m_randomRemain->FUN_1422c4cd0(FUN_1401ceea0(L"{0} 개 남았습니다.", m_nRandomRemain));
+            m_randomRemain->FUN_1422c4cd0(StringFormat<int>(L"{0} 개 남았습니다.", m_nRandomRemain));
         }
     }
 }
@@ -315,11 +316,11 @@ void UIDebugPacketDialog::OnDoubleClick(const Scaleform::GFx::FunctionHandler::P
 // @0x141291470
 bool UIDebugPacketDialog::FUN_141291470()
 {
-    m_nId = FUN_1401d9a00(m_id->FUN_1422e0b00());
+    m_nId = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_id.operator->())->GetText());
     if (m_nId == 0)
         return false;
-    m_nRemain = FUN_1401d9a00(m_loopCount->FUN_1422e0b00());
-    m_nDelay = FUN_1401d9a00(m_loopDelay->FUN_1422e0b00());
+    m_nRemain = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_loopCount.operator->())->GetText());
+    m_nDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_loopDelay.operator->())->GetText());
     if (m_nRemain < 1)
         m_nRemain = 1;
     m_nNext = FUN_140869420() + m_nDelay;
@@ -327,7 +328,7 @@ bool UIDebugPacketDialog::FUN_141291470()
     for (int i = 0; i < 5; i++)
     {
         int nType = m_type[i]->FUN_1422df6c0();
-        CStringW strValue = m_value[i]->FUN_1422e0b00();
+        CStringW strValue = reinterpret_cast<ASTextInput*>(m_value[i].operator->())->GetText();
         if (strValue.GetLength() < 1 && nType != 5)
             break;
         if (nType == 0)
@@ -349,12 +350,12 @@ bool UIDebugPacketDialog::FUN_141291470()
 // @0x141291850
 bool UIDebugPacketDialog::FUN_141291850()
 {
-    int nStart = FUN_1401d9a00(m_randomStart->FUN_1422e0b00());
-    int nEnd = FUN_1401d9a00(m_randomEnd->FUN_1422e0b00());
+    int nStart = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomStart.operator->())->GetText());
+    int nEnd = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomEnd.operator->())->GetText());
     m_range.FUN_1405c6380(nStart, nEnd);
-    m_nRandomRemain = FUN_1401d9a00(m_randomLoopCount->FUN_1422e0b00());
-    m_nRandomDelay = FUN_1401d9a00(m_randomLoopDelay->FUN_1422e0b00());
-    m_nRandomLength = FUN_1401d9a00(m_randomLoopLength->FUN_1422e0b00());
+    m_nRandomRemain = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopCount.operator->())->GetText());
+    m_nRandomDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopDelay.operator->())->GetText());
+    m_nRandomLength = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopLength.operator->())->GetText());
     m_nRandomNext = FUN_140869420() + m_nRandomDelay;
     return true;
 }

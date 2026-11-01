@@ -79,7 +79,8 @@
 // ---- callees ------------------------------------------------------------------------------------------------------
 
 void FUN_141275260(int nStringId, int nA, int nB);          // system message
-CStringW FUN_1408116a0(int nId, const int& nArg);           // string table entry with one integer argument
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 
 // Block checks (blockmanager.cpp).
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
@@ -175,7 +176,7 @@ class UIUGCItemEditDialog : public UIDialog
 {
 public:
     void FUN_141b450d0(int nResult);
-    void FUN_141b45020();                                   // drop the edited item
+    void ClearItemName();                                   // drop the edited item
     void FUN_141b45180(MS2Ptr<CItem> spItem);               // the look of the edited item changed
 };
 class UIUGCBannerDialog : public UIDialog
@@ -356,7 +357,7 @@ void FUN_1410268a0(CString strA, CString strB);
 class CItemUgc : public CPtred
 {
 public:
-    void FUN_140632070(CBlueprintItemData* pBlueprint);     // copy the blueprint data
+    void SetBlueprint(CBlueprintItemData* pBlueprint);     // copy the blueprint data
 };
 
 // The item containers: the bag and the cube fallback inventory (unit_14092f420.cpp / uicommon.cpp).
@@ -391,7 +392,7 @@ T* UgcFindDialog(eUIClassID nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject(nId);
         if (spObject.get() != 0)
             return dynamic_cast<T*>((UIObject*)spObject);
     }
@@ -589,7 +590,7 @@ CUgcManager::~CUgcManager()
     m_mapReserve.RemoveAll();
     FUN_14188b480();
     FUN_14188b4e0();
-    FUN_14188bb20();
+    DeleteMappedFiles();
 }
 
 // @0x14187f1c0
@@ -615,7 +616,7 @@ CStringW CUgcManager::FUN_14187f210(int nResult)
         return L"";
     if (nResult == 0x7a)
         return L"";
-    CStringW str = FUN_1408116a0(0x461, nResult);
+    CStringW str = BlockFormat<int>(0x461, nResult);
     return str;
 }
 MS2_REPLACE_METHOD(0x14187f210, CUgcManager, FUN_14187f210, 191, 0x9CA67996);
@@ -625,7 +626,7 @@ CStringW CUgcManager::FUN_14187f2e0(int nResult)
 {
     if (nResult == 0)
         return L"";
-    CStringW str = FUN_1408116a0(0x461, nResult);
+    CStringW str = BlockFormat<int>(0x461, nResult);
     return str;
 }
 MS2_REPLACE_METHOD(0x14187f2e0, CUgcManager, FUN_14187f2e0, 148, 0xF1F496B5);
@@ -975,7 +976,7 @@ MS2_REPLACE_METHOD(0x141880c90, CUgcManager, FUN_141880c90, 541, 0x9E8226C4);
 
 // @0x141880ec0
 // The server answered the current upload; a finished upload unlocks the manager and is dropped.
-void CUgcManager::FUN_141880ec0(int nResult)
+void CUgcManager::OnUploadResult(int nResult)
 {
     int bDone = 0;
     if (Unk_LockGuard guard = m_lock)
@@ -996,11 +997,11 @@ void CUgcManager::FUN_141880ec0(int nResult)
         FUN_141882450(MS2Ptr<CUgcUploadCtrl>(0));
     }
 }
-MS2_REPLACE_METHOD(0x141880ec0, CUgcManager, FUN_141880ec0, 247, 0xFBC31B7B);
+MS2_REPLACE_METHOD(0x141880ec0, CUgcManager, OnUploadResult, 247, 0xFBC31B7B);
 
 // @0x141880fc0
 // 1 when the viewer of the current upload has content to send.
-int CUgcManager::FUN_141880fc0()
+int CUgcManager::HasViewerContent()
 {
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
@@ -1012,7 +1013,7 @@ int CUgcManager::FUN_141880fc0()
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x141880fc0, CUgcManager, FUN_141880fc0, 244, 0xF93135EB);
+MS2_REPLACE_METHOD(0x141880fc0, CUgcManager, HasViewerContent, 244, 0xF93135EB);
 
 // @0x1418810c0
 // Lets the player pick a design image (at most UGCImgUploadSizeLimit pixels wide and high) and copies it into the
@@ -1608,7 +1609,7 @@ void CUgcManager::FUN_141883860(CString strPath)
                 param.m_strUrl = strPath;
             param.m_user.CopyFrom(&spItem->m_user);
             param.m_upload.CopyFrom(&spItem->m_upload);
-            FUN_141886150(&param, spProxy.get());
+            PushDownload(&param, spProxy.get());
         }
     }
     FUN_1418823f0();
@@ -1623,7 +1624,7 @@ void CUgcManager::FUN_141883df0(MS2Ptr<CItem> spItem, const egf::EntityID& id)
     if (spItem == 0)
         return;
     int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
-    CUgcItemLook* pLook = ((CItem*)spItem)->FUN_140528380();
+    CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
     if (pLook == 0)
         return;
     CString strLocal = FUN_1410280d0(nKind, pLook->m_strUrl);
@@ -1644,17 +1645,17 @@ void CUgcManager::FUN_141883df0(MS2Ptr<CItem> spItem, const egf::EntityID& id)
     if (nKind == 1)
     {
         CUgcItemPC item(spItem.get(), ((CItem*)spItem)->FUN_140526b10());
-        FUN_141886150(&param, &item);
+        PushDownload(&param, &item);
     }
     else if (nKind == 2)
     {
         CUgcItemCube item(spItem.get(), id);
-        FUN_141886150(&param, &item);
+        PushDownload(&param, &item);
     }
     else if (nKind == 7)
     {
         CUgcItemRidee item(spItem.get(), id);
-        FUN_141886150(&param, &item);
+        PushDownload(&param, &item);
     }
     FUN_1418841f0(pLook, spItem, 0);
 }
@@ -1677,7 +1678,7 @@ void CUgcManager::FUN_141884300(MS2Ptr<CItem> spItem, int nObjectId)
     int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
     if (nKind != 1)
         return;
-    CUgcItemLook* pLook = ((CItem*)spItem)->FUN_140528380();
+    CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
     if (pLook == 0)
         return;
     CUgcItemPC item(spItem.get(), nObjectId);
@@ -1696,7 +1697,7 @@ void CUgcManager::FUN_141884300(MS2Ptr<CItem> spItem, int nObjectId)
     param.m_upload.m_nType = 3;
     if (param.m_strUrl.GetLength() == 0)
         return;
-    FUN_141886150(&param, &item);
+    PushDownload(&param, &item);
 }
 MS2_REPLACE_METHOD(0x141884300, CUgcManager, FUN_141884300, 662, 0xCB43B451);
 
@@ -1729,7 +1730,7 @@ void CUgcManager::FUN_1418845a0(CubeItemInfo* pInfo, egf::EntityID id)
     param.m_upload.m_nType = 3;
     if (param.m_strUrl.GetLength() == 0)
         return;
-    FUN_141886150(&param, &item);
+    PushDownload(&param, &item);
 }
 MS2_REPLACE_METHOD(0x1418845a0, CUgcManager, FUN_1418845a0, 638, 0x94E61867);
 
@@ -1762,7 +1763,7 @@ void CUgcManager::FUN_141884830(MS2Ptr<Unk_PCBaseComp_b18> spInfo, egf::EntityID
     param.m_upload.m_nType = 3;
     if (param.m_strUrl.GetLength() == 0)
         return;
-    FUN_141886150(&param, &item);
+    PushDownload(&param, &item);
 }
 MS2_REPLACE_METHOD(0x141884830, CUgcManager, FUN_141884830, 683, 0x2E80906F);
 
@@ -1785,7 +1786,7 @@ void CUgcManager::FUN_141884af0(MS2Ptr<CUgcRegistBanner> spBanner)
         return;
     MS2Ptr<CUgcBannerPost> spPost(new CUgcBannerPost);
     spPost->CopyFrom(&spBanner->m_post);
-    FUN_141886150(&param, spPost.get());
+    PushDownload(&param, spPost.get());
 }
 MS2_REPLACE_METHOD(0x141884af0, CUgcManager, FUN_141884af0, 623, 0x752A3726);
 
@@ -1798,7 +1799,7 @@ void CUgcManager::FUN_141884d70(CUgcUserProxy* pUser, CString strPath)
     param.m_nType = 5;
     param.m_user.CopyFrom(pUser);
     param.m_strUrl = strPath;
-    FUN_141886150(&param, pUser);
+    PushDownload(&param, pUser);
 }
 MS2_REPLACE_METHOD(0x141884d70, CUgcManager, FUN_141884d70, 177, 0x0C85E59C);
 
@@ -1823,7 +1824,7 @@ void CUgcManager::FUN_141884f10(CUgcUserProxy* pUser, CString strPath)
     param.m_nType = 10;
     param.m_user.CopyFrom(pUser);
     param.m_strUrl = strPath;
-    FUN_141886150(&param, pUser);
+    PushDownload(&param, pUser);
 }
 MS2_REPLACE_METHOD(0x141884f10, CUgcManager, FUN_141884f10, 177, 0x00E5A2FF);
 
@@ -1849,7 +1850,7 @@ void CUgcManager::FUN_141885090(__int64 guildId, CString strUrl, CString strName
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spMark.get());
+    PushDownload(&param, spMark.get());
 }
 MS2_REPLACE_METHOD(0x141885090, CUgcManager, FUN_141885090, 319, 0x65AC29E4);
 
@@ -1865,7 +1866,7 @@ void CUgcManager::FUN_1418851e0(__int64 guildId, CString strUrl, int nIndex, CSt
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spPoster.get());
+    PushDownload(&param, spPoster.get());
 }
 MS2_REPLACE_METHOD(0x1418851e0, CUgcManager, FUN_1418851e0, 339, 0x6B04F5B7);
 
@@ -1878,7 +1879,7 @@ void CUgcManager::FUN_141885340(CString strUrl)
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spProxy.get());
+    PushDownload(&param, spProxy.get());
 }
 MS2_REPLACE_METHOD(0x141885340, CUgcManager, FUN_141885340, 241, 0xBA057102);
 
@@ -1901,7 +1902,7 @@ void CUgcManager::FUN_141885570(MS2Ptr<CUgcShopBannerProxy> spProxy, int nKind, 
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spProxy.get());
+    PushDownload(&param, spProxy.get());
 }
 MS2_REPLACE_METHOD(0x141885570, CUgcManager, FUN_141885570, 240, 0x182DD636);
 
@@ -1914,7 +1915,7 @@ void CUgcManager::FUN_141885670(int nKind, CString strUrl)
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spProxy.get());
+    PushDownload(&param, spProxy.get());
 }
 MS2_REPLACE_METHOD(0x141885670, CUgcManager, FUN_141885670, 248, 0xA9A077D7);
 
@@ -1928,7 +1929,7 @@ void CUgcManager::FUN_141885770(const CString& strUrl, const std::vector<unsigne
     param.m_strUrl = strUrl;
     param.m_user.Clear();
     param.m_upload.Clear();
-    FUN_141886150(&param, spProxy.get());
+    PushDownload(&param, spProxy.get());
 }
 MS2_REPLACE_METHOD(0x141885770, CUgcManager, FUN_141885770, 261, 0x933CEB38);
 
@@ -1940,10 +1941,10 @@ void CUgcManager::FUN_141885880(MS2Ptr<CItem> spItem)
     int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
     if (nKind != 9)
         return;
-    CUgcItemLook* pLook = ((CItem*)spItem)->FUN_140528380();
+    CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
     if (pLook == 0)
         return;
-    CBlueprintItemData* pBlueprint = ((CItem*)spItem)->FUN_1405284f0();
+    CBlueprintItemData* pBlueprint = ((CItem*)spItem)->GetBlueprintData();
     if (pBlueprint == 0)
         return;
     FUN_141885d20(pLook, 0, spItem, 0);
@@ -1959,7 +1960,7 @@ bool CUgcManager::FUN_1418859f0(const CUgcItemLook* pLook, const CBlueprintItemD
     int nKind = 9;
     CUgcBlueprintImageProxy image;
     image.m_n18 = pBlueprint->m_n18;
-    image.m_n20 = spItem.get() != 0 ? ((CItem*)spItem)->FUN_140526a50() : 0;
+    image.m_n20 = spItem.get() != 0 ? ((CItem*)spItem)->GetItemUid() : 0;
     image.m_n28 = spItem.get() != 0 ? ((CItem*)spItem)->FUN_1405276c0() : 0;
     image.m_strName = pLook->m_str28;
     CString strLocal = FUN_1410280d0(nKind, pLook->m_strUrl);
@@ -1977,7 +1978,7 @@ bool CUgcManager::FUN_1418859f0(const CUgcItemLook* pLook, const CBlueprintItemD
     param.m_upload.m_uid = pLook->m_n18;
     param.m_upload.m_strName = pLook->m_str20;
     param.m_upload.m_nType = 3;
-    FUN_141886150(&param, &image);
+    PushDownload(&param, &image);
     return true;
 }
 MS2_REPLACE_METHOD(0x1418859f0, CUgcManager, FUN_1418859f0, 800, 0x982B7862);
@@ -2018,7 +2019,7 @@ int CUgcManager::FUN_141885e20(CUgcItemLook* pLook, const int& nKind, const int&
                 icon.FUN_14088f960(*pCallBack);
             if (nObjectId != 0)
                 icon.m_nKind = nObjectId;
-            FUN_141886150(&param, &icon);
+            PushDownload(&param, &icon);
             return 1;
         }
     }
@@ -2027,11 +2028,11 @@ int CUgcManager::FUN_141885e20(CUgcItemLook* pLook, const int& nKind, const int&
 MS2_REPLACE_METHOD(0x141885e20, CUgcManager, FUN_141885e20, 802, 0x47FBD40F);
 
 // @0x141886150
-void CUgcManager::FUN_141886150(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
+void CUgcManager::PushDownload(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
 {
     TSingleton<CUgcDownloadDown>::GetInstance()->Push(pParam, pProxy);
 }
-MS2_REPLACE_METHOD(0x141886150, CUgcManager, FUN_141886150, 47, 0x48A95CC3);
+MS2_REPLACE_METHOD(0x141886150, CUgcManager, PushDownload, 47, 0x48A95CC3);
 
 // @0x141886190
 // A download finished: keeps its control under its name with the result.
@@ -2052,7 +2053,7 @@ void CUgcManager::FUN_141886190(CString strName, MS2Ptr<CUgcDownloadCtrl> spCtrl
 MS2_REPLACE_METHOD(0x141886190, CUgcManager, FUN_141886190, 215, 0x8A55253C);
 
 // @0x141886270
-void CUgcManager::FUN_141886270(CString strName, int nResult)
+void CUgcManager::SetDownloadResult(CString strName, int nResult)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -2066,7 +2067,7 @@ void CUgcManager::FUN_141886270(CString strName, int nResult)
             spCtrl->SetResult(nResult);
     }
 }
-MS2_REPLACE_METHOD(0x141886270, CUgcManager, FUN_141886270, 192, 0xC14D4FA7);
+MS2_REPLACE_METHOD(0x141886270, CUgcManager, SetDownloadResult, 192, 0xC14D4FA7);
 
 // @0x141886340
 MS2Ptr<IUgcProxy> CUgcManager::FUN_141886340(int nKind)
@@ -2966,7 +2967,7 @@ MS2_REPLACE_METHOD(0x14188a5b0, CUgcManager, FUN_14188a5b0, 313, 0xBDCC23CC);
 
 // @0x14188a6f0
 // Clear the read-only attribute of a file.
-void CUgcManager::FUN_14188a6f0(const CStringW& strPath)
+void CUgcManager::ClearReadOnlyAttribute(const CStringW& strPath)
 {
     DWORD dwAttributes = GetFileAttributesW(strPath);
     if (dwAttributes == INVALID_FILE_ATTRIBUTES)
@@ -2974,7 +2975,7 @@ void CUgcManager::FUN_14188a6f0(const CStringW& strPath)
     if ((dwAttributes & FILE_ATTRIBUTE_READONLY) != 0)
         SetFileAttributesW(strPath, dwAttributes & ~FILE_ATTRIBUTE_READONLY);
 }
-MS2_REPLACE_METHOD(0x14188a6f0, CUgcManager, FUN_14188a6f0, 100, 0x4361D3D1);
+MS2_REPLACE_METHOD(0x14188a6f0, CUgcManager, ClearReadOnlyAttribute, 100, 0x4361D3D1);
 
 // @0x14188a760
 void CUgcManager::FUN_14188a760(const CStringW& strDir, int bRemoveDir)
@@ -3009,7 +3010,7 @@ void CUgcManager::FUN_14188a7c0(const CStringW& strDir, int bRemoveDir, std::set
             }
             else
             {
-                FUN_14188a6f0(strPath);
+                ClearReadOnlyAttribute(strPath);
                 DeleteFileW(strPath);
             }
         } while (FindNextFileW(hFind, &fd));
@@ -3155,12 +3156,12 @@ MS2_REPLACE_METHOD(0x14188b4e0, CUgcManager, FUN_14188b4e0, 1591, 0xB3B38B8A);
 
 // @0x14188bb20
 // Delete the files of m_map190.
-void CUgcManager::FUN_14188bb20()
+void CUgcManager::DeleteMappedFiles()
 {
     for (std::map<CStringW, CStringW>::iterator it = m_map190.begin(); it != m_map190.end(); ++it)
         DeleteFileW(it->first);
 }
-MS2_REPLACE_METHOD(0x14188bb20, CUgcManager, FUN_14188bb20, 124, 0xFD52AD13);
+MS2_REPLACE_METHOD(0x14188bb20, CUgcManager, DeleteMappedFiles, 124, 0xFD52AD13);
 
 // @0x14188bbb0
 // Stop the current upload and close its dialog.
@@ -3181,7 +3182,7 @@ void CUgcManager::FUN_14188bbb0()
         if (spCtrl == NULL)
             return;
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)spCtrl->GetDialog()))
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)spCtrl->GetDialog());
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)spCtrl->GetDialog());
     }
 }
 MS2_REPLACE_METHOD(0x14188bbb0, CUgcManager, FUN_14188bbb0, 291, 0x207117CD);
@@ -3424,7 +3425,7 @@ void CUgcManager::FUN_14188cb10(int nType)
     wchar_t szExt[0x100] = {0};
     CStringW strDir = FUN_141026920(nType);
     CStringW strKind = strDir.Mid(2);
-    CStringW strLanguage = FUN_14189c5b0(((class CFeatureManager*)FUN_140166410())->FUN_14036d960());
+    CStringW strLanguage = FUN_14189c5b0(((class CFeatureManager*)FUN_140166410())->GetLocaleNameW());
     CStringW strPath = StringFormat(L".\\Data\\Resource\\Image\\{0}\\{1}", strKind, strLanguage);
     strPath.Replace(L"\\", L"/");
     CString strPathA = FUN_1401d4330(strPath, 0);
@@ -3686,7 +3687,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
         spItem = g_143ab2a90.FUN_140a5d680(itemUid);
     if (spItem == 0)
         return;
-    spItem->FUN_140528300(&look);
+    spItem->SetUgcLook(&look);
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if ((spCtrl.get() ? true : false) && (spCtrl->m_spViewer.get() ? true : false))
         spCtrl->m_spViewer->vfunc_12(itemUid);
@@ -3715,7 +3716,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     CItem* pItem = g_143ab2a90.FUN_140a5d680(itemUid).get();
     if (pItem == 0)
         return;
-    pItem->FUN_140528300(&look);
+    pItem->SetUgcLook(&look);
     Unk_UgcBlueprintDialog* pDialog = FUN_140d27260(0x4f7b);
     if (pDialog != 0 && pDialog->vfunc_55() == 0)
         pDialog->FUN_140c36b40(pItem);
@@ -3852,7 +3853,7 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
     {
         UIUGCItemEditDialog* pDialog = FUN_140eeff60(0x4e69);
         if (pDialog != 0)
-            pDialog->FUN_141b45020();
+            pDialog->ClearItemName();
         FUN_140d73bc0(0x8ba, 0, 0, L"");
         break;
     }
@@ -3880,17 +3881,17 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
     case 0x8a:
         break;
     case 0x8b:
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4f7b);
         break;
     case 0x8e:
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_uic_error"), 0, 0, L"");
         break;
     default:
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4f7b);
         FUN_141275260(0x6d7, 1, 1);
         break;
     }
@@ -3923,22 +3924,22 @@ int CUgcManager::FUN_14188fdb0(int nDialog)
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e56) == 0)
             return 0;
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e70);
     }
     else if (nDialog == 0x4e69)
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e69) == 0)
             return 0;
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e56);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e70);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e56);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e70);
     }
     else if (nDialog == 0x4e70)
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940(eUI_4e70) == 0)
             return 0;
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e56);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4e69);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e56);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4e69);
     }
     return 1;
 }
@@ -3972,12 +3973,12 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
         CUgcViewerBlueprintImage* pViewer = static_cast<CUgcViewerBlueprintImage*>(m_spUpload->m_spViewer.get());
         if (pViewer == 0)
             throw Exception(4);
-        Unk_ItemUgcInfo* pUgc = spItem->FUN_1405278d0();
+        Unk_ItemUgcInfo* pUgc = spItem->GetUgcInfo();
         if (pUgc == 0)
             throw Exception(5);
         CBlueprintItemData blueprint;
         blueprint.Read(packet);
-        reinterpret_cast<CItemUgc*>(pUgc)->FUN_140632070(&blueprint);
+        reinterpret_cast<CItemUgc*>(pUgc)->SetBlueprint(&blueprint);
         pViewer->m_proxy.m_n18 = blueprint.m_n18;
         pViewer->m_proxy.m_n20 = itemUid;
         pViewer->m_proxy.m_n28 = spItem->FUN_1405276c0();
@@ -3987,7 +3988,7 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
     catch (Exception& e)
     {
         int nCode = e.GetCode();
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0(eUI_4f7b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog(eUI_4f7b);
         CStringW strError(L"error add blueprint");
         FUN_1412751f0(strError, 1, 1);
     }

@@ -248,7 +248,7 @@ void CLua::CLuaContext::Error()
 // @0x140673150
 void CLua::CLuaContext::SetLocale()
 {
-    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
+    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->GetLocaleName();
     Select("set_locale");
     Push((const char*)strLocale);
     bool bOk = Call();
@@ -303,7 +303,7 @@ bool CLua::IsReady()
 // @0x140673450
 void CLua::Validate()
 {
-    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
+    CString strLocale = TSingleton<CFeatureManager>::GetInstance()->GetLocaleName();
     CString strCurrent = GetLocale();
     if (strLocale.Compare(strCurrent) != 0)
     {
@@ -1019,7 +1019,7 @@ void CLua::CalcMeratSkinItemBreakReward(unsigned short a, int b, long long c, in
                 int nTag = FUN_140557640(FUN_140281980(), CString(context->String(i + 2)));
                 Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
                 Unk_GemIngredientTag(info.operator->(), nTag);
-                rRewards.FUN_14026bca0(info);
+                rRewards.AddIngredient(info);
             }
         }
     }

@@ -76,7 +76,7 @@ public:
     void FUN_140e965e0();
     void FUN_140e96a90(const CStringW& path);
     int FUN_140e96c50(int type, CInPacket& packet);
-    void FUN_140e96900(int* width, int* height);
+    void GetDialogSize(int* width, int* height);
     void FUN_140e969a0();
     void FUN_140e96ed0(GameEventVariable*);
     void FUN_140e96f00(GameEventVariable*);

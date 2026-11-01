@@ -89,13 +89,13 @@ public:
     void FUN_141357300(NotifyObject* pObj);
     void FUN_141357330(NotifyObject* pObj);
     void SetNoticeSpeed(float f);
-    void FUN_141357430(CStringW strText);
-    void FUN_1413574a0(int nMode);
-    void FUN_141357580(int nMode);
+    void SetNotice(CStringW strText);
+    void SetGamePadMode(int nMode);
+    void SetInputMode(int nMode);
     void FUN_141357640(__int64 tTime, __int64 nBonus);
     bool FUN_1413579d0();
     void FUN_141357ac0(CInPacket& packet);
-    void FUN_141357af0();
+    void ResetClock();
     void FUN_141357b30();
     void FUN_141357d90(int nQuiet);
     void FUN_141358020(bool bForce);
@@ -107,7 +107,7 @@ public:
     void FUN_141358b20(Scaleform::GFx::Value* pRetVal);
     void FUN_141358df0(Scaleform::GFx::Value* pRetVal);
     void FUN_141359340();
-    void FUN_1413593d0(MS2Ptr<Unk_HudButton> spButton, int nCount);
+    void SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount);
     void FUN_141359510(int nState);
 
     MS2Ptr<Unk_HudButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_HudButton>& out);
@@ -225,13 +225,13 @@ public:
     void FUN_14135d440(bool bOn);
     void FUN_14135d490(bool bOn);
     void FUN_14135d4f0(bool bOn);
-    void FUN_14135d580(float fRed, float fGreen, float fBlue);
+    void SetGlowColor(float fRed, float fGreen, float fBlue);
     void FUN_14135d630(bool bOn);
     void FUN_14135d660(float fValue);
     void FUN_14135d690(float fNear, float fFar);
     void FUN_14135d700(bool bOn);
     void FUN_14135d730(ASData& data);
-    void FUN_14135d960(const CString& strName, float fValue);
+    void SetSliderValue(const CString& strName, float fValue);
 };
 MS2_CHECK_SIZE(UIVisualEffectDialog, 0x178);
 

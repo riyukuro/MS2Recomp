@@ -31,10 +31,10 @@
 class Unk_140166420 : public CFileSystem { };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>* pOut, const char* pszDelim);   // split into uints
 unsigned char FUN_1401d1320(CCacheData*);                                // the file changed since it was loaded
@@ -72,6 +72,12 @@ static CString s_skill("skill");
 // @0x1400bcfc0
 static CString s_stun("stun");
 
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 #ifndef MS2_HOOK_DLL
 // @0x1400bcff0
 #include "ms2/placeholder/unk_1402a9d70.h"
@@ -170,16 +176,16 @@ int LoadItemOptionSkillTier()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("skillTier"); pNode != 0; pNode = pNode->FUN_140168650("skillTier"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("skillTier"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("skillTier")))
     {
         if (!FUN_14028f710(pNode))
             continue;
         unsigned nId = 0;
         CString strSkills;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         FUN_140873ad0(pNode, "skillIDs", strSkills);
         ATL::CAtlArray<unsigned int> aSkills;
         FUN_140177e10(strSkills, &aSkills, ",");

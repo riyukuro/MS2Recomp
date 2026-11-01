@@ -78,6 +78,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 using namespace GroupMessengerData;
 
@@ -171,11 +172,7 @@ Unk_GrmChatUI* FUN_141482e80();
 class Unk_GrmWorld { public: PCBase* FUN_141bd0cc0(); };
 
 // The key state.
-class Unk_GrmKeys : public CInputKeyHandler
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);
-};
+class Unk_GrmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The notify manager.
@@ -384,11 +381,11 @@ void UIGroupMessenger::vfunc_63(int n)
         {
             unsigned nCount = FUN_141482e80()->m_pBrowser->FUN_141952b30(m_nGroupId);
             unsigned nRows;
-            if ((unsigned)spOutput->FUN_1422dd150() < nCount + 5)
-                nRows = spOutput->FUN_1422dd150();
+            if ((unsigned)spOutput->GetItemCount() < nCount + 5)
+                nRows = spOutput->GetItemCount();
             else
                 nRows = nCount + 5;
-            spOutput->FUN_1422dd0d0(nRows);
+            spOutput->ScrollToIndex(nRows);
             spOutput->vfunc_24(1);
         }
         FUN_141482e80()->FUN_141482c80(m_strName);
@@ -458,7 +455,7 @@ int UIGroupMessenger::vfunc_53(void* pCfg)
         XmlSetAttr((class TiXmlElement*)(pCfg), "alignType", m_nAlignType);
         XmlSetAttr((class TiXmlElement*)(pCfg), "scrollPosition", m_nScrollPosition);
         XmlSetAttr((class TiXmlElement*)(pCfg), "width", pDialog->FUN_1422c1340());
-        XmlSetAttr((class TiXmlElement*)(pCfg), "height", pDialog->FUN_1422c13b0());
+        XmlSetAttr((class TiXmlElement*)(pCfg), "height", pDialog->GetHeightCeil());
         FUN_1408740a0(pCfg, "name", m_strName);
         XmlSetAttr((class TiXmlElement*)(pCfg), "alpha", m_nAlpha);
         XmlSetAttr((class TiXmlElement*)(pCfg), "userlist", m_bUserList);
@@ -482,7 +479,7 @@ int UIGroupMessenger::vfunc_54(void* pCfg)
         XmlGetAttr((class TiXmlElement*)(pCfg), "scrollPosition", m_nScrollPosition);
         XmlGetAttr((class TiXmlElement*)(pCfg), "width", nWidth);
         XmlGetAttr((class TiXmlElement*)(pCfg), "height", nHeight);
-        FUN_140873420(pCfg, "name", m_strName);
+        XmlGetAttr((class TiXmlElement*)(pCfg), "name", m_strName);
         XmlGetAttr((class TiXmlElement*)(pCfg), "alpha", m_nAlpha);
         XmlGetAttr((class TiXmlElement*)(pCfg), "userlist", m_bUserList);
         XmlGetAttr((class TiXmlElement*)(pCfg), "minimize", m_6c);
@@ -595,13 +592,13 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 if (MS2Ptr<ASTextField> spName = box.FUN_1409b4620("m_textInput"))
                 {
                     Unk_BlockList request(0x4e93, m_nGroupId);
-                    request.Add("MessengerName", spName->FUN_1422c4da0(), 0);
+                    request.Add("MessengerName", spName->GetTextW(), 0);
                     request.SetEnabled(1);
                     if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
                     {
-                        if (FUN_14194ce40(spName->FUN_1422c4da0()) == 1)
+                        if (FUN_14194ce40(spName->GetTextW()) == 1)
                             return 0;
-                        SetName(spName->FUN_1422c4da0());
+                        SetName(spName->GetTextW());
                     }
                 }
                 if (MS2Ptr<Unk_GrmSlider> spAlpha = static_cast<Unk_GrmBoxRoot&>(box).FUN_140fafed0<Unk_GrmSlider>("m_slider0"))
@@ -787,7 +784,7 @@ void UIGroupMessenger::FUN_14194a340(int nKind, const CStringW& strName, const C
 {
     FUN_14194bde0();
     CStringW strMsg = FUN_140632a60(0x80e, strName, strOther);
-    FUN_14194a650(nKind, strName, strMsg);
+    AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A340, UIGroupMessenger, FUN_14194a340, 109, 0xF1D02319);
 
@@ -800,7 +797,7 @@ void UIGroupMessenger::FUN_14194a3c0(int nKind, const CStringW& strName, int nMo
         strMsg = FUN_14052bd00(0x810, strName);
     else if (nMode == 1)
         strMsg = FUN_14052bd00(0x813, strName);
-    FUN_14194a650(nKind, strName, strMsg);
+    AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A3C0, UIGroupMessenger, FUN_14194a3c0, 252, 0xF0BC3812);
 
@@ -809,7 +806,7 @@ void UIGroupMessenger::FUN_14194a4d0(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
     CStringW strMsg = FUN_14052bd00(0x811, strName);
-    FUN_14194a650(nKind, strName, strMsg);
+    AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A4D0, UIGroupMessenger, FUN_14194a4d0, 99, 0xBA001AB9);
 
@@ -818,7 +815,7 @@ void UIGroupMessenger::FUN_14194a540(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
     CStringW strMsg = FUN_14052bd00(0x812, strName);
-    FUN_14194a650(nKind, strName, strMsg);
+    AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A540, UIGroupMessenger, FUN_14194a540, 99, 0x5DE0CDB3);
 
@@ -832,13 +829,13 @@ void UIGroupMessenger::FUN_14194a5b0(int nKind, const CStringW& strName, const C
 MS2_REPLACE_METHOD(0x14194A5B0, UIGroupMessenger, FUN_14194a5b0, 139, 0x816186C3);
 
 // @0x14194a650
-void UIGroupMessenger::FUN_14194a650(int nKind, const CStringW& strName, const CStringW& strMsg)
+void UIGroupMessenger::AddSystemMessage(int nKind, const CStringW& strName, const CStringW& strMsg)
 {
     FUN_14194d3d0(nKind, strName, strMsg, 1);
     if (FUN_141482e80()->m_pBrowser != 0)
         FUN_141482e80()->m_pBrowser->FUN_141953810(nKind, strName, strMsg, 1, vfunc_64());
 }
-MS2_REPLACE_METHOD(0x14194A650, UIGroupMessenger, FUN_14194a650, 139, 0xEFB6BE61);
+MS2_REPLACE_METHOD(0x14194A650, UIGroupMessenger, AddSystemMessage, 139, 0xEFB6BE61);
 
 // @0x14194a6f0
 void UIGroupMessenger::FUN_14194a6f0(NotifyObject* pNotify)
@@ -853,7 +850,7 @@ void UIGroupMessenger::FUN_14194a6f0(NotifyObject* pNotify)
         return;
     if (pSelected->m_strTarget != m_strName)
     {
-        FUN_14194ad60();
+        CloseEmoticonPreview();
         return;
     }
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(pSelected->m_nEmoticonId);
@@ -907,7 +904,7 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
         item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
         item.FUN_1407cb9c0("width", spEmo->m_nWidth);
         item.FUN_1407cb9c0("height", spEmo->m_nHeight);
-        item.FUN_1407cbbe0("favorite", spCli->FUN_140a39fa0(spEmo->m_nId));
+        item.FUN_1407cbbe0("favorite", spCli->IsEmoticonFavorite(spEmo->m_nId));
         arr.PushBack(item.FUN_1422bb870());
     }
     if (arr.GetArraySize() <= 0)
@@ -918,14 +915,14 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
 MS2_REPLACE_METHOD(0x14194A930, UIGroupMessenger, FUN_14194a930, 1055, 0x7996AA4B);
 
 // @0x14194ad60
-void UIGroupMessenger::FUN_14194ad60()
+void UIGroupMessenger::CloseEmoticonPreview()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return;
     pDialog->Invoke("closeChatEmoticonPreview");
 }
-MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, FUN_14194ad60, 110, 0xF5CDBC08);
+MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, CloseEmoticonPreview, 110, 0xF5CDBC08);
 
 // @0x14194ade0
 int UIGroupMessenger::SendMessengerMode4(int nEmoticonId)
@@ -1031,7 +1028,7 @@ void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
             Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
             if (spChat.get())
             {
-                Unk_ChatMemberPtr spMember = spChat->FUN_14137ba10(strName);
+                Unk_ChatMemberPtr spMember = spChat->FindMemberByName(strName);
                 if (spMember.get())
                     pMenu->FUN_141a7f890(info, spMember, strHistory, 6);
             }
@@ -1186,7 +1183,7 @@ void UIGroupMessenger::OnBuildScrollingList()
             item.FUN_1407cbb20(s_strIconPath, entry.FUN_141483dc0());
             item.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
             item.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
-            spList->FUN_1422dd230(item);
+            spList->AddItem(item);
         }
         for (POSITION pos = invited.GetHeadPosition(); pos != 0; invited.GetNext(pos))
         {
@@ -1199,14 +1196,14 @@ void UIGroupMessenger::OnBuildScrollingList()
             item.FUN_1407cbb20(s_strIconPath, entry.FUN_141483dc0());
             item.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
             item.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
-            spList->FUN_1422dd230(item);
+            spList->AddItem(item);
         }
         unsigned nRows;
-        if (spList->FUN_1422dd150() > 8)
+        if (spList->GetItemCount() > 8)
             nRows = 8;
         else
-            nRows = spList->FUN_1422dd150();
-        spList->FUN_1422dd000(nRows);
+            nRows = spList->GetItemCount();
+        spList->SetRowCount(nRows);
         static_cast<Unk_GrmControl*>(static_cast<ASUIComponent*>(spList.operator->()))->vfunc_24(1);   // slot 24 validateNow
     }
 }
@@ -1236,7 +1233,7 @@ int UIGroupMessenger::FUN_14194c830()
     MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput");
     if (spInput == 0)
         return 0;
-    CStringW strText = spInput->FUN_1422e0b00();
+    CStringW strText = spInput->GetText();
     strText = strText.Trim();
     if (strText.IsEmpty())
     {
@@ -1281,7 +1278,7 @@ int UIGroupMessenger::FUN_14194cbb0()
         }
         else
         {
-            int nLength = spInput->FUN_1422e0b00().GetLength();
+            int nLength = spInput->GetText().GetLength();
             spInput->FUN_1422c7630(1);
             spInput->FUN_1422e1500(nLength, nLength);
             spInput->vfunc_24(1);
@@ -1323,7 +1320,7 @@ int UIGroupMessenger::FUN_14194ce40(CStringW strName)
     }
     if (FUN_141482e80()->m_pBrowser != 0)
     {
-        UIGroupMessenger* pOther = FUN_141482e80()->m_pBrowser->FUN_141952fc0(strName);
+        UIGroupMessenger* pOther = FUN_141482e80()->m_pBrowser->FindWindowByName(strName);
         if (pOther != 0 && pOther != this)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommon(0x817), 0, L""))
@@ -1339,7 +1336,7 @@ MS2_REPLACE_METHOD(0x14194CE40, UIGroupMessenger, FUN_14194ce40, 696, 0xB730CB0A
 // @0x14194d100
 void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CStringW& strText, int bSelectEnd)
 {
-    CStringW strCurrent = spInput->FUN_1422e0b00();
+    CStringW strCurrent = spInput->GetText();
     if (strCurrent.GetLength() >= spInput->FUN_1422e0da0())
         return;
     CStringW strSpace(L" ");
@@ -1354,7 +1351,7 @@ void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CString
     spInput->FUN_1422e0bd0(strHtml + strText + strSpace);
 #endif
     spInput->vfunc_24(1);
-    int nLength = spInput->FUN_1422e0b00().GetLength();
+    int nLength = spInput->GetText().GetLength();
     if (bSelectEnd && nLength > 0)
         spInput->FUN_1422e1500(nLength, nLength);
     spInput->vfunc_24(1);
@@ -1376,7 +1373,7 @@ void UIGroupMessenger::FUN_14194d3d0(int nKind, const CStringW& strName, const C
         item.FUN_1407cba60(s_strIconPath, strIcon);
         item.FUN_1407cbb20(s_strCharacterName, strName);
         item.FUN_1407cbbe0("visibleBg", bVisibleBg);
-        spOutput->FUN_1422dd230(item);
+        spOutput->AddItem(item);
         spOutput->vfunc_24(1);
         spOutput->FUN_1422e17a0();
     }
@@ -1430,7 +1427,7 @@ UIInviteGroupDialog* FUN_14194dd10(int nUiId)
 {
     if (CUIService::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spObj.get() != 0)
             return dynamic_cast<UIInviteGroupDialog*>(spObj.operator->());
     }
@@ -1597,10 +1594,10 @@ int UIGroupMessengerBrowser::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     CStringW strText = static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02d00();
                     ASObj box(root, 2);
-                    if (MS2Ptr<ASDropdownMenu> spGroups = box.FUN_140bbe700("m_dropdown"))
+                    if (MS2Ptr<ASDropdownMenu> spGroups = box.GetDropdownMenu("m_dropdown"))
                     {
                         CStringW strGroup = static_cast<Unk_GrmDropdown*>(spGroups.operator->())->FUN_1422dfe00();
-                        UIGroupMessenger* pWindow = FUN_141952fc0(strGroup);
+                        UIGroupMessenger* pWindow = FindWindowByName(strGroup);
                         if (pWindow != 0)
                         {
                             bDone = 1;
@@ -1653,7 +1650,7 @@ void UIGroupMessengerBrowser::vfunc_80(void* pPacket)
     {
         if (entry.m_nFlags == 0)
         {
-            UIGroupMessenger* pWindow = FUN_141952f20(result.GetMode());
+            UIGroupMessenger* pWindow = FindWindowByGroupId(result.GetMode());
             if (pWindow != 0)
             {
                 pWindow->SetName(entry.m_strName);
@@ -1683,7 +1680,7 @@ void UIGroupMessengerBrowser::vfunc_15()
         {
             TalkLog& log = m_pending.GetNext(pos);
             CStringW strMsg = FUN_141953b10(log.m_strName);
-            UIGroupMessenger* pWindow = FUN_141952f20(log.m_nKind);
+            UIGroupMessenger* pWindow = FindWindowByGroupId(log.m_nKind);
             if (pWindow != 0)
             {
                 pWindow->FUN_14194a5b0(log.m_nKind, log.m_strMsg, strMsg);
@@ -1701,7 +1698,7 @@ void UIGroupMessengerBrowser::FUN_1419515c0(int nGroupId)
 {
     m_logs.SetAt(nGroupId, new TalkLogList());
     FUN_141952d80(nGroupId, 1, 0);
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         FUN_141482e80()->FUN_141482c80(pWindow->GetName());
     FUN_141276180(s_strButtonClick, "");
@@ -1710,7 +1707,7 @@ void UIGroupMessengerBrowser::FUN_1419515c0(int nGroupId)
 // @0x141951720
 void UIGroupMessengerBrowser::FUN_141951720(int nGroupId, const CStringW& strName, const CStringW& strText)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         pWindow->FUN_14194a320(nGroupId, strName, strText);
     UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
@@ -1726,27 +1723,27 @@ void UIGroupMessengerBrowser::FUN_1419517b0(int nGroupId, const CStringW& strNam
     FUN_141952d80(nGroupId, 1, 1);
     FUN_141276180(s_strSystemGroupChat, "");
     FUN_1412751f0(FUN_14052bd00(0x80f, strName), 3, 1);
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
     {
-        pWindow->FUN_14194a650(nGroupId, strName, FUN_140632a60(0x80e, strName, strOther));
+        pWindow->AddSystemMessage(nGroupId, strName, FUN_140632a60(0x80e, strName, strOther));
         if (pWindow->vfunc_64())
             FUN_141952530();
     }
 }
 
 // @0x1419519a0
-void UIGroupMessengerBrowser::FUN_1419519a0(int nGroupId)
+void UIGroupMessengerBrowser::RemoveGroup(int nGroupId)
 {
     m_logs.RemoveKey(nGroupId);
     FUN_1419532d0(nGroupId);
 }
-MS2_REPLACE_METHOD(0x1419519A0, UIGroupMessengerBrowser, FUN_1419519a0, 55, 0x80CDBA28);
+MS2_REPLACE_METHOD(0x1419519A0, UIGroupMessengerBrowser, RemoveGroup, 55, 0x80CDBA28);
 
 // @0x1419519e0
 void UIGroupMessengerBrowser::FUN_1419519e0(int nGroupId, const CStringW& strName, const CStringW& strOther)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         pWindow->FUN_14194a340(nGroupId, strName, strOther);
     UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
@@ -1758,7 +1755,7 @@ MS2_REPLACE_METHOD(0x1419519E0, UIGroupMessengerBrowser, FUN_1419519e0, 126, 0xC
 // @0x141951a70
 void UIGroupMessengerBrowser::FUN_141951a70(int nGroupId, const CStringW& strName, int nMode)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         pWindow->FUN_14194a3c0(nGroupId, strName, nMode);
     UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
@@ -1770,7 +1767,7 @@ MS2_REPLACE_METHOD(0x141951A70, UIGroupMessengerBrowser, FUN_141951a70, 121, 0x1
 // @0x141951af0
 void UIGroupMessengerBrowser::FUN_141951af0(int nGroupId, const CStringW& strName)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         pWindow->FUN_14194a4d0(nGroupId, strName);
     UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
@@ -1782,7 +1779,7 @@ MS2_REPLACE_METHOD(0x141951AF0, UIGroupMessengerBrowser, FUN_141951af0, 111, 0xC
 // @0x141951b70
 void UIGroupMessengerBrowser::FUN_141951b70(int nGroupId, const CStringW& strName)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
         pWindow->FUN_14194a540(nGroupId, strName);
     UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
@@ -1794,9 +1791,9 @@ MS2_REPLACE_METHOD(0x141951B70, UIGroupMessengerBrowser, FUN_141951b70, 111, 0x0
 // @0x141951bf0
 void UIGroupMessengerBrowser::FUN_141951bf0(int nGroupId, const CStringW& strName, const CStringW& strMsg)
 {
-    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
-        pWindow->FUN_14194a650(nGroupId, strName, strMsg);
+        pWindow->AddSystemMessage(nGroupId, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x141951BF0, UIGroupMessengerBrowser, FUN_141951bf0, 79, 0xBE8B028E);
 
@@ -1821,7 +1818,7 @@ void UIGroupMessengerBrowser::FUN_141951d80(int nGroupId, const CStringW& strNam
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->FUN_140526b30(DAT_143ab2864);
+            spItem->SetObjectId(DAT_143ab2864);
             spItem->FUN_140524eb0(*pPacket);
             m_items.SetAt(nUid, spItem);
         }
@@ -1832,7 +1829,7 @@ MS2_REPLACE_METHOD(0x141951D80, UIGroupMessengerBrowser, FUN_141951d80, 490, 0xB
 // @0x141951f70
 void UIGroupMessengerBrowser::FUN_141951f70(const CStringW& strText)
 {
-    int nCount = CGroupChatManager::GetInstance()->FUN_14137e820();
+    int nCount = CGroupChatManager::GetInstance()->GetChatCount();
     if (nCount == 0)
     {
         CGroupChatManager::GetInstance()->Create(strText);
@@ -2042,7 +2039,7 @@ int UIGroupMessengerBrowser::FUN_141952d80(unsigned nGroupId, int bDeleteSave, i
 }
 
 // @0x141952f20
-UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952f20(int nGroupId)
+UIGroupMessenger* UIGroupMessengerBrowser::FindWindowByGroupId(int nGroupId)
 {
     for (POSITION pos = m_windows.GetStartPosition(); pos != 0; m_windows.GetNext(pos))
     {
@@ -2054,10 +2051,10 @@ UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952f20(int nGroupId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141952F20, UIGroupMessengerBrowser, FUN_141952f20, 145, 0x408E827A);
+MS2_REPLACE_METHOD(0x141952F20, UIGroupMessengerBrowser, FindWindowByGroupId, 145, 0x408E827A);
 
 // @0x141952fc0
-UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952fc0(const CStringW& strName)
+UIGroupMessenger* UIGroupMessengerBrowser::FindWindowByName(const CStringW& strName)
 {
     for (POSITION pos = m_windows.GetStartPosition(); pos != 0; m_windows.GetNext(pos))
     {
@@ -2069,12 +2066,12 @@ UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952fc0(const CStringW& strName
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141952FC0, UIGroupMessengerBrowser, FUN_141952fc0, 192, 0x8B12CA66);
+MS2_REPLACE_METHOD(0x141952FC0, UIGroupMessengerBrowser, FindWindowByName, 192, 0x8B12CA66);
 
 // @0x141953090
 void UIGroupMessengerBrowser::FUN_141953090(const CStringW& strName)
 {
-    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    UIGroupMessenger* pWindow = FindWindowByName(strName);
     if (pWindow != 0 && pWindow->GetName() == strName)
     {
         pWindow->vfunc_63(0);
@@ -2086,7 +2083,7 @@ MS2_REPLACE_METHOD(0x141953090, UIGroupMessengerBrowser, FUN_141953090, 202, 0xD
 // @0x141953160
 void UIGroupMessengerBrowser::FUN_141953160(const CStringW& strName)
 {
-    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    UIGroupMessenger* pWindow = FindWindowByName(strName);
     if (pWindow != 0 && pWindow->GetName() == strName)
     {
         pWindow->vfunc_63(1);
@@ -2098,7 +2095,7 @@ MS2_REPLACE_METHOD(0x141953160, UIGroupMessengerBrowser, FUN_141953160, 205, 0xA
 // @0x141953240
 void UIGroupMessengerBrowser::FUN_141953240(const CStringW& strName)
 {
-    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    UIGroupMessenger* pWindow = FindWindowByName(strName);
     if (pWindow != 0)
     {
         if (pWindow->vfunc_64())

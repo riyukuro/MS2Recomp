@@ -46,12 +46,12 @@ public:
     virtual int vfunc_48() { return 20249; }
     bool FUN_140e0ea40();
     void FUN_140e0eb40(CInPacket&);
-    void FUN_140e0f6b0();
+    void ClearEntries();
     void FUN_140e0f790();
     void FUN_140e0fcf0(int);
     void FUN_140e0fd20(int);
-    void FUN_140e0fe40();
-    void FUN_140e0ff50();
+    void LoadAllRenderTargets();
+    void UnloadAllRenderTargets();
     void FUN_140e10010(int&, int&, unsigned&, int, int);
     void FUN_140e102b0(Unk_ClosingEntry*);
     void FUN_140e104d0(int);

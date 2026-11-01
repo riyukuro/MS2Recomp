@@ -13,6 +13,13 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -24,7 +31,7 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 void FUN_14054c030(void*, int, int, const wchar_t*, const CStringA&, const CStringA&);   // logger with two arguments
 CStringA FUN_14071ae20(const CStringA& strFile);                        // the full path of a table file
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -32,7 +39,6 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault)
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
 bool FUN_140841300(const CStringW& str, const char* psz);               // string equals
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one argument
 
 
 bool CServerStringGroup::s_bInit;
@@ -55,15 +61,15 @@ bool CServerStringGroup::Load()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     m_mapFile.RemoveAll();
     CCacheData::FUN_1401d1160(CStringA(strPath));
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
@@ -104,7 +110,7 @@ CStringW CServerStringGroup::GetString(const CStringW& strKey)
             TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
             return strText;
         }
-        return FUN_1401e8510(L"NO KEY : {0}", strKey);
+        return StringFormat<CStringW>(L"NO KEY : {0}", strKey);
     }
     else
         return strKey;

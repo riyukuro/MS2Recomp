@@ -25,11 +25,11 @@ public:
     virtual void vfunc_26();                                    // 26 0x140c110b0
     virtual int vfunc_48() { return 0x4f86; }                   // 48 0x140c14270
 
-    void FUN_140c11190(int nGroup);                             // pick the dungeon group: refill m_rooms
+    void SelectGroup(int nGroup);                             // pick the dungeon group: refill m_rooms
     void SetSelected(const std::set<unsigned>& selected);     // the ticked dungeon ids (set by the control center)
     void FUN_140c112e0();                                       // refresh
-    void FUN_140c11300();                                       // the list's row count
-    void FUN_140c11370(const Scaleform::GFx::FunctionHandler::Params& params);   // the dropdown changed
+    void UpdateListCount();                                       // the list's row count
+    void OnGroupChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // the dropdown changed
     void FUN_140c113c0(const Scaleform::GFx::FunctionHandler::Params& params);   // OK
     void FUN_140c11420(const Scaleform::GFx::FunctionHandler::Params& params);   // a row was filled
     void FUN_140c11840(const Scaleform::GFx::FunctionHandler::Params& params);   // a check box was clicked

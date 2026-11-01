@@ -79,7 +79,7 @@ public:
     void FUN_1413bbfe0(ATL::CAtlArray<MS2Ptr<CGuildPVPSeasonHistoryData>>& out);
     void SendPVPMode3();
     void SendPVPMode4();
-    void FUN_1413bc1f0(__int64 guildId, CStringW guildName);
+    void SetTargetGuild(__int64 guildId, CStringW guildName);
     void FUN_1413bc250(Unk_GuildTarget* target);
     int FUN_1413bc390();
     void SendGuildMode82(__int64 guildId);
@@ -97,7 +97,7 @@ public:
     int FUN_1413bd1a0(int skillId, int skillLevel);
     void SendGuildMode115();
     void SendGuildMode116();
-    void FUN_1413bd4c0();
+    void NotifyVsGameCanRegister();
     int FUN_1413bd560();
     void FUN_1413bd5c0(NotifyObject* notify);
     void FUN_1413bd640(bool show);

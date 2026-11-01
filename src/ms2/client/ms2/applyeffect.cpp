@@ -225,14 +225,15 @@ ApplyEffect::~ApplyEffect()
 }
 
 // Scene-graph walker (48 bytes) and per-object shader value setters.
-class Unk_AeSceneIter
+class Unk_NodeQueue
 {
 public:
-    Unk_AeSceneIter(NiAVObject* pRoot);                     // 0x14098cb80
-    ~Unk_AeSceneIter();                                     // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
+    ~Unk_NodeQueue();                                     // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
+typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_AeSceneIter, 0x30);
 void FUN_141b70c50(class NiAVObject*, float, float);   // C3: was FUN_141b70c50
 NiAVObject* FUN_141b6efc0(void* pOwner);
@@ -566,7 +567,8 @@ inline NiFogProperty* GetNiFogProperty() { return DAT_143afa7f0; }
 
 // The scene graph service lookup (global service manager reference).
 efd::ServiceManager* FUN_1401cd190(void* pHolder);
-extern unsigned char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(unsigned char*)&egf::g_bapiContext)          // C3: was extern unsigned char DAT_143b059e8
 struct Unk_AeServiceCell { void* m_spManager; };              // SmartPointer<ServiceManager>
 // @0x1409a5700
 inline MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pCell)
@@ -787,7 +789,7 @@ void FUN_1409a5320(NiAVObject* pRoot, float fValueA, float fValueB, const char* 
     if (pRoot == 0) {
         return;
     }
-    Unk_AeSceneIter it(pRoot);
+    Unk_AeSceneIter it((NiAVObject*)(pRoot));
     NiAVObject* pObject;
     while ((pObject = it.FUN_14098e0d0(true)) != 0) {
         NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
@@ -811,7 +813,7 @@ void FUN_1409a51d0(void* pOwner, float fValueA, float fValueB, const char* pcNam
     if (spRoot == 0) {
         return;
     }
-    Unk_AeSceneIter it(spRoot);
+    Unk_AeSceneIter it((NiAVObject*)(spRoot));
     NiAVObject* pObject;
     while ((pObject = it.FUN_14098e0d0(true)) != 0) {
         NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);

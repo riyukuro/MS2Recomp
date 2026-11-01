@@ -69,7 +69,7 @@ int UIReconnectTopLayerNotify::vfunc_28(const char* szMethod, const Scaleform::G
     {
         vfunc_3();
         if (FUN_140e800e0() != 0)
-            FUN_140e800e0()->FUN_140aad8f0();
+            FUN_140e800e0()->DisableReconnect();
         return 1;
     }
     return 0;

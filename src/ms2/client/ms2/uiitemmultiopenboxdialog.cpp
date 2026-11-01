@@ -10,6 +10,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_McAttendTable                                          // the player inventory (global 0x143ab2a90)
@@ -26,7 +27,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                  // strin
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 const int* FUN_1402fbd20(const int* a, const int* b);            // std::min<int>
 struct Unk_McConstVal;
-const int* FUN_1402056b0(Unk_McConstVal* slot);                  // constant value
 struct Unk_McConstVal { void* m_0; void* m_8; };
 struct Unk_McConfig
 {
@@ -44,7 +44,8 @@ private:
     char m_pad_178[0x19c - 0x178];
     unsigned m_19c;
 };
-Unk_McInventoryDialog* FUN_1405344f0(int nId);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_McInventoryDialog* FUN_1405344f0 (calls cast back)
 
 // @0x140c3f350
 UIItemMultiOpenBoxDialog::UIItemMultiOpenBoxDialog() : m_180(0), m_184(0), m_190(0), m_194(0), m_198(0)
@@ -69,7 +70,7 @@ void UIItemMultiOpenBoxDialog::vfunc_67()
 {
     UIModalDialog::vfunc_67();
     FUN_141415600(GetTypeName());
-    Unk_McInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    Unk_McInventoryDialog* pInventory = reinterpret_cast<Unk_McInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInventory != 0)
         pInventory->FUN_140c3fe30(2);
     m_180 = 0;
@@ -137,7 +138,7 @@ void UIItemMultiOpenBoxDialog::vfunc_15()
     if (m_198 != 0 && nNow > (unsigned)m_198)
     {
         m_198 = 0;
-        int nCount = *FUN_1402fbd20(&m_194, FUN_1402056b0(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax));
+        int nCount = *FUN_1402fbd20(&m_194, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax)->Get());
         COutPacket packet(static_cast<int>(SendOp::RequestItemBox), 0);
         packet.WriteInt32(m_180);
         packet.WriteInt16(m_184);
@@ -193,7 +194,7 @@ MS2_REPLACE_METHOD(0x140C3FA80, UIItemMultiOpenBoxDialog, FUN_140c3fa80, 536, 0x
 // @0x140c3fca0
 void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
 {
-    if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count"))
+    if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_count"))
     {
         int nUsed = m_190 - m_194;
         spCount.operator->()->FUN_1422c4cd0(FUN_14028dfa0<int, int>(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));

@@ -161,8 +161,8 @@ public:
     void FUN_14123c680(bool b);                             // 0x14123c680 join/leave the update list
     void FUN_14123cb20(bool b);                             // 0x14123cb20 shadow
     efd::Point3 FUN_14123cc20();                             // 0x14123cc20 facing direction of vfunc_20()
-    static efd::Point3 FUN_14123cc80(NiPoint3 kRot);         // 0x14123cc80 rotation (degrees) -> direction
-    static float FUN_14123cd50(efd::Point3 kDir);           // 0x14123cd50 direction -> z angle (degrees)
+    static efd::Point3 RotationToDirection(NiPoint3 kRot);         // 0x14123cc80 rotation (degrees) -> direction
+    static float DirectionToYawDegrees(efd::Point3 kDir);           // 0x14123cd50 direction -> z angle (degrees)
     static float FUN_14123ce70(efd::Point3 kDir);           // 0x14123ce70 direction -> -radians
     unsigned __int64 FUN_14123cec0();                       // 0x14123cec0 (m_unk_70 << 32) | serial
     void FUN_14123d7a0(CString strKey, int nValue);         // 0x14123d7a0

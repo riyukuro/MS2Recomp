@@ -129,11 +129,11 @@ public:
     void FUN_1417db2e0(Unk_StateArg22* pReq);                       // queue a request
     void FUN_1417db550(Unk_StateArg22* pReq);                       // apply a request to the actor
     void FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq);       // snap the actor to the request position
-    void FUN_1417dbef0(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
+    void OnAnimActivated(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
         float fEventTime);                                          // forward to the current state, slot 11
-    void FUN_1417dbf50(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
+    void OnTextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
         const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime);   // slot 12
-    void FUN_1417dbfc0(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
+    void OnEndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
         float fEventTime);                                          // slot 13
     void FUN_1417dc020(int n);                                      // slot 31
     int FUN_1417dc070(int nState);                                  // the state allows a position correction

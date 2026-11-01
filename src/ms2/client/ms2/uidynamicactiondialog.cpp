@@ -53,6 +53,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 // header statics
 static CString s_strSkill1 = "skill";
@@ -69,7 +71,6 @@ class ASDialog : public ASDisplayObject {};
 class Unk_DaInput : public ASDisplayObject
 {
 public:
-    CStringW FUN_1422e0b00();                               // the text
     void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // text changed callback
 };
 int FUN_1422c76c0(Unk_DaInput* p);                          // the input has the focus
@@ -102,7 +103,7 @@ void FUN_14151f200();
 NotifySystem* FUN_140939a10();                              // the notify system
 
 // Input state, the movie manager, the key binds.
-class Unk_DaInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
+class Unk_DaInputState : public CInputKeyHandler {};
 Unk_DaInputState* FUN_14025e7c0();
 class Unk_DaUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DaUiMgr* FUN_140b632f0();
@@ -110,7 +111,6 @@ Unk_DaUiMgr* FUN_140b632f0();
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
@@ -243,7 +243,7 @@ int UIDynamicActionDialog::vfunc_13()
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (Unk_DaInput*)m_1a0 != 0) {
                 if (FUN_1422c76c0(m_1a0.operator->()) != 0) {
-                    FUN_14192d790(m_1a0->FUN_1422e0b00());
+                    SetSearchText(reinterpret_cast<ASTextInput*>(m_1a0.operator->())->GetText());
                     FUN_1422c7630(pDlg, 1);
                     FUN_1422c7630(m_1a0.operator->(), 0);
                     return 1;
@@ -263,10 +263,10 @@ int UIDynamicActionDialog::vfunc_13()
                 } else {
                     m_178.m_0 = 1;
                     m_178.m_8 = nKey;
-                    unsigned __int64 nOther = FUN_1409331f0()->FUN_14142d190(nKey);
+                    unsigned __int64 nOther = FUN_1409331f0()->GetKeyAction(nKey);
                     CStringW strOther;
-                    if (FUN_1409331f0()->FUN_14142cf10(nOther) != 0) {
-                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)FUN_1409331f0()->FUN_14142d190(nKey)),
+                    if (FUN_1409331f0()->IsQuickSlotAction(nOther) != 0) {
+                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)FUN_1409331f0()->GetKeyAction(nKey)),
                                                  FUN_1409331f0()->FUN_14142d220(nKey));
                     } else {
                         strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
@@ -401,7 +401,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
-        FUN_14192d790(CStringW(data.FUN_1422b8f40()));
+        SetSearchText(CStringW(data.FUN_1422b8f40()));
     }
     return 0;
 }
@@ -459,13 +459,13 @@ void UIDynamicActionDialog::FUN_14192c6b0()
 MS2_REPLACE_METHOD(0x14192C6B0, UIDynamicActionDialog, FUN_14192c6b0, 621, 0);
 
 // @0x14192c930
-void UIDynamicActionDialog::FUN_14192c930(int nAction)
+void UIDynamicActionDialog::SetFocusByEmotion(int nAction)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0)
         pDlg->Invoke("setFocusByEmotion", (unsigned int)nAction);
 }
-MS2_REPLACE_METHOD(0x14192C930, UIDynamicActionDialog, FUN_14192c930, 117, 0);
+MS2_REPLACE_METHOD(0x14192C930, UIDynamicActionDialog, SetFocusByEmotion, 117, 0);
 
 // @0x14192c9b0
 void UIDynamicActionDialog::FUN_14192c9b0(int nAction)
@@ -484,7 +484,7 @@ MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, FUN_14192c9b0, 79, 0);
 UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
-        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nDialog);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nDialog);
         if (spUI.get() != 0)
             return dynamic_cast<UISkillPreviewDialog*>((UIObject*)spUI);
     }
@@ -528,7 +528,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
             if (m_1b1 != 0 && !bFavorite)
                 continue;
             if (!m_1b8.IsEmpty()) {
-                if (FUN_1403b3c40(m_1b8, L"/") != 0)
+                if (operator==(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
                 do {
@@ -566,7 +566,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
         FUN_14192d960(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);
         if (nFocus != 0)
-            FUN_14192c930(nFocus);
+            SetFocusByEmotion(nFocus);
     }
 }
 MS2_REPLACE_METHOD(0x14192CA70, UIDynamicActionDialog, FUN_14192ca70, 1659, 0);
@@ -597,7 +597,7 @@ void UIDynamicActionDialog::FUN_14192d100()
             if (m_1b1 != 0 && !bFavorite)
                 continue;
             if (!m_1b8.IsEmpty()) {
-                if (FUN_1403b3c40(m_1b8, L"/") != 0)
+                if (operator==(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
                 do {
@@ -635,20 +635,20 @@ void UIDynamicActionDialog::FUN_14192d100()
         FUN_14192d960(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);
         if (nFocus != 0)
-            FUN_14192c930(nFocus);
+            SetFocusByEmotion(nFocus);
     }
 }
 MS2_REPLACE_METHOD(0x14192D100, UIDynamicActionDialog, FUN_14192d100, 1659, 0);
 
 // @0x14192d790
-void UIDynamicActionDialog::FUN_14192d790(CStringW strSearch)
+void UIDynamicActionDialog::SetSearchText(CStringW strSearch)
 {
     if (m_1b8.CompareNoCase(strSearch) == 0)
         return;
     m_1b8 = strSearch;
     FUN_14192c6b0();
 }
-MS2_REPLACE_METHOD(0x14192D790, UIDynamicActionDialog, FUN_14192d790, 124, 0);
+MS2_REPLACE_METHOD(0x14192D790, UIDynamicActionDialog, SetSearchText, 124, 0);
 
 // @0x14192d820
 CStringW UIDynamicActionDialog::FUN_14192d820(unsigned int nAction)
@@ -667,8 +667,8 @@ MS2_REPLACE_METHOD(0x14192D820, UIDynamicActionDialog, FUN_14192d820, 311, 0);
 // @0x14192d960
 void UIDynamicActionDialog::FUN_14192d960(ASArray& arr)
 {
-    int nRounded = (int)(std::ceil((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
-    int nMissing = (nRounded > 0x18 ? nRounded : 0x18) - arr.FUN_1422bc5d0();
+    int nRounded = (int)(std::ceil((float)arr.GetLength() / 6.0f) * 6.0f);
+    int nMissing = (nRounded > 0x18 ? nRounded : 0x18) - arr.GetLength();
     if (nMissing < 0)
         return;
     for (int i = 0; i < nMissing; i++) {
@@ -690,7 +690,7 @@ void UIDynamicActionDialog::FUN_14192da70(int nKey)
     } else if (nKey == 0x7e) {
         if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
@@ -701,7 +701,7 @@ void UIDynamicActionDialog::FUN_14192da70(int nKey)
     } else if (nKey == 0x7c) {
         if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }
@@ -711,7 +711,7 @@ MS2_REPLACE_METHOD(0x14192DA70, UIDynamicActionDialog, FUN_14192da70, 1067, 0);
 // @0x14192deb0
 int UIDynamicActionDialog::FUN_14192deb0(int nKey)
 {
-    return FUN_1409331f0()->FUN_14142d190(nKey) == 0;
+    return FUN_1409331f0()->GetKeyAction(nKey) == 0;
 }
 MS2_REPLACE_METHOD(0x14192DEB0, UIDynamicActionDialog, FUN_14192deb0, 62, 0);
 

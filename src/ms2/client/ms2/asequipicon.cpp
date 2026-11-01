@@ -98,7 +98,7 @@ MS2Ptr<ASMovieClip> ASEquipIcon::FUN_1409b9380()
 {
     if (m_50.get() != 0)
     {
-        Scaleform::GFx::Value slot = m_50->FUN_1422baa20("m_slot");
+        Scaleform::GFx::Value slot = m_50->GetMember("m_slot");
         MS2Ptr<ASMovieClip> clip(new ASMovieClip(slot, 2));
         m_60 = clip;
         if (clip == (ASMovieClip*)0 || clip->FUN_1422ba9a0())

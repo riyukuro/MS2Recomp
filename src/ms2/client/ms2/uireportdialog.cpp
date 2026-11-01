@@ -34,14 +34,12 @@ static CString s_strReportOpen("System_ReportOpen");
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 __int64 GetServerTime();                                        // the server time
 void FUN_141275260(int nStringId, int nA, int nB);              // system message
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW BlockFormat(int nStringId);                          // string table text by id
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // equals
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                         // send
 
@@ -95,7 +93,7 @@ MS2_REPLACE_METHOD(0x141AB8B40, UIReportDialog, GetTypeName, 61, 0x659308F6);
 void UIReportDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     CStringW strMode;
     CStringW strExtra;
@@ -165,14 +163,14 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_14028cd00(strTag, arrTag, L",", 2);
                 if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&(arrTag))->GetCount() == 1)
                 {
-                    if (FUN_1403b3c40(strTag, L"report"))
+                    if (operator==(strTag, L"report"))
                     {
                         if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
                             vfunc_67();
                         else
                             FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
                     }
-                    else if (FUN_1403b3c40(strTag, L"reportAndBan"))
+                    else if (operator==(strTag, L"reportAndBan"))
                     {
                         if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
                         {
@@ -418,7 +416,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
         __int64 nBuddyId = 0;
         bool bRequest = true;
         {
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(m_nCharacterId);
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(m_nCharacterId);
             if (spBuddy.get() != 0)
             {
                 nBuddyId = spBuddy->FUN_1401cc2f0();
@@ -433,7 +431,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
             request.name = m_strTarget;
             request.memo = GetStringCommon(0x8af);
             request.id = nBuddyId;
-            TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4820(request);
+            TSingleton<CBuddyManager>::GetInstance()->SendBuddyRequest(request);
         }
     }
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)

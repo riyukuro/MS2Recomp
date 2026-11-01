@@ -122,7 +122,7 @@ void FUN_141610410(int nFrameLimit);
 class Unk_MsWorld { public: int FUN_141bd1a10(GameObject* pObject); };
 // The scene graph service as these callers see it: the exe passes the entity id by value (ms2scenegraphservice.h has const&).
 class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
-int FUN_14028d260(float fTime);
+__int64 FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 #ifdef __clang__
 CString FUN_14038f6d0(const CString& str1, const char* psz2);      // the exe's ATL::operator+ copies (the hook build
@@ -176,14 +176,14 @@ CMainSystem::CMainSystem()
     m_tServerTimeBase = t;
     m_tLocalTimeBase = t;
     m_fTimeScale = 1.0f;
-    FUN_141473730(true);
+    SetStickyKeysDisabled(true);
     StartTimer();
 }
 
 // @0x141472dd0
 CMainSystem::~CMainSystem()
 {
-    FUN_141473730(false);
+    SetStickyKeysDisabled(false);
 }
 
 // @0x141472e90
@@ -193,7 +193,7 @@ const char* CMainSystem::GetDisplayName() const
 }
 
 // @0x141472eb0
-void CMainSystem::FUN_141472eb0(efd::IConfigManagerPtr spConfig)
+void CMainSystem::LoadDataPath(efd::IConfigManagerPtr spConfig)
 {
     if (spConfig)
     {
@@ -290,11 +290,11 @@ double CMainSystem::FUN_141473280()
 DWORD CMainSystem::FUN_1414732b0(GameObject* pObject)
 {
     int nKind = reinterpret_cast<Unk_MsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pObject);
-    return FUN_1414732f0(nKind);
+    return GetTimeByKind(nKind);
 }
 
 // @0x1414732f0
-DWORD CMainSystem::FUN_1414732f0(int nKind)
+DWORD CMainSystem::GetTimeByKind(int nKind)
 {
     if (nKind == 0)
         return (DWORD)FUN_141473280();
@@ -374,7 +374,7 @@ __int64 CMainSystem::FUN_141473560()
 {
     if (m_tA0 == 0)
         return 0;
-    __time64_t tNow = FUN_141473640();
+    __time64_t tNow = GetServerTime();
     __time64_t tDayEnd = GetNextDayStart(m_tA0);
     if (tDayEnd < tNow)
         return 0;
@@ -394,7 +394,7 @@ int CMainSystem::GetElapsedTime()
 }
 
 // @0x141473640
-__time64_t CMainSystem::FUN_141473640()
+__time64_t CMainSystem::GetServerTime()
 {
     __time64_t t;
     time(&t);
@@ -417,7 +417,7 @@ CString CMainSystem::GetDataPath()
 }
 
 // @0x141473730
-void CMainSystem::FUN_141473730(bool bDisable)
+void CMainSystem::SetStickyKeysDisabled(bool bDisable)
 {
     if (bDisable)
     {
@@ -436,7 +436,7 @@ void CMainSystem::FUN_141473730(bool bDisable)
 }
 
 // @0x1414737d0
-void CMainSystem::FUN_1414737d0(egf::Entity* pEntity)
+void CMainSystem::DestroyEntity(egf::Entity* pEntity)
 {
     if (pEntity)
     {
@@ -446,7 +446,7 @@ void CMainSystem::FUN_1414737d0(egf::Entity* pEntity)
 }
 
 // @0x141473870
-void CMainSystem::FUN_141473870(egf::EntityID id)
+void CMainSystem::DestroyEntityById(egf::EntityID id)
 {
     ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(id);
     ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(id);
@@ -467,7 +467,7 @@ void CMainSystem::SetMainThreadId(DWORD dwThreadId)
 }
 
 // @0x141473940
-bool CMainSystem::FUN_141473940()
+bool CMainSystem::IsMainThread()
 {
     DWORD dwId = GetCurrentThreadId();
     return m_dwMainThreadId == dwId;
@@ -537,7 +537,7 @@ efd::AsyncResult CMainSystem::OnInit()
     TSingleton<CSkillCollisionManager>::CreateInstance();
     TSingleton<CGroundEffectDataManager>::CreateInstance();
     TSingleton<CInstrumentManager>::CreateInstance();
-    FUN_141474490();
+    CreateClickRenderStep();
 
     m_kCategory = m_spMessageService->GetGloballyUniqueCategory();
     m_spMessageService->Subscribe(this, s_catEntityChannel, 0, false);
@@ -602,7 +602,7 @@ void CMainSystem::FUN_141474450()
 }
 
 // @0x141474490
-void CMainSystem::FUN_141474490()
+void CMainSystem::CreateClickRenderStep()
 {
     ecr::RenderSurface* pSurface = m_pRenderService->GetActiveRenderSurface();
     NiRenderFrame* pFrame = pSurface->GetRenderFrame();

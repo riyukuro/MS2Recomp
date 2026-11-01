@@ -136,7 +136,7 @@ class Unk_GmFileSystem : public CFileSystem { };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 class Unk_GmMovie : public UICutSceneMovie { };
@@ -148,7 +148,6 @@ public:
 private: void* unknown; UIObject* object;
 };
 struct Unk_GeUiMgr { Unk_CommandUIRef FUN_141adcea0(int); };
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 class Unk_GmPane : public UISwfEntity { };
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 class Unk_GmScene { public: int FUN_1422b9dc0(); int FUN_1422b9e00(); };
@@ -291,7 +290,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
     }
 
     std::vector<Unk_140165cf0*> events;
-    FUN_14028faa0(pRoot, "event", "id", &events);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "event", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&events));
     for (unsigned i = 0; i < events.size(); i++)
     {
         Unk_140165cf0* pElem = events[i];
@@ -1104,7 +1103,7 @@ Unk_GmMovie* FUN_14138fd50(unsigned nUIId)
     {
         Unk_CommandUIRef ref = reinterpret_cast<Unk_GeUiMgr*>(CUIService::GetInstance())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70() != 0)
-            return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(FUN_1403ed9e0(ref)));
+            return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*()));
     }
     return 0;
 }

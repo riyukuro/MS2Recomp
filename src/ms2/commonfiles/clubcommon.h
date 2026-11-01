@@ -28,13 +28,13 @@ class CClubMemberProxy : public CPtred
 public:
     CClubMemberProxy();
     virtual ~CClubMemberProxy();                    // ??_G 0x1402127a0, vftable 0x142cf3958
-    CStringW FUN_14020e5d0();                       // name (under m_lock)
-    void FUN_14020e650(CStringW strName);           // set the name (under m_lock)
-    CString FUN_14020e6c0();                        // picture (under m_lock)
-    void FUN_14020e740(CString strPicture);         // set the picture (under m_lock)
-    void FUN_14020d380();                           // reset all fields
+    CStringW GetName();                       // name (under m_lock)
+    void SetName(CStringW strName);           // set the name (under m_lock)
+    CString GetPicture();                        // picture (under m_lock)
+    void SetPicture(CString strPicture);         // set the picture (under m_lock)
+    void Reset();                           // reset all fields
     void FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture);   // reset, then set these
-    void FUN_14020d580(COutputStream& out);         // write the map id
+    void WriteMapId(COutputStream& out);         // write the map id
     void FUN_14020d690(COutputStream& out);         // write name, job code, job, level, picture
     void FUN_14020d610(COutputStream& out);         // write the whole snapshot (thunk of FUN_14020d9a0)
     void FUN_14020d9a0(COutputStream& out);         // write the whole snapshot
@@ -43,7 +43,7 @@ public:
     void FUN_14020df70(CInputStream* in);           // read the short form
     void FUN_14020e350(Unk_UserProxy* p);           // fill from a user proxy (0x1408f19e0 / 0x1408f1a60 accessors)
     void FUN_14020d770(CInPacket& packet);          // read the short form from a packet
-    void FUN_14020d5c0(CInPacket& packet);          // read from a packet (clubcli.cpp)
+    void ReadMapId(CInPacket& packet);          // read from a packet (clubcli.cpp)
     void FUN_14020d640(CInPacket* packet);          // read (null-checked packet pointer)
     void FUN_14020e130(const CClubMemberProxy& o);  // copy assignment
     __int64 m_accountId;                            // +0x18
@@ -80,12 +80,12 @@ class CClubMember : public CPtred
 public:
     CClubMember();
     virtual ~CClubMember();                         // ??_G 0x140212760, vftable 0x142cf3968
-    void FUN_14020ea50(CInPacket* packet);          // read from a packet
+    void ReadPacket(CInPacket* packet);          // read from a packet
     void FUN_14020e950(CClubMember* o);             // copy (null-checked)
-    void FUN_14020e890();                           // reset all fields
-    void FUN_14020ea20(COutputStream& out);         // write (thunk of FUN_14020eaa0)
-    void FUN_14020eaa0(COutputStream& out);         // write
-    void FUN_14020eba0(CInputStream* in);           // read
+    void Reset();                           // reset all fields
+    void FUN_14020ea20(COutputStream& out);         // write (thunk of Write)
+    void Write(COutputStream& out);         // write
+    void Read(CInputStream* in);           // read
     int FUN_14020eca0(Club::SaveMember* pSave);    // fill the save record when the dirty flag is set, then clear it
     void FUN_14020edb0(int nDirty);                 // set m_f4
     int FUN_14020edd0();                            // m_f4
@@ -128,42 +128,42 @@ public:
     // clubcli.cpp users
     __int64 FUN_14020f0c0();                        // club id
     void SetClubId(__int64 n);                  // set the club id
-    unsigned FUN_14020f380();                       // max members (m_48)
-    unsigned FUN_14020f540();                       // state (m_state)
-    void FUN_14020f4e0(int nState);                 // set the state
-    void FUN_14020f5b0(int nBuffId, int nBuffLevel);   // set m_50/m_54 then vfunc_2(1)
+    unsigned GetMaxMemberCount();                       // max members (m_48)
+    unsigned GetState();                       // state (m_state)
+    void SetState(int nState);                 // set the state
+    void SetBuff(int nBuffId, int nBuffLevel);   // set m_50/m_54 then vfunc_2(1)
     void FUN_14020f230(const CStringW& strName);           // set the club name
-    void FUN_14020f3f0(__int64 n);                  // set m_90
-    void FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused);   // set the leader, then vfunc_2(1); callers pass 1 as nUnused, which it never reads
-    void FUN_1402107a0(const CStringW& strOldName, const CStringW& strNewName);   // rename a member
-    CStringW FUN_14020f8c0();                       // leader name
+    void SetNameChangeAvailableTime(__int64 n);                  // set m_90
+    void SetLeaderInfo(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused);   // set the leader, then vfunc_2(1); callers pass 1 as nUnused, which it never reads
+    void RenameMember(const CStringW& strOldName, const CStringW& strNewName);   // rename a member
+    CStringW GetLeaderName();                       // leader name
     void FUN_14020fd80(CInPacket& packet);          // read the club
-    __int64 FUN_14020f460();                        // name change available time
-    int FUN_14020f640();                            // buff id
-    unsigned FUN_14020f6b0();                       // buff level
-    int FUN_140210df0();                            // member count
-    int FUN_140211080(CStringW strName);            // 1 when the name is the leader's
-    MS2Ptr<CClubMember> FUN_140210560(CStringW strName);   // find a member by name
-    MS2Ptr<CClubMember> FUN_140210f70();            // leader
+    __int64 GetNameChangeAvailableTime();                        // name change available time
+    int GetBuffId();                            // buff id
+    unsigned GetBuffLevel();                       // buff level
+    int GetMemberCount();                            // member count
+    int IsLeaderName(CStringW strName);            // 1 when the name is the leader's
+    MS2Ptr<CClubMember> FindMemberByName(CStringW strName);   // find a member by name
+    MS2Ptr<CClubMember> GetLeader();            // leader
     __int64 GetCreationTime();                        // creation time
     void SetCreationTime(__int64 n);                  // set the creation time
-    __int64 FUN_14020f7e0();                        // leader account id
-    __int64 FUN_14020f850();                        // leader character id
+    __int64 GetLeaderAccountId();                        // leader account id
+    __int64 GetLeaderCharacterId();                        // leader character id
     __int64 FUN_14020f950();                        // m_78
     void FUN_14020f9c0(__int64 n);                  // set m_78
     __int64 FUN_14020fa30();                        // m_80
     void FUN_14020fab0(__int64 n);                  // set m_80
     void FUN_14020fb20(COutputStream& out);         // write the club (header, then the members)
-    void FUN_1402100e0(COutputStream& out);         // write the members
-    void FUN_1402101e0(CInPacket& packet);          // read the members
-    MS2Ptr<CClubMember> FUN_140210630(__int64 nId); // member by m_18
+    void WriteMembers(COutputStream& out);         // write the members
+    void ReadMembers(CInPacket& packet);          // read the members
+    MS2Ptr<CClubMember> FindMemberById(__int64 nId); // member by m_18
     void FUN_1402108e0(ATL::CAtlArray<__int64>& ids);   // character ids of the members whose m_c8 is 2
-    void FUN_140210ad0(ATL::CAtlArray<MS2Ptr<CClubMember>>& members);   // members with the dirty flag set
+    void GetDirtyMembers(ATL::CAtlArray<MS2Ptr<CClubMember>>& members);   // members with the dirty flag set
     void FUN_140210be0(ATL::CAtlArray<MS2Ptr<CClubMember>>& members);   // members whose m_c8 is 2
     unsigned FUN_140210cf0();                       // number of members whose m_c8 is 2
     int FUN_140210e70();                            // number of those whose m_f0 is 0
-    void FUN_140211000(MS2Ptr<CClubMember> spLeader);   // set the leader
-    void FUN_1402109d0(ATL::CAtlArray<MS2Ptr<CClubMember>>& members);   // all members
+    void SetLeaderMember(MS2Ptr<CClubMember> spLeader);   // set the leader
+    void GetAllMembers(ATL::CAtlArray<MS2Ptr<CClubMember>>& members);   // all members
 
     typedef ATL::CRBMap<CStringW, MS2Ptr<CClubMember>, ATL::CStringElementTraitsI<CStringW>> MemberMap;
 
@@ -242,7 +242,7 @@ class CClubCli : public CClub, public CPtred
 public:
     CClubCli();
     virtual ~CClubCli();
-    MS2Ptr<CClubMember> FUN_140b12850(__int64 nCharacterId);    // member by character id
+    MS2Ptr<CClubMember> FindMemberById(__int64 nCharacterId);    // member by character id
     int FUN_140b129c0();                                        // number of members whose m_f0 is 0
     void FUN_140b12ad0(CInPacket& packet);                      // opcode 0xf
     void FUN_140b12d70(CInPacket& packet);                      // opcode 0x11
@@ -250,12 +250,12 @@ public:
     void FUN_140b13200(CInPacket& packet);                      // opcode 0x13
     void FUN_140b133c0(CInPacket& packet);                      // opcode 0x14
     void FUN_140b135d0(CInPacket& packet);                      // opcode 0x15
-    void FUN_140b13a20(CInPacket& packet);                      // opcode 0x16
+    void OnPacketClubBuff(CInPacket& packet);                      // opcode 0x16
     void FUN_140b13b50(CInPacket& packet);                      // opcode 0x17
     void FUN_140b13c60(CInPacket& packet);                      // opcode 0x18
     void FUN_140b13dc0(CInPacket& packet);                      // opcode 0x19
-    void FUN_140b13f20(CInPacket& packet);                      // opcode 0x1a
-    void FUN_140b14050(CInPacket& packet);                      // opcode 0x1b
+    void OnPacketClubRename(CInPacket& packet);                      // opcode 0x1a
+    void OnPacketMemberRename(CInPacket& packet);                      // opcode 0x1b
     void FUN_140b14110(CInPacket& packet);                      // opcode 0x1c
     bool FUN_140b14220();                                       // always true
     bool FUN_140b14230(CStringW strName);                       // request: add a member by name

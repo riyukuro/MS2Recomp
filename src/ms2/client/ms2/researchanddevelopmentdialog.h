@@ -19,8 +19,8 @@ public:
     virtual void DoDataExchange(CDataExchange* pDX);                // slot 66, 0x140c9c5a0
     virtual BOOL OnInitDialog();                                    // slot 96, 0x140c9c400
 
-    void FUN_140c9c4e0(CString strText);                            // set the status text (+0x268), callee destroys it
-    void FUN_140c9c540(CString strText);                            // set the recording status text (+0x278)
+    void SetStatusText(CString strText);                            // set the status text (+0x268), callee destroys it
+    void SetRecordStatusText(CString strText);                            // set the recording status text (+0x278)
 
     afx_msg void OnBnClickedCancel();                               // 0x140c9c6b0: IDCANCEL
     afx_msg void OnBnClickedOk();                                   // 0x140c9c6d0: IDOK

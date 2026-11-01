@@ -52,7 +52,6 @@ public:
     void FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst);   // collect the menus that can be shown
     int FUN_140c1c160(int nMenu, ASObj* pObj);          // fill the "addMenuEntity" arguments
     void FUN_140c1c530(int nKey);                       // move the cursor
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // bind a movie clip child (this+0x30)
 
 private:
     MS2_LAYOUT_FRIEND;

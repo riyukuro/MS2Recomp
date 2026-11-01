@@ -92,7 +92,7 @@ CMailAttachItem::CMailAttachItem(int index, MS2Ptr<CItem> item)
     }
     else
     {
-        m_item = item->FUN_140524250();
+        m_item = item->Clone();
         m_item->FUN_140526b70(index);
         m_nTime = 0;
         m_n20 = 0;
@@ -113,7 +113,7 @@ CMailAttachItem::CMailAttachItem(CInPacket& packet)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(nItemId, nAmount, 0))
     {
-        spItem->FUN_140526a70(nUid);
+        spItem->SetItemUid(nUid);
         spItem->FUN_140526b70(nRarity);
         spItem->FUN_140526c70(nEnchant);
         spItem->FUN_140524eb0(packet);
@@ -270,27 +270,27 @@ void CMailInfo::FUN_140690330(__int64 id) { m_nId = id; }
 __int64 CMailInfo::FUN_140690350() { return m_nId; }
 int CMailInfo::FUN_140690370() { return m_nKind; }
 
-void CMailInfo::FUN_140690390(__int64 value, CStringW text)
+void CMailInfo::SetSender(__int64 value, CStringW text)
 {
     m_n28 = value;
     m_str30 = text;
 }
 
 __int64 CMailInfo::FUN_1406903f0() { return m_n28; }
-CStringW CMailInfo::FUN_140690410() const { return m_str30; }
+CStringW CMailInfo::GetSenderName() const { return m_str30; }
 void CMailInfo::FUN_140690460(__int64 value) { m_n38 = value; }
 __int64 CMailInfo::FUN_140690480() { return m_n38; }
 void CMailInfo::FUN_1406904a0(CStringW text) { m_str40 = text; }
 CStringW CMailInfo::FUN_1406904f0() const { return m_str40; }
 
-void CMailInfo::FUN_140690540(CStringW a, CStringW b)
+void CMailInfo::SetTitleAndContent(CStringW a, CStringW b)
 {
     m_str48 = a;
     m_str50 = b;
 }
 
-CStringW CMailInfo::FUN_1406905b0() const { return m_str48; }
-CStringW CMailInfo::FUN_140690600() const { return m_str50; }
+CStringW CMailInfo::GetTitle() const { return m_str48; }
+CStringW CMailInfo::GetContent() const { return m_str50; }
 
 void CMailInfo::SetAttachment(int slot, Unk_MailAttachPtr attach)
 {
@@ -299,7 +299,7 @@ void CMailInfo::SetAttachment(int slot, Unk_MailAttachPtr attach)
     m_attach[slot] = attach;
 }
 
-void CMailInfo::FUN_1406906c0(int slot, __int64 time)
+void CMailInfo::SetAttachmentReceiveTime(int slot, __int64 time)
 {
     if (slot < 0 || slot >= 5)
         return;
@@ -312,7 +312,7 @@ void CMailInfo::FUN_1406906c0(int slot, __int64 time)
     FUN_1406911e0(1);
 }
 
-Unk_MailAttachPtr CMailInfo::FUN_140690790(int slot) const
+Unk_MailAttachPtr CMailInfo::GetAttachment(int slot) const
 {
     if (slot < 0 || slot >= 5)
         return Unk_MailAttachPtr(0);
@@ -335,9 +335,9 @@ int CMailInfo::FUN_140690840() const
     return nCount;
 }
 
-__int64 CMailInfo::FUN_140690920(int slot) const
+__int64 CMailInfo::GetAttachmentReceiveTime(int slot) const
 {
-    Unk_MailAttachPtr spAttach = FUN_140690790(slot);
+    Unk_MailAttachPtr spAttach = GetAttachment(slot);
     if (spAttach == 0)
         return 0;
     return spAttach->m_nTime;
@@ -436,7 +436,7 @@ void CMailInfo::FUN_140690f10(__int64)
     }
 }
 
-bool CMailInfo::FUN_140690fa0(int type, int sub, Unk_MailBenefit* out) const
+bool CMailInfo::FindBenefit(int type, int sub, Unk_MailBenefit* out) const
 {
     int nBenefits = m_benefits.FUN_14026a4b0();
     for (int i = 0; i < nBenefits; i++)
@@ -452,7 +452,7 @@ bool CMailInfo::FUN_140690fa0(int type, int sub, Unk_MailBenefit* out) const
 }
 
 // @0x140691090
-void CMailInfo::FUN_140691090()
+void CMailInfo::MarkRead()
 {
     if (FUN_140691130())
         return;
@@ -473,7 +473,7 @@ int CMailInfo::FUN_140691130()
 
 __int64 CMailInfo::FUN_140691160() const { return m_n108; }
 
-int CMailInfo::FUN_140691180() const
+int CMailInfo::IsExpired() const
 {
     __int64 now = FUN_140692760();
     if (now >= m_n108)
@@ -490,7 +490,7 @@ int CMailInfo::FUN_140691220()
     Unk_MailAttachPtr spAttach(0);
     for (int i = 0; i < 5; i++)
     {
-        spAttach = FUN_140690790(i);
+        spAttach = GetAttachment(i);
         if (spAttach.get() && spAttach->m_nTime == 0)
             return 1;
     }
@@ -506,13 +506,13 @@ int CMailInfo::FUN_140691220()
 }
 
 // @0x1406922d0
-CStringW CMailInfo::FUN_1406922d0() const
+CStringW CMailInfo::GetDateString() const
 {
     CMsTime tm(m_n118);
     return FUN_14083bdc0(tm, 1, CStringW(L"/"), CStringW(L":"));
 }
 
-void CMailInfo::FUN_1406923a0(int slot, MS2Ptr<CMailAdItem> ad)
+void CMailInfo::SetAd(int slot, MS2Ptr<CMailAdItem> ad)
 {
     if (slot < 0 || slot >= 5)
         return;
@@ -525,7 +525,7 @@ void CMailInfo::FUN_140692420(__int64 time)
     FUN_1406911e0(1);
 }
 
-MS2Ptr<CMailAdItem> CMailInfo::FUN_140692480(int slot) const
+MS2Ptr<CMailAdItem> CMailInfo::GetAd(int slot) const
 {
     if (slot < 0 || slot >= 5)
         return MS2Ptr<CMailAdItem>(0);
@@ -620,7 +620,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         {
             MS2Ptr<CMailAdItem> spAd(new CMailAdItem);
             spAd->FUN_14068fb60(&static_cast<CInputStream&>(packet));
-            FUN_1406923a0(i, spAd);
+            SetAd(i, spAd);
         }
         m_str120 = packet.ReadUnicodeString();
         m_n128 = packet.ReadInt64();

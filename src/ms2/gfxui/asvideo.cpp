@@ -32,7 +32,7 @@ MS2_REPLACE_METHOD(0x1422F7540, ASVideo, FUN_1422f7540, 40, 0xE4F47567);
 // @0x1422f7570
 int ASVideo::FUN_1422f7570()
 {
-    return FUN_1422baa20("deblocking").GetBool();
+    return GetMember("deblocking").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422F7570, ASVideo, FUN_1422f7570, 91, 0xB5FAD214);
 
@@ -46,21 +46,21 @@ MS2_REPLACE_METHOD(0x1422F75E0, ASVideo, FUN_1422f75e0, 40, 0xAEB91D5F);
 // @0x1422f7610
 int ASVideo::FUN_1422f7610()
 {
-    return FUN_1422baa20("smoothing").GetBool();
+    return GetMember("smoothing").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422F7610, ASVideo, FUN_1422f7610, 91, 0xFE65B6FE);
 
 // @0x1422f7680
 int ASVideo::FUN_1422f7680()
 {
-    return FUN_1422baa20("videoHeight").GetInt();
+    return GetMember("videoHeight").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422F7680, ASVideo, FUN_1422f7680, 88, 0x21AD8DD2);
 
 // @0x1422f76e0
 int ASVideo::FUN_1422f76e0()
 {
-    return FUN_1422baa20("videoWidth").GetInt();
+    return GetMember("videoWidth").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422F76E0, ASVideo, FUN_1422f76e0, 88, 0x797DFB1E);
 

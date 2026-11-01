@@ -50,12 +50,12 @@ MS2_REPLACE_METHOD(0x1422C4CD0, ASTextField, FUN_1422c4cd0, 61, 0x9903C860);
 // @0x1422c4d20
 CString ASTextField::FUN_1422c4d20()
 {
-    return FUN_14016a600(FUN_1422c4da0(), 0);
+    return FUN_14016a600(GetTextW(), 0);
 }
 MS2_REPLACE_METHOD(0x1422C4D20, ASTextField, FUN_1422c4d20, 120, 0x91918A67);
 
 // @0x1422c4da0
-CStringW ASTextField::FUN_1422c4da0()
+CStringW ASTextField::GetTextW()
 {
     Value v;
     if (FUN_1422bb870().GetText(&v))
@@ -67,7 +67,7 @@ CStringW ASTextField::FUN_1422c4da0()
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x1422C4DA0, ASTextField, FUN_1422c4da0, 264, 0x98304C6D);
+MS2_REPLACE_METHOD(0x1422C4DA0, ASTextField, GetTextW, 264, 0x98304C6D);
 
 // @0x1422c4eb0
 void ASTextField::FUN_1422c4eb0(const CString& strText)
@@ -106,184 +106,184 @@ CStringW ASTextField::FUN_1422c4fd0()
 MS2_REPLACE_METHOD(0x1422C4FD0, ASTextField, FUN_1422c4fd0, 264, 0x1C267731);
 
 // @0x1422c50e0
-void ASTextField::FUN_1422c50e0(unsigned int nColor)
+void ASTextField::SetTextColor(unsigned int nColor)
 {
     FUN_1409c0d20("textColor", nColor);
 }
-MS2_REPLACE_METHOD(0x1422C50E0, ASTextField, FUN_1422c50e0, 40, 0x839BCDCD);
+MS2_REPLACE_METHOD(0x1422C50E0, ASTextField, SetTextColor, 40, 0x839BCDCD);
 
 // @0x1422c5110
-unsigned int ASTextField::FUN_1422c5110()
+unsigned int ASTextField::GetTextColor()
 {
-    return FUN_1422baa20("textColor").GetUInt();
+    return GetMember("textColor").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422C5110, ASTextField, FUN_1422c5110, 88, 0x832C249C);
+MS2_REPLACE_METHOD(0x1422C5110, ASTextField, GetTextColor, 88, 0x832C249C);
 
 // @0x1422c5170
-void ASTextField::FUN_1422c5170(int nMaxChars)
+void ASTextField::SetMaxChars(int nMaxChars)
 {
     FUN_1407cb9c0("maxChars", nMaxChars);
 }
-MS2_REPLACE_METHOD(0x1422C5170, ASTextField, FUN_1422c5170, 40, 0xAFB9804F);
+MS2_REPLACE_METHOD(0x1422C5170, ASTextField, SetMaxChars, 40, 0xAFB9804F);
 
 // @0x1422c51a0
-int ASTextField::FUN_1422c51a0()
+int ASTextField::GetMaxChars()
 {
-    return FUN_1422baa20("maxChars").GetInt();
+    return GetMember("maxChars").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C51A0, ASTextField, FUN_1422c51a0, 88, 0xEA80715C);
+MS2_REPLACE_METHOD(0x1422C51A0, ASTextField, GetMaxChars, 88, 0xEA80715C);
 
 // @0x1422c5200
-void ASTextField::FUN_1422c5200(int bMultiline)
+void ASTextField::SetMultiline(int bMultiline)
 {
     FUN_1407cbbe0("multiline", bMultiline != 0);
 }
-MS2_REPLACE_METHOD(0x1422C5200, ASTextField, FUN_1422c5200, 60, 0x195876E7);
+MS2_REPLACE_METHOD(0x1422C5200, ASTextField, SetMultiline, 60, 0x195876E7);
 
 // @0x1422c5250
 int ASTextField::FUN_1422c5250()
 {
-    return FUN_1422baa20("multiline").GetBool();
+    return GetMember("multiline").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C5250, ASTextField, FUN_1422c5250, 91, 0xFE82D2D3);
 
 // @0x1422c52c0
-void ASTextField::FUN_1422c52c0(int bSelectable)
+void ASTextField::SetSelectable(int bSelectable)
 {
     FUN_1407cbbe0("selectable", bSelectable != 0);
 }
-MS2_REPLACE_METHOD(0x1422C52C0, ASTextField, FUN_1422c52c0, 60, 0xA6D0D30B);
+MS2_REPLACE_METHOD(0x1422C52C0, ASTextField, SetSelectable, 60, 0xA6D0D30B);
 
 // @0x1422c5310
 int ASTextField::FUN_1422c5310()
 {
-    return FUN_1422baa20("selectable").GetBool();
+    return GetMember("selectable").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C5310, ASTextField, FUN_1422c5310, 91, 0xBF1D2E51);
 
 // @0x1422c5380
-void ASTextField::FUN_1422c5380(int nIndex)
+void ASTextField::SetCaretIndex(int nIndex)
 {
     FUN_1407cb9c0("caretIndex", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422C5380, ASTextField, FUN_1422c5380, 40, 0x23842660);
+MS2_REPLACE_METHOD(0x1422C5380, ASTextField, SetCaretIndex, 40, 0x23842660);
 
 // @0x1422c53b0
-int ASTextField::FUN_1422c53b0()
+int ASTextField::GetCaretIndex()
 {
-    return FUN_1422baa20("caretIndex").GetInt();
+    return GetMember("caretIndex").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C53B0, ASTextField, FUN_1422c53b0, 88, 0xF2C211FC);
+MS2_REPLACE_METHOD(0x1422C53B0, ASTextField, GetCaretIndex, 88, 0xF2C211FC);
 
 // @0x1422c5410
-void ASTextField::FUN_1422c5410(int bEmbed)
+void ASTextField::SetEmbedFonts(int bEmbed)
 {
     FUN_1407cbbe0("embedFonts", bEmbed != 0);
 }
-MS2_REPLACE_METHOD(0x1422C5410, ASTextField, FUN_1422c5410, 60, 0x719A42F7);
+MS2_REPLACE_METHOD(0x1422C5410, ASTextField, SetEmbedFonts, 60, 0x719A42F7);
 
 // @0x1422c5460
 int ASTextField::FUN_1422c5460()
 {
-    return FUN_1422baa20("embedFonts").GetBool();
+    return GetMember("embedFonts").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C5460, ASTextField, FUN_1422c5460, 91, 0x37D62B23);
 
 // @0x1422c54d0
-void ASTextField::FUN_1422c54d0(int bPassword)
+void ASTextField::SetDisplayAsPassword(int bPassword)
 {
     FUN_1407cbbe0("displayAsPassword", bPassword != 0);
 }
-MS2_REPLACE_METHOD(0x1422C54D0, ASTextField, FUN_1422c54d0, 60, 0xE6E1A2E3);
+MS2_REPLACE_METHOD(0x1422C54D0, ASTextField, SetDisplayAsPassword, 60, 0xE6E1A2E3);
 
 // @0x1422c5520
 int ASTextField::FUN_1422c5520()
 {
-    return FUN_1422baa20("displayAsPassword").GetBool();
+    return GetMember("displayAsPassword").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C5520, ASTextField, FUN_1422c5520, 91, 0x44A77CED);
 
 // @0x1422c5590
-void ASTextField::FUN_1422c5590(int bRich)
+void ASTextField::SetUseRichTextClipboard(int bRich)
 {
     FUN_1407cbbe0("useRichTextClipboard", bRich != 0);
 }
-MS2_REPLACE_METHOD(0x1422C5590, ASTextField, FUN_1422c5590, 60, 0xD6FD35D3);
+MS2_REPLACE_METHOD(0x1422C5590, ASTextField, SetUseRichTextClipboard, 60, 0xD6FD35D3);
 
 // @0x1422c55e0
 int ASTextField::FUN_1422c55e0()
 {
-    return FUN_1422baa20("useRichTextClipboard").GetBool();
+    return GetMember("useRichTextClipboard").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C55E0, ASTextField, FUN_1422c55e0, 91, 0x8799CAC5);
 
 // @0x1422c5650
-void ASTextField::FUN_1422c5650(int bEnabled)
+void ASTextField::SetMouseWheelEnabled(int bEnabled)
 {
     FUN_1407cbbe0("mouseWheelEnabled", bEnabled != 0);
 }
-MS2_REPLACE_METHOD(0x1422C5650, ASTextField, FUN_1422c5650, 60, 0xA757D84F);
+MS2_REPLACE_METHOD(0x1422C5650, ASTextField, SetMouseWheelEnabled, 60, 0xA757D84F);
 
 // @0x1422c56a0
 int ASTextField::FUN_1422c56a0()
 {
-    return FUN_1422baa20("mouseWheelEnabled").GetBool();
+    return GetMember("mouseWheelEnabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C56A0, ASTextField, FUN_1422c56a0, 91, 0x672000D3);
 
 // @0x1422c5710
-void ASTextField::FUN_1422c5710(const CString& strRestrict)
+void ASTextField::SetRestrict(const CString& strRestrict)
 {
     FUN_1407cba60("restrict", strRestrict);
 }
-MS2_REPLACE_METHOD(0x1422C5710, ASTextField, FUN_1422c5710, 72, 0x7997D9A1);
+MS2_REPLACE_METHOD(0x1422C5710, ASTextField, SetRestrict, 72, 0x7997D9A1);
 
 // @0x1422c5760
-CString ASTextField::FUN_1422c5760()
+CString ASTextField::GetRestrict()
 {
-    return FUN_1409a23d0(FUN_1422baa20("restrict").GetString(), 0);
+    return FUN_1409a23d0(GetMember("restrict").GetString(), 0);
 }
-MS2_REPLACE_METHOD(0x1422C5760, ASTextField, FUN_1422c5760, 125, 0xD125DBC8);
+MS2_REPLACE_METHOD(0x1422C5760, ASTextField, GetRestrict, 125, 0xD125DBC8);
 
 // @0x1422c57f0
-int ASTextField::FUN_1422c57f0()
+int ASTextField::GetLength()
 {
-    return FUN_1422baa20("length").GetInt();
+    return GetMember("length").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C57F0, ASTextField, FUN_1422c57f0, 88, 0xA94234E0);
+MS2_REPLACE_METHOD(0x1422C57F0, ASTextField, GetLength, 88, 0xA94234E0);
 
 // @0x1422c5850
-int ASTextField::FUN_1422c5850()
+int ASTextField::GetNumLines()
 {
-    return FUN_1422baa20("numLines").GetInt();
+    return GetMember("numLines").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C5850, ASTextField, FUN_1422c5850, 88, 0xFEEFBE14);
+MS2_REPLACE_METHOD(0x1422C5850, ASTextField, GetNumLines, 88, 0xFEEFBE14);
 
 // @0x1422c58b0
-int ASTextField::FUN_1422c58b0()
+int ASTextField::GetMaxScrollV()
 {
-    return FUN_1422baa20("maxScrollV").GetInt();
+    return GetMember("maxScrollV").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C58B0, ASTextField, FUN_1422c58b0, 88, 0xBB9656F7);
+MS2_REPLACE_METHOD(0x1422C58B0, ASTextField, GetMaxScrollV, 88, 0xBB9656F7);
 
 // @0x1422c5910
-void ASTextField::FUN_1422c5910(int nAutoSize)
+void ASTextField::SetAutoSize(int nAutoSize)
 {
     FUN_1407cba60("autoSize", FUN_1422c5d40(nAutoSize));
 }
-MS2_REPLACE_METHOD(0x1422C5910, ASTextField, FUN_1422c5910, 75, 0x5C8AA59F);
+MS2_REPLACE_METHOD(0x1422C5910, ASTextField, SetAutoSize, 75, 0x5C8AA59F);
 
 // @0x1422c5970
-double ASTextField::FUN_1422c5970()
+double ASTextField::GetTextWidth()
 {
-    return FUN_1422baa20("textWidth").GetNumber();
+    return GetMember("textWidth").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422C5970, ASTextField, FUN_1422c5970, 92, 0x19304E37);
+MS2_REPLACE_METHOD(0x1422C5970, ASTextField, GetTextWidth, 92, 0x19304E37);
 
 // @0x1422c59e0
 double ASTextField::FUN_1422c59e0()
 {
-    return FUN_1422baa20("textHeight").GetNumber();
+    return GetMember("textHeight").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422C59E0, ASTextField, FUN_1422c59e0, 92, 0x284D168C);
 
@@ -330,11 +330,11 @@ void ASTextField::FUN_1422c5c60(int nBegin, int nEnd, const CStringW& strText)
 MS2_REPLACE_METHOD(0x1422C5C60, ASTextField, FUN_1422c5c60, 126, 0x13FF3336);
 
 // @0x1422c5cf0
-void ASTextField::FUN_1422c5cf0(int nBegin, int nEnd)
+void ASTextField::SetSelection(int nBegin, int nEnd)
 {
     FUN_1409ba0d0("setSelection", nBegin, nEnd);
 }
-MS2_REPLACE_METHOD(0x1422C5CF0, ASTextField, FUN_1422c5cf0, 68, 0x3CD49EF9);
+MS2_REPLACE_METHOD(0x1422C5CF0, ASTextField, SetSelection, 68, 0x3CD49EF9);
 
 // @0x1422c5d40
 CString ASTextField::FUN_1422c5d40(int nAutoSize)

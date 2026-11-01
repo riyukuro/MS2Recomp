@@ -132,7 +132,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
             row.FUN_1407cbb20("level", FUN_1409e88d0(0x459, FUN_14074bd10(nQuest)));
             row.FUN_1409c0d20("id", nQuest);
             row.FUN_1407cba60("icon", FUN_140e7fb90(nQuest));
-            list->FUN_1422dd230(row);
+            list->AddItem(row);
         }
         list->vfunc_24(true);
     }

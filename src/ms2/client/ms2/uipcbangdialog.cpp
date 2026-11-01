@@ -59,6 +59,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <algorithm>
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);
@@ -82,7 +84,8 @@ void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
 CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<int>
 CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<unsigned>
-CStringW FUN_1408116a0(int nId, const int& nArg);               // system text with one argument
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
@@ -231,7 +234,7 @@ void UIPcBangDialog::vfunc_72()
             UpdateBanner();
         if (IsPcBang())
         {
-            if (m_playTimeTimer.FUN_140268870(0))
+            if (reinterpret_cast<Unk_IntervalTimer&>(m_playTimeTimer).Check(0))
             {
                 UpdatePlayTime();
                 UpdateProgress();
@@ -240,7 +243,7 @@ void UIPcBangDialog::vfunc_72()
     }
     if (IsPcBang())
     {
-        if (m_receivableTimer.FUN_140268870(0))
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_receivableTimer).Check(0))
             UpdateReceivable();
     }
 }
@@ -559,7 +562,7 @@ void UIPcBangDialog::RefreshGiftList()
             obj.FUN_1409c0d20("id", spGift->m_giftId);
             obj.FUN_1407cbb20("label", GetStringTable()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
-            obj.FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
+            obj.FUN_1407cba60("iconPath", spData->GetIconPath());
             obj.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
             int nState = FUN_141275a10(spItem.get());
             if (nState == 2)
@@ -631,7 +634,7 @@ CStringW UIPcBangDialog::GetPlayTimeText()
     if (nHour > 0)
         return FUN_140811740(0xad0, nHour, nMinute);
     else
-        return FUN_1408116a0(0xad1, nMinute);
+        return BlockFormat<int>(0xad1, nMinute);
 }
 MS2_REPLACE_METHOD(0x141325F70, UIPcBangDialog, GetPlayTimeText, 194, 0x38EF9990);
 
@@ -666,7 +669,7 @@ void UIPcBangDialog::RebuildGiftOrder()
         MS2Ptr<CItemData> spData = FUN_14053f870(spGift->m_itemId);
         if (spData == 0)
             continue;
-        if (spData->FUN_14053cbc0() && !spData->FUN_14053cf90())
+        if (spData->FUN_14053cbc0() && !spData->HasSkinType())
             vecLevel.push_back(spGift);
         else
             m_giftOrder.push_back(spGift);

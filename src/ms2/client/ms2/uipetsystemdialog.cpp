@@ -147,10 +147,10 @@ void UIPetSystemDialog::OnLoadComplete()
             ASObj obj(2);
             obj.FUN_1407cbb20("label", GetStringCommon(spTab->m_18));
             obj.FUN_1407cba60("frame", strFrame);
-            spBar->FUN_1422e3460(obj);
+            spBar->AddItem(obj);
         }
         spBar->vfunc_24(true);
-        spBar->FUN_1422e31e0(nSel);
+        spBar->SetSelectedIndex(nSel);
     }
     FUN_1419260d0("m_webGuideButton", 0);
 }
@@ -229,8 +229,8 @@ void UIPetSystemDialog::FUN_140e74550(int nGroup)
     {
         m_180 = nGroup;
         int nTab = FUN_140e74790();
-        if (spBar->FUN_1422e3210() != nTab)
-            spBar->FUN_1422e31e0(nTab);
+        if (spBar->GetSelectedIndex() != nTab)
+            spBar->SetSelectedIndex(nTab);
     }
     else
     {

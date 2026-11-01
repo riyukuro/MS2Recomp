@@ -19,7 +19,6 @@
 class Unk_UpperActor : public PCBase
 {
 };
-Unk_UpperActor* FUN_1409ffd30(void* p);
 
 // An entry of the list at 0x143afa980->+0x190 (vfunc_6 tells each one whether the mode is a free camera).
 class Unk_CameraListEntry
@@ -129,7 +128,7 @@ MS2_REPLACE_METHOD(0x140afd630, CCameraMode, vfunc_5, 50, 0x7C24943E);
 // @0x140afd670
 void CCameraMode::vfunc_6(int n)
 {
-    Unk_UpperActor* pActor = FUN_1409ffd30(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
+    Unk_UpperActor* pActor = reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60())));
     if (pActor)
         pActor->FUN_1416781a0(vfunc_1());
     Unk_CameraList* pList = Unk_CameraListOwner::FUN_140afe770();

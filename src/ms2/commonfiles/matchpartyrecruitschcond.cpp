@@ -182,7 +182,7 @@ int FUN_140694970(const CMatchPartyRecruitSchCond* pThis)
 // @0x1406949e0
 CMatchPartyRecruit::CMatchPartyRecruit()
 {
-    FUN_140694ab0();
+    Clear();
 }
 
 // @0x140694a50
@@ -191,7 +191,7 @@ CMatchPartyRecruit::~CMatchPartyRecruit()
 }
 
 // @0x140694ab0
-void CMatchPartyRecruit::FUN_140694ab0()
+void CMatchPartyRecruit::Clear()
 {
     recruitId = 0;
     fieldId = 0;
@@ -225,7 +225,7 @@ void FUN_140694be0(const CMatchPartyRecruit* pThis, COutputStream& out)
 }
 
 // @0x140694c10
-void CMatchPartyRecruit::FUN_140694c10(CInPacket& packet)
+void CMatchPartyRecruit::Read(CInPacket& packet)
 {
     FUN_140694dc0(this, &packet);
 }
@@ -267,7 +267,7 @@ void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in)
 // The exe's body returns nothing (its `ret` exposes the last field copy's this pointer) and the callers ignore the
 // result, so it is declared void.
 // @0x140694f70
-void CMatchPartyRecruit::FUN_140694f70(const CMatchPartyRecruit& other)
+void CMatchPartyRecruit::CopyFrom(const CMatchPartyRecruit& other)
 {
     if (&other == 0)
         return;

@@ -26,6 +26,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -36,7 +43,7 @@ class Unk_140166430;
 class Unk_RsLoader : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_RsItemTable { public: void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo); };
 Unk_140166430* FUN_140166430();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
@@ -142,19 +149,19 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
-        for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recommend"); pNode != 0; pNode = pNode->FUN_140168650("recommend"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("recommend")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("recommend")))
         {
             MS2Ptr<CRecommendItem> spItem(new CRecommendItem);
             XmlGetAttr((class TiXmlElement*)(pNode), "code", spItem->m_nCode);
             XmlGetAttr((class TiXmlElement*)(pNode), "itemID", spItem->m_nItemId);
             Unk_ReadRank((class Unk_XmlNode*)(pNode), "itemRank", &spItem->m_nItemRank);
             XmlGetAttr((class TiXmlElement*)(pNode), "itemCount", spItem->m_nItemCount);
-            FUN_140873420(pNode, "itemDescription", spItem->m_strItemDescription);
-            FUN_140873420(pNode, "storeDescription", spItem->m_strStoreDescription);
-            FUN_140873420(pNode, "buyButtonText", spItem->m_strBuyButtonText);
+            XmlGetAttr((class TiXmlElement*)(pNode), "itemDescription", spItem->m_strItemDescription);
+            XmlGetAttr((class TiXmlElement*)(pNode), "storeDescription", spItem->m_strStoreDescription);
+            XmlGetAttr((class TiXmlElement*)(pNode), "buyButtonText", spItem->m_strBuyButtonText);
             XmlGetAttr((class TiXmlElement*)(pNode), "npcImageType", spItem->m_nNpcImageType);
             XmlGetAttr((class TiXmlElement*)(pNode), "requireMoney", spItem->m_nRequireMoney);
             XmlGetAttr((class TiXmlElement*)(pNode), "requireItemID", spItem->m_nRequireItemId);

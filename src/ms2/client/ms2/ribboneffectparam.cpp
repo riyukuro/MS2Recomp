@@ -42,6 +42,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/nifeffectparam.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
@@ -50,10 +57,9 @@ class Unk_140165cf0
 public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);
 };
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
@@ -75,7 +81,6 @@ void FUN_1409806e0(NiTexturingProperty* pProp, int n);
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
 void FUN_1415672e0(NiAVObject* pObj, int n);
-float FUN_140a17940(float f, float fMin, float fMax);               // clamp
 // Time controller / extra data helpers.
 void FUN_1416f18b0(NiTimeController* pCtrl, int n);
 // Property list of an NiMesh (hash/list walk with a position cursor).
@@ -86,15 +91,16 @@ NiProperty* FUN_140993f00(void* pSlot);                             // slot -> p
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
@@ -136,11 +142,11 @@ CRibbonEffectParam::CRibbonEffectParam()
 void CRibbonEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "texturePath", m_strTexturePath);
-    FUN_1408733e0(pNode, "nifPath", m_strNifPath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "texturePath", m_strTexturePath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "nifPath", m_strNifPath);
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
     XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
-    CString strAlpha = FUN_140188f50(FUN_14086f4b0(pNode, "alphaMode"), 0);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)
@@ -210,7 +216,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     {
         NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
-        Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409849b0(&spModel)));
+        Unk_SceneWalker kWalker((NiAVObject*)(static_cast<NiObject*>(FUN_1409849b0(&spModel))));
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0)
         {
@@ -414,7 +420,7 @@ void CRibbonEffect::UpdateMesh()
         for (int i = 0; i < (int)nCount; ++i)
         {
             float fU = (float)i / (float)nCount;
-            float fRamp = FUN_140a17940((fU - m_fFadeStart) / (m_fFadeEnd - m_fFadeStart), 0.0f, 1.0f);
+            float fRamp = efd::Clamp((fU - m_fFadeStart) / (m_fFadeEnd - m_fFadeStart), 0.0f, 1.0f);
             float fAlpha = m_fAlphaFrom + fRamp * (m_fAlphaTo - m_fAlphaFrom);
             NiColorA kColor(0.0f, 0.0f, 0.0f, fAlpha);
             pPos[i] = *(const efd::Point3*)&kMinus[i];

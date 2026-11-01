@@ -43,13 +43,13 @@ public:
     static MS2Ptr<ASMeratMarketProductBase> FUN_1409bbf30(const int& nType, const int& nMovieId);
 
     void SetIndex(int nIndex);                                         // m_nIndex = nIndex
-    void FUN_1409bc4a0(const CString& strBg);                               // "bgPath"
+    void SetBgPath(const CString& strBg);                               // "bgPath"
     void SetBanner(MS2Ptr<Unk_MeratBanner> spBanner);                   // m_spBanner = spBanner
     void FUN_1409bc540(const int& nIndex);                                  // "index"
-    void FUN_1409bc580(MS2Ptr<Unk_MeratEquipEntry> spEntry);                // "productOID" of a record
-    void FUN_1409bc630(const Unk_MeratOid& oid);                            // "productOID"
+    void SetProductOid(MS2Ptr<Unk_MeratEquipEntry> spEntry);                // "productOID" of a record
+    void SetProductOID(const Unk_MeratOid& oid);                            // "productOID"
     int GetIndex();                                                    // m_nIndex
-    void FUN_1409bc6a0(Unk_MeratOid* pOid);                                 // parses "productOID"
+    void GetProductOID(Unk_MeratOid* pOid);                                 // parses "productOID"
     unsigned int FUN_1409bc720();                                           // "index"
     int GetProductType();                                                    // m_nProductType
 

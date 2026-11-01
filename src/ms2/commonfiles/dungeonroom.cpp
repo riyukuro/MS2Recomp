@@ -137,7 +137,7 @@ public:
     template <class T> void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* format, const T& value)
     {
         fmt::internal::Value values[] = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
-        FUN_140653690(a, b, flags, format, fmt::ArgList(fmt::internal::make_type(value), values));
+        LogInfo(a, b, flags, format, fmt::ArgList(fmt::internal::make_type(value), values));
     }
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
@@ -162,7 +162,7 @@ void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // spl
 
 // The table file loader helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 class Unk_1406aeee0 { public: bool FUN_1406af020(); };
 Unk_1406aeee0* FUN_1406aeee0();
@@ -1055,7 +1055,7 @@ void DungeonRoomTable::LoadRooms()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "dungeonRoom", "dungeonRoomID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "dungeonRoom", "dungeonRoomID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         DungeonRoomPtr pRoom(new DungeonRoom);
@@ -1079,7 +1079,7 @@ void DungeonRoomTable::LoadSeasons()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "DungeonSeason", "seasonID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonSeason", "seasonID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
@@ -1127,7 +1127,7 @@ void DungeonRoomTable::LoadRankRewards()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "DungeonRankReward", "rewardID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonRankReward", "rewardID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
@@ -1153,7 +1153,7 @@ void DungeonRoomTable::LoadRoundGroups()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "DungeonRoundGroup", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonRoundGroup", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];

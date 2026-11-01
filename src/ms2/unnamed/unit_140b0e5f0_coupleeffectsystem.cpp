@@ -20,7 +20,7 @@ class CItemGemPropertyTable;
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 // Gem tables (RTTI names). Only the polymorphic part is declared; the effect-name lookup is an out-of-line member.
 class CGemDataBase { public: virtual ~CGemDataBase(); };
-class CGemCharEffectData : public CGemDataBase { public: CString FUN_1405acc80(int nOwnerGem, int nPartnerGem); };
+class CGemCharEffectData : public CGemDataBase { public: CString GetCoupleEffect(int nOwnerGem, int nPartnerGem); };
 class Unk_GemDbPtr { public: ~Unk_GemDbPtr(); CGemDataBase* FUN_1405a9970() const; private: void* m_pad_00; CGemDataBase* m_p; };   // dtor 0x1405a8740
 class Unk_GemEffPtr
 {
@@ -106,7 +106,6 @@ void FUN_1402b7560(void* pSlot, const char* pszMessage);
 class Unk_CeWorld
 {
 public:
-    PCBase* FUN_141bd1530(__int64 nId);                 // player by id
     Unk_CeMapPtr FUN_141bd30a0();                       // current map data
 };
 void* FUN_1409613d0(PCBase* p);
@@ -150,7 +149,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         return;
     if (((class Unk_IntervalTimer*)(struct Unk_CoupleTick*)(&m_tick))->Check(1000) != 0)
     {
-        PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+        PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
         if (pPartner == 0)
             return;
         if (m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
@@ -208,7 +207,7 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
 // @0x140b0eba0
 void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
 {
-    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0 || ((class GameObject*)(class PCBase*)(pPartner))->FUN_14123c580() == nObjectId)
     {
         FUN_140b0f3a0(1);
@@ -241,7 +240,7 @@ __int64 CoupleEffectSystem::FUN_140b0ec80()
 // @0x140b0ecd0
 void CoupleEffectSystem::FUN_140b0ecd0()
 {
-    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner != 0)
     {
         m_bInRange = 0;
@@ -300,19 +299,19 @@ bool CoupleEffectSystem::FUN_140b0ef20()
 // @0x140b0efb0
 CString CoupleEffectSystem::FUN_140b0efb0()
 {
-    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return "";
     Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(reinterpret_cast<Unk_GemDb*>(FUN_1405a96f0())->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
     if (spEffect.FUN_1405a8d70(0) != 0)
         return "";
-    return spEffect.FUN_1405a8ef0()->FUN_1405acc80(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
+    return spEffect.FUN_1405a8ef0()->GetCoupleEffect(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
 }
 
 // @0x140b0f160
 Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
 {
-    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return Unk_CoupleVec(DAT_143b01a60);
 #ifdef __clang__
@@ -334,7 +333,7 @@ void CoupleEffectSystem::FUN_140b0f260()
     void* pObj = FUN_1409613d0(m_pOwner);
     if (pObj == 0)
         return;
-    PCBase* pPartner = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPartnerId);
+    PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return;
     bool bDiffers = m_strName != pPartner->vfunc_77();

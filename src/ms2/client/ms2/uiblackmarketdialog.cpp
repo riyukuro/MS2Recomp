@@ -30,6 +30,7 @@
 #include "ms2/placeholder/cmesomarketman.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_cond(17, 0.75f, 0.25f, 2.25f, 10);
@@ -58,15 +59,14 @@ class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* p, int n);
 CFeatureManager* FUN_140166410();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: int FUN_140f20b90(); };
 class Unk_Cfg6198 { public: CString FUN_1409f6f30(); };
 class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_Cfg6198 m_6198; };
-Unk_Cfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_Cfg* FUN_1401d3200()
 void FUN_1418fe1c0(const CString& str);
-class Unk_GmKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SwfMgr { public: UISwfEntity* FUN_1422d4980(int nLayer); };
 Unk_SwfMgr* FUN_140b632f0();
@@ -201,7 +201,7 @@ int UIBlackMarketDialog::vfunc_74(int nMsg, void* p2, void* p3)
 {
     if (nMsg != 0x10f && nMsg != 0x102)
         return 0;
-    if (FUN_140ba28d0(&m_30, 0) || m_spItemSearch == 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) || m_spItemSearch == 0)
         return 0;
     if (FUN_1418d0da0(m_spItemSearch.get()))
         m_spItemSearch->FUN_140f0d630(nMsg, p2, p3);
@@ -219,13 +219,13 @@ void UIBlackMarketDialog::OnLoadInit()
 void UIBlackMarketDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (!FUN_140166410()->FUN_14036d570(0x15))
         FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
     if (FUN_140166410()->FUN_14036d570(0xf4))
     {
-        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", FUN_1401d3200()->m_6078.FUN_140f20b90() == 1);
+        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6078.FUN_140f20b90() == 1);
         m_30->FUN_140bbe640<Unk_140acd6e0>("m_mesoMarketDetailButton", m_spDetailButton);
         if (m_spDetailButton.get())
             m_spDetailButton->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
@@ -408,7 +408,7 @@ void UIBlackMarketDialog::FUN_1418d0de0(void* p)
 {
     if (m_spItemRegister == 0)
         return;
-    m_spItemRegister->FUN_140f132c0(*static_cast<CBlackMarketMan::ProductMap*>(p));
+    m_spItemRegister->BuildOwnerItemList(*static_cast<CBlackMarketMan::ProductMap*>(p));
 }
 
 // @0x1418d0e40
@@ -446,7 +446,7 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
     {
         MS2Ptr<CItem> spItem = spEntry->m_item;
         MS2Ptr<CItem> spNew = new CItem();
-        static_cast<CItem*>(spNew)->FUN_14052b2e0(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->FUN_140526bd0(), 0, n);
+        static_cast<CItem*>(spNew)->InitWithCount(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->FUN_140526bd0(), 0, n);
         FUN_141349ae0(spNew, 0x945, "");
         m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
     }
@@ -457,7 +457,7 @@ void UIBlackMarketDialog::FUN_1418d1330(int nA, int nB, void* p)
 {
     if (m_spItemSearch == 0)
         return;
-    m_spItemSearch->FUN_140f0d990(nA, nB, p);
+    m_spItemSearch->BuildItemList(nA, nB, p);
 }
 
 // @0x1418d13a0
@@ -473,7 +473,7 @@ void UIBlackMarketDialog::FUN_1418d1430(const Scaleform::GFx::FunctionHandler::P
 {
     if (!FUN_1418d0da0(m_spMesoSearchSingle.get()) && !FUN_1418d0da0(m_spMesoRegister.get()))
         return;
-    const CString& strUrl = FUN_1401d3200()->m_6198.FUN_1409f6f30();
+    const CString& strUrl = reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6198.FUN_1409f6f30();
     if (strUrl.IsEmpty() == true)
         return;
     FUN_1418fe1c0(strUrl);

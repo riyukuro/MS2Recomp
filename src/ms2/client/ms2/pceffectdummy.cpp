@@ -15,6 +15,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // Unrecovered helpers (same ones the other xml table units use).
 class Unk_140166420 : public CFileSystem { };
@@ -65,15 +72,15 @@ int CPCEffectDummy::LoadFile(const char* pszPath)
         FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", &pszPath);
         return 0;
     }
-    Unk_140165cf0* pGroup = pRoot->FUN_140165cf0("effectdummy");
+    Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effectdummy"));
     if (pGroup != 0)
     {
         m_dummies.clear();
         CEffectDummy kDummy;
-        for (Unk_140165cf0* pElem = pGroup->FUN_140165cf0("dummy"); pElem != 0; pElem = pElem->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("dummy")); pElem != 0; pElem = pElem->NextSiblingElement())
         {
             int nGender = 0;
-            FUN_1408731e0(pElem, "gender", nGender);
+            XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(nGender));
             kDummy.Parse(pElem);
             m_dummies[nGender].push_back(kDummy);
         }

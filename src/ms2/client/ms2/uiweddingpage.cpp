@@ -125,7 +125,7 @@ public:
 
 Unk_WpSkillMgr* FUN_1401958b0();
 MS2Ptr<Unk_WpItemData> FUN_14053f870(int nItemId);
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
@@ -159,7 +159,7 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 void ASObj::FUN_140fe95a0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -181,7 +181,7 @@ bool UIWeddingPage::vfunc_1()
 {
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_28->FUN_1422dba00()))->IsNull())
         return false;
-    Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
+    Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->GetMember("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)
         return false;
     m_pScript = FUN_140acca70(m_28->FUN_1422db730(), kPage);
@@ -338,7 +338,7 @@ bool UIWeddingPageSkill::vfunc_1()
                 obj.FUN_1407cb9c0("status", 0);
                 obj.FUN_1407cba60("imgPath", spItem->FUN_14053fdd0());
             }
-            spList->FUN_1422dd230(obj);
+            spList->AddItem(obj);
         }
         spList->vfunc_24(true);
     }
@@ -371,7 +371,7 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
                 return true;
             if (spPerk->m_nType != 1)
                 return true;
-            if (DAT_143ab2a90.FUN_140a5e2e0((&spPerk->m_grant)->vfunc_0()).get() != 0)
+            if (g_143ab2a90.FUN_140a5e2e0((&spPerk->m_grant)->vfunc_0()).get() != 0)
             {
                 {
                     CStringW strMsg(L"s_wedding_dialog_page_skill_exist");
@@ -485,9 +485,9 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     {
         ASTooltip tip(2);
         CStringW strTip = FUN_14028dfa0<CStringW>(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
-        if (tip.FUN_1409e26b0(strTip) != 0)
+        if (tip.ApplyTextTooltip(strTip) != 0)
         {
-            tip.FUN_1409c6dc0(1);
+            tip.SetTooltipAlign(1);
             FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
         }
     }
@@ -541,7 +541,7 @@ void UIWeddingPageMission::FUN_140fe8fb0()
                 row.FUN_1407cba60("binding", m_binder.FUN_140d43310(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
             if (1 < rewards.GetCount())
                 row.FUN_1407cba60("binding2", m_binder.FUN_140d43310(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
         spList->vfunc_24(true);
     }

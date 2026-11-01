@@ -28,7 +28,7 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 bool FUN_14028d470(float a, float b);                               // nearly equal
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
@@ -37,15 +37,16 @@ void* FUN_1409475f0(efd::SmartPointer<NiNode>* p);                  // const get
 void FUN_140194470(void* pDst, const void* pSrc);                   // copy a point
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // A material-table entry; only its state word (+0x540) is read here. Its exe accessor (0x1427542f0) lies in the
@@ -105,7 +106,7 @@ CStatusEffectParam::CStatusEffectParam()
 void CStatusEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "category", m_strCategory);
+    XmlGetAttr((class TiXmlElement*)(pNode), "category", m_strCategory);
 }
 MS2_REPLACE_METHOD(0x1418010a0, CStatusEffectParam, vfunc_1, 63, 0x33C924FF);
 
@@ -231,7 +232,7 @@ MS2_REPLACE_METHOD(0x1418018b0, CStatusEffect, vfunc_8, 62, 0xCE06636C);
 // @0x141801900
 void CStatusEffect::FUN_141801900(void* pUnused)
 {
-    Unk_SceneWalker walker(m_spNode);
+    Unk_SceneWalker walker((NiAVObject*)(m_spNode));
     NiAVObject* pObj;
     while ((pObj = walker.Next(true)) != 0)
     {

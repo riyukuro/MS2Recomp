@@ -31,6 +31,7 @@
 #include <map>
 #include <vector>
 #include <new>
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 
@@ -46,7 +47,7 @@ public:
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 
 // The row table (DAT_143ab1a40, constructed by skilltieroptionmanager.cpp's static init range); m_specialTo in the source.
@@ -187,7 +188,7 @@ int LoadSpecialAbilityStringTable()
         int nCommonId;
         int nValueId;
         XmlGetAttr((class TiXmlElement*)(pElem), "id", nId);
-        FUN_1408733e0(pElem, "option", strOption);
+        XmlGetAttr((class TiXmlElement*)(pElem), "option", strOption);
         XmlGetAttr((class TiXmlElement*)(pElem), "valueType", nValueType);
         XmlGetAttr((class TiXmlElement*)(pElem), "commonStringID", nCommonId);
         XmlGetAttr((class TiXmlElement*)(pElem), "valueStringID", nValueId);
@@ -213,7 +214,7 @@ int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
         CStringW strUnused;
         int nId;
         XmlGetAttr((class TiXmlElement*)(pElem), "id", nId);
-        FUN_140873420(pElem, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pElem), "name", strName);
         mapNames[nId] = strName;
     }
     return 1;
@@ -306,7 +307,7 @@ int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
         while (pos != 0)
         {
             eSpecialAbility nStat = spList->GetNext(pos);
-            bool bFound = spOption->FUN_1405cb800(nGroup, nStat).get() != 0;
+            bool bFound = spOption->GetSpecialOption(nGroup, nStat).get() != 0;
             if (bFound)
                 return 1;
         }

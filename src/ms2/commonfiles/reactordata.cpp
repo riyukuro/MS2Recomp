@@ -43,6 +43,14 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -51,12 +59,11 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_140197350(Unk_140165cf0*, const char*, int nDefault);           // int attribute with default
 unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
 float FUN_1401973d0(Unk_140165cf0*, const char*, float fDefault);
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);
 int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>& rOut);   // list attribute
 void FUN_140178270(const CStringA& str, std::vector<int>& rOut, const char* pszSep);   // split into ints
@@ -113,7 +120,7 @@ static int ReadStateType(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
         return 2;
     }
     CStringA str;
-    int nRead = FUN_1408733e0(pElem, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = ParseStateType(str);
@@ -130,16 +137,16 @@ bool ReactorStateData::Load(Unk_140165cf0* pNode)
     ReadStateType(pNode, "type", &m_nType);
     m_nNextTimeSec = FUN_140197350(pNode, "nextTimeSec", 0);
     m_nExpireTimeSec = FUN_140197350(pNode, "expireTimeSec", 0);
-    m_strKfmName = FUN_14015f710(pNode, "kfmName", CStringA(""));
-    m_strStartAni = FUN_14015f710(pNode, "startAni", CStringA(""));
-    m_strIdleAni = FUN_14015f710(pNode, "idleAni", CStringA(""));
+    m_strKfmName = Unk_ReadString((class Unk_XmlNode*)(pNode), "kfmName", CStringA(""));
+    m_strStartAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "startAni", CStringA(""));
+    m_strIdleAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "idleAni", CStringA(""));
     m_strActionStringKey = FUN_1401bf530(pNode, "actionStringKey", CStringW(L""));
     typedef ConditionPtr (*CondLoader)(Unk_140165cf0*);
     std::list<std::pair<CondLoader, CStringA> > loaders;
     loaders.push_back(std::make_pair(FUN_14076a1e0, "condItem"));
     for (std::list<std::pair<CondLoader, CStringA> >::iterator it = loaders.begin(); it != loaders.end(); ++it)
     {
-        ConditionPtr cond = it->first(pNode->FUN_140165cf0(it->second));
+        ConditionPtr cond = it->first(((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild(it->second)));
         if (!cond.IsNull())
             m_conditions.AddTail(cond);
     }
@@ -166,9 +173,9 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
     m_nReactTimeMSec = FUN_140197350(pNode, "reactTimeMSec", 15000);
     m_fReactDistance = FUN_1401973d0(pNode, "reactDistance", 0);
     std::vector<int> stateIds;
-    CStringA strStates = FUN_14015f710(pNode, "reactorStateList", CStringA(""));
+    CStringA strStates = Unk_ReadString((class Unk_XmlNode*)(pNode), "reactorStateList", CStringA(""));
     FUN_140178270(strStates, stateIds, ", []");
-    m_strConnectedEffect = FUN_14015f710(pNode, "connectedEffect", CStringA(""));
+    m_strConnectedEffect = Unk_ReadString((class Unk_XmlNode*)(pNode), "connectedEffect", CStringA(""));
     m_nGameEventId = FUN_140197390(pNode, "gameEventId", 0);
     for (std::vector<int>::iterator it = stateIds.begin(); it != stateIds.end(); ++it)
     {
@@ -184,11 +191,11 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
     do
     {
         CStringW strXml;
-        FUN_140873420(pNode, "rewardItemListXml", strXml);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardItemListXml", strXml);
         if (strXml.IsEmpty())
             break;
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
+        if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         {
             MS2_ASSERT_AT(0xff, 0);
             return false;
@@ -199,7 +206,7 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
             MS2_ASSERT_AT(0x106, 0);
             return false;
         }
-        for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("v"); pItem != 0; pItem = pItem->FUN_140168650("v"))
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("v")))
         {
             ItemEntity item;
             item.vfunc_2(pItem);
@@ -254,13 +261,13 @@ bool CReactorDataTable::LoadReactors()
     CString strPath(m_strReactorXml);
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactor"); pNode != 0; pNode = pNode->FUN_140168650("reactor"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactor")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reactor")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -283,13 +290,13 @@ bool CReactorDataTable::LoadStates()
     CString strPath(m_strStateXml);
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactorState"); pNode != 0; pNode = pNode->FUN_140168650("reactorState"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactorState")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reactorState")))
     {
         StatePtr state(new ReactorStateData);
         if (!state->Load(pNode))

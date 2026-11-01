@@ -36,15 +36,25 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/commoneffectdummy.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- unit-local views of exe objects ----------------------------------------------------------------------------
 
 // The common log (FUN_140166440()) and file system (FUN_140166420()).
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_NpcLog
 {
 public:
-    void FUN_14015eb90(int level, int flags, const wchar_t* format, const CStringA& arg);
 };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_NpcFileSystem : public CFileSystem
@@ -86,7 +96,7 @@ struct Unk_NpcConstants
     Unk_NpcConstant<unsigned> m_class3or7;                  // +0xaf78
     Unk_NpcConstant<unsigned> m_class4or6;                  // +0xafd0
 };
-Unk_NpcConstants* FUN_1401d3200_1();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_NpcConstants* FUN_1401d3200_1()
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
 // @0x140a7d630
@@ -152,22 +162,22 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
 {
     if (!CNpcData::LoadXml(pElem))
         return false;
-    FUN_1408733e0(pElem, "iconName", m_strIcon);
-    FUN_1408733e0(pElem, "minimapIconName", m_strMinimapIcon);
-    FUN_1408733e0(pElem, "shopIconName", m_strShopIcon);
-    FUN_1408733e0(pElem, "npcSoundStart", m_strSoundStart);
-    FUN_1408733e0(pElem, "npcSoundEnd", m_strSoundEnd);
-    FUN_1408733e0(pElem, "npcSoundDead", m_strSoundDead);
-    FUN_1408733e0(pElem, "regenEffect", m_strRegenEffect);
-    FUN_1408733e0(pElem, "deadEffect", m_strDeadEffect);
-    FUN_1408733e0(pElem, "damageEffect", m_strDamageEffect);
-    FUN_1408733e0(pElem, "createEffect", m_strCreateEffect);
-    FUN_1408733e0(pElem, "keepEffect", m_strKeepEffect);
-    FUN_1408733e0(pElem, "illust", m_strIllust);
-    FUN_1408730a0(pElem, "hpBar", m_bHpBar);
-    FUN_1408730a0(pElem, "attackDamage", m_bAttackDamage);
-    FUN_1408730a0(pElem, "nametag", m_bNametag);
-    FUN_1408731e0(pElem, "gender", m_nGender);
+    XmlGetAttr((class TiXmlElement*)(pElem), "iconName", m_strIcon);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minimapIconName", m_strMinimapIcon);
+    XmlGetAttr((class TiXmlElement*)(pElem), "shopIconName", m_strShopIcon);
+    XmlGetAttr((class TiXmlElement*)(pElem), "npcSoundStart", m_strSoundStart);
+    XmlGetAttr((class TiXmlElement*)(pElem), "npcSoundEnd", m_strSoundEnd);
+    XmlGetAttr((class TiXmlElement*)(pElem), "npcSoundDead", m_strSoundDead);
+    XmlGetAttr((class TiXmlElement*)(pElem), "regenEffect", m_strRegenEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "deadEffect", m_strDeadEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "damageEffect", m_strDamageEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "createEffect", m_strCreateEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "keepEffect", m_strKeepEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "illust", m_strIllust);
+    XmlGetAttr((class TiXmlElement*)(pElem), "hpBar", reinterpret_cast<bool&>(m_bHpBar));
+    XmlGetAttr((class TiXmlElement*)(pElem), "attackDamage", reinterpret_cast<bool&>(m_bAttackDamage));
+    XmlGetAttr((class TiXmlElement*)(pElem), "nametag", reinterpret_cast<bool&>(m_bNametag));
+    XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(m_nGender));
     {
         CEffectDummy dummy;
         size_t nCount = reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40200();
@@ -177,14 +187,14 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
             if (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40230((unsigned)i, dummy))
                 m_effectDummies.push_back(dummy);
         }
-        Unk_140165cf0* pDummies = pElem->FUN_140165cf0("effectdummy");
+        Unk_140165cf0* pDummies = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effectdummy"));
         if (pDummies != 0)
         {
-            for (Unk_140165cf0* pNode = pDummies->FUN_140165cf0("dummy"); pNode != 0; pNode = pNode->NextSiblingElement())
+            for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummies))->FirstChild("dummy")); pNode != 0; pNode = pNode->NextSiblingElement())
             {
                 bool bFound = false;
                 CStringA strName;
-                FUN_1408733e0(pNode, "name", strName);
+                XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);
                 for (size_t i = 0; i < m_effectDummies.size(); i++)
                 {
                     CEffectDummy* pDummy = &m_effectDummies[i];
@@ -235,17 +245,17 @@ int NpcDataCli::GetUnknown12()
 unsigned NpcDataCli::GetClassConstant()
 {
     if (m_nFriendly != 0)
-        return NpcConstantValue(&FUN_1401d3200_1()->m_friendly);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_friendly);
     switch (GetClass())
     {
     case 1:
-        return NpcConstantValue(&FUN_1401d3200_1()->m_class1);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class1);
     case 3:
     case 7:
-        return NpcConstantValue(&FUN_1401d3200_1()->m_class3or7);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class3or7);
     case 4:
     case 6:
-        return NpcConstantValue(&FUN_1401d3200_1()->m_class4or6);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class4or6);
     }
     return 0;
 }
@@ -300,18 +310,18 @@ void NpcDataTableCli::Load(int nFile)
     TiXmlDocument doc;
     if (((class Unk_NpcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        ((class Unk_NpcLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
         return;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        ((class Unk_NpcLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     std::vector<MS2Ptr<NpcDataCli> > list;
     list.reserve(100);
-    for (Unk_140165cf0* pNode : pRoot->FUN_140165cf0("npc"))
+    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")))
     {
         MS2Ptr<NpcDataCli> pData(new NpcDataCli);
         if (!pData->Load(pNode))

@@ -14,9 +14,9 @@ public:
     CMasteryManager();                                      // 0x140b6d070
     virtual ~CMasteryManager();                             // 0x140b6d0b0
 
-    int FUN_140b6d0e0();                                    // total number of learnable steps over the 12 mastery types
-    int FUN_140b6d140(int nType);                           // learnable steps of one mastery type
-    int FUN_140b6d250(int nType, int nLevel);              // the step has a reward
+    int GetTotalClaimableRewardLevels();                                    // total number of learnable steps over the 12 mastery types
+    int CountClaimableRewardLevels(int nType);                           // learnable steps of one mastery type
+    int HasRewards(int nType, int nLevel);              // the step has a reward
     int FUN_140b6d330(int nStep);                           // a quest requirement of the step is met
     Unk_MasteryResult FUN_140b6d470(int nStep);             // why the step cannot be learned (0 = can)
     void FUN_140b6d710(Unk_MasteryResult eResult);          // show the error text

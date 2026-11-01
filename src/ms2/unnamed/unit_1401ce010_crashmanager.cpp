@@ -120,7 +120,7 @@ void CCrashManager::FUN_1401ce2f0(const char* pszFormat, ...)
 // @0x1401ce3a0
 void CCrashManager::FUN_1401ce3a0()
 {
-    TSingleton<CFileLogger>::GetInstance()->FUN_1403922d0(m_nLogId);
+    TSingleton<CFileLogger>::GetInstance()->FlushLog(m_nLogId);
 }
 
 // @0x1401ce3d0

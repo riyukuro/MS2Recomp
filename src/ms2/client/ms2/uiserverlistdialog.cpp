@@ -40,6 +40,8 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/serverlisttable.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- statics (the exe runs them in this order: "gameexit", the sort-name table, "skill", "stun", the key input) ----
 // The shared header_statics_a.h would also construct the condition after "stun"; this unit's .text$di has none.
@@ -125,7 +127,6 @@ public:
     int FUN_1417e25a0(int);
     int FUN_1417e2610();
 };
-class Unk_SlWindow { public: HWND FUN_14209c720(); };
 class Unk_SlApp { public: };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 void FUN_141bca1e0(void* pObj);
@@ -134,7 +135,8 @@ void FUN_140da4fe0(void* pObj, MS2Ptr<NotifyObject> spNotify);
 int FUN_1406c34c0();                                            // the Nexon platform is active
 int FUN_14092f640();
 CStringW GetStringCommon(int nStringId);                          // string table text by id
-CStringW FUN_1408116a0(int nId, const int& n);                  // formatted notice text
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);
 extern CStringW DAT_143af62c0;
 extern CString DAT_143ab29d8;
@@ -266,13 +268,13 @@ UIServerListDialog::UIServerListDialog()
     m_80 = 0;
     m_strServer = FUN_1409a8b10()->FUN_140cfd260()->m_strServer;
     FUN_141925e70(0, 1);
-    ((class Unk_SlPackets*)FUN_140bccd50())->FUN_140da5180(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
 }
 
 // @0x141ad0e30
 UIServerListDialog::~UIServerListDialog()
 {
-    ((class Unk_SlPackets*)FUN_140bccd50())->FUN_140da51e0(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
 }
 
 // @0x141ad0f30
@@ -502,7 +504,7 @@ void UIServerListDialog::FUN_141ad1d20()
                         row.FUN_1407cb9c0("trafficPercent", server->m_nTrafficPercent);
                         array.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
                     } else {
-                        FUN_140d73aa0(FUN_1408116a0(0x20e, 99999), 0, 0, DAT_143af62c0);
+                        FUN_140d73aa0(BlockFormat<int>(0x20e, 99999), 0, 0, DAT_143af62c0);
                     }
                 }
             }
@@ -724,7 +726,7 @@ void UIServerListDialog::OnEndPopdown()
     {
         CSceneStateMulti* pMulti = FUN_140f30370();
         if (pMulti != 0)
-            PostMessageA(((class Unk_SlWindow*)FUN_140aadf80())->FUN_14209c720(), 0x4c8, 0, 0);
+            PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x4c8, 0, 0);
         break;
     }
     case 0x6200009:
@@ -754,7 +756,7 @@ bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
 // @0x141ad3310
 void UIServerListDialog::OnSceneLogin()
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef3);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ef3);
     m_30->Invoke("popdown");
 }
 

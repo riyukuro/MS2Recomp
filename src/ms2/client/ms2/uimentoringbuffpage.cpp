@@ -13,7 +13,7 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 CStringTable* GetStringTable();
-void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
+void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CStringW GetStringCommonByKey(const CStringW& str);
 
 // @0x140c6e3a0

@@ -81,6 +81,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 
@@ -201,16 +202,17 @@ MS2SceneGraphService* FUN_1413f98b0();
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class Unk_VtmCameraMgr : public CameraMgr { public: GameObject* FUN_140a38d60(); };
-Unk_VtmMover* FUN_1409ffd30(GameObject* pTarget);
 class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
-Unk_VtmAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 Unk_VtmMovie* FUN_1422bb8b0(int nLayer);
 CString FUN_141277f60(unsigned nLayer);                                      // name of UI layer nLayer
 class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 __int64 FUN_141245aa0(GPUManager*);
 CNetworkService* FUN_140714f90();
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-extern char DAT_143b059e8;                                                  // the game framework (service lookup cell)
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 unsigned FUN_1413d7eb0(HardwareInstancingService*);
 int FUN_1413d7e30(HardwareInstancingService*);
@@ -393,13 +395,13 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         if (reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
             GameObject* pTarget = reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
-            Unk_VtmMover* pMover = FUN_1409ffd30(pTarget);
+            Unk_VtmMover* pMover = reinterpret_cast<Unk_VtmMover*>(efd::DynamicCast<PCBase, GameObject>(pTarget));
             if (pTarget != 0)
             {
                 NiPoint3 kPos = pTarget->vfunc_18();
                 m_spPos->FUN_14118bdc0(kPos, bForce);
                 unsigned __int64 nKey;      // the egf::EntityID 0x14123c460 fills (no constructor runs on it)
-                efd::utf8string strAnim = FUN_141b6f910()->FUN_141206030(pTarget->FUN_14123c460(reinterpret_cast<egf::EntityID&>(nKey)));
+                efd::utf8string strAnim = reinterpret_cast<Unk_VtmAnimSvc*>(FUN_141b6f910())->FUN_141206030(pTarget->FUN_14123c460(reinterpret_cast<egf::EntityID&>(nKey)));
                 m_spAnim->FUN_14118bee0(strAnim, bForce);
             }
             if (pMover != 0)
@@ -456,7 +458,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spGpuAllocMemory->FUN_14118b9b0(nGpuUsedMb, bForce, acText);
         unsigned nPhysXKb = (unsigned)(DAT_143ae0bd0 / 0x400);
         m_spPhysXMem->FUN_14118b9b0(nPhysXKb, bForce, 0);
-        FUN_140714f90()->FUN_1415392e0();
+        FUN_140714f90()->UpdateLogger();
     }
 
     if (m_nPage == 3)

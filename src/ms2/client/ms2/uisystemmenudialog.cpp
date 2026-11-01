@@ -43,6 +43,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -81,7 +82,6 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);    // set 
 class Unk_SmWorld : public WorldService
 {
 public:
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field data
 };
 
 // The cube service (the home rules).
@@ -124,7 +124,6 @@ struct Unk_SmConsts
 };
 MS2_CHECK_OFFSET(Unk_SmConsts, m_cfe0, 0xcfe0);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_SmSlot* pSlot);
 
 class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
 CNetworkService* FUN_140714f90();
@@ -135,14 +134,12 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
 int FUN_14092f640();
 void* FUN_14136f520(int);   // C3: was FUN_14136f520
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void FUN_14151f200();
 void FUN_140dffb50(void*);   // C3: was FUN_140dffb50
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 CStringW FUN_140cd7d20();                                               // the dungeon name
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -187,7 +184,7 @@ void UISystemMenuDialog::vfunc_67()
 void UISystemMenuDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    m_188 = FUN_140bb4b10("m_exitRoom");
+    m_188 = GetChild<Unk_140acd6e0>("m_exitRoom");
     {
         MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (spField.get() != 0)
@@ -232,7 +229,7 @@ int UISystemMenuDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
-            if (FUN_1403b3c40(strTag, L"leaveInField"))
+            if (operator==(strTag, L"leaveInField"))
                 FUN_14151f200();
         }
     }
@@ -360,7 +357,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01700(0x476, 0, 0);
-        spBox->FUN_141a01ca0(*FUN_1402056b0(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0), 1, GetStringCommon(0x2b8));
+        spBox->FUN_141a01ca0(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }
@@ -475,14 +472,14 @@ void UISystemMenuDialog::FUN_141b14560(int nPage)
 // @0x141b145c0
 void UISystemMenuDialog::FUN_141b145c0()
 {
-    FUN_140714f90()->FUN_141538820();
+    FUN_140714f90()->SendRequestQuit();
     vfunc_67();
 }
 
 // @0x141b14600
 void UISystemMenuDialog::OnSelectCharacter()
 {
-    FUN_140714f90()->FUN_141538820();
+    FUN_140714f90()->SendRequestQuit();
 }
 
 // Select the current channel in the list.
@@ -521,7 +518,7 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
     default:
     {
         int nType = nMapType;
-        return GetStringCommonByKey(FUN_1401ceea0(L"s_room_exit_name_{0}", nType));
+        return GetStringCommonByKey(StringFormat<int>(L"s_room_exit_name_{0}", nType));
     }
     }
 }
@@ -555,7 +552,7 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
     case 0xd:
         return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
     default:
-        return FUN_14028dfa0<CStringW>(FUN_1401ceea0(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(StringFormat<int>(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
     }
 }
 

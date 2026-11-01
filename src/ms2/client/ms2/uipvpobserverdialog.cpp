@@ -24,6 +24,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -32,7 +33,6 @@ class ASDialog : public ASDisplayObject { };
 class Unk_PoEffectSvc : public CEffectService                                           // the effect manager
 {
 public:
-    unsigned FUN_1411a49c0(NoticeMessage& kRequest);            // start an effect
 };
 
 class Unk_PoMe : public MyPC                                      // the local player (MyPC)
@@ -43,7 +43,6 @@ class Unk_PoWorld                                               // the world ser
 {
 public:
     Unk_PoMe* FUN_141bd0cc0();                                      // the local player
-    PC* FUN_141bd1530(__int64 nCharId);                         // a player by character id
     bool FUN_141bc6fb0(unsigned* pnHour, unsigned* pnMin, int* pnC, int* pnFlag) const;     // the match countdown
 };
 
@@ -65,7 +64,8 @@ void FUN_14151f200();
 
 int FUN_141654730(PCBase* pPC);                                 // the job level
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1408116a0(int nStringId, const int* pnArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -151,7 +151,7 @@ void UIPvPObserverDialog::vfunc_72()
             NoticeMessage kRequest;
             kRequest.m_strName = FUN_1401d31f0()->m_strCountdownEffect;
             kRequest.m_nObject = 0;
-            m_1d0 = reinterpret_cast<Unk_PoEffectSvc*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kRequest);
+            m_1d0 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kRequest));
             m_1cc = 1;
         }
     }
@@ -188,12 +188,12 @@ int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     }
     else if (_stricmp("onObserveLeft", szMethod) == 0) {
-        PC* pTarget = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_178.m_nCharId);
+        PC* pTarget = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_178.m_nCharId));
         if (pTarget != 0)
             pMe->FUN_14152a4a0(pTarget);
     }
     else if (_stricmp("onObserveRight", szMethod) == 0) {
-        PC* pTarget = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_1a0.m_nCharId);
+        PC* pTarget = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_1a0.m_nCharId));
         if (pTarget != 0)
             pMe->FUN_14152a4a0(pTarget);
     }
@@ -276,14 +276,14 @@ void UIPvPObserverDialog::FUN_141a91b40()
     CStringW strStatusA(L"");
     CStringW strStatusB(L"");
     bool bObservableA = false;
-    PC* pA = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_178.m_nCharId);
+    PC* pA = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_178.m_nCharId));
     if (pA != 0) {
         strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
         if (m_1d4 != false) {
             strStatusA = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_178.m_nRating);
         }
         else {
-            strStatusA = (m_178.m_nWins > 0) ? FUN_1408116a0(0x89a, &m_178.m_nWins) : GetStringCommon(0x89b);
+            strStatusA = (m_178.m_nWins > 0) ? BlockFormat<int>(0x89a, m_178.m_nWins) : GetStringCommon(0x89b);
         }
         strJobA.Format(L"_%d", FUN_141654730(pA));
         strProfileA = FUN_14016a730(FUN_141028be0(pA->FUN_141656a80(), pA->FUN_1416612e0(), 1, CString("")), 0);
@@ -291,14 +291,14 @@ void UIPvPObserverDialog::FUN_141a91b40()
     }
     __int64 nCharIdB = 0;
     bool bObservableB = false;
-    PC* pB = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_1a0.m_nCharId);
+    PC* pB = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_1a0.m_nCharId));
     if (pB != 0) {
         strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
         if (m_1d4 != false) {
             strStatusB = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_1a0.m_nRating);
         }
         else {
-            strStatusB = (m_1a0.m_nWins > 0) ? FUN_1408116a0(0x89a, &m_1a0.m_nWins) : GetStringCommon(0x89b);
+            strStatusB = (m_1a0.m_nWins > 0) ? BlockFormat<int>(0x89a, m_1a0.m_nWins) : GetStringCommon(0x89b);
         }
         strJobB.Format(L"_%d", FUN_141654730(pB));
         strProfileB = FUN_14016a730(FUN_141028be0(pB->FUN_141656a80(), pB->FUN_1416612e0(), 1, CString("")), 0);

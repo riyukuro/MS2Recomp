@@ -45,6 +45,7 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/client/ms2/uiweddinghalllistdialog.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"   // CFieldDataCli (WorldService::FUN_141bd30a0)
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/uiobject.h"
@@ -157,7 +158,8 @@ public:
 };
 class Unk_WmField { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
 class Unk_WmFieldHolder { public: void* FUN_1401cd040(); };
-extern Unk_WmFieldHolder DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_WmFieldHolder*)&egf::g_bapiContext)          // C3: was extern Unk_WmFieldHolder DAT_143b059e8
 class Unk_WmFieldRef
 {
 public:
@@ -181,7 +183,7 @@ template <class T> T* Unk_WmDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -301,7 +303,7 @@ void WeddingManager::OnHallList(CInPacket& packet)
 void WeddingManager::OnInvitationOk(CInPacket& packet)
 {
     FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_ok"), 8, 1);
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f8e);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f8e);
 }
 
 // @0x141b84c60
@@ -652,7 +654,7 @@ void WeddingManager::ShowStep()
                 CStringW blank(L"");
                 box->FUN_141a01d30(2, blank, 0, 0, 0);
             }
-            box->FUN_141a024e0(FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_confirm_checkbox")), 0);
+            box->SetCheckbox0(FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_confirm_checkbox")), 0);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNicknameAnswer));
             FUN_140d73c60(box);
         }
@@ -1051,7 +1053,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
         return 0x15;
     if (g_143ab2a90.FUN_140a5f180(FUN_140900d40(), 0) == 0)
         return 0x1f;
-    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(id);
+    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(id);
     if (buddy == 0)
         return 0x16;
     if (buddy->FUN_1401cc5f0() == 0)
@@ -1100,7 +1102,7 @@ void WeddingManager::ReadTicketMail(MS2Ptr<Unk_WeddingMail> mail, AScript* scrip
 {
     TiXmlDocument doc;
     WeddingHallTicket ticket;
-    int loaded = GetFileSystem()->FUN_140397ab0(&doc, mail->FUN_141b8ecc0());
+    int loaded = GetFileSystem()->LoadXmlFromString(&doc, mail->FUN_141b8ecc0());
     if (loaded) {
         void* root = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
         if (root) {
@@ -1217,7 +1219,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
     if ((field.FUN_140885310() ? true : false) && field.FUN_1401cd1a0()->FUN_1410d2f10() && !field.FUN_1401cd1a0()->FUN_1410c35c0()) {
         allowed = 1;
     } else {
-        allowed = WorldService::GetInstance()->FUN_141bd30a0()->m_5c;
+        allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c;
     }
     if (allowed == 0) {
         FUN_141275260(0xc01, 1, 0);

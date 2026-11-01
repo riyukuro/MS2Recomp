@@ -89,8 +89,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show 
 CStringW BlockFormat(int nStrId);                                       // string table text by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text by key
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);             // formatted string table text
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);      // StringFormat<int>
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);   // StringFormat<CStringW, CStringW>
 
 template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v)
 {
@@ -155,10 +153,10 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
     MS2Ptr<ASScrollingList> spList = GetOptionDialog()->GetTabChild<ASScrollingList>("m_keyList", nCategory);
     if (spList == 0)
         return;
-    double dScroll = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spList.operator ASScrollingList*()->FUN_1422baa20("scrollPosition")))->GetNumber();
+    double dScroll = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spList.operator ASScrollingList*()->GetMember("scrollPosition")))->GetNumber();
     int bGamePad = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5);
     spList.operator ASScrollingList*()->FUN_1422dd1d0();
-    TPtrValue<ATL::CAtlList<MS2Ptr<CKeySettingParam> > > spKeys = FUN_1409331f0()->FUN_141430710(m_nId);
+    TPtrValue<ATL::CAtlList<MS2Ptr<CKeySettingParam> > > spKeys = FUN_1409331f0()->GetSettingList(m_nId);
     if (spKeys.get() != 0)
     {
         bool bFirst = true;
@@ -187,7 +185,7 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             row.FUN_1407cbbe0("secondaryEnable", 0 != 1 && spKey->m_nSecondaryLocked == 0);
             row.FUN_1407cbbe0("thirdlyEnable", 0 != 1 && spKey->m_nThirdlyLocked == 0);
             row.FUN_1407cb9c0("isGamePad", bGamePad);
-            spList.operator ASScrollingList*()->FUN_1422dd230(row);
+            spList.operator ASScrollingList*()->AddItem(row);
         }
     }
     static_cast<ASObj*>(static_cast<AScript*>(spList.operator ASScrollingList*()))->FUN_140e06d60("scrollPosition", dScroll);
@@ -294,13 +292,13 @@ int CGameOptionInputDefault::vfunc_8()
             FUN_140d73bc0(0x84c, 0, 0, CStringW(L""));
             return 1;
         }
-        __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
+        __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
         if (nAction != 0)
         {
             CStringW strKey = StringFormat(L"{0}", nKey);
             CStringW strName;
-            if (FUN_1409331f0()->FUN_14142cf10(nAction) != 0)
-                strName = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->FUN_14142d190(nKey)), FUN_1409331f0()->FUN_14142d220(nKey));
+            if (FUN_1409331f0()->IsQuickSlotAction(nAction) != 0)
+                strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->GetKeyAction(nKey)), FUN_1409331f0()->FUN_14142d220(nKey));
             else
                 strName = GetStringTable()->FUN_1418125b0((int)nAction);
             if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
@@ -417,7 +415,7 @@ void CGameOptionInputDefault::vfunc_12()
                 if (spBox.get() != 0)
                 {
                     int bPad = FUN_140a58540()->FUN_140d8ee40() != 0 ? 1 : 0;
-                    CStringW strPad = FUN_1401ceea0(L"{0}", bPad);
+                    CStringW strPad = StringFormat<int>(L"{0}", bPad);
                     spBox->FUN_140b76940(strPad);
                     spBox->FUN_141a01800(2);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGameOptionInputDefault::FUN_1412523d0));
@@ -588,7 +586,7 @@ MS2_REPLACE_METHOD(0x141252840, CGameOptionInputDefault, FUN_141252840, 201, 0xD
 void CGameOptionInputDefault::FUN_141252910()
 {
     if (m_nId == 9)
-        FUN_1409331f0()->FUN_14142a510();
+        FUN_1409331f0()->BackupKeys();
 }
 MS2_REPLACE_METHOD(0x141252910, CGameOptionInputDefault, FUN_141252910, 38, 0x7A1FD070);
 
@@ -611,8 +609,8 @@ void CGameOptionInputDefault::FUN_141252970()
         for (unsigned int i = 0; i < aSlots.GetCount(); i++)
         {
             int nSkillId = FUN_1409331f0()->FUN_14142dad0(aSlots[i]);
-            __int64 nItemUid = FUN_1409331f0()->FUN_14142ded0(aSlots[i]);
-            int nSlot = FUN_1409331f0()->FUN_14142e090(nSkillId, nItemUid);
+            __int64 nItemUid = FUN_1409331f0()->GetQuickSlotItemUidByKey(aSlots[i]);
+            int nSlot = FUN_1409331f0()->FindQuickSlotBySkillAndItemUid(nSkillId, nItemUid);
             if (nSlot != -1)
             {
                 Unk_SsQuickEntry entry;
@@ -679,7 +677,7 @@ int CGameOptionInputDefault::FUN_141252d40(int nKey)
         return 0;
     }
     if (FUN_1409331f0()->FUN_141430c30(nKey) != 0 &&
-        FUN_1409331f0()->FUN_141430b10(FUN_1409331f0()->FUN_14142d190(nKey)) != 0 &&
+        FUN_1409331f0()->FUN_141430b10(FUN_1409331f0()->GetKeyAction(nKey)) != 0 &&
         FUN_1409331f0()->FUN_141430b10(m_spEdit->m_nAction) == 0)
     {
         FUN_141252840(0x853);
@@ -839,7 +837,7 @@ bool CGameOptionInputDefault::FUN_1412530e0(int* pKey)
 // @0x1412532b0
 bool CGameOptionInputDefault::FUN_1412532b0(int nKey)
 {
-    return FUN_1409331f0()->FUN_14142d190(nKey) == 0;
+    return FUN_1409331f0()->GetKeyAction(nKey) == 0;
 }
 MS2_REPLACE(0x1412532B0, CGameOptionInputDefault::FUN_1412532b0, 58, 0x0E6A6F96);
 
@@ -865,7 +863,7 @@ MS2_REPLACE(0x1412533F0, CGameOptionInputDefault::FUN_1412533f0, 172, 0x3EB74F2D
 void ASObj::FUN_141253870(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

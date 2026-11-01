@@ -26,13 +26,15 @@ static ATL::CAtlMap<unsigned int, CString, ATL::CElementTraits<unsigned int>, AT
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::get() const;         // 0x1405a8eb0
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::operator->() const;  // 0x1405a8f40
 template <> MS2Ptr<Unk_PCBaseComp_aa8>::~MS2Ptr();                               // 0x1405a8980
-class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); float* FUN_140298f40(); float FUN_1402bac70(); void* m_unknown; };
+class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); float* FUN_140298f40(); void* m_unknown; };
 struct Unk_EmoCfg
 {
     char m_pad_0000[0x218];
@@ -48,7 +50,6 @@ class Unk_EmoPlayer : public CNpc                                               
 public:
     unsigned int FUN_1410937b0();                                           // npc id
 };
-Unk_EmoPlayer* FUN_14096e110(PCBase* pActor);
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(unsigned int nId); CString FUN_14035b2a0(unsigned int nId); };
 Unk_EmoNpcTable* FUN_140764010();
 CString FUN_141082090(unsigned int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
@@ -62,7 +63,6 @@ public:
 };
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
-PCBase* FUN_140974230(PCBase*);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -70,7 +70,6 @@ public:
     int GetSubSceneId();
 };
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_EmoClip : public ASGameEntity
 {
 public:
@@ -162,7 +161,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
     m_64 = 99999999;
     float fDefault = 400.0f;
     m_c0 = *((struct Unk_EmoCfg*)FUN_1401d3200())->m_218.FUN_140967520(&fDefault);
-    m_54 = ((struct Unk_EmoCfg*)FUN_1401d3200())->m_2600.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_2600)->Read();
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
@@ -218,13 +217,13 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
     if (m_38.get())
     {
         FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
-        if (FUN_14096e110(pActor) != 0)
+        if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
         {
             pPos->y = pPos->y + *((struct Unk_EmoCfg*)FUN_1401d3200())->m_638.FUN_140298f40();
         }
         else
         {
-            if (FUN_140974230(pActor) != 0)
+            if (efd::DynamicCast<PC, PCBase>(pActor) != 0)
                 pPos->y = pPos->y + ((class PCBase*)(class PCBase*)(pActor))->FUN_141670500();
         }
         switch (m_b0)
@@ -332,7 +331,7 @@ void UIEmoticon::Entity::FUN_14192f8d0(const CString& str)
 // @0x14192f910
 void UIEmoticon::Entity::FUN_14192f910()
 {
-    Unk_EmoPlayer* pPlayer = FUN_14096e110(FUN_140f49330());
+    Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
     if (pPlayer != 0)
     {
         int nType = pPlayer->FUN_141093c60();
@@ -374,7 +373,7 @@ CString UIEmoticon::Entity::FUN_14192fa50()
 {
     if (m_b0 == 1)
     {
-        Unk_EmoPlayer* pPlayer = FUN_14096e110(FUN_140f49330());
+        Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
         if (pPlayer != 0)
             return FUN_14192ed20(pPlayer->FUN_141093c20(), pPlayer->FUN_141093c60());
     }
@@ -382,7 +381,7 @@ CString UIEmoticon::Entity::FUN_14192fa50()
         return m_b8;
     if (m_b0 == 0)
     {
-        Unk_EmoPlayer* pPlayer = FUN_14096e110(FUN_140f49330());
+        Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
         if (pPlayer != 0)
         {
             CString strName = FUN_14192ebf0(FUN_14192fe00(pPlayer));
@@ -395,7 +394,7 @@ CString UIEmoticon::Entity::FUN_14192fa50()
 // @0x14192fbd0
 void UIEmoticon::Entity::FUN_14192fbd0()
 {
-    Unk_EmoPlayer* pPlayer = FUN_14096e110(FUN_140f49330());
+    Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
     if (pPlayer != 0)
         pPlayer->FUN_141093e90();
 }
@@ -458,7 +457,7 @@ void UIEmoticon::FUN_14192fe20(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -486,7 +485,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_EmoClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-                if (FUN_1409b0390(&v) == 0)
+                if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
                     if (p)
@@ -530,7 +529,7 @@ UIEmoticon* FUN_141930440(int nUiId)
 {
     if (reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIEmoticon*>((UIObject*)p);
     }

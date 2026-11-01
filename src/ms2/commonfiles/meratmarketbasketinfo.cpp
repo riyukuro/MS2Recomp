@@ -5,20 +5,20 @@
 // MS2-PIN: ??_7CMeratMarketPremium@@6B?$TSingleton@VCMeratMarketPremium@@@@@ 0x142d782c8
 // MS2-PIN: ?Copy@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAXAEBV12@@Z 0x1406a98d0
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCMeratMarketPremiumProduct@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketPremiumProduct@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1406aa630
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXPEAX@Z 0x1406ae740
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@UUnk_MmSaleCtx@@@@AEAAXPEAX@Z 0x1406ae740
 // MS2-RANGE: 0x1400bb3f0-0x1400bb6a0 .text$di
-// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@ATL@@@ATL@@QEAA@XZ 0x1406a86a0 ; merge-bind
+// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@UUnk_MmSaleCtx@@@@V?$CElementTraits@V?$MS2Ptr@UUnk_MmSaleCtx@@@@@ATL@@@ATL@@QEAA@XZ 0x1406a86a0 ; merge-bind
 // MS2-PIN: ??1?$MS2Ptr@VCUGCDesignData@@@@QEAA@XZ 0x1406a8930 ; merge-bind
 // MS2-PIN: ?Reference@?$MS2Ptr@VCUGCDesignData@@@@CAXPEAVCUGCDesignData@@@Z 0x1406ae3e0 ; merge-bind
 // MS2-PIN: ?Release@?$MS2Ptr@VCUGCDesignData@@@@AEAAXXZ 0x1406ae6c0 ; merge-bind
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUGCDesignData@@@@AEAAXPEAX@Z 0x1406ae920 ; merge-bind
 // cf9: preserve per-TU premium-event pointer copies.
-// MS2-PIN: ??1?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAA@XZ 0x1406a8810
-// MS2-PIN: ??4?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAAEAV0@AEBV0@@Z 0x1406a8bc0
-// MS2-PIN: ??C?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEBAPEAUPreminmMarketSaleEventContext@@XZ 0x1406a9100
-// MS2-PIN: ??_G?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAPEAXI@Z 0x1406a9190
-// MS2-PIN: ?AddRef@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEBAXXZ 0x1406ae220
-// MS2-PIN: ?Release@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXXZ 0x1406ae540
+// MS2-PIN: ??1?$MS2Ptr@UUnk_MmSaleCtx@@@@QEAA@XZ 0x1406a8810
+// MS2-PIN: ??4?$MS2Ptr@UUnk_MmSaleCtx@@@@QEAAAEAV0@AEBV0@@Z 0x1406a8bc0
+// MS2-PIN: ??C?$MS2Ptr@UUnk_MmSaleCtx@@@@QEBAPEAUUnk_MmSaleCtx@@XZ 0x1406a9100
+// MS2-PIN: ??_G?$MS2Ptr@UUnk_MmSaleCtx@@@@QEAAPEAXI@Z 0x1406a9190
+// MS2-PIN: ?AddRef@?$MS2Ptr@UUnk_MmSaleCtx@@@@AEBAXXZ 0x1406ae220
+// MS2-PIN: ?Release@?$MS2Ptr@UUnk_MmSaleCtx@@@@AEAAXXZ 0x1406ae540
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\meratmarketbasketinfo.cpp"   // no asserts of its own
 #include "ms2/placeholder/ms2stdafx.h"
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // xmlattr.h asserts (NDEBUG DLL build)
@@ -47,10 +47,16 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include <algorithm>
 #include "ms2/placeholder/ms2ptr_impl.h"
 
+// This unit's own copies of the MS2Ptr<PreminmMarketSaleEventContext> glue (??1, ??4, Release, ReleaseImpl, ...) differ
+// in bytes from gameevent/gameeventcontext/shopeventmanager's, so they get their own pointee type; never constructed,
+// it only renames the instantiations. GetSalePrice passes its arrays to CShopEventManager::FUN_1407ce380 by cast.
+struct Unk_MmSaleCtx : PreminmMarketSaleEventContext {};
+typedef CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > Unk_SaleCtxArray;
+
 // @0x1406ae740
-template <> inline void MS2Ptr<PreminmMarketSaleEventContext>::ReleaseImpl(void*)
+template <> inline void MS2Ptr<Unk_MmSaleCtx>::ReleaseImpl(void*)
 {
-    PreminmMarketSaleEventContext* p = m_p;
+    Unk_MmSaleCtx* p = m_p;
     if (CPtred::ReleasePtred(p) == 0)
     {
         Reference(p);
@@ -59,6 +65,8 @@ template <> inline void MS2Ptr<PreminmMarketSaleEventContext>::ReleaseImpl(void*
 }
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/luautil.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -667,12 +675,12 @@ void CDBPremiumProduct::ReadBrief(CInPacket& packet)
 struct Unk_SaleCtxPtrView
 {
     void* m_0;
-    PreminmMarketSaleEventContext* m_p;
+    Unk_MmSaleCtx* m_p;
 };
 
 // The exe's int-returning `sp == p` that GetSalePrice calls; MS2Ptr::operator== itself is 0x1407cebd0 and returns bool.
 // @0x1406a8f50
-int FUN_1406a8f50(const MS2Ptr<PreminmMarketSaleEventContext>* sp, PreminmMarketSaleEventContext* p)
+int FUN_1406a8f50(const MS2Ptr<Unk_MmSaleCtx>* sp, Unk_MmSaleCtx* p)
 {
     return ((const Unk_SaleCtxPtrView*)sp)->m_p == p;
 }
@@ -692,18 +700,18 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
     unsigned nCouponFlags = m_nCouponFlags;
     if (pParent && m_nType == 2)
         nCouponFlags = pParent->m_nCouponFlags;
-    MS2Ptr<PreminmMarketSaleEventContext> spBest(0);
+    MS2Ptr<Unk_MmSaleCtx> spBest(0);
     if (nCouponFlags & 1)
     {
-        CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arrAll;
+        CAtlArray<MS2Ptr<Unk_MmSaleCtx> > arrAll;
         const int nAllCurrency = 100002;
-        ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(arrAll, nAllCurrency);
+        ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(reinterpret_cast<Unk_SaleCtxArray&>(arrAll), nAllCurrency);
         if (!arrAll.IsEmpty())
         {
             int nCount = (int)arrAll.GetCount();
             for (int i = 0; i < nCount; i++)
             {
-                MS2Ptr<PreminmMarketSaleEventContext>& spContext = arrAll[i];
+                MS2Ptr<Unk_MmSaleCtx>& spContext = arrAll[i];
                 if (FUN_1406a8f50(&spContext, 0))
                     continue;
                 if (FUN_1406a8f50(&spBest, 0) || spBest->m_18 < spContext->m_18)
@@ -711,8 +719,8 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
             }
         }
     }
-    CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
-    ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(arr, nCurrency);
+    CAtlArray<MS2Ptr<Unk_MmSaleCtx> > arr;
+    ((class CShopEventManager*)(class CShopEventManager*)(TSingleton<CShopEventManager>::GetInstance()))->FUN_1407ce380(reinterpret_cast<Unk_SaleCtxArray&>(arr), nCurrency);
     if (!arr.IsEmpty())
     {
         std::vector<unsigned> ids;
@@ -728,7 +736,7 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
         int nCount = (int)arr.GetCount();
         for (int i = 0; i < nCount; i++)
         {
-            MS2Ptr<PreminmMarketSaleEventContext>& spContext = arr[i];
+            MS2Ptr<Unk_MmSaleCtx>& spContext = arr[i];
             if (FUN_1406a8f50(&spContext, 0))
                 continue;
             for (size_t j = 0; j < ids.size(); j++)
@@ -781,13 +789,13 @@ int CDBPremiumProduct::FUN_14069fee0()
 MS2_REPLACE_METHOD(0x14069FEE0, CDBPremiumProduct, FUN_14069fee0, 17, 0xFFA719EE);
 
 // @0x14069ff00
-bool CDBPremiumProduct::FUN_14069ff00()
+bool CDBPremiumProduct::HasPointPrice()
 {
     if (!m_bPoint)
         return false;
     return m_nPoint > 0;
 }
-MS2_REPLACE_METHOD(0x14069FF00, CDBPremiumProduct, FUN_14069ff00, 69, 0xB9AF4874);
+MS2_REPLACE_METHOD(0x14069FF00, CDBPremiumProduct, HasPointPrice, 69, 0xB9AF4874);
 
 // @0x14069ff50
 bool CDBPremiumProduct::FUN_14069ff50()
@@ -1689,7 +1697,7 @@ MS2_REPLACE_METHOD(0x1406A2E90, CMeratMarketPremium, LoadCategories, 607, 0x13C3
 void CMeratMarketPremium::AddCategory(MS2Ptr<CShopCategoryTable::TabInfo> tab)
 {
     CAtlArray<CStringA> names;
-    FUN_14015f050(tab->m_strCategory, names, ",");
+    Unk_SplitA(const_cast<CStringA&>(tab->m_strCategory), (ATL::CAtlArray<CStringA>*)&(names), ",");
     for (unsigned i = 0; i < names.GetCount(); i++)
     {
         CStringA strName(names[i]);
@@ -2179,7 +2187,7 @@ CStringW CMeratMarketProduct::GetName()
     CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
     if (IsUgc())
     {
-        if (m_ugc.FUN_140896310())
+        if (m_ugc.IsMusicType())
             return m_ugc.m_music.m_str30;
         return FUN_141277a90(&m_ugc.m_look, strName);
     }
@@ -2358,7 +2366,7 @@ int FUN_1406a50b0(Unk_MeratProductMap& map)
         MS2Ptr<CMeratMarketProduct> spProduct = map.GetValueAt(pos);
         if (spProduct == NULL || !spProduct->IsUgc())
             continue;
-        if (spProduct->m_ugc.FUN_140896310())
+        if (spProduct->m_ugc.IsMusicType())
             continue;
         if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
         {
@@ -2386,7 +2394,7 @@ MS2_REPLACE(0x1406A5210, FUN_1406a5210, 31, 0x68635521);
 // @0x1406a5240
 __int64 FUN_1406a5240(int nItemId)
 {
-    CString strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
+    CString strServer = TSingleton<CFeatureManager>::GetInstance()->GetLocaleName();
     const CString& rServer = strServer;
     __int64 nFee = ((class Unk_MeratPriceTable*)FUN_1401c0db0())->CalcMarketRegisterFee(nItemId, rServer);
     return nFee;
@@ -2446,10 +2454,10 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
 {
     if (spItem == NULL)
         return;
-    int nId = spItem->FUN_14053c510();
+    int nId = spItem->GetItemId();
     __int64 nMin = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMinPrice);
     __int64 nMax = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMaxPrice);
-    if (spItem->FUN_14053d6f0() || spItem->FUN_14053d900())
+    if (spItem->HasCubeTextureMesh() || spItem->FUN_14053d900())
     {
         CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nId);
         if (spData.get() != 0)
@@ -2462,7 +2470,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
     }
     else if (spItem->FUN_14053cd10())
     {
-        const CString& strServer = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d8e0();
+        const CString& strServer = TSingleton<CFeatureManager>::GetInstance()->GetLocaleName();
         __int64 nServerMin = 0;
         __int64 nServerMax = 0;
         ((class Unk_MeratPriceTable*)FUN_1401c0db0())->FUN_140674d70(strServer, &nServerMin, &nServerMax);
@@ -2493,7 +2501,7 @@ MS2_REPLACE(0x1406A5720, FUN_1406a5720, 22, 0xCF0C1D8A);
 // @0x1406a5740
 bool FUN_1406a5740()
 {
-    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d690(0x44);
+    return TSingleton<CFeatureManager>::GetInstance()->IsRedMeratFeatureEnabled(0x44);
 }
 MS2_REPLACE(0x1406A5740, FUN_1406a5740, 27, 0xEECC0297);
 
@@ -2507,7 +2515,7 @@ MS2_REPLACE(0x1406A5770, FUN_1406a5770, 27, 0x1C72616A);
 // @0x1406a57a0
 bool FUN_1406a57a0()
 {
-    if (((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x34) == 1)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(0x34)) == 1)
         return true;
     return false;
 }
@@ -2516,7 +2524,7 @@ MS2_REPLACE(0x1406A57A0, FUN_1406a57a0, 42, 0x6D0F554E);
 // @0x1406a57d0
 bool FUN_1406a57d0()
 {
-    if (((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x35) == 1)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_MeratConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(0x35)) == 1)
         return true;
     return false;
 }
@@ -2598,7 +2606,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
     {
         if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xec))
             return false;
-        Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->FUN_1405278d0());
+        Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->GetUgcInfo());
         if (pUgc == NULL)
             return false;
         if (pUgc->m_blueprint.m_n18 == 0)
@@ -2613,7 +2621,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
     }
     if (spItem->FUN_140525f60())
     {
-        Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->FUN_1405278d0());
+        Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->GetUgcInfo());
         if (pUgc == NULL)
             return false;
         if (pUgc->FUN_1406321a0() || pUgc->FUN_1406321d0())
@@ -2634,7 +2642,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             if (!((class Unk_CommonOwner*)(struct Unk_MeratItemOwner const*)(pOwner))->Matches(pScore->m_nNoteType, pScore->m_nNoteId))
                 return false;
             MS2Ptr<ItemMusicScore> spScore =
-                TSingleton<CItemDataTable>::GetInstance()/*C3:TSingleton<CItemDataTable>::GetInstance*/->GetMusicScore(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
+                TSingleton<CItemDataTable>::GetInstance()/*C3:TSingleton<CItemDataTable>::GetInstance*/->GetMusicScore(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetItemId());
             if (spScore == NULL)
                 return false;
             int nScore = spScore->FUN_14054ad00();
@@ -2657,7 +2665,7 @@ bool FUN_1406a6030(MS2Ptr<CItemData> spItem)
 {
     if (spItem == NULL)
         return false;
-    if (spItem->FUN_14053d6f0())
+    if (spItem->HasCubeTextureMesh())
         return true;
     if (spItem->FUN_14053d900())
         return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xec);

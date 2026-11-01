@@ -50,7 +50,7 @@ public:
                        const Unk_GVec3& kAxisZ);                                    // 0x141485a50
     // Extracts the three axes of the rotation matrix (in degrees) and unitizes them.
     void FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ);   // 0x141486a20
-    void FUN_1414863e0();                                                           // 0x1414863e0 (m_fScale = 1)
+    void ResetScale();                                                           // 0x1414863e0 (m_fScale = 1)
     // Projects a world position onto the minimap with the current zoom.
     bool FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410
     bool FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale);       // 0x141486450

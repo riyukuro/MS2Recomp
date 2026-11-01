@@ -25,6 +25,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_WsC_GameObj : public PCBase {};                                   // the actor lookups of WorldService
@@ -33,8 +34,6 @@ class Unk_PCBaseBuffs { public: unsigned int FUN_140970b10(); };            // t
 // CNpc::GetNpcData returns the client row: the exe calls the MS2Ptr<NpcDataCli> get / operator-> (cnpc.h types it as
 // MS2Ptr<CNpcData>).
 class Unk_DtNpc : public CNpc { };
-Unk_DtNpc* FUN_14096e110(GameObject* p);                                    // as an npc (0 for a player)
-PC* FUN_140974230(GameObject* p);                                           // as a player character (0 otherwise)
           // CPartyManager: a party member (int return)
 // The "RemoveAni" event dispatched by a dying number (an AS event object; 0x40 bytes, no array: the exe has no GS cookie).
 class Unk_DtAniEvent
@@ -80,14 +79,12 @@ public:
     float FUN_1422afec0(int);
 };
 class Unk_DtScene;
-Unk_DtScene* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
     int GetSubSceneId();
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-PCBase* FUN_1409ffd30(GameObject* p);                                       // the actor of a game object (0 otherwise)
 float FUN_1412762d0(const NiPoint3& pt);
 NiNode* FUN_1413fa070(egf::EntityID id);                                    // entity id -> scene root
 float FUN_140a0fda0(float a, float b);                                      // max
@@ -269,14 +266,14 @@ MS2_REPLACE_METHOD(0x141911520, UIDamageText, vfunc_3, 34, 0x74F08FAB);
 void UIDamageText::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    m_loadFont = m_30->FUN_1422baa20("loadFont");
-    m_unloadFont = m_30->FUN_1422baa20("unloadFont");
-    m_spDamageText.AssignRaw(new AScript(m_30->FUN_1422baa20("damageText"), m_28));
-    m_onNextAni = m_30->FUN_1422baa20("onNextAni");
-    m_onJumpAni = m_30->FUN_1422baa20("onJumpAni");
-    m_onForceRemove = m_30->FUN_1422baa20("onForceRemove");
-    m_spDamageEnable.AssignRaw(new AScript(m_30->FUN_1422baa20("damageEnable"), m_28));
-    m_spDamageGarbage.AssignRaw(new AScript(m_30->FUN_1422baa20("damageGarbage"), m_28));
+    m_loadFont = m_30->GetMember("loadFont");
+    m_unloadFont = m_30->GetMember("unloadFont");
+    m_spDamageText.AssignRaw(new AScript(m_30->GetMember("damageText"), m_28));
+    m_onNextAni = m_30->GetMember("onNextAni");
+    m_onJumpAni = m_30->GetMember("onJumpAni");
+    m_onForceRemove = m_30->GetMember("onForceRemove");
+    m_spDamageEnable.AssignRaw(new AScript(m_30->GetMember("damageEnable"), m_28));
+    m_spDamageGarbage.AssignRaw(new AScript(m_30->GetMember("damageGarbage"), m_28));
     m_pBattleOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630();
     m_pInterfaceOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150();
 }
@@ -380,9 +377,9 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
         bool bTargetMe = pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
         bool bMyDamage = bTargetMe || bCasterMe;
         unsigned int nFlags = m_pBattleOption->m_n10;
-        int nTargetKind = FUN_1419142a0(pTarget);
+        int nTargetKind = GetTargetKind(pTarget);
         PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
-        int nCasterKind = FUN_1419142a0(pCaster);
+        int nCasterKind = GetTargetKind(pCaster);
         CString strGrade = FUN_141914570(nGrade);
         bool bGem = nCasterKind == 0 && FUN_141914530(nGrade) == 0 && !bTargetMe;
         CString strCaster("");
@@ -409,7 +406,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
         {
             CString strValue = FUN_141914660(nValue, nGrade);
             obj.FUN_1407cba60("value", strValue);
-            CString strTarget = FUN_1419143c0(nTargetKind, bUser);
+            CString strTarget = GetTargetKindName(nTargetKind, bUser);
             obj.FUN_1407cba60("target", strTarget);
             obj.FUN_1407cba60("grade", strGrade);
             obj.FUN_1407cba60("caster", strCaster);
@@ -495,7 +492,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
         {
             CString strValue = FUN_141914890(nValue, nType);
             obj.FUN_1407cba60("value", strValue);
-            CString strTarget = FUN_1419143c0(FUN_1419142a0(pTarget), true);
+            CString strTarget = GetTargetKindName(GetTargetKind(pTarget), true);
             obj.FUN_1407cba60("target", strTarget);
             obj.FUN_1407cba60("grade", FUN_1419149d0(nType));
             obj.FUN_1407cbbe0("pcBang", bPcBang);
@@ -522,7 +519,7 @@ void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString&
     {
         unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
         Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
-                                                  FUN_1419143c0(FUN_1419142a0(pTarget), true), FUN_1419149d0(2), strIcon);
+                                                  GetTargetKindName(GetTargetKind(pTarget), true), FUN_1419149d0(2), strIcon);
         MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->FUN_14123c580() == pPlayer->FUN_14123c580() : false;
@@ -624,7 +621,7 @@ float UIDamageText::FUN_141913af0(GameObject* pTarget)
     if (pTarget == 0)
         return 0.0f;
     float fHeight = FUN_1412762d0(pTarget->vfunc_18());
-    PCBase* pActor = FUN_1409ffd30(pTarget);
+    PCBase* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != 0)
         fHeight += pActor->FUN_141670430();
     return fHeight;
@@ -660,7 +657,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
         nTargetMask = 1;
     else
     {
-        PC* pPC = FUN_140974230(pTarget);
+        PC* pPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pTarget));
         if (pPC != 0)
             nTargetMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
     }
@@ -673,12 +670,12 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
         else
         {
             PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
-            PC* pPC = FUN_140974230(pCaster);
+            PC* pPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pCaster));
             if (pPC != 0)
                 nCasterMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
             else
             {
-                Unk_DtNpc* pNpc = FUN_14096e110(pCaster);
+                Unk_DtNpc* pNpc = reinterpret_cast<Unk_DtNpc*>(efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pCaster)));
                 if (pNpc != 0 && pNpc->vfunc_116() > 0)
                 {
                     if (pNpc->GetOwnerId() == nPlayerId)
@@ -718,7 +715,7 @@ int UIDamageText::FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CStri
     kPos = kTargetPos;
     if (strNode.IsEmpty())
         return 1;
-    PCBase* pActor = FUN_1409ffd30(pTarget);
+    PCBase* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != 0)
     {
         NiAVObject* pNode = pActor->FUN_141675150(strNode);
@@ -748,7 +745,7 @@ MS2_REPLACE_METHOD(0x1419140F0, UIDamageText, FUN_1419140f0, 162, 0x3E527376);
 // @0x1419141a0
 int UIDamageText::FUN_1419141a0(GameObject* pTarget)
 {
-    PCBase* pActor = FUN_1409ffd30(pTarget);
+    PCBase* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != 0)
     {
         if (m_bObserver)
@@ -766,7 +763,7 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
 MS2_REPLACE_METHOD(0x1419141A0, UIDamageText, FUN_1419141a0, 244, 0xBDDE2484);
 
 // @0x1419142a0
-int UIDamageText::FUN_1419142a0(GameObject* pTarget)
+int UIDamageText::GetTargetKind(GameObject* pTarget)
 {
     int nKind = 1;
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -781,10 +778,10 @@ int UIDamageText::FUN_1419142a0(GameObject* pTarget)
     }
     return nKind;
 }
-MS2_REPLACE_METHOD(0x1419142A0, UIDamageText, FUN_1419142a0, 278, 0xA4962AB5);
+MS2_REPLACE_METHOD(0x1419142A0, UIDamageText, GetTargetKind, 278, 0xA4962AB5);
 
 // @0x1419143c0
-CString UIDamageText::FUN_1419143c0(int nTargetKind, bool bUser)
+CString UIDamageText::GetTargetKindName(int nTargetKind, bool bUser)
 {
     CString str;
     switch (nTargetKind)
@@ -801,7 +798,7 @@ CString UIDamageText::FUN_1419143c0(int nTargetKind, bool bUser)
     }
     return str;
 }
-MS2_REPLACE_METHOD(0x1419143C0, UIDamageText, FUN_1419143c0, 192, 0x44112EB6);
+MS2_REPLACE_METHOD(0x1419143C0, UIDamageText, GetTargetKindName, 192, 0x44112EB6);
 
 // @0x141914490
 int UIDamageText::FUN_141914490(GameObject* pTarget)
@@ -1011,7 +1008,7 @@ int UIDamageText::FUN_141914d40(GameObject* pTarget)
 {
     if (pTarget == 0)
         return 1;
-    if (((class GFxSceneService*)(class Unk_DtScene*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001e)
+    if (((class GFxSceneService*)(class Unk_DtScene*)(((Unk_DtScene*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001e)
         return 1;
     if (!FUN_1419141a0(pTarget))
         return 1;
@@ -1156,7 +1153,7 @@ void UIDamageText::FUN_1419153d0()
                 else
                 {
                     spInfo->FUN_141910e60(nNow);
-                    GameObject* pOwner = WorldService::GetInstance()->FUN_141bd0fe0(nOwnerId);
+                    GameObject* pOwner = WorldService::GetInstance()->FindObjectByKey(nOwnerId);
                     if (pOwner != 0)
                     {
                         spInfo->FUN_141910ee0(nNow);
@@ -1382,7 +1379,7 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         bool bRemove = false;
         unsigned __int64 nOwnerId = spInfo->m_nOwnerId;
         bool bMine = spInfo->m_bMyDamage;
-        bool bGarbage = bGarbageSeen || ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->FUN_1422baa20(s_strGarbage)))->GetBool();
+        bool bGarbage = bGarbageSeen || ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->GetMember(s_strGarbage)))->GetBool();
         if (bGarbage)
         {
             if (!bGarbageSeen && !bMine)
@@ -1391,13 +1388,13 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         }
         else
         {
-            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->FUN_1422baa20(s_strDecreaseCounter)))->GetBool())
+            if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spClip->GetMember(s_strDecreaseCounter)))->GetBool())
             {
                 static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1407cbbe0(s_strDecreaseCounter, false);
                 spInfo->m_bDecreased = true;
                 FUN_141915150(nOwnerId, 1, m_ownerFollowerCounter);
             }
-            GameObject* pOwner = WorldService::GetInstance()->FUN_141bd0fe0(nOwnerId);
+            GameObject* pOwner = WorldService::GetInstance()->FindObjectByKey(nOwnerId);
             if (pOwner != 0)
             {
                 if (FUN_141914d40(pOwner) != 0)
@@ -1588,9 +1585,9 @@ int UIDamageText::FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, const NiPoint3& kPos,
         if (spClip.get() != 0)
         {
             spInfo->m_spClip = spClip;
-            Scaleform::GFx::Value ani = spClip->FUN_1422baa20("m_ani");
+            Scaleform::GFx::Value ani = spClip->GetMember("m_ani");
             spInfo->m_spAni.AssignRaw(new ASMovieClip(Scaleform::GFx::Value(ani), m_28));
-            spInfo->m_fScale = static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c11f0();
+            spInfo->m_fScale = static_cast<Unk_DtClip*>(spClip.operator->())->GetXScale();
             NiPoint3 kWorld = kPos;
             if (bRecover != 0)
                 FUN_141914da0(bAppend, &m_posOwnerFollowers, m_ownerFollowers, m_ownerFollowerCounter, spInfo, m_nMaxList);

@@ -32,6 +32,7 @@
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #include <exception>
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- out-of-unit callees ----
 // Item template data (itemdata.cpp): the class name string is at +0x290.
@@ -64,14 +65,10 @@ CStringW GetStringCommon(int id);                         // string table lookup
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup menu
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 float FUN_140bf4fd0(float f);                           // ceilf
 void Unk_140657820();                                   // 'invalid call' of an empty Delegate (shared)
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* p);   // BindData -> ItemInfoSlot (TypeCast), 0 on failure
 
 // The empty-delegate error of ItemInfoSlotCanFn.
@@ -152,18 +149,18 @@ void FUN_141414d60(const CString& strName, const ATL::CAtlArray<unsigned __int64
     {
         int nCount = (int)(FUN_140bf4fd0((float)items.GetCount() / 4.0f) * 4.0f);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x141414e50
 void FUN_141414e50(const CString& strName)
 {
-    ItemEnchantSlotBag* pBag = FUN_1414151d0(FUN_1422c8e90(strName));
+    ItemEnchantSlotBag* pBag = FUN_1414151d0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -210,7 +207,7 @@ void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int
 {
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, spItem, nIndex, nIconType, nFlags);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x141415560
@@ -218,15 +215,15 @@ void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam)
 {
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, pParam);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x141415600
 void FUN_141415600(const CString& strName)
 {
-    ItemInfoSlot* pSlot = FUN_140c69ab0(FUN_1422c8e90(strName));
+    ItemInfoSlot* pSlot = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x141415390
@@ -343,10 +340,10 @@ int ItemInfoSlot::vfunc_0(void* p)
     if (m_spItem == 0 && m_strTip.GetLength() != 0)
     {
         ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->FUN_141bd0cc0(), m_nFlags, 2);
-        if (tip.FUN_1409e26b0(m_strTip))
+        if (tip.ApplyTextTooltip(m_strTip))
         {
             if (m_nTipArg != -1)
-                tip.FUN_1409c6dc0(m_nTipArg);
+                tip.SetTooltipAlign(m_nTipArg);
             *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
             return 1;
         }
@@ -360,7 +357,7 @@ int ItemInfoSlot::vfunc_0(void* p)
     }
     else
     {
-        if ((m_spItem.get() ? true : false) && FUN_1403b3c40(((class Unk_ItemDataX*)((class CItem*)(class CItem*)(m_spItem.operator->()))->FUN_140527840())->m_strClass, L"ItemExchangeScroll"))
+        if ((m_spItem.get() ? true : false) && operator==(((class Unk_ItemDataX*)((class CItem*)(class CItem*)(m_spItem.operator->()))->FUN_140527840())->m_strClass, L"ItemExchangeScroll"))
         {
             {
                 void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();

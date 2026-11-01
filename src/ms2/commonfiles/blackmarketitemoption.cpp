@@ -110,6 +110,12 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/luautil.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -135,8 +141,6 @@ int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873a50
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
@@ -399,7 +403,7 @@ unsigned int FUN_1401bd3a0()
 unsigned int LoadItemNames()
 {
     ATL::CAtlArray<CString> languages;
-    FUN_1401c0da0()->FUN_14064f310(languages);
+    FUN_1401c0da0()->GetLanguageCodes(languages);
     if (languages.GetCount() == 0)
         return 0;
     for (size_t i = 0; i < languages.GetCount(); i++)
@@ -550,7 +554,7 @@ void CBlackMarketProduct::Write(COutputStream* pStream)
     pStream->WriteInt32(m_nBought);
     pStream->WriteInt64(m_nUnitPrice);
     pStream->WriteUInt8((unsigned char)m_nStateB);
-    pStream->WriteInt64(m_item->FUN_140526a50());
+    pStream->WriteInt64(m_item->GetItemUid());
     pStream->WriteInt32(m_item->FUN_1405276c0());
     pStream->WriteUInt8((unsigned char)m_item->FUN_140526bd0());
     pStream->WriteInt64(m_qw68);
@@ -577,7 +581,7 @@ void CBlackMarketProduct::Read(CInPacket* pPacket)
     m_item.AssignRaw(new CItem);
     if (m_item->FUN_140523c40(nId, nRank, 0))
     {
-        m_item->FUN_140526a70(nUid);
+        m_item->SetItemUid(nUid);
         m_item->FUN_140524eb0(*pPacket);
     }
 }
@@ -1090,7 +1094,7 @@ void CBlackMarketTable::Load()
                         StatPtr stat(new StatInfo());
                         if (stat.get() != 0)
                         {
-                            CStringA strName(FUN_14086f4b0(pStat, "name"));
+                            CStringA strName(((class TiXmlElement*)(class Unk_140165cf0*)(pStat))->Attribute("name"));
                             CStringW strText;
                             XmlGetBool((class TiXmlElement*)(pStat), "percent", *(int*)(&stat->m_nPercent));
                             XmlQuery((class TiXmlElement*)(pStat), "default", *(float*)(&stat->m_fDefault));
@@ -1120,7 +1124,7 @@ void CBlackMarketTable::Load()
                 unsigned int nId = 0;
                 XmlGetAttr((class TiXmlElement*)(pOption), "id", nId);
                 IdArrayPtr ids((Unk_BmNewTag(0)));
-                CStringA strTables(FUN_14086f4b0(pOption, "stat_tables"));
+                CStringA strTables(((class TiXmlElement*)(class Unk_140165cf0*)(pOption))->Attribute("stat_tables"));
                 FUN_140177e10(strTables, *ids.operator->(), ",");
                 m_options.SetAt(nId, ids);
             }
@@ -1193,7 +1197,7 @@ void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pB
             {
                 tab->m_strName = strName;
                 CStringW strFeature = FUN_1401bf530(pTab, "feature", CStringW(L""));
-                if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
+                if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabledByName(strFeature))
                     continue;
                 tab->m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pTab), "category", CString(""));
                 XmlGetAttr((class TiXmlElement*)(pTab), "priority", tab->m_nPriority);

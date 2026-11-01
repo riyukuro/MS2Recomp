@@ -47,21 +47,21 @@ MS2_REPLACE_METHOD(0x1422C6640, ASDisplayObjectContainer, FUN_1422c6640, 41, 0xF
 // @0x1422c6670
 int ASDisplayObjectContainer::FUN_1422c6670()
 {
-    return FUN_1422baa20("numChildren").GetInt();
+    return GetMember("numChildren").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422C6670, ASDisplayObjectContainer, FUN_1422c6670, 88, 0x078F0851);
 
 // @0x1422c66d0
 int ASDisplayObjectContainer::FUN_1422c66d0()
 {
-    return FUN_1422baa20("tabChildren").GetBool();
+    return GetMember("tabChildren").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C66D0, ASDisplayObjectContainer, FUN_1422c66d0, 91, 0x70563FC4);
 
 // @0x1422c6740
 int ASDisplayObjectContainer::FUN_1422c6740()
 {
-    return FUN_1422baa20("mouseChildren").GetBool();
+    return GetMember("mouseChildren").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422C6740, ASDisplayObjectContainer, FUN_1422c6740, 91, 0x1139B52F);
 
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x1422C6C00, ASDisplayObjectContainer, FUN_1422c6c00, 75, 0x0
 // @0x1422c6c60
 Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6c60()
 {
-    return FUN_1422baa20("parent");
+    return GetMember("parent");
 }
 MS2_REPLACE_METHOD(0x1422C6C60, ASDisplayObjectContainer, FUN_1422c6c60, 65, 0x592F520F);
 

@@ -31,7 +31,7 @@ public:
     UIGuideEventArrowDialog();                                      // 0x14195e040
     // ~UIGuideEventArrowDialog 0x1419609c0 is implicit
     virtual int vfunc_2(void*);                                     // 2 0x14195e0e0
-    void FUN_14195e2d0(CString);                                    // kind from its name
+    void SetKindFromName(CString);                                    // kind from its name
     int FUN_14195e320(void*);                                       // kind 0: UI by id / name
     int FUN_14195e3f0(void*);                                       // 1 skill slot of MainPlayerInfo
     int FUN_14195e6e0(void*);                                       // 2..5 inventory item
@@ -82,12 +82,12 @@ public:
     MS2Ptr<AScript> FUN_14195c1a0(const CString&);
     void FUN_14195a1d0(CStringW&,CStringW&,int&);
     void FUN_14195b330(unsigned int,unsigned int);
-    void FUN_14195b490(int);
-    void FUN_14195b540(int);
+    void HideTutorial(int);
+    void HideSummary(int);
     void FUN_14195b600(int);
-    int FUN_14195b760();
-    int FUN_14195b810();
-    int FUN_14195b8c0();
+    int IsTutorialShowing();
+    int IsSummaryShowing();
+    int IsTextTipShowing();
     int GetLastTip();
     void FUN_14195b970();
     void FUN_14195be30();

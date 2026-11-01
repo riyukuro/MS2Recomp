@@ -318,7 +318,7 @@ void FUN_141627390()
     efd::File::SetFileAccessFunc((efd::File::FILEACCESSFUNCW)efd::File::DefaultFileAccessFunc);
     efd::File::SetCreateDirectoryFunc((efd::File::CREATEDIRFUNCW)efd::File::DefaultCreateDirectoryFunc);
     efd::File::SetDirectoryExistsFunc((efd::File::DIREXISTSFUNCW)efd::File::DefaultDirectoryExistsFunc);
-    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->FUN_14036d8e0());
+    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
@@ -326,7 +326,7 @@ void FUN_141627390()
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
     FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
-        reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::FUN_14039a660)));
+        reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::MarkCharacterModelLoaded)));
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
     FUN_141c51dd0(FUN_1414a90c0);
     UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
@@ -347,7 +347,7 @@ void FUN_1416275e0()
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
     UISwfEntity::FUN_141629ed0(Delegate<CString(CString, bool)>(FUN_141628470));
-    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->FUN_14036d8e0());
+    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));

@@ -30,7 +30,7 @@ public:
     CMainSystem();                                                  // 0x141472be0
     virtual ~CMainSystem();                                         // 0x141472dd0
     virtual const char* GetDisplayName() const;                     // 0x141472e90
-    void FUN_141472eb0(efd::IConfigManagerPtr spConfig);            // reads [Data] Path into m_strDataPath
+    void LoadDataPath(efd::IConfigManagerPtr spConfig);            // reads [Data] Path into m_strDataPath
     void ResetFps();                                                // 0x141472fe0
     void FUN_141473020(bool bActive);                               // surface render step on, own click step off (or back)
     void SetTimeScale(float fScale);                                // 0x1414730a0 the game clock's time scale
@@ -42,8 +42,8 @@ public:
     float GetLastGameTimeDelta();                                   // 0x141473230
     double GetDeltaTime();                                          // 0x141473260
     double FUN_141473280();                                         // the game clock's current time
-    DWORD FUN_1414732b0(GameObject* pObject);                       // FUN_1414732f0 of the object's time kind
-    DWORD FUN_1414732f0(int nKind);                                 // game time, server tick (kind 6) or a converted time
+    DWORD FUN_1414732b0(GameObject* pObject);                       // GetTimeByKind of the object's time kind
+    DWORD GetTimeByKind(int nKind);                                 // game time, server tick (kind 6) or a converted time
     int FUN_141473390();                                            // the server tick (re-based when the tick count wraps)
     int FUN_141473410(DWORD dwTick);                                // the server tick at a local tick
     int FUN_141473460();                                            // +0x74
@@ -54,22 +54,22 @@ public:
     __int64 FUN_141473560();                                        // seconds until +0xa0 (0 after its day ended)
     void StartTimer();                                              // 0x1414735e0
     int GetElapsedTime();                                           // 0x141473610 ms since StartTimer
-    __time64_t FUN_141473640();                                     // the server time now
+    __time64_t GetServerTime();                                     // the server time now
     void FUN_141473690(__time64_t tServer);                         // sets the server time base
     CString GetDataPath();                                        // m_strDataPath (+0xa8)
-    void FUN_141473730(bool bDisable);                              // sticky-keys hotkey off (saves the flags) / restore
-    static void FUN_1414737d0(egf::Entity* pEntity);                // drops the entity's scene-graph override and destroys it
-    static void FUN_141473870(egf::EntityID id);                    // same for an entity id
+    void SetStickyKeysDisabled(bool bDisable);                              // sticky-keys hotkey off (saves the flags) / restore
+    static void DestroyEntity(egf::Entity* pEntity);                // drops the entity's scene-graph override and destroys it
+    static void DestroyEntityById(egf::EntityID id);                    // same for an entity id
     static int FUN_1414738f0(int nIndex);                           // s_143add400[nIndex] (8 entries)
     void SetMainThreadId(DWORD dwThreadId);                           // +0xb0
-    bool FUN_141473940();                                           // called on the main thread
+    bool IsMainThread();                                           // called on the main thread
     CStringW FUN_141473990();                                       // "<cpu vendor> / <cpu brand>"
     virtual efd::SyncResult OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar);    // 0x141473c20
     virtual efd::AsyncResult OnInit();                              // 0x141473ca0
     virtual efd::AsyncResult OnTick();                              // 0x141474080
     virtual efd::AsyncResult OnShutdown();                          // 0x1414741e0
     void FUN_141474450();                                           // applies the graphics option's frame limit
-    void FUN_141474490();                                           // builds the main click render step
+    void CreateClickRenderStep();                                           // builds the main click render step
 private:
     MS2_LAYOUT_FRIEND;
     egf::Scheduler* m_pScheduler;                                   // +0x28

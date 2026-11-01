@@ -8,6 +8,7 @@
 #include "ms2/ms2recover.h"
 #include <intrin.h>
 #include "ms2/commonfiles/logstring.h"
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 
 // Slice-C functions are written as plain functions with loose (i64/pointer) types; the element types of the STL instances
 // they come from are not recovered (8-byte pair, 16-byte and 0x30-byte records of the neighbouring slices).
@@ -213,7 +214,7 @@ int FUN_1402767f0(void* node, const char* name, unsigned* out)
         return 2;
     }
     int value = 0;
-    int result = FUN_140873890(node, name, value);
+    int result = XmlQuery((class TiXmlElement*)(node), name, value);
     if (result != 0)
         return result;
     *out = value;

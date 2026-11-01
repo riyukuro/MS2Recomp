@@ -74,7 +74,8 @@ public:
     int FUN_140a5f780(int tag, int grade);
     void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem>>& out);
 };
-extern Unk_GsBag DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_GsBag
 extern __int64 DAT_143ab2898;                   // the meso the ingredient fee may cost
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
@@ -187,7 +188,7 @@ inline MS2Ptr<Unk_SocketPageBag> FUN_140c4b8a0(int nMovieId, const Scaleform::GF
 // @0x140c4bc60
 inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140c4b8a0(m_nMovieId, v);
     return MS2Ptr<Unk_SocketPageBag>(0);
@@ -351,7 +352,7 @@ void ItemSocketSystemPageGemstoneSwap::SendItemSocketSystemMode8(CInPacket* pack
     Unk_SSGGemUnequip result;
     FUN_140628be0(result, *packet);
     if (result.m_nItemUid == m_sourceUid) {
-        MS2Ptr<CItem> gem = DAT_143ab2a90.FUN_140a5d680(result.m_nGemUid);
+        MS2Ptr<CItem> gem = reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a5d680(result.m_nGemUid);
         if (gem.get() != 0) {
             Unk_SockUidCountSlot request;
             request.m_nCount = result.m_nGemUid;
@@ -375,11 +376,11 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c48df0(int result, const CMsgBoxDa
     if (!FUN_140c4a760(MS2Ptr<CItem>(source), MS2Ptr<CItem>(target)))
         return true;
     CItemSocket* socket = static_cast<CItem*>(source)->FUN_1405279c0();
-    for (unsigned i = 0; i < socket->FUN_140620a20(); ++i) {
-        if (socket->FUN_140621020(i) == true)
+    for (unsigned i = 0; i < socket->GetOpenSlotCount(); ++i) {
+        if (socket->IsSlotEmpty(i) == true)
             continue;
         Unk_SSGGemUnequip request;
-        request.m_nItemUid = static_cast<CItem*>(source)->FUN_140526a50();
+        request.m_nItemUid = static_cast<CItem*>(source)->GetItemUid();
         request.m_nSlot = i;
         COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
         out.Encode1(0xa);
@@ -396,12 +397,12 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49000(ItemInfoSlot& slot, ASSlot&
     {
         MS2Ptr<CItem> item = slot.vfunc_25();
         if (item.get() != 0) {
-            seal = static_cast<CItem*>(item)->FUN_1405279c0() ? (static_cast<CItem*>(item)->FUN_1405279c0()->FUN_140620a20() == 0 ? 1 : 0) : 0;
-            if (!FUN_1414258e0(static_cast<CItem*>(item)->FUN_140526a50()))
-                asSlot.FUN_1409c20d0(1);
+            seal = static_cast<CItem*>(item)->FUN_1405279c0() ? (static_cast<CItem*>(item)->FUN_1405279c0()->GetOpenSlotCount() == 0 ? 1 : 0) : 0;
+            if (!FUN_1414258e0(static_cast<CItem*>(item)->GetItemUid()))
+                asSlot.SetItemEquip(1);
         }
     }
-    asSlot.FUN_1409c1f00(seal);
+    asSlot.SetItemSeal(seal);
 }
 
 // @0x140c49110
@@ -428,7 +429,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49250(int index)
     MS2Ptr<CItem> item(m_sourceItems[index]);
     if (item == 0)
         return;
-    m_sourceUid = static_cast<CItem*>(item)->FUN_140526a50();
+    m_sourceUid = static_cast<CItem*>(item)->GetItemUid();
     m_targetUid = 0;
     m_binder.FUN_140d43990();
     FUN_140c4a2b0(MS2Ptr<CItem>(item));
@@ -449,7 +450,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
     MS2Ptr<CItem> item(m_targetItems[index]);
     if (item == 0)
         return;
-    m_targetUid = static_cast<CItem*>(item)->FUN_140526a50();
+    m_targetUid = static_cast<CItem*>(item)->GetItemUid();
     ASObj data(2);
     data.FUN_1407cba60("binding", m_binder.FUN_140d43790(item.get()));
     data.FUN_1407cbb20("itemName", static_cast<CItem*>(item)->FUN_140527b10());
@@ -481,14 +482,14 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         return;
     for (unsigned __int64 k = 0; k < 4; ++k)
         FUN_140cfd800(Unk_SocketFormat("{0}{1}", strPrefix, k));
-    unsigned open = socket->FUN_140620a20();
+    unsigned open = socket->GetOpenSlotCount();
     for (unsigned i = 0; i < open; ++i) {
         MS2Ptr<CGemStoneItem> gem(new CGemStoneItem);
         if (gem == 0)
             continue;
         MS2Ptr<CItem> gemItem(0);
         MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
-        if ((info.get() != 0 ? true : false) && !info->FUN_14061fab0())
+        if ((info.get() != 0 ? true : false) && !info->IsEmpty())
             gemItem = FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo>(info), 0, false);
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(gemItem), false);
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, i);
@@ -572,9 +573,9 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a620(MS2Ptr<CItem> item)
         return false;
     if (socket->GetMaxSlot() == 0)
         return false;
-    if (socket->FUN_140620a20() == 0)
+    if (socket->GetOpenSlotCount() == 0)
         return false;
-    if (!socket->FUN_1406210e0())
+    if (!socket->HasAnyGem())
         return false;
     return true;
 }
@@ -592,7 +593,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Pt
         return false;
     if (sourceSocket->GetMaxSlot() != targetSocket->GetMaxSlot())
         return false;
-    if (sourceSocket->FUN_140620a20() != targetSocket->FUN_140620a20())
+    if (sourceSocket->GetOpenSlotCount() != targetSocket->GetOpenSlotCount())
         return false;
     if (targetSocket->GetFilledSlotCount() != 0)
         return false;
@@ -602,8 +603,8 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Pt
 // @0x140c4a9a0
 void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& out)
 {
-    DAT_143ab2a90.FUN_140a60880(0, out);
-    DAT_143ab2a90.FUN_140a60880(1, out);
+    reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a60880(0, out);
+    reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a60880(1, out);
     Unk_GsPlayer* player = ((class Unk_GsPlayer*)((class WorldService*)(class Unk_GsWorld*)(reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (player == 0)
         return;
@@ -628,16 +629,16 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
         return false;
     if (socket->GetMaxSlot() == 0)
         return false;
-    int open = socket->FUN_140620a20();
+    int open = socket->GetOpenSlotCount();
     if (open == 0)
         return false;
     Unk_GsCosts costs;
-    for (unsigned i = 0; i < socket->FUN_140620a20(); ++i) {
-        if (socket->FUN_140621020(i) == true)
+    for (unsigned i = 0; i < socket->GetOpenSlotCount(); ++i) {
+        if (socket->IsSlotEmpty(i) == true)
             continue;
         Unk_GsCostTag tag = (Unk_GsCostTag)0;
         int amount = 0;
-        FUN_1406284f0(FUN_140626f20(socket->GetGemId(i)), static_cast<CItem*>(item)->FUN_140527840()->FUN_14053de40(),
+        FUN_1406284f0(FUN_140626f20(socket->GetGemId(i)), static_cast<CItem*>(item)->FUN_140527840()->GetSkinType(),
             reinterpret_cast<int*>(&tag), &amount);
         if (amount > 0)
             costs[tag] += amount;
@@ -649,7 +650,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     for (; it != last; ++it) {
         int itemId = FUN_1405575b0(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()), it->first);
         int grade = FUN_14053feb0(itemId);
-        int have = DAT_143ab2a90.FUN_140a5f780(it->first, grade);
+        int have = reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a5f780(it->first, grade);
         if (have < it->second) {
             if (it->first != Unk_GsCostTag_Meso) {
                 int lack = it->second - have;

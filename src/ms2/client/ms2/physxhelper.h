@@ -67,7 +67,7 @@ public:
     Unk_PhysXSceneHandle* FUN_1416892a0(int nScene);
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
     NxActor* FUN_1416897d0(void* pObj);                                                      // the actor of a game object
-    egf::Entity* FUN_141689970(NxActor* pActor);
+    egf::Entity* GetEntityFromActor(NxActor* pActor);
     bool FUN_141689a10(egf::Entity* pEntity);
     void FUN_141689ac0(Unk_PhysPropPtr pProp);
     void FUN_141689d00(NxActor* pActor, unsigned short nGroup, const NxGroupsMask* pMask);
@@ -81,7 +81,7 @@ public:
     void FUN_14168a540(int);
     void FUN_14168a570();
     void FUN_14168a5a0();
-    void FUN_14168a710();
+    void ClearScenes();
     void* FUN_14168a750();
     bool FUN_14168a770(const Vector3* pPoint);
     int FUN_14168a9b0(void* pEntity, const Vector3& ptFrom);

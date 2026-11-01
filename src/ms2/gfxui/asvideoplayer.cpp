@@ -34,7 +34,7 @@ MS2_REPLACE_METHOD(0x1422E9360, Unk_ASVideoPlayer, FUN_1422e9360, 72, 0x1D863DFF
 // @0x1422e93b0
 CString Unk_ASVideoPlayer::FUN_1422e93b0()
 {
-    return FUN_1422baa20("scaleMode").GetString();
+    return GetMember("scaleMode").GetString();
 }
 MS2_REPLACE_METHOD(0x1422E93B0, Unk_ASVideoPlayer, FUN_1422e93b0, 123, 0xFB2B0BF2);
 
@@ -70,14 +70,14 @@ MS2_REPLACE_METHOD(0x1422E9490, Unk_ASVideoPlayer, FUN_1422e9490, 43, 0x955DA732
 // @0x1422e94d0
 float Unk_ASVideoPlayer::FUN_1422e94d0()
 {
-    return (float)FUN_1422baa20("volume").GetNumber();
+    return (float)GetMember("volume").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422E94D0, Unk_ASVideoPlayer, FUN_1422e94d0, 96, 0xFD47CBEC);
 
 // @0x1422e9540
 float Unk_ASVideoPlayer::FUN_1422e9540()
 {
-    return (float)FUN_1422baa20("time").GetNumber();
+    return (float)GetMember("time").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422E9540, Unk_ASVideoPlayer, FUN_1422e9540, 96, 0xB48BC3FE);
 

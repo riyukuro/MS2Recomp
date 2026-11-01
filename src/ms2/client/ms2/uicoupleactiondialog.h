@@ -54,15 +54,15 @@ public:
     void FUN_140becea0(NotifyObject* pNotify);              // NotifyLearnEmotion: refresh
     void FUN_140beced0(const Scaleform::GFx::FunctionHandler::Params& params);   // empty (the search input callback)
     void FUN_140becef0();                                   // rebuild the emotions of the player and the pages
-    void FUN_140bed170(int nEmotion);                       // "setFocusByEmotion"
+    void SetFocusByEmotion(int nEmotion);                       // "setFocusByEmotion"
     void FUN_140bed1f0(int nEmotion);                       // select an emotion for the player
     void FUN_140bed2a0(unsigned __int64 nSelection);        // m_178 = nSelection
     void FUN_140bed2d0();                                   // "buildActions" in id order
     void FUN_140bed8a0();                                   // "buildActions" in reverse id order
     MS2Ptr<Unk_CoupleList> FUN_140ba4b70(const CString& strName);   // list child lookup (UIDialog member, shared COMDAT)
-    void FUN_140bede70(CStringW strSearch);                 // set the search text; refresh when it changed
-    CStringW FUN_140bedf00(unsigned int nEmotion);          // the search keywords of an emotion, space separated
-    void FUN_140bee040(ASArray& arr);                       // pad the page list with empty slots
+    void SetSearchText(CStringW strSearch);                 // set the search text; refresh when it changed
+    CStringW GetEmotionKeywords(unsigned int nEmotion);          // the search keywords of an emotion, space separated
+    void PadEntriesToGrid(ASArray& arr);                       // pad the page list with empty slots
     void FUN_140bee150(int nKey);                           // keys: move the selection in "m_list"
     int FUN_140bee590(int nKey);                           // the key has no emotion shortcut
     int FUN_140bee5e0(int nKey, unsigned __int64 nEmotion);    // set a shortcut

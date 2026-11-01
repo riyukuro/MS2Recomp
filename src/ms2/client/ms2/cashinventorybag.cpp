@@ -109,7 +109,7 @@ public:
 };
 
 // UI service: handle to a registered UI object.
-class Unk_CashUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_CashUIManager { public: };
 
 // Item data of an item id (only the item class test is used).
 class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
@@ -154,9 +154,6 @@ CStringW GetStringCommon(int nId);                        // string table text b
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 CashInventoryBag* FUN_140b05ac0(NotifyContext::BindData* p);
 UIMarketBillDialog* FUN_140b09580(int nClass);
@@ -197,6 +194,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CashInventoryBag);
 
 // Header-defined statics (same in every obj that includes the shared header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 static CStringW s_strUnlockCash(L"unlockcash");                                                     // 0x1400c6e80
 static CString s_strBuy8Sort[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -226,18 +224,18 @@ void FUN_140b055c0(const CString& strName, int nType)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(0x1e);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140b05680
 void FUN_140b05680(const CString& strName)
 {
-    CashInventoryBag* pBag = FUN_140b05ac0(FUN_1422c8e90(strName));
+    CashInventoryBag* pBag = FUN_140b05ac0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -915,7 +913,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             FUN_140d73bc0(0xa65, 0, 0, CStringW(L""));
             FUN_141276180(s_strCashInventoryToBag, "");
         }
-        else if (((class CFeatureManager*)FUN_140166410())->FUN_14036e5b0())
+        else if (((class CFeatureManager*)FUN_140166410())->IsRegionJP())
         {
             if (nD >= 900000 && nD < 1000000)
                 FUN_140d73bc0(0xa61, 0, 0, CStringW(L""));
@@ -981,7 +979,7 @@ bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
     if (ref.FUN_140a8e270(0))
         return true;
     if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f17);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f17);
     return true;
 }
 
@@ -990,7 +988,7 @@ UIMarketBillDialog* FUN_140b09580(int nClass)
 {
     if (reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIMarketBillDialog*>(spObj.operator->());
     }
@@ -1036,7 +1034,7 @@ int CashInventorySlot::vfunc_0(void* p)
     ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
-        tip.FUN_1409c65f0(GetStringCommon(0xa5d));
+        tip.SetEnableUseDbClick(GetStringCommon(0xa5d));
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -1052,7 +1050,7 @@ int CashInventorySlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 1))
     {
-        slot.FUN_1409c24f0(m_nType);
+        slot.SetItemNew(m_nType);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }

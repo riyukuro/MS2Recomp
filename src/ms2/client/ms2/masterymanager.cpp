@@ -94,7 +94,8 @@ public:
     int FUN_140a5f180(int nItemId, int n);                  // count of an item id
     int FUN_140a5f780(int nKind, int n);                    // count of an item class
 };
-extern Unk_MmInventory DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MmInventory
 extern __int64 DAT_143ab2898;
 
 class Unk_MmQuests { public: int FUN_140745630(unsigned int nQuestId); };
@@ -120,21 +121,21 @@ CMasteryManager::~CMasteryManager()
 }
 
 // @0x140b6d0e0
-int CMasteryManager::FUN_140b6d0e0()
+int CMasteryManager::GetTotalClaimableRewardLevels()
 {
     int nTotal = 0;
     for (size_t i = 0; i < 0xc; i++)
-        nTotal += FUN_140b6d140((int)i);
+        nTotal += CountClaimableRewardLevels((int)i);
     return nTotal;
 }
 
 // @0x140b6d140
-int CMasteryManager::FUN_140b6d140(int nType)
+int CMasteryManager::CountClaimableRewardLevels(int nType)
 {
     Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    unsigned int nExp = pPlayer->FUN_141662750(nType);
+    unsigned int nExp = pPlayer->GetMastery(nType);
     int nMax = ((class Unk_MmTable*)FUN_1409670c0())->MaxGrade(nType);
     int nCount = 0;
     for (int nLevel = 1; nLevel <= nMax; nLevel++)
@@ -145,7 +146,7 @@ int CMasteryManager::FUN_140b6d140(int nType)
         int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
         if (DAT_143ab31a0.FUN_140167ca0(nStep) != 0)
             continue;
-        if (FUN_140b6d250(nType, nLevel) == 0)
+        if (HasRewards(nType, nLevel) == 0)
             continue;
         nCount++;
     }
@@ -153,7 +154,7 @@ int CMasteryManager::FUN_140b6d140(int nType)
 }
 
 // @0x140b6d250
-int CMasteryManager::FUN_140b6d250(int nType, int nLevel)
+int CMasteryManager::HasRewards(int nType, int nLevel)
 {
     Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -192,7 +193,7 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
         int nType = spRow->m_nType;
         if (spRow->m_nNeedExp != 0)
         {
-            if (pPlayer->FUN_141662750(nType) < spRow->m_nNeedExp)
+            if (pPlayer->GetMastery(nType) < spRow->m_nNeedExp)
                 return (Unk_MasteryResult)1;
         }
         if (FUN_140b6d330(nStep) == 0)
@@ -204,12 +205,12 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
             MS2Ptr<Unk_MmCost> spCost = spRow->m_costs.FUN_14026bdc0(i);
             if (spCost->m_nKind != 0)
             {
-                if (DAT_143ab2a90.FUN_140a5f780(spCost->m_nKind, 0) < spCost->m_nCount)
+                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f780(spCost->m_nKind, 0) < spCost->m_nCount)
                     return (Unk_MasteryResult)4;
             }
             else
             {
-                if (DAT_143ab2a90.FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_nCount)
+                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_nCount)
                     return (Unk_MasteryResult)4;
             }
         }
@@ -251,9 +252,9 @@ void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140B6D0E0, CMasteryManager, FUN_140b6d0e0, 86, 0x3C2C797F);
-MS2_REPLACE_METHOD(0x140B6D140, CMasteryManager, FUN_140b6d140, 266, 0x0B05C086);
-MS2_REPLACE_METHOD(0x140B6D250, CMasteryManager, FUN_140b6d250, 203, 0x95812AFB);
+MS2_REPLACE_METHOD(0x140B6D0E0, CMasteryManager, GetTotalClaimableRewardLevels, 86, 0x3C2C797F);
+MS2_REPLACE_METHOD(0x140B6D140, CMasteryManager, CountClaimableRewardLevels, 266, 0x0B05C086);
+MS2_REPLACE_METHOD(0x140B6D250, CMasteryManager, HasRewards, 203, 0x95812AFB);
 MS2_REPLACE_METHOD(0x140B6D330, CMasteryManager, FUN_140b6d330, 310, 0xC4E143C1);
 MS2_REPLACE_METHOD(0x140B6D470, CMasteryManager, FUN_140b6d470, 657, 0xED84B747);
 MS2_REPLACE_METHOD(0x140B6D710, CMasteryManager, FUN_140b6d710, 936, 0xE616FB85);

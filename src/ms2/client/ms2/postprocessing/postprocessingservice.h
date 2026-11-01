@@ -81,12 +81,12 @@ public:
     bool FUN_1416a3780();
     bool FUN_1416a37a0(int nStep, bool bRelink);    // toggle a step's active flag; returns the new state
     bool SetStepActive(int nStep, bool bActive);    // set a step's active flag (toggles + relinks when it differs)
-    bool FUN_1416a3a00(int nStep);                  // is the step active
-    PostProcessEffect* FUN_1416a3a90(int nStep);
+    bool IsStepActive(int nStep);                  // is the step active
+    PostProcessEffect* GetStep(int nStep);
     static egf::IBuiltinModel* FUN_1416a3b10();     // "PostProcessSetting" builtin model factory
     void FUN_1416a3bb0();                           // create the off-screen target m_spTarget190
     LPDIRECT3DSURFACE9 FUN_1416a3cd0(const NiPixelFormat* pkFormat, unsigned int uiWidth, unsigned int uiHeight);
-    PostProcessEffect* FUN_1416a3ec0();             // first active step
+    PostProcessEffect* GetFirstActiveStep();             // first active step
     efd::SmartPointer<NiRenderTargetGroup> FUN_1416a3fb0();
     static bool FUN_1416a4000(NiRenderStep* pkStep, void* pvData);                    // re-point the mirrored view at the main camera
     static bool FUN_1416a40c0(NiRenderStep* pkStep, void* pvData);                    // disable user clip planes
@@ -97,8 +97,8 @@ public:
     void FUN_1416a44d0(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel);   // 8254
     void FUN_1416a4570(bool bEnable);               // texture-density debug view on/off
     bool FUN_1416a4620();                           // is the texture-density view on
-    void FUN_1416a4660(int nMode);
-    int FUN_1416a46a0();
+    void SetDensityMode(int nMode);
+    int GetDensityMode();
     void FUN_1416a46d0();                           // toggle the outline click
     bool FUN_1416a4790();                           // is the outline click active
     void FUN_1416aa450(int nClick, bool bActive);
@@ -111,7 +111,7 @@ public:
     void FUN_1416aae50();                           // flush the queued click events
     void FUN_1416aa240();                           // rebuild the shimmer target over m_aspTextures[7]
     void FUN_1416aa330();                           // create the seven post-process materials
-    bool FUN_1416aa850(int nClick);                 // is click nClick active
+    bool IsClickActive(int nClick);                 // is click nClick active
     bool FUN_1416aa8b0(NiRenderStep* pkStep);       // is the step one of the fade steps
     void FUN_1416aac60(NiAVObject* pkScene);        // remove a scene from the mirrored view
     CDepthOfFieldManager* GetDoF();          // m_spDoF

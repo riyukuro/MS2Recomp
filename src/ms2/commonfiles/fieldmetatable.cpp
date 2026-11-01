@@ -71,6 +71,18 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -86,7 +98,6 @@ CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 __int64 MakeTime(int nYear, int nMonth, int nDay, int nHour, int nMinute, int nSecond);        // server-time value
 __int64 GetServerTime();                                    // the current server time
@@ -138,7 +149,7 @@ int CFieldFeatureChecker::IsEnabled(int nFieldId)
     CheckInit();
     CStringW strFeature;
     s_names.Lookup(nFieldId, strFeature);
-    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature);
+    return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabledByName(strFeature);
 }
 #endif
 
@@ -179,13 +190,13 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <npc id=><field id= startTime= endTime=/></npc>
-    for (Unk_140165cf0* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = pNpc->FUN_140168650("npc"))
+    for (Unk_140165cf0* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc")))
     {
         unsigned nNpcId;
         XmlGetAttr((class TiXmlElement*)(pNpc), "id", nNpcId);
         if (FUN_1406cd330(nNpcId) == 0)
             continue;
-        for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+        for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -203,7 +214,7 @@ void CFieldMetaTable::LoadFieldMetaData()
                 m_fieldNpcs.SetAt(nFieldId, pNpcs);
             }
             pNpcs.get()->AddTail(nNpcId);
-            if (FUN_14086f4b0(pField, "startTime") != 0 && FUN_14086f4b0(pField, "endTime") != 0)
+            if (((class TiXmlElement*)(class Unk_140165cf0*)(pField))->Attribute("startTime") != 0 && ((class TiXmlElement*)(class Unk_140165cf0*)(pField))->Attribute("endTime") != 0)
             {
                 CString strStart;
                 CString strEnd;
@@ -223,7 +234,7 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <taxiStation field= IsHomePrivilege=/>
-    for (Unk_140165cf0* pTaxi = pRoot->FUN_140165cf0("taxiStation"); pTaxi != 0; pTaxi = pTaxi->FUN_140168650("taxiStation"))
+    for (Unk_140165cf0* pTaxi = pRoot->FUN_140165cf0("taxiStation"); pTaxi != 0; pTaxi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTaxi))->NextSibling("taxiStation")))
     {
         unsigned nField = 0;
         XmlGetAttr((class TiXmlElement*)(pTaxi), "field", nField);
@@ -237,7 +248,7 @@ void CFieldMetaTable::LoadFieldMetaData()
 
     // <fieldPortal field= indoor=><portal targetField= portalType= id= portalIndoor=/></fieldPortal>
     std::map<unsigned, bool> outdoor;
-    for (Unk_140165cf0* pPortal = pRoot->FUN_140165cf0("fieldPortal"); pPortal != 0; pPortal = pPortal->FUN_140168650("fieldPortal"))
+    for (Unk_140165cf0* pPortal = pRoot->FUN_140165cf0("fieldPortal"); pPortal != 0; pPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPortal))->NextSibling("fieldPortal")))
     {
         unsigned nField = 0;
         int nIndoor = 0;
@@ -252,7 +263,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         pTargets2 = Unk_FieldNewTag(0);
         m_portalTargets2.SetAt(nField, pTargets2);
         unsigned nTarget = 0;
-        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
+        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
         {
             XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nTarget);
             if (FUN_1406fc870(nTarget) == 0)
@@ -283,7 +294,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         pIndoor = Unk_FieldNewTag(0);
         m_indoorPortals.SetAt(nField, pIndoor);
         unsigned nIndoorTarget = 0;
-        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
+        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
         {
             int nPortalIndoor = 0;
             XmlGetAttr((class TiXmlElement*)(pTo), "portalIndoor", nPortalIndoor);
@@ -299,11 +310,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <interactObject id=><field id=/></interactObject>
-    for (Unk_140165cf0* pObj = pRoot->FUN_140165cf0("interactObject"); pObj != 0; pObj = pObj->FUN_140168650("interactObject"))
+    for (Unk_140165cf0* pObj = pRoot->FUN_140165cf0("interactObject"); pObj != 0; pObj = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pObj))->NextSibling("interactObject")))
     {
         int nObjId = 0;
         XmlGetAttr((class TiXmlElement*)(pObj), "id", nObjId);
-        for (Unk_140165cf0* pField = pObj->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+        for (Unk_140165cf0* pField = pObj->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -318,11 +329,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <pet id=><field id=/></pet>
-    for (Unk_140165cf0* pPet = pRoot->FUN_140165cf0("pet"); pPet != 0; pPet = pPet->FUN_140168650("pet"))
+    for (Unk_140165cf0* pPet = pRoot->FUN_140165cf0("pet"); pPet != 0; pPet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPet))->NextSibling("pet")))
     {
         unsigned nPetId = 0;
         XmlGetAttr((class TiXmlElement*)(pPet), "id", nPetId);
-        for (Unk_140165cf0* pField = pPet->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+        for (Unk_140165cf0* pField = pPet->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -337,11 +348,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <liftable id=><field id=/></liftable>
-    for (Unk_140165cf0* pLift = pRoot->FUN_140165cf0("liftable"); pLift != 0; pLift = pLift->FUN_140168650("liftable"))
+    for (Unk_140165cf0* pLift = pRoot->FUN_140165cf0("liftable"); pLift != 0; pLift = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLift))->NextSibling("liftable")))
     {
         unsigned nLiftId = 0;
         XmlGetAttr((class TiXmlElement*)(pLift), "id", nLiftId);
-        for (Unk_140165cf0* pField = pLift->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+        for (Unk_140165cf0* pField = pLift->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);

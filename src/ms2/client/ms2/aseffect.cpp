@@ -27,6 +27,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/additionalactionadditional.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // The header statics of this unit: header_statics_a.h's four, then the sort-name tables of two more headers.
 static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -36,7 +37,6 @@ static CString s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 extern Scaleform::GFx::Value DAT_143b0ae18;                     // the undefined value an effect clip starts from
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
 void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, __int64 a, int b);   // movie->CreateObject
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);     // value is undefined
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);        // Value::SetString
@@ -101,7 +101,7 @@ void ASEffect::BindChildren()
     if (pMovie == 0)
         return;
     FUN_14256e8e0(pMovie, &m_value, "export_additional_effect", 0, 0);
-    if (FUN_1409b0390(&m_value) != 0)
+    if (((Scaleform::GFx::Value*)(void*)(&m_value))->IsUndefined() != 0)
         return;
     m_a0 = FUN_1409b4560("m_cooldown");
     m_b0 = FUN_1409b4560("m_buffBorder");
@@ -145,7 +145,7 @@ void ASEffect::Update()
         int nFrame = (int)(30.0f + (120.0f * (fTotal - fRemain)) / fTotal);
         if (m_a0->FUN_1422c2300() != nFrame)
             m_a0->vfunc_14(nFrame);
-        if (m_94.FUN_140268870(100) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_94).Check(100) != 0)
             m_c0->FUN_1422c4cd0(FormatRemain(fRemain));
         return;
     }
@@ -302,7 +302,7 @@ MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v)
 // @0x1409b4560
 MS2Ptr<ASMovieClip> AScript::FUN_1409b4560(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_1409b40c0(m_nMovieId, v);
     return MS2Ptr<ASMovieClip>(0);
@@ -311,7 +311,7 @@ MS2Ptr<ASMovieClip> AScript::FUN_1409b4560(const CString& strName)
 // @0x1409b4620
 MS2Ptr<ASTextField> AScript::FUN_1409b4620(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_1409b41a0(m_nMovieId, v);
     return MS2Ptr<ASTextField>(0);
@@ -568,7 +568,7 @@ MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, in
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v;
     FUN_14256e8e0(pMovie, &v, strClass, a1, a2);
-    if (FUN_1409b0390(&v) != 0)
+    if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() != 0)
         return MS2Ptr<ASMovieClip>(0);
     MS2Ptr<ASMovieClip> sp(new ASMovieClip(v, nMovieId));
     return sp;

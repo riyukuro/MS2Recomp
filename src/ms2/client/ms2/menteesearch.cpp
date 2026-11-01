@@ -40,6 +40,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/csoapclient.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -151,7 +152,7 @@ CMenteeSearchManager::~CMenteeSearchManager()
 }
 
 // @0x140b6e3e0
-void CMenteeSearchManager::FUN_140b6e3e0()
+void CMenteeSearchManager::ProcessResponse()
 {
     if (!FUN_140166410()->FUN_14036d570(0x3f))
         return;
@@ -211,7 +212,7 @@ void CMenteeSearchManager::ClearParam()
 // @0x140b6e730
 void CMenteeSearchManager::RequestSearch(const CMenteeSearchParam* pParam)
 {
-    if (((struct Unk_MenteeConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x41) == 1)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_MenteeConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x41)) == 1)
         return;
     if (!FUN_140166410()->FUN_14036d570(0x3f))
         return;
@@ -367,7 +368,7 @@ UIInviteMentoringDialog* FUN_140b6f4c0(int nClass)
 {
     if (reinterpret_cast<Unk_MenteeUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIInviteMentoringDialog*>(spObj.operator->());
     }

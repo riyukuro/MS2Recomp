@@ -118,12 +118,17 @@
 #include "ms2/client/ms2/filepreload_1.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/effectservice.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_140ad02f0(int nValue, int nLimit);                          // upper clamp
 bool FUN_14028d470(float a, float b);                               // nearly equal
 const int& FUN_1404eb7e0(const int& a, const int& b);               // max
@@ -145,15 +150,16 @@ void FUN_140b850d0(void* pLog, int nA, int nB, const wchar_t* pszFormat, const c
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
@@ -223,16 +229,16 @@ CSwooshEffectParam::CSwooshEffectParam()
 void CSwooshEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "texturePath", m_strTexturePath);
-    FUN_1408733e0(pNode, "nifPath", m_strNifPath);
-    FUN_1408733e0(pNode, "node1", m_strNode1);
-    FUN_1408733e0(pNode, "node2", m_strNode2);
+    XmlGetAttr((class TiXmlElement*)(pNode), "texturePath", m_strTexturePath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "nifPath", m_strNifPath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "node1", m_strNode1);
+    XmlGetAttr((class TiXmlElement*)(pNode), "node2", m_strNode2);
     XmlGetAttr((class TiXmlElement*)(pNode), "length", m_fLength);
     XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
     XmlGetAttr((class TiXmlElement*)(pNode), "sampling", m_nSampling);
     m_nQuality = FUN_140ad02f0(m_nQuality, 4);
     m_nSampling = FUN_140ad02f0(m_nSampling, 0x3c);
-    CString strAlpha(FUN_14086f4b0(pNode, "alphaMode"));
+    CString strAlpha(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"));
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)
@@ -367,7 +373,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         {
-            Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409849b0(&spModel)));
+            Unk_SceneWalker kWalker((NiAVObject*)(static_cast<NiObject*>(FUN_1409849b0(&spModel))));
             NiAVObject* pObj;
             while ((pObj = kWalker.Next(true)) != 0)
             {

@@ -28,22 +28,22 @@ ASData::ASData()
 }
 
 // @0x1422b7f70
-void ASData::FUN_1422b7f70(int n)
+void ASData::AddInt(int n)
 {
     Scaleform::GFx::Value v;
     v.SetInt(n);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B7F70, ASData, FUN_1422b7f70, 85, 0x5C0E688E);
+MS2_REPLACE_METHOD(0x1422B7F70, ASData, AddInt, 85, 0x5C0E688E);
 
 // @0x1422b7fd0
-void ASData::FUN_1422b7fd0(bool b)
+void ASData::AddBool(bool b)
 {
     Scaleform::GFx::Value v;
     v.SetBoolean(b);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B7FD0, ASData, FUN_1422b7fd0, 86, 0xD74909A1);
+MS2_REPLACE_METHOD(0x1422B7FD0, ASData, AddBool, 86, 0xD74909A1);
 
 // @0x1422b8030
 void ASData::FUN_1422b8030(unsigned int n)
@@ -55,65 +55,65 @@ void ASData::FUN_1422b8030(unsigned int n)
 MS2_REPLACE_METHOD(0x1422B8030, ASData, FUN_1422b8030, 85, 0xF7B8A73C);
 
 // @0x1422b8090
-void ASData::FUN_1422b8090(unsigned long n)
+void ASData::AddULong(unsigned long n)
 {
     Scaleform::GFx::Value v;
     v.SetUInt(n);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B8090, ASData, FUN_1422b8090, 85, 0x6071F6C8);
+MS2_REPLACE_METHOD(0x1422B8090, ASData, AddULong, 85, 0x6071F6C8);
 
 // @0x1422b80f0
-void ASData::FUN_1422b80f0(float f)
+void ASData::AddFloat(float f)
 {
     Scaleform::GFx::Value v;
     v.SetNumber(f);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B80F0, ASData, FUN_1422b80f0, 92, 0xA653EA98);
+MS2_REPLACE_METHOD(0x1422B80F0, ASData, AddFloat, 92, 0xA653EA98);
 
 // @0x1422b8160
-void ASData::FUN_1422b8160(double d)
+void ASData::AddDouble(double d)
 {
     Scaleform::GFx::Value v;
     v.SetNumber(d);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B8160, ASData, FUN_1422b8160, 89, 0xEB77A1F4);
+MS2_REPLACE_METHOD(0x1422B8160, ASData, AddDouble, 89, 0xEB77A1F4);
 
 // @0x1422b81c0
-void ASData::FUN_1422b81c0(__int64 n)
+void ASData::AddInt64(__int64 n)
 {
     Scaleform::GFx::Value v;
     v.SetNumber((double)n);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B81C0, ASData, FUN_1422b81c0, 92, 0xBE5630E6);
+MS2_REPLACE_METHOD(0x1422B81C0, ASData, AddInt64, 92, 0xBE5630E6);
 
 // @0x1422b8230
-void ASData::FUN_1422b8230(ASData* pOther)
+void ASData::AddArgsFrom(ASData* pOther)
 {
     if (pOther != NULL)
         pOther->FUN_1422b9580(m_args);
 }
-MS2_REPLACE_METHOD(0x1422B8230, ASData, FUN_1422b8230, 49, 0x732ACD52);
+MS2_REPLACE_METHOD(0x1422B8230, ASData, AddArgsFrom, 49, 0x732ACD52);
 
 // @0x1422b8270
 void ASData::FUN_1422b8270(const AScript& obj)
 {
     if (&obj != NULL)
-        FUN_1422b83f0(const_cast<AScript&>(obj).FUN_1422bb870());
+        AddValue(const_cast<AScript&>(obj).FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x1422B8270, ASData, FUN_1422b8270, 50, 0x247FE890);
 
 // @0x1422b82b0
-void ASData::FUN_1422b82b0(const char* sz)
+void ASData::AddString(const char* sz)
 {
     Scaleform::GFx::Value v;
     v.SetString(sz);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B82B0, ASData, FUN_1422b82b0, 87, 0x804F3DC2);
+MS2_REPLACE_METHOD(0x1422B82B0, ASData, AddString, 87, 0x804F3DC2);
 
 // @0x1422b8310
 void ASData::FUN_1422b8310(const wchar_t* sz)
@@ -125,20 +125,20 @@ void ASData::FUN_1422b8310(const wchar_t* sz)
 MS2_REPLACE_METHOD(0x1422B8310, ASData, FUN_1422b8310, 87, 0xDC102A34);
 
 // @0x1422b8370
-void ASData::FUN_1422b8370(size_t n)
+void ASData::AddSize(size_t n)
 {
     Scaleform::GFx::Value v;
     v.SetNumber((double)n);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B8370, ASData, FUN_1422b8370, 108, 0x02724AB7);
+MS2_REPLACE_METHOD(0x1422B8370, ASData, AddSize, 108, 0x02724AB7);
 
 // @0x1422b83f0
-void ASData::FUN_1422b83f0(const Scaleform::GFx::Value& v)
+void ASData::AddValue(const Scaleform::GFx::Value& v)
 {
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B83F0, ASData, FUN_1422b83f0, 41, 0x3427F45B);
+MS2_REPLACE_METHOD(0x1422B83F0, ASData, AddValue, 41, 0x3427F45B);
 
 // @0x1422b8420
 void ASData::FUN_1422b8420(int* pOut)
@@ -331,14 +331,14 @@ __int64 ASData::FUN_1422b9110()
 MS2_REPLACE_METHOD(0x1422B9110, ASData, FUN_1422b9110, 126, 0xCFB41D83);
 
 // @0x1422b91a0
-unsigned __int64 ASData::FUN_1422b91a0()
+unsigned __int64 ASData::PopUInt64()
 {
     unsigned __int64 n = 0;
     if (m_args.GetCount() > 0)
         n = (unsigned __int64)m_args.RemoveHead().GetNumber();
     return n;
 }
-MS2_REPLACE_METHOD(0x1422B91A0, ASData, FUN_1422b91a0, 175, 0x1382280E);
+MS2_REPLACE_METHOD(0x1422B91A0, ASData, PopUInt64, 175, 0x1382280E);
 
 // @0x1422b9260
 Scaleform::GFx::Value ASData::FUN_1422b9260()

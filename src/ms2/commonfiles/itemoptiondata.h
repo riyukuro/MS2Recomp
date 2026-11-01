@@ -78,14 +78,14 @@ public:
     int FUN_1405d17c0(int nLevel, double dScale);
     double FUN_1405d1850(int nLevel, double dBase, double dStep, double dScale);
     double FUN_1405d18a0(int nLevel, double dBase, double dStep, double dScale);
-    double FUN_1405d18f0(int nLevel, double dA, double dB, double dC);
-    int FUN_1405d1960(int nRank);
-    double FUN_1405d19f0(int nRank);
+    double EvalCubic(int nLevel, double dA, double dB, double dC);
+    int GetRankFlatValue(int nRank);
+    double GetRankMultiplier(int nRank);
     double FUN_1405d1aa0(int nRank);
     double FUN_1405d1b70(int nRank);
     double FUN_1405d1c40(int nRank, int nOptionLevel);
     double FUN_1405d1d70(int nStat);
-    double FUN_1405d1e70(int nJob);
+    double GetJobMultiplier(int nJob);
     double FUN_1405d2020(int nRank);
     double FUN_1405d20f0(int nStat);
     double FUN_1405d2250(int nStat);
@@ -286,13 +286,13 @@ public:
     void FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, unsigned nTrials,
                        const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut);
     void FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPick, std::vector<CStringW>* pOut);
-    bool FUN_1405d74d0(int nStat);              // a row of the stat
-    bool FUN_1405d7550(unsigned nSpecial);
-    void FUN_1405d75d0(std::function<void(ItemOptionValueRandom*)> fnVisit);
-    int FUN_1405d7680(int nStat);               // the statID of a stat's row (0 when none)
-    int FUN_1405d7710(unsigned nSpecial);
-    MS2Ptr<ItemOptionValueRandom> FUN_1405d77a0(int nStat);
-    MS2Ptr<ItemOptionValueRandom> FUN_1405d7870(unsigned nSpecial);
+    bool HasStat(int nStat);              // a row of the stat
+    bool HasSpecialStat(unsigned nSpecial);
+    void ForEachValue(std::function<void(ItemOptionValueRandom*)> fnVisit);
+    int GetStatIdByStat(int nStat);               // the statID of a stat's row (0 when none)
+    int GetStatIdBySpecial(unsigned nSpecial);
+    MS2Ptr<ItemOptionValueRandom> FindValueByStat(int nStat);
+    MS2Ptr<ItemOptionValueRandom> FindValueBySpecial(unsigned nSpecial);
     int FUN_1405d7940(std::vector<ItemOptionValueRandom*>& vOut, CItemOption* pSource);   // the rows the source holds
     bool FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, unsigned& nCount, Unk_Random* pRandom, BOOL bFixedCount,
                        MS2Ptr<ItemOptionRandomContext> spContext, const std::vector<std::pair<int, int> >& vLocked,

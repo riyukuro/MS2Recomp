@@ -34,7 +34,8 @@ int FUN_14151e740();                                            // GFx allocator
 void FUN_1422d9020(int n);
 CLogString* GetLogString();
 
-extern char DAT_143b059e8;                                      // the entity app framework
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern const efd::Category DAT_143b0d778;                       // the category GFxService subscribes to
 extern void (*DAT_143b0d368)();                                 // called on shutdown when set
 

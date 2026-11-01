@@ -25,7 +25,7 @@ public:
     CMesoMarketProductCli();                                // 0x140d6d8c0
     // implicit virtual dtor 0x140d70a70 (??_G 0x140d70ca0): the exe stores no vftable in it
 
-    bool FUN_140d6d900();                                   // the sale is over
+    bool IsExpired();                                   // the sale is over
     void FUN_140d6d940(ASObj& row);                         // the row of an own listing
     void FUN_140d6dab0(ASObj& row);                         // the row of a listing of the market
     void FUN_140d6db30(ASObj& row);                         // the fields both rows share
@@ -66,9 +66,9 @@ public:
     void OnMesoMarket(CInPacket& packet);                  // packet 0x81 dispatcher by the sub code
     void FUN_140d6e5b0(ASArray& rows);                      // the rows of the own listing
     void FUN_140d6e6d0(ASArray& rows);                      // the rows of the market
-    MS2Ptr<CMesoMarketProductCli> FUN_140d6e7e0(unsigned __int64 qwId);   // product of the own listing
-    MS2Ptr<CMesoMarketProductCli> FUN_140d6e890(unsigned __int64 qwId);   // product of the market
-    Unk_MesoLimits& FUN_140d6e940();                        // the limits
+    MS2Ptr<CMesoMarketProductCli> FindOwnProduct(unsigned __int64 qwId);   // product of the own listing
+    MS2Ptr<CMesoMarketProductCli> FindMarketProduct(unsigned __int64 qwId);   // product of the market
+    Unk_MesoLimits& GetLimits();                        // the limits
     bool FUN_140d6e960(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
     bool FUN_140d6ea50(unsigned __int64 qwId);              // validate a buy
     int GetOwn();                                    // the own count
@@ -81,11 +81,11 @@ public:
     void FUN_140d6ee00(CInPacket& packet);                  // 6: one own product left
     void FUN_140d6eec0(CInPacket& packet);                  // 7: a market page
     void FUN_140d6efb0(CInPacket& packet);                  // 8: a product was bought
-    void FUN_140d6f0b0(MS2Ptr<CMesoMarketProductCli> sp);   // add to the own listing
-    void FUN_140d6f130(int nCode);                          // result code -> message
-    __int64 FUN_140d6ff60();                                // lowest price allowed
-    __int64 FUN_140d6ffe0();                                // highest price allowed
-    void FUN_140d70060(__int64 qwId);                       // remove a product from both lists
+    void AddOwnProduct(MS2Ptr<CMesoMarketProductCli> sp);   // add to the own listing
+    void ShowResultMessage(int nCode);                          // result code -> message
+    __int64 GetMinPrice();                                // lowest price allowed
+    __int64 GetMaxPrice();                                // highest price allowed
+    void RemoveMarketProduct(__int64 qwId);                       // remove a product from both lists
 
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x08

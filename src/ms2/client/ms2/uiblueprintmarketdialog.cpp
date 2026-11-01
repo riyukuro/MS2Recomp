@@ -69,6 +69,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -123,10 +124,9 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // s
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // set a Boolean value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // set a Value from an AS object
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // copy a Value
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                                // m_30's operator-> (the out-of-line COMDAT copy)
 extern int DAT_143ab2974;                                                   // the preview cool-down (seconds; server config 34)
 
-class Unk_MeratKeyState { public: bool FUN_14116d9c0(int nKey, int a, int b); };   // 0x1c = Enter
+class Unk_MeratKeyState : public CInputKeyHandler {};   // 0x1c = Enter
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CommonString* FUN_14025e7d0();
 
@@ -171,7 +171,7 @@ template <> TMarketBillDataParam::GiftCallback& TMarketBillDataParam::GiftCallba
 UIHomeInfoDialog* FUN_140bbea00(int nId)
 {
     if (CUIService::GetInstance() != 0) {
-        MS2Ptr<UIObject> spObject = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObject = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (spObject.get() != 0)
             return dynamic_cast<UIHomeInfoDialog*>(spObject.operator->());
     }
@@ -280,7 +280,7 @@ void UIBlueprintMarketDialog::vfunc_26()
     m_previewTimer.Init();
     m_saved.Clear();
     int nUIClassID = vfunc_48();
-    CMeratMarketMan::GetInstance()->FUN_140d5a200(nUIClassID);
+    CMeratMarketMan::GetInstance()->OnDialogClosed(nUIClassID);
 }
 MS2_REPLACE_METHOD(0x140bbab60, UIBlueprintMarketDialog, vfunc_26, 0, 0);
 
@@ -410,10 +410,10 @@ void UIBlueprintMarketDialog::ShowSearchResult(int nPage, int nFirst, int nLast,
             strNotice = FUN_14052bd00(0xa10, m_spCond->m_str);
     }
     if (bHasText && m_sort.get() != 0) {
-        m_sort->FUN_1422df690(-1);
+        m_sort->SetSelectedIndex(-1);
         {
             CStringW strCategory(L"$s_meratmarket_search_category");
-            m_sort->FUN_1422dfa80(strCategory);
+            m_sort->SetTitle(strCategory);
         }
         m_sort->vfunc_24(false);
     }
@@ -527,7 +527,7 @@ void UIBlueprintMarketDialog::BuildPage(int nFirst, int nLast)
     Unk_MmViewScope scope;
     Unk_MeratProductArray& list = CMeratMarketMan::GetInstance()->GetBlueprintList();
     FillPage(nFirst, nLast, items, list, &scope);
-    Scaleform::GFx::Value vResult = FUN_1409ee290(&m_30)->Invoke("buildPage", items);
+    Scaleform::GFx::Value vResult = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("buildPage", items);
 }
 MS2_REPLACE_METHOD(0x140bbc510, UIBlueprintMarketDialog, BuildPage, 0, 0);
 
@@ -610,13 +610,13 @@ void UIBlueprintMarketDialog::ApplySearchData(MS2Ptr<CMeratMarketSchCond> spCond
         return;
     if (data.FUN_1422ba9a0())
         return;
-    Scaleform::GFx::Value vSort = data.FUN_1422baa20("sort");
+    Scaleform::GFx::Value vSort = data.GetMember("sort");
     int nSort = 0;
     if (!((Scaleform::GFx::Value*)(void*)(&vSort))->IsNull() && !((Scaleform::GFx::Value*)(void*)(&vSort))->IsUndefined()) {
         AScript sort(vSort, 2);
-        nSort = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sort.FUN_1422baa20("sortValue")))->GetInt();
+        nSort = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sort.GetMember("sortValue")))->GetInt();
     }
-    int nPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.FUN_1422baa20("page")))->GetInt();
+    int nPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("page")))->GetInt();
     spCond->m_24 = nSort;
     spCond->m_30 = nPage;
     spCond->m_str.Empty();
@@ -712,7 +712,7 @@ void UIBlueprintMarketDialog::OnSearch(const Scaleform::GFx::FunctionHandler::Pa
     MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCond();
     if (spCond == 0)
         return;
-    CStringW strText = m_inputSearch->FUN_1422e0b00();
+    CStringW strText = m_inputSearch->GetText();
     SearchText(spCond, strText);
 }
 MS2_REPLACE_METHOD(0x140bbd5e0, UIBlueprintMarketDialog, OnSearch, 0, 0);
@@ -764,7 +764,7 @@ void UIBlueprintMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
     if (spRow == 0)
         return;
     Unk_MeratProductKey key;
-    spRow->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));
+    spRow->GetProductOID(reinterpret_cast<Unk_MeratOid*>(&key));
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140ec2300(key, 4, 0);
     if (spProduct == 0 || !spProduct->m_ugc.FUN_140896350())
         return;
@@ -824,9 +824,9 @@ template <> MS2Ptr<ASButton> AScript::FUN_140bbe640<ASButton>(const CString& str
 }
 
 // @0x140bbe700
-MS2Ptr<ASDropdownMenu> AScript::FUN_140bbe700(const CString& strName)
+MS2Ptr<ASDropdownMenu> AScript::GetDropdownMenu(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return Unk_BpCreate<ASDropdownMenu>(m_nMovieId, v);
     return MS2Ptr<ASDropdownMenu>(0);
@@ -836,14 +836,14 @@ MS2Ptr<ASDropdownMenu> AScript::FUN_140bbe700(const CString& strName)
 template <> MS2Ptr<ASDropdownMenu> AScript::FUN_140bbe7c0<ASDropdownMenu>(const CString& strName, MS2Ptr<ASDropdownMenu>& outChild)
 {
     MS2_ASCRIPT_INL_ASSERT(0xd5, outChild == NULL);
-    outChild = FUN_140bbe700(strName);
+    outChild = GetDropdownMenu(strName);
     return outChild;
 }
 
 // @0x140bbe880
 template <> MS2Ptr<ASTextInput> AScript::FUN_140bbe880<ASTextInput>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return Unk_BpCreate<ASTextInput>(m_nMovieId, v);
     return MS2Ptr<ASTextInput>(0);

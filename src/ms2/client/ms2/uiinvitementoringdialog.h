@@ -35,7 +35,6 @@ public:
     void FUN_140c2f860(__int64 nMentor, const CStringW& strName);         // 0x140c2f860 invite one (packet 0xa1 / 5)
     bool FUN_140c2fae0(int nResult, const CMsgBoxData& data);       // 0x140c2fae0 accept answer (packet 0xa1 / 6)
 
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // movie clip child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

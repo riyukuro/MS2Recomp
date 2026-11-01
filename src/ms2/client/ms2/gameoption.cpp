@@ -483,7 +483,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_1403ed2d0 : public WorldService
 {
 public:
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
 
 // @0x141248f10
@@ -1031,11 +1030,11 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
                 if (static_cast<Unk_GoCombo*>(sp) != 0)
                 {
                     if (nLevel >= 3)
-                        sp->FUN_1422df690(2);
+                        sp->SetSelectedIndex(2);
                     else if (nLevel >= 2)
-                        sp->FUN_1422df690(1);
+                        sp->SetSelectedIndex(1);
                     else if (nLevel >= 0)
-                        sp->FUN_1422df690(0);
+                        sp->SetSelectedIndex(0);
                 }
             }
             {
@@ -1098,7 +1097,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
         if (static_cast<Unk_GoCombo*>(sp) != 0)
-            sp->FUN_1422df690(m_state.m_nMultisampling);
+            sp->SetSelectedIndex(m_state.m_nMultisampling);
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_vsync"), -1);
@@ -1116,11 +1115,11 @@ void CGameOptionGraphicDefault::vfunc_6()
         {
             int nShadow = m_state.m_nShadow;
             if (nShadow >= 3)
-                sp->FUN_1422df690(2);
+                sp->SetSelectedIndex(2);
             else if (nShadow >= 2)
-                sp->FUN_1422df690(1);
+                sp->SetSelectedIndex(1);
             else if (nShadow >= 0)
-                sp->FUN_1422df690(0);
+                sp->SetSelectedIndex(0);
         }
     }
     {
@@ -1131,7 +1130,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
         if (static_cast<Unk_GoCombo*>(sp) != 0)
-            sp->FUN_1422df690(m_state2.m_nOptimalHide);
+            sp->SetSelectedIndex(m_state2.m_nOptimalHide);
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
@@ -1227,7 +1226,7 @@ void CGameOptionGraphicDefault::vfunc_7()
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
         if (static_cast<Unk_GoCombo*>(sp) != 0)
         {
-            int nSel = sp->FUN_1422df6c0();
+            int nSel = sp->GetSelectedIndex();
             if (nSel == 0)
                 m_state.m_nShadow = 0;
             else if (nSel == 1)
@@ -1249,12 +1248,12 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
         if (static_cast<Unk_GoCombo*>(sp) != 0)
-            m_state.m_nMultisampling = sp->FUN_1422df6c0();
+            m_state.m_nMultisampling = sp->GetSelectedIndex();
     }
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
         if (static_cast<Unk_GoCombo*>(sp) != 0)
-            m_state2.m_nOptimalHide = sp->FUN_1422df6c0();
+            m_state2.m_nOptimalHide = sp->GetSelectedIndex();
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
@@ -1285,7 +1284,7 @@ void CGameOptionGraphicDefault::vfunc_7()
         MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
         if (static_cast<Unk_GoInput*>(sp) != 0)
         {
-            CStringW strInput = sp->FUN_1422e0b00();
+            CStringW strInput = sp->GetText();
             m_state2.m_nCustomInput = FUN_1407181a0(strInput);
         }
     }
@@ -1331,7 +1330,7 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
     if (m_state.m_bShowFrameRate)
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e7d)));
     else
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e7d);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7d);
     if (bNotify != 0)
         FUN_140d73bc0(0x84e, 0, 0, CStringW(L""));
 }
@@ -1364,9 +1363,9 @@ void CGameOptionGraphicDefault::FUN_14124d080()
                 {
                     nRows = (int)modes.size();
                     if (nRows > 6)
-                        spCombo->FUN_1422df8c0(L"export_scroll");
+                        spCombo->SetScrollBar(L"export_scroll");
                     else
-                        spCombo->FUN_1422df5f0(nRows);
+                        spCombo->SetMenuRowCount(nRows);
                     std::sort(modes.begin(), modes.end(), Unk_GoResModeLess());
                     int nSelectedId = 0;                        // set, never read
                     int nSelected = 0;
@@ -1391,7 +1390,7 @@ void CGameOptionGraphicDefault::FUN_14124d080()
                             nSelectedId = mode.m_nIndex;
                         }
                     }
-                    spCombo->FUN_1422df690(nSelected);
+                    spCombo->SetSelectedIndex(nSelected);
                     spCombo->vfunc_24(true);
                 }
             }
@@ -1770,7 +1769,7 @@ int CGameOption::LoadAccountOption()
     if (FUN_14125d3d0(&m_account, &m_docAccount) == 0)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[E] Can not read account option");
     int bReadDefault = GetFileSystem()->FUN_1403974b0(&m_docAccountDefault, GetOptionFilePath(1, true), 0, true, false);
-    if (CFeatureManager::GetInstance()->FUN_14036e560())
+    if (CFeatureManager::GetInstance()->IsRegionNA())
     {
         TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n08 = 0;
         TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_bDisplayChatComfirmSuper = true;
@@ -1838,7 +1837,7 @@ int CGameOption::FUN_141242f60()
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0xe2);
     if (LoadGameOptionLanguage(&m_language, &doc) == 0)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[E] Can not read language hide option");
-    if (CFeatureManager::GetInstance()->FUN_14036e560() && bDefaulted != 0)
+    if (CFeatureManager::GetInstance()->IsRegionNA() && bDefaulted != 0)
     {
         LANGID nLang = GetUserDefaultUILanguage();
         m_language.m_nLanguage = FUN_1406518d0((short)nLang);

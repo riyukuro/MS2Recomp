@@ -35,10 +35,7 @@ public:
     virtual int vfunc_65();                                                                         // 65 0x140ba2bf0
     virtual void vfunc_67();                                                                        // 67 0x140ba2c50
 
-    // UIStatusEventListener (+0x178) overrides: 3, 4, 9 (empty), 30 and 31 (refresh the lists)
-    virtual void vfunc_oa0_3(int a1, int a2) {}                                                     // COMDAT 0x140ba4fc0
-    virtual void vfunc_oa0_4(int a1, int a2) {}                                                     // COMDAT 0x140ba4fe0
-    virtual void vfunc_oa0_9(unsigned short a1) {}                                                  // COMDAT 0x140ba4fd0
+    // UIStatusEventListener (+0x178) overrides: 30 and 31 (refresh the lists); 3, 4 and 9 are the base no-ops
     virtual void vfunc_oa0_30(int a1);                                                              // 0x140ba30a0
     virtual void vfunc_oa0_31(void* a1);                                                            // 0x140ba3140
 

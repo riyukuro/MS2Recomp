@@ -78,7 +78,6 @@ public:
     void FUN_140f87af0(unsigned short nLevel);                      // pick the shown level range around nLevel
     MS2Ptr<Unk_LgEvent> FUN_140f880c0(const CString& strName);      // the "m_eventDialog" child
     MS2Ptr<Unk_LgCheck> FUN_140e52670(const CString& strName);      // check box child lookup (UIDialog member, shared)
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // text field child lookup (UIDialog member, shared)
     MS2Ptr<Unk_LgList> FUN_140ba4b70(const CString& strName);       // list child lookup (UIDialog member, shared)
 
 private:

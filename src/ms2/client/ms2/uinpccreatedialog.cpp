@@ -40,13 +40,19 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/client/ms2/worldservice.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 extern template class MS2Ptr<CProxyGameObject>;
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The key input state (singleton).
-class Unk_14025e7c0 : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
+class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The local player: the position (slot 18) and direction (slot 20) getters.
@@ -342,8 +348,8 @@ void UINpcCreateDialog::ReadNpcFromFile()
         TiXmlDocument doc;
         if (((class Unk_NcFiles*)GetFileSystem())->FUN_1403974b0(doc, (const char*)strFile, 0, true, false) == 0)
             continue;
-        Unk_NcNode* pRoot = ((Unk_NcNode*)&doc)->FUN_140165cf0("ms2");
-        for (Unk_NcNode* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = pNpc->FUN_140168650("npc")) {
+        Unk_NcNode* pRoot = ((class Unk_NcNode*)((class Unk_XmlNode*)(((Unk_NcNode*)&doc)))->FirstChild("ms2"));
+        for (Unk_NcNode* pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")); pNpc != 0; pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc"))) {
             CStringW strId((const wchar_t*)0);
             strId = FUN_1401bf530(pNpc, "id", CStringW(L""));
             if (!strId.IsEmpty())
@@ -445,7 +451,7 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
         ASObj row(2);
         row.FUN_1407cbb20("code", e.m_strId);
         row.FUN_1407cbb20("field", e.m_strLine);
-        ((ASScrollingList*)list)->FUN_1422dd230(row);
+        ((ASScrollingList*)list)->AddItem(row);
     }
     ((ASScrollingList*)list)->vfunc_24(true);
     m_strFilter = strFilter;

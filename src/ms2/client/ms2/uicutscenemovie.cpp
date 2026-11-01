@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/uiloadingprogress.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/loadingimagetable.h"
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143af1e60
 
@@ -39,15 +40,6 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
-class Unk_140a94350
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_140a94350* FUN_140a94350();
 class Unk_141529a50 { public: void FUN_141529a50(bool b); };
 class Unk_1403ed2d0 : public WorldService { public: Unk_141529a50* FUN_141bd0cc0();};
 void FUN_14151f200();
@@ -92,8 +84,8 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     RemoveTween();
     SetSoundFade(true);
     FUN_14025e7a0()->FUN_1422ae920(1);
-    FUN_140b632f0()->FUN_1422d4780(this, 2);
-    FUN_140a94350()->vfunc_10(11);
+    FUN_140b632f0()->AddToLayer(this, 2);
+    ChromaSDK::GetChromaManager()->SetState(11);
     if (m_4c != 0) {
         if (((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
             Play();
@@ -112,9 +104,9 @@ MS2_REPLACE_METHOD(0x14190EC00, UICutSceneMovie, vfunc_52, 317, 0x6D3CA15C);
 // @0x14190ed50
 int UICutSceneMovie::vfunc_53()
 {
-    FUN_140b632f0()->FUN_1422d4840(this, 2);
+    FUN_140b632f0()->RemoveFromLayer(this, 2);
     TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141adb7b0(1);
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
     if (m_30.get())
         m_30->Invoke("hide");
     SetSoundFade(false);

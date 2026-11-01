@@ -16,12 +16,12 @@ public:
     CLocaleLanguageData();                          // 0x14064ead0
     virtual ~CLocaleLanguageData();                 // 0x14064eb60
 
-    int FUN_14064ebf0(int nLanguage);               // does this row offer the language enum
-    int FUN_14064ec70(CString strCode);             // CompareNoCase search of the language codes (by value, callee frees)
-    int FUN_14064ed50();                            // first language code as an enum
-    void FUN_14064edf0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out);   // all language codes as enums
-    void FUN_14064eec0(ATL::CAtlArray<CString>& out);   // all language codes, upper-cased
-    void FUN_14064ef60();                           // clear
+    int HasLanguageId(int nLanguage);               // does this row offer the language enum
+    int HasLanguageCode(CString strCode);             // CompareNoCase search of the language codes (by value, callee frees)
+    int GetDefaultLanguage();                            // first language code as an enum
+    void GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out);   // all language codes as enums
+    void GetLanguageCodes(ATL::CAtlArray<CString>& out);   // all language codes, upper-cased
+    void Clear();                           // clear
 
     CString m_strLocale;                            // +0x18 "locale"
     ATL::CAtlArray<CString> m_languages;            // +0x20 "language" (comma separated)
@@ -41,11 +41,11 @@ public:
     CLocaleLanguage();                              // 0x14064efc0
     virtual ~CLocaleLanguage();                     // 0x14064f020
 
-    LocaleLanguageDataPtr FUN_14064f070(unsigned int nLocale);   // the row for the configured locale (0 = from options)
-    int FUN_14064f180(int nLanguage);
-    int FUN_14064f210();
-    void FUN_14064f290(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out);
-    void FUN_14064f310(ATL::CAtlArray<CString>& out);
+    LocaleLanguageDataPtr GetLocaleData(unsigned int nLocale);   // the row for the configured locale (0 = from options)
+    int HasLanguageId(int nLanguage);
+    int GetDefaultLanguage();
+    void GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out);
+    void GetLanguageCodes(ATL::CAtlArray<CString>& out);
     int LoadGameOptionLocale();                            // load gameOptionLocale.xml
 
     ATL::CAtlArray<LocaleLanguageDataPtr> m_rows;   // +0x08

@@ -22,9 +22,15 @@
 #include "ms2/client/ms2/effectskipmgr.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 // ---- unit-local views of exe objects and unrecovered callees --------------------------------------------------------------
-class Unk_RsSkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
 
 // The world service (0x1403ed2d0): the entity kind of an id, the actor of an id.
 class Unk_RsActor;
@@ -92,7 +98,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
     m_fRotY = fRotY;
     m_points.Copy(kPoints);
     m_nStartTick = nTick;
-    m_spRow = reinterpret_cast<Unk_RsSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+    reinterpret_cast<MS2Ptr<SkillData>&>(m_spRow) = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spRow.IsNull())
         return 0;
     m_spSkill = m_spRow->FUN_1407e90a0(nLevel);
@@ -118,15 +124,15 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
                 Unk_RsNiPoint3 niPt(m_points[i]);
                 FUN_14097faa0(&xf.m_Translate, &niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = m_pAttr->m_strEffect;
-                kTarget.m_nKind = m_nOwnerType;
-                kTarget.m_pXform = &xf;
-                kTarget.m_b31 = m_pAttr->m_bAlways;
-                kTarget.m_nRandomIndex = m_nId;
+                NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEffect;
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+                ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+                ((Unk_EffectTarget&)(kTarget)).m_b31 = m_pAttr->m_bAlways;
+                ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
                 nEffect = 0;
-                if ((m_bLocal != 0 || kTarget.m_b31) && !m_pAttr->m_bNoSpawn)
-                    nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                if ((m_bLocal != 0 || ((Unk_EffectTarget&)(kTarget)).m_b31) && !m_pAttr->m_bNoSpawn)
+                    nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 if (nEffect != 0)
                 {
                     m_effects.Add(nEffect);
@@ -153,14 +159,14 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
                 Unk_RsNiPoint3 niPt(m_points[i]);
                 FUN_14097faa0(&xf.m_Translate, &niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = m_pAttr->m_strEndEffect;
-                kTarget.m_nKind = m_nOwnerType;
-                kTarget.m_pXform = &xf;
-                kTarget.m_nRandomIndex = m_nId;
+                NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEndEffect;
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+                ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+                ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
                 nEffect2 = 0;
                 if (m_bLocal != 0)
-                    nEffect2 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                    nEffect2 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 if (nEffect2 != 0)
                 {
                     m_effects.Add(nEffect2);
@@ -237,11 +243,11 @@ void CRegionSkillObject::FUN_1416f6900()
     bool bAlways = pAttr->m_bAlways;
     if (m_bLocal != 0 || bAlways)
     {
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = pAttr->m_strHitEffect;
-        kTarget.m_nKind = m_nOwnerType;
-        kTarget.m_b31 = bAlways;
-        kTarget.m_nRandomIndex = m_nId;
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = pAttr->m_strHitEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+        ((Unk_EffectTarget&)(kTarget)).m_b31 = bAlways;
+        ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
         for (unsigned i = 0; i < m_points.GetCount(); i++)
         {
             NiTransform xf;
@@ -249,8 +255,8 @@ void CRegionSkillObject::FUN_1416f6900()
             Unk_RsNiPoint3 niPt(m_points[i]);
             FUN_14097faa0(&xf.m_Translate, &niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-            kTarget.m_pXform = &xf;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+            ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
         }
     }
 }
@@ -270,11 +276,11 @@ void CRegionSkillObject::FUN_1416f6b90()
         return;
     if (m_bLocal != 0 || pAttr->m_bAlways)
     {
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = pAttr->m_strResetEffect;
-        kTarget.m_nKind = m_nOwnerType;
-        kTarget.m_b31 = pAttr->m_bAlways;
-        kTarget.m_nRandomIndex = m_nId;
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = pAttr->m_strResetEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+        ((Unk_EffectTarget&)(kTarget)).m_b31 = pAttr->m_bAlways;
+        ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
         for (unsigned i = 0; i < m_points.GetCount(); i++)
         {
             NiTransform xf;
@@ -282,14 +288,14 @@ void CRegionSkillObject::FUN_1416f6b90()
             Unk_RsNiPoint3 niPt(m_points[i]);
             FUN_14097faa0(&xf.m_Translate, &niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-            kTarget.m_pXform = &xf;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+            ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
         }
     }
 }
 
 // @0x1416f6e20
-int CRegionSkillObject::FUN_1416f6e20()
+int CRegionSkillObject::GetId()
 {
     return m_nId;
 }
@@ -331,13 +337,13 @@ void CRegionSkillObject::FUN_1416f6f50()
                 bool bAlways = m_pAttr->m_bAlways;
                 if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect, m_nOwnerType, &xf) == 0 && (m_bLocal != 0 || bAlways))
                 {
-                    Unk_EffectTarget kTarget;
-                    kTarget.m_strName = m_pAttr->m_strEffect;
-                    kTarget.m_nKind = m_nOwnerType;
-                    kTarget.m_pXform = &xf;
-                    kTarget.m_b31 = bAlways;
-                    kTarget.m_nRandomIndex = m_nId;
-                    int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                    ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEffect;
+                    ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+                    ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+                    ((Unk_EffectTarget&)(kTarget)).m_b31 = bAlways;
+                    ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
+                    int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                     if (nEffect != 0)
                     {
                         m_effects.Add(nEffect);
@@ -373,12 +379,12 @@ void CRegionSkillObject::FUN_1416f6f50()
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect2, m_nOwnerType, &xf) == 0 && m_bLocal != 0)
             {
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = m_pAttr->m_strEndEffect;
-                kTarget.m_nKind = m_nOwnerType;
-                kTarget.m_pXform = &xf;
-                kTarget.m_nRandomIndex = m_nId;
-                int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEndEffect;
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+                ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+                ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
+                int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 if (nEffect != 0)
                 {
                     m_effects.Add(nEffect);
@@ -419,11 +425,11 @@ void CRegionSkillObject::FUN_1416f7790()
         bool bAlways = m_pAttr->m_bAlways;
         if (m_bLocal != 0 || bAlways)
         {
-            Unk_EffectTarget kTarget;
-            kTarget.m_strName = m_pAttr->m_strLateEffect;
-            kTarget.m_nKind = m_nOwnerType;
-            kTarget.m_b31 = bAlways;
-            kTarget.m_nRandomIndex = m_nId;
+            NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+            ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strLateEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_nKind = m_nOwnerType;
+            ((Unk_EffectTarget&)(kTarget)).m_b31 = bAlways;
+            ((Unk_EffectTarget&)(kTarget)).m_nRandomIndex = m_nId;
             for (unsigned i = 0; i < m_points.GetCount(); i++)
             {
                 NiTransform xf;
@@ -431,8 +437,8 @@ void CRegionSkillObject::FUN_1416f7790()
                 Unk_RsNiPoint3 niPt(m_points[i]);
                 FUN_14097faa0(&xf.m_Translate, &niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-                kTarget.m_pXform = &xf;
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+                ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
             }
         }
         m_bLateDone = 1;

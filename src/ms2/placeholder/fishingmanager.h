@@ -42,8 +42,8 @@ MS2_CHECK_SIZE(CFish, 0x30);
 struct Unk_FishRecord
 {
     Unk_FishRecord() : m_bOff(1), m_nTry(0), m_nSuccess(0) {}   // 0x140cdf490
-    void FUN_140cd8e70(unsigned nFishId, int bSuccess);    // count a cast
-    void FUN_140cd8f10();                                   // reset
+    void AddAttempt(unsigned nFishId, int bSuccess);    // count a cast
+    void Reset();                                   // reset
     CString FUN_140cd8f60();                                // write the log file, its name
     int m_bOff;                                             // +0x00 recording is off
     int m_nTry;                                             // +0x04
@@ -64,16 +64,16 @@ public:
     void FUN_140cdac20();                                   // the player moved
     void FUN_140cdac50();                                   // the cast was thrown
     void FUN_140cdacb0(NotifyObject* pNotify);              // "NotifyChangeBuff"
-    void FUN_140cdadb0(MS2Ptr<CItem> rod);                  // use a rod
+    void ToggleFishing(MS2Ptr<CItem> rod);                  // use a rod
     void FUN_140cdae30(MS2Ptr<CItem> rod);                  // start fishing with a rod
     void SendFishingMode1();                                   // leaves the casting
     int FUN_140cdb110(efd::Point3 kPos);                        // a fishing spot is in front of the point
     void SendFishingMode9();                                   // leave the fishing spot (packet 0x73 mode 9)
     int FUN_140cdb250();                                    // start fishing at the current spot
     void FUN_140cdb450();                                   // per frame
-    MS2Ptr<CFish> FUN_140cdba00(unsigned nFishId);          // a fish of the spot
-    void FUN_140cdba90(ATL::CAtlArray<MS2Ptr<CFish> >& out);   // all fishes of the spot
-    MS2Ptr<CFishCube> FUN_140cdbb10(unsigned nCell);        // the fishing cube of a grid cell
+    MS2Ptr<CFish> FindFish(unsigned nFishId);          // a fish of the spot
+    void GetAllFish(ATL::CAtlArray<MS2Ptr<CFish> >& out);   // all fishes of the spot
+    MS2Ptr<CFishCube> FindCube(unsigned nCell);        // the fishing cube of a grid cell
     int FUN_140cdbb90();                                    // no catch is pending
     int FUN_140cdbbd0(MS2Ptr<CItem> rod);                   // the player may use the rod
     int GetAutoCount();                                    // m_nAutoCount

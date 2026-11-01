@@ -44,18 +44,18 @@ ASCoreList::~ASCoreList()
 }
 
 // @0x1422dcca0
-void ASCoreList::FUN_1422dcca0(int nIndex)
+void ASCoreList::SetSelectedIndex(int nIndex)
 {
     FUN_1407cb9c0("selectedIndex", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422DCCA0, ASCoreList, FUN_1422dcca0, 40, 0xA4D98BED);
+MS2_REPLACE_METHOD(0x1422DCCA0, ASCoreList, SetSelectedIndex, 40, 0xA4D98BED);
 
 // @0x1422dccd0
-int ASCoreList::FUN_1422dccd0()
+int ASCoreList::GetSelectedIndex()
 {
-    return FUN_1422baa20("selectedIndex").GetInt();
+    return GetMember("selectedIndex").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422DCCD0, ASCoreList, FUN_1422dccd0, 88, 0x868A3740);
+MS2_REPLACE_METHOD(0x1422DCCD0, ASCoreList, GetSelectedIndex, 88, 0x868A3740);
 
 // @0x1422dcd30
 void ASCoreList::vfunc_25(const Scaleform::GFx::Value& data)
@@ -65,14 +65,14 @@ void ASCoreList::vfunc_25(const Scaleform::GFx::Value& data)
 MS2_REPLACE_METHOD(0x1422DCD30, ASCoreList, vfunc_25, 71, 0x8F03E154);
 
 // @0x1422dcd80
-MS2Ptr<ASDataProvider> ASCoreList::FUN_1422dcd80()
+MS2Ptr<ASDataProvider> ASCoreList::GetDataProvider()
 {
     return FUN_1422de460<ASDataProvider>("dataProvider");
 }
-MS2_REPLACE_METHOD(0x1422DCD80, ASCoreList, FUN_1422dcd80, 102, 0x78BAC401);
+MS2_REPLACE_METHOD(0x1422DCD80, ASCoreList, GetDataProvider, 102, 0x78BAC401);
 
 // @0x1422dcdf0
-void ASCoreList::FUN_1422dcdf0(Scaleform::GFx::Value list)
+void ASCoreList::SetItemRendererList(Scaleform::GFx::Value list)
 {
     FUN_1409adbe0("itemRendererList", list);
 }
@@ -102,18 +102,18 @@ void ASCoreList::FUN_1422dcf40(int nCount)
 MS2_REPLACE_METHOD(0x1422DCF40, ASCoreList, FUN_1422dcf40, 186, 0xEC17C3DB);
 
 // @0x1422dd000
-void ASCoreList::FUN_1422dd000(unsigned nRows)
+void ASCoreList::SetRowCount(unsigned nRows)
 {
     FUN_1409c0d20("rowCount", nRows);
 }
-MS2_REPLACE_METHOD(0x1422DD000, ASCoreList, FUN_1422dd000, 40, 0x53A95978);
+MS2_REPLACE_METHOD(0x1422DD000, ASCoreList, SetRowCount, 40, 0x53A95978);
 
 // @0x1422dd030
-unsigned ASCoreList::FUN_1422dd030()
+unsigned ASCoreList::GetRowCount()
 {
-    return FUN_1422baa20("rowCount").GetUInt();
+    return GetMember("rowCount").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422DD030, ASCoreList, FUN_1422dd030, 88, 0xFDCD74D5);
+MS2_REPLACE_METHOD(0x1422DD030, ASCoreList, GetRowCount, 88, 0xFDCD74D5);
 
 // @0x1422dd090
 void ASCoreList::vfunc_23()
@@ -123,46 +123,46 @@ void ASCoreList::vfunc_23()
 MS2_REPLACE_METHOD(0x1422DD090, ASCoreList, vfunc_23, 46, 0xC115623E);
 
 // @0x1422dd0d0
-void ASCoreList::FUN_1422dd0d0(int nIndex)
+void ASCoreList::ScrollToIndex(int nIndex)
 {
     Invoke("scrollToIndex", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422DD0D0, ASCoreList, FUN_1422dd0d0, 55, 0x4A289BC8);
+MS2_REPLACE_METHOD(0x1422DD0D0, ASCoreList, ScrollToIndex, 55, 0x4A289BC8);
 
 // @0x1422dd110
-void ASCoreList::FUN_1422dd110()
+void ASCoreList::ScrollToSelected()
 {
     Invoke("scrollToSelected");
 }
-MS2_REPLACE_METHOD(0x1422DD110, ASCoreList, FUN_1422dd110, 46, 0x219EFD1F);
+MS2_REPLACE_METHOD(0x1422DD110, ASCoreList, ScrollToSelected, 46, 0x219EFD1F);
 
 // @0x1422dd150
-unsigned ASCoreList::FUN_1422dd150()
+unsigned ASCoreList::GetItemCount()
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
-        return spProvider->FUN_1422bc5d0();
+        return spProvider->GetLength();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422DD150, ASCoreList, FUN_1422dd150, 114, 0xB2513273);
+MS2_REPLACE_METHOD(0x1422DD150, ASCoreList, GetItemCount, 114, 0xB2513273);
 
 // @0x1422dd1d0
 void ASCoreList::FUN_1422dd1d0()
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
         spProvider->FUN_1422df120();
 }
 MS2_REPLACE_METHOD(0x1422DD1D0, ASCoreList, FUN_1422dd1d0, 83, 0xC4AB9264);
 
 // @0x1422dd230
-void ASCoreList::FUN_1422dd230(const ASObj& item)
+void ASCoreList::AddItem(const ASObj& item)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
         spProvider->FUN_1422bbf00(item);
 }
-MS2_REPLACE_METHOD(0x1422DD230, ASCoreList, FUN_1422dd230, 93, 0x32872065);
+MS2_REPLACE_METHOD(0x1422DD230, ASCoreList, AddItem, 93, 0x32872065);
 
 // @0x1422dd2a0
 void ASCoreList::FUN_1422dd2a0(const CString& strLabel)
@@ -174,7 +174,7 @@ MS2_REPLACE_METHOD(0x1422DD2A0, ASCoreList, FUN_1422dd2a0, 97, 0x1403C126);
 // @0x1422dd310
 void ASCoreList::FUN_1422dd310(const CStringW& strLabel)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
         AScript item(2);
         item.FUN_1407cbb20("label", strLabel);
@@ -207,14 +207,14 @@ MS2_REPLACE_METHOD(0x1422DD4A0, ASCoreList, FUN_1422dd4a0, 120, 0xCECA77F3);
 // @0x1422dd520
 CStringW ASCoreList::FUN_1422dd520()
 {
-    if (FUN_1422dccd0() < 0)
+    if (GetSelectedIndex() < 0)
         return L"";
-    if (FUN_1422dccd0() >= (int)FUN_1422dd150())
+    if (GetSelectedIndex() >= (int)GetItemCount())
         return L"";
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        AScript item = spProvider->FUN_1422df140(FUN_1422dccd0());
-        Scaleform::GFx::Value label = item.FUN_1422baa20("label");
+        AScript item = spProvider->FUN_1422df140(GetSelectedIndex());
+        Scaleform::GFx::Value label = item.GetMember("label");
         if (label.IsString())
             return XmlWide(label.GetString());
         if (label.IsStringW())
@@ -225,32 +225,32 @@ CStringW ASCoreList::FUN_1422dd520()
 MS2_REPLACE_METHOD(0x1422DD520, ASCoreList, FUN_1422dd520, 563, 0x2F910C4C);
 
 // @0x1422dd760
-bool ASCoreList::FUN_1422dd760(AScript& item)
+bool ASCoreList::GetSelectedItem(AScript& item)
 {
-    if (FUN_1422dccd0() < 0)
+    if (GetSelectedIndex() < 0)
         return false;
-    if (FUN_1422dccd0() >= (int)FUN_1422dd150())
+    if (GetSelectedIndex() >= (int)GetItemCount())
         return false;
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        item = spProvider->FUN_1422df140(FUN_1422dccd0());
+        item = spProvider->FUN_1422df140(GetSelectedIndex());
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422DD760, ASCoreList, FUN_1422dd760, 270, 0x7C7A42D0);
+MS2_REPLACE_METHOD(0x1422DD760, ASCoreList, GetSelectedItem, 270, 0x7C7A42D0);
 
 // @0x1422dd880
 void ASCoreList::FUN_1422dd880(const CString& strMember, int nValue)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        for (unsigned __int64 i = 0; i < FUN_1422dd150(); i++) {
+        for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
             AScript item = spProvider->FUN_1422df140((unsigned)i);
             if (item.FUN_1422bb870().IsObject()) {
-                Scaleform::GFx::Value v = item.FUN_1422baa20(strMember);
+                Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString() && nValue == (int)v.GetInt()) {
-                    FUN_1422dcca0((int)i);
+                    SetSelectedIndex((int)i);
                     return;
                 }
             }
@@ -262,14 +262,14 @@ MS2_REPLACE_METHOD(0x1422DD880, ASCoreList, FUN_1422dd880, 342, 0x49ECAC2A);
 // @0x1422dd9e0
 void ASCoreList::FUN_1422dd9e0(const CString& strMember, int nValue)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        for (unsigned __int64 i = 0; i < FUN_1422dd150(); i++) {
+        for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
             AScript item = spProvider->FUN_1422df140((unsigned)i);
             if (item.FUN_1422bb870().IsObject()) {
-                Scaleform::GFx::Value v = item.FUN_1422baa20(strMember);
+                Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString() && nValue == (int)v.GetUInt()) {
-                    FUN_1422dcca0((int)i);
+                    SetSelectedIndex((int)i);
                     return;
                 }
             }
@@ -281,21 +281,21 @@ MS2_REPLACE_METHOD(0x1422DD9E0, ASCoreList, FUN_1422dd9e0, 342, 0x477F9403);
 // @0x1422ddb40
 void ASCoreList::FUN_1422ddb40(const CString& strMember, const CStringW& strValue)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        for (unsigned __int64 i = 0; i < FUN_1422dd150(); i++) {
+        for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
             AScript item = spProvider->FUN_1422df140((unsigned)i);
             if (item.FUN_1422bb870().IsObject()) {
-                Scaleform::GFx::Value v = item.FUN_1422baa20(strMember);
+                Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString()) {
                     if (strValue == XmlWide(v.GetString())) {
-                        FUN_1422dcca0((int)i);
+                        SetSelectedIndex((int)i);
                         return;
                     }
                 }
                 if (v.IsStringW()) {
                     if (strValue == v.GetStringW()) {
-                        FUN_1422dcca0((int)i);
+                        SetSelectedIndex((int)i);
                         return;
                     }
                 }
@@ -306,32 +306,32 @@ void ASCoreList::FUN_1422ddb40(const CString& strMember, const CStringW& strValu
 MS2_REPLACE_METHOD(0x1422DDB40, ASCoreList, FUN_1422ddb40, 520, 0x13C98F26);
 
 // @0x1422ddd50
-void ASCoreList::FUN_1422ddd50(int nIndex)
+void ASCoreList::RemoveItemAt(int nIndex)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
         spProvider->FUN_1422bc660(nIndex, 1);
 }
-MS2_REPLACE_METHOD(0x1422DDD50, ASCoreList, FUN_1422ddd50, 97, 0x39902CE9);
+MS2_REPLACE_METHOD(0x1422DDD50, ASCoreList, RemoveItemAt, 97, 0x39902CE9);
 
 // @0x1422dddc0
 void ASCoreList::FUN_1422dddc0(const CString& strLabel)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        for (unsigned __int64 i = 0; i < FUN_1422dd150(); i++) {
+        for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
             AScript item = spProvider->FUN_1422df140((unsigned)i);
             if (item.FUN_1422bb870().IsObject()) {
-                Scaleform::GFx::Value v = item.FUN_1422baa20("label");
+                Scaleform::GFx::Value v = item.GetMember("label");
                 if (v.IsString()) {
                     if (strLabel == FUN_1409a23d0(v.GetString(), 0)) {
-                        FUN_1422ddd50((int)i);
+                        RemoveItemAt((int)i);
                         return;
                     }
                 }
                 if (v.IsStringW()) {
                     if (strLabel == FUN_14016a600(v.GetStringW(), 0)) {
-                        FUN_1422ddd50((int)i);
+                        RemoveItemAt((int)i);
                         return;
                     }
                 }
@@ -414,7 +414,7 @@ MS2_REPLACE_METHOD(0x1422DE400, ASCoreList, FUN_1422de400, 82, 0xB39E0A2C);
 // @0x1422de460
 template <class T> MS2Ptr<T> AScript::FUN_1422de460(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140ff6b60(m_nMovieId, v);
     return MS2Ptr<T>(0);

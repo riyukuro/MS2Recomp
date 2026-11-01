@@ -45,6 +45,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 
+template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);   // owned by uibingoeventdialog (0x140bb4cf0)
+
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
 // The AS controls of the page (all are AS UI components).
@@ -205,8 +207,8 @@ void UIHairPhysxDialog::OnLoadComplete()
     pPc->vfunc_59(0xe, 0, 0, 0);
     FUN_141901390(0, 0x3eb);
     m_2c0.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
-    m_2c0->FUN_140cd2530(6);
-    m_2c0->FUN_140cd25c0(1);
+    m_2c0->HideSlot(6);
+    m_2c0->SelectSlot(1);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
     m_2d0 = FUN_140cd47b0(0x4ef2);
     m_190.MakeIdentity();
@@ -247,11 +249,11 @@ void UIHairPhysxDialog::vfunc_26()
     }
     if (m_2c0.get() != 0)
     {
-        m_2c0->FUN_140cd24a0(6);
+        m_2c0->ShowSlot(6);
         m_2c0 = 0;
     }
     m_2d0 = 0;
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef2);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ef2);
 }
 MS2_REPLACE_METHOD(0x141981A00, UIHairPhysxDialog, vfunc_26, 473, 0x9AD1B8E0);
 
@@ -263,7 +265,7 @@ void UIHairPhysxDialog::vfunc_15()
         return;
     m_2c0->FUN_140cd1bf0();
     if (m_2d0)
-        m_2d0->FUN_1418dda30(m_2c0->FUN_140cd27f0() == 0);
+        m_2d0->FUN_1418dda30(m_2c0->IsDragging() == 0);
 }
 MS2_REPLACE_METHOD(0x141981BE0, UIHairPhysxDialog, vfunc_15, 166, 0x55D7B316);
 
@@ -700,8 +702,8 @@ void UIHairPhysxDialog::FUN_141983730()
         sp->FUN_1422dfc10();
         for (unsigned j = 0; j < arrJoints.GetCount(); j++)
             sp->FUN_1422dfce0(FUN_14016a730(arrJoints[j], 0));
-        sp->FUN_1422df5f0(Unk_HpxMin(sp->FUN_1422dfb90(), 4u));
-        sp->FUN_1422df690(0);
+        sp->SetMenuRowCount(Unk_HpxMin(sp->FUN_1422dfb90(), 4u));
+        sp->SetSelectedIndex(0);
         sp->vfunc_24(true);
     }
 }
@@ -816,7 +818,7 @@ void UIHairPhysxDialog::FUN_141984360()
         return;
     if ((pDesc = reinterpret_cast<Unk_WindPropDesc*>(pProp->GetSnapshot())) == 0)
         return;
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_transform"))
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_transform"))
     {
         spText->FUN_1422c4c80("");
         for (unsigned i = 0; i < pDesc->GetActorCount(); i++)

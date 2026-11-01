@@ -240,7 +240,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
     MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
     if (spOption.get() != 0)
     {
-        Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
+        Unk_EnchantMap& stats = spOption->GetStatMap(nGroup);
         if (!stats.IsEmpty())
         {
             for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
@@ -250,7 +250,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                    ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -261,7 +261,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 }
             }
         }
-        Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
+        Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(nGroup);
         if (!specials.IsEmpty())
         {
             for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
@@ -271,7 +271,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                    ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -304,12 +304,12 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 3;
     if (!spScroll->m_arrItemTypes.IsEmpty())
     {
-        if (Unk_ArrayFind<unsigned>(spScroll->m_arrItemTypes, spData->FUN_14053c510()) == -1)
+        if (Unk_ArrayFind<unsigned>(spScroll->m_arrItemTypes, spData->GetItemId()) == -1)
             return 8;
     }
     else if (spScroll->m_nPetKind != 0)
     {
-        if (!spData->FUN_14053cc40())
+        if (!spData->IsPetItem())
             return 1;
     }
     else
@@ -326,21 +326,21 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 0xb;
     int bExclusive = spData->FUN_14053d600();
     {
-        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(item->FUN_140526bd0()));
-        Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(2);
-        Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(2);
+        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(item->FUN_140526bd0()));
+        Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(2);
+        Unk_EnchantMap& stats = spOption->GetStatMap(2);
         if (specials.IsEmpty() && stats.IsEmpty())
             return 3;
         unsigned nExclusive = 0;
         for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            if (!spRandom->FUN_1405d74d0(nStat))
+            if (!spRandom->HasStat(nStat))
                 return 3;
             if (bExclusive)
             {
                 CString strName(FUN_14082efb0(nStat));
-                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -348,12 +348,12 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
             int nSpecial = specials.GetKeyAt(pos);
-            if (!spRandom->FUN_1405d7550(nSpecial))
+            if (!spRandom->HasSpecialStat(nSpecial))
                 return 3;
             if (bExclusive)
             {
                 CString strName(FUN_14081d380(nSpecial));
-                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6e40(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -424,7 +424,7 @@ int FUN_140616dd0(MS2Ptr<CItem> item)
         nId = 0x65;
     else if (spData->FUN_14053d5c0())
         nId = 0x67;
-    else if (spData->FUN_14053cc40())
+    else if (spData->IsPetItem())
         nId = 0x68;
     return nId;
 }
@@ -435,7 +435,7 @@ unsigned FUN_140616f10(MS2Ptr<CItem> item)
 {
     if (item == 0 || !TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
         return 0;
-    if (item->FUN_140525640() != 0)
+    if (item->IsPetItem() != 0)
         return 0;
     return item->FUN_140526bd0();
 }
@@ -453,7 +453,7 @@ bool FUN_140616fd0(MS2Ptr<CItem> item)
         return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x89);
     else if (spData->FUN_14053d5c0())
         return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8b);
-    else if (spData->FUN_14053cc40())
+    else if (spData->IsPetItem())
         return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x9b);
     return false;
 }
@@ -720,8 +720,8 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
     if (spOption == 0)
         return CStringW(L"");
     int nGroup = stat.m_nMode;
-    Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
-    Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
+    Unk_EnchantMap& stats = spOption->GetStatMap(nGroup);
+    Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(nGroup);
     const CStringW& strBest = GetStringCommon(0x48d);
     const CStringW& strRowBest = GetStringCommonByKey(L"s_tooltip_itemoption_stat_row_best");
     const CStringW& strRow = GetStringCommonByKey(L"s_tooltip_itemoption_stat_row");
@@ -730,7 +730,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
     const CStringW& strRangeR = bFinal ? GetStringCommonByKey(L"s_itemremake_option_with_range_r") : CStringW(L"");
     bool bBest = false;
     Unk_OptionTextMap names(10);
-    if (item->FUN_140525640() != 0 && nGroup == 2)
+    if (item->IsPetItem() != 0 && nGroup == 2)
         spOption->FUN_1405cb900(nGroup, names);
     else
     {
@@ -763,7 +763,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631600(nStat, spBase.get());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);
@@ -781,7 +781,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollValue(item, nStat, nGroup, spBase->GetValue()))
                 strText.Append(FUN_1401e8510(strRowBest, strValue));
             else
                 strText.Append(FUN_1401e8510(strRow, strValue));
@@ -799,7 +799,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);
@@ -817,7 +817,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollSpecialValue(item, nSpecial, nGroup, spBase->GetValue()))
                 strText.Append(FUN_1401e8510(strRowBest, strValue));
             else
                 strText.Append(FUN_1401e8510(strRow, strValue));
@@ -874,10 +874,10 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
     if (nOption < 0)
         return false;
     int nGroup = m_nMode;
-    Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
-    Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
+    Unk_EnchantMap& stats = spOption->GetStatMap(nGroup);
+    Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(nGroup);
     Unk_OptionTextMap names(10);
-    if (item->FUN_140525640() != 0 && nGroup == 2)
+    if (item->IsPetItem() != 0 && nGroup == 2)
         spOption->FUN_1405cb900(nGroup, names);
     else
     {

@@ -16,6 +16,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -49,7 +57,7 @@ inline void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, cons
 inline bool Unk_CoupleEmotionBool(Unk_140165cf0* pElem, const char* pszName, bool bDefault)
 {
     bool bValue;
-    if (FUN_1408730a0(pElem, pszName, bValue) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, bValue) != 0)
         return bDefault;
     return bValue;
 }
@@ -113,24 +121,24 @@ int CCoupleEmotionTable::Load()
         return 0;
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("coupleEmotion"); pElem != 0;
-         pElem = pElem->FUN_140168650("coupleEmotion"))
+         pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("coupleEmotion")))
     {
         MS2Ptr<CCoupleEmotionData> spData(new CCoupleEmotionData);
         spData->m_nId = FUN_140197390(pElem, "code", 0);
         {
             MS2Ptr<CCoupleEmotionData::AnimationData> spAni(new CCoupleEmotionData::AnimationData());
             CString str("");
-            str = FUN_14015f710(pElem, "animationDiffGender_female", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationDiffGender_female", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_requestAnis, ",");
-            str = FUN_14015f710(pElem, "animationDiffGender_male", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationDiffGender_male", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_targetAnis, ",");
-            str = FUN_14015f710(pElem, "animationDiffGender_pathNif", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationDiffGender_pathNif", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
@@ -141,17 +149,17 @@ int CCoupleEmotionTable::Load()
         {
             MS2Ptr<CCoupleEmotionData::AnimationData> spAni(new CCoupleEmotionData::AnimationData());
             CString str("");
-            str = FUN_14015f710(pElem, "animationSameGenderMale_requestUser", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderMale_requestUser", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_requestAnis, ",");
-            str = FUN_14015f710(pElem, "animationSameGenderMale_targetUser", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderMale_targetUser", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_targetAnis, ",");
-            str = FUN_14015f710(pElem, "animationSameGenderMale_pathNif", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderMale_pathNif", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
@@ -162,17 +170,17 @@ int CCoupleEmotionTable::Load()
         {
             MS2Ptr<CCoupleEmotionData::AnimationData> spAni(new CCoupleEmotionData::AnimationData());
             CString str("");
-            str = FUN_14015f710(pElem, "animationSameGenderFemale_requestUser", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderFemale_requestUser", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_requestAnis, ",");
-            str = FUN_14015f710(pElem, "animationSameGenderFemale_targetUser", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderFemale_targetUser", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
             Unk_CoupleEmotionSplit(str, spAni->m_targetAnis, ",");
-            str = FUN_14015f710(pElem, "animationSameGenderFemale_pathNif", CString(""));
+            str = Unk_ReadString((class Unk_XmlNode*)(pElem), "animationSameGenderFemale_pathNif", CString(""));
             str.Remove('[');
             str.Remove(']');
             str.Remove(' ');
@@ -180,7 +188,7 @@ int CCoupleEmotionTable::Load()
             spAni->m_bLoop = Unk_CoupleEmotionBool(pElem, "animationSameGenderFemale_loop", false);
             spData->AddAni(1, 1, spAni);
         }
-        spData->m_strTeleportEffect = FUN_14015f710(pElem, "teleport_effect", CString((const char*)0));
+        spData->m_strTeleportEffect = Unk_ReadString((class Unk_XmlNode*)(pElem), "teleport_effect", CString((const char*)0));
         if (!Validate(spData))
             continue;
         m_data.SetAt(spData->m_nId, spData);

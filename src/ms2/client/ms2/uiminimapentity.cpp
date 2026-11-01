@@ -86,6 +86,7 @@
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // ---- unit-local views of exe objects ----
 
@@ -159,7 +160,6 @@ public:
     MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
-    PC* FUN_141bd1530(unsigned __int64 nCharId);                    // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
     ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject> >& FUN_141bc9fb0();   // the proxy objects by object id
@@ -187,7 +187,7 @@ CStringW FUN_1401aa6a0(int nNpcId);                                 // the npc n
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);
 CStringW FUN_14183e930(const CStringW& strText, int nColor);        // a coloured text
 class Unk_MmConfig { public: int FUN_140a7d630(); };                // the colour option block
-class Unk_MmConfigValue { public: unsigned* FUN_1401d7c10(); };    // Value<unsigned int>::Get
+class Unk_MmConfigValue { public: };    // Value<unsigned int>::Get
 class Unk_MmGameConfig                                              // Client::Constants (only the members read here)
 {
 public:
@@ -220,7 +220,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                     // a 
 int FUN_140408410(const ATL::CAtlArray<int>& arr, const int& n);    // the index of a value or -1
 extern ATL::CAtlArray<int> DAT_143ab3078;                           // the taxi stops the player has found
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
 int FUN_14192e8f0();
 extern int DAT_143af7d40;                                           // input enabled
@@ -258,7 +258,7 @@ template <class T> T* Unk_MmFindDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -395,7 +395,7 @@ void UIMinimapEntity::FUN_141a310e0(NpcDataCli* pNpc)
 {
     m_icon = FUN_141a32750(pNpc);
     m_state = FUN_141a329e0(m_icon);
-    m_layer = FUN_141a32aa0(pNpc, m_icon);
+    m_layer = GetLayerForNpc(pNpc, m_icon);
     m_visible = !m_icon.IsEmpty() && m_icon != s_strNoIcon;
 }
 MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, FUN_141a310e0, 389, 0x38FD60B2);
@@ -655,7 +655,7 @@ CString UIMinimapEntity::FUN_141a329e0(const CString& strIcon)
 MS2_REPLACE_METHOD(0x141a329e0, UIMinimapEntity, FUN_141a329e0, 174, 0xA64ECAAB);
 
 // @0x141a32aa0
-CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
+CString UIMinimapEntity::GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon)
 {
     switch (pNpc->GetNpcType()) {
     case 1:
@@ -667,7 +667,7 @@ CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
         return s_strLayerFriendly;
     return s_strLayerNpc;
 }
-MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, FUN_141a32aa0, 236, 0x6D436F94);
+MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, GetLayerForNpc, 236, 0x6D436F94);
 
 // @0x141a32ba0
 CStringW UIMinimapEntity::FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy)
@@ -840,7 +840,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
     CStringW strLabel;
     int nHome = 0;
     const int& nField = spPortal->FUN_14169d280();
-    if (pPC->FUN_141527f80(&nHome) && nHome == nField)
+    if (pPC->GetHomeMapId(&nHome) && nHome == nField)
         strLabel = FormatStringId<CStringW>(0x70f, pPC->FUN_1415281c0());
     UIMinimapDialog* pDialog = FUN_141386800();
     if (pDialog) {
@@ -852,7 +852,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
             POSITION pos = spHomes->GetHeadPosition();
             for (size_t i = 0; i < nCount; i++) {
                 __int64 nId = spHomes->GetAt(pos);
-                Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+                Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
                 if (spBuddy.get()) {
                     if (!strBuddies.IsEmpty())
                         strBuddies.Append(L"\n");
@@ -1253,7 +1253,7 @@ template <class T> T* Unk_MmGetDialog()
     CUIService* pService = TSingleton<CUIService>::GetInstance();
     if (pService == 0)
         return 0;
-    MS2Ptr<UIObject> obj = pService->FUN_141adcea0(T::GetUIClassID());
+    MS2Ptr<UIObject> obj = pService->FindObject(T::GetUIClassID());
     if (!obj)
         return 0;
     return dynamic_cast<T*>(obj.operator->());
@@ -1444,11 +1444,11 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 strText += L"\n";
                 strText += strExtra;
             }
-            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-            tooltip.FUN_1409c6e00(300);
-            tooltip.FUN_1409c6e30(60000);
-            tooltip.FUN_1409c6dc0(7);
-            tooltip.FUN_1409c6cb0(strText);
+            tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+            tooltip.SetOnDelay(300);
+            tooltip.SetOffDelay(60000);
+            tooltip.SetTooltipAlign(7);
+            tooltip.SetText(strText);
         }
         *pRetVal = tooltip.FUN_1422bb870();
     }
@@ -1496,15 +1496,15 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
         Scaleform::GFx::Value saveData = m_30->Invoke("getSaveData");
         AScript save(saveData, 2);
         if (!save.FUN_1422ba9a0()) {
-            x = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("x")))->GetNumber());
-            y = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("y")))->GetNumber());
-            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("width")))->GetInt();
-            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("height")))->GetInt();
-            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("mapAlpha")))->GetInt();
-            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("bgAlpha")))->GetInt();
-            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("scale")))->GetNumber());
-            bFullmap = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("fullmap")))->GetBool();
-            bMinimize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.FUN_1422baa20("minimize")))->GetBool();
+            x = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("x")))->GetNumber());
+            y = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("y")))->GetNumber());
+            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("width")))->GetInt();
+            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("height")))->GetInt();
+            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("mapAlpha")))->GetInt();
+            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("bgAlpha")))->GetInt();
+            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("scale")))->GetNumber());
+            bFullmap = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("fullmap")))->GetBool();
+            bMinimize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(save.GetMember("minimize")))->GetBool();
         }
         XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", x, 1);
         XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
@@ -1650,7 +1650,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
 {
     if (m_30 == 0)
         return;
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     int nField = spBuddy->FUN_1401cc3e0();
@@ -1679,7 +1679,7 @@ MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc
 // @0x141a38880
 void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
 {
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     FUN_141a3f9f0(spBuddy);
@@ -1691,7 +1691,7 @@ void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
 {
     if (!n)
         return;
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     FUN_141a3f9f0(spBuddy);
@@ -2081,8 +2081,8 @@ void UIMinimapDialog::FUN_141a3abd0()
     m_30->Invoke("onTabKeyUp");
     m_1fa = false;
     FUN_1422dc260(m_2c);
-    FUN_140b632f0()->FUN_1422d4840(this, 3);
-    FUN_140b632f0()->FUN_1422d4780(this, m_e0);
+    FUN_140b632f0()->RemoveFromLayer(this, 3);
+    FUN_140b632f0()->AddToLayer(this, m_e0);
 }
 MS2_REPLACE_METHOD(0x141a3abd0, UIMinimapDialog, FUN_141a3abd0, 197, 0x23AC8E23);
 
@@ -2098,8 +2098,8 @@ void UIMinimapDialog::FUN_141a3aca0()
     m_30->Invoke("onTabKeyDown");
     m_1fa = true;
     FUN_1422dc260(0x1a);
-    FUN_140b632f0()->FUN_1422d4840(this, m_e0);
-    FUN_140b632f0()->FUN_1422d4780(this, 3);
+    FUN_140b632f0()->RemoveFromLayer(this, m_e0);
+    FUN_140b632f0()->AddToLayer(this, 3);
 }
 MS2_REPLACE_METHOD(0x141a3aca0, UIMinimapDialog, FUN_141a3aca0, 215, 0x1D15CA91);
 
@@ -2199,7 +2199,7 @@ void UIMinimapDialog::FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId)
 MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 54, 0x63DECFAD);
 
 // @0x141a3b510
-UIMinimapDialog::EntityPtr UIMinimapDialog::FUN_141a3b510(ProxyPtr spProxy)
+UIMinimapDialog::EntityPtr UIMinimapDialog::FindEntityByProxy(ProxyPtr spProxy)
 {
     if (m_30 == 0)
         return EntityPtr(0);
@@ -2284,7 +2284,7 @@ void UIMinimapDialog::FUN_141a44f40()
         return;
     int nWidth = 0;
     int nHeight = 0;
-    FUN_141a45ad0(nWidth, nHeight);
+    GetWindowSize(nWidth, nHeight);
     m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
 }
 MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 210, 0x473BA9B2);
@@ -2384,7 +2384,7 @@ void UIMinimapDialog::FUN_141a42bb0()
     dPanelY /= fScale;
     m_212 = false;
     ATL::CAtlMap<unsigned __int64, int> occupied;
-    int nCell = *((class Unk_MmGameConfig*)FUN_1401d3200())->m_minimapCell.FUN_1401d7c10();
+    int nCell = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_MmGameConfig*)FUN_1401d3200())->m_minimapCell)->Get();
     ATL::CAtlArray<EntityPtr> entities;
     FUN_141a42fe0(entities);
     for (size_t i = 0; i < entities.GetCount(); ++i) {
@@ -2546,7 +2546,7 @@ void UIMinimapDialog::FUN_141a458d0(bool b)
 MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 68, 0xA6155441);
 
 // @0x141a45ad0
-bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
+bool UIMinimapDialog::GetWindowSize(int& nWidth, int& nHeight)
 {
     nWidth = 0;
     nHeight = 0;
@@ -2557,10 +2557,10 @@ bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 148, 0xC31D8C09);
+MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, GetWindowSize, 148, 0xC31D8C09);
 
 // @0x141a45c70
-bool UIMinimapDialog::FUN_141a45c70(const CString& strIcon)
+bool UIMinimapDialog::IsBossIcon(const CString& strIcon)
 {
     if (strIcon == s_strBoss || strIcon == s_strEliteBoss || strIcon == s_strEventBoss)
         return 1;
@@ -2670,7 +2670,7 @@ bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
 // @0x141a45d50
 CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
 {
-    PCBase* pActor = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(nId);
+    PCBase* pActor = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (pActor)
         return pActor->vfunc_77();
     for (POSITION pos = m_proxies.GetHeadPosition(); pos; m_proxies.GetNext(pos)) {
@@ -2709,7 +2709,7 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
             if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070()) {
                 NiPoint3 kOrigin(efd::Point3::ZERO);
                 NiPoint3 kDir(efd::Point3::ZERO);
-                if (((class CameraMgr*)(class Unk_MmCamera*)(reinterpret_cast<Unk_MmCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140af0520(kCursor, kOrigin, kDir)) {
+                if (((class CameraMgr*)(class Unk_MmCamera*)(reinterpret_cast<Unk_MmCamera*>(TSingleton<CameraMgr>::GetInstance())))->ScreenToRay(kCursor, kOrigin, kDir)) {
                     NiPoint3 kHit(efd::Point3::ZERO);
                     if (FUN_14168a230(((class Unk_MmSpatial*)FUN_1409f7ca0()), NiPoint3(kOrigin), kHit, NiPoint3(kDir), 10000.0f, 0x201)) {
                         m_viewport->FUN_141486410(kHit, kOut);
@@ -2817,7 +2817,7 @@ void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
 void UIMinimapDialog::FUN_141a3ed50()
 {
     ATL::CAtlArray<Unk_BuddyPtr<CBuddy> > buddies;
-    TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4df0(buddies);
+    TSingleton<CBuddyManager>::GetInstance()->GetAllBuddies(buddies);
     int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
@@ -3064,7 +3064,7 @@ void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
         bool bAlive = !bDead;
         m_clip238->vfunc_4(bAlive);
         if (bAlive)
-            m_clip238->FUN_1422bfef0(FUN_141a45920(pPC));
+            m_clip238->SetRotation(FUN_141a45920(pPC));
     }
 }
 
@@ -3190,9 +3190,9 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
         } else {
             MS2Ptr<CPvPInfo> spPvP = reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420();
             if (spPvP.get() != 0) {
-                if (spPvP->FUN_1407435d0() || spPvP->FUN_1407436d0()) {
+                if (spPvP->FUN_1407435d0() || spPvP->IsOnePunchMode()) {
                     __int64 nCharId = spProxy->FUN_1416c22f0();
-                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(spProxy->FUN_1416c22f0()));
                     if (pOther != 0) {
                         bVisible = false;
                         int nRank = FUN_140f97ef0()->FUN_1413437e0(nCharId);
@@ -3212,7 +3212,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743610()) {
-                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(spProxy->FUN_1416c22f0()));
                     if (pOther != 0) {
                         bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->GetPoint() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->GetPoint();
                         if (bVisible) {
@@ -3221,11 +3221,11 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
-                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(spProxy->FUN_1416c22f0()));
                     if (pOther != 0)
                         bVisible = pOther->FUN_141674bc0() == 0;
-                } else if (spPvP->FUN_140743550()) {
-                    PC* pOther = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                } else if (spPvP->HasPoint()) {
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(spProxy->FUN_1416c22f0()));
                     if (pOther != 0) {
                         bVisible = pOther->vfunc_116() == pPC->vfunc_116() ? true : pOther->FUN_141674bc0() == 0;
                     }
@@ -3310,7 +3310,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
     if (spEntity->m_visible)
         spEntity->m_visible = FUN_141a45b70(spProxy);
     if (spProxy->m_68 != 0) {
-        bBoss = FUN_141a45c70(spEntity->m_icon);
+        bBoss = IsBossIcon(spEntity->m_icon);
         if (bBoss)
             spEntity->m_state = s_strDie;
         else
@@ -3426,7 +3426,7 @@ bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool 
     CString strIcon;
     int nHome = 0;
     bool bMine = false;
-    if (pPC->FUN_141527f80(&nHome) && nHome == nField) {
+    if (pPC->GetHomeMapId(&nHome) && nHome == nField) {
         bMine = true;
         strIcon = s_strMyHome;
     }
@@ -3439,7 +3439,7 @@ bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool 
         POSITION pos = spHomes->GetHeadPosition();
         for (size_t i = 0; i < nCount; i++) {
             __int64 nId = spHomes->GetAt(pos);
-            Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+            Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
             if (spBuddy.get()) {
                 bFound = true;
                 break;
@@ -3549,11 +3549,11 @@ void UIMinimapDialog::FUN_141a3c150()
             int nMapAlpha = 100;
             int nWidth = 0;
             int nHeight = 0;
-            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("width")))->GetInt();
-            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("height")))->GetInt();
-            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("mapAlpha")))->GetInt();
-            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("bgAlpha")))->GetInt();
-            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->FUN_1422baa20("scale")))->GetNumber());
+            nWidth = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->GetMember("width")))->GetInt();
+            nHeight = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->GetMember("height")))->GetInt();
+            nMapAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->GetMember("mapAlpha")))->GetInt();
+            nBgAlpha = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->GetMember("bgAlpha")))->GetInt();
+            fScale = static_cast<float>(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spData->GetMember("scale")))->GetNumber());
         }
         ASArray showEntities(2);
         for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
@@ -3790,7 +3790,7 @@ void UIMinimapDialog::FUN_141a47190(PingMap& map)
 void ASObj::FUN_141a472c0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

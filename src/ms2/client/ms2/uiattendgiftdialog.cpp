@@ -43,6 +43,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/itempreview.h"
 #include "ms2/placeholder/cadbannermanagercli.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -75,7 +76,7 @@ class CItem {
 public:
     CItem();
     int FUN_14052b130(int id,int rarity,int flag);
-    __int64 FUN_140526a50();
+    __int64 GetItemUid();
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
     void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
@@ -121,10 +122,8 @@ class Unk_140ce3510 { public:
     Unk_AttendDate FUN_140ce3aa0();
     Unk_AttendDate FUN_140ce3ae0();
 };
-class Unk_140acd6e0 : public ASDisplayObject { public:
+class Unk_140acd6e0 : public ASButton { public:
     void FUN_1422cdf20(bool);
-    void FUN_1422cdfb0(const CStringW&);
-    void FUN_1422ce090(int);
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,void*);
     void FUN_1422c1fe0(unsigned);
 };
@@ -143,8 +142,8 @@ class ASSlot : public ASObj { public:
     virtual ~ASSlot();
     int FUN_1409c4510(int,int,int);
     bool FUN_1422ba9a0();
-    int FUN_1409c3780();
-    int FUN_1409c37f0();
+    int GetItemID();
+    int GetItemGrade();
 };
 class Unk_AttendTable { public:
     bool FUN_140482280(int nKind,const bool& nDefault);
@@ -266,29 +265,29 @@ bool UIAttendGiftDialog::FUN_14102c7a0(int id)
 }
 MS2_REPLACE_METHOD(0x14102C7A0, UIAttendGiftDialog, FUN_14102c7a0, 309, 0xF38E5CF2);
 // @0x14102c8e0
-void UIAttendGiftDialog::FUN_14102c8e0(Unk_14102fe10<Unk_140ce3510> event)
+void UIAttendGiftDialog::AddEvent(Unk_14102fe10<Unk_140ce3510> event)
 {
     m_events.insert(std::make_pair(event->FUN_1402e1d00(),event));
     if(event->FUN_140ce3510()) m_activeEvents.Add(event);
     if(FUN_141924630()) FUN_14102d690();
 }
-MS2_REPLACE_METHOD(0x14102C8E0, UIAttendGiftDialog, FUN_14102c8e0, 236, 0x8EE28BC0);
+MS2_REPLACE_METHOD(0x14102C8E0, UIAttendGiftDialog, AddEvent, 236, 0x8EE28BC0);
 // @0x14102c9e0
-void UIAttendGiftDialog::FUN_14102c9e0(Unk_14102fe10<Unk_140ce3510> event)
+void UIAttendGiftDialog::RemoveEvent(Unk_14102fe10<Unk_140ce3510> event)
 {
     m_events.erase(event->FUN_1402e1d00());
     if(m_requested==event.get()) { m_requested=0; vfunc_67(); return; }
-    FUN_14102e940();
+    RebuildActiveEvents();
     if(FUN_141924630()) {
         if(m_activeEvents.IsEmpty()) { vfunc_67(); return; }
         if(m_selected==event.get()) { m_selected=m_activeEvents[0]; FUN_14102d690(); }
         else FUN_14102d6e0();
     }
 }
-MS2_REPLACE_METHOD(0x14102C9E0, UIAttendGiftDialog, FUN_14102c9e0, 364, 0xC713545C);
+MS2_REPLACE_METHOD(0x14102C9E0, UIAttendGiftDialog, RemoveEvent, 364, 0xC713545C);
 // @0x14102cb60
-bool UIAttendGiftDialog::FUN_14102cb60() { return m_activeEvents.GetCount()>0; }
-MS2_REPLACE_METHOD(0x14102CB60, UIAttendGiftDialog, FUN_14102cb60, 61, 0x33D47331);
+bool UIAttendGiftDialog::HasActiveEvents() { return m_activeEvents.GetCount()>0; }
+MS2_REPLACE_METHOD(0x14102CB60, UIAttendGiftDialog, HasActiveEvents, 61, 0x33D47331);
 // @0x14102cbb0
 Unk_14102fe10<Unk_140ce3510> UIAttendGiftDialog::FUN_14102cbb0(int kind)
 {
@@ -321,12 +320,12 @@ MS2_REPLACE_METHOD(0x14102CEA0, UIAttendGiftDialog, FUN_14102cea0, 127, 0xA6FC2A
 void UIAttendGiftDialog::FUN_14102d4b0(const Scaleform::GFx::FunctionHandler::Params&) { FUN_14102f0e0(); }
 MS2_REPLACE_METHOD(0x14102D4B0, UIAttendGiftDialog, FUN_14102d4b0, 29, 0x9237BEA3);
 // @0x14102d5c0
-void UIAttendGiftDialog::FUN_14102d5c0(int id)
+void UIAttendGiftDialog::SetEventId(int id)
 {
     m_eventId=id;
-    if(FUN_141924630()) { FUN_14102ea30(); FUN_14102d690(); }
+    if(FUN_141924630()) { UpdateSelectedEvent(); FUN_14102d690(); }
 }
-MS2_REPLACE_METHOD(0x14102D5C0, UIAttendGiftDialog, FUN_14102d5c0, 67, 0xBC002A9E);
+MS2_REPLACE_METHOD(0x14102D5C0, UIAttendGiftDialog, SetEventId, 67, 0xBC002A9E);
 // @0x14102d610
 void UIAttendGiftDialog::FUN_14102d610(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_14102d690(); }
 MS2_REPLACE_METHOD(0x14102D610, UIAttendGiftDialog, FUN_14102d610, 45, 0x777F4742);
@@ -341,7 +340,7 @@ void UIAttendGiftDialog::FUN_14102d690()
 }
 MS2_REPLACE_METHOD(0x14102D690, UIAttendGiftDialog, FUN_14102d690, 70, 0x1A05A86E);
 // @0x14102e940
-void UIAttendGiftDialog::FUN_14102e940()
+void UIAttendGiftDialog::RebuildActiveEvents()
 {
     m_activeEvents.RemoveAll();
     for(auto it=m_events.begin();it!=m_events.end();it++) {
@@ -349,9 +348,9 @@ void UIAttendGiftDialog::FUN_14102e940()
         if(event->FUN_140ce3510()) m_activeEvents.Add(event);
     }
 }
-MS2_REPLACE_METHOD(0x14102E940, UIAttendGiftDialog, FUN_14102e940, 223, 0x321BAC6F);
+MS2_REPLACE_METHOD(0x14102E940, UIAttendGiftDialog, RebuildActiveEvents, 223, 0x321BAC6F);
 // @0x14102ea30
-void UIAttendGiftDialog::FUN_14102ea30()
+void UIAttendGiftDialog::UpdateSelectedEvent()
 {
     m_selected=0;
     if(m_requested.get()) { m_selected=m_requested; return; }
@@ -363,7 +362,7 @@ void UIAttendGiftDialog::FUN_14102ea30()
     }
     if(m_selected==NULL) m_selected=m_activeEvents[0];
 }
-MS2_REPLACE_METHOD(0x14102EA30, UIAttendGiftDialog, FUN_14102ea30, 369, 0xFD143DA9);
+MS2_REPLACE_METHOD(0x14102EA30, UIAttendGiftDialog, UpdateSelectedEvent, 369, 0xFD143DA9);
 // @0x14102ebb0
 void UIAttendGiftDialog::FUN_14102ebb0(CInPacket& packet)
 {
@@ -388,7 +387,7 @@ void UIAttendGiftDialog::FUN_14102ecc0(CInPacket& packet)
     unsigned long id=reinterpret_cast<Unk_14070f480*>(&packet.m_stream)->vfunc_3();
     if(m_events.find(id)==m_events.end()) return;
     {
-        FUN_14102d5c0(id);
+        SetEventId(id);
         if(FUN_141924630()) FUN_14102d690();
         else FUN_141924680();
     }
@@ -414,8 +413,8 @@ MS2_REPLACE_METHOD(0x14102F0E0, UIAttendGiftDialog, FUN_14102f0e0, 144, 0x6F4A4D
 void UIAttendGiftDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_14102e940();
-    FUN_14102ea30();
+    RebuildActiveEvents();
+    UpdateSelectedEvent();
     FUN_141925ec0("m_closeButton");
     FUN_141925fa0("m_dragBar");
     FUN_14102f870("m_giftList",m_giftList);
@@ -474,7 +473,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
             __int64 couponUid=0;
             if(m_selected->FUN_140ce3900()!=0) {
                 MS2Ptr<CItem> found=g_attendItems.FUN_140a5e2e0(m_selected->FUN_140ce3900());
-                if(found.get()!=0) couponUid=found->FUN_140526a50();
+                if(found.get()!=0) couponUid=found->GetItemUid();
             }
             CStringW text=FUN_140f09c60(strKey,remain,m_selected->FUN_140ce38e0());
             MS2Ptr<Unk_AttendMsgBox> box=FUN_140d73f20(text,0x19);
@@ -565,7 +564,7 @@ void UIAttendGiftDialog::FUN_14102da40()
                     if(item->FUN_14052b130(id,it3->vfunc_1(),0)) {
                         ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(),8,2);
                         if(tip.FUN_1409e0d40(item.get())) {
-                            tip.FUN_1409c6dc0(1);
+                            tip.SetTooltipAlign(1);
                             slot.FUN_1409adbe0("tooltip",tip.FUN_1422bb870());
                         }
                     }
@@ -577,7 +576,7 @@ void UIAttendGiftDialog::FUN_14102da40()
     m_giftList->vfunc_25(slots.FUN_1422bb870());
     m_giftList->vfunc_24(true);
     CStringW strPeriod;
-    if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->FUN_140d9f530(m_selected->FUN_1402e1d00())) {
+    if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->FUN_1402e1d00())) {
         int nItemId=m_selected->FUN_140ce3980();
         strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
     } else {
@@ -644,8 +643,8 @@ void UIAttendGiftDialog::FUN_14102f180(ASData& data)
     Scaleform::GFx::Value args=data.FUN_1422b9260();
     ASSlot slot(args,FUN_1422db730());
     if(slot.FUN_1422ba9a0()) return;
-    int a=slot.FUN_1409c3780();
-    int b=slot.FUN_1409c37f0();
+    int a=slot.GetItemID();
+    int b=slot.GetItemGrade();
     MS2Ptr<CItem> item=FUN_140ebc360(a,b);
     if(item==0) return;
     if(((class Unk_AttendCursor*)FUN_1409bb9e0())->IsHudOn()) ((class Unk_AttendCursor*)FUN_1409bb9e0())->FUN_140d40120(item,0);

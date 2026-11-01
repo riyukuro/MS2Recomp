@@ -3,7 +3,7 @@
 // creates; it loads UI images (Scaleform images backed by Gamebryo textures) on its own thread. Owning unit:
 // client\ms2\asyncimageloader.cpp. The members are named from use.
 //
-// Flow: a caller queues a request (FUN_140a589d0: an ImageLoaderParam with the file name and the Scaleform image) in
+// Flow: a caller queues a request (QueueImage: an ImageLoaderParam with the file name and the Scaleform image) in
 // m_68; the thread moves the queue to a local list, reads every file (FUN_140a59090: texture cache or NiImageConverter) and
 // appends the loaded ones to m_78; the main thread (FUN_140a58b90, from the frame update) moves m_78 to m_88 and binds the
 // textures to their Scaleform images (FUN_140a59540), dropping each request it could apply.
@@ -171,12 +171,12 @@ public:
     CAsyncImageLoader();                                    // 0x140a58820
     virtual ~CAsyncImageLoader();                           // 0x140a58900
     virtual unsigned int vfunc_1(void*, Unk_140659080&);    // 0x140a58d70 the loader thread
-    void FUN_140a589d0(const CString& strFile, Unk_GfxRef spImage);   // queue a request
+    void QueueImage(const CString& strFile, Unk_GfxRef spImage);   // queue a request
     void FUN_140a58b90();                                   // bind the loaded textures (main thread)
-    void FUN_140a58b10();                                   // stops it
+    void Shutdown();                                   // stops it
     bool FUN_140a59090(ParamPtr spParam);                   // read the file of a request (loader thread)
     bool FUN_140a59540(ParamPtr spParam);                   // bind the texture of a request to its image
-    void FUN_140a597a0();                                   // drop all requests
+    void ClearQueues();                                   // drop all requests
 private:
     MS2_LAYOUT_FRIEND;
     bool m_20;                                              // +0x20 stop the thread

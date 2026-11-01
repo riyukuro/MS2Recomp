@@ -89,18 +89,18 @@ public:
     void SendMeretMarketMode32(ATL::CAtlArray<int>& ids);
     void SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& ids);
     void FUN_140d553a0();
-    int FUN_140d55620(MS2Ptr<CMeratMarketProduct> spProduct);
-    void FUN_140d55790(Unk_MeratProductKey key);
-    MS2Ptr<CMeratMarketProduct> FUN_140d55800(Unk_MeratProductKey key);
+    int AddProduct(MS2Ptr<CMeratMarketProduct> spProduct);
+    void RemoveProduct(Unk_MeratProductKey key);
+    MS2Ptr<CMeratMarketProduct> FindProduct(Unk_MeratProductKey key);
     MS2Ptr<CMeratMarketProduct> FUN_140d558c0(__int64 nUid);
     MS2Ptr<CMeratMarketProduct> FUN_140d55a10(__int64 nUgcUid);
     MS2Ptr<CMeratMarketProduct> FUN_140d55b60(__int64 nMusicUid);
-    void FUN_140d55ce0(MS2Ptr<CUgcMarketSeller> spSeller);
-    void FUN_140d55e50(MS2Ptr<CUgcMarketSeller> spSeller);
-    MS2Ptr<CUgcMarketSeller> FUN_140d55f40(__int64 nId);
-    MS2Ptr<CUgcMarketSeller> FUN_140d56000();
-    int FUN_140d560e0();
-    int FUN_140d56160();
+    void AddSeller(MS2Ptr<CUgcMarketSeller> spSeller);
+    void RemoveSeller(MS2Ptr<CUgcMarketSeller> spSeller);
+    MS2Ptr<CUgcMarketSeller> FindSeller(__int64 nId);
+    MS2Ptr<CUgcMarketSeller> GetFirstSeller();
+    int GetSellerCount();
+    int GetProductCount();
     void FUN_140d56190();
     void FUN_140d56320(MS2Ptr<CUgcMarketSeller> spSeller, __int64 nAmount);
     __int64 FUN_140d56470();
@@ -108,17 +108,17 @@ public:
     int FUN_140d564b0();
     int FUN_140d565c0();
     int GetSellerState();
-    void FUN_140d566f0(int nState);
+    void SetSellerState(int nState);
     __int64 FUN_140d56780();
     int FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller);
     int FUN_140d56840();
-    void FUN_140d56a40(MS2Ptr<CUgcBookMark> spOwner);
-    void FUN_140d56be0(__int64 nId);
-    void FUN_140d56c60();
-    MS2Ptr<CUgcCharBookMark> FUN_140d56cc0(__int64 nId);
-    int FUN_140d56db0(__int64 nId);
-    int FUN_140d56e40();
-    void FUN_140d56eb0(__int64 nId, CInPacket& packet);
+    void AddBookMark(MS2Ptr<CUgcBookMark> spOwner);
+    void RemoveBookMark(__int64 nId);
+    void ClearBookMarks();
+    MS2Ptr<CUgcCharBookMark> FindBookMark(__int64 nId);
+    int HasBookMark(__int64 nId);
+    int GetBookMarkCount();
+    void ReadBookMarkProducts(__int64 nId, CInPacket& packet);
     void FUN_140d57090(MS2Ptr<CMeratMarketProduct> spProduct, Unk_MeratProductMap& map, Unk_MeratProductArray& list);
     MS2Ptr<CMeratMarketProduct> FUN_140d57150(Unk_MeratProductKey key, __int64 nBookMarkId);
     MS2Ptr<CMeratMarketProduct> FUN_140d575e0(Unk_MeratProductKey key);
@@ -128,12 +128,12 @@ public:
     bool FUN_140d57a80(unsigned int nCategory, int nTab, Unk_MeratProductArray& out);
     MS2Ptr<CMeratMarketProduct> FUN_140d57d80(Unk_MeratProductKey key);
     void FUN_140d57e40();
-    MS2Ptr<CMeratMarketBasket> FUN_140d57ed0(unsigned int nIndex);
+    MS2Ptr<CMeratMarketBasket> GetBasketLine(unsigned int nIndex);
     MS2Ptr<CMeratMarketProduct> FUN_140d57f70(Unk_MeratProductKey key);
-    int FUN_140d58130(MS2Ptr<CMeratMarketBasket> spLine);
+    int AddBasketLine(MS2Ptr<CMeratMarketBasket> spLine);
     int FUN_140d58260(MS2Ptr<CMeratMarketProduct> spProduct, __int64 nBookMarkId);
     void FUN_140d583d0(unsigned int nIndex);
-    void FUN_140d584c0(unsigned int nIndex);
+    void RemoveBasketLine(unsigned int nIndex);
     void FUN_140d58650(int nBuyType);
     void FUN_140d58810(int bSuccess, int nResult, int nIndex);
     void FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nError);
@@ -151,14 +151,14 @@ public:
     void SendMeretMarketMode30(MS2Ptr<CMeratMarketBuy> spBuy);
     __int64 FUN_140d5a1b0();
     __int64 FUN_140d5a1d0();
-    void FUN_140d5a200(const int& nUIClassID);
+    void OnDialogClosed(const int& nUIClassID);
     Unk_MeratProductArray& GetBlueprintList() { return m_150; }     // 0x140bc09d0 (inline COMDAT; uiblueprintmarketdialog.cpp)
     void FUN_140d5a290();
     int FUN_140d5a2e0();
     CStringW FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBuy);
     int FUN_140d5b170();
-    bool FUN_140d5b1f0(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);
-    bool FUN_140d5b280(CMeratMarketPremiumProduct* pProduct, bool bShowError);
+    bool CanBuyProduct(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);
+    bool CanBuyPremiumProduct(CMeratMarketPremiumProduct* pProduct, bool bShowError);
     bool FUN_140d5b370(MS2Ptr<CMeratMarketProduct> spProduct);
     bool FUN_140d5b4c0(MS2Ptr<CMeratMarketProduct> spProduct, bool bStrict);
     int FUN_140d5b6b0();
@@ -167,7 +167,7 @@ public:
     bool FUN_140d5ba70();                                   // push the ad products to the ad dialog (0x4f34)
     // The server answers (sub-opcodes of the market packet, see OnMeretMarket).
     void FUN_140d5bc30(CInPacket& packet);
-    void FUN_140d5bd10(CInPacket& packet);
+    void ReadHomePage(CInPacket& packet);
     void FUN_140d5bf40(CInPacket& packet);
     void FUN_140d5c0c0(CInPacket& packet, int nPage, int nValue);
     void FUN_140d601c0(MS2Ptr<CMeratMarketProduct> spProduct);    // keep the earliest sale end
@@ -175,15 +175,15 @@ public:
     void FUN_140d5c910(CInPacket& packet);
     void FUN_140d5cb90(CInPacket& packet);
     void FUN_140d5ce00(CInPacket& packet);
-    void FUN_140d5cfa0(CInPacket& packet);
-    void FUN_140d5d140(CInPacket& packet);
-    void FUN_140d5d2c0(CInPacket& packet);
+    void OnProductRegistered(CInPacket& packet);
+    void OnProductRemoved(CInPacket& packet);
+    void OnProductUpdated(CInPacket& packet);
     void FUN_140d5d3e0(CInPacket& packet);
     void FUN_140d5d500(CInPacket& packet);
     void FUN_140d5d760(CInPacket& packet);
     void FUN_140d5da10(CInPacket& packet);
-    void FUN_140d5dba0(CInPacket& packet);
-    void FUN_140d5dcf0(CInPacket& packet);
+    void OnBookMarkAdded(CInPacket& packet);
+    void OnBookMarkRemoved(CInPacket& packet);
     void FUN_140d5dd80(CInPacket& packet);
     void FUN_140d5de90(CInPacket& packet);
     void FUN_140d5e020(CInPacket& packet);
@@ -198,9 +198,9 @@ public:
     void FUN_140d5f5e0(CInPacket& packet);
     void FUN_140d5f610(CInPacket& packet);
     void FUN_140d5fea0(CMeratMarketPacket::ErrorPacket& error);
-    void FUN_140d60050(const int& nUIType);
+    void ClearSearchResults(const int& nUIType);
     bool FUN_140d60280(int nResult, const CMsgBoxData& box);
-    static __int64 FUN_140d61530(__int64 nTime, int nDays);
+    static __int64 AddDaysToTime(__int64 nTime, int nDays);
 
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x8

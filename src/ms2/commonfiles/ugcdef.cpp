@@ -73,7 +73,6 @@ unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a 
 // The UGC managers behind the item.cpp singleton FUN_14052d220 (only the "is the server a test server" query is used).
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
 
 // The music book table of item.cpp (the title of a music book lives at +0x28).
@@ -382,13 +381,13 @@ void CUgcItemProxy::Read(CInPacket& packet)
 // @0x14088f100
 void CUgcItemProxy::FUN_14088f100(CItem* pItem)
 {
-    if (pItem != 0 && pItem->FUN_140525f10() != 0 && pItem->FUN_140525f60() != 0)
+    if (pItem != 0 && pItem->HasCubeTextureMesh() != 0 && pItem->FUN_140525f60() != 0)
     {
-        m_itemUid = pItem->FUN_140526a50();
+        m_itemUid = pItem->GetItemUid();
         m_nItemId = pItem->FUN_1405276c0();
         m_nCount = 1;
-        m_strName = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->FUN_1405278d0())->m_strName;
-        m_nRarity = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->FUN_1405278d0())->m_nRarity;
+        m_strName = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->GetUgcInfo())->m_strName;
+        m_nRarity = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->GetUgcInfo())->m_nRarity;
         return;
     }
     Clear();
@@ -1118,7 +1117,7 @@ CStringW Unk_CharUploadSNs::ToString() const
     for (size_t i = 0; i < m_serials.GetCount(); ++i)
         strSerials += FUN_1406c6bd0(L"{0} ", m_serials[i]);
     CStringW strResult;
-    strResult = FUN_140656190(L"m_charName={0}, m_uploadSN={1}", m_strCharName, strSerials);
+    strResult = StringFormat<CStringW, CStringW>(L"m_charName={0}, m_uploadSN={1}", m_strCharName, strSerials);
     return strResult;
 }
 
@@ -1851,7 +1850,7 @@ void CUgcMarketSchCond::ReadShort(CInputStream& stream)
 }
 
 // @0x140894750
-int CUgcMarketSchCond::FUN_140894750() const
+int CUgcMarketSchCond::GetPageIndex() const
 {
     if (m_n30 == 0)
         return -1;
@@ -1863,7 +1862,7 @@ int CUgcMarketSchCond::FUN_140894750() const
 // @0x1408947a0
 int CUgcMarketSchCond::FUN_1408947a0() const
 {
-    int nPage = FUN_140894750();
+    int nPage = GetPageIndex();
     if (nPage == -1)
         return 0;
     int nPerPage = 0x78;
@@ -1874,7 +1873,7 @@ int CUgcMarketSchCond::FUN_1408947a0() const
 // @0x1408947f0
 int CUgcMarketSchCond::FUN_1408947f0() const
 {
-    int nPage = FUN_140894750();
+    int nPage = GetPageIndex();
     if (nPage == -1)
         return 0;
     int nPerPage = 0x78;
@@ -1895,7 +1894,7 @@ int CUgcMarketSchCond::FUN_140894840() const
 }
 
 // @0x1408948a0
-CStringA CUgcMarketSchCond::FUN_1408948a0() const
+CStringA CUgcMarketSchCond::GetOrderName() const
 {
     if (m_n20 < 0 || m_n20 >= 6)
         return CStringA("");
@@ -2173,7 +2172,7 @@ int CUgcMarketProduct::FUN_1408961a0() const
 }
 
 // @0x1408961e0
-int CUgcMarketProduct::FUN_1408961e0() const
+int CUgcMarketProduct::IsWithinSalePeriod() const
 {
     __int64 nNow = GetServerTime();
     if (nNow < m_n58 || nNow > m_n68)
@@ -2186,7 +2185,7 @@ bool CUgcMarketProduct::FUN_140896230(Unk_CommonOwner& owner)
 {
     if (owner.id == 0)
         return false;
-    if (FUN_140896310() != 0)
+    if (IsMusicType() != 0)
     {
         if (owner.Matches(m_music.m_info.m_n00, m_music.m_info.m_n08))
             return true;
@@ -2205,7 +2204,7 @@ bool CUgcMarketProduct::FUN_140896230(Unk_CommonOwner& owner)
 }
 
 // @0x140896310
-int CUgcMarketProduct::FUN_140896310() const
+int CUgcMarketProduct::IsMusicType() const
 {
     int nLast = 499;
     if (m_n30 >= 400 && m_n30 <= nLast)

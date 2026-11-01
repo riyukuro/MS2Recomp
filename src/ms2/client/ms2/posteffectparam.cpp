@@ -17,7 +17,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
 
 bool FUN_14028d470(float a, float b);                   // nearly equal
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_141b6fe40(float t, int nInterpolator);        // 1 linear, 2 log, 3 exp
 
 // Post-process effect manager (?\applyeffect.cpp, singleton 0x1409a8b00).
@@ -28,6 +27,7 @@ float FUN_141b6fe40(float t, int nInterpolator);        // 1 linear, 2 log, 3 ex
 #include "screenmaskingeffectparam.h"
 #include "gaussianblureffectparam.h"
 #include "postprocessing/postshimmerrenderstep.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 extern int DAT_143ac47c8;   // CPostEffect id counter
 
@@ -360,7 +360,7 @@ MS2_REPLACE_METHOD(0x140dbdab0, CScreenEffectBase, vfunc_6, 63, 0xF0453B88);
 // @0x140dbdb00
 void CScreenEffectBase::SetState(int nState, float fAlpha)
 {
-    fAlpha = FUN_140a17940(fAlpha, 0, 1.0f);
+    fAlpha = efd::Clamp(fAlpha, 0.0f, 1.0f);
     if (nState != m_nState || !FUN_14028d470(m_fAlpha, fAlpha))
     {
         vfunc_7(nState, fAlpha);

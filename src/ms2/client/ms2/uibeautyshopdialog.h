@@ -60,7 +60,7 @@ public:
     int FUN_1418c6af0();
     void FUN_1418c6bc0(int nValue);
     void FUN_1418c6c80(int nValue);
-    void FUN_1418c6d40(Unk_BSFee* pFee, unsigned* pPrice);             // show the fee
+    void UpdateFee(Unk_BSFee* pFee, unsigned* pPrice);             // show the fee
     void FUN_1418c7180(int nItemId);                    // show the item
     void FUN_1418c7400(int bPreview);
     Unk_BSFee* FUN_1418c74e0(unsigned* pPrice);         // the fee row and its price
@@ -73,8 +73,8 @@ public:
     void FUN_1418c7aa0(int);                            // empty
     void FUN_1418c7ab0();
     void FUN_1418c7ce0();
-    void FUN_1418c7d20(int bPreview);
-    void FUN_1418c7d90(int bPreview);
+    void SetPreviewMode(int bPreview);
+    void ApplyPreviewMode(int bPreview);
     void SendBeautyMode12(int nSlot);
     void FUN_1418c7fe0(int nSlot);
     void FUN_1418c80b0(CInPacket& packet);              // opcode 0x31
@@ -101,7 +101,7 @@ public:
     void FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew);
     void FUN_1418cb6a0(MS2Ptr<CItem> spItem);
     void FUN_1418cb6d0();
-    void FUN_1418cb6e0(int n);
+    void EnableCustomColorDetail(int n);
     void FUN_1418cb750(ASObj& out);
     CStringW FUN_1418cb920(int nShopKind, int nMode);
     CStringW FUN_1418cbb40(int nShopKind, int nMode);
@@ -110,11 +110,10 @@ public:
     bool FUN_1418cbc70();
     bool FUN_1418cbd30(int nItemId);
     int FUN_1418cbdc0(int nItemId);
-    MS2Ptr<Unk_BSPriceRow> FUN_1418cbeb0(int nItemId);
+    MS2Ptr<Unk_BSPriceRow> CreatePriceRow(int nItemId);
     int FUN_1418ccb40();                                // the sale event id
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // text field child lookup (a UIDialog member)
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);          // movie clip child lookup (a UIDialog member)
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // bind a button child
 
 private:
     MS2_LAYOUT_FRIEND;

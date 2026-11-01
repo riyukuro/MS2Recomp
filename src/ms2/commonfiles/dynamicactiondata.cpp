@@ -31,18 +31,22 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                               // path of a Table file
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
-void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
+void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CString FUN_14016a5c0(const char* psz, int n);
 
 // The statics are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
@@ -132,7 +136,7 @@ void CDynamicActionData::Load()
     CString strPath = FUN_14071ae20("korDynamicAction.xml");
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -143,7 +147,7 @@ void CDynamicActionData::Load()
     TPtrValue<std::set<unsigned> > spAll;
     spAll = Unk_GrNewTag(0);
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "key", "skillID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "skillID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     std::vector<Unk_140165cf0*>& rNodes = nodes;
     std::vector<Unk_140165cf0*>::const_iterator itEnd = rNodes.end();
     for (std::vector<Unk_140165cf0*>::const_iterator it = rNodes.begin(); it != itEnd; ++it)
@@ -157,7 +161,7 @@ void CDynamicActionData::Load()
         ATL::CAtlArray<CStringW> parts;
         FUN_14025a680(strReserved, parts, L"|");
         for (size_t i = 0; i < parts.GetCount(); i++)
-            spRow->m_reserved.Add(FUN_1401e8510(L"/{0}", parts[i]));
+            spRow->m_reserved.Add(StringFormat<CStringW>(L"/{0}", parts[i]));
         if (Unk_LockGuard guard = s_lock) {}
         else
             s_rows.AddTail(spRow);

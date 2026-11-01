@@ -320,15 +320,16 @@ public:
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 // Depth-first walker over a scene graph (util.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);                              // 0x14098cb80
-    ~Unk_SceneWalker();                                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);                              // 0x14098cb80
+    ~Unk_NodeQueue();                                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 
 class Unk_Svc764020;
 void* FUN_140764020();
@@ -383,7 +384,7 @@ public:
 class Unk_TalkMgrView { public: void FUN_141b20790(int nObjectId, int nFriendly); };   // UITalkManager: monologue
 Unk_TalkMgrView* FUN_140967100();
 class UITalkManager { public: int GetTalking(); };                // a talk is open
-int FUN_14028d260(float f);                                         // float -> int (ms)
+__int64 FUN_14028d260(float f);                                         // float -> int (ms)
 float FUN_14028d5b0(float fAngle);                                  // normalise an angle
 float FUN_14059d930(float f);                                       // fabs
 extern int DAT_143ae2b4c;                                           // the optimizer's turn-smoothing option
@@ -657,7 +658,7 @@ void CNpc::vfunc_12()
         if (!FUN_141674ef0(m_spNpcData->m_effectDummies[i]))
             bAllAdded = false;
     }
-    if (FUN_14028d470(FUN_1416749a0()->FUN_140970720(), 1.0f)) {
+    if (FUN_14028d470(FUN_1416749a0()->ComputeAlphaBlending(), 1.0f)) {
         int nSpawnAlpha = GetNpcData()->m_model.m_nSpawnAlphaAnimation;
         if (nSpawnAlpha != 0)
             vfunc_40(0.0f, 1.0f, 0.0f, 0.5f);
@@ -1040,7 +1041,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             FUN_14166d260();
         else
             vfunc_19(kPos);
-        FUN_14166d8b0(fRotZ);
+        SetTargetYaw(fRotZ);
         if (bRotate)
             vfunc_21(efd::Point3(0.0f, 0.0f, fRotZ));
     }
@@ -1063,8 +1064,8 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         if (FUN_14166cc80() == 0x49 && nTalking == 0) {
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());
-                if (pQuest->FUN_1416d0610() != 0) {
-                    Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                if (pQuest->IsPortalSummonRequestActive() != 0) {
+                    Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->GetTargetObjectPosition();
                     if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                         FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
                 }
@@ -1082,9 +1083,9 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         vfunc_59(nState, 0, 0, 1);
         return;
     } else if (nState == 0x38) {
-        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0610() != 0) {
+        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->IsPortalSummonRequestActive() != 0) {
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
-                Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->GetTargetObjectPosition();
                 if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                     FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
             }
@@ -1349,7 +1350,7 @@ void CNpc::FUN_141093c80()
     int nIcon = m_questState.m_icon;
     int nState = m_questState.m_state;
     if (!GetNpcData().IsNull() && vfunc_116() != 0 && m_cE40 != 0) {
-        m_questState.FUN_1409669c0();
+        m_questState.Reset();
         ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->FUN_1416d12d0(FUN_141092fa0(), &m_questState, 0);
         if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
             if (vfunc_83().get() != 0)
@@ -1425,8 +1426,8 @@ int CNpc::FUN_141094200()
 {
     int nUiId = FUN_141094170();
     if (nUiId == 0x4e4a) {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e4a);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e49);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e4a);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e49);
     } else if (nUiId == 0x4e47) {
         if (DAT_143ab2d80.Ready() == 0) {
             DAT_143ab2d80.RequestLoad();
@@ -1445,7 +1446,7 @@ void CNpc::FUN_1410942c0()
 {
     int nUiId = FUN_141094170();
     if (nUiId != 0)
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nUiId);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nUiId);
 }
 
 // In talk range of the camera (always for property tag 0x1a).
@@ -1544,7 +1545,7 @@ void CNpc::FUN_1410947e0()
     m_spC40 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(FUN_140cc2ba0(CString("Item"), strNif), false, 5, 0, 0);
     efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150(CString("Eff_UI"));
     {
-        Unk_SceneWalker kWalker(m_spC40);
+        Unk_SceneWalker kWalker((NiAVObject*)(m_spC40));
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0) {
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObj);
@@ -1559,7 +1560,7 @@ void CNpc::FUN_1410947e0()
             NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pIcon->GetProperty(8));
             NiTexturingProperty::Map* pMap;
             if (pTexturing != 0 && (pMap = pTexturing->GetBaseMap()) != 0) {
-                CString strIcon = spItem->FUN_14053fdd0();
+                CString strIcon = spItem->GetIconPath();
                 FUN_1401d3700(strIcon);
                 if (!strIcon.IsEmpty())
                     pMap->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(strIcon), 5));
@@ -1603,7 +1604,7 @@ void CNpc::FUN_141094e60()
         if (nInQuest != 0)
             RemoveHideReason(5);
         else
-            FUN_14166ca20(5);
+            AddHideReason(5);
         vfunc_126(nInQuest != 0 && m_unk_15c == 0 ? 1 : 0, 1);
     }
 }
@@ -1928,7 +1929,7 @@ void CNpc::vfunc_33(void* a, void* b)
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(static_cast<CDamageRecord*>(a)->m_nOwnerId);
     bool bBoss = GetNpcData()->IsBoss();
-    SkillAttackData* pAttack = static_cast<CDamageRecord*>(a)->FUN_14175a8b0();
+    SkillAttackData* pAttack = static_cast<CDamageRecord*>(a)->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
         m_unk_748.FUN_14096fb20(1);
     if (bBoss && nOwnerRel == 1) {
@@ -1952,7 +1953,7 @@ void CNpc::vfunc_33(void* a, void* b)
                 reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e240(FUN_14123c580());
         }
         m_spSkillRow = static_cast<CDamageRecord*>(a)->m_spLevel;
-        m_nD80 = static_cast<CDamageRecord*>(a)->FUN_14175a8b0()->m_nDirection;
+        m_nD80 = static_cast<CDamageRecord*>(a)->GetAttackData()->m_nDirection;
         if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->FUN_14123c580()) {
             Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
             float fVolume = pVolume->Read();
@@ -2042,7 +2043,7 @@ void CNpc::vfunc_35(void* p)
     else
         FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(static_cast<CSplashDamageRecord*>(p)));
     int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(static_cast<CSplashDamageRecord*>(p)->m_nOwnerId);
-    SkillAttackData* pAttack = static_cast<CSplashDamageRecord*>(p)->FUN_14175a8b0();
+    SkillAttackData* pAttack = static_cast<CSplashDamageRecord*>(p)->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
         m_unk_748.FUN_14096fb20(1);
     bool bBoss = GetNpcData()->IsBoss();
@@ -2061,7 +2062,7 @@ void CNpc::vfunc_35(void* p)
         reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
             m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         m_spSkillRow = static_cast<CSplashDamageRecord*>(p)->m_spLevel;
-        m_nD80 = static_cast<CSplashDamageRecord*>(p)->FUN_14175a8b0()->m_nDirection;
+        m_nD80 = static_cast<CSplashDamageRecord*>(p)->GetAttackData()->m_nDirection;
     }
     if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
         MakeDeadPhysXActor();
@@ -2110,7 +2111,7 @@ void CNpc::FUN_141099170(float fTime)
     NiPoint3 kRot = vfunc_20();
     if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() != 0 && FUN_14028d470(kRot.z, m_f934))
         return;
-    FUN_14166d8b0(FUN_14028d5b0(m_f934));
+    SetTargetYaw(FUN_14028d5b0(m_f934));
     float fDelta = m_f934 - kRot.z;
     fDelta = FUN_14028d5b0(fDelta);
     float fSpeed = FUN_14059d930(fDelta) / 0.1f;
@@ -2352,14 +2353,14 @@ void CNpc::vfunc_90(void* p)
                 nValue = static_cast<CInPacket*>(p)->ReadInt64();
             else
                 nValue = (unsigned int)static_cast<CInPacket*>(p)->ReadInt32();
-            FUN_141670540(i, nStat, nValue);
+            SetStat(i, nStat, nValue);
         }
     } else {
         for (int i = 0; i < 3; i++) {
             __int64 nHp = static_cast<CInPacket*>(p)->ReadInt64();
-            FUN_141670540(i, 4, nHp);
+            SetStat(i, 4, nHp);
             __int64 nSp = (unsigned int)static_cast<CInPacket*>(p)->ReadInt32();
-            FUN_141670540(i, 0xd, nSp);
+            SetStat(i, 0xd, nSp);
         }
     }
 }
@@ -2456,10 +2457,10 @@ void CNpc::vfunc_53(float fTime)
             vfunc_19(vfunc_18() + m_posD40 * fTime);
         } else {
             efd::Point3 kPos;
-            float fYaw = FUN_14166da40();
+            float fYaw = GetTargetYaw();
             reinterpret_cast<Unk_ArcMoverView*>(&m_unkDB0)->FUN_14160bf90(fTime, kPos, &fYaw);
             vfunc_19(kPos);
-            FUN_14166d8b0(fYaw);
+            SetTargetYaw(fYaw);
         }
     }
     FUN_141099170(fTime);

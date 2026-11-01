@@ -43,6 +43,12 @@
 #include <NiMaterialInstance.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 class Unk_140165cf0                                                     // game TinyXML element
@@ -59,7 +65,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);                          // null-safe CString
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
 void FUN_141b6ed40(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
@@ -109,7 +115,7 @@ ChaosLightTransitionData::ChaosLightTransitionData()
 void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "node", m_strNode);
+    XmlGetAttr((class TiXmlElement*)(pNode), "node", m_strNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "fresnelBoost", m_fFresnelBoost);
     XmlGetAttr((class TiXmlElement*)(pNode), "fresnelExponent", m_fFresnelExponent);
     XmlGetAttr((class TiXmlElement*)(pNode), "dimmer", m_fDimmer);
@@ -136,7 +142,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     spFirst->m_fBlue = m_fBlue;
     ChaosLightTransitionData* pPrev = spFirst;
     float fTime = m_fStartDelay;
-    for (Unk_140165cf0* pKey = pNode->FUN_140165cf0("transition"); pKey != 0; pKey = pKey->FUN_140168650("transition"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transition")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("transition")))
     {
         NiPointer<ChaosLightTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) ChaosLightTransitionData);
         FUN_14185f0b0(spData.operator->(), pKey, &fTime);

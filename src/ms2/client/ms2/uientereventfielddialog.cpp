@@ -33,6 +33,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of exe types ----
 
@@ -42,15 +43,11 @@ class ASDialog : public ASGameEntity
 };
 
 // WorldService singleton (FUN_1403ed2d0).
-class Unk_EnterWorld
-{
-public:
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 // The string table (TSingleton<CStringTable>::GetInstance).
@@ -62,7 +59,6 @@ CStringW FUN_14052bd00(int id, const CStringW& arg);            // formatted sys
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                    // show it
 void FUN_140710590(COutPacket& packet);                         // send the packet
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
 // @0x140f3fb10
@@ -185,9 +181,9 @@ void UIEnterEventFieldDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (FUN_1422dc2d0() == 0)
         return;
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
-    if (m_tick.FUN_140268870(1000) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000) == 0)
         return;
     UpdateVisible();
 }
@@ -223,7 +219,7 @@ MS2_REPLACE_METHOD(0x140F403A0, UIEnterEventFieldDialog, OnNotifyGameStart, 38, 
 // MS2-FUNCTIONAL: branch/temporary layout differs from the exe
 void UIEnterEventFieldDialog::UpdateVisible()
 {
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_EnterWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
         return;
     int nShow = 1;

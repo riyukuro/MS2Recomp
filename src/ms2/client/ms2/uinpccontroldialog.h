@@ -54,7 +54,6 @@ public:
     void FUN_141a63ce0(const CString& strGroup);        // refill "m_items" with the commands of a group
     void FUN_141a64ba0(int nCommand, const CStringW& strArg);   // run a command of the list
     void FUN_141a65000();                               // pick an AI xml file and send it (packet 0x50 / 4 / id / 0xd)
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);  // bind a list child of the movie
 
 private:

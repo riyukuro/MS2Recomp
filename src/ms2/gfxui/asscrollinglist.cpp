@@ -30,7 +30,7 @@ ASScrollingList::~ASScrollingList()
 // @0x1422e17a0
 void ASScrollingList::FUN_1422e17a0()
 {
-    FUN_1422dd0d0(FUN_1422dd150() < 0 ? 0 : FUN_1422dd150());
+    ScrollToIndex(GetItemCount() < 0 ? 0 : GetItemCount());
 }
 MS2_REPLACE_METHOD(0x1422E17A0, ASScrollingList, FUN_1422e17a0, 66, 0x49B7C3FB);
 
@@ -44,7 +44,7 @@ MS2_REPLACE_METHOD(0x1422E17F0, ASScrollingList, FUN_1422e17f0, 40, 0x5680D819);
 // @0x1422e1820
 int ASScrollingList::FUN_1422e1820()
 {
-    return (int)FUN_1422baa20("scrollPosition").GetNumber();
+    return (int)GetMember("scrollPosition").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422E1820, ASScrollingList, FUN_1422e1820, 92, 0x79FE17F6);
 
@@ -65,7 +65,7 @@ MS2_REPLACE_METHOD(0x1422E1910, ASScrollingList, FUN_1422e1910, 82, 0xDAF972B7);
 // @0x1422e1970
 void ASScrollingList::FUN_1422e1970(int nIndex, ASObj& row)
 {
-    MS2Ptr<ASDataProvider> spProvider = FUN_1422dcd80();
+    MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider == 0)
         return;
     spProvider->FUN_1422bc730(nIndex, row.FUN_1422bb890());

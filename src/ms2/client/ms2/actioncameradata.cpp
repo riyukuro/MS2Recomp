@@ -12,6 +12,11 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <efd/ILogger.h>
 #include <efd/Helpers.h>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Game TinyXML element: FirstChildElement by name.
 class Unk_140165cf0
@@ -27,7 +32,9 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 unsigned char FUN_1401d1320(CCacheData*);
 
 class Unk_ActionFiles : public CFileSystem { };
-class Unk_ActionLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+class Unk_ActionLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 extern int DAT_1439ed00c;   // camera cache enabled
@@ -65,17 +72,17 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
     TiXmlDocument doc;
     if (((class Unk_ActionFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return DataPtr(0);
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        ((class Unk_ActionLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         EE_LOG_AT(1, 1, ("Failed to read %s", (const char*)strPath), MS2_THIS_FILE, 0x34);
         return DataPtr(0);
     }
     DataPtr spData(new CActionCameraData);
     spData->FUN_1401d1160(CString(strPath));
     ActionCameraInfo* pInfo = spData->GetInfo();
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("actionCamera");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("actionCamera"));
     pInfo->m_strPath = FUN_14086f4b0(pNode, "path");
     CString strStay = FUN_140188f50(FUN_14086f4b0(pNode, "stayLocked"), 0);
     pInfo->m_bStayLocked = (strStay == "true");

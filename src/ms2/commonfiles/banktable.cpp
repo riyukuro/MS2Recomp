@@ -24,6 +24,12 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -33,8 +39,8 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int FUN_14021bdc0(CString& str);                                         // enum value of a slot name
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 
@@ -235,13 +241,13 @@ int CBankTable::LoadItemDefine()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         DefinePtr def(new CBankItemDefine);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", def->m_nId);
@@ -265,20 +271,20 @@ int CBankTable::LoadBankType()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     CString strStore;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("bankType"); pNode != 0; pNode = pNode->FUN_140168650("bankType"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("bankType")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("bankType")))
     {
         DataPtr data(new CBankData);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned&>(data->m_nId));
         XmlGetAttr((class TiXmlElement*)(pNode), "useCash", data->m_nUseCash);
         XmlGetAttr((class TiXmlElement*)(pNode), "slotCount", data->m_nSlotCount);
-        strStore = FUN_14015f710(pNode, "storeItemType", CString(""));
+        strStore = Unk_ReadString((class Unk_XmlNode*)(pNode), "storeItemType", CString(""));
         data->SetSlots(CString(strStore));
         Unk_1401b4ec0 guard(m_lock, 1);
         m_banks.SetAt(data->m_nId, data);
@@ -299,7 +305,7 @@ int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pElem, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = FUN_14021bdc0(str);

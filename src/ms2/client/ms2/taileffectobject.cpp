@@ -58,7 +58,10 @@ MS2_CHECK_SIZE(Unk_TeRequest, 0x70);
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
 public:
+    NoticeMessage();
+    ~NoticeMessage();
     void SetActor(int);
+    void* m_storage[14];
 };
 void FUN_1409fabf0(void* pSmartPointer, void* pNode);       // efd::SmartPointer<NiAVObject>::operator=
 
@@ -67,9 +70,6 @@ class Unk_TeEffectMgr
 {
 public:
     void* FUN_1411a6b10();                                  // the effect root NiNode
-    int FUN_1411a49c0(Unk_TeRequest* pRequest);             // spawn, returns the handle
-    void FUN_1411a4a00(Unk_TeRequest* pRequest);            // fire and forget
-    void FUN_1411a6060(int nHandle);                        // release
     void FUN_1411a68f0(int nHandle, bool bVisible);
 };
 
@@ -180,12 +180,12 @@ void CTailEffectObject::FUN_140acee90()
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
 
-    Unk_TeRequest kRequest;
-    kRequest.m_strName = strPath;
-    kRequest.m_nOwnerId = 0;
-    ((class NoticeMessage*)(struct Unk_TeRequest*)(&kRequest))->SetActor(m_pOwner->FUN_14123c580());
-    FUN_1409fabf0(&kRequest.m_spNode, FUN_1409475d0(&spNode));
-    int nHandle = reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
+    NoticeMessage kRequest;   // C3: was Unk_TeRequest
+    ((Unk_TeRequest&)(kRequest)).m_strName = strPath;
+    ((Unk_TeRequest&)(kRequest)).m_nOwnerId = 0;
+    ((class NoticeMessage*)(struct Unk_TeRequest*)(&((Unk_TeRequest&)(kRequest))))->SetActor(m_pOwner->FUN_14123c580());
+    FUN_1409fabf0(&((Unk_TeRequest&)(kRequest)).m_spNode, FUN_1409475d0(&spNode));
+    int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
     reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(nHandle, m_bVisible);
 
     MS2Ptr<TailEffectInfo> spInfo;
@@ -241,7 +241,7 @@ void CTailEffectObject::FUN_140acf570()
     if (spInfo.IsNull())
         return;
 
-    reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(spInfo->m_nEffectId);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(spInfo->m_nEffectId);
     do
     {
         if (m_bDestroyed)
@@ -254,11 +254,11 @@ void CTailEffectObject::FUN_140acf570()
         kXform.m_Rotate.MakeIdentity();
         kXform.m_Translate = static_cast<NiAVObject*>(FUN_1409475f0(&spInfo->m_spNode))->GetWorldTranslate();
         kXform.m_fScale = static_cast<NiAVObject*>(FUN_1409475f0(&spInfo->m_spNode))->GetScale();
-        Unk_TeRequest kRequest;
-        kRequest.m_strName = m_spData->m_strEndEffectPath;
-        kRequest.m_pTransform = &kXform;
-        kRequest.m_nOwnerId = 0;
-        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
+        NoticeMessage kRequest;   // C3: was Unk_TeRequest
+        ((Unk_TeRequest&)(kRequest)).m_strName = m_spData->m_strEndEffectPath;
+        ((Unk_TeRequest&)(kRequest)).m_pTransform = &kXform;
+        ((Unk_TeRequest&)(kRequest)).m_nOwnerId = 0;
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
     } while (0);
     FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&spInfo->m_spNode)));
     m_listInfo.pop_back();

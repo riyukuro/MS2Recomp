@@ -28,7 +28,7 @@ UISceneEntity::UISceneEntity()
 {
     FUN_1422dc2f0(0);
     m_2c = 0xc;
-    FUN_140b632f0()->FUN_1422d0c10(MS2Ptr<UISceneEntity>(this));
+    FUN_140b632f0()->AddScene(MS2Ptr<UISceneEntity>(this));
 }
 
 // @0x1422e7850

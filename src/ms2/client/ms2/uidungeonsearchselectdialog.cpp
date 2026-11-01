@@ -26,6 +26,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 // ---- statics (.text$di): the shared header statics a second time (another header of the unit pulls them in) and a bare
 // sort-name table ----
@@ -40,14 +41,11 @@ static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "Pric
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
 // The radio ("recommend") and the check boxes of the rows.
-class Unk_SdToggle : public ASDisplayObject
+class Unk_SdToggle : public ASButton
 {
 public:
     void FUN_1422cdf20(bool bVisible);                           // show
-    void FUN_1422cdfb0(const CStringW& strText);                // label
-    void FUN_1422ce090(int bChecked);                           // set checked
     unsigned char FUN_1422ce0e0();                              // is checked
-    void FUN_1422ce240(const ParamsDelegate& onClick, int nUserData);
     void FUN_1422ce320(const ParamsDelegate& onClick, void* pUserData);
 };
 class Unk_SdRadio : public Unk_SdToggle {};
@@ -79,7 +77,6 @@ bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned 
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, int nColor);                            // wrap in a color tag
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -117,7 +114,7 @@ template <> bool MS2Ptr<Unk_SdRadio>::operator==(Unk_SdRadio* p) const { return 
 // @0x140e28bc0
 template <> MS2Ptr<Unk_SdRadio> AScript::FUN_140e159f0<Unk_SdRadio>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140a463d0(m_nMovieId, v);
     return MS2Ptr<Unk_SdRadio>(0);
@@ -217,11 +214,11 @@ void UIDungeonSearchSelectDialog::FUN_140e27f80()
     else
         FUN_140cfee80(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_raid");
     m_radio->FUN_1422ce090(m_bAll);
-    FUN_140e28100();
+    UpdateListCount();
 }
 
 // @0x140e28100
-void UIDungeonSearchSelectDialog::FUN_140e28100()
+void UIDungeonSearchSelectDialog::UpdateListCount()
 {
     if (m_list.get() != 0)
         m_list->FUN_1422dcf40((int)m_rooms.size());
@@ -235,7 +232,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28170(const Scaleform::GFx::FunctionHa
     m_bAll = true;
     m_selected.clear();
     m_selected = m_allRooms;
-    FUN_140e28100();
+    UpdateListCount();
 }
 
 // @0x140e281f0
@@ -300,12 +297,12 @@ void UIDungeonSearchSelectDialog::FUN_140e286a0(const Scaleform::GFx::FunctionHa
     unsigned nRoom = m_roomOfRow[nRow];
     CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
     ASTooltip tooltip(1, 2);
-    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tooltip.FUN_1409c6e00(300);
-    tooltip.FUN_1409c6e30(60000);
-    tooltip.FUN_1409c6dc0(5);
-    tooltip.FUN_1409c6cb0(strName);
-    FUN_1409b4bc0(params.pRetVal, tooltip.FUN_1422bb870());
+    tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tooltip.SetOnDelay(300);
+    tooltip.SetOffDelay(60000);
+    tooltip.SetTooltipAlign(5);
+    tooltip.SetText(strName);
+    *params.pRetVal = tooltip.FUN_1422bb870();
 }
 
 // @0x140e288f0
@@ -336,7 +333,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28a40(const Scaleform::GFx::FunctionHa
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType)
 {
     if (reinterpret_cast<Unk_SdUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonSearchDialog*>((UIObject*)p);
     }

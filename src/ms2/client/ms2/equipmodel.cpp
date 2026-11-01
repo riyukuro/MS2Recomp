@@ -63,6 +63,7 @@
 // two derived models). Loops over the node list at +0xf8 use the exe's iterator helpers (begin 0x141209190, end
 // 0x141209360, neq 0x140b029f0, deref 0x140b02a60, inc 0x140b02a80).
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "equipmodel.h"
 #include <efd/Matrix3.h>
 #include <NiTransform.h>
@@ -77,13 +78,14 @@
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/effectquery.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
 extern char DAT_143afbbb0;      // NiMesh::ms_RTTI
 extern char DAT_143af77a8;      // RTTI of the dummy attach node class
 extern float DAT_143ac3d08;     // the engine's frame step
-extern char DAT_143b01a60;      // NiPoint3::ZERO
+#define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
 // 0x143ad2348 is s_strWillUpdatePos (constructed in .text$di 0x1400e8b40); the data_bss_game blob of that name never is
 extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tried when resolving an attach point name
 extern char DAT_142ec05ba;      // ""
@@ -112,8 +114,8 @@ public:
 public:
     void FUN_1411a6060(unsigned int);   // C3: was free FUN_1411a6060
 };
-void* FUN_141b6f910();   void* FUN_140999440(void* svc, void* id);   void* FUN_14123c460(void* ent, void* out);
-void* FUN_140999440(void* svc, const egf::EntityID& kId);
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();   void* FUN_14123c460(void* ent, void* out);
 struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
 unsigned FUN_14123c580(void* ent);
 class PC   // C3: member view for the former free stand-ins
@@ -126,7 +128,7 @@ void FUN_1411ea430(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void FUN_1411ea50
 unsigned FUN_141658e60(void* ent);
 // the id holder returned by FUN_1411dc7a0 and its accessors
 void FUN_1401bfde0(void* p);   void FUN_1401bf970(void* out, void* p);   char FUN_1401b5240(void* p, int n);
-char FUN_1401b50d0(void* p);   void* FUN_1401b52a0(void* p);   void* FUN_140203c60(void* p);   void* FUN_140203510(void* out, int n);
+char FUN_1401b50d0(void* p);   void* FUN_140203c60(void* p);   void* FUN_140203510(void* out, int n);
 void* FUN_1401c0180(void* p);   bool FUN_1401c0050(void* p, int n);
 unsigned FUN_140526b10(void* p);   unsigned __int64 FUN_140526ad0(void* p);class CItemData   // C3: member view for the former free stand-ins
 {
@@ -169,15 +171,16 @@ char FUN_140184310(CString* a, void* psz);
 CString FUN_14016a5c0(const char* psz, int n);   CString FUN_140298360(const char* psz, const CString& s);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
-class Unk_MeshWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_MeshWalker(void* pRoot);                                    // 0x14098cb80
-    ~Unk_MeshWalker();                                              // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                                    // 0x14098cb80
+    ~Unk_NodeQueue();                                              // 0x14098cf00
     void* FUN_14098e0d0(bool bChildren);                            // 0x14098e0d0 next object, NULL at the end
 private:
     void* m_a[6];
 };
+typedef Unk_NodeQueue Unk_MeshWalker;   // C3: was a local stand-in for Unk_NodeQueue
    void* FUN_140a0b000(void* obj);
 void FUN_140aacb60(void* obj, void* xf);void* FUN_1411a3f30(void* p);   void FUN_1411a3e30(void* p);   void FUN_1411a4080(void* p);
 bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);   void* FUN_140998e90(void* p);
@@ -613,7 +616,7 @@ void* FUN_1412008e0(CEquipModel* self)
     void* pEnt = FUN_141200850(self);
     if (pEnt == 0)
         return 0;
-    return FUN_140999440(FUN_141b6f910(), ((Unk_EmEntity*)pEnt)->FUN_14123c460());
+    return reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((Unk_EmEntity*)pEnt)->FUN_14123c460());
 }
 
 // @0x141200940
@@ -764,7 +767,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
     CString kKey(kName);
     FUN_1401d3700(&kKey);
     EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
-        Unk_MeshWalker kWalk(FUN_1409849b0(&sp));
+        Unk_MeshWalker kWalk((NiAVObject*)(FUN_1409849b0(&sp)));
         void* pObj;
         while ((pObj = kWalk.FUN_14098e0d0(true)) != 0) {
             void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj);
@@ -781,7 +784,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
             }
         }
     }
-    Unk_MeshWalker kWalk2(self->vfunc_14());
+    Unk_MeshWalker kWalk2((NiAVObject*)(self->vfunc_14()));
     void* pObj2;
     while ((pObj2 = kWalk2.FUN_14098e0d0(true)) != 0) {
         void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj2);
@@ -947,7 +950,7 @@ void FUN_141201d50(CEquipModel* self, CString kName)
     if (pTarget == 0)
         return;
     pTarget->AttachChild(self->m_spNode, true);
-    CString kModel(((Unk_EmModelLoader*)FUN_141b6f910())->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+    CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
     FUN_141200390(self, kModel);
     NiAVObject* pAV = (NiAVObject*)FUN_1409f7cb0(pRoot);
     if (pAV != 0) {
@@ -1023,7 +1026,7 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
     if (pEnt == 0)
         return;
     alignas(8) char kEntId[24];
-    void* pActor = FUN_140999440(FUN_141b6f910(), FUN_14123c460(pEnt, kEntId));
+    void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(*reinterpret_cast<const egf::EntityID*>(FUN_14123c460(pEnt, kEntId)));
     if (pActor == 0 || FUN_1409f7cb0(pActor) == 0)
         return;
     alignas(8) char fs[8];
@@ -1219,7 +1222,7 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         FUN_1409f76f0(NODE(self), pNew);
         void* pEnt = FUN_141200820(self);
         if (pEnt != 0) {
-            CString kModel(((Unk_EmModelLoader*)FUN_141b6f910())->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+            CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
             FUN_141200390(self, kModel);
         }
     }

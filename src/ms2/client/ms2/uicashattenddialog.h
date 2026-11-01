@@ -49,14 +49,14 @@ public:
     virtual void vfunc_26();
     // @0x140bccd60
     virtual int vfunc_48() { return 0x4eb9; }
-    void FUN_140bc3db0(MS2Ptr<GameEventCashAttendCli> spEvent);     // add an event
-    void FUN_140bc3eb0(MS2Ptr<GameEventCashAttendCli> spEvent);     // remove an event
-    bool FUN_140bc4030();                                           // any active event
-    int FUN_140bc4080();                                            // usable points summed over the events
-    void FUN_140bc4150(const Scaleform::GFx::FunctionHandler::Params& params);   // event button clicked
+    void AddEvent(MS2Ptr<GameEventCashAttendCli> spEvent);     // add an event
+    void RemoveEvent(MS2Ptr<GameEventCashAttendCli> spEvent);     // remove an event
+    bool HasActiveEvents();                                           // any active event
+    int GetTotalUsablePoints();                                            // usable points summed over the events
+    void OnEventTabClick(const Scaleform::GFx::FunctionHandler::Params& params);   // event button clicked
     void FUN_140bc4230(const Scaleform::GFx::FunctionHandler::Params& params);   // use-point button clicked
-    bool FUN_140bc4260(int nButton, const CMsgBoxData& data);
-    void FUN_140bc4340(int nEventId);                               // select an event by id
+    bool OnAttendMsgBox(int nButton, const CMsgBoxData& data);
+    void SetEventId(int nEventId);                               // select an event by id
     void FUN_140bc4390(GameEventVariable* pVar);
     void FUN_140bc43d0(GameEventVariable* pVar);
     MS2Ptr<GameEventCashAttendCli> GetSelected();                 // the selected event
@@ -64,15 +64,15 @@ public:
     void FUN_140bc44b0();                                           // refresh the event buttons
     void FUN_140bc4980();                                           // refresh the gauge, list and period text
     void FUN_140bc4d40();                                           // refresh the use-point button
-    void FUN_140bc4f00();                                           // rebuild the active events
-    void FUN_140bc4ff0();                                           // pick the selected event
-    void FUN_140bc5170(CInPacket& packet);
+    void RebuildActiveEvents();                                           // rebuild the active events
+    void ResolveSelectedEvent();                                           // pick the selected event
+    void OnPacket(CInPacket& packet);
     void FUN_140bc5220(CInPacket& packet);
     void FUN_140bc5250(CInPacket& packet);
     void FUN_140bc5280(CInPacket& packet);
     void FUN_140bc5350(CInPacket& packet);
     void FUN_140bc5640();
-    void FUN_140bc56a0();
+    void SendSelectedEventRequest();
     template<class T> MS2Ptr<T> FUN_140bc7070(const CString& strName, MS2Ptr<T>& out);
     template<class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out);
 private:

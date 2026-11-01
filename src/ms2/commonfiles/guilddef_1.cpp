@@ -425,14 +425,14 @@ void CGuildJoinRequestSchCond::FUN_1404c8410()
 }
 
 // @0x1404c8440
-void CGuildJoinRequestSchCond::FUN_1404c8440(const CGuildJoinRequestSchCond* other)
+void CGuildJoinRequestSchCond::CopyFrom(const CGuildJoinRequestSchCond* other)
 {
     FUN_1404c8410(); if(!other) return;
     f18=other->f18; f1c=other->f1c;
 }
 
 // @0x1404c8490
-int CGuildJoinRequestSchCond::FUN_1404c8490(const CGuildJoinRequestSchCond* other)
+int CGuildJoinRequestSchCond::IsEqual(const CGuildJoinRequestSchCond* other)
 {
     if(!other) return 0; if(other->f18!=f18) return 0; if(other->f1c!=f1c) return 0; return 1;
 }
@@ -440,23 +440,23 @@ int CGuildJoinRequestSchCond::FUN_1404c8490(const CGuildJoinRequestSchCond* othe
 // @0x1404c84e0
 void CGuildJoinRequestSchCond::FUN_1404c84e0(COutPacket* out)
 {
-    FUN_1404c8560(*out);
+    Write(*out);
 }
 
 // @0x1404c8510
-void CGuildJoinRequestSchCond::FUN_1404c8510(CInPacket* in)
+void CGuildJoinRequestSchCond::ReadPacket(CInPacket* in)
 {
-    FUN_1404c85b0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c8560
-void CGuildJoinRequestSchCond::FUN_1404c8560(COutputStream& out)
+void CGuildJoinRequestSchCond::Write(COutputStream& out)
 {
     out.WriteInt32(f18); out.WriteInt32(f1c);
 }
 
 // @0x1404c85b0
-void CGuildJoinRequestSchCond::FUN_1404c85b0(CInputStream& in)
+void CGuildJoinRequestSchCond::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt32(); f1c=in.ReadInt32();
 }
@@ -469,14 +469,14 @@ int CGuildJoinRequestSchCond::FUN_1404c8600()
 }
 
 // @0x1404c8650
-int CGuildJoinRequestSchCond::FUN_1404c8650()
+int CGuildJoinRequestSchCond::GetMinDays()
 {
     int n=FUN_1404c8600(); if(n==-1) return 0;
     int days=90; int v=n*days+1; return v;
 }
 
 // @0x1404c86a0
-int CGuildJoinRequestSchCond::FUN_1404c86a0()
+int CGuildJoinRequestSchCond::GetMaxDays()
 {
     int n=FUN_1404c8600(); if(n==-1) return 0;
     int days=90; int v=(n+1)*days; return v;
@@ -743,34 +743,34 @@ bool CGuildMemberRaid::FUN_1404cab20()
 }
 
 // @0x1404cabb0
-void CGuildMemberRaid::FUN_1404cabb0(const CGuildMemberRaid& other)
+void CGuildMemberRaid::CopyFrom(const CGuildMemberRaid& other)
 {
     Unk_GuildMapLock guard(lock,1); raids.clear(); raids=other.raids;
 }
 
 // @0x1404cac30
-bool CGuildMemberRaid::FUN_1404cac30(unsigned long id,int count)
+bool CGuildMemberRaid::UpdateRaidCountIfHigher(unsigned long id,int count)
 {
     Unk_GuildMapLock guard(lock,1); auto i=raids.find(id);
-    if(i==raids.end()) { FUN_1404cad50(id,count,false); return true; }
-    else { int cur=i->second; if(cur<count) { FUN_1404cad50(id,count,false); return true; } }
+    if(i==raids.end()) { SetRaidCount(id,count,false); return true; }
+    else { int cur=i->second; if(cur<count) { SetRaidCount(id,count,false); return true; } }
     return false;
 }
 
 // @0x1404cad50
-void CGuildMemberRaid::FUN_1404cad50(unsigned long id,int count,bool)
+void CGuildMemberRaid::SetRaidCount(unsigned long id,int count,bool)
 {
     Unk_GuildMapLock guard(lock,1); raids[id]=count;
 }
 
 // @0x1404cadc0
-int CGuildMemberRaid::FUN_1404cadc0()
+int CGuildMemberRaid::GetTotalCount()
 {
     int count=0; Unk_GuildMapLock guard(lock,1); for(auto i=raids.begin(),end=raids.end();i!=end;++i) count+=i->second; return count;
 }
 
 // @0x1404cae90
-int CGuildMemberRaid::FUN_1404cae90(unsigned long id)
+int CGuildMemberRaid::GetRaidCount(unsigned long id)
 {
     Unk_GuildMapLock guard(lock,1);
     auto i=raids.find(id);
@@ -780,7 +780,7 @@ int CGuildMemberRaid::FUN_1404cae90(unsigned long id)
 }
 
 // @0x1404caf50
-void CGuildMemberRaid::FUN_1404caf50(COutputStream& out)
+void CGuildMemberRaid::Write(COutputStream& out)
 {
     Unk_GuildMapLock guard(lock,1); auto i=raids.begin(),end=raids.end(); out.WriteInt32((int)raids.size()); for(;i!=end;++i) { out.WriteInt32(i->first); out.WriteInt32(i->second); }
 }
@@ -849,7 +849,7 @@ void CGuildMember::FUN_1404cb450(CInPacket* in)
 // @0x1404cb4a0
 void CGuildMember::FUN_1404cb4a0(COutputStream& out)
 {
-    out.WriteUInt8((unsigned char)fb0); out.WriteUInt8((unsigned char)fb4); if(fb0==3) { out.WriteInt64(f18); data.FUN_1404c99d0(out); out.WriteUnicodeString(fb8); out.WriteInt64(fc8); out.WriteInt64(fd0); out.WriteInt64(fd8); out.WriteInt32(fe0); out.WriteInt32(fe4); out.WriteInt32(fe8); out.WriteInt32(fec); out.WriteInt32(ff0); out.WriteInt64(ff8); raid.FUN_1404caf50(out); out.WriteUInt8((unsigned char)f158); } else { out.WriteInt64(f18); data.FUN_1404c9ef0(out); }
+    out.WriteUInt8((unsigned char)fb0); out.WriteUInt8((unsigned char)fb4); if(fb0==3) { out.WriteInt64(f18); data.FUN_1404c99d0(out); out.WriteUnicodeString(fb8); out.WriteInt64(fc8); out.WriteInt64(fd0); out.WriteInt64(fd8); out.WriteInt32(fe0); out.WriteInt32(fe4); out.WriteInt32(fe8); out.WriteInt32(fec); out.WriteInt32(ff0); out.WriteInt64(ff8); raid.Write(out); out.WriteUInt8((unsigned char)f158); } else { out.WriteInt64(f18); data.FUN_1404c9ef0(out); }
 }
 
 // @0x1404cb6c0
@@ -870,19 +870,19 @@ CGuildSkill::~CGuildSkill()
 }
 
 // @0x1404cb9a0
-void CGuildSkill::FUN_1404cb9a0(const CGuildSkill* other)
+void CGuildSkill::CopyFrom(const CGuildSkill* other)
 {
     f18=other->f18; f1c=other->f1c; f20=other->f20;
 }
 
 // @0x1404cb9f0
-void CGuildSkill::FUN_1404cb9f0(COutputStream& out)
+void CGuildSkill::Write(COutputStream& out)
 {
     out.WriteInt32(f18); out.WriteInt32(f1c); out.WriteInt64(f20);
 }
 
 // @0x1404cba60
-void CGuildSkill::FUN_1404cba60(CInPacket& packet)
+void CGuildSkill::Read(CInPacket& packet)
 {
     f18=packet.ReadInt32(); f1c=packet.ReadInt32(); f20=packet.ReadInt64();
 }
@@ -891,7 +891,7 @@ void CGuildSkill::FUN_1404cba60(CInPacket& packet)
 int CGuildSkill::FUN_1404cbb00()
 {
     if(f20==0) return 0;
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(f18,f1c);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->GetSkill(f18,f1c);
     if(skill==0) return 0;
     __int64 now=GetServerTime(); __int64 until=(__int64)skill->f2c+f20;
     if(until<now) return 0;
@@ -901,7 +901,7 @@ int CGuildSkill::FUN_1404cbb00()
 // @0x1404cbbf0
 int CGuildSkill::FUN_1404cbbf0()
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(f18,f1c);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->GetSkill(f18,f1c);
     if(skill==0) return 0x7fffffff;
     __int64 now=GetServerTime(); __int64 until=(__int64)skill->f30+f20;
     if(now>until) return 0;
@@ -1121,34 +1121,34 @@ void CGuildInfo::FUN_1404cd030(CStringW v)
 }
 
 // @0x1404cd0b0
-CStringW CGuildInfo::FUN_1404cd0b0()
+CStringW CGuildInfo::GetNotice()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f60; }
 }
 
 // @0x1404cd140
-void CGuildInfo::FUN_1404cd140(CStringW v)
+void CGuildInfo::SetNotice(CStringW v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f60=v; }
 }
 
 // @0x1404cd1c0
-int CGuildInfo::FUN_1404cd1c0()
+int CGuildInfo::GetCapacity()
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7410(FUN_1404d1ad0());
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->GetProperty(GetGuildLevel());
     if(prop==0) return f50;
     return (std::max)(prop->f20,f50);
 }
 
 // @0x1404cd2b0
-void CGuildInfo::FUN_1404cd2b0(int v)
+void CGuildInfo::SetMaxMemberCount(int v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f50=v; }
 }
 
 // @0x1404cd310
-void CGuildInfo::FUN_1404cd310(__int64 a,__int64 b,CStringW c,int)
+void CGuildInfo::SetMaster(__int64 a,__int64 b,CStringW c,int)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f70=a; f78=b; f80=c; }
 }
@@ -1166,7 +1166,7 @@ __int64 CGuildInfo::FUN_1404cd420()
 }
 
 // @0x1404cd490
-CStringW CGuildInfo::FUN_1404cd490()
+CStringW CGuildInfo::GetMasterName()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f80; }
 }
@@ -1208,12 +1208,12 @@ void CGuildInfo::FUN_1404cd7d0(COutputStream& out)
         out.WriteInt64(FUN_1404ccbd0());
         out.WriteUnicodeString(FUN_1404cccb0());
         out.WriteUnicodeStringA(FUN_1404ccdb0());
-        out.WriteUInt8((unsigned char)FUN_1404cd1c0());
+        out.WriteUInt8((unsigned char)GetCapacity());
         out.WriteUnicodeString(FUN_1404ccfa0());
-        out.WriteUnicodeString(FUN_1404cd0b0());
+        out.WriteUnicodeString(GetNotice());
         out.WriteInt64(FUN_1404cd3b0());
         out.WriteInt64(FUN_1404cd420());
-        out.WriteUnicodeString(FUN_1404cd490());
+        out.WriteUnicodeString(GetMasterName());
         out.WriteInt64(f68);
         out.WriteUInt8((unsigned char)f130);
         out.WriteInt32(f134); out.WriteInt32(f138); out.WriteInt32(f13c); out.WriteInt32(f140);
@@ -1222,8 +1222,8 @@ void CGuildInfo::FUN_1404cd7d0(COutputStream& out)
         out.WriteInt32(f158); out.WriteInt32(f15c); out.WriteInt32(f160); out.WriteInt32(f164);
         out.WriteBool(reinterpret_cast<const bool&>(f354));
         out.WriteInt32(f350);
-        FUN_1404ce690(out); FUN_1404ce8f0(out); FUN_1404ceb90(out); FUN_1404cee00(out);
-        FUN_1404cf070(out); FUN_1404cf390(out); FUN_1404cf5f0(out);
+        WriteMembers(out); WriteGrades(out); WriteSkills(out); WriteCustomEvents(out);
+        FUN_1404cf070(out); WriteNpcs(out); WriteNpcShop(out);
         storage.FUN_1404cc160(out);
     }
 }
@@ -1252,29 +1252,29 @@ void CGuildInfo::FUN_1404cdda0(CInPacket& packet)
         SetGuildId(id);
         SetGuildName(name);
         FUN_1404cce40(code);
-        FUN_1404cd2b0(b1);
-        FUN_1404cd140(s190);
+        SetMaxMemberCount(b1);
+        SetNotice(s190);
         FUN_1404cd030(s188);
-        FUN_1404cd310(l48,l50,s198,1);
+        SetMaster(l48,l50,s198,1);
         SetCreateTime(l40);
         FUN_1404d11b0(v6,v7,v8,v9,v10,v11,v12);
         FUN_1404d1140(b2);
         FUN_1404d3600(v13);
         FUN_1404d17e0(b3,v14);
-        FUN_1404d1940(v15);
-        FUN_1404d1b40(v16,false);
-        FUN_1404d1c90(v17,false);
-        FUN_1404ce790(packet); FUN_1404cea10(packet); FUN_1404ceca0(packet); FUN_1404cef10(packet);
-        FUN_1404cf1e0(packet); FUN_1404cf490(packet); FUN_1404cf6c0(packet);
+        SetExp(v15);
+        SetFund(v16,false);
+        SetEventFund(v17,false);
+        ReadMembers(packet); ReadGrades(packet); ReadSkills(packet); ReadCustomEvents(packet);
+        FUN_1404cf1e0(packet); ReadNpcs(packet); ReadNpcShop(packet);
         storage.FUN_1404cc210(packet);
     }
 }
 
 // @0x1404ce690
-void CGuildInfo::FUN_1404ce690(COutputStream& out)
+void CGuildInfo::WriteMembers(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        int count=FUN_1404d0020();
+        int count=GetMemberCount();
         out.WriteUInt8(count);
         for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;FUN_1404f4700(&f320,&pos)) {
             MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
@@ -1284,7 +1284,7 @@ void CGuildInfo::FUN_1404ce690(COutputStream& out)
 }
 
 // @0x1404ce790
-void CGuildInfo::FUN_1404ce790(CInPacket& packet)
+void CGuildInfo::ReadMembers(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         int count=packet.ReadUInt8();
@@ -1297,7 +1297,7 @@ void CGuildInfo::FUN_1404ce790(CInPacket& packet)
 }
 
 // @0x1404ce8f0
-void CGuildInfo::FUN_1404ce8f0(COutputStream& out)
+void CGuildInfo::WriteGrades(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteUInt8((unsigned char)fa0.GetCount());
@@ -1309,7 +1309,7 @@ void CGuildInfo::FUN_1404ce8f0(COutputStream& out)
 }
 
 // @0x1404cea10
-void CGuildInfo::FUN_1404cea10(CInPacket& packet)
+void CGuildInfo::ReadGrades(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         fa0.RemoveAll();
@@ -1324,33 +1324,33 @@ void CGuildInfo::FUN_1404cea10(CInPacket& packet)
 }
 
 // @0x1404ceb90
-void CGuildInfo::FUN_1404ceb90(COutputStream& out)
+void CGuildInfo::WriteSkills(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteUInt8(FUN_1404f4480(&f238));
         for(void* pos=((void*)((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildSkill>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildSkill>>>*)(void*)(&f238))->GetStartPosition());pos!=0;FUN_1404f4660(&f238,&pos)) {
             Unk_PayloadPtr<CGuildSkill> ref(reinterpret_cast<Unk_PayloadPtr<CGuildSkill>&>(*((struct Unk_GuildRef*)&((ATL::CAtlMap<int, Unk_PayloadPtr<CGuildSkill>, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_PayloadPtr<CGuildSkill>>>*)(void*)(&f238))->GetValueAt((struct __POSITION*)(pos)))));
-            ref->FUN_1404cb9f0(out);
+            ref->Write(out);
         }
     }
 }
 
 // @0x1404ceca0
-void CGuildInfo::FUN_1404ceca0(CInPacket& packet)
+void CGuildInfo::ReadSkills(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         f238.RemoveAll();
         int count=packet.ReadUInt8();
         for(int i=0;i<count;++i) {
             Unk_PayloadPtr<CGuildSkill> skill(new CGuildSkill);
-            skill->FUN_1404cba60(packet);
+            skill->Read(packet);
             f238.SetAt(skill->f18,skill);
         }
     }
 }
 
 // @0x1404cee00
-void CGuildInfo::FUN_1404cee00(COutputStream& out)
+void CGuildInfo::WriteCustomEvents(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteUInt8(FUN_1404f4470(&f280));
@@ -1362,7 +1362,7 @@ void CGuildInfo::FUN_1404cee00(COutputStream& out)
 }
 
 // @0x1404cef10
-void CGuildInfo::FUN_1404cef10(CInPacket& packet)
+void CGuildInfo::ReadCustomEvents(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         f280.RemoveAll();
@@ -1407,7 +1407,7 @@ void CGuildInfo::FUN_1404cf1e0(CInPacket& packet)
 }
 
 // @0x1404cf390
-void CGuildInfo::FUN_1404cf390(COutputStream& out)
+void CGuildInfo::WriteNpcs(COutputStream& out)
 {
     Unk_GuildMapLock guard(lock,1);
     out.WriteUInt8(FUN_1404f4490(&f2c8));
@@ -1418,7 +1418,7 @@ void CGuildInfo::FUN_1404cf390(COutputStream& out)
 }
 
 // @0x1404cf490
-void CGuildInfo::FUN_1404cf490(CInPacket& packet)
+void CGuildInfo::ReadNpcs(CInPacket& packet)
 {
     Unk_GuildMapLock guard(lock,1);
     ((ATL::CAtlMap<Unk_GuildNpcKind, Unk_PayloadPtr<CGuildNpc>, ATL::CElementTraits<Unk_GuildNpcKind>, ATL::CElementTraits<Unk_PayloadPtr<CGuildNpc>>>*)(void*)(&f2c8))->RemoveAll();
@@ -1431,16 +1431,16 @@ void CGuildInfo::FUN_1404cf490(CInPacket& packet)
 }
 
 // @0x1404cf5f0
-void CGuildInfo::FUN_1404cf5f0(COutputStream& out)
+void CGuildInfo::WriteNpcShop(COutputStream& out)
 {
     Unk_GuildMapLock guard(lock,1);
     bool has=f360?true:false;
     out.WriteBool(has);
-    if(f360) f360->FUN_1404d8d50(out);
+    if(f360) f360->Write(out);
 }
 
 // @0x1404cf6c0
-void CGuildInfo::FUN_1404cf6c0(CInPacket& packet)
+void CGuildInfo::ReadNpcShop(CInPacket& packet)
 {
     Unk_GuildMapLock guard(lock,1);
     bool has=packet.ReadBool();
@@ -1448,7 +1448,7 @@ void CGuildInfo::FUN_1404cf6c0(CInPacket& packet)
         if(f360==0) {
             f360=new CGuildNpcShopMgr;
         }
-        f360->FUN_1404d8e80(&packet);
+        f360->Read(&packet);
     }
 }
 
@@ -1485,7 +1485,7 @@ MS2Ptr<CGuildMember> CGuildInfo::FUN_1404cf9f0(CStringW name)
 }
 
 // @0x1404cfb00
-MS2Ptr<CGuildMember> CGuildInfo::FUN_1404cfb00(__int64 id)
+MS2Ptr<CGuildMember> CGuildInfo::FindMemberById(__int64 id)
 {
     MS2Ptr<CGuildMember> found(0);
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
@@ -1501,7 +1501,7 @@ MS2Ptr<CGuildMember> CGuildInfo::FUN_1404cfb00(__int64 id)
 }
 
 // @0x1404cfc70
-void CGuildInfo::FUN_1404cfc70(const CStringW& oldName,const CStringW& newName)
+void CGuildInfo::RenameMember(const CStringW& oldName,const CStringW& newName)
 {
     MS2Ptr<CGuildMember> ref(0);
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
@@ -1545,25 +1545,25 @@ int CGuildInfo::FUN_1404cff20()
 }
 
 // @0x1404d0020
-int CGuildInfo::FUN_1404d0020()
+int CGuildInfo::GetMemberCount()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return FUN_1404f44b0(&f320); }
 }
 
 // @0x1404d00a0
-Unk_PayloadPtr<CGuildMember> CGuildInfo::FUN_1404d00a0()
+Unk_PayloadPtr<CGuildMember> CGuildInfo::GetMasterMember()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f310; }
 }
 
 // @0x1404d0130
-void CGuildInfo::FUN_1404d0130(Unk_PayloadPtr<CGuildMember> v)
+void CGuildInfo::SetMasterMember(Unk_PayloadPtr<CGuildMember> v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f310=v; }
 }
 
 // @0x1404d01b0
-int CGuildInfo::FUN_1404d01b0(CStringW name)
+int CGuildInfo::IsMaster(CStringW name)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         MS2Ptr<CGuildMember> member=FUN_1404cf9f0(name);
@@ -1602,13 +1602,13 @@ int CGuildInfo::FUN_1404d0510()
 }
 
 // @0x1404d0580
-int CGuildInfo::FUN_1404d0580()
+int CGuildInfo::GetMaxGradeIndex()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return (int)(((ATL::CAtlArray<Unk_PayloadPtr<CGuildGrade>, ATL::CElementTraits<Unk_PayloadPtr<CGuildGrade>>>*)(void*)(&fa0))->GetCount()-1); }
 }
 
 // @0x1404d0600
-int CGuildInfo::FUN_1404d0600(CStringW name,unsigned mask)
+int CGuildInfo::HasMemberPermission(CStringW name,unsigned mask)
 {
     unsigned v=FUN_1404d06a0(name);
     if ((v&mask)!=0)
@@ -1622,7 +1622,7 @@ unsigned CGuildInfo::FUN_1404d06a0(CStringW name)
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         MS2Ptr<CGuildMember> member=FUN_1404cf9f0(name);
         if(member==0) return 0;
-        Unk_PayloadPtr<CGuildGrade> grade=FUN_1404d0860(member->fb4);
+        Unk_PayloadPtr<CGuildGrade> grade=GetGrade(member->fb4);
         if(grade.get()!=0) {
             return grade->permissions;
         } else {
@@ -1632,11 +1632,11 @@ unsigned CGuildInfo::FUN_1404d06a0(CStringW name)
 }
 
 // @0x1404d0860
-Unk_PayloadPtr<CGuildGrade> CGuildInfo::FUN_1404d0860(int index)
+Unk_PayloadPtr<CGuildGrade> CGuildInfo::GetGrade(int index)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         if(fa0.GetCount()==0) return 0;
-        if(index<0 || index>FUN_1404d0580()) {
+        if(index<0 || index>GetMaxGradeIndex()) {
             return 0;
         } else {
             return fa0[index];
@@ -1645,11 +1645,11 @@ Unk_PayloadPtr<CGuildGrade> CGuildInfo::FUN_1404d0860(int index)
 }
 
 // @0x1404d0990
-int CGuildInfo::FUN_1404d0990(int index,Unk_PayloadPtr<CGuildGrade> grade)
+int CGuildInfo::SetOrAddGrade(int index,Unk_PayloadPtr<CGuildGrade> grade)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        if(FUN_1404d0860(index)==0) {
-            if(index!=FUN_1404d0580()+1) return 0;
+        if(GetGrade(index)==0) {
+            if(index!=GetMaxGradeIndex()+1) return 0;
             fa0.Add(grade);
         } else {
             fa0.SetAt(index,grade);
@@ -1660,10 +1660,10 @@ int CGuildInfo::FUN_1404d0990(int index,Unk_PayloadPtr<CGuildGrade> grade)
 }
 
 // @0x1404d0af0
-CStringW CGuildInfo::FUN_1404d0af0(int index)
+CStringW CGuildInfo::GetGradeName(int index)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        Unk_PayloadPtr<CGuildGrade> grade=FUN_1404d0860(index);
+        Unk_PayloadPtr<CGuildGrade> grade=GetGrade(index);
         if(grade.get()!=0) return grade->name;
         return L"";
     }
@@ -1718,20 +1718,20 @@ int CGuildInfo::FUN_1404d0ee0()
             Unk_GuildMemberRef ref(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos))));
             if(FUN_1404f0020(&ref,0))
                 continue;
-            total+=FUN_1404f0b80(&ref)->raid.FUN_1404cadc0();
+            total+=FUN_1404f0b80(&ref)->raid.GetTotalCount();
         }
     }
     return total;
 }
 
 // @0x1404d0ff0
-unsigned CGuildInfo::FUN_1404d0ff0()
+unsigned CGuildInfo::GetScore()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f134; }
 }
 
 // @0x1404d1060
-void CGuildInfo::FUN_1404d1060(int v)
+void CGuildInfo::SetScore(int v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f134=v; }
 }
@@ -1755,25 +1755,25 @@ void CGuildInfo::FUN_1404d11b0(int a,int b,int c,int d,int e,int f,int g)
 }
 
 // @0x1404d1280
-unsigned CGuildInfo::FUN_1404d1280()
+unsigned CGuildInfo::GetWinCount()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f138; }
 }
 
 // @0x1404d12f0
-void CGuildInfo::FUN_1404d12f0(int v)
+void CGuildInfo::SetWinCount(int v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f138=v; }
 }
 
 // @0x1404d1360
-unsigned CGuildInfo::FUN_1404d1360()
+unsigned CGuildInfo::GetLoseCount()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f13c; }
 }
 
 // @0x1404d13d0
-void CGuildInfo::FUN_1404d13d0(int v)
+void CGuildInfo::SetLoseCount(int v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f13c=v; }
 }
@@ -1840,13 +1840,13 @@ unsigned CGuildInfo::FUN_1404d1860()
 }
 
 // @0x1404d18d0
-unsigned CGuildInfo::FUN_1404d18d0()
+unsigned CGuildInfo::GetPropensity()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f158; }
 }
 
 // @0x1404d1940
-void CGuildInfo::FUN_1404d1940(int v)
+void CGuildInfo::SetExp(int v)
 {
     Unk_GuildMapLock guard(lock,1);
     f15c=v;
@@ -1857,7 +1857,7 @@ bool CGuildInfo::FUN_1404d1990(int delta)
 {
     Unk_GuildMapLock guard(lock,1);
     int before=f15c;
-    int limit=((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->FUN_1404d7280();
+    int limit=((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->GetMaxExp();
     f15c=f15c+delta;
     if(f15c<0) f15c=0;
     if(f15c>limit) f15c=limit;
@@ -1873,14 +1873,14 @@ int CGuildInfo::FUN_1404d1a80()
 }
 
 // @0x1404d1ad0
-int CGuildInfo::FUN_1404d1ad0()
+int CGuildInfo::GetGuildLevel()
 {
     Unk_GuildMapLock guard(lock,1);
-    return ((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->FUN_1404d7130(f15c);
+    return ((class CGuildXmlData*)(void*)(TSingleton<CGuildXmlData>::GetInstance()))->GetLevelByExp(f15c);
 }
 
 // @0x1404d1b40
-void CGuildInfo::FUN_1404d1b40(int v,bool bNotify)
+void CGuildInfo::SetFund(int v,bool bNotify)
 {
     Unk_GuildMapLock guard(lock,1);
     f160=v;
@@ -1900,7 +1900,7 @@ bool CGuildInfo::FUN_1404d1ba0(int delta)
 }
 
 // @0x1404d1c90
-void CGuildInfo::FUN_1404d1c90(int v,bool bNotify)
+void CGuildInfo::SetEventFund(int v,bool bNotify)
 {
     Unk_GuildMapLock guard(lock,1);
     if(f164==v)
@@ -1922,14 +1922,14 @@ bool CGuildInfo::FUN_1404d1d00(int delta)
 }
 
 // @0x1404d1df0
-int CGuildInfo::FUN_1404d1df0()
+int CGuildInfo::GetFund()
 {
     Unk_GuildMapLock guard(lock,1);
     return f160;
 }
 
 // @0x1404d1e40
-int CGuildInfo::FUN_1404d1e40()
+int CGuildInfo::GetEventFund()
 {
     Unk_GuildMapLock guard(lock,1);
     return f164;
@@ -1938,8 +1938,8 @@ int CGuildInfo::FUN_1404d1e40()
 // @0x1404d1e90
 int CGuildInfo::FUN_1404d1e90()
 {
-    int level=FUN_1404d1ad0();
-    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7410(level);
+    int level=GetGuildLevel();
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=TSingleton<CGuildXmlData>::GetInstance()->GetProperty(level);
     if(prop==0) return 0;
     return (int)prop->f28;
 }
@@ -1982,7 +1982,7 @@ int CGuildInfo::FUN_1404d2030()
 int CGuildInfo::FUN_1404d2080()
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(f168,f16c);
+    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house=TSingleton<CGuildXmlData>::GetInstance()->GetHouse(f168,f16c);
     if(house==0) return 0;
     return house->f50;
 }
@@ -2037,7 +2037,7 @@ CStringW CGuildInfo::FUN_1404d2400(int key)
 // @0x1404d2510
 int CGuildInfo::FUN_1404d2510(int a,int b)
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d74e0(a,b);
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=TSingleton<CGuildXmlData>::GetInstance()->GetSkill(a,b);
     if(skill==0) return 0x7fffffff;
     return skill->f28;
 }
@@ -2108,7 +2108,7 @@ void CGuildInfo::FUN_1404d2a10(CInPacket* packet)
         if(f360==0) {
             f360=new CGuildNpcShopMgr;
         }
-        f360->FUN_1404d8e80(packet);
+        f360->Read(packet);
     }
 }
 
@@ -2326,7 +2326,7 @@ void CGuildInfo::FUN_1404d3e70()
     Unk_GuildMapLock guard(lock,1);
     f280.RemoveAll();
     std::vector<int> v;
-    TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7900(v);
+    TSingleton<CGuildXmlData>::GetInstance()->GetEventIds(v);
     for(unsigned __int64 i=0;i<v.size();++i) {
         Unk_PayloadPtr<CGuildCustomEvent> ref(new CGuildCustomEvent);
         ref->f18=v[i];

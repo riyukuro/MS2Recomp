@@ -29,6 +29,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -191,7 +194,6 @@ public:
     int FUN_141658f30();                                // level
     unsigned int FUN_141528160();
     Unk_RevAbility* FUN_1416749a0();
-    Unk_RevStats* FUN_1416561a0();
 };
 
 // The world (singleton 0x1403ed2d0).
@@ -203,7 +205,7 @@ public:
 };
 
 // The client constants (singleton 0x1401d3200): the revival related values.
-class Unk_RevUIntVal { public: unsigned* FUN_1401d7c10(); };
+class Unk_RevUIntVal { public: };
 class Unk_RevFloatVal { public: float* FUN_140298f40(); };
 class Unk_RevIntVal { public: int* FUN_1402056b0(); };
 struct Unk_RevConsts
@@ -220,8 +222,6 @@ struct Unk_RevConsts
     Unk_RevIntVal m_cfe0;                               // +0xcfe0 the auto-decline countdown
 };
 MS2_CHECK_OFFSET(Unk_RevConsts, m_cfe0, 0xcfe0);
-Unk_RevConsts* FUN_1401d3200();
-unsigned* FUN_1401d7c10(Unk_RevUIntVal* p);
 float* FUN_140298f40(Unk_RevFloatVal* p);
 int* FUN_1402056b0(Unk_RevIntVal* p);
 
@@ -307,13 +307,11 @@ extern int DAT_143ab2950;
 extern __int64 DAT_143ab2898;                           // the free revival limit
 
 // The check box child (the coupon).
-class Unk_RevCheck : public ASDisplayObject
+class Unk_RevCheck : public ASButton
 {
 public:
     int FUN_1422c2030();
     bool FUN_1422ce0e0();
-    void FUN_1422ce090(int n);
-    void FUN_1422c1fe0(int n);
 };
 
 // The movie root: the data calls.
@@ -365,7 +363,6 @@ CStringW FUN_140cd7d20();                                       // the dungeon n
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);   // ATL::operator+(const wchar_t*, const CStringW&)
 void FUN_141275260(int nId, int a, int b);                      // system message by string id
 void FUN_1412751f0(const CStringW& str, int a, int b);          // system message
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // case-insensitive equal
 bool FUN_140374410(int nFieldId);
 __int64 FUN_140632990(__int64 nValue, float fRate);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
@@ -432,7 +429,7 @@ int UIRevivalDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
-            if (FUN_1403b3c40(strTag, L"leaveInField") != 0)
+            if (operator==(strTag, L"leaveInField") != 0)
                 FUN_14151f200();
         }
     }
@@ -630,7 +627,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01700(0x476, 0, 0);
-            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a01ca0(*FUN_1402056b0(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_cfe0), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(spBox);
         }
     }
@@ -685,7 +682,7 @@ void UIRevivalDialog::FUN_141abbb20()
     }
     if (spField.FUN_140885340()->m_13c == 0)
     {
-        if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
+        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0, 0, 1) != 0)
         {
             FUN_141275260(0x281, 1, 1);
             return;
@@ -735,8 +732,8 @@ void UIRevivalDialog::FUN_141abc080()
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
         __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(), 0);
-        float fRate = *FUN_140298f40(&FUN_1401d3200()->m_8cc0) < pPc->FUN_1416561a0()->FUN_1411e1110(0x42)
-            ? *FUN_140298f40(&FUN_1401d3200()->m_8cc0) : pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
+        float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42)
+            ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42);
         nCost = FUN_140632990(nCost, 1.0f - fRate);
         nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
@@ -757,7 +754,7 @@ void UIRevivalDialog::FUN_141abc080()
     }
     if (spField.FUN_140885340()->m_13c == 0)
     {
-        if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
+        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0, 0, 1) != 0)
         {
             FUN_141275260(0x281, 1, 1);
             return;
@@ -818,7 +815,7 @@ int UIRevivalDialog::FUN_141abc7f0()
 // @0x141abc930
 bool UIRevivalDialog::FUN_141abc930()
 {
-    if (FUN_1401d3200()->m_a278 != 0)
+    if (reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_a278 != 0)
         return false;
     if (DAT_143ab2884 != 0)
     {
@@ -911,9 +908,9 @@ void UIRevivalDialog::FUN_141abccb0()
     if (pPc == 0)
         return;
     __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(),
-        pPc->FUN_1416749a0()->FUN_140970d90(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0));
-    float fRate = *FUN_140298f40(&FUN_1401d3200()->m_8cc0) < pPc->FUN_1416561a0()->FUN_1411e1110(0x42)
-        ? *FUN_140298f40(&FUN_1401d3200()->m_8cc0) : pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
+        pPc->FUN_1416749a0()->FUN_140970d90(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0));
+    float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42)
+        ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
@@ -948,8 +945,8 @@ void UIRevivalDialog::FUN_141abd290()
     int nA = pPc->FUN_141528160();
     int nB = FUN_1401c0d90()->FUN_140477d10(pPc->FUN_141658f30());
     __int64 nCost = FUN_1401c0db0()->FUN_1406771e0(pPc->vfunc_78(), nA, nB);
-    float fRate = FUN_1401d3200()->m_90f8 < pPc->FUN_1416561a0()->FUN_1411e1110(0xa4)
-        ? FUN_1401d3200()->m_90f8 : pPc->FUN_1416561a0()->FUN_1411e1110(0xa4);
+    float fRate = reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0xa4)
+        ? reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0xa4);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (FUN_140374410(reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd3060()) != 0)

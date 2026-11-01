@@ -223,7 +223,7 @@ bool CMS2JavascriptHandler::HaveHome(CefRefPtr<CefV8Value> object, const CefV8Va
     bool bHome = false;
     MyPC* pPC = static_cast<MyPC*>(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
     if (pPC != NULL)
-        bHome = pPC->FUN_141527e00() == 0;
+        bHome = pPC->HasNoHome() == 0;
     retval = CefV8Value::CreateBool(bHome);
     return true;
 }
@@ -432,6 +432,6 @@ bool CMS2JavascriptHandler::DoAction(CefRefPtr<CefV8Value> object, const CefV8Va
 // @0x1414bf2c0
 bool CMS2JavascriptHandler::SendMessage(CefRefPtr<CefProcessMessage> message)
 {
-    CWebBrowserService::GetInstance()->FUN_141b78570(CefV8Context::GetCurrentContext(), message);
+    CWebBrowserService::GetInstance()->QueueBrowserMessage(CefV8Context::GetCurrentContext(), message);
     return true;
 }

@@ -29,7 +29,7 @@ public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 Unk_LockUIManager* FUN_1403ed2b0();
-UIInventoryDialog* FUN_1405344f0(int nId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 int FUN_140534480(const ATL::CAtlArray<unsigned __int64>& aIds, const unsigned __int64& nId);
 bool FUN_140634120(MS2Ptr<CItem> item, int* pReason);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);

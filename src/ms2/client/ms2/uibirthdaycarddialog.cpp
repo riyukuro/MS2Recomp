@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -37,11 +38,13 @@ public:
     void FUN_1411a5110(CString strPath, CString strName, CString strBone, int a, void* pXform, float fScale, int b);   // play a sound
 };
 
-class WorldService { public: void* FUN_141bd0cc0(); };   // C3: member view (0x141bd0cc0, the local player)
-void* FUN_1403ed2d0();                                          // the world session (local player owner)
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 void* FUN_140967100();
-void FUN_141b1feb0(void* pTalk);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 
 // 0x143abd4f8: the greeting sound's name.
@@ -78,7 +81,7 @@ MS2_REPLACE_METHOD(0x140BB9860, UIBirthdayCardDialog, vfunc_65, 37, 0x1083A844);
 void UIBirthdayCardDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
 }
 MS2_REPLACE_METHOD(0x140BB9890, UIBirthdayCardDialog, vfunc_67, 37, 0xAB07D7CD);
 
@@ -105,7 +108,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
 {
     if (m_30.get() != 0)
     {
-        Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+        Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
         {
             if (pActor->FUN_141660030() != 0)

@@ -18,6 +18,11 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // Unrecovered helpers.
@@ -350,10 +355,10 @@ void SkillDataTableCli::LoadAdditionalFile(CString strPath)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("additional"))
+    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("additional")))
     {
         MS2Ptr<AdditionalData> spData(new AdditionalData);
         spData->Load(pElem);

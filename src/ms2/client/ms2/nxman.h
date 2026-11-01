@@ -51,7 +51,7 @@ public:
     int FUN_14160e5f0();                                // 0x14160e5f0
     int  FUN_14160e630();                               // 0x14160e630
     void FUN_14160e870();                               // 0x14160e870
-    void FUN_14160e9b0();                               // 0x14160e9b0
+    void SetCommandLine();                               // 0x14160e9b0
     CString FUN_14160e9e0(CString strHost);             // 0x14160e9e0
     CString FUN_14160eb70();                            // 0x14160eb70
     CString FUN_14160ebf0();                            // 0x14160ebf0

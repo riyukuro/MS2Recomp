@@ -65,6 +65,7 @@
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // return types of the getters this unit calls
 class CUserEventManager;
@@ -144,7 +145,6 @@ public:
     int FUN_1422e6270();
     int FUN_1422e6310();
 };
-void FUN_1407cba60(AScript* p, const char* szName, CStringA v);
 void FUN_1407cbbe0(AScript* p, const char* szName, bool v);
 void FUN_1407cb9c0(AScript* p, const char* szName, int v);
 // Bit flags of the XML/refresh state (m_nFlags): 1 default loaded, 2 my-pc complete, 4 swf loaded.
@@ -158,7 +158,7 @@ template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Val
 }
 template<class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -266,7 +266,7 @@ void UIAdPushDialog::vfunc_72()
         return;
     if (FUN_1418ffe80(m_nShowState, 1))
         FixPosition();
-    if (!m_tick.FUN_140268870(1000))
+    if (!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))
         return;
     POSITION pos = m_entities.GetHeadPosition();
     while (pos)
@@ -981,7 +981,7 @@ bool AdPushEntityLimitedBundle::vfunc_1()
             {
                 Unk_AdItemInfo& info = m_item->m_info;
                 CStringA strIcon = info.FUN_1406a0160();
-                FUN_1407cba60(script.operator->(), s_strIconPath, CStringA(strIcon));
+                static_cast<AScript*>(script.operator->())->FUN_1407cba60(s_strIconPath, CStringA(strIcon));
                 FUN_1407cbbe0(script.operator->(), "visible", true);
                 FUN_1407cb9c0(script.operator->(), "id", m_nId);
                 FUN_1407cbbe0(script.operator->(), "showRemainTime", m_bShowRemain);

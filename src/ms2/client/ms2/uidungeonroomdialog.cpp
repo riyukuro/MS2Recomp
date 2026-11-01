@@ -209,7 +209,6 @@ bool FUN_140930b40();                                                           
 class Unk_DrUIService
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                                            // the dialog of a ui id
     void FUN_141adc530(int nId);                                                        // open a dialog
 };
 class Unk_DrLog { public: void FUN_140177a80(int nLevel, int nCategory, const wchar_t* szFormat, const unsigned& arg); };
@@ -219,7 +218,6 @@ size_t FUN_140e20940(const std::vector<MS2Ptr<ASButton> >* pButtons);          /
 void FUN_140e20070(std::vector<MS2Ptr<ASLabel> >* pLabels);                     // vector<MS2Ptr<ASLabel>>::clear (the folded copy Clear calls)
 void FUN_140e20870(std::vector<MS2Ptr<ASLabel> >* pLabels, const MS2Ptr<ASLabel>& spLabel); // vector<MS2Ptr<ASLabel>>::push_back (the folded copy AddText calls)
 CStringW FUN_140298ea0(CStringW strKey);                                                // localized string by key (by value)
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& arg);                   // StringFormat<CStringW>
 CStringW FUN_140719d20(const wchar_t* szFormat, const short& arg);                      // StringFormat<short>
 CStringW FUN_140719b50(short nScore);                                                   // a score as text
 CStringA FUN_1402bb1c0(const char* szFormat, const int& arg);                           // StringFormat<int>
@@ -271,7 +269,7 @@ template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Val
 }
 template<class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -345,7 +343,7 @@ void UIDungeonRoomRankPanel::Refresh(MS2Ptr<DungeonRoom> spRoom)
                 ((class Unk_DrLog*)GetLogString())->FUN_140177a80(1, 0x13, L"UIDungeonRoomRankPanel Not Found DungeonMission:{0}", missions[i]);
                 return;
             }
-            FUN_140cfee80((*m_missions[i]).FUN_1422bb890(), "titleText", FUN_1401e8510(L"{0}", spMission->GetName()));
+            FUN_140cfee80((*m_missions[i]).FUN_1422bb890(), "titleText", StringFormat<CStringW>(L"{0}", spMission->GetName()));
             FUN_140cfee80((*m_missions[i]).FUN_1422bb890(), "scoreText", FUN_140719d20(L"{0}", spMission->m_maxScore));
         }
         else
@@ -470,7 +468,7 @@ void UIDungeonRoomSeasonRankReward::Refresh(MS2Ptr<DungeonRoom> spRoom)
         unsigned nItemId = spReward->GetItemId(nRank);
         int nRarity = FUN_14053feb0(nItemId);
         bool bComplete = nRank <= nCount;
-        m_slots[i]->FUN_1409ba5d0(nItemId, nRarity, 0);
+        m_slots[i]->SetItem(nItemId, nRarity, 0);
         CString strState(bComplete ? "complete" : "normal");
         m_seasonRankReward[i]->vfunc_15(strState);
         CString strEnable = FUN_1402bb1c0("enable{0}", nRank);
@@ -520,7 +518,7 @@ void UIDungeonRoomLimitTextGroup::AddText(const CStringW& strText, int nColor, c
     spLabel->FUN_1422bffe0(m_x, m_y);
     if (!strTooltip.IsEmpty())
         spLabel->FUN_1422c7b40(strTooltip);
-    m_y += spLabel->FUN_1422c13b0();
+    m_y += spLabel->GetHeightCeil();
 }
 MS2_REPLACE_METHOD(0x1412A9630, UIDungeonRoomLimitTextGroup, AddText, 651, 0x109A083B);
 
@@ -593,7 +591,7 @@ UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovie
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
     for (unsigned i = 0; i < FUN_140e20940(&m_subTabButtons); i++)
         m_subTabButtons[i]->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnSubTab), FUN_140bd09d0(i));
-    m_subTabButtons[3]->FUN_1422c7d30(300, 0);
+    m_subTabButtons[3]->SetTooltipOffset(300, 0);
     m_enterSoloButton->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnEnterSolo), 0);
     m_enterPartyButton->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnEnterParty), 0);
     m_partySearchButton->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnPartySearch), 0);
@@ -624,7 +622,7 @@ template <class T> T* Unk_DrGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_DrUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_DrUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -693,18 +691,18 @@ void UIDungeonRoomInfo::RefreshLimits()
     CStringW strLimit;
     if (m_spRoom->m_limitPlayerLevel > 0)
     {
-        strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_1409e8820(L"s_dungeonRoom_limit_Level", m_spRoom->m_limitPlayerLevel), pPlayer->vfunc_78() >= m_spRoom->m_limitPlayerLevel ? 0xffffff : 0xff0000));
+        strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_1409e8820(L"s_dungeonRoom_limit_Level", m_spRoom->m_limitPlayerLevel), pPlayer->vfunc_78() >= m_spRoom->m_limitPlayerLevel ? 0xffffff : 0xff0000));
     }
     if (m_spRoom->m_gearScore > 0)
     {
-        strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_140938ae0(L"s_dungeonRoom_limit_GearScore", m_spRoom->m_gearScore), (unsigned)pPlayer->FUN_14152ea50() >= m_spRoom->m_gearScore ? 0xffffff : 0xff0000));
+        strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_140938ae0(L"s_dungeonRoom_limit_GearScore", m_spRoom->m_gearScore), (unsigned)pPlayer->FUN_14152ea50() >= m_spRoom->m_gearScore ? 0xffffff : 0xff0000));
     }
     if (!m_spRoom->m_limitDayOfWeeks.FUN_140b91330())
-        strLimit += FUN_1401e8510(L"{0}\n", FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_DayOfWeeks", FUN_140b8f550(m_spRoom->m_limitDayOfWeeks)));
+        strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_DayOfWeeks", FUN_140b8f550(m_spRoom->m_limitDayOfWeeks)));
     if (m_spRoom->m_minUserCount > 0)
     {
         int nUserCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
-        strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_140938ae0(L"s_dungeonRoom_limit_minUserCount", m_spRoom->m_minUserCount), (unsigned)nUserCount >= m_spRoom->m_minUserCount ? 0xffffff : 0xff0000));
+        strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_140938ae0(L"s_dungeonRoom_limit_minUserCount", m_spRoom->m_minUserCount), (unsigned)nUserCount >= m_spRoom->m_minUserCount ? 0xffffff : 0xff0000));
     }
     if (m_spRoom->m_limitClearDungeon.size() > 0)
     {
@@ -714,30 +712,30 @@ void UIDungeonRoomInfo::RefreshLimits()
         {
             unsigned nRoomId = *it;
             int nColor = FUN_140931510()->GetRecord()->HasProgress(nRoomId) ? 0xffffff : 0xff0000;
-            strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_clearDungeon", GetStringTable()->FUN_141811980(0x14, nRoomId)), nColor));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_clearDungeon", GetStringTable()->FUN_141811980(0x14, nRoomId)), nColor));
         }
     }
     if (m_spRoom->m_limitRecommendWeapon)
     {
         if (pPlayer->FUN_1415272b0())
-            strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_recommendJobs_weapon_equip"), 0xffffff));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_recommendJobs_weapon_equip"), 0xffffff));
         else
-            strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_recommendJobs_weapon"), 0xff0000));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_recommendJobs_weapon"), 0xff0000));
     }
     if (m_spRoom->m_isLimitTime)
     {
         std::vector<Unk_DayTimeRange> times;
-        ((class CGameRule*)FUN_1401c0d90())->FUN_14047a1b0(m_spRoom->GetDungeonRoomID(), times);
+        ((class CGameRule*)FUN_1401c0d90())->GetEventTimeLimitDungeonRanges(m_spRoom->GetDungeonRoomID(), times);
         if (times.empty())
         {
-            strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_cannot_enter"), 0xff0000));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_140298ea0(L"s_dungeonRoom_limit_cannot_enter"), 0xff0000));
         }
         else
         {
             CStringW strTimes;
             for (unsigned i = 0; i < times.size(); ++i)
                 strTimes += StringFormat(L"{0:02d}:{1:02d}~{2:02d}:{3:02d} ", (int)times[i].m_start.GetHour(), (int)times[i].m_start.GetMinute(), (int)times[i].m_end.GetHour(), (int)times[i].m_end.GetMinute());
-            strLimit += FUN_1401e8510(L"{0}\n", FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_time", strTimes));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_time", strTimes));
         }
     }
     m_limitText->FUN_1422c4f00(strLimit);
@@ -862,7 +860,7 @@ void UIDungeonRoomInfo::FUN_1412b0110()
             if (m_helpCoinInfo->FUN_140bc71c0("m_dungeonHelperIcon", spIcon))
             {
                 double dX = spRewardCount->FUN_1422c10a0();
-                spIcon->FUN_1422bffe0((int)(dX + spRewardCount->FUN_1422c5970() + 10.0), 0);
+                spIcon->FUN_1422bffe0((int)(dX + spRewardCount->GetTextWidth() + 10.0), 0);
             }
         }
     }
@@ -1045,7 +1043,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
         if (spItem->FUN_14052b130(pEntity->vfunc_o18_0(), pEntity->vfunc_o18_1(), 0) == 0)
             continue;
         if (items[i]->GetTradable())
-            spItem->FUN_1405273f0(0);
+            spItem->SetTransferCount(0);
         switch (items[i]->GetItemTag())
         {
         case RewardPreviewItemTag_New:
@@ -1123,7 +1121,7 @@ void UIDungeonRoomInfo::FUN_1412b3430()
         m_enterStatusText->FUN_1422c4cd0(GetStringCommon(0x9b0));
     for (int i = 0; i < (int)m_partyMembers.size(); ++i)
     {
-        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162b360(i);
+        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->GetMemberAt(i);
         if (spMember == 0)
         {
             m_partyMembers[i]->vfunc_3(0);
@@ -1146,7 +1144,7 @@ void UIDungeonRoomInfo::RefreshResetButton()
     if (FUN_140930b40())
         return;
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1 && TSingleton<CPartyManager>::GetInstance()->IsMatchmaking()
-        && TSingleton<CPartyManager>::GetInstance()->FUN_14162c090() == m_spRoom->GetDungeonRoomID() && TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+        && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID() && TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
         m_resetButton->vfunc_3(1);
 }
 MS2_REPLACE_METHOD(0x1412B3720, UIDungeonRoomInfo, RefreshResetButton, 293, 0x9D2A6F74);
@@ -1174,7 +1172,7 @@ void UIDungeonRoomInfo::FUN_1412b3890()
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1)
     {
         bool bLeader = TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60();
-        if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && TSingleton<CPartyManager>::GetInstance()->FUN_14162c090() == m_spRoom->GetDungeonRoomID())
+        if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID())
         {
             m_enterPartyButton->FUN_1422c1fe0(1);
             m_enterPartyButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_dungeonRoom_enterButton_already_enter"));
@@ -1311,7 +1309,7 @@ void UIDungeonRoomInfo::OnEnterParty(const ASParams& params)
         return;
     if (m_spRoom == 0)
         return;
-    if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && m_spRoom->GetDungeonRoomID() == TSingleton<CPartyManager>::GetInstance()->FUN_14162c090())
+    if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && m_spRoom->GetDungeonRoomID() == TSingleton<CPartyManager>::GetInstance()->GetDungeonId())
     {
         TSingleton<CPartyManager>::GetInstance()->SendRoomDungeon(m_spRoom->GetDungeonID());
         return;
@@ -1411,7 +1409,7 @@ void UIDungeonRoomInfo::OnFindHelper(const ASParams& params)
         return;
     if (!CanAskHelp())
         return;
-    int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->FUN_14162c090();
+    int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->GetDungeonId();
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
     {
         // the party's current dungeon name comes first, then this room's
@@ -1435,7 +1433,7 @@ void UIDungeonRoomInfo::OnFindMember(const ASParams& params)
         return;
     if (!CanAskHelp())
         return;
-    int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->FUN_14162c090();
+    int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->GetDungeonId();
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
     {
         // the party's current dungeon name comes first, then this room's
@@ -1618,10 +1616,10 @@ void UIDungeonRoomInfo::LayoutSubPanels()
         {
             m_subPanels[i]->vfunc_3(1);
             m_subPanels[i]->FUN_1422c0060(0, y);
-            y += m_subPanels[i]->FUN_1422c13b0();
+            y += m_subPanels[i]->GetHeightCeil();
         }
     }
-    m_dungeonScrollInfo->FUN_1409c1ba0(y);
+    m_dungeonScrollInfo->SetContentsHeight(y);
 }
 MS2_REPLACE_METHOD(0x1412B57C0, UIDungeonRoomInfo, LayoutSubPanels, 469, 0xBB377534);
 
@@ -1639,7 +1637,7 @@ void UIDungeonRoomInfo::LayoutSearching()
         return;
     if (static_cast<Unk_Finder*>((ASDisplayObjectContainer*)spText.operator->())->FUN_1412bc730("textField", spField) == 0)
         return;
-    int nHalfText = (int)(spField->FUN_1422c5970() / 2.0);
+    int nHalfText = (int)(spField->GetTextWidth() / 2.0);
     int x = spText->FUN_1422c1340() / 2 - nHalfText - 0x30;
     spIcon->FUN_1422bffe0(x, 8);
 }
@@ -1729,7 +1727,7 @@ int UIDungeonRoomInfo::GetClearCount()
 {
     if (m_spRoom == 0)
         return 0xb;
-    return FUN_140931510()->FUN_140d9f880(m_spRoom->GetDungeonRoomID());
+    return FUN_140931510()->GetDungeonEnterState(m_spRoom->GetDungeonRoomID());
 }
 MS2_REPLACE_METHOD(0x1412B6360, UIDungeonRoomInfo, GetClearCount, 99, 0x80C0E990);
 
@@ -1794,7 +1792,7 @@ CStringW UIDungeonRoomInfo::FUN_1412b6530(int nState, CStringW strName)
         break;
     }
     if (strState.GetLength() > 0)
-        strState = FUN_1401e8510(L" ({0})", strState);
+        strState = StringFormat<CStringW>(L" ({0})", strState);
     int nColor = nState >= 10 ? 0xff0000 : 0xffffff;
     CStringW strTooltip = FUN_1408f71a0(L"s_dungeonRoom_party_status_tooltip", strName, strState);
     strTooltip = FUN_14183e930(strTooltip, nColor);
@@ -1953,11 +1951,11 @@ void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
             if (strStatus.IsEmpty())
                 return;
             ASTooltip tooltip(1, 2);
-            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-            tooltip.FUN_1409c6e00(300);
-            tooltip.FUN_1409c6e30(60000);
-            tooltip.FUN_1409c6dc0(5);
-            tooltip.FUN_1409c6cb0(strStatus);
+            tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+            tooltip.SetOnDelay(300);
+            tooltip.SetOffDelay(60000);
+            tooltip.SetTooltipAlign(5);
+            tooltip.SetText(strStatus);
             *pRetVal = tooltip.FUN_1422bb870();
         }
     }
@@ -1974,17 +1972,17 @@ void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         unsigned nRewardRoomId = m_spRoom->GetRewardRoomID();
         DungeonRecordCliPtr spRecord = FUN_140931510()->GetRecord()->GetRecord(nRewardRoomId);
         if (spRecord.get() != NULL)
-            tooltip.FUN_1409e26b0(FormatStringId<CStringW>(0x9a4, FUN_140b8e9a0(CMsTime(spRecord->GetExpire()))));
+            tooltip.ApplyTextTooltip(FormatStringId<CStringW>(0x9a4, FUN_140b8e9a0(CMsTime(spRecord->GetExpire()))));
     }
     else if (strName == "m_seasonSummary")
     {
         FUN_1412b9460();
         ASTooltip tooltip(1, 2);
-        tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-        tooltip.FUN_1409c6e00(300);
-        tooltip.FUN_1409c6e30(60000);
-        tooltip.FUN_1409c6dc0(7);
-        tooltip.FUN_1409c6cb0(m_188);
+        tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+        tooltip.SetOnDelay(300);
+        tooltip.SetOffDelay(60000);
+        tooltip.SetTooltipAlign(7);
+        tooltip.SetText(m_188);
         *pRetVal = tooltip.FUN_1422bb870();
     }
 }
@@ -2164,7 +2162,7 @@ void UIDungeonRoomDialog::FUN_1412b9460()
 // @0x1412b9470
 void UIDungeonRoomDialog::OnGroupChanged(const ASParams& params)
 {
-    unsigned __int64 nIndex = m_dungeonGroupCombo->FUN_1422df6c0();
+    unsigned __int64 nIndex = m_dungeonGroupCombo->GetSelectedIndex();
     if (nIndex >= m_dungeonIds.size())
         return;
     ShowGroup(m_dungeonIds[nIndex], 0);
@@ -2174,7 +2172,7 @@ MS2_REPLACE_METHOD(0x1412B9470, UIDungeonRoomDialog, OnGroupChanged, 120, 0x88AD
 // @0x1412b94f0
 void UIDungeonRoomDialog::OnRoomSelected(const ASParams& params)
 {
-    size_t nIndex = m_dungeonList->FUN_1422dccd0();
+    size_t nIndex = m_dungeonList->GetSelectedIndex();
     if (nIndex >= m_rooms.size())
         return;
     if (m_spRoom == m_rooms[nIndex].get())
@@ -2263,7 +2261,7 @@ void FUN_1412b9870(int nRoomId, int nReason)
         for (std::vector<unsigned>::const_iterator it = rEffects.begin(); it != itEnd; ++it)
         {
             unsigned nEffectId = *it;
-            strEffects += FUN_1401e8510(L"[{0}] ", GetStringTable()->FUN_141812290(nEffectId, 1, "name"));
+            strEffects += StringFormat<CStringW>(L"[{0}] ", GetStringTable()->FUN_141812290(nEffectId, 1, "name"));
         }
         FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_field_limit_additionalEffect", strEffects), 1, 1);
         break;
@@ -2325,7 +2323,7 @@ void UIDungeonRoomDialog::ShowVipTooltip(Scaleform::GFx::Value* pRetVal)
     if (m_spRoom == 0)
         return;
     ASTooltip tooltip(pPlayer, 2, 2);
-    if (tooltip.FUN_1409e26b0(GetStringCommonByKey(L"s_vip_tooltip_info")))
+    if (tooltip.ApplyTextTooltip(GetStringCommonByKey(L"s_vip_tooltip_info")))
         *pRetVal = tooltip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x1412BA290, UIDungeonRoomDialog, ShowVipTooltip, 264, 0x56A92FD1);
@@ -2340,7 +2338,7 @@ bool UIDungeonRoomDialog::SelectGroup(int nGroup, unsigned nRoomId)
         if (m_rooms.empty())
             return false;
         SetRoom(*m_rooms.begin());
-        m_dungeonList->FUN_1422dcca0(0);
+        m_dungeonList->SetSelectedIndex(0);
     }
     return true;
 }
@@ -2387,7 +2385,7 @@ void UIDungeonRoomDialog::SelectComboGroup(int nGroup)
     {
         if (m_dungeonIds[i] == nGroup)
         {
-            m_dungeonGroupCombo->FUN_1422df690(i);
+            m_dungeonGroupCombo->SetSelectedIndex(i);
             return;
         }
     }
@@ -2431,10 +2429,10 @@ void UIDungeonRoomDialog::ShowGroup(int nGroup, unsigned nRoomId)
             }
         }
     }
-    m_dungeonList->FUN_1422dcca0(-1);
+    m_dungeonList->SetSelectedIndex(-1);
     m_dungeonList->FUN_1422dcf40((int)m_rooms.size());
     static_cast<Unk_ASComponentSlots*>((ASUIComponent*)m_dungeonList.operator->())->vfunc_24(true);
-    m_dungeonList->FUN_1422dcca0(nSelect);
+    m_dungeonList->SetSelectedIndex(nSelect);
 }
 MS2_REPLACE_METHOD(0x1412BA830, UIDungeonRoomDialog, ShowGroup, 847, 0x22CDA082);
 

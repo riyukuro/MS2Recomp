@@ -30,6 +30,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/pvpmanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- unit-local views of exe types ----
 
@@ -107,17 +109,7 @@ public:
     Unk_PtConst m_rewardItem;                                   // +0x4f70
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned int* FUN_1402056b0(Unk_PtConst* p);
 
-class Unk_PtSound                                               // the sound / cursor service
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_PtSound* FUN_140a94350();
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 int FUN_141276180(const CString& strSound, const CString& strArg);               // play a UI sound
@@ -262,7 +254,7 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
     }
     else if (m_nCount >= 0)
     {
-        unsigned int nItemId = *FUN_1402056b0(&((class Unk_PtConfig*)FUN_1401d3200())->m_rewardItem);
+        unsigned int nItemId = *reinterpret_cast<unsigned int*>(reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_rewardItem)->Get());
         CString strBind = FUN_141345eb0(nItemId, m_nCount);
         CStringW strIcon = FUN_14016a730(strBind, 0);
         CStringW strReward(L"");
@@ -272,7 +264,7 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
         if (m_nMyTeam == m_nWinTeam)
         {
             FUN_141276180(s_strBattleFieldWin, "");
-            FUN_140a94350()->vfunc_10(9);
+            ChromaSDK::GetChromaManager()->SetState(9);
             strReward = FUN_14028dfa0<CStringW, int>(L"s_team_pvp_winner_reward_one_type", strName, m_nCount);
         }
         else

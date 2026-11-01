@@ -14,6 +14,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -28,7 +29,7 @@ public:
 };
 Unk_InputState* FUN_14025e7c0();
 
-// A field actor (FUN_1409ffd30 casts an object to it).
+// A field actor (efd::DynamicCast<PCBase, GameObject> casts an object to it).
 class Unk_RpgActor : public Unk_CameraTargetEntity
 {
 public:
@@ -57,12 +58,10 @@ public:
     virtual void vfunc_41();
     virtual void vfunc_42(float fAlpha, bool bFade);
 };
-Unk_RpgActor* FUN_1409ffd30(Unk_CameraTargetEntity* p);
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -73,7 +72,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-Unk_ClientConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_ClientConfig* FUN_1401d3200()
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
 class Unk_Cursor
@@ -88,7 +87,6 @@ egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game 
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -118,7 +116,7 @@ MS2_REPLACE_METHOD(0x14185aac0, CTPSCameraMode, vfunc_8, 36, 0xF8B84114);
 // @0x14185aaf0
 void CTPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_RpgActor* pActor = FUN_1409ffd30(p);
+    Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(p)));
     if (m_130 && m_130 != pActor)
     {
         if (m_130)

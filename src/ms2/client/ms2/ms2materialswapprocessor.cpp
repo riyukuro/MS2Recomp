@@ -70,7 +70,7 @@ void MS2MaterialSwapProcessor::SetUseMS2List(int bUseMS2List)
 }
 
 // @0x1414cfbe0
-std::vector<NiPointer<MaterialSwapper> >& MS2MaterialSwapProcessor::FUN_1414cfbe0()
+std::vector<NiPointer<MaterialSwapper> >& MS2MaterialSwapProcessor::GetSwappers()
 {
     return m_swappers;
 }

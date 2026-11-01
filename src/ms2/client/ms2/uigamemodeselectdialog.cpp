@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -20,10 +21,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> GmClickDelegate;
 
-class Unk_GmStartButton : public ASDisplayObject
+class Unk_GmStartButton : public ASButton
 {
 public:
-    void FUN_1422ce240(const GmClickDelegate& onClick, int nFlags);     // click callback
 };
 
 // The constants table: the two movie paths.

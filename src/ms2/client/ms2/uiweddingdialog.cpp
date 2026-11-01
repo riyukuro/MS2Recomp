@@ -41,6 +41,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local views of exe objects ----
 
@@ -89,7 +90,6 @@ class CUgcManager   // C3: member view for the former free stand-ins
 public:
     void FUN_14187fd80();
 };
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_140710590(COutPacket&);
 
 // The proxy members the shared WeddingProxy placeholder leaves in its padding.
@@ -106,13 +106,13 @@ UIWeddingDialog::UIWeddingDialog()
     FUN_140fc83d0(PagePtr(new UIWeddingPageMessage(this)));
     FUN_140fc83d0(PagePtr(new UIWeddingPageSkill(this)));
     FUN_140fc83d0(PagePtr(new UIWeddingPageMission(this)));
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
 }
 
 // @0x140fc72a0
 UIWeddingDialog::~UIWeddingDialog()
 {
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIWeddingDialog::FUN_140fc81a0));
 }
 
 // @0x140fc73a0
@@ -272,7 +272,7 @@ MS2_REPLACE_METHOD(0x140fc7e10, UIWeddingDialog, vfunc_49, 98, 0x19C1D0F7);
 // @0x140fc7e80
 void UIWeddingDialog::FUN_140fc7e80(const CStringW& strProfile)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     m_30->Invoke("setProfile", CStringW(strProfile));
 }
@@ -281,7 +281,7 @@ MS2_REPLACE_METHOD(0x140fc7e80, UIWeddingDialog, FUN_140fc7e80, 159, 0x4F906D40)
 // @0x140fc7f30
 void UIWeddingDialog::FUN_140fc7f30()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     m_30->Invoke("setProfile", FUN_140fc88d0());
 }

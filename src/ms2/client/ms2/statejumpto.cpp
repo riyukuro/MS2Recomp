@@ -21,7 +21,8 @@
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 class Unk_JtAnimService { public: int FUN_140b7f6a0(const egf::EntityID& kId); };    // sequence id of the model
-Unk_JtAnimService* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // The temporary returned by vfunc_18 viewed as the 12-byte point of the arc API (cl takes the address of the temporary;
 // clang-cl refuses, so it goes through a helper there).
@@ -109,7 +110,7 @@ void StateJumpTo::vfunc_3(double fTime)
         m_pOwner->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         if ((m_spJump.get() != 0 ? true : false) && m_spJump->m_n34 != 0)
         {
-            m_pOwner->FUN_14166d8b0(m_spJump->m_f38);
+            m_pOwner->SetTargetYaw(m_spJump->m_f38);
             m_pOwner->FUN_14166d630((float)fTime);
         }
     }
@@ -119,7 +120,7 @@ void StateJumpTo::vfunc_3(double fTime)
 void StateJumpTo::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    int nSeq = reinterpret_cast<Unk_JtAnimService*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (m_n10 == 0x28)
     {
         if (m_spArc->IsRising() != 0 && m_n48 == 0)

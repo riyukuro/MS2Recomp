@@ -66,17 +66,15 @@ static UICommon::CMyPCKeyInputController s_keyInputController;                  
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // ---- unit-local views of exe objects ----
 
 // The item table the list is filled from.
 
 // The input state (key presses of the frame).
-class Unk_OcInputState
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);             // the key was pressed
-};
+class Unk_OcInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The AS list controls of the movie ("m_itemGrade" combo, "m_items" list) and the search input.
@@ -99,7 +97,6 @@ public:
 class Unk_CoupleInput : public AScript
 {
 public:
-    CStringW FUN_1422e0b00();                               // the text
 };
 
 // The string table (item rank names, item names).
@@ -154,7 +151,7 @@ int UIItemOptionCreateDialog::vfunc_13()
         return 1;
     if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         if (MS2Ptr<Unk_CoupleInput> input = FUN_140e35bd0("m_searchInput"))
-            FUN_1412d3c10("", input->FUN_1422e0b00());
+            FUN_1412d3c10("", reinterpret_cast<ASTextInput*>(input.operator->())->GetText());
         return 1;
     } else if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0) != 0) {
         if (m_30.get() != 0)
@@ -237,10 +234,10 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
         Scaleform::GFx::Value elem;
         if (options.GetElement(i, &elem) != 0) {
             ASObj row(elem, 2);
-            Scaleform::GFx::Value vKinds = row.FUN_1422baa20("kinds");
-            Scaleform::GFx::Value vType = row.FUN_1422baa20("type");
-            Scaleform::GFx::Value vIndex = row.FUN_1422baa20("index");
-            Scaleform::GFx::Value vValue = row.FUN_1422baa20("value");
+            Scaleform::GFx::Value vKinds = row.GetMember("kinds");
+            Scaleform::GFx::Value vType = row.GetMember("type");
+            Scaleform::GFx::Value vIndex = row.GetMember("index");
+            Scaleform::GFx::Value vValue = row.GetMember("value");
             int nKind = ((Scaleform::GFx::Value*)&(vKinds))->GetUInt();
             if (nKind < 0)
                 continue;
@@ -274,13 +271,13 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
         if (item == 0)
             return;
         int nSelected = 0;
-        if (item->FUN_14053c5a0() != 0) {
+        if (item->GetRank() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("label", ((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813150(item->FUN_14053c5a0()));
-            row.FUN_1409adc90("itemRank", item->FUN_14053c5a0());
+            row.FUN_1407cbb20("label", ((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813150(item->GetRank()));
+            row.FUN_1409adc90("itemRank", item->GetRank());
             combo->FUN_1422dfc70(row);
             nSelected = 0;
-            m_nRank = item->FUN_14053c5a0();
+            m_nRank = item->GetRank();
         } else {
             for (int nRank = 1; nRank < 7; ++nRank) {
                 int nItemRank = nRank;
@@ -340,25 +337,25 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
         MS2Ptr<ASUIComponent> table = sheet->FUN_140accfb0<ASUIComponent>("m_tableRandom");
         if (table == 0)
             break;
-        MS2Ptr<ItemOptionRandom> random = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(item->FUN_14053eff0(m_nRank));
+        MS2Ptr<ItemOptionRandom> random = ((class CItemOptionTable*)FUN_140166430())->GetRandom(item->FUN_14053eff0(m_nRank));
         if (random == 0)
             break;
         int nRows = random->FUN_1405d5fe0(m_nRank);
         table->Invoke("initTable", nRows, nRows, "Random", 2);
         if (nRows == 0)
             break;
-        random->FUN_1405d75d0([this, &table](ItemOptionValueRandom* pValue) {
+        random->ForEachValue([this, &table](ItemOptionValueRandom* pValue) {
             ASObj column(2);
             ASObj label(2);
             if (pValue->FUN_1405d2790() == 0) {
                 FUN_1412d4400(label, pValue->GetStat());
-                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f64e0(m_nItemId, m_nRank, pValue->GetStat());
+                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(m_nItemId, m_nRank, pValue->GetStat());
                 column.FUN_1407cb9c0("minV", range.first);
                 column.FUN_1407cb9c0("maxV", range.second);
                 column.FUN_1407cb9c0("value", range.second);
             } else if (pValue->FUN_1405d2790() == 1) {
                 FUN_1412d44d0(label, pValue->GetSpecial());
-                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6650(m_nItemId, m_nRank, pValue->GetSpecial());
+                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(m_nItemId, m_nRank, pValue->GetSpecial());
                 column.FUN_1407cb9c0("minV", range.first);
                 column.FUN_1407cb9c0("maxV", range.second);
                 column.FUN_1407cb9c0("value", range.second);
@@ -379,7 +376,7 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
     MS2Ptr<ASUIComponent> result = FUN_140c02990("m_optionResult");
     if (result == 0)
         return;
-    MS2Ptr<ItemOptionConstant> constant = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f5ee0(item->FUN_14053efd0(), m_nRank);
+    MS2Ptr<ItemOptionConstant> constant = ((class CItemOptionTable*)FUN_140166430())->FindConstantOption(item->FUN_14053efd0(), m_nRank);
     if (constant.get() != 0) {
         constant->FUN_1405d33e0([this, &result](ItemOptionValue* pValue) {
             ASObj row(2);
@@ -406,7 +403,7 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
     if (!list)
         return;
     list->FUN_1422dd1d0();
-    list->FUN_1422dcca0(-1);
+    list->SetSelectedIndex(-1);
     list->vfunc_24(true);
     for (size_t i = 0; i < m_ids.size(); ++i) {
         unsigned nId = m_ids[i];
@@ -417,9 +414,9 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
         CStringW strLabel;
         int nLevel = item->limit.levelLimit;
         CStringW strFormat(L"[%ld] [%s] [Lv.%d] %s");
-        if (item->FUN_14053e130() != 0) {
+        if (item->IsCashItem() != 0) {
             strLabel.Format(strFormat, nId, L"CASH", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
-        } else if (item->FUN_14053cf90() != 0) {
+        } else if (item->HasSkinType() != 0) {
             strLabel.Format(strFormat, nId, L"SKIN", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
         } else {
             strLabel.Format(strFormat, nId, L"GAME", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
@@ -430,38 +427,38 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
         if (strSearch.IsEmpty()) {
             if (strGroup == "RHLH") {
                 if (item->FUN_14053d460())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "CLPA") {
                 if (item->FUN_14053d2b0())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "CONSUME") {
-                if (item->FUN_14053c5c0() == 2 || item->FUN_14053c5c0() == 0x18)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 2 || item->GetType() == 0x18)
+                    list->AddItem(row);
             } else if (strGroup == "ETC") {
-                if (item->FUN_14053c5c0() == 4)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 4)
+                    list->AddItem(row);
             } else if (strGroup == "MISSION") {
-                if (item->FUN_14053c5c0() == 3)
-                    list->FUN_1422dd230(row);
+                if (item->GetType() == 3)
+                    list->AddItem(row);
             } else if (strGroup == "SKILL") {
                 if (item->FUN_14053cb40())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else if (strGroup == "INSTALL") {
                 if (item->FUN_14053cb80())
-                    list->FUN_1422dd230(row);
+                    list->AddItem(row);
             } else {
                 if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
                     if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
-                        list->FUN_1422dd230(row);
+                        list->AddItem(row);
                 }
             }
         } else {
             if (strLabel.Find(strSearch, 0) == -1)
                 continue;
-            list->FUN_1422dd230(row);
+            list->AddItem(row);
         }
     }
-    list->FUN_1422dcca0(0);
+    list->SetSelectedIndex(0);
     list->vfunc_24(true);
 }
 
@@ -484,7 +481,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
 inline void ASObj::FUN_1412d4860(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -492,7 +489,7 @@ inline void ASObj::FUN_1412d4860(const char* szName, int n)
 inline void ASObj::FUN_1412d4900(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -500,7 +497,7 @@ inline void ASObj::FUN_1412d4900(const char* szName, int n)
 inline void ASObj::FUN_1412d49a0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

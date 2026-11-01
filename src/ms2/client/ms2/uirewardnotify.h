@@ -11,7 +11,7 @@
 class PC; class NotifyObject; class CInPacket; class Unk_RNItemRef; class Unk_RNAchieve;
 
 // HUD queue of "reward" toasts (exp, meso, items, titles, skills, fishing, ...). Each Push*/Show* builds an AS object
-// (type/msg/icon/...) and hands it to FUN_141ac1fe0, which sends "appendReward" or queues it until the movie is ready.
+// (type/msg/icon/...) and hands it to AppendReward, which sends "appendReward" or queues it until the movie is ready.
 class UIRewardNotify : public UIHeadUpDisplay {
 public:
     UIRewardNotify();                                                                   // 0x141abe1d0
@@ -54,7 +54,7 @@ public:
     void FUN_141ac1b50(int nPoint);                                                     // stat point
     void FUN_141ac1d10(int nItemId);                                                    // box open (cash coupon)
     void FUN_141ac1f40();                                                               // "rewardComplete"
-    void FUN_141ac1fe0(MS2Ptr<AScript> pReward);                                          // send "appendReward" or queue
+    void AppendReward(MS2Ptr<AScript> pReward);                                          // send "appendReward" or queue
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -23,6 +23,13 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // The table file loader helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -129,20 +136,20 @@ bool CRankingArenaDataTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return false;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("gradeInfo"); pNode != 0; pNode = pNode->FUN_140168650("gradeInfo"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradeInfo")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("gradeInfo")))
     {
         RankingArenaData kData;
-        FUN_1408731e0(pNode, "grade", kData.m_nGrade);
+        XmlGetAttr((class TiXmlElement*)(pNode), "grade", reinterpret_cast<int&>(kData.m_nGrade));
         if (kData.m_nGrade == 0)
             continue;
         if (kData.m_nGrade >= 8)
             continue;
-        FUN_1408731e0(pNode, "gradeRating", kData.m_nGradeRating);
-        FUN_1408731e0(pNode, "winnerReward", kData.m_nWinnerReward);
-        FUN_1408731e0(pNode, "loserReward", kData.m_nLoserReward);
-        FUN_1408731e0(pNode, "weeklyRewardMax", kData.m_nWeeklyRewardMax);
-        FUN_1408731e0(pNode, "winnerRating", kData.m_nWinnerRating);
-        FUN_1408731e0(pNode, "loserRating", kData.m_nLoserRating);
+        XmlGetAttr((class TiXmlElement*)(pNode), "gradeRating", reinterpret_cast<int&>(kData.m_nGradeRating));
+        XmlGetAttr((class TiXmlElement*)(pNode), "winnerReward", reinterpret_cast<int&>(kData.m_nWinnerReward));
+        XmlGetAttr((class TiXmlElement*)(pNode), "loserReward", reinterpret_cast<int&>(kData.m_nLoserReward));
+        XmlGetAttr((class TiXmlElement*)(pNode), "weeklyRewardMax", reinterpret_cast<int&>(kData.m_nWeeklyRewardMax));
+        XmlGetAttr((class TiXmlElement*)(pNode), "winnerRating", reinterpret_cast<int&>(kData.m_nWinnerRating));
+        XmlGetAttr((class TiXmlElement*)(pNode), "loserRating", reinterpret_cast<int&>(kData.m_nLoserRating));
         m_aGrades[kData.m_nGrade] = kData;
     }
     for (int i = 1; i < 8; i++)

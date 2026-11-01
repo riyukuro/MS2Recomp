@@ -462,9 +462,9 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
         PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
         {
-            int nLevel = ((class PC*)(class PCBase*)(pPC))->FUN_141662750(spReceipe->m_nType);
+            int nLevel = ((class PC*)(class PCBase*)(pPC))->GetMastery(spReceipe->m_nType);
             int nFactor = ((class CMasteryTable*)FUN_1409670c0())->Factor(nReceipeId, nLevel);
-            strStatus = ((class CMasteryTable*)FUN_1409670c0())->DifferentialName(nReceipeId, ((class PC*)(class PCBase*)(pPC))->FUN_141662750(spReceipe->m_nType));
+            strStatus = ((class CMasteryTable*)FUN_1409670c0())->DifferentialName(nReceipeId, ((class PC*)(class PCBase*)(pPC))->GetMastery(spReceipe->m_nType));
             if (nFactor == 0)
                 strStatus = "disable";
             nEnabled = (nFactor != 0 && nLimit != 3) ? 1 : 0;

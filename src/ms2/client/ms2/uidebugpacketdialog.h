@@ -52,8 +52,6 @@ public:
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
     MS2Ptr<Unk_DpButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 bind a button child (a UIDialog member)
     MS2Ptr<Unk_DpInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 bind a movie clip child
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field child lookup
     MS2Ptr<Unk_DpCheck> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
 
 private:

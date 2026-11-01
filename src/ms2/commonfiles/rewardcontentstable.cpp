@@ -23,6 +23,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/adventureleveltablehelper.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -62,7 +69,7 @@ RewardContentsItem::RewardContentsItem()
 void RewardContentsItem::vfunc_2(void* pNode)
 {
     ItemEntity::vfunc_2(pNode);
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "prob", reinterpret_cast<unsigned&>(m_nProb));
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "prob", reinterpret_cast<unsigned&>(m_nProb));
 }
 
 // @0x140770440
@@ -76,7 +83,7 @@ bool RewardContentsItemGroup::Load(void* pNode)
     FUN_1408731a0(static_cast<Unk_140165cf0*>(pNode), "minLevel", m_levelRange.m_nLow);
     FUN_1408731a0(static_cast<Unk_140165cf0*>(pNode), "maxLevel", m_levelRange.m_nHigh);
     (void)((!!(m_levelRange.m_nLow <= m_levelRange.m_nHigh)) || (_wassert(L"m_levelRange.m_minValue <= m_levelRange.m_maxValue", _CRT_WIDE(MS2_THIS_FILE), 35), 0));
-    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("item"); pChild != 0; pChild = pChild->FUN_140168650("item"))
+    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("item"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("item")))
     {
         MS2Ptr<RewardContentsItem> spItem(new RewardContentsItem);
         spItem->vfunc_2(pChild);
@@ -114,10 +121,10 @@ bool RewardContentsItemTable::Load(void* pNode)
 {
     if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
         return false;
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "itemTableID", m_nItemTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "itemTableID", m_nItemTableId);
     if (m_nItemTableId == 0)
         return false;
-    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
+    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("v"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         MS2Ptr<RewardContentsItemGroup> spGroup(new RewardContentsItemGroup);
         if (!spGroup->Load(pChild))
@@ -156,13 +163,13 @@ bool RewardContents::Load(void* pNode)
 {
     if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
         return false;
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "rewardID", m_nRewardId);
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "mesoTableID", m_nMesoTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "rewardID", m_nRewardId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "mesoTableID", m_nMesoTableId);
     XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "mesoFactor", *(double*)(&m_dMesoFactor));
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "expTableID", m_nExpTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "expTableID", m_nExpTableId);
     XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "expFactor", *(double*)(&m_dExpFactor));
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "itemTableID", m_nItemTableId);
-    FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "adventureExpTableID", m_nAdventureExpTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "itemTableID", m_nItemTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "adventureExpTableID", m_nAdventureExpTableId);
     if (m_nRewardId == 0)
         return false;
     return true;
@@ -230,10 +237,10 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = pNode->FUN_140168650("table"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
     {
         unsigned nId = 0;
-        FUN_140873220(pNode, "mesoTableID", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "mesoTableID", nId);
         if (nId == 0)
             continue;
         std::vector<__int64>& values = m_mesoTables[nId];
@@ -242,7 +249,7 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
             FUN_1406a6d70(GetLogString(), 0, 0, 0x13, L"RewardContentsTable::ReadMesoTable DuplicateID:{0}", nId);
             continue;
         }
-        for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
+        for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
                 continue;
@@ -288,7 +295,7 @@ bool RewardContentsTable::ReadItemTable()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = pNode->FUN_140168650("table"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("table"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
     {
         MS2Ptr<RewardContentsItemTable> spValue(new RewardContentsItemTable);
         if (!spValue->Load(pNode))
@@ -314,7 +321,7 @@ bool RewardContentsTable::ReadContents()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         MS2Ptr<RewardContents> spValue(new RewardContents);
         if (!spValue->Load(pNode))

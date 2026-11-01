@@ -45,6 +45,13 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <map>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unit-local declarations (unrecovered callees; names describe their use) ----
 
@@ -56,7 +63,7 @@ public:
     Unk_DcXmlNode* FUN_140168650(const char* szName);           // next sibling element
 };
 void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
-int FUN_1408733e0(Unk_DcXmlNode* pNode, const char* szName, CString& str);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140179060(Unk_DcXmlNode* pNode, const char* szName, Unk_DcGroupType& n);   // enum attribute
 bool FUN_14028f710(Unk_DcXmlNode* pNode);                       // the element is enabled (feature/locale filter)
 void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
@@ -220,7 +227,7 @@ class Unk_DcRewardMgr { public: bool FUN_140770e40(int nRewardId, short nLevel, 
 Unk_DcRewardMgr* FUN_140764030();
 
 // The find component's party search button.
-class Unk_140acd6e0 : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned int bEnabled); };
+class Unk_140acd6e0 : public ASMovieClip { public: };
 
 // Strings.
 CStringW FUN_140cbf840(int nGroupType);                         // group type name
@@ -269,7 +276,7 @@ UIDungeonCategoryTable::~UIDungeonCategoryTable()
 int FUN_140c09130(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange& range)
 {
     CString str;
-    int nResult = FUN_1408733e0(pNode, szName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pNode), szName, str);
     if (nResult == 0) {
         ATL::CAtlArray<unsigned short> values;
         FUN_140177db0(str, values, "-");
@@ -287,25 +294,25 @@ void UIDungeonCategoryTable::Load()
     CString strPath = FUN_14071a5b0("Table", "dungeonCategory.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
-    Unk_DcXmlNode* pRoot = reinterpret_cast<Unk_DcXmlNode*>(&doc)->FUN_140165cf0("ms2");
+    Unk_DcXmlNode* pRoot = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(reinterpret_cast<Unk_DcXmlNode*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0) {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_DcXmlNode* pTab = pRoot->FUN_140165cf0("dungeonMainTab"); pTab != 0;
-         pTab = pTab->FUN_140168650("dungeonMainTab")) {
+    for (Unk_DcXmlNode* pTab = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonMainTab")); pTab != 0;
+         pTab = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pTab))->NextSibling("dungeonMainTab"))) {
         int nIndex = 0;
-        FUN_1408731e0(pTab, "index", nIndex);
+        XmlGetAttr((class TiXmlElement*)(pTab), "index", reinterpret_cast<int&>(nIndex));
         if (nIndex < 0 || nIndex >= 2)
             continue;
-        for (Unk_DcXmlNode* pSub = pTab->FUN_140165cf0("dungeonSubTab"); pSub != 0;
-             pSub = pSub->FUN_140168650("dungeonSubTab")) {
+        for (Unk_DcXmlNode* pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pTab))->FirstChild("dungeonSubTab")); pSub != 0;
+             pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->NextSibling("dungeonSubTab"))) {
             if (!FUN_14028f710(pSub))
                 continue;
             MS2Ptr<UIDungeonCategory> pCategory(new UIDungeonCategory);
             FUN_140c09130(pSub, "level", pCategory->m_range);
-            for (Unk_DcXmlNode* pNode = pSub->FUN_140165cf0("dungeonCategory"); pNode != 0;
-                 pNode = pNode->FUN_140168650("dungeonCategory")) {
+            for (Unk_DcXmlNode* pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->FirstChild("dungeonCategory")); pNode != 0;
+                 pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonCategory"))) {
                 Unk_DcGroupType nGroupType;
                 FUN_140179060(pNode, "groupType", nGroupType);
                 pCategory->m_groupTypes.Add(nGroupType);
@@ -645,7 +652,7 @@ MS2_REPLACE_METHOD(0x140C0C8E0, UIDungeonControlCenter, FUN_140c0c8e0, 400, 0xBA
 UIDungeonSearchSettingDialog* FUN_140c0dea0(int nUiId)
 {
     if (reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIDungeonSearchSettingDialog*>((UIObject*)spUI);
     }
@@ -795,7 +802,7 @@ int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange
                                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
         out.FUN_1422bbf00(obj);
     }
-    return out.FUN_1422bc5d0() != 0;
+    return out.GetLength() != 0;
 }
 MS2_REPLACE_METHOD(0x140C0CF80, UIDungeonControlCenter, FUN_140c0cf80, 720, 0x945A24C6);
 
@@ -945,7 +952,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, AScript a2)
 void ASObj::FUN_140c0e050(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

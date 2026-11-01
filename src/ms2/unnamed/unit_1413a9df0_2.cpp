@@ -20,12 +20,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/guildmanager.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views and unrecovered callees ------------------------------------------------------------------------------
 
 // StringFormat instances of this unit's neighbours, bound by address.
 CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& a, const int& b);
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& a);
 CStringW FUN_140e06940(const wchar_t* pszFormat, const unsigned& a, const CStringW& b, const CStringW& c);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 
@@ -65,7 +65,7 @@ class UIPlayInstrumentDialog   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_14100c890();
-    bool FUN_14100d8c0();
+    bool HasAnyScore();
 };
 class PCBase   // C3: member view for the former free stand-ins
 {
@@ -77,7 +77,7 @@ class UGCCubePalette* GetUGCCubePalette();   // C3: was FUN_140ef0b20
 class CubeHolderManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1410b5bc0();
+    int GetSelectedItemId();
 };
 void* FUN_141530930();                                  // the stat window
 // the stat window's value handle, returned by value (dtor 0x140c24a50, accessor 0x140c24af0)
@@ -539,7 +539,7 @@ int CGuideConditionMenuExpand::vfunc_3()
 CStringW CGuideConditionMenuExpand::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(FUN_1401e8510(L"menuName({0})", FUN_14016a730(m_strMenuName, 0)));
+    str.Append(StringFormat<CStringW>(L"menuName({0})", FUN_14016a730(m_strMenuName, 0)));
     return str;
 }
 
@@ -644,7 +644,7 @@ int CGuideConditionPlayInstrumentHasSelectItem::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->FUN_14100d8c0());
+        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->HasAnyScore());
     return 0;
 }
 
@@ -688,7 +688,7 @@ int CGuideConditionCubeHolderSelectItem::vfunc_3()
 {
     if (!((void*)GetUGCCubePalette()))
         return 0;
-    return FUN_1413a5600(((class CubeHolderManager*)(void*)(((void*)GetUGCCubePalette())))->FUN_1410b5bc0() == m_n20);
+    return FUN_1413a5600(((class CubeHolderManager*)(void*)(((void*)GetUGCCubePalette())))->GetSelectedItemId() == m_n20);
 }
 
 // @0x1413ae840
@@ -754,7 +754,7 @@ int CGuideConditionMentoringPage::vfunc_3()
 CStringW CGuideConditionMentoringPage::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(FUN_1401e8510(L"pageName({0})", FUN_14016a730(m_strPageName, 0)));
+    str.Append(StringFormat<CStringW>(L"pageName({0})", FUN_14016a730(m_strPageName, 0)));
     return str;
 }
 
@@ -827,7 +827,7 @@ void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
 CStringW CGuideConditionButtonSelected::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(FUN_1401e8510(L"dialogName({0})", FUN_14016a730(m_strDialog, 0)));
+    str.Append(StringFormat<CStringW>(L"dialogName({0})", FUN_14016a730(m_strDialog, 0)));
     return str;
 }
 
@@ -882,7 +882,7 @@ int CGuideConditionContract::vfunc_3()
 void CGuideConditionContract::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_140873220(pElem, "dialogID", m_nDialogId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_nDialogId);
     FUN_1408733e0(pElem, "childName", m_strChild);
     FUN_1408733e0(pElem, "dialogName", m_strDialog);
 }

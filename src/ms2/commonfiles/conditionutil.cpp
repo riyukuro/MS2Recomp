@@ -42,10 +42,10 @@
 class Unk_ConditionXml;
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_ConditionXml* pNode, const char* pszName, CString& rValue);          // string attribute
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_14015f710(Unk_ConditionXml* pNode, const char* pszName, CString strDefault);   // string with default
 CLogString* GetLogString();                                                                // the log singleton
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);       // split into strings
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);           // split into ints
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);
 void Unk_ParseExtra(CString strBody, CConditionDict* pDict);                                // "k=v,k=v" into a dictionary
@@ -139,7 +139,7 @@ int CConditionParam::Parse(CString strText)
         return 1;
     }
     ATL::CAtlArray<CString> items;
-    FUN_14015f050(strText, items, ", ");
+    Unk_SplitA(strText, (ATL::CAtlArray<CStringA>*)&(items), ", ");
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         CString strItem(items[i]);
@@ -272,7 +272,7 @@ inline void Unk_ConditionLog(CLogString* log, unsigned __int64 a, unsigned __int
     const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(first),
                                                    fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(second),
                                                    fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(third)};
-    log->FUN_1406536f0(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second, third), args));
+    log->LogWarning(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second, third), args));
 }
 
 // @0x1402a61e0
@@ -329,8 +329,8 @@ int CConditionCommonData::Load(Unk_ConditionXml* pNode, CStringW strTag, unsigne
     CString strCode;
     CString strTarget;
     XmlGetAttr((class TiXmlElement*)(pNode), "value", m_nGoal);
-    FUN_1408733e0(pNode, "code", strCode);
-    FUN_1408733e0(pNode, "target", strTarget);
+    XmlGetAttr((class TiXmlElement*)(pNode), "code", strCode);
+    XmlGetAttr((class TiXmlElement*)(pNode), "target", strTarget);
     XmlGetAttr((class TiXmlElement*)(pNode), "partyCount", m_nPartyCount);
     XmlGetAttr((class TiXmlElement*)(pNode), "guildPartyCount", m_nGuildPartyCount);
     if (!strCode.IsEmpty() && strCode != "0")

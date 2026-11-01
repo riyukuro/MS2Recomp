@@ -15,10 +15,10 @@
 #include "scenestatebase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_140aadf80();                      // the application object
-HWND FUN_14209c720(void* pApp);             // its main window
 extern int g_143af7d58;                     // nonzero: keep the window hidden
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateBase);
@@ -40,7 +40,7 @@ void CSceneStateBase::OnEnter(int nPrevState)
     m_nEnterTime = GetTickCountMs2();
     FUN_140aadf80();
     if (!g_143af7d58)
-        ShowWindow(FUN_14209c720(FUN_140aadf80()), SW_SHOWNORMAL);
+        ShowWindow(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), SW_SHOWNORMAL);
 }
 MS2_REPLACE_METHOD(0x14170b8e0, CSceneStateBase, OnEnter, 72, 0x60A9E002);
 

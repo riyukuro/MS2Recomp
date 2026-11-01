@@ -54,8 +54,8 @@ class SkillTargetRecord : public CPtred
 public:
     bool FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
         short nLevel, int nMotion, Vector3 ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
-    SkillMotionData* FUN_141759010();                       // the motion
-    SkillAttackData* FUN_141759050();                       // the attack
+    SkillMotionData* GetMotionData();                       // the motion
+    SkillAttackData* GetAttackData();                       // the attack
     int FUN_141759090();                                    // whether the attack exists
     const CString& FUN_1417590d0();                         // the arrow effect of an arrow attack
     unsigned FUN_141758fb0();                               // the skill id
@@ -94,7 +94,7 @@ public:
     CSkillRecord();                                         // 0x141759260
     virtual ~CSkillRecord();                                // 0x141759520
     bool Init(Unk_InventorySkillRequest& kReq);             // 0x1417595d0
-    SkillMotionData* FUN_141759830();                       // the motion
+    SkillMotionData* GetMotionData();                       // the motion
     const CString& FUN_1417598a0();                         // the motion effects (kind 2, 3, 4)
     const CString& FUN_1417598e0();
     const CString& FUN_141759920();
@@ -108,17 +108,17 @@ public:
     float FUN_141759d20(double dDelta, float fRate);        // the share of fRate % of the elapsed duration
     int FUN_141759e40();                                    // the attacks are over
     int FUN_141759eb0();                                    // the last motion is running
-    int FUN_141759f20();                                    // the motion is the last one
+    int IsLastMotion();                                    // the motion is the last one
     int FUN_141759f70();                                    // whether the attack exists
     void FUN_141759fc0();                                   // the attack has started
     void FUN_141759fe0();                                   // the cast is over
-    SkillAttackData* FUN_14175a000();                       // the attack
+    SkillAttackData* GetCurrentAttackData();                       // the attack
     SkillAttackData* FUN_14175a050(int nAttack);            // one attack of the motion
-    SkillAttackData* FUN_14175a0a0(CString strName);        // one attack of the motion by name
-    int FUN_14175a130();                                    // the attack's broken offence
+    SkillAttackData* GetAttackDataByName(CString strName);        // one attack of the motion by name
+    int GetBrokenOffence();                                    // the attack's broken offence
     float FUN_14175a170();                                  // the attack's broken force
     float FUN_14175a1b0();                                  // the duration left
-    int FUN_14175a210();                                    // the super armor of the skill (0 if not allowed)
+    int GetSuperArmor();                                    // the super armor of the skill (0 if not allowed)
     void AddTarget(unsigned nKey, unsigned nTarget);        // 0x14175a280
     int HasTarget(unsigned nKey, unsigned nTarget);         // 0x14175a360
     void SendSkill();                                   // sends the cast again
@@ -178,14 +178,14 @@ public:
         short nLevel, int nMotion, int nAttack, const Vector3& ptPos, const Vector3& ptDir,
         const Vector3& ptHit);                      // 0x14175a610
     SkillData* FUN_14175a820();                             // the skill
-    SkillMotionData* FUN_14175a850();                       // the motion
-    SkillAttackData* FUN_14175a8b0();                       // the attack
+    SkillMotionData* GetMotionData();                       // the motion
+    SkillAttackData* GetAttackData();                       // the attack
     int FUN_14175a920();                                    // the attack's name index
     CString FUN_14175a960();                                // the attack's hit effect
     CString FUN_14175aa50();                                // the attack's remain effect
-    bool FUN_14175ab40();                                   // the attack ignores the optimal hide of the hit effect
-    bool FUN_14175ab80();                                   // ... of the remain effect
-    void FUN_14175abc0(int nType, __int64 nDamage);         // adds one damage (type 8 is kept as 3)
+    bool IsIgnoreOptimalHideHitEffect();                                   // the attack ignores the optimal hide of the hit effect
+    bool IsIgnoreOptimalHideRemainEffect();                                   // ... of the remain effect
+    void AddDamage(int nType, __int64 nDamage);         // adds one damage (type 8 is kept as 3)
     int FUN_14175acc0();                                    // whether the attack exists
     __int64 FUN_14175ac30();                                // the total damage
     unsigned __int64 FUN_14175aeb0();                       // the damage count

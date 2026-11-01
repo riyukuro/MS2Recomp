@@ -18,11 +18,21 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the same ones the other table units use) ----
 
 class Unk_DiLoader : public CFileSystem { };
-class Unk_DiLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+class Unk_DiLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);       // FirstChildElement of the document
@@ -60,18 +70,18 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
     {
-        ((class Unk_DiLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return MS2Ptr<CDropItemData>(0);
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dropitem"); pNode != 0; pNode = pNode->FUN_140168650("dropitem"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropitem")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dropitem")))
     {
         // The exe parses into spData itself, so a miss in the final Lookup returns the last parsed entry.
         spData.AssignRaw(new CDropItemData);
         int nRowId;
-        FUN_1408731e0(pNode, "id", nRowId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nRowId));
         spData->m_nId = nRowId;
-        FUN_140873360(pNode, "shadowscale", spData->m_shadow.m_fScale);
-        FUN_140873360(pNode, "shadowbias", spData->m_shadow.m_fBias);
+        XmlGetAttr((class TiXmlElement*)(pNode), "shadowscale", reinterpret_cast<float&>(spData->m_shadow.m_fScale));
+        XmlGetAttr((class TiXmlElement*)(pNode), "shadowbias", reinterpret_cast<float&>(spData->m_shadow.m_fBias));
         Unk_LockGuard guard(s_lockDropItem);
         if (guard) {}
         else

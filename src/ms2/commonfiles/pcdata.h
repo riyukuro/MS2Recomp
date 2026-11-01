@@ -75,8 +75,8 @@ public:
     typedef ATL::CAtlArray<MS2Ptr<CItem> > ItemArray;
     CPCDataPack();                                          // 0x14071f480
     virtual ~CPCDataPack();                                 // 0x14071f510 (deleting 0x140720b40)
-    void FUN_14071f580(COutputStream& out);                 // write the three buffers
-    void FUN_14071f710(CInputStream& in);                   // read the three buffers
+    void Write(COutputStream& out);                 // write the three buffers
+    void Read(CInputStream& in);                   // read the three buffers
     void FUN_14071f8a0(CPCData* pData);                     // fill the record from the first buffer
     void FUN_14071f920(CPCData* pData);                     // store the record into the first buffer
     void FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra, const CMsTime& tmBegin, const CMsTime& tmEnd,

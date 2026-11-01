@@ -9,6 +9,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -21,7 +27,7 @@ CLogString* GetLogString();
 void FUN_14036e770(CLogString* log, int level, int category, const wchar_t* format, const CStringW& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);   // string attribute
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 void* FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pnValue);           // int attribute
 
 // @0x141375cb0
@@ -42,14 +48,14 @@ void CGraphicOptionTable::Load()
 {
     if (GetFileSystem()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&m_doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&m_doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
             CString strKey;
             int nValue;
-            for (Unk_140165cf0* pOption = pRoot->FUN_140165cf0("option"); pOption != 0; pOption = pOption->FUN_140168650("option"))
+            for (Unk_140165cf0* pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pOption != 0; pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->NextSibling("option")))
             {
-                CString strName = FUN_14015f710(pOption, "name", CString(""));
+                CString strName = Unk_ReadString((class Unk_XmlNode*)(pOption), "name", CString(""));
                 for (unsigned int i = 1; i <= 5; i++)
                 {
                     strKey.Format("option%d", i);
@@ -65,9 +71,9 @@ void CGraphicOptionTable::Load()
                     }
                 }
             }
-            for (Unk_140165cf0* pShadow = pRoot->FUN_140165cf0("shadow"); pShadow != 0; pShadow = pShadow->FUN_140168650("shadow"))
+            for (Unk_140165cf0* pShadow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shadow")); pShadow != 0; pShadow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShadow))->NextSibling("shadow")))
             {
-                CString strName = FUN_14015f710(pShadow, "name", CString(""));
+                CString strName = Unk_ReadString((class Unk_XmlNode*)(pShadow), "name", CString(""));
                 int bSet1 = 0;
                 int bSet2 = 0;
                 for (unsigned int i = 1; i <= 5; i++)

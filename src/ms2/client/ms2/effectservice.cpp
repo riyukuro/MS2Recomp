@@ -157,6 +157,17 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Params whose units are not recovered yet: only the constructor and the size are known here.
 class CSoundMusicEffectParam : public CEffectParam      // ?\soundmusiceffectparam.cpp, vftable 0x142f67b50
@@ -184,7 +195,6 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
@@ -198,7 +208,7 @@ bool FUN_14028d470(float a, float b);                   // nearly equal
 
 // Game log (commonfiles singleton 0x140166440).
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
 
@@ -342,7 +352,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
     }
     if (spEffect->FUN_14119f400() && spEffect->IsLoop())
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x133,
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x133,
             L"Loop가 걸린 이펙트의 경우 명시적으로 해당 이펙트를 비활성화 시켜주어야 합니다[{0}]", spEffect->GetName());
         return 0;
     }
@@ -596,26 +606,26 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
         return CEffectDataPtr(0);
     }
     CEffectDataPtr spData(new CEffectData());
     spData->FUN_1401d1160(strFile);
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("effect");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effect"));
     if (pNode == 0)
         return CEffectDataPtr(0);
-    for (; pNode != 0; pNode = pNode->FUN_140168650("effect"))
+    for (; pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("effect")))
     {
         CEffectParamPtr spParam = FUN_1411a04e0(strPath, pNode);
         if (spParam == 0)
         {
-            FUN_14015eb90(((void*)GetLogString()), 1, 0x133, L"Effect Fail CreateParam:{0}", strFile);
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x133, L"Effect Fail CreateParam:{0}", strFile);
             return CEffectDataPtr(0);
         }
         spData->AddParam(spParam.get());
@@ -646,16 +656,16 @@ CEffectParam::CEffectParam(int nType)
 // @0x1411a0290
 void CEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
-    FUN_140873360(pNode, "startDelay", m_fStartDelay);
-    FUN_140873360(pNode, "duration", m_fDuration);
-    FUN_1408731e0(pNode, "lodSkipLevel", m_nLodSkipLevel);
-    FUN_1408730a0(pNode, "loop", m_b30);
-    FUN_1408731e0(pNode, "gender", m_nGender);
-    FUN_140873220(pNode, "jobCode", m_nJobCode);
-    FUN_1408730a0(pNode, "offSkip", m_bOffSkip);
-    FUN_1408730a0(pNode, "onlyCasterMyPC", m_bOnlyCasterMyPC);
-    FUN_1408730a0(pNode, "onlyTargetMyPC", m_bOnlyTargetMyPC);
-    FUN_1408730a0(pNode, "ignoreOptimize", m_bIgnoreOptimize);
+    XmlGetAttr((class TiXmlElement*)(pNode), "startDelay", reinterpret_cast<float&>(m_fStartDelay));
+    XmlGetAttr((class TiXmlElement*)(pNode), "duration", reinterpret_cast<float&>(m_fDuration));
+    XmlGetAttr((class TiXmlElement*)(pNode), "lodSkipLevel", reinterpret_cast<int&>(m_nLodSkipLevel));
+    XmlGetAttr((class TiXmlElement*)(pNode), "loop", reinterpret_cast<bool&>(m_b30));
+    XmlGetAttr((class TiXmlElement*)(pNode), "gender", reinterpret_cast<int&>(m_nGender));
+    XmlGetAttr((class TiXmlElement*)(pNode), "jobCode", reinterpret_cast<unsigned int&>(m_nJobCode));
+    XmlGetAttr((class TiXmlElement*)(pNode), "offSkip", reinterpret_cast<bool&>(m_bOffSkip));
+    XmlGetAttr((class TiXmlElement*)(pNode), "onlyCasterMyPC", reinterpret_cast<bool&>(m_bOnlyCasterMyPC));
+    XmlGetAttr((class TiXmlElement*)(pNode), "onlyTargetMyPC", reinterpret_cast<bool&>(m_bOnlyTargetMyPC));
+    XmlGetAttr((class TiXmlElement*)(pNode), "ignoreOptimize", reinterpret_cast<bool&>(m_bIgnoreOptimize));
 }
 MS2_REPLACE_METHOD(0x1411a0290, CEffectParam, vfunc_1, 309, 0x17F2709B);
 
@@ -673,7 +683,7 @@ bool CEffectParam::vfunc_2()
         case kEffectFog:
         case kEffectVibrate:
         case kEffectTextureOverride:
-            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"Loop가 False이고, Duration이 0 입니다[{0}]", m_str20);
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"Loop가 False이고, Duration이 0 입니다[{0}]", m_str20);
             return false;
         }
     }
@@ -833,7 +843,7 @@ int FUN_1411a16c0(Unk_140165cf0* pNode, const char* pszName, int& nType)
         return 2;
     }
     CString strType;
-    int nResult = FUN_1408733e0(pNode, pszName, strType);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pNode), pszName, strType);
     if (nResult != 0)
         return nResult;
     nType = FUN_1411a0f80(strType);
@@ -925,7 +935,7 @@ EffectNode::EffectNode(const CEffectDummy& kDummy)
         NiFixedString kName(kDummy.GetName());
         SetName(kName);
     }
-    FUN_1411a3cb0(kDummy);
+    ApplyDummy(kDummy);
 }
 
 // @0x1411a36b0
@@ -963,7 +973,7 @@ void EffectNode::UpdateWorldData()
     }
     if (m_spMovement.get()) {
         double dTime = TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
-        m_kWorld = m_spMovement->FUN_141625430(dTime, m_kWorld);
+        m_kWorld = m_spMovement->UpdateMovement(dTime, m_kWorld);
     }
     if (m_bOnGround) {
         Unk_EffNodeRayHit kInfo;
@@ -985,7 +995,7 @@ void EffectNode::UpdateWorldData()
 MS2_REPLACE_METHOD(0x1411a3720, EffectNode, UpdateWorldData, 1407, 0xA6E76FBE);
 
 // @0x1411a3cb0
-void EffectNode::FUN_1411a3cb0(const CEffectDummy& kDummy)
+void EffectNode::ApplyDummy(const CEffectDummy& kDummy)
 {
     m_bApplyWorldTransform = kDummy.m_bApplyWorldTransform;
     m_bApplyLocalScale = kDummy.m_bApplyLocalScale;
@@ -995,7 +1005,7 @@ void EffectNode::FUN_1411a3cb0(const CEffectDummy& kDummy)
                                  kDummy.m_vRotation.z * 3.1415927f / 180.0f);
     FUN_1411a4000(m_kRotate);
 }
-MS2_REPLACE_METHOD(0x1411a3cb0, EffectNode, FUN_1411a3cb0, 244, 0x5441C62C);
+MS2_REPLACE_METHOD(0x1411a3cb0, EffectNode, ApplyDummy, 244, 0x5441C62C);
 
 // @0x1411a3db0
 void EffectNode::SetMovement(INodeMovement* pMovement) { m_spMovement.AssignRaw(pMovement); }
@@ -1051,6 +1061,14 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 #include "ms2/client/ms2/soundeventmgr.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 namespace FMOD { class EventGroup; }
 
 // PendingEffect::Init (0x140a8f300) with the real argument types (pendingeffect.h declares it over stand-ins of
@@ -1217,17 +1235,17 @@ private:
 class Unk_EsMapTable { public: Unk_EsMapRowPtr FUN_140428a90(); };
 class Unk_EsMapMgr { public: Unk_EsMapTable* FUN_1403ed1d0(); };
 CString FUN_1401d4330(const wchar_t* psz, int n);              // wide to multi-byte
-void* FUN_1409ffd30(GameObject* pObject);                       // the actor of an object
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class, same as util.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);                          // 0x14098cb80
-    ~Unk_SceneWalker();                                         // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);                          // 0x14098cb80
+    ~Unk_NodeQueue();                                         // 0x14098cf00
     NiAVObject* Next(bool bDescend);                            // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 // Objects with a "fade" virtual (slot 41).
 class Unk_EsFadeObject
@@ -1278,7 +1296,7 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 int Unk_EsEffectGroup::m_sTotalEffectCount = 0;
 
 // @0x1411a42b0
-void Unk_EsEffectGroup::FUN_1411a42b0()
+void Unk_EsEffectGroup::ClearEffects()
 {
     EffectSkipMgr* pSkip = TSingleton<EffectSkipMgr>::GetInstance();
     for (std::list<CEffectPtr>::iterator it = m_listEffects.begin(); it != m_listEffects.end(); ++it) {
@@ -1289,7 +1307,7 @@ void Unk_EsEffectGroup::FUN_1411a42b0()
     MS2_ASSERT_AT(0x5b, m_sTotalEffectCount >= 0);
     m_listEffects.clear();
 }
-MS2_REPLACE_METHOD(0x1411a42b0, Unk_EsEffectGroup, FUN_1411a42b0, 325, 0x1C4B21DE);
+MS2_REPLACE_METHOD(0x1411a42b0, Unk_EsEffectGroup, ClearEffects, 325, 0x1C4B21DE);
 
 inline TSingleton<CEffectService>::TSingleton() { s_instance = static_cast<CEffectService*>(this); }
 
@@ -1330,7 +1348,7 @@ bool FUN_1411a4800(const CString& strName, int nArg)
             bError = true;
     }
     if (bError)
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"CEffectService::PreLoad Found Error effectID:{0}", strName);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"CEffectService::PreLoad Found Error effectID:{0}", strName);
     return true;
 }
 MS2_REPLACE(0x1411a4800, FUN_1411a4800, 405, 0x3BC9D76A);
@@ -1356,7 +1374,7 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
         return 0;
     if (kTarget.m_strName.IsEmpty())
         return 0;
-    if (!FUN_1411a91d0(kTarget.m_nKind))
+    if (!IsEffectTypeVisible(kTarget.m_nKind))
         return 0;
     EffectSkipMgr* pSkip = TSingleton<EffectSkipMgr>::GetInstance();
     if (pSkip->CanPlay(kTarget.m_strName))
@@ -1381,7 +1399,7 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
         CEffectPtr spEffect = FUN_14119eae0(pParam, &kTarget);
         if (spEffect == 0)
             continue;
-        pGroup->FUN_1411b15b0(spEffect);
+        pGroup->AddEffect(spEffect);
         nCount++;
     }
     if (nCount == 0)
@@ -1415,7 +1433,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
 {
     if (!IsEnabled())
         return 0;
-    if (!FUN_1411a91d0(nKind))
+    if (!IsEffectTypeVisible(nKind))
         return 0;
     if (pXform != 0) {
         Unk_SkipCheck kCheck;
@@ -1428,18 +1446,18 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
     float fScale = nKind == 3 ? static_cast<Client::Constants*>(FUN_1401d3200())->VolumeOtherPc.Read() : 1.0f;
     FUN_1401d3700(strCategory);
     MS2Ptr<CSoundEventEffectParam> spParam = FUN_141775980(strName, strCategory, fScale * fVolume, strExtra);
-    Unk_EffectTarget kTarget;
-    kTarget.m_pXform = pXform;
-    kTarget.FUN_140a53170(nOwner);
-    kTarget.m_nKind = nKind;
-    kTarget.m_b34 = true;
-    CEffectPtr spEffect = FUN_14119eae0(spParam, &kTarget);
+    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+    ((Unk_EffectTarget&)(kTarget)).m_pXform = pXform;
+    ((Unk_EffectTarget&)(kTarget)).FUN_140a53170(nOwner);
+    ((Unk_EffectTarget&)(kTarget)).m_nKind = nKind;
+    ((Unk_EffectTarget&)(kTarget)).m_b34 = true;
+    CEffectPtr spEffect = FUN_14119eae0(spParam, &((Unk_EffectTarget&)(kTarget)));
     if (spEffect == 0)
         return 0;
     unsigned nId = FUN_1411a9230();
     Unk_EsEffectGroup* pGroup = FUN_1411aac40(nId);
     pGroup->SetName(strName);
-    pGroup->FUN_1411b15b0(spEffect);
+    pGroup->AddEffect(spEffect);
     return nId;
 }
 
@@ -1623,7 +1641,7 @@ MS2_REPLACE_METHOD(0x1411a69e0, CEffectService, FUN_1411a69e0, 288, 0x15C3A538);
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\effectservice.h"
 // @0x1411b2df0
-inline std::list<CEffectPtr>::iterator Unk_EsEffectGroup::FUN_1411b2df0(std::list<CEffectPtr>::iterator it)
+inline std::list<CEffectPtr>::iterator Unk_EsEffectGroup::RemoveEffect(std::list<CEffectPtr>::iterator it)
 {
     --m_sTotalEffectCount;
     MS2_ASSERT_AT(0x28, m_sTotalEffectCount >= 0);
@@ -1639,7 +1657,7 @@ inline void Unk_EsEffectGroup::SetName(const char* pszName) { m_strName = pszNam
 inline const std::string& Unk_EsEffectGroup::FUN_1411b1e40() { return m_strName; }
 
 // @0x1411b15b0
-inline void Unk_EsEffectGroup::FUN_1411b15b0(CEffectPtr spEffect)
+inline void Unk_EsEffectGroup::AddEffect(CEffectPtr spEffect)
 {
     ++m_sTotalEffectCount;
     m_listEffects.push_back(spEffect);
@@ -1665,7 +1683,7 @@ void CEffectService::FUN_1411a6160()
             if (spEffect->vfunc_12() == 3 || spEffect->vfunc_12() == 2) {
                 spEffect->vfunc_5();
                 vStopped.push_back(spEffect);
-                itEffect = pGroup->FUN_1411b2df0(itEffect);
+                itEffect = pGroup->RemoveEffect(itEffect);
             } else {
                 ++itEffect;
             }
@@ -1698,7 +1716,7 @@ void CEffectService::FUN_1411a6490()
             if (spEffect->FUN_14119f400()) {
                 pSkip->RemoveCount(spEffect->GetName());
                 spEffect->vfunc_7();
-                itEffect = pGroup->FUN_1411b2df0(itEffect);
+                itEffect = pGroup->RemoveEffect(itEffect);
             } else {
                 ++itEffect;
             }
@@ -1714,7 +1732,7 @@ void CEffectService::FUN_1411a6490()
 MS2_REPLACE_METHOD(0x1411a6490, CEffectService, FUN_1411a6490, 556, 0x40B935F8);
 
 // @0x1411a6b10
-NiNode* CEffectService::FUN_1411a6b10()
+NiNode* CEffectService::GetLeastLoadedRoot()
 {
     if (DAT_143ae2b30 != 0) {
         unsigned nBest = 0;
@@ -1730,7 +1748,7 @@ NiNode* CEffectService::FUN_1411a6b10()
     }
     return m_spRoot;
 }
-MS2_REPLACE_METHOD(0x1411a6b10, CEffectService, FUN_1411a6b10, 193, 0x5DC1F652);
+MS2_REPLACE_METHOD(0x1411a6b10, CEffectService, GetLeastLoadedRoot, 193, 0x5DC1F652);
 
 // @0x1411a6be0
 void CEffectService::FUN_1411a6be0()
@@ -1767,14 +1785,14 @@ void CEffectService::FUN_1411a6d50(NiAVObject* pChild)
 MS2_REPLACE_METHOD(0x1411a6d50, CEffectService, FUN_1411a6d50, 322, 0x64E3F501);
 
 // @0x1411a6ea0
-void CEffectService::FUN_1411a6ea0(Unk_EsTracked* p)
+void CEffectService::AddTracked(Unk_EsTracked* p)
 {
     if (p != 0) {
         Unk_EsTrackedPtr spTracked(p);
         m_listTracked.AddTail(spTracked);
     }
 }
-MS2_REPLACE_METHOD(0x1411a6ea0, CEffectService, FUN_1411a6ea0, 85, 0xBF19BC72);
+MS2_REPLACE_METHOD(0x1411a6ea0, CEffectService, AddTracked, 85, 0xBF19BC72);
 
 // @0x1411a6f00
 void CEffectService::FUN_1411a6f00(const egf::EntityID& id)
@@ -1907,7 +1925,7 @@ void CEffectService::FUN_1411a74a0(egf::EntityID id, egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x1411a74a0, CEffectService, FUN_1411a74a0, 539, 0xEE8C2006);
 
 // @0x1411a76d0
-void CEffectService::FUN_1411a76d0()
+void CEffectService::UpdateRootEffects()
 {
     if (DAT_143ae2b30 != 0) {
         for (unsigned i = 0; i < m_nRoots; i++)
@@ -1917,10 +1935,10 @@ void CEffectService::FUN_1411a76d0()
             m_spRoot->UpdateEffects();
     }
 }
-MS2_REPLACE_METHOD(0x1411a76d0, CEffectService, FUN_1411a76d0, 133, 0xF7D68405);
+MS2_REPLACE_METHOD(0x1411a76d0, CEffectService, UpdateRootEffects, 133, 0xF7D68405);
 
 // @0x1411a7760
-void CEffectService::FUN_1411a7760(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut)
+void CEffectService::GetGroupEffects(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut)
 {
     Unk_EsGroupMap::iterator it = m_mapGroups.find(nId);
     if (it == m_mapGroups.end())
@@ -1929,7 +1947,7 @@ void CEffectService::FUN_1411a7760(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOu
     for (std::list<CEffectPtr>::iterator itEffect = pGroup->FUN_141044280(); itEffect != pGroup->FUN_1410443f0(); ++itEffect)
         aOut.Add(*itEffect);
 }
-MS2_REPLACE_METHOD(0x1411a7760, CEffectService, FUN_1411a7760, 200, 0x1C64A78D);
+MS2_REPLACE_METHOD(0x1411a7760, CEffectService, GetGroupEffects, 200, 0x1C64A78D);
 
 // @0x1411a7830
 bool CEffectService::IsEnabled() { return m_bEnabled; }
@@ -1971,7 +1989,7 @@ void CEffectService::FUN_1411a7960(unsigned nIndex)
     }
     m_spF8 = m_aPreloaded[nIndex];
     if (m_spF8) {
-        Unk_SceneWalker kWalker(m_spF8);
+        Unk_SceneWalker kWalker((NiAVObject*)(m_spF8));
         NiAVObject* pObject;
         while ((pObject = kWalker.Next(true)) != NULL) {
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObject);
@@ -1987,12 +2005,12 @@ void CEffectService::FUN_1411a7960(unsigned nIndex)
         else
             m_spRoot->AttachChild(m_spF8, true);
     }
-    FUN_1411a7ce0(nIndex >= 3 && nIndex <= 4);
+    SetRainEnabled(nIndex >= 3 && nIndex <= 4);
 }
 MS2_REPLACE_METHOD(0x1411a7960, CEffectService, FUN_1411a7960, 878, 0x67F5DF8E);
 
 // @0x1411a7ce0
-void CEffectService::FUN_1411a7ce0(bool bRain)
+void CEffectService::SetRainEnabled(bool bRain)
 {
     m_spRain = 0;
     if (bRain) {
@@ -2000,15 +2018,15 @@ void CEffectService::FUN_1411a7ce0(bool bRain)
         m_spRain->Create();
     }
 }
-MS2_REPLACE_METHOD(0x1411a7ce0, CEffectService, FUN_1411a7ce0, 195, 0xBA8FACC7);
+MS2_REPLACE_METHOD(0x1411a7ce0, CEffectService, SetRainEnabled, 195, 0xBA8FACC7);
 
 // @0x1411a7db0
-void CEffectService::FUN_1411a7db0()
+void CEffectService::DestroyRain()
 {
     if (m_spRain)
         m_spRain->Destroy();
 }
-MS2_REPLACE_METHOD(0x1411a7db0, CEffectService, FUN_1411a7db0, 65, 0x253E07BD);
+MS2_REPLACE_METHOD(0x1411a7db0, CEffectService, DestroyRain, 65, 0x253E07BD);
 
 // @0x1411a7e00
 void CEffectService::FUN_1411a7e00(const CString& strName)
@@ -2163,7 +2181,7 @@ void CEffectService::FUN_1411a8e90()
             if (spEffect->vfunc_12() == 2) {
                 CSoundEventEffect* pSound = static_cast<CSoundEventEffect*>((CEffect*)spEffect);
                 if (pSound != 0 && pSound->GetSound()) {
-                    if (pSound->GetSound()->FUN_1411b1ba0() != 0 && pSound->GetSound()->FUN_14177ab80())
+                    if (pSound->GetSound()->FUN_1411b1ba0() != 0 && pSound->GetSound()->IsPlaying())
                         pSound->GetSound()->FUN_1411b1ba0()->vfunc_1();
                 }
             }
@@ -2256,14 +2274,14 @@ void CEffectService::FUN_1411a8cb0(const CString& strName)
     GameObject* pTarget = ((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
     if (pTarget == NULL)
         return;
-    Unk_EffectTarget kTarget;
-    kTarget.m_strName = strName;
-    kTarget.m_nKind = 0;
-    kTarget.FUN_140a53190(pTarget->FUN_14123c580());
-    void* pActor = FUN_1409ffd30(pTarget);
+    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+    ((Unk_EffectTarget&)(kTarget)).m_strName = strName;
+    ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(pTarget->FUN_14123c580());
+    void* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != NULL)
-        kTarget.m_b30 = true;
-    unsigned nId = FUN_1411a49c0(kTarget);
+        ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
+    unsigned nId = FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     m_list140.AddTail(nId);
 }
 MS2_REPLACE_METHOD(0x1411a8cb0, CEffectService, FUN_1411a8cb0, 260, 0x48703B45);
@@ -2288,7 +2306,7 @@ unsigned CEffectService::GetTick() { return m_nTick; }
 MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, GetTick, 17, 0xFA964832);
 
 // @0x1411a91d0
-bool CEffectService::FUN_1411a91d0(int nType)
+bool CEffectService::IsEffectTypeVisible(int nType)
 {
     if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bHide12 == true && nType == 4)
         return false;
@@ -2296,7 +2314,7 @@ bool CEffectService::FUN_1411a91d0(int nType)
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x1411a91d0, CEffectService, FUN_1411a91d0, 86, 0x70658B4B);
+MS2_REPLACE_METHOD(0x1411a91d0, CEffectService, IsEffectTypeVisible, 86, 0x70658B4B);
 
 unsigned CEffectService::s_nLastId = 1;                            // the exe image holds 1 (.data 0x1439f7038)
 
@@ -2336,7 +2354,7 @@ efd::AsyncResult CEffectService::OnInit()
             m_ppRoots[i]->SetName("World Effect Root");
             efd::vector<NiObjectPtr> kObjects;
             kObjects.push_back(NiDynamicCast(NiObject, m_ppRoots[i]));
-            pSceneGraph->FUN_1414f1e30(m_ppRoots[i]);
+            pSceneGraph->AddAlwaysUpdated(m_ppRoots[i]);
             pSceneGraph->AddSceneGraph(kObjects, true, true);
         }
     } else {
@@ -2348,7 +2366,7 @@ efd::AsyncResult CEffectService::OnInit()
         pSceneGraph->AddSceneGraph(kObjects, true, true);
     }
     FUN_1413f9830()->Subscribe(this, s_catEffectChannel, 0, false);
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177d6e0("ms2sound/sound/attack/hit", 1);
+    TSingleton<CSoundEventMgr>::GetInstance()->GetEventGroup("ms2sound/sound/attack/hit", 1);
     FUN_14025e7a0()->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
     {
         CNifLoadingService* pLoader = ((class CNifLoadingService*)FUN_140a0afd0());
@@ -2403,7 +2421,7 @@ efd::AsyncResult CEffectService::OnTick()
             CEffectPtr spEffect = *itEffect;
             if (!spEffect->vfunc_9()) {
                 vRemoved.push_back(spEffect);
-                itEffect = pGroup->FUN_1411b2df0(itEffect);
+                itEffect = pGroup->RemoveEffect(itEffect);
                 if (((void*)GetLogString()) != 0) {
                     unsigned nId = pGroup->FUN_1411b1ed0();
                     FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"Remove Effect OID[{0}] [{1}]", nId, spEffect->GetName());
@@ -2445,29 +2463,29 @@ efd::AsyncResult CEffectService::OnTick()
         if (m_bAreaEffect) {
             if (m_nAreaEffect == 0) {
                 if (!m_strAreaEffectNext.IsEmpty()) {
-                    Unk_EffectTarget kTarget;
+                    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                     if (DAT_143ae2b30 != 0)
-                        kTarget.m_spObject = m_ppRoots[0];
+                        ((Unk_EffectTarget&)(kTarget)).m_spObject = m_ppRoots[0];
                     else
-                        kTarget.m_spObject = FUN_1411a6b10();
-                    kTarget.m_strName = m_strAreaEffectNext;
-                    kTarget.m_nKind = 0;
-                    kTarget.m_b30 = true;
-                    m_nAreaEffect = FUN_1411a49c0(kTarget);
+                        ((Unk_EffectTarget&)(kTarget)).m_spObject = GetLeastLoadedRoot();
+                    ((Unk_EffectTarget&)(kTarget)).m_strName = m_strAreaEffectNext;
+                    ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+                    ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
+                    m_nAreaEffect = FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 } else {
                     m_bAreaEffect = false;
                 }
             }
         } else if (!m_strAreaEffect.IsEmpty()) {
-            Unk_EffectTarget kTarget;
+            NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             if (DAT_143ae2b30 != 0)
-                kTarget.m_spObject = m_ppRoots[0];
+                ((Unk_EffectTarget&)(kTarget)).m_spObject = m_ppRoots[0];
             else
-                kTarget.m_spObject = FUN_1411a6b10();
-            kTarget.m_strName = m_strAreaEffect;
-            kTarget.m_nKind = 0;
-            kTarget.m_b30 = true;
-            m_nAreaEffect = FUN_1411a49c0(kTarget);
+                ((Unk_EffectTarget&)(kTarget)).m_spObject = GetLeastLoadedRoot();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = m_strAreaEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+            ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
+            m_nAreaEffect = FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
             m_strAreaEffectCur = m_strAreaEffect;
             m_strAreaEffect.Empty();
         }
@@ -2484,7 +2502,7 @@ efd::AsyncResult CEffectService::OnShutdown()
     m_spF8 = 0;
     m_spRain = 0;
     for (Unk_EsGroupMap::iterator it = m_mapGroups.begin(); it != m_mapGroups.end(); ++it) {
-        it->second->FUN_1411a42b0();
+        it->second->ClearEffects();
         delete it->second;
     }
     m_mapGroups.clear();
@@ -2515,7 +2533,7 @@ void CEffectService::FUN_1411aa800()
             for each (CEffectPtr spEffect in vEffects) {
 #endif
                 pSkip->AddCount(spEffect->GetName());
-                pGroup->FUN_1411b15b0(spEffect);
+                pGroup->AddEffect(spEffect);
             }
             if (!FUN_140a8f5c0(spPending.operator->()).FUN_140a53460().IsNull()) {
                 bool bInserted = !vEffects.empty();
@@ -2606,7 +2624,7 @@ MS2_REPLACE_METHOD(0x1411ab090, CEffectService, FUN_1411ab090, 116, 0xB4C1ACF2);
 // @0x1411b0140
 Unk_EsEffectGroup::~Unk_EsEffectGroup()
 {
-    FUN_1411a42b0();
+    ClearEffects();
 }
 
 // @0x1411b1f50

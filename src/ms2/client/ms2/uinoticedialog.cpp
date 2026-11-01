@@ -67,7 +67,6 @@ public:
 };
 CFeatureManager* FUN_140166410();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 bool FUN_140e04c20(const MS2Ptr<ASDialog>* p, int n);                       // p == NULL
 bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);                  // p == NULL
 bool FUN_1409b9be0(const MS2Ptr<ASMovieClip>* p, int n);                    // p == NULL
@@ -143,7 +142,7 @@ void UINoticeDialog::OnLoadComplete()
     }
     if (m_hitArea.get())
     {
-        m_hitArea->FUN_1422c7840(1);
+        m_hitArea->SetFocusable(1);
         m_hitArea->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009710), 0, 0);
         m_hitArea->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009740), 0, 0);
         m_hitArea->FUN_1422c7630(0);
@@ -178,7 +177,7 @@ void UINoticeDialog::vfunc_43()
 void UINoticeDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (m_nHideAt != 0 && GetTickCountMs2() > m_nHideAt)
         FUN_141009a60();
@@ -191,7 +190,7 @@ void UINoticeDialog::vfunc_85()
         return;
     vfunc_86();
     m_spImage.AssignRaw(new Unk_AasImage(2));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->FUN_1422c13b0()), 2)));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
     reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78aa0(m_nBrowserId, 0);
 }
@@ -220,7 +219,7 @@ void UINoticeDialog::vfunc_87(SIZE* pSize)
     if (FUN_140acd940(&m_renderTarget, 0))
         return;
     pSize->cx = m_renderTarget->FUN_1422c1340();
-    pSize->cy = m_renderTarget->FUN_1422c13b0();
+    pSize->cy = m_renderTarget->GetHeightCeil();
 }
 
 // @0x141009470
@@ -305,7 +304,7 @@ void UINoticeDialog::FUN_141009870()
     {
     }
     reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(&m_strUrl, strUrl);
-    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78b40(1, m_nBrowserId);
+    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(1, m_nBrowserId);
 }
 
 // @0x141009950
@@ -317,7 +316,7 @@ void UINoticeDialog::FUN_141009950(int nSeconds)
 // @0x141009980
 void UINoticeDialog::FUN_141009980()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     FUN_141009870();
     m_90->vfunc_13("show");
@@ -329,7 +328,7 @@ void UINoticeDialog::FUN_141009980()
 // @0x141009a60
 void UINoticeDialog::FUN_141009a60()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     vfunc_84(0);
     m_90->vfunc_13("hide");

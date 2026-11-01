@@ -38,7 +38,6 @@ public:
     void FUN_1418b6d10(const Scaleform::GFx::FunctionHandler::Params& params);   // the other door
     void FUN_1418b6d40(const Scaleform::GFx::FunctionHandler::Params& params);   // nothing
     void FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Params& params);   // the contract button was clicked
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child
     CStringW FUN_1418b6de0();                                   // 0x1418b6de0 the apartment name
     void FUN_1418b6ec0(int nUiType);                            // 0x1418b6ec0 the broker's lines
 

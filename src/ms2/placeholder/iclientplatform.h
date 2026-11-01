@@ -66,8 +66,8 @@ public:
     virtual bool vfunc_41(__int64 a1) MS2_ICLIENTPLATFORM_PURE;
     virtual void vfunc_42(void* a1) MS2_ICLIENTPLATFORM_PURE;
     virtual bool vfunc_43(int a1, bool a2, int a3) MS2_ICLIENTPLATFORM_PURE;
-    virtual const CStringA& vfunc_44() MS2_ICLIENTPLATFORM_PURE;
-    virtual const CStringA& vfunc_45() MS2_ICLIENTPLATFORM_PURE;
+    virtual void vfunc_44() MS2_ICLIENTPLATFORM_PURE;                                 // close UI class 20156 (0x140c75d30)
+    virtual void vfunc_45() MS2_ICLIENTPLATFORM_PURE;                                 // open UI class 20156 (0x140c75d60)
     virtual int vfunc_46() MS2_ICLIENTPLATFORM_PURE;
     virtual void vfunc_47(CStringA a1, CStringA a2) MS2_ICLIENTPLATFORM_PURE;
     virtual void vfunc_48(MS2Ptr<CUserReportData> spReport) MS2_ICLIENTPLATFORM_PURE;

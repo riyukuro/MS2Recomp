@@ -14,6 +14,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\getexp.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <NiNode.h>
 #include <NiAVObject.h>
@@ -36,13 +37,21 @@ CString s_strEffDummy = "Eff_Dummy";                             // @0x1400eb770
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400eb910
 static CString s_strSkill2 = "skill";                // @0x1400eb9d0
 static CString s_strStun2 = "stun";                  // @0x1400eba00
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);   // @0x1400eba30
 
 // ---- exe data ----
-extern Vector3 DAT_143b01a60;       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
 extern Vector3 DAT_143a08cf8;       // axis a (the up axis)
 extern Vector3 DAT_143a08cd8;       // axis b
@@ -109,9 +118,6 @@ class Unk_1403ed280
 {
 public:
     void* FUN_1411a6b10();                                          // the effect root NiNode
-    int FUN_1411a49c0(Unk_ExpTarget* pRequest);                     // spawn, returns the handle
-    void FUN_1411a4a00(Unk_ExpTarget* pRequest);                    // play once
-    void FUN_1411a6060(int nHandle);                                // release
 };
 
 // Effect request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0).
@@ -141,7 +147,7 @@ private:
 
 // The client constants (0x1401d3200) and the singleton holding the effect names (0x1401d31f0).
 struct Unk_ClientConfig;
-class Unk_ConfigFloat { public: float FUN_1402bac70(); };                           // Value<float>::get
+class Unk_ConfigFloat { public: };                           // Value<float>::get
 class Unk_ConfigPoint
 {
 public:
@@ -246,10 +252,10 @@ void CExpEffectInfo::InitConstants()
 {
     if (s_nConstInit != 0)
         return;
-    DAT_1439f733c = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x21b8)->FUN_1402bac70();
-    DAT_1439f7340 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2210)->FUN_1402bac70();
-    DAT_1439f7348 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2268)->FUN_1402bac70();
-    DAT_1439f7344 = reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x22c0)->FUN_1402bac70();
+    DAT_1439f733c = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x21b8))->Read();
+    DAT_1439f7340 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2210))->Read();
+    DAT_1439f7348 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2268))->Read();
+    DAT_1439f7344 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x22c0))->Read();
     Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2318)->FUN_141273d00();
     s_ptSpreadMin = kMin;
     Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2380)->FUN_141273d00();
@@ -264,7 +270,7 @@ void CExpEffectInfo::StopEffect()
 {
     if (m_hEffect > 0)
     {
-        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_hEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_hEffect);
         m_hEffect = 0;
     }
 }
@@ -350,12 +356,12 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     SetPosition(m_ptSource);
     NiNode* pRoot = (NiNode*)reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
     pRoot->AttachChild((NiAVObject*)FUN_1409475d0(&m_spNode), true);
-    Unk_ExpTarget kRequest;
-    kRequest.m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
-    kRequest.m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
-    kRequest.m_nOwnerId = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1a10(pObj);
-    kRequest.FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
-    m_hEffect = reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
+    NoticeMessage kRequest;   // C3: was Unk_ExpTarget
+    ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
+    ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
+    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1a10(pObj);
+    ((Unk_ExpTarget&)(kRequest)).FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
+    m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     return 1;
 }
 
@@ -395,11 +401,11 @@ void CExpEffectInfo::Finish()
     ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->FUN_141673f70(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
     SetPosition(ptHit);
     StopEffect();
-    Unk_ExpTarget kRequest;
-    kRequest.m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x340);
-    kRequest.m_nOwnerId = 1;
-    kRequest.FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
-    reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kRequest);
+    NoticeMessage kRequest;   // C3: was Unk_ExpTarget
+    ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x340);
+    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = 1;
+    ((Unk_ExpTarget&)(kRequest)).FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     m_nState = 1;
 }
 

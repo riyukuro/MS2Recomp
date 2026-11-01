@@ -49,7 +49,7 @@ public:
 
     void FUN_141487bf0(size_t nFrame);                  // push the weight of frame nFrame
     void FUN_141487c50(float fWeight);                  // push fWeight into every interpolator of the morph controller
-    NiAVObject* FUN_141487d80(const CString& strNodeName);   // find the render object of the owner's model by name
+    NiAVObject* FindNode(const CString& strNodeName);   // find the render object of the owner's model by name
 
     CMorphingAnimationData* m_pData;                    // +0x20
     int m_nFrame;                                       // +0x28 current frame (0x7fffffff: none yet)

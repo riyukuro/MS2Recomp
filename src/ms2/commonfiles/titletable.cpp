@@ -13,6 +13,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -43,14 +52,14 @@ int CTitleTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<CTitle> spTitle(new CTitle);
-        FUN_140873220(pNode, "id", spTitle->m_nId);
-        FUN_1408733e0(pNode, "tag", spTitle->m_strTag);
-        FUN_1408731e0(pNode, "account", spTitle->m_nAccount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", spTitle->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "tag", spTitle->m_strTag);
+        XmlGetAttr((class TiXmlElement*)(pNode), "account", reinterpret_cast<int&>(spTitle->m_nAccount));
         m_titles.SetAt(spTitle->m_nId, spTitle);
         if (spTitle->m_strTag.GetLength() > 0)
             m_tags.SetAt(spTitle->m_strTag, spTitle->m_nId);

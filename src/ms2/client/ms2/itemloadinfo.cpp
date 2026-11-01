@@ -267,7 +267,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
             NiAVObjectPtr nif(0);
             for (size_t i = 0; i < data->FUN_14053eba0()->FUN_14054b3d0(); ++i)
             {
-                const ModelGroup* pGroup = data->FUN_14053eba0()->FUN_14054b2f0(i);
+                const ModelGroup* pGroup = data->FUN_14053eba0()->GetGroup(i);
                 for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
                 {
                     const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -408,9 +408,9 @@ void CItemLoader::RefreshItem(MS2Ptr<CItemLoadInfo> info)
     MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(item->FUN_140527840()));
     if (data->FUN_14053cc00())
     {
-        if (item->FUN_140527900() != 0)
+        if (item->GetGem() != 0)
         {
-            Unk_ItemPayload* pPayload = reinterpret_cast<Unk_ItemPayload*>(item->FUN_140527900());
+            Unk_ItemPayload* pPayload = reinterpret_cast<Unk_ItemPayload*>(item->GetGem());
             pPayload->Refresh();   // MS2: slot 8
         }
     }

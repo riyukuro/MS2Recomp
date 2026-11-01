@@ -434,7 +434,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
                 MS2Ptr<CItem> spItem = pState->m_260[i];
                 if (spItem.get() != 0)
                 {
-                    spItem->FUN_140526b30(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
+                    spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
                     pPC->FUN_141653d10(spItem);
                 }
             }
@@ -449,7 +449,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
                 MS2Ptr<CItem> spItem = pState->m_220[i];
                 if (FUN_1401c0050(spItem, 0) != 0)
                     continue;
-                spItem->FUN_140526b30(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
+                spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
                 pPC->FUN_141653d10(spItem);
             }
         }
@@ -531,8 +531,8 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
                 else
                     nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400();
                 spItem->FUN_140526c10(nSlot);
-                spItem->FUN_140526a70(pPC->FUN_14123cec0());
-                spItem->FUN_140526b30(m_nType);
+                spItem->SetItemUid(pPC->FUN_14123cec0());
+                spItem->SetObjectId(m_nType);
                 pPC->FUN_141653d10(spItem);
             }
         }

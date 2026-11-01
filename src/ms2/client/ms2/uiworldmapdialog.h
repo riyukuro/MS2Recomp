@@ -57,7 +57,7 @@ public:
     void FUN_141b57580(CInPacket* pPacket);                                 // 0x141b57580 packet 0x84 mode 0: the tiles
     void FUN_141b57620(CInPacket* pPacket);                                 // 0x141b57620 packet 0x84 mode 1: additional infos
     void FUN_141b57660();                                                   // 0x141b57660 select the pending field
-    void FUN_141b57740();                                                   // 0x141b57740 apply the pending search text
+    void ApplyPendingSearch();                                                   // 0x141b57740 apply the pending search text
     void FUN_141b57870();                                                   // 0x141b57870 build the tiles of the world
     void FUN_141b58200();                                                   // 0x141b58200
     void FUN_141b58220();                                                   // 0x141b58220 update the additional infos

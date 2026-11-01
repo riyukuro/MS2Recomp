@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- unit-local placeholders ----
 
@@ -26,7 +27,6 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -63,7 +63,7 @@ Unk_TargetRpg* FUN_1409ffd30(Unk_CameraTargetEntity* p);    // rpg object of a t
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14166d8b0(float);
+    void SetTargetYaw(float);
 };
 
 float FUN_1409f25a0(float f);                       // cos
@@ -127,9 +127,9 @@ CLocalTargetCameraMode::CLocalTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<C
             m_d8.m_pos = FUN_1409f2540();
             m_d8.m_rot = FUN_140af8260();
             m_c0 = m_d8;
-            m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-            m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
-            m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+            m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+            m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
+            m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
         }
     }
 }
@@ -270,7 +270,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 {
                     pTarget->vfunc_21(m_108.m_4c);
                     if (pRpg)
-                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->FUN_14166d8b0(m_108.m_4c.z);
+                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->SetTargetYaw(m_108.m_4c.z);
                 }
                 vfunc_11(m_108.m_setting.m_0);
             }
@@ -294,7 +294,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                     Vector3 ptRot = m_1ac.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac)));
                     pTarget->vfunc_21(ptRot);
                     if (pRpg)
-                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->FUN_14166d8b0(ptRot.z);
+                        ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->SetTargetYaw(ptRot.z);
                 }
                 vfunc_11(m_190 + t * (m_108.m_setting.m_0 - m_190));
             }

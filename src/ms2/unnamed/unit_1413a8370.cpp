@@ -334,11 +334,11 @@ int CGuideConditionDesignItem::vfunc_3()
         MS2Ptr<CItem> spItem = arrItems.GetAt(i);
         if (!spItem->FUN_140528980())
             continue;
-        if (spItem->FUN_140525f10() == 0)
+        if (spItem->HasCubeTextureMesh() == 0)
             continue;
         if (spItem->FUN_140525f60() != 0)
             continue;
-        if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->FUN_14053c5c0() != m_nItemType)
+        if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->GetType() != m_nItemType)
             continue;
         return FUN_1413a55a0(1);
     }

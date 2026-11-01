@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x141487ed0-0x141489aa0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\motioncontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include "motioncontroller.h"
 
@@ -27,12 +28,10 @@ public:
 class CSkillRecord   // C3: member view for the former free stand-ins
 {
 public:
-    class SkillMotionData* FUN_141759830();
+    class SkillMotionData* GetMotionData();
     float FUN_141759b60(double);
     float FUN_141759d20(double, float);
 };
-PCBase* FUN_140974230(PCBase* p);                                   // owning pc of the target
-void* FUN_1416561a0(PCBase* p);                                     // skill component
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
@@ -55,7 +54,7 @@ int FUN_141489940(PCBase* p);
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                    const float* pA, const float* pB, const float* pC, const float* pD);
 
-extern Vector3 DAT_143b01a60;       // zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cd8;       // reference axis of the type 10 base direction
 extern Vector3 DAT_143a08cf8;       // up axis
 
@@ -77,6 +76,7 @@ const NiRTTI CMoveMotionController::ms_RTTI("CMoveMotionController", &CMotionCon
 // @0x1400f8130..0x1400f8250: the sort names, "skill", "stun" and the condition table
 #endif
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 
 // @0x141487ed0
 CMotionController::CMotionController()
@@ -116,16 +116,16 @@ int CMotionController::vfunc_4()
 bool CMotionController::vfunc_5(double fTime)
 {
     m_fSpeed = ((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759b60(fTime);
-    if (((class PCBase*)(class PCBase*)(m_pTarget))->FUN_1416719c0() != 0)
+    if (((class PCBase*)(class PCBase*)(m_pTarget))->IsDashModel() != 0)
     {
-        PCBase* pPc = FUN_140974230(m_pTarget);
+        PCBase* pPc = efd::DynamicCast<PC, PCBase>(m_pTarget);
         if (pPc != 0)
-            m_fSpeed = ((class CEquipment*)(void*)(FUN_1416561a0(pPc)))->FUN_1411e0f50(m_fSpeed);
+            m_fSpeed = ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())))->FUN_1411e0f50(m_fSpeed);
     }
     Vector3 kDir;
     float fTiltSpeed = 0;
     float fTiltAngle = 0;
-    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759830());
+    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->GetMotionData());
     if (pTilt != 0)
     {
         fTiltSpeed = pTilt->m_fSpeed;
@@ -138,7 +138,7 @@ bool CMotionController::vfunc_5(double fTime)
     else
     {
         Vector3 kBase;
-        PCBase* pPc = FUN_140974230(m_pTarget);
+        PCBase* pPc = efd::DynamicCast<PC, PCBase>(m_pTarget);
         if (pPc != 0 && FUN_141489940(pPc) == 10)
         {
             Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
@@ -193,7 +193,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     m_kStartPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     Vector3 kRot;
     Vector3 kBase;
-    PCBase* pPc = FUN_140974230(pTarget);
+    PCBase* pPc = efd::DynamicCast<PC, PCBase>(pTarget);
     if (pPc != 0 && FUN_141489940(pPc) == 10)
     {
         Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
@@ -211,7 +211,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     float fAngle = 0;
     float fCtrlHeight = 100.0f;
     float fCtrlWeight = 0.5f;
-    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->FUN_141759830());
+    Unk_MotionTilt* pTilt = ((struct Unk_MotionTilt*)((class CSkillRecord*)(struct Unk_MotionData*)(m_pData))->GetMotionData());
     if (pTilt != 0)
     {
         fSpeed = pTilt->m_fSpeed;

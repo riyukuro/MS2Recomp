@@ -31,19 +31,19 @@ void NotifySwfEntity::getUserData(const Params& params)
     ASData args;
     for (unsigned int i = 2; i < params.ArgCount; i++) {
         if (params.pArgs[i].IsBool())
-            args.FUN_1422b7fd0(params.pArgs[i].GetBool());
+            args.AddBool(params.pArgs[i].GetBool());
         else if (params.pArgs[i].IsInt())
-            args.FUN_1422b7f70(params.pArgs[i].GetInt());
+            args.AddInt(params.pArgs[i].GetInt());
         else if (params.pArgs[i].IsUInt())
-            args.FUN_1422b8090(params.pArgs[i].GetUInt());
+            args.AddULong(params.pArgs[i].GetUInt());
         else if (params.pArgs[i].IsNumber())
-            args.FUN_1422b8160(params.pArgs[i].GetNumber());
+            args.AddDouble(params.pArgs[i].GetNumber());
         else if (params.pArgs[i].IsString())
-            args.FUN_1422b82b0(params.pArgs[i].GetString());
+            args.AddString(params.pArgs[i].GetString());
         else if (params.pArgs[i].IsStringW())
             args.FUN_1422b8310(params.pArgs[i].GetStringW());
         else
-            args.FUN_1422b83f0(params.pArgs[i]);
+            args.AddValue(params.pArgs[i]);
     }
 
     MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(strEntity);

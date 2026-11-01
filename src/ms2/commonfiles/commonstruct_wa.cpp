@@ -7,6 +7,10 @@
 #include "commonstruct_wa.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- ItemEntity -----------------------------------------------------------------------------------------------
 // @0x14026ab50
@@ -30,9 +34,9 @@ void ItemEntity::vfunc_1(CStringW text) {
 }
 // @0x14026ae40
 void ItemEntity::vfunc_2(void* xml) {
-    FUN_140873220(xml, "itemID", m_itemId);
-    FUN_1408731e0(xml, "grade", m_rank);
-    FUN_140873220(xml, "count", m_count);
+    XmlGetAttr((class TiXmlElement*)(xml), "itemID", m_itemId);
+    XmlGetAttr((class TiXmlElement*)(xml), "grade", reinterpret_cast<int&>(m_rank));
+    XmlGetAttr((class TiXmlElement*)(xml), "count", m_count);
 }
 // @0x14026aeb0
 bool FUN_14026aeb0(const ItemEntity& a, const ItemEntity& b) {
@@ -89,14 +93,14 @@ void CIngredientInfo::FUN_14026b250(CInPacket& in) {
     m_c = in.ReadInt32();
 }
 // @0x14026b2f0
-bool CIngredientInfo::FUN_14026b2f0(CIngredientInfo* other) {
+bool CIngredientInfo::IsDifferent(CIngredientInfo* other) {
     if (m_a != other->m_a) return 1;
     if (m_b != other->m_b) return 1;
     if (m_c != other->m_c) return 1;
     return 0;
 }
 // @0x14026b350
-bool CIngredientInfo::FUN_14026b350() {
+bool CIngredientInfo::IsEmpty() {
     return m_c == 0 || (m_a == 0 && m_b == 0);
 }
 // @0x14026b3a0
@@ -151,11 +155,11 @@ CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
     }
 }
 // @0x14026b890
-bool CIngredientContainer::FUN_14026b890(CIngredientContainer* other) {
+bool CIngredientContainer::IsDifferentFrom(CIngredientContainer* other) {
     if (m_items.FUN_14028b500() != other->m_items.FUN_14028b500()) return true;
     size_t count = m_items.FUN_14028b500();
     for (size_t i = 0; i < count; ++i) {
-        if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->FUN_14026b2f0(other->m_items.FUN_14027f220(i)->FUN_140281f10())) return true;
+        if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->IsDifferent(other->m_items.FUN_14027f220(i)->FUN_140281f10())) return true;
     }
     return false;
 }
@@ -174,7 +178,7 @@ void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
         if (sub.FUN_14028b4c0() > 1) ref->m_b = FUN_140557640(FUN_140281980(), sub.FUN_14027f1c0(1));
     }
     ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
-    if (ref->m_a != 0) FUN_14026bca0(Unk_IngRef(ref));
+    if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
 }
 // @0x14026bbf0
 void CIngredientContainer::FUN_14026bbf0(int a, int b) {
@@ -183,7 +187,7 @@ void CIngredientContainer::FUN_14026bbf0(int a, int b) {
     m_items.FUN_14028b300(ref);
 }
 // @0x14026bca0
-void CIngredientContainer::FUN_14026bca0(Unk_IngRef r) {
+void CIngredientContainer::AddIngredient(Unk_IngRef r) {
     if (r == 0) return;
     m_items.FUN_14028b330(r);
 }
@@ -214,7 +218,7 @@ bool CIngredientContainer::FUN_14026bf70() { return m_items.FUN_14028a8c0(); }
 // @0x14026bfa0
 void CIngredientContainer::FUN_14026bfa0(size_t n) { m_items.FUN_14028b3a0(n); }
 // @0x14026bfd0
-void CIngredientContainer::FUN_14026bfd0(COutputStream& out) {
+void CIngredientContainer::Write(COutputStream& out) {
     unsigned char count = (unsigned char)m_items.FUN_14028b500();
     out.WriteUInt8(count);
     for (size_t i = 0; i < count; ++i) {
@@ -224,7 +228,7 @@ void CIngredientContainer::FUN_14026bfd0(COutputStream& out) {
     }
 }
 // @0x14026c0b0
-void CIngredientContainer::FUN_14026c0b0(CInPacket& in) {
+void CIngredientContainer::Read(CInPacket& in) {
     m_items.FUN_14028a610();
     size_t count = in.ReadUInt8();
     m_items.FUN_14028b3a0(count);
@@ -232,7 +236,7 @@ void CIngredientContainer::FUN_14026c0b0(CInPacket& in) {
         Unk_IngRef ref(new CIngredientInfo());
         if (ref == 0) continue;
         ref->FUN_14026b410(in);
-        FUN_14026bca0(ref);
+        AddIngredient(ref);
     }
 }
 // @0x14026c230
@@ -244,7 +248,7 @@ void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
     size_t count = other->FUN_14026bee0();
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef cur = other->FUN_14026bdc0(i);
-        if (cur == 0 || cur->FUN_14026b350()) continue;
+        if (cur == 0 || cur->IsEmpty()) continue;
         Unk_IngRef found = FUN_14026c450(cur->m_a);
         if (found.FUN_14027f250() != 0) {
             int* dst = &found->m_c;
@@ -270,7 +274,7 @@ Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
 }
 // @0x14026c550
 bool Unk_IngHolder::FUN_14026c550(Unk_IngHolder* other) {
-    if (m_container.FUN_140281f00()->FUN_14026b890(other->m_container.FUN_140281f00())) return true;
+    if (m_container.FUN_140281f00()->IsDifferentFrom(other->m_container.FUN_140281f00())) return true;
     return false;
 }
 
@@ -358,7 +362,7 @@ unsigned DungeonRewardInfo::FUN_14026cd70(unsigned key) {
     return *(unsigned*)((char*)FUN_14027f350(&found) + 4);
 }
 // @0x14026cdf0
-void DungeonRewardInfo::FUN_14026cdf0() {
+void DungeonRewardInfo::Clear() {
     m_rewards.FUN_14028a410();
     m_items.FUN_14028a590();
 }
@@ -376,36 +380,36 @@ void DungeonRewardInfo::FUN_14026ce80(unsigned key, int delta) {
 
 // ---- WeddingHallReservationFee --------------------------------------------------------------------------------
 // @0x14026e700
-WeddingHallReservationFee::WeddingHallReservationFee() { FUN_14026e7b0(); }
+WeddingHallReservationFee::WeddingHallReservationFee() { Reset(); }
 // @0x14026e750
 WeddingHallReservationFee::~WeddingHallReservationFee() {}
 // @0x14026e780
 WeddingHallReservationFee& WeddingHallReservationFee::FUN_14026e780(const WeddingHallReservationFee& other) {
-    FUN_14026e860(other);
+    Assign(other);
     return *this;
 }
 // @0x14026e7b0
-void WeddingHallReservationFee::FUN_14026e7b0() {
+void WeddingHallReservationFee::Reset() {
     m_total = 0;
     memset(m_values, 0, sizeof(m_values));
 }
 // @0x14026e7e0
-void WeddingHallReservationFee::FUN_14026e7e0(const WeddingHallReservationFee& other) {
+void WeddingHallReservationFee::AddFee(const WeddingHallReservationFee& other) {
     m_total = m_total + other.m_total;
     for (int i = 0; i < 4; i = i + 1) m_values[i] = m_values[i] + other.m_values[i];
 }
 // @0x14026e860
-void WeddingHallReservationFee::FUN_14026e860(const WeddingHallReservationFee& other) {
+void WeddingHallReservationFee::Assign(const WeddingHallReservationFee& other) {
     m_total = other.m_total;
     for (int i = 0; i < 4; i = i + 1) m_values[i] = other.m_values[i];
 }
 // @0x14026e8c0
-void WeddingHallReservationFee::FUN_14026e8c0(COutputStream& out) {
+void WeddingHallReservationFee::WriteTo(COutputStream& out) {
     for (int i = 0; i < 4; i = i + 1) out.WriteInt64(m_values[i]);
     out.WriteInt64(m_total);
 }
 // @0x14026e940
-void WeddingHallReservationFee::FUN_14026e940(CInputStream& in) {
+void WeddingHallReservationFee::ReadFrom(CInputStream& in) {
     for (int i = 0; i < 4; i = i + 1) m_values[i] = in.ReadInt64();
     m_total = in.ReadInt64();
 }
@@ -414,7 +418,7 @@ void WeddingHallReservationFee::FUN_14026e940(CInputStream& in) {
 // @0x14026e9b0
 NpcShopItemLife::NpcShopItemLife() : m_type(0), m_value(0), m_time(), m_onlyVisible(false) {}
 // @0x14026ea20
-bool NpcShopItemLife::FUN_14026ea20(NpcShopItemLife* other) {
+bool NpcShopItemLife::IsDifferentFrom(NpcShopItemLife* other) {
     if (m_type != other->m_type) return true;
     if (m_value != other->m_value) return true;
     if (m_time != other->m_time) return true;
@@ -422,7 +426,7 @@ bool NpcShopItemLife::FUN_14026ea20(NpcShopItemLife* other) {
     return false;
 }
 // @0x14026eab0
-Unk_ShopLifeRef NpcShopItemLife::FUN_14026eab0() {
+Unk_ShopLifeRef NpcShopItemLife::Clone() {
     Unk_ShopLifeRef ref(new NpcShopItemLife());
     ref->m_type = m_type;
     ref->m_time = m_time;
@@ -436,17 +440,17 @@ bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
     if (m_type == 0) return 0;
     switch (m_type) {
     case 1:
-        FUN_140873220(xml, "itemLifeValue", (unsigned&)m_value);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         if (m_value == 0) return 0;
         break;
     case 3:
     case 4:
-        FUN_140873220(xml, "itemLifeValue", (unsigned&)m_value);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         break;
     case 2: {
         Unk_IntArr parts;
         CString text;
-        FUN_1408733e0(xml, "itemLifeDateTime", text);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
         FUN_140177de0(text, &parts, "-");
         if (parts.FUN_140186260() == 6) {
             m_time = CMsTime(*parts.FUN_1401844d0(0), *parts.FUN_1401844d0(1), *parts.FUN_1401844d0(2),
@@ -459,11 +463,11 @@ bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
     default:
         return 0;
     }
-    FUN_1408730a0(xml, "onlyVisibleInLifePeriod", m_onlyVisible);
+    XmlGetAttr((class TiXmlElement*)(xml), "onlyVisibleInLifePeriod", reinterpret_cast<bool&>(m_onlyVisible));
     return 1;
 }
 // @0x14026ee70
-void NpcShopItemLife::FUN_14026ee70(COutputStream& out) {
+void NpcShopItemLife::Write(COutputStream& out) {
     out.WriteUInt8((unsigned char)m_type);
     switch (m_type) {
     case 1:
@@ -477,7 +481,7 @@ void NpcShopItemLife::FUN_14026ee70(COutputStream& out) {
     }
 }
 // @0x14026ef20
-void NpcShopItemLife::FUN_14026ef20(CInPacket& in) {
+void NpcShopItemLife::Read(CInPacket& in) {
     m_type = in.ReadUInt8();
     switch (m_type) {
     case 1:
@@ -495,10 +499,10 @@ bool NpcShopItemLife::FUN_14026f000() { return m_onlyVisible == false; }
 // @0x14026f040
 bool NpcShopItemLife::FUN_14026f040(const CMsTime& now) {
     if (FUN_14026f000()) return true;
-    return FUN_14026f080(now);
+    return IsNotExpired(now);
 }
 // @0x14026f080
-bool NpcShopItemLife::FUN_14026f080(const CMsTime& now) {
+bool NpcShopItemLife::IsNotExpired(const CMsTime& now) {
     if (!FUN_14026f0f0()) return true;
     if (m_time.Get() > 0 && now > m_time) return false;
     return true;
@@ -548,17 +552,17 @@ bool ItemDropItemLife::FUN_14026f290(void* xml) {
     if (m_type == 0) return 0;
     switch (m_type) {
     case 1:
-        FUN_140873220(xml, "itemLifeValue", (unsigned&)m_value);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         if (m_value == 0) return 0;
         break;
     case 3:
     case 4:
-        FUN_140873220(xml, "itemLifeValue", (unsigned&)m_value);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         break;
     case 2: {
         Unk_IntArr parts;
         CString text;
-        FUN_1408733e0(xml, "itemLifeDateTime", text);
+        XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
         FUN_140177de0(text, &parts, "-");
         if (parts.FUN_140186260() == 6) {
             m_time = CMsTime(*parts.FUN_1401844d0(0), *parts.FUN_1401844d0(1), *parts.FUN_1401844d0(2),

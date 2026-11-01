@@ -146,9 +146,9 @@ void UIChaosDPSDialog::FUN_140e05950()
 {
     if (m_30.IsNull())
         return;
-    CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
+    CStringW strTime = CBattleRecordManager::GetInstance()->GetElapsedTimeText(m_nGroup);
     static_cast<Unk_ChaosAS*>(m_30.operator->())->Invoke("setTime", strTime);
-    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     if (members.IsEmpty())
         return;
     m_members.clear();
@@ -254,7 +254,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             strHistory.Append(StringFormat((const wchar_t*)strRow, i + 1, spMember->user.FUN_1408f19e0(), strMeter));
         }
         int nNow = GetTickCountMs2();
-        int nTime = nNow - CBattleRecordManager::GetInstance()->FUN_140a04060(m_nGroup);
+        int nTime = nNow - CBattleRecordManager::GetInstance()->GetGroupStartTick(m_nGroup);
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
         strHistory.Append(FUN_1405c2690(CStringW(L"s_chaosdps_notice_history_total_time"), strTotal));
@@ -318,7 +318,7 @@ Scaleform::GFx::Value Unk_ChaosAS::FUN_140e06cc0(const char* szMethod, double d)
 void ASObj::FUN_140e06d60(const char* szName, double d)
 {
     ASData args;
-    ((class ASData*)(class ASData*)(&args))->FUN_1422b8160(d);
+    ((class ASData*)(class ASData*)(&args))->AddDouble(d);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, args.FUN_1422b9260());
 }
 

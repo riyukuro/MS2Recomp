@@ -27,15 +27,16 @@
 #include "hook/ms2hook.h"
 
 // Depth-first walker over a NIF scene graph (0x30 bytes: the base ctor 0x14098c730 fills up to +0x2c; unrecovered class). Next(bDescend) yields the next NiAVObject.
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // Registers the service's dependency (a template inline of efd::IDependencyRegistrar, instantiated in another unit).
@@ -66,7 +67,7 @@ int CNifAnimationService::FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, in
 {
     if (nMode == 1)
     {
-        Unk_SceneWalker walker(pkNif);
+        Unk_SceneWalker walker((NiAVObject*)(pkNif));
         NiAVObject* pkObject;
         while ((pkObject = walker.Next(true)) != 0)
         {

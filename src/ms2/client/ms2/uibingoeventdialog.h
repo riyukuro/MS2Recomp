@@ -122,7 +122,7 @@ public:
     void FUN_140bb3050(int);
     void FUN_140bb3bd0();
     unsigned FUN_140bb3f80();
-    void FUN_140bb4040();
+    void PlayFireworkEffect();
     void FUN_140bb4150(unsigned);
     void FUN_140bb43a0(ATL::CAtlArray<bool>&, ATL::CAtlArray<int>&);
     void FUN_140bb46e0();

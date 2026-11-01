@@ -39,6 +39,7 @@ static int s_nNameTagMode;                                      // 0x143af45f0
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #undef MS2_STATICS_A_BEFORE_CONDITION
 namespace Unk_NameTagStatics {
 static CString sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -62,7 +63,7 @@ public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
 };
 
-struct Unk_NtCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_NtCfgFloat { char m_pad[0x58]; };
 struct Unk_NtCfg
 {
     char m_pad_0000[8];
@@ -111,7 +112,6 @@ public:
 };
 class Unk_NtUIMgr { public: };
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 
 // Per-actor components (PCBase members outside the header) and the smart pointers they hand out.
 struct Unk_NtNpcData
@@ -122,19 +122,9 @@ struct Unk_NtNpcData
     __int64 m_d8[0x1b];                                 // stats (index = stat id)
     unsigned int FUN_1406cd0d0();
 };
-class Unk_NtNpcDataPtr
-{
-public:
-    ~Unk_NtNpcDataPtr() { FUN_1406d5390(); }            // 0x1406d5390 (another obj)
-    Unk_NtNpcData* FUN_140965990() const;               // operator->
-    void FUN_1406d5390();                               // release
-    void* m_pad_00;
-    Unk_NtNpcData* m_p;
-};
 class Unk_NtNpc : public CNpc
 {
 public:
-    Unk_NtNpcDataPtr FUN_141093270();
 };
 class Unk_NtPet : public CPet
 {
@@ -173,8 +163,6 @@ public:
     Unk_NtMountSeatPtr FUN_141657730();
     Unk_NtTeamPtr FUN_140967420();
 };
-Unk_NtPC* FUN_140974230(PCBase* pActor);                // the actor as a player
-Unk_NtNpc* FUN_14096e110(PCBase* pActor);               // the actor as an npc
 Unk_NtPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 Unk_NtSeatSub* FUN_14165ca20(PC* pPc);
 AdditionalCliList* FUN_1416749a0(PCBase* pActor);
@@ -268,7 +256,7 @@ int UINameTag::Entity::FUN_141a5e5d0(Unk_NtPos* pPos)
 {
     if (m_38.get() != 0 && FUN_140f48d40() != 0)
     {
-        m_38->FUN_1422c0f60(&pPos->x, &pPos->y);
+        m_38->GetPosition(&pPos->x, &pPos->y);
         pPos->x -= (double)m_68 * 0.5;
         return 1;
     }
@@ -348,11 +336,11 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
         float fDist = FUN_140f48e20();
         bool bNear = !(700.0f < fDist) || reinterpret_cast<Unk_NtWorld*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_1e0 != 0;
         if (bNear)
-            m_38->FUN_1422bfe00(100.0f);
+            m_38->SetAlpha(100.0f);
         else
-            m_38->FUN_1422bfe00((m_54 - fDist) * 0.05f + 40.0f);
-        if (FUN_14028d470(FUN_1416749a0(pActor)->FUN_140970720(), 0.0f))
-            m_38->FUN_1422bfe00(0.0f);
+            m_38->SetAlpha((m_54 - fDist) * 0.05f + 40.0f);
+        if (FUN_14028d470(FUN_1416749a0(pActor)->ComputeAlphaBlending(), 0.0f))
+            m_38->SetAlpha(0.0f);
         float fY = pPos->y;
         fY += FUN_1412762d0(vfunc_10());
         m_38->FUN_1422c00f0(pPos->x, fY);
@@ -419,13 +407,13 @@ float UINameTag::Entity::vfunc_9()
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 0.0f;
-    Unk_NtPC* pPc = FUN_140974230(pActor);
+    Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor));
     if (pPc != 0)
     {
         bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->FUN_14166ce30() != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
             && pPc->FUN_141657730().FUN_141667740()->FUN_140f48d40() != 0;
         if (bSeated)
-            return ((struct Unk_NtCfg*)FUN_1401d3200())->m_848.FUN_1402bac70();
+            return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)FUN_1401d3200())->m_848)->Read();
     }
     if (pActor != 0)
         return pActor->vfunc_89();
@@ -448,11 +436,11 @@ void UINameTag::Entity::FUN_141a5f080()
         return;
     if (m_38.get() != 0)
     {
-        m_38->FUN_1422bfe00(100.0f);
+        m_38->SetAlpha(100.0f);
         ASObj obj(m_18);
         CStringW strInfo;
         CStringW strStats;
-        Unk_NtPC* pPc = FUN_140974230(pActor);
+        Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
         {
             __int64 nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap;
@@ -474,34 +462,34 @@ void UINameTag::Entity::FUN_141a5f080()
                                    FUN_140b8f730(pPc->vfunc_20()),
                                    pPc->vfunc_134());
         }
-        else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
+        else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
         {
             __int64 nHp, nMaxHp, nPap, nMap, nNdd, nPar, nMar, nAtp, nEvp, nAbp, nMsp, nCar;
             nHp = ((class PCBase*)(class PCBase*)(pNpc))->FUN_141670a00(4);
-            nPap = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x17];
-            nMap = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x18];
-            nNdd = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x14];
-            nPar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x19];
-            nMar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x1a];
-            nAtp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0xf];
-            nEvp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x10];
-            nAbp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x15];
-            nMsp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0xe];
-            nCar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x13];
-            nMaxHp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x4];
+            nPap = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x17];
+            nMap = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x18];
+            nNdd = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x14];
+            nPar = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x19];
+            nMar = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x1a];
+            nAtp = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0xf];
+            nEvp = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x10];
+            nAbp = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x15];
+            nMsp = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0xe];
+            nCar = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x13];
+            nMaxHp = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_d8[0x4];
             strStats = StringFormat(L"hp:{0}/{1} pap:{2} map:{3} ndd:{4} par:{5} mar:{6} atp:{7} evp:{8}, abp:{9}, msp:{10}, car:{11}",
                                     nHp, nMaxHp, nPap, nMap, nNdd, nPar, nMar, nAtp, nEvp, nAbp, nMsp, nCar);
             int aRankStr[9] = {0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2};
             unsigned short nLevel = (unsigned short)pNpc->vfunc_78();
-            int nRank = pNpc->FUN_141093270().FUN_140965990()->m_7c;
+            int nRank = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_7c;
             strInfo.Format(L"name:[%s] state:[%s] lv:%d rank:[%s]",
                            (LPCWSTR)pNpc->vfunc_77(),
                            (LPCWSTR)FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pNpc))->FUN_14166c930(), s_gosNames), 0),
                            (unsigned int)nLevel,
                            (LPCWSTR)GetStringCommon(aRankStr[nRank]));
-            bool bShop = pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0() > 0;
+            bool bShop = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->FUN_1406cd0d0() > 0;
             if (bShop)
-                strInfo.AppendFormat(L" shopID:[%d]", pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0());
+                strInfo.AppendFormat(L" shopID:[%d]", reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->FUN_1406cd0d0());
             Unk_NtPet* pPet = FUN_1409ffc60(pActor);
             if (pPet != 0)
                 strInfo.AppendFormat(L" tamingLevel:[%d], tamerOID:[%d], tamingPoint:[%d]",
@@ -526,12 +514,12 @@ void UINameTag::Entity::FUN_141a5ff60()
         return;
     if (m_38.get() != 0)
     {
-        m_38->FUN_1422bfe00(100.0f);
+        m_38->SetAlpha(100.0f);
         ASObj obj(m_18);
         CStringW strName;
         CStringW strGuild;
         strName = pActor->vfunc_77();
-        Unk_NtPC* pPc = FUN_140974230(pActor);
+        Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
         {
             strGuild = L"";
@@ -598,7 +586,7 @@ void UINameTag::Entity::FUN_141a5ff60()
                 }
             }
         }
-        else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
+        else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
         {
             strGuild = pNpc->FUN_141093980();
         }
@@ -627,7 +615,7 @@ int UINameTag::Entity::FUN_141a60920()
         FUN_141a60b90(reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_1, reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_0);
         return m_78 != 0 || m_7c != 0;
     }
-    else if (Unk_NtPC* pPc = FUN_140974230(pActor))
+    else if (Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor)))
     {
         if (pPlayer->vfunc_122(pPc) == 0)
         {
@@ -643,7 +631,7 @@ int UINameTag::Entity::FUN_141a60920()
     {
         return 1;
     }
-    else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
+    else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
     {
         if (pNpc->vfunc_116() == 0)
             return reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_5;
@@ -721,7 +709,7 @@ UINameTag* FUN_141a62100(int nUiId)
 {
     if (reinterpret_cast<Unk_NtUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UINameTag*>((UIObject*)p);
     }
@@ -777,7 +765,7 @@ void UINameTag::FUN_141a60f70(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -805,7 +793,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_NtClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)

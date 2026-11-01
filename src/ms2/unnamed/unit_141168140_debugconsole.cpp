@@ -15,13 +15,12 @@
 #include "ms2/client/ms2/sounddlg.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #pragma intrinsic(memset, memcpy)
 
 // ---- unit-local views of exe objects ----
 
-class Unk_DcApp;                                                    // the client application object
 void* FUN_140aadf80();
-HWND FUN_14209c720(Unk_DcApp* pApp);                                // its main window
 
 // ---- CDebugConsole ----
 
@@ -97,7 +96,7 @@ bool CDebugConsole::FUN_141168350()
     } else {
         TSingleton<CSoundDlg>::DestroyInstance();
         TSingleton<CSoundDlg>::CreateInstance();
-        TSingleton<CSoundDlg>::GetInstance()->Create(0x92, CWnd::FromHandle(FUN_14209c720(reinterpret_cast<Unk_DcApp*>(FUN_140aadf80()))));
+        TSingleton<CSoundDlg>::GetInstance()->Create(0x92, CWnd::FromHandle(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef()));
     }
     return true;
 }

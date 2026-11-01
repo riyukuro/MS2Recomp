@@ -87,8 +87,8 @@ public:
     void FUN_141768900(MS2Ptr<CSkillRecord> spRecord);
     int FUN_141768770(class SkillData* pData);              // the skill's use-count condition
     int FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int* pByItem, int nFlag);   // the cooldown of a skill
-    int FUN_141765cf0(int n);                               // set m_18, return the old
-    int FUN_141765d30(int n);                               // set m_88, return the old
+    int SetShowError(int n);                               // set m_18, return the old
+    int SetCastAllowed(int n);                               // set m_88, return the old
     unsigned char FUN_141765a70(int nSkillId);              // the skill may be cast
 
     // not called outside the unit

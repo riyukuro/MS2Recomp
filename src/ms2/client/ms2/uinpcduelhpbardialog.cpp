@@ -40,6 +40,8 @@ MS2_CHECK_SIZE(ASEffectManager, 0x120);
 
 struct Unk_NdNpcRow;
 // The actor (player or npc): only the virtual slots the dialog reads.
+class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
+class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_NdActor
 {
 public:
@@ -63,7 +65,6 @@ public:
     __int64 FUN_141670a30(int nStat);                           // stat 4 = max hp
     CString FUN_1416612e0();                                    // profile picture path
     int FUN_141092fa0();                                        // npc id
-    MS2Ptr<Unk_NdNpcRow> FUN_141093270();                               // the npc table row
 };
 class Unk_NdFlags { public: bool FUN_1401927c0(bool bFlag); };
 struct Unk_NdBuffInfo { char m_pad[0xb8]; Unk_NdFlags m_flags; };
@@ -120,7 +121,6 @@ void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW 
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strIcon);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pValue);     // localized text with one {0} argument
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 
 // the movie that creates AS objects by class name
 class Unk_NdMovie { public: void FUN_14256e8e0(Scaleform::GFx::Value& out, const char* szClass, __int64 a1, int a2); };
@@ -225,10 +225,10 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
     Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
     if (pNpc != 0) {
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
-            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, ((class CNpcData*)(struct Unk_NdNpcRow*)(pNpc->FUN_141093270().operator->()))->GetRace()));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, ((class CNpcData*)(struct Unk_NdNpcRow*)(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->()))->GetRace()));
         FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
         FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", FUN_140719dc0(L"{0}", pNpc->vfunc_78()));
-        CString strProfile(pNpc->FUN_141093270()->m_90);
+        CString strProfile(reinterpret_cast<Unk_NdNpcRow*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_90);
         m_30->Invoke("setRightProfile", strProfile);
         FUN_140e6c9c0();
         m_effects->Clear();
@@ -371,7 +371,7 @@ MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1
         return MS2Ptr<ASEffectManager>(0);
     Scaleform::GFx::Value obj;
     pMovie->FUN_14256e8e0(obj, strClass, a1, a2);
-    if (FUN_1409b0390(&obj) != 0)
+    if (((Scaleform::GFx::Value*)(void*)(&obj))->IsUndefined() != 0)
         return MS2Ptr<ASEffectManager>(0);
     MS2Ptr<ASEffectManager> pEffects(new ASEffectManager(obj, nMovieId));
     return pEffects;

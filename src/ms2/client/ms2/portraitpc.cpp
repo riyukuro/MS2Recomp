@@ -14,6 +14,7 @@
 // MS2-PIN: ?SetupClassInfo@PortraitPC@@SAXPEAVClassInfo@efd@@_K@Z 0x14169ac60
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\portraitpc.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "portraitpc.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -94,7 +95,7 @@ struct Unk_PtVec3 : public Vector3
 // ---- out-of-unit callees ----
 
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
-extern Vector3 DAT_143b01a60;                              // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 void FUN_1411e1b80(Unk_PCEquipSet* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);   // the worn items
 class CEquipment   // C3: member view for the former free stand-ins
@@ -112,6 +113,7 @@ unsigned __int64 FUN_141662e90(PC* pPC);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(PortraitPC);
 
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // @0x1416999b0
 PortraitPC::~PortraitPC()
@@ -167,14 +169,14 @@ void PortraitPC::vfunc_149()
                 MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);
                 if (spCopy.get() != 0)
                 {
-                    spCopy->FUN_140526b30(FUN_14123c580());
+                    spCopy->SetObjectId(FUN_14123c580());
                     FUN_141653d10(spCopy);
                 }
             }
         }
         vfunc_143();
         Unk_MyPCEquip* pSrcEquip = m_pSourcePC->FUN_14165f460();
-        FUN_14165f460()->FUN_141270e00(*pSrcEquip);
+        FUN_14165f460()->CopyFrom(*pSrcEquip);
     }
     FUN_141087390();
     m_b12f8 = false;
@@ -252,7 +254,7 @@ void PortraitPC::vfunc_53(float f)
     FUN_141087770();
     if (m_b12f9 && (static_cast<UIModelView*>(m_spModelView) ? true : false))
     {
-        if (m_spModelView->FUN_141ab7660() == 0 || m_unk_1318.FUN_140268870(500) != 0)
+        if (m_spModelView->FUN_141ab7660() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(500) != 0)
             FUN_14169a5e0();
     }
     FUN_141087790();

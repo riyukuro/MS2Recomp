@@ -9,6 +9,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 void FUN_140178670(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<int>& arr);
 void FUN_140645110(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned short>& arr);
@@ -27,7 +30,7 @@ SetItemOptionPart::SetItemOptionPart() : m_nCount(0)
 // @0x1407bc580
 bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "count", m_nCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "count", m_nCount);
     if (m_nCount == 0)
     {
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.PartCount is NULL");
@@ -40,15 +43,15 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.additionalEffect Count Error!");
         return false;
     }
-    FUN_1408733e0(pElem, "animationPrefix", m_animationPrefix);
-    FUN_1408733e0(pElem, "setEffect", m_setEffect);
-    FUN_1408733e0(pElem, "groundAttribute", m_groundAttribute);
+    XmlGetAttr((class TiXmlElement*)(pElem), "animationPrefix", m_animationPrefix);
+    XmlGetAttr((class TiXmlElement*)(pElem), "setEffect", m_setEffect);
+    XmlGetAttr((class TiXmlElement*)(pElem), "groundAttribute", m_groundAttribute);
 
     for (StatKey nStat : DAT_1439f48d0)
     {
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
-        FUN_1408731e0(pElem, (const char*)FUN_14082efb0(nStat), nValue);
+        XmlGetAttr((class TiXmlElement*)(pElem), (const char*)FUN_14082efb0(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
         if (spOption->HasValue())
             FUN_1407bca10(nStat, spOption);
@@ -59,7 +62,7 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
         SpecialKey nStat = pSpecials[(int)i];
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
-        FUN_1408731e0(pElem, (const char*)FUN_14081d380(nStat), nValue);
+        XmlGetAttr((class TiXmlElement*)(pElem), (const char*)FUN_14081d380(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
         if (spOption->HasValue())
             FUN_1407bcac0(nStat, spOption);

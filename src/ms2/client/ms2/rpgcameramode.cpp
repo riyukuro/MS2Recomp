@@ -14,6 +14,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- the unit's header statics (header_statics_a.h order plus a pointer holder before the map) ----
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -88,7 +90,6 @@ public:
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -143,7 +144,6 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -239,7 +239,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
                 ptPos.z = ptTarget.z;
                 Vector3 ptDist = ptTarget.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_58, m_54);
+                m_50 = efd::Clamp(m_50, m_58, m_54);
                 if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) <= 5.0f)
                 {
                     m_50 = m_98;
@@ -270,7 +270,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                        FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
@@ -280,18 +280,18 @@ void CRPGCameraMode::vfunc_8(double fTime)
             if (fZoom != 0.0f)
             {
                 m_84 += fZoom * 2000.0f;
-                m_84 = FUN_140a17940(m_84, -50.0f, 50.0f);
+                m_84 = efd::Clamp(m_84, -50.0f, 50.0f);
             }
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
-                m_68 += FUN_140a17940(fYaw, g_142f5c218, 0.1f);
+                m_68 += efd::Clamp(fYaw, g_142f5c218, 0.1f);
                 m_6c -= fPitch;
                 Vector3 ptCenter = m_78;
                 ptPos = m_d8.m_pos;
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_58, m_54);
+                m_50 = efd::Clamp(m_50, m_58, m_54);
                 ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
                 ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
                 ptPos.z = m_50 * FUN_1409f2310(m_6c) + ptCenter.z;
@@ -341,9 +341,9 @@ void CRPGCameraMode::vfunc_6(int n)
         vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
-    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
-    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
 }
 MS2_REPLACE_METHOD(0x14170a7c0, CRPGCameraMode, vfunc_6, 1104, 0x2FD1127B);
 

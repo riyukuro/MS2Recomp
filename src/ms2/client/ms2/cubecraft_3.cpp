@@ -51,6 +51,7 @@
 #include <NiIntegerExtraData.h>
 #include <NiSourceTexture.h>
 #include <efd/AssetID.h>
+#include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 // This scene traversal helper owns a 0x30-byte ATL list. Its constructor
 // (14098cb80), traversal (14098e0d0), and destructor (14098cf00) are external.
@@ -106,9 +107,7 @@ public:
 };
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
-void FUN_1409618c0(egf::Entity*, unsigned, NiPoint3&);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_1408a20a0(egf::Entity*, unsigned, bool&);
 void FUN_1409457c0(egf::Entity*, unsigned, const float&);
 void FUN_1411cf570(void*, egf::Entity*);
 
@@ -309,7 +308,7 @@ void CFittingDollCubeGuide::vfunc_9(float scale) { doll->FUN_14123c280(scale); d
 MS2_REPLACE_METHOD(0x1410b0eb0, CFittingDollCubeGuide, vfunc_9, 82, 0x9FE77C47);
 // @0x1410b0f10
 void CFittingDollCubeGuide::vfunc_10(NiNode* parent, int attachName) {
-    if (attachName != 0) doll->FUN_14121c170(parent->GetName());
+    if (attachName != 0) doll->SetParentName(parent->GetName());
 }
 MS2_REPLACE_METHOD(0x1410b0f10, CFittingDollCubeGuide, vfunc_10, 119, 0x619129BF);
 // @0x1410b0f90
@@ -369,7 +368,7 @@ void CKfmCubeGuide::vfunc_1() {
 void CKfmCubeGuide::vfunc_2(const NiPoint3& position) { FUN_140a38a50(entity.operator->(), 0xfd95ca52, position); }
 MS2_REPLACE_METHOD(0x1410b1710, CKfmCubeGuide, vfunc_2, 54, 0x5F732E7A);
 // @0x1410b1750
-NiPoint3 CKfmCubeGuide::vfunc_3() { NiPoint3 position; FUN_1409618c0(entity.operator->(), 0xfd95ca52, position); return position; }
+NiPoint3 CKfmCubeGuide::vfunc_3() { NiPoint3 position; reinterpret_cast<egf::Entity*>(entity.operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(position)); return position; }
 MS2_REPLACE_METHOD(0x1410b1750, CKfmCubeGuide, vfunc_3, 93, 0xB16325BF);
 // @0x1410b17c0
 void CKfmCubeGuide::vfunc_4(const NiMatrix3& rotation) {
@@ -381,7 +380,7 @@ MS2_REPLACE_METHOD(0x1410b17c0, CKfmCubeGuide, vfunc_4, 79, 0x6E878803);
 // @0x1410b1820
 NiMatrix3 CKfmCubeGuide::vfunc_5() {
     NiPoint3 angles;
-    FUN_1409618c0(entity.operator->(), 0x68c7c29d, angles);
+    reinterpret_cast<egf::Entity*>(entity.operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(angles));
     NiMatrix3 rotation;
     FUN_140b86230(angles, rotation);
     return rotation;
@@ -418,7 +417,7 @@ void CKfmCubeGuide::vfunc_8(float value) {
 void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; FUN_14098c6e0((class Unk_CachedEntity*)(entity.operator->()), 0xa0b6b179, hidden); }
 MS2_REPLACE_METHOD(0x1410b1ce0, CKfmCubeGuide, vfunc_6, 81, 0x4D8BA781);
 // @0x1410b1d40
-int CKfmCubeGuide::vfunc_7() { bool hidden; FUN_1408a20a0(entity.operator->(), 0xa0b6b179, hidden); return hidden ? false : true; }
+int CKfmCubeGuide::vfunc_7() { bool hidden; entity.operator->()->GetPropertyValue(0xa0b6b179, hidden); return hidden ? false : true; }
 MS2_REPLACE_METHOD(0x1410b1d40, CKfmCubeGuide, vfunc_7, 75, 0xED65222D);
 // @0x1410b1da0
 void CKfmCubeGuide::vfunc_9(float scale) { FUN_1409457c0(entity.operator->(), 0x2d7cad2d, scale); }

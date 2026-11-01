@@ -41,7 +41,7 @@ public:
     void FUN_1413190c0(int nMode, Unk_MeratProductKey key);             // set mode and the product to list again
     bool FUN_141319100(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: send the product
     bool FUN_141319180(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: refresh the fee
-    MS2Ptr<CItem> FUN_1413191f0(int nIndex);                            // item of the list by index
+    MS2Ptr<CItem> GetItemAt(int nIndex);                            // item of the list by index
     bool FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> spItem);         // the item can still be found
     int FUN_1413197a0(const CUgcMarketProduct* pProduct);               // list index of the product's item, -1 if none
     void FUN_141319920(ItemArray& arrItems);                            // collect the items that can be listed

@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/uiservice.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- unit-local placeholders ----
 
@@ -84,7 +85,6 @@ void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fAbsZ = FUN_140a38cd0(ptInput.z);
             float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);

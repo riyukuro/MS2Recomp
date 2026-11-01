@@ -6,6 +6,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidebuggingdialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uidebuggingdialog.h"
 #include "pcbase.h"
 #include "ms2/placeholder/astextfield.h"
@@ -93,13 +94,14 @@ struct Unk_DbgMarker
 class Unk_DbgEffectMgr
 {
 public:
-    int FUN_1411a49c0(Unk_DbgMarker* pRequest);                         // start the effect, returns its id
-    void FUN_1411a6060(int nId);                                        // stop an effect
 };
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
 public:
+    NoticeMessage();
+    ~NoticeMessage();
     void SetActor(int);
+    void* m_storage[14];
 };
 struct Unk_DbgConfig { char m_pad[0x2e8]; CString m_strMarkerEffect; };   // the client config
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
@@ -116,19 +118,20 @@ class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 void* FUN_140af2a30(void* pManager);
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 efd::Point2 FUN_140a0a600(float fX, float fY);
-extern Vector3 DAT_143b01a60;                                   // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 PCBase* FUN_140a7b650(void* pEntry);
 void FUN_140a7b860(void* pMap, void** pPos);
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, symbols-manual rows shared with util.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 extern char DAT_143afa7d0;                                              // NiRTTI of the mesh class
 void* FUN_140876480(void* pOut, int nCat);
@@ -145,7 +148,8 @@ class Unk_DbgModelTable
 public:
     Unk_DbgModelSet FUN_141206030(const egf::EntityID& kKey);           // the npc's model set
 };
-Unk_DbgModelTable* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 float FUN_14028d3a0(float fValue);                                       // table value of a speed
 bool FUN_14028d470(float fValue, float fZero);                           // fValue == nZero
 // The npc record handle accessors.
@@ -277,7 +281,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                         continue;
                     ecr::SceneGraphService* pSceneSvc = FUN_1413f98b0();
                     NiAVObject* pRoot = pSceneSvc->GetSceneGraphFromEntity(pNpc->FUN_14123c410());
-                    Unk_SceneWalker walker(pRoot);
+                    Unk_SceneWalker walker((NiAVObject*)(pRoot));
                     while (void* pNode = walker.Next(true))
                     {
                         if (void* pMesh = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pNode))))
@@ -297,11 +301,11 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                                 if (m_nTargetId != 0 || m_nMarkerId != 0)
                                     FUN_1412860c0();
                                 m_nTargetId = pNpc->FUN_14123c580();
-                                Unk_DbgMarker kMarker;
-                                reinterpret_cast<CString&>(kMarker.m_pName) = ((struct Unk_DbgConfig*)FUN_1401d31f0())->m_strMarkerEffect;
-                                kMarker.m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
-                                ((class NoticeMessage*)(struct Unk_DbgMarker*)(&kMarker))->SetActor(pNpc->FUN_14123c580());
-                                m_nMarkerId = reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kMarker);
+                                NoticeMessage kMarker;   // C3: was Unk_DbgMarker
+                                reinterpret_cast<CString&>(((Unk_DbgMarker&)(kMarker)).m_pName) = ((struct Unk_DbgConfig*)FUN_1401d31f0())->m_strMarkerEffect;
+                                ((Unk_DbgMarker&)(kMarker)).m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
+                                ((class NoticeMessage*)(struct Unk_DbgMarker*)(&((Unk_DbgMarker&)(kMarker))))->SetActor(pNpc->FUN_14123c580());
+                                m_nMarkerId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_DbgMarker&)(kMarker))));
                                 bFound = true;
                                 break;
                             }
@@ -333,7 +337,7 @@ void UIDebuggingDialog::vfunc_72()
         Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nTargetId);
         if (pNpc != 0)
         {
-            Unk_DbgModelSet kModel = FUN_141b6f910()->FUN_141206030(pNpc->FUN_14123c460());
+            Unk_DbgModelSet kModel = reinterpret_cast<Unk_DbgModelTable*>(FUN_141b6f910())->FUN_141206030(pNpc->FUN_14123c460());
             CStringW strNpcName = pNpc->vfunc_77().GetLength() == 0 ? L"Noname" : (LPCWSTR)pNpc->vfunc_77();
             FUN_141286050("m_npcName", strNpcName);
             FUN_141286050("m_aniName", FUN_14016a730(((efd::utf8string*)(struct Unk_DbgModelSet*)(&kModel))->c_str(), 0));
@@ -387,7 +391,7 @@ void UIDebuggingDialog::vfunc_72()
 // @0x141286050
 void UIDebuggingDialog::FUN_141286050(const CString& strName, const CStringW& strText)
 {
-    MS2Ptr<ASTextField> spText = FUN_140bb4cf0(strName);
+    MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName);
     if (spText.get() != 0)
         spText->FUN_1422c4cd0(strText);
 }
@@ -398,7 +402,7 @@ void UIDebuggingDialog::FUN_1412860c0()
     if (m_nMarkerId != 0)
     {
         if (reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance()) != 0)
-            reinterpret_cast<Unk_DbgEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nMarkerId);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nMarkerId);
     }
     m_nMarkerId = 0;
     m_nTargetId = 0;

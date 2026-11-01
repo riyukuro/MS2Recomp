@@ -94,6 +94,14 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Out-of-unit helpers.
 // Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
@@ -125,7 +133,7 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_140d9f580(int);
+    __int64 GetTime(int);
 };
 CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& a, const int& b);   // {0}({1})
 void* FUN_140c053e0(int nId);                                   // the attend gift dialog (UIAttendGiftDialog)
@@ -173,7 +181,7 @@ template <> Unk_14102fe10<Unk_140ce3510>::Unk_14102fe10(Unk_140ce3510* p);    //
 template <class T> T* FindCliDialog(int id)
 {
     if (CUIService::GetInstance()) {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)id);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject((eUIClassID)id);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -251,7 +259,7 @@ void GameEventGameMenuPopupCli::OnStart()
     GameEventGameMenuPopup::OnStart();
     UIGameMenuDialog* pDlg = FUN_140938b90(0x4e28);
     if (pDlg) {
-        pDlg->FUN_141938490(m_d0, m_d8);
+        pDlg->SetMenuText(m_d0, m_d8);
         if (pDlg->FUN_141924630())
             pDlg->FUN_1419384d0();
     }
@@ -265,7 +273,7 @@ void GameEventGameMenuPopupCli::vfunc_6()
     if (pDlg) {
         {
             CStringW strEmpty(L"");
-            pDlg->FUN_141938490(m_d0, strEmpty);
+            pDlg->SetMenuText(m_d0, strEmpty);
         }
         if (pDlg->FUN_141924630())
             pDlg->FUN_1419384d0();
@@ -415,7 +423,7 @@ void GameEventAttendGiftCli::OnStart()
     GameEventAttendGift::OnStart();
     Unk_CliAttendOps* pDlg = (Unk_CliAttendOps*)FUN_140c053e0(0x4eb8);
     if (pDlg)
-        pDlg->FUN_14102c8e0(Unk_14102fe10<Unk_140ce3510>((Unk_140ce3510*)this));
+        pDlg->AddEvent(Unk_14102fe10<Unk_140ce3510>((Unk_140ce3510*)this));
     if ((unsigned)m_i120 > 0) {
         UIDTAttendPopup* pPopup = FindCliDialog<UIDTAttendPopup>(0x4eba);
         if (pPopup)
@@ -429,7 +437,7 @@ void GameEventAttendGiftCli::vfunc_6()
     GameEventAttendGift::vfunc_6();
     Unk_CliAttendOps* pDlg = (Unk_CliAttendOps*)FUN_140c053e0(0x4eb8);
     if (pDlg)
-        pDlg->FUN_14102c9e0(Unk_14102fe10<Unk_140ce3510>((Unk_140ce3510*)this));
+        pDlg->RemoveEvent(Unk_14102fe10<Unk_140ce3510>((Unk_140ce3510*)this));
     if ((unsigned)m_i120 > 0) {
         UIDTAttendPopup* pPopup = FindCliDialog<UIDTAttendPopup>(0x4eba);
         if (pPopup)
@@ -461,7 +469,7 @@ bool GameEventAttendGiftCli::FUN_140ce3510()
 }
 
 // @0x140ce35c0
-bool GameEventAttendGiftCli::FUN_140ce35c0()
+bool GameEventAttendGiftCli::IsCheckedInToday()
 {
     CMsTime now(GetServerTime());
     __int64 nDefault = 0;
@@ -571,7 +579,7 @@ CMsTime GameEventAttendGiftCli::FUN_140ce3aa0() { return m_28; }
 CMsTime GameEventAttendGiftCli::FUN_140ce3ae0()
 {
     if (m_i114 == 2) {
-        __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f580(FUN_1402e1d00());
+        __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetTime(FUN_1402e1d00());
         if (nTime != 0)
             return CMsTime(nTime);
     }
@@ -592,7 +600,7 @@ void GameEventCashAttendCli::OnStart()
     GameEventCashAttend::OnStart();
     UICashAttendDialog* pDlg = FindCliDialog<UICashAttendDialog>(0x4eb9);
     if (pDlg)
-        pDlg->FUN_140bc3db0(MS2Ptr<GameEventCashAttendCli>(this));
+        pDlg->AddEvent(MS2Ptr<GameEventCashAttendCli>(this));
 }
 
 // @0x140ce3c90
@@ -601,7 +609,7 @@ void GameEventCashAttendCli::vfunc_6()
     GameEventCashAttend::vfunc_6();
     UICashAttendDialog* pDlg = FindCliDialog<UICashAttendDialog>(0x4eb9);
     if (pDlg)
-        pDlg->FUN_140bc3eb0(MS2Ptr<GameEventCashAttendCli>(this));
+        pDlg->RemoveEvent(MS2Ptr<GameEventCashAttendCli>(this));
 }
 
 // @0x140ce3d00
@@ -628,7 +636,7 @@ bool GameEventCashAttendCli::FUN_140ce3da0()
 }
 
 // @0x140ce3e40
-unsigned GameEventCashAttendCli::GetDayCount()
+unsigned GameEventCashAttendCli::GetGroupCount()
 {
     if (m_entry == 0)
         return 0;
@@ -661,7 +669,7 @@ CStringW GameEventCashAttendCli::GetDesc() { return m_strDesc; }
 // @0x140ce3fc0
 AttendGiftDataGroupPtr GameEventCashAttendCli::GetDayGroup(unsigned nDay)
 {
-    if (nDay >= GetDayCount())
+    if (nDay >= GetGroupCount())
         return AttendGiftDataGroupPtr(0);
     return reinterpret_cast<AttendGiftData*>(m_entry.operator->())->GetGroup(nDay);
 }
@@ -685,7 +693,7 @@ void GameEventTrafficOptimizerCli::OnStart()
 {
     GameEventTrafficOptimizer::OnStart();
     for (size_t i = 0; i < 7; i++)
-        TSingleton<CTrafficOptimizer>::GetInstance()->FUN_14087d5b0((unsigned)i, m_values[i]);
+        TSingleton<CTrafficOptimizer>::GetInstance()->SetTraffic((unsigned)i, m_values[i]);
 }
 
 // @0x140ce4250
@@ -693,7 +701,7 @@ void GameEventTrafficOptimizerCli::vfunc_6()
 {
     GameEventTrafficOptimizer::vfunc_6();
     for (size_t i = 0; i < 7; i++)
-        TSingleton<CTrafficOptimizer>::GetInstance()->FUN_14087d5b0((unsigned)i, 0);
+        TSingleton<CTrafficOptimizer>::GetInstance()->SetTraffic((unsigned)i, 0);
 }
 
 // @0x140ce42b0
@@ -812,7 +820,7 @@ void GameEventUpdateStringCli::OnStart()
     strXml.Trim();
     if (!strXml.IsEmpty()) {
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0) {
+        if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0) {
             MS2_ASSERT_AT(0x271, FALSE);
             return;
         }
@@ -821,19 +829,19 @@ void GameEventUpdateStringCli::OnStart()
             MS2_ASSERT_AT(0x278, FALSE);
             return;
         }
-        Unk_140165cf0* pStringCommon = pRoot->FUN_140165cf0("stringCommon");
+        Unk_140165cf0* pStringCommon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("stringCommon"));
         if (pStringCommon != 0)
             FUN_140ce4c60(pStringCommon);
-        Unk_140165cf0* pItemDesc = pRoot->FUN_140165cf0("itemDescription");
+        Unk_140165cf0* pItemDesc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("itemDescription"));
         if (pItemDesc != 0)
             FUN_140ce4c90(pItemDesc);
-        Unk_140165cf0* pAddDesc = pRoot->FUN_140165cf0("additionalDescription");
+        Unk_140165cf0* pAddDesc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("additionalDescription"));
         if (pAddDesc != 0)
             FUN_140ce4cc0(pAddDesc);
-        Unk_140165cf0* pSkillDesc = pRoot->FUN_140165cf0("skillDescription");
+        Unk_140165cf0* pSkillDesc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("skillDescription"));
         if (pSkillDesc != 0)
             FUN_140ce4cf0(pSkillDesc);
-        Unk_140165cf0* pMailContent = pRoot->FUN_140165cf0("systemMailContent");
+        Unk_140165cf0* pMailContent = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("systemMailContent"));
         if (pMailContent != 0)
             FUN_140ce4d20(pMailContent);
     }
@@ -878,7 +886,7 @@ void GameEventWorldmapIconCli::OnStart()
         MS2_ASSERT_AT(0x2c8, FALSE);
         return;
     }
-    for (Unk_140165cf0* pIcon = pRoot->FUN_140165cf0("v"); pIcon != 0; pIcon = pIcon->FUN_140168650("v")) {
+    for (Unk_140165cf0* pIcon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pIcon != 0; pIcon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pIcon))->NextSibling("v"))) {
         MS2Ptr<EventIconInfo> spInfo(new EventIconInfo);
         if (spInfo->Load(pIcon) == 0)
             continue;
@@ -899,7 +907,7 @@ void GameEventWorldmapIconCli::vfunc_6()
         MS2_ASSERT_AT(0x2e2, FALSE);
         return;
     }
-    for (Unk_140165cf0* pIcon = pRoot->FUN_140165cf0("v"); pIcon != 0; pIcon = pIcon->FUN_140168650("v")) {
+    for (Unk_140165cf0* pIcon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pIcon != 0; pIcon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pIcon))->NextSibling("v"))) {
         MS2Ptr<EventIconInfo> spInfo(new EventIconInfo);
         if (spInfo->Load(pIcon) == 0)
             continue;
@@ -1156,7 +1164,7 @@ void GameEventBurningLevelupCli::OnStart()
     UIBurningEventWidgetDialog* pDlg = FindCliDialog<UIBurningEventWidgetDialog>(0x4f6a);
     if (pDlg)
         pDlg->FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent>(reinterpret_cast<Unk_MyPCBurningEvent*>(this)));
-    ((class Unk_CliMcPackets*)FUN_140bccd50())->FUN_140da5180(0xf7,
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xf7,
         Delegate<void(CInPacket&)>(this, reinterpret_cast<Unk_CliBurnPktFn>(&GameEventBurningLevelupCli::FUN_140ce7250)));
     NotifySystem::GetInstance()->RegisterNotify(L"NotifyChangeMyLevel",
         Delegate<void(NotifyObject*)>(this, &GameEventBurningLevelupCli::vfunc_10));
@@ -1169,7 +1177,7 @@ void GameEventBurningLevelupCli::vfunc_6()
     UIBurningEventWidgetDialog* pDlg = FindCliDialog<UIBurningEventWidgetDialog>(0x4f6a);
     if (pDlg)
         pDlg->FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent>(0));
-    ((class Unk_CliMcPackets*)FUN_140bccd50())->FUN_140da51e0(0xf7,
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xf7,
         Delegate<void(CInPacket&)>(this, reinterpret_cast<Unk_CliBurnPktFn>(&GameEventBurningLevelupCli::FUN_140ce7250)));
     NotifySystem::GetInstance()->UnregisterNotify(L"NotifyChangeMyLevel",
         Delegate<void(NotifyObject*)>(this, &GameEventBurningLevelupCli::vfunc_10));
@@ -1212,7 +1220,7 @@ void GameEventLongTermAttendGiftCli::OnStart()
 void GameEventLongTermAttendGiftCli::vfunc_6()
 {
     GameEventLongTermAttendGift::vfunc_6();
-    CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f98);
+    CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f98);
 }
 
 // @0x140ce65f0
@@ -1248,10 +1256,10 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
                 ((CItem*)spItem)->FUN_140526c70(m_d0->m_spJumpingItem->vfunc_o18_2());
                 spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
                 spData->m_spItem = spItem;
-                spData->m_nCount = ((CItem*)spItem)->FUN_140526c50();
+                spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;
             }
-            spBox->FUN_141a01e60(spData);
+            spBox->SetItem(spData);
         }
         FUN_140d73c60(spBox);
     } else if (pChg->m_nOldLevel < m_d0->m_8c && pChg->m_nLevel >= m_d0->m_8c) {
@@ -1267,10 +1275,10 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
                 ((CItem*)spItem)->FUN_140526c70(m_d0->m_rewardItems.begin()->vfunc_o18_2());
                 spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
                 spData->m_spItem = spItem;
-                spData->m_nCount = ((CItem*)spItem)->FUN_140526c50();
+                spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;
             }
-            spBox->FUN_141a01e60(spData);
+            spBox->SetItem(spData);
         }
         FUN_140d73c60(spBox);
     }
@@ -1304,10 +1312,10 @@ void GameEventBurningLevelupCli::FUN_140ce7250(Unk_CliPkt& pkt)
                 ((CItem*)spItem)->FUN_140526c70(m_d0->m_spJumpingItem->vfunc_o18_2());
                 spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
                 spData->m_spItem = spItem;
-                spData->m_nCount = ((CItem*)spItem)->FUN_140526c50();
+                spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;
             }
-            spBox->FUN_141a01e60(spData);
+            spBox->SetItem(spData);
         }
         FUN_140d73c60(spBox);
     }
@@ -1434,8 +1442,8 @@ template <> Unk_14102fe10<Unk_140ce3510>::Unk_14102fe10(Unk_140ce3510* p)
 int EventIconInfo::Load(Unk_140165cf0* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "fieldID", m_nFieldId);
-    FUN_140873420(pElem, "iconFrame", m_strIconFrame);
-    FUN_140873420(pElem, "eventStr", m_strEventStr);
+    XmlGetAttr((class TiXmlElement*)(pElem), "iconFrame", m_strIconFrame);
+    XmlGetAttr((class TiXmlElement*)(pElem), "eventStr", m_strEventStr);
     XmlGetAttr((class TiXmlElement*)(pElem), "offsetX", m_nOffsetX);
     XmlGetAttr((class TiXmlElement*)(pElem), "offsetY", m_nOffsetY);
     XmlGetAttr((class TiXmlElement*)(pElem), "scale", m_fScale);

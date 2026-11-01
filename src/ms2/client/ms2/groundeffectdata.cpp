@@ -29,6 +29,19 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <egf/EntityID.h>
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // The statics of three header copies sit in this .text$di range: the first full copy comes from header_statics_a.h
 // above, then a copy of only the sort type names, then a second full copy.
@@ -46,10 +59,11 @@ public:
     Unk_140165cf0* FUN_140168650(const char* pszName);       // NextSiblingElement
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);   // string attribute
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_GroundFiles : public CFileSystem { };
-class Unk_GroundLog { public: void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+class Unk_GroundLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 extern int DAT_1439ed00c;   // ground effect cache enabled
@@ -72,7 +86,6 @@ private:
     GameObject* m_p;
 };
 int FUN_141654700(PCBase* pPc);
-PCBase* FUN_140974230(GameObject* pObject);
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class COptimizer   // C3: member view for the former free stand-ins
 {
@@ -171,13 +184,13 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
     TiXmlDocument doc;
     if (((class Unk_GroundFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        ((class Unk_GroundLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return GroundPtr(0);
     }
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        ((class Unk_GroundLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return GroundPtr(0);
     }
     GroundPtr spGround(0);
@@ -186,9 +199,9 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
         spGround.AssignRaw(new CGroundData);
         m_grounds.SetAt(strGround, spGround);
     }
-    for (Unk_140165cf0* pAction = pRoot->FUN_140165cf0("action"); pAction != 0; pAction = pAction->FUN_140168650("action"))
+    for (Unk_140165cf0* pAction = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("action")); pAction != 0; pAction = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAction))->NextSibling("action")))
     {
-        const char* pszType = FUN_14086f4b0(pAction, "type");
+        const char* pszType = ((class TiXmlElement*)(class Unk_140165cf0*)(pAction))->Attribute("type");
         if (pszType != 0)
         {
             CGroundData::ActionPtr spAction(new CGroundActionData);
@@ -196,15 +209,15 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
                 CString strType(pszType);
                 spGround->m_actions.SetAt(strType, spAction);
             }
-            for (Unk_140165cf0* pEffects = pAction->FUN_140165cf0("effects"); pEffects != 0;
-                 pEffects = pEffects->FUN_140168650("effects"))
+            for (Unk_140165cf0* pEffects = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAction))->FirstChild("effects")); pEffects != 0;
+                 pEffects = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffects))->NextSibling("effects")))
             {
                 CGroundActionData::EffectPtr spEffect(new CGroundEffectData);
                 spAction->m_effects.Add(spEffect);
-                for (Unk_140165cf0* pEffect = pEffects->FUN_140165cf0("effect"); pEffect != 0;
-                     pEffect = pEffect->FUN_140168650("effect"))
+                for (Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffects))->FirstChild("effect")); pEffect != 0;
+                     pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
                 {
-                    const char* pszFile = FUN_14086f4b0(pEffect, "filePath");
+                    const char* pszFile = ((class TiXmlElement*)(class Unk_140165cf0*)(pEffect))->Attribute("filePath");
                     {
                         CString strFile(pszFile);
                         spEffect->m_files.Add(strFile);
@@ -271,7 +284,7 @@ MS2_REPLACE_METHOD(0x1413771F0, CGroundEffectDataManager, GetEffectFiles, 548, 0
 void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strAction)
 {
     PCBase* pPc;
-    if ((pPc = FUN_140974230(pObject)) != 0 && FUN_141654700(pPc) == 0x6e && pPc->vfunc_65() != 0
+    if ((pPc = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject))) != 0 && FUN_141654700(pPc) == 0x6e && pPc->vfunc_65() != 0
         && strAction.Find("run", 0) == 0)
         return;
     CString strGround = static_cast<Unk_GroundOwner*>(pObject)->FUN_141671480();

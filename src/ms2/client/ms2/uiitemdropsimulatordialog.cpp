@@ -47,7 +47,7 @@ CString UIItemDropSimulatorDialog::GetTypeName()
 void UIItemDropSimulatorDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
-    ((class CItemOptionTable*)FUN_140166430())->FUN_1405f4720();
+    ((class CItemOptionTable*)FUN_140166430())->Init();
 }
 
 // @0x14192a3b0
@@ -111,7 +111,7 @@ void UIItemDropSimulatorDialog::FUN_14192a940(CString strA, CString strB, int nA
 // @0x14192a9a0
 void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
 {
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_simulateResult"))
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_simulateResult"))
         spText->FUN_1422c4cd0(strText);
 }
 

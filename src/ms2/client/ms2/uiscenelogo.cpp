@@ -32,7 +32,7 @@ class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 class CItemOptionTable   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_1405f4720();
+    bool Init();
 };
 class CItemDefaultData   // C3: member view for the former free stand-ins
 {
@@ -87,7 +87,7 @@ void UISceneLogo::OnLoadComplete()
     if (pIntro != 0)
         pIntro->vfunc_52("Common/MS2Intro.usm", 0);
     ((class StateEffectMgr*)(class Unk_SlA*)(reinterpret_cast<Unk_SlA*>(TSingleton<StateEffectMgr>::GetInstance())))->Load();
-    ((class CItemOptionTable*)(class Unk_SlB*)(((class Unk_SlB*)FUN_140166430())))->FUN_1405f4720();
+    ((class CItemOptionTable*)(class Unk_SlB*)(((class Unk_SlB*)FUN_140166430())))->Init();
     CItemDefaultData::Load();
     ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)FUN_1414a5720())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
     if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)FUN_1406aeee0())))->IsPreloadNoThread())

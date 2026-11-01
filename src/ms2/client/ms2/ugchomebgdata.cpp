@@ -6,6 +6,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ugchomebgdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ugchomebgdata.h"
 #include "ms2/client/ms2/cameramode.h"
 #include "ms2/client/ms2/camera.h"
@@ -45,9 +46,9 @@ public:
     void *m_a, *m_b, *m_c;
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, Unk_UhXmlList* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);   // string attribute
+
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 class Unk_UhFiles;
 class CFileSystem   // C3: member view for the former free stand-ins
@@ -59,7 +60,7 @@ class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 
 extern Vector3 DAT_143a08d08;   // zero colour
-extern Vector3 DAT_143b01a60;   // zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cf8;   // zero up axis
 
 // The statics of the home apply functions (opaque stand-ins for helpers of other units).
@@ -195,12 +196,12 @@ void UgcHomeOptionData::LoadBg()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcBackground.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapBg.RemoveAll();
     Unk_UhXmlList list;
-    FUN_14028faa0(pRoot, "list", "id", &list);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "list", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.FUN_14016d900(); ++i)
     {
         Unk_140165cf0* pNode = list.FUN_140164a30(i);
@@ -220,7 +221,7 @@ void UgcHomeOptionData::LoadLight()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapLight.RemoveAll();
@@ -243,7 +244,7 @@ void UgcHomeOptionData::LoadCamera()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapCamera.RemoveAll();

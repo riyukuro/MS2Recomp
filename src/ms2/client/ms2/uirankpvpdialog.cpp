@@ -44,6 +44,7 @@ static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "C
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // ---- unit-local views of exe objects ----
 
@@ -69,7 +70,8 @@ CStringW GetStringCommonByKey(const CStringW& str);                        // st
 CStringW GetStringCommon(int nId);                                    // string table text by id
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);             // the key's text formatted with n
 CStringW FUN_140b90340(CStringW strKey, const int& a, const int& b, const int& c);
-CStringW FUN_1408116a0(int nId, const int& n);                      // the id's text formatted with n
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 CString FUN_1402bb1c0(const char* szFormat, const int& n);
 CString FUN_140e10af0(const char* szFormat, const Unk_JobCode& job);
@@ -123,7 +125,7 @@ void UIRankPvPDialog::OnLoadComplete()
     m_registerPage = GetChild<ASMovieClip>("m_registerPage");
     m_statisticsPage = GetChild<ASMovieClip>("m_statisticsPage");
     m_registMenu->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), 0);
-    m_statisticsMenu->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), 1);
+    m_statisticsMenu->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), (void*)1);
     m_shopButton->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95220), 0);
     if (m_registerPage)
     {
@@ -159,7 +161,7 @@ void UIRankPvPDialog::OnLoadComplete()
         m_history[100] = m_statisticsPage->FUN_1409b4560("m_history11");
         m_history[110] = m_statisticsPage->FUN_1409b4560("m_history12");
         // Outside Korea the first job row is hidden.
-        bool bHideFirst = ((class CFeatureManager*)FUN_140166410())->FUN_14036d8e0() != "KR" && m_history[1] != 0;
+        bool bHideFirst = ((class CFeatureManager*)FUN_140166410())->GetLocaleName() != "KR" && m_history[1] != 0;
         if (bHideFirst)
             m_history[1]->vfunc_4(false);
         if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(8))
@@ -282,7 +284,7 @@ void UIRankPvPDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
                 CString strNameKey = FUN_1402bb1c0("rankName{0}", i);
                 CString strScoreKey = FUN_1402bb1c0("score{0}", i);
                 CStringW strName = GetStringTable()->FUN_141811980(0x22, pGrade->m_nGrade);
-                CStringW strScore = FUN_1408116a0(0x3f7, pGrade->m_nGradeRating);
+                CStringW strScore = BlockFormat<int>(0x3f7, pGrade->m_nGradeRating);
                 tooltip.FUN_1407cbb20(strNameKey, strName);
                 tooltip.FUN_1407cbb20(strScoreKey, strScore);
             }
@@ -326,9 +328,9 @@ void UIRankPvPDialog::FUN_140f94490()
     m_gauge->FUN_1422c0e20(nWidth);
     m_rewardText->FUN_1422c4cd0(FUN_14083dc40(L"{0} / {1}", nValue, nMax));
     if (nValue > nMax)
-        m_rewardText->FUN_1422c50e0(0xc00000);
+        m_rewardText->SetTextColor(0xc00000);
     else
-        m_rewardText->FUN_1422c50e0(0);
+        m_rewardText->SetTextColor(0);
     int nWin = CPVPManager::GetInstance()->GetRankDuel()->m_total2c;
     int nRating = pDuel->m_value20;
     int nBest = pDuel->m_value24;
@@ -378,7 +380,7 @@ void UIRankPvPDialog::FUN_140f94840()
             if (spWinRate)
             {
                 spWinRate->FUN_1422c4cd0(strNone);
-                spWinRate->FUN_1422c50e0(0);
+                spWinRate->SetTextColor(0);
             }
         }
         else
@@ -389,11 +391,11 @@ void UIRankPvPDialog::FUN_140f94840()
             {
                 spWinRate->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_rate"), nRate));
                 if (nRate >= 60)
-                    spWinRate->FUN_1422c50e0(0xa2ed);
+                    spWinRate->SetTextColor(0xa2ed);
                 else if (nRate <= 40)
-                    spWinRate->FUN_1422c50e0(0xc00000);
+                    spWinRate->SetTextColor(0xc00000);
                 else
-                    spWinRate->FUN_1422c50e0(0);
+                    spWinRate->SetTextColor(0);
             }
         }
     }

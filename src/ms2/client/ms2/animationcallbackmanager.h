@@ -171,10 +171,10 @@ struct Unk_AnimTable
     // Unbinds the owner.
     void FUN_1409975a0(GameObject* pObj);                               // 0x1409975a0
     // Height-from-ground of the sequence (0 if none).
-    float FUN_140997650(CString strName);                               // 0x140997650
-    bool FUN_140997710(CString strName);                                // 0x140997710 make sure the item exists
+    float GetHeightFromGround(CString strName);                               // 0x140997650
+    bool EnsureItem(CString strName);                                // 0x140997710 make sure the item exists
     bool FUN_1409977f0(CString strName, CString strText);              // 0x1409977f0 add a text to the item
-    bool FUN_140997990(ItemPtr spItem, CString strText);                // 0x140997990
+    bool AddItemText(ItemPtr spItem, CString strText);                // 0x140997990
 
     ItemMap m_items;                                                    // +0x00
     NiActorManager* m_pActor;                                           // +0x48 the bound actor manager

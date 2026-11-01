@@ -86,7 +86,7 @@ int UGCItemSlot::vfunc_26(ASObj& obj)
     MS2Ptr<CItemData> spData = FUN_14053f870(m_spItem->FUN_1405276c0());
     if (!spData)
         return 0;
-    obj.FUN_1407cbbe0(s_strItemCash, spData->FUN_14053e130());
+    obj.FUN_1407cbbe0(s_strItemCash, spData->IsCashItem());
     int nState = FUN_141275a10(m_spItem.get());
     if (nState == 1)
         obj.FUN_1407cbbe0(s_strItemLock, true);

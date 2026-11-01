@@ -11,6 +11,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_BuffEntity : public ASGameEntity
@@ -21,7 +22,7 @@ public:
     Scaleform::GFx::Value& FUN_1422bb870();
     void FUN_1422c00f0(float x, float y);
 };
-struct Unk_BuffCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_BuffCfgFloat { char m_pad[0x58]; };
 struct Unk_BuffCfg
 {
     char m_pad_0000[0x378];
@@ -43,7 +44,6 @@ class Unk_BuffActor : public PCBase
 class Unk_BuffMgr;
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_BuffUIMgr { };   // C3: FUN_141adcea0 is CUIService's
 class Unk_BuffInfoAS : public AScript
 {
@@ -58,7 +58,7 @@ UIBuffBalloon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int
     : TimerEntity(nLayer, clip, nActorId), m_a0("")
 {
     m_a8 = 0;
-    m_54 = ((struct Unk_BuffCfg*)FUN_1401d3200())->m_378.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BuffCfg*)FUN_1401d3200())->m_378)->Read();
 }
 
 // @0x14128e890
@@ -221,7 +221,7 @@ void UIBuffBalloon::FUN_14128f030(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -249,7 +249,7 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_BuffEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-                if (FUN_1409b0390(&v) == 0)
+                if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
                     if (p)
@@ -293,7 +293,7 @@ UIBuffBalloon* FUN_14128f650(int nUiId)
 {
     if (reinterpret_cast<Unk_BuffUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIBuffBalloon*>((UIObject*)p);
     }

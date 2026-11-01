@@ -2,14 +2,14 @@
 // MS2-UNIT: ?\uiadventureleveldialog.cpp
 // MS2-RANGE: 0x140ba2a80-0x140ba53b0 .text$mn
 // MS2-RANGE: 0x1400c9750-0x1400c98c0 .text$di
-// MS2-PIN: ?vfunc_oa0_9@UIAdventureLevelDialog@@UEAAXG@Z 0x140ba4fd0
+// MS2-PIN: ?vfunc_oa0_9@UIStatusEventListener@@UEAAXG@Z 0x140ba4fd0
 // MS2-PIN: ??1CreateParam@ItemInfoSlot@@UEAA@XZ 0x140ba4e80
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$_Kfn@$$CBIVUnk_ALMissionState@@@?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@SAAEBIAEBU?$pair@$$CBIVUnk_ALMissionState@@@1@@Z 0x140ba4d60 ; prop
 // MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@AEBI@Z 0x140ba4d70 ; unique
 // MS2-PIN: ??$addressof@$$CBU?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@YAPEBU?$pair@$$CBIVUnk_ALMissionState@@@0@AEBU10@@Z 0x140ba4e10 ; unique
-// MS2-PIN: ?vfunc_oa0_3@UIAdventureLevelDialog@@UEAAXHH@Z 0x140ba4fc0 ; unique
-// MS2-PIN: ?vfunc_oa0_4@UIAdventureLevelDialog@@UEAAXHH@Z 0x140ba4fe0 ; unique
+// MS2-PIN: ?vfunc_oa0_3@UIStatusEventListener@@UEAAXHH@Z 0x140ba4fc0 ; unique
+// MS2-PIN: ?vfunc_oa0_4@UIStatusEventListener@@UEAAXHH@Z 0x140ba4fe0 ; unique
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBI0@Z 0x140ba4ff0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x140ba5070 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@XZ 0x140ba5080 ; prop
@@ -50,6 +50,7 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -206,8 +207,6 @@ public:
     Unk_ALConstU16 m_stat;                                          // +0x9298
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned short* FUN_1401d7c10(Unk_ALConstU16* p);
-unsigned int* FUN_1401d7c10(Unk_ALConstU32* p);
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
@@ -657,13 +656,13 @@ void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
 // @0x140ba4b30
 unsigned short FUN_140ba4b30(Unk_ALConstU16* p)
 {
-    return *FUN_1401d7c10(p);
+    return *reinterpret_cast<unsigned short*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(p)->Get());
 }
 
 // @0x140ba4b50
 float FUN_140ba4b50(Unk_ALConstU32* p)
 {
-    return (float)*FUN_1401d7c10(p);
+    return (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(p)->Get();
 }
 
 // @0x140ba4b70

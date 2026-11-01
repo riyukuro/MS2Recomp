@@ -52,35 +52,35 @@ ASEvent::~ASEvent()
 // @0x1422e22d0
 CString ASEvent::FUN_1422e22d0()
 {
-    return FUN_1422baa20("type").GetString();
+    return GetMember("type").GetString();
 }
 MS2_REPLACE_METHOD(0x1422E22D0, ASEvent, FUN_1422e22d0, 123, 0xD03CD1C3);
 
 // @0x1422e2360
 Scaleform::GFx::Value ASEvent::FUN_1422e2360()
 {
-    return FUN_1422baa20("target");
+    return GetMember("target");
 }
 MS2_REPLACE_METHOD(0x1422E2360, ASEvent, FUN_1422e2360, 65, 0xFD6E1D87);
 
 // @0x1422e23b0
 Scaleform::GFx::Value ASEvent::FUN_1422e23b0()
 {
-    return FUN_1422baa20("currentTarget");
+    return GetMember("currentTarget");
 }
 MS2_REPLACE_METHOD(0x1422E23B0, ASEvent, FUN_1422e23b0, 65, 0x80EFB99B);
 
 // @0x1422e2400
 bool ASEvent::FUN_1422e2400()
 {
-    return FUN_1422baa20("cancelable").GetBool();
+    return GetMember("cancelable").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E2400, ASEvent, FUN_1422e2400, 89, 0x78D18A51);
 
 // @0x1422e2460
 bool ASEvent::FUN_1422e2460()
 {
-    return FUN_1422baa20("bubbles").GetBool();
+    return GetMember("bubbles").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E2460, ASEvent, FUN_1422e2460, 89, 0x3C076FA1);
 
@@ -128,7 +128,7 @@ ASTextEvent::ASTextEvent(const Scaleform::GFx::FunctionHandler::Params& params)
 // @0x1422e26b0
 CString ASTextEvent::FUN_1422e26b0()
 {
-    return FUN_1422baa20("text").GetString();
+    return GetMember("text").GetString();
 }
 MS2_REPLACE_METHOD(0x1422E26B0, ASTextEvent, FUN_1422e26b0, 123, 0x34214D81);
 
@@ -141,56 +141,56 @@ ASListEvent::ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params)
 // @0x1422e2780
 Scaleform::GFx::Value ASListEvent::FUN_1422e2780()
 {
-    return FUN_1422baa20("itemData");
+    return GetMember("itemData");
 }
 MS2_REPLACE_METHOD(0x1422E2780, ASListEvent, FUN_1422e2780, 65, 0xF6706C33);
 
 // @0x1422e27d0
 Scaleform::GFx::Value ASListEvent::FUN_1422e27d0()
 {
-    return FUN_1422baa20("itemRenderer");
+    return GetMember("itemRenderer");
 }
 MS2_REPLACE_METHOD(0x1422E27D0, ASListEvent, FUN_1422e27d0, 65, 0x3FA32223);
 
 // @0x1422e2820
 int ASListEvent::FUN_1422e2820()
 {
-    return FUN_1422baa20("index").GetInt();
+    return GetMember("index").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E2820, ASListEvent, FUN_1422e2820, 88, 0xBE89DDE7);
 
 // @0x1422e2880
 int ASListEvent::FUN_1422e2880()
 {
-    return FUN_1422baa20("columnIndex").GetInt();
+    return GetMember("columnIndex").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E2880, ASListEvent, FUN_1422e2880, 88, 0x15100F0F);
 
 // @0x1422e28e0
 int ASListEvent::FUN_1422e28e0()
 {
-    return FUN_1422baa20("rowIndex").GetInt();
+    return GetMember("rowIndex").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E28E0, ASListEvent, FUN_1422e28e0, 88, 0x9B9A6B0F);
 
 // @0x1422e2940
 unsigned int ASListEvent::FUN_1422e2940()
 {
-    return FUN_1422baa20("controllerIdx").GetUInt();
+    return GetMember("controllerIdx").GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422E2940, ASListEvent, FUN_1422e2940, 88, 0xC2BC7FAC);
 
 // @0x1422e29a0
 unsigned int ASListEvent::FUN_1422e29a0()
 {
-    return FUN_1422baa20("buttonIdx").GetUInt();
+    return GetMember("buttonIdx").GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422E29A0, ASListEvent, FUN_1422e29a0, 88, 0x3115F9F3);
 
 // @0x1422e2a00
 bool ASListEvent::FUN_1422e2a00()
 {
-    return FUN_1422baa20("isKeyboard").GetBool();
+    return GetMember("isKeyboard").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E2A00, ASListEvent, FUN_1422e2a00, 89, 0x7948D30E);
 
@@ -203,21 +203,21 @@ ASIndexEvent::ASIndexEvent(const Scaleform::GFx::FunctionHandler::Params& params
 // @0x1422e2aa0
 int ASIndexEvent::FUN_1422e2aa0()
 {
-    return FUN_1422baa20("index").GetInt();
+    return GetMember("index").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E2AA0, ASIndexEvent, FUN_1422e2aa0, 88, 0x37E2B3A3);
 
 // @0x1422e2b00
 int ASIndexEvent::FUN_1422e2b00()
 {
-    return FUN_1422baa20("lastIndex").GetInt();
+    return GetMember("lastIndex").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E2B00, ASIndexEvent, FUN_1422e2b00, 88, 0x85318D48);
 
 // @0x1422e2b60
 Scaleform::GFx::Value ASIndexEvent::FUN_1422e2b60()
 {
-    return FUN_1422baa20("data");
+    return GetMember("data");
 }
 MS2_REPLACE_METHOD(0x1422E2B60, ASIndexEvent, FUN_1422e2b60, 65, 0x879438C6);
 

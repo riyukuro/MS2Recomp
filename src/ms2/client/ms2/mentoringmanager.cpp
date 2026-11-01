@@ -48,7 +48,6 @@ class Unk_MMScene { public: int FUN_1422b9e00(); };
 class Unk_MMUIService
 {
 public:
-    void FUN_141adc5d0(int nId);                            // close the dialog
 };
 
 class MyPC;
@@ -70,7 +69,7 @@ UIInviteMentoringDialog* FUN_140b6f4c0(int nId);            // unit ?\menteesear
 // Moves the read position of the packet back by one byte (the protocol byte is read again by the payload reader).
 inline void FUN_140b736c0(CInPacket& packet, int nDelta)
 {
-    packet.FUN_140715280(packet.m_offset + nDelta);
+    packet.SetOffset(packet.m_offset + nDelta);
 }
 
 // The dialogs by class id, dynamic-cast to their type.
@@ -78,7 +77,7 @@ template <class T> T* Unk_MMDialog(int nId)
 {
     if (reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -178,7 +177,7 @@ struct Unk_MMResultPacket16                                 // protocol 16 (0x14
 // @0x140b71440
 CMentoringManager::CMentoringManager()
 {
-    FUN_140b71500();
+    Reset();
 }
 
 // @0x140b714b0
@@ -187,7 +186,7 @@ CMentoringManager::~CMentoringManager()
 }
 
 // @0x140b71500
-void CMentoringManager::FUN_140b71500()
+void CMentoringManager::Reset()
 {
     m_n8 = 0;
     m_nC = 0;
@@ -231,7 +230,7 @@ int CMentoringManager::FUN_140b71650()
 }
 
 // @0x140b71680
-CMentoringManager::MentorPtr CMentoringManager::FUN_140b71680(int nIndex)
+CMentoringManager::MentorPtr CMentoringManager::GetMentee(int nIndex)
 {
     if (!(nIndex >= 0 && nIndex < (int)m_mentees.GetCount()))
         return 0;
@@ -239,13 +238,13 @@ CMentoringManager::MentorPtr CMentoringManager::FUN_140b71680(int nIndex)
 }
 
 // @0x140b71720
-size_t CMentoringManager::FUN_140b71720()
+size_t CMentoringManager::GetMenteeCount()
 {
     return m_mentees.GetCount();
 }
 
 // @0x140b71750
-size_t CMentoringManager::FUN_140b71750()
+size_t CMentoringManager::GetMentorCount()
 {
     return m_mentors.GetCount();
 }
@@ -407,7 +406,7 @@ void CMentoringManager::OnPairMode(CInPacket& packet)
 void CMentoringManager::OnMenteeRegistered(CInPacket& packet)
 {
     if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
-        reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentee"), 0x10);
 }
 
@@ -442,7 +441,7 @@ void CMentoringManager::OnMentorApproved(CInPacket& packet)
     m_mentors.RemoveAll();
     if (!strName.IsEmpty())
         FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_approve_mentor"), strName), 0x10);
-    reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4b);
 }
 
 // @0x140b722f0
@@ -474,7 +473,7 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
 void CMentoringManager::OnMentorRegistered(CInPacket& packet)
 {
     if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
-        reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentor"), 0x10);
 }
 

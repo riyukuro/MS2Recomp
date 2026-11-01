@@ -32,13 +32,13 @@ class Unk_PvPRankWorld                                              // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
 };
 
 // One row of the ranking.
@@ -77,11 +77,9 @@ private:
     Unk_PvPRankTable m_table;
 };
 
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 int FUN_141654730(PCBase* pPC);                                     // the job
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void* FUN_1403ed2b0();                                              // the UI service
-int FUN_141adc940(void* pUI, int nUiId);
 void FUN_14151f200();
 
 // @0x141342f10
@@ -141,11 +139,11 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
     if (pEntry == 0)
         return false;
     {
-        PCBase* pPC = ((class Unk_PvPRankWorld*)WorldService::GetInstance())->FUN_141bd1530(pEntry->m_nCharId);
+        PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));
         pObj->FUN_1407cb9c0("rank", nRank);
         CStringW strRank(L"-");
         if (pEntry->FUN_141343860())
-            strRank = FUN_1401ceea0(L"{0}", nRank);
+            strRank = StringFormat<int>(L"{0}", nRank);
         pObj->FUN_1407cbb20("rankText", strRank);
         pObj->FUN_1407cbb20("charName", pEntry->m_strName);
         pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
@@ -190,7 +188,7 @@ int UIPvPRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
-        if (FUN_141adc940(FUN_1403ed2b0(), 0x4e9b) != 0)
+        if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e9b) != 0)
             (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e9b)));
         return 1;
     }

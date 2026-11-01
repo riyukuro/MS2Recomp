@@ -11,6 +11,14 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 // ---- unit-local views of exe types ----
 
@@ -49,7 +57,7 @@ MS2_REPLACE_METHOD(0x141B26730, UITimerDialog, GetTypeName, 61, 0x9C98EE2E);
 void UITimerDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_tick.FUN_140268870(100) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100) == 0)
         return;
     int nMin = 0;
     int nSec = 0;
@@ -66,10 +74,10 @@ void UITimerDialog::vfunc_72()
         }
     }
     if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10) {
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = ((struct Unk_TimerCfg*)FUN_1401d31f0())->m_strEffect;
-        kTarget.m_nKind = 0;
-        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TimerCfg*)FUN_1401d31f0())->m_strEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         m_nEffectRunning = 1;
     } else if (m_nEffectRunning != 0 && (nMin > 0 || nSec > 10)) {
         FUN_141b26bf0();

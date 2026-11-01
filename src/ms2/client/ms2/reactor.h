@@ -28,12 +28,12 @@ public:
 
     CString GetName();                                // copy of m_strName
     void FUN_140b78b40(bool bFlag);                         // tells the animation service about the entity
-    int FUN_140b78bb0();                                    // reactor table id (0 without data)
-    MS2Ptr<ReactorStateData> FUN_140b78c00(int nIdx);       // state nIdx of the data (null when out of range)
-    void FUN_140b78d90(Unk_ReactorInfo* pOut);              // action string and react time of the current state
-    void FUN_140b78ea0(const CString& strAni);              // queue an animation (empty ones are dropped)
+    int GetReactorId();                                    // reactor table id (0 without data)
+    MS2Ptr<ReactorStateData> GetStateData(int nIdx);       // state nIdx of the data (null when out of range)
+    void GetReactorInfo(Unk_ReactorInfo* pOut);              // action string and react time of the current state
+    void AddAnimation(const CString& strAni);              // queue an animation (empty ones are dropped)
     bool FUN_140b78ef0(const CString& strEffect);           // show the connected effect (always true)
-    bool FUN_140b79120(const CString& strEffect);           // hide the connected effect (always true)
+    bool RemoveEffect(const CString& strEffect);           // hide the connected effect (always true)
     void FUN_140b791a0();                                   // play the head of the animation queue
     void FUN_140b79330();                                   // connect/disconnect the effect for the local player
     bool FUN_140b79490(CInPacket* pPacket);                 // field-add packet
@@ -43,7 +43,7 @@ public:
     int FUN_140b79cc0(PCBase* pPc);                           // 1 = the state refuses this player
     int FUN_140b79ee0(PCBase* pPc);                           // 1 = the player lacks the required items
     // Accessors defined in the unit that follows the animation-queue helpers (actionkeyobject.cpp); both copy a member.
-    MS2Ptr<ReactorStateData> FUN_140966db0();               // state of m_nStateIdx
+    MS2Ptr<ReactorStateData> GetCurrentStateData();               // state of m_nStateIdx
     MS2Ptr<ReactorData> GetData();                    // copy of m_spData
 
 public:

@@ -42,10 +42,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 extern unsigned int DAT_143ab2914;                              // the client build level
 
 // The "m_apply" button of the option swf.
-class Unk_GoButton : public ASDisplayObject
+class Unk_GoButton : public ASMovieClip
 {
 public:
-    void FUN_1422c1fe0(unsigned int bEnabled);                  // set enabled
 };
 
 // The tooltip image paths (the hdr one at +0xe0, the shimmer one at +0xe8).
@@ -67,7 +66,7 @@ public:
     __int64 FUN_14142cbe0(unsigned int nIndex);                 // id of the row
     int FUN_14142cb40(unsigned int nIndex, int n);              // the row is done
 };
-Unk_GoPending* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GoPending (calls cast back)
 
 // The buff-like table of the simple (reduced) mode test.
 class Unk_GoBuffs;
@@ -85,9 +84,6 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSceneId();
 };
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // str == psz
 CString FUN_140651390();                                        // the language directory
 void FUN_14151f200();
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -169,12 +165,12 @@ CString UIGameOptionDialog::GetTypeName()
 void UIGameOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     int bNewBuild = (int)DAT_143ab2914 >= 0x32;
     int bGamePad = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5);
     FUN_141944590(bNewBuild);
-    FUN_1409ee290(&m_30)->Invoke("initData", FUN_140651390(), bNewBuild, bGamePad);
+    ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("initData", FUN_140651390(), bNewBuild, bGamePad);
     FUN_141943480();
     FUN_1419436e0(m_nTab);
 }
@@ -285,7 +281,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         int nAnswer = pMsg->FUN_1422b8a10();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
-        if (FUN_1403b3c40(strTag, L"OnSave"))
+        if (operator==(strTag, L"OnSave"))
         {
             if (nAnswer == 0)
             {
@@ -293,7 +289,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_141943820(0);
             }
         }
-        else if (FUN_1403b3c40(strTag, L"OnSaveAndCheck"))
+        else if (operator==(strTag, L"OnSaveAndCheck"))
         {
             if (nAnswer == 0)
             {
@@ -306,7 +302,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 vfunc_67();
             }
         }
-        else if (FUN_1403b3c40(strTag, L"OnClose"))
+        else if (operator==(strTag, L"OnClose"))
         {
             if (nAnswer == 0)
                 vfunc_67();
@@ -353,7 +349,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 // @0x141943480
 void UIGameOptionDialog::FUN_141943480()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     int nMapClass = ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId();
     m_bSimple = nMapClass == 0x620000d || nMapClass == 0x6200009 || nMapClass == 0x6200085
@@ -373,7 +369,7 @@ void UIGameOptionDialog::FUN_141943480()
         sp->vfunc_3(0);
     }
     bool bUnused = false;   // the exe stores this byte and never reads it
-    FUN_1409ee290(&m_30)->Invoke("setTabComponent", m_nTab, m_bSimple, false);
+    ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("setTabComponent", m_nTab, m_bSimple, false);
     FUN_141943940();
 }
 
@@ -424,11 +420,11 @@ void UIGameOptionDialog::FUN_141943900(bool b)
 // @0x141943940
 void UIGameOptionDialog::FUN_141943940()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     MS2Ptr<CBaseOption> sp(nullptr);
     if (m_mapPages.Lookup(0xf, sp))
-        FUN_1409ee290(&m_30)->Invoke("enableAgreementTabButtonRedCircle", m_bF1d0);
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("enableAgreementTabButtonRedCircle", m_bF1d0);
 }
 
 // @0x141943a00
@@ -443,8 +439,8 @@ void UIGameOptionDialog::FUN_141943a30()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), this, CStringW(L""));
     if (spBox.get() != 0)
     {
-        Scaleform::GFx::Value vTab = FUN_1409ee290(&m_30)->Invoke("getCurrentTabName");
-        Scaleform::GFx::Value vCategory = FUN_1409ee290(&m_30)->Invoke("getCurrentCategoryName");
+        Scaleform::GFx::Value vTab = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("getCurrentTabName");
+        Scaleform::GFx::Value vCategory = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("getCurrentCategoryName");
         CStringW strTab = FUN_141277dd0(&vTab);
         CStringW strCategory = FUN_141277dd0(&vCategory);
         if (m_nTab >= 9 && m_nTab <= 0xd)
@@ -530,15 +526,15 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < FUN_1409331f0()->FUN_14142cbb0(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
     {
-        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a137)
+        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a137)
             continue;
-        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a138)
+        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a138)
             continue;
-        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a139)
+        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a139)
             continue;
-        if (FUN_1409331f0()->FUN_14142cb40((unsigned)i, 0) == 0)
+        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;

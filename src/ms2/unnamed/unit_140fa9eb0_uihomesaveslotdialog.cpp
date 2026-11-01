@@ -56,7 +56,8 @@ static Unk_BuddyHandle s_pointer2(NULL);
 
 // The cube map information service (class id 0x06100017), which also keeps the home / blueprint save slots.
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 extern int DAT_143ab2914;
 
 // One saved slot: id, name and the time it was saved (0 = empty).
@@ -295,7 +296,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
-                spBox->FUN_140533ff0(nSlot);
+                spBox->Append<int>(nSlot);
                 spBox->FUN_140b76940(CStringW(strName));
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
                 FUN_140d73c60(spBox);
@@ -378,7 +379,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
-                spBox->FUN_140533ff0(nSlot);
+                spBox->Append<int>(nSlot);
                 spBox->FUN_140b76940(CStringW(strName));
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
                 FUN_140d73c60(spBox);
@@ -440,7 +441,7 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_140533ff0(nSlot);
+        spBox->Append<int>(nSlot);
         spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
@@ -457,7 +458,7 @@ void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_140533ff0(nSlot);
+        spBox->Append<int>(nSlot);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
         FUN_140d73c60(spBox);
     }
@@ -473,7 +474,7 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_140533ff0(nSlot);
+        spBox->Append<int>(nSlot);
         spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
@@ -490,7 +491,7 @@ void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_140533ff0(nSlot);
+        spBox->Append<int>(nSlot);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
         FUN_140d73c60(spBox);
     }

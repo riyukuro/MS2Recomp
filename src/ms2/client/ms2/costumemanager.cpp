@@ -59,8 +59,8 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             continue;
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        spItem->FUN_140526a70(FUN_14028d0e0());
-        spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
+        spItem->SetItemUid(FUN_14028d0e0());
+        spItem->SetObjectId(m_pOwner->FUN_14123c580());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
@@ -75,8 +75,8 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             return;
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
-        spItem->FUN_140526a70(FUN_14028d0e0());
+        spItem->SetObjectId(m_pOwner->FUN_14123c580());
+        spItem->SetItemUid(FUN_14028d0e0());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);

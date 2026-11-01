@@ -306,11 +306,9 @@ class Unk_AkoUIMgr
 {
 public:
     Unk_AkoUIRef FUN_141adcea0(int nUiId);                  // the ui by id
-    int FUN_141adc940(int nUiId);                           // is open
     int FUN_141adc890(int nUiId);                           // is shown
     void FUN_141adc530(int nUiId);                          // close
 };
-UIObject* FUN_1403ed9e0(Unk_AkoUIRef&);
 
 // The UI by id, cast to its class (a template: one COMDAT per class in first-use order, see the pins at the top).
 template <class T> T* Unk_GetUI(int nUiId)
@@ -319,7 +317,7 @@ template <class T> T* Unk_GetUI(int nUiId)
     {
         Unk_AkoUIRef ref = reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<T*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<T*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -438,12 +436,11 @@ int FUN_141276980();                                        // npc talk is allow
 // stand-in types), and the object-of-entity lookup with its by-value id (the exe copies the id into a temporary,
 // EntityID copy ctor 0x1408b6b20; worldservice.h says const&, the same callee ABI); the world service is viewed
 // through this class.
-class Unk_AkoWorldView
+class Unk_AkoWorldView : public WorldService
 {
 public:
     Unk_WsC_GameObj* FUN_141bd0fa0(egf::EntityID id);       // the game object of an entity
     MS2Ptr<Unk_AkoPortal> FUN_141bc2800(int nPortalId);     // the portal by id
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field
 };
 // The quest manager (FUN_140764020); the quest state at +0x10.
 class Unk_AkoQuestState { public: int FUN_140745590(int nQuestId); };   // the quest is complete
@@ -664,7 +661,7 @@ void Unk_ActionKeyManager::FUN_140952ef0()
     m_nNextTick = nNow;
     int bRefresh = 0;
     int nType = 0x1e;
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     for (POSITION pos = pActions->GetHeadPosition(); pos; pActions->GetNext(pos))
     {
         MS2Ptr<ActionKeyObject> spAction = pActions->GetValueAt(pos);
@@ -693,7 +690,7 @@ void Unk_ActionKeyManager::FUN_140952ef0()
     }
     else if (UIActionTooltip* pTooltip = Unk_GetUI<UIActionTooltip>(0x4e5c))
     {
-        if (ActionKeyObject* pCur = FUN_140953550())
+        if (ActionKeyObject* pCur = GetCurrentAction())
         {
             if (pTooltip->GetAction() != pCur)
                 bRefresh = 1;
@@ -712,11 +709,11 @@ void Unk_ActionKeyManager::FUN_140952ef0()
 MS2_REPLACE_METHOD(0x140952EF0, Unk_ActionKeyManager, FUN_140952ef0, 1042, 0x13A46E5D);
 
 // @0x140953310
-void Unk_ActionKeyManager::FUN_140953310()
+void Unk_ActionKeyManager::ActivateCurrentAction()
 {
     if (m_nCur == 0x1e)
         return;
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     MS2Ptr<ActionKeyObject> spAction(0);
     if (!pActions->Lookup(m_nCur, spAction))
         return;
@@ -729,14 +726,14 @@ void Unk_ActionKeyManager::FUN_140953310()
     if (TSingleton<CMouseController>::GetInstance()->HasMode())
         TSingleton<CMouseController>::GetInstance()->FUN_140ad22d0();
 }
-MS2_REPLACE_METHOD(0x140953310, Unk_ActionKeyManager, FUN_140953310, 248, 0x47B4C32E);
+MS2_REPLACE_METHOD(0x140953310, Unk_ActionKeyManager, ActivateCurrentAction, 248, 0x47B4C32E);
 
 // @0x140953410
-bool Unk_ActionKeyManager::FUN_140953410()
+bool Unk_ActionKeyManager::TryActivateCurrentAction()
 {
     if (m_nCur == 0x1e)
         return false;
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     MS2Ptr<ActionKeyObject> spAction(0);
     if (!pActions->Lookup(m_nCur, spAction))
         return false;
@@ -750,7 +747,7 @@ bool Unk_ActionKeyManager::FUN_140953410()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140953410, Unk_ActionKeyManager, FUN_140953410, 282, 0x61BC001A);
+MS2_REPLACE_METHOD(0x140953410, Unk_ActionKeyManager, TryActivateCurrentAction, 282, 0x61BC001A);
 
 // @0x140953530
 int Unk_ActionKeyManager::GetCur()
@@ -760,19 +757,19 @@ int Unk_ActionKeyManager::GetCur()
 MS2_REPLACE_METHOD(0x140953530, Unk_ActionKeyManager, GetCur, 13, 0xA5869133);
 
 // @0x140953550
-ActionKeyObject* Unk_ActionKeyManager::FUN_140953550()
+ActionKeyObject* Unk_ActionKeyManager::GetCurrentAction()
 {
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     MS2Ptr<ActionKeyObject> spAction(0);
     pActions->Lookup(m_nCur, spAction);
     return spAction.get();
 }
-MS2_REPLACE_METHOD(0x140953550, Unk_ActionKeyManager, FUN_140953550, 104, 0x73B9BB61);
+MS2_REPLACE_METHOD(0x140953550, Unk_ActionKeyManager, GetCurrentAction, 104, 0x73B9BB61);
 
 // @0x1409535c0
-void Unk_ActionKeyManager::FUN_1409535c0()
+void Unk_ActionKeyManager::DeactivateCurrent()
 {
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     MS2Ptr<ActionKeyObject> spAction(0);
     if (pActions->Lookup(m_nCur, spAction))
         spAction->vfunc_3();
@@ -781,7 +778,7 @@ void Unk_ActionKeyManager::FUN_1409535c0()
     if (UIActionTooltip* pTooltip = Unk_GetUI<UIActionTooltip>(0x4e5c))
         pTooltip->FUN_1418b16f0();
 }
-MS2_REPLACE_METHOD(0x1409535C0, Unk_ActionKeyManager, FUN_1409535c0, 188, 0xEBB060BC);
+MS2_REPLACE_METHOD(0x1409535C0, Unk_ActionKeyManager, DeactivateCurrent, 188, 0xEBB060BC);
 
 // @0x140953690
 int Unk_ActionKeyManager::IsEnabled()
@@ -802,7 +799,7 @@ void Unk_ActionKeyManager::FUN_1409536d0()
 {
     if (m_nCur == 0x1e)
         return;
-    Unk_ActionKeyMap* pActions = FUN_140953770();
+    Unk_ActionKeyMap* pActions = GetActiveActionMap();
     MS2Ptr<ActionKeyObject> spAction(0);
     if (!pActions->Lookup(m_nCur, spAction))
         return;
@@ -811,7 +808,7 @@ void Unk_ActionKeyManager::FUN_1409536d0()
 MS2_REPLACE_METHOD(0x1409536D0, Unk_ActionKeyManager, FUN_1409536d0, 147, 0xB05C022E);
 
 // @0x140953770
-Unk_ActionKeyMap* Unk_ActionKeyManager::FUN_140953770()
+Unk_ActionKeyMap* Unk_ActionKeyManager::GetActiveActionMap()
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
@@ -822,7 +819,7 @@ Unk_ActionKeyMap* Unk_ActionKeyManager::FUN_140953770()
         return &m_actionsFishing;
     return &m_actions;
 }
-MS2_REPLACE_METHOD(0x140953770, Unk_ActionKeyManager, FUN_140953770, 113, 0xBF74575B);
+MS2_REPLACE_METHOD(0x140953770, Unk_ActionKeyManager, GetActiveActionMap, 113, 0xBF74575B);
 
 // ---- ActionKeyObject -------------------------------------------------------------------------------------------------
 // @0x140954f60
@@ -920,7 +917,7 @@ void TaxiStationAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e42))
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e42))
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e42)));
     if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
         pDialog->FUN_141b5af80(1);
@@ -960,7 +957,7 @@ PortalAction::~PortalAction()
 void PortalAction::vfunc_3()
 {
     if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ebd))
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ebd);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ebd);
 }
 MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
 // @0x140955280
@@ -1046,11 +1043,11 @@ void PortalAction::vfunc_2()
         }
         else if (pCell)
         {
-            FUN_140956aa0(pCell, nTarget, nPortalId);
+            RequestMoveFromCube(pCell, nTarget, nPortalId);
             return;
         }
     }
-    FUN_140956160(nTarget, nPortalId);
+    UsePortal(nTarget, nPortalId);
 }
 MS2_REPLACE_METHOD(0x140955580, PortalAction, vfunc_2, 1021, 0xEB4CA627);
 // @0x1409559d0
@@ -1148,12 +1145,12 @@ int PortalAction::FUN_140956110()
 }
 MS2_REPLACE_METHOD(0x140956110, PortalAction, FUN_140956110, 69, 0x8E8EC06C);
 // @0x140956160
-void PortalAction::FUN_140956160(int nTarget, int nPortalId)
+void PortalAction::UsePortal(int nTarget, int nPortalId)
 {
     switch (m_spPortal->m_nType)
     {
     case 8:
-        FUN_140956290(nPortalId);
+        OpenDungeonRoomDialog(nPortalId);
         break;
     case 9:
         SendRoomDungeon();
@@ -1178,9 +1175,9 @@ void PortalAction::FUN_140956160(int nTarget, int nPortalId)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140956160, PortalAction, FUN_140956160, 246, 0x0584F47B);
+MS2_REPLACE_METHOD(0x140956160, PortalAction, UsePortal, 246, 0x0584F47B);
 // @0x140956290
-void PortalAction::FUN_140956290(int nPortalId)
+void PortalAction::OpenDungeonRoomDialog(int nPortalId)
 {
     if (UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd))
     {
@@ -1193,7 +1190,7 @@ void PortalAction::FUN_140956290(int nPortalId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140956290, PortalAction, FUN_140956290, 119, 0x70B8578D);
+MS2_REPLACE_METHOD(0x140956290, PortalAction, OpenDungeonRoomDialog, 119, 0x70B8578D);
 // @0x140956310
 void PortalAction::SendRoomDungeon()
 {
@@ -1296,7 +1293,7 @@ void PortalAction::FUN_140956a20(int nPortalId, int nArg)
 }
 MS2_REPLACE_METHOD(0x140956A20, PortalAction, FUN_140956a20, 117, 0x78FA43EB);
 // @0x140956aa0
-void PortalAction::FUN_140956aa0(Cube* pCell, int nTarget, int nPortalId)
+void PortalAction::RequestMoveFromCube(Cube* pCell, int nTarget, int nPortalId)
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
@@ -1311,7 +1308,7 @@ void PortalAction::FUN_140956aa0(Cube* pCell, int nTarget, int nPortalId)
         bInside = 1;
     pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, nCubeId, bInside, L"", L"");
 }
-MS2_REPLACE_METHOD(0x140956AA0, PortalAction, FUN_140956aa0, 309, 0xFE6AA6E2);
+MS2_REPLACE_METHOD(0x140956AA0, PortalAction, RequestMoveFromCube, 309, 0xFE6AA6E2);
 // @0x140956e40
 CStringW PortalAction::FUN_140956e40()
 {
@@ -2116,7 +2113,7 @@ void PutDownLiftableAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (Unk_PCCubeCraft* pCraft = pPlayer->FUN_141530290())
+    if (Unk_PCCubeCraft* pCraft = pPlayer->GetActiveCubeCraft())
         pCraft->FUN_1410aad50();
 }
 MS2_REPLACE_METHOD(0x14095AD50, PutDownLiftableAction, vfunc_2, 75, 0xE574BACD);
@@ -3020,13 +3017,13 @@ void ReactorAction::vfunc_2()
         if (pPlayer->FUN_1416764a0())
         {
             MS2Ptr<RideOffActionReact> spRideOff(new RideOffActionReact(0));
-            spRideOff->m_n28 = spReactor->FUN_140b78bb0();
+            spRideOff->m_n28 = spReactor->GetReactorId();
             spRideOff->m_s30 = spReactor->GetName();
             pPlayer->SendRequestRideMode1(spRideOff);
         }
         else
         {
-            MS2Ptr<StateReactData> spState(new StateReactData(spReactor->FUN_140b78bb0(), spReactor->GetName(), ""));
+            MS2Ptr<StateReactData> spState(new StateReactData(spReactor->GetReactorId(), spReactor->GetName(), ""));
             pPlayer->vfunc_59(0x3d, spState, 0x9f, 0);
         }
     }
@@ -3051,7 +3048,7 @@ CStringW ReactorAction::vfunc_6()
     efd::SmartPointer<CReactor> spReactor = reinterpret_cast<CReactor*>(WorldService::GetInstance()->FUN_141bd1180(m_nReactorId));
     if (spReactor == 0)
         return L"";
-    MS2Ptr<ReactorStateData> spState = spReactor->FUN_140966db0();
+    MS2Ptr<ReactorStateData> spState = spReactor->GetCurrentStateData();
     if (spState == 0)
         return L"";
     CStringW strAction = GetStringCommonByKey(spState->m_strActionStringKey);
@@ -3263,7 +3260,7 @@ int TreeWateringAction::vfunc_1()
     int nState = pPlayer->FUN_14166c930();
     if (nState == 0x3e || nState == 0x1e)
         return 0;
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d320();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
     if (spContext == 0)
         return 0;
     efd::SmartPointer<egf::Entity> spTree = WorldService::GetInstance()->FUN_141bd2cd0(spContext->m_strTreeName);
@@ -3298,7 +3295,7 @@ void TreeWateringAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d320();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
     if (spContext == 0)
         return;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
@@ -3323,7 +3320,7 @@ CStringW TreeWateringAction::vfunc_6()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return CStringW(L"");
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047d320();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
     if (spContext == 0)
         return CStringW(L"");
     if (m_n18 < spContext->m_nDailyLimit)
@@ -3410,9 +3407,9 @@ unsigned short FUN_140966f80(const Unk_AkoReqItemList& list)
 }
 
 // @0x140966db0
-MS2Ptr<ReactorStateData> CReactor::FUN_140966db0()
+MS2Ptr<ReactorStateData> CReactor::GetCurrentStateData()
 {
-    return FUN_140b78c00(m_nStateIdx);
+    return GetStateData(m_nStateIdx);
 }
 
 // @0x140966e50
@@ -3461,7 +3458,7 @@ int CFunctionCubeObject::FUN_1409674f0()
 Unk_QmNpcQuestState::Unk_QmNpcQuestState()
 {
     m_wantText = 0;
-    FUN_1409669c0();
+    Reset();
 }
 
 // @0x140964e40
@@ -3470,7 +3467,7 @@ Unk_QmNpcQuestState::~Unk_QmNpcQuestState()
 }
 
 // @0x1409669c0
-void Unk_QmNpcQuestState::FUN_1409669c0()
+void Unk_QmNpcQuestState::Reset()
 {
     m_icon = 0xb;
     m_state = 4;

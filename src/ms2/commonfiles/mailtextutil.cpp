@@ -16,6 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- out-of-unit callees (names describe uses) ----
 int FUN_140873420(void* pElement, const char* szName, CStringW& strOut);        // xml attribute -> wide string
@@ -48,7 +49,7 @@ MailTextValue::MailTextValue(int kind, const CStringW& value, const CStringW& au
 // @0x14065b240
 bool MailTextValue::Load(void* element) {
     CStringW value;
-    if (FUN_140873420(element, "str", value) != 1) {
+    if (XmlGetAttr((class TiXmlElement*)(element), "str", value) != 1) {
         m_kind = 0;
         bool numeric = value.SpanIncluding(L"0123456789,.") == value;
         if (numeric && value.Replace(L",", L"") > 0)
@@ -56,9 +57,9 @@ bool MailTextValue::Load(void* element) {
         m_value = value;
         return true;
     }
-    else if (FUN_140873420(element, "key", value) != 1) { m_kind = 1; m_value = value; return true; }
-    else if (FUN_140873420(element, "item", value) != 1) { m_kind = 2; m_value = value; return true; }
-    else if (FUN_140873420(element, "money", value) != 1) {
+    else if (XmlGetAttr((class TiXmlElement*)(element), "key", value) != 1) { m_kind = 1; m_value = value; return true; }
+    else if (XmlGetAttr((class TiXmlElement*)(element), "item", value) != 1) { m_kind = 2; m_value = value; return true; }
+    else if (XmlGetAttr((class TiXmlElement*)(element), "money", value) != 1) {
         m_kind = 3;
         bool numeric = value.SpanIncluding(L"0123456789") == value;
         if (numeric) value = FUN_14083cb20(value);
@@ -214,7 +215,7 @@ bool MailText::LoadTitle(const CStringW& text) {
     SetTitleText(text);
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
-    if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
+    if (!GetFileSystem()->LoadXmlFromString(&document, text)) return false;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;
     void* title = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("v")); if (!title) return false;
     bool loaded = m_title.Load(title);
@@ -226,7 +227,7 @@ bool MailText::LoadBody(const CStringW& text) {
     m_paragraphs.RemoveAll();
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
-    if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
+    if (!GetFileSystem()->LoadXmlFromString(&document, text)) return false;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;
     void* firstChild = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("v"));
     if (!firstChild) return false;

@@ -39,7 +39,7 @@ int CHomePrivilege::FUN_14050d550(int nNpcId)
 {
     if (m_pOwner == 0)
         return 0;
-    if (m_pOwner->FUN_141527e00() == 0)
+    if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
         if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
@@ -64,7 +64,7 @@ int CHomePrivilege::FUN_14050d6f0(int nPortalId)
 {
     if (m_pOwner == 0)
         return 0;
-    if (m_pOwner->FUN_141527e00() == 0)
+    if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
         if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
@@ -89,7 +89,7 @@ int CHomePrivilege::FUN_14050d890(int nInteractId)
 {
     if (m_pOwner == 0)
         return 0;
-    if (m_pOwner->FUN_141527e00() == 0)
+    if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
         if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
@@ -114,7 +114,7 @@ int CHomePrivilege::FUN_14050da30()
 {
     if (m_pOwner == 0)
         return 0;
-    if (m_pOwner->FUN_141527e00() == 0)
+    if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->FUN_141523c50());
         if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())

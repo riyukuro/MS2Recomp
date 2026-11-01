@@ -174,7 +174,7 @@ void UIWeddingGuestDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140fcdcf0();
-    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
+    if (MS2Ptr<ASTextField> spCounter = GetChild<ASTextField>("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -191,8 +191,8 @@ void UIWeddingGuestDialog::vfunc_43()
         UITalkCinematic* pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
         if (pRef != 0)
         {
-            int nX = pRef->FUN_141b1d3d0();
-            int nY = pRef->FUN_141b1d460() - 0x50;
+            int nX = pRef->GetLowerCutGlobalY();
+            int nY = pRef->GetIllustGlobalX() - 0x50;
             if (nX != -1 && nY != -1)
             {
                 pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
@@ -309,7 +309,7 @@ void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
 void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
 {
     m_guests[spGuest->m_strName] = spGuest;
-    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
+    if (MS2Ptr<ASTextField> spCounter = GetChild<ASTextField>("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -321,7 +321,7 @@ void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
 void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
 {
     m_guests.erase(strName);
-    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
+    if (MS2Ptr<ASTextField> spCounter = GetChild<ASTextField>("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -400,7 +400,7 @@ UIWeddingInvitationDialog* FUN_140fce870(int nId)
 {
     if (CUIService::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIWeddingInvitationDialog*>((UIObject*)spObj);
     }
@@ -425,7 +425,7 @@ bool UIWeddingGuestPage::vfunc_1()
 {
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
-    Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
+    Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)
         return false;
     m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
@@ -479,7 +479,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
     if (!UIWeddingGuestPage::vfunc_1())
         return false;
     BuddyArray buddies;
-    CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
+    CBuddyManager::GetInstance()->GetAllBuddies(buddies);
     if (buddies.GetCount() == 0)
         return true;
     if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
@@ -500,9 +500,9 @@ bool UIWeddingGuestPageFriend::vfunc_1()
                                                       GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
             row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
                                                        FUN_14016a5c0((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
-        spList->FUN_1422dcca0(0);
+        spList->SetSelectedIndex(0);
         spList->vfunc_24(true);
     }
     return true;
@@ -530,7 +530,7 @@ bool UIWeddingGuestPageFriend::vfunc_4(const char* szMethod, const Scaleform::GF
         {
             bool bSelected = data.FUN_1422b8a90();
             CStringW strName = data.FUN_1422b8f40();
-            CBuddyManager::Ptr spBuddy = CBuddyManager::GetInstance()->FUN_140ae4950(strName);
+            CBuddyManager::Ptr spBuddy = CBuddyManager::GetInstance()->FindByName(strName);
             if (spBuddy.get() != 0)
             {
                 if (!bSelected)
@@ -584,9 +584,9 @@ bool UIWeddingGuestPageGuild::vfunc_1()
                                                       GetStringTable()->FUN_141811980(6, spMember->data.f18)));
             row.FUN_1407cba60("profile", FUN_141028be0(spMember->data.f08,
                                                        FUN_14016a5c0(spMember->data.FUN_1404ca980(), 0), 1, CString("")));
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
-        spList->FUN_1422dcca0(0);
+        spList->SetSelectedIndex(0);
         spList->vfunc_24(true);
     }
     return true;
@@ -673,9 +673,9 @@ bool UIWeddingGuestPageStranger::vfunc_1()
             row.FUN_1407cbb20("accSN", FUN_141b71910(spGuest->m_n20));
             row.FUN_1407cbb20("charSN", FUN_141b71910(spGuest->m_n28));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spGuest->m_strName));
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
-        spList->FUN_1422dcca0(0);
+        spList->SetSelectedIndex(0);
         spList->vfunc_24(true);
     }
     return true;

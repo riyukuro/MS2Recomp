@@ -28,7 +28,7 @@ __int64 FUN_1414210f0(int nSlot, AvatarPC* pAvatar)
     {
         MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pAvatar);
         if (spEquip.get())
-            return spEquip->GetItem()->FUN_140526a50();
+            return spEquip->GetItem()->GetItemUid();
     }
     return 0;
 }
@@ -82,7 +82,7 @@ int FUN_141421690(CItem* pItem)
     if (pItem != 0 && pItem->FUN_140527840() != 0)
     {
         CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
-        return pData->FUN_14053cf00() || pData->FUN_14053d0c0() || pData->FUN_14053cfd0() || pData->FUN_14053d020()
+        return pData->IsAvatarColorItem() || pData->FUN_14053d0c0() || pData->FUN_14053cfd0() || pData->FUN_14053d020()
             || pData->FUN_14053cf40();
     }
     return 0;

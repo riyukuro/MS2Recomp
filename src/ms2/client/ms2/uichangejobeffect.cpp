@@ -29,7 +29,6 @@
 class Unk_CjPC : public PC { };                  // job code
 class Unk_CjWorld { public: Unk_CjPC* FUN_141bd0cc0(); };         // the local player
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 
 // FUN_140bd0bb0 is a free function, so it reaches the dialog's AS pointer (UISwfEntity::m_30 at +0x30) through this
 // layout view.
@@ -77,7 +76,7 @@ MS2_REPLACE_METHOD(0x140BD0B30, UIChangeJobEffect, vfunc_28, 111, 0x578A6BDE);
 // @0x140bd0bb0
 void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
 {
-    if (FUN_140ba28d0(&((Unk_CjAS*)pEffect)->m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&((Unk_CjAS*)pEffect)->m_30) == 0))
         return;
     Unk_CjPC* pPc = ((Unk_CjPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -95,7 +94,7 @@ MS2_REPLACE(0x140BD0BB0, FUN_140bd0bb0, 474, 0x84C58FA1);
 void ASObj::FUN_140bd0d90(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 MS2_REPLACE_METHOD(0x140BD0D90, ASObj, FUN_140bd0d90, 152, 0x1CED670B);

@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x140FAFB60, UIUGCCubeNoticeDialog, vfunc_28, 105, 0xA27700CA
 void UIUGCCubeNoticeDialog::OnApply()
 {
     if (MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textMessage"))
-        m_strMessage = spText->FUN_1422e0b00();
+        m_strMessage = spText->GetText();
     if (MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>("m_sliderDistance"))
         m_nDistance = (int)spSlider->FUN_1422ce630();
     CBanTextChecker* pChecker;
@@ -128,7 +128,7 @@ MS2_REPLACE_METHOD(0x140FAFBD0, UIUGCCubeNoticeDialog, OnApply, 760, 0x571ABD56)
 // @0x140fafed0
 template <> MS2Ptr<Unk_HudSlider> AScript::FUN_140accef0<Unk_HudSlider>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140a57ea0(m_nMovieId, v);
     return MS2Ptr<Unk_HudSlider>(0);

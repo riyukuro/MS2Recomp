@@ -61,6 +61,7 @@
 #include "ms2/placeholder/cproxygameobject.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- unit-local stand-ins for the unrecovered callee types ----
 
@@ -74,13 +75,13 @@ class Unk_MiWorld
 {
 public:
     MyPC* FUN_141bd0cc0();                                      // the player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 class Unk_MiUIMgr
@@ -194,7 +195,6 @@ int* FUN_1409eec00(ATL::CAtlArray<void*>* pArr, __int64 nIndex);   // element
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);               // a copy of the item
-void* FUN_1422c8e90(const CString& strName);                     // the bound data of a slot bag
 void* FUN_140c544d0(void* pBind);                                // its bag
    // the tab bar
 class Unk_MiNtMgr
@@ -538,7 +538,7 @@ void UIMyInfoDialog::vfunc_21(void* p)
     if (pAvatar != 0)
     {
         MS2Ptr<CItem> spItem = FUN_140ccac60(*static_cast<MS2Ptr<CItem>*>(p));
-        spItem->FUN_140526b30(pAvatar->vfunc_25());
+        spItem->SetObjectId(pAvatar->vfunc_25());
         pAvatar->FUN_1418baf40(spItem.get());
     }
 }
@@ -652,7 +652,7 @@ void UIMyInfoDialog::vfunc_dl_3(void* p)
             if (pDialog != 0)
             {
                 CString strKind;
-                if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c5c0() == 7)
+                if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetType() == 7)
                     strKind = "gem";
                 else
                     strKind = Name_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400());
@@ -919,7 +919,7 @@ int UIMyInfoDialog::vfunc_93()
         FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, CStringW(L""));
         return 0;
     }
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
     if (spField->FUN_140375660(0x10) != 0)
@@ -1031,7 +1031,7 @@ void UIMyInfoDialog::FUN_141a5bed0()
         m_278 = FUN_140d290c0(&kTitle)->FUN_1411df810();
         if ((m_30.get() ? true : false) && m_nTab == 3)
         {
-            void* pBag = FUN_140c544d0(FUN_1422c8e90(m_strEquipBag));
+            void* pBag = FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_strEquipBag));
             if (pBag != 0)
                 ((class DragSlotBag*)(void*)(pBag))->FUN_1422cca90();
         }
@@ -1111,7 +1111,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
         if (spBox.get() != 0)
         {
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));
-            spBox->FUN_140533ff0(nTab);
+            spBox->Append<int>(nTab);
             FUN_140d73c60(spBox);
         }
     }
@@ -1127,7 +1127,7 @@ bool UIMyInfoDialog::FUN_141a5c640(int nButton, const CMsgBoxData& kData)
         {
             MS2Ptr<ASMovieClip> spTab = m_30->FUN_140be23c0<ASMovieClip>("m_tab");
             if (spTab.get() != 0)
-                reinterpret_cast<ASButtonBar*>(spTab.operator->())->FUN_1422e31e0(nTab);
+                reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
         }
     }
     return true;
@@ -1159,7 +1159,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
     nUsed += m_250;
     CString strRow = StringFormat("m_statPoint{0}", nStat + 1);
     {
-        MS2Ptr<ASMovieClip> spRow = FUN_140ba7930(strRow);
+        MS2Ptr<ASMovieClip> spRow = GetChild<ASMovieClip>(strRow);
         if (spRow)
         {
             int nKey = aStats[nStat];
@@ -1185,7 +1185,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
     }
     if (MS2Ptr<ASButton> spReset = FUN_140bb4b10("m_resetStatPoint"))
         spReset->FUN_1422c1fe0(nUsed > 0 ? 1 : 0);
-    if (MS2Ptr<ASMovieClip> spRemain = FUN_140ba7930("m_remainPoint"))
+    if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
     {
         if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
         {
@@ -1194,7 +1194,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
             unsigned nColor2 = 0xffffff;
             if (nRemain > 0)
                 nColor2 = 0xffa200;
-            spText->FUN_1422c50e0(nColor2);
+            spText->SetTextColor(nColor2);
         }
     }
 }
@@ -1252,7 +1252,7 @@ void UIMyInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
 void UIMyInfoDialog::vfunc_16()
 {
     UIPCInfoDialog::vfunc_16();
-    FUN_141a5d630();
+    UnloadRenderTarget();
 }
 
 // @0x141a5d410
@@ -1260,7 +1260,7 @@ bool UIMyInfoDialog::vfunc_17()
 {
     if (!UIPCInfoDialog::vfunc_17())
         return false;
-    FUN_141a5d5d0();
+    LoadRenderTarget();
     return true;
 }
 
@@ -1269,7 +1269,7 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
 {
     if (pAvatar == 0)
         return 0;
-    FUN_141a5d5d0();
+    LoadRenderTarget();
     ASObj kObj(2);
     AvatarPC* pAv = FUN_140a535c0(static_cast<UIAvatarBase*>(pAvatar)->vfunc_24());
     if (pAv != 0)
@@ -1285,7 +1285,7 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
 }
 
 // @0x141a5d5d0
-void UIMyInfoDialog::FUN_141a5d5d0()
+void UIMyInfoDialog::LoadRenderTarget()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
@@ -1293,7 +1293,7 @@ void UIMyInfoDialog::FUN_141a5d5d0()
 }
 
 // @0x141a5d630
-void UIMyInfoDialog::FUN_141a5d630()
+void UIMyInfoDialog::UnloadRenderTarget()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;

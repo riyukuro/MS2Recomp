@@ -144,7 +144,6 @@ class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;              // ids already remembered
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // show a notice
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -268,7 +267,7 @@ static void FUN_140fb19c0(Unk_UgcpCombo* pCombo, const CString& strName, CString
     MS2Ptr<ASArray> spData = pCombo->FUN_1422df770();
     if (spData == 0)
         return;
-    if (nSel >= spData.operator->()->FUN_1422bc5d0())
+    if (nSel >= spData.operator->()->GetLength())
         return;
     FUN_140fb1930(static_cast<Unk_UgcpArray*>(spData.operator->()), nSel, strName, strOut);
 }
@@ -408,7 +407,7 @@ void UIUGCPortalDialog::FUN_140fb15a0()
         spCombo.operator->()->FUN_1422dfc70(none);
     }
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-    CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
+    CBuddyManager::GetInstance()->GetAllBuddies(buddies);
     for (size_t i = 0; i < buddies.GetCount(); i++)
     {
         if (buddies[i].get()->FUN_1401cc5f0() == 0)

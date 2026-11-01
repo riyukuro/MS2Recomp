@@ -62,32 +62,32 @@ int CKillCount::FUN_14064c5f0(unsigned short a1, unsigned short a2)
 }
 
 // @0x14064c6e0
-double CKillCount::FUN_14064c6e0()
+double CKillCount::GetBonusExpRate()
 {
     return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountBonusExpRate(m_08);
 }
 
 // @0x14064c710
-unsigned int CKillCount::FUN_14064c710()
+unsigned int CKillCount::GetGrade()
 {
     return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountGrade(m_08);
 }
 
 // @0x14064c740
-CStringW CKillCount::FUN_14064c740()
+CStringW CKillCount::GetKillCountMessage()
 {
     return FUN_14016a730(((class Unk_LuaState*)FUN_1401c0db0())->CalcKillCountMsg(m_08), 0);
 }
 
 // @0x14064c7d0
-void CKillCount::FUN_14064c7d0()
+void CKillCount::Reset()
 {
     m_08 = 0;
     m_0c = 0;
 }
 
 // @0x14064c800
-int CKillCount::FUN_14064c800()
+int CKillCount::GetCount()
 {
     return m_08;
 }

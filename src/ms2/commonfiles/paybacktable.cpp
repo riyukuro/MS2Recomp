@@ -21,6 +21,12 @@
 #include <algorithm>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 extern "C" double (__cdecl* __imp_floor)(double);            // the exe imports floor from the UCRT
 
@@ -73,7 +79,7 @@ bool PaybackTable::Load()
     }
     m_nTotalWeight = 0;
     m_levels.clear();
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("payback"); pNode != 0; pNode = pNode->FUN_140168650("payback"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("payback"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("payback")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

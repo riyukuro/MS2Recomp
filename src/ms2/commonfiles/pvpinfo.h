@@ -15,25 +15,25 @@ public:
     CPvPInfo();                                                         // 0x140743430
     virtual ~CPvPInfo();                                                //  0 0x1407434d0 (??_G 0x1407441b0)
 
-    bool FUN_140743550();                                               // m_nPoint > 0
+    bool HasPoint();                                               // m_nPoint > 0
     bool FUN_140743590();                                               // mode 1
     bool FUN_1407435d0();                                               // mode 2
     bool FUN_140743610();                                               // mode 3
     bool FUN_140743650();                                               // mode 4
     bool FUN_140743690();                                               // mode 10
-    bool FUN_1407436d0();                                               // mode 5 (one punch)
+    bool IsOnePunchMode();                                               // mode 5 (one punch)
     int GetPoint();                                                // m_nPoint
-    void FUN_140743730();                                               // reset
-    void FUN_1407437b0(int nDelta);                                     // m_nKill += nDelta (never below 0)
+    void Reset();                                               // reset
+    void AddKill(int nDelta);                                     // m_nKill += nDelta (never below 0)
     void FUN_140743810(__int64 nDelta);                                   // m_nUnk34 += nDelta
-    void FUN_140743840(int nDelta);                                     // m_nWin += nDelta (never below 0); starts the match clock
-    void FUN_1407438b0(int nDelta);                                     // m_nLose += nDelta (never below 0)
-    void FUN_140743910();                                               // m_nTeam = random 0/1
-    int FUN_140743940();                                                // reward item id of the mode
-    void FUN_1407439a0(COutputStream* pOut);                            // encode point / team / mode
-    void FUN_140743a10(CInPacket& packet);                              // decode point / team / mode
-    void FUN_140743ab0(COutputStream* pOut);                            // encode win / lose / kill
-    void FUN_140743b20(CInPacket& packet);                              // decode win / lose / kill
+    void AddWinAndStart(int nDelta);                                     // m_nWin += nDelta (never below 0); starts the match clock
+    void AddLose(int nDelta);                                     // m_nLose += nDelta (never below 0)
+    void RandomizeTeam();                                               // m_nTeam = random 0/1
+    int GetRewardItemId();                                                // reward item id of the mode
+    void WritePointTeamMode(COutputStream* pOut);                            // encode point / team / mode
+    void ReadPointTeamMode(CInPacket& packet);                              // decode point / team / mode
+    void WriteRecordToStream(COutputStream* pOut);                            // encode win / lose / kill
+    void ReadRecordFromPacket(CInPacket& packet);                              // decode win / lose / kill
 
     int m_nPoint;                                                       // +0x18
     int m_nTeam;                                                        // +0x1c

@@ -87,7 +87,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         } else {
             ((class MyPC*)(class Unk_UmPlayer*)(pPlayer))->FUN_14152a240(nConcept);
         }
-        CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3f);
+        CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f3f);
         return 1;
     }
     return 0;

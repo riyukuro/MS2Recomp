@@ -75,6 +75,14 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -100,7 +108,6 @@ int FUN_14074b950(int);
 int FUN_1418fd280();
 CStringW FUN_1416e4df0(int);
 CStringW FUN_1416e7fb0(int);
-CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW GetStringCommonByKey(const CStringW& str);
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -260,14 +267,14 @@ void CStoryQuest::FUN_140d73960()
         if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d)
         {
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
-            CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
+            CStringW strText = StringFormat<CStringW>((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
             TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
-                    spBox->FUN_140533ff0(m_7c);
+                    spBox->Append<int>(m_7c);
                     spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
                     spBox->FUN_141a01690(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
@@ -476,19 +483,19 @@ extern int DAT_143ae0fc0;                                           // debug swi
 
 // The xml helpers every table unit uses.
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14071ae20(const CString& strFile);                      // path of a Table file
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140536a50(const char* szFormat, const CString& strArg);
 unsigned FUN_14021c7c0(const CString& str);                         // the id of a string key
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, std::vector<Unk_140165cf0*>&);   // commonutil.cpp
 unsigned char FUN_1401d1320(CCacheData*);
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
 CStringW GetStringCommon(int nId);                                    // the text of a string id
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -611,13 +618,13 @@ BOOL CStringTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return FALSE;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return FALSE;
     }
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
@@ -626,9 +633,9 @@ BOOL CStringTable::Load()
         CString strParser;
         CString strParserValue;
         XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
-        FUN_1408733e0(pKey, "name", strName);
-        FUN_1408733e0(pKey, "parser", strParser);
-        FUN_1408733e0(pKey, "parserValue", strParserValue);
+        XmlGetAttr((class TiXmlElement*)(pKey), "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pKey), "parser", strParser);
+        XmlGetAttr((class TiXmlElement*)(pKey), "parserValue", strParserValue);
         CachePtr spCache(0);
         if (!m_caches.Lookup(nId, spCache))
         {
@@ -826,7 +833,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         {
             CStringW strName = pPlayer->FUN_141523bc0()->FUN_141767e60(nId);
             if (!strName.IsEmpty())
-                return FUN_1401e8510(FUN_141811980(5, nId), strName);
+                return StringFormat<CStringW>(FUN_141811980(5, nId), strName);
         }
     }
     else if (nId >= 0xdbba1 && nId <= 0xdbbaa)
@@ -835,7 +842,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         UIClosetDialog* pCloset = FUN_141815ed0();
         if (pCloset != 0)
             strExtra = pCloset->TabName(nId);
-        return FUN_1401e8510(FUN_141811980(5, nId), strExtra);
+        return StringFormat<CStringW>(FUN_141811980(5, nId), strExtra);
     }
     return FUN_141811980(5, nId);
 }
@@ -917,7 +924,7 @@ CStringW CStringTable::FUN_141813060(int nRank, int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return CStringW(L"");
-    if (spItem->FUN_14053c5a0() != 0)
+    if (spItem->GetRank() != 0)
         return GetStringCommon(0);
     return FUN_141813150(nRank);
 }
@@ -1070,20 +1077,20 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             return 0;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             return 0;
         }
-        for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+        for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                 continue;
             CString strId;
             CStringW strText;
-            FUN_1408733e0(pKey, "id", strId);
-            FUN_140873420(pKey, "name", strText);
+            XmlGetAttr((class TiXmlElement*)(pKey), "id", strId);
+            XmlGetAttr((class TiXmlElement*)(pKey), "name", strText);
             strText.Replace(L"\\n", L"\n");
             unsigned nId = FUN_14021c7c0(strId);
             spCache->m_strings.SetAt(nId, strText);
@@ -1106,20 +1113,20 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             return 0;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             return 0;
         }
-        for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+        for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                 continue;
             int nId = 0;
             CStringW strText;
             XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
-            FUN_140873420(pKey, strAttr, strText);
+            XmlGetAttr((class TiXmlElement*)(pKey), strAttr, strText);
             if (strText.IsEmpty())
                 continue;
             strText.Replace(L"\\n", L"\n");
@@ -1138,13 +1145,13 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return 0;
     }
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
@@ -1167,13 +1174,13 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
         return 0;
     }
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
@@ -1200,10 +1207,10 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             continue;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            FUN_14015eb90(((void*)GetLogString()), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             continue;
         }
         std::vector<Unk_140165cf0*> aNodes;
@@ -1282,7 +1289,7 @@ CStringTable::DescPtr CStringTable::FUN_141815650(Unk_140165cf0* pNode, ATL::CAt
     DescPtr spDesc(new CDesc());
     {
         CStringW strText;
-        FUN_140873420(pNode, "name", strText);
+        XmlGetAttr((class TiXmlElement*)(pNode), "name", strText);
         if (!strText.IsEmpty())
         {
             strText.Replace(L"\\n", L"\n");
@@ -1295,7 +1302,7 @@ CStringTable::DescPtr CStringTable::FUN_141815650(Unk_140165cf0* pNode, ATL::CAt
         {
             CStringW strText;
             CString strTag(rTags[i]);
-            FUN_140873420(pNode, strTag, strText);
+            XmlGetAttr((class TiXmlElement*)(pNode), strTag, strText);
             if (!strText.IsEmpty())
             {
                 strText.Replace(L"\\n", L"\n");
@@ -1322,7 +1329,7 @@ CStringTable::DescPtr CStringTable::FUN_1418158b0(Unk_140165cf0* pNode)
 void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
 {
     Unk_1401b4ec0 lock(m_lock, 1);
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
@@ -1339,7 +1346,7 @@ void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
 void CStringTable::FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot)
 {
     Unk_1401b4ec0 lock(m_lock, 1);
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;

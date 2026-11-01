@@ -34,6 +34,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipmodel.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 extern unsigned char DAT_143afc898;                                        // assertions throw when set
 
@@ -75,7 +76,6 @@ public:
     int FUN_14166c930();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-float FUN_1402bac70(void* pValue);                                  // Constants::Value<float>::get
 float FUN_1409f2310(float f);                                       // sin
 float FUN_1409f25a0(float f);                                       // cos
 Unk_ServiceManager* FUN_1413f9850();                                // the framework's service manager
@@ -176,12 +176,12 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     }
 
     if (!(m_fElapsed < m_fPeriod)) {
-        static float s_fVariance = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2f48);
-        static float s_fBase = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2fa0);
+        static float s_fVariance = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2f48)->Read();
+        static float s_fBase = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2fa0)->Read();
         m_fPeriod = s_fBase + s_fVariance * (rand() / 32767.0f - 0.5f);
         m_fElapsed = 0;
     }
-    static float s_fStrength = FUN_1402bac70(((char*)FUN_1401d3200()) + 0x2ff8);
+    static float s_fStrength = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2ff8)->Read();
     float fStrength = s_fStrength * (float)fDeltaTime;
     float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);

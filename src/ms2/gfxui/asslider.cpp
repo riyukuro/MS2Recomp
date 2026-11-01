@@ -35,7 +35,7 @@ MS2_REPLACE_METHOD(0x1422CE5F0, ASSlider, FUN_1422ce5f0, 43, 0xB02E9BC5);
 // @0x1422ce630
 float ASSlider::FUN_1422ce630()
 {
-    return (float)FUN_1422baa20("value").GetNumber();
+    return (float)GetMember("value").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CE630, ASSlider, FUN_1422ce630, 96, 0xF625FCB4);
 
@@ -49,7 +49,7 @@ MS2_REPLACE_METHOD(0x1422CE6A0, ASSlider, FUN_1422ce6a0, 43, 0xE93331B9);
 // @0x1422ce6e0
 float ASSlider::FUN_1422ce6e0()
 {
-    return (float)FUN_1422baa20("maximum").GetNumber();
+    return (float)GetMember("maximum").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CE6E0, ASSlider, FUN_1422ce6e0, 96, 0x130F2EF2);
 
@@ -63,7 +63,7 @@ MS2_REPLACE_METHOD(0x1422CE750, ASSlider, FUN_1422ce750, 43, 0x7FB2EF9D);
 // @0x1422ce790
 float ASSlider::FUN_1422ce790()
 {
-    return (float)FUN_1422baa20("minimum").GetNumber();
+    return (float)GetMember("minimum").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CE790, ASSlider, FUN_1422ce790, 96, 0x1E1CD5F1);
 
@@ -77,7 +77,7 @@ MS2_REPLACE_METHOD(0x1422CE800, ASSlider, FUN_1422ce800, 43, 0xF3A5660D);
 // @0x1422ce840
 float ASSlider::FUN_1422ce840()
 {
-    return (float)FUN_1422baa20("position").GetNumber();
+    return (float)GetMember("position").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CE840, ASSlider, FUN_1422ce840, 96, 0xE0F51450);
 
@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x1422CE8B0, ASSlider, FUN_1422ce8b0, 43, 0x4CE96E19);
 // @0x1422ce8f0
 float ASSlider::FUN_1422ce8f0()
 {
-    return (float)FUN_1422baa20("snapInterval").GetNumber();
+    return (float)GetMember("snapInterval").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CE8F0, ASSlider, FUN_1422ce8f0, 96, 0xEDC75B72);
 

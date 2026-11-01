@@ -18,7 +18,6 @@ class Unk_BoUIRef
 public:
     ~Unk_BoUIRef();
     UIObject* FUN_1403e8a70() const;                                // the object, or 0
-    UIObject* FUN_1403ed9e0();
 private:
     void* unknown;
     UIObject* object;
@@ -187,7 +186,7 @@ UIGameOptionDialog* FUN_140a02e60(int nDialogId)
     {
         Unk_BoUIRef ref = reinterpret_cast<Unk_BoUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nDialogId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIGameOptionDialog*>(ref.FUN_1403ed9e0());
+            return dynamic_cast<UIGameOptionDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

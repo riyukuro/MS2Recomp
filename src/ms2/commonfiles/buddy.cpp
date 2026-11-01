@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x1400b4640-0x1400b4657 .text$di
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\buddy.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/client/ms2/buddymanager.h"
 #include <efd/ISystemService.h>
 #include <efd/ServiceManager.h>
@@ -33,8 +34,9 @@ public:
     int FUN_1410d33a0(unsigned, Vector3*);
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
-extern Vector3 DAT_143b01a60;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
 
 // A header static of this unit: a pointer-sized handle constructed from 0 through a base ctor (the two COMDATs

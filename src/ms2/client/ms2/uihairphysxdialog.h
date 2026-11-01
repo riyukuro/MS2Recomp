@@ -109,7 +109,6 @@ public:
     MS2Ptr<Unk_HpxInput> FUN_140e35bd0(const CString& strName);        // GetChild<input>
     MS2Ptr<Unk_HpxSlider> FUN_140faff90(const CString& strName);       // GetChild<slider>
     MS2Ptr<Unk_HpxCombo> FUN_140c28560(const CString& strName);        // GetChild<combo>
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);         // GetChild<ASTextField>
 
 private:
     MS2_LAYOUT_FRIEND;

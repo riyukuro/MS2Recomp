@@ -59,11 +59,9 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-PCBase* FUN_140974230(PCBase*);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_PopupUIMgr { public: };
 class Unk_PopupInfoAS : public AScript
 {
@@ -117,7 +115,7 @@ void UIPopupProfileImage::Entity::vfunc_4()
 void UIPopupProfileImage::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    PCBase* pPc = FUN_140974230((PCBase*)FUN_140f49330());
+    PCBase* pPc = efd::DynamicCast<PC, PCBase>((PCBase*)FUN_140f49330());
     if (pPc == 0)
         return;
     if (m_38.get() != 0)
@@ -148,7 +146,7 @@ void UIPopupProfileImage::Entity::vfunc_6(NiPoint3* pPos)
 // @0x141a8f880
 void UIPopupProfileImage::Entity::vfunc_7()
 {
-    PCBase* pPc = FUN_140974230((PCBase*)FUN_140f49330());
+    PCBase* pPc = efd::DynamicCast<PC, PCBase>((PCBase*)FUN_140f49330());
     if (pPc != 0)
         reinterpret_cast<Unk_PopupSvc*>(TSingleton<CPopupProfileImageMan>::GetInstance())->FUN_1416979e0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
     if (m_38.get())
@@ -225,7 +223,7 @@ void UIPopupProfileImage::FUN_141a8fc30(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -253,7 +251,7 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_PopupEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-                if (FUN_1409b0390(&v) == 0)
+                if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
                     if (p)
@@ -297,7 +295,7 @@ UIPopupProfileImage* FUN_141a90250(int nUiId)
 {
     if (reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIPopupProfileImage*>((UIObject*)p);
     }

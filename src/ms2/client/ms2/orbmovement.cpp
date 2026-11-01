@@ -34,7 +34,7 @@ INodeMovement::INodeMovement(const INodeMovement& kSrc) : CPtred()
 }
 
 // @0x141625430
-NiTransform INodeMovement::FUN_141625430(double dTime, const NiTransform& kTarget)
+NiTransform INodeMovement::UpdateMovement(double dTime, const NiTransform& kTarget)
 {
     if (m_bInitialized == 0)
     {

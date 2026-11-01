@@ -44,7 +44,8 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
-class Unk_TwBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_TwBuffMgr { public: };
 
 // @0x140ad5c50
 int Unk_SSGConstValue::FUN_140ad5c50()
@@ -181,7 +182,7 @@ void StateTreeWatering::vfunc_8(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
     Unk_TwBuffMgr* pBuff = ((class Unk_TwBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    Vector3 kPos = pBuff->FUN_141683290();
+    Vector3 kPos = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290();
     Vector3 kArg = kPos;
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0() != 0)

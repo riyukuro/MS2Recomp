@@ -135,7 +135,6 @@ int FUN_1409a8f90(const float* pf);
 bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
 float FUN_140a38cd0(float f);
-void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
 extern char DAT_143b059e8;
 efd::ISystemService* FUN_1401cd040(char*);
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
@@ -220,7 +219,7 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
     if (pHit != 0)
     {
         NxActor* pActor = &pHit->shape->getActor();
-        egf::Entity* pEntity = FUN_141689970(pActor);
+        egf::Entity* pEntity = GetEntityFromActor(pActor);
         pInfo->m_hitActor = pActor;
         pInfo->m_hitEntity = pEntity;
         pInfo->m_hitShape = pHit->shape;
@@ -263,7 +262,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
 }
 #endif
 // @0x141689970
-egf::Entity* CPhysXHelper::FUN_141689970(NxActor* pActor)
+egf::Entity* CPhysXHelper::GetEntityFromActor(NxActor* pActor)
 {
     if (pActor == 0)
         return 0;
@@ -280,7 +279,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     if (pEntity == 0)
         return false;
     bool bCube = false;
-    FUN_1408a20a0(pEntity, 0x38141815, &bCube);
+    pEntity->GetPropertyValue(0x38141815, bCube);
     if (bCube)
         return true;
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
@@ -367,7 +366,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     if (pEntity == 0)
         return;
     bool bCube = false;
-    FUN_1408a20a0(pEntity, 0x38141815, &bCube);
+    pEntity->GetPropertyValue(0x38141815, bCube);
     if (bCube)
     {
         efd::SmartPointer<efd::ISystemService> spService(FUN_1401cd040(&DAT_143b059e8));
@@ -512,7 +511,7 @@ void CPhysXHelper::FUN_14168a5a0()
     }
 }
 // @0x14168a710
-void CPhysXHelper::FUN_14168a710()
+void CPhysXHelper::ClearScenes()
 {
     for (unsigned i = 0; i < 2; i++)
         m_apScene[i] = 0;
@@ -662,7 +661,7 @@ MS2_REPLACE_METHOD(0x14168A450, CPhysXHelper, FUN_14168a450, 232, 0x8C3C8D12);
 MS2_REPLACE_METHOD(0x14168A540, CPhysXHelper, FUN_14168a540, 32, 0xEC94BD02);
 MS2_REPLACE_METHOD(0x14168A570, CPhysXHelper, FUN_14168a570, 28, 0xC37B47B6);
 MS2_REPLACE_METHOD(0x14168A5A0, CPhysXHelper, FUN_14168a5a0, 349, 0x880CE577);
-MS2_REPLACE_METHOD(0x14168A710, CPhysXHelper, FUN_14168a710, 56, 0xB4C7EA23);
+MS2_REPLACE_METHOD(0x14168A710, CPhysXHelper, ClearScenes, 56, 0xB4C7EA23);
 MS2_REPLACE_METHOD(0x14168A750, CPhysXHelper, FUN_14168a750, 15, 0x5B8A7339);
 MS2_REPLACE_METHOD(0x14168B0F0, ClosestHitReport, FUN_14168b0f0, 33, 0xE0D29AB9);
 MS2_REPLACE_METHOD(0x14168A770, CPhysXHelper, FUN_14168a770, 554, 0xA7AA0EBC);

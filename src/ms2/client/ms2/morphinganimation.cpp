@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- out-of-unit callees ----
 // Key that names the owner's model in the model cache (16 bytes; plain data).
@@ -40,11 +41,11 @@ public:
 class Unk_ModelCache
 {
 public:
-    Unk_ModelEntry* FUN_140999440(const Unk_ModelKey& key);   // lookup, NULL when not cached
 };
 class CMainSystem;
 template<> CMainSystem* TSingleton<CMainSystem>::GetInstance();
-Unk_ModelCache* FUN_141b6f910();                        // the model cache singleton
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                        // the model cache singleton
 // RTTI of the render object class (0x143afa7d0; name assumed from its uses).
 extern const NiRTTI Unk_RenderObjectRTTI;
 
@@ -124,7 +125,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
         return;
     int nCount = 0;
     NiInterpController* pCtrl = NULL;
-    NiAVObject* pNode = FUN_141487d80(m_pData->m_strNodeName);
+    NiAVObject* pNode = FindNode(m_pData->m_strNodeName);
     if (pNode != NULL) {
         NiTimeController* pTimeCtrl = pNode->GetControllers();
         while (pTimeCtrl != NULL) {
@@ -145,10 +146,10 @@ MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, FUN_141487c50, 295, 0x516868
 
 
 // @0x141487d80
-NiAVObject* CMorphingAnimation::FUN_141487d80(const CString& strNodeName)
+NiAVObject* CMorphingAnimation::FindNode(const CString& strNodeName)
 {
     Unk_ModelKey kKey;
-    Unk_ModelEntry* pEntry = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(kKey));
+    Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_ModelKey&>(m_pOwner->FUN_14123c460(kKey)))));
     if (pEntry != NULL) {
         NiNode* pRoot = pEntry->FUN_1409f7cb0();
         if (pRoot == NULL)

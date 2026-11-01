@@ -54,6 +54,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipmodel.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- out-of-unit callees ----
 class CLogString;
@@ -64,7 +65,8 @@ template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory,
 class Unk_TrigNetSvc2 { public: efd::Category FUN_142156c20(); };
 Unk_TrigNetSvc2* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc2 { public: efd::Category FUN_141235eb0(); };
-Unk_TrigAnimSvc2* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // The model owner of CEquipModel is the CEquipItem (its MS2Ptr copy is the CPtred-generic 0x140884f30).
 class Unk_EquipModelOwner : public CPtred {};
@@ -88,9 +90,6 @@ int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   /
 typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
 
 // The registry of named bags (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
 ItemInfoSlot* FUN_140cfe6c0(DragSlot* p);                           // DragSlot -> ItemInfoSlot (TypeCast)
 class AvatarPC;
@@ -213,7 +212,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
     MS2Ptr<CItemData> spData(FUN_140527840(pItem));
     for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
-        const ModelGroup* pGroup = spData->FUN_14053eba0()->FUN_14054b2f0(i);
+        const ModelGroup* pGroup = spData->FUN_14053eba0()->GetGroup(i);
         for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
         {
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -331,7 +330,7 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
     MS2Ptr<CItemData> spData(FUN_140527840(pItem));
     for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
-        const ModelGroup* pGroup = spData->FUN_14053eba0()->FUN_14054b2f0(i);
+        const ModelGroup* pGroup = spData->FUN_14053eba0()->GetGroup(i);
         for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++)
         {
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -353,7 +352,7 @@ void CItemService::FUN_14141b250(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEq
     int nLayer = pItem->FUN_14052a170();
     for (size_t i = 0; i < FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
-        int nSlot = FUN_141420a30(FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), pItem,
+        int nSlot = FUN_141420a30(FUN_140527840(pItem)->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0(), pItem,
             reinterpret_cast<AvatarPC*>(pPC));
         MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e1780(nSlot, nLayer);
         if (spItem.get() != 0)
@@ -380,7 +379,7 @@ efd::AsyncResult CItemService::OnInit()
     m_spMessages->Subscribe(this, m_catGlobal, 0, false);
     m_spMessages->Subscribe(this, FUN_140ae1200(m_pServiceManager)->FUN_142156c20(), 0, false);
     m_spMessages->Subscribe(this, s_catAnimationChannel, 0, false);
-    m_spMessages->Subscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0, false);
+    m_spMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
     return efd::AsyncResult_Complete;
 }
 
@@ -406,7 +405,7 @@ efd::AsyncResult CItemService::OnShutdown()
         m_spMessages->Unsubscribe(this, m_catGlobal, 0);
         m_spMessages->Unsubscribe(this, FUN_140ae1200(m_pServiceManager)->FUN_142156c20(), 0);
         m_spMessages->Unsubscribe(this, s_catAnimationChannel, 0);
-        m_spMessages->Unsubscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0);
+        m_spMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0);
     }
     return efd::AsyncResult_Complete;
 }
@@ -443,7 +442,7 @@ void FUN_14141f770(const CString& strName, int nSlots, void* pItems, ItemSlotBag
     if (pBag != 0)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
@@ -454,18 +453,18 @@ void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<Item
     if (pBag != 0)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14141f970
 void FUN_14141f970(const CString& strName)
 {
-    ItemSlotBag* pBag = FUN_140c54520(FUN_1422c8e90(strName));
+    ItemSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag != 0)
     {
         pBag->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

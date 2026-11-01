@@ -30,6 +30,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // The UCRT header-inline memmove_s (corecrt_memcpy_s.h) closes the CAtlMap instantiations.
 #pragma function(memmove)
@@ -99,13 +105,13 @@ int CSkillCompactControlTable::Load()
         return 0;
     }
     s_cache.FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pJob = pRoot->FUN_140165cf0("job"); pJob != 0; pJob = pJob->FUN_140168650("job"))
+    for (Unk_140165cf0* pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("job")); pJob != 0; pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
     {
         Unk_CcSkillListPtr spList;
         spList = Unk_SocketNew(0);
@@ -113,7 +119,7 @@ int CSkillCompactControlTable::Load()
         FUN_1406363a0(pJob, "code", nCode);
         __int64 nBaseSP = 50;
         XmlGetAttr((class TiXmlElement*)(pJob), "baseSP", nBaseSP);
-        for (Unk_140165cf0* pSkill = pJob->FUN_140165cf0("skill"); pSkill != 0; pSkill = pSkill->FUN_140168650("skill"))
+        for (Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->FirstChild("skill")); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pSkill)))
                 continue;

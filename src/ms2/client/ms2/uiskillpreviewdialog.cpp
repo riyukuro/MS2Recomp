@@ -176,11 +176,6 @@ private:
     Unk_SkillPreviewSkill* m_p;
 };
 MS2_CHECK_SIZE(Unk_SkillPreviewSkillPtr, 0x10);
-class Unk_SkillPreviewSkillManager
-{
-public:
-    Unk_SkillPreviewSkillPtr FUN_1407ee1d0(int);
-};
 
 // @0x140e93690
 UISkillPreviewDialog::UISkillPreviewDialog() : m_skill(0), m_level(0) {}
@@ -196,7 +191,7 @@ MS2_REPLACE_METHOD(0x140E937B0, UISkillPreviewDialog, GetTypeName, 61, 0xFF81443
 void UISkillPreviewDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140e941b0();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x140E93800, UISkillPreviewDialog, vfunc_26, 34, 0x7AF3593D);
 
@@ -264,7 +259,7 @@ MS2_REPLACE_METHOD(0x140E939F0, UISkillPreviewDialog, vfunc_25, 721, 0x173AD909)
 void UISkillPreviewDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_140e941b0();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x140E93CD0, UISkillPreviewDialog, vfunc_16, 34, 0x0C98A2FC);
 
@@ -272,7 +267,7 @@ MS2_REPLACE_METHOD(0x140E93CD0, UISkillPreviewDialog, vfunc_16, 34, 0x0C98A2FC);
 bool UISkillPreviewDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17()) return false;
-    FUN_140e94150();
+    LoadRenderTarget();
     return true;
 }
 MS2_REPLACE_METHOD(0x140E93D00, UISkillPreviewDialog, vfunc_17, 47, 0x298FF795);
@@ -281,7 +276,7 @@ MS2_REPLACE_METHOD(0x140E93D00, UISkillPreviewDialog, vfunc_17, 47, 0x298FF795);
 int UISkillPreviewDialog::vfunc_o178_1(void* avatar)
 {
     if (!avatar) return 0;
-    FUN_140e94150();
+    LoadRenderTarget();
     Unk_SkillPreviewAScript data(2);
     m_30->Invoke("initData", data.FUN_1422bb870());
     return 1;
@@ -304,9 +299,9 @@ void UISkillPreviewDialog::FUN_140e93e70(int skill, unsigned short level)
     m_skill = skill;
     m_level = level;
     if (!m_avatar->FUN_1418b9b80()) return;
-    Unk_SkillPreviewSkillPtr data = reinterpret_cast<Unk_SkillPreviewSkillManager*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(skill);
+    MS2Ptr<SkillData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(skill);
     if (data.IsNull()) { MS2_ASSERT_AT(162, 0); return; }
-    if (data->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
+    if (reinterpret_cast<Unk_SkillPreviewSkill*>(data.operator->())->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
     else m_avatar->FUN_1418bcf60(skill, level);
     m_skill = 0;
     m_level = 0;
@@ -327,17 +322,17 @@ void UISkillPreviewDialog::FUN_140e93ff0()
 MS2_REPLACE_METHOD(0x140E93FF0, UISkillPreviewDialog, FUN_140e93ff0, 342, 0x09033A99);
 
 // @0x140e94150
-void UISkillPreviewDialog::FUN_140e94150()
+void UISkillPreviewDialog::LoadRenderTarget()
 {
     if (m_30.get()) m_30->Invoke("loadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x140E94150, UISkillPreviewDialog, FUN_140e94150, 83, 0xD1FBA7E2);
+MS2_REPLACE_METHOD(0x140E94150, UISkillPreviewDialog, LoadRenderTarget, 83, 0xD1FBA7E2);
 
 // @0x140e941b0
-void UISkillPreviewDialog::FUN_140e941b0()
+void UISkillPreviewDialog::UnloadRenderTarget()
 {
     if (m_30.get()) m_30->Invoke("unloadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x140E941B0, UISkillPreviewDialog, FUN_140e941b0, 83, 0x830FFE0B);
+MS2_REPLACE_METHOD(0x140E941B0, UISkillPreviewDialog, UnloadRenderTarget, 83, 0x830FFE0B);
 
 MS2_EMIT_CRT_MEMMOVE_S();

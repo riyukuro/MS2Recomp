@@ -145,6 +145,7 @@
 #include "ms2/client/ms2/ugchomebgdata.h"
 #include "ms2/placeholder/cwebbrowserservice.h"
 #include "ms2/commonfiles/featuremanager.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // ---- unit-local placeholders ----
 
@@ -152,16 +153,16 @@
 class GFxManager   // C3: member view (real class not in this TU)
 {
 public:
-    int FUN_1422adc90(GFxMovie*);
-    int FUN_1422addb0();
-    int FUN_1422ade10(GFxMovie*);
-    int FUN_1422adf30();
-    void FUN_1422ae960(int);
-    void FUN_1422aeaa0(int);
-    void FUN_1422aebe0(int, bool);
+    int LoadBackgroundMovie(GFxMovie*);
+    int UnloadBackgroundMovie();
+    int LoadDamageTextMovie(GFxMovie*);
+    int UnloadDamageTextMovie();
+    void SetMoviesVisible(int);
+    void SetMoviesVisibleStep(int);
+    void SetMoviesLayerVisible(int, bool);
     int FUN_1422aeed0(int);
     void FUN_1422aef20(int, int);
-    int FUN_1422af2d0(int);
+    int IsTextFieldFocused(int);
     void FUN_1422afb00();
     float FUN_1422afec0(int);
     int FUN_1422aff10(float);
@@ -178,7 +179,7 @@ class Unk_UisMovieMgr
 public:
     CStringW FUN_1422b0570(const CString& strKey);                  // $-prefixed key lookup
 };
-Unk_UisMovieMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_UisMovieMgr (calls cast back)
 
 // ---- exe helpers the service reaches ----
 class PCBase;
@@ -301,14 +302,6 @@ class Unk_UisUpperHpBar { public: void FUN_141b4d0a0(); };          // UIUpperHp
 Unk_UisUpperHpBar* FUN_14096e340(int nClass);
 class Unk_UisDlg4e52 { public: void FUN_141908690(); void FUN_141908720(float fDelta); };
 Unk_UisDlg4e52* FUN_14136f290(int nClass);
-class Unk_UisCursor                                                 // IME / cursor controller
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int nMode);
-};
-Unk_UisCursor* FUN_140a94350();
 class Unk_UisScene                                                  // UISceneEntity
 {
 public:
@@ -348,7 +341,7 @@ template<class T> T* Unk_UisFind(eUIClassID nClass)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject(nClass);
         if (spObj)
             return dynamic_cast<T*>(spObj.operator->());
     }
@@ -539,50 +532,50 @@ void CUIService::FUN_141ad9650()
         if (!strBg.IsEmpty())
         {
             GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-            ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
+            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
             return;
         }
     }
     CAtlArray<CString> arr;
-    FUN_14015f050(spField->m_strBgDay, arr, ",");
+    Unk_SplitA(const_cast<CStringA&>(spField->m_strBgDay), (ATL::CAtlArray<CStringA>*)&(arr), ",");
     if (arr.IsEmpty())
         return;
     CString strBg = arr[(size_t)rand() % arr.GetCount()];
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9650, CUIService, FUN_141ad9650, 805, 0x6765F254);
 
 // @0x141ad9980
-void CUIService::FUN_141ad9980(char nStage)
+void CUIService::LoadStageBackground(char nStage)
 {
     CStringA strBg = reinterpret_cast<Unk_UisBgSvc*>(TSingleton<UgcHomeOptionData>::GetInstance())->FUN_140b67fe0(nStage);
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
-MS2_REPLACE_METHOD(0x141ad9980, CUIService, FUN_141ad9980, 214, 0x88859AF5);
+MS2_REPLACE_METHOD(0x141ad9980, CUIService, LoadStageBackground, 214, 0x88859AF5);
 
 // @0x141ad9a60
-void CUIService::FUN_141ad9a60(CStringA strBg)
+void CUIService::LoadBackground(CStringA strBg)
 {
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
-MS2_REPLACE_METHOD(0x141ad9a60, CUIService, FUN_141ad9a60, 190, 0xFA75380C);
+MS2_REPLACE_METHOD(0x141ad9a60, CUIService, LoadBackground, 190, 0xFA75380C);
 
 // @0x141ad9b30
 void CUIService::FUN_141ad9b30()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422addb0();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->UnloadBackgroundMovie();
 }
 MS2_REPLACE_METHOD(0x141ad9b30, CUIService, FUN_141ad9b30, 27, 0x0C5983B1);
 
@@ -590,13 +583,13 @@ MS2_REPLACE_METHOD(0x141ad9b30, CUIService, FUN_141ad9b30, 27, 0x0C5983B1);
 bool CUIService::FUN_141ad9b60()
 {
     GFxMovieDamage* pDamage = new (efd::MemHint(efd::MemHint::NONE)) GFxMovieDamage;
-    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422ade10(pDamage) == 1;
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadDamageTextMovie(pDamage) == 1;
 }
 
 // @0x141ad9c10
 void CUIService::FUN_141ad9c10()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adf30();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->UnloadDamageTextMovie();
 }
 MS2_REPLACE_METHOD(0x141ad9c10, CUIService, FUN_141ad9c10, 27, 0xD41E04A3);
 
@@ -635,7 +628,7 @@ MS2_REPLACE_METHOD(0x141ad93b0, CUIService, FUN_141ad93b0, 655, 0x104E5C39);
 // @0x141ad9c40
 void CUIService::FUN_141ad9c40(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61900(FUN_140719190(spGem->GetGemId()));
 }
@@ -644,7 +637,7 @@ MS2_REPLACE_METHOD(0x141ad9c40, CUIService, FUN_141ad9c40, 174, 0x2F761BAF);
 // @0x141ad9d00
 void CUIService::FUN_141ad9d00(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61b80(FUN_140719190(spGem->GetGemId()));
 }
@@ -653,7 +646,7 @@ MS2_REPLACE_METHOD(0x141ad9d00, CUIService, FUN_141ad9d00, 174, 0x5D6CDB34);
 // @0x141ad9dc0
 void CUIService::FUN_141ad9dc0()
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61ce0();
 }
@@ -686,7 +679,7 @@ class MyPC   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_141527280();
-    class Unk_PCCubeCraft* FUN_141530290();
+    class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
 struct Unk_UisInfo { char m_unk00[8]; float m_fValue; };
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
@@ -1029,7 +1022,7 @@ int CUIService::FUN_141aec1f0(MS2Ptr<UIDialog> spDlg)
 }
 
 // @0x141adcd40
-int CUIService::FUN_141adcd40()
+int CUIService::CloseAllDialogs()
 {
     POSITION pos = m_mapDlg.GetStartPosition();
     while (pos != 0) {
@@ -1090,7 +1083,7 @@ void CUIService::FUN_141adbbb0()
             {
                 if (Unk_UisSlot23* p = static_cast<Unk_UisSlot23*>(((void*)((class PC*)(class PCBase*)(pPlayer))->FUN_1416625b0())))
                     p->vfunc_23(bOn);
-                if (void* q = ((void*)((class MyPC*)(class PCBase*)(pPlayer))->FUN_141530290()))
+                if (void* q = ((void*)((class MyPC*)(class PCBase*)(pPlayer))->GetActiveCubeCraft()))
                     ((class Unk_PCCubeCraft*)(void*)(q))->FUN_1410aa380(bOn == 0);
             }
         }
@@ -1106,6 +1099,9 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()
@@ -1163,7 +1159,7 @@ void CUIService::FUN_141ada610(int nScene)
         FUN_141adc050();
         ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->FUN_140d5a290();
     } else if (nScene == 0x620001f) {
-        FUN_141adc5d0(eUI_4ef2);
+        CloseDialog(eUI_4ef2);
         FUN_140d86260()->vfunc_44();
     }
 }
@@ -1172,7 +1168,7 @@ MS2_REPLACE_METHOD(0x141ada610, CUIService, FUN_141ada610, 215, 0x260C5DC3);
 // @0x141adbd10
 unsigned CUIService::FUN_141adbd10()
 {
-    return (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
+    return (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
 }
 MS2_REPLACE_METHOD(0x141adbd10, CUIService, FUN_141adbd10, 72, 0x31DAF086);
 
@@ -1203,21 +1199,21 @@ int CUIService::FUN_141adbe00(float fValue, int bRaw)
     float f = fValue;
     if (bRaw == 0)
         f = FUN_141276490((float)DAT_143af62d4, fValue);
-    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aff10(f);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aff10(f);
 }
 MS2_REPLACE_METHOD(0x141adbe00, CUIService, FUN_141adbe00, 91, 0x1AE4A279);
 
 // @0x141adbe70
 void CUIService::FUN_141adbe70()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422afec0(2);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afec0(2);
 }
 MS2_REPLACE_METHOD(0x141adbe70, CUIService, FUN_141adbe70, 32, 0x1FDD01DB);
 
 // @0x141adbca0
 void CUIService::FUN_141adbca0(int n)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422ae960(n);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesVisible(n);
 }
 MS2_REPLACE_METHOD(0x141adbca0, CUIService, FUN_141adbca0, 35, 0x3F0A8ADB);
 
@@ -1319,7 +1315,7 @@ void CUIService::FUN_141adb880()
     }
     else
         FUN_141adba40();
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 MS2_REPLACE_METHOD(0x141adb880, CUIService, FUN_141adb880, 113, 0xAC706AB4);
 
@@ -1348,7 +1344,7 @@ void CUIService::FUN_141adb9c0(const CStringW& str, int a, int b)
     Unk_UisLoading* pLoading = static_cast<Unk_UisLoading*>(FUN_141540270(GetMode()));
     if (pLoading != 0)
         pLoading->FUN_1419dff50(str, a, b);
-    FUN_140a94350()->vfunc_10(1);
+    ChromaSDK::GetChromaManager()->SetState(1);
 }
 MS2_REPLACE_METHOD(0x141adb9c0, CUIService, FUN_141adb9c0, 115, 0x60FA7A5A);
 
@@ -1366,7 +1362,7 @@ void CUIService::FUN_141adba40()
             pText->FUN_141b15ec0(str, 7, 0);
         }
     }
-    FUN_140a94350()->vfunc_10(-1);
+    ChromaSDK::GetChromaManager()->SetState(-1);
 }
 MS2_REPLACE_METHOD(0x141adba40, CUIService, FUN_141adba40, 174, 0x72FCEE36);
 
@@ -1375,7 +1371,7 @@ int CUIService::FUN_141adbb00()
 {
     if (((class CWebBrowserService*)(class Unk_UisBrowserMgr*)(reinterpret_cast<Unk_UisBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())))->FUN_141b78650() != 0)
         return 1;
-    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422af2d0(2);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->IsTextFieldFocused(2);
 }
 MS2_REPLACE_METHOD(0x141adbb00, CUIService, FUN_141adbb00, 56, 0xACD21E96);
 
@@ -1531,53 +1527,53 @@ MS2_REPLACE_METHOD(0x141adc170, CUIService, FUN_141adc170, 24, 0xA3122A8F);
 void CUIService::FUN_141adc190()
 {
     FUN_14151f460(1);
-    FUN_141adc5d0(eUI_4ec3);
-    FUN_141adc5d0(eUI_2711);
-    FUN_141adc5d0(eUI_4f76);
-    FUN_141adc5d0(eUI_4e2d);
-    FUN_141adc5d0(eUI_4f2d);
-    FUN_141adc5d0(eUI_4e3e);
-    FUN_141adc5d0(eUI_4e73);
-    FUN_141adc5d0(eUI_4e42);
-    FUN_141adc5d0(eUI_4e49);
-    FUN_141adc5d0(eUI_4e4a);
-    FUN_141adc5d0(eUI_4e4d);
-    FUN_141adc5d0(eUI_4ec1);
-    FUN_141adc5d0(eUI_4ef3);
-    FUN_141adc5d0(eUI_4e77);
-    FUN_141adc5d0(eUI_4e78);
-    FUN_141adc5d0(eUI_4f14);
-    FUN_141adc5d0(eUI_4f3e);
-    FUN_141adc5d0(eUI_4f6d);
+    CloseDialog(eUI_4ec3);
+    CloseDialog(eUI_2711);
+    CloseDialog(eUI_4f76);
+    CloseDialog(eUI_4e2d);
+    CloseDialog(eUI_4f2d);
+    CloseDialog(eUI_4e3e);
+    CloseDialog(eUI_4e73);
+    CloseDialog(eUI_4e42);
+    CloseDialog(eUI_4e49);
+    CloseDialog(eUI_4e4a);
+    CloseDialog(eUI_4e4d);
+    CloseDialog(eUI_4ec1);
+    CloseDialog(eUI_4ef3);
+    CloseDialog(eUI_4e77);
+    CloseDialog(eUI_4e78);
+    CloseDialog(eUI_4f14);
+    CloseDialog(eUI_4f3e);
+    CloseDialog(eUI_4f6d);
 }
 MS2_REPLACE_METHOD(0x141adc190, CUIService, FUN_141adc190, 294, 0x1A401294);
 
 // @0x141adc2c0
 void CUIService::FUN_141adc2c0()
 {
-    FUN_141adc5d0(eUI_4e7c);
-    FUN_141adc5d0(eUI_4e97);
-    FUN_141adc5d0(eUI_4e98);
-    FUN_141adc5d0(eUI_4e6d);
-    FUN_141adc5d0(eUI_4e6e);
-    FUN_141adc5d0(eUI_4e92);
-    FUN_141adc5d0(eUI_4e9d);
-    FUN_141adc5d0(eUI_4ec0);
-    FUN_141adc5d0(eUI_4eeb);
-    FUN_141adc5d0(eUI_4e68);
-    FUN_141adc5d0(eUI_4f5b);
-    FUN_141adc5d0(eUI_4f6d);
-    FUN_141adc5d0(eUI_4f8d);
-    FUN_141adc5d0(eUI_4f94);
-    FUN_141adc5d0(eUI_4f8e);
-    FUN_141adc5d0(eUI_4f97);
+    CloseDialog(eUI_4e7c);
+    CloseDialog(eUI_4e97);
+    CloseDialog(eUI_4e98);
+    CloseDialog(eUI_4e6d);
+    CloseDialog(eUI_4e6e);
+    CloseDialog(eUI_4e92);
+    CloseDialog(eUI_4e9d);
+    CloseDialog(eUI_4ec0);
+    CloseDialog(eUI_4eeb);
+    CloseDialog(eUI_4e68);
+    CloseDialog(eUI_4f5b);
+    CloseDialog(eUI_4f6d);
+    CloseDialog(eUI_4f8d);
+    CloseDialog(eUI_4f94);
+    CloseDialog(eUI_4f8e);
+    CloseDialog(eUI_4f97);
 }
 MS2_REPLACE_METHOD(0x141adc2c0, CUIService, FUN_141adc2c0, 254, 0xD50F4A63);
 
 // @0x141adc3d0
 void CUIService::FUN_141adc3d0()
 {
-    FUN_141adc5d0(eUI_4f38);
+    CloseDialog(eUI_4f38);
 }
 MS2_REPLACE_METHOD(0x141adc3d0, CUIService, FUN_141adc3d0, 29, 0xF419D392);
 
@@ -1611,7 +1607,7 @@ void CUIService::OpenDialog(eUIClassID nClass)
 MS2_REPLACE_METHOD(0x141adc530, CUIService, OpenDialog, 148, 0x5BAEB13D);
 
 // @0x141adc5d0
-void CUIService::FUN_141adc5d0(eUIClassID nClass)
+void CUIService::CloseDialog(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = 0;
     if (m_mapDlg.Lookup(nClass, spDlg) && spDlg)
@@ -1620,7 +1616,7 @@ void CUIService::FUN_141adc5d0(eUIClassID nClass)
             spDlg->vfunc_67();
     }
 }
-MS2_REPLACE_METHOD(0x141adc5d0, CUIService, FUN_141adc5d0, 179, 0x707388F7);
+MS2_REPLACE_METHOD(0x141adc5d0, CUIService, CloseDialog, 179, 0x707388F7);
 
 // @0x141adc690
 void CUIService::FUN_141adc690(eUIClassID nClass)
@@ -1648,7 +1644,7 @@ MS2_REPLACE_METHOD(0x141adc750, CUIService, ToggleDialog, 148, 0x411CFA63);
 // @0x141adc7f0
 int CUIService::FUN_141adc7f0(eUIClassID nClass)
 {
-    MS2Ptr<UIDialog> spDlg = FUN_141aec130(nClass);
+    MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->vfunc_73();
     return 0;
@@ -1658,7 +1654,7 @@ MS2_REPLACE_METHOD(0x141adc7f0, CUIService, FUN_141adc7f0, 139, 0xA1476223);
 // @0x141adc890
 int CUIService::FUN_141adc890(eUIClassID nClass)
 {
-    MS2Ptr<UIDialog> spDlg = FUN_141aec130(nClass);
+    MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->vfunc_55() == 0;
     return 0;
@@ -1668,7 +1664,7 @@ MS2_REPLACE_METHOD(0x141adc890, CUIService, FUN_141adc890, 165, 0xA9116C01);
 // @0x141adc940
 int CUIService::FUN_141adc940(eUIClassID nClass)
 {
-    MS2Ptr<UIDialog> spDlg = FUN_141aec130(nClass);
+    MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->vfunc_55();
     return 1;
@@ -1678,7 +1674,7 @@ MS2_REPLACE_METHOD(0x141adc940, CUIService, FUN_141adc940, 139, 0x902CC994);
 // @0x141adc9e0
 int CUIService::FUN_141adc9e0(eUIClassID nClass)
 {
-    MS2Ptr<UIDialog> spDlg = FUN_141aec130(nClass);
+    MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->FUN_141924740();
     return 0;
@@ -1713,27 +1709,27 @@ void CUIService::FUN_141adcb60(int n)
 MS2_REPLACE_METHOD(0x141adcb60, CUIService, FUN_141adcb60, 65, 0x9BF97C8B);
 
 // @0x141aec130
-MS2Ptr<UIDialog> CUIService::FUN_141aec130(eUIClassID nClass)
+MS2Ptr<UIDialog> CUIService::FindDialog(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = 0;
     if (m_mapDlg.Lookup(nClass, spDlg))
         return spDlg;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141aec130, CUIService, FUN_141aec130, 171, 0x03CB6013);
+MS2_REPLACE_METHOD(0x141aec130, CUIService, FindDialog, 171, 0x03CB6013);
 
 // @0x141adcea0
-MS2Ptr<UIObject> CUIService::FUN_141adcea0(eUIClassID nClass)
+MS2Ptr<UIObject> CUIService::FindObject(eUIClassID nClass)
 {
     MS2Ptr<UIObject> spObj = 0;
     if (m_mapA.Lookup(nClass, spObj))
         return spObj;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141adcea0, CUIService, FUN_141adcea0, 169, 0xB0798820);
+MS2_REPLACE_METHOD(0x141adcea0, CUIService, FindObject, 169, 0xB0798820);
 
 // @0x141adcf50
-MS2Ptr<UIObject> CUIService::FUN_141adcf50(const CStringA& strName)
+MS2Ptr<UIObject> CUIService::FindObjectByName(const CStringA& strName)
 {
     if (strName.IsEmpty())
         return 0;
@@ -1742,12 +1738,12 @@ MS2Ptr<UIObject> CUIService::FUN_141adcf50(const CStringA& strName)
         return spObj;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141adcf50, CUIService, FUN_141adcf50, 229, 0x29291FB4);
+MS2_REPLACE_METHOD(0x141adcf50, CUIService, FindObjectByName, 229, 0x29291FB4);
 
 // @0x141add040
 void CUIService::FUN_141add040(eUIClassID nClass)
 {
-    MS2Ptr<UIObject> spObj = FUN_141adcea0(nClass);
+    MS2Ptr<UIObject> spObj = FindObject(nClass);
     if (spObj)
         spObj->vfunc_2();
 }
@@ -1756,7 +1752,7 @@ MS2_REPLACE_METHOD(0x141add040, CUIService, FUN_141add040, 105, 0x26ED8236);
 // @0x141add0b0
 void CUIService::FUN_141add0b0(eUIClassID nClass)
 {
-    MS2Ptr<UIObject> spObj = FUN_141adcea0(nClass);
+    MS2Ptr<UIObject> spObj = FindObject(nClass);
     if (spObj)
         spObj->vfunc_3();
 }
@@ -1765,7 +1761,7 @@ MS2_REPLACE_METHOD(0x141add0b0, CUIService, FUN_141add0b0, 105, 0xBD5E89ED);
 // @0x141add120
 void CUIService::FUN_141add120(eUIClassID nClass, int n)
 {
-    MS2Ptr<UIDialog> spDlg = FUN_141aec130(nClass);
+    MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg.IsNull())
         return;
     spDlg->vfunc_8(n);
@@ -1773,25 +1769,25 @@ void CUIService::FUN_141add120(eUIClassID nClass, int n)
 MS2_REPLACE_METHOD(0x141add120, CUIService, FUN_141add120, 128, 0xF5072EA2);
 
 // @0x141aebfa0
-void CUIService::FUN_141aebfa0(MS2Ptr<UIObject> spObj)
+void CUIService::RegisterObject(MS2Ptr<UIObject> spObj)
 {
     m_mapA.SetAt(static_cast<eUIClassID>(spObj->vfunc_48()), spObj);
     m_mapC.SetAt(spObj->GetTypeName(), spObj);
 }
-MS2_REPLACE_METHOD(0x141aebfa0, CUIService, FUN_141aebfa0, 203, 0x9C64F89F);
+MS2_REPLACE_METHOD(0x141aebfa0, CUIService, RegisterObject, 203, 0x9C64F89F);
 
 // @0x141aec080
-void CUIService::FUN_141aec080(MS2Ptr<UIDialog> spDlg)
+void CUIService::RegisterDialog(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_141aebfa0(MS2Ptr<UIObject>(spDlg.get()));
+    RegisterObject(MS2Ptr<UIObject>(spDlg.get()));
     m_mapDlg.SetAt(static_cast<eUIClassID>(spDlg->vfunc_48()), spDlg);
 }
-MS2_REPLACE_METHOD(0x141aec080, CUIService, FUN_141aec080, 159, 0x38E07131);
+MS2_REPLACE_METHOD(0x141aec080, CUIService, RegisterDialog, 159, 0x38E07131);
 
 // @0x141add1b0
 void CUIService::FUN_141add1b0(int nSlot, bool bOn)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aebe0(nSlot, bOn);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesLayerVisible(nSlot, bOn);
 }
 MS2_REPLACE_METHOD(0x141add1b0, CUIService, FUN_141add1b0, 46, 0x400D367F);
 
@@ -1902,9 +1898,9 @@ void FUN_141626ac0(void* p);
 efd::SyncResult CUIService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
     FUN_1411ab770(pRegistrar, 1);
-    FUN_141af1860(FUN_14025e7a0(), &CUIService::FUN_141ade300);
-    FUN_141af1a90(FUN_14025e7a0(), FUN_141b6fc50);
-    FUN_1422aee50(FUN_14025e7a0(), TFunctor<bool, ParamList<HWND__*, EmptyParam> >(this, &CUIService::FUN_141ad9e20));
+    FUN_141af1860(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), &CUIService::FUN_141ade300);
+    FUN_141af1a90(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), FUN_141b6fc50);
+    FUN_1422aee50(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), TFunctor<bool, ParamList<HWND__*, EmptyParam> >(this, &CUIService::FUN_141ad9e20));
     return efd::SyncResult_Success;
 }
 
@@ -2369,367 +2365,367 @@ class UIUnlimitedEnchantDialog : public UIDialog { public: UIUnlimitedEnchantDia
 void CUIService::FUN_141adf580()
 {
     FUN_1422d4b40(((void*)FUN_140b632f0()), FUN_141adda20);
-    FUN_1422aee20(FUN_14025e7a0(), FUN_141addb30);
-    FUN_1422aeea0(FUN_14025e7a0(), FUN_141ade430);
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIGuideEvent));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIExpBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIAdventureLevelExpBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIUpperHpBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIDamageText));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UISystemText));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIDamageEffect));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMassiveEvent));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIKillCount));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UICutSceneCinematic));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIScreenMask));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UILoadingProgress));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UILoadingProgressLobby));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIActionTooltip));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIGuildFlagTooltip));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIPopUpMenu));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIRewardNotify));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UICastingBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UICutSceneMovie));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMessageBox));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIIntroMovie));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UITalkCinematic));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIUpperHudDialog));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIHpBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIShieldBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UITombStoneBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UINameTag));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIEmoticon));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIBuffBalloon));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIChatBalloon));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIPopupProfileImage));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIBanner));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UITopLayerNotify));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UISmartPush));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIEventIntroduce));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIChapterBook));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMasteryObjectMark));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UITamingBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIQuestNavigation));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UISidePopupTalk));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIFameContentsNotify));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UICommunityPopup));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMicroGameRps));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMicroGameCoupleDance));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UISlimeEventBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIChangeJobEffect));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIMicroGameCoupleDanceMessage));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UILapenshardShieldBar));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIReconnectTopLayerNotify));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIHouseMark));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIRandomCoupon));
-    FUN_141aebfa0(MS2Ptr<UIObject>(new UIStanceBar));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILoginDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRegionListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIServerListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICharacterCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICharacterCreateSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICharacterListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICameraEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISystemMenuDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRevivalDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDPSDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBeautyShopDevDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMoveFieldDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINpcCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHideSettingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemDropSimulatorDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDecoEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMinimapEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGraphicOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuestDebugDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHairPhysxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINpcControlDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINpcPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAdditionalControlDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemEnchantSimulateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDebugGuideDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDebugPacketDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIStatControlDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDialogCenterDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITextureDensityDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHSLDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIChaosLightDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILightDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIColorBoostDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRimLightDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeaponDummyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICameraDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRangePreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIVisualTrackerListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDebuggingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDevelopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIVisualEffectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITextPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMDEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIObjectCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemOptionCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemDropInfoDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMyInfoDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMinimapDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameMenuDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIInventoryDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBeautyShopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemColoringDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITimerDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITimerGaugeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuestDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIShopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWorldMapDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIStoreDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMailListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMailSendDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICommunityDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICommunityQueryDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPartyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuestGuideDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCImageUploadDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCCameraDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWhisperNotifyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMainPlayerInfo));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMessengerBrowser));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITalkPanelSettingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemMergeOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCItemEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWebBrowser));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITriggerEditorDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRouletteDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemEnchantTransformDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemGetOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCBannerDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISkillBookTreeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAchieveDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGemSettingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRealEstateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIFittingDollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIObjectStoreDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITradeDialogEx));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDynamicActionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBillDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIJobChangeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPerformanceDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRealEstateSell));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIConstructHelpDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIReportDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICartoonDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGuildDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIObserveDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMyHouseAuthDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPartyDPSDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIEnterEventFieldDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDTEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIIndividualDPSDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemBreakDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemBreakDonationDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIInviteGroupDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIEnchantSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIKeySettingSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemEnchantDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGroupMessengerBrowser));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITriggerTimerDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPObserverDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGambleDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBlackMarketDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIFreeForAllTimerDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPRankingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPTeamFlagGagueDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMaidDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISmartRecommendNotifyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISmartRecommendBillingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPKillLogDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAutoReviveCountDownDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIIGuideMovieDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAttendGiftDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILongTermAttendGiftDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICashAttendDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDTAttendPopup));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonRoomDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPGuildTeamDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPGuildTeamResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIManufactureDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISkillPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMeratMarketDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMeratMarketRegisterDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPCInfoDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIManufactureStatus));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBannerAdvertisingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICashShopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMaidRecipeListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITokenPocketDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPcBangDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIIndividualPvPDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPTeamResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPTeamScoreDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINameTagSymbolSettingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomePasswordDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeSummonDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGlobalPortalDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeInfoDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIVisitorsBookDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPartySearchDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPartySearchRegisterDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISystemMailNotifyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRecallScrollNotifyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIEnchantScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuizDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHouseDemolishDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIInteriorBuildDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIInteriorPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDarkStreamScoreDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDarkStreamResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIFishingBookDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIFishingFloatDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINoticeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemRemakeOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPlayInstrumentDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWriteMusicDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemAutoUseOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISkillCompactControlDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonExpenseRewardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonRewardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILevelUpGuideDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBossRewardPreviewDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIArcadeLifeBar));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIArcadeMainDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIArcadeTextEffectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBeautyListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISelectItemBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICardReverseGameDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBeautyShopStyleDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRankPvPDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPvPRankDuelResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISystemShopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemLockDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemRemakeScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemSocketSystemDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameDictionaryDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICharacterAbilityDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIShadowExpeditionBossBar));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIKeyboardGuideDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemSocketScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemRePackingScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemPetTrainingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemExchangeScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBlueMarbleGameDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCCubePaletteDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILearningQuestDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMarketBillDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonClosingPhotoDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISurveyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIVIPDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonSearchDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIVIPGoodsShopDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameRankingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIClubDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMasteryDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCPortalDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISkillBookAutoDistributeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonLobby));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonSearchSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIChaosDPSDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeSaveSlotDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeResizeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCHousingPointDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCCubeBillDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILoginNotice));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemLulluBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemPetBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGuildHouseUpgradeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILevelUpPackageDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITencentCashChargeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITencentAas2Dialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new TencentUserReport::UITencentUserReportDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIStampEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMusicConcertDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPetSystemDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIOtherPetSystemDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemMergeRevertDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICameraModeHelpDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAdPushDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCModelHouseDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWebBrowserPopup));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemEventOpenBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITimeRunEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuizHostDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuizOXSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPrizeMoneyDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuizOXCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuizOXWelcomeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemExtractionScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPetExtractionScrollDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIMentoringDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIInviteMentoringDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPopupNpcTalkDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICoupleActionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemBillBoardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAllianceQuestDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCCubeNoticeDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDailyMissionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIFamePointBoardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBirthdayCardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIQuestPostBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISelectSuperWorldChatDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGalleryEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemTreasureMapDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UISnowmanEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILevelUpPackageWidgetDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIRpsEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UINpcDuelHPBarDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGamePadMenuDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUGCPVPControlDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIAdventureLevelDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWorldChampionRewardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBurningEventWidgetDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UILapenshardSystemDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIChangeJobDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameModeSelectDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIGameMakerMainDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICoupleDanceEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHighlightGameMenu));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIClosetDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeInfoEditDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeInsideOptionDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemBlueprintCreateDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHomeMenuDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIOxQuizDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBlueprintMarketDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIChatEmoticonDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICollectItemGroupEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIBingoEventDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonControlCenter));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonPopupRewardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIDungeonSearchSettingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemMultiOpenBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UITypingGameDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIItemGachaBoxDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingHallReservationDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingInvitationDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPhotoStudioMenuDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingBillboardDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWatchAGameDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIHideAndSeekResultDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIPaybackDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingGuestDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingAffinityDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIWeddingHallListDialog));
-    FUN_141aec080(MS2Ptr<UIDialog>(new UIUnlimitedEnchantDialog));
+    FUN_1422aee20(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), FUN_141addb30);
+    FUN_1422aeea0(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), FUN_141ade430);
+    RegisterObject(MS2Ptr<UIObject>(new UIGuideEvent));
+    RegisterObject(MS2Ptr<UIObject>(new UIExpBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIAdventureLevelExpBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIUpperHpBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIDamageText));
+    RegisterObject(MS2Ptr<UIObject>(new UISystemText));
+    RegisterObject(MS2Ptr<UIObject>(new UIDamageEffect));
+    RegisterObject(MS2Ptr<UIObject>(new UIMassiveEvent));
+    RegisterObject(MS2Ptr<UIObject>(new UIKillCount));
+    RegisterObject(MS2Ptr<UIObject>(new UICutSceneCinematic));
+    RegisterObject(MS2Ptr<UIObject>(new UIScreenMask));
+    RegisterObject(MS2Ptr<UIObject>(new UILoadingProgress));
+    RegisterObject(MS2Ptr<UIObject>(new UILoadingProgressLobby));
+    RegisterObject(MS2Ptr<UIObject>(new UIActionTooltip));
+    RegisterObject(MS2Ptr<UIObject>(new UIGuildFlagTooltip));
+    RegisterObject(MS2Ptr<UIObject>(new UIPopUpMenu));
+    RegisterObject(MS2Ptr<UIObject>(new UIRewardNotify));
+    RegisterObject(MS2Ptr<UIObject>(new UICastingBar));
+    RegisterObject(MS2Ptr<UIObject>(new UICutSceneMovie));
+    RegisterObject(MS2Ptr<UIObject>(new UIMessageBox));
+    RegisterObject(MS2Ptr<UIObject>(new UIIntroMovie));
+    RegisterObject(MS2Ptr<UIObject>(new UITalkCinematic));
+    RegisterObject(MS2Ptr<UIObject>(new UIUpperHudDialog));
+    RegisterObject(MS2Ptr<UIObject>(new UIHpBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIShieldBar));
+    RegisterObject(MS2Ptr<UIObject>(new UITombStoneBar));
+    RegisterObject(MS2Ptr<UIObject>(new UINameTag));
+    RegisterObject(MS2Ptr<UIObject>(new UIEmoticon));
+    RegisterObject(MS2Ptr<UIObject>(new UIBuffBalloon));
+    RegisterObject(MS2Ptr<UIObject>(new UIChatBalloon));
+    RegisterObject(MS2Ptr<UIObject>(new UIPopupProfileImage));
+    RegisterObject(MS2Ptr<UIObject>(new UIBanner));
+    RegisterObject(MS2Ptr<UIObject>(new UITopLayerNotify));
+    RegisterObject(MS2Ptr<UIObject>(new UISmartPush));
+    RegisterObject(MS2Ptr<UIObject>(new UIEventIntroduce));
+    RegisterObject(MS2Ptr<UIObject>(new UIChapterBook));
+    RegisterObject(MS2Ptr<UIObject>(new UIMasteryObjectMark));
+    RegisterObject(MS2Ptr<UIObject>(new UITamingBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIQuestNavigation));
+    RegisterObject(MS2Ptr<UIObject>(new UISidePopupTalk));
+    RegisterObject(MS2Ptr<UIObject>(new UIFameContentsNotify));
+    RegisterObject(MS2Ptr<UIObject>(new UICommunityPopup));
+    RegisterObject(MS2Ptr<UIObject>(new UIMicroGameRps));
+    RegisterObject(MS2Ptr<UIObject>(new UIMicroGameCoupleDance));
+    RegisterObject(MS2Ptr<UIObject>(new UISlimeEventBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIChangeJobEffect));
+    RegisterObject(MS2Ptr<UIObject>(new UIMicroGameCoupleDanceMessage));
+    RegisterObject(MS2Ptr<UIObject>(new UILapenshardShieldBar));
+    RegisterObject(MS2Ptr<UIObject>(new UIReconnectTopLayerNotify));
+    RegisterObject(MS2Ptr<UIObject>(new UIHouseMark));
+    RegisterObject(MS2Ptr<UIObject>(new UIRandomCoupon));
+    RegisterObject(MS2Ptr<UIObject>(new UIStanceBar));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILoginDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRegionListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIServerListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICharacterCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICharacterCreateSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICharacterListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICameraEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISystemMenuDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRevivalDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDPSDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBeautyShopDevDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMoveFieldDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINpcCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHideSettingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemDropSimulatorDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDecoEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMinimapEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGraphicOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuestDebugDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHairPhysxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINpcControlDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINpcPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAdditionalControlDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemEnchantSimulateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDebugGuideDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDebugPacketDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIStatControlDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDialogCenterDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITextureDensityDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHSLDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIChaosLightDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILightDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIColorBoostDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRimLightDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeaponDummyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICameraDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRangePreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIVisualTrackerListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDebuggingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDevelopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIVisualEffectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITextPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMDEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIObjectCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemOptionCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemDropInfoDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMyInfoDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMinimapDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameMenuDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIInventoryDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBeautyShopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemColoringDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITimerDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITimerGaugeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuestDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIShopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWorldMapDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIStoreDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMailListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMailSendDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICommunityDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICommunityQueryDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPartyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuestGuideDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCImageUploadDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCCameraDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWhisperNotifyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMainPlayerInfo));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMessengerBrowser));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITalkPanelSettingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemMergeOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCItemEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWebBrowser));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITriggerEditorDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRouletteDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemEnchantTransformDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemGetOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCBannerDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISkillBookTreeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAchieveDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGemSettingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRealEstateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIFittingDollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIObjectStoreDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITradeDialogEx));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDynamicActionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBillDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIJobChangeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPerformanceDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRealEstateSell));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIConstructHelpDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIReportDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICartoonDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGuildDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIObserveDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMyHouseAuthDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPartyDPSDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIEnterEventFieldDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDTEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIIndividualDPSDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemBreakDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemBreakDonationDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIInviteGroupDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIEnchantSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIKeySettingSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemEnchantDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGroupMessengerBrowser));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITriggerTimerDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPObserverDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGambleDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBlackMarketDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIFreeForAllTimerDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPRankingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPTeamFlagGagueDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMaidDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISmartRecommendNotifyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISmartRecommendBillingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPKillLogDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAutoReviveCountDownDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIIGuideMovieDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAttendGiftDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILongTermAttendGiftDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICashAttendDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDTAttendPopup));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonRoomDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPGuildTeamDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPGuildTeamResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIManufactureDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISkillPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMeratMarketDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMeratMarketRegisterDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPCInfoDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIManufactureStatus));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBannerAdvertisingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICashShopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMaidRecipeListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITokenPocketDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPcBangDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIIndividualPvPDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPTeamResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPTeamScoreDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINameTagSymbolSettingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomePasswordDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeSummonDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGlobalPortalDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeInfoDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIVisitorsBookDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPartySearchDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPartySearchRegisterDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISystemMailNotifyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRecallScrollNotifyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIEnchantScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuizDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHouseDemolishDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIInteriorBuildDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIInteriorPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDarkStreamScoreDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDarkStreamResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIFishingBookDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIFishingFloatDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINoticeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemRemakeOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPlayInstrumentDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWriteMusicDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemAutoUseOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISkillCompactControlDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonExpenseRewardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonRewardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILevelUpGuideDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBossRewardPreviewDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIArcadeLifeBar));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIArcadeMainDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIArcadeTextEffectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBeautyListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISelectItemBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICardReverseGameDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBeautyShopStyleDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRankPvPDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPvPRankDuelResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISystemShopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemLockDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemRemakeScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemSocketSystemDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameDictionaryDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICharacterAbilityDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIShadowExpeditionBossBar));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIKeyboardGuideDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemSocketScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemRePackingScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemPetTrainingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemExchangeScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBlueMarbleGameDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCCubePaletteDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILearningQuestDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMarketBillDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonClosingPhotoDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISurveyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIVIPDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonSearchDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIVIPGoodsShopDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameRankingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIClubDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMasteryDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCPortalDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISkillBookAutoDistributeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonLobby));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonSearchSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIChaosDPSDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeSaveSlotDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeResizeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCHousingPointDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCCubeBillDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILoginNotice));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemLulluBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemPetBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGuildHouseUpgradeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILevelUpPackageDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITencentCashChargeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITencentAas2Dialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new TencentUserReport::UITencentUserReportDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIStampEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMusicConcertDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPetSystemDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIOtherPetSystemDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemMergeRevertDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICameraModeHelpDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAdPushDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCModelHouseDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWebBrowserPopup));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemEventOpenBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITimeRunEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuizHostDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuizOXSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPrizeMoneyDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuizOXCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuizOXWelcomeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemExtractionScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPetExtractionScrollDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIMentoringDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIInviteMentoringDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPopupNpcTalkDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICoupleActionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemBillBoardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAllianceQuestDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCCubeNoticeDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDailyMissionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIFamePointBoardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBirthdayCardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIQuestPostBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISelectSuperWorldChatDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGalleryEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemTreasureMapDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UISnowmanEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILevelUpPackageWidgetDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIRpsEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UINpcDuelHPBarDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGamePadMenuDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUGCPVPControlDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIAdventureLevelDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWorldChampionRewardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBurningEventWidgetDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UILapenshardSystemDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIChangeJobDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameModeSelectDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIGameMakerMainDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICoupleDanceEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHighlightGameMenu));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIClosetDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeInfoEditDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeInsideOptionDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemBlueprintCreateDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHomeMenuDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIOxQuizDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBlueprintMarketDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIChatEmoticonDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UICollectItemGroupEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIBingoEventDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonControlCenter));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonPopupRewardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIDungeonSearchSettingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemMultiOpenBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UITypingGameDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIItemGachaBoxDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingHallReservationDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingInvitationDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPhotoStudioMenuDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingBillboardDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWatchAGameDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIHideAndSeekResultDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIPaybackDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingGuestDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingAffinityDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingHallListDialog));
+    RegisterDialog(MS2Ptr<UIDialog>(new UIUnlimitedEnchantDialog));
 }
 
 // @0x141aec8c0
 void CUIService::FUN_141aec8c0(int nMode)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aeaa0(nMode);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesVisibleStep(nMode);
 }
 MS2_REPLACE_METHOD(0x141aec8c0, CUIService, FUN_141aec8c0, 35, 0x66E851B8);
 
@@ -2809,11 +2805,11 @@ public:
     Unk_UisHousingSvcPtr(Unk_UisHousingSvc* p);                 // 0x1401cd0b0
     ~Unk_UisHousingSvcPtr();                                    // 0x1401cd150
     operator Unk_UisHousingSvc*() const;                        // 0x140885310
-    Unk_UisHousingSvc* FUN_1401cd1a0() const;                   // operator->
 private:
     Unk_UisHousingSvc* m_p;
 };
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
 class MS2InputService   // C3: member view for the former free stand-ins
 {
@@ -2837,7 +2833,7 @@ float FUN_141276460();
 unsigned long long FUN_141adda20()
 {
     int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
-    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->IsArchive() == 0
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->IsArchive() == 0
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x1d, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x38, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ad60(0x13))
@@ -2858,9 +2854,9 @@ unsigned long long FUN_141adda20()
 // @0x141aecc30
 void CUIService::FUN_141aecc30()
 {
-    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27c0() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27c0() != 0)
         return;
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422afb00();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afb00();
     if (CUIService* pService = TSingleton<CUIService>::GetInstance())
     {
         pService->FUN_141aecd70();
@@ -2871,12 +2867,12 @@ void CUIService::FUN_141aecc30()
         pService->FUN_141ad9b30();
     }
     if (Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))))
-        ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(spHousing.FUN_1401cd1a0()))->FUN_1410bc320();
+        ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())))->FUN_1410bc320();
     ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4d10();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d2250();
-    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b24f0();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b24f0();
     TSingleton<CUIService>::GetInstance()->FUN_141ad9c10();
 }
 
@@ -2892,7 +2888,7 @@ bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
         NiRenderTargetGroup* pGroup = FUN_140994450()->GetDefaultRenderTargetGroup();
         DAT_143af62d4 = pGroup->GetWidth(0);
         DAT_143af62d8 = pGroup->GetHeight(0);
-        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b0060(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b0060(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
     }
     return true;
 }
@@ -2961,11 +2957,11 @@ void CUIService::FUN_141aec760(float fDelta)
         if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
         {
             int bHit = pMovie->vfunc_37(x, y, 3, 0);
-            ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(2, bHit);
+            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(2, bHit);
             if (bHit)
             {
-                ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(FUN_141277f40(), 0);
-                ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(FUN_141277f50(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(FUN_141277f40(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(FUN_141277f50(), 0);
             }
         }
     }
@@ -2989,7 +2985,7 @@ void CUIService::FUN_141aec8f0(bool bOn, NiAVObject* pRoot)
 // @0x141aec9c0
 void CUIService::FUN_141aec9c0()
 {
-    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27c0() != 0 && ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b2760() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27c0() != 0 && ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b2760() != 0)
     {
         CUIService* pService = TSingleton<CUIService>::GetInstance();
         if (pService == 0)
@@ -3009,9 +3005,9 @@ void CUIService::FUN_141aec9c0()
         pService->FUN_141ad9650();
         Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         if (spHousing)
-            ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(spHousing.FUN_1401cd1a0()))->FUN_1410bc1c0();
+            ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
-        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27e0(0);
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27e0(0);
     }
 }
 
@@ -3056,9 +3052,9 @@ int CUIService::FUN_141aed0a0(MS2Ptr<UIDialog> spDlg)
 void CUIService::FUN_141aebed0()
 {
     FUN_1422d4b40(((void*)FUN_140b632f0()), FUN_141adda20);
-    FUN_1422aee20(FUN_14025e7a0(), FUN_141addb30);
-    FUN_1422aeea0(FUN_14025e7a0(), FUN_141ade430);
-    FUN_141aec080(MS2Ptr<UIDialog>(new UICameraDialog));
+    FUN_1422aee20(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), FUN_141addb30);
+    FUN_1422aeea0(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), FUN_141ade430);
+    RegisterDialog(MS2Ptr<UIDialog>(new UICameraDialog));
 }
 
 // @0x141ade2d0
@@ -3260,7 +3256,7 @@ void FUN_141ade430(void* p, int nMovieId)
         int nFeature = i;
         if (!FUN_14036d570(((void*)FUN_140166410()), nFeature))
             continue;
-        strFeatures += FUN_14061ad70(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036da50(nFeature), L",");
+        strFeatures += FUN_14061ad70(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetFeatureNameById(nFeature), L",");
     }
     static_cast<ASObj*>(p)->FUN_1407cbb20("m_currentFeatureByString", CStringW(strFeatures));
     static_cast<ASObj*>(p)->FUN_1409c0d20("m_bottomMarginOfStage", FUN_1418dd0c0() + FUN_1418dd110());
@@ -3340,7 +3336,7 @@ void FUN_141addb30(long long n)
         return;
     CStringW strFormat;
     if (strKeyW.Find(L"$", 0) == 0)
-        strFormat = FUN_14025e7a0()->FUN_1422b0570(strKey);
+        strFormat = reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
     else if (strKeyW.Find(L"s_", 0) == 0)
         strFormat = GetStringCommonByKey(strKeyW);
     else

@@ -256,13 +256,13 @@ void UICollectItemGroupEventDialog::Refresh()
         if (spSlot == 0)
             continue;
         m_slots.push_back(spSlot);
-        spSlot->FUN_1409ba5d0(item.vfunc_o18_0(), item.vfunc_o18_1(), item.vfunc_o18_2());
+        spSlot->SetItem(item.vfunc_o18_0(), item.vfunc_o18_1(), item.vfunc_o18_2());
     }
     MS2Ptr<ASItemSlot> spReward = static_cast<Unk_CigClip*>(m_rewardPanel.operator->())->FUN_140bb4ba0("m_slot");
     if (spReward.get() != 0)
     {
         m_slots.push_back(spReward);
-        spReward->FUN_1409ba5d0(spContext->m_result.vfunc_o18_0(), spContext->m_result.vfunc_o18_1(), spContext->m_result.vfunc_o18_2());
+        spReward->SetItem(spContext->m_result.vfunc_o18_0(), spContext->m_result.vfunc_o18_1(), spContext->m_result.vfunc_o18_2());
     }
     bool bComplete = IsComplete(m_selected);
     if (bComplete && !bReceived)
@@ -308,7 +308,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
             PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
             if (pPlayer != 0)
             {
-                if (static_cast<Unk_CigEquipSet*>(pPlayer->FUN_1416561a0())->FUN_1411e0c30(nItemId) == 1 || pPlayer->FUN_14165f460()->FUN_141270290(nItemId) == true)
+                if (static_cast<Unk_CigEquipSet*>(pPlayer->FUN_1416561a0())->FUN_1411e0c30(nItemId) == 1 || pPlayer->FUN_14165f460()->HasItemId(nItemId) == true)
                     bWorn = true;
             }
         }

@@ -28,14 +28,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include <vector>
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
 // ---- unit-local views of unrecovered callees -----------------------------------------------------------------------
 
 // The confirm button of the bill ("m_buy").
-class Unk_UcbButton : public ASDisplayObject
+class Unk_UcbButton : public ASButton
 {
 public:
-    void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
 };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -94,7 +94,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         MS2Ptr<Unk_UcbButton> spBuy = FUN_140bb4b10("m_buy");
         if (spBuy.get() != 0)
             spBuy->FUN_1422cdfb0(L"$s_common_confirm");
-        MS2Ptr<ASTextField> spTitle = FUN_140bb4cf0("m_title");
+        MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title");
         if (spTitle.get() != 0)
             spTitle->FUN_1422c4cd0(L"$s_ugc_cube_bill_title_calculate");
         if (s_cost.m_nKind == 3)
@@ -102,7 +102,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
     }
     if (strDesc.IsEmpty())
         strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description"), s_cost.m_nArg);
-    MS2Ptr<ASTextField> spDesc = FUN_140bb4cf0("m_billDescription");
+    MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_billDescription");
     if (spDesc.get() != 0)
         spDesc->FUN_1422c4f00(strDesc);
     ASObj obj(2);
@@ -189,7 +189,7 @@ void FUN_140ee8610(MS2Ptr<CItem> spItem)
     {
         TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
         UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
-        UIUGCCubeBillDialog::s_pending.m_nBlueprintUid = spItem->FUN_140526a50();
+        UIUGCCubeBillDialog::s_pending.m_nBlueprintUid = spItem->GetItemUid();
         UIUGCCubeBillDialog::s_pending.m_nKind = 3;
     }
 }
@@ -227,7 +227,7 @@ void UIUGCCubeBillDialog::SendRequestCube()
             FUN_140710590(packet);
         }
     }
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f29);
 }
 
 // The server's bill for a cube.
@@ -247,7 +247,7 @@ void FUN_140ee8190(CInPacket& packet)
         __int64 nAmount = packet.ReadInt64();
         UIUGCCubeBillDialog::s_cost.m_map.SetAt(eType, nAmount);
     }
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f27);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f27);
     if (nCount > 0)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f29);
@@ -294,7 +294,7 @@ void FUN_140ee83f0(CInPacket& packet)
     }
     bool bPreview = packet.ReadBool();
     UIUGCCubeBillDialog::s_cost.m_bPreview = bPreview;
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f27);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f27);
     if (nCount > 0 || bPreview == 1)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f29);

@@ -46,7 +46,7 @@ void CByteBuffer::FromHex(const std::string& hex) {
             unsigned char a=hex[i]; unsigned char b=hex[i+1];
             unsigned char byte=(unsigned char)(digits[a]<<4)|digits[b]; WriteUInt8(byte);
         }
-        return FUN_140720e90(0);
+        return SetOffset(0);
     }
 
 }
@@ -226,7 +226,7 @@ MS2_REPLACE(0x14083AF10, CByteBuffer::TestCompression, 976, 0xE3CCF212);
 void Unk_CompressedStream::Encode(COutputStream& out) {
     CByteBuffer* data=0;
     if(m_raw.GetLength()<m_threshold)m_useCompression=false;
-    if(m_useCompression){m_raw.Compress(m_compressed);data=&Compressed();} else {m_raw.FUN_140720e90(0);m_raw.FUN_140720c30(m_compressed);data=&FUN_140714de0();}
+    if(m_useCompression){m_raw.Compress(m_compressed);data=&Compressed();} else {m_raw.SetOffset(0);m_raw.AppendRemainingTo(m_compressed);data=&FUN_140714de0();}
     out.WriteBool(m_useCompression);out.WriteInt32(data->GetLength());out.WriteBytes(data->FUN_140204eb0(),data->GetLength());
 }
 MS2_REPLACE_METHOD(0x14083B2F0, Unk_CompressedStream, Encode, 298, 0x2C116931);
@@ -235,7 +235,7 @@ CByteBuffer& Unk_CompressedStream::Decode(CInputStream& in) {
     m_useCompression=in.ReadBool();unsigned count=in.ReadInt32();
     m_raw.FUN_140204670(count);in.ReadBytes(m_raw.FUN_140204eb0(),count);
     if(m_useCompression){bool ok=m_raw.Uncompress(m_compressed);MS2_ASSERT_AT(593,ok);}
-    else {m_raw.FUN_140720c30(m_compressed);m_compressed.FUN_140720e90(0);}
+    else {m_raw.AppendRemainingTo(m_compressed);m_compressed.SetOffset(0);}
     return m_compressed;
 }
 MS2_REPLACE_METHOD(0x14083B420, Unk_CompressedStream, Decode, 260, 0xE4D13373);

@@ -17,6 +17,8 @@
 #include "hook/ms2hook.h"
 
 #include <NiPoint2.h>
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc940
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -28,11 +30,10 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 
 // The client's world service and the local player (worldservice.h spells the player as void*).
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);   // C3: was FUN_140a7b810
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz) throw();           // case-insensitive equal
 bool FUN_14034eee0(const CStringW& str, const wchar_t* psz) throw();           // operator!=
 
 // The ui manager (FUN_1403ed2b0) and the dialogue singleton.
-class Unk_AtUIMgr { public: int FUN_141adc940(int nUiId); };           // the ui is open
+class Unk_AtUIMgr { public: };           // FUN_1403ed2b0's return type
 Unk_AtUIMgr* FUN_1403ed2b0();
 void* FUN_140967100();
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -41,19 +42,10 @@ public:
     int GetTalking();
 };
 
-// The sound/guide manager (FUN_140a94350): slot 7 plays a sound, slot 8 stops it.
-class Unk_AtSound
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(int, int);
-    virtual void vfunc_8(int);
-};
-Unk_AtSound* FUN_140a94350();
 
 // The key hint table (FUN_1409331f0) and the options flag behind FUN_1409a8b10.
 class Unk_AtHintTable { public: CStringW FUN_14142d760(int nId, int nFlag); };
-Unk_AtHintTable* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_AtHintTable (calls cast back)
 void* FUN_1409a8b10();
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 int FUN_141277f40();   // C3: was FUN_141277f40
@@ -135,7 +127,7 @@ void UIActionTooltip::vfunc_3()
 // @0x1418b16f0
 void UIActionTooltip::FUN_1418b16f0()
 {
-    if (FUN_1418b23a0() == 0x1e || FUN_1403b3c40(FUN_1418b1a20(), L""))
+    if (FUN_1418b23a0() == 0x1e || operator==(FUN_1418b1a20(), L""))
         FUN_1418b1e60();
     else if (FUN_1418b2140() != 0)
         FUN_1418b1e60();
@@ -173,7 +165,7 @@ ActionKeyObject* UIActionTooltip::FUN_1418b1900()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->FUN_140953550();
+    return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->GetCurrentAction();
 }
 
 // @0x1418b1950
@@ -192,7 +184,7 @@ CStringW UIActionTooltip::FUN_1418b1990()
 {
     int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) ? 2 : 0;
     int nId = FUN_1418b1950();
-    return FUN_1409331f0()->FUN_14142d760(nId, nFlag);
+    return reinterpret_cast<Unk_AtHintTable*>(FUN_1409331f0())->FUN_14142d760(nId, nFlag);
 }
 
 // @0x1418b1a20
@@ -221,7 +213,7 @@ void UIActionTooltip::FUN_1418b1ab0()
                 FUN_1413b4140(&m_kTarget)->z += fLift;
             FUN_1418b1ef0();
             m_30->FUN_1412e80d0("show", FUN_1418b1990(), pAction->vfunc_6(), pAction->vfunc_8());
-            FUN_140a94350()->vfunc_7(FUN_1418b1950(), 0);
+            ChromaSDK::GetChromaManager()->OnKeySkill(FUN_1418b1950(), 0);
         }
     }
 }
@@ -236,7 +228,7 @@ void UIActionTooltip::FUN_1418b1e60()
         m_pAction = 0;
         m_30->Invoke("hide");
     }
-    FUN_140a94350()->vfunc_8(0);
+    ChromaSDK::GetChromaManager()->ResetKeys(0);
 }
 
 // @0x1418b1ef0
@@ -260,7 +252,7 @@ void UIActionTooltip::FUN_1418b1ef0()
             int nWidth = spEntity->FUN_1422c1500();
             float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
             int nHeight = spEntity->FUN_1422c1530();
-            float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->FUN_1422c13b0()));
+            float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->GetHeightCeil()));
             spEntity->FUN_1422c00f0(fX, fY);
         }
     }
@@ -280,7 +272,7 @@ int UIActionTooltip::FUN_1418b2140()
     case 0x16:
         return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking();
     case 0x10:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4e56) == 0;
+        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e56) == 0;
     case 4:
     case 0x11:
     case 0x12:
@@ -291,9 +283,9 @@ int UIActionTooltip::FUN_1418b2140()
         return pMyPC->FUN_14166c930() == 0x19;
     }
     case 0xe:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4e77) == 0;
+        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e77) == 0;
     case 0x13:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4ebd) == 0;
+        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4ebd) == 0;
     case 0x1a:
     {
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());

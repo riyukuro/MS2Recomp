@@ -130,36 +130,36 @@ public:
     int HasStartWithWords(unsigned nTypes);                // 0x140224f80
     bool IsAlnumName(const CStringW& str, void*);                  // 0x140224fe0 (1..32 characters of [0-9A-Za-z])
 
-    int FUN_140225120(const CStringW& str, CStringW& message);
+    int CheckPetName(const CStringW& str, CStringW& message);
     int FUN_140225210(const CStringW& str, CStringW& message, int bShort);
-    int FUN_1402252f0(const CStringW& str, CStringW& message);
+    int CheckHomeName(const CStringW& str, CStringW& message);
     int FUN_1402253b0(const CStringW& str, CStringW& message);
-    int FUN_140225470(const CStringW& str, CStringW& message);
+    int CheckMaidProfileField(const CStringW& str, CStringW& message);
     int CheckMaidName(const CStringW& str, CStringW& message);
     int FUN_140225630(const CStringW& str, CStringW& message);
     int CheckGuildName(const CStringW& str, CStringW& message);
-    int FUN_140225810(const CStringW& str, CStringW& message);
+    int CheckGuildGradeName(const CStringW& str, CStringW& message);
     int FUN_1402258f0(const CStringW& str, CStringW& message);
     int FUN_1402259b0(const CStringW& str, CStringW& message);
     int FUN_140225a70(const CStringW& str, CStringW& message);
-    int FUN_140225c90(const CStringW& str, CStringW& message);
-    int FUN_140225de0(const CStringW& str, CStringW& message);
+    int CheckMailTitleText(const CStringW& str, CStringW& message);
+    int CheckContentText(const CStringW& str, CStringW& message);
     int FUN_140225f30(const CStringW& str, CStringW& message);
     int FUN_140225f70(const CStringW& str, CStringW& message);
     int FUN_1402260c0(const CStringW& str, CStringW& message);
-    int FUN_140226100(const CStringW& str, CStringW& message);
-    int FUN_140226160(const CStringW& str, CStringW& message);
+    int CheckMarketDescription(const CStringW& str, CStringW& message);
+    int CheckMarketProductName(const CStringW& str, CStringW& message);
     int FUN_1402261e0(const CStringW& str, CStringW& message);
     int FUN_140226220(const CStringW& str, CStringW& message);
     int FUN_140226260(const CStringW& str, CStringW& message);
     int FUN_1402262a0(const CStringW& str, CStringW& message);
     int FUN_1402262e0(const CStringW& str, CStringW& message);
-    int FUN_140226320(const CStringW& str, CStringW& message);
+    int CheckPartySearchText(const CStringW& str, CStringW& message);
     int FUN_140226400(const CStringW& str, CStringW& message);
     int FUN_140226440(const CStringW& str, CStringW& message);
     int FUN_140226590(const CStringW& str, CStringW& message);
     int FUN_1402266e0(const CStringW& str, CStringW& message);
-    int FUN_140226830(const CStringW& str, CStringW& message);
+    int CheckAutoDistributeEntryName(const CStringW& str, CStringW& message);
 
     int CheckTextWithLimit(const CStringW& str, CheckerOption& opt, CheckerLimit& limit, CStringW& message);   // 0x140227fb0
     int CheckTextOption(const CStringW& str, CheckerOption& opt, CStringW& message);      // 0x140227930

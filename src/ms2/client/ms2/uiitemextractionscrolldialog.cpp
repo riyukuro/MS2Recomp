@@ -40,7 +40,7 @@ class ASDialog : public ASDisplayObject
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
 
 // The inventory's bag of items by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The feature switches (FUN_140166410 returns the manager).
 CFeatureManager* FUN_140166410();
@@ -71,7 +71,7 @@ public:
     void FUN_141999f60();
     void FUN_141999e00();
 };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -80,7 +80,9 @@ void FUN_1422c8f70(const CString& strName);
 UIItemExtractionScrollDialog::SlotBag* FUN_140e4b840(NotifyContext::BindData* p);
 
 UIItemExtractionScrollDialog* FUN_140d27300(int nUiId);     // the open dialog with this UI id
-void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -253,10 +255,10 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
             __int64 nUidItem = static_cast<CInPacket*>(pPacket)->ReadInt64();
             __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
             unsigned nCount = (unsigned short)static_cast<CInPacket*>(pPacket)->ReadInt16();
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUidItem);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUidItem);
             if (spItem == 0)
                 return;
-            MS2Ptr<CItem> spResult = DAT_143ab2a90.FUN_140a5d680(nUidResult);
+            MS2Ptr<CItem> spResult = g_143ab2a90.FUN_140a5d680(nUidResult);
             if (spResult == 0)
                 return;
             Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->FUN_140527870());
@@ -338,7 +340,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
         return;
     if (spItem->FUN_1405292a0() < 1u)
@@ -391,7 +393,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 // @0x140e4b2c0
 void UIItemExtractionScrollDialog::FUN_140e4b2c0(__int64 nScrollUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nScrollUid);
     if (spItem == 0)
         return;
     m_nScrollUid = nScrollUid;
@@ -400,7 +402,7 @@ void UIItemExtractionScrollDialog::FUN_140e4b2c0(__int64 nScrollUid)
 // @0x140e4b340
 void UIItemExtractionScrollDialog::FUN_140e4b340()
 {
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         pInv->FUN_141999f60();
@@ -411,7 +413,7 @@ void UIItemExtractionScrollDialog::FUN_140e4b340()
 // @0x140e4b380
 void UIItemExtractionScrollDialog::OnOk()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem == 0)
         return;
     MS2Ptr<Unk_ExtractionRow> spRow = ((class Unk_ExtractionTable*)FUN_14052d1f0())->FUN_140597580(spItem->FUN_1405276c0());

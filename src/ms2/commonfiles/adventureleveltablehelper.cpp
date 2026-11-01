@@ -133,6 +133,16 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <algorithm>
 #include <utility>
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -140,12 +150,10 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 bool FUN_14028f710(Unk_140165cf0*);
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute (default by value)
 
 int FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short*);
 int FUN_1408731e0(Unk_140165cf0*, const char*, int*);
-int FUN_140873220(Unk_140165cf0*, const char*, unsigned*);
-int FUN_140873360(Unk_140165cf0*, const char*, float*);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 // An effect record (shared MS2Ptr<> glue with the other adventure-level skill records): CPtred + 0x18 bytes, kind at +0x30.
 class Unk_ALSkillAttr : public CPtred
 {
@@ -172,7 +180,7 @@ extern CAdventureLevelMission DAT_142ceaec8;
 unsigned short FUN_140197310(Unk_140165cf0* pElem, const char* pszName, unsigned short nDefault)
 {
     unsigned short nVal;
-    if (FUN_1408731a0(pElem, pszName, &nVal) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<unsigned short&>(nVal)) != 0)
         return nDefault;
     return nVal;
 }
@@ -181,7 +189,7 @@ unsigned short FUN_140197310(Unk_140165cf0* pElem, const char* pszName, unsigned
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault)
 {
     int nVal;
-    if (FUN_1408731e0(pElem, pszName, &nVal) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<int&>(nVal)) != 0)
         return nDefault;
     return nVal;
 }
@@ -190,7 +198,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault)
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault)
 {
     unsigned nVal;
-    if (FUN_140873220(pElem, pszName, &nVal) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(unsigned int*)(&nVal)) != 0)
         return nDefault;
     return nVal;
 }
@@ -199,7 +207,7 @@ unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefa
 float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault)
 {
     float fVal;
-    if (FUN_140873360(pElem, pszName, &fVal) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<float&>(fVal)) != 0)
         return fDefault;
     return fVal;
 }
@@ -413,19 +421,19 @@ bool CAdventureLevelTable::LoadReward()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reward"); pNode != 0; pNode = pNode->FUN_140168650("reward"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reward")))
     {
         if (!FUN_14028f710(pNode))
             continue;
         unsigned nLevel = FUN_140197310(pNode, "level", 0);
         CAdventureLevelReward row;
-        row.m_nType = ParseRewardType(FUN_14015f710(pNode, "type", CString("")).Trim());
+        row.m_nType = ParseRewardType(Unk_ReadString((class Unk_XmlNode*)(pNode), "type", CString("")).Trim());
         row.m_nId = FUN_140197390(pNode, "id", 0);
         row.m_nRank = FUN_140197350(pNode, "rank", 0);
         row.m_nValue = FUN_140197350(pNode, "value", 0);
@@ -444,13 +452,13 @@ bool CAdventureLevelTable::LoadAbility()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("ability"); pNode != 0; pNode = pNode->FUN_140168650("ability"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
         if (!FUN_14028f710(pNode))
             continue;
@@ -477,13 +485,13 @@ bool CAdventureLevelTable::LoadMission()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("mission"); pNode != 0; pNode = pNode->FUN_140168650("mission"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mission")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mission")))
     {
         if (!FUN_14028f710(pNode))
             continue;

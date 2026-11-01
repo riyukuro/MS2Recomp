@@ -62,7 +62,7 @@ void ASTileList::FUN_1422cf3b0(Scaleform::GFx::Value scrollBar)
 // @0x1422cf420
 Scaleform::GFx::Value ASTileList::FUN_1422cf420()
 {
-    return FUN_1422baa20("scrollBar");
+    return GetMember("scrollBar");
 }
 MS2_REPLACE_METHOD(0x1422CF420, ASTileList, FUN_1422cf420, 65, 0xCB76CB8D);
 
@@ -90,7 +90,7 @@ MS2_REPLACE_METHOD(0x1422CF4F0, ASTileList, FUN_1422cf4f0, 40, 0x4C605C86);
 // @0x1422cf520
 int ASTileList::FUN_1422cf520()
 {
-    return (int)FUN_1422baa20("scrollPosition").GetNumber();
+    return (int)GetMember("scrollPosition").GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422CF520, ASTileList, FUN_1422cf520, 92, 0x3064F1C5);
 
@@ -205,7 +205,7 @@ MS2_REPLACE_METHOD(0x1422CFA30, ASMultiSelectTileCacheList, FUN_1422cfa30, 158, 
 // @0x1422cfad0
 template <class T> void GetAll(ASArray& arr, ATL::CAtlArray<T>& aOut)
 {
-    unsigned nCount = arr.FUN_1422bc5d0();
+    unsigned nCount = arr.GetLength();
     for (unsigned i = 0; i < nCount; i++) {
         T value;
         arr.FUN_1422bc860(i, value);
@@ -216,7 +216,7 @@ template <class T> void GetAll(ASArray& arr, ATL::CAtlArray<T>& aOut)
 // @0x1422cfb40
 template <class T> void GetAll(ASArray& arr, std::vector<T>& aOut)
 {
-    unsigned nCount = arr.FUN_1422bc5d0();
+    unsigned nCount = arr.GetLength();
     for (unsigned i = 0; i < nCount; i++) {
         T value;
         arr.FUN_1422bc860(i, value);

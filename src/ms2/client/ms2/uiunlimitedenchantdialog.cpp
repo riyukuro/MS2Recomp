@@ -60,7 +60,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1407cba60(const char* szName, CString str);             // set a string member
     void FUN_1422dcca0(int nIndex);                                  // select an entry (-1: none)
     void FUN_1422dd1d0();                                            // clear
 };
@@ -70,7 +69,6 @@ UITalkCinematic* FUN_140a7b2b0(int nId);
 
 class Unk_BackUpItem : public CPtred { public: MS2Ptr<CItem> FUN_1411dc7a0(); };
 class Unk_PCItems { public: };
-Unk_PCItems* FUN_1416561a0(MyPC* pc);
 bool FUN_140b02900(const MS2Ptr<Unk_BackUpItem>& sp);                  // IsNull
 bool FUN_140534e50(const MS2Ptr<CItem>& sp);                           // IsNull
 void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
@@ -87,7 +85,7 @@ public:
 class Unk_UeLimitTable { public: int FUN_14058e3a0(CItem* pItem); };
 
 class UIInventoryDialog;
-UIInventoryDialog* FUN_1405344f0(int nId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -120,6 +118,7 @@ public:
 extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 template <> MS2Ptr<Unk_UeBag>::MS2Ptr(int nNull);                    // 0x140acd430
@@ -224,11 +223,11 @@ void UIUnlimitedEnchantDialog::vfunc_43()
     UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x50;
+        int nX = pRef->GetLowerCutGlobalY();
+        int nY = pRef->GetIllustGlobalX() - 0x50;
         if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+            pDialog->vfunc_2(5, nY, nX - pDialog->GetHeightCeil());
             return;
         }
     }
@@ -243,7 +242,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
 {
     unsigned __int64 nUid = pPacket->ReadInt64();
     CIngredientContainer ingredients;
-    ingredients.FUN_14026c0b0(*pPacket);
+    ingredients.Read(*pPacket);
     MS2Ptr<CItem> spTarget = FUN_1419be700(nUid);
     if (spTarget == 0)
         return;
@@ -273,7 +272,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 int nHave = FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0);
                 int nIngredientRank = FUN_14053feb0(nIngredientId);
                 CItem* pIngredient = new CItem();   // raw and never released, as in the exe
-                if (pIngredient->FUN_14052b2e0(nIngredientId, nIngredientRank, 0, nCount) != 0)
+                if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
                 {
                     ASObj entry(2);
                     entry.FUN_1407cba60("binding", m_binder.FUN_140d43790(pIngredient));
@@ -300,7 +299,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
         return;
     spItem->FUN_140524eb0(*pPacket);
     m_30->Invoke("onEnchant");
-    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0)
         ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->FUN_140c3fe30(7);
     FUN_140fb7690(nUid);
@@ -351,7 +350,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             m_items.Add(spItem);
         }
         ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
-        FUN_1411e1ce0(FUN_1416561a0(pPC), &equips, 0);
+        FUN_1411e1ce0(reinterpret_cast<Unk_PCItems*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0()), &equips, 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos))
         {
             MS2Ptr<Unk_BackUpItem> spEquip = equips.GetAt(pos);
@@ -392,7 +391,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode0(unsigned __int64 nUid)
     }
     COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
     packet.WriteUInt8(0);
-    packet.WriteInt64(spItem->FUN_140526a50());
+    packet.WriteInt64(spItem->GetItemUid());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FB7450, UIUnlimitedEnchantDialog, SendLimitBreakMode0, 273, 0x50680FB4);
@@ -412,7 +411,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode1(unsigned __int64 nUid)
     }
     COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
     packet.WriteUInt8(1);
-    packet.WriteInt64(spItem->FUN_140526a50());
+    packet.WriteInt64(spItem->GetItemUid());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FB7570, UIUnlimitedEnchantDialog, SendLimitBreakMode1, 273, 0x50C15093);
@@ -426,7 +425,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb7690(__int64 nUid)
         MS2Ptr<CItem> spItem = m_items.GetAt(i);
         if (spItem.get() ? true : false)
         {
-            if (spItem->FUN_140526a50() == nUid)
+            if (spItem->GetItemUid() == nUid)
                 nSelected = i;
         }
     }
@@ -447,7 +446,7 @@ Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> 
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
     if (spData == 0)
         return UNLIMITED_ENCHANT_INVALID_ITEM;
-    if (spData->FUN_14053e9e0() == 0)
+    if (spData->GetUnlimitedEnchantMaxGrade() == 0)
         return UNLIMITED_ENCHANT_INVALID_ITEM;
     int nLevel = spItem->FUN_140527270();
     if (nLevel == 0)
@@ -455,7 +454,7 @@ Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> 
         if (reinterpret_cast<Unk_UeLimitTable*>(TSingleton<CItemEnchantLimitTable>::GetInstance())->FUN_14058e3a0(spItem.get()) == 0)
             return UNLIMITED_ENCHANT_INVALID_ITEM;
     }
-    if (nLevel == spData->FUN_14053e9e0())
+    if (nLevel == spData->GetUnlimitedEnchantMaxGrade())
         return UNLIMITED_ENCHANT_MAX_GRADE;
     return UNLIMITED_ENCHANT_OK;
 }

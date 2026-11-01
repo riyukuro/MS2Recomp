@@ -67,12 +67,12 @@ public:
 
     int Load();                             // 0x14062cbc0 Table/itemSocket.xml
     MS2Ptr<CItemSocketData> Find(unsigned nItemId, int nGrade);     // 0x14062d330
-    unsigned FUN_14062d4b0(int nSocketId, int nGrade, MS2Ptr<CItemData> spData);    // 0x14062d4b0 the most sockets an item can have
-    unsigned FUN_14062d6f0(int nSocketId, int nGrade, MS2Ptr<CItemData> spData);    // 0x14062d6f0 the sockets it has from the start
+    unsigned GetMaxSocketCount(int nSocketId, int nGrade, MS2Ptr<CItemData> spData);    // 0x14062d4b0 the most sockets an item can have
+    unsigned GetInitialSocketCount(int nSocketId, int nGrade, MS2Ptr<CItemData> spData);    // 0x14062d6f0 the sockets it has from the start
     bool FUN_14062d890(int nArg1, int nArg2, int nArg3, MS2Ptr<CItem> spItem);     // 0x14062d890 always true (no caller)
-    bool FUN_14062d8d0(MS2Ptr<CItemData> spData);                   // 0x14062d8d0 sockets are enabled for the item's kind
+    bool IsSocketFeatureEnabled(MS2Ptr<CItemData> spData);                   // 0x14062d8d0 sockets are enabled for the item's kind
     bool FUN_14062d980(MS2Ptr<CItemData> spData, int nGrade);       // 0x14062d980 the item cannot take more sockets
-    int FUN_14062db50();                    // 0x14062db50 reload the table
+    int Reload();                    // 0x14062db50 reload the table
 
 private:
     MS2_LAYOUT_FRIEND;

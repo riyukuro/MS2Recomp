@@ -79,7 +79,6 @@ CGameRule* FUN_1401c0d90();
 CQuestManager* FUN_140764020();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 UIQuestEventDispatcher* FUN_140bfc4b0();
-bool FUN_140841300(const CStringW& str, const char* sz);
 int FUN_140718170(const CString& str);
 __int64 GetServerTime();                                // the server time
 __int64 FUN_140282020(const CMsTime& kTime);            // time_t of a CMsTime
@@ -132,13 +131,13 @@ void UITimeRunEventDialog::vfunc_67()
 void UITimeRunEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) {
         vfunc_67();
         return;
     }
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba030("setDay", FUN_140ee4bb0(spContext));
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_remainTime"))
         spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
     FUN_140ee3580();
     FUN_140ee4ca0();
@@ -154,7 +153,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
     UIObject::vfunc_45(pRetVal, strMethod, pArgs);
     if ((strMethod == "getTabTooltip")) {
         int nTab = FUN_140718170(pArgs->FUN_1422b8d30());
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
         if (spContext.get() != 0) {
             CMsTime now(GetServerTime());
             CMsTime start(FUN_140ee4990(spContext));
@@ -163,21 +162,21 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
                 ATL::CTimeSpan span = start - now;
                 CStringW strRemain = FormatTimeSpan(span, true, true, true, true);
                 ASTooltip tip(2);
-                if (tip.FUN_1409e26b0(FUN_14028dfa0<CStringW>(CStringW(L"s_timerun_remain_time_from_day"), strRemain)))
+                if (tip.ApplyTextTooltip(FUN_14028dfa0<CStringW>(CStringW(L"s_timerun_remain_time_from_day"), strRemain)))
                     *pRetVal = tip.FUN_1422bb870();
             }
         }
     } else if ((strMethod == "getTooltip")) {
         CStringW strKind = pArgs->FUN_1422b8f40();
-        if (FUN_140841300(strKind, "guide")) {
+        if (operator==(strKind, "guide")) {
             int nQuest = pArgs->FUN_1422b8b10();
             MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
             if (data.get() != 0) {
                 void* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
                 if (pMyPC == 0) return;
                 ASTooltip tip(2);
-                if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nQuest, 1)))) {
-                    tip.FUN_1409c6dc0(1);
+                if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nQuest, 1)))) {
+                    tip.SetTooltipAlign(1);
                     *pRetVal = tip.FUN_1422bb870();
                 }
             }
@@ -208,7 +207,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     } else if (!_stricmp(szMethod, "onClickFinalReward")) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
         if (spContext.get() != 0) {
             int nDefault = 0;
             int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault);
@@ -223,7 +222,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nKey = data.FUN_1422b8b10();
-            MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+            MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
             if (spContext.get() != 0) {
                 int nDefault = 0;
                 int nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
@@ -246,7 +245,7 @@ void UITimeRunEventDialog::vfunc_o178_10(void* pQuest)
     if (m_30.IsNull()) return;
     bool bSkip = static_cast<CQuest*>(pQuest)->GetData()->m_350.m_value != 3;
     if (bSkip) return;
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) return;
     MS2Ptr<TimeRunEventContext::QuestContext> spQuest(0);
     if (spContext->m_quests.Lookup(static_cast<CQuest*>(pQuest)->FUN_140bfc580(), spQuest)) {
@@ -262,12 +261,12 @@ void UITimeRunEventDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
     if (m_tick.FUN_140268870(1000)) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
         if (spContext.IsNull()) {
             vfunc_67();
             return;
         }
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
+        if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_remainTime"))
             spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
     }
 }
@@ -276,7 +275,7 @@ void UITimeRunEventDialog::vfunc_15()
 // @0x140ee3290
 int UITimeRunEventDialog::FUN_140ee3290()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) return 0;
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
@@ -300,7 +299,7 @@ int UITimeRunEventDialog::FUN_140ee3290()
 // @0x140ee3580
 void UITimeRunEventDialog::FUN_140ee3580()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull())
         return;
     unsigned nDistance = FUN_140ee4280(spContext);
@@ -336,7 +335,7 @@ void UITimeRunEventDialog::FUN_140ee3580()
     ItemEntity* pFinalItem = &pFinal->m_item;
     CString strBind = m_mapBinder.FUN_140d43510(pFinalItem ? static_cast<ItemAble*>(pFinalItem) : 0);
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", strBind, bFinal);
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_totalDistance"))
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_totalDistance"))
         spText->FUN_1422c4cd0(FUN_140938ae0(CStringW(L"s_timerun_total_distance"), nDistance));
 }
 
@@ -344,7 +343,7 @@ void UITimeRunEventDialog::FUN_140ee3580()
 // @0x140ee3c00
 void UITimeRunEventDialog::FUN_140ee3c00(int nDay)
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) {
         vfunc_67();
         return;
@@ -420,7 +419,7 @@ void UITimeRunEventDialog::FUN_140ee4570(int)
 // @0x140ee45c0
 int UITimeRunEventDialog::FUN_140ee45c0()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) return 0;
     int nCount = 0;
     int bAll = 1;
@@ -494,7 +493,7 @@ int UITimeRunEventDialog::FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext)
 void UITimeRunEventDialog::FUN_140ee4ca0()
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
     if (spContext.IsNull()) return;
     std::map<int, int> counts;
     for (unsigned __int64 i = 1; i <= 7; ++i)

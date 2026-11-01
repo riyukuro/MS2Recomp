@@ -46,7 +46,7 @@ class UIPopUpMenu
 public:
     void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir);
     void FUN_141a80910();                                       // copy the own guild
-    void FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
+    void SetGuildInfo(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
     void PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, class CGuildMember* pMember);   // the guild member menu (uiguilddialog.cpp)
     void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<class CProxyGameObject> spProxy, int nType);   // the menu of a player in the field
     void FUN_141a805f0(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType);   // the menu of a chat name (uimessenger.cpp)

@@ -36,6 +36,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include <atlcoll.h>
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -62,7 +65,6 @@ class Unk_DictInput : public ASDisplayObject
 {
 public:
     void FUN_1422e0ab0(const CStringW& str);                // set the text
-    CStringW FUN_1422e0b00();                               // the text
 };
 class ASDialog : public ASDisplayObject {};
 
@@ -109,7 +111,7 @@ struct Unk_DictRequestValue
 };
 
 // Input state, the movie manager, the player and the text hooks.
-class Unk_DictInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
+class Unk_DictInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_DictUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DictUiMgr* FUN_140b632f0();
@@ -124,7 +126,6 @@ int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search t
 // The string formatters (key by value: the callee destroys it).
 CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned& a);
 CStringW FUN_1406e7810(const wchar_t* szFormat, const unsigned& a, const unsigned& b);
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);    // a + b (the exe's operator+; clang would import MFC CopyChars)
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
@@ -146,7 +147,7 @@ struct Unk_GdScript : AScript
 void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 {
     ASData data;
-    data.FUN_1422b83f0(tooltip.FUN_1422bb890());
+    data.AddValue(tooltip.FUN_1422bb890());
     ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -154,7 +155,7 @@ void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 void FUN_140f47320(AScript* pScript, const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -231,9 +232,9 @@ void UIGameDictionaryDialog::OnLoadComplete()
     {
         if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
         {
-            if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
+            if (spItems->GetDataProvider()->GetLength() > 0)
             {
-                spItems->FUN_1422dcca0(0);
+                spItems->SetSelectedIndex(0);
                 spItems->vfunc_24(1);
             }
             m_17c = 0;
@@ -290,7 +291,7 @@ int UIGameDictionaryDialog::vfunc_13()
         if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         {
             if (((class ASUIComponent*)(class Unk_DictInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
-                FUN_140f46c90(spInput->FUN_1422e0b00());
+                FUN_140f46c90(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
         }
         return 1;
     }
@@ -385,7 +386,7 @@ void UIGameDictionaryDialog::FUN_140f45870()
     if (spItems.IsNull())
         return;
     spItems->FUN_1422dd1d0();
-    spItems->FUN_1422dcca0(-1);
+    spItems->SetSelectedIndex(-1);
     unsigned nMask = FUN_140f46e40(m_178);
     CStringW strUnused;
     std::list<Entry> unused;
@@ -402,7 +403,7 @@ void UIGameDictionaryDialog::FUN_140f45870()
                 item.FUN_1407cb9c0("id", entry.m_id);
                 item.FUN_1407cb9c0("itemGrade", entry.m_levelOrGrade);
                 FUN_140f47320(&item, "type", entry.m_type);
-                spItems->FUN_1422dd230(item);
+                spItems->AddItem(item);
                 bFound = 1;
             }
         }
@@ -474,9 +475,9 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         {
             if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
             {
-                if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
+                if (spItems->GetDataProvider()->GetLength() > 0)
                 {
-                    spItems->FUN_1422dcca0(0);
+                    spItems->SetSelectedIndex(0);
                     spItems->vfunc_24(1);
                 }
                 m_17c = 0;
@@ -571,7 +572,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                                 CStringW strClock = FUN_140f48210(time.GetHour(), nMinute);
                                 CStringW strGuarantee = GetStringCommonByKey(CStringW(L"s_spawnnpc_guarantee"));
                                 strMaps += L" ";
-                                strMaps += FUN_1401e8510(strGuarantee, strClock);
+                                strMaps += StringFormat<CStringW>(strGuarantee, strClock);
                             }
                         }
                         CStringW strContent;

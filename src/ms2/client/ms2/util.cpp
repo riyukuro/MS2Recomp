@@ -45,6 +45,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/client/ms2/ridee.h"  // C3: was a local member view
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 class Unk_AvModeSvc;
 namespace ecr { class RenderService; }
 
@@ -77,7 +79,6 @@ CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wi
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);       // wide -> ANSI conversion
 int FUN_141b72310(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);   // BrowseForFolder callback
 void* FUN_140aadf80();
-HWND FUN_14209c720(void* pApp);                                     // main window handle of the app object
 
 int FUN_141b6fd90(size_t nSize);                                   // new handler (reports size 3)
 
@@ -90,11 +91,11 @@ extern Unk_MaterialTable DAT_143d69198;
 struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
     size_t FUN_1414d3ff0();                         // number of pending nodes
     NiAVObject* FUN_1414d4a50();                    // current object
@@ -102,6 +103,7 @@ public:
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -136,8 +138,6 @@ public:
 };
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
 bool FUN_14028d470(float fA, float fB);                             // float equality
-float FUN_140a17940(float fValue, float fMin, float fMax);          // clamp
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 int FUN_140961880(egf::Entity* pEntity, unsigned uPropId, float* pOut);             // read a float property (0 = ok)
 
 // NiPoint3 with the out-of-line conversion / move-assign of the exe.
@@ -306,7 +306,7 @@ MS2_REPLACE(0x141b6e150, FUN_141b6e150, 105, 0xB6F3C78B);
 CStringA FUN_141b6e1c0(const CStringA& kInitialDir, LPCSTR pszFilter, const CStringA& kDefaultFile)
 {
     char szFile[MAX_PATH] = { 0 };
-    HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
+    HWND hWndOwner = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     if (!kDefaultFile.IsEmpty())
         strcpy_s(szFile, MAX_PATH, (LPCSTR)kDefaultFile);
     OPENFILENAMEA ofn = { 0 };
@@ -330,7 +330,7 @@ CStringA FUN_141b6e1c0(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 CStringW FUN_141b6e360(const CStringW& kInitialDir, LPCWSTR pszFilter, const CStringW& kDefaultFile)
 {
     wchar_t szFile[MAX_PATH] = { 0 };
-    HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
+    HWND hWndOwner = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     if (!kDefaultFile.IsEmpty())
         wcscpy_s(szFile, MAX_PATH, (LPCWSTR)kDefaultFile);
     OPENFILENAMEW ofn = { 0 };
@@ -360,7 +360,7 @@ MS2_REPLACE(0x141b6e500, FUN_141b6e500, 78, 0x48E5C3D5);
 // @0x141b6e560
 CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStringA& kDefaultFile)
 {
-    HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
+    HWND hWndOwner = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     char szFile[MAX_PATH] = { 0 };
     strcpy_s(szFile, MAX_PATH, (LPCSTR)kDefaultFile);
     OPENFILENAMEA ofn = { 0 };
@@ -383,7 +383,7 @@ CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 // @0x141b6e6f0
 CStringW FUN_141b6e6f0(const CStringW& kInitialDir, LPCWSTR pszFilter, const CStringW& kDefaultFile)
 {
-    HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
+    HWND hWndOwner = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     wchar_t szFile[MAX_PATH] = { 0 };
     wcscpy_s(szFile, MAX_PATH, (LPCWSTR)kDefaultFile);
     OPENFILENAMEW ofn = { 0 };
@@ -417,7 +417,7 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
     BROWSEINFOW bi = { 0 };
     lstrcpyW(szPath, (LPCWSTR)kStartPath);
     PathRemoveBackslashW(szPath);
-    bi.hwndOwner = FUN_14209c720(FUN_140aadf80());
+    bi.hwndOwner = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     bi.pszDisplayName = szPath;
     bi.lpszTitle = L"\uD3F4\uB354\uB97C \uC120\uD0DD\uD558\uC138\uC694";
     bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT | BIF_EDITBOX | BIF_NEWDIALOGSTYLE;   // 0x55
@@ -533,7 +533,7 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
         else
             pszKey = FUN_142087e50(&DAT_143ae50d8);
     }
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender != NULL) {
@@ -573,7 +573,7 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
         else
             pszKey = FUN_142087e50(&DAT_143ae50d8);
     }
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender != NULL) {
@@ -612,7 +612,7 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
         else
             pszKey = FUN_142087e50(&DAT_143ae50d8);
     }
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiObject* pColor;
     do {
         NiRenderObject* pRender;
@@ -648,7 +648,7 @@ float FUN_141b6f700(const egf::EntityID& rId)
     NiAVObject* pScene = FUN_141b6ef70(rId);
     float fAlpha = 0.0f;
     if (pScene != NULL) {
-        Unk_SceneWalker kWalker(pScene);
+        Unk_SceneWalker kWalker((NiAVObject*)(pScene));
         while (NiAVObject* pNode = kWalker.Next(true)) {
             NiObject* pMaterial = NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, (class NiObject const*)(pNode->GetProperty(NiProperty::MATERIAL)));
             if (pMaterial != NULL)
@@ -712,7 +712,7 @@ MS2_REPLACE(0x141b6fa90, FUN_141b6fa90, 73, 0x30A74C77);
 // @0x141b6fae0
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue)
 {
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
         if (pRender != NULL) {
@@ -743,7 +743,7 @@ int FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, unsigned nFlags
 {
     HWND hWnd = NULL;
     if (FUN_140aadf80() != NULL && DAT_143af7d44 == 0) {
-        hWnd = FUN_14209c720(FUN_140aadf80());
+        hWnd = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
         ShowWindow(hWnd, SW_MINIMIZE);
     }
     return MessageBoxW(hWnd, (LPCWSTR)kText, (LPCWSTR)kTitle, nFlags | 0x40000);
@@ -779,7 +779,7 @@ float FUN_141b6fdb0(float fValue, int nCurve)
 float FUN_141b6fe40(float fValue, int nCurve)
 {
     fValue = FUN_141b6fdb0(fValue, nCurve);
-    return FUN_140a17940(fValue, 0.0f, 1.0f);
+    return efd::Clamp(fValue, 0.0f, 1.0f);
 }
 MS2_REPLACE(0x141b6fe40, FUN_141b6fe40, 62, 0x6EFBDA85);
 
@@ -828,11 +828,11 @@ MS2_REPLACE(0x141b6ffc0, FUN_141b6ffc0, 88, 0x5FA463E7);
 bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
 {
     Vector3 vTranslation;
-    if (FUN_1409618c0(pEntity, 0xfd95ca52, &vTranslation) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vTranslation)) != 0)
         return false;
     pOut->m_kTranslate = vTranslation;
     Vector3 vEuler;
-    if (FUN_1409618c0(pEntity, 0x68c7c29d, &vEuler) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(vEuler)) != 0)
         return false;
     Unk_NiMatrix3 kX;
     Unk_NiMatrix3 kY;
@@ -1419,7 +1419,7 @@ void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
 {
     if (pRoot == NULL)
         return;
-    Unk_SceneWalker kWalk(pRoot);
+    Unk_SceneWalker kWalk((NiAVObject*)(pRoot));
     while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
         NiObject* pTag = NiObject::DynamicCast(&DAT_143afb000, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))));
@@ -1443,7 +1443,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
 {
     if (pRoot == NULL)
         return;
-    Unk_SceneWalker kWalk(pRoot);
+    Unk_SceneWalker kWalk((NiAVObject*)(pRoot));
     while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
         NiObject* pTag = NiObject::DynamicCast(&DAT_143afb000, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))));

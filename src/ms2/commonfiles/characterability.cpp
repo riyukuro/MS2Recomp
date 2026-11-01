@@ -26,6 +26,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -57,7 +65,6 @@ public:
     Unk_CaSlot m_slot;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1401d7c10(Unk_CaSlot* pSlot);
 
 // The unit's log call (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0): two arguments.
 template <class A, class B> inline void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format,
@@ -130,19 +137,19 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
-        FUN_140873420(pNode, "locale", strLocale);
-        if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d750(strLocale))
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
+        if (!((class Unk_CaSwitches*)FUN_140166410())->IsLocaleInList(strLocale))
             continue;
         {
             MS2Ptr<CCharacterAbilityCategory> spCategory(new CCharacterAbilityCategory);
             XmlGetAttr((class TiXmlElement*)(pNode), "id", spCategory->m_nId);
-            FUN_140873420(pNode, "name", spCategory->m_strName);
-            FUN_140873420(pNode, "tooltip", spCategory->m_strTooltip);
+            XmlGetAttr((class TiXmlElement*)(pNode), "name", spCategory->m_strName);
+            XmlGetAttr((class TiXmlElement*)(pNode), "tooltip", spCategory->m_strTooltip);
             spCategory->m_strName = GetStringCommonByKey(spCategory->m_strName);
             spCategory->m_strTooltip = GetStringCommonByKey(spCategory->m_strTooltip);
             m_categories.SetAt(spCategory->m_nId, spCategory);
@@ -172,13 +179,13 @@ int CCharacterAbilityTable::LoadCharacterAbility()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("ability"); pNode != 0; pNode = pNode->FUN_140168650("ability"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
-        FUN_140873420(pNode, "locale", strLocale);
-        if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d750(strLocale))
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
+        if (!((class Unk_CaSwitches*)FUN_140166410())->IsLocaleInList(strLocale))
             continue;
         {
             MS2Ptr<CCharacterAbility> spAbility(new CCharacterAbility);
@@ -274,7 +281,7 @@ int FUN_1401e0790(unsigned short nLevel, int nPoints)
 {
     unsigned short nPlayerLevel = ((class Unk_CaSwitches*)FUN_140166410())->FUN_14036de00();
     int nTotal = nLevel - nPlayerLevel;
-    nTotal += *FUN_1401d7c10(&((class Unk_CaState*)FUN_1401d3200())->m_slot);
+    nTotal += *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaState*)FUN_1401d3200())->m_slot)->Get());
     nTotal += nPoints;
     return nTotal;
 }

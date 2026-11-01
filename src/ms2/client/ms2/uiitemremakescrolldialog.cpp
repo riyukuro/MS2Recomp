@@ -67,6 +67,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/citemremakescrolltable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local views of exe objects ----
 
@@ -124,7 +125,6 @@ class Unk_ItemOwnerRef { public: unsigned FUN_140635100(); int FUN_140635120(); 
 // Strings / messages.
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140298ea0(CStringW key);
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -321,13 +321,13 @@ UIItemRemakeScrollDialog::UIItemRemakeScrollDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    ((class Unk_RmPackets*)FUN_140bccd50())->FUN_140da5180(0xc9, Delegate<void(CInPacket&)>(this, &UIItemRemakeScrollDialog::FUN_140f59230));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xc9, Delegate<void(CInPacket&)>(this, &UIItemRemakeScrollDialog::FUN_140f59230));
 }
 
 // @0x140f58290
 UIItemRemakeScrollDialog::~UIItemRemakeScrollDialog()
 {
-    ((class Unk_RmPackets*)FUN_140bccd50())->FUN_140da51e0(0xc9, Delegate<void(CInPacket&)>(this, &UIItemRemakeScrollDialog::FUN_140f59230));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xc9, Delegate<void(CInPacket&)>(this, &UIItemRemakeScrollDialog::FUN_140f59230));
 }
 
 // @0x140f583e0
@@ -507,11 +507,11 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
         if (box.get() != 0)
         {
             box->FUN_141a027c0(RmMsgBoxFn(this, &UIItemRemakeScrollDialog::FUN_140f5f2a0));
-            box->FUN_141a01600(spItem->FUN_140526a50());
+            box->FUN_141a01600(spItem->GetItemUid());
             box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->FUN_141a01700(0x475, 0x476, 0);
-            box->FUN_1405340b0(nOptionUid);
-            box->FUN_140533ff0(nUnk);
+            box->Append<__int64>(nOptionUid);
+            box->Append<int>(nUnk);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
     }
@@ -549,9 +549,9 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strAsk), 0, CStringW(s_strBindPetTag));
             if (box.get() != 0)
             {
-                box->FUN_141a01600(spItem->FUN_140526a50());
+                box->FUN_141a01600(spItem->GetItemUid());
                 box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-                box->FUN_1405340b0(nOptionUid);
+                box->Append<__int64>(nOptionUid);
                 box->FUN_141a01700(0x477, 0x478, 0);
                 FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
                 return;
@@ -560,7 +560,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
     }
     CCItemRemakeOptionScrollPacket::RemakeOption option;
     option.m_scrollUid = m_nScrollUid;
-    option.m_itemUid = m_spTarget->FUN_140526a50();
+    option.m_itemUid = m_spTarget->GetItemUid();
     option.m_ingredientUid = m_nIngredientUid;
     Unk_LockOpt lockOpt;
     ATL::CAtlArray<int> aLocked;
@@ -615,7 +615,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
 // @0x140f5a7e0
 void UIItemRemakeScrollDialog::FUN_140f5a7e0(CInPacket& packet)
 {
-    m_spOption = m_spTarget->FUN_140524250();
+    m_spOption = m_spTarget->Clone();
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_spOption;
     apply.vfunc_2(packet);
@@ -638,7 +638,7 @@ void UIItemRemakeScrollDialog::FUN_140f5a9c0(CInPacket& packet)
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_spOption;
     apply.vfunc_2(packet);
-    if (apply.m_uid != m_spOption->FUN_140526a50())
+    if (apply.m_uid != m_spOption->GetItemUid())
         return;
     FUN_140f5d020(MS2Ptr<CItem>(m_spOption));
     SetState(4);
@@ -722,7 +722,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
     }
     ATL::CAtlArray<int> aLocked;
     FUN_140f5f310(aLocked);
-    unsigned __int64 nOptionUid = m_spTarget->FUN_140526a50();
+    unsigned __int64 nOptionUid = m_spTarget->GetItemUid();
     if (aLocked.GetCount() == 0)
         FUN_140f59420(nOptionUid, 0);
     else
@@ -758,7 +758,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
         }
         MS2Ptr<CMsgBoxData> box = FUN_140d74230(RmMsgBoxFn(this, &UIItemRemakeScrollDialog::FUN_140f5e4c0), CStringW(strAsk));
         if (box.get() != 0)
-            box->FUN_1405340b0(nOptionUid);
+            box->Append<__int64>(nOptionUid);
     }
 }
 
@@ -767,7 +767,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
 {
     if (GetState() != 3 || m_spTarget == 0 || m_spOption == 0)
         return;
-    MS2Ptr<CItem> spCheck = g_143ab2a90.FUN_140a5d680(m_spTarget->FUN_140526a50());
+    MS2Ptr<CItem> spCheck = g_143ab2a90.FUN_140a5d680(m_spTarget->GetItemUid());
     if (spCheck == 0)
     {
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_item");
@@ -775,7 +775,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
     }
     const Scaleform::GFx::Value v = data.FUN_1422b9260();
     ASObj obj(v, 2);
-    int nSelected = obj.FUN_1422baa20("selectedOptionIndex").GetInt();
+    int nSelected = obj.GetMember("selectedOptionIndex").GetInt();
     if (nSelected == -1)
     {
         if (m_nPet != 0)
@@ -790,7 +790,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
     if (spChosen == m_spOption.get())
     {
         CCItemRemakeOptionPacket::ApplyOptionClient apply;
-        apply.m_uid = spChosen->FUN_140526a50();
+        apply.m_uid = spChosen->GetItemUid();
         COutPacket pkt(static_cast<int>(SendOp::ChangeAttributesScroll), 0);
         pkt.Encode1(3);
         apply.vfunc_1(pkt);
@@ -806,7 +806,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
 // @0x140f5bb20
 void UIItemRemakeScrollDialog::FUN_140f5bb20()
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
 }
 
 // @0x140f5bb60
@@ -1053,7 +1053,7 @@ bool UIItemRemakeScrollDialog::FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow
             unsigned nRank = (*pRanks)[i];
             CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank), nRank);
             if (i != 0)
-                strLimit.Append(FUN_1401e8510(strSeparator, strRank));
+                strLimit.Append(StringFormat<CStringW>(strSeparator, strRank));
             else
                 strLimit.Append(strRank);
         }
@@ -1082,7 +1082,7 @@ bool UIItemRemakeScrollDialog::FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow
                     if (strSlot.IsEmpty())
                         continue;
                     if (!strSlots.IsEmpty())
-                        strSlots.Append(FUN_1401e8510(strSeparator, strSlot));
+                        strSlots.Append(StringFormat<CStringW>(strSeparator, strSlot));
                     else
                         strSlots.Append(strSlot);
                 }
@@ -1313,7 +1313,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ede0(ItemScrollSlot& slot, DragSlot* pDr
         ASObj obj(2);
         obj.FUN_1407cb9c0("maxOptionLockCount", nLimit);
         m_spIngredient = spItem;
-        m_nIngredientUid = spItem->FUN_140526a50();
+        m_nIngredientUid = spItem->GetItemUid();
         m_30->Invoke("selectItemIngredient", obj.FUN_1422bb870());
         FUN_140f5e1f0(2);
     }
@@ -1323,7 +1323,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ede0(ItemScrollSlot& slot, DragSlot* pDr
 bool UIItemRemakeScrollDialog::FUN_140f5f250(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
     return true;
 }
 
@@ -1345,7 +1345,7 @@ void UIItemRemakeScrollDialog::FUN_140f5f310(ATL::CAtlArray<int>& aLocked)
     Scaleform::GFx::Value v = m_30->Invoke("getLockOptionIndex");
     ASArray arr(v, 2);
     int nValue = 0;
-    for (unsigned i = 0; i < arr.FUN_1422bc5d0(); i++)
+    for (unsigned i = 0; i < arr.GetLength(); i++)
     {
         static_cast<Unk_RmArray&>(arr).FUN_1422bc780(i, &nValue);
         aLocked.Add(nValue);

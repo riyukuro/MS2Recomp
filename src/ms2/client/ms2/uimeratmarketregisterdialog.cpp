@@ -38,6 +38,9 @@
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- header statics (the shared list of the merat market units) ----
 #ifndef MS2_HOOK_DLL
@@ -94,7 +97,7 @@ struct Unk_MrdConfig { void* m_p; };
 struct Unk_MrdValueInt { void* m_p; };
 struct Unk_MrdValueI64 { void* m_p; };
 struct Unk_MrdValueMoney { void* m_p; };
-Unk_MrdConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MrdConfig* FUN_1401d3200()
 __int64 FUN_1402bac90(Unk_MrdValueI64* pValue);     // Value<__int64>::Read
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 __int64 FUN_1406a6d50(Unk_MrdValueMoney* pValue);   // the limit
@@ -161,7 +164,8 @@ bool FUN_1418ff110(int nType, __int64 nValue, bool b);          // the player ca
 CStringW FUN_1418fec00(int nType, __int64 nValue, int n);       // money text by pay type
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1408116a0(int nId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14086d060(int nId, const __int64& nArg);
 CStringW FUN_1409404f0(__int64 nValue);
 CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
@@ -179,7 +183,6 @@ void FUN_14141f770(CString& strOut, unsigned int nSlots, const UIMeratMarketRegi
                    MS2Ptr<CItem> (*pfnGet)(const UIMeratMarketRegisterDialog::ItemArray&, int), int a, int b);
 MS2Ptr<CItem> FUN_141420330(const UIMeratMarketRegisterDialog::ItemArray& arrItems, int nIndex);
 int FUN_1406516a0();
-void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -217,7 +220,7 @@ public:
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // The key state.
-class Unk_MrdKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_MrdKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // Dialog manager: the top dialog of a layer.
@@ -240,7 +243,6 @@ class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 CStringW FUN_140ebd9d0(int a, int b);
 
 // The slot bag of the movie.
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 DragSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
 DragSlot* FUN_140cfe6c0(DragSlot* pSlot);
 
@@ -331,11 +333,11 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
             return;
         CStringW strCharge = FUN_140ebd9d0(0, 0);
         ASTooltip tip(1, 2);
-        int nOk = tip.FUN_1409e26b0(FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_tooltip_charge"), strCharge));
+        int nOk = tip.ApplyTextTooltip(FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_tooltip_charge"), strCharge));
         if (nOk != 0)
         {
-            tip.FUN_1409c6dc0(5);
-            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            tip.SetTooltipAlign(5);
+            *pRetVal = tip.FUN_1422bb870();
         }
     }
     else if (_stricmp("m_selectedItem", strName) == 0)
@@ -343,10 +345,10 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         int nIndex = pArgs->FUN_1422b8a10();
         if (nIndex < 0)
             return;
-        MS2Ptr<CItem> spItem = FUN_1413191f0(nIndex);
+        MS2Ptr<CItem> spItem = GetItemAt(nIndex);
         if (spItem == 0)
             return;
-        DragSlotBag* pBag = FUN_140c54520(FUN_1422c8e90(m_strKey));
+        DragSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(m_strKey));
         if (pBag != 0)
         {
             DragSlot* pSlot = FUN_140cfe6c0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex));
@@ -373,7 +375,7 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     int nSaleDay = FUN_14025a620((class Unk_ConstVal*)(MrdSaleDayValue()));
     FUN_14131ac80(0, MS2Ptr<CItem>(0), 1);
     ASObj objData(2);
-    objData.FUN_1407cbb20("saleDay", FUN_1408116a0(0xa39, nSaleDay));
+    objData.FUN_1407cbb20("saleDay", BlockFormat<int>(0xa39, nSaleDay));
     objData.FUN_1407cbb20("ad", FUN_14086d060(0xa3a, nAdFee));
     objData.FUN_1407cbb20("royalty", GetStringCommon(0xa3b));
     objData.FUN_1407cbbe0("onlyShowEnableDesigns", m_bOnlyEnabled);
@@ -390,14 +392,14 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     FUN_141318ef0(FUN_14131ca80());
     if (bNew)
     {
-        int nRows = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.FUN_1422baa20("slotRowCount")))->GetUInt();
-        int nColumns = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.FUN_1422baa20("slotColumnCount")))->GetUInt();
+        int nRows = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.GetMember("slotRowCount")))->GetUInt();
+        int nColumns = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.GetMember("slotColumnCount")))->GetUInt();
         FUN_14131a880(m_strKey, nColumns, nRows);
     }
     else
     {
         if (FUN_14131a100(m_keyResale) == 0)
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec5);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ec5);
     }
 }
 
@@ -573,7 +575,7 @@ bool UIMeratMarketRegisterDialog::FUN_141319180(int nButton, const CMsgBoxData& 
 }
 
 // @0x1413191f0
-MS2Ptr<CItem> UIMeratMarketRegisterDialog::FUN_1413191f0(int nIndex)
+MS2Ptr<CItem> UIMeratMarketRegisterDialog::GetItemAt(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return MS2Ptr<CItem>(0);
@@ -652,14 +654,14 @@ int UIMeratMarketRegisterDialog::FUN_1413197a0(const CUgcMarketProduct* pProduct
         MS2Ptr<CItem> spItem = m_items[i];
         if (spItem == 0)
             continue;
-        if (pProduct->FUN_140896310() == 0)
+        if (pProduct->IsMusicType() == 0)
         {
-            if (spItem->FUN_140528380()->m_n18 == pProduct->m_look.m_n18)
+            if (spItem->GetUgcLook()->m_n18 == pProduct->m_look.m_n18)
                 return (int)i;
         }
         else
         {
-            if (spItem->FUN_140526a50() == pProduct->m_music.m_n18)
+            if (spItem->GetItemUid() == pProduct->m_music.m_n18)
                 return (int)i;
         }
     }
@@ -715,9 +717,9 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
         MS2Ptr<CItem> spItem = arrCandidates[i];
         if (spItem.get() != 0)
         {
-            if (spItem->FUN_140525f10() != 0 || spItem->FUN_140526010() != 0)
+            if (spItem->HasCubeTextureMesh() != 0 || spItem->FUN_140526010() != 0)
             {
-                Unk_ItemUgcInfo* pUgc = spItem->FUN_1405278d0();
+                Unk_ItemUgcInfo* pUgc = spItem->GetUgcInfo();
                 __int64 nUgcUid = pUgc->m_nUgcUid;
                 if (nUgcUid != 0 && m_mapUgc.Lookup(nUgcUid) == 0)
                 {
@@ -754,14 +756,14 @@ bool UIMeratMarketRegisterDialog::FUN_141319f10(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    if (spItem->FUN_140525f10() != 0 || spItem->FUN_140526010() != 0)
+    if (spItem->HasCubeTextureMesh() != 0 || spItem->FUN_140526010() != 0)
     {
-        Unk_ItemUgcInfo* pUgc = spItem->FUN_1405278d0();
+        Unk_ItemUgcInfo* pUgc = spItem->GetUgcInfo();
         return ((class Unk_MrdMarket*)FUN_140939a00())->FUN_140d55a10(pUgc->m_nUgcUid).get() != 0;
     }
     else if (spItem->FUN_140525790())
     {
-        return ((class Unk_MrdMarket*)FUN_140939a00())->FUN_140d55b60(spItem->FUN_140526a50()).get() != 0;
+        return ((class Unk_MrdMarket*)FUN_140939a00())->FUN_140d55b60(spItem->GetItemUid()).get() != 0;
     }
     return false;
 }
@@ -773,7 +775,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     if (FUN_140ba28d0(&m_30, 0))
         return false;
     m_spSelected = 0;
-    MS2Ptr<CMeratMarketProduct> spProduct = ((class Unk_MrdMarket*)FUN_140939a00())->FUN_140d55800(key);
+    MS2Ptr<CMeratMarketProduct> spProduct = ((class Unk_MrdMarket*)FUN_140939a00())->FindProduct(key);
     if (spProduct == 0)
         return false;
     if (spProduct->IsUgc() == 0)
@@ -788,7 +790,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         nGender = ((class PC*)(class PCBase*)(pPlayer))->FUN_141658e60();
-    slot.FUN_1407cbbe0("disable", spData->FUN_14053c940(nGender) == 0);
+    slot.FUN_1407cbbe0("disable", spData->IsGenderAllowed(nGender) == 0);
     CStringW strWarning;
     if (spData->FUN_14053cd10())
         strWarning = L"$s_meratmarket_text_register_notice_warning_music_score";
@@ -954,7 +956,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
     if (strDescription.GetLength() > 200)
     {
         int nLimit = 200;
-        CStringW strText = FUN_1408116a0(0xa38, nLimit);
+        CStringW strText = BlockFormat<int>(0xa38, nLimit);
         FUN_140d73aa0(strText, 0, 0, L"");
         return false;
     }
@@ -1010,10 +1012,10 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
     CStringW strDescription = data.FUN_1422b8f40();
     bool bAdvertise = data.FUN_1422b8a90();
     __int64 nItemUid = FUN_141b71960(strGuid);
-    MS2Ptr<CItem> spItem = FUN_1413191f0(nIndex);
+    MS2Ptr<CItem> spItem = GetItemAt(nIndex);
     if (spItem.get() != 0 ? true : false)
     {
-        if (spItem->FUN_140526a50() != nItemUid)
+        if (spItem->GetItemUid() != nItemUid)
             spItem = 0;
     }
     bool bValid = FUN_1413192d0(nItemUid, spItem);
@@ -1112,7 +1114,7 @@ void UIMeratMarketRegisterDialog::FUN_14131c570(ASData& data)
     Scaleform::GFx::Value value = data.FUN_1422b9260();
     ASObj obj(value, 2);
     if (nIndex >= 0)
-        m_spSelected = FUN_1413191f0(nIndex);
+        m_spSelected = GetItemAt(nIndex);
     bool bChanged = false;
     if (m_spSelected)
     {
@@ -1208,7 +1210,7 @@ MS2_REPLACE_METHOD(0x1413187D0, UIMeratMarketRegisterDialog, vfunc_13, 398, 0x42
 MS2_REPLACE_METHOD(0x141318970, UIMeratMarketRegisterDialog, vfunc_15, 163, 0xB59734C4);
 MS2_REPLACE_METHOD(0x141318CC0, UIMeratMarketRegisterDialog, FUN_141318cc0, 551, 0x321E93F0);
 MS2_REPLACE_METHOD(0x141318EF0, UIMeratMarketRegisterDialog, FUN_141318ef0, 444, 0x3E58C313);
-MS2_REPLACE_METHOD(0x1413191F0, UIMeratMarketRegisterDialog, FUN_1413191f0, 204, 0x53827808);
+MS2_REPLACE_METHOD(0x1413191F0, UIMeratMarketRegisterDialog, GetItemAt, 204, 0x53827808);
 MS2_REPLACE_METHOD(0x1413197A0, UIMeratMarketRegisterDialog, FUN_1413197a0, 367, 0x9A68B28B);
 MS2_REPLACE_METHOD(0x141319920, UIMeratMarketRegisterDialog, FUN_141319920, 1500, 0x674985B1);
 MS2_REPLACE_METHOD(0x14131A100, UIMeratMarketRegisterDialog, FUN_14131a100, 1905, 0xE12EBD40);

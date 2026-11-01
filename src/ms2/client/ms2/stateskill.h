@@ -98,7 +98,7 @@ public:
     virtual void vfunc_26(Unk_StateDataArg* p);                         // 26 0x1417e91f0
 
     MS2Ptr<CSkillRecord> GetRecord();                               // the running cast
-    void FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord);                  // set the charging cast
+    void SetChargeRecord(MS2Ptr<CSkillRecord> spRecord);                  // set the charging cast
     MS2Ptr<CSkillRecord> GetCharge();                               // the charging cast
     void FUN_1417ec2f0();                                               // send the charge / aim state
     void FUN_1417ec630(bool bCharge, bool bStart);                      // charge input on/off
@@ -127,7 +127,7 @@ public:
     void FUN_1417f1a90();
     void FUN_1417f1ea0();
     void FUN_1417f1fe0();
-    void FUN_1417f2030();
+    void PlayLoopEndEffect();
     void FUN_1417f2150();
     void FUN_1417f27d0();
     void FUN_1417f2a90(bool bFinish);
@@ -138,7 +138,7 @@ public:
     static int FUN_1417ea310(GameObject* pOwner, ATL::CAtlArray<efd::SmartPointer<GameObject> >& aTargets);
                                                                         // party members first
     static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);  // run an arrow pick (callee releases)
-    unsigned FUN_1417e9330();                                           // the running skill id (0: none)
+    unsigned GetSkillId();                                           // the running skill id (0: none)
     float FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot);
     void SendSkillMode4();
     void FUN_1417f4d20();                                               // start the super armor effect

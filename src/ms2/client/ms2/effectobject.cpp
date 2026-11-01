@@ -19,6 +19,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/stateskill.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- out-of-unit callees (names of the Unk_ types are invented) ----
 
@@ -73,8 +74,8 @@ template <> MS2Ptr<CStateManager>::~MS2Ptr();                        // 0x140a4f
 CString FUN_141b6ed00(const CString& str);                          // normalised copy of a model name
 CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + str
 
-NiActorManager* FUN_140999440(void* pCache, const Unk_GoModelKey& kKey);   // cached actor manager (NULL if none)
-void* FUN_141b6f910();                                              // the model cache singleton
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                                              // the model cache singleton
 const char* FUN_142087e50(const NiFixedString& kName);              // NiFixedString::operator const char*
 void* FUN_14086d260();                                              // the game clock
 class CMainSystem   // C3: member view for the former free stand-ins
@@ -159,7 +160,7 @@ void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, c
 {
     // 0x14123c460 writes an 8-byte entity id; the exe reserves only 8 bytes for it, not the 16 of Unk_GoModelKey.
     struct { void* p; } kKey;
-    NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), FUN_14123c460(reinterpret_cast<Unk_GoModelKey&>(kKey)));
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_GoModelKey&>(FUN_14123c460(reinterpret_cast<Unk_GoModelKey&>(kKey)))));
     if (pMgr != NULL)
     {
         unsigned int uiSeqId = pMgr->FindSequenceID(FUN_142087e50(kSeqName));

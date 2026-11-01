@@ -22,6 +22,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/worldservice.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
@@ -67,7 +74,7 @@ class Unk_GcCore : public Unk_PCCubeCraft { };   // the cube-craft core: its pos
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_PCCubeCraft* FUN_141530290();
+    class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
 class PCBase   // C3: member view for the former free stand-ins
 {
@@ -156,11 +163,11 @@ CGuideConditionPosition::CGuideConditionPosition()
 void CGuideConditionPosition::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pCube = pElem->FUN_140165cf0("cube"); pCube != 0; pCube = pCube->FUN_140168650("cube"))
+    for (Unk_140165cf0* pCube = pElem->FUN_140165cf0("cube"); pCube != 0; pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
     {
         float fRange = 75.0f;
         XmlGetAttr((class TiXmlElement*)(pCube), "range", fRange);
-        CString strPos = FUN_14015f710(pCube, "pos", CString(""));
+        CString strPos = Unk_ReadString((class Unk_XmlNode*)(pCube), "pos", CString(""));
         ATL::CAtlArray<float> arrPos;
         XmlSplit(strPos, arrPos, ",");
         if (arrPos.GetCount() == 3)
@@ -183,8 +190,8 @@ int CGuideConditionPosition::vfunc_3()
     if (pPC == 0)
         return 0;
     Vector3 pos = pPC->vfunc_18();
-    if (((void*)((class PC*)(class Unk_GcPC*)(pPC))->FUN_1416625b0()) != 0 && ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->FUN_141530290()) != 0)
-        pos = ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->FUN_141530290())->GetPtCell();
+    if (((void*)((class PC*)(class Unk_GcPC*)(pPC))->FUN_1416625b0()) != 0 && ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft()) != 0)
+        pos = ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft())->GetPtCell();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)
     {
         float fDist = pos.FUN_140965c40(m_arrCube.GetAt(i).vPos).FUN_140967ac0();

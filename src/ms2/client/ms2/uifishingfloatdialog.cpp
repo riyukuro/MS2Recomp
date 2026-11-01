@@ -26,6 +26,13 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -45,7 +52,7 @@ public:
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 class Unk_StringTable { public: CStringW FUN_14142d760(int nId, int n); };
-Unk_StringTable* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_StringTable (calls cast back)
 struct Unk_GpSettings;
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
@@ -68,8 +75,6 @@ class Unk_SoundOwner;
 class Unk_SoundMgr
 {
 public:
-    int FUN_1411a49c0(Unk_SoundParam& p);                           // 0x1411a49c0 play
-    void FUN_1411a6060(int nHandle);                                // 0x1411a6060 stop
 };
 int FUN_141276180(const CString&, const CString&);
 MS2InputService* FUN_140a58540();
@@ -138,7 +143,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     if (m_30.get())
     {
         int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
-        m_30.operator->()->Invoke("setKeyText", FUN_1409331f0()->FUN_14142d760(0x493e2, nKeyType));
+        m_30.operator->()->Invoke("setKeyText", reinterpret_cast<Unk_StringTable*>(FUN_1409331f0())->FUN_14142d760(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }
@@ -147,7 +152,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
-            FUN_140a58540()->FUN_140d8b3e0(1.7976931348623157e+308);
+            FUN_140a58540()->StartRumbleFor(1.7976931348623157e+308);
     }
 }
 
@@ -158,7 +163,7 @@ void UIFishingFloatDialog::vfunc_67()
     FUN_140f44650(0);
     FUN_140f44650(1);
     FUN_140f44650(2);
-    FUN_140a58540()->FUN_140d8b560(false);
+    FUN_140a58540()->StopRumble(false);
 }
 
 // @0x140f44180
@@ -241,16 +246,16 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
     Unk_SoundMgr* pOwner = ((class Unk_SoundMgr*)((class WorldService*)(class Unk_SoundOwner*)(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pOwner == 0)
         return;
-    Unk_SoundParam param;
+    NoticeMessage param;   // C3: was Unk_SoundParam
     if (nSound == 0)
-        param.m_name = "ETC/Fishing/Sound_Fish_Action.xml";
+        ((Unk_SoundParam&)(param)).m_name = "ETC/Fishing/Sound_Fish_Action.xml";
     else if (nSound == 1)
-        param.m_name = "ETC/Fishing/Sound_Fish_Action_Red.xml";
+        ((Unk_SoundParam&)(param)).m_name = "ETC/Fishing/Sound_Fish_Action_Red.xml";
     else if (nSound == 2)
-        param.m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
-    param.m_08 = 1;
-    param.FUN_140a53190(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
-    m_180[nSound] = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(param);
+        ((Unk_SoundParam&)(param)).m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
+    ((Unk_SoundParam&)(param)).m_08 = 1;
+    ((Unk_SoundParam&)(param)).FUN_140a53190(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
+    m_180[nSound] = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(((Unk_SoundParam&)(param))));
 }
 
 // @0x140f44650
@@ -258,7 +263,7 @@ void UIFishingFloatDialog::FUN_140f44650(int nSound)
 {
     if (m_180[nSound])
     {
-        reinterpret_cast<Unk_SoundMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_180[nSound]);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_180[nSound]);
         m_180[nSound] = 0;
     }
 }

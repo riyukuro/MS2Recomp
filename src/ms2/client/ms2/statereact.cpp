@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x140b8d3e0-0x140b8e760 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statereact.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <float.h>
 #include <errno.h>
@@ -25,7 +26,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 class Unk_StateDataArg                                   // the state-sync record (slots 1/2 of StateData)
 {
@@ -94,7 +95,8 @@ public:
     void FUN_1418e1390();                                                        // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
-class Unk_ReactBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_ReactBuffMgr { public: };
 // PCBase vtable view: slots 22 and 68 take the point by value (the exe copies it to a 16-aligned temp)
 class Unk_ReactSlots
 {
@@ -116,7 +118,7 @@ CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
 class CReactor   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140b78d90(struct Unk_ReactorInfo*);
+    void GetReactorInfo(struct Unk_ReactorInfo*);
     void SendStateReact();
 };
 class Unk_ReactClips : public CPtred                                             // the animation table row of a reaction
@@ -197,7 +199,7 @@ void StateReact::vfunc_4(StateData* pData)
                     m_pOwner->vfunc_59(1, 0, 0, 0);
                     return;
                 }
-                ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->FUN_140b78d90((struct Unk_ReactorInfo*)(&kInfo));
+                ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->GetReactorInfo((struct Unk_ReactorInfo*)(&kInfo));
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar == 0)
                     return;
@@ -281,7 +283,7 @@ void StateReact::vfunc_8(double fTime)
         }
     }
     Unk_ReactBuffMgr* pMgr = ((Unk_ReactBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
-    reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
+    reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else

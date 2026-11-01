@@ -8,11 +8,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItemData>::operator->
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 struct Unk_GiftItem : public CItemData { };
 struct Unk_GiftItemPtr {
     ~Unk_GiftItemPtr(); // 0x1401b50d0
     bool FUN_1402ffd90();
-    Unk_GiftItem* FUN_1401b52a0();
     void* m_00; Unk_GiftItem* m_08;
 };
 MS2_CHECK_SIZE(Unk_GiftItemPtr,0x10);
@@ -29,7 +30,7 @@ int ItemGift::ValidateItem(CString& error) {
     Unk_GiftItemPtr item=FUN_14053f870(m_itemId);
     if(item.FUN_1402ffd90()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no item:{0}",m_itemId);return 0; }
     if(m_count>1) {
-        if(!item.FUN_1401b52a0()->FUN_14053c7c0()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
+        if(!reinterpret_cast<Unk_GiftItem*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053c7c0()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
     }
     return 1;
 }

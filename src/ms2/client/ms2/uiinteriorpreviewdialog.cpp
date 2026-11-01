@@ -197,9 +197,9 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                 }
             }
         }
-        if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_itemName"))
+        if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_itemName"))
             spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, m_178));
-        if (MS2Ptr<ASTextField> spSize = FUN_140bb4cf0("m_cubeSize"))
+        if (MS2Ptr<ASTextField> spSize = GetChild<ASTextField>("m_cubeSize"))
         {
             CStringW strSize = StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType);
             spSize->FUN_1422c4cd0(strSize);

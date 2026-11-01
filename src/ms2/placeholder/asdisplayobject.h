@@ -82,12 +82,12 @@ public:
     virtual ASStage* vfunc_5();                                 // 5 0x1422c1560 the stage of the object's movie (ASStage returns itself)
 
     bool FUN_1422bfca0();                                       // IsVisible
-    void FUN_1422bfd10(float fFOV);                             // set the FOV
-    float FUN_1422bfd90();                                      // FOV
-    void FUN_1422bfe00(float fAlpha);                           // set the alpha (100 = opaque)
+    void SetFOV(float fFOV);                             // set the FOV
+    float GetFOV();                                      // FOV
+    void SetAlpha(float fAlpha);                           // set the alpha (100 = opaque)
     float FUN_1422bfe80();                                      // alpha
-    void FUN_1422bfef0(float fRotation);                        // set the rotation (degrees; uiminimapentity.cpp)
-    float FUN_1422bff70();                                      // rotation
+    void SetRotation(float fRotation);                        // set the rotation (degrees; uiminimapentity.cpp)
+    float GetRotation();                                      // rotation
     void FUN_1422bffe0(int x, int y);                           // set the position
     void FUN_1422c0060(unsigned int x, unsigned int y);         // set the position (uidungeonroomdialog season rank marks)
     void FUN_1422c00f0(float x, float y);                       // set the position (float)
@@ -103,9 +103,9 @@ public:
     void FUN_1422c0620(int z);                                  // set z
     void FUN_1422c06a0(unsigned int z);
     void FUN_1422c0720(float z);
-    void FUN_1422c07a0(int dx);                                 // move x by dx
-    void FUN_1422c0840(int dy);                                 // move y by dy
-    void FUN_1422c08e0(int dx, int dy);                         // move by (dx, dy)
+    void MoveX(int dx);                                 // move x by dx
+    void MoveY(int dy);                                 // move y by dy
+    void MoveBy(int dx, int dy);                         // move by (dx, dy)
     void FUN_1422c09a0(int xScale);                             // set the x scale
     void FUN_1422c0a20(unsigned int xScale);
     void FUN_1422c0aa0(float xScale);
@@ -121,23 +121,23 @@ public:
     void FUN_1422c0ec0(int nHeight);                            // set the "height" member
     void FUN_1422c0ef0(unsigned int nHeight);
     void FUN_1422c0f20(float fHeight);
-    void FUN_1422c0f60(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
-    void FUN_1422c1000(float* pXScale, float* pYScale);         // get the scale
+    void GetPosition(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
+    void GetScale(float* pXScale, float* pYScale);         // get the scale
     float FUN_1422c10a0();                                      // x
     float FUN_1422c1110();                                      // y
-    float FUN_1422c1180();                                      // z
-    float FUN_1422c11f0();                                      // x scale
-    float FUN_1422c1260();                                      // y scale
-    float FUN_1422c12d0();                                      // z scale
+    float GetZ();                                      // z
+    float GetXScale();                                      // x scale
+    float GetYScale();                                      // y scale
+    float GetZScale();                                      // z scale
     int FUN_1422c1340();                                        // ceil(width)
-    int FUN_1422c13b0();                                        // ceil(height)
-    float FUN_1422c1420();                                      // width
-    float FUN_1422c1490();                                      // height
+    int GetHeightCeil();                                        // ceil(height)
+    float GetWidth();                                      // width
+    float GetHeight();                                      // height
     int FUN_1422c1500();                                        // the stage width
     int FUN_1422c1530();                                        // the stage height
     int FUN_1422c15d0(int x, int y, bool bShapeFlag);          // hitTestPoint
-    int FUN_1422c1670(float x, float y, bool bShapeFlag);      // hitTestPoint
-    int FUN_1422c1710(MS2Ptr<ASDisplayObject> spObj);          // hitTestObject (spObj by value: the callee destroys it)
+    int HitTestPoint(float x, float y, bool bShapeFlag);      // hitTestPoint
+    int HitTestObject(MS2Ptr<ASDisplayObject> spObj);          // hitTestObject (spObj by value: the callee destroys it)
     int FUN_1422c17d0(const Scaleform::GFx::Value::DisplayInfo& info);   // SetDisplayInfo
     int FUN_1422c1810(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
 

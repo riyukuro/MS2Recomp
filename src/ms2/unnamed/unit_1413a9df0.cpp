@@ -46,6 +46,15 @@ __declspec(noinline) CStringW GcFmtSize(const wchar_t* f, const size_t& a) { ret
 __declspec(noinline) CStringW GcFmtStr(const wchar_t* f, const CStringW& a) { return StringFormat(f, a); }
 
 #include "ms2/unnamed/unit_1413a9df0.h"
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // @0x1413a9df0
 CStringW CGuideConditionFieldId::vfunc_7()
@@ -103,7 +112,7 @@ CStringW CGuideConditionAnyOne::GetTypeName()
 void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = pChild->FUN_140168650("condition")) {
+    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
@@ -147,7 +156,7 @@ CStringW CGuideConditionAllOf::GetTypeName()
 void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = pChild->FUN_140168650("condition")) {
+    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
@@ -230,7 +239,7 @@ void CGuideConditionGuideOpen::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 13;
     m_nGuideId = 0;
-    FUN_140873220(pElem, "id", reinterpret_cast<unsigned&>(m_nGuideId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned&>(m_nGuideId));
 }
 
 // @0x1413aa8f0
@@ -274,7 +283,7 @@ void CGuideConditionGuideClear::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 2;
     m_nGuideId = 0;
-    FUN_140873220(pElem, "id", reinterpret_cast<unsigned&>(m_nGuideId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned&>(m_nGuideId));
 }
 
 // @0x1413aab60
@@ -317,8 +326,8 @@ void CGuideConditionExistShortcut::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     m_nSlotIndex = 0;
     m_nSkillId = 0;
-    FUN_140873220(pElem, "slotIndex", reinterpret_cast<unsigned&>(m_nSlotIndex));
-    FUN_140873220(pElem, "skillID", reinterpret_cast<unsigned&>(m_nSkillId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "slotIndex", reinterpret_cast<unsigned&>(m_nSlotIndex));
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillID", reinterpret_cast<unsigned&>(m_nSkillId));
 }
 
 // @0x1413aadb0
@@ -507,7 +516,7 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
         return FUN_1413a55a0(0);
     if (Unk_GcBoolHasValue(&m_attachable)) {
         Unk_G9ItemRef item = FUN_14053f870(FUN_1408b4f20(pCube));
-        bool bAttach = item.FUN_1401b52a0()->m_nValue != 0;
+        bool bAttach = reinterpret_cast<Unk_G9ItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_nValue != 0;
         if (bAttach != m_attachable.GetValue())
             return FUN_1413a55a0(0);
     }
@@ -579,7 +588,7 @@ void CGuideConditionInteractObject::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     FUN_1408731e0(pElem, "interactId", m_nInteractId);
-    FUN_140873360(pElem, "distance", m_fDistance);
+    XmlGetAttr((class TiXmlElement*)(pElem), "distance", m_fDistance);
     FUN_1408731e0(pElem, "state", m_nState);
 }
 

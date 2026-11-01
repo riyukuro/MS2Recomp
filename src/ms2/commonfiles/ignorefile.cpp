@@ -13,6 +13,18 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unit-local views of callees emitted in other units ----
 
@@ -22,7 +34,6 @@ template<class T> inline void Unk_FileLog(CLogString* log, int level, int catego
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(value), args));
 }
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (NULL: missing)
 
 // @0x14050e140
 CIgnoreFile::CIgnoreFile()
@@ -36,16 +47,16 @@ CIgnoreFile::~CIgnoreFile()
 }
 
 // @0x14050e200
-bool CIgnoreFile::FUN_14050e200(std::string strPath, int nMode)
+bool CIgnoreFile::Load(std::string strPath, int nMode)
 {
     m_nMode = nMode;
     m_setDirs.clear();
     m_setFiles.clear();
-    return FUN_14050e4c0(strPath, nMode);
+    return ParseFile(strPath, nMode);
 }
 
 // @0x14050e2a0
-bool CIgnoreFile::FUN_14050e2a0(std::string strPath)
+bool CIgnoreFile::IsIgnored(std::string strPath)
 {
     if (m_setFiles.find(strPath) != m_setFiles.end())
         return true;
@@ -62,7 +73,7 @@ bool CIgnoreFile::FUN_14050e2a0(std::string strPath)
 }
 
 // @0x14050e420
-bool CIgnoreFile::FUN_14050e420(std::string strPath)
+bool CIgnoreFile::IsIgnoredDir(std::string strPath)
 {
     if (m_setDirs.find(strPath) != m_setDirs.end())
         return true;
@@ -70,7 +81,7 @@ bool CIgnoreFile::FUN_14050e420(std::string strPath)
 }
 
 // @0x14050e4c0
-bool CIgnoreFile::FUN_14050e4c0(std::string strPath, int nMode)
+bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
 {
     TiXmlDocument doc;
     CString strFile;
@@ -87,15 +98,15 @@ bool CIgnoreFile::FUN_14050e4c0(std::string strPath, int nMode)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\r\n");
         return false;
     }
-    for (Unk_140165cf0* pExcept = pRoot->FUN_140165cf0("except"); pExcept != 0; pExcept = pExcept->FUN_140168650("except"))
+    for (Unk_140165cf0* pExcept = pRoot->FUN_140165cf0("except"); pExcept != 0; pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->NextSibling("except")))
     {
         std::string strEntry;
-        const char* pszTag = FUN_14086f4b0(pExcept, "tag");
+        const char* pszTag = ((class TiXmlElement*)(class Unk_140165cf0*)(pExcept))->Attribute("tag");
         if (pszTag != 0 && atoi(pszTag) <= nMode)
             continue;
-        for (Unk_140165cf0* pDir = pExcept->FUN_140165cf0("directory"); pDir != 0; pDir = pDir->FUN_140168650("directory"))
+        for (Unk_140165cf0* pDir = pExcept->FUN_140165cf0("directory"); pDir != 0; pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDir))->NextSibling("directory")))
         {
-            const char* pszName = FUN_14086f4b0(pDir, "name");
+            const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pDir))->Attribute("name");
             if (pszName != 0)
             {
                 std::string strName(pszName);
@@ -111,9 +122,9 @@ bool CIgnoreFile::FUN_14050e4c0(std::string strPath, int nMode)
                 m_setDirs.insert(strEntry);
             }
         }
-        for (Unk_140165cf0* pFile = pExcept->FUN_140165cf0("file"); pFile != 0; pFile = pFile->FUN_140168650("file"))
+        for (Unk_140165cf0* pFile = pExcept->FUN_140165cf0("file"); pFile != 0; pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFile))->NextSibling("file")))
         {
-            const char* pszName = FUN_14086f4b0(pFile, "name");
+            const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pFile))->Attribute("name");
             if (pszName != 0)
             {
                 std::string strName(pszName);

@@ -53,6 +53,8 @@
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include <utility>
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -141,11 +143,7 @@ public:
     Unk_PsdFlags m_8;
 };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_PsdKeys
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);
-};
+class Unk_PsdKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The key event of vfunc_79: a base with the key code and a second base (+8) whose slot 1 tells "repeated".
@@ -184,7 +182,8 @@ unsigned __int64 FUN_140718350(const CString& str);                     // strin
 unsigned __int64 FUN_140718370(const CStringW& str);
 CStringW FUN_140719a80(unsigned __int64 n);
 CStringW GetStringCommon(int nId);                                        // string table
-CStringW FUN_1408116a0(int nId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a1, const int& a2);
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);
@@ -222,7 +221,7 @@ void FUN_140f8ff40(int nId, int a, int b)
 void ASObj::FUN_140f8f970(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -230,7 +229,7 @@ void ASObj::FUN_140f8f970(const char* szName, int n)
 void ASObj::FUN_140f8fa10(const char* szName, unsigned int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -361,7 +360,7 @@ int UIPartySearchDialog::vfunc_65()
 // @0x140f8c650
 int UIPartySearchDialog::vfunc_73()
 {
-    if (((class Unk_PsdConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x1b) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((class Unk_PsdConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x1b)) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -408,7 +407,7 @@ void UIPartySearchDialog::vfunc_26()
     UIDialog::vfunc_26();
     m_17c = 0;
     FUN_140f8ded0();
-    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4edb);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4edb);
 }
 
 // @0x140f8c9c0
@@ -866,7 +865,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
     if (TSingleton<CPartyManager>::GetInstance()->FUN_141631cc0() != 0)
         FUN_140d73bc0(0xb3d, 0, 0, L"");
     else if (TSingleton<CPartyManager>::GetInstance()->FUN_14162af00() >= 10)
-        FUN_140d73aa0(FUN_1408116a0(0xb3b, 10), 0, 0, L"");
+        FUN_140d73aa0(BlockFormat<int>(0xb3b, 10), 0, 0, L"");
     else
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4edb)));
 }

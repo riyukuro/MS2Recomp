@@ -25,8 +25,8 @@ public:
     virtual void vfunc_43();                                                    // 43 empty
     virtual int vfunc_48() { return 20320; }                                    // 48 UI type id (COMDAT 0x140e667c0)
 
-    void FUN_140e66330();                                                       // popUp
-    void FUN_140e663b0();                                                       // hide
+    void PopUp();                                                       // popUp
+    void Hide();                                                       // hide
     void FUN_140e664a0();                                                       // centre the game entity on screen
     void SetCard(int nCard);                                              // m_70 = nCard
     void SendMicrogame();                                                       // onSelectTimeUp: send the selection

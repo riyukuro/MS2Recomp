@@ -35,7 +35,6 @@
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
 void FUN_1401783d0(const CString* pText, std::vector<int>* pOut, const char* pszSep);   // split into ints
 __int64 FUN_140475ff0(unsigned short nRule);                            // the rule's limit
 struct Unk_RegMarker {};
@@ -57,9 +56,21 @@ static CString s_skill("skill");
 // @0x1400b9010
 static CString s_stun("stun");
 
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 #ifndef MS2_HOOK_DLL
 // @0x1400b9040
 #include "ms2/placeholder/unk_1402a9d70.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142c9aa30
 #endif
 
@@ -201,14 +212,14 @@ void HideAndSeek::LoadHideAndSeek()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("field"); pNode != 0; pNode = pNode->FUN_140168650("field"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("field"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("field")))
     {
         if (FUN_14028f710((struct Unk_XmlElement*)(pNode)) == 0)
             continue;
         unsigned nMapCode = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "mapCode", nMapCode);
         std::vector<int> objects;
-        CString strObjects(FUN_14086f4b0(pNode, "ridingObject"));
+        CString strObjects(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("ridingObject"));
         FUN_1401783d0(&strObjects, &objects, ",");
         if (Unk_LockGuard guard = s_lock) {} else
         {

@@ -59,10 +59,10 @@ public:
     virtual int vfunc_48();                                     // 48 0x141a7aa70 UI id
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141a774d0 "buy_scroll" box answer
 
-    void FUN_141a74d50(CPartyMember* pMember, int nFlags);      // "updateMember"
+    void UpdateMember(CPartyMember* pMember, int nFlags);      // "updateMember"
     void FUN_141a74ea0();                                       // update every member (flags 0x180)
     void FUN_141a74f50(CPartyMember* pOld, CPartyMember* pNew); // "changeChief"
-    int FUN_141a752a0(CPartyMember* pMember);                   // "addMember"
+    int AddMember(CPartyMember* pMember);                   // "addMember"
     int FUN_141a753d0(CPartyMember* pMember);                   // "removeMember"
     int FUN_141a75490(__int64 nCharId, float* pPos);            // "getCameraButtonPos" (adds it to pPos)
     int FUN_141a75680(float* pPos);                             // the first other member's camera button
@@ -83,10 +83,10 @@ public:
     int FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int nFlags);    // fill the member object
     void FUN_141a792b0();                                       // refresh everything, "initMembers"
     void FUN_141a794e0();                                       // m_enterDungeon state
-    void FUN_141a79570();                                       // dungeon name
+    void UpdateDungeonName();                                       // dungeon name
     void FUN_141a796b0();                                       // m_recall state
-    void FUN_141a79770();                                       // m_createClub state
-    void FUN_141a79840();                                       // m_giveUpDungeon state
+    void UpdateCreateClubButton();                                       // m_createClub state
+    void UpdateGiveUpDungeonButton();                                       // m_giveUpDungeon state
 
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASButton> m_enterDungeon;                            // +0x178 "m_enterDungeon"
@@ -275,7 +275,7 @@ public:
     __int64 FUN_141a808a0();                                    // m_a8
     CString FUN_141a808c0();                                    // the request key (m_88)
     void FUN_141a80910();                                       // copy the own guild
-    void FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
+    void SetGuildInfo(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
     void FUN_141a80a50(CInPacket& packet);                      // packet 0x53
     void FUN_141a80af0(const Unk_PopupMenuInfo& info);          // take the request
     void FUN_141a80c40();                                       // register the menu handlers
@@ -284,7 +284,7 @@ public:
     void FUN_141a82dd0();                                       // reset
     int FUN_141a82ed0(GameObject* pObject, NiPoint3& out, float fDir);
     int FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir);
-    void FUN_141a82fb0(const CString& strImage);
+    void SetProfileImage(const CString& strImage);
     int FUN_141a83080(GameObject* pObject);                     // target kind
     void FUN_141a832e0(GameObject* pObject, CStringW& strName);
     int FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strName, int nDir);
@@ -334,7 +334,7 @@ public:
     void SendRequestPet();
     void FUN_141a86b80();
     void SendRequestCube();
-    void FUN_141a86ca0();
+    void OpenCoupleActionDialog();
     void FUN_141a86d20();
     void FUN_141a86db0();
     void FUN_141a86e40();

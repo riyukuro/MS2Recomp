@@ -10,6 +10,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 class Unk_DungeonPopupStream
 {
@@ -69,7 +70,7 @@ MS2_REPLACE_METHOD(0x140C0ED60, UIDungeonPopupRewardDialog, GetTypeName, 61, 0x3
 void UIDungeonPopupRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_DungeonPopupPacketManager*)FUN_140bccd50())->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     m_reward = new UIDungeonSearchUnitedReward;
@@ -86,7 +87,7 @@ MS2_REPLACE_METHOD(0x140C0EDB0, UIDungeonPopupRewardDialog, OnLoadComplete, 873,
 void UIDungeonPopupRewardDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class Unk_DungeonPopupPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
     m_reward = 0;
 }
 MS2_REPLACE_METHOD(0x140C0F140, UIDungeonPopupRewardDialog, vfunc_26, 189, 0xCE47389B);

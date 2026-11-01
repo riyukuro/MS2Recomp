@@ -59,15 +59,16 @@ private:
 
 // Depth-first walker over a scene graph (0x30 bytes: the base ctor 0x14098c730 fills up to +0x2c; unrecovered class,
 // see nifanimationservice.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // effect object configured by FUN_1413f9ba0 (only the members used here)
@@ -128,7 +129,6 @@ public:
     static void MarkScene(class NiAVObject*, bool);
 };
 int FUN_1408a2060(egf::Entity* e, unsigned id, efd::utf8string* out);
-int FUN_1408a20a0(egf::Entity* e, unsigned id, bool* out);
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* out);
 int FUN_1408a01e0(CStringA kText);
 void FUN_140b27ec0(void*, unsigned int, void*);   // C3: was FUN_140b27ec0
@@ -442,7 +442,7 @@ MS2_REPLACE(0x1413FA1B0, FUN_1413fa1b0, 232, 0xC57CBF3D);
 bool FUN_1413fa2a0(egf::Entity* pEntity)
 {
     bool bValue = true;
-    FUN_1408a20a0(pEntity, 0xd89e9b12, &bValue);
+    pEntity->GetPropertyValue(0xd89e9b12, bValue);
     return bValue;
 }
 MS2_REPLACE(0x1413FA2A0, FUN_1413fa2a0, 44, 0xB3C8E4E0);
@@ -451,7 +451,7 @@ MS2_REPLACE(0x1413FA2A0, FUN_1413fa2a0, 44, 0xB3C8E4E0);
 bool FUN_1413fa2e0(egf::Entity* pEntity)
 {
     bool bValue = true;
-    FUN_1408a20a0(pEntity, 0x90d6d437, &bValue);
+    pEntity->GetPropertyValue(0x90d6d437, bValue);
     return bValue;
 }
 MS2_REPLACE(0x1413FA2E0, FUN_1413fa2e0, 44, 0x7EEE2184);
@@ -476,7 +476,7 @@ bool FUN_1413fa390(egf::Entity* pEntity)
     if (FUN_1408a2060(pEntity, 0x15014205, &kName) != 0)
         return false;
     bFlag = false;
-    if (FUN_1408a20a0(pEntity, 0xa9487f97, &bFlag) != 0)
+    if (pEntity->GetPropertyValue(0xa9487f97, bFlag) != 0)
         return false;
     return (bFlag || FUN_1408a01e0(CStringA(kName.c_str())) == 0x40) ? 1 : 0;
 }
@@ -487,7 +487,7 @@ void FUN_1413fa4c0(egf::Entity* pEntity)
     NiAVObject* pkRoot = FUN_141b6efc0(pEntity);
     if (pkRoot == 0)
         return;
-    Unk_SceneWalker kWalker(pkRoot);
+    Unk_SceneWalker kWalker((NiAVObject*)(pkRoot));
     NiAVObject* pkObject;
     while ((pkObject = kWalker.Next(true)) != 0) {
         NiProperty* pkProp = pkObject->GetProperty(0xb);

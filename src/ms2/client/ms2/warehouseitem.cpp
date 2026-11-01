@@ -38,7 +38,7 @@ int CWarehouseItem::FUN_1408fb990()
 // @0x1408fb9f0
 __int64 CWarehouseItem::FUN_1408fb9f0()
 {
-    return (CItem*)m_spItem != 0 ? m_spItem->FUN_140526a50() : 0;
+    return (CItem*)m_spItem != 0 ? m_spItem->GetItemUid() : 0;
 }
 
 // @0x1408fba50
@@ -66,7 +66,7 @@ void CWarehouseItemTable::RemoveAll()
 // @0x1408fbaf0
 int CWarehouseItemTable::Add(CItem* pItem)
 {
-    if (m_items.Lookup(pItem->FUN_140526a50()) != 0)
+    if (m_items.Lookup(pItem->GetItemUid()) != 0)
         return 0x11;
     MS2Ptr<CWarehouseItem> spEntry(new CWarehouseItem(MS2Ptr<CItem>(pItem)));
     m_items.SetAt(spEntry->FUN_1408fb9f0(), spEntry);
@@ -167,7 +167,7 @@ int CWarehouseItemTable::FUN_1408fc1b0(int nItemId)
         if (spItem == 0)
             continue;
         if (spItem->FUN_1405276c0() == nItemId)
-            nTotal += spItem->FUN_140526c50();
+            nTotal += spItem->GetCount();
     }
     return nTotal;
 }
@@ -184,8 +184,8 @@ int CWarehouseItemTable::FUN_1408fc2f0(int nItemId, unsigned __int64 nUgcUid)
         MS2Ptr<CItem> spItem = spEntry->m_spItem;
         if (spItem == 0)
             continue;
-        if (spItem->FUN_1405276c0() == nItemId && spItem->FUN_1405283d0() == nUgcUid)
-            nTotal += spItem->FUN_140526c50();
+        if (spItem->FUN_1405276c0() == nItemId && spItem->GetUgcUid() == nUgcUid)
+            nTotal += spItem->GetCount();
     }
     return nTotal;
 }

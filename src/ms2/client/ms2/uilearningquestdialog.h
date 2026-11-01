@@ -48,8 +48,6 @@ public:
     void FUN_140ea2e50(ASObj& rOut);                            // 0x140ea2e50 build the category / quest tree
     void FUN_140ea3570(const CQuestData::CompleteReward& rReward, ASObj& rOut);   // 0x140ea3570 exp / meso text and reward items
     void FUN_140ea3910();                                       // 0x140ea3910 mark dirty while the lobby scene is shown
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
 
 private:
     MS2_LAYOUT_FRIEND;

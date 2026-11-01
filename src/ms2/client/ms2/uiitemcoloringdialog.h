@@ -54,7 +54,7 @@ public:
     int FUN_1419aef80();                                        // "m_save" enabled
     void FUN_1419af050(int bEnable);                            // enable "m_save"
     void FUN_1419af110(int bEnable);                            // enable "m_reset"
-    void FUN_1419af1d0(int bEnable);                            // enable "m_addBasket"
+    void SetAddBasketButtonEnabled(int bEnable);                            // enable "m_addBasket"
     void FUN_1419af290();                                       // "forceClearSelected"
     void FUN_1419af2f0(unsigned nPrice);                        // "setFee"
     void FUN_1419af750();                                       // the dye done effect

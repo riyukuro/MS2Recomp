@@ -45,7 +45,8 @@ public:
     static class NiRenderer* GetRenderer();
 };
 class NiDX9Renderer { public: static const NiRTTI ms_RTTI; };      // C3: was extern char DAT_143d6eb58
-extern char DAT_143b059e8;                                                  // the entity app framework
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 ecr::SceneGraphService* FUN_1409a5700(void* pFramework);                    // the scene graph service
 
 // The engine's light-service functor that re-evaluates which lights affect each scene graph (Gamebryo LightService.cpp, ctor

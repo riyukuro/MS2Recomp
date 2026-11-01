@@ -16,14 +16,6 @@
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
-// The effect manager and its play request (NoticeMessage, effectquery.h).
-class Unk_LtFxMgr
-{
-public:
-    int FUN_1411a49c0(NoticeMessage* pRequest);                     // play, returns the handle
-    void FUN_1411a6060(int nHandle);                                // stop
-};
-
 // The target's transform (NiTransform: rotation, translation, scale). The ctor 0x140a332d0 is out of line, and the
 // position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
 struct Unk_LtPoint3 { float x, y, z; Unk_LtPoint3& operator=(const Unk_LtPoint3&); };
@@ -46,7 +38,6 @@ void FUN_14097faa0(Unk_LtPoint3* p, Unk_LtPoint3* pSrc);
 class Unk_Entity
 {
 public:
-    int FUN_1409618c0(unsigned nHash, Vector3* pValue);     // point property
     int FUN_1408a2020(unsigned nHash, int* pValue);                 // int property
     int FUN_1408a2060(unsigned nHash, efd::utf8string* pValue);     // string property
 };
@@ -148,9 +139,9 @@ CLiftableTarget::~CLiftableTarget()
 int CLiftableTarget::vfunc_1(Unk_EntRef ent)
 {
     m_ent = ent;
-    if (m_ent.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &m_vPos) != 0)
+    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vPos)) != 0)
         return 0;
-    if (m_ent.FUN_1408a9280()->FUN_1409618c0(0x68c7c29d, &m_vRot) != 0)
+    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_vRot)) != 0)
         return 0;
     if (m_ent.FUN_1408a9280()->FUN_1408a2020(0x79ec600a, &m_nId) != 0)
         return 0;
@@ -211,7 +202,7 @@ void CLiftableTarget::FUN_141448750()
     req.m_strName = vfunc_2();
     req.m_nObject = 0;
     req.m_p18 = &xform;
-    m_nFx = reinterpret_cast<Unk_LtFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&req);
+    m_nFx = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&req));
 }
 
 // @0x141448920
@@ -219,7 +210,7 @@ void CLiftableTarget::FUN_141448920()
 {
     if (m_nFx == 0)
         return;
-    reinterpret_cast<Unk_LtFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nFx);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nFx);
     m_nFx = 0;
 }
 

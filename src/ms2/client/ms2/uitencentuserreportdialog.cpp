@@ -19,6 +19,7 @@
 #include "ms2/placeholder/blindmanager.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/buddymanager.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 static CString s_marketSort[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -34,7 +35,6 @@ public:
 class Unk_ReportCheck : public CPtred {
 public:
     void FUN_1422c1fe0(int enabled);
-    void FUN_1422ce090(int checked);
     bool FUN_1422ce0e0();
     void FUN_1422cdfb0(const CStringW& text);
 };
@@ -439,7 +439,7 @@ void UITencentUserReportPage::FUN_140edc7d0(int type)
             continue;
         }
         if (g_reportTypes[i] == type)
-            m_checks[i]->FUN_1422ce090(1);
+            reinterpret_cast<ASButton*>(m_checks[i].operator->())->FUN_1422ce090(1);
         m_checks[i]->FUN_1422c1fe0(0);
     }
 }

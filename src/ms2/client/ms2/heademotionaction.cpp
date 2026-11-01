@@ -28,7 +28,7 @@ public:
 class CBoneRotateManager   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140a34f00();
+    void StopLooking();
 };
 
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -107,6 +107,6 @@ void CHeadEmotionAction::vfunc_6(double f)
     {
         PC* pPC = reinterpret_cast<Unk_EntityMgr*>(WorldService::GetInstance())->FUN_141bd1290(m_n18);
         if (pPC != 0)
-            ((class CBoneRotateManager*)(class Unk_PCD88*)(pPC->FUN_14165c2d0().operator->()))->FUN_140a34f00();
+            ((class CBoneRotateManager*)(class Unk_PCD88*)(pPC->FUN_14165c2d0().operator->()))->StopLooking();
     }
 }

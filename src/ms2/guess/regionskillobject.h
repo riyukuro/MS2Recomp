@@ -55,7 +55,7 @@ public:
     void FUN_1416f6860();                                   // fade out every spawned effect
     void FUN_1416f6900();                                   // a tick hit
     void FUN_1416f6b90();                                   // reset
-    int FUN_1416f6e20();                                    // the id
+    int GetId();                                    // the id
     void FUN_1416f6e40();                                   // end the region skill
     Vector3 FUN_1416f6ed0();                        // the first point
     void FUN_1416f6f50();                                   // per frame: respawn the culled effects

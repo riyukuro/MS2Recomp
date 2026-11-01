@@ -226,7 +226,6 @@ CStringW FUN_1409e8ca0(CStringW strKey, const int& a1, const int& a2, const int&
 CStringW FUN_140938ae0(CStringW strKey, const int& a1);
 CStringW FUN_1409e9890(CStringW strKey, const int& a1, const int& a2);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& a1);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 void FUN_141275260(int nId, int a2, int a3);                                // system message
 __int64 GetServerTime();
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -453,7 +452,7 @@ MS2_REPLACE_METHOD(0x141aa9ae0, UIQuestGuideDialog, vfunc_65, 456, 0xAB811FEE);
 void UIQuestGuideDialog::vfunc_67()
 {
     if (m_30.get()) {
-        int nPage = m_30->FUN_1422baa20("m_pageIndex").GetInt();
+        int nPage = m_30->GetMember("m_pageIndex").GetInt();
         m_pageIndex.SetAt(DAT_143ab2828, nPage);
     }
     UIDialog::vfunc_67();
@@ -488,7 +487,7 @@ void UIQuestGuideDialog::OnLoadComplete()
     m_bRecommendDirty = 0;
     m_nRecommendQuest = 0;
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x77)) {
-        m_navigation.AssignRaw(new AScript(m_30->FUN_1422baa20("updateNavigation"), 2));
+        m_navigation.AssignRaw(new AScript(m_30->GetMember("updateNavigation"), 2));
         ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIQuestGuideDialog::FUN_141aaf150), 0, FUN_1422db730());
         static_cast<ASObj*>(m_30.operator->())->FUN_1409adbe0("m_funcGetNavigation", Scaleform::GFx::Value(fn.FUN_1422bb870()));
     }
@@ -533,7 +532,7 @@ void UIQuestGuideDialog::vfunc_15()
     }
     if (m_navigation.get() ? true : false) {
         if (m_navigationTick.FUN_140268870(0xf0))
-            m_navigation->FUN_1422bb3c0();
+            m_navigation->InvokeSelf();
     }
 }
 MS2_REPLACE_METHOD(0x141aaa450, UIQuestGuideDialog, vfunc_15, 523, 0xF3015AD5);
@@ -657,7 +656,7 @@ int UIQuestGuideDialog::vfunc_53(void* pCfg)
         if ((m_alignment.get() ? true : false) && pDialog) {
             float x = (float)pDialog->FUN_1422c1500();
             float y = (float)pDialog->FUN_1422c1530();
-            m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->FUN_1422c13b0(), x, y);
+            m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);
             m_alignment->FUN_1419015e0(pCfg);
         }
         return 1;
@@ -675,7 +674,7 @@ int UIQuestGuideDialog::vfunc_54(void* pCfg)
             if (!m_alignment->FUN_141901660(pCfg)) {
                 float x = (float)pDialog->FUN_1422c1500();
                 float y = (float)pDialog->FUN_1422c1530();
-                m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->FUN_1422c13b0(), x, y);
+                m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);
             }
         }
         return 1;
@@ -1064,7 +1063,7 @@ CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
         }
     }
     CStringW strTitle = FUN_1416e7fb0(spData->m_28);
-    return FUN_140656190(L"[{0}] {1}", strKind, strTitle);
+    return StringFormat<CStringW, CStringW>(L"[{0}] {1}", strKind, strTitle);
 }
 MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, FUN_141aacf40, 909, 0x310FE535);
 
@@ -1072,7 +1071,7 @@ MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, FUN_141aacf40, 909, 0x310FE5
 unsigned UIQuestGuideDialog::FUN_141aad300(int nChapter)
 {
     ATL::CAtlArray<unsigned> quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, quests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, quests);
     return (unsigned)quests.GetCount();
 }
 MS2_REPLACE_METHOD(0x141aad300, UIQuestGuideDialog, FUN_141aad300, 88, 0x5AE2D51B);
@@ -1173,7 +1172,7 @@ void UIQuestGuideDialog::FUN_141aadd10(int* pnWidth, int* pnHeight)
         return;
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30)) {
         *pnWidth = pDialog->FUN_1422c1340();
-        *pnHeight = pDialog->FUN_1422c13b0();
+        *pnHeight = pDialog->GetHeightCeil();
     }
 }
 MS2_REPLACE_METHOD(0x141aadd10, UIQuestGuideDialog, FUN_141aadd10, 148, 0xF2281377);
@@ -1188,7 +1187,7 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
     if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(nMapId, &nParent))
         nMapId = nParent;
     ATL::CAtlArray<unsigned> quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cbf0(nMapId, quests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByMap(nMapId, quests);
     if (!quests.GetCount())
         return false;
     ASArray conditions(2);
@@ -1301,7 +1300,7 @@ int UIQuestGuideDialog::FUN_141aae6d0()
             nBest = quests[i]->FUN_140bfc580();
         }
     }
-    return ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416d2600(nBest, 1);
+    return ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetNextQuestId(nBest, 1);
 }
 MS2_REPLACE_METHOD(0x141aae6d0, UIQuestGuideDialog, FUN_141aae6d0, 499, 0x25DB618B);
 
@@ -1426,7 +1425,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const AScript& a1, c
 void ASObj::FUN_141aafcd0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

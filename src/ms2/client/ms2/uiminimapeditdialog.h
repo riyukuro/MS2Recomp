@@ -38,7 +38,6 @@ public:
     MS2Ptr<Unk_MeSlider> FUN_140faff90(const CString& strName);     // 0x140faff90 slider child lookup (a UIDialog member)
     MS2Ptr<Unk_MeLabel> FUN_140e6d820(const CString& strName);      // 0x140e6d820 label child lookup
     MS2Ptr<Unk_MeInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 movie clip child lookup
 
     void FUN_141a53100();                                           // 0x141a53100 load the <minimap> node of the map xml into m_spMinimap and the camera
     void FUN_141a53750();                                           // 0x141a53750 store the camera/image area into m_spMinimap and save the xml

@@ -111,7 +111,7 @@
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141277f50();                                                // the UI layer id
-bool FUN_141276180(CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
+int FUN_141276180(const CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
 CReservedWordTable* FUN_1403b4750();
 UISwfEntity* FUN_14096e340(int nId);
 class Unk_StEntity : public ASGameEntity { };   // y                                // the UI of a class id
@@ -206,7 +206,7 @@ void UISystemText::vfunc_43()
         if (pUpper != 0)
         {
             if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()))
-                nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->FUN_1422c1110() + (float)pUpperRoot->FUN_1422c13b0() + 10.0f);
+                nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->FUN_1422c1110() + (float)pUpperRoot->GetHeightCeil() + 10.0f);
         }
         pEntity->vfunc_2(1, 0, nTop);
     }

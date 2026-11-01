@@ -41,12 +41,12 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- the world, the actors and the helper services this unit calls ----------------------------------------------------
 class MyPC;
 MyPC* FUN_14161e580(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
 class Unk_OptWorld;
-PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, unsigned __int64 nUid);
 class Unk_OptObjMap;                                                // the world's actor table
 TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
 void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
@@ -164,7 +164,7 @@ void COptimizer::FUN_14161bb60()
         m_fMemoryTime = 0;
         if (!((class COSInfo*)(class Unk_OptOsInfo*)(reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())))->Is64Bit())
         {
-            unsigned __int64 nUsage = FUN_14161bdc0();
+            unsigned __int64 nUsage = GetPagefileUsageMB();
             if (0x599 < nUsage)
             {
                 ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->LowerLifetime(120.0);
@@ -182,7 +182,7 @@ void COptimizer::FUN_14161bb60()
             for (std::set<unsigned __int64>::iterator it = m_players.begin(); it != m_players.end(); ++it)
             {
                 const unsigned __int64* pId = &*it;
-                PCBase* pPC = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), *pId);
+                PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(*pId));
                 if (pPC != 0)
                 {
                     FUN_14161dbe0(pPC, preloadMode);
@@ -207,13 +207,13 @@ void COptimizer::FUN_14161bb60()
     }
     if (m_nSampleCount > 0)
     {
-        FUN_14161c990();
+        UpdateFrameSampling();
     }
     ((class Unk_OptGPU*)FUN_141245b20())->FUN_1413758b0();
 }
 
 // @0x14161bdc0
-unsigned __int64 COptimizer::FUN_14161bdc0() const
+unsigned __int64 COptimizer::GetPagefileUsageMB() const
 {
     PROCESS_MEMORY_COUNTERS_EX counters = {};
     counters.cb = sizeof(counters);
@@ -225,7 +225,7 @@ unsigned __int64 COptimizer::FUN_14161bdc0() const
 }
 
 // @0x14161be50
-unsigned __int64 COptimizer::FUN_14161be50() const
+unsigned __int64 COptimizer::GetPrivateUsageMB() const
 {
     PROCESS_MEMORY_COUNTERS_EX counters = {};
     counters.cb = sizeof(counters);
@@ -245,7 +245,7 @@ void COptimizer::FUN_14161bee0()
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     unsigned __int64 nMemory = FUN_141245b10();
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GlobalMemory : %d(MB)", nMemory);
-    nMemory = FUN_14161bdc0();
+    nMemory = GetPagefileUsageMB();
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Pagefile : %d(MB)", nMemory);
     DWORD dwLength = 0x80;
     HKEY hKey;
@@ -349,14 +349,14 @@ float COptimizer::FUN_14161c360()
 }
 
 // @0x14161c3f0
-void COptimizer::FUN_14161c3f0()
+void COptimizer::ClearFrameLimit()
 {
     m_fFrameLimit = 0;
     m_nFrameDelay = 0;
 }
 
 // @0x14161c420
-void COptimizer::FUN_14161c420(float fLimit)
+void COptimizer::SetFrameLimit(float fLimit)
 {
     m_fFrameLimit = fLimit;
     if (FUN_14028d470(m_fFrameLimit, 0))
@@ -443,7 +443,7 @@ void COptimizer::FUN_14161c8c0()
 }
 
 // @0x14161c940
-void COptimizer::FUN_14161c940(unsigned nCount, int nCycle)
+void COptimizer::StartFrameSampling(unsigned nCount, int nCycle)
 {
     if (m_nSampleCount != 0)
     {
@@ -454,9 +454,9 @@ void COptimizer::FUN_14161c940(unsigned nCount, int nCycle)
 }
 
 // @0x14161c990
-void COptimizer::FUN_14161c990()
+void COptimizer::UpdateFrameSampling()
 {
-    if (m_sampleTimer.FUN_140268870(m_nSampleCycle) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_sampleTimer).Check(m_nSampleCycle) == 0)
     {
         return;
     }
@@ -573,7 +573,7 @@ int COptimizer::FUN_14161ce60(unsigned nId)
 }
 
 // @0x14161cee0
-void COptimizer::FUN_14161cee0(int nSuppressed)
+void COptimizer::SetSuppressed(int nSuppressed)
 {
     m_nSuppressed = nSuppressed;
     if (m_nEnabled != 0)
@@ -616,7 +616,7 @@ void COptimizer::FUN_14161d010(const egf::EntityID& kId)
 {
     if (m_suppress.empty())
     {
-        FUN_14161cee0(1);
+        SetSuppressed(1);
     }
     m_suppress.insert(kId);
 }
@@ -629,7 +629,7 @@ void COptimizer::FUN_14161d070(const egf::EntityID& kId)
         m_suppress.erase(kId);
         if (m_suppress.empty())
         {
-            FUN_14161cee0(0);
+            SetSuppressed(0);
             FUN_14109ac50(1);
         }
     }
@@ -666,9 +666,9 @@ void COptimizer::FUN_14161d130(bool bForce)
                     int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
                     for (int i = 0; i < nCount; i = i + 1)
                     {
-                        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162b360(i);
+                        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->GetMemberAt(i);
                         unsigned __int64 nKey = spMember->FUN_141637bb0();
-                        PCBase* pOther = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), nKey);
+                        PCBase* pOther = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nKey));
                         if (pOther != 0 && pLocal != pOther)
                         {
                             preferred[nKey] = pOther;
@@ -759,7 +759,7 @@ void COptimizer::FUN_14161d130(bool bForce)
             }
             for (std::map<unsigned __int64, Entry>::iterator it = m_selected.begin(); it != m_selected.end(); ++it)
             {
-                PCBase* pOld = FUN_141bd1530(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()), it->first);
+                PCBase* pOld = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(it->first));
                 if (pOld != 0)
                 {
                     FUN_14161dbe0(pOld, preloadMode);

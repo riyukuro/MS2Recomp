@@ -139,7 +139,7 @@ public:
     void FUN_141adafd0(int nScene);                 // 0x141adafd0 hide the world UI for a scene change
     void FUN_141adb2a0(int nScene);                 // 0x141adb2a0 show it again (argument unused)
     void FUN_141adbbb0();                           // 0x141adbbb0
-    int FUN_141adcd40();                            // 0x141adcd40 close the dialogs that can be closed
+    int CloseAllDialogs();                            // 0x141adcd40 close the dialogs that can be closed
     int FUN_141aec1f0(MS2Ptr<UIDialog> spDlg);      // 0x141aec1f0 dialog may be closed in bulk
     void FUN_141adb4c0(int bOn);                    // 0x141adb4c0 enable / disable every hot key slot
     void FUN_141adb7b0(int bOn);                    // 0x141adb7b0
@@ -176,8 +176,8 @@ public:
     void FUN_141ad9350();                                              // 0x141ad9350
     void FUN_141ad93b0();                                              // 0x141ad93b0 check / rewrite version.xml
     void FUN_141ad9650();                                              // 0x141ad9650 field background movie
-    void FUN_141ad9980(char nStage);                                   // 0x141ad9980
-    void FUN_141ad9a60(CStringA strBg);                                // 0x141ad9a60
+    void LoadStageBackground(char nStage);                                   // 0x141ad9980
+    void LoadBackground(CStringA strBg);                                // 0x141ad9a60
     void FUN_141ad9b30();                                              // 0x141ad9b30
     bool FUN_141ad9b60();                                              // 0x141ad9b60
     void FUN_141ad9c10();                                              // 0x141ad9c10
@@ -191,8 +191,8 @@ public:
     void FUN_141adbe70();                                              // 0x141adbe70
     void FUN_141adbf30();                                              // 0x141adbf30
     void FUN_141adbf70(int n);                                         // 0x141adbf70
-    void FUN_141aebfa0(MS2Ptr<UIObject> spObj);                        // 0x141aebfa0 register an object (class id / name tables)
-    void FUN_141aec080(MS2Ptr<UIDialog> spDlg);                        // 0x141aec080 register a dialog
+    void RegisterObject(MS2Ptr<UIObject> spObj);                        // 0x141aebfa0 register an object (class id / name tables)
+    void RegisterDialog(MS2Ptr<UIDialog> spDlg);                        // 0x141aec080 register a dialog
     void FUN_141adb810();                                              // 0x141adb810
     void FUN_141adb880();                                              // 0x141adb880
     void FUN_141adb900(int n);                                         // 0x141adb900
@@ -213,7 +213,7 @@ public:
     void FUN_141adc2c0();                                              // 0x141adc2c0
     void FUN_141adc3d0();                                              // 0x141adc3d0
     void FUN_141adc400();                                              // 0x141adc400
-    void FUN_141adc5d0(eUIClassID nClass);                                    // 0x141adc5d0 close a dialog (if open)
+    void CloseDialog(eUIClassID nClass);                                    // 0x141adc5d0 close a dialog (if open)
     void FUN_141adc690(eUIClassID nClass);                                    // 0x141adc690 close-request a dialog (if open)
     void ToggleDialog(eUIClassID nClass);                                    // 0x141adc750 toggle a dialog
     int FUN_141adc7f0(eUIClassID nClass);                              // 0x141adc7f0 dialog vfunc_73 (can open)
@@ -221,9 +221,9 @@ public:
     int FUN_141adc940(eUIClassID nClass);                              // 0x141adc940 dialog vfunc_55 (closed)
     int FUN_141adc9e0(eUIClassID nClass);                              // 0x141adc9e0
     void FUN_141adca70();                                              // 0x141adca70 TooltipManager.dispatchRefreshTooltip
-    MS2Ptr<UIDialog> FUN_141aec130(eUIClassID nClass);                 // 0x141aec130 dialog by class id
-    MS2Ptr<UIObject> FUN_141adcea0(eUIClassID nClass);                 // 0x141adcea0 object by class id
-    MS2Ptr<UIObject> FUN_141adcf50(const CStringA& strName);           // 0x141adcf50 object by name
+    MS2Ptr<UIDialog> FindDialog(eUIClassID nClass);                 // 0x141aec130 dialog by class id
+    MS2Ptr<UIObject> FindObject(eUIClassID nClass);                 // 0x141adcea0 object by class id
+    MS2Ptr<UIObject> FindObjectByName(const CStringA& strName);           // 0x141adcf50 object by name
     void FUN_141add0b0(eUIClassID nClass);                             // 0x141add0b0
     void FUN_141add120(eUIClassID nClass, int n);                      // 0x141add120
     // @@

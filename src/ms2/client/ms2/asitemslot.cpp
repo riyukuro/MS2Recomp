@@ -328,9 +328,9 @@ public:
     virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);       // 25 the effect tooltip
-    void FUN_1409badd0();                                       // push the slot data
-    void FUN_1409baf10(int nId, unsigned short nLevel);         // set the effect and refresh
-    void FUN_1409bb060(Unk_AsDelegate callback, __int64 nUser);     // setTooltipFunction
+    void SendSlotData();                                       // push the slot data
+    void SetEffect(int nId, unsigned short nLevel);         // set the effect and refresh
+    void SetTooltipFunction(Unk_AsDelegate callback, __int64 nUser);     // setTooltipFunction
     void FUN_1409bb100(const Scaleform::GFx::FunctionHandler::Params& params);   // the tooltip callback
 private:
     int m_nId;                                                  // +0x88
@@ -371,7 +371,7 @@ ASItemSlot::ASItemSlot(CString strName, int nUnused)
     m_rarity = 0;
     m_nCount = 0;
     m_bLocked = false;
-    FUN_1409ba980(Unk_AsDelegate(this, &ASItemSlot::FUN_1409baa20), 0);
+    SetTooltipFunction(Unk_AsDelegate(this, &ASItemSlot::FUN_1409baa20), 0);
     FUN_1422c6380(FUN_1422bb890(), 2);
 }
 
@@ -384,7 +384,7 @@ ASItemSlot::ASItemSlot(const Scaleform::GFx::Value& v, int nMovieId)
     m_nCount = 0;
     m_bLocked = false;
     m_bPreview = false;
-    FUN_1409ba980(Unk_AsDelegate(this, &ASItemSlot::FUN_1409baa20), 0);
+    SetTooltipFunction(Unk_AsDelegate(this, &ASItemSlot::FUN_1409baa20), 0);
     FUN_1422c6380(FUN_1422bb890(), 2);
 }
 
@@ -395,36 +395,36 @@ ASItemSlot::~ASItemSlot()
 }
 
 // @0x1409ba460
-void ASItemSlot::FUN_1409ba460()
+void ASItemSlot::UpdateSlotData()
 {
     ASSlot slot(2);
     if (slot.FUN_1409c4510(m_itemId, m_rarity, m_nCount) != 0)
     {
         if (m_bLocked)
-            slot.FUN_1409c1e80(1);
+            slot.SetItemLock(1);
         Invoke("setSlotData", slot);
     }
     else if (m_itemId == 0)
     {
-        slot.FUN_1409c23a0(m_itemId);
+        slot.SetItemID(m_itemId);
         Invoke("setSlotData", slot);
     }
 }
 
 // @0x1409ba5d0
-void ASItemSlot::FUN_1409ba5d0(int nItemId, int nRarity, int nCount)
+void ASItemSlot::SetItem(int nItemId, int nRarity, int nCount)
 {
     m_itemId = nItemId;
     m_rarity = nRarity;
     m_nCount = nCount;
-    FUN_1409ba460();
+    UpdateSlotData();
 }
-MS2_REPLACE_METHOD(0x1409BA5D0, ASItemSlot, FUN_1409ba5d0, 83, 0x4AF4ED20);
+MS2_REPLACE_METHOD(0x1409BA5D0, ASItemSlot, SetItem, 83, 0x4AF4ED20);
 
 // @0x1409ba630
 void ASItemSlot::FUN_1409ba630(const Unk_ItemSlotSource& item)
 {
-    FUN_1409ba5d0(item.vfunc_0(), item.vfunc_1(), item.vfunc_2());
+    SetItem(item.vfunc_0(), item.vfunc_1(), item.vfunc_2());
 }
 
 // @0x1409ba6d0
@@ -457,7 +457,7 @@ void ASItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
 }
 
 // @0x1409ba980
-void ASItemSlot::FUN_1409ba980(Unk_AsDelegate callback, __int64 nUser)
+void ASItemSlot::SetTooltipFunction(Unk_AsDelegate callback, __int64 nUser)
 {
     Invoke("setTooltipFunction", ASFunction(callback, nUser, m_nMovieId));
 }
@@ -484,7 +484,7 @@ ASAdditionalEffectSlot::ASAdditionalEffectSlot(CString strName, int nUnused)
 {
     m_nId = 0;
     m_nLevel = 0;
-    FUN_1409bb060(Unk_AsDelegate(this, &ASAdditionalEffectSlot::FUN_1409bb100), 0);
+    SetTooltipFunction(Unk_AsDelegate(this, &ASAdditionalEffectSlot::FUN_1409bb100), 0);
     FUN_1422c6380(FUN_1422bb890(), 2);
 }
 
@@ -494,7 +494,7 @@ ASAdditionalEffectSlot::ASAdditionalEffectSlot(const Scaleform::GFx::Value& v, i
 {
     m_nId = 0;
     m_nLevel = 0;
-    FUN_1409bb060(Unk_AsDelegate(this, &ASAdditionalEffectSlot::FUN_1409bb100), 0);
+    SetTooltipFunction(Unk_AsDelegate(this, &ASAdditionalEffectSlot::FUN_1409bb100), 0);
     FUN_1422c6380(FUN_1422bb890(), 2);
 }
 
@@ -505,7 +505,7 @@ ASAdditionalEffectSlot::~ASAdditionalEffectSlot()
 }
 
 // @0x1409badd0
-void ASAdditionalEffectSlot::FUN_1409badd0()
+void ASAdditionalEffectSlot::SendSlotData()
 {
     MS2Ptr<Unk_AdditionalEffect> spEffect = FUN_1401958b0()->FUN_140aafef0(m_nId, m_nLevel);
     if (spEffect == 0)
@@ -516,11 +516,11 @@ void ASAdditionalEffectSlot::FUN_1409badd0()
 }
 
 // @0x1409baf10
-void ASAdditionalEffectSlot::FUN_1409baf10(int nId, unsigned short nLevel)
+void ASAdditionalEffectSlot::SetEffect(int nId, unsigned short nLevel)
 {
     m_nId = nId;
     m_nLevel = nLevel;
-    FUN_1409badd0();
+    SendSlotData();
 }
 
 // @0x1409baf60
@@ -535,7 +535,7 @@ void ASAdditionalEffectSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
 }
 
 // @0x1409bb060
-void ASAdditionalEffectSlot::FUN_1409bb060(Unk_AsDelegate callback, __int64 nUser)
+void ASAdditionalEffectSlot::SetTooltipFunction(Unk_AsDelegate callback, __int64 nUser)
 {
     Invoke("setTooltipFunction", ASFunction(callback, nUser, m_nMovieId));
 }
@@ -571,7 +571,7 @@ public:
     virtual void vfunc_22();
     virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1409c1ba0(int nHeight);                            // setContentsHeight
+    void SetContentsHeight(int nHeight);                            // setContentsHeight
 };
 MS2_CHECK_SIZE(ASScrollPanel, 0x88);
 
@@ -753,7 +753,8 @@ public:
     int m_nMode;                                                // +0x1a4
 };
 MS2_CHECK_OFFSET(Unk_SlotInventoryDialog, m_nMode, 0x1a4);
-Unk_SlotInventoryDialog* FUN_1405344f0(int nDialogId);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_SlotInventoryDialog* FUN_1405344f0 (calls cast back)
 extern Unk_SlotBreakManager* DAT_143aaf300;
 extern Unk_SlotLapenTable* DAT_143aafd98;
 Unk_SlotBreakManager* FUN_1409c4b20();
@@ -771,7 +772,7 @@ ASScrollPanel::~ASScrollPanel()
 }
 
 // @0x1409c1ba0
-void ASScrollPanel::FUN_1409c1ba0(int nHeight)
+void ASScrollPanel::SetContentsHeight(int nHeight)
 {
     Invoke("setContentsHeight", nHeight);
 }
@@ -794,55 +795,55 @@ ASSlot::~ASSlot()
 }
 
 // @0x1409c1ce0
-void ASSlot::FUN_1409c1ce0(int n)
+void ASSlot::SetItemPet(int n)
 {
     FUN_1407cb9c0(s_strItemPet, n);
 }
 
 // @0x1409c1d20
-void ASSlot::FUN_1409c1d20(int n)
+void ASSlot::SetItemCash(int n)
 {
     FUN_1407cb9c0(s_strItemCash, n);
 }
 
 // @0x1409c1d60
-void ASSlot::FUN_1409c1d60(int n)
+void ASSlot::SetItemSkin(int n)
 {
     FUN_1407cb9c0(s_strItemSkin, n);
 }
 
 // @0x1409c1da0
-void ASSlot::FUN_1409c1da0(bool b)
+void ASSlot::SetItemPcBang(bool b)
 {
     FUN_1407cb9c0(s_strItemPcBang, b != false);
 }
 
 // @0x1409c1e00
-void ASSlot::FUN_1409c1e00(int n)
+void ASSlot::SetItemVIP(int n)
 {
     FUN_1407cb9c0(s_strItemVIP, n);
 }
 
 // @0x1409c1e40
-void ASSlot::FUN_1409c1e40(int n)
+void ASSlot::SetItemWedding(int n)
 {
     FUN_1407cb9c0(s_strItemWedding, n);
 }
 
 // @0x1409c1e80
-void ASSlot::FUN_1409c1e80(int n)
+void ASSlot::SetItemLock(int n)
 {
     FUN_1407cb9c0(s_strItemLock, n);
 }
 
 // @0x1409c1ec0
-void ASSlot::FUN_1409c1ec0(int n)
+void ASSlot::SetItemConditionLock(int n)
 {
     FUN_1407cb9c0(s_strItemConditionLock, n);
 }
 
 // @0x1409c1f00
-void ASSlot::FUN_1409c1f00(int n)
+void ASSlot::SetItemSeal(int n)
 {
     FUN_1407cb9c0(s_strItemSeal, n);
 }
@@ -873,171 +874,171 @@ void ASSlot::FUN_1409c1f40(CItem* pItem)
 #endif
 
 // @0x1409c2050
-void ASSlot::FUN_1409c2050(int n)
+void ASSlot::SetItemPiece(int n)
 {
     FUN_1407cb9c0(s_strItemPiece, n);
 }
 
 // @0x1409c2090
-void ASSlot::FUN_1409c2090(int n)
+void ASSlot::SetGrayColor(int n)
 {
     FUN_1407cb9c0(s_strGrayColor, n);
 }
 
 // @0x1409c20d0
-void ASSlot::FUN_1409c20d0(int n)
+void ASSlot::SetItemEquip(int n)
 {
     FUN_1407cb9c0(s_strItemEquip, n);
 }
 
 // @0x1409c2110
-void ASSlot::FUN_1409c2110(int n)
+void ASSlot::SetItemEquip2(int n)
 {
     FUN_1407cb9c0(s_strItemEquip2, n);
 }
 
 // @0x1409c2150
-void ASSlot::FUN_1409c2150(int n)
+void ASSlot::SetItemSummon(int n)
 {
     FUN_1407cb9c0(s_strItemSummon, n);
 }
 
 // @0x1409c2190
-void ASSlot::FUN_1409c2190(unsigned n)
+void ASSlot::SetItemCountValue(unsigned n)
 {
     if (n > 0)
         FUN_1407cbb20(s_strItemCount, StringFormat(L"{0}", n));
 }
 
 // @0x1409c2200
-void ASSlot::FUN_1409c2200(CItem* pItem)
+void ASSlot::SetItemCountFromItem(CItem* pItem)
 {
-    FUN_1407cbb20(s_strItemCount, pItem->FUN_140527840()->FUN_14053c7c0() ? StringFormat(L"{0}", (unsigned)pItem->FUN_140526c50()) : CStringW(L""));
+    FUN_1407cbb20(s_strItemCount, pItem->FUN_140527840()->FUN_14053c7c0() ? StringFormat(L"{0}", (unsigned)pItem->GetCount()) : CStringW(L""));
 }
 
 // @0x1409c2360
-void ASSlot::FUN_1409c2360(unsigned long nColor)
+void ASSlot::SetItemColor(unsigned long nColor)
 {
     FUN_1409c4990(s_strItemColor, nColor);
 }
 
 // @0x1409c23a0
-void ASSlot::FUN_1409c23a0(unsigned nItemId)
+void ASSlot::SetItemID(unsigned nItemId)
 {
     FUN_1409c0d20(s_strItemID, nItemId);
 }
 
 // @0x1409c23e0
-void ASSlot::FUN_1409c23e0(int nGrade)
+void ASSlot::SetItemGrade(int nGrade)
 {
     FUN_1409adc90(s_strItemGrade, nGrade);
 }
 
 // @0x1409c2420
-void ASSlot::FUN_1409c2420(int nRank)
+void ASSlot::SetItemPetRankAndDisableShadow(int nRank)
 {
     FUN_1409adc90(s_strItemPetRank, nRank);
-    FUN_1409c2610();
+    DisableDropShadow();
 }
 
 // @0x1409c2470
-void ASSlot::FUN_1409c2470(int n)
+void ASSlot::SetItemPetSkin(int n)
 {
     FUN_1407cb9c0(s_strItemPetSkin, n);
 }
 
 // @0x1409c24b0
-void ASSlot::FUN_1409c24b0(int n)
+void ASSlot::SetItemBothEquip(int n)
 {
     FUN_1407cb9c0(s_strItemBothEquip, n);
 }
 
 // @0x1409c24f0
-void ASSlot::FUN_1409c24f0(int n)
+void ASSlot::SetItemNew(int n)
 {
     FUN_1407cb9c0(s_strItemNew, n);
 }
 
 // @0x1409c2530
-void ASSlot::FUN_1409c2530(int n)
+void ASSlot::SetItemEvent(int n)
 {
     FUN_1407cb9c0(s_strItemEvent, n);
 }
 
 // @0x1409c2570
-void ASSlot::FUN_1409c2570(int n)
+void ASSlot::SetItemResultTag(int n)
 {
     FUN_1407cb9c0(s_strItemResultTag, n);
 }
 
 // @0x1409c25b0
-void ASSlot::FUN_1409c25b0(const CStringW& strName)
+void ASSlot::SetItemName(const CStringW& strName)
 {
     FUN_1407cbb20(s_strItemName, strName);
 }
 
 // @0x1409c2610
-void ASSlot::FUN_1409c2610()
+void ASSlot::DisableDropShadow()
 {
     FUN_1407cb9c0(s_strDropShadowDisable, 1);
 }
 
 // @0x1409c2650
-void ASSlot::FUN_1409c2650()
+void ASSlot::DisableDrag()
 {
     FUN_1407cb9c0(s_strDisableDrag, 1);
 }
 
 // @0x1409c2690
-void ASSlot::FUN_1409c2690(int n)
+void ASSlot::SetLearn(int n)
 {
     FUN_1407cb9c0(s_strLearn, n);
 }
 
 // @0x1409c26d0
-void ASSlot::FUN_1409c26d0(int nIndex)
+void ASSlot::SetIndex(int nIndex)
 {
     FUN_1407cb9c0(s_strIndex, nIndex);
 }
 
 // @0x1409c2710
-void ASSlot::FUN_1409c2710(int n)
+void ASSlot::SetDisable(int n)
 {
     FUN_1407cb9c0(s_strDisable, n);
 }
 
 // @0x1409c2750
-void ASSlot::FUN_1409c2750(const CString& strPath)
+void ASSlot::SetIconPathString(const CString& strPath)
 {
-    FUN_1409c27c0(FUN_14016a730(strPath, 0));
+    SetIconPath(FUN_14016a730(strPath, 0));
 }
 
 // @0x1409c27c0
-void ASSlot::FUN_1409c27c0(const CStringW& strPath)
+void ASSlot::SetIconPath(const CStringW& strPath)
 {
     FUN_1407cbb20(s_strIconPath, strPath);
 }
 
 // @0x1409c2820
-void ASSlot::FUN_1409c2820(const CString& strHint)
+void ASSlot::SetSlotHintString(const CString& strHint)
 {
-    FUN_1409c2890(FUN_14016a730(strHint, 0));
+    SetSlotHint(FUN_14016a730(strHint, 0));
 }
 
 // @0x1409c2890
-void ASSlot::FUN_1409c2890(const CStringW& strHint)
+void ASSlot::SetSlotHint(const CStringW& strHint)
 {
     FUN_1407cbb20(s_strSlotHint, strHint);
 }
 
 // @0x1409c28f0
-void ASSlot::FUN_1409c28f0(const CStringW& strGuid)
+void ASSlot::SetItemGUID(const CStringW& strGuid)
 {
     FUN_1407cbb20(s_strItemGUID, strGuid);
 }
 
 // @0x1409c2950
-void ASSlot::FUN_1409c2950(int nTag)
+void ASSlot::SetUgcTag(int nTag)
 {
     if (nTag == 0)
         return;
@@ -1045,25 +1046,25 @@ void ASSlot::FUN_1409c2950(int nTag)
 }
 
 // @0x1409c2990
-void ASSlot::FUN_1409c2990(const CStringW& strCategory)
+void ASSlot::SetItemCategory(const CStringW& strCategory)
 {
     FUN_1407cbb20(s_strItemCategory, strCategory);
 }
 
 // @0x1409c29f0
-void ASSlot::FUN_1409c29f0(unsigned nType)
+void ASSlot::SetSkillType(unsigned nType)
 {
     FUN_1409c0d20(s_strSkilltype, nType);
 }
 
 // @0x1409c2a30
-void ASSlot::FUN_1409c2a30(int n)
+void ASSlot::SetSkillMaster(int n)
 {
     FUN_1407cb9c0(s_strSkillmaster, n);
 }
 
 // @0x1409c2a70
-void ASSlot::FUN_1409c2a70(MS2Ptr<Unk_SlotSkillInfo> spSkill, int nPoints)
+void ASSlot::SetUpgradeCondition(MS2Ptr<Unk_SlotSkillInfo> spSkill, int nPoints)
 {
     FUN_1407cbbe0("upgradeCondition", FUN_140ecf630(spSkill, nPoints));
 }
@@ -1071,7 +1072,7 @@ void ASSlot::FUN_1409c2a70(MS2Ptr<Unk_SlotSkillInfo> spSkill, int nPoints)
 // @0x1409c2af0
 void ASSlot::FUN_1409c2af0(CItem* pItem, void* pPlayer)
 {
-    if (pItem->FUN_140526100() != 0)
+    if (pItem->IsLapenshard() != 0)
         return;
     if (pItem->FUN_140527840()->FUN_14053dc20() == 0)
         return;
@@ -1091,25 +1092,25 @@ void ASSlot::FUN_1409c2af0(CItem* pItem, void* pPlayer)
         return;
     if (spRow->m_bCooldown == 0)
         return;
-    FUN_1409c2dc0(((Unk_SlotSkillCooldowns*)((MyPC*)(Unk_SlotPc*)(pPc))->FUN_141523bc0())->FUN_141765fe0(pItem->FUN_140527840()->FUN_14053dc20(), 0));
-    FUN_1409c2e00(((SkillLevelData*)(spLevel).operator->())->FUN_140804660());
-    FUN_1409c2e40();
+    SetRemainTime(((Unk_SlotSkillCooldowns*)((MyPC*)(Unk_SlotPc*)(pPc))->FUN_141523bc0())->FUN_141765fe0(pItem->FUN_140527840()->FUN_14053dc20(), 0));
+    SetTotalTime(((SkillLevelData*)(spLevel).operator->())->FUN_140804660());
+    SetCooldownStrings();
 }
 
 // @0x1409c2dc0
-void ASSlot::FUN_1409c2dc0(float fRemain)
+void ASSlot::SetRemainTime(float fRemain)
 {
     FUN_1409c4a30("remainTime", fRemain);
 }
 
 // @0x1409c2e00
-void ASSlot::FUN_1409c2e00(float fTotal)
+void ASSlot::SetTotalTime(float fTotal)
 {
     FUN_1409c4a30("totalTime", fTotal);
 }
 
 // @0x1409c2e40
-void ASSlot::FUN_1409c2e40()
+void ASSlot::SetCooldownStrings()
 {
     FUN_1407cbb20("cooldownSecStr", GetStringCommon(0x5cb));
     FUN_1407cbb20("cooldownMinStr", GetStringCommon(0x5ca));
@@ -1118,7 +1119,7 @@ void ASSlot::FUN_1409c2e40()
 }
 
 // @0x1409c2f40
-void ASSlot::FUN_1409c2f40(CItemEnchantInfo* pEnchant)
+void ASSlot::SetItemEnchant(CItemEnchantInfo* pEnchant)
 {
     if (pEnchant->FUN_14058c8a0() != 0)
     {
@@ -1138,7 +1139,7 @@ void ASSlot::FUN_1409c2f40(CItemEnchantInfo* pEnchant)
 }
 
 // @0x1409c2fe0
-void ASSlot::FUN_1409c2fe0(Unk_ItemPlusInfo* pPlus)
+void ASSlot::SetItemUnlimitedEnchant(Unk_ItemPlusInfo* pPlus)
 {
     if (((UnlimitedEnchantInfo*)(Unk_ItemPlusInfo*)(pPlus))->GetLevel() > 0)
     {
@@ -1153,7 +1154,7 @@ void ASSlot::FUN_1409c3040(MS2Ptr<CItemData> spData)
 {
     if (spData == 0 || !spData->FUN_14053d840())
         return;
-    unsigned short nLevel = FUN_140626f20(spData->FUN_14053c510());
+    unsigned short nLevel = FUN_140626f20(spData->GetItemId());
     if (nLevel == 0)
         return;
     FUN_1409c48f0("enchant", nLevel);
@@ -1162,9 +1163,9 @@ void ASSlot::FUN_1409c3040(MS2Ptr<CItemData> spData)
 // @0x1409c30f0
 void ASSlot::FUN_1409c30f0(MS2Ptr<CItemData> spData)
 {
-    if (spData == 0 || !spData->FUN_14053d8c0())
+    if (spData == 0 || !spData->IsLapenshardType())
         return;
-    unsigned short nLevel = FUN_1409c4b30()->GetLevel(spData->FUN_14053c510());
+    unsigned short nLevel = FUN_1409c4b30()->GetLevel(spData->GetItemId());
     if (nLevel == 0)
         return;
     FUN_1409c48f0("enchant", nLevel);
@@ -1178,22 +1179,22 @@ void ASSlot::FUN_1409c31b0(MS2Ptr<CItem> spItem)
     MS2Ptr<CItemData> spData(spItem->FUN_140527840());
     if (spData == 0)
         return;
-    FUN_1409c3290(spData);
+    SetItemSeason(spData);
 }
 
 // @0x1409c3290
-void ASSlot::FUN_1409c3290(MS2Ptr<CItemData> spData)
+void ASSlot::SetItemSeason(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return;
-    int nItemId = spData->FUN_14053c510();
-    int nSeason = spData->FUN_14053dec0();
+    int nItemId = spData->GetItemId();
+    int nSeason = spData->GetOpenGachaBoxParam0();
     ItemGachaBoxTable* pTable = FUN_14052d230();
-    if (pTable != NULL && pTable->FUN_14059eec0(nItemId) == true)
-        nSeason = pTable->FUN_14059ebb0(nItemId);
+    if (pTable != NULL && pTable->IsCoinItem(nItemId) == true)
+        nSeason = pTable->GetRandomBoxIdByCoinItem(nItemId);
     if (nSeason == 0)
         return;
-    if (!pTable->FUN_14059ef70(nSeason))
+    if (!pTable->IsSeasonNumberOnIcon(nSeason))
         return;
     CStringW strSeason = FUN_1409e5320(nSeason);
     FUN_1407cbb20("itemSeason", strSeason);
@@ -1212,7 +1213,7 @@ void ASSlot::FUN_1409c3400()
 }
 
 // @0x1409c3430
-void ASSlot::FUN_1409c3430(CItem* pItem)
+void ASSlot::SetItemQuestMark(CItem* pItem)
 {
     switch (((class CQuestManager*)FUN_140764020())->FUN_1416ce6a0(MS2Ptr<CItem>(pItem)))
     {
@@ -1228,7 +1229,7 @@ void ASSlot::FUN_1409c3430(CItem* pItem)
 // @0x1409c34e0
 void ASSlot::FUN_1409c34e0(CItem* pItem)
 {
-    Unk_SlotInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    Unk_SlotInventoryDialog* pInventory = reinterpret_cast<Unk_SlotInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInventory != NULL && pInventory->vfunc_55() == 0)
     {
         int nMode = pInventory->FUN_1409c4b00();
@@ -1239,33 +1240,33 @@ void ASSlot::FUN_1409c34e0(CItem* pItem)
         case 1:
         case 2:
             if (FUN_1409c4b20()->FUN_140531aa0(MS2Ptr<CItem>(pItem)) == 0)
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
             break;
         case 3:
             if (((class Unk_SlotLockManager*)FUN_140535310())->FUN_140613430(MS2Ptr<CItem>(pItem)) == 0)
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
             break;
         case 4:
             if (static_cast<unsigned int>(pItem->FUN_1405292a0()) < 1)
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
             break;
         case 5:
         {
-            if (pItem->FUN_140525640() == 0)
+            if (pItem->IsPetItem() == 0)
             {
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
                 break;
             }
-            int nPetId = pItem->FUN_140527840()->FUN_14053dc60();
+            int nPetId = pItem->FUN_140527840()->GetPetId();
             MS2Ptr<Unk_SlotPetRow> spPet = ((class Unk_SlotPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
             if (spPet.IsNull())
             {
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
                 break;
             }
             if (!spPet->m_bSummonable)
             {
-                FUN_1409c1f00(1);
+                SetItemSeal(1);
                 break;
             }
             break;
@@ -1277,23 +1278,23 @@ void ASSlot::FUN_1409c34e0(CItem* pItem)
 }
 
 // @0x1409c3750
-void ASSlot::FUN_1409c3750(bool b)
+void ASSlot::SetUseRightClick(bool b)
 {
     FUN_1407cbbe0("useRightClick", b);
 }
 
 // @0x1409c3780
-int ASSlot::FUN_1409c3780()
+int ASSlot::GetItemID()
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(s_strItemID);
+    Scaleform::GFx::Value v = GetMember(s_strItemID);
     int nItemId = v.GetUInt();
     return nItemId;
 }
 
 // @0x1409c37f0
-int ASSlot::FUN_1409c37f0()
+int ASSlot::GetItemGrade()
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(s_strItemGrade);
+    Scaleform::GFx::Value v = GetMember(s_strItemGrade);
     int nGrade = v.GetInt();
     return nGrade;
 }
@@ -1308,41 +1309,41 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         return 0;
     if (nFlags & 1)
     {
-        FUN_1409c23a0(spData->FUN_14053c510());
-        FUN_1409c23e0(pItem->FUN_140526bd0());
-        FUN_1409c26d0(pItem->FUN_140526b50());
+        SetItemID(spData->GetItemId());
+        SetItemGrade(pItem->FUN_140526bd0());
+        SetIndex(pItem->FUN_140526b50());
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8c))
         {
-            if (spData->FUN_14053cc40())
-                FUN_1409c2420(pItem->FUN_140526bd0());
+            if (spData->IsPetItem())
+                SetItemPetRankAndDisableShadow(pItem->FUN_140526bd0());
         }
         else
         {
-            FUN_1409c1ce0(spData->FUN_14053cc40());
+            SetItemPet(spData->IsPetItem());
         }
         int bPet = spData->FUN_14053e900() == 11;
-        FUN_1409c2470(bPet);
-        FUN_1409c1d20(spData->FUN_14053e130());
-        FUN_1409c1d60(spData->FUN_14053cf90());
-        FUN_1409c1da0(spData->FUN_14053ce20());
-        FUN_1409c1e00(spData->FUN_14053d1f0());
-        FUN_1409c1e40(spData->FUN_14053d210());
-        FUN_1409c2750(pItem->FUN_140528590());
-        FUN_1409c2950(pItem->FUN_140528840());
+        SetItemPetSkin(bPet);
+        SetItemCash(spData->IsCashItem());
+        SetItemSkin(spData->HasSkinType());
+        SetItemPcBang(spData->IsPCBangItem());
+        SetItemVIP(spData->FUN_14053d1f0());
+        SetItemWedding(spData->HasWeddingLimit());
+        SetIconPathString(pItem->FUN_140528590());
+        SetUgcTag(pItem->GetUgcTag());
         if (pPlayer != NULL)
             FUN_1409c2af0(pItem, pPlayer);
-        FUN_1409c2f40(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->GetEnchant());
-        FUN_1409c2fe0(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->FUN_140630d90());
+        SetItemEnchant(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->GetEnchant());
+        SetItemUnlimitedEnchant(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->FUN_140630d90());
         FUN_1409c1f40(pItem);
-        FUN_1409c2050(spData->FUN_14053d990());
+        SetItemPiece(spData->IsPieceItem());
         FUN_1409c3040(spData);
         FUN_1409c30f0(spData);
         FUN_1409c31b0(MS2Ptr<CItem>(pItem));
     }
     if (nFlags & 0x400)
-        FUN_1409c2650();
+        DisableDrag();
     if (nFlags & 0x800)
-        FUN_1409c25b0(pItem->FUN_140527b10());
+        SetItemName(pItem->FUN_140527b10());
     if ((nFlags & 0x20) && pPlayer != NULL)
     {
         Unk_SlotPc* pPc = FUN_1409613d0(pPlayer);
@@ -1351,29 +1352,29 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
             BOOL bEquipped = FALSE;
             if (pItem->FUN_140527840()->FUN_14053cbc0())
             {
-                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655c30(pItem->FUN_140526a50());
+                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655c30(pItem->GetItemUid());
                 if (spEquip.get() != NULL)
                     bEquipped = TRUE;
             }
             if (bEquipped)
-                FUN_1409c20d0(bEquipped);
+                SetItemEquip(bEquipped);
         }
     }
-    if ((nFlags & 0x10000) && pItem->FUN_140525640() != 0)
+    if ((nFlags & 0x10000) && pItem->IsPetItem() != 0)
     {
-        if (pItem->FUN_140526a50() == ((class CPetManager*)FUN_140535320())->GetSummonUid())
-            FUN_1409c2150(1);
+        if (pItem->GetItemUid() == ((class CPetManager*)FUN_140535320())->GetSummonUid())
+            SetItemSummon(1);
     }
     if (nFlags & 2)
     {
         if (pItem->FUN_1405268f0() != 0)
-            FUN_1409c24f0(1);
+            SetItemNew(1);
         else if (pItem->FUN_140526930())
-            FUN_1409c2530(1);
+            SetItemEvent(1);
     }
     if (nFlags & 4)
     {
-        FUN_1409c0d20("level", pItem->FUN_140527710());
+        FUN_1409c0d20("level", pItem->GetRequiredLevel());
         if (pPlayer != NULL)
         {
             Unk_SlotPc* pPc = FUN_1409613d0(pPlayer);
@@ -1381,38 +1382,38 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
             {
                 int nUsable = FUN_141275a10(pItem);
                 if (nUsable == 1)
-                    FUN_1409c1e80(1);
+                    SetItemLock(1);
                 else if (nUsable == 2)
-                    FUN_1409c2710(1);
+                    SetDisable(1);
                 else if (nUsable == 3)
-                    FUN_1409c1ec0(1);
+                    SetItemConditionLock(1);
             }
         }
     }
     if (nFlags & 8)
     {
         if (pItem->FUN_140527840()->FUN_14053ec70()->FUN_140547190())
-            FUN_1409c2360(((CItemExtraData*)(Unk_UserProxyItemData*)(pItem->FUN_140527870()))->FUN_140599fd0(0));
+            SetItemColor(((CItemExtraData*)(Unk_UserProxyItemData*)(pItem->FUN_140527870()))->FUN_140599fd0(0));
     }
     if (nFlags & 0x10)
-        FUN_1409c2200(pItem);
+        SetItemCountFromItem(pItem);
     if (nFlags & 0x80)
-        FUN_1409c2820(Name_14021c050(pItem->FUN_140526c30()));
+        SetSlotHintString(Name_14021c050(pItem->FUN_140526c30()));
     if (nFlags & 0x100)
     {
-        CStringW strGuid = FUN_141b71910(pItem->FUN_140526a50());
-        FUN_1409c28f0(strGuid);
+        CStringW strGuid = FUN_141b71910(pItem->GetItemUid());
+        SetItemGUID(strGuid);
     }
     if (nFlags & 0x1000)
     {
-        FUN_1409c2990(TSingleton<CStringTable>::GetInstance()->FUN_141812f60(pItem->FUN_1405276c0()));
+        SetItemCategory(TSingleton<CStringTable>::GetInstance()->FUN_141812f60(pItem->FUN_1405276c0()));
     }
     if ((nFlags & 0x200) && pItem->FUN_140526970() != 0)
-        FUN_1409c2570(1);
+        SetItemResultTag(1);
     if (nFlags & 0x2000)
-        FUN_1409c2610();
+        DisableDropShadow();
     if (nFlags & 0x4000)
-        FUN_1409c3430(pItem);
+        SetItemQuestMark(pItem);
     if (nFlags & 0x8000)
         FUN_1409c34e0(pItem);
     if (nFlags & 0x20000)
@@ -1434,11 +1435,11 @@ int ASSlot::FUN_1409c41f0(CItem* pItem, void* pPc, int nSlot, int nFlags)
         MS2Ptr<CEquipItem> spMain = ((class Unk_SlotEquipSet*)((class PC*)(void*)(pPc))->FUN_1416561a0())->FUN_1411e1780(nSlot, 0);
         MS2Ptr<CEquipItem> spSub = ((class Unk_SlotEquipSet*)((class PC*)(void*)(pPc))->FUN_1416561a0())->FUN_1411e1780(nSlot, 1);
         if (pItem->FUN_1405258b0() != 0 && (spMain.get() ? true : false))
-            FUN_1409c24b0(1);
+            SetItemBothEquip(1);
         else if (pItem->FUN_1405258b0() == 0 && (spSub.get() ? true : false))
-            FUN_1409c24b0(1);
+            SetItemBothEquip(1);
         else
-            FUN_1409c24b0(0);
+            SetItemBothEquip(0);
         return 1;
     }
     return 0;
@@ -1455,14 +1456,14 @@ int ASSlot::FUN_1409c4360(Unk_SlotSkillInfo* pSkill, unsigned nFlags)
         return 0;
     if (nFlags & 1)
     {
-        FUN_1409c2750(spRow->m_strIcon);
-        FUN_1409c2a70(MS2Ptr<Unk_SlotSkillInfo>(pSkill), pPc->FUN_14152e970(((JobSkill*)(Unk_SlotSkillInfo*)(pSkill))->GetJobLevel()));
+        SetIconPathString(spRow->m_strIcon);
+        SetUpgradeCondition(MS2Ptr<Unk_SlotSkillInfo>(pSkill), pPc->FUN_14152e970(((JobSkill*)(Unk_SlotSkillInfo*)(pSkill))->GetJobLevel()));
     }
     if (nFlags & 0x400)
     {
-        FUN_1409c2710(pSkill->m_bLearned == false);
+        SetDisable(pSkill->m_bLearned == false);
         if (((SkillData*)(spRow).operator->())->FUN_1407e9de0())
-            FUN_1409c2650();
+            DisableDrag();
     }
     return 1;
 }
@@ -1473,28 +1474,28 @@ int ASSlot::FUN_1409c4510(int nItemId, int nRarity, int nCount)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData.IsNull())
         return 0;
-    FUN_1409c23a0(nItemId);
-    FUN_1409c23e0(nRarity);
+    SetItemID(nItemId);
+    SetItemGrade(nRarity);
     if (!(!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8c)))
     {
-        if (spData->FUN_14053cc40())
-            FUN_1409c2420(nRarity);
+        if (spData->IsPetItem())
+            SetItemPetRankAndDisableShadow(nRarity);
     }
     else
-        FUN_1409c1ce0(spData->FUN_14053cc40());
-    FUN_1409c1d20(spData->FUN_14053e130());
-    FUN_1409c1d60(spData->FUN_14053cf90());
-    FUN_1409c1da0(spData->FUN_14053ce20());
-    FUN_1409c1e00(spData->FUN_14053d1f0());
-    FUN_1409c1e40(spData->FUN_14053d210());
-    FUN_1409c2750(spData->FUN_14053fdd0());
-    FUN_1409c25b0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
-    FUN_1409c2190(nCount);
-    FUN_1409c2650();
+        SetItemPet(spData->IsPetItem());
+    SetItemCash(spData->IsCashItem());
+    SetItemSkin(spData->HasSkinType());
+    SetItemPcBang(spData->IsPCBangItem());
+    SetItemVIP(spData->FUN_14053d1f0());
+    SetItemWedding(spData->HasWeddingLimit());
+    SetIconPathString(spData->GetIconPath());
+    SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+    SetItemCountValue(nCount);
+    DisableDrag();
     FUN_1409c3040(spData);
     FUN_1409c30f0(spData);
-    FUN_1409c3290(spData);
-    FUN_1409c2050(spData->FUN_14053d990());
+    SetItemSeason(spData);
+    SetItemPiece(spData->IsPieceItem());
     return 1;
 }
 
@@ -1503,16 +1504,16 @@ int ASSlot::FUN_1409c4860(Unk_SlotIconSource* pSource)
 {
     if (pSource == NULL)
         return 0;
-    FUN_1409c2750(pSource->m_strIcon);
-    FUN_1409c2650();
+    SetIconPathString(pSource->m_strIcon);
+    DisableDrag();
     return 1;
 }
 
 // @0x1409c48b0
 int ASSlot::FUN_1409c48b0(const CString& strText)
 {
-    FUN_1409c2750(strText);
-    FUN_1409c2650();
+    SetIconPathString(strText);
+    DisableDrag();
     return 1;
 }
 
@@ -1521,7 +1522,7 @@ int ASSlot::FUN_1409c48b0(const CString& strText)
 void ASObj::FUN_1409c48f0(const char* szName, short n)
 {
     ASData data;
-    data.FUN_1422b7f70((unsigned short)n);
+    data.AddInt((unsigned short)n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -1529,7 +1530,7 @@ void ASObj::FUN_1409c48f0(const char* szName, short n)
 void ASObj::FUN_1409c4990(const char* szName, unsigned long n)
 {
     ASData data;
-    data.FUN_1422b8090(n);
+    data.AddULong(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -1537,7 +1538,7 @@ void ASObj::FUN_1409c4990(const char* szName, unsigned long n)
 void ASObj::FUN_1409c4a30(const char* szName, float f)
 {
     ASData data;
-    data.FUN_1422b80f0(f);
+    data.AddFloat(f);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -1697,7 +1698,7 @@ class CUgcMarketProduct   // C3: member view (real class not in this TU)
 {
 public:
     int FUN_1408961a0() const;
-    int FUN_140896310() const;
+    int IsMusicType() const;
 };
 class Unk_MeratUgc
 {
@@ -1821,7 +1822,8 @@ CStringW FUN_1409e3050(const CStringW& strKey, int n1, int n2);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140763e10(int value);
-CStringW FUN_1408116a0(int nId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CString FUN_1407194b0(__int64 v);
 CString FUN_140719530(unsigned __int64 v);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
@@ -1920,7 +1922,7 @@ bool ASMeratMarketProductBase::vfunc_3(MS2Ptr<Unk_MeratEquipEntry> spEntry, cons
         return false;
     Unk_MeratOid oid = spEntry->m_oid;
     FUN_1407cbb20("productOID", oid.FUN_1409b0470());
-    FUN_1409bc4a0(strBg);
+    SetBgPath(strBg);
     return true;
 }
 
@@ -1949,7 +1951,7 @@ void ASMeratMarketProductBase::SetIndex(int nIndex)
 }
 
 // @0x1409bc4a0
-void ASMeratMarketProductBase::FUN_1409bc4a0(const CString& strBg)
+void ASMeratMarketProductBase::SetBgPath(const CString& strBg)
 {
     FUN_1407cba60("bgPath", strBg);
 }
@@ -1967,7 +1969,7 @@ void ASMeratMarketProductBase::FUN_1409bc540(const int& nIndex)
 }
 
 // @0x1409bc580
-void ASMeratMarketProductBase::FUN_1409bc580(MS2Ptr<Unk_MeratEquipEntry> spEntry)
+void ASMeratMarketProductBase::SetProductOid(MS2Ptr<Unk_MeratEquipEntry> spEntry)
 {
     if (spEntry == 0)
         return;
@@ -1976,7 +1978,7 @@ void ASMeratMarketProductBase::FUN_1409bc580(MS2Ptr<Unk_MeratEquipEntry> spEntry
 }
 
 // @0x1409bc630
-void ASMeratMarketProductBase::FUN_1409bc630(const Unk_MeratOid& oid)
+void ASMeratMarketProductBase::SetProductOID(const Unk_MeratOid& oid)
 {
     FUN_1407cbb20("productOID", oid.FUN_1409b0470());
 }
@@ -1988,7 +1990,7 @@ int ASMeratMarketProductBase::GetIndex()
 }
 
 // @0x1409bc6a0
-void ASMeratMarketProductBase::FUN_1409bc6a0(Unk_MeratOid* pOid)
+void ASMeratMarketProductBase::GetProductOID(Unk_MeratOid* pOid)
 {
     CStringW strOid;
     FUN_1422baad0("productOID", strOid);
@@ -1998,7 +2000,7 @@ void ASMeratMarketProductBase::FUN_1409bc6a0(Unk_MeratOid* pOid)
 // @0x1409bc720
 unsigned int ASMeratMarketProductBase::FUN_1409bc720()
 {
-    return FUN_1422baa20("index").GetUInt();
+    return GetMember("index").GetUInt();
 }
 
 // @0x1409bc780
@@ -2061,14 +2063,14 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
             if (spData)
             {
                 CStringW strFunction = spData->function.name;
-                FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
+                FUN_1407cba60("iconPath", spData->GetIconPath());
                 FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                 if (spFilter.get() != NULL)
                 {
                     bool bDisable = !spFilter->FUN_140ebb780(nJob, nLevel, spData) ? TRUE : FALSE;
                     FUN_1407cbbe0("disable", bDisable);
                 }
-                FUN_1407cbbe0("showRecipe", spData->FUN_14053cde0());
+                FUN_1407cbbe0("showRecipe", spData->HasMaidId());
                 FUN_1407cbbe0("showPreview", FUN_1403b3c40(strFunction, L"UGCMapPackage"));
                 if (spData->property.slotMax > 1)
                 {
@@ -2120,7 +2122,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         }
         FUN_1407cbb20("itemName", spEntry->FUN_1406a4770());
         CString strIcon;
-        if (((CUgcMarketProduct*)(Unk_MeratUgc*)&(ugc))->FUN_140896310() != 0)
+        if (((CUgcMarketProduct*)(Unk_MeratUgc*)&(ugc))->IsMusicType() != 0)
         {
             Unk_MeratUgcTemplate& tpl = ugc.m_template;
             strIcon = tpl.FUN_140894060();
@@ -2144,7 +2146,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
             bDebug = pOpt->m_bDebug;
         if (bDebug)
         {
-            CStringW strSellCount = FUN_1408116a0(0xa27, ugc.m_nSaleCountTotal);
+            CStringW strSellCount = BlockFormat<int>(0xa27, ugc.m_nSaleCountTotal);
             FUN_1407cbb20("sellCount", strSellCount);
             CMsTime tPeriod(ugc.m_nPeriod);
             CStringW strPeriod;
@@ -2176,7 +2178,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
 // @0x1409bd8e0
 bool ASMeratMarketProduct::vfunc_4()
 {
-    return FUN_1422baa20("soldOut").GetBool();
+    return GetMember("soldOut").GetBool();
 }
 
 // @0x1409bd940
@@ -2257,7 +2259,7 @@ bool ASMeratMarketLimitedProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, c
     if (m_spBanner.get() != NULL)
     {
         FUN_1409c0dc0("type", "banner");
-        FUN_1409bc4a0(m_spBanner->m_strBg);
+        SetBgPath(m_spBanner->m_strBg);
     }
     else
     {
@@ -2266,11 +2268,11 @@ bool ASMeratMarketLimitedProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, c
         if (nBg > 0)
         {
             CString strBg = FUN_1402bad60("bg{0}", &nBg);
-            FUN_1409bc4a0(strBg);
+            SetBgPath(strBg);
         }
         else
         {
-            FUN_1409bc4a0("");
+            SetBgPath("");
         }
     }
     Unk_MeratPremium& premium = spEntry->m_premium;
@@ -2303,13 +2305,13 @@ bool ASMeratMarketLimitedProduct::vfunc_2(MS2Ptr<Unk_MeratEquipEntry> spEntry)
 // @0x1409be390
 bool ASMeratMarketLimitedProduct::vfunc_4()
 {
-    return FUN_1422baa20("soldOut").GetBool() || FUN_1422baa20("soldOutBuyLimit").GetBool();
+    return GetMember("soldOut").GetBool() || GetMember("soldOutBuyLimit").GetBool();
 }
 
 // @0x1409be4a0
 bool ASMeratMarketLimitedProduct::vfunc_5()
 {
-    return FUN_1422baa20("expired").GetBool();
+    return GetMember("expired").GetBool();
 }
 
 // @0x1409be500
@@ -2610,7 +2612,7 @@ bool ASMeratMarketHomeProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, cons
 // @0x1409c00e0
 bool ASMeratMarketHomeProduct::vfunc_4()
 {
-    return FUN_1422baa20("soldOutBuyLimit").GetBool();
+    return GetMember("soldOutBuyLimit").GetBool();
 }
 
 // @0x1409c0140
@@ -2688,7 +2690,7 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
     if (spData)
     {
         CStringW strFunction = spData->function.name;
-        FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
+        FUN_1407cba60("iconPath", spData->GetIconPath());
         if (spFilter.get() != NULL)
         {
             bool bDisable = !spFilter->FUN_140ebb780(nJob, nLevel, spData) ? TRUE : FALSE;
@@ -2699,9 +2701,9 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
             int nCount = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetB0(0);
             FUN_1407cb9c0("itemCount", nCount);
         }
-        if (spData->FUN_14053da20())
+        if (spData->HasOpenGachaBoxFunction())
         {
-            int nSeason = FUN_14052d230()->FUN_14059ed00(spData->FUN_14053dec0());
+            int nSeason = FUN_14052d230()->GetSeasonByCoinOrBoxItemId(spData->GetOpenGachaBoxParam0());
             FUN_1409c0d20("itemSeason", nSeason);
         }
     }
@@ -2720,7 +2722,7 @@ void ASObj::FUN_1409c0d20(const char* szName, unsigned int n)
 void ASObj::FUN_1409c0dc0(const char* szName, const char* szValue)
 {
     ASData data;
-    data.FUN_1422b82b0(szValue);
+    data.AddString(szValue);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2736,7 +2738,7 @@ void ASObj::FUN_1409c0e60(const char* szName, const wchar_t* szValue)
 void ASMeratMarketProductBase::FUN_1409c0f00(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2744,7 +2746,7 @@ void ASMeratMarketProductBase::FUN_1409c0f00(const char* szName, int n)
 void ASMeratMarketProductBase::FUN_1409c0fa0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2752,7 +2754,7 @@ void ASMeratMarketProductBase::FUN_1409c0fa0(const char* szName, int n)
 void ASMeratMarketProductBase::FUN_1409c1040(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2760,7 +2762,7 @@ void ASMeratMarketProductBase::FUN_1409c1040(const char* szName, int n)
 void ASMeratMarketProductBase::FUN_1409c10e0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2768,7 +2770,7 @@ void ASMeratMarketProductBase::FUN_1409c10e0(const char* szName, int n)
 void ASObj::FUN_1409c1180(const char* szName, __int64 n)
 {
     ASData data;
-    data.FUN_1422b81c0(n);
+    data.AddInt64(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

@@ -25,6 +25,17 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Header statics: the market sort name arrays, one copy per including unit.
 #ifndef MS2_HOOK_DLL
@@ -61,14 +72,14 @@ bool CShopCategoryTable::s_bInit;
 void AScript::FUN_1407cb9c0(const char* pszName, int nValue)
 {
     ASData data;
-    data.FUN_1422b7f70(nValue);
+    data.AddInt(nValue);
     m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
 void AScript::FUN_1407cba60(const char* pszName, CString strValue)
 {
     ASData data;
-    data.FUN_1422b82b0(strValue);
+    data.AddString(strValue);
     m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
@@ -82,7 +93,7 @@ void AScript::FUN_1407cbb20(const char* pszName, CStringW strValue)
 void AScript::FUN_1407cbbe0(const char* pszName, bool bValue)
 {
     ASData data;
-    data.FUN_1422b7fd0(bValue);
+    data.AddBool(bValue);
     m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 
@@ -106,21 +117,21 @@ bool CShopCategoryTable::TabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spP
     if (pElem == 0)
         return false;
     unsigned nName = 0;
-    FUN_140873220(pElem, "name", nName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "name", nName);
     if (nName == 0)
         return false;
     m_nName = nName;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabledByName(strFeature))
         return false;
-    m_strSymbol = FUN_14015f710(pElem, "symbol", CString(""));
+    m_strSymbol = Unk_ReadString((class Unk_XmlNode*)(pElem), "symbol", CString(""));
     if (m_strSymbol.Find("/", 0) >= 0)
         m_strSymbol = "";
-    m_strCategory = FUN_14015f710(pElem, "category", CString(""));
-    FUN_1408731e0(pElem, "priority", m_nPriority);
-    FUN_1408731e0(pElem, "static", m_nStatic);
-    FUN_1408731e0(pElem, "id", m_nId);
-    FUN_1408730a0(pElem, "alwaysOpen", m_bAlwaysOpen);
+    m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pElem), "category", CString(""));
+    XmlGetAttr((class TiXmlElement*)(pElem), "priority", reinterpret_cast<int&>(m_nPriority));
+    XmlGetAttr((class TiXmlElement*)(pElem), "static", reinterpret_cast<int&>(m_nStatic));
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "alwaysOpen", reinterpret_cast<bool&>(m_bAlwaysOpen));
     return true;
 }
 
@@ -157,8 +168,8 @@ bool CShopCategoryTable::SortTabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo>
 {
     if (TabInfo::Load(pElem, MS2Ptr<TabInfo>(0)))
     {
-        FUN_1408730a0(pElem, "sortGender", m_bSortGender);
-        FUN_1408730a0(pElem, "sortJob", m_bSortJob);
+        XmlGetAttr((class TiXmlElement*)(pElem), "sortGender", reinterpret_cast<bool&>(m_bSortGender));
+        XmlGetAttr((class TiXmlElement*)(pElem), "sortJob", reinterpret_cast<bool&>(m_bSortJob));
         if (spParent.get() != 0)
         {
             MS2Ptr<SortTabInfo> spSortParent(dynamic_cast<SortTabInfo*>(spParent.operator TabInfo*()));
@@ -228,16 +239,16 @@ void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
 {
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pCategory = pRoot->FUN_140165cf0("category"); pCategory != 0; pCategory = pCategory->FUN_140168650("category"))
+    for (Unk_140165cf0* pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0; pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
     {
         unsigned nId = 0;
-        FUN_140873220(pCategory, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pCategory), "id", nId);
         if (nId <= 0)
             continue;
         if (!FUN_14028f710((struct Unk_XmlElement*)(pCategory)))
             continue;
         CString strTabType;
-        FUN_1408733e0(pCategory, "tabType", strTabType);
+        XmlGetAttr((class TiXmlElement*)(pCategory), "tabType", strTabType);
         int nTabType = (strTabType == "sort") != 0;
         TabListPtr spList(Unk_GrNewTag(0));
         if (spList.get() != 0)
@@ -262,12 +273,12 @@ CShopCategoryTable::TabPtr CShopCategoryTable::NewTab(int nTabType)
 // @0x1407cb000
 void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& rMap, TabList* pList, TabPtr spParent)
 {
-    for (Unk_140165cf0* pElem = pParent->FUN_140165cf0("tab"); pElem != 0; pElem = pElem->FUN_140168650("tab"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pParent))->FirstChild("tab")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("tab")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
         int nName = 0;
-        FUN_1408731e0(pElem, "name", nName);
+        XmlGetAttr((class TiXmlElement*)(pElem), "name", reinterpret_cast<int&>(nName));
         if (nName > 0)
         {
             TabPtr spTab = NewTab(nTabType);
@@ -286,7 +297,7 @@ void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& 
         else
         {
             int nCopyId = 0;
-            FUN_1408731e0(pElem, "copyid", nCopyId);
+            XmlGetAttr((class TiXmlElement*)(pElem), "copyid", reinterpret_cast<int&>(nCopyId));
             TabListPtr spCopy(0);
             if (rMap.Lookup(nCopyId, spCopy))
             {

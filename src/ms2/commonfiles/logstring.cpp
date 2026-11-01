@@ -97,13 +97,13 @@ CLogString::CLogString() : m_queue(10),m_file(0),m_name(L"unknown"),m_day(0),m_i
 CLogString::~CLogString()
 {
     for(unsigned i=0;i<m_Handles.GetCount();++i) if(m_Handles[i]) CloseHandle(m_Handles[i]);
-    FUN_140654790();
+    CloseFiles();
 }
 // @0x140652a40
-void CLogString::FUN_140652a40(CStringW name)
+void CLogString::Init(CStringW name)
 {
     m_name=name;
-    if(!FUN_140653e60() && !FUN_140654160()) { MessageBoxW(0,L"Failed to Create Log Path",L"LogString Error",0); return; }
+    if(!ReadLogPathFromSettings() && !CreateDefaultLogPath()) { MessageBoxW(0,L"Failed to Create Log Path",L"LogString Error",0); return; }
     m_directory=StringFormat(L"{0}\\{1}\\",m_root,m_name);
     CreateDirectoryW(m_directory,0);
     HANDLE stop=CreateEventA(0,TRUE,FALSE,0);
@@ -111,23 +111,23 @@ void CLogString::FUN_140652a40(CStringW name)
     HANDLE work=CreateEventA(0,FALSE,FALSE,0);
     if(work) m_Handles.Add(work);
 }
-MS2_REPLACE_METHOD(0x140652a40, CLogString, FUN_140652a40, 375, 0x7FE400C1);
+MS2_REPLACE_METHOD(0x140652a40, CLogString, Init, 375, 0x7FE400C1);
 
 // @0x140652bc0
-void CLogString::FUN_140652bc0()
+void CLogString::StopThread()
 {
     MS2_ASSERT_AT(73,m_Handles.GetCount() > 0);
     SetEvent(m_Handles[0]); FUN_1401d3510(INFINITE);
 }
-MS2_REPLACE_METHOD(0x140652bc0, CLogString, FUN_140652bc0, 107, 0xE95D6CD3);
+MS2_REPLACE_METHOD(0x140652bc0, CLogString, StopThread, 107, 0xE95D6CD3);
 
 // @0x140652c40
-void CLogString::FUN_140652c40()
+void CLogString::SignalWork()
 {
     MS2_ASSERT_AT(80,m_Handles.GetCount() > 1);
     SetEvent(m_Handles[1]);
 }
-MS2_REPLACE_METHOD(0x140652c40, CLogString, FUN_140652c40, 96, 0xE55A0BF7);
+MS2_REPLACE_METHOD(0x140652c40, CLogString, SignalWork, 96, 0xE55A0BF7);
 
 // @0x140652cd0
 unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
@@ -138,8 +138,8 @@ unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
     for(;;) {
         DWORD result=WaitForMultipleObjects(count,&m_Handles[0],FALSE,INFINITE); result-=WAIT_OBJECT_0;
         SYSTEMTIME time; GetLocalTime(&time);
-        if(m_day!=time.wDay) { m_day=time.wDay; FUN_140654790(); }
-        FUN_140654280(); FUN_140654410();
+        if(m_day!=time.wDay) { m_day=time.wDay; CloseFiles(); }
+        OpenLogFile(); OpenGroupFiles();
         if(!m_queue.IsEmpty()) {
             while(!m_queue.IsEmpty()) {
                 CStringW line;
@@ -176,58 +176,58 @@ MS2_REPLACE_METHOD(0x140652cd0, CLogString, vfunc_1, 1017, 0xB76246D7);
 
 // No hooks on this forwarding family: the core constructs DLL-local CLogStringCtx RTTI.
 // @0x1406530d0
-void CLogString::FUN_1406530d0(int level,int category,const wchar_t* format,const fmt::ArgList& args) { FUN_140653130(0,0,level,category,format,args); }
+void CLogString::FUN_1406530d0(int level,int category,const wchar_t* format,const fmt::ArgList& args) { Log(0,0,level,category,format,args); }
 // @0x140653130
-void CLogString::FUN_140653130(unsigned __int64 account,unsigned __int64 character,int level,int category,const wchar_t* format,const fmt::ArgList& args)
+void CLogString::Log(unsigned __int64 account,unsigned __int64 character,int level,int category,const wchar_t* format,const fmt::ArgList& args)
 {
     if(!m_callbacks.empty()) {
         ContextPtr context(new CLogStringCtx);
         context->m_level=level; context->m_category=category;
         context->m_account=account; context->m_character=character;
         context->m_text=StringFormat(format,args);
-        FUN_140654d00(context);
+        InvokeCallbacks(context);
     }
     if(m_fileLevel<level) return;
     CStringW text=StringFormat(format,args);
-    FUN_140653d40(FUN_140654b70(account,character,level,category,text));
+    EnqueueLine(FormatLogLine(account,character,level,category,text));
     FUN_140653de0(account,character,level,category,text);
-    if(m_debugLevel>=level) OutputDebugStringW(FUN_140654c70(text));
-    FUN_140653e00(level);
+    if(m_debugLevel>=level) OutputDebugStringW(FormatTimestampedLine(text));
+    CountLevel(level);
 }
 // No hook: custom logging can construct DLL-local CLogCustomGroup RTTI.
 // @0x140653440
-void CLogString::FUN_140653440(const CString& group,const wchar_t* format,const fmt::ArgList& args)
+void CLogString::LogToGroup(const CString& group,const wchar_t* format,const fmt::ArgList& args)
 {
     SYSTEMTIME time; GetLocalTime(&time);
     CStringW line; line.Format(L"[%02d:%02d:%02d]",time.wHour,time.wMinute,time.wSecond);
     line.Append(StringFormat(format,args)); line.Append(L"\r\n");
-    FUN_1406549e0(group,line);
+    EnqueueGroupLine(group,line);
 }
 // @0x140653550
-void CLogString::FUN_140653550(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { FUN_140653130(a,c,12,category,format,args); }
+void CLogString::LogDebug(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { Log(a,c,12,category,format,args); }
 // @0x1406535b0
 void CLogString::FUN_1406535b0(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args)
 {
-    FUN_140653130(a,c,1,category,format,args);
+    Log(a,c,1,category,format,args);
     if(m_loadingError && g_logLoadingError) if(FUN_140654910()) {
         MessageBoxW(0,StringFormat(format,args),L"Loading Error",0); g_logLoadingError=false;
     }
 }
 // @0x140653690
-void CLogString::FUN_140653690(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { FUN_140653130(a,c,11,category,format,args); }
+void CLogString::LogInfo(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { Log(a,c,11,category,format,args); }
 // @0x1406536f0
-void CLogString::FUN_1406536f0(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { FUN_140653130(a,c,2,category,format,args); }
+void CLogString::LogWarning(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { Log(a,c,2,category,format,args); }
 // @0x140653750
-void CLogString::FUN_140653750(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { FUN_140654920(a,c,category,StringFormat(format,args)); }
-MS2_REPLACE_METHOD(0x140653750, CLogString, FUN_140653750, 126, 0x812C0F0B);
+void CLogString::LogForced(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* format,const fmt::ArgList& args) { QueueTaggedLine(a,c,category,StringFormat(format,args)); }
+MS2_REPLACE_METHOD(0x140653750, CLogString, LogForced, 126, 0x812C0F0B);
 
 // @0x1406537e0
-void CLogString::FUN_1406537e0(int level) { m_fileLevel=level; }
-MS2_REPLACE_METHOD(0x1406537e0, CLogString, FUN_1406537e0, 25, 0x0E391D3B);
+void CLogString::SetFileLevel(int level) { m_fileLevel=level; }
+MS2_REPLACE_METHOD(0x1406537e0, CLogString, SetFileLevel, 25, 0x0E391D3B);
 
 // @0x140653800
-void CLogString::FUN_140653800(int level) { m_debugLevel=level; }
-MS2_REPLACE_METHOD(0x140653800, CLogString, FUN_140653800, 25, 0x09284B7F);
+void CLogString::SetDebugLevel(int level) { m_debugLevel=level; }
+MS2_REPLACE_METHOD(0x140653800, CLogString, SetDebugLevel, 25, 0x09284B7F);
 
 // @0x140653820
 int CLogString::GetErrors() { return m_errors; }
@@ -242,7 +242,7 @@ int CLogString::GetFileLevel() { return m_fileLevel; }
 MS2_REPLACE_METHOD(0x140653860, CLogString, GetFileLevel, 17, 0x03AA79F7);
 
 // @0x140653880
-CStringW CLogString::FUN_140653880(int fullPath)
+CStringW CLogString::BuildLogFileName(int fullPath)
 {
     wchar_t module[MAX_PATH],drive[_MAX_DRIVE],directory[_MAX_DIR],file[_MAX_FNAME],computer[MAX_COMPUTERNAME_LENGTH+1];
     GetModuleFileNameW(0,module,MAX_PATH); _wsplitpath(module,drive,directory,file,0);
@@ -254,48 +254,48 @@ CStringW CLogString::FUN_140653880(int fullPath)
     if(fullPath) name=StringFormat(L"{0}{1}",m_directory,name);
     FUN_14025fab0(name); m_day=time.wDay; return name;
 }
-MS2_REPLACE_METHOD(0x140653880, CLogString, FUN_140653880, 672, 0x448DA939);
+MS2_REPLACE_METHOD(0x140653880, CLogString, BuildLogFileName, 672, 0x448DA939);
 
 // @0x140653b30
 CStringW CLogString::GetRoot() { return m_root; }
 MS2_REPLACE_METHOD(0x140653b30, CLogString, GetRoot, 68, 0x44C95B86);
 
 // @0x140653b80
-void CLogString::FUN_140653b80(Callback callback) { Unk_1401b4ec0 guard(m_callbackLock,1); m_callbacks.push_back(callback); }
-MS2_REPLACE_METHOD(0x140653b80, CLogString, FUN_140653b80, 105, 0x1E498D94);
+void CLogString::AddCallback(Callback callback) { Unk_1401b4ec0 guard(m_callbackLock,1); m_callbacks.push_back(callback); }
+MS2_REPLACE_METHOD(0x140653b80, CLogString, AddCallback, 105, 0x1E498D94);
 
 // @0x140653bf0
-void CLogString::FUN_140653bf0(Callback callback)
+void CLogString::RemoveCallback(Callback callback)
 {
     Unk_1401b4ec0 guard(m_callbackLock,1);
     for(unsigned i=0;i<m_callbacks.size();++i) if(m_callbacks[i]==callback) { m_callbacks.erase(m_callbacks.begin()+i); return; }
 }
-MS2_REPLACE_METHOD(0x140653bf0, CLogString, FUN_140653bf0, 325, 0xEDF114DF);
+MS2_REPLACE_METHOD(0x140653bf0, CLogString, RemoveCallback, 325, 0xEDF114DF);
 
 // @0x140653d40
-void CLogString::FUN_140653d40(const CStringW& text)
+void CLogString::EnqueueLine(const CStringW& text)
 {
-    CStringW line=FUN_140654c70(text); Unk_140163940 guard(m_queueLock);
-    if(guard!=0) {} else { m_queue.AddTail(line); FUN_140652c40(); }
+    CStringW line=FormatTimestampedLine(text); Unk_140163940 guard(m_queueLock);
+    if(guard!=0) {} else { m_queue.AddTail(line); SignalWork(); }
 }
-MS2_REPLACE_METHOD(0x140653d40, CLogString, FUN_140653d40, 143, 0xD9B70076);
+MS2_REPLACE_METHOD(0x140653d40, CLogString, EnqueueLine, 143, 0xD9B70076);
 
 // @0x140653de0
 void CLogString::FUN_140653de0(unsigned __int64,unsigned __int64,int,int,const CStringW&) {}
 MS2_REPLACE_METHOD(0x140653de0, CLogString, FUN_140653de0, 21, 0x088A195E);
 
 // @0x140653e00
-void CLogString::FUN_140653e00(int level)
+void CLogString::CountLevel(int level)
 {
     switch(level) {
     case 1: ++m_errors; break;
     case 2: ++m_warnings; break;
     }
 }
-MS2_REPLACE_METHOD(0x140653e00, CLogString, FUN_140653e00, 89, 0x4E51C3B9);
+MS2_REPLACE_METHOD(0x140653e00, CLogString, CountLevel, 89, 0x4E51C3B9);
 
 // @0x140653e60
-bool CLogString::FUN_140653e60()
+bool CLogString::ReadLogPathFromSettings()
 {
     TiXmlDocument doc;
     bool bFailed=!doc.FUN_140870fc0(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),0) ? TRUE : FALSE;
@@ -310,10 +310,10 @@ bool CLogString::FUN_140653e60()
     if(!CreateDirectoryW(m_root,0)) { DWORD error=GetLastError(); if(error!=ERROR_ALREADY_EXISTS) return false; }
     return true;
 }
-MS2_REPLACE_METHOD(0x140653e60, CLogString, FUN_140653e60, 760, 0xA20C55A1);
+MS2_REPLACE_METHOD(0x140653e60, CLogString, ReadLogPathFromSettings, 760, 0xA20C55A1);
 
 // @0x140654160
-bool CLogString::FUN_140654160()
+bool CLogString::CreateDefaultLogPath()
 {
     wchar_t module[MAX_PATH],drive[_MAX_DRIVE],directory[_MAX_DIR];
     GetModuleFileNameW(0,module,MAX_PATH); _wsplitpath(module,drive,directory,0,0);
@@ -321,48 +321,48 @@ bool CLogString::FUN_140654160()
     if(!CreateDirectoryW(m_root,0)) { DWORD error=GetLastError(); if(error!=ERROR_ALREADY_EXISTS) return false; }
     return true;
 }
-MS2_REPLACE_METHOD(0x140654160, CLogString, FUN_140654160, 267, 0xC1B3B87D);
+MS2_REPLACE_METHOD(0x140654160, CLogString, CreateDefaultLogPath, 267, 0xC1B3B87D);
 
 // @0x140654280
-void CLogString::FUN_140654280()
+void CLogString::OpenLogFile()
 {
     if(m_file) return;
     {
-        CStringW path=StringFormat(L"{0}\\{1}",m_directory,FUN_140653880(0));
+        CStringW path=StringFormat(L"{0}\\{1}",m_directory,BuildLogFileName(0));
         bool bExists=_waccess(path,0)==0 ? true : false;
         m_file=CreateFileW(path,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,0,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0);
         if(!bExists) { DWORD written=0; wchar_t bom=0xfeff; WriteFile(m_file,&bom,2,&written,0); }
         LARGE_INTEGER offset; offset.QuadPart=0; SetFilePointerEx(m_file,offset,0,FILE_END);
     }
 }
-MS2_REPLACE_METHOD(0x140654280, CLogString, FUN_140654280, 388, 0xBB875AD9);
+MS2_REPLACE_METHOD(0x140654280, CLogString, OpenLogFile, 388, 0xBB875AD9);
 
 // @0x140654410
-void CLogString::FUN_140654410()
+void CLogString::OpenGroupFiles()
 {
     Unk_1401b4ec0 guard(m_groupLock,1);
     for(POSITION pos=m_groups.GetHeadPosition();pos;m_groups.GetNext(pos)) {
         GroupPtr group=m_groups.GetValueAt(pos);
-        if(!group->m_file) FUN_140654520(group);
+        if(!group->m_file) OpenGroupFile(group);
     }
 }
-MS2_REPLACE_METHOD(0x140654410, CLogString, FUN_140654410, 253, 0xF740BBC3);
+MS2_REPLACE_METHOD(0x140654410, CLogString, OpenGroupFiles, 253, 0xF740BBC3);
 
 // @0x140654520
-void CLogString::FUN_140654520(GroupPtr group)
+void CLogString::OpenGroupFile(GroupPtr group)
 {
     if(group==NULL) return;
     if(group->m_file) { FlushFileBuffers(group->m_file); CloseHandle(group->m_file); }
-    CStringW path=StringFormat(L"{0}\\{1}_{2}",m_directory,FUN_14016a730(group->m_name,0),FUN_140653880(0));
+    CStringW path=StringFormat(L"{0}\\{1}_{2}",m_directory,FUN_14016a730(group->m_name,0),BuildLogFileName(0));
     bool bExists=_waccess(path,0)==0 ? true : false;
     group->m_file=CreateFileW(path,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,0,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0);
     if(!bExists) { DWORD written=0; wchar_t bom=0xfeff; WriteFile(group->m_file,&bom,2,&written,0); }
     LARGE_INTEGER offset; offset.QuadPart=0; SetFilePointerEx(group->m_file,offset,0,FILE_END);
 }
-MS2_REPLACE_METHOD(0x140654520, CLogString, FUN_140654520, 607, 0xD962302B);
+MS2_REPLACE_METHOD(0x140654520, CLogString, OpenGroupFile, 607, 0xD962302B);
 
 // @0x140654790
-void CLogString::FUN_140654790()
+void CLogString::CloseFiles()
 {
     if(m_file) { FlushFileBuffers(m_file); CloseHandle(m_file); m_file=0; }
     Unk_140163940 guard(m_groupLock);
@@ -373,14 +373,14 @@ void CLogString::FUN_140654790()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140654790, CLogString, FUN_140654790, 370, 0x57C96FE3);
+MS2_REPLACE_METHOD(0x140654790, CLogString, CloseFiles, 370, 0x57C96FE3);
 
 // @0x140654910
 bool CLogString::FUN_140654910() { return true; }
 MS2_REPLACE_METHOD(0x140654910, CLogString, FUN_140654910, 8, 0x71679366);
 
 // @0x140654920
-void CLogString::FUN_140654920(unsigned __int64 account,unsigned __int64 character,unsigned category,const CStringW& text)
+void CLogString::QueueTaggedLine(unsigned __int64 account,unsigned __int64 character,unsigned category,const CStringW& text)
 {
     CStringW line;
     line.Format(L"[F][LT%02u]",category);
@@ -391,21 +391,21 @@ void CLogString::FUN_140654920(unsigned __int64 account,unsigned __int64 charact
     }
     else
         line.Append(text);
-    FUN_140653d40(line);
+    EnqueueLine(line);
 }
-MS2_REPLACE_METHOD(0x140654920, CLogString, FUN_140654920, 178, 0x52509381);
+MS2_REPLACE_METHOD(0x140654920, CLogString, QueueTaggedLine, 178, 0x52509381);
 
 // No hook: creates a custom group on first use (DLL-local RTTI).
 // @0x1406549e0
-void CLogString::FUN_1406549e0(const CString& name,const CStringW& text)
+void CLogString::EnqueueGroupLine(const CString& name,const CStringW& text)
 {
     Unk_1401b4ec0 guard(m_groupLock,1);
     GroupPtr group;
-    if(!m_groups.Lookup(name,group)) group=FUN_140654df0(name);
-    group->m_queue.AddTail(text); FUN_140652c40();
+    if(!m_groups.Lookup(name,group)) group=CreateGroup(name);
+    group->m_queue.AddTail(text); SignalWork();
 }
 // @0x140654b10
-wchar_t CLogString::FUN_140654b10(int level)
+wchar_t CLogString::GetLevelChar(int level)
 {
     switch(level) {
     case 1: return L'E';
@@ -415,40 +415,40 @@ wchar_t CLogString::FUN_140654b10(int level)
     }
     return L'U';
 }
-MS2_REPLACE_METHOD(0x140654b10, CLogString, FUN_140654b10, 84, 0xACA69F93);
+MS2_REPLACE_METHOD(0x140654b10, CLogString, GetLevelChar, 84, 0xACA69F93);
 
 // @0x140654b70
-CStringW CLogString::FUN_140654b70(unsigned __int64 account,unsigned __int64 character,int level,int category,const CStringW& text)
+CStringW CLogString::FormatLogLine(unsigned __int64 account,unsigned __int64 character,int level,int category,const CStringW& text)
 {
-    if(account!=0 || character!=0) return StringFormat(L"[{0}][LT{1:02}][ac={2}][ch={3}]{4}",FUN_140654b10(level),reinterpret_cast<const Unk_LogCategory&>(category),account,character,text);
-    return StringFormat(L"[{0}][LT{1:02}]{2}",FUN_140654b10(level),reinterpret_cast<const Unk_LogCategory&>(category),text);
+    if(account!=0 || character!=0) return StringFormat(L"[{0}][LT{1:02}][ac={2}][ch={3}]{4}",GetLevelChar(level),reinterpret_cast<const Unk_LogCategory&>(category),account,character,text);
+    return StringFormat(L"[{0}][LT{1:02}]{2}",GetLevelChar(level),reinterpret_cast<const Unk_LogCategory&>(category),text);
 }
-MS2_REPLACE_METHOD(0x140654b70, CLogString, FUN_140654b70, 237, 0xA8607059);
+MS2_REPLACE_METHOD(0x140654b70, CLogString, FormatLogLine, 237, 0xA8607059);
 
 // @0x140654c70
-CStringW CLogString::FUN_140654c70(const CStringW& text)
+CStringW CLogString::FormatTimestampedLine(const CStringW& text)
 {
     SYSTEMTIME time; GetLocalTime(&time);
     return StringFormat(L"[{0:02}:{1:02}:{2:02}]{3}\r\n",time.wHour,time.wMinute,time.wSecond,text);
 }
-MS2_REPLACE_METHOD(0x140654c70, CLogString, FUN_140654c70, 134, 0x2C74BB4C);
+MS2_REPLACE_METHOD(0x140654c70, CLogString, FormatTimestampedLine, 134, 0x2C74BB4C);
 
 // @0x140654d00
-void CLogString::FUN_140654d00(ContextPtr context)
+void CLogString::InvokeCallbacks(ContextPtr context)
 {
     std::vector<Callback> callbacks;
     { Unk_140163940 guard(m_callbackLock); if(guard!=0) {} else callbacks=m_callbacks; }
     for(unsigned i=0;i<callbacks.size();++i) callbacks[i](context.get());
 }
-MS2_REPLACE_METHOD(0x140654d00, CLogString, FUN_140654d00, 234, 0x5F59D737);
+MS2_REPLACE_METHOD(0x140654d00, CLogString, InvokeCallbacks, 234, 0x5F59D737);
 
 // No hook: constructs DLL-local CLogCustomGroup RTTI.
 // @0x140654df0
-CLogString::GroupPtr CLogString::FUN_140654df0(CString name)
+CLogString::GroupPtr CLogString::CreateGroup(CString name)
 {
     Unk_1401b4ec0 guard(m_groupLock,1);
     GroupPtr group(new CLogCustomGroup(name));
-    FUN_140654520(group); m_groups.SetAt(name,group); return group;
+    OpenGroupFile(group); m_groups.SetAt(name,group); return group;
 }
 // @0x140654f70
 void CLogString::FUN_140654f70()

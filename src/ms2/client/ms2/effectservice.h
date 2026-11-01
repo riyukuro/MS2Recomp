@@ -104,7 +104,7 @@ class INodeMovement : public CPtred
 public:
     virtual ~INodeMovement();                                   // 0x141626240
     virtual INodeMovement* Clone() = 0;                         // slot 1
-    NiTransform FUN_141625430(double dTime, const NiTransform& kWorld);     // moved world transform
+    NiTransform UpdateMovement(double dTime, const NiTransform& kWorld);     // moved world transform
 
     char m_pad_18[0x48];
 };
@@ -124,7 +124,7 @@ public:
     virtual void UpdateWorldData();                             // slot 32, 0x1411a3720
     void CopyMembers(EffectNode* pkDest, NiCloningProcess& kCloning);   // 0x1411a3380
 
-    void FUN_1411a3cb0(const CEffectDummy& kDummy);             // transform and attach flags from a dummy
+    void ApplyDummy(const CEffectDummy& kDummy);             // transform and attach flags from a dummy
     void SetMovement(INodeMovement* pMovement);               // set the movement
     void SetOnGround(int bOnGround);                          // snap to the ground
     void SetRotationTarget(NiAVObject* pTarget);                    // rotation target (ignored if this)
@@ -172,8 +172,8 @@ class NiTransform;
 struct Unk_EsEffectGroup
 {
     explicit Unk_EsEffectGroup(unsigned nId) : m_nId(nId) {}   // 0x1411af8b0
-    ~Unk_EsEffectGroup();                                       // 0x1411b0140: FUN_1411a42b0, then the members
-    void FUN_1411a42b0();                                       // drop every effect (vfunc_7) and the skip counts
+    ~Unk_EsEffectGroup();                                       // 0x1411b0140: ClearEffects, then the members
+    void ClearEffects();                                       // drop every effect (vfunc_7) and the skip counts
 
     static int FUN_1411b1f50();                                 // m_sTotalEffectCount
     // @0x1411b1ed0
@@ -184,10 +184,10 @@ struct Unk_EsEffectGroup
     std::list<CEffectPtr>::iterator FUN_141044280() { return m_listEffects.begin(); }
     // @0x1410443f0
     std::list<CEffectPtr>::iterator FUN_1410443f0() { return m_listEffects.end(); }
-    std::list<CEffectPtr>::iterator FUN_1411b2df0(std::list<CEffectPtr>::iterator it);   // erase one effect
+    std::list<CEffectPtr>::iterator RemoveEffect(std::list<CEffectPtr>::iterator it);   // erase one effect
     void SetName(const char* pszName);                    // m_strName = pszName
     const std::string& FUN_1411b1e40();                         // m_strName
-    void FUN_1411b15b0(CEffectPtr spEffect);                    // add an effect (counted)
+    void AddEffect(CEffectPtr spEffect);                    // add an effect (counted)
     bool FUN_1411b2720();                                       // no effects left
 
     unsigned m_nId;                                             // +0x00
@@ -266,25 +266,25 @@ public:
     void FUN_1411a67f0(unsigned nId, float f);                  // vfunc_6 on the effects of an id
     void FUN_1411a68f0(unsigned nId, bool b);                   // vfunc_10 on the effects of an id
     void FUN_1411a69e0(unsigned nId);                           // stop the id once every effect is done (vfunc_11)
-    NiNode* FUN_1411a6b10();                                    // the root with the fewest children
+    NiNode* GetLeastLoadedRoot();                                    // the root with the fewest children
     void FUN_1411a6490();                                       // drop the finished effects and the empty groups
     void FUN_1411a6be0();                                       // detach every child of the roots
     void FUN_1411a6d50(NiAVObject* pChild);                     // detach pChild from the roots
-    void FUN_1411a6ea0(Unk_EsTracked* p);                       // keep p
+    void AddTracked(Unk_EsTracked* p);                       // keep p
     void FUN_1411a6f00(const egf::EntityID& id);                // drop the kept object of an entity
     void FUN_1411a7000(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8253 added
     void FUN_1411a7070(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
     void FUN_1411a7330(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8196 updated
     void FUN_1411a7420(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);
     void FUN_1411a74a0(egf::EntityID id, egf::Entity* pEntity);  // attach the light of a light entity
-    void FUN_1411a76d0();                                       // UpdateEffects on the roots
-    void FUN_1411a7760(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut); // the effects of an id
+    void UpdateRootEffects();                                       // UpdateEffects on the roots
+    void GetGroupEffects(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut); // the effects of an id
     bool IsEnabled();                                       // enabled
     void SetEnabled(bool bEnabled);
     void FUN_1411a7870(int nIndex);                             // re-show the sky object (0 = the first)
     void FUN_1411a7960(unsigned nIndex);                        // show preloaded sky object nIndex on the root
-    void FUN_1411a7ce0(bool bRain);                             // create / drop the rain
-    void FUN_1411a7db0();
+    void SetRainEnabled(bool bRain);                             // create / drop the rain
+    void DestroyRain();
     void FUN_1411a7e00(const CString& strName);                 // set the area effect (stops the playing one)
     void FUN_1411a7e80(int nType);                              // pick the area effect of a weather type
     unsigned FUN_1411a85a0();                                   // the effect count
@@ -303,7 +303,7 @@ public:
     void FUN_1411a8dc0();                                       // stop every id of m_list140
     void SetTick(unsigned nTick);
     unsigned GetTick();
-    bool FUN_1411a91d0(int nType);                              // false when the option hides that effect type
+    bool IsEffectTypeVisible(int nType);                              // false when the option hides that effect type
     static unsigned FUN_1411a9230();                            // next effect id (never 0)
     static unsigned s_nLastId;                                  // 0x1439f7038
 

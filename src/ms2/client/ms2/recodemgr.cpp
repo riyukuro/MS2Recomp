@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -37,7 +38,6 @@ MS2_CHECK_SIZE(Unk_RmMutex, 0x10);
 
 struct Unk_RmRenderLink { char m_pad[0x38]; ecr::RenderContext* m_pContext; };
 struct Unk_RmRenderService { char m_pad[0x48]; Unk_RmRenderLink* m_pLink; };
-class Unk_RmApp { public: HWND FUN_14209c720(); };
 class Unk_AeGraphicOption   // C3: member view (real class not in this TU)
 {
 public:
@@ -93,7 +93,7 @@ RecodeMgr::~RecodeMgr()
 // @0x140c9bb20
 void RecodeMgr::FUN_140c9bb20()
 {
-    FUN_140c9bc00();
+    StopRecording();
 }
 
 // @0x140c9bb40
@@ -105,7 +105,7 @@ int RecodeMgr::IsRecording()
 // @0x140c9bb60
 int RecodeMgr::FUN_140c9bb60()
 {
-    FUN_140c9bc00();
+    StopRecording();
     MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
     if (pContext != 0)
     {
@@ -126,7 +126,7 @@ int RecodeMgr::FUN_140c9bb60()
 }
 
 // @0x140c9bc00
-int RecodeMgr::FUN_140c9bc00()
+int RecodeMgr::StopRecording()
 {
     m_bRecording = 0;
     MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
@@ -138,7 +138,7 @@ int RecodeMgr::FUN_140c9bc00()
 // @0x140c9bc70
 int RecodeMgr::FUN_140c9bc70(CString strText)
 {
-    FUN_140c9bc00();
+    StopRecording();
     MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
     if (pContext != 0)
     {
@@ -180,7 +180,7 @@ int RecodeMgr::FUN_140c9be00()
             memset(&info, 0, sizeof(info));
             info.cbSize = sizeof(info);
             info.fMask = 0;
-            info.hwnd = ((class Unk_RmApp*)FUN_140aadf80())->FUN_14209c720();
+            info.hwnd = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
             info.lpVerb = "Open";
             info.lpFile = strExe;
             info.lpDirectory = 0;
@@ -256,14 +256,14 @@ BOOL CResearchAndDevelopmentDialog::OnInitDialog()
 }
 
 // @0x140c9c4e0
-void CResearchAndDevelopmentDialog::FUN_140c9c4e0(CString strText)
+void CResearchAndDevelopmentDialog::SetStatusText(CString strText)
 {
     m_strStatus = strText;
     UpdateData(0);
 }
 
 // @0x140c9c540
-void CResearchAndDevelopmentDialog::FUN_140c9c540(CString strText)
+void CResearchAndDevelopmentDialog::SetRecordStatusText(CString strText)
 {
     m_strRecordStatus = strText;
     UpdateData(0);
@@ -352,7 +352,7 @@ void CResearchAndDevelopmentDialog::OnBnClickedRecord()
 void CResearchAndDevelopmentDialog::OnBnClickedStopRecord()
 {
     if (RecodeMgr::GetInstance() != 0)
-        RecodeMgr::GetInstance()->FUN_140c9bc00();
+        RecodeMgr::GetInstance()->StopRecording();
 }
 
 // @0x140c9c980

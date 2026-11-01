@@ -147,7 +147,7 @@ public:
 
     float FUN_14154b470();                                      // duration of the nif animation
     bool FUN_14154b4a0(NiObjectNET* pkNode);                    // swap the alpha controllers for duplicates
-    bool FUN_14154b5e0();                                       // fade out allowed (param not "notForceStop")
+    bool IsNotForceStop();                                       // fade out allowed (param not "notForceStop")
     void FUN_14154b630(NiObjectNET* pkNode, float fTime);       // add a fade-out controller
     void FUN_14154ba40(Unk_EffectTarget* pTarget);              // attach type 0
     void FUN_14154bdd0(Unk_EffectTarget* pTarget);              // attach type 1

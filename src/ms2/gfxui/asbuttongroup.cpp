@@ -34,14 +34,14 @@ ASButtonGroup::~ASButtonGroup()
 // @0x1422e89a0
 unsigned int ASButtonGroup::FUN_1422e89a0()
 {
-    return FUN_1422baa20("length").GetUInt();
+    return GetMember("length").GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422E89A0, ASButtonGroup, FUN_1422e89a0, 88, 0x83EDF72E);
 
 // @0x1422e8a00
 int ASButtonGroup::FUN_1422e8a00()
 {
-    return FUN_1422baa20("selectedIndex").GetInt();
+    return GetMember("selectedIndex").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E8A00, ASButtonGroup, FUN_1422e8a00, 88, 0x3C039DF8);
 

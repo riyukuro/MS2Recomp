@@ -142,7 +142,7 @@ MS2SvrPtr<CIngredientContainer> CItemLapenshardData::GetIngredients(int nScale)
         }
         Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
         Unk_LapenIngredientTag(info.operator->(), nTag);
-        spResult->FUN_14026bca0(info);
+        spResult->AddIngredient(info);
     }
     return spResult;
 }
@@ -236,7 +236,7 @@ int CItemLapenshardTable::Load()
             MS2Ptr<CItemData> next = FUN_14053f870(data->m_nNext);
             if (next.get() != 0 && nTransfer != next->limit.transferType)
             {
-                unsigned nNextId = next->FUN_14053c510();
+                unsigned nNextId = next->GetItemId();
                 FUN_1405b1bd0(GetLogString(), 2, 0x13,
                               L"라펜샤드 거래타입(귀속,거래불가 등)이 같지않습니다(itemID: {0}, nextItemID: {1}). itemProperty transferType을 확인해 주세요. [{2}]",
                               nItemId, nNextId, strPath);
@@ -266,7 +266,7 @@ int CItemLapenshardTable::Load()
                     }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_LapenIngredientTag(info.operator->(), nTag);
-                    data->m_spIngredients->FUN_14026bca0(info);
+                    data->m_spIngredients->AddIngredient(info);
                 }
             }
         }

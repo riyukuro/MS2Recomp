@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 static CString s_winSound = "BattleField_Win";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -181,11 +182,10 @@ public:
 class Unk_ClosingWorld : public WorldService
 {
 public:
-    Unk_ClosingPlayer* FUN_141bd1530(__int64);
     Unk_ClosingSelf* FUN_141bd0cc0();
 };
 class Unk_ClosingUIMgr { public: void FUN_141adc530(int); };
-class Unk_ClosingButton : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned); };
+class Unk_ClosingButton : public ASMovieClip { public: };
 class Unk_ClosingClip : public ASUIComponent
 {
 public:
@@ -193,21 +193,11 @@ public:
     virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20();
     virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool);
-    void FUN_1422c00f0(float, float);
     void FUN_1422c0180(unsigned, unsigned);
 };
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); int FUN_14070fe80(); void FUN_140715280(unsigned); };
 class Unk_RewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int, CStringW, int); };
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
-class Unk_140a94350
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_140a94350* FUN_140a94350();
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -236,7 +226,7 @@ CString UIDungeonClosingPhotoDialog::GetTypeName() { return "DungeonClosingPhoto
 void UIDungeonClosingPhotoDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140e0f6b0();
+    ClearEntries();
 }
 
 // @0x140e0e020
@@ -329,7 +319,7 @@ void UIDungeonClosingPhotoDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp,
 void UIDungeonClosingPhotoDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_140e0ff50();
+    UnloadAllRenderTargets();
 }
 
 // @0x140e0e840
@@ -337,7 +327,7 @@ bool UIDungeonClosingPhotoDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17())
         return false;
-    FUN_140e0fe40();
+    LoadAllRenderTargets();
     return true;
 }
 
@@ -423,7 +413,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             }
         }
         if (m_entries.size() < 10) {
-            Unk_ClosingPlayer* player = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd1530(uid);
+            Unk_ClosingPlayer* player = reinterpret_cast<Unk_ClosingPlayer*>(WorldService::GetInstance()->FUN_141bd1530(uid));
             if (player == 0)
                 continue;
             UIAvatarPC* av = new UIAvatarPC(player, false);
@@ -448,7 +438,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
         Unk_RewardOtherDialog* dlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
         if (dlg) {
             flag = 2000;
-            FUN_140a94350()->vfunc_10(9);
+            ChromaSDK::GetChromaManager()->SetState(9);
             dlg->FUN_1419f6a70(5, GetStringCommonByKey(CStringW(L"s_room_dungeon_clear")), 2000);
             FUN_141276180(s_winSound, "");
         }
@@ -466,9 +456,9 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
 }
 
 // @0x140e0f6b0
-void UIDungeonClosingPhotoDialog::FUN_140e0f6b0()
+void UIDungeonClosingPhotoDialog::ClearEntries()
 {
-    FUN_140e0ff50();
+    UnloadAllRenderTargets();
     for (size_t i = 0; i < m_entries.size(); ++i) {
         if (m_entries[i].m_clip.get())
             m_entries[i].m_clip->vfunc_3(0);
@@ -530,7 +520,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0fd20(int idx)
 }
 
 // @0x140e0fe40
-void UIDungeonClosingPhotoDialog::FUN_140e0fe40()
+void UIDungeonClosingPhotoDialog::LoadAllRenderTargets()
 {
     for (size_t i = 0; i < m_entries.size(); ++i) {
         if (m_entries[i].m_clip.get())
@@ -539,7 +529,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0fe40()
 }
 
 // @0x140e0ff50
-void UIDungeonClosingPhotoDialog::FUN_140e0ff50()
+void UIDungeonClosingPhotoDialog::UnloadAllRenderTargets()
 {
     for (size_t i = 0; i < m_entries.size(); ++i) {
         if (m_entries[i].m_clip.get())
@@ -588,7 +578,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e10010(int& x, int& y, unsigned& scale,
     MS2Ptr<ASMovieClip> bg = GetChild<ASMovieClip>("m_bg");
     if (bg.get()) {
         x += bg->FUN_1422c1340() / 2;
-        y += bg->FUN_1422c13b0() / 2;
+        y += bg->GetHeightCeil() / 2;
     }
 }
 
@@ -640,7 +630,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         req.protocol = 2;
         req.name = actor->vfunc_77();
         req.memo = GetStringCommon(0x60a);
-        TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4820(req);
+        TSingleton<CBuddyManager>::GetInstance()->SendBuddyRequest(req);
     }
 }
 
@@ -649,7 +639,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e10800(int result, CStringW name)
 {
     if (result == 0)
         return;
-    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4950(name);
+    CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(name);
     if (buddy.get()) {
         if (buddy->FUN_1401cc5d0() == 1) {
             FUN_140961010(0x61a, 1, 1, name);
@@ -710,11 +700,11 @@ MS2_REPLACE_METHOD(0x140E0E840, UIDungeonClosingPhotoDialog, vfunc_17, 47, 0x1B6
 MS2_REPLACE_METHOD(0x140E0E880, UIDungeonClosingPhotoDialog, vfunc_79, 212, 0x370462AD);
 MS2_REPLACE_METHOD(0x140E0E960, UIDungeonClosingPhotoDialog, vfunc_28, 208, 0xB4AD78BB);
 MS2_REPLACE_METHOD(0x140E0EA40, UIDungeonClosingPhotoDialog, FUN_140e0ea40, 52, 0xE31499F5);
-MS2_REPLACE_METHOD(0x140E0F6B0, UIDungeonClosingPhotoDialog, FUN_140e0f6b0, 217, 0x26A6CA20);
+MS2_REPLACE_METHOD(0x140E0F6B0, UIDungeonClosingPhotoDialog, ClearEntries, 217, 0x26A6CA20);
 MS2_REPLACE_METHOD(0x140E0F790, UIDungeonClosingPhotoDialog, FUN_140e0f790, 1360, 0x142313B4);
 MS2_REPLACE_METHOD(0x140E0FCF0, UIDungeonClosingPhotoDialog, FUN_140e0fcf0, 38, 0xB5134428);
-MS2_REPLACE_METHOD(0x140E0FE40, UIDungeonClosingPhotoDialog, FUN_140e0fe40, 251, 0x36262D83);
-MS2_REPLACE_METHOD(0x140E0FF50, UIDungeonClosingPhotoDialog, FUN_140e0ff50, 176, 0x39D83762);
+MS2_REPLACE_METHOD(0x140E0FE40, UIDungeonClosingPhotoDialog, LoadAllRenderTargets, 251, 0x36262D83);
+MS2_REPLACE_METHOD(0x140E0FF50, UIDungeonClosingPhotoDialog, UnloadAllRenderTargets, 176, 0x39D83762);
 MS2_REPLACE_METHOD(0x140E10010, UIDungeonClosingPhotoDialog, FUN_140e10010, 666, 0xEE731CE4);
 MS2_REPLACE_METHOD(0x140E102B0, UIDungeonClosingPhotoDialog, FUN_140e102b0, 533, 0x47263C5C);
 MS2_REPLACE_METHOD(0x140E104D0, UIDungeonClosingPhotoDialog, FUN_140e104d0, 804, 0xD8A04FFD);

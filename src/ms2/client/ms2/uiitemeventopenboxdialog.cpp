@@ -60,7 +60,6 @@ static CString s_strStun = "stun";                                          // @
 class Unk_140acd6e0 : public ASButton {};
 // the box item slot clip: sets a string member of its AS object
 class Unk_EobSlot : public ASUIComponent { public:
-    void FUN_1407cba60(const char*, CString);
 };
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
     int FUN_1409617d0(int, unsigned, const int&);
@@ -88,13 +87,13 @@ UIItemEventOpenBoxDialog::UIItemEventOpenBoxDialog()
     m_178 = 0;
     m_80 = 0;
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
-    ((class Unk_EobPackets*)FUN_140bccd50())->FUN_140da5180(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
 }
 
 // @0x140e477f0
 UIItemEventOpenBoxDialog::~UIItemEventOpenBoxDialog()
 {
-    ((class Unk_EobPackets*)FUN_140bccd50())->FUN_140da51e0(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
 }
 

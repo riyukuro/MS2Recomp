@@ -42,7 +42,7 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);  // 0x143abf6d
 extern bool DAT_143ab2947;
 extern bool DAT_143ab2966;
 bool FUN_1407105c0(COutPacket& packet, int nKind, int nParam);
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -146,7 +146,7 @@ int CClientPlatformTencent::vfunc_36()
 {
     Unk_TcObject* pPlayer = ((Unk_TcObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
-        return pPlayer->FUN_1416749a0()->FUN_140971260(0x2fac971);
+        return pPlayer->FUN_1416749a0()->HasEnabledWithId(0x2fac971);
     } else {
         return 0;
     }
@@ -226,7 +226,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     case 5: {
         int nId = static_cast<CInPacket*>(a1)->ReadInt32();
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nId);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nId);
         break;
     }
     default:
@@ -325,14 +325,11 @@ void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
     }
 }
 
-// The slots 44/45 return a CStringA reference in the base but are empty here (the exe falls off the end).
-#pragma warning(push)
-#pragma warning(disable : 4716)
+// The slots 44/45 open / close a UI class in the base; empty here.
 // @0x140c7e210
-const CStringA& CClientPlatformTencent::vfunc_45() {}
+void CClientPlatformTencent::vfunc_45() {}
 // @0x140c7e220
-const CStringA& CClientPlatformTencent::vfunc_44() {}
-#pragma warning(pop)
+void CClientPlatformTencent::vfunc_44() {}
 
 // @0x140c7e230
 int CClientPlatformTencent::vfunc_49() { return 0; }
@@ -382,7 +379,7 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
 UITencentUserReportDialog* FUN_140c7e460(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
-        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObject.get() != 0)
             return dynamic_cast<UITencentUserReportDialog*>((UIObject*)spObject);
     }

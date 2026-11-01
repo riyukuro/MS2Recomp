@@ -44,7 +44,7 @@ struct Unk_MeshInstancingConfig {
     ~Unk_MeshInstancingConfig();                                // 0x1413d3250
     Unk_MeshInstancingConfig& operator=(const Unk_MeshInstancingConfig& other);   // 0x1413d3290
     bool operator==(const Unk_MeshInstancingConfig& other) const;               // 0x1413d3370
-    bool FUN_1413d33c0(const Unk_MeshInstancingConfig& other) const;            // the fields after the asset
+    bool Equals(const Unk_MeshInstancingConfig& other) const;            // the fields after the asset
     void FUN_1413eb720();                                       // ++activeCount
     efd::AssetID asset;
     bool flags30, flags31, flags32;
@@ -80,9 +80,9 @@ public:
     void FUN_14147caa0();
     void FUN_14147cbc0();
     void FUN_14147ccf0();
-    bool FUN_14147cde0(egf::EntityID id);       // by value: callers copy the id
-    NiMesh* FUN_14147ce70(const NiFixedString&);
-    unsigned FUN_14147cf40();
+    bool ContainsEntityId(egf::EntityID id);       // by value: callers copy the id
+    NiMesh* FindMeshByName(const NiFixedString&);
+    unsigned GetVisibleInstanceCount();
     int FUN_14147cf90(const Unk_MeshInstancingConfig&);
     int FUN_14147cfd0(const Unk_MeshInstancingConfig&);
     int FUN_14147d010(egf::Entity*);
@@ -93,11 +93,11 @@ public:
     // Accessors emitted in ?\hardwareinstancingservice.cpp's COMDAT run (0x1413eb740-0x1413ed300).
     int FUN_140ad4bb0() const;                  // mode
     void FUN_1413eb740();                       // ++config.activeCount
-    egf::EntityID FUN_1413ebb00() const;        // id18
+    egf::EntityID GetEntityId() const;        // id18
     unsigned FUN_1413ebb30() const;             // config.activeCount
     NiNode* FUN_1413ebb70() const;              // root
     unsigned FUN_1413ebb90() const;             // capacity
-    bool FUN_1413ec820() const;                 // !config.ids.empty()
+    bool HasIds() const;                 // !config.ids.empty()
     bool FUN_1413ec890() const;                 // flag28
     void FUN_1413ed2f0();                       // dirty = true
     void FUN_1413ed300(int nCount);             // config.activeCount = nCount

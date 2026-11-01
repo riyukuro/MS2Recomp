@@ -326,7 +326,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x128, 0);
                 break;
             }
-            pState->FUN_140b876a0();
+            pState->ResetRound();
         }
         break;
     case 5:
@@ -364,7 +364,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
                 break;
-            PCBase* pPartner = pState->FUN_140b879d0();
+            PCBase* pPartner = pState->GetRpsPC();
             if (pPartner == 0)
                 break;
             if (pPartner->FUN_141656a80() != nActorId)
@@ -511,7 +511,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->FUN_140534050(nValue);
-            spBox->FUN_1405340b0(nTargetId);
+            spBox->Append<__int64>(nTargetId);
             spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
@@ -668,7 +668,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
                 break;
-            PCBase* pPartner = pState->FUN_140b89dd0();
+            PCBase* pPartner = pState->GetDancePC();
             if (pPartner == 0)
                 break;
             if (pPartner->FUN_141656a80() != nActorId)
@@ -709,7 +709,7 @@ UICoupleDanceEventDialog* FUN_140b769d0(int nId)
 {
     if (reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICoupleDanceEventDialog*>((UIObject*)p);
     }

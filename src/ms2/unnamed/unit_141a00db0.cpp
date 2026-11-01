@@ -11,6 +11,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // Free functions of other units.
 CStringW GetStringCommon(int nStringId);                              // a common string by id
@@ -20,7 +21,6 @@ void FUN_141415600(const CString& strName);                         // drops an 
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str); // a string by id formatted with two arguments
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
 CStringW FUN_14016a730(const char* psz, int nCodePage);
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
 
 // @0x141a00db0
@@ -58,11 +58,11 @@ inline __declspec(noinline) CMsgBoxData::~CMsgBoxData()
 }
 
 // @0x141a01480
-bool CMsgBoxData::FUN_141a01480()
+bool CMsgBoxData::HasCallback()
 {
     return !m_callback.IsNull();
 }
-MS2_REPLACE_METHOD(0x141A01480, CMsgBoxData, FUN_141a01480, 63, 0x30009C27);
+MS2_REPLACE_METHOD(0x141A01480, CMsgBoxData, HasCallback, 63, 0x30009C27);
 
 // @0x141a014d0
 bool CMsgBoxData::FUN_141a014d0(int n, Scaleform::GFx::Value* pMovie)
@@ -230,14 +230,14 @@ void CMsgBoxData::FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned 
 MS2_REPLACE_METHOD(0x141A01D30, CMsgBoxData, FUN_141a01d30, 293, 0xB4B29E7F);
 
 // @0x141a01e60
-void CMsgBoxData::FUN_141a01e60(MS2Ptr<CMsgBoxDataItem> spItem)
+void CMsgBoxData::SetItem(MS2Ptr<CMsgBoxDataItem> spItem)
 {
     if (spItem == NULL)
         return;
     m_nFlags |= 1;
     m_spItem = spItem;
 }
-MS2_REPLACE_METHOD(0x141A01E60, CMsgBoxData, FUN_141a01e60, 119, 0xB6F56F2A);
+MS2_REPLACE_METHOD(0x141A01E60, CMsgBoxData, SetItem, 119, 0xB6F56F2A);
 
 // @0x141a01ee0
 void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nColorMode, int nCount, int nMax,
@@ -260,24 +260,24 @@ void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, i
 MS2_REPLACE_METHOD(0x141A01EE0, CMsgBoxData, FUN_141a01ee0, 454, 0x3868D69C);
 
 // @0x141a020b0
-void CMsgBoxData::FUN_141a020b0(int nItemId, int nRarity, int n)
+void CMsgBoxData::SetItemById(int nItemId, int nRarity, int n)
 {
     MS2Ptr<CItem> spItem(new CItem);
     spItem->FUN_140523c40(nItemId, nRarity, 0);
     spItem->FUN_140526c70(n);
     FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, n, -1, -1, 1);
 }
-MS2_REPLACE_METHOD(0x141A020B0, CMsgBoxData, FUN_141a020b0, 352, 0x59C6C9F8);
+MS2_REPLACE_METHOD(0x141A020B0, CMsgBoxData, SetItemById, 352, 0x59C6C9F8);
 
 // @0x141a02220
-void CMsgBoxData::FUN_141a02220(MS2Ptr<CMsgBoxDataItem> spItem)
+void CMsgBoxData::SetSecondItem(MS2Ptr<CMsgBoxDataItem> spItem)
 {
     if (spItem == NULL)
         return;
     m_nFlags |= 0x20;
     m_spItem2 = spItem;
 }
-MS2_REPLACE_METHOD(0x141A02220, CMsgBoxData, FUN_141a02220, 119, 0x62468448);
+MS2_REPLACE_METHOD(0x141A02220, CMsgBoxData, SetSecondItem, 119, 0x62468448);
 
 // @0x141a022a0
 void CMsgBoxData::FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode)
@@ -317,39 +317,39 @@ void CMsgBoxData::FUN_141a024c0()
 MS2_REPLACE_METHOD(0x141A024C0, CMsgBoxData, FUN_141a024c0, 18, 0x4ED51B3A);
 
 // @0x141a024e0
-void CMsgBoxData::FUN_141a024e0(CStringW str, bool bSelected)
+void CMsgBoxData::SetCheckbox0(CStringW str, bool bSelected)
 {
     m_nFlags |= 8;
     m_checks.m_strLabel0 = str;
     m_checks.m_bSelected0 = bSelected;
 }
-MS2_REPLACE_METHOD(0x141A024E0, CMsgBoxData, FUN_141a024e0, 110, 0xF1B541D0);
+MS2_REPLACE_METHOD(0x141A024E0, CMsgBoxData, SetCheckbox0, 110, 0xF1B541D0);
 
 // @0x141a02560
-void CMsgBoxData::FUN_141a02560(CStringW str, bool bSelected)
+void CMsgBoxData::SetCheckbox1(CStringW str, bool bSelected)
 {
     m_nFlags |= 8;
     m_checks.m_strLabel1 = str;
     m_checks.m_bSelected1 = bSelected;
 }
-MS2_REPLACE_METHOD(0x141A02560, CMsgBoxData, FUN_141a02560, 110, 0x83CF50FC);
+MS2_REPLACE_METHOD(0x141A02560, CMsgBoxData, SetCheckbox1, 110, 0x83CF50FC);
 
 // @0x141a025e0
-void CMsgBoxData::FUN_141a025e0(CStringW strLabel0, CStringW strLabel1)
+void CMsgBoxData::SetCheckboxLabels(CStringW strLabel0, CStringW strLabel1)
 {
     m_nFlags |= 8;
     m_checks.m_strLabel0 = strLabel0;
     m_checks.m_strLabel1 = strLabel1;
 }
-MS2_REPLACE_METHOD(0x141A025E0, CMsgBoxData, FUN_141a025e0, 132, 0xEFE897F7);
+MS2_REPLACE_METHOD(0x141A025E0, CMsgBoxData, SetCheckboxLabels, 132, 0xEFE897F7);
 
 // @0x141a02670
-void CMsgBoxData::FUN_141a02670(bool b)
+void CMsgBoxData::SetCheckbox0Enabled(bool b)
 {
     m_nFlags |= 8;
     m_checks.m_bEnabled0 = b;
 }
-MS2_REPLACE_METHOD(0x141A02670, CMsgBoxData, FUN_141a02670, 51, 0x037F8A96);
+MS2_REPLACE_METHOD(0x141A02670, CMsgBoxData, SetCheckbox0Enabled, 51, 0x037F8A96);
 
 // @0x141a026f0
 void CMsgBoxData::FUN_141a026f0(bool b)
@@ -374,13 +374,13 @@ void CMsgBoxData::SetRetraction(int n)
 MS2_REPLACE_METHOD(0x141A02750, CMsgBoxData, SetRetraction, 25, 0xBF2FCB8D);
 
 // @0x141a02770
-void CMsgBoxData::FUN_141a02770(int nWidth, int nHeight)
+void CMsgBoxData::SetSize(int nWidth, int nHeight)
 {
     m_nFlags |= 0x10;
     m_nWidth = nWidth;
     m_nHeight = nHeight;
 }
-MS2_REPLACE_METHOD(0x141A02770, CMsgBoxData, FUN_141a02770, 70, 0x79022C97);
+MS2_REPLACE_METHOD(0x141A02770, CMsgBoxData, SetSize, 70, 0x79022C97);
 
 // @0x141a027c0
 void CMsgBoxData::FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb)
@@ -404,14 +404,14 @@ void CMsgBoxData::FUN_141a02860(void* p)
 MS2_REPLACE_METHOD(0x141A02860, CMsgBoxData, FUN_141a02860, 25, 0xAB8BF0FB);
 
 // @0x141a02880
-void CMsgBoxData::FUN_141a02880(int nBuffId, short nLevel, CStringW strExtra)
+void CMsgBoxData::SetBuff(int nBuffId, short nLevel, CStringW strExtra)
 {
     m_buff.m_nId = nBuffId;
     m_buff.m_nLevel = nLevel;
     m_buff.m_strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141812290(m_buff.m_nId, m_buff.m_nLevel, "tooltipDescription");
     m_buff.m_strExtra = strExtra;
 }
-MS2_REPLACE_METHOD(0x141A02880, CMsgBoxData, FUN_141a02880, 286, 0xAFC42ECF);
+MS2_REPLACE_METHOD(0x141A02880, CMsgBoxData, SetBuff, 286, 0xAFC42ECF);
 
 // @0x141a029b0
 void CMsgBoxData::FUN_141a029b0(const Unk_MsgBoxBuff& buff)
@@ -549,7 +549,7 @@ MS2_REPLACE_METHOD(0x141A02DC0, CMsgBoxData, GetLinkUrl, 68, 0xD8467B00);
 // @0x141a02e10
 bool CMsgBoxData::FUN_141a02e10(int nIndex, bool bDefault) const
 {
-    FUN_141a071e0(nIndex, bDefault);
+    GetBoolArg(nIndex, bDefault);
     return bDefault;
 }
 MS2_REPLACE_METHOD(0x141A02E10, CMsgBoxData, FUN_141a02e10, 47, 0x2509F554);
@@ -589,7 +589,7 @@ MS2_REPLACE_METHOD(0x141A02F10, CMsgBoxData, FUN_141a02f10, 47, 0x191DF553);
 // @0x141a02f50
 CString CMsgBoxData::FUN_141a02f50(int nIndex, CString strDefault) const
 {
-    FUN_141a07140(nIndex, strDefault);
+    GetStringArg(nIndex, strDefault);
     return strDefault;
 }
 MS2_REPLACE_METHOD(0x141A02F50, CMsgBoxData, FUN_141a02f50, 108, 0x19785B43);
@@ -656,7 +656,7 @@ void CMsgBoxData::FUN_141a03130(UIMessageBox* pBox, int nSec)
     {
         m_timer.m_nArmed = nSec;
         CStringW strTail(L"\n");
-        strTail += FUN_1401ceea0(m_timer.m_strFormat, nSec);
+        strTail += StringFormat<int>(m_timer.m_strFormat, nSec);
         pBox->FUN_1422dba00()->Invoke("onProcessFunction", "updateMsg", FUN_1401d0080(m_strMsg, strTail));
     }
 }

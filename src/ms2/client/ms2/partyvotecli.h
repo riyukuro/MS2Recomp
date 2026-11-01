@@ -30,6 +30,6 @@ public:
     void vfunc_3() override;
     void vfunc_6(unsigned __int64 id) override;
     void vfunc_7(__int64 id, bool accepted) override;
-    bool FUN_140a8a0b0(int result, const CMsgBoxData& box);
+    bool OnMessageBoxResult(int result, const CMsgBoxData& box);
 };
 MS2_CHECK_SIZE(PartyVoteReadyCli, 0x60);

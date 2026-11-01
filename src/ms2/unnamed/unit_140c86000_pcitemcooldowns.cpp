@@ -58,8 +58,8 @@ void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             return;
         spItem->FUN_140526b70(nSlot);
-        spItem->FUN_140526a70(nItemUid);
-        spItem->FUN_140526b30(nObjId);
+        spItem->SetItemUid(nItemUid);
+        spItem->SetObjectId(nObjId);
         spItem->FUN_140524eb0(stream);
         m_items[nSlot] = spItem;
     }
@@ -74,7 +74,7 @@ MS2Ptr<CItem> Unk_PCItemCooldowns::FUN_140c862c0(__int64 nItemUid)
         MS2Ptr<CItem> spItem = m_items[i];
         if (spItem == 0)
             continue;
-        if (spItem->FUN_140526a50() == nItemUid)
+        if (spItem->GetItemUid() == nItemUid)
             return spItem;
     }
     return MS2Ptr<CItem>(0);
@@ -111,7 +111,7 @@ bool Unk_PCItemCooldowns::FUN_140c86510(__int64 nItemUid)
         MS2Ptr<CItem> spItem = m_items[i];
         if (spItem == 0)
             continue;
-        if (spItem->FUN_140526a50() == nItemUid)
+        if (spItem->GetItemUid() == nItemUid)
         {
             m_items[i] = 0;
             return true;

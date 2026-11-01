@@ -52,7 +52,7 @@ MS2_REPLACE_METHOD(0x1422E5CD0, ASSprite, FUN_1422e5cd0, 60, 0xCC6D1C81);
 // @0x1422e5d20
 int ASSprite::FUN_1422e5d20()
 {
-    return FUN_1422baa20("useHandCursor").GetBool();
+    return GetMember("useHandCursor").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E5D20, ASSprite, FUN_1422e5d20, 91, 0xD750AEA7);
 
@@ -73,7 +73,7 @@ MS2_REPLACE_METHOD(0x1422E5DD0, ASSprite, FUN_1422e5dd0, 46, 0x19CD2CE0);
 // @0x1422e5eb0
 template <> MS2Ptr<ASGraphics> AScript::FUN_140accef0<ASGraphics>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<ASGraphics>(m_nMovieId, v);
     return MS2Ptr<ASGraphics>(0);

@@ -20,6 +20,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -85,16 +93,16 @@ int CItemRePackingScrollTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("rePackingScroll"); pNode != 0; pNode = pNode->FUN_140168650("rePackingScroll"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("rePackingScroll")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("rePackingScroll")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CItemRePackingScrollDataPtr spData(new CItemRePackingScrollData);
         if (spData == 0)
             continue;
-        FUN_1408731e0(pNode, "id", spData->m_nId);
-        FUN_1408731a0(pNode, "minLv", spData->m_nMinLv);
-        FUN_1408731a0(pNode, "maxLv", spData->m_nMaxLv);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spData->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "minLv", reinterpret_cast<unsigned short&>(spData->m_nMinLv));
+        XmlGetAttr((class TiXmlElement*)(pNode), "maxLv", reinterpret_cast<unsigned short&>(spData->m_nMaxLv));
         XmlTokenList(pNode, "rank", spData->m_arrRank);
         XmlTokenList(pNode, "slot", spData->m_arrSlot);
         int nPetType = 0;
@@ -175,7 +183,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
     case 1:
         if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa4))
             return 7;
-        if (!pItemData->FUN_14053cc40())
+        if (!pItemData->IsPetItem())
             return 3;
         break;
     }
@@ -193,7 +201,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 9;
     if (FUN_140634230(pItem))
         return 1;
-    if (((CItem*)pItem)->FUN_140527580() == 0)
+    if (((CItem*)pItem)->GetRemainingRePackingCount() == 0)
         return 10;
     if (((CItem*)pItem)->FUN_140528ca0() == 1 || ((CItem*)pItem)->FUN_140528e00() > GetServerTime())
         return 0xb;

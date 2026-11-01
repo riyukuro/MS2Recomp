@@ -14,11 +14,11 @@ class CIgnoreFile : public TSingleton<CIgnoreFile>
 public:
     CIgnoreFile();                                          // 0x14050e140
     virtual ~CIgnoreFile();
-    bool FUN_14050e200(std::string strPath, int nMode);     // loads the ignore-pack-file list
-    bool FUN_14050e2a0(std::string strPath);                // is the path a listed file or inside a listed directory
-    bool FUN_14050e420(std::string strPath);                // is the path exactly a listed directory entry
+    bool Load(std::string strPath, int nMode);     // loads the ignore-pack-file list
+    bool IsIgnored(std::string strPath);                // is the path a listed file or inside a listed directory
+    bool IsIgnoredDir(std::string strPath);                // is the path exactly a listed directory entry
 private:
-    bool FUN_14050e4c0(std::string strPath, int nMode);     // parses the xml into the two sets
+    bool ParseFile(std::string strPath, int nMode);     // parses the xml into the two sets
     MS2_LAYOUT_FRIEND;
     int m_nMode;                                            // +0x08 the mode the lists were filtered for
     int m_pad_c;

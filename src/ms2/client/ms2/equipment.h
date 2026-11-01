@@ -123,11 +123,11 @@ public:
     void FUN_1411e3600(MS2Ptr<CItem> spItem);               // Equip
     void FUN_1411e36e0(MS2Ptr<CEquipItem> spItem);          // Equip
     void FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 nValue);   // Equip
-    void FUN_1411e38e0(MS2Ptr<CItem> spItem);               // RequestLoad
+    void RequestItemLoad(MS2Ptr<CItem> spItem);               // RequestLoad
     void FUN_1411e3960(MS2Ptr<CItem> spItem, int nFlag);    // Unequip
     void FUN_1411e3b10(MS2Ptr<CItem> spItem, int nFlag);    // RequestLoad
     void FUN_1411e3bd0(MS2Ptr<CEquipItem> spItem, int nFlag);   // Unequip
-    void FUN_1411e3c70(MS2Ptr<CEquipItem> spItem, int nFlag);   // RequestLoad
+    void RequestEquipItemLoad(MS2Ptr<CEquipItem> spItem, int nFlag);   // RequestLoad
     void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nFlag);     // Unequip
     void FUN_1411e3de0(int bKeepLoaded);                    // UnequipAll
     void FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, int bKeepLoaded);       // UnequipExcept
@@ -136,14 +136,14 @@ public:
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped
     void FUN_1411e5100(MS2Ptr<CEquipItem> spItem);          // the layer expired tag
     int FUN_1411e5280(int nLayer);                          // no shown upper / lower item above the layer
-    void FUN_1411e5450(MS2Ptr<CEquipItem> spItem);          // SetExpired
-    void FUN_1411e5500(MS2Ptr<CEquipItem> spItem);          // SetInvalid
-    void FUN_1411e55b0(MS2Ptr<CEquipItem> spItem);          // SetPCBang
-    void FUN_1411e5660(MS2Ptr<CEquipItem> spItem);          // ClearPCBang
-    void FUN_1411e56e0(MS2Ptr<CEquipItem> spItem);          // SetVIP
-    void FUN_1411e5790(MS2Ptr<CEquipItem> spItem);          // ClearVIP
-    void FUN_1411e5810(MS2Ptr<CEquipItem> spItem, const CString& strTag);    // AddTag
-    void FUN_1411e58c0(MS2Ptr<CEquipItem> spItem, const CString& strTag);    // RemoveTag
+    void AddExpiredTag(MS2Ptr<CEquipItem> spItem);          // SetExpired
+    void AddInvalidTag(MS2Ptr<CEquipItem> spItem);          // SetInvalid
+    void AddPCBangTag(MS2Ptr<CEquipItem> spItem);          // SetPCBang
+    void RemovePCBangTag(MS2Ptr<CEquipItem> spItem);          // ClearPCBang
+    void AddVIPTag(MS2Ptr<CEquipItem> spItem);          // SetVIP
+    void RemoveVIPTag(MS2Ptr<CEquipItem> spItem);          // ClearVIP
+    void AddItemTag(MS2Ptr<CEquipItem> spItem, const CString& strTag);    // AddTag
+    void RemoveItemTag(MS2Ptr<CEquipItem> spItem, const CString& strTag);    // RemoveTag
     void FUN_1411e5940(MS2Ptr<CEquipItem> spItem);          // OnTagChanged
     void FUN_1411e5c10();
     void FUN_1411e6ab0();
@@ -171,7 +171,7 @@ public:
     void FUN_1411ea500(MS2Ptr<CEquipItem> spItem);          // ModelChanged
     void FUN_1411ea320();                                   // drop effect slot 2 of every item
     CString FUN_1411ea5d0(const CString& str);
-    void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
+    void SetLayerPeriod(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
     bool FUN_1411ea770();                                   // IsLayerActive
     void FUN_1411ea7c0();
     void FUN_1411ea8c0();
@@ -201,8 +201,8 @@ public:
     int FUN_1411ef870(MS2Ptr<CEquipmentSlot> spSlot, int nLayer);  // IsSlotActive
     void FUN_1411ef970();                                   // ClearSetEffects
     void FUN_1411efa00(int nIndex);                         // RemoveSetEffect
-    MS2Ptr<Equipment::SetEffectInfo> FUN_1411efaf0(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
-    int FUN_1411efb90(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
+    MS2Ptr<Equipment::SetEffectInfo> FindSetEffect(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
+    int FindSetEffectIndex(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
     void FUN_1411efcb0(unsigned nId, CString strName, bool bInserted);   // the set effect callback
 
 public:

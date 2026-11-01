@@ -141,7 +141,7 @@ template <class T> T* Unk_AcFindUI(eUIClassID nId)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject(nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -192,13 +192,13 @@ AdditionalCliList::AdditionalCliList(PCBase* pOwner)
 // @0x14096f000
 AdditionalCliList::~AdditionalCliList()
 {
-    FUN_140970490();
+    ClearAll();
 }
 
 // @0x14096f070
 int AdditionalCliList::FUN_14096f070(MS2Ptr<AdditionalCli> sp)
 {
-    if (!sp->FUN_14096c6f0())
+    if (!sp->IsValid())
         return 0;
     if (m_map.Lookup(sp->GetKey()))
         return 0;
@@ -295,7 +295,7 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096f820(const Unk_AdditionalOwner
     if (sp == 0)
         return MS2Ptr<AdditionalCli>(0);
     sp->FUN_14096bf40(m_pOwner, nFlags, owner, packet);
-    if (!sp->FUN_14096c6f0())
+    if (!sp->IsValid())
         return MS2Ptr<AdditionalCli>(0);
     if (nFlags & 1)
     {
@@ -329,7 +329,7 @@ void AdditionalCliList::FUN_14096fb20(int nEvent)
         if (!sp->m_bEnabled)
             continue;
         if (sp->FUN_14096d810()->m_nInvokeEvent == nEvent)
-            sp->FUN_14096cec0();
+            sp->PlayInvokeEffect();
     }
 }
 
@@ -340,7 +340,7 @@ void AdditionalCliList::FUN_14096fc00(int nKey)
         return;
     MS2Ptr<AdditionalCli> sp;
     if (m_map.Lookup(nKey, sp))
-        sp->FUN_14096cec0();
+        sp->PlayInvokeEffect();
 }
 
 // @0x14096fc80
@@ -353,7 +353,7 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096fc80(int nKey)
 }
 
 // @0x14096fd30
-MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096fd30(int nType)
+MS2Ptr<AdditionalCli> AdditionalCliList::FindEnabledByEventBuffType(int nType)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -399,7 +399,7 @@ int AdditionalCliList::FUN_140970020(unsigned nId, unsigned short nLevel, unsign
 }
 
 // @0x1409700d0
-int AdditionalCliList::FUN_1409700d0(int nType)
+int AdditionalCliList::HasEnabledWithMainType(int nType)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -415,7 +415,7 @@ int AdditionalCliList::FUN_1409700d0(int nType)
 }
 
 // @0x1409701d0
-int AdditionalCliList::FUN_1409701d0(int nType)
+int AdditionalCliList::HasEnabledWithEventBuffType(int nType)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -431,7 +431,7 @@ int AdditionalCliList::FUN_1409701d0(int nType)
 }
 
 // @0x1409702d0
-int AdditionalCliList::FUN_1409702d0(int nGroup)
+int AdditionalCliList::HasEnabledInGroup(int nGroup)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -447,7 +447,7 @@ int AdditionalCliList::FUN_1409702d0(int nGroup)
 }
 
 // @0x1409703d0
-bool AdditionalCliList::FUN_1409703d0(int nSlot)
+bool AdditionalCliList::IsItemSlotDisabled(int nSlot)
 {
     if (nSlot == 0)
         return false;
@@ -468,12 +468,12 @@ void AdditionalCliList::FUN_140970420(double dTime)
 }
 
 // @0x140970490
-void AdditionalCliList::FUN_140970490()
+void AdditionalCliList::ClearAll()
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         MS2Ptr<AdditionalCli> sp = m_map.GetValueAt(pos);
-        sp->FUN_14096ce50();
+        sp->RemoveKeepEffect();
         FUN_140973cc0(sp);
         FUN_140974090(sp);
     }
@@ -483,7 +483,7 @@ void AdditionalCliList::FUN_140970490()
 }
 
 // @0x1409705d0
-float AdditionalCliList::FUN_1409705d0()
+float AdditionalCliList::GetScaleMultiplier()
 {
     for (POSITION pos = m_map.GetTailPosition(); pos != 0; m_map.GetPrev(pos))
     {
@@ -503,7 +503,7 @@ float AdditionalCliList::GetAlpha()
 }
 
 // @0x140970720
-float AdditionalCliList::FUN_140970720()
+float AdditionalCliList::ComputeAlphaBlending()
 {
     float fAlpha = m_motion.m_fAlphaBlending;
     if (!FUN_14028d470(m_motion.m_fAlphaBlending, 1.0f))
@@ -529,7 +529,7 @@ float AdditionalCliList::FUN_140970720()
 }
 
 // @0x1409708a0
-__int64 AdditionalCliList::FUN_1409708a0()
+__int64 AdditionalCliList::GetTotalShieldValue()
 {
     __int64 nSum = 0;
     for (POSITION pos = m_map.GetTailPosition(); pos != 0; m_map.GetPrev(pos))
@@ -583,7 +583,7 @@ int AdditionalCliList::FUN_140970a40()
 }
 
 // @0x140970a60
-int AdditionalCliList::FUN_140970a60(unsigned nSkillId)
+int AdditionalCliList::IsSkillUseDisabled(unsigned nSkillId)
 {
     return m_motion.m_setSkillUseDisableIDs.find(nSkillId) != m_motion.m_setSkillUseDisableIDs.end();
 }
@@ -617,7 +617,7 @@ unsigned AdditionalCliList::FUN_140970b30()
         {
             MS2Ptr<CSkillRecord> spRecord = pState->GetRecord();
             if (spRecord.get())
-                nValue = spRecord->FUN_14175a210();
+                nValue = spRecord->GetSuperArmor();
         }
     }
     return nValue > m_motion.m_nSuperArmor ? nValue : m_motion.m_nSuperArmor;
@@ -677,7 +677,7 @@ bool AdditionalCliList::IsInfinitySP()
 }
 
 // @0x140970d90
-unsigned AdditionalCliList::FUN_140970d90(unsigned nId, unsigned short nLevel)
+unsigned AdditionalCliList::GetOverlapCount(unsigned nId, unsigned short nLevel)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -694,7 +694,7 @@ unsigned AdditionalCliList::FUN_140970d90(unsigned nId, unsigned short nLevel)
 }
 
 // @0x140970eb0
-int AdditionalCliList::FUN_140970eb0(float& fOut)
+int AdditionalCliList::TryGetFixedZRotation(float& fOut)
 {
     if (0.0f == m_motion.m_fFixedZRotation)
         return 0;
@@ -744,15 +744,15 @@ void AdditionalCliList::FUN_140970ff0(CInPacket& packet)
 }
 
 // @0x140971150
-void AdditionalCliList::FUN_140971150()
+void AdditionalCliList::ApplyAlphaBlending()
 {
-    float fAlpha = FUN_140970720();
+    float fAlpha = ComputeAlphaBlending();
     if (!FUN_14028d470(fAlpha, 1.0f))
         m_pOwner->vfunc_42(fAlpha, true);
 }
 
 // @0x1409711c0
-unsigned AdditionalCliList::FUN_1409711c0()
+unsigned AdditionalCliList::GetIgnoreCollisionGroups()
 {
     unsigned nGroups = 0;
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
@@ -766,7 +766,7 @@ unsigned AdditionalCliList::FUN_1409711c0()
 }
 
 // @0x140971260
-int AdditionalCliList::FUN_140971260(int nId)
+int AdditionalCliList::HasEnabledWithId(int nId)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -780,7 +780,7 @@ int AdditionalCliList::FUN_140971260(int nId)
 }
 
 // @0x140971300
-int AdditionalCliList::FUN_140971300(int nId, int nCaster)
+int AdditionalCliList::HasEnabledWithIdAndCaster(int nId, int nCaster)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
@@ -846,13 +846,13 @@ void AdditionalCliList::FUN_1409713b0()
 }
 
 // @0x1409716a0
-CString AdditionalCliList::FUN_1409716a0()
+CString AdditionalCliList::GetStunAnimation()
 {
     return m_motion.m_strStunAnimation;
 }
 
 // @0x1409716f0
-int AdditionalCliList::FUN_1409716f0(SAType eType)
+int AdditionalCliList::GetSpecialAbility(SAType eType)
 {
     return m_status.m_mapSA[eType];
 }
@@ -1033,12 +1033,12 @@ void AdditionalCliList::FUN_140972770()
         return;
     if ((FUN_1409735c0() || FUN_140973600()) && m_pOwner->FUN_14166ce30())
         return;
-    float fAlpha = FUN_140970720();
+    float fAlpha = ComputeAlphaBlending();
     if (fAlpha != m_fAlpha)
     {
         m_fAlpha = fAlpha;
         if (FUN_14028d470(m_fAlpha, 0.0f))
-            m_pOwner->FUN_14166ca20(3);
+            m_pOwner->AddHideReason(3);
         else
         {
             static_cast<Unk_AclEffect*>(CEffectService::GetInstance())->FUN_1411a6f00(m_pOwner->FUN_14123c460());
@@ -1258,7 +1258,7 @@ void AdditionalCliList::FUN_140973950(MS2Ptr<AdditionalCli> sp)
             MS2Ptr<Unk_PCBaseComp_a98> spBalloon = m_pOwner->vfunc_84();
             if (spBalloon.get())
                 spBalloon->FUN_14128ecf0(sp->GetKey(), CString(sp->FUN_14096d810()->m_ui.m_strIcon),
-                                         sp->FUN_14096d2e0());
+                                         sp->GetRemainTicks());
         }
     }
     if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue > 0)

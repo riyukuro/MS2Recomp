@@ -29,6 +29,8 @@
 #include <sstream>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // @0x140591210
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -39,7 +41,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item data of an id
 
 // The unit's init flag and singleton are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
@@ -153,16 +155,16 @@ int CItemEnchantLimitTable::Load()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "limit", "slot", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "limit", "slot", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];
         MS2Ptr<EnchantLimit> spLimit(new EnchantLimit);
-        FUN_1408731a0(pNode, "minLv", spLimit->m_nMinLv);
-        FUN_1408731a0(pNode, "maxLv", spLimit->m_nMaxLv);
-        FUN_1408731e0(pNode, "maxGrade", spLimit->m_nMaxGrade);
+        XmlGetAttr((class TiXmlElement*)(pNode), "minLv", reinterpret_cast<unsigned short&>(spLimit->m_nMinLv));
+        XmlGetAttr((class TiXmlElement*)(pNode), "maxLv", reinterpret_cast<unsigned short&>(spLimit->m_nMaxLv));
+        XmlGetAttr((class TiXmlElement*)(pNode), "maxGrade", reinterpret_cast<int&>(spLimit->m_nMaxGrade));
         int nSlot = 0;
-        FUN_1408731e0(pNode, "slot", nSlot);
+        XmlGetAttr((class TiXmlElement*)(pNode), "slot", reinterpret_cast<int&>(nSlot));
         int nKey = nSlot;
         m_map.SetAt(nKey, spLimit);
     }
@@ -182,7 +184,7 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
         return 0;
     if (pItem->FUN_140527840() == 0)
         return 0;
-    if (ITEM_DATA(pItem)->FUN_14053c5c0() != 1)
+    if (ITEM_DATA(pItem)->GetType() != 1)
         return 0;
     if (pItem->FUN_140525c60() == 1)
         return 0;
@@ -191,10 +193,10 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
         return 0;
-    if (pItem->FUN_140527710() < spLimit->m_nMinLv)
+    if (pItem->GetRequiredLevel() < spLimit->m_nMinLv)
         return 0;
 
-    if (pItem->FUN_140527710() > spLimit->m_nMaxLv)
+    if (pItem->GetRequiredLevel() > spLimit->m_nMaxLv)
         return 0;
 
     Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->GetEnchant());
@@ -218,9 +220,9 @@ int CItemEnchantLimitTable::FUN_14058e230(CItem* pItem)
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
         return 0;
-    if (pItem->FUN_140527710() < spLimit->m_nMinLv)
+    if (pItem->GetRequiredLevel() < spLimit->m_nMinLv)
         return 0;
-    if (pItem->FUN_140527710() > spLimit->m_nMaxLv)
+    if (pItem->GetRequiredLevel() > spLimit->m_nMaxLv)
         return 0;
     if (ITEM_DATA_BYTE(pItem, 0x1a1) != 0)
         return 0;
@@ -228,7 +230,7 @@ int CItemEnchantLimitTable::FUN_14058e230(CItem* pItem)
 }
 
 // @0x14058e3a0
-unsigned CItemEnchantLimitTable::FUN_14058e3a0(CItem* pItem)
+unsigned CItemEnchantLimitTable::IsMaxGrade(CItem* pItem)
 {
     CheckInit();
     if (pItem == 0)
@@ -242,7 +244,7 @@ unsigned CItemEnchantLimitTable::FUN_14058e3a0(CItem* pItem)
 }
 
 // @0x14058e4a0
-bool CItemEnchantLimitTable::FUN_14058e4a0(CItemData* pData)
+bool CItemEnchantLimitTable::HasLimit(CItemData* pData)
 {
     return m_map.Lookup(pData->FUN_14053c620()) != 0;
 }

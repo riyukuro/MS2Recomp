@@ -17,6 +17,7 @@
 #include "ms2/client/ms2/uigameoptiondialog.h"  // C3: was a local member view
 #include "ms2/client/ms2/uimainplayerinfo.h"  // C3: was a local member view
 #include "ms2/client/ms2/gameoptioninputdefault.h"  // C3: was a local member view
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -24,10 +25,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> KsClickDelegate;
 
-class Unk_KsButton : public ASMovieClip
+class Unk_KsButton : public ASButton
 {
 public:
-    void FUN_1422ce240(const KsClickDelegate& onClick, int nFlags);     // click callback
 };
 
 // The click event: the pressed button's index is read from the second pointer (+0x30).
@@ -90,12 +90,12 @@ void UIKeySettingSelectDialog::OnLoadComplete()
     int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)FUN_1409331f0())))->GetLocked() == 0;
     if (FUN_140bc6d10("m_button1", m_button1))
     {
-        m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), 1);
+        m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
         m_button1->FUN_1422c1fe0(bOn);
     }
     if (FUN_140bc6d10("m_button2", m_button2))
     {
-        m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), 2);
+        m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
         m_button2->FUN_1422c1fe0(bOn);
     }
 }

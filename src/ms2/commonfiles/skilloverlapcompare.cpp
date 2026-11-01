@@ -95,7 +95,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>& out);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut);   // npcdata.cpp: list attribute
 const CString& FUN_14082efb0(int nStat);                // xml name of the nStat-th stat
@@ -880,7 +880,7 @@ void SkillData::Load(Unk_140165cf0* pElem)
     m_sensor.LoadElement(pBasic, "sensor");
     m_condition.Load(pBasic);
     std::vector<Unk_140165cf0*> vLevels;
-    FUN_14028faa0(pElem, "level", "value", vLevels);
+    FUN_14028faa0((struct Unk_XmlElement*)(pElem), "level", "value", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(vLevels));
     for (Unk_140165cf0* pLevel : vLevels)
     {
         MS2Ptr<SkillLevelData> spLevel(new SkillLevelData(this));

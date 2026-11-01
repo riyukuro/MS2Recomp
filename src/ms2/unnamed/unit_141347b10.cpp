@@ -76,7 +76,6 @@ void FUN_1418fe1c0(const CString& strUrl);                       // open a url
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CNetworkService* FUN_140714f90();
 Unk_SbShopDialog* FUN_140534780(int nUIType);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 CStringW GetStringCommon(int nId);                                 // string table lookup
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
 int FUN_141276180(const CString& strSound, const CString& strArg);
@@ -418,7 +417,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
-    if (FUN_1403b3c40(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
+    if (operator==(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
     {
         MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
         if (spInfo.get())
@@ -492,13 +491,13 @@ int FUN_1413499b0(int nTab)
         }
         if (bOpen)
         {
-            FUN_140714f90()->FUN_141538c40(nTab, 1);
+            FUN_140714f90()->SendSystemShop(nTab, 1);
             FUN_141276180(s_strBuildOpenShop, "");
         }
         else
         {
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e3b);
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e2d);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e3b);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e2d);
         }
         return bOpen;
     }

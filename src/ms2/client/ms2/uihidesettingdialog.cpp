@@ -33,6 +33,7 @@
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uihidesettingdialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // ---- unit-local placeholders ----
@@ -42,11 +43,10 @@ class Unk_1403ed2b0
 {
 public:
     void FUN_141adc530(int nId);                                    // show the UI nId
-    int FUN_141adc940(int nId);                                     // nonzero: the UI nId is hidden
 };
 
 // The key input state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The UI of type nId as a T (inline header template; one COMDAT per T: 0x141988290 UISwfEntity, 0x1419881f0
@@ -55,7 +55,7 @@ template <class T>
 inline T* FUN_GetUI(int nId)
 {
     if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>(p.operator->());
     }
@@ -170,7 +170,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                                 FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pHud));
                                 pHud->vfunc_3();
                             } else {
-                                FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(pHud));
+                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pHud));
                                 pHud->vfunc_2();
                             }
                         }
@@ -180,9 +180,9 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         if (pEntity) {
                             if (bChecked) {
                                 FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
-                                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nId);
+                                TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nId);
                             } else {
-                                FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(pEntity));
+                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
                                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(nId)));
                             }
                         }
@@ -193,7 +193,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                             if (bChecked)
                                 FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
                             else
-                                FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(pEntity));
+                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
                         }
                     }
                 }
@@ -218,7 +218,7 @@ void UIHideSettingDialog::FUN_141987990()
                 continue;
             bool bSelected = false;
             if (info->m_nType == 1) {
-                if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(info->m_nId))
+                if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)info->m_nId))
                     bSelected = true;
             } else {
                 UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(info->m_nId);

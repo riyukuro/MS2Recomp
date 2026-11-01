@@ -79,7 +79,7 @@ public:
     void FUN_141861840(CInPacket* pEvent);
     void FUN_141861a50(CInPacket* pEvent);   // type 2: n objects
     void FUN_141861ad0(CInPacket* pEvent);   // type 3: one object
-    void FUN_141861b00(CInPacket* pEvent);   // type 5: camera step list
+    void OnCameraObjects(CInPacket* pEvent);   // type 5: camera step list
     void FUN_141861c20(CInPacket* pEvent);   // type 6: look-at-centre camera
     void FUN_141861f30(CInPacket* pEvent);   // type 7: camera fade off
     void FUN_141861f60(CInPacket* pEvent);   // camera fade on
@@ -91,7 +91,7 @@ public:
     void FUN_141862d30(CInPacket* pEvent);   // type 0x14: set the state of named UI objects
     void FUN_141862ec0(CInPacket* pEvent);   // type 0x15
     void FUN_141862ff0(int nType, CInPacket* pEvent);    // types 0x17-0x19
-    void FUN_141863030(CInPacket* pEvent);   // type 9 sub 0xc: typing game dialog
+    void OnTypingGame(CInPacket* pEvent);   // type 9 sub 0xc: typing game dialog
     bool FUN_141863100(int nObject, Vector3 pt);        // is the point inside the object
     void FUN_1418631a0();
     void FUN_1418631c0();                           // clear the camera step list

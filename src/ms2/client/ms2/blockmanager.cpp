@@ -30,7 +30,6 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 __int64 GetServerTime();                                      // current server time
 CStringW GetStringCommon(int id);                               // string table lookup
 void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notice
-CStringW FUN_1408116a0(int id, const int& v);                 // string table + one int
 CStringW FUN_1409e8970(CStringW key, const int& a, const int& b);
 void AddDays(CMsTime& time, long days);   // 0x14086a7e0 (commonfiles/timeutil.cpp)
 void FUN_140d73aa0(CStringW msg, int a, u64 cb, CStringW b);  // message box
@@ -138,10 +137,10 @@ void CBlockManager::OnBlockPacket(void* packet)
             switch (type)
             {
             case 2:
-                FUN_1412751b0(FUN_1408116a0(0x435, -delta), 0x14);
+                FUN_1412751b0(BlockFormat<int>(0x435, -delta), 0x14);
                 break;
             case 4:
-                FUN_1412751b0(FUN_1408116a0(0x43a, -delta), 0x14);
+                FUN_1412751b0(BlockFormat<int>(0x43a, -delta), 0x14);
                 break;
             }
         }

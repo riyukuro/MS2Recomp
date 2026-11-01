@@ -17,6 +17,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/client/ms2/trademanagerex.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // Item template data (itemdata.cpp): the pickup/drop sound name.
 CItemData* FUN_140527840(CItem* pItem);                 // CItem::GetItemData
@@ -39,7 +40,7 @@ class Unk_InvenSlot : public InvenSlot
 Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The bag of the player's inventory items by uid.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // Item context-menu actions.
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // show the item's popup (id, rarity, template)
@@ -47,9 +48,6 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // show the item's popup
 CStringW GetStringCommon(int id);                         // string table lookup
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 class TradeSlotBag;
 TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
 
@@ -104,7 +102,7 @@ int TradeSlot::vfunc_18(void* p)
     {
         if (IsMine())
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
             if (spItem.get())
                 pInven->FUN_14140b6d0(spItem);
         }
@@ -126,7 +124,7 @@ int TradeSlot::vfunc_0(void* p)
             tip.FUN_1409c69b0(GetStringCommon(0x750));
             {
                 CStringW strText(L"");
-                tip.FUN_1409c65f0(strText);
+                tip.SetEnableUseDbClick(strText);
             }
         }
         else
@@ -137,7 +135,7 @@ int TradeSlot::vfunc_0(void* p)
             }
             {
                 CStringW strText(L"");
-                tip.FUN_1409c65f0(strText);
+                tip.SetEnableUseDbClick(strText);
             }
         }
         if (IsEnabled() == 1)
@@ -157,7 +155,7 @@ int TradeSlot::vfunc_8(void* p)
     if (slot.FUN_1409c3860(m_spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x1c81f))
     {
         if (!IsMine())
-            slot.FUN_1409c2650();
+            slot.DisableDrag();
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }
@@ -185,7 +183,7 @@ void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
     {
         if (FUN_140527840(spItem.operator->()))
         {
-            FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
         }
     }
 }
@@ -208,7 +206,7 @@ int TradeSlot::FUN_14185e530()
 __int64 TradeSlot::FUN_14185e580()
 {
     if (m_spItem.get())
-        return m_spItem->FUN_140526a50();
+        return m_spItem->GetItemUid();
     return 0;
 }
 
@@ -239,18 +237,18 @@ void FUN_14185e850(const CString& strName, int nCount, bool bMine)
     {
         pBag->SetMine(bMine);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14185e920
 void FUN_14185e920(const CString& strName)
 {
-    TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strName));
+    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

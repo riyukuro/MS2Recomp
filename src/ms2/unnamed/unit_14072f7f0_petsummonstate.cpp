@@ -81,7 +81,7 @@ int FUN_14072fa70(Unk_SlotValueTable* pTable, int nItemId, int nLevel)
     if (FUN_14053f900(nItemId)) return 1;
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0) return 0;
-    switch (spItem->FUN_14053c5c0()) {
+    switch (spItem->GetType()) {
     case 0xb:
         return pTable->m_1c;
     case 0xd:

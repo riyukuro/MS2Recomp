@@ -191,25 +191,25 @@ unsigned int ASArray::FUN_1422bc490(Scaleform::GFx::Value v)
 MS2_REPLACE_METHOD(0x1422BC490, ASArray, FUN_1422bc490, 154, 0xAF61FE63);
 
 // @0x1422bc530
-Scaleform::GFx::Value ASArray::FUN_1422bc530()
+Scaleform::GFx::Value ASArray::Pop()
 {
     return Invoke("pop");
 }
-MS2_REPLACE_METHOD(0x1422BC530, ASArray, FUN_1422bc530, 65, 0x1E495DD7);
+MS2_REPLACE_METHOD(0x1422BC530, ASArray, Pop, 65, 0x1E495DD7);
 
 // @0x1422bc580
-Scaleform::GFx::Value ASArray::FUN_1422bc580()
+Scaleform::GFx::Value ASArray::Shift()
 {
     return Invoke("shift");
 }
-MS2_REPLACE_METHOD(0x1422BC580, ASArray, FUN_1422bc580, 65, 0x8C1288A3);
+MS2_REPLACE_METHOD(0x1422BC580, ASArray, Shift, 65, 0x8C1288A3);
 
 // @0x1422bc5d0
-unsigned int ASArray::FUN_1422bc5d0()
+unsigned int ASArray::GetLength()
 {
-    return FUN_1422baa20("length").GetUInt();
+    return GetMember("length").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422BC5D0, ASArray, FUN_1422bc5d0, 88, 0x20D7E0A1);
+MS2_REPLACE_METHOD(0x1422BC5D0, ASArray, GetLength, 88, 0x20D7E0A1);
 
 // @0x1422bc630
 void ASArray::FUN_1422bc630()
@@ -226,18 +226,18 @@ void ASArray::FUN_1422bc660(unsigned nIndex, int nCount)
 MS2_REPLACE_METHOD(0x1422BC660, ASArray, FUN_1422bc660, 68, 0xCF0D00D1);
 
 // @0x1422bc6b0
-Scaleform::GFx::Value ASArray::FUN_1422bc6b0(unsigned nIndex)
+Scaleform::GFx::Value ASArray::GetElement(unsigned nIndex)
 {
     Scaleform::GFx::Value v;
     m_value.GetElement(nIndex, &v);
     return v;
 }
-MS2_REPLACE_METHOD(0x1422BC6B0, ASArray, FUN_1422bc6b0, 119, 0x03CD6D1D);
+MS2_REPLACE_METHOD(0x1422BC6B0, ASArray, GetElement, 119, 0x03CD6D1D);
 
 // @0x1422bc730
 void ASArray::FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v)
 {
-    if (nIndex >= FUN_1422bc5d0())
+    if (nIndex >= GetLength())
         return;
     m_value.SetElement(nIndex, v);
 }
@@ -246,56 +246,56 @@ MS2_REPLACE_METHOD(0x1422BC730, ASArray, FUN_1422bc730, 67, 0x8424C835);
 // @0x1422bc780
 void ASArray::FUN_1422bc780(unsigned nIndex, int& nOut)
 {
-    nOut = FUN_1422bc6b0(nIndex).GetInt();
+    nOut = GetElement(nIndex).GetInt();
 }
 MS2_REPLACE_METHOD(0x1422BC780, ASArray, FUN_1422bc780, 97, 0x5E64C920);
 
 // @0x1422bc7f0
 void ASArray::FUN_1422bc7f0(unsigned nIndex, bool& bOut)
 {
-    bOut = FUN_1422bc6b0(nIndex).GetBool();
+    bOut = GetElement(nIndex).GetBool();
 }
 MS2_REPLACE_METHOD(0x1422BC7F0, ASArray, FUN_1422bc7f0, 97, 0xB88F95C2);
 
 // @0x1422bc860
 void ASArray::FUN_1422bc860(unsigned nIndex, unsigned& nOut)
 {
-    nOut = FUN_1422bc6b0(nIndex).GetUInt();
+    nOut = GetElement(nIndex).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BC860, ASArray, FUN_1422bc860, 97, 0xE3196770);
 
 // @0x1422bc8d0
 void ASArray::FUN_1422bc8d0(unsigned nIndex, unsigned long& nOut)
 {
-    nOut = FUN_1422bc6b0(nIndex).GetUInt();
+    nOut = GetElement(nIndex).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BC8D0, ASArray, FUN_1422bc8d0, 97, 0xCBA3F049);
 
 // @0x1422bc940
 void ASArray::FUN_1422bc940(unsigned nIndex, float& fOut)
 {
-    fOut = (float)FUN_1422bc6b0(nIndex).GetNumber();
+    fOut = (float)GetElement(nIndex).GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422BC940, ASArray, FUN_1422bc940, 103, 0xC6A60F3F);
 
 // @0x1422bc9b0
 void ASArray::FUN_1422bc9b0(unsigned nIndex, double& dOut)
 {
-    dOut = FUN_1422bc6b0(nIndex).GetNumber();
+    dOut = GetElement(nIndex).GetNumber();
 }
 MS2_REPLACE_METHOD(0x1422BC9B0, ASArray, FUN_1422bc9b0, 99, 0x0C1851E6);
 
 // @0x1422bca20
 void ASArray::FUN_1422bca20(unsigned nIndex, CString& strOut)
 {
-    strOut = FUN_1422bc6b0(nIndex).GetString();
+    strOut = GetElement(nIndex).GetString();
 }
 MS2_REPLACE_METHOD(0x1422BCA20, ASArray, FUN_1422bca20, 105, 0x891ED9C2);
 
 // @0x1422bca90
 void ASArray::FUN_1422bca90(unsigned nIndex, CStringW& strOut)
 {
-    strOut = FUN_1422bc6b0(nIndex).GetStringW();
+    strOut = GetElement(nIndex).GetStringW();
 }
 MS2_REPLACE_METHOD(0x1422BCA90, ASArray, FUN_1422bca90, 105, 0xC726AEA7);
 

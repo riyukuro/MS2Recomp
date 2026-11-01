@@ -75,8 +75,6 @@ class Unk_1403ed2d0 : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
-    Unk_QueryObj* FUN_141bd1530(unsigned __int64 nEntityId);
 };
 int FUN_1410a8a90(Unk_CubeCraftCore*);
 int FUN_1410a8ab0(Unk_CubeCraftCore*);
@@ -114,13 +112,13 @@ int FUN_14053f9c0(int nItemId);
 class Unk_IngItem : public CPtred { public: char unknown18[0x36]; unsigned char m_bFree; };    // +0x4e
 class Unk_IngTable { public: MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId); };
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 class Unk_CubeStock { public: int FUN_140dfcb00(int nItemId); };
 extern Unk_CubeStock DAT_143ab2e50;
 
 // the backup item list of the local player
 class Unk_ItemSub : public CPtred {};
 class Unk_BackUpItem : public CPtred { public: MS2Ptr<Unk_ItemSub> FUN_1411dc7a0(); };
-Unk_PCItems* FUN_1416561a0(MyPC*);
 void FUN_1411e1b80(Unk_PCItems*, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >*);
 
 // Template glue of the Cube map (std::map<int, MS2Ptr<Cube> > iterator/pointer helpers), spelled as plain functions.
@@ -221,7 +219,7 @@ int CUGCBuildValidator::vfunc_32(unsigned* pErr)
     *pErr = 0x62;
     if (m_itemData == 0 || m_pItem == 0)
         return 0;
-    if (!((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053d6f0() || m_pItem->FUN_1408b3860() == 1)
+    if (!((class CItemData*)(class CItemData*)(m_itemData.operator->()))->HasCubeTextureMesh() || m_pItem->FUN_1408b3860() == 1)
         return 1;
     return 0;
 }
@@ -502,9 +500,9 @@ int CUGCBuildValidatorCli::vfunc_2(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    Unk_CubeCraftCore* pCore = ((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290());
+    Unk_CubeCraftCore* pCore = ((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft());
     if (pCore != 0 && FUN_1410a8ab0(pCore) == 0 && FUN_1415302e0(pPC, m_pItem->itemId))
         return 0;
     return 1;
@@ -520,9 +518,9 @@ int CUGCBuildValidatorCli::vfunc_3(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) != 2)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) != 2)
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(m_pItem->itemId);
         if (spData == 0)
@@ -551,10 +549,10 @@ int CUGCBuildValidatorCli::vfunc_4(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
     int nMapId = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd3060();
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) != 2 && FUN_14092f660() && !CFieldData::FUN_140374410(nMapId))
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) != 2 && FUN_14092f660() && !CFieldData::FUN_140374410(nMapId))
         return 0;
     MS2Ptr<CFieldDataCli> spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField != 0 || spField->m_nIndoorMask != (spField->m_nIndoorMask & m_itemData->install.space))
@@ -570,13 +568,13 @@ int CUGCBuildValidatorCli::vfunc_5(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) == 2)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) == 2)
     {
         if ((m_itemData->install.placeable & m_pCube->field44) == 0)
             return 0;
-        if ((((class Cube*)(class Cube*)(m_pCube))->FUN_1408b4e90() & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053c5e0())) == 0)
+        if ((((class Cube*)(class Cube*)(m_pCube))->FUN_1408b4e90() & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->GetSubtype())) == 0)
             return 0;
     }
     return 1;
@@ -796,7 +794,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
     if (!spCube != 0)
         return 0;
-    if (FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053c5e0()) != spCube->field44)
+    if (FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->GetSubtype()) != spCube->field44)
         return 0;
     if (spCube->field64 != 0 || m_itemData->install.unchangeable != 0)
     {
@@ -807,13 +805,13 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) == 2 && m_pCube != 0)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) == 2 && m_pCube != 0)
     {
         if ((m_itemData->install.placeable & m_pCube->field44) == 0)
             return 0;
-        if ((((class Cube*)(class Cube*)(m_pCube))->FUN_1408b4e90() & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053c5e0())) == 0)
+        if ((((class Cube*)(class Cube*)(m_pCube))->FUN_1408b4e90() & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->GetSubtype())) == 0)
             return 0;
     }
     if (spCube->field68 != 0)
@@ -829,7 +827,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
             for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
             {
                 MS2Ptr<Cube> spOther = it->second;
-                if ((spOther->field60 & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053c5e0())) == 0)
+                if ((spOther->field60 & FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->GetSubtype())) == 0)
                 {
                     *pErr = 0x1e;
                     return 0;
@@ -873,7 +871,7 @@ int CUGCBuildValidatorCli::vfunc_14(unsigned* pErr)
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
     if (!spCube)
         return 0;
-    if (FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->FUN_14053c5e0()) != spCube->field44)
+    if (FUN_1408a0190(((class CItemData*)(class CItemData*)(m_itemData.operator->()))->GetSubtype()) != spCube->field44)
         return 0;
     if (spCube->field64 != 0 || m_itemData->install.unchangeable != 0)
     {
@@ -994,9 +992,9 @@ int CUGCBuildValidatorCli::vfunc_20(unsigned* pErr)
         PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
-        if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+        if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
             return 0;
-        if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) == 2)
+        if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) == 2)
         {
             MS2Ptr<CFieldDataCli> spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
             if (!spField != 0)
@@ -1072,11 +1070,11 @@ int CUGCBuildValidatorCli::vfunc_24(unsigned* pErr)
         return 0;
     if (FUN_1407072e0(spCube->fieldB4) == 0)
         return 1;
-    MyPC* pMyPC = FUN_140884db0(((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd1530(spCube->field18));
+    MyPC* pMyPC = FUN_140884db0(reinterpret_cast<Unk_QueryObj*>(WorldService::GetInstance()->FUN_141bd1530(spCube->field18)));
     if (pMyPC == 0)
         return 0;
     ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > items(10);
-    FUN_1411e1b80(FUN_1416561a0(pMyPC), &items);
+    FUN_1411e1b80(reinterpret_cast<Unk_PCItems*>(reinterpret_cast<PC*>(pMyPC)->FUN_1416561a0()), &items);
     for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
     {
         MS2Ptr<Unk_BackUpItem> spItem = items.GetAt(pos);
@@ -1104,7 +1102,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
         return 1;
@@ -1119,7 +1117,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
             return 0;
         }
     }
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) == 2)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) == 2)
     {
         if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
         {
@@ -1250,9 +1248,9 @@ Cube* CUGCBuildValidatorCli::vfunc_34()
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) != 2)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) != 2)
     {
         Cube* pCube = m_pCubeService->FUN_1410b8790(m_point);
         return pCube;
@@ -1276,9 +1274,9 @@ int CUGCBuildValidatorCli::vfunc_35()
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
+    if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft()) == 0)
         return 0;
-    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290())) == 2 && m_itemData->install.attachable != 0)
+    if (FUN_1410a8a90(((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft())) == 2 && m_itemData->install.attachable != 0)
         return 1;
     return 0;
 }

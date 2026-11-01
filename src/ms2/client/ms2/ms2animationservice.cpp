@@ -51,6 +51,12 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/filepreload_1.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 extern int DAT_1439ed00c;                       // option: remember the KF preload files (0 = read the XML each time)
 extern void* DAT_143b09498;                     // callback slot set by OnInit (the asset filter)
@@ -62,7 +68,6 @@ class Unk_XmlNode
 public:
     Unk_XmlNode* FUN_140165cf0(const char* pcName);     // FirstChild(name)
     Unk_XmlNode* NextSibling(const char* pcName);       // NextSibling(name)
-    const char* FUN_14086f4b0(const char* pcName);      // Attribute(name)
     void FUN_140873ca0(const char* pcName, int nValue); // SetAttribute(name, int)
 };
 Unk_XmlNode* FUN_140165cf0(TiXmlDocument* pDoc, const char* pcName);    // FirstChild(name) of the document
@@ -237,7 +242,7 @@ efd::AsyncResult MS2AnimationService::OnTick()
             ReloadFemaleKF();
             break;
         }
-        ((class Unk_FileSys*)GetFileSystem())->FUN_14039a740();
+        ((class Unk_FileSys*)GetFileSystem())->ResetCharacterMask();
     }
     return egmAnimation::AnimationService::OnTick();
 }
@@ -429,10 +434,10 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
                 int nIndex = 0;
                 for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                 {
-                    CString kText = FUN_140188f50(pKey->FUN_14086f4b0("text"), 0);
-                    (*ppEntries)[nIndex].SetName(pKey->FUN_14086f4b0("text"));
-                    (*ppEntries)[nIndex].SetTime((float)atof(pKey->FUN_14086f4b0("time")));
-                    const char* szPreload = pKey->FUN_14086f4b0("preload");
+                    CString kText = FUN_140188f50(((class TiXmlElement*)(pKey))->Attribute("text"), 0);
+                    (*ppEntries)[nIndex].SetName(((class TiXmlElement*)(pKey))->Attribute("text"));
+                    (*ppEntries)[nIndex].SetTime((float)atof(((class TiXmlElement*)(pKey))->Attribute("time")));
+                    const char* szPreload = ((class TiXmlElement*)(pKey))->Attribute("preload");
                     if (szPreload == 0)
                     {
                         pKey->FUN_140873ca0("preload", 1);

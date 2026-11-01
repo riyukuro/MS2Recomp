@@ -55,7 +55,7 @@ public:
     void FUN_141429600();                                   // apply / save the edited bindings
     int FUN_1414297e0(const CString& strPath, int n);       // load the default key file
     int FUN_141429e60(const CString& strPath);              // load a default gamepad key file
-    void FUN_14142a510();                                   // category 9: back up the bindings
+    void BackupKeys();                                   // category 9: back up the bindings
     void FUN_14142a680();                                   // category 9: restore them
     void FUN_14142a800();                                   // clear every binding
     void FUN_14142a8b0(__int64 nAction);                    // the action's binding changed
@@ -74,41 +74,41 @@ public:
     int FUN_14142c540(int nAction);                         // the action's key was released
     void FUN_14142c5d0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut);       // the quick slot keys
     void FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId);   // the keys of a skill
-    int FUN_14142c830(int nKey, int& nPair);                // the twin modifier key
+    int GetPairKey(int nKey, int& nPair);                // the twin modifier key
     MS2Ptr<stKeyData> FUN_14142c890(int nKey);              // the binding of a key
     int FUN_14142c940(__int64 nAction, int nPriority);      // the key bound to the action, 0 = none
     int FUN_14142ca40(int nId, int nPriority);
     int FUN_14142cb40(unsigned nIndex, int nPriority);      // the key of a quick slot action
     size_t FUN_14142cbb0();                                 // the quick slot action count
-    __int64 FUN_14142cbe0(unsigned nIndex);                 // a quick slot action
+    __int64 GetQuickSlotAction(unsigned nIndex);                 // a quick slot action
     int FUN_14142cc40(int nKey);                            // the key can be bound
     int FUN_14142cca0(int nKey);
-    int FUN_14142cd50(int nKey, int nAction);
-    int FUN_14142ce10(int nKey);                            // the key is a quick slot key
-    int FUN_14142cf10(__int64 nAction);                     // the action is a quick slot action
+    int IsKeyBoundToAction(int nKey, int nAction);
+    int IsQuickSlotKey(int nKey);                            // the key is a quick slot key
+    int IsQuickSlotAction(__int64 nAction);                     // the action is a quick slot action
     int FUN_14142cf60(MS2Ptr<stKeyData> spKey);             // the binding is usable
-    int FUN_14142d100(int nKey);                            // the binding type of a key
-    __int64 FUN_14142d190(int nKey);                        // the action bound to the key, 0 = none
+    int GetKeyType(int nKey);                            // the binding type of a key
+    __int64 GetKeyAction(int nKey);                        // the action bound to the key, 0 = none
     CStringW FUN_14142d220(int nKey);                       // the key's display name
     CStringW FUN_14142d580(int nKey);
     CStringW FUN_14142d760(int nAction, int nPriority);     // the key name of a binding
     CStringW FUN_14142d7e0(const int& nKey);
     int FUN_14142d9b0(stKeyData* pKey);
     int FUN_14142dad0(unsigned nSlot);                      // the skill id of the quick slot
-    int FUN_14142dc50(unsigned nSlot);                      // the skill id of a slot of the current page
-    int FUN_14142dcb0(int nKey, int& nIndex);               // the quick slot action index of a key
-    __int64 FUN_14142ded0(unsigned nSlot);                  // the item uid of the quick slot
-    int FUN_14142dfb0(unsigned nKey);                       // the item id of the key's quick slot
-    bool FUN_14142e030(unsigned nSlot, Unk_SsQuickEntry& entry);   // a slot of the current page
-    int FUN_14142e090(int nSkillId, __int64 nItemUid);      // the quick slot holding them, -1 = none
-    int FUN_14142e150(int nSkillId, int nItemId, __int64 nItemUid);
+    int GetQuickSlotSkillId(unsigned nSlot);                      // the skill id of a slot of the current page
+    int FindQuickSlotIndexByKey(int nKey, int& nIndex);               // the quick slot action index of a key
+    __int64 GetQuickSlotItemUidByKey(unsigned nSlot);                  // the item uid of the quick slot
+    int GetQuickSlotItemIdByKey(unsigned nKey);                       // the item id of the key's quick slot
+    bool GetQuickSlotEntry(unsigned nSlot, Unk_SsQuickEntry& entry);   // a slot of the current page
+    int FindQuickSlotBySkillAndItemUid(int nSkillId, __int64 nItemUid);      // the quick slot holding them, -1 = none
+    int FindQuickSlotBySkillAndItem(int nSkillId, int nItemId, __int64 nItemUid);
     int FUN_14142e220(__int64 nAction);                     // the quick slot index of an action, -1 = none
-    void FUN_14142e2a0(unsigned nSlot, const Unk_SsQuickEntry& entry);
-    void FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry& entry);
+    void SetQuickSlotEntry(unsigned nSlot, const Unk_SsQuickEntry& entry);
+    void SetQuickSlotEntryOnPage(int nPage, unsigned nSlot, const Unk_SsQuickEntry& entry);
     int FUN_14142e340(int bPressed);                         // the key pressed (key capture)
     int FUN_14142e470(int bPressed);                         // the key held (key capture)
-    bool FUN_14142e510(unsigned nCombo);                    // both keys of a modifier combo are known
-    void FUN_14142e600(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aOut);   // the keys bound to the action
+    bool IsComboKeyValid(unsigned nCombo);                    // both keys of a modifier combo are known
+    void GetKeysForAction(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aOut);   // the keys bound to the action
     int FUN_14142e6f0(int nKey);
     void FUN_14142e730(int nKey);
     void FUN_14142e770(int nKey);
@@ -126,7 +126,7 @@ public:
     int FUN_14142f870(int nSlot);
     int FUN_141430470(__int64 nAction);
     MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction) const;     // the setting of the action
-    SettingList FUN_141430710(int nCategory);               // the settings of a tab
+    SettingList GetSettingList(int nCategory);               // the settings of a tab
     int LoadKeySettingTable();                                     // load Table/keySetting.xml into m_settings
     void FUN_1414307a0();                                   // build the setting categories
     int FUN_141430b10(__int64 nAction);
@@ -164,7 +164,7 @@ public:
     int m_nLocked;                                          // +0x14 nonzero: nothing is sent
     ATL::CRBMap<unsigned int, unsigned int> m_18;           // +0x18
     KeyMap m_keys;                                          // +0x48 key code -> binding
-    KeyMap m_keysBackup;                                    // +0x78 (FUN_14142a510 / FUN_14142a680)
+    KeyMap m_keysBackup;                                    // +0x78 (BackupKeys / FUN_14142a680)
     ATL::CRBMultiMap<unsigned __int64, int, ATL::CElementTraits<unsigned __int64>, KeyTraits> m_actionKeys; // +0xa8 action -> keys
     ATL::CRBMultiMap<unsigned int, int, ATL::CElementTraits<unsigned int>, KeyTraits> m_d8; // +0xd8 slot -> keys
     KeyPairMap m_pairKeys;                                  // +0x108 left/right modifier twins

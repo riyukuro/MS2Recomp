@@ -48,6 +48,12 @@
 #include <memory>
 #include <string>
 #include <vector>
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -56,11 +62,11 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_1407181a0(const CStringW& str);
 
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // The game's fmt::format(StringRef, ArgList) -> std::string path (an old fmt: MemoryWriter over a 500-char buffer).
 // Unit-local stand-ins; the heavy write loop (0x1402d9f20) lives in another unit.
@@ -252,7 +258,7 @@ int FUN_1401d9b90(Unk_140165cf0* pElem, const char* pszName, int* pnType)
         return 2;
     }
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     *pnType = FUN_1401d9640(str);
@@ -290,7 +296,7 @@ int CChapterBookData::Read(Unk_140165cf0* pElem)
         int nType = 0;
         CStringW strValue;
         FUN_1401d9b90(pElem, strTypeName, &nType);
-        FUN_140873420(pElem, strValueName, strValue);
+        XmlGetAttr((class TiXmlElement*)(pElem), strValueName, strValue);
         if (nType == 0)
             continue;
         Unk_ChapterReward reward;
@@ -358,14 +364,14 @@ int CChapterBookTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> list;
-    FUN_14028faa0(pRoot, "chapterbook", "id", &list);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "chapterbook", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.size(); i++)
     {
         Unk_140165cf0* pNode = list[i];

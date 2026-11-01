@@ -111,8 +111,8 @@ public:
     int FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode);    // anchor position of a target
     int FUN_1419140f0(GameObject* pTarget, int& nIndex, CounterMap& map);
     int FUN_1419141a0(GameObject* pTarget);                                            // within the show distance
-    int FUN_1419142a0(GameObject* pTarget);                                             // 0 npc-like, 1 player
-    CString FUN_1419143c0(int nTargetKind, bool bUser);                                 // "Monster" / "User"
+    int GetTargetKind(GameObject* pTarget);                                             // 0 npc-like, 1 player
+    CString GetTargetKindName(int nTargetKind, bool bUser);                                 // "Monster" / "User"
     int FUN_141914490(GameObject* pTarget);                                             // pc bang bonus (0)
     int FUN_1419144b0(int nGrade);                                                      // recover grade
     bool FUN_1419144f0(int nGrade);                                                     // damage grade

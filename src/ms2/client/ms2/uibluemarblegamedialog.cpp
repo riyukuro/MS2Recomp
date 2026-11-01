@@ -42,7 +42,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // The dice button of the movie.
-class Unk_140acd6e0 : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned int bEnabled); };
+class Unk_140acd6e0 : public ASMovieClip { public: };
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -341,7 +341,7 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
         if (nKind == 10) {
             MS2Ptr<CItemData> spData = FUN_14053f870(nArg);
             if (spData.get()) {
-                row.FUN_1407cba60("binding", FUN_140f23f10(spData->FUN_14053c510(), spData->FUN_14053c5a0(), nCount));
+                row.FUN_1407cba60("binding", FUN_140f23f10(spData->GetItemId(), spData->GetRank(), nCount));
             }
         } else if (nKind != 0) {
             CStringW strKind = Name_140218290(nKind);
@@ -361,7 +361,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
 {
     ASArray rewards(2);
     {
-        MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940();
+        MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent();
         if (spContext.get()) {
             for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos; spContext->m_rewards.GetNext(pos)) {
                 MS2Ptr<ItemEntity> spReward = spContext->m_rewards.GetValueAt(pos);
@@ -370,7 +370,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 if (spData == 0)
                     continue;
                 ASObj row(2);
-                row.FUN_1407cba60("binding", FUN_140f23f10(spData->FUN_14053c510(), spData->FUN_14053c5a0(), spReward->m_count));
+                row.FUN_1407cba60("binding", FUN_140f23f10(spData->GetItemId(), spData->GetRank(), spReward->m_count));
                 bool bReceive;
                 if (nPosition >= nRound * 0x1c && nRound != 0)
                     bReceive = true;
@@ -449,7 +449,7 @@ void UIBlueMarbleGameDialog::FUN_140f23590(int nItemId, int nRarity, int nCount)
         CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_bluemarble_get_item"),
                                             GetStringTable()->FUN_141811980(1, nItemId));
         m_30->Invoke("onRewardNotify", CStringW(strMessage),
-                     FUN_14016a730(spData->FUN_14053fdd0(), 0), spData->FUN_14053c5a0(), nCount);
+                     FUN_14016a730(spData->GetIconPath(), 0), spData->GetRank(), nCount);
     }
 }
 
@@ -460,7 +460,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
     int nLap = nPosition / 0x1c;
     if (nPrevLap == nLap)
         return;
-    MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940();
+    MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent();
     if (spContext.get()) {
         MS2Ptr<ItemEntity> spReward(0);
         if (spContext->m_rewards.Lookup(0, spReward))
@@ -482,7 +482,7 @@ void UIBlueMarbleGameDialog::FUN_140f23940()
 // @0x140f23b90
 void UIBlueMarbleGameDialog::FUN_140f23b90()
 {
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_coinCount")) {
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_coinCount")) {
         int nCoins = g_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
         CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins);
         spText->FUN_1422c4cd0(strText);
@@ -492,7 +492,7 @@ void UIBlueMarbleGameDialog::FUN_140f23b90()
 // @0x140f23ca0
 void UIBlueMarbleGameDialog::FUN_140f23ca0()
 {
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_finishCount")) {
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_finishCount")) {
         int nFinish = m_nPosition / 0x1c;
         CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_finish_count"), &nFinish);
         spText->FUN_1422c4cd0(strText);
@@ -503,7 +503,7 @@ void UIBlueMarbleGameDialog::FUN_140f23ca0()
 void UIBlueMarbleGameDialog::FUN_140f23da0()
 {
     ASArray flags(2);
-    if (MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->FUN_14047b940()) {
+    if (MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent()) {
         for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != 0; spContext->m_rewards.GetNext(pos)) {
             int nRound = spContext->m_rewards.GetKeyAt(pos);
             bool bReceive = m_nPosition >= nRound * 0x1c && nRound != 0;
@@ -531,7 +531,7 @@ CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCou
 // @0x140f24140
 void UIBlueMarbleGameDialog::FUN_140f24140(int bEnabled)
 {
-    if (MS2Ptr<Unk_140acd6e0> spButton = FUN_140bb4b10("m_dice"))
+    if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_dice"))
         spButton->FUN_1422c1fe0(bEnabled);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

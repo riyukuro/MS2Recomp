@@ -20,17 +20,17 @@ public:
     UnlimitedEnchantInfo(int nItemId, int nRarity);                 // 0x1408bb9d0
     ~UnlimitedEnchantInfo() = default;                              // 0x1408c0020 (implicit; defined where the vftable is)
     MS2Ptr<UnlimitedEnchantInfo> FUN_1408bba60();                   // 0x1408bba60 copy
-    void FUN_1408bbc00();                                           // 0x1408bbc00 reset
+    void Reset();                                           // 0x1408bbc00 reset
     int GetLevel();                                            // 0x1408bbc50 the level
-    int FUN_1408bbc70();                                            // 0x1408bbc70 level up
-    void FUN_1408bbcb0(int nLevel, bool bChanged);                  // 0x1408bbcb0 set the level
+    int IncrementLevel();                                            // 0x1408bbc70 level up
+    void SetLevel(int nLevel, bool bChanged);                  // 0x1408bbcb0 set the level
     void FUN_1408bbd30(COutputStream& out);                         // 0x1408bbd30 write
     void FUN_1408bbef0(CInputStream& in);                           // 0x1408bbef0 read
     void SetChanged(bool bChanged);                              // 0x1408bc1d0
     bool IsChanged();                                           // 0x1408bc1f0
-    Unk_EnchantPtr<BaseOption> FUN_1408bc210(unsigned nType);       // 0x1408bc210 the option of a stat type
+    Unk_EnchantPtr<BaseOption> FindOption(unsigned nType);       // 0x1408bc210 the option of a stat type
     OptionMap& FUN_1408bc2d0();                                     // 0x1408bc2d0
-    Unk_EnchantPtr<BaseOption> FUN_1408bc2f0(unsigned nType);       // 0x1408bc2f0
+    Unk_EnchantPtr<BaseOption> FindSecondaryOption(unsigned nType);       // 0x1408bc2f0
     SecondaryMap& FUN_1408bc3b0();                                  // 0x1408bc3b0
     void FUN_1408bc3d0();                                           // 0x1408bc3d0 (empty)
 private:

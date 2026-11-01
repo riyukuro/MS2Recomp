@@ -58,7 +58,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -127,7 +127,7 @@ int CNametagSymbolTable::Load()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "symbol", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "symbol", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];

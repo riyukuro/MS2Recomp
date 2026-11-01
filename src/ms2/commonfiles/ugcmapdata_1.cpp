@@ -36,6 +36,8 @@
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 struct Unk_EntityAppFramework;
 struct Unk_LevelArray;
 class Unk_Service6100017;
@@ -60,7 +62,8 @@ bool FUN_14053f940(unsigned);
 Unk_Int3* FUN_1408850a0(Unk_Int3*);
 float FUN_14059d930(float);
 class PCBase;
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_UgcPhysSvc {
 public:
     virtual void vfunc_0();
@@ -72,7 +75,6 @@ class Unk_Ptr1401cd040 {
 public:
     Unk_Ptr1401cd040(void* p);                                      // 0x1401cd0b0
     ~Unk_Ptr1401cd040();                                            // 0x1401cd150
-    Unk_UgcPhysSvc* FUN_1401cd1a0();
     Unk_UgcPhysSvc* m_p;
 };
 Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
@@ -345,7 +347,7 @@ int FUN_1408a18d0(__int64 charID) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
-            service.FUN_1401cd1a0()->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
+            reinterpret_cast<Unk_UgcPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(service).operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
             if(hits.size()>0) {
                 efd::SmartPointer<egf::Entity> first=hits[0];
                 first->GetPropertyValue(0x85ef19e7,style);

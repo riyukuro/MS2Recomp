@@ -55,6 +55,7 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: TSingleton<> needs the class
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -180,7 +181,7 @@ int UIMentoringMentorPage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onOpenInviteMentoPage") == 0)
     {
-        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x41) != 0)
+        if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x41)) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -486,7 +487,6 @@ public:
 };
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-bool FUN_140841300(const CStringW& strText, const char* szCompare);
 int FUN_140718170(const CString& str);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1416e5350(int nQuest, int n);
@@ -556,7 +556,7 @@ void UIMentoringMissionPage::vfunc_3(Scaleform::GFx::Value* pOut, const CString&
             ATL::CTimeSpan span = tDay - now;
             CStringW strRemain = FormatTimeSpan(span, true, true, true, true);
             ASTooltip tip(2);
-            if (tip.FUN_1409e26b0(FUN_1405c2690(CStringW(L"s_mentoring_remain_time_from_day"), strRemain)))
+            if (tip.ApplyTextTooltip(FUN_1405c2690(CStringW(L"s_mentoring_remain_time_from_day"), strRemain)))
                 *pOut = tip.FUN_1422bb870();
         }
     }
@@ -567,7 +567,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
 {
     UIMentoringPage::vfunc_4(pOut, pArgs);
     CStringW strName = pArgs->FUN_1422b8f40();
-    if (FUN_140841300(strName, "guide"))
+    if (operator==(strName, "guide"))
     {
         int nQuest = pArgs->FUN_1422b8b10();
         Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
@@ -576,14 +576,14 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
             Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0) return;
             ASTooltip tip(2);
-            if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nQuest, 1))))
+            if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nQuest, 1))))
             {
-                tip.FUN_1409c6dc0(1);
+                tip.SetTooltipAlign(1);
                 *pOut = tip.FUN_1422bb870();
             }
         }
     }
-    else if (FUN_140841300(strName, "menteeCoin"))
+    else if (operator==(strName, "menteeCoin"))
     {
         int nQuest = pArgs->FUN_1422b8b10();
         Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
@@ -592,9 +592,9 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
             Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0) return;
             ASTooltip tip(2);
-            if (tip.FUN_1409e26b0(FUN_140763e10(FUN_140761e40(nQuest, 1))))
+            if (tip.ApplyTextTooltip(FUN_140763e10(FUN_140761e40(nQuest, 1))))
             {
-                tip.FUN_1409c6dc0(1);
+                tip.SetTooltipAlign(1);
                 *pOut = tip.FUN_1422bb870();
             }
         }
@@ -707,7 +707,7 @@ void UIMentoringMissionPage::FUN_140c74450(int nDay)
             if (spInst.IsNull()) continue;
             ASObj obj(2);
             FUN_140c74170(obj, spInst.get());
-            spList->FUN_1422dd230(obj);
+            spList->AddItem(obj);
         }
         spList->vfunc_24(true);
     }
@@ -770,7 +770,7 @@ UIMentoringPage::~UIMentoringPage() {}
 int UIMentoringPage::vfunc_1()
 {
     if (m_owner->FUN_1422dba00().IsNull()) return 0;
-    Scaleform::GFx::Value tab = m_owner->FUN_1422dba00()->FUN_1422baa20("m_currentTab");
+    Scaleform::GFx::Value tab = m_owner->FUN_1422dba00()->GetMember("m_currentTab");
     if (FUN_1409b0350(&tab)) return 0;
     m_script = FUN_140acca70(m_owner->FUN_1422db730(), tab);
     return 1;

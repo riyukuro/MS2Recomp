@@ -191,7 +191,7 @@ void CEquipItem::FUN_1411dc210()
     }
     else
     {
-        if ((m_spItem.get() ? true : false) && m_spItem->FUN_140525f10() && m_spItem->FUN_140525f60() && FUN_1411ddcb0() == 1)
+        if ((m_spItem.get() ? true : false) && m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60() && FUN_1411ddcb0() == 1)
             m_bUgcPending = 1;
     }
     FUN_1411de030();
@@ -246,7 +246,7 @@ int CEquipItem::FUN_1411dc670()
 MS2_REPLACE_METHOD(0x1411DC670, CEquipItem, FUN_1411dc670, 144, 0x8C4F8E43);
 
 // @0x1411dc710
-int CEquipItem::FUN_1411dc710()
+int CEquipItem::HasEarFold()
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -255,7 +255,7 @@ int CEquipItem::FUN_1411dc710()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1411DC710, CEquipItem, FUN_1411dc710, 123, 0xED7EE5A7);
+MS2_REPLACE_METHOD(0x1411DC710, CEquipItem, HasEarFold, 123, 0xED7EE5A7);
 
 // @0x1411dc7a0
 MS2Ptr<CItem> CEquipItem::GetItem()
@@ -284,7 +284,7 @@ MS2_REPLACE_METHOD(0x1411DC820, CEquipItem, FUN_1411dc820, 65, 0xC3F937C3);
 __int64 CEquipItem::FUN_1411dc870()
 {
     if (m_spItem.get() != 0)
-        return m_spItem->FUN_140526a50();
+        return m_spItem->GetItemUid();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1411DC870, CEquipItem, FUN_1411dc870, 65, 0xC9EF30FC);
@@ -304,16 +304,16 @@ void CEquipItem::FUN_1411dc8e0(PC* pPC)
 MS2_REPLACE_METHOD(0x1411DC8E0, CEquipItem, FUN_1411dc8e0, 25, 0xAB8BF0FB);
 
 // @0x1411dc900
-void CEquipItem::FUN_1411dc900(int bPending)
+void CEquipItem::SetUgcPending(int bPending)
 {
-    if (!m_spItem->FUN_140525f10())
+    if (!m_spItem->HasCubeTextureMesh())
         return;
     m_bUgcPending = bPending;
 }
-MS2_REPLACE_METHOD(0x1411DC900, CEquipItem, FUN_1411dc900, 64, 0xFECDAB85);
+MS2_REPLACE_METHOD(0x1411DC900, CEquipItem, SetUgcPending, 64, 0xFECDAB85);
 
 // @0x1411dc950
-MS2Ptr<CEquipModel> CEquipItem::FUN_1411dc950(const CString& strName)
+MS2Ptr<CEquipModel> CEquipItem::FindModelByName(const CString& strName)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -323,7 +323,7 @@ MS2Ptr<CEquipModel> CEquipItem::FUN_1411dc950(const CString& strName)
     }
     return MS2Ptr<CEquipModel>(0);
 }
-MS2_REPLACE_METHOD(0x1411DC950, CEquipItem, FUN_1411dc950, 217, 0x8D8D2155);
+MS2_REPLACE_METHOD(0x1411DC950, CEquipItem, FindModelByName, 217, 0x8D8D2155);
 
 // @0x1411dca30
 void CEquipItem::FUN_1411dca30(int nKind, ATL::CAtlArray<CString>& aOut)
@@ -338,7 +338,7 @@ void CEquipItem::FUN_1411dca30(int nKind, ATL::CAtlArray<CString>& aOut)
 MS2_REPLACE_METHOD(0x1411DCA30, CEquipItem, FUN_1411dca30, 161, 0x0761C1C2);
 
 // @0x1411dcae0
-void CEquipItem::FUN_1411dcae0(ATL::CAtlArray<MS2Ptr<CNifModel> >* pOut)
+void CEquipItem::GetNifModels(ATL::CAtlArray<MS2Ptr<CNifModel> >* pOut)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -351,10 +351,10 @@ void CEquipItem::FUN_1411dcae0(ATL::CAtlArray<MS2Ptr<CNifModel> >* pOut)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411DCAE0, CEquipItem, FUN_1411dcae0, 187, 0xBE672FA9);
+MS2_REPLACE_METHOD(0x1411DCAE0, CEquipItem, GetNifModels, 187, 0xBE672FA9);
 
 // @0x1411dcbb0
-void CEquipItem::FUN_1411dcbb0(ATL::CAtlArray<MS2Ptr<CKfmModel> >* pOut)
+void CEquipItem::GetKfmModels(ATL::CAtlArray<MS2Ptr<CKfmModel> >* pOut)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -367,10 +367,10 @@ void CEquipItem::FUN_1411dcbb0(ATL::CAtlArray<MS2Ptr<CKfmModel> >* pOut)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411DCBB0, CEquipItem, FUN_1411dcbb0, 187, 0x9BFF8DF1);
+MS2_REPLACE_METHOD(0x1411DCBB0, CEquipItem, GetKfmModels, 187, 0x9BFF8DF1);
 
 // @0x1411dcc80
-void CEquipItem::FUN_1411dcc80(ATL::CAtlArray<MS2Ptr<CEquipModel> >& aOut)
+void CEquipItem::GetModels(ATL::CAtlArray<MS2Ptr<CEquipModel> >& aOut)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -378,7 +378,7 @@ void CEquipItem::FUN_1411dcc80(ATL::CAtlArray<MS2Ptr<CEquipModel> >& aOut)
         aOut.Add(spModel);
     }
 }
-MS2_REPLACE_METHOD(0x1411DCC80, CEquipItem, FUN_1411dcc80, 117, 0xBD220E42);
+MS2_REPLACE_METHOD(0x1411DCC80, CEquipItem, GetModels, 117, 0xBD220E42);
 
 // @0x1411dcd00
 void CEquipItem::FUN_1411dcd00()
@@ -596,14 +596,14 @@ void CEquipItem::FUN_1411dd650()
 MS2_REPLACE_METHOD(0x1411DD650, CEquipItem, FUN_1411dd650, 120, 0xAA779C63);
 
 // @0x1411dd6d0
-void CEquipItem::FUN_1411dd6d0(CItem* pItem)
+void CEquipItem::SetItem(CItem* pItem)
 {
     m_spItem.AssignRaw(pItem);
 }
-MS2_REPLACE_METHOD(0x1411DD6D0, CEquipItem, FUN_1411dd6d0, 41, 0xE71DC818);
+MS2_REPLACE_METHOD(0x1411DD6D0, CEquipItem, SetItem, 41, 0xE71DC818);
 
 // @0x1411dd700
-NiNodePtr CEquipItem::FUN_1411dd700()
+NiNodePtr CEquipItem::FindPoint01Node()
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -614,7 +614,7 @@ NiNodePtr CEquipItem::FUN_1411dd700()
     }
     return NiNodePtr(0);
 }
-MS2_REPLACE_METHOD(0x1411DD700, CEquipItem, FUN_1411dd700, 281, 0x1E098B50);
+MS2_REPLACE_METHOD(0x1411DD700, CEquipItem, FindPoint01Node, 281, 0x1E098B50);
 
 // @0x1411dd820
 NiTexturePtr CEquipItem::FUN_1411dd820()
@@ -637,11 +637,11 @@ void CEquipItem::FUN_1411dd9a0()
         return;
     if (m_spItem == 0)
         return;
-    if (m_spItem->FUN_140525f10() && m_spItem->FUN_140525f60())
+    if (m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60())
     {
-        if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->FUN_1405278d0()->m_strName) == 0)
+        if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName) == 0)
             TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->FUN_14123c580());
-        FUN_1411dc900(1);
+        SetUgcPending(1);
     }
 }
 MS2_REPLACE_METHOD(0x1411DD9A0, CEquipItem, FUN_1411dd9a0, 304, 0x466982C4);
@@ -649,12 +649,12 @@ MS2_REPLACE_METHOD(0x1411DD9A0, CEquipItem, FUN_1411dd9a0, 304, 0x466982C4);
 // @0x1411ddae0
 void CEquipItem::FUN_1411ddae0()
 {
-    if (!m_spItem->FUN_140525f10())
+    if (!m_spItem->HasCubeTextureMesh())
         return;
     if (!m_spItem->FUN_140525f60())
         return;
     CString strFile = FUN_1411ddd50();
-    if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->FUN_1405278d0()->m_strName) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName) == 0)
         return;
     CUgcItemPC kItem(m_spItem.get(), m_pPC->FUN_14123c580());
     if (TSingleton<CUgcManager>::GetInstance()->FUN_141886980(&kItem, strFile) == 0)
@@ -665,11 +665,11 @@ MS2_REPLACE_METHOD(0x1411DDAE0, CEquipItem, FUN_1411ddae0, 457, 0xDC1D7EF2);
 // @0x1411ddcb0
 int CEquipItem::FUN_1411ddcb0()
 {
-    if (!m_spItem->FUN_140525f10())
+    if (!m_spItem->HasCubeTextureMesh())
         return 1;
     if (!m_spItem->FUN_140525f60())
         return 1;
-    return TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->FUN_1405278d0()->m_strName);
+    return TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName);
 }
 MS2_REPLACE_METHOD(0x1411DDCB0, CEquipItem, FUN_1411ddcb0, 141, 0x1EE2CF38);
 
@@ -677,13 +677,13 @@ MS2_REPLACE_METHOD(0x1411DDCB0, CEquipItem, FUN_1411ddcb0, 141, 0x1EE2CF38);
 CString CEquipItem::FUN_1411ddd50()
 {
     if (m_strUgcFile.IsEmpty())
-        m_strUgcFile = FUN_1410280d0(1, m_spItem->FUN_1405278d0()->m_strName);
+        m_strUgcFile = FUN_1410280d0(1, m_spItem->GetUgcInfo()->m_strName);
     return m_strUgcFile;
 }
 MS2_REPLACE_METHOD(0x1411DDD50, CEquipItem, FUN_1411ddd50, 238, 0xBAD18CBE);
 
 // @0x1411dde50
-void CEquipItem::FUN_1411dde50(CEquipModel* pModel)
+void CEquipItem::AddModel(CEquipModel* pModel)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -694,7 +694,7 @@ void CEquipItem::FUN_1411dde50(CEquipModel* pModel)
     MS2Ptr<CEquipModel> spNew(pModel);
     m_models.AddTail(spNew);
 }
-MS2_REPLACE_METHOD(0x1411DDE50, CEquipItem, FUN_1411dde50, 184, 0x073EED80);
+MS2_REPLACE_METHOD(0x1411DDE50, CEquipItem, AddModel, 184, 0x073EED80);
 
 // @0x1411ddf10
 void CEquipItem::FUN_1411ddf10(CEquipModel* pModel)
@@ -728,7 +728,7 @@ void CEquipItem::FUN_1411de030()
 {
     if (m_spUgcMeshes.get() != 0)
         return;
-    if ((m_spItem.get() ? true : false) && m_spItem->FUN_140525f10())
+    if ((m_spItem.get() ? true : false) && m_spItem->HasCubeTextureMesh())
     {
         m_spUgcMeshes.AssignRaw(new CItemUgcMeshContainer());
         m_spUgcMeshes->FUN_141426170(MS2Ptr<CEquipItem>(this));

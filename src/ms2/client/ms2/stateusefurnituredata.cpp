@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x141282a50-0x141284ac0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateusefurnituredata.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <string.h>
@@ -31,6 +32,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // The skill record of a ride / sit target (CPtred, a point at +0x50 where the player is put).
@@ -63,24 +65,17 @@ struct Unk_UfDirRet : public efd::Point3
 };
 
 // The buff set of the actor.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_UfBuff
 {
 public:
     bool FUN_141682fe0(int nId);                             // has a buff
     bool FUN_141683100(int nId);                             // has a buff (kind)
-    Unk_UfDirRet FUN_141683290();                            // the knock-back direction
 };
 
 CFunctionCubeService* FUN_1409670b0();
 bool FUN_1402a5b40(const CString& a, const char* b);       // CString != C string
-
-// The effect manager: plays an effect for a request (returns its id), stops it by id.
-class Unk_UfEffectMgr
-{
-public:
-    unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
-    void FUN_1411a4a00(Unk_EffectQuery* pQuery);
-};
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
 class Unk_UfAnimSvc
@@ -88,8 +83,8 @@ class Unk_UfAnimSvc
 public:
     efd::utf8string FUN_1409a1790(const egf::EntityID& kId, unsigned int nSeq);
 };
-Unk_UfAnimSvc* FUN_141b6f910();
-NiActorManager* FUN_140999440(Unk_UfAnimSvc* pSvc, const egf::EntityID& kId);   // cached actor manager
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 class Unk_SeqAccess   // C3: member view for the former free stand-ins
 {
 public:
@@ -225,7 +220,7 @@ void StateUseFurniture::vfunc_4(StateData* pData)
             kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
             kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
             kQuery.SetActor(m_pOwner->FUN_14123c580());
-            m_nEffect = reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+            m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
         }
     }
     PCBase* pPC = FUN_1417b8370();
@@ -245,7 +240,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
         if (bModel)
         {
-            NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), m_spCube->FUN_141226eb0());
+            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_UfAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_spCube->FUN_141226eb0());
             if (pMgr != 0)
             {
                 NiControllerSequence* pSeq = pMgr->GetActiveSequence(static_cast<NiActorManager*>(pMgr)->GetCurAnimation(), true, true);
@@ -323,7 +318,7 @@ void StateUseFurniture::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_UfBuff* pBuff = (Unk_UfBuff*)pPC->FUN_14166d240();
-    pPC->vfunc_22(efd::Point3(pBuff->FUN_141683290()));
+    pPC->vfunc_22(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()))));
     if (pBuff->FUN_141683100(0x30d41))
         pPC->FUN_1415248d0(1, 0);
     else if (pBuff->FUN_141683100(0x30d42))
@@ -351,7 +346,7 @@ void StateUseFurniture::vfunc_5(int n)
 {
     State::vfunc_5(n);
     if (m_nEffect != 0)
-        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
         FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8, "");
     if (bEffect)
@@ -360,7 +355,7 @@ void StateUseFurniture::vfunc_5(int n)
         kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
         kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
         kQuery.SetActor(m_pOwner->FUN_14123c580());
-        reinterpret_cast<Unk_UfEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&kQuery);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
@@ -400,7 +395,7 @@ void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eS
         return;
     if (m_n64 == 0)
     {
-        efd::utf8string kName = FUN_141b6f910()->FUN_1409a1790(m_pOwner->FUN_14123c460(), eSequenceID);
+        efd::utf8string kName = reinterpret_cast<Unk_UfAnimSvc*>(FUN_141b6f910())->FUN_1409a1790(m_pOwner->FUN_14123c460(), eSequenceID);
         if (UfEqual((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
             m_n64 = 1;
     }

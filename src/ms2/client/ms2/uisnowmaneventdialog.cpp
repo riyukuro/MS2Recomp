@@ -17,6 +17,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 namespace UICommon {
 class CAlignmentInfo : public CPtred {
@@ -138,7 +139,7 @@ UIRewardNotify* FUN_140938cd0(int);
 class Unk_SnowmanDisplay { public: virtual void vfunc_0(); virtual void vfunc_1(int, int, int, int, int); };
 
 int FUN_140d01040(CString&);
-int FUN_1408733e0(void*, const char*, CString*);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 int FUN_140397ab0(void*, TiXmlDocument*, const CStringW&);
@@ -259,7 +260,7 @@ void UISnowmanEventDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (m_30.IsNull())
         return;
-    if (m_timer.FUN_140268870(1000) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) == 0)
         return;
     __int64 now = GetServerTime();
     if (FUN_14086ab70(Unk_Time(m_lastUpdate), Unk_Time(now), 0))
@@ -284,7 +285,7 @@ void UISnowmanEventDialog::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pH
         return;
     MS2Ptr<ASDisplayObject> pRoot = FUN_1422dba50();
     if (pRoot.get()) {
-        FUN_140e96900(pWidth, pHeight);
+        GetDialogSize(pWidth, pHeight);
         reinterpret_cast<Unk_SnowmanDisplay*>(pRoot.operator->())->vfunc_1(a1, a2, a3, *pWidth, *pHeight);
     }
 }
@@ -546,7 +547,7 @@ void UISnowmanEventDialog::FUN_140e965e0()
 MS2_REPLACE_METHOD(0x140E965E0, UISnowmanEventDialog, FUN_140e965e0, 784, 0xAF323AEA);
 
 // @0x140e96900
-void UISnowmanEventDialog::FUN_140e96900(int* width, int* height)
+void UISnowmanEventDialog::GetDialogSize(int* width, int* height)
 {
     if (m_30 == NULL)
         return;
@@ -556,7 +557,7 @@ void UISnowmanEventDialog::FUN_140e96900(int* width, int* height)
         *height = dialog->FUN_1422e6270();
     }
 }
-MS2_REPLACE_METHOD(0x140E96900, UISnowmanEventDialog, FUN_140e96900, 148, 0x464891AD);
+MS2_REPLACE_METHOD(0x140E96900, UISnowmanEventDialog, GetDialogSize, 148, 0x464891AD);
 
 // @0x140e969a0
 void UISnowmanEventDialog::FUN_140e969a0()
@@ -567,7 +568,7 @@ void UISnowmanEventDialog::FUN_140e969a0()
     }
     int width = 0;
     int height = 0;
-    FUN_140e96900(&width, &height);
+    GetDialogSize(&width, &height);
     m_alignInfo->FUN_141901c10(m_30, width, height);
 }
 MS2_REPLACE_METHOD(0x140E969A0, UISnowmanEventDialog, FUN_140e969a0, 223, 0x48771CFC);
@@ -591,7 +592,7 @@ void UISnowmanEventDialog::FUN_140e96a90(const CStringW& path)
         return;
     }
     CString align;
-    FUN_1408733e0(node, "align", &align);
+    XmlGetAttr((class TiXmlElement*)(node), "align", *(&align));
     m_alignment = FUN_140d01040(align);
     XmlGetAttr((class TiXmlElement*)(node), "offsetX", *(int*)(&m_offsetX));
     XmlGetAttr((class TiXmlElement*)(node), "offsetY", *(int*)(&m_offsetY));

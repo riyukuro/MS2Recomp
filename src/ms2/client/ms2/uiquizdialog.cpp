@@ -27,7 +27,6 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringW FUN_14083d340(CStringW str);
 CInputStream& FUN_14070f480(CInputStream& in, int& n);              // read an int
 CInputStream& FUN_14070f5f0(CInputStream& in, CStringW& str);       // read a wide string
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 
@@ -45,7 +44,7 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 // @0x14129b4a0
 template <> MS2Ptr<ASCountDownTimer> AScript::FUN_140accef0<ASCountDownTimer>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<ASCountDownTimer>(m_nMovieId, v);
     return MS2Ptr<ASCountDownTimer>(0);
@@ -108,7 +107,7 @@ void UIQuizDialog::vfunc_43()
 // @0x14129a7b0
 void UIQuizDialog::vfunc_72()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     if (m_nDeadline == 0)
         return;
@@ -159,7 +158,7 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
 // @0x14129ad50
 void UIQuizDialog::FUN_14129ad50()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     {
         if (m_nMode == 0)

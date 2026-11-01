@@ -76,7 +76,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
                 m_locked.GetAt(nSlot) = nItemUid;
                 pDialog->FUN_140f56c80();
             }
-            UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+            UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
             if (pInventory != 0)
                 pInventory->FUN_14199a3f0(nItemUid);
         }
@@ -85,7 +85,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
             __int64 nItemUid = packet.ReadInt64();
             FUN_140612c60(nItemUid);
             pDialog->FUN_140f56c80();
-            UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+            UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
             if (pInventory != 0)
                 pInventory->FUN_14199a3f0(nItemUid);
         }
@@ -99,9 +99,9 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
                 if (item.get() != 0)
                     item->FUN_140524eb0(packet);
                 FUN_140612c60(nItemUid);
-                UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+                UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
                 if (pInventory != 0)
-                    pInventory->FUN_14199a3f0(item->FUN_140526a50());
+                    pInventory->FUN_14199a3f0(item->GetItemUid());
             }
             pDialog->FUN_140f56c80();
         }
@@ -181,7 +181,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
 {
     if (item.IsNull())
         return 0;
-    unsigned __int64 nItemUid = item->FUN_140526a50();
+    unsigned __int64 nItemUid = item->GetItemUid();
     if (FUN_140534480(m_locked, nItemUid) != -1)
     {
         {
@@ -192,7 +192,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
     }
     if (m_mode == 0)
     {
-        if (item->FUN_140528cc0() == false)
+        if (item->CanBeItemLocked() == false)
         {
             FUN_141275260(0xc46, 1, 1);
             return 0;
@@ -200,7 +200,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
     }
     else if (m_mode == 1)
     {
-        if (item->FUN_140528da0() == false)
+        if (item->IsItemLocked() == false)
         {
             FUN_141275260(0xc47, 1, 1);
             return 0;
@@ -209,7 +209,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
     COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
     packet.WriteUInt8(1);
     packet.WriteUInt8(m_mode);
-    packet.WriteInt64(item->FUN_140526a50());
+    packet.WriteInt64(item->GetItemUid());
     FUN_140710590(packet);
     return 1;
 }
@@ -277,15 +277,15 @@ int CItemLockManager::FUN_140613430(MS2Ptr<CItem> item)
     switch (nMode)
     {
     case LOCKMODE_LOCK:
-        if (item->FUN_140528cc0() == false)
+        if (item->CanBeItemLocked() == false)
             return 0;
         break;
     case LOCKMODE_UNLOCK:
-        if (item->FUN_140528da0() == false)
+        if (item->IsItemLocked() == false)
             return 0;
         break;
     }
-    unsigned __int64 nItemUid = item->FUN_140526a50();
+    unsigned __int64 nItemUid = item->GetItemUid();
     if (FUN_140534480(m_locked, nItemUid) != -1)
         return 0;
     return 1;

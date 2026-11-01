@@ -140,11 +140,28 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);   // string attribute
 CString FUN_14028d1f0(const char* psz);                                 // CString of attribute text
 CString FUN_140188f50(const char* psz, int nCodePage);
@@ -233,26 +250,26 @@ SystemSoundProperty::SystemSoundProperty()
 void SystemSoundProperty::Load(Unk_140165cf0* pElem)
 {
     XmlTokenList(pElem, "soundID", m_sounds);
-    FUN_1408733e0(pElem, "group", m_strGroup);
-    FUN_1408730a0(pElem, "byGender", m_bByGender);
-    FUN_1408730a0(pElem, "byJob", m_bByJob);
-    FUN_140873220(pElem, "cooltimeID", m_nCooltimeId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "group", m_strGroup);
+    XmlGetAttr((class TiXmlElement*)(pElem), "byGender", reinterpret_cast<bool&>(m_bByGender));
+    XmlGetAttr((class TiXmlElement*)(pElem), "byJob", reinterpret_cast<bool&>(m_bByJob));
+    XmlGetAttr((class TiXmlElement*)(pElem), "cooltimeID", reinterpret_cast<unsigned int&>(m_nCooltimeId));
     if (m_bByJob && m_bByGender)
     {
         CString strJobs;
         FUN_140873ad0(pElem, "jobSoundID", strJobs);
         ATL::CAtlArray<CString> jobs;
-        FUN_14015f050(strJobs, jobs, ";");
+        Unk_SplitA(const_cast<CStringA&>(strJobs), (ATL::CAtlArray<CStringA>*)&(jobs), ";");
         for (unsigned i = 0; i < jobs.GetCount(); i++)
         {
             CString strJob(jobs[i]);
             ATL::CAtlArray<CString> parts;
-            FUN_14015f050(strJob, parts, ":");
+            Unk_SplitA(const_cast<CStringA&>(strJob), (ATL::CAtlArray<CStringA>*)&(parts), ":");
             if (parts.GetCount() != 2)
                 continue;
             int nJob = atoi(FUN_1401c0cc0(&parts, 0));
             ATL::CAtlArray<CString> names;
-            FUN_14015f050(FUN_1401c0cc0(&parts, 1), names, ",");
+            Unk_SplitA(const_cast<CStringA&>(FUN_1401c0cc0(&parts, 1)), (ATL::CAtlArray<CStringA>*)&(names), ",");
             if (names.GetCount() != 2)
                 continue;
             Unk_SoundNameArrayPtr spNames;
@@ -323,11 +340,11 @@ void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
 {
     if (pElem != 0)
     {
-        FUN_1408731e0(pElem, "byGender", m_bByGender);
-        FUN_1408731e0(pElem, "byJob", m_bByJob);
+        XmlGetAttr((class TiXmlElement*)(pElem), "byGender", reinterpret_cast<int&>(m_bByGender));
+        XmlGetAttr((class TiXmlElement*)(pElem), "byJob", reinterpret_cast<int&>(m_bByJob));
         {
-            CString strDefault(FUN_14086f4b0(pElem, "defaultSound"));
-            FUN_14015f050(strDefault, m_sounds, ",");
+            CString strDefault(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("defaultSound"));
+            Unk_SplitA(const_cast<CStringA&>(strDefault), (ATL::CAtlArray<CStringA>*)&(m_sounds), ",");
         }
         for (unsigned __int64 i = 1; i < 12; i++)
         {
@@ -338,7 +355,7 @@ void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
             if (FUN_140873ad0(pElem, strKey, strNames) != 0)
                 continue;
             ATL::CAtlArray<CString> names;
-            FUN_14015f050(strNames, names, ",");
+            Unk_SplitA(const_cast<CStringA&>(strNames), (ATL::CAtlArray<CStringA>*)&(names), ",");
             Unk_SoundNameArrayPtr spNames;
             spNames = Unk_FieldNewTag(0);
             spNames->Copy(names);
@@ -477,7 +494,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("hitSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("hitSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             int nAttack;
             int nDefence;
@@ -485,9 +502,9 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
             nAttack ^= nAttack;
             nDefence ^= nDefence;
             nSoundId ^= nSoundId;
-            FUN_1408731e0(pElem, "AttackMaterial", nAttack);
-            FUN_1408731e0(pElem, "DefenceMeterial", nDefence);
-            FUN_1408731e0(pElem, "soundID", nSoundId);
+            XmlGetAttr((class TiXmlElement*)(pElem), "AttackMaterial", reinterpret_cast<int&>(nAttack));
+            XmlGetAttr((class TiXmlElement*)(pElem), "DefenceMeterial", reinterpret_cast<int&>(nDefence));
+            XmlGetAttr((class TiXmlElement*)(pElem), "soundID", reinterpret_cast<int&>(nSoundId));
             Unk_HitSoundKey key(nAttack, nDefence);
             m_hitSounds[key].push_back(nSoundId);
         }
@@ -506,9 +523,9 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("systemSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("systemSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
-            CString strKey = FUN_140188f50(FUN_14086f4b0(pElem, "key"), 0);
+            CString strKey = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("key"), 0);
             SystemPtr spProp(new SystemSoundProperty);
             spProp->Load(pElem);
             m_systemSounds.SetAt(strKey, spProp);
@@ -528,14 +545,14 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("pitchSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("pitchSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             int nId = 0;
             float fPitch = 0.0f;
             int nUnit = 0;
-            FUN_1408731e0(pElem, "id", nId);
-            FUN_1408731e0(pElem, "pitchUnit", nUnit);
-            FUN_140873360(pElem, "pitch", fPitch);
+            XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<int&>(nId));
+            XmlGetAttr((class TiXmlElement*)(pElem), "pitchUnit", reinterpret_cast<int&>(nUnit));
+            XmlGetAttr((class TiXmlElement*)(pElem), "pitch", reinterpret_cast<float&>(fPitch));
             m_pitches[nId].m_fPitch = fPitch;
             m_pitches[nId].m_nUnits = nUnit;
         }
@@ -554,28 +571,28 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("eventSound"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("eventSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
             Unk_EventVoice voice;
             int nType = 0;
-            CString strEvent = FUN_14028d1f0(FUN_14086f4b0(pElem, "event"));
-            voice.m_strSoundId = FUN_14028d1f0(FUN_14086f4b0(pElem, "soundID"));
-            voice.m_strRestoreSoundId = FUN_14028d1f0(FUN_14086f4b0(pElem, "restoreSoundID"));
+            CString strEvent = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("event"));
+            voice.m_strSoundId = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("soundID"));
+            voice.m_strRestoreSoundId = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("restoreSoundID"));
             if (!strEvent.IsEmpty() && (!voice.m_strSoundId.IsEmpty() || !voice.m_strRestoreSoundId.IsEmpty()))
             {
                 nType = FUN_141793500(CString(strEvent));
                 if (nType == 0)
                     continue;
-                const char* pszCaster = FUN_14086f4b0(pElem, "onlyCasterMyPC");
+                const char* pszCaster = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("onlyCasterMyPC");
                 if (pszCaster != 0)
                     voice.m_bOnlyCasterMyPC = strcmp(pszCaster, "true") == 0;
-                voice.m_strGroup = FUN_14086f4b0(pElem, "group");
+                voice.m_strGroup = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("group");
                 if (!voice.m_strGroup.IsEmpty())
                     FUN_1401d3700(voice.m_strGroup);
                 int nJob = 0;
                 int nGender = 0;
-                FUN_1408731e0(pElem, "job", nJob);
-                FUN_1408731e0(pElem, "gender", nGender);
+                XmlGetAttr((class TiXmlElement*)(pElem), "job", reinterpret_cast<int&>(nJob));
+                XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(nGender));
                 m_events[nType][nGender][nJob][voice.m_bOnlyCasterMyPC] = voice;
             }
         }
@@ -594,9 +611,9 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("voice"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("voice")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
         {
-            CString strKey = FUN_140188f50(FUN_14086f4b0(pElem, "key"), 0);
+            CString strKey = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("key"), 0);
             VoicePtr spProp(new TriggerVoiceProperty);
             spProp->Load(pElem);
             m_triggerVoices.SetAt(strKey, spProp);
@@ -619,7 +636,7 @@ unsigned SoundPropertyMgr::FUN_141792d70(int nAttack, int nDefence)
 }
 
 // @0x141792e00
-int SoundPropertyMgr::FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventVoice* pOut)
+int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventVoice* pOut)
 {
     CheckInit();
     if (nEventId != 0 && pActor != 0)

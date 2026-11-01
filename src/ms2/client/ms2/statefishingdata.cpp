@@ -124,21 +124,6 @@ public:
 };
 static inline Unk_FsFishMgr* FsFishMgr() { return static_cast<Unk_FsFishMgr*>(TSingleton<CFishingManager>::GetInstance()); }
 
-// The game mode singleton (hud / sound): slot 7 starts a mode, slot 8 ends it.
-class Unk_FsGameMode
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7(int nMode, int n);                  // MS2: slot 7 (0x38)
-    virtual void vfunc_8(int n);                             // MS2: slot 8 (0x40)
-};
-Unk_FsGameMode* FUN_140a94350();
 
 // The effect manager: plays an effect for a request (returns its id), stops it by id, hands out the effect root.
 class Unk_FsEffectMgr : public CEffectService
@@ -165,7 +150,10 @@ public:
     int FUN_141bd1a10(GameObject* pObject);
 };
 
-class Unk_PCBaseMoveTarget { public: efd::Point3 FUN_141683900(); };
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCBaseMoveTarget { public: };
 
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 UICastingBar* FUN_140ac2270(int nId);
@@ -260,7 +248,7 @@ void StateFishing::vfunc_4(StateData* pData)
     if (FUN_1417b84b0() != 0)
     {
         reinterpret_cast<Unk_FsOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
-        FUN_140a94350()->vfunc_7(0x493e2, 0);
+        ChromaSDK::GetChromaManager()->OnKeySkill(0x493e2, 0);
         return;
     }
     if (efd::ClassInfo::IsKindOf(FUN_1417b8370() ? FUN_1417b8370()->GetClassDesc() : 0, 0x6200044))
@@ -288,7 +276,7 @@ void StateFishing::vfunc_5(int n)
         if (pBar != 0)
             pBar->FUN_1418e1390();
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4ee7) != 0)
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ee7);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ee7);
     }
     if (m_spEffect)
     {
@@ -301,7 +289,7 @@ void StateFishing::vfunc_5(int n)
     }
     if (m_nEffect != 0)
         reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
-    FUN_140a94350()->vfunc_8(0);
+    ChromaSDK::GetChromaManager()->ResetKeys(0);
 }
 
 // @0x140dda950
@@ -526,8 +514,8 @@ void StateFishing::FUN_140ddb740(int nRod)
         MS2Ptr<CItem> spNew(new CItem);
         if (spNew->FUN_140523c40(nRod, 1, 0))
         {
-            spNew->FUN_140526b30(m_pOwner->FUN_14123c580());
-            spNew->FUN_140526a70(FUN_14028d0e0());
+            spNew->SetObjectId(m_pOwner->FUN_14123c580());
+            spNew->SetItemUid(FUN_14028d0e0());
             if (efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200044))
                 spNew->FUN_14052a130(3);
             else
@@ -550,7 +538,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
-            NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
+            NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot();
             ClonePC* pClone = FUN_1405a7e30((class PC*)(pPC));
             if (pClone != 0)
                 static_cast<AvatarPC*>(pClone)->FUN_1409f5560(m_spEffect);
@@ -648,8 +636,8 @@ void StateFishingFloat::vfunc_8(double fTime)
     if (m_n10 != 0x7a)
         return;
     Unk_PCBaseMoveTarget* pMove = static_cast<Unk_PCBaseMoveTarget*>(m_pOwner->FUN_14166d240());
-    efd::Point3 kTarget = pMove->FUN_141683900();
-    reinterpret_cast<Unk_FsOwnerSlots*>(m_pOwner)->vfunc_22(kTarget);
+    Vector3 kTarget = reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683900();
+    reinterpret_cast<Unk_FsOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kTarget));
 }
 
 // @0x140ddc240

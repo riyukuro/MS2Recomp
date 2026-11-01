@@ -132,7 +132,6 @@ int FUN_1411e1160(Unk_DpsEquipSet* pSet, int nStat);        // the summed value 
 class Unk_DpsPC : public PC
 {
 public:
-    Unk_DpsEquipSet* FUN_1416561a0();                       // the worn items
 };
 // CItem::FUN_1405278a0's record is the item status.
 class Unk_ItemEnchantData : public CItemStatus {};
@@ -1391,7 +1390,7 @@ static const CStringW& GetItemText(CItem* pItem)
         {
             int nStatId = nStat;
             Unk_EnchantPtr<BaseOption> spStat(new BaseOption);
-            spStat->SetValue(pItem->FUN_1405278a0()->FUN_14062ffb0(nStatId, 0, (int)nRank));
+            spStat->SetValue(pItem->FUN_1405278a0()->GetStatValue(nStatId, 0, (int)nRank));
             int nValue = spStat->GetValue();
             if (nValue == 0)
                 continue;
@@ -1403,9 +1402,9 @@ static const CStringW& GetItemText(CItem* pItem)
         for (unsigned nType = 1; nType < 0xcf; nType++)
         {
             int nTypeId = nType;
-            Unk_EnchantPtr<BaseOption> spSpecial = spOption->FUN_1405cb800((int)nRank, nTypeId);
+            Unk_EnchantPtr<BaseOption> spSpecial = spOption->GetSpecialOption((int)nRank, nTypeId);
             if (spSpecial.get() != 0)
-                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->FUN_1406305e0((int)nRank, nTypeId, 0));
+                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->GetSpecialStatText((int)nRank, nTypeId, 0));
         }
     }
     return s_str;
@@ -1627,7 +1626,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
         {
             ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-            FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), equips, 0);
+            FUN_1411e1ce0(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), equips, 0);
             for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos))
             {
                 MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
@@ -1642,7 +1641,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
         ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
-        FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), skins, 1);
+        FUN_1411e1ce0(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), skins, 1);
         for (POSITION pos = skins.GetHeadPosition(); pos != NULL; skins.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = skins.GetAt(pos);
@@ -1675,8 +1674,8 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
             return 0;
         if (spLeft->GetItem()->FUN_1405278a0() == 0)
             return 0;
-        nMin = spLeft->GetItem()->FUN_1405278a0()->FUN_14062ffb0(0x1b, 3, 5);
-        nMax = spLeft->GetItem()->FUN_1405278a0()->FUN_14062ffb0(0x1c, 3, 5);
+        nMin = spLeft->GetItem()->FUN_1405278a0()->GetStatValue(0x1b, 3, 5);
+        nMax = spLeft->GetItem()->FUN_1405278a0()->GetStatValue(0x1c, 3, 5);
     }
     else
     {
@@ -1725,8 +1724,8 @@ CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
     if (pMe == 0)
         return str;
     float fBase = 0.0f;
-    float fBonus = bPercent != 0 ? FUN_14028d380(FUN_1411e1110(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), nStat))
-                                 : (float)FUN_1411e1160(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), nStat);
+    float fBonus = bPercent != 0 ? FUN_14028d380(FUN_1411e1110(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), nStat))
+                                 : (float)FUN_1411e1160(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), nStat);
     float fValue = fBase + fBonus;
     if (bPercent != 0)
         str = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));

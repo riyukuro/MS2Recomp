@@ -89,14 +89,12 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem);               // take the gem item off
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlotBag);
 
@@ -131,7 +129,7 @@ int GemSlot::vfunc_18(void* p)
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
                 if (FUN_14126d880(spItem.get()) != 0)
                 {
-                    int nType = spItem->FUN_140527900()->vfunc_1();
+                    int nType = spItem->GetGem()->vfunc_1();
                     if (nType == m_nGemType)
                     {
                         int nSlot = -1;
@@ -169,7 +167,7 @@ int GemSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -180,7 +178,7 @@ int GemSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -202,7 +200,7 @@ int GemSlot::FUN_14126d880(CItem* pItem)
         return 0;
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527840()->FUN_14053c5c0() != 7)
+    if (pItem->FUN_140527840()->GetType() != 7)
         return 0;
     if (m_spPC->FUN_140dba1c0() == 0)
         return 0;
@@ -254,8 +252,8 @@ int GemSlot::vfunc_0(void* p)
     {
         ASTooltip tip(2);
         CStringW strTitle = StringFormat(L"$s_tooltip_myinfo_gem_{0}", Name_140219b10(m_nGemType));
-        tip.FUN_1409e26b0(strTitle);
-        tip.FUN_1409c6dc0(3);
+        tip.ApplyTextTooltip(strTitle);
+        tip.SetTooltipAlign(3);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -281,15 +279,15 @@ int GemSlot::vfunc_8(void* p)
     slot.FUN_1407cbbe0("lock", bLock);
     if (spItem ? true : false)
     {
-        if (spItem->FUN_140527900() != 0)
+        if (spItem->GetGem() != 0)
         {
             if (slot.FUN_1409c3860(vfunc_25(), pActor, nFlags))
             {
                 if (m_spPC->FUN_140dba1c0() != 0)
-                    slot.FUN_1407cbbe0("config", vfunc_25()->FUN_140527840()->FUN_14053c5e0() == 1);
+                    slot.FUN_1407cbbe0("config", vfunc_25()->FUN_140527840()->GetSubtype() == 1);
                 else
                     slot.FUN_1407cbbe0("config", false);
-                int nGemSystem = spItem->FUN_140527900()->vfunc_1();
+                int nGemSystem = spItem->GetGem()->vfunc_1();
                 slot.FUN_1407cb9c0("gemSystem", nGemSystem);
             }
         }
@@ -317,18 +315,18 @@ void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC)
     {
         int nCount = pBag->FUN_14126e930();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14126e3f0
 void FUN_14126e3f0(const CString& strName)
 {
-    GemSlotBag* pBag = FUN_14126e9a0(FUN_1422c8e90(strName));
+    GemSlotBag* pBag = FUN_14126e9a0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

@@ -62,6 +62,8 @@ static CString s_strSortTypeNamesPre[] = {"None", "Buy", "Like", "PriceLow", "Pr
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
 
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
@@ -168,14 +170,12 @@ void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 NotifySystem* FUN_140939a10();
 
 class Unk_GpKeys { public: CStringW FUN_14142d760(int nBind, int n); };
-Unk_GpKeys* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GpKeys (calls cast back)
 class Unk_GpStr { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_GpStr* FUN_14025e7a0();
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_GpStr (calls cast back)
 CFeatureManager* FUN_140166410();
-class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116dd30(int nKey, int a, int b); };
+class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 
 // @0x140c1c8c0
@@ -289,7 +289,7 @@ int UIGamePadMenuDialog::vfunc_13()
         else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x95, 0, 0))
             FUN_140c1c530(0x95);
         else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
-            FUN_1409ee290(&m_30)->Invoke("menuClick");
+            ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("menuClick");
         else
             return 0;
         return 1;
@@ -312,7 +312,7 @@ void UIGamePadMenuDialog::vfunc_72()
                 m_pages.Lookup(m_nPage, reinterpret_cast<unsigned int&>(m_nItem));
                 int nItem = m_nItem - 1;
                 m_nItem = nItem;
-                FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, nItem);
+                ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1409ba0d0("moveMenu", m_nPage, nItem);
             }
             else
             {
@@ -330,7 +330,7 @@ void UIGamePadMenuDialog::FUN_140c1b550()
     FUN_140c1c010(m_menus);
     if (m_menus.GetCount() > 0)
     {
-        static_cast<Unk_GpAS*>(FUN_1409ee290(&m_30))->FUN_140c1c8c0("updateAlignment", m_menus.GetCount());
+        static_cast<Unk_GpAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140c1c8c0("updateAlignment", m_menus.GetCount());
         m_timer.FUN_140868750(m_nMoveMs);
     }
 }
@@ -367,13 +367,13 @@ void UIGamePadMenuDialog::FUN_140c1b620()
                     children.FUN_1422bc050(childObj.FUN_1422bb870());
                 }
                 obj.FUN_1409adbe0("child", children.FUN_1422bb870());
-                m_pages.SetAt((int)m_pages.GetCount(), children.FUN_1422bc5d0());
+                m_pages.SetAt((int)m_pages.GetCount(), children.GetLength());
             }
             else
             {
                 m_pages.SetAt((int)m_pages.GetCount(), 0);
             }
-            FUN_1409ee290(&m_30)->Invoke("addMenuEntity", obj.FUN_1422bb870());
+            ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("addMenuEntity", obj.FUN_1422bb870());
         }
     }
 }
@@ -419,7 +419,7 @@ MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu)
 // @0x140c1be20
 MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
 {
-    if (MS2Ptr<ASMovieClip> spMenus = FUN_140ba7930("m_menus"))
+    if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus"))
     {
         MS2Ptr<ASMovieClip> spMenu = spMenus->FUN_1409b4560(strMenu);
         if (spMenu)
@@ -468,12 +468,12 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
     {
         if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
             return 0;
-        CStringW strTip = FUN_14025e7a0()->FUN_1422b0570(spMenu->m_strText);
+        CStringW strTip = reinterpret_cast<Unk_GpStr*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strText);
         if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
-            CStringW strKey = FUN_1409331f0()->FUN_14142d760(spMenu->m_nKeyBind, 0);
+            CStringW strKey = reinterpret_cast<Unk_GpKeys*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);
             if (strKey.GetLength() > 0)
-                strTip += FUN_1401e8510(L" [{0}]", strKey);
+                strTip += StringFormat<CStringW>(L" [{0}]", strKey);
         }
         CString strName(spMenu->m_strLayer);
         if (spMenu->m_cond38.FUN_140c1d130() == false)
@@ -541,7 +541,7 @@ void UIGamePadMenuDialog::FUN_140c1c530(int nKey)
     {
         m_nItem = 0;
     }
-    FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, m_nItem);
+    ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1409ba0d0("moveMenu", m_nPage, m_nItem);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca2600-0x142ca26e0 .text$yd

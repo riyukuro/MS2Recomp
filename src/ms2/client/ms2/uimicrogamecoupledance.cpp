@@ -881,7 +881,7 @@ MS2_CHECK_OFFSET(Unk_CoupleEvent, m_data, 8);
 MS2_CHECK_SIZE(Unk_CoupleEvent, 0x10);
 int FUN_141277f40();
 unsigned int FUN_140768010(unsigned int, unsigned int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
 
 // @0x140e63e60

@@ -182,7 +182,7 @@ void UICameraDialog::vfunc_72()
 // @0x141032560
 void UICameraDialog::FUN_141032560(const CString& strName, float f)
 {
-    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0(strName)) {
+    if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName)) {
         CString str;
         str.Format("%.1f", (double)f);
         spText->FUN_1422c4c80(str);

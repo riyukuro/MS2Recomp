@@ -235,7 +235,7 @@ UIMessageBox* FUN_14151fcb0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIMessageBox*>((UIObject*)p);
     }

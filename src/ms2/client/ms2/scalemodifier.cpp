@@ -14,7 +14,7 @@
 CMainSystem* FUN_14086d260();
 
 // Ease-out curve on [0,1] (0x140cd8c20); empty functor, called on a temporary.
-struct Unk_EaseOut { float FUN_140cd8c20(float t); };
+struct Unk_EaseOut { float Evaluate(float t); };
 
 // @0x14170b530
 CScaleModifier::CScaleModifier()
@@ -48,9 +48,9 @@ bool CScaleModifier::Update()
     float fHalf = m_fDuration * 0.5f;
     float fRatio = 0.0f;
     if (fElapsed < fHalf)
-        fRatio = Unk_EaseOut().FUN_140cd8c20(fElapsed / fHalf);
+        fRatio = Unk_EaseOut().Evaluate(fElapsed / fHalf);
     else
-        fRatio = 1.0f - Unk_EaseOut().FUN_140cd8c20((fElapsed - fHalf) / fHalf);
+        fRatio = 1.0f - Unk_EaseOut().Evaluate((fElapsed - fHalf) / fHalf);
     m_fScale = m_fBaseScale * (1.0f + fRatio * (m_fMaxScale - 1.0f));
     return true;
 }

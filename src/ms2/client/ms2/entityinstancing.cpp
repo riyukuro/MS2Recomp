@@ -241,7 +241,7 @@ int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
         efd::vector<NiMesh*>::const_iterator itEnd = kChildren.end();
         for (efd::vector<NiMesh*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
             NiMesh* child = *itChild;
-            NiMesh* mesh = FUN_14147ce70(child->GetName());
+            NiMesh* mesh = FindMeshByName(child->GetName());
             if (mesh != NULL) {
                 NiMeshHWInstance* instance = NiNew NiMeshHWInstance;
                 if (instance != NULL) {
@@ -312,7 +312,7 @@ void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
                     efd::vector<NiMeshHWInstance*>::const_iterator itEnd = kChildren.end();
                     for (efd::vector<NiMeshHWInstance*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
                         NiMeshHWInstance* instance = *itChild;
-                        NiMesh* mesh = FUN_14147ce70(instance->GetName());
+                        NiMesh* mesh = FindMeshByName(instance->GetName());
                         if (mesh != NULL) {
                             if (NiInstancingUtilities::RemoveMeshInstance(mesh, instance)) {
                                 if ((NiNode*)root != NULL) root->DetachChild(entry.clone);
@@ -342,7 +342,7 @@ int EntityInstancing::FUN_1411c6390(egf::Entity* entity, bool eraseHidden) {
                     decltype(entry.instances)::const_iterator itEnd = kInstances.end();
                     for (decltype(entry.instances)::const_iterator itOwned = kInstances.begin(); itOwned != itEnd; ++itOwned) {
                         NiMeshHWInstance* instance = *itOwned;
-                        NiMesh* mesh = FUN_14147ce70(instance->GetName());
+                        NiMesh* mesh = FindMeshByName(instance->GetName());
                         if (mesh != NULL) {
                             if (NiInstancingUtilities::AddMeshInstance(mesh, instance)) {
                                 if ((NiNode*)root != NULL) root->Update(0.0f, true);
@@ -424,7 +424,7 @@ void EntityInstancing::FUN_1411c6ae0(unsigned count) {
             efd::vector<NiMeshHWInstance*>::const_iterator itEnd = kChildren.end();
             for (efd::vector<NiMeshHWInstance*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
                 NiMeshHWInstance* instance = *itChild;
-                NiMesh* mesh = FUN_14147ce70(instance->GetName());
+                NiMesh* mesh = FindMeshByName(instance->GetName());
                 if (mesh != NULL && NiInstancingUtilities::RemoveMeshInstance(mesh, instance)) dirty = true;
             }
         }
@@ -453,7 +453,7 @@ void EntityInstancing::FUN_1411c6ae0(unsigned count) {
         ++activeCount;
         for (auto instanceIt = it->second.instances.begin(); instanceIt != it->second.instances.end(); ++instanceIt) {
             NiPointer<NiMeshHWInstance> instance = *instanceIt;
-            NiMesh* mesh = FUN_14147ce70(instance->GetName());
+            NiMesh* mesh = FindMeshByName(instance->GetName());
             if (mesh != NULL) NiInstancingUtilities::AddMeshInstance(mesh, instance);
         }
     }

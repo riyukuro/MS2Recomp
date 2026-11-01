@@ -115,19 +115,19 @@ public:
     static bool FUN_141a0df10();                                            // 0x141a0df10 reloads it when it changed
     CStringW GetName();                                               // 0x141a0df70 the window name
     CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name
-    MessengerData::TalkTab* FUN_141a0e050();                                // 0x141a0e050 the selected tab
-    MessengerData::TalkTab* FUN_141a0e0f0(const CStringW& strName);         // 0x141a0e0f0 a tab by name
+    MessengerData::TalkTab* GetCurrentTab();                                // 0x141a0e050 the selected tab
+    MessengerData::TalkTab* FindTabByName(const CStringW& strName);         // 0x141a0e0f0 a tab by name
     int FUN_141a0e1f0(int nIndex);                                          // 0x141a0e1f0 selects a tab by index
     int FUN_141a0e2a0(const CStringW& strName);                             // 0x141a0e2a0 selects a tab
     int FUN_141a0e350(const CStringW& strName);                             // 0x141a0e350 removes a tab
     int FUN_141a0e4d0(MessengerData::TalkTab* pTab);                        // 0x141a0e4d0 adds a tab
     int FUN_141a0e650(MessengerData::TalkTab* pTab);                        // 0x141a0e650 inserts a tab (refreshes the bar)
     int FUN_141a0e810(const CStringW& strName, int nClose, int nDetach, int nAdditive);   // 0x141a0e810 creates a tab
-    size_t FUN_141a0e900(ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs);   // 0x141a0e900 copies the tabs
+    size_t GetTabs(ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs);   // 0x141a0e900 copies the tabs
     void FUN_141a0e990();                                                   // 0x141a0e990 selects the default tab
-    void FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew);     // 0x141a0e9f0 renames a tab
-    void FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml);              // 0x141a0ead0 sets the html font size
-    void FUN_141a0ebb0(unsigned nAlpha);                                       // 0x141a0ebb0 the background alpha
+    void RenameTab(const CStringW& strOld, const CStringW& strNew);     // 0x141a0e9f0 renames a tab
+    void ReplaceFontSize(unsigned nFontSize, CStringW& strHtml);              // 0x141a0ead0 sets the html font size
+    void SetBackgroundAlpha(unsigned nAlpha);                                       // 0x141a0ebb0 the background alpha
     void FUN_141a0ec30(const CStringW& strText);                            // 0x141a0ec30 appends to the input
     void FUN_141a0f180();                                                   // 0x141a0f180 reads the alignment
     void FUN_141a0f1d0(CStringW strText, CStringW strHtml, bool bHistory);  // 0x141a0f1d0 submits a line

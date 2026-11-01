@@ -7,6 +7,7 @@
 // MS2-RANGE: 0x141031430-0x141031f80 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uibootypopup.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uibootypopup.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asgameentity.h"
@@ -19,9 +20,10 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Vector3 DAT_143b01a60;                               // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
             // non-null while the local player is in the world
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_UIScale;
@@ -35,7 +37,6 @@ Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 CStringTable* GetStringTable();                                     // the string tables
 CStringW GetStringCommon(int nId);                                    // string table entry
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);  // formats one number argument into the message
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);    // psz + str
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 
@@ -196,7 +197,7 @@ void UIBootyPopup::FUN_141031890()
                 vfunc_8(1);
                 FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
                 pEntity->FUN_1422c00f0(screen.x - (float)(pEntity->FUN_1422c1340() / 2),
-                                       (screen.y - (float)pEntity->FUN_1422c13b0()) - 15.0f);
+                                       (screen.y - (float)pEntity->GetHeightCeil()) - 15.0f);
             }
         }
         else
@@ -235,7 +236,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                         int nC = 0;
                         int nB = 0;
                         FUN_141b706a0(spAttr->m_nValueId, (unsigned int*)(&nA), (unsigned int*)(&nC), (unsigned int*)(&nB));
-                        CStringW strLine = FUN_1401ceea0(GetStringCommon(0x9a8), nA);
+                        CStringW strLine = StringFormat<int>(GetStringCommon(0x9a8), nA);
                         strDesc += FUN_1401d0160(L"\n", strLine);
                     }
                 }

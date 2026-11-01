@@ -54,14 +54,12 @@ class Unk_UgcImageData : public AScript
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 UIItemBlueprintCreateDialog* FUN_1418a6920();                   // the create dialog of a blueprint item, if open
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
 int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 CStringW FUN_140719a00(__int64 nMoney);                         // a money amount as text
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 extern __int64 DAT_143ab2898;                                   // the money
 
@@ -110,7 +108,7 @@ void UIUGCImageUploadDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
-    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
     m_188 = Unk_UgcOpenType_None;
 }
 
@@ -169,7 +167,7 @@ int UIUGCImageUploadDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
-            if (FUN_1403b3c40(strTag, L"noexist") == 0)
+            if (operator==(strTag, L"noexist") == 0)
             {
                 if (FUN_140d74e80(strTag) != 0)
                     ((class CUgcManager*)FUN_14052d220())->FUN_141882020();
@@ -267,26 +265,26 @@ void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
 {
     CString strType = pArgs->FUN_1422b8d30();
     Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
-    if (FUN_1409b0390(&arg) || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
+    if (((Scaleform::GFx::Value*)(void*)(&arg))->IsUndefined() || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
     if ((strType == "image"))
     {
 #ifdef __clang__
-        AScript data(root.FUN_1422baa20("data"), 2);
+        AScript data(root.GetMember("data"), 2);
 #else
         // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
-        AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+        AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
         if (data.FUN_1422ba9a0() == 0)
         {
             ASTooltip tip(1, 2);
             CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
-            if (tip.FUN_1409e26b0(strText) != 0)
+            if (tip.ApplyTextTooltip(strText) != 0)
             {
-                tip.FUN_1409c6dc0(2);
-                tip.FUN_1409c6e60(-4);
-                tip.FUN_1409c6e90(1);
+                tip.SetTooltipAlign(2);
+                tip.SetOffsetX(-4);
+                tip.SetOffsetY(1);
                 *pRetVal = tip.FUN_1422bb870();
             }
         }
@@ -456,7 +454,7 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
 // @0x141b3b020
 int UIUGCImageUploadDialog::OnNewTemplate()
 {
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
         return 0;
     FUN_141b3ab90();
     return 1;

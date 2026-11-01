@@ -26,6 +26,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -36,7 +46,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // 
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 CString FUN_1402bb1c0(const char* szFormat, const int& n);                  // StringFormat<int>
 bool FUN_14028d470(float a, float b);                                       // approximately equal
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern const int DAT_1439f4a10;                                             // the option slots per row (4)
 
 // ---- dynamic initializers (.text$di) ----
@@ -133,14 +143,14 @@ bool UnlimitedEnchantTable::Load()
     }
     typedef std::map<std::pair<int, int>, MS2Ptr<UnlimitedEnchantOption> > RangeMap;
     std::map<int, RangeMap> ranges;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("option"); pNode != 0; pNode = pNode->FUN_140168650("option"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("option")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nSlot = 0;
         CString strGrade;
-        FUN_1408731e0(pNode, "slot", nSlot);
-        FUN_1408733e0(pNode, "grade", strGrade);
+        XmlGetAttr((class TiXmlElement*)(pNode), "slot", reinterpret_cast<int&>(nSlot));
+        XmlGetAttr((class TiXmlElement*)(pNode), "grade", strGrade);
         ATL::CAtlArray<int> grades;
         FUN_140177de0(strGrade, grades, "-");
         int nFirst = 0;
@@ -173,8 +183,8 @@ bool UnlimitedEnchantTable::Load()
             __int64 nValue = 0;
             float fRate = 0;
             XmlValue(pNode, FUN_1402bb1c0("option{0}", i), nOption);
-            FUN_1408732e0(pNode, FUN_1402bb1c0("value{0}", i), nValue);
-            FUN_140873360(pNode, FUN_1402bb1c0("rate{0}", i), fRate);
+            XmlGetAttr((class TiXmlElement*)(pNode), FUN_1402bb1c0("value{0}", i), reinterpret_cast<__int64&>(nValue));
+            XmlGetAttr((class TiXmlElement*)(pNode), FUN_1402bb1c0("rate{0}", i), reinterpret_cast<float&>(fRate));
             if (nOption != -1 && (!FUN_14028d470(fRate, 0) || nValue != 0))
             {
                 Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
@@ -187,7 +197,7 @@ bool UnlimitedEnchantTable::Load()
             Unk_SocketSpecialStat nSpecial = (Unk_SocketSpecialStat)0;
             float fSpecialRate = 0;
             XmlValue(pNode, FUN_1402bb1c0("sa_option{0}", i), nSpecial);
-            FUN_140873360(pNode, FUN_1402bb1c0("sa_rate{0}", i), fSpecialRate);
+            XmlGetAttr((class TiXmlElement*)(pNode), FUN_1402bb1c0("sa_rate{0}", i), reinterpret_cast<float&>(fSpecialRate));
             if (nSpecial != 0 && !FUN_14028d470(fSpecialRate, 0))
             {
                 Unk_EnchantPtr<BaseOption> spOption(new BaseOption);

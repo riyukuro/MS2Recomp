@@ -74,7 +74,7 @@ bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const 
 MS2_REPLACE_METHOD(0x1422EB570, NiGFxLocalizeManager, FUN_1422eb570, 534, 0x3DE349A6);
 
 // @0x1422eb790
-void NiGFxLocalizeManager::FUN_1422eb790(const CString& strKey, const CStringW& strText)
+void NiGFxLocalizeManager::AddString(const CString& strKey, const CStringW& strText)
 {
     if (m_pConfigSet != 0)
     {
@@ -83,17 +83,17 @@ void NiGFxLocalizeManager::FUN_1422eb790(const CString& strKey, const CStringW& 
     }
     m_strings.SetAt(strKey, strText);
 }
-MS2_REPLACE_METHOD(0x1422EB790, NiGFxLocalizeManager, FUN_1422eb790, 188, 0x3EEA964A);
+MS2_REPLACE_METHOD(0x1422EB790, NiGFxLocalizeManager, AddString, 188, 0x3EEA964A);
 
 // @0x1422eb860
-CStringW NiGFxLocalizeManager::FUN_1422eb860(const CString& strKey)
+CStringW NiGFxLocalizeManager::GetString(const CString& strKey)
 {
     CStringW strText;
     if (!m_strings.Lookup(strKey, strText))
         return L"";
     return strText;
 }
-MS2_REPLACE_METHOD(0x1422EB860, NiGFxLocalizeManager, FUN_1422eb860, 183, 0x8BDB7639);
+MS2_REPLACE_METHOD(0x1422EB860, NiGFxLocalizeManager, GetString, 183, 0x8BDB7639);
 
 // @0x1422eb920
 void NiGFxLocalizeManager::FUN_1422eb920()
@@ -180,7 +180,7 @@ void NiGFxLocalizeManager::FUN_1422ebc80(TiXmlDocument* pDoc, CString strAttrNam
             strText.Replace(L"\\n", L"\n");
             strText.Replace(L"\\r", L"\r");
         }
-        FUN_1422eb790(strKey, strText);
+        AddString(strKey, strText);
     }
 }
 

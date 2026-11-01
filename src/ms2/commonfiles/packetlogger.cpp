@@ -10,6 +10,7 @@
 #include <shlwapi.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 struct Unk_PacketLockGuard { explicit Unk_PacketLockGuard(Unk_PacketLogLock&); ~Unk_PacketLockGuard();int FUN_140164a80();void* lock; };
 struct Unk_PacketScopedLock { Unk_PacketScopedLock(Unk_PacketLogLock&,int);~Unk_PacketScopedLock();void* lock; };
 MS2_CHECK_SIZE(Unk_PacketLockGuard,8);
@@ -48,7 +49,7 @@ void CPacketLogger::LogReceive(int opcode,const Unk_LogInPacket& packet) {
 }
 MS2_REPLACE_METHOD(0x140716D60, CPacketLogger, LogReceive, 261, 0xA9C74171);
 // @0x140716e70
-void CPacketLogger::Update() { if(m_timer.FUN_140268870(1000)){m_sendRate=(float)m_sendBytes;m_sendBytes=0;m_receiveRate=(float)m_receiveBytes;m_receiveBytes=0;} }
+void CPacketLogger::Update() { if(reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000)){m_sendRate=(float)m_sendBytes;m_sendBytes=0;m_receiveRate=(float)m_receiveBytes;m_receiveBytes=0;} }
 MS2_REPLACE_METHOD(0x140716E70, CPacketLogger, Update, 124, 0xD63C88FA);
 // @0x140716f00
 const float& CPacketLogger::SendRate() const {return m_sendRate;}

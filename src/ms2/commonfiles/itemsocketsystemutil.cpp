@@ -118,10 +118,10 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Init(MS2Ptr<CItem> pItem
 {
     if (pItem == (CItem*)0 || FUN_1405279c0(pItem.get()) == 0)
         return false;
-    m_n18 = ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->FUN_14053c560();
+    m_n18 = ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->GetOriginOrItemId();
     m_n1C = pItem.get()->FUN_140526bd0();
-    m_n20 = pItem.get()->FUN_140526a50();
-    m_n28 = ((class CItemSocket*)(void*)(FUN_1405279c0(pItem.get())))->FUN_140620a20();
+    m_n20 = pItem.get()->GetItemUid();
+    m_n28 = ((class CItemSocket*)(void*)(FUN_1405279c0(pItem.get())))->GetOpenSlotCount();
     m_nSocketMode = nSocketMode;
     m_nUnlockMode = nUnlockMode;
     return true;
@@ -132,14 +132,14 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Matches(MS2Ptr<CItem> pI
 {
     if (pItem == (CItem*)0)
         return false;
-    if (m_n20 == (unsigned __int64)pItem.get()->FUN_140526a50())
+    if (m_n20 == (unsigned __int64)pItem.get()->GetItemUid())
         return false;
-    if (m_n18 != ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->FUN_14053c560() || m_n1C != pItem.get()->FUN_140526bd0())
+    if (m_n18 != ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->GetOriginOrItemId() || m_n1C != pItem.get()->FUN_140526bd0())
         return false;
     void* pEnhance = FUN_1405279c0(pItem.get());
     if (pEnhance == 0 || ((class CItemSocket*)(void*)(pEnhance))->GetMaxSlot() == 0)
         return false;
-    if (m_n28 != ((class CItemSocket*)(void*)(pEnhance))->FUN_140620a20())
+    if (m_n28 != ((class CItemSocket*)(void*)(pEnhance))->GetOpenSlotCount())
         return false;
     if (FUN_140528980(pItem.get()) == 0)
         return false;
@@ -209,7 +209,7 @@ int FUN_140628050(MS2Ptr<CItem> spItem);
 // @0x140626f20
 unsigned short FUN_140626f20(unsigned nId)
 {
-    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FUN_1405b1a60(nId);
+    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FindData(nId);
     if (spRow == 0)
         return 0;
     return spRow->m_nSlot;
@@ -219,7 +219,7 @@ MS2_REPLACE(0x140626F20, FUN_140626f20, 123, 0x077283A7);
 // @0x140626fb0
 bool FUN_140626fb0(unsigned nId)
 {
-    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FUN_1405b1a60(nId);
+    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FindData(nId);
     return FUN_140627020(spRow);
 }
 MS2_REPLACE(0x140626FB0, FUN_140626fb0, 105, 0xC554095B);
@@ -234,7 +234,7 @@ bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow)
     bResult = nLinked == 0;
     if (!bResult)
     {
-        MS2Ptr<CItemGemStoneData> spLinked = FUN_14062c280()->FUN_1405b1a60(nLinked);
+        MS2Ptr<CItemGemStoneData> spLinked = FUN_14062c280()->FindData(nLinked);
         bResult = spLinked == 0 ? true : false;
     }
     return bResult;
@@ -244,7 +244,7 @@ MS2_REPLACE(0x140627020, FUN_140627020, 225, 0xC4BBD2F2);
 // @0x140627110
 bool FUN_140627110(unsigned nId, short* pMin, short* pMax, int* pError)
 {
-    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FUN_1405b1a60(nId);
+    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FindData(nId);
     return FUN_1406271b0(spRow, pMin, pMax, pError);
 }
 MS2_REPLACE(0x140627110, FUN_140627110, 141, 0x833B2DEF);
@@ -288,7 +288,7 @@ MS2_REPLACE(0x1406272F0, FUN_1406272f0, 140, 0x04DF3904);
 // @0x140627390
 CStringW FUN_140627390(unsigned nId)
 {
-    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FUN_1405b1a60(nId);
+    MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FindData(nId);
     if ((CItemGemStoneData*)spRow)
         return CStringW(spRow->m_strName);
     return CStringW(L"");
@@ -342,7 +342,7 @@ bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<CItemSocketScrollData> spScr
 {
     if (spData == 0 || spScroll == 0)
         return false;
-    int nKind = spData->FUN_14053cf90() ? 2 : 1;
+    int nKind = spData->HasSkinType() ? 2 : 1;
     return (spScroll->m_nUnk1c & nKind) > 0;
 }
 MS2_REPLACE(0x140627930, FUN_140627930, 226, 0xEA957CAF);
@@ -408,7 +408,7 @@ bool FUN_140627c10(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
         return false;
-    return !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053cf90();
+    return !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType();
 }
 MS2_REPLACE(0x140627C10, FUN_140627c10, 162, 0x0B1DA3C6);
 
@@ -427,10 +427,10 @@ bool FUN_140627d70(MS2Ptr<CItemData> spData)
     bool bResult;
     if (spData == 0)
         return false;
-    bResult = spData->FUN_14053cf90();
+    bResult = spData->HasSkinType();
     if (!bResult && spData->FUN_14053d840() == 1)
     {
-        MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FUN_1405b1a60(spData->FUN_14053c510());
+        MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280()->FindData(spData->GetItemId());
         bResult = FUN_1406272f0(8, spRow);
     }
     return bResult;
@@ -443,13 +443,13 @@ int FUN_140627e80(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
         return 0;
-    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053cf90())
+    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType())
         return 0;
-    if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->FUN_140635900() == 0)
+    if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->CanTransferSocket() == 0)
         return 0;
     if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620a20() == 0)
+    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetOpenSlotCount() == 0)
         return 0;
     if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
         return 0;
@@ -464,13 +464,13 @@ int FUN_140628050(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
         return 0;
-    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053cf90())
+    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType())
         return 0;
-    if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->FUN_140635900() == 0)
+    if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->CanTransferSocket() == 0)
         return 0;
     if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620a20() != 0)
+    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetOpenSlotCount() != 0)
         return 0;
     if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
         return 0;
@@ -671,7 +671,7 @@ void FUN_140628950(Unk_SSGGemEquip& v, COutputStream& out)
     if (v.m_spGem.get() != 0)
     {
         out.WriteBool(true);
-        ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->FUN_14061ff90(out);
+        ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->WriteToStream(out);
     }
     else
     {
@@ -690,7 +690,7 @@ void FUN_140628a00(Unk_SSGGemEquip& v, CInPacket& in)
     {
         v.m_spGem.AssignRaw(new TSocketGemStoneInfo);
         if (v.m_spGem.get() != 0)
-            ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->FUN_140620080(in);
+            ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->ReadFromStream(in);
     }
 }
 MS2_REPLACE(0x140628A00, FUN_140628a00, 348, 0xF3CBE4F7);
@@ -756,7 +756,7 @@ void FUN_140628e20(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS
         {
             MS2Ptr<CItem> spItem = aItems.at(i);
             if (spItem.get() != 0)
-                v.m_aUids.push_back(spItem->FUN_140526a50());
+                v.m_aUids.push_back(spItem->GetItemUid());
             else
                 v.m_aUids.push_back(0);
         }
@@ -880,7 +880,7 @@ void FUN_140628ff0(Unk_SockItemMsg& v, COutputStream& out, bool bTransfer)
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
     out.WriteUInt8(v.m_bValid);
-    out.WriteInt64(v.m_spItem->FUN_140526a50());
+    out.WriteInt64(v.m_spItem->GetItemUid());
     if (v.m_bValid)
     {
         out.WriteUInt8(v.m_nByte);
@@ -902,7 +902,7 @@ void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
     if (v.m_bValid)
     {
         v.m_nByte = in.ReadUInt8();
-        if (v.m_spItem->FUN_140526a50() == nUid)
+        if (v.m_spItem->GetItemUid() == nUid)
         {
             v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
             bool bTransfer = in.ReadBool();
@@ -920,9 +920,9 @@ void FUN_140629400(Unk_SockItemPair& v, COutputStream& out, int nMode)
         return;
     if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
         return;
-    out.WriteInt64(v.m_spA->FUN_140526a50());
+    out.WriteInt64(v.m_spA->GetItemUid());
     v.m_spA->FUN_1405279c0()->WriteToStream(out);
-    out.WriteInt64(v.m_spB->FUN_140526a50());
+    out.WriteInt64(v.m_spB->GetItemUid());
     v.m_spB->FUN_1405279c0()->WriteToStream(out);
     out.WriteBool(nMode == 1);
     if (nMode != 0)
@@ -938,11 +938,11 @@ void FUN_1406295b0(Unk_SockItemPair& v, CInPacket& in)
     if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
         return;
     __int64 nUidA = in.ReadInt64();
-    if (v.m_spA->FUN_140526a50() != nUidA)
+    if (v.m_spA->GetItemUid() != nUidA)
         return;
     v.m_spA->FUN_1405279c0()->ReadFromStream(in);
     __int64 nUidB = in.ReadInt64();
-    if (v.m_spB->FUN_140526a50() != nUidB)
+    if (v.m_spB->GetItemUid() != nUidB)
         return;
     v.m_spB->FUN_1405279c0()->ReadFromStream(in);
     int bTransfer = in.ReadBool();
@@ -993,7 +993,7 @@ void FUN_140629960(Unk_SockMsgGem& v, COutputStream& out)
     if (v.m_spGem.get() != 0)
     {
         out.WriteBool(true);
-        ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->FUN_14061ff90(out);
+        ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->WriteToStream(out);
     }
     else
     {
@@ -1014,7 +1014,7 @@ void FUN_140629a30(Unk_SockMsgGem& v, CInPacket& in)
     {
         v.m_spGem.AssignRaw(new TSocketGemStoneInfo);
         if (v.m_spGem.get() != 0)
-            ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->FUN_140620080(in);
+            ((class TSocketGemStoneInfo*)(class TSocketGemStoneInfo*)(v.m_spGem.operator->()))->ReadFromStream(in);
     }
 }
 MS2_REPLACE(0x140629A30, FUN_140629a30, 446, 0xEFAC776D);
@@ -1088,12 +1088,12 @@ void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
     out.WriteUInt8(v.m_bFlag);
-    v.m_nUid = v.m_spItem->FUN_140526a50();
+    v.m_nUid = v.m_spItem->GetItemUid();
     out.WriteInt64(v.m_nUid);
     out.WriteUInt8(v.m_nByte);
     if (v.m_bFlag)
     {
-        out.WriteInt32(v.m_spItem->FUN_1405273a0());
+        out.WriteInt32(v.m_spItem->GetTransferCount());
         v.m_spItem->FUN_1405279c0()->WriteToStream(out);
     }
 }
@@ -1109,10 +1109,10 @@ void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
     v.m_nByte = in.ReadUInt8();
     if (v.m_bFlag)
     {
-        if (v.m_spItem->FUN_140526a50() == v.m_nUid)
+        if (v.m_spItem->GetItemUid() == v.m_nUid)
         {
             int nCount = in.ReadInt32();
-            v.m_spItem->FUN_1405273f0(nCount);
+            v.m_spItem->SetTransferCount(nCount);
             v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
         }
     }
@@ -1141,7 +1141,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
         return false;
     if (((class CItemSocket*)(void*)(pSocket))->GetMaxSlot() == 0)
         return false;
-    int nMax = ((class CItemSocket*)(void*)(pSocket))->FUN_140620a20();
+    int nMax = ((class CItemSocket*)(void*)(pSocket))->GetOpenSlotCount();
     if (nMax == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_socket_lock_all", 1);
         return false;
@@ -1160,7 +1160,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
             }
         }
     } else {
-        if (!((class CItemSocket*)(void*)(pSocket))->FUN_140621020(nSlot)) {
+        if (!((class CItemSocket*)(void*)(pSocket))->IsSlotEmpty(nSlot)) {
             FUN_1412752d0(L"s_itemsocketsystem_error_socket_used", 1);
             return false;
         }
@@ -1173,7 +1173,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
     unsigned short nRate = FUN_140626f20(spGem->FUN_1405276c0());
     int nFeeItem = 0;
     int nFeeCount = 0;
-    FUN_1406284f0(nRate, spItem->FUN_140527840()->FUN_14053de40(), &nFeeItem, &nFeeCount);
+    FUN_1406284f0(nRate, spItem->FUN_140527840()->GetSkinType(), &nFeeItem, &nFeeCount);
     CStringW strMsg;
     int nSocketNo = nTarget + 1;
     unsigned nFeeName = FUN_1405575b0(((class Unk_IngTable*)TSingleton<CItemDataTable>::GetInstance()), nFeeItem);
@@ -1187,8 +1187,8 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
         return false;
     spBox->FUN_141a027c0(cb);
     spBox->FUN_141a024a0(0);
-    spBox->FUN_1405340b0(spGem->FUN_140526a50());
-    spBox->FUN_140533ff0(nTarget);
+    spBox->Append<__int64>(spGem->GetItemUid());
+    spBox->Append<int>(nTarget);
     FUN_140d73c60(spBox);
     return true;
 }
@@ -1200,7 +1200,7 @@ bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
 {
     if (spItem == (CItem*)0)
         return false;
-    __int64 nUid = spItem->FUN_140526a50();
+    __int64 nUid = spItem->GetItemUid();
     if (FUN_141425750(nUid, 0) == (CItem*)0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return false;
@@ -1239,7 +1239,7 @@ CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
     if (spOption == (CItemOption*)0)
         return CStringW(L"");
     CStringW str;
-    Unk_EnchantMap& mapRandom = spOption->FUN_1405cb8a0(0);
+    Unk_EnchantMap& mapRandom = spOption->GetStatMap(0);
     if (!mapRandom.IsEmpty())
     {
         for (POSITION pos = mapRandom.GetStartPosition(); pos; mapRandom.GetNext(pos))
@@ -1251,7 +1251,7 @@ CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
             return FUN_140631600(nType, spBase.get());
         }
     }
-    Unk_SocketSpecialMap& mapExtra = spOption->FUN_1405cb8d0(0);
+    Unk_SocketSpecialMap& mapExtra = spOption->GetSpecialMap(0);
     if (!mapExtra.IsEmpty())
     {
         for (POSITION pos = mapExtra.GetStartPosition(); pos; mapExtra.GetNext(pos))
@@ -1301,7 +1301,7 @@ MS2_REPLACE(0x14062AE60, FUN_14062ae60, 74, 0x2E79F9D4);
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> spSocket)
 {
     CStringW str;
-    if ((spSocket.get() ? true : false) && spSocket->FUN_14061fbb0())
+    if ((spSocket.get() ? true : false) && spSocket->IsLocked())
     {
         MS2Ptr<TSocketGemStoneLock> spSlot = spSocket->GetLock();
         if ((spSlot.get() ? true : false) && spSlot->FUN_140623e20() == 1)
@@ -1450,20 +1450,20 @@ MS2Ptr<CItemSocketData> CItemSocketTable::Find(unsigned nItemId, int nGrade)
 MS2_REPLACE_METHOD(0x14062D330, CItemSocketTable, Find, 366, 0x63FC37F3);
 
 // @0x14062d4b0
-unsigned CItemSocketTable::FUN_14062d4b0(int nSocketId, int nGrade, MS2Ptr<CItemData> spData)
+unsigned CItemSocketTable::GetMaxSocketCount(int nSocketId, int nGrade, MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return 0;
-    if (!FUN_14062d8d0(spData))
+    if (!IsSocketFeatureEnabled(spData))
         return 0;
-    if (spData->FUN_14053d8c0())
+    if (spData->IsLapenshardType())
         return 0;
     if (nSocketId == 0)
     {
         int nCount = 0;
         unsigned short nLevel = (unsigned short)spData->limit.levelLimit;
         int nItemType = spData->FUN_14053c620();
-        int nSubType = spData->FUN_14053de40();
+        int nSubType = spData->GetSkinType();
         ((class CLua*)(void*)(((void*)FUN_1401c0db0())))->CalcItemSocketMaxCount(nItemType, nGrade, nLevel, nSubType, &nCount);
         return nCount;
     }
@@ -1472,17 +1472,17 @@ unsigned CItemSocketTable::FUN_14062d4b0(int nSocketId, int nGrade, MS2Ptr<CItem
         return 0;
     return spRow->m_nMaxCount;
 }
-MS2_REPLACE_METHOD(0x14062D4B0, CItemSocketTable, FUN_14062d4b0, 557, 0x9F3A57AF);
+MS2_REPLACE_METHOD(0x14062D4B0, CItemSocketTable, GetMaxSocketCount, 557, 0x9F3A57AF);
 
 // @0x14062d6f0
-unsigned CItemSocketTable::FUN_14062d6f0(int nSocketId, int nGrade, MS2Ptr<CItemData> spData)
+unsigned CItemSocketTable::GetInitialSocketCount(int nSocketId, int nGrade, MS2Ptr<CItemData> spData)
 {
     unsigned nCount = 0;
     if (nSocketId == 0)
         return 0;
     if (spData == 0)
         return 0;
-    if (!FUN_14062d8d0(spData))
+    if (!IsSocketFeatureEnabled(spData))
         return 1;
     MS2Ptr<CItemSocketData> spRow = Find(nSocketId, nGrade);
     if (spRow == 0)
@@ -1492,7 +1492,7 @@ unsigned CItemSocketTable::FUN_14062d6f0(int nSocketId, int nGrade, MS2Ptr<CItem
         nCount = spRow->m_range.m_nMin;
     return nCount;
 }
-MS2_REPLACE_METHOD(0x14062D6F0, CItemSocketTable, FUN_14062d6f0, 400, 0x7C262BE8);
+MS2_REPLACE_METHOD(0x14062D6F0, CItemSocketTable, GetInitialSocketCount, 400, 0x7C262BE8);
 
 // @0x14062d890
 bool CItemSocketTable::FUN_14062d890(int nArg1, int nArg2, int nArg3, MS2Ptr<CItem> spItem)
@@ -1501,17 +1501,17 @@ bool CItemSocketTable::FUN_14062d890(int nArg1, int nArg2, int nArg3, MS2Ptr<CIt
 }
 
 // @0x14062d8d0
-bool CItemSocketTable::FUN_14062d8d0(MS2Ptr<CItemData> spData)
+bool CItemSocketTable::IsSocketFeatureEnabled(MS2Ptr<CItemData> spData)
 {
     bool bEnabled = ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e);
     if (bEnabled && (spData.get() != 0 ? true : false))
     {
-        if (spData->FUN_14053cf90())
+        if (spData->HasSkinType())
             bEnabled = ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x5e);
     }
     return bEnabled;
 }
-MS2_REPLACE_METHOD(0x14062D8D0, CItemSocketTable, FUN_14062d8d0, 166, 0xE858BA21);
+MS2_REPLACE_METHOD(0x14062D8D0, CItemSocketTable, IsSocketFeatureEnabled, 166, 0xE858BA21);
 
 // @0x14062d980
 bool CItemSocketTable::FUN_14062d980(MS2Ptr<CItemData> spData, int nGrade)
@@ -1524,8 +1524,8 @@ bool CItemSocketTable::FUN_14062d980(MS2Ptr<CItemData> spData, int nGrade)
     MS2Ptr<CItemSocketData> spRow = Find(nSocketId, nGrade);
     if (spRow == 0)
         return false;
-    unsigned nMax = FUN_14062d4b0(nSocketId, nGrade, spData);
-    unsigned nStart = FUN_14062d6f0(nSocketId, nGrade, spData);
+    unsigned nMax = GetMaxSocketCount(nSocketId, nGrade, spData);
+    unsigned nStart = GetInitialSocketCount(nSocketId, nGrade, spData);
     if (nMax > nStart)
         return true;
     return false;
@@ -1533,7 +1533,7 @@ bool CItemSocketTable::FUN_14062d980(MS2Ptr<CItemData> spData, int nGrade)
 MS2_REPLACE_METHOD(0x14062D980, CItemSocketTable, FUN_14062d980, 454, 0xA0BEA5F1);
 
 // @0x14062db50
-int CItemSocketTable::FUN_14062db50()
+int CItemSocketTable::Reload()
 {
     int nResult = 0;
     if (Unk_LockGuard guard = m_lock)
@@ -1546,7 +1546,7 @@ int CItemSocketTable::FUN_14062db50()
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x14062DB50, CItemSocketTable, FUN_14062db50, 115, 0x5F0288EB);
+MS2_REPLACE_METHOD(0x14062DB50, CItemSocketTable, Reload, 115, 0x5F0288EB);
 
 // @0x140626a20
 CItemSocketSystemUtil::EnableSocketUnlockFunction::EnableSocketUnlockFunction()
@@ -1625,61 +1625,61 @@ CItemStatus::CItemStatus(CItemOption* pOption, CItemEnchantInfo* pEnchant, Unlim
 // @0x140631d70
 CItemUgc::CItemUgc()
 {
-    FUN_140631e50();
+    ResetLook();
 }
 
 // @0x140631de0
 CItemUgc::~CItemUgc()
 {
-    FUN_140631e50();
+    ResetLook();
 }
 
 // @0x140631e50
-void CItemUgc::FUN_140631e50()
+void CItemUgc::ResetLook()
 {
     ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Clear();
 }
-MS2_REPLACE_METHOD(0x140631E50, CItemUgc, FUN_140631e50, 31, 0xB73A08F6);
+MS2_REPLACE_METHOD(0x140631E50, CItemUgc, ResetLook, 31, 0xB73A08F6);
 
 // @0x140631e80
-MS2Ptr<CItemUgc> CItemUgc::FUN_140631e80()
+MS2Ptr<CItemUgc> CItemUgc::Clone()
 {
     MS2Ptr<CItemUgc> spNew(new CItemUgc());
     ((class CUgcItemLook*)(class CUgcItemLook*)(&spNew->m_look))->CopyFrom(&m_look);
     return spNew;
 }
-MS2_REPLACE_METHOD(0x140631E80, CItemUgc, FUN_140631e80, 196, 0x5C94FB68);
+MS2_REPLACE_METHOD(0x140631E80, CItemUgc, Clone, 196, 0x5C94FB68);
 
 // @0x140631f50
-void CItemUgc::FUN_140631f50(COutputStream& out)
+void CItemUgc::WriteToStream(COutputStream& out)
 {
     ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Write(*(class COutputStream*)(&out));
     m_blueprint.Write(out);
 }
-MS2_REPLACE_METHOD(0x140631F50, CItemUgc, FUN_140631f50, 65, 0xD959A128);
+MS2_REPLACE_METHOD(0x140631F50, CItemUgc, WriteToStream, 65, 0xD959A128);
 
 // @0x140631fa0
-void CItemUgc::FUN_140631fa0(CInputStream& in)
+void CItemUgc::ReadFromStream(CInputStream& in)
 {
     ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Read(*(class CInputStream*)(&in));
     m_blueprint.Read(in);
 }
-MS2_REPLACE_METHOD(0x140631FA0, CItemUgc, FUN_140631fa0, 65, 0xBF3AE4BB);
+MS2_REPLACE_METHOD(0x140631FA0, CItemUgc, ReadFromStream, 65, 0xBF3AE4BB);
 
 // @0x140631ff0
-void CItemUgc::FUN_140631ff0(CUgcItemLook* pLook)
+void CItemUgc::SetLook(CUgcItemLook* pLook)
 {
-    FUN_140631e50();
+    ResetLook();
     ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->CopyFrom(pLook);
 }
-MS2_REPLACE_METHOD(0x140631FF0, CItemUgc, FUN_140631ff0, 51, 0x47EF6E9A);
+MS2_REPLACE_METHOD(0x140631FF0, CItemUgc, SetLook, 51, 0x47EF6E9A);
 
 // @0x140632030
-unsigned __int64 CItemUgc::FUN_140632030()
+unsigned __int64 CItemUgc::GetUgcId()
 {
     return m_look.m_n18;
 }
-MS2_REPLACE_METHOD(0x140632030, CItemUgc, FUN_140632030, 15, 0xAC153A31);
+MS2_REPLACE_METHOD(0x140632030, CItemUgc, GetUgcId, 15, 0xAC153A31);
 
 // @0x140632050
 int CItemUgc::FUN_140632050()
@@ -1689,12 +1689,12 @@ int CItemUgc::FUN_140632050()
 MS2_REPLACE_METHOD(0x140632050, CItemUgc, FUN_140632050, 14, 0xB1F80757);
 
 // @0x140632070
-void CItemUgc::FUN_140632070(CBlueprintItemData* pBlueprint)
+void CItemUgc::SetBlueprint(CBlueprintItemData* pBlueprint)
 {
     m_blueprint.Clear();
     m_blueprint.CopyFrom(*pBlueprint);
 }
-MS2_REPLACE_METHOD(0x140632070, CItemUgc, FUN_140632070, 62, 0xBB4AA826);
+MS2_REPLACE_METHOD(0x140632070, CItemUgc, SetBlueprint, 62, 0xBB4AA826);
 
 // @0x1406320c0
 __int64 CItemUgc::FUN_1406320c0()
@@ -1711,11 +1711,11 @@ int CItemUgc::FUN_1406320e0()
 MS2_REPLACE_METHOD(0x1406320E0, CItemUgc, FUN_1406320e0, 14, 0x921EE467);
 
 // @0x140632100
-CString CItemUgc::FUN_140632100()
+CString CItemUgc::GetLookLocalPath()
 {
     return m_look.GetLocalPath();
 }
-MS2_REPLACE_METHOD(0x140632100, CItemUgc, FUN_140632100, 65, 0x2B0AA445);
+MS2_REPLACE_METHOD(0x140632100, CItemUgc, GetLookLocalPath, 65, 0x2B0AA445);
 
 // @0x140632150
 CStringW CItemUgc::FUN_140632150()
@@ -1739,13 +1739,13 @@ int CItemUgc::FUN_1406321d0()
 MS2_REPLACE_METHOD(0x1406321D0, CItemUgc, FUN_1406321d0, 31, 0xA34D9BC7);
 
 // @0x140632200
-void CItemUgc::FUN_140632200(CItemUgc* pSource)
+void CItemUgc::CopyLookFrom(CItemUgc* pSource)
 {
     if (pSource == 0)
         return;
     ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->CopyFrom(&pSource->m_look);
 }
-MS2_REPLACE_METHOD(0x140632200, CItemUgc, FUN_140632200, 55, 0x51B741FA);
+MS2_REPLACE_METHOD(0x140632200, CItemUgc, CopyLookFrom, 55, 0x51B741FA);
 
 // @0x140632240
 CItemCustomMusicScore::~CItemCustomMusicScore()
@@ -1753,7 +1753,7 @@ CItemCustomMusicScore::~CItemCustomMusicScore()
 }
 
 // @0x1406322c0
-MS2Ptr<CItemCustomMusicScore> CItemCustomMusicScore::FUN_1406322c0()
+MS2Ptr<CItemCustomMusicScore> CItemCustomMusicScore::Clone()
 {
     MS2Ptr<CItemCustomMusicScore> spNew(new CItemCustomMusicScore());
     spNew->m_n18 = m_n18;
@@ -1770,10 +1770,10 @@ MS2Ptr<CItemCustomMusicScore> CItemCustomMusicScore::FUN_1406322c0()
     spNew->m_note.m_str18 = m_note.m_str18;
     return spNew;
 }
-MS2_REPLACE_METHOD(0x1406322C0, CItemCustomMusicScore, FUN_1406322c0, 556, 0x32D48641);
+MS2_REPLACE_METHOD(0x1406322C0, CItemCustomMusicScore, Clone, 556, 0x32D48641);
 
 // @0x140632500
-void CItemCustomMusicScore::FUN_140632500(COutputStream& out)
+void CItemCustomMusicScore::WriteToStream(COutputStream& out)
 {
     out.WriteInt32(m_n18);
     out.WriteInt32(m_n1c);
@@ -1785,10 +1785,10 @@ void CItemCustomMusicScore::FUN_140632500(COutputStream& out)
     out.WriteInt64(m_n40);
     out.WriteInt64(m_n48);
 }
-MS2_REPLACE_METHOD(0x140632500, CItemCustomMusicScore, FUN_140632500, 267, 0x7A2583B5);
+MS2_REPLACE_METHOD(0x140632500, CItemCustomMusicScore, WriteToStream, 267, 0x7A2583B5);
 
 // @0x140632620
-void CItemCustomMusicScore::FUN_140632620(CInputStream& in)
+void CItemCustomMusicScore::ReadFromStream(CInputStream& in)
 {
     m_n18 = in.ReadInt32();
     m_n1c = in.ReadInt32();
@@ -1800,7 +1800,7 @@ void CItemCustomMusicScore::FUN_140632620(CInputStream& in)
     m_n40 = in.ReadInt64();
     m_n48 = in.ReadInt64();
 }
-MS2_REPLACE_METHOD(0x140632620, CItemCustomMusicScore, FUN_140632620, 344, 0x07AB5DCE);
+MS2_REPLACE_METHOD(0x140632620, CItemCustomMusicScore, ReadFromStream, 344, 0x07AB5DCE);
 
 // @0x140632780
 bool CItemCustomMusicScore::FUN_140632780()
@@ -1825,9 +1825,9 @@ struct Unk_MusicScoreInfo
 MS2_CHECK_OFFSET(Unk_MusicScoreInfo, m_note, 0x40);
 
 // @0x1406327c0
-void CItemCustomMusicScore::FUN_1406327c0(const Unk_MusicScoreInfo& info)
+void CItemCustomMusicScore::SetFromScoreInfo(const Unk_MusicScoreInfo& info)
 {
-    FUN_1406328c0();
+    Reset();
     m_n18 = info.m_n20;
     m_n1c = info.m_n24;
     m_str28 = info.m_str30;
@@ -1840,10 +1840,10 @@ void CItemCustomMusicScore::FUN_1406327c0(const Unk_MusicScoreInfo& info)
     m_note.m_str18 = kNote.m_str18;
     m_n38 = 1;
 }
-MS2_REPLACE_METHOD(0x1406327C0, CItemCustomMusicScore, FUN_1406327c0, 246, 0x61EED0DA);
+MS2_REPLACE_METHOD(0x1406327C0, CItemCustomMusicScore, SetFromScoreInfo, 246, 0x61EED0DA);
 
 // @0x1406328c0
-void CItemCustomMusicScore::FUN_1406328c0()
+void CItemCustomMusicScore::Reset()
 {
     m_n18 = 0;
     m_n1c = 0;
@@ -1858,41 +1858,41 @@ void CItemCustomMusicScore::FUN_1406328c0()
     m_n40 = 0;
     m_note.FUN_14052d040();
 }
-MS2_REPLACE_METHOD(0x1406328C0, CItemCustomMusicScore, FUN_1406328c0, 204, 0x4570B3DE);
+MS2_REPLACE_METHOD(0x1406328C0, CItemCustomMusicScore, Reset, 204, 0x4570B3DE);
 
 // @0x14062fbc0
-MS2Ptr<CItemStatus> CItemStatus::FUN_14062fbc0()
+MS2Ptr<CItemStatus> CItemStatus::Clone()
 {
-    return MS2Ptr<CItemStatus>(new CItemStatus(m_spOption->FUN_1405caf90(), m_spEnchant->FUN_14058c3b0(), m_spUnlimited->FUN_1408bba60()));
+    return MS2Ptr<CItemStatus>(new CItemStatus(m_spOption->Clone(), m_spEnchant->Clone(), m_spUnlimited->FUN_1408bba60()));
 }
-MS2_REPLACE_METHOD(0x14062FBC0, CItemStatus, FUN_14062fbc0, 473, 0x2DCD2F3E);
+MS2_REPLACE_METHOD(0x14062FBC0, CItemStatus, Clone, 473, 0x2DCD2F3E);
 
 // @0x14062fda0
-void CItemStatus::FUN_14062fda0(COutputStream& out)
+void CItemStatus::WriteToStream(COutputStream& out)
 {
-    m_spOption->FUN_1405cbeb0(out);
-    m_spEnchant->FUN_14058c9c0(reinterpret_cast<Unk_EnchantWrite&>(out));
+    m_spOption->Serialize(out);
+    m_spEnchant->Write(reinterpret_cast<Unk_EnchantWrite&>(out));
     m_spUnlimited->FUN_1408bbd30(out);
 }
-MS2_REPLACE_METHOD(0x14062FDA0, CItemStatus, FUN_14062fda0, 109, 0x4F2E960D);
+MS2_REPLACE_METHOD(0x14062FDA0, CItemStatus, WriteToStream, 109, 0x4F2E960D);
 
 // @0x14062fe20
-void CItemStatus::FUN_14062fe20(CInputStream& in)
+void CItemStatus::ReadFromStream(CInputStream& in)
 {
-    m_spOption->FUN_1405cc190(in);
-    m_spEnchant->FUN_14058cb20(reinterpret_cast<Unk_EnchantRead&>(in));
+    m_spOption->Deserialize(in);
+    m_spEnchant->Read(reinterpret_cast<Unk_EnchantRead&>(in));
     m_spUnlimited->FUN_1408bbef0(in);
 }
-MS2_REPLACE_METHOD(0x14062FE20, CItemStatus, FUN_14062fe20, 109, 0xBA262CEC);
+MS2_REPLACE_METHOD(0x14062FE20, CItemStatus, ReadFromStream, 109, 0xBA262CEC);
 
 // @0x14062fea0
 int CItemStatus::FUN_14062fea0(unsigned nType)
 {
-    int nValue = m_spOption->FUN_1405cb3a0(nType);
-    if (FUN_140630dc0(nType))
+    int nValue = m_spOption->SumStatValue(nType);
+    if (IsRatioStat(nType))
     {
-        int nEnchant = FUN_14062ffb0(nType, 1, 5);
-        int nExtra = nEnchant + FUN_14062ffb0(nType, 2, 5);
+        int nEnchant = GetStatValue(nType, 1, 5);
+        int nExtra = nEnchant + GetStatValue(nType, 2, 5);
         if (nType == 0x14)
             nExtra = (int)((float)nExtra * 0.159f);
         nValue += nExtra;
@@ -1904,35 +1904,35 @@ MS2_REPLACE_METHOD(0x14062FEA0, CItemStatus, FUN_14062fea0, 189, 0x47444B3B);
 // @0x14062ff70
 int CItemStatus::FUN_14062ff70(unsigned nType)
 {
-    return m_spOption->FUN_1405cb440(nType);
+    return m_spOption->SumSpecialValue(nType);
 }
 MS2_REPLACE_METHOD(0x14062FF70, CItemStatus, FUN_14062ff70, 47, 0x04A83391);
 
 // @0x14062ffb0
-int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
+int CItemStatus::GetStatValue(unsigned nType, int nWhich, int nSub)
 {
     int nResult = 0;
     if (nWhich == 3 || nWhich == 0)
     {
         if (nSub == 5)
         {
-            nResult += m_spOption->FUN_1405cb3a0(nType);
+            nResult += m_spOption->SumStatValue(nType);
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb760(nSub, nType);
+            Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetStatOption(nSub, nType);
             if (spBase.get() != 0)
                 nResult += spBase->GetValue();
         }
     }
     if (nWhich == 3 || nWhich == 1)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->FUN_14058cde0(nType);
+        Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->GetOption(nType);
         if (spBase.get() != 0)
         {
-            if (FUN_140630dc0(nType))
+            if (IsRatioStat(nType))
             {
-                __int64 nBase = FUN_14062ffb0(nType, 0, 0);
+                __int64 nBase = GetStatValue(nType, 0, 0);
                 __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
                 nResult += nScaled;
             }
@@ -1944,12 +1944,12 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
     }
     if (nWhich == 3 || nWhich == 2)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FUN_1408bc210(nType);
+        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FindOption(nType);
         if (spBase.get() != 0)
         {
-            if (FUN_140630dc0(nType))
+            if (IsRatioStat(nType))
             {
-                __int64 nBase = FUN_14062ffb0(nType, 0, 0);
+                __int64 nBase = GetStatValue(nType, 0, 0);
                 __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
                 nResult += nScaled;
             }
@@ -1961,7 +1961,7 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x14062FFB0, CItemStatus, FUN_14062ffb0, 717, 0x6B640166);
+MS2_REPLACE_METHOD(0x14062FFB0, CItemStatus, GetStatValue, 717, 0x6B640166);
 
 // @0x140630290
 int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
@@ -1971,18 +1971,18 @@ int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
     {
         if (nSub == 5)
         {
-            nResult += m_spOption->FUN_1405cb440(nType);
+            nResult += m_spOption->SumSpecialValue(nType);
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb800(nSub, nType);
+            Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
             if (spBase.get() != 0)
                 nResult += spBase->GetValue();
         }
     }
     if ((nWhich == 3 || nWhich == 2) && nSub == 5)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FUN_1408bc2f0(nType);
+        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FindSecondaryOption(nType);
         if (spBase.get() != 0)
             nResult += spBase->GetValue();
     }
@@ -1991,45 +1991,45 @@ int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
 MS2_REPLACE_METHOD(0x140630290, CItemStatus, FUN_140630290, 325, 0x45267C83);
 
 // @0x1406303e0
-float CItemStatus::FUN_1406303e0(unsigned nType)
+float CItemStatus::GetEnchantRatio(unsigned nType)
 {
-    Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->FUN_14058cde0(nType);
+    Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->GetOption(nType);
     if (spBase == (BaseOption*)0)
         return 0;
-    if (!FUN_140630dc0(nType))
+    if (!IsRatioStat(nType))
         return 0;
     return spBase->FUN_140266e10();
 }
-MS2_REPLACE_METHOD(0x1406303E0, CItemStatus, FUN_1406303e0, 197, 0xE7166FB6);
+MS2_REPLACE_METHOD(0x1406303E0, CItemStatus, GetEnchantRatio, 197, 0xE7166FB6);
 
 // @0x1406304b0
-int CItemStatus::FUN_1406304b0(int nSub, int nWhich, unsigned nType)
+int CItemStatus::HasOptionEntry(int nSub, int nWhich, unsigned nType)
 {
     if (nSub != 5)
     {
         if (nWhich == 0)
         {
-            BaseOption* pBase = m_spOption->FUN_1405cb760(nSub, nType).get();
+            BaseOption* pBase = m_spOption->GetStatOption(nSub, nType).get();
             if (pBase != 0)
                 return true;
         }
         else if (nWhich == 1)
         {
-            BaseOption* pBase = m_spOption->FUN_1405cb800(nSub, nType).get();
+            BaseOption* pBase = m_spOption->GetSpecialOption(nSub, nType).get();
             if (pBase != 0)
                 return true;
         }
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1406304B0, CItemStatus, FUN_1406304b0, 289, 0xE66A0E7F);
+MS2_REPLACE_METHOD(0x1406304B0, CItemStatus, HasOptionEntry, 289, 0xE66A0E7F);
 
 // @0x1406305e0
-CStringW CItemStatus::FUN_1406305e0(int nSub, unsigned nType, void* pData)
+CStringW CItemStatus::GetSpecialStatText(int nSub, unsigned nType, void* pData)
 {
     CStringW str;
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb800(nSub, nType);
+        Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
         if (spBase.get() != 0)
         {
             str = FUN_140631830(nType, spBase->GetValue(), reinterpret_cast<CItemData*>(pData));
@@ -2037,10 +2037,10 @@ CStringW CItemStatus::FUN_1406305e0(int nSub, unsigned nType, void* pData)
     }
     return str;
 }
-MS2_REPLACE_METHOD(0x1406305E0, CItemStatus, FUN_1406305e0, 263, 0xC97769C1);
+MS2_REPLACE_METHOD(0x1406305E0, CItemStatus, GetSpecialStatText, 263, 0xC97769C1);
 
 // @0x1406306f0
-void CItemStatus::FUN_1406306f0(int nItemId, int nRank, int nSeed)
+void CItemStatus::GenerateOptions(int nItemId, int nRank, int nSeed)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
@@ -2048,12 +2048,12 @@ void CItemStatus::FUN_1406306f0(int nItemId, int nRank, int nSeed)
     Unk_Random kRandom(nSeed);
     m_spOption = ((class Unk_OptionFactory*)FUN_140166430())->FUN_1405f4ff0(spData, nRank, kRandom);
 }
-MS2_REPLACE_METHOD(0x1406306F0, CItemStatus, FUN_1406306f0, 280, 0x03F00F7D);
+MS2_REPLACE_METHOD(0x1406306F0, CItemStatus, GenerateOptions, 280, 0x03F00F7D);
 
 // @0x140630810
 bool CItemStatus::FUN_140630810()
 {
-    return m_spOption->FUN_1405cc410();
+    return m_spOption->HasGroup4Options();
 }
 MS2_REPLACE_METHOD(0x140630810, CItemStatus, FUN_140630810, 39, 0xEC3C6A18);
 
@@ -2062,7 +2062,7 @@ void CItemStatus::FUN_140630840()
 {
     if (FUN_140630810())
     {
-        m_spOption->FUN_1405cb190(4);
+        m_spOption->ClearGroup(4);
         m_spOption->FUN_1405cb360(0);
     }
 }
@@ -2070,19 +2070,19 @@ MS2_REPLACE_METHOD(0x140630840, CItemStatus, FUN_140630840, 88, 0x4E3181F8);
 
 // @0x1406308a0
 // MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
-int CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
+int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
 {
     if (spOther == (CItemStatus*)0)
         return 0;
     int bChanged = 0;
     for (unsigned i = 0; i < 0x23; ++i)
     {
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->FUN_1405cb760(4, i);
+        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetStatOption(4, i);
         if (spSource.get() != 0)
         {
             Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
-            m_spOption->FUN_1405cb200(4, i, spCopy);
+            m_spOption->TrySetStatOption(4, i, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
             bChanged = 1;
@@ -2090,12 +2090,12 @@ int CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
     }
     for (unsigned i = 0; i < 0xcf; ++i)
     {
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->FUN_1405cb800(4, i);
+        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetSpecialOption(4, i);
         if (spSource.get() != 0)
         {
             Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
-            m_spOption->FUN_1405cb2a0(4, i, spCopy);
+            m_spOption->TrySetSpecialOption(4, i, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
             bChanged = 1;
@@ -2103,14 +2103,14 @@ int CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
     }
     return bChanged;
 }
-MS2_REPLACE_METHOD(0x1406308A0, CItemStatus, FUN_1406308a0, 1103, 0xFA56D793);
+MS2_REPLACE_METHOD(0x1406308A0, CItemStatus, CopyGroup4From, 1103, 0xFA56D793);
 
 // @0x140630d00
-unsigned short CItemStatus::FUN_140630d00()
+unsigned short CItemStatus::GetEnchantLevel()
 {
     return m_spEnchant->GetLevel();
 }
-MS2_REPLACE_METHOD(0x140630D00, CItemStatus, FUN_140630d00, 39, 0x3E09AE77);
+MS2_REPLACE_METHOD(0x140630D00, CItemStatus, GetEnchantLevel, 39, 0x3E09AE77);
 
 // @0x140630d30
 CItemOption* CItemStatus::GetOption()
@@ -2134,11 +2134,11 @@ Unk_ItemPlusInfo* CItemStatus::FUN_140630d90()
 MS2_REPLACE_METHOD(0x140630D90, CItemStatus, FUN_140630d90, 31, 0x7F01B568);
 
 // @0x140630dc0
-bool CItemStatus::FUN_140630dc0(int nType)
+bool CItemStatus::IsRatioStat(int nType)
 {
     return nType == 0x1b || nType == 0x1c || nType == 0x14;
 }
-MS2_REPLACE_METHOD(0x140630DC0, CItemStatus, FUN_140630dc0, 59, 0x69FAA13A);
+MS2_REPLACE_METHOD(0x140630DC0, CItemStatus, IsRatioStat, 59, 0x69FAA13A);
 
 // @0x140630e10
 CStringW FUN_140630e10(int nSaType)
@@ -2269,7 +2269,7 @@ CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus
     CStringW strResult;
     if (spBase->HasValue())
     {
-        __int64 nBase = pStatus->FUN_14062ffb0(nStat, 0, 0);
+        __int64 nBase = pStatus->GetStatValue(nStat, 0, 0);
         float fBase = (float)nBase;
         __int64 nExtra = (__int64)(fBase * spBase->FUN_140266e10());
         CStringW strUnused;
@@ -2337,10 +2337,10 @@ bool FUN_140633840(MS2Ptr<CItem> spItem)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_1406354d0() == 0)
+    if (pTransfer != 0 && pTransfer->IsSellable() == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622720() == 0)
+    if (pSocket != 0 && pSocket->CheckGemsShopSellable() == 0)
         return false;
     return true;
 }
@@ -2375,10 +2375,10 @@ bool FUN_140633a90(MS2Ptr<CItem> spItem)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_140635630() == 0)
+    if (pTransfer != 0 && pTransfer->HasTradeCountLeft() == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_1406227c0() == 0)
+    if (pSocket != 0 && pSocket->CheckNoBoundGem() == 0)
         return false;
     return true;
 }
@@ -2398,10 +2398,10 @@ bool FUN_140633bf0(MS2Ptr<CItem> spItem)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_140635770() == 0)
+    if (pTransfer != 0 && pTransfer->CanBreak() == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622820() == 0)
+    if (pSocket != 0 && pSocket->CheckGemsBreakable() == 0)
         return false;
     return true;
 }
@@ -2421,10 +2421,10 @@ bool FUN_140633d50(MS2Ptr<CItem> spItem)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_1406358c0() == 0)
+    if (pTransfer != 0 && pTransfer->CanRegisterMeratMarket() == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622880() == 0)
+    if (pSocket != 0 && pSocket->CheckGemsMeratMarketRegistrable() == 0)
         return false;
     return true;
 }
@@ -2465,7 +2465,7 @@ bool FUN_140633fb0(MS2Ptr<CItem> spItem, int* pReason)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_140635690() == 0)
+    if (pTransfer != 0 && pTransfer->CanListOnBlackMarket() == 0)
     {
         *pReason = 1;
         return false;
@@ -2499,7 +2499,7 @@ bool FUN_140634120(MS2Ptr<CItem> spItem, int* pReason)
         return false;
     }
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622850() == 0)
+    if (pSocket != 0 && pSocket->CheckNoLockedGem() == 0)
     {
         *pReason = 2;
         return false;
@@ -2533,7 +2533,7 @@ bool FUN_140634290(MS2Ptr<CItem> spItem, int* pReason)
         return true;
     }
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_1406228d0() == true)
+    if (pSocket != 0 && pSocket->HasBoundGem() == true)
     {
         *pReason = 2;
         return true;
@@ -2551,7 +2551,7 @@ bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId)
     if (pTransfer != 0 && pTransfer->FUN_140635980(pCharacterId) == false)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622a00(pCharacterId) == false)
+    if (pSocket != 0 && pSocket->AllGemsUsableByCharacter(pCharacterId) == false)
         return false;
     return true;
 }
@@ -2571,7 +2571,7 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId, ItemUtilTr
     bool bBound = false;
     if (pTransfer != 0 && pTransfer->FUN_140635940())
     {
-        if ((unsigned __int64)spItem->FUN_140527930()->FUN_140635160()->FUN_14052d1c0() > 0)
+        if ((unsigned __int64)spItem->FUN_140527930()->GetBinding()->FUN_14052d1c0() > 0)
             bBound = true;
     }
     if (spItem->FUN_140527840()->FUN_14053d7c0())
@@ -2579,14 +2579,14 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId, ItemUtilTr
     if (bBound && pTransfer != 0 && pTransfer->FUN_140635980(pCharacterId) == false)
     {
         pOut->kind = 1;
-        pTransfer->FUN_1406359c0(&pOut->characterId, &pOut->name);
+        pTransfer->GetBindingInfo(&pOut->characterId, &pOut->name);
         return false;
     }
     CItemSocket* pSocket = spItem->FUN_1405279c0();
-    if (pSocket != 0 && pSocket->FUN_140622a00(pCharacterId) == false)
+    if (pSocket != 0 && pSocket->AllGemsUsableByCharacter(pCharacterId) == false)
     {
         pOut->kind = 2;
-        pSocket->FUN_140622b40(&pOut->characterId, &pOut->name);
+        pSocket->GetGemBindOwner(&pOut->characterId, &pOut->name);
         return false;
     }
     return true;
@@ -2650,7 +2650,7 @@ void CItemTransfer::SetItem(CItem* pItem)
 MS2_REPLACE_METHOD(0x140634970, CItemTransfer, SetItem, 25, 0xAB8BF0FB);
 
 // @0x140634990
-void CItemTransfer::FUN_140634990(CItem* pItem)
+void CItemTransfer::InitFromItem(CItem* pItem)
 {
     m_pItem = pItem;
     if (m_pItem != 0)
@@ -2662,18 +2662,18 @@ void CItemTransfer::FUN_140634990(CItem* pItem)
             m_b39 = (unsigned char)pData->limit.shopSell;
             if (pData->limit.enableBreak == 0)
                 m_b3E = 1;
-            m_b3A = pData->FUN_14053db80() ? true : false;
+            m_b3A = pData->CanRegisterMeratMarket() ? true : false;
             m_nCount = pData->FUN_14053d800() ? 1 : 0;
             m_b41 = ((class CItemSocketTable*)FUN_14052d200())->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->FUN_140527840()), pItem->FUN_140526bd0());
             m_b42 = m_b41;
-            FUN_140635a60();
+            RefreshRule();
         }
     }
 }
-MS2_REPLACE_METHOD(0x140634990, CItemTransfer, FUN_140634990, 401, 0x66C6DDFC);
+MS2_REPLACE_METHOD(0x140634990, CItemTransfer, InitFromItem, 401, 0x66C6DDFC);
 
 // @0x140634b30
-MS2Ptr<CItemTransfer> CItemTransfer::FUN_140634b30()
+MS2Ptr<CItemTransfer> CItemTransfer::Clone()
 {
     MS2Ptr<CItemTransfer> spNew(new CItemTransfer);
     *spNew = *this;
@@ -2685,7 +2685,7 @@ MS2Ptr<CItemTransfer> CItemTransfer::FUN_140634b30()
     }
     return spNew;
 }
-MS2_REPLACE_METHOD(0x140634B30, CItemTransfer, FUN_140634b30, 386, 0x652A96FC);
+MS2_REPLACE_METHOD(0x140634B30, CItemTransfer, Clone, 386, 0x652A96FC);
 
 // @0x140634cc0
 int CItemTransfer::FUN_140634cc0()
@@ -2707,7 +2707,7 @@ void CItemTransfer::vfunc_1(COutputStream& out)
     out.WriteInt32(m_nMax);
     out.WriteUInt8(m_b3F);
     out.WriteUInt8(m_b42);
-    if ((bool)m_spBinding.get() && FUN_140635100() != 0)
+    if ((bool)m_spBinding.get() && HasBindingRule() != 0)
     {
         out.WriteBool(true);
         m_spBinding->FUN_1406346a0(out);
@@ -2766,7 +2766,7 @@ void CItemTransfer::SetMax(unsigned n)
 MS2_REPLACE_METHOD(0x140635000, CItemTransfer, SetMax, 22, 0xFEAFFEDF);
 
 // @0x140635020
-int CItemTransfer::FUN_140635020()
+int CItemTransfer::DecrementTransferCount()
 {
     if ((m_nRule & 0x10) != 0 && m_nCount > 0)
     {
@@ -2775,10 +2775,10 @@ int CItemTransfer::FUN_140635020()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140635020, CItemTransfer, FUN_140635020, 59, 0x48337623);
+MS2_REPLACE_METHOD(0x140635020, CItemTransfer, DecrementTransferCount, 59, 0x48337623);
 
 // @0x140635070
-int CItemTransfer::FUN_140635070()
+int CItemTransfer::IncrementTransferCount()
 {
     if (m_pItem == 0)
         return 0;
@@ -2786,7 +2786,7 @@ int CItemTransfer::FUN_140635070()
     {
         if (m_nCount > 0)
             return 0;
-        if (m_nMax >= (int)m_pItem->FUN_1405274e0())
+        if (m_nMax >= (int)m_pItem->GetRepackLimitCount())
             return 0;
         ++m_nMax;
         ++m_nCount;
@@ -2794,14 +2794,14 @@ int CItemTransfer::FUN_140635070()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140635070, CItemTransfer, FUN_140635070, 133, 0x995E53BE);
+MS2_REPLACE_METHOD(0x140635070, CItemTransfer, IncrementTransferCount, 133, 0x995E53BE);
 
 // @0x140635100
-unsigned CItemTransfer::FUN_140635100()
+unsigned CItemTransfer::HasBindingRule()
 {
     return m_nRule & 8;
 }
-MS2_REPLACE_METHOD(0x140635100, CItemTransfer, FUN_140635100, 17, 0xB9EB22D4);
+MS2_REPLACE_METHOD(0x140635100, CItemTransfer, HasBindingRule, 17, 0xB9EB22D4);
 
 // @0x140635120
 int CItemTransfer::FUN_140635120()
@@ -2811,11 +2811,11 @@ int CItemTransfer::FUN_140635120()
 MS2_REPLACE_METHOD(0x140635120, CItemTransfer, FUN_140635120, 58, 0x06ED1646);
 
 // @0x140635160
-CItemTransfer::CItemBinding* CItemTransfer::FUN_140635160()
+CItemTransfer::CItemBinding* CItemTransfer::GetBinding()
 {
     return m_spBinding.get();
 }
-MS2_REPLACE_METHOD(0x140635160, CItemTransfer, FUN_140635160, 31, 0x379A5C2F);
+MS2_REPLACE_METHOD(0x140635160, CItemTransfer, GetBinding, 31, 0x379A5C2F);
 
 // @0x140635190
 int CItemTransfer::GetType()
@@ -2839,23 +2839,23 @@ bool CItemTransfer::FUN_1406351b0()
 MS2_REPLACE_METHOD(0x1406351B0, CItemTransfer, FUN_1406351b0, 45, 0x9C2A80F2);
 
 // @0x1406351f0
-unsigned char CItemTransfer::FUN_1406351f0(const __int64& nCharId, const CStringW& strName)
+unsigned char CItemTransfer::SetBinding(const __int64& nCharId, const CStringW& strName)
 {
     m_spBinding.AssignRaw(new CItemBinding);
     if (m_spBinding.get() != 0)
         return m_spBinding->FUN_1406347d0(nCharId, strName);
     return 0;
 }
-MS2_REPLACE_METHOD(0x1406351F0, CItemTransfer, FUN_1406351f0, 175, 0x3EF4D3CA);
+MS2_REPLACE_METHOD(0x1406351F0, CItemTransfer, SetBinding, 175, 0x3EF4D3CA);
 
 // @0x1406352b0
-unsigned char CItemTransfer::FUN_1406352b0()
+unsigned char CItemTransfer::ClearBinding()
 {
     m_pItem->vfunc_5(true);
     m_spBinding = 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1406352B0, CItemTransfer, FUN_1406352b0, 61, 0x61774D6B);
+MS2_REPLACE_METHOD(0x1406352B0, CItemTransfer, ClearBinding, 61, 0x61774D6B);
 
 // @0x140635300
 void CItemTransfer::FUN_140635300()
@@ -2874,9 +2874,9 @@ MS2_REPLACE_METHOD(0x140635320, CItemTransfer, FUN_140635320, 32, 0xB7D9EF8D);
 
 // The binding owner's name: the actor's own name when the actor is the owner, else the stored name.
 // @0x140635350
-void CItemTransfer::FUN_140635350(PCBase* pPc, CStringW* pName)
+void CItemTransfer::GetBindingOwnerName(PCBase* pPc, CStringW* pName)
 {
-    CItemBinding* pBinding = FUN_140635160();
+    CItemBinding* pBinding = GetBinding();
     if (pBinding != 0)
     {
         if (pPc != 0 && pPc->FUN_141656a80() == pBinding->FUN_14052d1c0())
@@ -2887,10 +2887,10 @@ void CItemTransfer::FUN_140635350(PCBase* pPc, CStringW* pName)
         *pName = pBinding->FUN_14052d1b0();
     }
 }
-MS2_REPLACE_METHOD(0x140635350, CItemTransfer, FUN_140635350, 196, 0x7287F0A9);
+MS2_REPLACE_METHOD(0x140635350, CItemTransfer, GetBindingOwnerName, 196, 0x7287F0A9);
 
 // @0x140635470
-bool CItemTransfer::FUN_140635470(const __int64* pId)
+bool CItemTransfer::IsBindingCompatible(const __int64* pId)
 {
     if (m_spBinding.get() != 0)
     {
@@ -2899,7 +2899,7 @@ bool CItemTransfer::FUN_140635470(const __int64* pId)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140635470, CItemTransfer, FUN_140635470, 87, 0x4FDB0514);
+MS2_REPLACE_METHOD(0x140635470, CItemTransfer, IsBindingCompatible, 87, 0x4FDB0514);
 
 // @0x140635420
 bool FUN_140635420(CItemTransfer* pTransfer, PCBase* pPc)
@@ -2907,14 +2907,14 @@ bool FUN_140635420(CItemTransfer* pTransfer, PCBase* pPc)
     if (pPc != 0)
     {
         __int64 nId = pPc->FUN_141656a80();
-        return pTransfer->FUN_140635470(&nId);
+        return pTransfer->IsBindingCompatible(&nId);
     }
     return true;
 }
 MS2_REPLACE(0x140635420, FUN_140635420, 61, 0x538A89AA);
 
 // @0x1406354d0
-int CItemTransfer::FUN_1406354d0()
+int CItemTransfer::IsSellable()
 {
     if (m_pItem == 0)
         return false;
@@ -2924,7 +2924,7 @@ int CItemTransfer::FUN_1406354d0()
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x1406354D0, CItemTransfer, FUN_1406354d0, 70, 0x2CA2E2B6);
+MS2_REPLACE_METHOD(0x1406354D0, CItemTransfer, IsSellable, 70, 0x2CA2E2B6);
 
 // @0x140635520
 unsigned CItemTransfer::FUN_140635520()
@@ -2965,7 +2965,7 @@ unsigned CItemTransfer::FUN_140635590()
 MS2_REPLACE_METHOD(0x140635590, CItemTransfer, FUN_140635590, 154, 0xE947292A);
 
 // @0x140635630
-int CItemTransfer::FUN_140635630()
+int CItemTransfer::HasTradeCountLeft()
 {
     if (FUN_140635120() != 0)
         return 0;
@@ -2977,10 +2977,10 @@ int CItemTransfer::FUN_140635630()
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x140635630, CItemTransfer, FUN_140635630, 89, 0xAC2D2E1A);
+MS2_REPLACE_METHOD(0x140635630, CItemTransfer, HasTradeCountLeft, 89, 0xAC2D2E1A);
 
 // @0x140635690
-unsigned CItemTransfer::FUN_140635690()
+unsigned CItemTransfer::CanListOnBlackMarket()
 {
     if (FUN_140635120() != 0)
         return 0;
@@ -2999,10 +2999,10 @@ unsigned CItemTransfer::FUN_140635690()
         nResult = m_nRule & 4;
     return nResult;
 }
-MS2_REPLACE_METHOD(0x140635690, CItemTransfer, FUN_140635690, 204, 0x23D70D12);
+MS2_REPLACE_METHOD(0x140635690, CItemTransfer, CanListOnBlackMarket, 204, 0x23D70D12);
 
 // @0x140635770
-int CItemTransfer::FUN_140635770()
+int CItemTransfer::CanBreak()
 {
     if (m_pItem == 0)
         return 0;
@@ -3018,15 +3018,15 @@ int CItemTransfer::FUN_140635770()
     {
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3a))
             return 0;
-        if (m_pItem->FUN_140525f10() != 0 && m_pItem->FUN_1405279c0() != 0)
+        if (m_pItem->HasCubeTextureMesh() != 0 && m_pItem->FUN_1405279c0() != 0)
         {
-            if (((class CItemSocket*)(void*)(m_pItem->FUN_1405279c0()))->FUN_140620a20() == 0)
+            if (((class CItemSocket*)(void*)(m_pItem->FUN_1405279c0()))->GetOpenSlotCount() == 0)
                 return 0;
         }
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x140635770, CItemTransfer, FUN_140635770, 235, 0xAE1E60FC);
+MS2_REPLACE_METHOD(0x140635770, CItemTransfer, CanBreak, 235, 0xAE1E60FC);
 
 // @0x140635870
 int CItemTransfer::FUN_140635870()
@@ -3040,7 +3040,7 @@ int CItemTransfer::FUN_140635870()
 MS2_REPLACE_METHOD(0x140635870, CItemTransfer, FUN_140635870, 61, 0xD0B35AF7);
 
 // @0x1406358c0
-int CItemTransfer::FUN_1406358c0()
+int CItemTransfer::CanRegisterMeratMarket()
 {
     if (FUN_140634cc0() == 0)
         return false;
@@ -3048,10 +3048,10 @@ int CItemTransfer::FUN_1406358c0()
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x1406358C0, CItemTransfer, FUN_1406358c0, 54, 0x431A3034);
+MS2_REPLACE_METHOD(0x1406358C0, CItemTransfer, CanRegisterMeratMarket, 54, 0x431A3034);
 
 // @0x140635900
-int CItemTransfer::FUN_140635900()
+int CItemTransfer::CanTransferSocket()
 {
     if (m_b42 == 0)
         return false;
@@ -3059,7 +3059,7 @@ int CItemTransfer::FUN_140635900()
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x140635900, CItemTransfer, FUN_140635900, 45, 0xF1A2447C);
+MS2_REPLACE_METHOD(0x140635900, CItemTransfer, CanTransferSocket, 45, 0xF1A2447C);
 
 // @0x140635940
 bool CItemTransfer::FUN_140635940()
@@ -3071,14 +3071,14 @@ MS2_REPLACE_METHOD(0x140635940, CItemTransfer, FUN_140635940, 52, 0xE032FB84);
 // @0x140635980
 bool CItemTransfer::FUN_140635980(const __int64* pId)
 {
-    if (FUN_140635470(pId))
+    if (IsBindingCompatible(pId))
         return true;
     return false;
 }
 MS2_REPLACE_METHOD(0x140635980, CItemTransfer, FUN_140635980, 47, 0xDBE87C5F);
 
 // @0x1406359c0
-void CItemTransfer::FUN_1406359c0(__int64* pId, CStringW* pName)
+void CItemTransfer::GetBindingInfo(__int64* pId, CStringW* pName)
 {
     if (m_spBinding.get() != 0)
     {
@@ -3091,22 +3091,22 @@ void CItemTransfer::FUN_1406359c0(__int64* pId, CStringW* pName)
         pName->Empty();
     }
 }
-MS2_REPLACE_METHOD(0x1406359C0, CItemTransfer, FUN_1406359c0, 143, 0x27AF4741);
+MS2_REPLACE_METHOD(0x1406359C0, CItemTransfer, GetBindingInfo, 143, 0x27AF4741);
 
 // @0x140635a60
-void CItemTransfer::FUN_140635a60()
+void CItemTransfer::RefreshRule()
 {
     if (m_pItem == 0)
         return;
     if (m_pItem->FUN_140527840() == 0)
         return;
     CItemData* pData = reinterpret_cast<CItemData*>(m_pItem->FUN_140527840());
-    m_nRule = FUN_140635ae0(m_nType, pData, m_pItem->FUN_140526bd0());
+    m_nRule = ComputeRule(m_nType, pData, m_pItem->FUN_140526bd0());
 }
-MS2_REPLACE_METHOD(0x140635A60, CItemTransfer, FUN_140635a60, 111, 0xE6CA5D84);
+MS2_REPLACE_METHOD(0x140635A60, CItemTransfer, RefreshRule, 111, 0xE6CA5D84);
 
 // @0x140635ae0
-unsigned CItemTransfer::FUN_140635ae0(int nType, CItemData* pData, int nId)
+unsigned CItemTransfer::ComputeRule(int nType, CItemData* pData, int nId)
 {
     if (pData == 0)
         return 0;
@@ -3133,7 +3133,7 @@ unsigned CItemTransfer::FUN_140635ae0(int nType, CItemData* pData, int nId)
     }
     return nRule;
 }
-MS2_REPLACE(0x140635AE0, CItemTransfer::FUN_140635ae0, 136, 0x921CFB58);
+MS2_REPLACE(0x140635AE0, CItemTransfer::ComputeRule, 136, 0x921CFB58);
 
 // @0x140635b90
 bool FUN_140635b90(unsigned a, unsigned b)

@@ -46,7 +46,7 @@ int FUN_1406516b0();                                // the server kind
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);    // split into strings
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int FUN_1427221f0(z_stream* pStream, int nFlush);   // inflate
 unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut);
 
@@ -232,7 +232,7 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
             return spResult;
         }
         spResult->m_buffer.WriteBytes(pData, nOut);
-        spResult->m_buffer.FUN_140720e90(0);
+        spResult->m_buffer.SetOffset(0);
         if (pData != 0)
         {
             delete[] pData;
@@ -290,7 +290,7 @@ MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchPa
         int nOut = 0;
         unsigned char* pData = FUN_141771b40(pBody, nBodySize, &nOut);
         spResult->m_buffer.WriteBytes(pData, nOut);
-        spResult->m_buffer.FUN_140720e90(0);
+        spResult->m_buffer.SetOffset(0);
         if (pData != 0)
         {
             delete[] pData;
@@ -336,7 +336,7 @@ MS2Ptr<CSoapResult> CSoapClient::FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, in
         char* pBody = http.Body();
         CString strBody = FUN_140188f50(pBody, 0);
         ATL::CAtlArray<CString> arrFields;
-        FUN_14015f050(strBody, arrFields, DAT_142f6301c);
+        Unk_SplitA(const_cast<CStringA&>(strBody), (ATL::CAtlArray<CStringA>*)&(arrFields), DAT_142f6301c);
         if (arrFields.GetCount() != 2)
         {
             nCode = 6;

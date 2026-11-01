@@ -185,11 +185,10 @@ public:
 extern Unk_CubeStock DAT_143ab2e50;
 
 class PCBase;
-class Unk_CubeWorld
+class Unk_CubeWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
 int FUN_141663080(PCBase* pPC);
 class MyPC   // C3: member view for the former free stand-ins
@@ -268,14 +267,14 @@ bool UGCCube::FUN_140def420()                                                   
         if (FUN_141663080(pPC) < itemData->FUN_14053fdb0())
             return true;
     }
-    return ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(itemData->FUN_14053c510());
+    return ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(itemData->GetItemId());
 }
 
 bool UGCCube::FUN_140def4f0()                                                                  // @0x140def4f0
 {
     if (itemData == 0)
         return false;
-    if (itemData->FUN_14053cde0() && FUN_140defe70() > 0)
+    if (itemData->HasMaidId() && FUN_140defe70() > 0)
         return false;
     if (ingredient && ingredient->m_bFree == 0)
         return false;
@@ -285,7 +284,7 @@ bool UGCCube::FUN_140def4f0()                                                   
 int UGCCube::FUN_140def5a0()                                                                   // @0x140def5a0
 {
     if (itemData.get() != 0)
-        return itemData->FUN_14053c510();
+        return itemData->GetItemId();
     return 0;
 }
 
@@ -318,7 +317,7 @@ CStringW UGCCube::FUN_140def710()                                               
             return strTitle;
     }
     if (itemData.get() != 0)
-        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemData->FUN_14053c510());
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemData->GetItemId());
     return L"";
 }
 
@@ -331,7 +330,7 @@ CStringW UGCCube::FUN_140def880()                                               
         if (!strName.IsEmpty())
             return strName;
     }
-    if (itemData->FUN_14053cde0() && FUN_140defe70() > 0)
+    if (itemData->HasMaidId() && FUN_140defe70() > 0)
     {
         Unk_NpcRefPtr spNpc = reinterpret_cast<Unk_NpcSvc*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(itemData->FUN_14053dd30());
         if (spNpc.get() != 0)
@@ -342,7 +341,7 @@ CStringW UGCCube::FUN_140def880()                                               
         }
     }
     if (itemData.get() != 0)
-        return FUN_14016a730(itemData->FUN_14053fdd0(), 0);
+        return FUN_14016a730(itemData->GetIconPath(), 0);
     return L"";
 }
 
@@ -657,9 +656,9 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
     MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(nItemId);
     if (spIng && spIng->m_bFree == 0)
         return false;
-    if (spData->FUN_14053d6f0())
+    if (spData->HasCubeTextureMesh())
         return false;
-    if (spData->FUN_14053cde0())
+    if (spData->HasMaidId())
         return true;
     if (m_listIds.Find(nItemId) != 0)
         return false;
@@ -671,7 +670,7 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
 
 bool Unk_CubeUsage::FUN_140df15e0(MS2Ptr<CItem> spItem, Unk_CubePaletteFilter* pFilter)        // @0x140df15e0
 {
-    return FUN_140df1720(spItem->FUN_1405276c0(), spItem->FUN_140526a50(), spItem->FUN_1405283d0(), pFilter);
+    return FUN_140df1720(spItem->FUN_1405276c0(), spItem->GetItemUid(), spItem->GetUgcUid(), pFilter);
 }
 
 bool Unk_CubeUsage::FUN_140df1680(MS2Ptr<Unk_UgcStock> spStock, Unk_CubePaletteFilter* pFilter)  // @0x140df1680
@@ -684,15 +683,15 @@ bool Unk_CubeUsage::FUN_140df1720(int nItemId, unsigned __int64 nInstance, unsig
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return false;
-    if (pFilter->FUN_140df00b0() && spData->FUN_14053cde0())
+    if (pFilter->FUN_140df00b0() && spData->HasMaidId())
         return false;
     if (m_listInstances.Find(nInstance) != 0)
         return false;
     if (m_listIds.Find(nItemId) != 0)
     {
-        if (spData->FUN_14053cde0())
+        if (spData->HasMaidId())
             return true;
-        if (spData->FUN_14053d6f0())
+        if (spData->HasCubeTextureMesh())
         {
             POSITION pos = m_mapUgc.FindFirstWithKey(nItemId);
             while (pos != 0)
@@ -710,7 +709,7 @@ bool Unk_CubeUsage::FUN_140df1720(int nItemId, unsigned __int64 nInstance, unsig
     m_listIds.AddTail(nItemId);
     if (nInstance > 0)
         m_listInstances.AddTail(nInstance);
-    if (spData->FUN_14053d6f0() && nUgc >= 0)
+    if (spData->HasCubeTextureMesh() && nUgc >= 0)
         m_mapUgc.Insert(nItemId, nUgc);
     return true;
 }
@@ -743,7 +742,7 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
             MS2Ptr<CItemData> spData;
             if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
             {
-                MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->FUN_14053c510());
+                MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->GetItemId());
                 if (spIng && reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886a40(&spIng->m_ids))
                     continue;
             }
@@ -860,9 +859,9 @@ void UGCCubePalette::FUN_140df2250()                                            
             continue;
         if (!spData->FUN_14053cb80())
             continue;
-        if (FUN_140281980()->FUN_1405566e0(spData->FUN_14053c510()) == 0)
+        if (FUN_140281980()->FUN_1405566e0(spData->GetItemId()) == 0)
             continue;
-        mapItems.SetAt(spData->FUN_14053c510(), spData);
+        mapItems.SetAt(spData->GetItemId(), spData);
     }
 }
 
@@ -889,7 +888,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
                 continue;
             if (usage.FUN_140df15e0(spItem, pFilter))
             {
-                CubePtr spNew(new UGCCube(nItemId, spItem->FUN_140526a50(), spItem->FUN_140528910(), spItem->FUN_140528380()));
+                CubePtr spNew(new UGCCube(nItemId, spItem->GetItemUid(), spItem->FUN_140528910(), spItem->GetUgcLook()));
                 out.Add(spNew);
             }
         }
@@ -953,7 +952,7 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbe90(nItemId);
         if (spItem.get() != 0)
         {
-            CubePtr spNew(new UGCCube(nItemId, spItem->FUN_140526a50(), spItem->FUN_140528910(), spItem->FUN_140528380()));
+            CubePtr spNew(new UGCCube(nItemId, spItem->GetItemUid(), spItem->FUN_140528910(), spItem->GetUgcLook()));
             out.Add(spNew);
             continue;
         }
@@ -983,7 +982,7 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
         if (!spData->install.FUN_140548cd0())
             return true;
     }
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->FUN_14053c510());
+    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->GetItemId());
     if (spIng == 0)
         return false;
     if (pFilter->FUN_140df0160() != spIng->m_nCategory)

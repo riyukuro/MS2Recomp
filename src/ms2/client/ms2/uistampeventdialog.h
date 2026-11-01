@@ -40,6 +40,5 @@ public:
     CString FUN_140ed9480(int nItemId);                             // item icon name
     CString FUN_140ed9560();                                        // the event tag
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);    // bind a list child
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // text field child lookup
 };
 MS2_CHECK_SIZE(UIStampEventDialog, 0x180);

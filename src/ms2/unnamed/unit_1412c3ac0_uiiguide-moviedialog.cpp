@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 // return types of the getters this unit calls
 class Unk_SingletonObj1;
@@ -24,11 +25,7 @@ public:
     Unk_GmGuideCfg m_guide;                                     // +0xcd70
 };
 Unk_SingletonObj1* FUN_1401d3200();
-class Unk_GmKeys
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);
-};
+class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();
 
 // @0x1412c3ac0

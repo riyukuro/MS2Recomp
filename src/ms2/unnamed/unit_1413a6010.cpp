@@ -17,6 +17,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // return types of the getters this unit calls
 class Unk_Restrictions;
@@ -103,9 +106,9 @@ void CGuideConditionDialog::vfunc_2(Unk_140165cf0* pElem)
     m_n18 = 3;
     if (m_b1c != 0)
         throw std::exception("Dialog is Not Allow Keword 'not'");
-    FUN_1408733e0(pElem, "dialogName", m_strDialog);
-    FUN_140873220(pElem, "dialogID", m_nDialogID);
-    FUN_1408731e0(pElem, "isOpen", m_nIsOpen);
-    FUN_1408731e0(pElem, "subIndex", m_nSubIndex);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogName", m_strDialog);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_nDialogID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isOpen", reinterpret_cast<int&>(m_nIsOpen));
+    XmlGetAttr((class TiXmlElement*)(pElem), "subIndex", reinterpret_cast<int&>(m_nSubIndex));
     FUN_141386b50(pElem, "control", m_arrControl);
 }

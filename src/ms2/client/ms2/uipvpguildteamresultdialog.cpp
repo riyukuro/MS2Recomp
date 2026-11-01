@@ -24,6 +24,9 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // ---- header statics (dynamic initializers 0x1400efc20..) ----
 static CString s_strMassiveFail = "massive_fail";
@@ -49,15 +52,6 @@ struct Unk_PgtrConfig
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-class Unk_PgtrSound                                                 // the sound / cursor service
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_PgtrSound* FUN_140a94350();
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
 class Unk_PgtrItemData : public CItemData { };       // the icon name
@@ -66,7 +60,6 @@ class Unk_PgtrItemPtr
 public:
     ~Unk_PgtrItemPtr() { FUN_1401b50d0(); }
     void* FUN_140203c60() const;
-    Unk_PgtrItemData* FUN_1401b52a0() const;
     void FUN_1401b50d0();
 private:
     void* unknown;
@@ -78,15 +71,15 @@ Unk_PgtrItemPtr FUN_14053f870(int nItemId);
 CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-insensitive equal
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
-CStringW FUN_1408116a0(int nId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
@@ -209,7 +202,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     else
     {
         if (m_guildB.m_nSec < 0)
-            m_guildB.m_strTime += FUN_1408116a0(0x400, m_guildB.m_nSec);
+            m_guildB.m_strTime += BlockFormat<int>(0x400, m_guildB.m_nSec);
     }
     m_strReward.Empty();
     if (nCount != 0)
@@ -266,7 +259,7 @@ void UIPvPGuildTeamResultDialog::FUN_1413415e0(__int64 nGuildId, const CStringW&
 // @0x1413418a0
 void UIPvPGuildTeamResultDialog::FUN_1413418a0()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     FUN_140cfee80(FUN_1422dbb40(), "m_msg", m_strTitle);
     Unk_PgtrGuild* pLeft;
@@ -293,7 +286,7 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
     {
         Unk_PgtrItemPtr spItem = FUN_14053f870(m_nRewardItem);
         if (spItem.FUN_140203c60() != 0)
-            m_30->Invoke("setRewardIcon", spItem.FUN_1401b52a0()->FUN_14053fdd0());
+            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PgtrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
     }
     FUN_141341e70();
 }
@@ -308,7 +301,7 @@ void UIPvPGuildTeamResultDialog::FUN_141341e70()
     {
         FUN_141276180(s_strMassiveSuccess, "");
         FUN_141276180(s_strBattleFieldWin, "");
-        FUN_140a94350()->vfunc_10(9);
+        ChromaSDK::GetChromaManager()->SetState(9);
         FUN_141276180("system_notice_GuildBattleGuide06", "");
     }
     else

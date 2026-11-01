@@ -14,6 +14,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // Header static string table (7 names) that this TU instantiates; no use here.
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -45,7 +46,8 @@ void* FUN_140aadf70();
 void* FUN_140aadf80();
 Unk_RCApp* FUN_140d4fdf0(void*);
 UIReconnectTopLayerNotify* FUN_140aade00(int id);
-CStringW FUN_1408116a0(int, const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_1412751f0(const CStringW&, int, int);
 
@@ -58,14 +60,14 @@ CReconnectionManagerCli::~CReconnectionManagerCli() {
 }
 
 // @0x140aacf50
-bool CReconnectionManagerCli::FUN_140aacf50(int error) {
+bool CReconnectionManagerCli::ShouldReconnect(int error) {
     if (!(FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c)) return false;
     if (FUN_140714f90() == 0) return false;
-    if (FUN_140714f90()->FUN_1415392c0().GetDisconnect() != 0) return false;
+    if (FUN_140714f90()->GetSocket().GetDisconnect() != 0) return false;
     if (DAT_143af7d44 == 1) return false;
     if (DAT_143ab2910 == 1) return false;
-    if (FUN_140aad0a0(0) == 0) return false;
-    if (FUN_140aad1e0() && FUN_140aad220()) return false;
+    if (GetOption(0) == 0) return false;
+    if (IsReconnecting() && IsReconnectTimedOut()) return false;
     if (m_context.m_18 != 1) return false;
     switch (error) {
     case 0: break;
@@ -76,63 +78,63 @@ bool CReconnectionManagerCli::FUN_140aacf50(int error) {
 }
 
 // @0x140aad050
-void CReconnectionManagerCli::FUN_140aad050(const ReconnectionOptions* src) {
+void CReconnectionManagerCli::SetOptions(const ReconnectionOptions* src) {
     m_options.FUN_140208460(src);
 }
-MS2_REPLACE_METHOD(0x140AAD050, CReconnectionManagerCli, FUN_140aad050, 41, 0x9138FC0F);
+MS2_REPLACE_METHOD(0x140AAD050, CReconnectionManagerCli, SetOptions, 41, 0x9138FC0F);
 
 // @0x140aad080
-ReconnectionOptions* CReconnectionManagerCli::FUN_140aad080() {
+ReconnectionOptions* CReconnectionManagerCli::GetOptions() {
     return &m_options;
 }
-MS2_REPLACE_METHOD(0x140AAD080, CReconnectionManagerCli, FUN_140aad080, 15, 0x770B1889);
+MS2_REPLACE_METHOD(0x140AAD080, CReconnectionManagerCli, GetOptions, 15, 0x770B1889);
 
 // @0x140aad0a0
-int CReconnectionManagerCli::FUN_140aad0a0(int index) {
+int CReconnectionManagerCli::GetOption(int index) {
     return m_options.FUN_140aadf90(index);
 }
-MS2_REPLACE_METHOD(0x140AAD0A0, CReconnectionManagerCli, FUN_140aad0a0, 39, 0x7C4E916A);
+MS2_REPLACE_METHOD(0x140AAD0A0, CReconnectionManagerCli, GetOption, 39, 0x7C4E916A);
 
 // @0x140aad0d0
-void CReconnectionManagerCli::FUN_140aad0d0() {
+void CReconnectionManagerCli::Reset() {
     m_08 = 0;
     m_context.FUN_1402085c0();
     m_cli.FUN_140208780();
 }
-MS2_REPLACE_METHOD(0x140AAD0D0, CReconnectionManagerCli, FUN_140aad0d0, 62, 0x6CE6D00E);
+MS2_REPLACE_METHOD(0x140AAD0D0, CReconnectionManagerCli, Reset, 62, 0x6CE6D00E);
 
 // @0x140aad120
-void CReconnectionManagerCli::FUN_140aad120() {
+void CReconnectionManagerCli::SetPending() {
     m_cli.m_pending = true;
 }
-MS2_REPLACE_METHOD(0x140AAD120, CReconnectionManagerCli, FUN_140aad120, 18, 0xFC112093);
+MS2_REPLACE_METHOD(0x140AAD120, CReconnectionManagerCli, SetPending, 18, 0xFC112093);
 
 // @0x140aad140
-void CReconnectionManagerCli::FUN_140aad140() {
+void CReconnectionManagerCli::PostPendingReconnect() {
     if (m_cli.m_pending) {
-        unsigned deadline = FUN_140aad0a0(8) * 1000 + m_cli.m_lastTick;
+        unsigned deadline = GetOption(8) * 1000 + m_cli.m_lastTick;
         if (deadline < FUN_140869420()) {
             PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x46b, m_cli.m_postParam, 0);
             m_cli.m_pending = false;
         }
     }
 }
-MS2_REPLACE_METHOD(0x140AAD140, CReconnectionManagerCli, FUN_140aad140, 144, 0xD64AFCC7);
+MS2_REPLACE_METHOD(0x140AAD140, CReconnectionManagerCli, PostPendingReconnect, 144, 0xD64AFCC7);
 
 // @0x140aad1e0
-bool CReconnectionManagerCli::FUN_140aad1e0() {
+bool CReconnectionManagerCli::IsReconnecting() {
     return m_cli.m_startTick != 0;
 }
-MS2_REPLACE_METHOD(0x140AAD1E0, CReconnectionManagerCli, FUN_140aad1e0, 48, 0x3852C998);
+MS2_REPLACE_METHOD(0x140AAD1E0, CReconnectionManagerCli, IsReconnecting, 48, 0x3852C998);
 
 // @0x140aad220
-bool CReconnectionManagerCli::FUN_140aad220() {
+bool CReconnectionManagerCli::IsReconnectTimedOut() {
     if (m_cli.m_disabled) return true;
     if (m_cli.m_attempt > m_cli.m_maxAttempts) return true;
-    unsigned deadline = FUN_140aad0a0(2) * 1000 + m_cli.m_startTick;
+    unsigned deadline = GetOption(2) * 1000 + m_cli.m_startTick;
     return deadline < FUN_140869420();
 }
-MS2_REPLACE_METHOD(0x140AAD220, CReconnectionManagerCli, FUN_140aad220, 132, 0x295953E6);
+MS2_REPLACE_METHOD(0x140AAD220, CReconnectionManagerCli, IsReconnectTimedOut, 132, 0x295953E6);
 
 // @0x140aad2b0
 int CReconnectionManagerCli::FUN_140aad2b0() {
@@ -141,7 +143,7 @@ int CReconnectionManagerCli::FUN_140aad2b0() {
 MS2_REPLACE_METHOD(0x140AAD2B0, CReconnectionManagerCli, FUN_140aad2b0, 17, 0xBA29CEEF);
 
 // @0x140aad2d0
-bool CReconnectionManagerCli::FUN_140aad2d0(int code) {
+bool CReconnectionManagerCli::IsFatalReconnectError(int code) {
     switch (code) {
     case 100:
     case 101:
@@ -165,25 +167,25 @@ bool CReconnectionManagerCli::FUN_140aad2d0(int code) {
         return false;
     }
 }
-MS2_REPLACE_METHOD(0x140AAD2D0, CReconnectionManagerCli, FUN_140aad2d0, 101, 0x126FA365);
+MS2_REPLACE_METHOD(0x140AAD2D0, CReconnectionManagerCli, IsFatalReconnectError, 101, 0x126FA365);
 
 // @0x140aad340
-void CReconnectionManagerCli::FUN_140aad340(unsigned code) {
+void CReconnectionManagerCli::BeginReconnect(unsigned code) {
     if (FUN_140714f90() == 0) return;
     m_cli.m_startTick = FUN_140869420();
     m_cli.m_attempt = 0;
-    m_cli.m_maxAttempts = FUN_140aad0a0(7);
+    m_cli.m_maxAttempts = GetOption(7);
     m_cli.m_postParam = code;
     m_cli.m_session = FUN_140714f90()->FUN_1415385d0();
     PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x46b, (WPARAM)code, 0);
-    FUN_140aad910(1, m_cli.m_maxAttempts);
+    ShowProgress(1, m_cli.m_maxAttempts);
     CStringW text(L"[DEBUG] * PreReconnect");
     FUN_1412751f0(text, 1, 1);
 }
-MS2_REPLACE_METHOD(0x140AAD340, CReconnectionManagerCli, FUN_140aad340, 264, 0x7A30D3FA);
+MS2_REPLACE_METHOD(0x140AAD340, CReconnectionManagerCli, BeginReconnect, 264, 0x7A30D3FA);
 
 // @0x140aad450
-bool CReconnectionManagerCli::FUN_140aad450() {
+bool CReconnectionManagerCli::AttemptReconnect() {
     if (FUN_140714f90() == 0) return false;
     unsigned now = FUN_140869420();
     m_cli.m_attempt = m_cli.m_attempt + 1;
@@ -192,17 +194,17 @@ bool CReconnectionManagerCli::FUN_140aad450() {
         CStringW text(L"[DEBUG] * Reconnecting...");
         FUN_1412751f0(text, 1, 1);
     }
-    FUN_140aad910(m_cli.m_attempt, m_cli.m_maxAttempts);
+    ShowProgress(m_cli.m_attempt, m_cli.m_maxAttempts);
     if (m_cli.m_deadline != 0 && (unsigned)m_cli.m_deadline > now) return false;
     int ok = FUN_140714f90()->FUN_1415383a0(CString(m_cli.m_host), m_cli.m_port, 1, 1, 1);
     if (ok == 0) return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x140AAD450, CReconnectionManagerCli, FUN_140aad450, 358, 0x221EB435);
+MS2_REPLACE_METHOD(0x140AAD450, CReconnectionManagerCli, AttemptReconnect, 358, 0x221EB435);
 
 // @0x140aad5c0
-void CReconnectionManagerCli::FUN_140aad5c0(int ok) {
-    FUN_140aad970();
+void CReconnectionManagerCli::OnReconnectResult(int ok) {
+    HideProgress();
     if (ok == 1) {
         m_cli.m_attempt = 0;
         m_cli.m_maxAttempts = 0;
@@ -219,17 +221,17 @@ void CReconnectionManagerCli::FUN_140aad5c0(int ok) {
         FUN_1412751f0(text, 1, 1);
     }
 }
-MS2_REPLACE_METHOD(0x140AAD5C0, CReconnectionManagerCli, FUN_140aad5c0, 271, 0x3FCE6E1F);
+MS2_REPLACE_METHOD(0x140AAD5C0, CReconnectionManagerCli, OnReconnectResult, 271, 0x3FCE6E1F);
 
 // @0x140aad6e0
-void CReconnectionManagerCli::FUN_140aad6e0(int error) {
+void CReconnectionManagerCli::OnReconnectFailed(int error) {
     {
         CStringW text(L"[DEBUG] !! ReconnectFailed");
         FUN_1412751f0(text, 1, 1);
     }
     m_cli.m_lastError = error;
-    if (FUN_140aad2d0(error) == 1 || FUN_140aad220() == 1) {
-        FUN_140aad970();
+    if (IsFatalReconnectError(error) == 1 || IsReconnectTimedOut() == 1) {
+        HideProgress();
         if (FUN_140714f90() != 0) {
             if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->FUN_1415384e0() != 0) {
                 FUN_140714f90()->FUN_141538510();
@@ -237,13 +239,13 @@ void CReconnectionManagerCli::FUN_140aad6e0(int error) {
         }
         PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x465, (WPARAM)m_cli.m_postParam, 0);
     } else {
-        FUN_140aad120();
+        SetPending();
     }
 }
-MS2_REPLACE_METHOD(0x140AAD6E0, CReconnectionManagerCli, FUN_140aad6e0, 251, 0xCC066A0F);
+MS2_REPLACE_METHOD(0x140AAD6E0, CReconnectionManagerCli, OnReconnectFailed, 251, 0xCC066A0F);
 
 // @0x140aad7f0
-void CReconnectionManagerCli::FUN_140aad7f0() {
+void CReconnectionManagerCli::SendReconnectRequest() {
     CStringW name = FUN_140d4fdf0(FUN_140aadf70())->FUN_14067c400();
     COutPacket packet(static_cast<int>(SendOp::Reconnect), 0);
     packet.WriteUInt8(1);
@@ -255,43 +257,43 @@ void CReconnectionManagerCli::FUN_140aad7f0() {
     m_context.FUN_140208610(packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140AAD7F0, CReconnectionManagerCli, FUN_140aad7f0, 236, 0xA06EF1BE);
+MS2_REPLACE_METHOD(0x140AAD7F0, CReconnectionManagerCli, SendReconnectRequest, 236, 0xA06EF1BE);
 
 // @0x140aad8f0
-void CReconnectionManagerCli::FUN_140aad8f0() {
+void CReconnectionManagerCli::DisableReconnect() {
     m_cli.m_disabled = true;
 }
-MS2_REPLACE_METHOD(0x140AAD8F0, CReconnectionManagerCli, FUN_140aad8f0, 18, 0xDEC0E05B);
+MS2_REPLACE_METHOD(0x140AAD8F0, CReconnectionManagerCli, DisableReconnect, 18, 0xDEC0E05B);
 
 // @0x140aad910
-void CReconnectionManagerCli::FUN_140aad910(int a, int b) {
+void CReconnectionManagerCli::ShowProgress(int a, int b) {
     UIReconnectTopLayerNotify* ui = FUN_140aade00(0x4f78);
     if (ui != 0) {
         ui->vfunc_2();
         ui->vfunc_52(a, b);
     }
 }
-MS2_REPLACE_METHOD(0x140AAD910, CReconnectionManagerCli, FUN_140aad910, 90, 0x47078FC4);
+MS2_REPLACE_METHOD(0x140AAD910, CReconnectionManagerCli, ShowProgress, 90, 0x47078FC4);
 
 // @0x140aad970
-void CReconnectionManagerCli::FUN_140aad970() {
+void CReconnectionManagerCli::HideProgress() {
     UIReconnectTopLayerNotify* ui = FUN_140aade00(0x4f78);
     if (ui != 0) {
         ui->vfunc_3();
     }
 }
-MS2_REPLACE_METHOD(0x140AAD970, CReconnectionManagerCli, FUN_140aad970, 53, 0xA618BCD8);
+MS2_REPLACE_METHOD(0x140AAD970, CReconnectionManagerCli, HideProgress, 53, 0xA618BCD8);
 
 // @0x140aad9b0
-void CReconnectionManagerCli::FUN_140aad9b0(int seconds) {
+void CReconnectionManagerCli::DisconnectAndDelayReconnect(int seconds) {
     m_cli.m_deadline = FUN_140869420() + seconds * 1000;
     FUN_140714f90()->FUN_141538510();
     PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x465, 0x2745, 0);
 }
-MS2_REPLACE_METHOD(0x140AAD9B0, CReconnectionManagerCli, FUN_140aad9b0, 93, 0x25593940);
+MS2_REPLACE_METHOD(0x140AAD9B0, CReconnectionManagerCli, DisconnectAndDelayReconnect, 93, 0x25593940);
 
 // @0x140aada20
-void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
+void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
     int kind = packet->ReadUInt8();
     switch (kind) {
     case 0: {
@@ -301,8 +303,8 @@ void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
         m_context.m_18 = mode;
         m_context.m_20 = host;
         m_context.m_28 = port;
-        m_cli.m_host = FUN_140714f90()->FUN_1415392c0().GetHost();
-        m_cli.m_port = FUN_140714f90()->FUN_1415392c0().GetPort();
+        m_cli.m_host = FUN_140714f90()->GetSocket().GetHost();
+        m_cli.m_port = FUN_140714f90()->GetSocket().GetPort();
     }
         break;
     case 2: {
@@ -310,48 +312,48 @@ void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
         switch (result) {
         case 1:
             if (FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {
-                FUN_140aad5c0(1);
+                OnReconnectResult(1);
             } else {
-                FUN_140aad6e0(0xcc);
+                OnReconnectFailed(0xcc);
             }
             break;
         default:
-            FUN_140aad6e0(result);
+            OnReconnectFailed(result);
             break;
         }
     }
         break;
     case 3:
-        FUN_140aad0d0();
+        Reset();
         if (FUN_140aa6d30() != 0) {
             if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {
                 FUN_140714f90()->FUN_1415388a0();
                 FUN_1417e25a0(FUN_140aa6d30(), 0x6200009);
-                FUN_140d73aa0(FUN_1408116a0(0x20f, 0), 0, 0, CStringW(L""));
+                FUN_140d73aa0(BlockFormat<int>(0x20f, 0), 0, 0, CStringW(L""));
             }
         }
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140AADA20, CReconnectionManagerCli, FUN_140aada20, 834, 0x633CEC99);
+MS2_REPLACE_METHOD(0x140AADA20, CReconnectionManagerCli, OnReconnectPacket, 834, 0x633CEC99);
 
 // @0x140aadd70
-void CReconnectionManagerCli::FUN_140aadd70() {
+void CReconnectionManagerCli::Tick() {
     unsigned now = FUN_140869420();
     if (m_08 != 0 && (unsigned)(m_08 + 1000) > now) return;
     m_08 = now;
-    if (FUN_140aad1e0() == true && FUN_140aad220()) {
-        FUN_140aad6e0(0xc9);
+    if (IsReconnecting() == true && IsReconnectTimedOut()) {
+        OnReconnectFailed(0xc9);
     } else {
-        FUN_140aad140();
+        PostPendingReconnect();
     }
 }
-MS2_REPLACE_METHOD(0x140AADD70, CReconnectionManagerCli, FUN_140aadd70, 129, 0x7EEBCA39);
+MS2_REPLACE_METHOD(0x140AADD70, CReconnectionManagerCli, Tick, 129, 0x7EEBCA39);
 
 // @0x140aade00
 UIReconnectTopLayerNotify* FUN_140aade00(int id) {
     if (reinterpret_cast<Unk_RCUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (p.get()) {
             return dynamic_cast<UIReconnectTopLayerNotify*>((UIObject*)p);
         }

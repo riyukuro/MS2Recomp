@@ -41,7 +41,6 @@ public:
     void FUN_141b14630();                               // select the current channel in the list
     CStringW FUN_141b146a0(int nMapType);               // the leave button text
     CStringW FUN_141b149d0(int nMapType);               // the leave box text
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);    // bind a button child (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

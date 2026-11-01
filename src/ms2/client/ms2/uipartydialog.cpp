@@ -160,6 +160,7 @@
 #include "ms2/client/ms2/uiservice.h"  // C3: was a local member view
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: was a local member view
 #include "ms2/client/ms2/uicommunitydialog.h"  // C3: was a local member view
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- Delegate<void()> (UIPopUpMenu's menu handlers, RTTI vftable 0x142fd4958): this TU's own COMDAT copies. The
 // TInterpolator / OnceCallbackTimer callbacks bound at 0x1401cffb0 / 0x14098d150 are TFunctor<void, EmptyParam>. ----
@@ -216,7 +217,6 @@ public:
     int FUN_141adc7f0(int nUiId);                                       // is a dialog registered
     int FUN_141adc940(int nUiId);                                       // is a dialog open
     float FUN_141adbe70();                                              // the ui scale
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);                          // a dialog by id
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringTable* GetStringTable();                                          // TSingleton<CStringTable>::GetInstance
@@ -276,7 +276,7 @@ struct Unk_PdScript : AScript
 template <class T> void Unk_PdSetData(ASObj* pObj, const char* szName, T value)
 {
     ASData data;
-    data.FUN_1422b7f70(value);
+    data.AddInt(value);
     ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_PdScript*>(static_cast<AScript*>(pObj))->m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 enum Unk_PdTombType : int { Unk_PdTombNone = 0 };
@@ -332,7 +332,7 @@ void ASPartyVotePage::FUN_141a74760()
 {
     if (m_page == 0)
         return;
-    MS2Ptr<PartyVoteCli> spVote = TSingleton<CPartyManager>::GetInstance()->FUN_14162c350();
+    MS2Ptr<PartyVoteCli> spVote = TSingleton<CPartyManager>::GetInstance()->GetVote();
     if (spVote == 0 || !spVote->vfunc_5())
     {
         m_page->vfunc_4(false);
@@ -341,9 +341,9 @@ void ASPartyVotePage::FUN_141a74760()
     m_page->vfunc_4(true);
     CStringW strTitle = spVote->vfunc_4();
     m_title->FUN_1422c4f00(strTitle);
-    m_yesCount->FUN_1422c4cd0(FUN_140719630((int)spVote->FUN_140a89560()));
-    m_noCount->FUN_1422c4cd0(FUN_140719630((int)spVote->FUN_140a89590()));
-    bool bVoted = spVote->FUN_140a895c0();
+    m_yesCount->FUN_1422c4cd0(FUN_140719630((int)spVote->GetYesCount()));
+    m_noCount->FUN_1422c4cd0(FUN_140719630((int)spVote->GetNoCount()));
+    bool bVoted = spVote->HasVoted();
     m_yesButton->vfunc_4(!bVoted);
     m_noButton->vfunc_4(!bVoted);
     m_votedText->vfunc_4(bVoted);
@@ -364,7 +364,7 @@ void ASPartyVotePage::FUN_141a74a90(const Scaleform::GFx::FunctionHandler::Param
 // @0x141a74ac0
 void ASPartyVotePage::FUN_141a74ac0(bool bYes)
 {
-    MS2Ptr<PartyVoteCli> spVote = TSingleton<CPartyManager>::GetInstance()->FUN_14162c350();
+    MS2Ptr<PartyVoteCli> spVote = TSingleton<CPartyManager>::GetInstance()->GetVote();
     if (spVote == 0)
         return;
     spVote->SendParty(bYes);
@@ -392,7 +392,7 @@ CString UIPartyDialog::GetTypeName()
 }
 
 // @0x141a74d50
-void UIPartyDialog::FUN_141a74d50(CPartyMember* pMember, int nFlags)
+void UIPartyDialog::UpdateMember(CPartyMember* pMember, int nFlags)
 {
     if (m_30 == 0 || pMember == 0)
         return;
@@ -406,13 +406,13 @@ void UIPartyDialog::FUN_141a74ea0()
 {
     if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
         return;
-    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
         CPartyMember* pMember = members[i].get();
         if (pMember != 0)
-            FUN_141a74d50(pMember, 0x180);
+            UpdateMember(pMember, 0x180);
     }
 }
 
@@ -426,13 +426,13 @@ void UIPartyDialog::FUN_141a74f50(CPartyMember* pOld, CPartyMember* pNew)
     m_30->FUN_1413127f0("changeChief", strOld, strNew);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
     {
-        FUN_141a79770();
+        UpdateCreateClubButton();
         FUN_141a75a20();
     }
 }
 
 // @0x141a752a0
-int UIPartyDialog::FUN_141a752a0(CPartyMember* pMember)
+int UIPartyDialog::AddMember(CPartyMember* pMember)
 {
     if (m_30 == 0)
         return 0;
@@ -482,7 +482,7 @@ int UIPartyDialog::FUN_141a75680(float* pPos)
     MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0 || spField->m_nGlobalSplit == 0)
         return 0;
-    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -589,7 +589,7 @@ void UIPartyDialog::vfunc_15()
         return;
     if (!m_timer.Check(1000))
         return;
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162c300())
+    if (TSingleton<CPartyManager>::GetInstance()->HasVote())
         m_vote->FUN_141a74760();
     if (m_deadline != 0 && GetTickCountMs2() > m_deadline)
         TSingleton<CPartyManager>::GetInstance()->FUN_14162c4a0(0);
@@ -648,7 +648,7 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             return 1;
         }
         else
-            FUN_141a783d0(((CItem*)spItem)->FUN_140526a50());
+            FUN_141a783d0(((CItem*)spItem)->GetItemUid());
     }
     return 0;
 }
@@ -699,9 +699,9 @@ void UIPartyDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
         if (!strText.IsEmpty())
         {
             ASTooltip tip(1, 2);
-            if (tip.FUN_1409e26b0(strText))
+            if (tip.ApplyTextTooltip(strText))
             {
-                tip.FUN_1409c6dc0(4);
+                tip.SetTooltipAlign(4);
                 tip.FUN_1407cb9c0("offsetX", -30);
                 tip.FUN_1407cb9c0("offsetY", -1);
                 *pRetVal = tip.FUN_1422bb870();
@@ -792,11 +792,11 @@ void UIPartyDialog::FUN_141a77980(CInPacket& packet)
     {
     case 0x19:
         FUN_141a794e0();
-        FUN_141a79570();
+        UpdateDungeonName();
         FUN_141a75a20();
         break;
     case 0x11:
-        FUN_141a79840();
+        UpdateGiveUpDungeonButton();
         FUN_141a75a20();
         break;
     case 0x30:
@@ -815,7 +815,7 @@ void UIPartyDialog::FUN_141a77a40(CInPacket& packet)
     {
     case 3:
     case 4:
-        FUN_141a79840();
+        UpdateGiveUpDungeonButton();
         FUN_141a75a20();
         break;
     }
@@ -833,7 +833,7 @@ void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params&
 {
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
     {
-        if (((class Unk_PdClubManager*)FUN_140e0d900())->FUN_140b14cd0() == 1)
+        if (((class Unk_PdClubManager*)FUN_140e0d900())->IsClubLimitReached() == 1)
         {
             int nKind = 3;
             FUN_1412751f0(FUN_1408116a0(0x381, nKind), 1, 1);
@@ -1068,13 +1068,13 @@ void UIPartyDialog::FUN_141a792b0()
     if (m_30 == 0)
         return;
     FUN_141a794e0();
-    FUN_141a79570();
+    UpdateDungeonName();
     FUN_141a796b0();
-    FUN_141a79770();
-    FUN_141a79840();
+    UpdateCreateClubButton();
+    UpdateGiveUpDungeonButton();
     FUN_141a759b0();
     FUN_141a75a20();
-    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     size_t nCount = members.GetCount();
     ASArray list(2);
     for (size_t i = 0; i < nCount; i++)
@@ -1101,11 +1101,11 @@ void UIPartyDialog::FUN_141a794e0()
 }
 
 // @0x141a79570
-void UIPartyDialog::FUN_141a79570()
+void UIPartyDialog::UpdateDungeonName()
 {
     if (m_dungeonName == 0)
         return;
-    int nDungeonId = TSingleton<CPartyManager>::GetInstance()->FUN_14162c090();
+    int nDungeonId = TSingleton<CPartyManager>::GetInstance()->GetDungeonId();
     if (!FUN_140930b40() && nDungeonId != 0)
     {
         m_dungeonName->vfunc_4(true);
@@ -1128,7 +1128,7 @@ void UIPartyDialog::FUN_141a796b0()
 }
 
 // @0x141a79770
-void UIPartyDialog::FUN_141a79770()
+void UIPartyDialog::UpdateCreateClubButton()
 {
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
     {
@@ -1144,7 +1144,7 @@ void UIPartyDialog::FUN_141a79770()
 }
 
 // @0x141a79840
-void UIPartyDialog::FUN_141a79840()
+void UIPartyDialog::UpdateGiveUpDungeonButton()
 {
     RoomStageDungeonCli* pStage = FUN_140931510()->GetStage().get();
     if (pStage != 0 && pStage->IsStageFlagSet() && TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
@@ -1228,9 +1228,9 @@ void UIPartyDPSDialog::FUN_141a7b540()
 {
     if (m_30.IsNull() != 0)
         return;
-    CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
+    CStringW strTime = CBattleRecordManager::GetInstance()->GetElapsedTimeText(m_nGroup);
     m_30->Invoke("setTime", strTime);
-    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->FUN_14162ba30();
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     if (members.IsEmpty() != 0)
         return;
     m_members.clear();
@@ -1337,7 +1337,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, spMember->FUN_141637bb0(), m_nMode)));
         }
         int nNow = GetTickCountMs2();
-        int nTime = CBattleRecordManager::GetInstance()->FUN_140a04060(m_nGroup);
+        int nTime = CBattleRecordManager::GetInstance()->GetGroupStartTick(m_nGroup);
         nTime = nNow - nTime;
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
@@ -1473,7 +1473,6 @@ struct Unk_PeOwner : Unk_PopupOwner
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
 class Unk_PeAnimService;
 Unk_PeAnimService* FUN_141b6f910();
-void* FUN_140999440(Unk_PeAnimService* pService, const egf::EntityID& id);   // the entity's actor manager
 const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);                     // world translate of a node
 int FUN_141277f40();                                                      // the popup entity ui layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
@@ -1615,7 +1614,7 @@ int UIPopupEntity::vfunc_57(int nForce)
         return 1;
     if (reinterpret_cast<PCBase*>(m_68)->FUN_141674bc0() != 0 && nForce == 0)
         return 1;
-    void* pActors = FUN_140999440(FUN_141b6f910(), reinterpret_cast<PCBase*>(m_68)->FUN_14123c460());
+    void* pActors = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(reinterpret_cast<PCBase*>(m_68)->FUN_14123c460());
     if (pActors == 0)
         return 1;
     return 0;
@@ -1735,9 +1734,7 @@ extern int DAT_143af62d8;                                               // the s
 float FUN_140bf4fd0(float f);
 bool FUN_140900550();                                                   // wedding enabled
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);     // StringFormat<CStringW>
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
-struct Unk_PmMsgBox : CMsgBoxData { void FUN_1405340b0(__int64 n); };    // Append<__int64>
 void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show a box
 class Unk_PmMdState { public: char m_00[0x48]; void* m_48; void* m_50; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
@@ -1783,7 +1780,7 @@ template <class T> T* Unk_PmGetDialog(int nUiId)
 {
     if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spDialog = ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spDialog.get() != 0)
             return dynamic_cast<T*>(static_cast<UIObject*>(spDialog));
     }
@@ -1861,7 +1858,7 @@ void UIPopUpMenu::vfunc_15()
         FUN_141a80770();
     if (m_80 == 1)
     {
-        PCBase* pTarget = efd::DynamicCast<PCBase>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0fe0(m_98)));
+        PCBase* pTarget = efd::DynamicCast<PCBase>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectByKey(m_98)));
         if (pTarget != 0)
         {
             NiPoint3 kScreen;
@@ -1976,7 +1973,7 @@ void UIPopUpMenu::vfunc_ugc_1(void* pId, CString strImage)
     if (FUN_141a80880() != 0)
         return;
     if (m_a8 == (__int64)pId)
-        FUN_141a82fb0(FUN_141028a90(strImage, 0));
+        SetProfileImage(FUN_141028a90(strImage, 0));
 }
 
 // @0x141a7e280
@@ -2021,7 +2018,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     m_b0 = pTarget->vfunc_77();
     m_158 = target.m_strImage;
     __int64 nAccountId = 0;
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4c30(nAccountId, m_a8, m_b0);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindBuddy(nAccountId, m_a8, m_b0);
     if (spBuddy.get() != 0)
         m_d0 = spBuddy->FUN_1401cc2f0();
     HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47580(m_a8);
@@ -2097,7 +2094,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
     m_a8 = (__int64)spProxy->FUN_1416c22f0();
     m_b0 = spProxy->FUN_1416c23b0();
     __int64 nAccountId = 0;
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4c30(nAccountId, m_a8, m_b0);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindBuddy(nAccountId, m_a8, m_b0);
     if (spBuddy.get() != 0)
         m_d0 = spBuddy->FUN_1401cc2f0();
     HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47580(m_a8);
@@ -2201,7 +2198,7 @@ void UIPopUpMenu::FUN_141a7f890(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* 
 void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
 {
     FUN_141a80770();
-    CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nBuddyId).get();
+    CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nBuddyId).get();
     if (pBuddy == 0)
         return;
     CStringW strName = pBuddy->FUN_1401cc1c0();
@@ -2288,7 +2285,7 @@ void UIPopUpMenu::FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Pt
 void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMember* pMember)
 {
     FUN_141a80770();
-    CStringW strName = pMember->m_info.FUN_14020e5d0();
+    CStringW strName = pMember->m_info.GetName();
     if (strName.IsEmpty())
     {
         FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
@@ -2301,7 +2298,7 @@ void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMe
     CClubMemberProxy& rInfo = pMember->m_info;
     target.m_nLevel = (unsigned short)rInfo.m_level;
     target.m_nCharId = rInfo.m_characterId;
-    target.m_strImage = FUN_141028be0(rInfo.m_characterId, rInfo.FUN_14020e6c0(), 1, CString(""));
+    target.m_strImage = FUN_141028be0(rInfo.m_characterId, rInfo.GetPicture(), 1, CString(""));
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = pMember->m_f0 == 0;
@@ -2313,7 +2310,7 @@ void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMe
         nKind = 1;
     m_a0 = pMember->m_info.m_accountId;
     m_a8 = pMember->m_info.m_characterId;
-    m_b0 = pMember->m_info.FUN_14020e5d0();
+    m_b0 = pMember->m_info.GetName();
     m_138 = 0;
     m_140 = L"";
     m_148 = "";
@@ -2350,7 +2347,7 @@ void UIPopUpMenu::FUN_141a80770()
     if ((ASScrollingList*)m_f0 != 0)
         static_cast<Unk_PdScript*>((AScript*)m_f0.operator->())->Invoke("close");
     FUN_141a82dd0();
-    FUN_140b632f0()->FUN_1422d4840(this, 0);
+    FUN_140b632f0()->RemoveFromLayer(this, 0);
     ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_141930950(this);
     ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38c70(this);
 }
@@ -2382,7 +2379,7 @@ void UIPopUpMenu::FUN_141a80910()
 }
 
 // @0x141a809e0
-void UIPopUpMenu::FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark)
+void UIPopUpMenu::SetGuildInfo(__int64 nGuildId, const CStringW& strGuild, const CString& strMark)
 {
     m_138 = nGuildId;
     m_140 = strGuild;
@@ -2447,7 +2444,7 @@ void UIPopUpMenu::FUN_141a80c40()
     m_160.SetAt(0x1fa, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86b80));
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x100))
         m_160.SetAt(0x1fb, Delegate<void()>(this, &UIPopUpMenu::SendRequestCube));
-    m_160.SetAt(0x1fc, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ca0));
+    m_160.SetAt(0x1fc, Delegate<void()>(this, &UIPopUpMenu::OpenCoupleActionDialog));
     m_160.SetAt(600, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86d20));
     m_160.SetAt(0x259, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86db0));
     m_160.SetAt(0x25a, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86e40));
@@ -2537,7 +2534,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
     m_a8 = target.m_nCharId;
     vfunc_8(1);
     vfunc_47(0);
-    FUN_140b632f0()->FUN_1422d4780(this, 0);
+    FUN_140b632f0()->AddToLayer(this, 0);
     ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
     ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
     m_f0 = FUN_140bc61d0(m_28, list);
@@ -2584,7 +2581,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
     m_90 = strName;
     vfunc_8(1);
     vfunc_47(0);
-    FUN_140b632f0()->FUN_1422d4780(this, 0);
+    FUN_140b632f0()->AddToLayer(this, 0);
     ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
     ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
     m_f0 = FUN_140bc61d0(m_28, list);
@@ -2623,7 +2620,7 @@ int UIPopUpMenu::FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir)
 }
 
 // @0x141a82fb0
-void UIPopUpMenu::FUN_141a82fb0(const CString& strImage)
+void UIPopUpMenu::SetProfileImage(const CString& strImage)
 {
     if (FUN_141a80880() != 0)
         return;
@@ -2708,7 +2705,7 @@ int UIPopUpMenu::FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strNa
         FUN_141a84a10(nType, m_a8);
     if ((nFlags & 8) != 0 && nType != 1 && 0 < strName.GetLength())
     {
-        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4950(strName).get();
+        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(strName).get();
         FUN_141a847c0(nType, pMe, pBuddy);
     }
     if ((nFlags & 4) != 0)
@@ -2719,7 +2716,7 @@ int UIPopUpMenu::FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strNa
         FUN_141a84ac0(nType, m_a8);
     if ((nFlags & 0x10) != 0 && nType != 1 && 0 < strName.GetLength())
     {
-        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4950(strName).get();
+        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(strName).get();
         FUN_141a84860(nType, pMe, pBuddy);
     }
     if ((nFlags & 0x40) != 0)
@@ -2753,7 +2750,7 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
         FUN_141a84c60(nType, pMe, m_a8);
     if ((nFlags & 8) != 0 && nType != 1 && nCharId != 0)
     {
-        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nCharId).get();
+        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nCharId).get();
         FUN_141a847c0(nType, pMe, pBuddy);
     }
     if ((nFlags & 4) != 0)
@@ -2764,7 +2761,7 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
         FUN_141a84ac0(nType, m_a8);
     if ((nFlags & 0x10) != 0 && nType != 1 && nCharId != 0)
     {
-        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nCharId).get();
+        CBuddy* pBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nCharId).get();
         FUN_141a84860(nType, pMe, pBuddy);
     }
     if ((nFlags & 0x20000) != 0 && nType != 1 && nCharId != 0)
@@ -2826,7 +2823,7 @@ void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
     __int64 nBuddyId = m_d0;
     if (nBuddyId != 0)
     {
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4c30(m_d0, m_a8, m_90);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindBuddy(m_d0, m_a8, m_90);
         if (spBuddy.get() != 0)
         {
             nBuddyId = spBuddy->FUN_1401cc2f0();
@@ -2843,8 +2840,8 @@ void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
     ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b8310(m_90);
-    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strBuddy);
-    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strChar);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strBuddy);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strChar);
     UIDialog* pQuery = ((class UIDialog*)FUN_140ae5a30(0x4e4e));
     if (pQuery != 0)
         pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
@@ -2867,8 +2864,8 @@ void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
     ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b8310(m_90);
-    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strHome);
-    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strChar);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strHome);
+    ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strChar);
     UIDialog* pQuery = ((class UIDialog*)FUN_140ae5a30(0x4e4e));
     if (pQuery != 0)
         pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
@@ -3181,7 +3178,7 @@ void UIPopUpMenu::FUN_141a85010()
 {
     if (!m_90.IsEmpty())
     {
-        CStringW strTag = FUN_1401e8510(L"expelMember:{0}", m_90);
+        CStringW strTag = StringFormat<CStringW>(L"expelMember:{0}", m_90);
         FUN_140d73aa0(FormatStringId<CStringW>(0x340, m_90), 1, this, CStringW(strTag));
     }
 }
@@ -3191,7 +3188,7 @@ void UIPopUpMenu::FUN_141a85120()
 {
     if (!m_90.IsEmpty())
     {
-        CStringW strTag = FUN_1401e8510(L"changeChief:{0}", m_90);
+        CStringW strTag = StringFormat<CStringW>(L"changeChief:{0}", m_90);
         FUN_140d73aa0(FormatStringId<CStringW>(0x33f, m_90), 1, this, CStringW(strTag));
     }
 }
@@ -3204,7 +3201,7 @@ void UIPopUpMenu::FUN_141a85230()
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e0a0),
                                                   FUN_14028dfa0<CStringW>(CStringW(L"s_party_vote_kick_user_confirm"), m_90));
         if ((CMsgBoxData*)spBox != 0)
-            static_cast<Unk_PmMsgBox*>(spBox.get())->FUN_1405340b0(m_a8);
+            spBox->Append<__int64>(m_a8);
     }
 }
 
@@ -3255,8 +3252,8 @@ void UIPopUpMenu::FUN_141a85500()
     {
         CString strBuddy = FUN_140719530(m_d0);
         Unk_FcUIMsg msg;
-        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0("editMemo");
-        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strBuddy);
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString("editMemo");
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strBuddy);
         pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
     else
@@ -3440,7 +3437,7 @@ void UIPopUpMenu::SendRequestCube()
 }
 
 // @0x141a86ca0
-void UIPopUpMenu::FUN_141a86ca0()
+void UIPopUpMenu::OpenCoupleActionDialog()
 {
     __int64 nCharId = m_a8;
     if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f4e) != 0)
@@ -3531,8 +3528,8 @@ void UIPopUpMenu::FUN_141a871a0()
     {
         CString strHome = FUN_140719530(m_d8);
         Unk_FcUIMsg msg;
-        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0("editMemoHomeBlock");
-        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->FUN_1422b82b0(strHome);
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString("editMemoHomeBlock");
+        ((class ASData*)(struct Unk_FcUIMsg*)(&msg))->AddString(strHome);
         pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
     else

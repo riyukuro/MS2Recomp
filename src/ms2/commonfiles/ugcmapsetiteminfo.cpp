@@ -37,6 +37,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (same ones the other xml table loaders use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -45,7 +51,7 @@ class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);   // split to uints
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& arr, const char* pszDelim);              // split to strings
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -127,14 +133,14 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return UGCMapSetItemDataPtr(0);
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return UGCMapSetItemDataPtr(0);
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("UGCMapSetItem"); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("UGCMapSetItem")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("UGCMapSetItem")); pNode != 0;
+         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("UGCMapSetItem"))))
     {
         data = new CUGCMapSetItemData;
         XmlGetAttr((class TiXmlElement*)(pNode), "group", *(unsigned int*)&static_cast<int&>(data->m_nGroup));
@@ -152,7 +158,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         XmlGetAttr((class TiXmlElement*)(pNode), "minCount", *(unsigned int*)&static_cast<int&>(data->m_nMinCount));
         ATL::CAtlArray<CString> arrAniIdle;
         CString strAniIdle = FUN_14015f710(pNode, "aniIdle", CString(""));
-        FUN_14015f050(strAniIdle, arrAniIdle, ",");
+        Unk_SplitA(strAniIdle, (ATL::CAtlArray<CStringA>*)&(arrAniIdle), ",");
         if (arrItemId.GetCount() != arrAniIdle.GetCount())
         {
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"UGCMapSetItem group = {0}, itemID.size() != aniIdle.size()", reinterpret_cast<const unsigned&>(data->m_nGroup));
@@ -160,7 +166,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         }
         ATL::CAtlArray<CString> arrAniWork;
         CString strAniWork = FUN_14015f710(pNode, "aniWork", CString(""));
-        FUN_14015f050(strAniWork, arrAniWork, ",");
+        Unk_SplitA(strAniWork, (ATL::CAtlArray<CStringA>*)&(arrAniWork), ",");
         if (arrItemId.GetCount() != arrAniWork.GetCount())
         {
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"UGCMapSetItem group = {0}, itemID.size() != aniWork.size()", reinterpret_cast<const unsigned&>(data->m_nGroup));
@@ -168,10 +174,10 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         }
         ATL::CAtlArray<CString> arrEffect;
         CString strEffect = FUN_14015f710(pNode, "effect", CString(""));
-        FUN_14015f050(strEffect, arrEffect, ",");
+        Unk_SplitA(strEffect, (ATL::CAtlArray<CStringA>*)&(arrEffect), ",");
         ATL::CAtlArray<CString> arrEffectNode;
         CString strEffectNode = FUN_14015f710(pNode, "effectNode", CString(""));
-        FUN_14015f050(strEffectNode, arrEffectNode, ",");
+        Unk_SplitA(strEffectNode, (ATL::CAtlArray<CStringA>*)&(arrEffectNode), ",");
         for (size_t i = 0; i < arrItemId.GetCount(); ++i)
         {
             unsigned int nItemId = arrItemId[i];

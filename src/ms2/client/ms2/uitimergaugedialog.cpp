@@ -8,6 +8,7 @@
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class Unk_TimerGauge {public:void FUN_1409b9f60(unsigned int,unsigned int);};
 class Unk_TimerClip : public AScript {
 public:Unk_TimerClip(CString,int);
@@ -55,7 +56,7 @@ CString UITimerGaugeDialog::GetTypeName(){return "TimerGaugeDialog";}
 MS2_REPLACE_METHOD(0x140EDED70, UITimerGaugeDialog, GetTypeName, 61, 0x19138386);
 
 // @0x140ededc0
-void UITimerGaugeDialog::vfunc_72(){UIDialog::vfunc_72();if(!Unk_TimerPlayer::Get())return;if(m_tick1.FUN_140268870(500))FUN_140edf200();if(m_tick2.FUN_140268870(1000))FUN_140edf2b0();}
+void UITimerGaugeDialog::vfunc_72(){UIDialog::vfunc_72();if(!Unk_TimerPlayer::Get())return;if(reinterpret_cast<Unk_IntervalTimer&>(m_tick1).Check(500))FUN_140edf200();if(reinterpret_cast<Unk_IntervalTimer&>(m_tick2).Check(1000))FUN_140edf2b0();}
 MS2_REPLACE_METHOD(0x140EDEDC0, UITimerGaugeDialog, vfunc_72, 112, 0x2BE0909E);
 
 // @0x140edee40

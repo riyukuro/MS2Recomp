@@ -13,6 +13,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- unit-local placeholders ----
 
@@ -65,7 +67,6 @@ public:
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -111,7 +112,6 @@ public:
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
@@ -190,9 +190,9 @@ void CHomeCameraMode::vfunc_6(int n)
         m_c4.m_pos = FUN_1409f2540();
         m_c4.m_rot = FUN_140af8260();
         m_dc = m_c4;
-        m_f4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
-        m_f8 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-        m_fc = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
+        m_f4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+        m_f8 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+        m_fc = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
     }
     m_b4 = 0;
     FUN_140b66570();
@@ -293,7 +293,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                        FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
@@ -303,7 +303,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
             if (fZoom != 0.0f)
             {
                 m_94 += fZoom * 2000.0f;
-                m_94 = FUN_140a17940(m_94, -150.0f, 150.0f);
+                m_94 = efd::Clamp(m_94, -150.0f, 150.0f);
             }
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
@@ -313,7 +313,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_58, m_54 + m_9c);
+                m_50 = efd::Clamp(m_50, m_58, m_54 + m_9c);
                 ptPos.x = m_50 * m_100.x + ptCenter.x;
                 ptPos.y = m_50 * m_100.y + ptCenter.y;
                 ptPos.z = m_50 * m_100.z + ptCenter.z;
@@ -389,7 +389,7 @@ void CHomeCameraMode::vfunc_16(float f)
 {
     m_54 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0() ? m_a8 : f;
     if (-1.0f != m_5c)
-        m_98 = FUN_140a17940(m_98, m_58, m_54 + m_9c);
+        m_98 = efd::Clamp(m_98, m_58, m_54 + m_9c);
 }
 MS2_REPLACE_METHOD(0x140B66120, CHomeCameraMode, vfunc_16, 172, 0x273C523C);
 
@@ -463,7 +463,7 @@ void CHomeCameraMode::FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarg
     Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
     m_50 = ptDir.FUN_140967ac0();
     if (bClamp)
-        m_50 = FUN_140a17940(m_50, m_58, m_54 + m_9c);
+        m_50 = efd::Clamp(m_50, m_58, m_54 + m_9c);
     if (0.0f > m_94 && m_50 > m_54 && fPrevDist < m_54)
     {
         m_50 = m_54;

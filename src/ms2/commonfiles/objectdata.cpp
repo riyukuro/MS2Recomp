@@ -17,6 +17,21 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- unrecovered helpers ----
 
@@ -24,7 +39,6 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_140188f50(const char* psz, int n);
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);          // attribute text
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -36,7 +50,6 @@ void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const wchar_t*
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>& rOut, const wchar_t* pszSep);
 void FUN_140177e40(const CString& str, ATL::CAtlArray<float>& rOut, const wchar_t* pszSep);
 int FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>&);                      // list attribute
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
 void FUN_140194470(efd::Point3* pDst, const efd::Point3& kSrc);         // efd::Point3 assignment
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
@@ -101,13 +114,13 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return CObjectDataPtr(0);
     }
-    Unk_140165cf0* pFunc = pRoot->FUN_140165cf0("FunctionCube");
+    Unk_140165cf0* pFunc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("FunctionCube"));
     if (pFunc != 0)
     {
         spData->m_cube.m_bEnabled = 1;
         XmlGetAttr((class TiXmlElement*)(pFunc), "UseKfm", spData->m_cube.m_bUseKfm);
         XmlGetAttr((class TiXmlElement*)(pFunc), "DefaultState", spData->m_cube.m_nDefaultState);
-        CString strType = FUN_140188f50(FUN_14086f4b0(pFunc, "ControlType"), 0);
+        CString strType = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("ControlType"), 0);
         spData->m_cube.m_strControlType = strType;
         if ((strType == "Sensor"))
             spData->m_cube.m_nControlType = 2;
@@ -135,7 +148,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             spData->m_cube.m_nControlType = 0xd;
         else
             spData->m_cube.m_nControlType = 1;
-        CString strAction = FUN_140188f50(FUN_14086f4b0(pFunc, "StateChangeAction"), 0);
+        CString strAction = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("StateChangeAction"), 0);
         if ((strAction == "ActionKey"))
             spData->m_cube.m_nStateChangeAction = 1;
         else if ((strAction == "Attack"))
@@ -143,7 +156,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         int nPermission = 0;
         XmlGetAttr((class TiXmlElement*)(pFunc), "StateChangeActionPermissionType", nPermission);
         spData->m_cube.m_nStateChangePermission = nPermission;
-        CString strUi = FUN_140188f50(FUN_14086f4b0(pFunc, "UseUiFunction"), 0);
+        CString strUi = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("UseUiFunction"), 0);
         if ((strType == "FunctionUI"))
         {
             if ((strUi == "TriggerTool"))
@@ -162,24 +175,24 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 spData->m_cube.m_nUiFunction = 7;
         }
         spData->m_cube.m_sequences.SetCount(6, -1);
-        spData->m_cube.m_sequences[0] = FUN_14086f4b0(pFunc, "ZeroSeq");
-        spData->m_cube.m_sequences[3] = FUN_14086f4b0(pFunc, "ZeroIngSeq");
-        spData->m_cube.m_sequences[1] = FUN_14086f4b0(pFunc, "FirstSeq");
-        spData->m_cube.m_sequences[4] = FUN_14086f4b0(pFunc, "FirstIngSeq");
-        spData->m_cube.m_sequences[2] = FUN_14086f4b0(pFunc, "SecondSeq");
-        spData->m_cube.m_sequences[5] = FUN_14086f4b0(pFunc, "SecondIngSeq");
+        spData->m_cube.m_sequences[0] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("ZeroSeq");
+        spData->m_cube.m_sequences[3] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("ZeroIngSeq");
+        spData->m_cube.m_sequences[1] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("FirstSeq");
+        spData->m_cube.m_sequences[4] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("FirstIngSeq");
+        spData->m_cube.m_sequences[2] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("SecondSeq");
+        spData->m_cube.m_sequences[5] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("SecondIngSeq");
         spData->m_cube.m_effects.SetCount(6, -1);
-        spData->m_cube.m_effects[0] = FUN_14086f4b0(pFunc, "ZeroEffect");
-        spData->m_cube.m_effects[3] = FUN_14086f4b0(pFunc, "ZeroIngEffect");
-        spData->m_cube.m_effects[1] = FUN_14086f4b0(pFunc, "FirstEffect");
-        spData->m_cube.m_effects[4] = FUN_14086f4b0(pFunc, "FirstIngEffect");
-        spData->m_cube.m_effects[2] = FUN_14086f4b0(pFunc, "SecondEffect");
-        spData->m_cube.m_effects[5] = FUN_14086f4b0(pFunc, "SecondIngEffect");
+        spData->m_cube.m_effects[0] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("ZeroEffect");
+        spData->m_cube.m_effects[3] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("ZeroIngEffect");
+        spData->m_cube.m_effects[1] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("FirstEffect");
+        spData->m_cube.m_effects[4] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("FirstIngEffect");
+        spData->m_cube.m_effects[2] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("SecondEffect");
+        spData->m_cube.m_effects[5] = ((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("SecondIngEffect");
         XmlGetAttr((class TiXmlElement*)(pFunc), "ZeroPhysics", spData->m_cube.m_anPhysics[0]);
         XmlGetAttr((class TiXmlElement*)(pFunc), "FirstPhysics", spData->m_cube.m_anPhysics[1]);
         XmlGetAttr((class TiXmlElement*)(pFunc), "SecondPhysics", spData->m_cube.m_anPhysics[2]);
         ATL::CAtlArray<int> autoStates;
-        CString strAuto = FUN_140188f50(FUN_14086f4b0(pFunc, "AutoStateChange"), 0);
+        CString strAuto = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("AutoStateChange"), 0);
         FUN_140177de0(strAuto, autoStates, L"-");
         if (autoStates.GetCount() == 2)
         {
@@ -189,11 +202,11 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         XmlGetAttr((class TiXmlElement*)(pFunc), "AutoStateChangeTime", spData->m_cube.m_autoState.m_nTime);
         XmlGetAttr((class TiXmlElement*)(pFunc), "enableTriggerControl", spData->m_cube.m_bEnableTriggerControl);
         XmlGetAttr((class TiXmlElement*)(pFunc), "receipeID", spData->m_cube.m_reactable.m_nRecipeId);
-        FUN_1408733e0(pFunc, "reactableEffect", spData->m_cube.m_reactable.m_strEffect);
-        Unk_140165cf0* pCamera = pFunc->FUN_140165cf0("camera");
+        XmlGetAttr((class TiXmlElement*)(pFunc), "reactableEffect", spData->m_cube.m_reactable.m_strEffect);
+        Unk_140165cf0* pCamera = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("camera"));
         if (pCamera != 0)
         {
-            CString strCamera = FUN_140188f50(FUN_14086f4b0(pCamera, "SetCamera"), 0);
+            CString strCamera = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pCamera))->Attribute("SetCamera"), 0);
             if ((strCamera == "TPSCamera"))
                 spData->m_cube.m_nCamera = 1;
             else if ((strCamera == "FPSCamera"))
@@ -207,7 +220,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             else if ((strCamera == "ConsoleCamera"))
                 spData->m_cube.m_nCamera = 6;
         }
-        Unk_140165cf0* pSpawner = pFunc->FUN_140165cf0("spawner");
+        Unk_140165cf0* pSpawner = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("spawner"));
         if (pSpawner != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pSpawner), "radius", spData->m_cube.m_spawner.m_fRadius);
@@ -215,19 +228,19 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             XmlGetAttr((class TiXmlElement*)(pSpawner), "npcID", *(unsigned int*)&static_cast<int&>(spData->m_cube.m_spawner.m_nNpcId));
             XmlGetAttr((class TiXmlElement*)(pSpawner), "regenCheckTime", spData->m_cube.m_spawner.m_fRegenCheckTime);
         }
-        Unk_140165cf0* pFusioner = pFunc->FUN_140165cf0("fusioner");
+        Unk_140165cf0* pFusioner = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("fusioner"));
         if (pFusioner != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pFusioner), "temperature", spData->m_cube.m_fusioner.m_nTemperature);
             XmlGetAttr((class TiXmlElement*)(pFusioner), "sacrifice", spData->m_cube.m_fusioner.m_nSacrifice);
         }
-        Unk_140165cf0* pDoll = pFunc->FUN_140165cf0("fittingdoll");
+        Unk_140165cf0* pDoll = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("fittingdoll"));
         if (pDoll != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pDoll), "fittingdollGender", spData->m_cube.m_fittingDoll.m_nGender);
             XmlGetAttr((class TiXmlElement*)(pDoll), "fittingdollType", spData->m_cube.m_fittingDoll.m_nType);
             CString strAsset;
-            FUN_1408733e0(pDoll, "fittingdollAsset", strAsset);
+            XmlGetAttr((class TiXmlElement*)(pDoll), "fittingdollAsset", strAsset);
             if (strAsset.GetLength() != 0)
                 spData->m_cube.m_fittingDoll.m_strAsset = strAsset;
             else
@@ -237,44 +250,44 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 else
                     spData->m_cube.m_fittingDoll.m_strAsset = "FittingDoll_M_Default01";
             }
-            CString strItems = FUN_140188f50(FUN_14086f4b0(pDoll, "fittingdollDefaultItem"), 0);
+            CString strItems = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pDoll))->Attribute("fittingdollDefaultItem"), 0);
             FUN_140177e10(strItems, spData->m_cube.m_fittingDoll.m_defaultItems, L",");
             CString strColor;
-            strColor = FUN_14015f710(pDoll, "fittingdollSkinColor0", CString(""));
+            strColor = Unk_ReadString((class Unk_XmlNode*)(pDoll), "fittingdollSkinColor0", CString(""));
             spData->m_cube.m_fittingDoll.m_anSkinColor[0] = FUN_14028c0d0(strColor);
-            strColor = FUN_14015f710(pDoll, "fittingdollSkinColor1", CString(""));
+            strColor = Unk_ReadString((class Unk_XmlNode*)(pDoll), "fittingdollSkinColor1", CString(""));
             spData->m_cube.m_fittingDoll.m_anSkinColor[1] = FUN_14028c0d0(strColor);
-            strColor = FUN_14015f710(pDoll, "fittingdollSkinColor2", CString(""));
+            strColor = Unk_ReadString((class Unk_XmlNode*)(pDoll), "fittingdollSkinColor2", CString(""));
             spData->m_cube.m_fittingDoll.m_anSkinColor[2] = FUN_14028c0d0(strColor);
         }
-        Unk_140165cf0* pSkill = pFunc->FUN_140165cf0("skillobject");
+        Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("skillobject"));
         if (pSkill != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pSkill), "skillID", *(unsigned int*)&static_cast<int&>(spData->m_cube.m_skill.m_nSkillId));
             XmlGetAttr((class TiXmlElement*)(pSkill), "skillLevel", *(unsigned short*)&static_cast<short&>(spData->m_cube.m_skill.m_nSkillLevel));
             XmlGetAttr((class TiXmlElement*)(pSkill), "friendly", spData->m_cube.m_skill.m_bFriendly);
         }
-        Unk_140165cf0* pFirst = pFunc->FUN_140165cf0("firstPCAnimation");
+        Unk_140165cf0* pFirst = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("firstPCAnimation"));
         if (pFirst != 0)
         {
-            spData->m_cube.m_firstAnimation.m_strAnimation = FUN_140188f50(FUN_14086f4b0(pFirst, "firstAnimation"), 0);
+            spData->m_cube.m_firstAnimation.m_strAnimation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstAnimation"), 0);
             XmlGetAttr((class TiXmlElement*)(pFirst), "firstUsePCMove", spData->m_cube.m_firstAnimation.m_nUsePcMove);
-            spData->m_cube.m_firstAnimation.m_strBone = FUN_140188f50(FUN_14086f4b0(pFirst, "firstPCBone"), 0);
-            CString strTranslation = FUN_140188f50(FUN_14086f4b0(pFirst, "firstPCTranslation"), 0);
+            spData->m_cube.m_firstAnimation.m_strBone = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCBone"), 0);
+            CString strTranslation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCTranslation"), 0);
             ATL::CAtlArray<float> translation;
             FUN_140177e40(strTranslation, translation, L",");
             if (translation.GetCount() == 3)
                 FUN_140194470(&spData->m_cube.m_firstAnimation.m_vTranslation, efd::Point3(translation[0], translation[1], translation[2]));
-            CString strRotation = FUN_140188f50(FUN_14086f4b0(pFirst, "firstPCRotation"), 0);
+            CString strRotation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCRotation"), 0);
             ATL::CAtlArray<float> rotation;
             FUN_140177e40(strRotation, rotation, L",");
             if (rotation.GetCount() == 3)
                 FUN_140194470(&spData->m_cube.m_firstAnimation.m_vRotation, efd::Point3(rotation[0], rotation[1], rotation[2]));
-            FUN_1408733e0(pFirst, "firstEmotionID", spData->m_cube.m_firstAnimation.m_strEmotionId);
-            FUN_1408733e0(pFirst, "firstEffectStart", spData->m_cube.m_firstAnimation.m_strEffectStart);
-            FUN_1408733e0(pFirst, "firstEffectEnd", spData->m_cube.m_firstAnimation.m_strEffectEnd);
+            XmlGetAttr((class TiXmlElement*)(pFirst), "firstEmotionID", spData->m_cube.m_firstAnimation.m_strEmotionId);
+            XmlGetAttr((class TiXmlElement*)(pFirst), "firstEffectStart", spData->m_cube.m_firstAnimation.m_strEffectStart);
+            XmlGetAttr((class TiXmlElement*)(pFirst), "firstEffectEnd", spData->m_cube.m_firstAnimation.m_strEffectEnd);
         }
-        Unk_140165cf0* pAdditional = pFunc->FUN_140165cf0("firstAdditionalEffect");
+        Unk_140165cf0* pAdditional = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("firstAdditionalEffect"));
         if (pAdditional != 0)
         {
             spData->m_cube.m_firstEffect.m_bEnabled = 1;
@@ -284,7 +297,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             XmlGetAttr((class TiXmlElement*)(pAdditional), "firstAdditionalRange", spData->m_cube.m_firstEffect.m_fRange);
             XmlGetAttr((class TiXmlElement*)(pAdditional), "firstAdditionalPopup", spData->m_cube.m_firstEffect.m_bPopup);
         }
-        Unk_140165cf0* pForbidden = pFunc->FUN_140165cf0("forbidden");
+        Unk_140165cf0* pForbidden = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("forbidden"));
         if (pForbidden != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pForbidden), "forbidJump", spData->m_cube.m_bForbidJump);
@@ -293,23 +306,23 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             XmlGetAttr((class TiXmlElement*)(pForbidden), "forbidPlayInstrument", spData->m_cube.m_bForbidPlayInstrument);
             XmlGetAttr((class TiXmlElement*)(pForbidden), "forbidExceptOwner", spData->m_cube.m_bForbidExceptOwner);
         }
-        Unk_140165cf0* pPvp = pFunc->FUN_140165cf0("pvp");
+        Unk_140165cf0* pPvp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("pvp"));
         if (pPvp != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pPvp), "enable", *(bool*)&static_cast<char&>(spData->m_cube.m_pvp.m_bEnabled));
             XmlGetAttr((class TiXmlElement*)(pPvp), "team", spData->m_cube.m_pvp.m_nTeam);
         }
-        Unk_140165cf0* pWeb = pFunc->FUN_140165cf0("openWeb");
+        Unk_140165cf0* pWeb = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("openWeb"));
         if (pWeb != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pWeb), "opentype", spData->m_cube.m_openWeb.m_nOpenType);
-            FUN_1408733e0(pWeb, "target", spData->m_cube.m_openWeb.m_strTarget);
-            FUN_1408733e0(pWeb, "webURL", spData->m_cube.m_openWeb.m_strUrl);
+            XmlGetAttr((class TiXmlElement*)(pWeb), "target", spData->m_cube.m_openWeb.m_strTarget);
+            XmlGetAttr((class TiXmlElement*)(pWeb), "webURL", spData->m_cube.m_openWeb.m_strUrl);
         }
-        Unk_140165cf0* pNotice = pFunc->FUN_140165cf0("noticePopup");
+        Unk_140165cf0* pNotice = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("noticePopup"));
         if (pNotice != 0)
-            FUN_140873420(pNotice, "type", spData->m_cube.m_notice.m_strType);
-        Unk_140165cf0* pNurturing = pFunc->FUN_140165cf0("nurturing");
+            XmlGetAttr((class TiXmlElement*)(pNotice), "type", spData->m_cube.m_notice.m_strType);
+        Unk_140165cf0* pNurturing = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFunc))->FirstChild("nurturing"));
         if (pNurturing != 0)
         {
             ATL::CAtlArray<unsigned> list;
@@ -323,7 +336,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 }
                 list.RemoveAll();
             }
-            FUN_140873420(pNurturing, "nurturingQuestTag", spData->m_cube.m_nurturing.m_strQuestTag);
+            XmlGetAttr((class TiXmlElement*)(pNurturing), "nurturingQuestTag", spData->m_cube.m_nurturing.m_strQuestTag);
             if (FUN_140178670(pNurturing, "rewardItemByFeeding", list) == 0)
             {
                 if (list.GetCount() == 3)
@@ -368,11 +381,11 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             }
         }
     }
-    Unk_140165cf0* pConfig = pRoot->FUN_140165cf0("ConfigurableCube");
+    Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ConfigurableCube"));
     if (pConfig != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pConfig), "enable", spData->m_config.m_bEnabled);
-        FUN_1408733e0(pConfig, "id", spData->m_config.m_strId);
+        XmlGetAttr((class TiXmlElement*)(pConfig), "id", spData->m_config.m_strId);
     }
     else
         spData->m_config.m_bEnabled = 0;

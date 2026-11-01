@@ -126,7 +126,8 @@ public:
     bool FUN_1409991a0(const Unk_GoModelKey& id, Unk_AvAnimRec** ppRec);
     void FUN_1409a1fc0(const Unk_GoModelKey& id, const efd::utf8string& kName, float fBlend, bool b);   // play
 };
-Unk_AcAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
 // UGC ridee build request (CUgcItemRidee, RTTI; ctor 0x14088fd60, dtor 0x14088fde0).
@@ -193,12 +194,11 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_AvWorld : public WorldService
 {
 public:
-    PC* FUN_141bd1530(unsigned __int64 nPcId);                               // the pc of a record id
     void* FUN_141bd1180(unsigned nId);                                       // object registered under the pet / ridee id
     void* FUN_141bd1290(unsigned nId);                                       // object registered under the avatar id
 };
 
-// The effect manager (FUN_1403ed280): spawn requests are 0x78 bytes built by 0x140a52ef0, released by 0x1405a89e0.
+// The effect manager (TSingleton<CEffectService>): spawn requests are 0x78 bytes built by 0x140a52ef0, released by 0x1405a89e0.
 void FUN_140a52ef0(void* pRequest);
 void FUN_1405a89e0(void* pRequest);
 struct Unk_AvEffectRequest
@@ -217,13 +217,6 @@ class NoticeMessage   // C3: member view for the former free stand-ins
 public:
     void SetActor(int);
 };
-class Unk_AvEffectMgr
-{
-public:
-    int FUN_1411a49c0(Unk_AvEffectRequest* pRequest);       // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                        // release
-};
-Unk_AvEffectMgr* FUN_1403ed280();
 
 // The mode service (FUN_1409f7c90): one flag read from a global.
 extern int DAT_143ae2b40;
@@ -450,6 +443,8 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(AvatarPC);
 
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/avatarpc_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/client/ms2/effectservice.h"   // C3: CEffectService::FUN_1411a49c0/4a00/6060
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(AvatarPet);
@@ -573,7 +568,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(kItemIds[i], 1, 0))
         {
-            ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140526b30(FUN_1409f6ee0());
+            ((class CItem*)(class CItem*)(spItem.operator->()))->SetObjectId(FUN_1409f6ee0());
             FUN_141653d10(spAvatar, MS2Ptr<CItem>(spItem));
         }
     }
@@ -598,7 +593,7 @@ AvatarPC* FUN_1409f3fd0(MS2Ptr<Unk_PCArg125> spSrc)
     AvatarPC* pAvatar = new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0);
     if (pAvatar != 0)
     {
-        PC* pSource = ((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bd1530(spSrc->m_nPcId);
+        PC* pSource = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(spSrc->m_nPcId));
         if (pSource != 0)
         {
             ((class PC*)(class PC*)(pAvatar))->FUN_141658ed0(((class PC*)(pSource))->FUN_141658f10());
@@ -667,7 +662,7 @@ void AvatarPC::FUN_1409f45a0(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return;
-    int nInstrument = ((class CItemData*)(spData.operator->()))->FUN_14053de80();
+    int nInstrument = ((class CItemData*)(spData.operator->()))->GetInstrumentId();
     if (::FUN_14166c930(this) == 0x2f)
     {
         Unk_McState* pState = ::FUN_14166ccb0(this);
@@ -685,12 +680,12 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 {
     if (spData == 0)
         return;
-    if (!((class CItemData*)(spData.operator->()))->FUN_14053cc80())
+    if (!((class CItemData*)(spData.operator->()))->IsRideItem())
         return;
     if (m_spRidee)
     {
         bool bChanged = m_spRidee->GetItemData() &&
-                        m_spRidee->GetItemData()->FUN_14053c510() != spData->FUN_14053c510();
+                        m_spRidee->GetItemData()->GetItemId() != spData->GetItemId();
         m_spRidee->vfunc_58(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
         if (!bChanged)
             return;
@@ -955,7 +950,7 @@ void AvatarPC::vfunc_53(float f)
     }
     if (m_b12f9 && (m_spModelView ? true : false))
     {
-        if (m_spModelView->FUN_141ab7660() == 0 || m_unk_1318.FUN_140268870(100) != 0)
+        if (m_spModelView->FUN_141ab7660() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(100) != 0)
             FUN_1409f5d20();
     }
     FUN_141087790();
@@ -1213,7 +1208,7 @@ void AvatarPC::FUN_1409f6e30()
 {
     if ((unsigned int)m_nTimer > 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nTimer);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nTimer);
         m_nTimer = 0;
     }
     if (m_spFishing)
@@ -1282,7 +1277,7 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
     CString strModel(m_strModel);
     if (spData.get() != 0)
     {
-        Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(spData.operator->()))->FUN_14053dc60());
+        Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(spData.operator->()))->GetPetId());
         if (kPet.FUN_140729a90(0))
             return;
         int nNpcId = kPet.FUN_14052ceb0()->FUN_140728820();
@@ -1337,7 +1332,7 @@ void AvatarPet::vfunc_12()
     if (m_unk_80 != 0)
     {
         Unk_AcKey kId;
-        FUN_141b6f910()->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
     FUN_1409f9010();
     FUN_1409f8e10();
@@ -1359,7 +1354,7 @@ void AvatarPet::FUN_1409f8e10()
         return;
     if (m_spItemData == 0)
         return;
-    Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(m_spItemData.operator->()))->FUN_14053dc60());
+    Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
     if (kPet.FUN_140729a90(0))
         return;
     Unk_AvNpcHandle kNpc = ((class Unk_AvNpcTable*)FUN_1406d6e90())->FUN_140a7cab0(kPet.FUN_14052ceb0()->FUN_140728820());
@@ -1371,7 +1366,7 @@ void AvatarPet::FUN_1409f8e10()
         reinterpret_cast<CString&>(kRequest.m_pName) = kNpc.FUN_140965990()->m_strEffect;
         ((class NoticeMessage*)(struct Unk_AvEffectRequest*)(&kRequest))->SetActor(FUN_14123c580());
         kRequest.m_nKind = kNpc.FUN_140965990()->FUN_1406ccf40() ? 6 : 5;
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
     }
 }
 
@@ -1380,7 +1375,7 @@ void AvatarPet::FUN_1409f9010()
 {
     if ((unsigned int)m_nEffect > 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -1426,7 +1421,7 @@ AvatarRidee::~AvatarRidee()
 {
     if (m_nEffect != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     m_pRider = 0;
@@ -1444,7 +1439,7 @@ bool AvatarRidee::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     m_spRow = 0;
     if (spData.get() != 0)
     {
-        Unk_RideePtr kRow = FUN_1407844b0(((class CItemData*)(spData.operator->()))->FUN_14053dd80());
+        Unk_RideePtr kRow = FUN_1407844b0(((class CItemData*)(spData.operator->()))->GetRideeId());
         if (kRow.get() != 0)
             FUN_1409f9ea0(Unk_RideePtr(kRow));
     }
@@ -1453,7 +1448,7 @@ bool AvatarRidee::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     if (m_bReloading)
     {
         m_spAttach = 0;
-        FUN_141b6f910()->FUN_1409fad80(FUN_14123c460(), true);
+        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), true);
         if (m_pRider != 0)
             m_pRider->vfunc_59(1, 0, 0, 0);
     }
@@ -1474,7 +1469,7 @@ void AvatarRidee::vfunc_12()
     Unk_RideePtr kRow(m_spRow);
     if (m_spRow.FUN_1407893c0(0) && m_spItemData.get() != 0)
     {
-        m_spRow = FUN_1407844b0(((class CItemData*)(m_spItemData.operator->()))->FUN_14053dd80());
+        m_spRow = FUN_1407844b0(((class CItemData*)(m_spItemData.operator->()))->GetRideeId());
         kRow = m_spRow;
     }
     if (m_pRider != 0)
@@ -1499,13 +1494,13 @@ void AvatarRidee::vfunc_12()
         reinterpret_cast<CString&>(kRequest.m_pName) = kRow->m_strEffect;
         kRequest.m_nKind = 0;
         ((class NoticeMessage*)(struct Unk_AvEffectRequest*)(&kRequest))->SetActor(FUN_14123c580());
-        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
     }
     if (m_unk_80 != 0)
     {
-        FUN_141b6f910()->FUN_1409fad80(FUN_14123c460(), false);
+        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
         Unk_AcKey kKey2;
-        FUN_141b6f910()->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kKey2)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kKey2)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
 }
 
@@ -1604,15 +1599,15 @@ AvatarRidee::AvatarRidee(Unk_RideePtr spRow)
 // @0x1409fa4f0
 void AvatarRidee::vfunc_59(MS2Ptr<CItem> spItem)
 {
-    if (spItem.get() != 0 && spItem->FUN_1405278d0() != 0)
+    if (spItem.get() != 0 && spItem->GetUgcInfo() != 0)
     {
-        CString strFile = FUN_1410280d0(7, spItem->FUN_1405278d0()->m_strName);
+        CString strFile = FUN_1410280d0(7, spItem->GetUgcInfo()->m_strName);
         if (_access(strFile, 0) == 0)
         {
             Unk_AcKey kKey1;
             Unk_UgcItemRidee kRidee;
             FUN_14088fd60(&kRidee, spItem.get(), FUN_14123c460(AC_KEY(kKey1)));
-            if (FUN_14052d220()->FUN_141887040(&kRidee, CString(strFile), spItem->FUN_1405283d0()) == 0)
+            if (FUN_14052d220()->FUN_141887040(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
             {
                 Unk_AcKey kKey2;
                 Unk_GoModelKey& rKey2 = FUN_14123c460(AC_KEY(kKey2));

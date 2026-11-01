@@ -36,6 +36,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
@@ -60,11 +61,10 @@ public:
     void FUN_1422dcca0(int nIndex);                             // select
 };
 // The upgrade button.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422cdf20(bool b);
-    void FUN_1422cdfb0(const CStringW& str);
     void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);
     void FUN_1422c1fe0(unsigned n);
 };
@@ -143,7 +143,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         return;
     int nLevel = m_tab->FUN_1422e3210() + 1;
     int nTheme = m_themeList->FUN_1422dccd0() + 1;
-    Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
+    Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
     if (house == 0)
         return;
     MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_themeTitle");
@@ -164,7 +164,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         m_upgradeButton->vfunc_4(bEnable);
         m_upgradeButton->FUN_1422cdf20(true);
         m_upgradeButton->FUN_1422cdfb0(strLabel);
-        bool bOk = FUN_14028d780((char)TSingleton<CGuildManager>::GetInstance()->FUN_1404d01b0(WorldService::GetInstance()->FUN_141bd0d30()));
+        bool bOk = FUN_14028d780((char)TSingleton<CGuildManager>::GetInstance()->IsMaster(WorldService::GetInstance()->FUN_141bd0d30()));
         if (!bOk)
             m_upgradeButton->FUN_1422c1fe0(0);
     }
@@ -219,7 +219,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
 {
     m_themes.clear();
     std::vector<std::pair<int, int> > list;
-    TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7a90(list);
+    TSingleton<CGuildXmlData>::GetInstance()->GetHouseKeys(list);
     for (size_t i = 0; i < list.size(); i++)
         m_themes[list[i].first].push_back(list[i].second);
     static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
@@ -241,7 +241,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a910(const Scaleform::GFx::FunctionHand
     for (size_t i = 0; i < ids.size(); i++)
     {
         ASObj obj(2);
-        Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, ids[i]);
+        Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, ids[i]);
         if (house == 0)
             return;
         obj.FUN_1407cbb20("imgpath", CStringW(house->f58));
@@ -270,27 +270,27 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
     {
         if (nLevel == nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
+            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_change_theme"), FUN_140763e10(house->f30),
                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a720));
-            box->FUN_140533ff0(nTheme);
+            box->Append<int>(nTheme);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
         else if (nLevel > nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d79b0(nLevel, nTheme);
+            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_140d26d90(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), &nLevel,
                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a6b0));
-            box->FUN_140533ff0(nLevel);
-            box->FUN_140533ff0(nTheme);
+            box->Append<int>(nLevel);
+            box->Append<int>(nTheme);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
     }

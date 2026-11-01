@@ -15,14 +15,21 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 void* FUN_14025e7c0();                                          // the option service
-bool FUN_14116d840(void* pOptions);                             // is the observer mode on
-class WorldService { public: void* FUN_141bd0cc0(); };   // C3: member view (0x141bd0cc0, the local player)
-void* FUN_1403ed2d0();                                          // the UI service
-void FUN_14152a960(void* pActor);                               // leave the observed actor
+class CInputKeyHandler   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14116d840();
+};
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14152a960();
+};
 
 // @0x141a732e0
 UIObserveDialog::UIObserveDialog()
@@ -59,11 +66,11 @@ MS2_REPLACE_METHOD(0x141A733E0, UIObserveDialog, OnLoadComplete, 226, 0xFD29FD68
 // @0x141a734d0
 int UIObserveDialog::vfunc_13()
 {
-    if (FUN_14116d840(FUN_14025e7c0()) != false)
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840() != false)
     {
-        void* pActor = ((void*)((WorldService*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+        void* pActor = ((void*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
-            FUN_14152a960(pActor);
+            ((class MyPC*)(void*)(pActor))->FUN_14152a960();
         return 1;
     }
     if (UIDialog::vfunc_13() != 0)

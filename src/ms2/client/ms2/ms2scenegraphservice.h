@@ -63,7 +63,7 @@ public:
     virtual void RemoveFromUpdate(SceneGraphData* pData);                   // 0x1414f1c10
     static void FUN_1414f1d00(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin, efd::UInt32 uiEnd,
         NiUpdateProcess* pkProcess);                                        // 0x1414f1d00 MultiSceneUpdater callback
-    void FUN_1414f1e30(NiAVObject* pkSceneGraph);                           // 0x1414f1e30 always update in bucket 1
+    void AddAlwaysUpdated(NiAVObject* pkSceneGraph);                           // 0x1414f1e30 always update in bucket 1
     void FUN_1414f1e70(const egf::EntityID& entityID, int iBucket);         // 0x1414f1e70 bucket override by entity
     void FUN_1414f1ec0();                                                   // 0x1414f1ec0 drop all bucket overrides
     void FUN_1414f1ef0(const egf::EntityID& entityID);                      // 0x1414f1ef0 drop one bucket override

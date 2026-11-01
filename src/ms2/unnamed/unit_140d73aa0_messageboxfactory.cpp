@@ -27,7 +27,7 @@ public:
     void FUN_141a027c0(Unk_MsgBoxCallback cb);
     void FUN_141a01800(int n);
     void SetTitle(const CStringW& str);
-    void FUN_141a024e0(CStringW str, bool b);
+    void SetCheckbox0(CStringW str, bool b);
     void SetAgreement(bool b);
 
     char m_pad[0x2a0];
@@ -185,7 +185,7 @@ void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB
     {
         box->FUN_141a01800(1);
         box->SetTitle(strA);
-        box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
+        box->SetCheckbox0(GetStringCommon(0x9d0), 1);
         g_1439f5a0c = nBit;
         box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
         FUN_140d73c60(box);
@@ -204,7 +204,7 @@ Unk_MsgBoxPtr FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB
     }
     box->FUN_141a01800(1);
     box->SetTitle(strA);
-    box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
+    box->SetCheckbox0(GetStringCommon(0x9d0), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);
     FUN_140d73c60(box);

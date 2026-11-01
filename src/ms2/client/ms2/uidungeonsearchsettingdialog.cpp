@@ -122,17 +122,17 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     m_group->FUN_1422dfce0(FUN_140cbf840(1));
     m_group->FUN_1422dfce0(FUN_140cbf840(2));
     m_group->FUN_1422df5f0(3);
-    m_group->FUN_1422df690(0);
+    m_group->SetSelectedIndex(0);
     m_roomOfRow.resize(m_rows.size(), 0);
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c113c0), 0);
-    m_group->FUN_1422df9a0(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11370), 0);
+    m_group->FUN_1422df9a0(ParamsDelegate(this, &UIDungeonSearchSettingDialog::OnGroupChanged), 0);
     m_checks.resize(m_rows.size(), MS2Ptr<ASCheckBox>(0));
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
         if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]))
             m_checks[i]->FUN_1422ce320(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11840), FUN_140bd09d0(i));
     }
-    FUN_140c11190(m_nGroup);
+    SelectGroup(m_nGroup);
     FUN_140c112e0();
 }
 
@@ -154,7 +154,7 @@ void UIDungeonSearchSettingDialog::vfunc_26()
 MS2_REPLACE_METHOD(0x140C110B0, UIDungeonSearchSettingDialog, vfunc_26, 218, 0x943477A1);
 
 // @0x140c11190
-void UIDungeonSearchSettingDialog::FUN_140c11190(int nGroup)
+void UIDungeonSearchSettingDialog::SelectGroup(int nGroup)
 {
     m_rooms.clear();
     m_nGroup = nGroup;
@@ -171,7 +171,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11190(int nGroup)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140C11190, UIDungeonSearchSettingDialog, FUN_140c11190, 262, 0xF2E97D1F);
+MS2_REPLACE_METHOD(0x140C11190, UIDungeonSearchSettingDialog, SelectGroup, 262, 0xF2E97D1F);
 
 // @0x140c112a0
 void UIDungeonSearchSettingDialog::SetSelected(const std::set<unsigned>& selected)
@@ -183,26 +183,26 @@ MS2_REPLACE_METHOD(0x140C112A0, UIDungeonSearchSettingDialog, SetSelected, 43, 0
 // @0x140c112e0
 void UIDungeonSearchSettingDialog::FUN_140c112e0()
 {
-    FUN_140c11300();
+    UpdateListCount();
 }
 MS2_REPLACE_METHOD(0x140C112E0, UIDungeonSearchSettingDialog, FUN_140c112e0, 24, 0x56AAF3CF);
 
 // @0x140c11300
-void UIDungeonSearchSettingDialog::FUN_140c11300()
+void UIDungeonSearchSettingDialog::UpdateListCount()
 {
     if (m_list)
         m_list->FUN_1422dcf40((int)m_rooms.size());
 }
-MS2_REPLACE_METHOD(0x140C11300, UIDungeonSearchSettingDialog, FUN_140c11300, 94, 0xBF7D9412);
+MS2_REPLACE_METHOD(0x140C11300, UIDungeonSearchSettingDialog, UpdateListCount, 94, 0xBF7D9412);
 
 // @0x140c11370
-void UIDungeonSearchSettingDialog::FUN_140c11370(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchSettingDialog::OnGroupChanged(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nGroup = m_group->FUN_1422df6c0();
-    FUN_140c11190(nGroup);
+    int nGroup = m_group->GetSelectedIndex();
+    SelectGroup(nGroup);
     FUN_140c112e0();
 }
-MS2_REPLACE_METHOD(0x140C11370, UIDungeonSearchSettingDialog, FUN_140c11370, 74, 0x86F00231);
+MS2_REPLACE_METHOD(0x140C11370, UIDungeonSearchSettingDialog, OnGroupChanged, 74, 0x86F00231);
 
 // @0x140c113c0
 void UIDungeonSearchSettingDialog::FUN_140c113c0(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -275,7 +275,7 @@ MS2_REPLACE_METHOD(0x140C11840, UIDungeonSearchSettingDialog, FUN_140c11840, 321
 // @0x140c11f50
 template <> MS2Ptr<ASCheckBox> AScript::FUN_140c11f50<ASCheckBox>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140a57df0(m_nMovieId, v);
     return MS2Ptr<ASCheckBox>(0);
@@ -299,12 +299,12 @@ template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c120d0(const CString& strName)
 template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c12120(const Scaleform::GFx::Value& v, const CString& strName)
 {
     MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
-    if (!spObj->FUN_1422ba9f0("getChildByName"))
+    if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
     if (child.IsObject())
         return FUN_140bc6120(m_nMovieId, child);
-    if (!spObj->FUN_1422ba9f0("numChildren"))
+    if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount = spObj->FUN_1422c6670();
     for (int i = 0; i < nCount; i++) {
@@ -341,7 +341,7 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
 UIDungeonControlCenter* FUN_140c125c0(int nUIType)
 {
     if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonControlCenter*>((UIObject*)p);
     }

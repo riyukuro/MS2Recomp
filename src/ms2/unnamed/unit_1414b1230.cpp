@@ -64,7 +64,7 @@ MS2_CHECK_SIZE(Unk_CmdBitset, 1);
 size_t FUN_1401662c0(ATL::CAtlArray<CString>* p);                               // element count
 CString* FUN_140164930(ATL::CAtlArray<CString>* p, size_t nIndex);              // element
 void FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
-void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep);   // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_14015f0b0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep);   // split
 class Unk_CmdEnvSvc { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
 Unk_LaunchOptions* FUN_1406aeee0();
@@ -225,7 +225,7 @@ int FUN_1414b1770(CString strArg)
         return 0;
     CString strRest = strArg.Mid(5);
     ATL::CAtlArray<CString> tokens;
-    FUN_14015f050(strRest, tokens, ",");
+    Unk_SplitA(const_cast<CStringA&>(strRest), (ATL::CAtlArray<CStringA>*)&(tokens), ",");
     int nCount = (int)FUN_1401662c0(&tokens);
     if (nCount == 2)
     {

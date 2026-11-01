@@ -16,9 +16,11 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 
 // The actor's buff set: the fall-damage knock-back direction.
-class Unk_FallDmgBuff { public: efd::Point3 FUN_1416836d0(); };
+class Unk_PCMove { public: Vector3 FUN_1416836d0(); };   // C3: view of the real class (unit_141682f80)
+class Unk_FallDmgBuff { public: };
 
 // PCBase vtable view: slot 22 takes the point by value (the exe copies it to a 16-aligned temp)
 class Unk_FallDmgSlots
@@ -52,9 +54,9 @@ void StateFallDamage::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         CString strRec;
-        bool bHasRec = !FUN_1416561a0(pPC)->FUN_1411eabd0().IsEmpty();
+        bool bHasRec = !reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0().IsEmpty();
         if (bHasRec)
-            strRec = FUN_1416561a0(pPC)->FUN_1411eabd0();
+            strRec = reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0();
         if (!strRec.IsEmpty())
         {
             efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
@@ -89,7 +91,7 @@ void StateFallDamage::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_FallDmgBuff* pBuff = (Unk_FallDmgBuff*)m_pOwner->FUN_14166d240();
-    reinterpret_cast<Unk_FallDmgSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_1416836d0());
+    reinterpret_cast<Unk_FallDmgSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_1416836d0())));
     if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else

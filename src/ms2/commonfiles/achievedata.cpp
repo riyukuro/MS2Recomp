@@ -385,7 +385,7 @@ inline CStringW FUN_14016a730(const char* psz, int nCodePage)
     return CStringW(L"");
 }
 CString FUN_1407185b0(const CString& value);
-void FUN_14028faa0(Unk_XmlNode* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlNode*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_XmlNode*, const char*, CString&);
@@ -816,9 +816,9 @@ CString CAchieveData::GetName()
 // @0x14015bd60
 int CAchieveData::IsAvailable()
 {
-    if (!FUN_140166410()->FUN_14036d4b0(m_strFeature))
+    if (!FUN_140166410()->IsFeatureEnabledByName(m_strFeature))
         return 0;
-    bool bOther = m_strLocale.GetLength() != 0 && m_strLocale != FUN_140166410()->FUN_14036d8e0();
+    bool bOther = m_strLocale.GetLength() != 0 && m_strLocale != FUN_140166410()->GetLocaleName();
     if (bOther)
         return 0;
     return 1;
@@ -900,7 +900,7 @@ void CAchieveData::Load(CString strPath)
         return;
     }
     std::vector<Unk_XmlNode*> nodes;
-    FUN_14028faa0(pRoot, "achieves", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "achieves", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_XmlNode* pNode = nodes[i];
@@ -1002,7 +1002,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
         return;
     }
     std::vector<Unk_XmlNode*> nodes;
-    FUN_14028faa0(pRoot, "achieves", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "achieves", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_XmlNode* pNode = nodes[i];

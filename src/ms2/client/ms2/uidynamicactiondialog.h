@@ -52,12 +52,12 @@ public:
     void FUN_14192c660(NotifyObject* pNotify);              // NotifyClearAchieve: refresh
     void FUN_14192c690(const Scaleform::GFx::FunctionHandler::Params& params);   // empty (the search input callback)
     void FUN_14192c6b0();                                   // rebuild the learned actions of the player and the pages
-    void FUN_14192c930(int nAction);                        // "setFocusByEmotion"
+    void SetFocusByEmotion(int nAction);                        // "setFocusByEmotion"
     void FUN_14192c9b0(int nAction);                        // use the action on the player
     void FUN_14192ca10(int nAction);                        // open the skill preview of the action
     void FUN_14192ca70();                                   // "buildActions" in id order
     void FUN_14192d100();                                   // "buildActions" in reverse id order
-    void FUN_14192d790(CStringW strSearch);                 // set the search text; refresh when it changed
+    void SetSearchText(CStringW strSearch);                 // set the search text; refresh when it changed
     CStringW FUN_14192d820(unsigned int nAction);           // the search keywords of an action, space separated
     void FUN_14192d960(ASArray& arr);                       // pad the page list with empty slots
     void FUN_14192da70(int nKey);                           // keys: move the selection in "m_list"

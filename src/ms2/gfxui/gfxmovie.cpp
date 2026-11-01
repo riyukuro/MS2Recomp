@@ -25,7 +25,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/gfxmanager.h"
 
-extern char DAT_143b059e8;                                      // the entity app framework
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
 ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value

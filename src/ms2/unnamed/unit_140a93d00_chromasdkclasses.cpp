@@ -1492,7 +1492,7 @@ void ChromaManagerImpl::RefreshKeySkills()
     CKeyTable* pKeyTable = CKeyTable::GetInstance();
     for (int nKey = 1; nKey < KEY_SKILL_COUNT; nKey++)
     {
-        unsigned __int64 nSkill = pKeyTable->FUN_14142d190(nKey);
+        unsigned __int64 nSkill = pKeyTable->GetKeyAction(nKey);
         if (nSkill == 0 || nSkill > 500025)
             continue;
         m_keySkills[nKey] = (int)nSkill;

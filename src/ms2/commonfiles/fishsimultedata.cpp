@@ -25,6 +25,15 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -87,14 +96,14 @@ CFishData::CFishData()
 // @0x1403b1100
 int CFishData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "id", m_nId);
-    FUN_140873220(pNode, "fishMastery", m_nMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fishMastery", m_nMastery);
     Unk_ReadRank((class Unk_XmlNode*)(pNode), "rank", &m_nRank);
-    FUN_1408731e0(pNode, "ignoreSpotMastery", m_nIgnoreSpotMastery);
-    FUN_1408731e0(pNode, "fishingBook", m_nFishingBook);
-    FUN_140873220(pNode, "companion", m_nCompanion);
+    XmlGetAttr((class TiXmlElement*)(pNode), "ignoreSpotMastery", reinterpret_cast<int&>(m_nIgnoreSpotMastery));
+    XmlGetAttr((class TiXmlElement*)(pNode), "fishingBook", reinterpret_cast<int&>(m_nFishingBook));
+    XmlGetAttr((class TiXmlElement*)(pNode), "companion", m_nCompanion);
     CStringW strHabitat;
-    FUN_140873420(pNode, "habitat", strHabitat);
+    XmlGetAttr((class TiXmlElement*)(pNode), "habitat", strHabitat);
     m_nHabitat = CFishingTable::GetInstance()->FUN_1403b1f70(strHabitat);
     ATL::CAtlArray<int> arr;
     CString strSmall;
@@ -198,10 +207,10 @@ CFishingRodData::CFishingRodData()
 // @0x1403b1a20
 int CFishingRodData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "rodCode", m_nRodCode);
-    FUN_140873220(pNode, "fishMasteryLimit", m_nMasteryLimit);
-    FUN_140873220(pNode, "addFishMastery", m_nAddMastery);
-    FUN_140873220(pNode, "reduceFishingTime", m_nReduceTime);
+    XmlGetAttr((class TiXmlElement*)(pNode), "rodCode", m_nRodCode);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fishMasteryLimit", m_nMasteryLimit);
+    XmlGetAttr((class TiXmlElement*)(pNode), "addFishMastery", m_nAddMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "reduceFishingTime", m_nReduceTime);
     FUN_140873ad0(pNode, "chair", m_strChair);
     FUN_140873ad0(pNode, "fishLureEffect", m_strLureEffect);
     FUN_140873ad0(pNode, "fishingChairEffect", m_strChairEffect);
@@ -221,9 +230,9 @@ CFishingSpotData::CFishingSpotData()
 // @0x1403b1b90
 int CFishingSpotData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "id", m_nId);
-    FUN_140873220(pNode, "minMastery", m_nMinMastery);
-    FUN_140873220(pNode, "maxMastery", m_nMaxMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "minMastery", m_nMinMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "maxMastery", m_nMaxMastery);
     ATL::CAtlArray<CStringW> arr;
     FUN_14015f480(pNode, "liquidType", arr);
     m_arrLiquid.RemoveAll();
@@ -333,12 +342,12 @@ int CFishingTable::LoadSpots()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("spot"); pNode != 0; pNode = pNode->FUN_140168650("spot"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("spot")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("spot")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CFishingSpotDataPtr spData(new CFishingSpotData);
         if (spData->Load(pNode))
             m_mapSpot.SetAt(spData->m_nId, spData);
@@ -359,12 +368,12 @@ int CFishingTable::LoadFish()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fish"); pNode != 0; pNode = pNode->FUN_140168650("fish"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fish")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fish")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CFishDataPtr spData(new CFishData);
         if (spData->Load(pNode))
             m_mapFish.SetAt(spData->m_nId, spData);
@@ -385,12 +394,12 @@ int CFishingTable::LoadRods()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("rod"); pNode != 0; pNode = pNode->FUN_140168650("rod"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("rod")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("rod")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
-        FUN_140873220(pNode, "rodCode", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rodCode", nId);
         CFishingRodDataPtr spData(new CFishingRodData);
         if (spData->Load(pNode))
             m_mapRod.SetAt(nId, spData);
@@ -411,12 +420,12 @@ int CFishingTable::LoadHabitats()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fish"); pNode != 0; pNode = pNode->FUN_140168650("fish"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fish")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fish")))
     {
         unsigned nId = 0;
         CStringW strHabitat;
-        FUN_140873220(pNode, "id", nId);
-        FUN_140873420(pNode, "habitat", strHabitat);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "habitat", strHabitat);
         CFishMapIdsPtr spMaps(0);
         if (!m_mapMaps.Lookup(nId, spMaps))
         {

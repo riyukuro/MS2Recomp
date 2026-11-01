@@ -42,7 +42,7 @@ struct Unk_SptNpcNotice
 int FUN_140768010(int nMax, int nMin);                      // a random number in [nMin, nMax)
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 bool FUN_140184310(const CString& str, const char* sz);     // CString == const char*
-void FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
+int FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
 __int64 FUN_140718320(const CStringW& str);                 // parse a number text
 unsigned __int64 FUN_140718370(const CStringW& str);        // parse an unsigned 64-bit number text
 
@@ -51,7 +51,7 @@ template <class T> T* Unk_SptGetUI(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get())
             return dynamic_cast<T*>((UIObject*)spObj);
     }
@@ -376,6 +376,6 @@ MS2_REPLACE_METHOD(0x140E886F0, UISidePopupTalk, FUN_140e886f0, 148, 0x698C3076)
 void ASObj::FUN_140e88a10(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }

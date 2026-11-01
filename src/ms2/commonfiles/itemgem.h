@@ -4,7 +4,7 @@
 // An item can carry one "gem": a CGemBase-derived effect record (transparency of equip slots, chat balloon / name tag
 // skin, tomb stone / swim model, damage font, fishing, character effect, auto mastery, equip effect, pet skin, meta).
 // CItemGem is the holder that serializes the gem (flag, type byte, gem id, then the gem's own payload) and forwards
-// the apply / remove calls to it. The 12 gem types are created by CItemGem::FUN_1405a7020 from the type byte.
+// the apply / remove calls to it. The 12 gem types are created by CItemGem::CreateGem from the type byte.
 // Names: virtuals are vfunc_<slot>, non-virtual members are FUN_<va>; fields are invented.
 #pragma once
 
@@ -76,9 +76,9 @@ public:
     CGemSwimData();                                                 // 0x1405af280
     // ~CGemSwimData is implicit: 0x1405af5d0, ??_G 0x1405af8c0 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405ac860
-    CString FUN_1405ac8f0();                                        // 0x1405ac8f0 "SwimIdle_<kf>"
-    CString FUN_1405ac940();                                        // 0x1405ac940 "SwimRun_<kf>"
-    CString FUN_1405ac990();                                        // 0x1405ac990 "SwimDash_<kf>"
+    CString GetIdleAnimName();                                        // 0x1405ac8f0 "SwimIdle_<kf>"
+    CString GetRunAnimName();                                        // 0x1405ac940 "SwimRun_<kf>"
+    CString GetDashAnimName();                                        // 0x1405ac990 "SwimDash_<kf>"
     void FUN_1405ac9e0();                                           // 0x1405ac9e0 preloads the effects
 
     CString m_strIdleEffect;                                        // +0x20 "idleEffect"
@@ -95,8 +95,8 @@ public:
     CGemCharEffectData();                                           // 0x1405aca90
     // ~CGemCharEffectData is implicit: 0x1405af4f0, ??_G 0x1405af800 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405acb20
-    CString FUN_1405acbd0(int nPartnerGem);                         // 0x1405acbd0 the effect name of the partner gem
-    CString FUN_1405acc80(int nOwnerGem, int nPartnerGem);          // 0x1405acc80 the couple effect name
+    CString GetEffectByGender(int nPartnerGem);                         // 0x1405acbd0 the effect name of the partner gem
+    CString GetCoupleEffect(int nOwnerGem, int nPartnerGem);          // 0x1405acc80 the couple effect name
 
     CString m_strMale;                                              // +0x20 "EffectMale"
     CString m_strFemale;                                            // +0x28 "EffectFemale"
@@ -175,8 +175,8 @@ public:
     virtual int vfunc_5(PC* pPC, MS2Ptr<CItem> spItem);             //  5 0x1405a4170
     virtual int vfunc_6(PC* pPC, MS2Ptr<CItem> spItem);             //  6 0x1405a41f0
     virtual int vfunc_7(PC* pPC, MS2Ptr<CItem> spItem);             //  7 0x1405a4520
-    void FUN_1405a4100(int nSlot, int nHidden);                     // 0x1405a4100
-    int FUN_1405a4140(int nSlot);                                   // 0x1405a4140
+    void SetSlotHidden(int nSlot, int nHidden);                     // 0x1405a4100
+    int IsSlotHidden(int nSlot);                                   // 0x1405a4140
 
     int m_aHidden[10];                                              // +0x20 per slot: 1 = the slot is hidden
 };
@@ -355,7 +355,7 @@ public:
     virtual int vfunc_7(PC* pPC, MS2Ptr<CItem> spItem);             //  7 0x1405a7b50 remove
     virtual void vfunc_8();                                         //  8 0x1405a7c10
     void SetGem(MS2Ptr<CGemBase> spGem);                     // 0x1405aa540 take over a gem
-    bool FUN_1405a7020(int nType, int nGemId);                      // 0x1405a7020 create the gem of a type
+    bool CreateGem(int nType, int nGemId);                      // 0x1405a7020 create the gem of a type
     int FUN_1405a7c60();                                            // 0x1405a7c60
     CString FUN_1405a7cc0();                                        // 0x1405a7cc0
     CStringW FUN_1405a7d60();                                       // 0x1405a7d60

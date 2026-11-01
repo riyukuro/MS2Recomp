@@ -29,6 +29,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <egf/Entity.h>   // C3: egf::Entity::GetPropertyValue<efd::Point3>
 
 // ---- types local to this unit (all member names invented) ----
 
@@ -99,7 +100,7 @@ struct Unk_TaxiHolder
 };
 class Unk_TaxiResTable;
 class Unk_TaxiTimer;
-struct Unk_TaxiEnt { void FUN_1409618c0(unsigned hash, Vector3* out); };
+struct Unk_TaxiEnt { };
 
 struct Unk_TaxiIdArray { int* m_data; unsigned __int64 m_count; unsigned __int64 m_cap; };   // ATL::CAtlArray<int>
 extern Unk_TaxiIdArray DAT_143ab3078;
@@ -244,7 +245,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                             if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed440(*(struct Unk_CameraSetting*)(&setting)) != 0)
                             {
                                 Vector3 base;
-                                ent.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &base);
+                                reinterpret_cast<egf::Entity*>(ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(base));
                                 float fDist = FUN_1409f2430(Unk_CameraManager::FUN_1409478c0());
                                 float fYaw = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0c70();
                                 float fPitch = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d30();

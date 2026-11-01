@@ -30,7 +30,6 @@ CStringW FUN_140719a00(__int64);
 CStringW FUN_1407197a0(float);
 float FUN_140718480(const CStringW&);
 CStringW FUN_14083cb20(const CStringW&);
-CStringW FUN_1401e8510(const wchar_t*,const CStringW&);
 CStringW FUN_14052bd00(int,const CStringW&);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141b70810(unsigned,CStringW&);
@@ -186,7 +185,7 @@ public:
 };
 class Unk_BattleNpc : public CNpc { public: unsigned FUN_141094f40();};
 class Unk_BattleWorld {
-public: Unk_BattleActor* FUN_141bd1530(__int64); __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned); Unk_BattleNpc* FUN_141bd1320(unsigned);
+public: __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned); Unk_BattleNpc* FUN_141bd1320(unsigned);
 };
 struct Unk_BattleDamage {
     unsigned __int64 pad_0;
@@ -238,7 +237,7 @@ CBattleRecordGroup::CBattleRecordGroup(int value) : active(0),start(0),type(valu
 // @0x140a03290
 CBattleRecordGroup::~CBattleRecordGroup() { Clear(); }
 // @0x140a03300
-void CBattleRecordGroup::Clear() { active=0;start=0;records.RemoveAll();FUN_140a03c30(); }
+void CBattleRecordGroup::Clear() { active=0;start=0;records.RemoveAll();CloseLogFile(); }
 MS2_REPLACE_METHOD(0x140a03300, CBattleRecordGroup, Clear, 65, 0x1D6A58BF);
 // @0x140a03350
 void CBattleRecordGroup::StartIfInactive() { if(active) return; Start(); }
@@ -256,11 +255,11 @@ void CBattleRecordGroup::Stop() {
 }
 MS2_REPLACE_METHOD(0x140a03460, CBattleRecordGroup, Stop, 199, 0xEAC73EAE);
 // @0x140a03530
-int CBattleRecordGroup::FUN_140a03530() {
+int CBattleRecordGroup::IsActive() {
     if(type==2) { int roomId=DAT_143ab2884; if(!roomId) return 0; Unk_BattleRoomPtr room=reinterpret_cast<Unk_BattleRoomMgr*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(roomId); if(room==0) return 0; if(!room->enabled) return 0; }
     return active;
 }
-MS2_REPLACE_METHOD(0x140a03530, CBattleRecordGroup, FUN_140a03530, 192, 0x1BC023A0);
+MS2_REPLACE_METHOD(0x140a03530, CBattleRecordGroup, IsActive, 192, 0x1BC023A0);
 // @0x140a03600
 unsigned CBattleRecordGroup::FUN_140a03600() { return start; }
 MS2_REPLACE_METHOD(0x140a03600, CBattleRecordGroup, FUN_140a03600, 14, 0x8AEE455B);
@@ -277,15 +276,15 @@ MS2_REPLACE_METHOD(0x140a03700, CBattleRecordGroup, HasRecord, 68, 0x857B9A3E);
 CBattleRecordGroup::Ptr CBattleRecordGroup::GetRecord(__int64 id) { Ptr record(0); records.Lookup(id,record); return record; }
 MS2_REPLACE_METHOD(0x140a03750, CBattleRecordGroup, GetRecord, 122, 0xA692EB0C);
 // @0x140a037d0
-void CBattleRecordGroup::FUN_140a037d0(Ptr record,int type,__int64 amount) { if(record==0) return; record->AddAmount(type,amount); FUN_140a03c80(record->FUN_140a03120(),type,amount); }
-MS2_REPLACE_METHOD(0x140a037d0, CBattleRecordGroup, FUN_140a037d0, 148, 0xD1C80987);
+void CBattleRecordGroup::RecordAmount(Ptr record,int type,__int64 amount) { if(record==0) return; record->AddAmount(type,amount); LogAmount(record->FUN_140a03120(),type,amount); }
+MS2_REPLACE_METHOD(0x140a037d0, CBattleRecordGroup, RecordAmount, 148, 0xD1C80987);
 // @0x140a03870
-void CBattleRecordGroup::FUN_140a03870(__int64 id,int type,__int64 amount) { Ptr record=GetRecord(id); if(record==0) return; FUN_140a037d0(record,type,amount); }
-MS2_REPLACE_METHOD(0x140a03870, CBattleRecordGroup, FUN_140a03870, 162, 0x91A3E014);
+void CBattleRecordGroup::RecordAmountById(__int64 id,int type,__int64 amount) { Ptr record=GetRecord(id); if(record==0) return; RecordAmount(record,type,amount); }
+MS2_REPLACE_METHOD(0x140a03870, CBattleRecordGroup, RecordAmountById, 162, 0x91A3E014);
 // @0x140a03920
 void CBattleRecordGroup::FUN_140a03920() {
     if(!DAT_143ab5b00) return; {
-        FUN_140a03c30(); SYSTEMTIME time; GetLocalTime(&time);
+        CloseLogFile(); SYSTEMTIME time; GetLocalTime(&time);
         CString filename; filename.Format("battlerecord_%04d%02d%02d_%02d%02d%02d%03d.txt",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond,time.wMilliseconds);
         const char* dir=".\\log"; char full[MAX_PATH]={0}; char path[MAX_PATH]={0};
         if(!GetFullPathNameA(dir,MAX_PATH,full,0)) { MS2_ASSERT_AT(227,0); return; }
@@ -297,22 +296,22 @@ void CBattleRecordGroup::FUN_140a03920() {
 }
 MS2_REPLACE_METHOD(0x140a03920, CBattleRecordGroup, FUN_140a03920, 517, 0xD0AF2240);
 // @0x140a03b30
-void CBattleRecordGroup::FUN_140a03b30(const CString& text) {
+void CBattleRecordGroup::WriteLogLine(const CString& text) {
     if(!DAT_143ab5b00) return; {
         SYSTEMTIME time; GetLocalTime(&time); CString line; line.Format("%02d:%02d:%02d\t",time.wHour,time.wMinute,time.wSecond); line.Append(text);
         Unk_BattleBytes bytes(line); file.FUN_140299dc0(bytes.FUN_140297d10(),bytes.FUN_140298f20(),0);
     }
 }
-MS2_REPLACE_METHOD(0x140a03b30, CBattleRecordGroup, FUN_140a03b30, 246, 0x2A052D05);
+MS2_REPLACE_METHOD(0x140a03b30, CBattleRecordGroup, WriteLogLine, 246, 0x2A052D05);
 // @0x140a03c30
-void CBattleRecordGroup::FUN_140a03c30() { if(file.handle!=INVALID_HANDLE_VALUE) { file.FUN_140717be0(); file.FUN_1402988c0(); file.handle=INVALID_HANDLE_VALUE; } }
-MS2_REPLACE_METHOD(0x140a03c30, CBattleRecordGroup, FUN_140a03c30, 73, 0xC1B25F1F);
+void CBattleRecordGroup::CloseLogFile() { if(file.handle!=INVALID_HANDLE_VALUE) { file.FUN_140717be0(); file.FUN_1402988c0(); file.handle=INVALID_HANDLE_VALUE; } }
+MS2_REPLACE_METHOD(0x140a03c30, CBattleRecordGroup, CloseLogFile, 73, 0xC1B25F1F);
 // @0x140a03c80
-void CBattleRecordGroup::FUN_140a03c80(__int64 id,int type,__int64 amount) {
-    Unk_BattleActor* actor=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1530(id);
-    if(!actor) return; { CString text; text.Format("%s\t%d\t%d\t%u\r\n",(const char*)FUN_1401d4330(actor->vfunc_77(),0),actor->FUN_141654700(),type,amount); FUN_140a03b30(text); }
+void CBattleRecordGroup::LogAmount(__int64 id,int type,__int64 amount) {
+    Unk_BattleActor* actor=reinterpret_cast<Unk_BattleActor*>(WorldService::GetInstance()->FUN_141bd1530(id));
+    if(!actor) return; { CString text; text.Format("%s\t%d\t%d\t%u\r\n",(const char*)FUN_1401d4330(actor->vfunc_77(),0),actor->FUN_141654700(),type,amount); WriteLogLine(text); }
 }
-MS2_REPLACE_METHOD(0x140a03c80, CBattleRecordGroup, FUN_140a03c80, 321, 0xCE2B9BD6);
+MS2_REPLACE_METHOD(0x140a03c80, CBattleRecordGroup, LogAmount, 321, 0xCE2B9BD6);
 // @0x140a03dd0
 CBattleRecordManager::CBattleRecordManager() { for(unsigned i=0;i<3;++i) groups[i]=new CBattleRecordGroup(i); }
 // @0x140a03ec0
@@ -327,11 +326,11 @@ MS2_REPLACE_METHOD(0x140a03fa0, CBattleRecordManager, StartGroup, 53, 0x9931178A
 void CBattleRecordManager::StopGroup(int type) { groups[type]->Stop(); }
 MS2_REPLACE_METHOD(0x140a03fe0, CBattleRecordManager, StopGroup, 53, 0x8B5A3BF5);
 // @0x140a04020
-int CBattleRecordManager::IsGroupActive(int type) { return groups[type]->FUN_140a03530(); }
+int CBattleRecordManager::IsGroupActive(int type) { return groups[type]->IsActive(); }
 MS2_REPLACE_METHOD(0x140a04020, CBattleRecordManager, IsGroupActive, 53, 0xE9013C0A);
 // @0x140a04060
-unsigned CBattleRecordManager::FUN_140a04060(int type) { return groups[type]->FUN_140a03600(); }
-MS2_REPLACE_METHOD(0x140a04060, CBattleRecordManager, FUN_140a04060, 53, 0xE667A18B);
+unsigned CBattleRecordManager::GetGroupStartTick(int type) { return groups[type]->FUN_140a03600(); }
+MS2_REPLACE_METHOD(0x140a04060, CBattleRecordManager, GetGroupStartTick, 53, 0xE667A18B);
 // @0x140a040a0
 CBattleRecordManager::Ptr CBattleRecordManager::GetGroup(int type) { return groups[type]; }
 MS2_REPLACE_METHOD(0x140a040a0, CBattleRecordManager, GetGroup, 80, 0xF5A012A2);
@@ -345,8 +344,8 @@ MS2_REPLACE_METHOD(0x140a04150, CBattleRecordManager, RemoveRecord, 63, 0x5491EF
 int CBattleRecordManager::HasRecord(int type,__int64 id) { return groups[type]->HasRecord(id); }
 MS2_REPLACE_METHOD(0x140a041a0, CBattleRecordManager, HasRecord, 63, 0xFF8FB621);
 // @0x140a041f0
-CBattleRecordGroup::Ptr CBattleRecordManager::FUN_140a041f0(int type,__int64 id) { return groups[type]->GetRecord(id); }
-MS2_REPLACE_METHOD(0x140a041f0, CBattleRecordManager, FUN_140a041f0, 98, 0xFB4FF94A);
+CBattleRecordGroup::Ptr CBattleRecordManager::GetRecord(int type,__int64 id) { return groups[type]->GetRecord(id); }
+MS2_REPLACE_METHOD(0x140a041f0, CBattleRecordManager, GetRecord, 98, 0xFB4FF94A);
 // @0x140a04260
 CStringW CBattleRecordManager::FUN_140a04260(int group,__int64 id,int type) {
     CBattleRecordGroup::Ptr record=groups[group]->GetRecord(id); if(record==0) return CStringW();
@@ -368,15 +367,15 @@ MS2_REPLACE_METHOD(0x140a04260, CBattleRecordManager, FUN_140a04260, 1436, 0x11C
 CStringW CBattleRecordManager::FUN_140a04830(int group,__int64 id,int type) {
     CBattleRecordGroup::Ptr record=groups[group]->GetRecord(id); if(record==0) return CStringW();
     switch(type) {
-    case 0: case 1: case 2: case 3: case 6: case 7: case 8: return FUN_1401e8510(L"{0}",FUN_14083cb20(FUN_140a04260(group,id,type)));
+    case 0: case 1: case 2: case 3: case 6: case 7: case 8: return StringFormat<CStringW>(L"{0}",FUN_14083cb20(FUN_140a04260(group,id,type)));
     case 4: case 5: return FUN_14052bd00(0x98e,StringFormat(L"{0:0.2f}",FUN_140718480(FUN_140a04260(group,id,type))));
     }
     return CStringW();
 }
 MS2_REPLACE_METHOD(0x140a04830, CBattleRecordManager, FUN_140a04830, 666, 0x5FE78C60);
 // @0x140a04b00
-CStringW CBattleRecordManager::FUN_140a04b00(int group) { CStringW text; unsigned elapsed=0; elapsed=GetTickCountMs2()-groups[group]->FUN_140a03600(); FUN_141b70810(elapsed,text); return text; }
-MS2_REPLACE_METHOD(0x140a04b00, CBattleRecordManager, FUN_140a04b00, 171, 0xE1199823);
+CStringW CBattleRecordManager::GetElapsedTimeText(int group) { CStringW text; unsigned elapsed=0; elapsed=GetTickCountMs2()-groups[group]->FUN_140a03600(); FUN_141b70810(elapsed,text); return text; }
+MS2_REPLACE_METHOD(0x140a04b00, CBattleRecordManager, GetElapsedTimeText, 171, 0xE1199823);
 // @0x140a04bc0
 CStringW CBattleRecordManager::FUN_140a04bc0(int type) {
     switch(type) {
@@ -400,31 +399,31 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
     if(!source) { Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) source=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(npc->FUN_141094f40()); }
     __int64 target=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(damage->target);
     for(unsigned i=0;i<3;++i) {
-        Ptr group=groups[i]; if(!group->FUN_140a03530()) continue;
+        Ptr group=groups[i]; if(!group->IsActive()) continue;
         CBattleRecordGroup::Ptr record=group->GetRecord(source);
         if(record.get()) {
             unsigned count=(unsigned)damage->values.FUN_1401b8910();
-            group->FUN_140a037d0(record,2,count);
-            group->FUN_140a037d0(record,0,std::abs(damage->FUN_14175ac30()));
+            group->RecordAmount(record,2,count);
+            group->RecordAmount(record,0,std::abs(damage->FUN_14175ac30()));
             Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1320(damage->target);
-            if(npc && npc->FUN_1410934c0()==6) group->FUN_140a037d0(record,7,std::abs(damage->FUN_14175ac30()));
+            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(damage->FUN_14175ac30()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {
-                case 0: group->FUN_140a037d0(record,3,1); break;
-                case 1: group->FUN_140a037d0(record,3,1); group->FUN_140a037d0(record,4,1); break;
+                case 0: group->RecordAmount(record,3,1); break;
+                case 1: group->RecordAmount(record,3,1); group->RecordAmount(record,4,1); break;
                 }
             }
         }
         CBattleRecordGroup::Ptr victim=group->GetRecord(target);
-        if(victim.get()) group->FUN_140a037d0(victim,1,std::abs(damage->FUN_14175ac30()));
+        if(victim.get()) group->RecordAmount(victim,1,std::abs(damage->FUN_14175ac30()));
     }
 }
 MS2_REPLACE_METHOD(0x140a04ef0, CBattleRecordManager, FUN_140a04ef0, 1432, 0x2FA35BAE);
 // @0x140a05490
-void CBattleRecordManager::FUN_140a05490(__int64 id,__int64 amount) { for(unsigned i=0;i<3;++i) { Ptr group=groups[i]; if(!group->FUN_140a03530()) continue; group->FUN_140a03870(id,5,amount); } }
+void CBattleRecordManager::FUN_140a05490(__int64 id,__int64 amount) { for(unsigned i=0;i<3;++i) { Ptr group=groups[i]; if(!group->IsActive()) continue; group->RecordAmountById(id,5,amount); } }
 MS2_REPLACE_METHOD(0x140a05490, CBattleRecordManager, FUN_140a05490, 176, 0xCCD842A2);
 // @0x140a05550
-void CBattleRecordManager::FUN_140a05550(__int64 id,__int64 amount) { for(unsigned i=0;i<3;++i) { Ptr group=groups[i]; if(!group->FUN_140a03530()) continue; group->FUN_140a03870(id,6,amount); } }
+void CBattleRecordManager::FUN_140a05550(__int64 id,__int64 amount) { for(unsigned i=0;i<3;++i) { Ptr group=groups[i]; if(!group->IsActive()) continue; group->RecordAmountById(id,6,amount); } }
 MS2_REPLACE_METHOD(0x140a05550, CBattleRecordManager, FUN_140a05550, 176, 0xCE2A1E75);
 // @0x140a05610
 void CBattleRecordManager::FUN_140a05610() { groups[1]->Clear();groups[2]->Clear(); }

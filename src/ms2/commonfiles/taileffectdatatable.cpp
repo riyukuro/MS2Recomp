@@ -10,12 +10,18 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -45,15 +51,15 @@ bool CTailEffectDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("tailEffect"); pNode != 0; pNode = pNode->FUN_140168650("tailEffect"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("tailEffect")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("tailEffect")))
     {
         DataPtr data(new TailEffectData);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", data->m_nId);
-        FUN_1408733e0(pNode, "effectPath", data->m_strEffectPath);
-        FUN_1408733e0(pNode, "endEffectPath", data->m_strEndEffectPath);
+        XmlGetAttr((class TiXmlElement*)(pNode), "effectPath", data->m_strEffectPath);
+        XmlGetAttr((class TiXmlElement*)(pNode), "endEffectPath", data->m_strEndEffectPath);
         XmlGetAttr((class TiXmlElement*)(pNode), "distance", data->m_fDistance);
         XmlGetAttr((class TiXmlElement*)(pNode), "speed", data->m_fSpeed);
         m_map.SetAt(data->m_nId, data);

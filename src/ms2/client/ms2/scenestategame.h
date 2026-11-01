@@ -114,7 +114,7 @@ public:
     void OnStateFallDamage(CInPacket& packet);                  // 0x65
     void OnCinematic(CInPacket& packet);                  // 0x66
     void FUN_1417232a0(CInPacket& packet);                  // 0x67
-    void FUN_141723330(CInPacket& packet);                  // 0x70
+    void OnFollowNpc(CInPacket& packet);                  // 0x70
     void FUN_1417235a0(CInPacket& packet);                  // (cube item placed by an actor)
     void OnSetCraftMode(CInPacket& packet);                  // 0x68
     void OnResponseCube(CInPacket& packet);                  // 0x69
@@ -182,7 +182,7 @@ public:
     void FUN_1417373d0(CInPacket& packet);                  // 0xaa
     void FUN_141737d60(CInPacket& packet);                  // 0xd1
     void FUN_141737db0(CInputStream& in);                   // 0xd3
-    void FUN_1417380c0(CInPacket& packet);                  // 0xd6
+    void OnGlobalFactor(CInPacket& packet);                  // 0xd6
     void FUN_141738120(CInPacket& packet);                  // 0xd7
     void FUN_141738290(CInPacket& packet);                  // 0xdc
     void FUN_141738380(CInPacket& packet);                  // 0xdd
@@ -246,7 +246,7 @@ public:
     void FUN_141739880();                                   // drop the taxi effect (m_nTaxiEffect)
     int FUN_14173fe20();                                    // Ctrl+Alt+... debug key combination
     void FUN_14173feb0();                                   // the debug key action
-    void FUN_141740200(const CStringW& strName, int nType); // send packet 0x51 (mode 0, name, type)
+    void SendRequestHome(const CStringW& strName, int nType); // send packet 0x51 (mode 0, name, type)
     bool FUN_141740280(int nButton, const CMsgBoxData& data); // message box callback: answers packet 0x51
 
 public:   // members (names inferred)

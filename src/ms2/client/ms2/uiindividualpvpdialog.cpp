@@ -52,20 +52,23 @@
 #include "ms2/client/ms2/pvpmanager.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/individualarenadata.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unit-local views of exe objects ----
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
 // An arena button.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422cdfb0(const CStringW& strText);                // set the label
-    void FUN_1422ce090(int bSelected);
-    void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);  // click callback
     void FUN_1422c2a70(const ParamsDelegate& cb, void* pUser);  // click callback (event form)
-    void FUN_1422c1fe0(unsigned int bEnabled);
     void FUN_1407cbb20(const char* szName, CStringW strText);   // set a string member
     void FUN_1409c0e60(const char* szName, const wchar_t* szText);
 };
@@ -122,7 +125,7 @@ StringManager* GetStringManager();
 
 // the string table loader of the arena strings
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);
@@ -155,11 +158,11 @@ void UIIndividualPvPDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    m_spRegister = FUN_140bb4b10("m_registPVP");
-    m_spUnregister = FUN_140bb4b10("m_unregistPVP");
-    m_spJoin = FUN_140bb4b10("m_joinPVP");
-    m_spName = FUN_140bb4cf0("m_arenaName");
-    m_spDetail = FUN_140bb4cf0("m_arenaDetail");
+    m_spRegister = GetChild<Unk_140acd6e0>("m_registPVP");
+    m_spUnregister = GetChild<Unk_140acd6e0>("m_unregistPVP");
+    m_spJoin = GetChild<Unk_140acd6e0>("m_joinPVP");
+    m_spName = GetChild<ASTextField>("m_arenaName");
+    m_spDetail = GetChild<ASTextField>("m_arenaDetail");
     m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
     m_spUnregister->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), 0);
     m_spJoin->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4b0), 0);
@@ -167,7 +170,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     for (int i = 1; i < 4; i++)
     {
         CString strName = FUN_1402bb1c0("m_arena{0}", &i);
-        MS2Ptr<Unk_140acd6e0> spArena = FUN_140bb4b10(strName);
+        MS2Ptr<Unk_140acd6e0> spArena = GetChild<Unk_140acd6e0>(strName);
         if (spArena.get())
         {
             m_arenas[i] = spArena;
@@ -483,19 +486,19 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     } while (0);
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
         return 0;
     }
     pMap = new ValueMap(10);
     std::auto_ptr<KeyMap> names = m_factory30();
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = pElem->FUN_140168650("key"))
+    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
         CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));
         typename KeyMap::CPair* pPair = names->Lookup(strName);
         if (pPair == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
             delete pMap;
             pMap = 0;
             return 0;

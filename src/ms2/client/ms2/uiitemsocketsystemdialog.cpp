@@ -104,6 +104,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 typedef std::vector<ItemSocketSystemPageBase*> PageList;
 
@@ -126,7 +127,6 @@ public:
 
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, const CStringW& strText);
 CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
@@ -148,13 +148,13 @@ UIItemSocketSystemDialog::UIItemSocketSystemDialog()
     : m_pPage(0), m_nTab(0)
 {
     FUN_141924170(1);
-    ((class Unk_IssPackets*)FUN_140bccd50())->FUN_140da5180(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68ed0
 UIItemSocketSystemDialog::~UIItemSocketSystemDialog()
 {
-    ((class Unk_IssPackets*)FUN_140bccd50())->FUN_140da51e0(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68fc0
@@ -275,7 +275,7 @@ void UIItemSocketSystemDialog::vfunc_26()
 // @0x140f699f0
 void UIItemSocketSystemDialog::FUN_140f699f0(const int& nTab)
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     m_30->Invoke("changeTab", nTab);
 }
@@ -300,7 +300,7 @@ void UIItemSocketSystemDialog::FUN_140f69b50(CInPacket& packet)
 {
     if (vfunc_55() == 1)
         return;
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
     if (m_pPage != 0)

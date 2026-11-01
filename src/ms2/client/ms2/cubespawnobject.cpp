@@ -25,6 +25,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/client/ms2/effectservice.h"
+#include <egf/Entity.h>   // C3: egf::Entity::GetPropertyValue<efd::Point3>
 
 // ---- unit-local placeholders ----
 
@@ -107,7 +108,6 @@ void FUN_141993750(int nObjectId);
 class Unk_Entity
 {
 public:
-    void FUN_1409618c0(unsigned int uiPropId, efd::Point3& out);    // point property
 };
 
 // The state machine and the two states this actor registers.
@@ -422,7 +422,7 @@ int CubeSpawnObject::FUN_140a4f690()
 {
     if (FUN_140164830(m_strOwner, ((struct Unk_CsoConfig*)FUN_1401d3200())->m_94a8.FUN_140a50020()))
         return false;
-    return FUN_1401c0d90()->FUN_1404793a0(((struct Unk_CsoConfig*)FUN_1401d3200())->m_94a8.FUN_140a50020());
+    return FUN_1401c0d90()->HasTermTag(((struct Unk_CsoConfig*)FUN_1401d3200())->m_94a8.FUN_140a50020());
 }
 MS2_REPLACE_METHOD(0x140a4f690, CubeSpawnObject, FUN_140a4f690, 112, 0x1E480BE2);
 
@@ -434,8 +434,8 @@ void CubeSpawnObject::vfunc_9(void* p)
     {
         efd::Point3 kPos = efd::Point3::ZERO;
         efd::Point3 kDir = efd::Point3::ZERO;
-        m_entity.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, kPos);
-        m_entity.FUN_1408a9280()->FUN_1409618c0(0x68c7c29d, kDir);
+        reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
+        reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kDir));
         kPos = kPos + m_spNpc->m_offset;
         vfunc_19(kPos);
         vfunc_21(kDir);

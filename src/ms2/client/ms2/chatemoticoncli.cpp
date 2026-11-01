@@ -45,6 +45,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/chatemoticontable.h"
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // ---- statics (.text$di) ----
 // Two copies of the sort-type name table (two headers of the unit define it).
@@ -59,7 +60,7 @@ class UIChatEmoticonDialog : public UIDialog
 {
 public:
     void FUN_140bd2620();                                           // refresh
-    void FUN_140bd2660();                                           // rebuild
+    void ClearEmoticonData();                                           // rebuild
     void FUN_140bd26c0(int nEmoticonId);                            // select
     unsigned char unrecovered[0x50];
 };
@@ -114,7 +115,6 @@ class Unk_EmoItemPtr
 public:
     ~Unk_EmoItemPtr();                                              // 0x1401b50d0
     bool FUN_1402ffd90() const;
-    Unk_EmoItemData* FUN_1401b52a0() const;
 private:
     void* m_pad;
     void* m_p;
@@ -192,12 +192,12 @@ void CChatEmoticonCli::FUN_140a38fa0(CInPacket& packet)
     {
         unsigned nId = packet.ReadInt32();
         __int64 nExpire = packet.ReadInt64();
-        FUN_140a3a290(nId, nExpire);
+        AddGroup(nId, nExpire);
     }
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
     if (pDlg != 0)
     {
-        pDlg->FUN_140bd2660();
+        pDlg->ClearEmoticonData();
         pDlg->FUN_140bd2620();
     }
 }
@@ -211,7 +211,7 @@ void CChatEmoticonCli::FUN_140a39170(CInPacket& packet)
     for (int i = 0; i < nGroups; i++)
     {
         unsigned nId = packet.ReadInt32();
-        FUN_140a3a380(nId);
+        RemoveGroup(nId);
     }
     int nIds = packet.ReadInt32();
     for (int i = 0; i < nIds; i++)
@@ -237,7 +237,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
     {
         unsigned nId = packet.ReadInt32();
         __int64 nExpire = packet.ReadInt64();
-        FUN_140a3a290(nId, nExpire);
+        AddGroup(nId, nExpire);
         setAdded.insert(nId);
     }
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
@@ -256,7 +256,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
     UIChatDialog* pChat = ((class UIChatDialog*)FUN_140938cd0(0x4e5d));
     if (pChat != 0)
     {
-        CStringW strName = FUN_14016a730((const char*)item.FUN_1401b52a0()->FUN_14053fdd0(), 0);
+        CStringW strName = FUN_14016a730((const char*)reinterpret_cast<Unk_EmoItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconPath(), 0);
         CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_add_notify_message",
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
@@ -293,7 +293,7 @@ MS2_REPLACE_METHOD(0x140A397B0, CChatEmoticonCli, OnEmoticonRemoved, 107, 0x3D9C
 
 // 3: a pack opened in the messenger browser.
 // @0x140a39830
-void CChatEmoticonCli::FUN_140a39830(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonTypedInMessenger(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     CStringW strName = packet.ReadUnicodeString();
@@ -306,11 +306,11 @@ void CChatEmoticonCli::FUN_140a39830(CInPacket& packet)
         return;
     pChat->FUN_141a10010(nFlag, nId);
 }
-MS2_REPLACE_METHOD(0x140A39830, CChatEmoticonCli, FUN_140a39830, 255, 0xCDB8952F);
+MS2_REPLACE_METHOD(0x140A39830, CChatEmoticonCli, OnEmoticonTypedInMessenger, 255, 0xCDB8952F);
 
 // 4: a pack opened in the group messenger browser.
 // @0x140a39940
-void CChatEmoticonCli::FUN_140a39940(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonSentInGroupMessenger(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     CStringW strName = packet.ReadUnicodeString();
@@ -322,7 +322,7 @@ void CChatEmoticonCli::FUN_140a39940(CInPacket& packet)
         return;
     pChat->FUN_14194afc0(nId);
 }
-MS2_REPLACE_METHOD(0x140A39940, CChatEmoticonCli, FUN_140a39940, 209, 0x3A7FAB09);
+MS2_REPLACE_METHOD(0x140A39940, CChatEmoticonCli, OnEmoticonSentInGroupMessenger, 209, 0x3A7FAB09);
 
 // 7: result notice of a pack operation.
 // @0x140a39a20
@@ -374,7 +374,7 @@ bool CChatEmoticonCli::FUN_140a39dd0(int nEmoticonId)
 MS2_REPLACE_METHOD(0x140A39DD0, CChatEmoticonCli, FUN_140a39dd0, 454, 0xE5D9DB06);
 
 // @0x140a39fa0
-bool CChatEmoticonCli::FUN_140a39fa0(int nEmoticonId)
+bool CChatEmoticonCli::IsEmoticonFavorite(int nEmoticonId)
 {
     Unk_EmoDataPtr data = reinterpret_cast<Unk_EmoTable*>(TSingleton<CChatEmoticonTable>::GetInstance())->FUN_1401e7120(nEmoticonId);
     if (data.FUN_1401f0b70())
@@ -386,7 +386,7 @@ bool CChatEmoticonCli::FUN_140a39fa0(int nEmoticonId)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140A39FA0, CChatEmoticonCli, FUN_140a39fa0, 266, 0xE11749A0);
+MS2_REPLACE_METHOD(0x140A39FA0, CChatEmoticonCli, IsEmoticonFavorite, 266, 0xE11749A0);
 
 // @0x140a3a0b0
 bool CChatEmoticonCli::FUN_140a3a0b0(int nEmoticonId)
@@ -419,27 +419,27 @@ bool CChatEmoticonCli::FUN_140a3a140(unsigned nGroupId)
 MS2_REPLACE_METHOD(0x140A3A140, CChatEmoticonCli, FUN_140a3a140, 319, 0xCB912C57);
 
 // @0x140a3a290
-void CChatEmoticonCli::FUN_140a3a290(unsigned nGroupId, __int64 nExpire)
+void CChatEmoticonCli::AddGroup(unsigned nGroupId, __int64 nExpire)
 {
-    FUN_140a3a380(nGroupId);
+    RemoveGroup(nGroupId);
     MS2Ptr<ChatEmoticonGroupInfo> spGroup(new ChatEmoticonGroupInfo);
     spGroup->m_nId = nGroupId;
     spGroup->m_nExpire = nExpire;
     m_groupById[nGroupId] = spGroup;
     m_groups.push_back(spGroup);
 }
-MS2_REPLACE_METHOD(0x140A3A290, CChatEmoticonCli, FUN_140a3a290, 225, 0xED9F37B5);
+MS2_REPLACE_METHOD(0x140A3A290, CChatEmoticonCli, AddGroup, 225, 0xED9F37B5);
 
 // @0x140a3a380
-void CChatEmoticonCli::FUN_140a3a380(unsigned nGroupId)
+void CChatEmoticonCli::RemoveGroup(unsigned nGroupId)
 {
-    MS2Ptr<ChatEmoticonGroupInfo> spGroup = FUN_140a3a640(nGroupId);
+    MS2Ptr<ChatEmoticonGroupInfo> spGroup = FindGroup(nGroupId);
     if (spGroup.IsNull())
         return;
     m_groupById.erase(nGroupId);
     m_groups.remove(spGroup);
 }
-MS2_REPLACE_METHOD(0x140A3A380, CChatEmoticonCli, FUN_140a3a380, 132, 0x5133450B);
+MS2_REPLACE_METHOD(0x140A3A380, CChatEmoticonCli, RemoveGroup, 132, 0x5133450B);
 
 // @0x140a3a410
 void CChatEmoticonCli::SendMessenger()
@@ -464,17 +464,17 @@ void CChatEmoticonCli::SendMessenger()
 MS2_REPLACE_METHOD(0x140A3A410, CChatEmoticonCli, SendMessenger, 550, 0x755D789E);
 
 // @0x140a3a640
-MS2Ptr<ChatEmoticonGroupInfo> CChatEmoticonCli::FUN_140a3a640(unsigned nGroupId)
+MS2Ptr<ChatEmoticonGroupInfo> CChatEmoticonCli::FindGroup(unsigned nGroupId)
 {
     std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> >::iterator it = m_groupById.find(nGroupId);
     if (it == m_groupById.end())
         return MS2Ptr<ChatEmoticonGroupInfo>(0);
     return it->second;
 }
-MS2_REPLACE_METHOD(0x140A3A640, CChatEmoticonCli, FUN_140a3a640, 174, 0x91849124);
+MS2_REPLACE_METHOD(0x140A3A640, CChatEmoticonCli, FindGroup, 174, 0x91849124);
 
 // @0x140a3a700
-void CChatEmoticonCli::FUN_140a3a700(CInPacket& packet)
+void CChatEmoticonCli::DispatchPacket(CInPacket& packet)
 {
     int nType = packet.ReadUInt8();
     switch (nType)
@@ -482,11 +482,11 @@ void CChatEmoticonCli::FUN_140a3a700(CInPacket& packet)
     case 0: FUN_140a38fa0(packet); break;
     case 1: FUN_140a39170(packet); break;
     case 2: FUN_140a39360(packet); break;
-    case 3: FUN_140a39830(packet); break;
-    case 4: FUN_140a39940(packet); break;
+    case 3: OnEmoticonTypedInMessenger(packet); break;
+    case 4: OnEmoticonSentInGroupMessenger(packet); break;
     case 5: OnEmoticonMovedToEnd(packet); break;
     case 6: OnEmoticonRemoved(packet); break;
     case 7: FUN_140a39a20(packet); break;
     }
 }
-MS2_REPLACE_METHOD(0x140A3A700, CChatEmoticonCli, FUN_140a3a700, 237, 0x18A57F3A);
+MS2_REPLACE_METHOD(0x140A3A700, CChatEmoticonCli, DispatchPacket, 237, 0x18A57F3A);

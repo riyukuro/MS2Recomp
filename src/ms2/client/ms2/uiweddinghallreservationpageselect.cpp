@@ -129,7 +129,6 @@ Unk_SlotRec* FUN_1409020e0(RSlot* p);
 int FUN_140906e40(Unk_SlotRec* p, unsigned char bFlag);
 unsigned char FUN_140bcc0c0(RList* p, int n);                               // handle is null
 Unk_RListCtl* FUN_140bcc3f0(RList* p);
-unsigned char FUN_140ba28d0(MS2Ptr<AScript>* p, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW FUN_1409404f0(__int64 n);                                          // number to text
@@ -337,7 +336,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_12()
 // @0x140fe4fb0
 void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
 {
-    if (FUN_140ba28d0(&pPage->m_pScript, 0))
+    if ((*(const MS2Ptr<AScript>*)(&pPage->m_pScript) == 0))
         return;
     int nHallId = FUN_140fe2d20(pPage->m_pDialog);
     RHall hall = reinterpret_cast<Unk_HallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(nHallId);

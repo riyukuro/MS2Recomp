@@ -325,7 +325,7 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
                 if (!path.empty()) {
                     if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
                     Unk_FileArchive* archive = new Unk_FileArchive;
-                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
+                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::DecryptByMagic));
                     archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
                     if (archive->FUN_1406af680(path, nullptr) == 0) {
                         delete archive;
@@ -350,7 +350,7 @@ int CFileSystem::FUN_140396d00(const char* directory) {
         delete *it;
     }
     patchArchives.clear();
-    FUN_14039b660();
+    ClearCache();
     std::string config(directory);
     config += "/";
     config += "PackDiffClient.ini";
@@ -373,7 +373,7 @@ int CFileSystem::FUN_140396d00(const char* directory) {
                 if (!path.empty()) {
                     if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
                     Unk_FileArchive* archive = new Unk_FileArchive;
-                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
+                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::DecryptByMagic));
                     archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
                     if (archive->FUN_1406af680(path, directory) == 0) {
                         delete archive;
@@ -446,7 +446,7 @@ int CFileSystem::FUN_1403979e0(TiXmlDocument* document, BufferPtr buffer) {
 }
 MS2_REPLACE_METHOD(0x1403979e0, CFileSystem, FUN_1403979e0, 190, 0xB229CEED);
 // @0x140397ab0
-int CFileSystem::FUN_140397ab0(TiXmlDocument* document, const CStringW& xml) {
+int CFileSystem::LoadXmlFromString(TiXmlDocument* document, const CStringW& xml) {
     BufferPtr buffer(new CFileBuffer);
     if (buffer == nullptr) return 0;
     buffer->SetText(xml);
@@ -718,7 +718,7 @@ bool CFileSystem::FUN_14039a160(const char* directory, const char* reference, ch
     if (FUN_140398190()) {
         std::string resolved = FUN_14039c050(std::string(directory), false);
         std::string name(reference);
-        FUN_14039bf80(name);
+        TrimSpaces(name);
         if (name[0] == '.') {
             size_t slash = name.find_first_of('/');
             if (slash != std::string::npos) name = name.substr(slash + 1, name.length());
@@ -759,23 +759,23 @@ MS2_REPLACE_METHOD(0x14039a160, CFileSystem, FUN_14039a160, 1230, 0x093E08A9);
 void CFileSystem::FUN_14039a640() { packed = false; }
 MS2_REPLACE_METHOD(0x14039a640, CFileSystem, FUN_14039a640, 15, 0xCAF8FB9C);
 // @0x14039a660
-void CFileSystem::FUN_14039a660(CString path, void*) {
+void CFileSystem::MarkCharacterModelLoaded(CString path, void*) {
     Unk_FileSystemLock guard(characterLock, 1);
     if (path == "./data/resource/model/character/female/female.xml") characterMask |= 2;
     else if (path == "./data/resource/model/character/male/male.xml") characterMask |= 1;
 }
-MS2_REPLACE_METHOD(0x14039a660, CFileSystem, FUN_14039a660, 185, 0x96106327);
+MS2_REPLACE_METHOD(0x14039a660, CFileSystem, MarkCharacterModelLoaded, 185, 0x96106327);
 // @0x14039a720
 unsigned CFileSystem::FUN_14039a720() { return characterMask; }
 MS2_REPLACE_METHOD(0x14039a720, CFileSystem, FUN_14039a720, 17, 0x650AC462);
 // @0x14039a740
-void CFileSystem::FUN_14039a740() {
+void CFileSystem::ResetCharacterMask() {
     Unk_FileSystemLock guard(characterLock, 1);
     characterMask = 0;
 }
-MS2_REPLACE_METHOD(0x14039a740, CFileSystem, FUN_14039a740, 69, 0x60D6BBDC);
+MS2_REPLACE_METHOD(0x14039a740, CFileSystem, ResetCharacterMask, 69, 0x60D6BBDC);
 // @0x14039a790
-unsigned long CFileSystem::FUN_14039a790(unsigned long magic, unsigned char* data, unsigned long size,
+unsigned long CFileSystem::DecryptByMagic(unsigned long magic, unsigned char* data, unsigned long size,
                                        unsigned char** output, unsigned long capacity) {
     if (magic == 0x4632534d) return FUN_14039a8a0(data, size, output, capacity);
     else if (magic == 0x4632534e) return FUN_14039aba0(data, size, output, capacity);
@@ -909,13 +909,13 @@ MS2_REPLACE_METHOD(0x14039b470, CFileSystem, FUN_14039b470, 478, 0x65A79091);
 #pragma clang optimize on
 #endif
 // @0x14039b660
-void CFileSystem::FUN_14039b660() {
+void CFileSystem::ClearCache() {
     Unk_FileSystemLock guard(cacheLock, 1);
     cache.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x14039b660, CFileSystem, FUN_14039b660, 69, 0x68A6E2C2);
+MS2_REPLACE_METHOD(0x14039b660, CFileSystem, ClearCache, 69, 0x68A6E2C2);
 // @0x14039b6b0
-void CFileSystem::FUN_14039b6b0() {
+void CFileSystem::PurgeExpiredCache() {
     if (cache.GetCount() == 0) return;
     __time64_t now;
     FUN_140396290(&now);
@@ -929,10 +929,10 @@ void CFileSystem::FUN_14039b6b0() {
         if (age >= DAT_1439f4830) cache.RemoveAt(current);
     }
 }
-MS2_REPLACE_METHOD(0x14039b6b0, CFileSystem, FUN_14039b6b0, 272, 0x26CFCE3D);
+MS2_REPLACE_METHOD(0x14039b6b0, CFileSystem, PurgeExpiredCache, 272, 0x26CFCE3D);
 // @0x14039b7d0
-void CFileSystem::FUN_14039b7d0(int enabled) { alternatePaths = enabled ? true : false; }
-MS2_REPLACE_METHOD(0x14039b7d0, CFileSystem, FUN_14039b7d0, 47, 0x717FD09C);
+void CFileSystem::SetUseAlternatePaths(int enabled) { alternatePaths = enabled ? true : false; }
+MS2_REPLACE_METHOD(0x14039b7d0, CFileSystem, SetUseAlternatePaths, 47, 0x717FD09C);
 // @0x14039b810
 std::string CFileSystem::FUN_14039b810(std::string path) {
     path = FUN_14039c050(path, true);
@@ -979,7 +979,7 @@ MS2_REPLACE_METHOD(0x14039bb50, CFileSystem, FUN_14039bb50, 1047, 0xEF6B46BF);
 bool CFileSystem::FUN_14039bf70() { return true; }
 MS2_REPLACE_METHOD(0x14039bf70, CFileSystem, FUN_14039bf70, 8, 0x71679366);
 // @0x14039bf80
-void CFileSystem::FUN_14039bf80(std::string& path) {
+void CFileSystem::TrimSpaces(std::string& path) {
     size_t pos = path.find_last_not_of(' ');
     if (pos != std::string::npos) {
         path.erase(pos + 1);
@@ -989,7 +989,7 @@ void CFileSystem::FUN_14039bf80(std::string& path) {
         path.erase(path.begin(), path.end());
     }
 }
-MS2_REPLACE_METHOD(0x14039bf80, CFileSystem, FUN_14039bf80, 190, 0xA7F44878);
+MS2_REPLACE_METHOD(0x14039bf80, CFileSystem, TrimSpaces, 190, 0xA7F44878);
 // @0x14039c050
 std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
     std::string result;
@@ -998,7 +998,7 @@ std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
         _splitpath(path.c_str(), nullptr, nullptr, nullptr, extension);
         if (extension[0] == '\0') return result;
     }
-    FUN_14039bf80(path);
+    TrimSpaces(path);
     if (!path.empty()) {
         std::transform(path.begin(), path.end(), path.begin(), ::tolower);
         for (auto it = path.begin(); it != path.end(); ++it) if (*it == '\\') *it = '/';
@@ -1534,7 +1534,7 @@ void FUN_1403ab1a0(CFileBuffer* buffer, __time64_t time) { buffer->m_tLastAccess
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE(0x140396260, FUN_140396260, 35, 0x4CBC55DE);
 MS2_REPLACE(0x140396290, FUN_140396290, 25, 0x93DBCDFE);
-MS2_REPLACE_METHOD(0x14039a790, CFileSystem, FUN_14039a790, 250, 0xD9FE5945);
+MS2_REPLACE_METHOD(0x14039a790, CFileSystem, DecryptByMagic, 250, 0xD9FE5945);
 MS2_REPLACE(0x1403a9410, FUN_1403a9410, 8, 0x99CCE324);
 MS2_REPLACE_METHOD(0x1403ab490, CFileSystem, FUN_1403ab490, 154, 0xAC9AEF37);
 MS2_REPLACE_METHOD(0x1403a93e0, Unk_FileArchive, FUN_1403a93e0, 15, 0x5731F599);

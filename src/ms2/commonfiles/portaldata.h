@@ -3,13 +3,10 @@
 #include <afx.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/billboardinfo.h"
 
-// 12-byte float triple; ctor is the shared out-of-line FUN_14027db40 (commonfiles\commonstruct.cpp, not yet recovered).
-struct Unk_PDVec3 {
-    Unk_PDVec3(float x, float y, float z);   // 0x14027db40
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_PDVec3, 0xc);
+// 12-byte float triple; the (float, float, float) ctor is the shared Unk_CommonPosition one (0x14027db40).
+typedef Unk_CommonPosition Unk_PDVec3;   // C3: was a local struct with its own ctor decl
 
 // Placeholder: real class unrecovered (0x40 bytes); ctor 0x140266860, dtor 0x14027e920.
 class QuestMask {

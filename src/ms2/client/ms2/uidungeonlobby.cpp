@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -60,13 +61,13 @@ UIDungeonLobby::UIDungeonLobby()
     m_2c = 0x16;
     m_80 = 0;
     FUN_141925e70(0, 1);
-    FUN_140bccd50()->FUN_140da5180(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
 }
 
 // @0x140e177e0
 UIDungeonLobby::~UIDungeonLobby()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
 }
 
 // @0x140e178e0

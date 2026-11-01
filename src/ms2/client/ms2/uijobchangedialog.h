@@ -70,7 +70,6 @@ public:
     int FUN_1419dc530();                                // the chosen job is a hard one (difficulty > 4)
     static void FUN_1419dec80(bool bValid);             // the tables were read
     static void FUN_1419dcf80();                        // the tables must be read (message box otherwise)
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -32,7 +32,8 @@
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
-void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                                     // 0x141b6f910 the animation service
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -65,10 +66,11 @@ bool FUN_1415337c0(unsigned int, unsigned int, int);   // C3: was FUN_1415337c0
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SwimBuff
 {
 public:
-    efd::Point3 FUN_141683900();
     bool FUN_141683100(int nKey);
     bool FUN_141682fe0(int nKey);
 };
@@ -197,8 +199,8 @@ void StateSwim::vfunc_8(double fTime)
                 return;
             }
             Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
-            efd::Point3 kDir = pBuff->FUN_141683900();
-            reinterpret_cast<Unk_SwOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+            Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+            reinterpret_cast<Unk_SwOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
             if (m_pOwner->FUN_141676b70() != 0 && FUN_1417fb370() != 0)
                 m_n10 = 0x85;
             else
@@ -232,7 +234,7 @@ void StateSwim::vfunc_8(double fTime)
 void StateSwim::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nSeq = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     if (FUN_1417fb370() != 0)
     {
         int nKey = (m_n10 == 0x85) ? 0x1f : 0x1c;
@@ -295,7 +297,7 @@ int StateSwim::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 void StateSwim::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 {
     State::vfunc_29(p);
-    MS2Ptr<CItemGem> spGem(p->FUN_140527900());
+    MS2Ptr<CItemGem> spGem(p->GetGem());
     if ((spGem ? true : false) && (spGem->GetGem().get() ? true : false))
     {
         MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(spGem->GetGem().operator->()));

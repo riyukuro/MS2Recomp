@@ -32,7 +32,7 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a stri
 inline int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt)
 {
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet == 0)
     {
         int nPos = 0;

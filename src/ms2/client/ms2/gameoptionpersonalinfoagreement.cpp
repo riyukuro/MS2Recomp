@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <string.h>
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local placeholders ----
 static CString s_stun = "stun";     // 0x143ab6740 (dynamic initializers 0x1400c3670 / 0x1400c36a0)
@@ -28,7 +29,6 @@ class Unk_PiCheck : public CPtred
 {
 public:
     Unk_PiCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ce4b0
-    void FUN_1422ce090(int bChecked);
     bool FUN_1422ce0e0();
 private:
     char m_pad[0x88 - sizeof(CPtred)];
@@ -143,11 +143,11 @@ void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
     {
         MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
-            agree->FUN_1422ce090(m_state.m_bAgree);
+            reinterpret_cast<ASButton*>(agree.operator->())->FUN_1422ce090(m_state.m_bAgree);
     }
     MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
-        deny->FUN_1422ce090(m_state.m_bAgree == 0);
+        reinterpret_cast<ASButton*>(deny.operator->())->FUN_1422ce090(m_state.m_bAgree == 0);
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040

@@ -61,11 +61,10 @@ public:
     void FUN_1422df690(unsigned int nSelected);                 // select
     unsigned char FUN_1422df6c0();                              // the selection
 };
-class Unk_HioButton : public ASDisplayObject
+class Unk_HioButton : public ASMovieClip
 {
 public:
     int FUN_1422c2030();                                        // is enabled
-    void FUN_1422c1fe0(unsigned int bEnabled);                  // set enabled
 };
 class Unk_HioScript : public AScript
 {
@@ -92,7 +91,6 @@ typedef Delegate<bool(int, const CMsgBoxData&)> HioAnswerDelegate;
 CStringW FUN_140298ea0(CStringW strKey);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 // @0x140c27340
@@ -272,7 +270,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
 // @0x140c28560
 template <class T> MS2Ptr<T> UIHomeInsideOptionDialog::FUN_140c28560(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
     {
         return MS2Ptr<T>(0);
     }

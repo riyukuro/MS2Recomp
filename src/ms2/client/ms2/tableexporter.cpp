@@ -81,6 +81,14 @@
 #include "ms2/client/ms2/soundproperty.h"
 #include "ms2/client/ms2/soundeventmgr.h"
 #include "ms2/commonfiles/itemdatatable.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 struct Unk_AvBox;
 class Unk_PetRowTable;
 struct Unk_XmlElement;
@@ -115,7 +123,6 @@ class Unk_XmlNode   // C3: member view for the former free stand-ins
 public:
     class Unk_XmlNode* NextSibling(char const*);
 };
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);         // attribute text
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -257,7 +264,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rValue);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rValue);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                      // root element
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
@@ -387,11 +393,11 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
             for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
                  pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pNode))->NextSibling("entity"))) {
-                CString strModel = FUN_140188f50(FUN_14086f4b0(pNode, "modelName"), 0);
+                CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("modelName"), 0);
                 if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
                     for (Unk_140165cf0* pProp = FUN_140165cf0(pNode, "property"); pProp != NULL;
                          pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pProp))->NextSibling("property"))) {
-                        CString strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
+                        CString strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
                         if (FUN_141827210(props, strName) != -1) {
                             ((class TiXmlNode*)(class Unk_140165cf0*)(pNode))->RemoveChild((class TiXmlNode*)(pProp));
                             nDeleted++;
@@ -423,13 +429,13 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), FUN_141827280("{0} Read block {1}", i, blocks[i]));
             for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
                  pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pNode))->NextSibling("entity"))) {
-                CString strModel = FUN_140188f50(FUN_14086f4b0(pNode, "model-name"), 0);
+                CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("model-name"), 0);
                 if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
                     Unk_140165cf0* pProps = FUN_140165cf0(pNode, "properties");
                     if (pProps != NULL) {
                         for (Unk_140165cf0* pProp = FUN_140165cf0(pProps, "property"); pProp != NULL;
                              pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pProp))->NextSibling("property"))) {
-                            CString strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
+                            CString strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
                             if (FUN_141827210(props, strName) != -1) {
                                 ((class TiXmlNode*)(class Unk_140165cf0*)(pProps))->RemoveChild((class TiXmlNode*)(pProp));
                                 nDeleted++;
@@ -463,7 +469,7 @@ int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str)
 // @0x141825f60
 void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
 {
-    FMOD::EventGroup* pGroup = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177d6e0(strGroup, 1);
+    FMOD::EventGroup* pGroup = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->GetEventGroup(strGroup, 1);
     if (pGroup == NULL) {
         MS2_ASSERT_AT(0x3d4, 0);
         return;
@@ -555,7 +561,7 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
     if (strPath.Find(".sql", 0) == -1)
         strPath.Append(".sql");
     ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > languages;
-    FUN_1401c0da0()->FUN_14064f290(languages);
+    FUN_1401c0da0()->GetLanguages(languages);
     std::vector<unsigned int> ids;
     ((class CItemDataTable*)(class Unk_IngTable*)(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())))->LoadItemNameIds(ids);
     ATL::CAtlFile file;
@@ -766,7 +772,7 @@ bool FUN_1418226b0(bool bLog)
                     continue;
 
                 CString strXblock;
-                strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", FUN_14086f4b0(pXblock, "name"));
+                strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", ((class TiXmlElement*)(class Unk_140165cf0*)(pXblock))->Attribute("name"));
                 TiXmlDocument docXblock;
                 if (GetFileSystem()->FUN_1403974b0(&docXblock, strXblock, 0, true, false) == 0) {
                     strErrors.AppendFormat("** Not Find XBlockPath. \n: %s\n", (const char*)CString(strXblock));
@@ -783,7 +789,7 @@ bool FUN_1418226b0(bool bLog)
                     continue;
                 }
                 for (Unk_140165cf0* pEntity = FUN_140165cf0(pEntitySet, "entity"); pEntity != NULL; pEntity = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pEntity))->NextSibling("entity"))) {
-                    CString strModel = FUN_140188f50(FUN_14086f4b0(pEntity, "modelName"), 0);
+                    CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("modelName"), 0);
                     if (FUN_140a2a920(&mgr, strModel, CString("SpawnPointNPC")) != 0) {
                         Unk_RefArrayA npcs;
                         FUN_140a2aab0(&mgr, pEntity, CString(strModel), "NpcList", &npcs);
@@ -910,8 +916,8 @@ bool FUN_1418226b0(bool bLog)
         if (nType == 0) {
             CString strFields;
             CString strNpcs;
-            FUN_1408733e0(pEvent, "targetFields", strFields);
-            FUN_1408733e0(pEvent, "npcIDs", strNpcs);
+            XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
+            XmlGetAttr((class TiXmlElement*)(pEvent), "npcIDs", strNpcs);
             ATL::CAtlArray<unsigned int> npcIds;
             ATL::CAtlArray<unsigned int> fieldIds;
             FUN_140177e10(strNpcs, npcIds, L",");
@@ -926,7 +932,7 @@ bool FUN_1418226b0(bool bLog)
         } else if (nType == 4) {
             int nInteract = 0;
             CString strFields;
-            FUN_1408733e0(pEvent, "targetFields", strFields);
+            XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
             XmlGetAttr((class TiXmlElement*)(pEvent), "interactID", nInteract);
             ATL::CAtlArray<unsigned int> fieldIds;
             FUN_140177e10(strFields, fieldIds, L",");
@@ -950,12 +956,12 @@ bool FUN_1418226b0(bool bLog)
         if (!FUN_14028f710((Unk_XmlElement *)pEvent))
             continue;
         CStringW strEventType = FUN_1401bf530(pEvent, "eventType", CStringW(L""));
-        if (!FUN_1403b3c40(strEventType, L"SpawnNpc"))
+        if (!operator==(strEventType, L"SpawnNpc"))
             continue;
         CStringW strNpcFile;
-        FUN_140873420(pEvent, "value1", strNpcFile);
+        XmlGetAttr((class TiXmlElement*)(pEvent), "value1", strNpcFile);
         TiXmlDocument docNpc;
-        if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_140397ab0(&docNpc, strNpcFile) == 0)
+        if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFromString(&docNpc, strNpcFile) == 0)
             continue;
         Unk_140165cf0* pNpcRoot = FUN_140345b40(&docNpc);
         if (pNpcRoot == NULL)
@@ -964,8 +970,8 @@ bool FUN_1418226b0(bool bLog)
         _NpcInfo npc;
         XmlGetAttr((class TiXmlElement*)(pNpcRoot), "npcID", nNpcId);
         XmlGetAttr((class TiXmlElement*)(pNpcRoot), "fieldID", npc.m_nFieldId);
-        FUN_140873420(pEvent, "eventStart", npc.m_strStart);
-        FUN_140873420(pEvent, "eventEnd", npc.m_strEnd);
+        XmlGetAttr((class TiXmlElement*)(pEvent), "eventStart", npc.m_strStart);
+        XmlGetAttr((class TiXmlElement*)(pEvent), "eventEnd", npc.m_strEnd);
         FUN_1418270c0(nNpcId, npc, g_mapNpc);
     }
 
@@ -1129,7 +1135,7 @@ bool FUN_1418226b0(bool bLog)
     if (bLog)
         FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), "Write FieldMetaTable Complete.");
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&elemRoot));
-    CString strLang = static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d8e0();
+    CString strLang = static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetLocaleName();
     const fmt::internal::ArgArray<1>::Type arrOut = {fmt::internal::MakeValue< fmt::BasicFormatter<char> >(strLang)};
     CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", fmt::ArgList(fmt::internal::make_type(strLang), arrOut));
     if (!FUN_1408710c0(&docOut, strOut))

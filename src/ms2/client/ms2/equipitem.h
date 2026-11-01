@@ -41,19 +41,19 @@ public:
     void FUN_1411dc530(void* p);                                    // 0x1411dc530
     int FUN_1411dc560();                                            // 0x1411dc560 drop the models (unload slot 7) and re-apply the look
     int FUN_1411dc670();                                            // 0x1411dc670 CanEquip: a model is ready (slot 20)
-    int FUN_1411dc710();                                            // 0x1411dc710 a model's part folds the ears
+    int HasEarFold();                                            // 0x1411dc710 a model's part folds the ears
     MS2Ptr<CItem> GetItem();                                  // 0x1411dc7a0 the item the slot shows
     struct Unk_EquipItemData* FUN_1411dc7f0();                      // 0x1411dc7f0 the item's table data (mypc)
     int FUN_1411dc820();                                            // 0x1411dc820 the item id (mypc)
     __int64 FUN_1411dc870();                                        // 0x1411dc870 the item uid
     PC* FUN_1411dc8c0();                                            // 0x1411dc8c0 the wearer
     void FUN_1411dc8e0(PC* pPC);                                    // 0x1411dc8e0
-    void FUN_1411dc900(int bPending);                               // 0x1411dc900 a UGC item waits for its download
-    MS2Ptr<CEquipModel> FUN_1411dc950(const CString& strName);      // 0x1411dc950 the model whose part has this name
+    void SetUgcPending(int bPending);                               // 0x1411dc900 a UGC item waits for its download
+    MS2Ptr<CEquipModel> FindModelByName(const CString& strName);      // 0x1411dc950 the model whose part has this name
     void FUN_1411dca30(int nKind, ATL::CAtlArray<CString>& aOut);   // 0x1411dca30 the part names of a model kind
-    void FUN_1411dcae0(ATL::CAtlArray<MS2Ptr<CNifModel> >* pOut);  // 0x1411dcae0 the NIF models
-    void FUN_1411dcbb0(ATL::CAtlArray<MS2Ptr<CKfmModel> >* pOut);  // 0x1411dcbb0 the KFM models
-    void FUN_1411dcc80(ATL::CAtlArray<MS2Ptr<CEquipModel> >& aOut); // 0x1411dcc80 all models
+    void GetNifModels(ATL::CAtlArray<MS2Ptr<CNifModel> >* pOut);  // 0x1411dcae0 the NIF models
+    void GetKfmModels(ATL::CAtlArray<MS2Ptr<CKfmModel> >* pOut);  // 0x1411dcbb0 the KFM models
+    void GetModels(ATL::CAtlArray<MS2Ptr<CEquipModel> >& aOut); // 0x1411dcc80 all models
     void FUN_1411dcd00();                                           // 0x1411dcd00 (slot 11 of every model)
     int FUN_1411dcda0();                                            // 0x1411dcda0 a model reports slot 15
     int FUN_1411dce60(const CString& strTag);                       // 0x1411dce60 add a tag ("Customize", "Undo"; customize.cpp)
@@ -71,15 +71,15 @@ public:
         bool b);                                                    // 0x1411dd520 play an animation on the KFM models
     void FUN_1411dd5e0(const CString& strName);                           // 0x1411dd5e0
     void FUN_1411dd650();                                           // 0x1411dd650 drop effect slot 2 of every model
-    void FUN_1411dd6d0(CItem* pItem);                               // 0x1411dd6d0
-    efd::SmartPointer<NiNode> FUN_1411dd700();                      // 0x1411dd700 the first model's "Point01"
+    void SetItem(CItem* pItem);                               // 0x1411dd6d0
+    efd::SmartPointer<NiNode> FindPoint01Node();                      // 0x1411dd700 the first model's "Point01"
     efd::SmartPointer<NiTexture> FUN_1411dd820();                   // 0x1411dd820 the UGC texture
     MS2Ptr<CItemUgcMeshContainer> GetUgcMeshes();                  // 0x1411dd950 the UGC meshes of the item (ugcmanager.cpp#4)
     void FUN_1411dd9a0();                                           // 0x1411dd9a0 request the UGC download
     void FUN_1411ddae0();                                           // 0x1411ddae0 the UGC download finished
     int FUN_1411ddcb0();                                            // 0x1411ddcb0 the UGC file is here (1)
     CString FUN_1411ddd50();                                        // 0x1411ddd50 the UGC file name
-    void FUN_1411dde50(CEquipModel* pModel);                        // 0x1411dde50 add a model
+    void AddModel(CEquipModel* pModel);                        // 0x1411dde50 add a model
     void FUN_1411ddf10(CEquipModel* pModel);                        // 0x1411ddf10 RemoveModel
     void FUN_1411ddfb0(double fTime);                               // 0x1411ddfb0 update the models (slot 19)
     void FUN_1411de030();                                           // 0x1411de030 create the UGC mesh container

@@ -42,6 +42,7 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -170,7 +171,6 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
 CStringW FUN_14016a730(const char* psz, int n);                             // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& strArg);    // text with one argument
 CStringW FUN_14062b4f0(CStringW strKey, const unsigned& nArg);              // string table text with one argument
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the page
 int FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
@@ -195,12 +195,12 @@ template <class T> MS2Ptr<T> Unk_SmNode::GetChild(const CString& strName, MS2Ptr
 template <class T> MS2Ptr<T> Unk_SmNode::FUN_deep(const Scaleform::GFx::Value& v, const CString& strName)
 {
     MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
-    if (!spObj->FUN_1422ba9f0("getChildByName"))
+    if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
     if (child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, child);
-    if (!spObj->FUN_1422ba9f0("numChildren"))
+    if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount = spObj->FUN_1422c6670();
     for (int i = 0; i < nCount; i++)
@@ -303,7 +303,7 @@ void UISystemMailNotifyDialog::vfunc_72()
         return;
     if (m_nHideAt == 0)
         return;
-    if (m_tick.FUN_140268870(500) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(500) != 0)
     {
         unsigned nNow = GetTickCountMs2();
         if (nNow >= m_nHideAt)
@@ -358,7 +358,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
     Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->FUN_140478020(rec->m_nUrlTextId);
+    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->GetUserConditionText(rec->m_nUrlTextId);
     ATL::CAtlArray<Unk_SmReward> rewards;
     rec->m_body.FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
     if (rewards.GetCount() > 0)
@@ -374,7 +374,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
             strAttach = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_body.m_strAttach;
-        CStringW strDesc = FUN_1401e8510(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
+        CStringW strDesc = StringFormat<CStringW>(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
         FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
     FUN_141276180(s_strPopUp, "");

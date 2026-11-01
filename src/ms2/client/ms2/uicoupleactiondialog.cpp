@@ -138,6 +138,7 @@
 #include <cmath>
 #include <set>
 #include <vector>
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -181,7 +182,7 @@ void FUN_14151f200();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // Input state, the movie manager, the key binds.
-class Unk_CoupleInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
+class Unk_CoupleInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_CoupleUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_CoupleUiMgr* FUN_140b632f0();
@@ -190,7 +191,6 @@ class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 
@@ -287,7 +287,7 @@ int UICoupleActionDialog::vfunc_13()
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
                 if (((class ASUIComponent*)(class Unk_CoupleInput*)(m_190.operator->()))->FUN_1422c76c0() != 0) {
-                    FUN_140bede70(m_190->FUN_1422e0b00());
+                    SetSearchText(m_190->FUN_1422e0b00());
                     ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(1);
                     ((class ASUIComponent*)(class ASDisplayObject*)(m_190.operator->()))->FUN_1422c7630(0);
                     return 1;
@@ -311,7 +311,7 @@ void UICoupleActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         ASObj stat(2);
         stat.FUN_1407cb9c0("type", 1);
         stat.FUN_1409c0dc0("level", "");
-        stat.FUN_1407cbb20("cooltime", FUN_140bedf00(nEmotion));
+        stat.FUN_1407cbb20("cooltime", GetEmotionKeywords(nEmotion));
         tooltip.FUN_1409adbe0("statDescription", stat.FUN_1422bb870());
         tooltip.FUN_1409c0dc0("enablePuton", "");
         *pRetVal = tooltip.FUN_1422bb870();
@@ -371,7 +371,7 @@ int UICoupleActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
         CStringW strSearch = data.FUN_1422b8f40();
-        FUN_140bede70(strSearch);
+        SetSearchText(strSearch);
     } else if (_stricmp(szMethod, "onFocusIn") == 0) {
     } else {
         _stricmp(szMethod, "onFocusOut");
@@ -403,8 +403,8 @@ void UICoupleActionDialog::FUN_140becef0()
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
     FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
-    int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141765cf0(0);
-    ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141765cf0(nMode);
+    int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(0);
+    ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
@@ -421,13 +421,13 @@ void UICoupleActionDialog::FUN_140becef0()
 MS2_REPLACE_METHOD(0x140BECEF0, UICoupleActionDialog, FUN_140becef0, 621, 0x38B953F4);
 
 // @0x140bed170
-void UICoupleActionDialog::FUN_140bed170(int nEmotion)
+void UICoupleActionDialog::SetFocusByEmotion(int nEmotion)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0)
         pDlg->Invoke("setFocusByEmotion", (unsigned int)nEmotion);
 }
-MS2_REPLACE_METHOD(0x140BED170, UICoupleActionDialog, FUN_140bed170, 117, 0x195C0E2E);
+MS2_REPLACE_METHOD(0x140BED170, UICoupleActionDialog, SetFocusByEmotion, 117, 0x195C0E2E);
 
 // @0x140bed1f0
 void UICoupleActionDialog::FUN_140bed1f0(int nEmotion)
@@ -482,7 +482,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
         if (m_1a1 != 0 && !bFavorite)
             continue;
         if (!m_1a8.IsEmpty()) {
-            if (FUN_1403b3c40(m_1a8, L"/") != 0)
+            if (operator==(m_1a8, L"/") != 0)
                 continue;
             bool bFound = false;
             do {
@@ -493,7 +493,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
                     break;
                 }
                 std::vector<CStringW> words;
-                CStringW strKeywords = FUN_140bedf00(nId);
+                CStringW strKeywords = GetEmotionKeywords(nId);
                 FUN_140988d60(strKeywords, words, L", ");
                 for (CStringW& strWord : words) {
                     if (strWord.Find(m_1a8, 0) != -1) {
@@ -514,10 +514,10 @@ void UICoupleActionDialog::FUN_140bed2d0()
         action.FUN_1407cbbe0("isFavorite", bFavorite);
         actions.FUN_1422bbf00(action);
     }
-    FUN_140bee040(actions);
+    PadEntriesToGrid(actions);
     pDlg->FUN_140bd2cb0("buildActions", actions);
     if (nFocus != 0)
-        FUN_140bed170(nFocus);
+        SetFocusByEmotion(nFocus);
 }
 MS2_REPLACE_METHOD(0x140BED2D0, UICoupleActionDialog, FUN_140bed2d0, 1468, 0xF1993D52);
 
@@ -545,7 +545,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
         if (m_1a1 != 0 && !bFavorite)
             continue;
         if (!m_1a8.IsEmpty()) {
-            if (FUN_1403b3c40(m_1a8, L"/") != 0)
+            if (operator==(m_1a8, L"/") != 0)
                 continue;
             bool bFound = false;
             do {
@@ -556,7 +556,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
                     break;
                 }
                 std::vector<CStringW> words;
-                CStringW strKeywords = FUN_140bedf00(nId);
+                CStringW strKeywords = GetEmotionKeywords(nId);
                 FUN_140988d60(strKeywords, words, L", ");
                 for (CStringW& strWord : words) {
                     if (strWord.Find(m_1a8, 0) != -1) {
@@ -577,25 +577,25 @@ void UICoupleActionDialog::FUN_140bed8a0()
         action.FUN_1407cbbe0("isFavorite", bFavorite);
         actions.FUN_1422bbf00(action);
     }
-    FUN_140bee040(actions);
+    PadEntriesToGrid(actions);
     pDlg->FUN_140bd2cb0("buildActions", actions);
     if (nFocus != 0)
-        FUN_140bed170(nFocus);
+        SetFocusByEmotion(nFocus);
 }
 MS2_REPLACE_METHOD(0x140BED8A0, UICoupleActionDialog, FUN_140bed8a0, 1468, 0x5CE27D3B);
 
 // @0x140bede70
-void UICoupleActionDialog::FUN_140bede70(CStringW strSearch)
+void UICoupleActionDialog::SetSearchText(CStringW strSearch)
 {
     if (m_1a8.CompareNoCase(strSearch) == 0)
         return;
     m_1a8 = strSearch;
     FUN_140becef0();
 }
-MS2_REPLACE_METHOD(0x140BEDE70, UICoupleActionDialog, FUN_140bede70, 124, 0x23F3ADE0);
+MS2_REPLACE_METHOD(0x140BEDE70, UICoupleActionDialog, SetSearchText, 124, 0x23F3ADE0);
 
 // @0x140bedf00
-CStringW UICoupleActionDialog::FUN_140bedf00(unsigned int nEmotion)
+CStringW UICoupleActionDialog::GetEmotionKeywords(unsigned int nEmotion)
 {
     MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nEmotion);
     if (!spData)
@@ -606,7 +606,7 @@ CStringW UICoupleActionDialog::FUN_140bedf00(unsigned int nEmotion)
     strKeywords.TrimRight();
     return strKeywords;
 }
-MS2_REPLACE_METHOD(0x140BEDF00, UICoupleActionDialog, FUN_140bedf00, 311, 0x1F48382E);
+MS2_REPLACE_METHOD(0x140BEDF00, UICoupleActionDialog, GetEmotionKeywords, 311, 0x1F48382E);
 
 extern "C" float (__cdecl* __imp_ceilf)(float);   // the exe calls the IAT slot
 
@@ -618,10 +618,10 @@ float FUN_140bf4fd0(float f)
 }
 
 // @0x140bee040
-void UICoupleActionDialog::FUN_140bee040(ASArray& arr)
+void UICoupleActionDialog::PadEntriesToGrid(ASArray& arr)
 {
-    int nRounded = (int)(FUN_140bf4fd0((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
-    int nMissing = (nRounded > 0x1e ? nRounded : 0x1e) - arr.FUN_1422bc5d0();
+    int nRounded = (int)(FUN_140bf4fd0((float)arr.GetLength() / 6.0f) * 6.0f);
+    int nMissing = (nRounded > 0x1e ? nRounded : 0x1e) - arr.GetLength();
     if (nMissing < 0)
         return;
     for (int i = 0; i < nMissing; i++) {
@@ -630,7 +630,7 @@ void UICoupleActionDialog::FUN_140bee040(ASArray& arr)
         arr.FUN_1422bc050(kEmpty);
     }
 }
-MS2_REPLACE_METHOD(0x140BEE040, UICoupleActionDialog, FUN_140bee040, 254, 0xB7B5AC57);
+MS2_REPLACE_METHOD(0x140BEE040, UICoupleActionDialog, PadEntriesToGrid, 254, 0xB7B5AC57);
 
 // @0x140bee150
 void UICoupleActionDialog::FUN_140bee150(int nKey)
@@ -643,7 +643,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     } else if (nKey == 0x7e) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
@@ -654,7 +654,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     } else if (nKey == 0x7c) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }

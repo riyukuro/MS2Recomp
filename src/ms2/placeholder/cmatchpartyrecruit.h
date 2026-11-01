@@ -7,9 +7,9 @@ class CMatchPartyRecruit : public CPtred {
 public:
     CMatchPartyRecruit();
     virtual ~CMatchPartyRecruit();
-    void FUN_140694ab0();
-    void FUN_140694c10(CInPacket&);
-    void FUN_140694f70(const CMatchPartyRecruit&);
+    void Clear();
+    void Read(CInPacket&);
+    void CopyFrom(const CMatchPartyRecruit&);
     __int64 recruitId;
     int fieldId, category, kind;
     CStringW title;

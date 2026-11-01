@@ -59,7 +59,6 @@ public:
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);     // 0x140c02870 bind a tab child
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 bind a list child
     MS2Ptr<Unk_DmGuideBar> FUN_140c02990(const CString& strName);   // 0x140c02990 bind the guide bar child
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 movie clip child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

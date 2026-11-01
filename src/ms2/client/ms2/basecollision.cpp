@@ -57,6 +57,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // The game objects the world query returns (worldservice.h names them by this stand-in).
 class Unk_WsC_GameObj : public GameObject { };
@@ -68,8 +70,6 @@ public:
     unsigned int FUN_140970b10();                                   // extra target flags the actor's buffs grant
 };
 
-PCBase* FUN_140974230(GameObject* pObject);                         // efd::DynamicCast<PC>
-CNpc* FUN_14096e110(PCBase* pActor);                                // the npc side of an actor (null for a player)
 int FUN_14165ef30(PCBase* pPC);                                     // the team / pvp side
 CStringW* FUN_141656be0(PCBase* pPC);                               // the guild name
 int FUN_141661bc0(PCBase* pPC);                                     // the party id
@@ -331,14 +331,14 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             {
                 if (bFromOwner != 0)
                 {
-                    if (!pTarget->FUN_1416749a0()->FUN_140971300(nBuff, spCtx->m_pOwner->FUN_14123c580()))
+                    if (!pTarget->FUN_1416749a0()->HasEnabledWithIdAndCaster(nBuff, spCtx->m_pOwner->FUN_14123c580()))
                         continue;
                 }
-                else if (!pTarget->FUN_1416749a0()->FUN_140971260(nBuff))
+                else if (!pTarget->FUN_1416749a0()->HasEnabledWithId(nBuff))
                     continue;
             }
-            PCBase* pTargetPC = FUN_140974230(pTarget);
-            PCBase* pOwnerPC = FUN_140974230(spCtx->m_pOwner);
+            PCBase* pTargetPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pTarget));
+            PCBase* pOwnerPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(spCtx->m_pOwner));
             if (pTargetPC != NULL && pOwnerPC != NULL)
             {
                 if (bSameParty != 0)
@@ -386,29 +386,29 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                     continue;
                 if (nStatSort == 1)
                 {
-                    if (pA->FUN_141670990(2, nStat) > pB->FUN_141670990(2, nStat))
+                    if (pA->GetStat(2, nStat) > pB->GetStat(2, nStat))
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
                 }
                 else if (nStatSort == 2)
                 {
-                    if (pA->FUN_141670990(2, nStat) < pB->FUN_141670990(2, nStat))
+                    if (pA->GetStat(2, nStat) < pB->GetStat(2, nStat))
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
                 }
                 else if (nStatSort == 3)
                 {
-                    float fCurA = (float)pA->FUN_141670990(2, nStat);
-                    float fRateA = fCurA / (float)pA->FUN_141670990(0, nStat);
-                    float fCurB = (float)pB->FUN_141670990(2, nStat);
-                    float fRateB = fCurB / (float)pB->FUN_141670990(0, nStat);
+                    float fCurA = (float)pA->GetStat(2, nStat);
+                    float fRateA = fCurA / (float)pA->GetStat(0, nStat);
+                    float fCurB = (float)pB->GetStat(2, nStat);
+                    float fRateB = fCurB / (float)pB->GetStat(0, nStat);
                     if (fRateA > fRateB)
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
                 }
                 else if (nStatSort == 4)
                 {
-                    float fCurA = (float)pA->FUN_141670990(2, nStat);
-                    float fRateA = fCurA / (float)pA->FUN_141670990(0, nStat);
-                    float fCurB = (float)pB->FUN_141670990(2, nStat);
-                    float fRateB = fCurB / (float)pB->FUN_141670990(0, nStat);
+                    float fCurA = (float)pA->GetStat(2, nStat);
+                    float fRateA = fCurA / (float)pA->GetStat(0, nStat);
+                    float fCurB = (float)pB->GetStat(2, nStat);
+                    float fRateB = fCurB / (float)pB->GetStat(0, nStat);
                     if (fRateA < fRateB)
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
                 }
@@ -798,8 +798,8 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
         if (pOther->FUN_14166cb00(7) == true)
             return 0;
     }
-    PCBase* pActorPC = FUN_140974230(pActor);
-    PCBase* pOtherPC = FUN_140974230(pOther);
+    PCBase* pActorPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pActor));
+    PCBase* pOtherPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pOther));
     CPet* pPet = efd::DynamicCast<CPet>(pOther);
     if ((nFlags & 8) != 0)
     {
@@ -814,7 +814,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
         return 0;
     if (nNpcKinds != 0)
     {
-        CNpc* pNpc = FUN_14096e110(pOther);
+        CNpc* pNpc = efd::DynamicCast<CNpc, PCBase>(pOther);
         if (pNpc != NULL)
         {
             int nKind = pNpc->FUN_1410934c0();
@@ -835,7 +835,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
             }
             else
             {
-                CNpc* pOtherNpc = FUN_14096e110(pOther);
+                CNpc* pOtherNpc = efd::DynamicCast<CNpc, PCBase>(pOther);
                 if (pOtherNpc != NULL)
                 {
                     if (pOtherNpc->FUN_141670a00(4) > 0)

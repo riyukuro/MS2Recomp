@@ -86,7 +86,7 @@ void WeaponAttachTransformNode::UpdateWorldData()
     if (m_bUseMovement)
     {
         double dTime = TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
-        m_kWorld = m_spMovement->FUN_141625430(dTime, m_kWorld);
+        m_kWorld = m_spMovement->UpdateMovement(dTime, m_kWorld);
     }
     if (m_spCollisionObject)
         m_spCollisionObject->UpdateWorldData();

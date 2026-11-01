@@ -32,11 +32,11 @@ class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
 // The physics body of the actor: the fly-away lift.
 
 // The actor's buffs (PCBase::FUN_14166d240).
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); Vector3 FUN_1416836d0(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HitBuff
 {
 public:
-    efd::Point3 FUN_1416836d0();                                        // 0x1416836d0 the knock-back direction (variant 1)
-    efd::Point3 FUN_141683290();                                        // 0x141683290 the knock-back direction (variant 2)
     bool FUN_141683100(int nBuff);                                      // 0x141683100 the actor has the buff
 };
 
@@ -193,9 +193,9 @@ void StateHit::vfunc_8(double fTime)
         return;
     Unk_HitBuff* pBuff = (Unk_HitBuff*)m_pOwner->FUN_14166d240();
     if (s_nKeyIsDown != 0)
-        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     else
-        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_1416836d0());
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_1416836d0())));
     if (s_nMove != 0 && m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else if (s_nJump != 0 && m_pOwner->vfunc_99(0) == 0 && pBuff->FUN_141683100(0x493e1))

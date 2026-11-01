@@ -111,7 +111,7 @@ MS2_REPLACE_METHOD(0x1413A7DD0, CGuideConditionQuestSatisfied, GetTypeName, 61, 
 // @0x1413a7e20
 int CGuideConditionQuestSatisfied::vfunc_3()
 {
-    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_n20));
+    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7E20, CGuideConditionQuestSatisfied, vfunc_3, 51, 0x97F87638);
 
@@ -180,7 +180,7 @@ MS2_REPLACE_METHOD(0x1413A8070, CGuideConditionQuestProgress, vfunc_2, 46, 0xA95
 // @0x1413a80b0
 int CGuideConditionQuestProgress::vfunc_3()
 {
-    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_140745630(m_n20));
+    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->IsQuestActive(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A80B0, CGuideConditionQuestProgress, vfunc_3, 51, 0x6667D788);
 

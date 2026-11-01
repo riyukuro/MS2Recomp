@@ -41,6 +41,12 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -51,14 +57,14 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 __int64 GetServerTime();                                                  // current time
 
@@ -132,13 +138,13 @@ bool CFieldBannerData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "field", m_nField);
     XmlGetAttr((class TiXmlElement*)(pNode), "ad", m_nAd);
     XmlGetAttr((class TiXmlElement*)(pNode), "size", m_nSize);
-    FUN_1408733e0(pNode, "default", m_strDefault);
-    FUN_1408733e0(pNode, "webOpenURL", m_strWebOpenURL);
+    XmlGetAttr((class TiXmlElement*)(pNode), "default", m_strDefault);
+    XmlGetAttr((class TiXmlElement*)(pNode), "webOpenURL", m_strWebOpenURL);
     XmlGetAttr((class TiXmlElement*)(pNode), "admin", m_bAdmin);
     XmlGetAttr((class TiXmlElement*)(pNode), "isManage", m_bManage);
     XmlGetAttr((class TiXmlElement*)(pNode), "isVisible", m_bVisible);
     CString strPrice;
-    FUN_1408733e0(pNode, "price", strPrice);
+    XmlGetAttr((class TiXmlElement*)(pNode), "price", strPrice);
     if (ParsePrice(strPrice) == 0)
         return false;
     return true;
@@ -172,13 +178,13 @@ int CFieldBannerData::LoadTable()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("banner"); pNode != 0; pNode = pNode->FUN_140168650("banner"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("banner")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("banner")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

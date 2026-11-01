@@ -9,6 +9,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimodelview.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uimodelview.h"
 #include "gameobject.h"
 #include "fielddatacli.h"
@@ -30,12 +31,12 @@ class Unk_UmvWorld
 {
 public:
     GameObject* FUN_141bd1180(int nId);                         // 0x141bd1180 NULL when the id is free
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // 0x141bd30a0 the current field data
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 class Unk_UmvClock;
@@ -62,7 +63,7 @@ class PostProcessingService   // C3: member view for the former free stand-ins
 public:
     void FUN_1416aac60(class NiAVObject*);
 };
-extern efd::Point3 DAT_143b01a60;                               // zero
+#define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)          // C3: was extern efd::Point3 DAT_143b01a60
 float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
 NiPoint3& FUN_14097faa0(NiPoint3* pDst, NiPoint3&& kSrc);       // NiPoint3 move assignment (out of line in the exe)
 // The exe's NiPoint3 copies and assignments are out-of-line calls; this view of a NiPoint3 member declares them.
@@ -108,7 +109,7 @@ void UIModelView::vfunc_3()
 {
     UIRenderView::vfunc_3();
     FUN_14107b010();
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_UmvWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField)
         FUN_141ab7b80(spField->m_bFog);
 }

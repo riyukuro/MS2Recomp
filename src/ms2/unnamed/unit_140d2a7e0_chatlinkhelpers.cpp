@@ -37,6 +37,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/uimessenger.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // return types of the getters this unit calls
 struct Unk_MdState;
@@ -74,7 +75,6 @@ public:
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool bFocus);                     // 24 set the focus
     int FUN_1422c76c0();                                    // has the focus
-    CStringW FUN_1422e0b00();                               // the plain text
     CStringW FUN_1422e0c20();                               // the html text
     void FUN_1422e0bd0(const CStringW& strHtml);            // set the html text
 };
@@ -458,7 +458,7 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
         {
             spInput->FUN_1422e0bd0(strHtml);
             spInput->vfunc_24(true);
-            CStringW strText = spInput->FUN_1422e0b00();
+            CStringW strText = reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
             if (strText.IsEmpty())
             {
                 CStringW strEmpty(L"<Font></Font>");
@@ -590,7 +590,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return;
-    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), spItem->FUN_140526a50());
+    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), spItem->GetItemUid());
 }
 
 // @0x140d2d060
@@ -739,7 +739,7 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
             spItem = pPC->FUN_141655b80(nUid);
             if (spItem == NULL)
             {
-                spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(nUid);
+                spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(nUid);
             }
             if (spItem == NULL)
                 spItem = MS2_STORE_TABLE.Find(nUid);
@@ -753,10 +753,10 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
 // @0x140d2e6f0
 CStringW FUN_140d2e6f0(MS2Ptr<CItem> spItem)
 {
-    unsigned __int64 nUid = spItem->FUN_140526a50();
+    unsigned __int64 nUid = spItem->GetItemUid();
     ItemGradeKey eGrade = (ItemGradeKey)spItem->FUN_140526bd0();
     unsigned nItemId = spItem->FUN_1405276c0();
-    unsigned __int64 nUid2 = spItem->FUN_140526a50();
+    unsigned __int64 nUid2 = spItem->GetItemUid();
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nUid, eKind, nUid2, nItemId, eGrade);
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());

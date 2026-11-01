@@ -47,7 +47,7 @@ MS2_REPLACE_METHOD(0x1422E4A50, ASLabel, FUN_1422e4a50, 72, 0x097D1931);
 // @0x1422e4aa0
 CStringW ASLabel::FUN_1422e4aa0()
 {
-    return FUN_1422baa20("text").GetStringW();
+    return GetMember("text").GetStringW();
 }
 MS2_REPLACE_METHOD(0x1422E4AA0, ASLabel, FUN_1422e4aa0, 123, 0xB13FED19);
 
@@ -68,7 +68,7 @@ MS2_REPLACE_METHOD(0x1422E4B80, ASLabel, FUN_1422e4b80, 72, 0x70D6C936);
 // @0x1422e4bd0
 CStringW ASLabel::FUN_1422e4bd0()
 {
-    return FUN_1422baa20("htmlText").GetStringW();
+    return GetMember("htmlText").GetStringW();
 }
 MS2_REPLACE_METHOD(0x1422E4BD0, ASLabel, FUN_1422e4bd0, 123, 0xE0781EE2);
 
@@ -82,7 +82,7 @@ MS2_REPLACE_METHOD(0x1422E4C60, ASLabel, FUN_1422e4c60, 72, 0x8E9278D8);
 // @0x1422e4cb0
 CString ASLabel::FUN_1422e4cb0()
 {
-    return FUN_1422baa20("autoSize").GetString();
+    return GetMember("autoSize").GetString();
 }
 MS2_REPLACE_METHOD(0x1422E4CB0, ASLabel, FUN_1422e4cb0, 123, 0x0D4463AB);
 
@@ -129,7 +129,7 @@ void ASLabel::FUN_1422e4ef0(int nBegin, int nEnd)
     vfunc_24(true);
     MS2Ptr<ASTextField> spTextField = FUN_1422e4e80();
     if (spTextField.get())
-        spTextField->FUN_1422c5cf0(nBegin, nEnd);
+        spTextField->SetSelection(nBegin, nEnd);
 }
 MS2_REPLACE_METHOD(0x1422E4EF0, ASLabel, FUN_1422e4ef0, 151, 0x53302C30);
 

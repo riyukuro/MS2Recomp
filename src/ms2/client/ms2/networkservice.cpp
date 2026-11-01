@@ -331,8 +331,10 @@ void FUN_140a30b80(char*, int);   // C3: was FUN_140a30b80
 void FUN_1405340b0(void*,__int64);
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/client/ms2/statemanager.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 CStringW GetStringCommon(int);
-CStringW FUN_1408116a0(int,const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 class CUIService   // C3: member view for the former free stand-ins
 {
 public:
@@ -479,18 +481,18 @@ int CNetworkService::FUN_1415382c0() {
 int CNetworkService::FUN_1415383a0(CString host,int port,int flags,int showErrors,int reconnect) {
     FUN_141539630();
     if(reconnect==0) FUN_141538570();
-    FUN_141538510(); FUN_14153a210(0);
-    if(reconnect==0) FUN_141539230();
+    FUN_141538510(); SetConnectionState(0);
+    if(reconnect==0) IncrementConnectionCount();
     return m_socket.FUN_141265420(host,port,flags,showErrors);
 }
 // @0x141538480
 void CNetworkService::FUN_141538480(int reconnect) {
-    FUN_141539630(); FUN_141538510(); FUN_14153a210(0);
-    if(reconnect==0) FUN_141539230();
+    FUN_141539630(); FUN_141538510(); SetConnectionState(0);
+    if(reconnect==0) IncrementConnectionCount();
     m_socket.Reconnect();
 }
 // @0x1415384e0
-int CNetworkService::FUN_1415384e0() { return m_socket.FUN_1412675f0(); }
+int CNetworkService::FUN_1415384e0() { return m_socket.IsConnected(); }
 // @0x141538510
 void CNetworkService::FUN_141538510() { m_socket.Close(); }
 // @0x141538540
@@ -506,13 +508,13 @@ BOOL CNetworkService::FUN_141538600(CItem* item) {
     if(item==0) return false;
     if(!FUN_14086ac80(FUN_140528a90(item))) return false;
     int type=FUN_14053fd90(((void*)((class CItem*)(class CItem*)(item))->FUN_140527840()));
-    int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),((class CItem*)(class CItem*)(item))->FUN_140526c50());
+    int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
     if(slot==-1) { FUN_140961010(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
-    else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->FUN_140526a50());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->FUN_140526c50());FUN_140710590(packet); }
+    else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
 }
 // @0x141538820
-void CNetworkService::FUN_141538820() {
+void CNetworkService::SendRequestQuit() {
     Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player) player->FUN_1415293b0();
     COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(0); FUN_140710590(packet);
@@ -521,7 +523,7 @@ void CNetworkService::FUN_141538820() {
 void CNetworkService::FUN_1415388a0() {
     Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player) player->FUN_1415293b0();
-    m_socket.FUN_141267000(1);
+    m_socket.SetDisconnect(1);
     COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(1); FUN_140710590(packet);
 }
 // @0x141538930
@@ -541,16 +543,16 @@ void CNetworkService::FUN_141538b10(int flag) {
 // @0x141538bb0
 void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.WriteUInt8(7);packet.WriteUnicodeString(text);packet.WriteUInt8(flag);FUN_140710590(packet); }
 // @0x141538c40
-void CNetworkService::FUN_141538c40(int first,int second) { COutPacket packet(static_cast<int>(SendOp::SystemShop),0);packet.WriteUInt8(first);packet.WriteUInt8(second);FUN_140710590(packet); }
+void CNetworkService::SendSystemShop(int first,int second) { COutPacket packet(static_cast<int>(SendOp::SystemShop),0);packet.WriteUInt8(first);packet.WriteUInt8(second);FUN_140710590(packet); }
 // @0x141538cb0
-void CNetworkService::FUN_141538cb0() {
+void CNetworkService::SendResponseVersion() {
     FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
     Unk_NetworkHello hello;
     hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d8b0();hello.build=FUN_1406516b0();
     COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);hello.FUN_1401f8f10(packet);FUN_140710590(packet);
 }
 // @0x141538d50
-bool CNetworkService::FUN_141538d50() {
+bool CNetworkService::SendPatchFileList() {
     COutPacket packet(static_cast<int>(SendOp::Patch),0);packet.WriteUInt8(0);
     std::list<CString> names;FUN_14038bb30("./DataPatch/","",names);packet.WriteInt32((int)names.size());
     for(auto it=names.begin();it!=names.end();++it) {
@@ -562,13 +564,13 @@ bool CNetworkService::FUN_141538d50() {
     FUN_140710590(packet);return true;
 }
 // @0x141538f20
-unsigned CNetworkService::FUN_141538f20() { return m_latency.minimum; }
+unsigned CNetworkService::GetMinLatency() { return m_latency.minimum; }
 // @0x141538f40
-unsigned CNetworkService::FUN_141538f40() { return m_latency.maximum; }
+unsigned CNetworkService::GetMaxLatency() { return m_latency.maximum; }
 // @0x141538f60
-unsigned CNetworkService::FUN_141538f60() { return m_latency.average; }
+unsigned CNetworkService::GetAverageLatency() { return m_latency.average; }
 // @0x141538f80
-void CNetworkService::FUN_141538f80() {
+void CNetworkService::ProcessReceivedPackets() {
     try {
         for(;;) {
             Unk_InPtr packet;
@@ -580,7 +582,7 @@ void CNetworkService::FUN_141538f80() {
                 m_receiveTimes.RemoveHead();
                 packet=m_received.RemoveHead();
             }
-            FUN_1415397d0(*packet);
+            DispatchPacket(*packet);
         }
     } catch(Exception& e) {
         e.GetCode();
@@ -588,12 +590,12 @@ void CNetworkService::FUN_141538f80() {
     }
 }
 // @0x141539130
-void CNetworkService::FUN_141539130() {
+void CNetworkService::SaveServerAddress() {
     CString& strHost=DAT_143ab2a48; unsigned short& nPort=DAT_143ab2848;
     g_143ab2a50=strHost; DAT_143ab2854=nPort;
 }
 // @0x141539180
-int CNetworkService::FUN_141539180() {
+int CNetworkService::RestoreServerAddress() {
     CString& strHost=g_143ab2a50; unsigned short& nPort=DAT_143ab2854;
     if(strHost.IsEmpty()||nPort==0) return 0;
     if(DAT_143ab284a!=0x11) return 0;
@@ -603,13 +605,13 @@ int CNetworkService::FUN_141539180() {
 // @0x141539210
 int CNetworkService::GetConnectionCount() { return m_connectionCount; }
 // @0x141539230
-void CNetworkService::FUN_141539230() { ++m_connectionCount; }
+void CNetworkService::IncrementConnectionCount() { ++m_connectionCount; }
 // @0x141539260
-void CNetworkService::FUN_141539260() { COutPacket packet(static_cast<int>(SendOp::ServerEnter),0);packet.WriteInt32(DAT_143ab0240);FUN_140710590(packet); }
+void CNetworkService::SendServerEnter() { COutPacket packet(static_cast<int>(SendOp::ServerEnter),0);packet.WriteInt32(DAT_143ab0240);FUN_140710590(packet); }
 // @0x1415392c0
-CGameSocket& CNetworkService::FUN_1415392c0() { return m_socket; }
+CGameSocket& CNetworkService::GetSocket() { return m_socket; }
 // @0x1415392e0
-void CNetworkService::FUN_1415392e0() {
+void CNetworkService::UpdateLogger() {
     if(m_socket.m_logger) m_socket.m_logger->Update();
 }
 // @0x141539330
@@ -656,7 +658,7 @@ bool CNetworkService::FUN_1415395a0(int result,const CMsgBoxData&) {
 // @0x141539630
 void CNetworkService::FUN_141539630() { if(Unk_LockGuard guard=m_receiveLock) {} else { m_received.RemoveAll();m_receiveTimes.RemoveAll(); } }
 // @0x1415396b0
-void CNetworkService::FUN_1415396b0(Unk_InPtr packet) {
+void CNetworkService::QueueReceivedPacket(Unk_InPtr packet) {
     if(Unk_LockGuard guard=m_receiveLock) {} else {
         m_received.AddTail(packet);
         unsigned time=GetTickCountMs2();
@@ -666,7 +668,7 @@ void CNetworkService::FUN_1415396b0(Unk_InPtr packet) {
     }
 }
 // @0x1415397d0
-void CNetworkService::FUN_1415397d0(CInPacket& packet) {
+void CNetworkService::DispatchPacket(CInPacket& packet) {
     int opcode=packet.FUN_14070fe80();
     switch(opcode) {
     case static_cast<int>(RecvOp::RequestVersion): FUN_14153ad10(packet); break;
@@ -728,7 +730,7 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case static_cast<int>(RecvOp::DynamicBanword): FUN_14153f9d0(packet); break;
     case static_cast<int>(RecvOp::RequestSystemInfo): FUN_14153fa20(packet); break;
     case 0x127: FUN_14153fae0(packet); break;
-    case static_cast<int>(RecvOp::Payback): ((class PaybackManagerClient*)(void*)(((void*)FUN_1409c1740())))->FUN_140a8afb0(packet); break;
+    case static_cast<int>(RecvOp::Payback): ((class PaybackManagerClient*)(void*)(((void*)FUN_1409c1740())))->OnPaybackPacket(packet); break;
     }
     FUN_1417e27d0(((void*)TSingleton<CStateService>::GetInstance()),packet);
     FUN_141adbfb0(((void*)TSingleton<CUIService>::GetInstance()),packet);
@@ -748,9 +750,9 @@ void CNetworkService::FUN_14153a020(COutPacket& input) {
     else m_socket.SendPacket(input);
 }
 // @0x14153a1d0
-void CNetworkService::FUN_14153a1d0(unsigned first,unsigned second) { m_socket.FUN_141266480(first,second); }
+void CNetworkService::FUN_14153a1d0(unsigned first,unsigned second) { m_socket.SetKeys(first,second); }
 // @0x14153a210
-void CNetworkService::FUN_14153a210(int state) { m_connectionState=state; }
+void CNetworkService::SetConnectionState(int state) { m_connectionState=state; }
 // @0x14153a230
 int CNetworkService::GetConnectionState() { return m_connectionState; }
 // @0x14153a250
@@ -836,7 +838,7 @@ void CNetworkService::OnGvg(CInPacket& input) {
             if(((void*)FUN_140e800e0())!=0) {
                 FUN_140aad050(((void*)FUN_140e800e0()),options);int enabled=options.FUN_140aadf90(0)==1;
                 if(enabled) { int value=options.FUN_140aadf90(1); m_socket.m_out->FUN_140209340(value); }
-                m_socket.m_out->FUN_140209450(enabled);
+                m_socket.m_out->SetCaptureEnabled(enabled);
             }
         }
             break;
@@ -851,7 +853,7 @@ void CNetworkService::FUN_14153ad10(CInPacket& input) {
         Unk_NetworkHandshake handshake;handshake.FUN_1407a4420(input);
         if(handshake.version==0x9dd) {
             if(handshake.patch==1&&FUN_141541bc0(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()))==0) {
-                if(FUN_141538d50()==true) return;
+                if(SendPatchFileList()==true) return;
             } else if(handshake.patch==2) {
             } else if(handshake.patch==0) ((class COnlinePatchManagerCli*)(void*)(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance())))->DeletePatchFiles("./DataPatch/");
             FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
@@ -871,7 +873,7 @@ void CNetworkService::FUN_14153af70(CInPacket&) {
 }
 // @0x14153b010
 void CNetworkService::FUN_14153b010(CInPacket&) {
-    if(((void*)FUN_140e800e0())!=0&&((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad1e0()) { ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad7f0();return; }
+    if(((void*)FUN_140e800e0())!=0&&((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->IsReconnecting()) { ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->SendReconnectRequest();return; }
     int count=(int)DAT_143ab2a58.GetCount();
     if(count==0) {
         Unk_NetworkAuth auth;auth.account=DAT_143ab2820;auth.token1=DAT_143ab284c;auth.token2=DAT_143ab2850;
@@ -889,7 +891,7 @@ void CNetworkService::FUN_14153b1c0(CInPacket& input) {
 // @0x14153b220
 void CNetworkService::FUN_14153b220(CInPacket& input) {
     unsigned sequence=input.ReadInt32();
-    m_socket.m_out.operator->()->FUN_140209050(sequence);
+    m_socket.m_out.operator->()->DiscardAcked(sequence);
     COutPacket packet(static_cast<int>(SendOp::Pong),0);packet.WriteInt32(m_socket.m_sequence);FUN_140710590(packet);
 }
 // @0x14153b2d0
@@ -912,7 +914,7 @@ void CNetworkService::FUN_14153b440(CInPacket& input) {
     int result=input.ReadUInt8();
     if(result==0) {
         switch(DAT_1439f4a78) {
-        case 1: ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x620000d);FUN_141539260(); break;
+        case 1: ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x620000d);SendServerEnter(); break;
         case 2: ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x620000c); break;
         }
         FUN_140d86260()->vfunc_8();
@@ -981,7 +983,7 @@ void CNetworkService::FUN_14153c0c0(CInPacket& input) {
             DAT_143ab2a58.RemoveAll();int size=input.ReadInt32();DAT_143ab2a58.SetCount(size,-1);
             input.ReadBytes(&DAT_143ab2a58[0],size);
             ((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bbc580(0, 0);((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x6200042);
-        } else FUN_140d73aa0(FUN_1408116a0(0x227,result),0,0,L"");
+        } else FUN_140d73aa0(BlockFormat<int>(0x227,result),0,0,L"");
     } else if(kind==4) {
         CSceneStateBase* loading=FUN_1415401b0(reinterpret_cast<CStateService*>(((void*)TSingleton<CStateService>::GetInstance()))->GetCurrent()).Get();
         if(loading) ((class CSceneStateRelocateWorld*)(void*)(loading))->SetState(1);
@@ -1068,8 +1070,8 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         int message=FUN_140cc1fb0(result);
         if(message==0x218) {
             CStringW text=L"";
-            if(((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e5b0()&&error==0x4e2e) { Unk_NetworkAuthErrors errors;text=errors.FUN_140c7a360(0x17); }
-            if(text.IsEmpty()) text=FUN_1408116a0(message,error);
+            if(((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionJP()&&error==0x4e2e) { Unk_NetworkAuthErrors errors;text=errors.FUN_140c7a360(0x17); }
+            if(text.IsEmpty()) text=BlockFormat<int>(message,error);
             FUN_140d86260()->vfunc_58(0x218,0);FUN_140d73aa0(text,0,0,L"");
         } else { FUN_140d86260()->vfunc_59(result);FUN_140d73bc0(message,0,0,L""); }
     }
@@ -1100,10 +1102,10 @@ void CNetworkService::FUN_14153e180(CInPacket& input) {
         int value=input.ReadInt32();
         int flag=input.ReadUInt8();
         bool enabled=input.ReadBool();
-        ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f400(value, flag, enabled);
+        ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->CreateStage(value, flag, enabled);
         break;
     }
-    case 1: ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f4b0(); break;
+    case 1: ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->ClearStage(); break;
     }
 }
 // @0x14153e280
@@ -1210,7 +1212,7 @@ void CNetworkService::FUN_14153f6c0(CInPacket& input) {
     case 3: {
         __int64 itemId=input.ReadInt64();const CStringW& name=input.ReadUnicodeString();
         Unk_SocketPtr<CItem> item=reinterpret_cast<Unk_NetworkEquipment*>(((void*)((class PC*)(class Unk_NetworkPlayer*)(player))->FUN_14165f460()))->FUN_141270140(7);
-        if(static_cast<bool>(item)&&item->FUN_140526a50()==itemId) ((class CItem*)(class CItem*)(item.operator->()))->FUN_140529330(name);
+        if(static_cast<bool>(item)&&item->GetItemUid()==itemId) ((class CItem*)(class CItem*)(item.operator->()))->SetCoupleName(name);
     }
     }
 }
@@ -1312,27 +1314,27 @@ MS2_REPLACE_METHOD(0x141538570, CNetworkService, FUN_141538570, 33, 0xD9C03822);
 MS2_REPLACE_METHOD(0x1415385a0, CNetworkService, FUN_1415385a0, 33, 0xCBF1E589);
 MS2_REPLACE_METHOD(0x1415385d0, CNetworkService, FUN_1415385d0, 33, 0xCBF1E589);
 MS2_REPLACE_METHOD(0x141538600, CNetworkService, FUN_141538600, 532, 0x44C794A7);
-MS2_REPLACE_METHOD(0x141538820, CNetworkService, FUN_141538820, 111, 0x98088833);
+MS2_REPLACE_METHOD(0x141538820, CNetworkService, SendRequestQuit, 111, 0x98088833);
 MS2_REPLACE_METHOD(0x1415388a0, CNetworkService, FUN_1415388a0, 138, 0x9F931C23);
 MS2_REPLACE_METHOD(0x141538930, CNetworkService, SendRequestItemInventoryMode4, 117, 0xF8895E9E);
 MS2_REPLACE_METHOD(0x1415389b0, CNetworkService, SendRequestItemInventoryMode5, 95, 0x63AB8EBC);
 MS2_REPLACE_METHOD(0x141538a20, CNetworkService, SendRequestItemStorage, 95, 0xF6C48771);
 MS2_REPLACE_METHOD(0x141538a90, CNetworkService, SendFittingDoll, 118, 0xBF08B370);
 MS2_REPLACE_METHOD(0x141538b10, CNetworkService, FUN_141538b10, 142, 0xCE84232D);
-MS2_REPLACE_METHOD(0x141538c40, CNetworkService, FUN_141538c40, 105, 0x8A1154DD);
-MS2_REPLACE_METHOD(0x141538cb0, CNetworkService, FUN_141538cb0, 140, 0x658AE724);
-MS2_REPLACE_METHOD(0x141538d50, CNetworkService, FUN_141538d50, 455, 0x7466BFF9);
-MS2_REPLACE_METHOD(0x141538f20, CNetworkService, FUN_141538f20, 17, 0x54C6247B);
-MS2_REPLACE_METHOD(0x141538f40, CNetworkService, FUN_141538f40, 17, 0xEF627A07);
-MS2_REPLACE_METHOD(0x141538f60, CNetworkService, FUN_141538f60, 17, 0x33D25353);
-MS2_REPLACE_METHOD(0x141538f80, CNetworkService, FUN_141538f80, 415, 0xFF261F0C);
-MS2_REPLACE_METHOD(0x141539130, CNetworkService, FUN_141539130, 71, 0x49ADBDB6);
-MS2_REPLACE_METHOD(0x141539180, CNetworkService, FUN_141539180, 126, 0x26089769);
+MS2_REPLACE_METHOD(0x141538c40, CNetworkService, SendSystemShop, 105, 0x8A1154DD);
+MS2_REPLACE_METHOD(0x141538cb0, CNetworkService, SendResponseVersion, 140, 0x658AE724);
+MS2_REPLACE_METHOD(0x141538d50, CNetworkService, SendPatchFileList, 455, 0x7466BFF9);
+MS2_REPLACE_METHOD(0x141538f20, CNetworkService, GetMinLatency, 17, 0x54C6247B);
+MS2_REPLACE_METHOD(0x141538f40, CNetworkService, GetMaxLatency, 17, 0xEF627A07);
+MS2_REPLACE_METHOD(0x141538f60, CNetworkService, GetAverageLatency, 17, 0x33D25353);
+MS2_REPLACE_METHOD(0x141538f80, CNetworkService, ProcessReceivedPackets, 415, 0xFF261F0C);
+MS2_REPLACE_METHOD(0x141539130, CNetworkService, SaveServerAddress, 71, 0x49ADBDB6);
+MS2_REPLACE_METHOD(0x141539180, CNetworkService, RestoreServerAddress, 126, 0x26089769);
 MS2_REPLACE_METHOD(0x141539210, CNetworkService, GetConnectionCount, 17, 0x88444049);
-MS2_REPLACE_METHOD(0x141539230, CNetworkService, FUN_141539230, 30, 0xC901F3BF);
-MS2_REPLACE_METHOD(0x141539260, CNetworkService, FUN_141539260, 79, 0x0ABD6394);
-MS2_REPLACE_METHOD(0x1415392c0, CNetworkService, FUN_1415392c0, 17, 0x7500A253);
-MS2_REPLACE_METHOD(0x1415392e0, CNetworkService, FUN_1415392e0, 65, 0x3435D849);
+MS2_REPLACE_METHOD(0x141539230, CNetworkService, IncrementConnectionCount, 30, 0xC901F3BF);
+MS2_REPLACE_METHOD(0x141539260, CNetworkService, SendServerEnter, 79, 0x0ABD6394);
+MS2_REPLACE_METHOD(0x1415392c0, CNetworkService, GetSocket, 17, 0x7500A253);
+MS2_REPLACE_METHOD(0x1415392e0, CNetworkService, UpdateLogger, 65, 0x3435D849);
 MS2_REPLACE_METHOD(0x141539330, CNetworkService, FUN_141539330, 69, 0xEFF6B029);
 MS2_REPLACE_METHOD(0x141539380, CNetworkService, FUN_141539380, 69, 0xCA6A2967);
 MS2_REPLACE_METHOD(0x1415393d0, CNetworkService, OnPreInit, 87, 0xD0875A38);
@@ -1340,9 +1342,9 @@ MS2_REPLACE_METHOD(0x141539430, CNetworkService, OnInit, 11, 0x620C90F9);
 MS2_REPLACE_METHOD(0x141539450, CNetworkService, OnTick, 258, 0x4CB7A0A3);
 MS2_REPLACE_METHOD(0x141539560, CNetworkService, OnShutdown, 44, 0x69ED45C7);
 MS2_REPLACE_METHOD(0x1415395a0, CNetworkService, FUN_1415395a0, 128, 0x759D4D2C);
-MS2_REPLACE_METHOD(0x1415397d0, CNetworkService, FUN_1415397d0, 1573, 0x151C027B);
+MS2_REPLACE_METHOD(0x1415397d0, CNetworkService, DispatchPacket, 1573, 0x151C027B);
 MS2_REPLACE_METHOD(0x14153a1d0, CNetworkService, FUN_14153a1d0, 51, 0x33D2563B);
-MS2_REPLACE_METHOD(0x14153a210, CNetworkService, FUN_14153a210, 25, 0xAD719599);
+MS2_REPLACE_METHOD(0x14153a210, CNetworkService, SetConnectionState, 25, 0xAD719599);
 MS2_REPLACE_METHOD(0x14153a230, CNetworkService, GetConnectionState, 17, 0xEDA7EABD);
 MS2_REPLACE_METHOD(0x14153a250, CNetworkService, FUN_14153a250, 127, 0x827339AB);
 MS2_REPLACE_METHOD(0x14153a2e0, CNetworkService, FUN_14153a2e0, 154, 0x119BF7E2);

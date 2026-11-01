@@ -29,7 +29,6 @@ class Unk_CcWorld : public WorldService
 {
 public:
     MyPC* FUN_141bd0cc0();                                      // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
 void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice by id
 
@@ -47,7 +46,8 @@ struct Unk_CcHandle
     static void FUN_1401bfde0(Unk_CcHandle* p);
 };
 class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
-extern Unk_CcInventory DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_CcInventory
 unsigned char FUN_1401c0050(Unk_CcHandle* p, int n);
 void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
@@ -100,11 +100,11 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     else if (bOwned)
     {
-        if (FUN_1401c0d90()->FUN_140477ea0() == 0)
+        if (FUN_1401c0d90()->IsFreeAirTaxiActive() == 0)
         {
-            Unk_CcHandle hItem = DAT_143ab2a90.FUN_140a5e040(10);
+            Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(10);
             if (FUN_1401c0050(&hItem, 0) != 0)
-                FUN_140692c90(&hItem, DAT_143ab2a90.FUN_140a5e040(0xb));
+                FUN_140692c90(&hItem, reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
                 nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();
@@ -121,10 +121,10 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         int nNeed = 3;
         if (((class Unk_CcConfig*)FUN_140166410())->FUN_14036e5b0() != 0)
             nNeed = 1;
-        int nHave = DAT_143ab2a90.FUN_140a5f7b0(0xb, 0);
+        int nHave = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5f7b0(0xb, 0);
         if (nHave >= nNeed)
         {
-            Unk_CcHandle hItem = DAT_143ab2a90.FUN_140a5e040(0xb);
+            Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
             if (FUN_1401c0050(&hItem, 0) != 0)
                 return 0;
             nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();

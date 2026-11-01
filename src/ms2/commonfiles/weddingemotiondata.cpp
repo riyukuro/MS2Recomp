@@ -20,6 +20,12 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -29,7 +35,7 @@ void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* form
                    const unsigned& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -76,7 +82,7 @@ int WeddingEmotionTable::Load()
     }
     std::set<unsigned> codes;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("weddingEmotion"); pNode != 0;
-         pNode = pNode->FUN_140168650("weddingEmotion"))
+         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("weddingEmotion")))
     {
         MS2Ptr<WeddingEmotionData> spData(new WeddingEmotionData);
         unsigned nCode = FUN_140197390(pNode, "code", 0);
@@ -87,7 +93,7 @@ int WeddingEmotionTable::Load()
             FUN_1401e0850(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0} id : {1}]", strPath, nCode);
             return 0;
         }
-        CString strAnim = FUN_14015f710(pNode, "anim", CString(""));
+        CString strAnim = Unk_ReadString((class Unk_XmlNode*)(pNode), "anim", CString(""));
         if (strAnim.IsEmpty())
             continue;
         std::vector<CString> unused;

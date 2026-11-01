@@ -73,7 +73,6 @@ class Unk_EnchantItemPtr
 public:
     ~Unk_EnchantItemPtr();                  // 0x1401b50d0
     bool FUN_1402ffd90() const;             // is null
-    Unk_EnchantItemData* FUN_1401b52a0() const;
 private:
     MS2_LAYOUT_FRIEND;
     void* m_unknown;

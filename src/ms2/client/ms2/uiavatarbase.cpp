@@ -532,7 +532,7 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
         if (kData.FUN_1422b9620(pArgs, nArgs))
         {
             int nButton = kData.FUN_1422b8a10();
-            if (FUN_1418ba160(nButton) != 0)
+            if (SetModeFromButton(nButton) != 0)
             {
                 if (m_nLocked == 0 && m_nMode == 2)
                 {
@@ -566,7 +566,7 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
             int nDy = kData.FUN_1422b8a10();
             int nButton = kData.FUN_1422b8a10();
             int nMode = GetMode();
-            if (FUN_1418ba1a0(nButton) != nMode)
+            if (GetModeForButton(nButton) != nMode)
                 return 1;
             if (abs(nDx) > 2 || abs(nDy) > 2)
             {
@@ -724,14 +724,14 @@ void UIAvatarBase::FUN_1418b9c10()
 }
 
 // @0x1418b9df0
-void UIAvatarBase::FUN_1418b9df0(bool bAngle, bool bPosition)
+void UIAvatarBase::ResetView(bool bAngle, bool bPosition)
 {
     if (bAngle)
         FUN_1418ba340(0);
     if (bPosition)
         FUN_1418ba280(0);
 }
-MS2_REPLACE_METHOD(0x1418B9DF0, UIAvatarBase, FUN_1418b9df0, 65, 0xB30BF4F3);
+MS2_REPLACE_METHOD(0x1418B9DF0, UIAvatarBase, ResetView, 65, 0xB30BF4F3);
 
 // @0x1418b9e40
 void UIAvatarBase::FUN_1418b9e40()
@@ -783,15 +783,15 @@ int UIAvatarBase::GetMode()
 MS2_REPLACE_METHOD(0x1418BA140, UIAvatarBase, GetMode, 17, 0xD9D952B7);
 
 // @0x1418ba160
-int UIAvatarBase::FUN_1418ba160(int nButton)
+int UIAvatarBase::SetModeFromButton(int nButton)
 {
-    m_nMode = FUN_1418ba1a0(nButton);
+    m_nMode = GetModeForButton(nButton);
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x1418BA160, UIAvatarBase, FUN_1418ba160, 54, 0x8F49F212);
+MS2_REPLACE_METHOD(0x1418BA160, UIAvatarBase, SetModeFromButton, 54, 0x8F49F212);
 
 // @0x1418ba1a0
-int UIAvatarBase::FUN_1418ba1a0(int nButton)
+int UIAvatarBase::GetModeForButton(int nButton)
 {
     if (nButton == 0)
         return 2;
@@ -890,12 +890,12 @@ public:
     Customize(int nObjectId, int nZero, bool bFlag);                    // 0x140cd1570
     void FUN_140cd1c90(CItem* pItem);                                   // equips an item
     void FUN_140cd1d50(int nValue);
-    void FUN_140cd1e80();                                               // clears the items
-    void FUN_140cd1ed0(CItem* pItem);                                   // unequips an item
-    void FUN_140cd1f30(int nValue);
+    void ClearPreview();                                               // clears the items
+    void Unequip(CItem* pItem);                                   // unequips an item
+    void UnequipId(int nValue);
     void FUN_140cd1f90(CItem* pItem);
-    void FUN_140cd20c0();                                               // resets
-    void FUN_140cd23e0(MS2Ptr<CItem> spItem, int nValue);
+    void RestoreAll();                                               // resets
+    void ApplyItem(MS2Ptr<CItem> spItem, int nValue);
     void FUN_140cd3480(int nValue, int nMode);
 private:
     char m_unk_18[0x70];
@@ -1017,7 +1017,7 @@ void UIAvatarPC::vfunc_2()
 {
     UIAvatarBase::vfunc_2();
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd20c0();
+        m_spCustomize->RestoreAll();
     m_mapPackages.clear();
 }
 MS2_REPLACE_METHOD(0x1418BAAB0, UIAvatarPC, vfunc_2, 94, 0x5098D0EE);
@@ -1116,7 +1116,7 @@ void UIAvatarPC::FUN_1418bafa0(CItem* pItem, int nEffect)
         Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nEffect, 0);
         if (kRow.FUN_14056cf90(0))
             return;
-        FUN_141423cf0(pItem->FUN_140526a50(), *(struct Unk_UgcExtra const*)(kRow.FUN_14056d630()), (struct Unk_UgcPlayer*)(pAvatar), 0);
+        FUN_141423cf0(pItem->GetItemUid(), *(struct Unk_UgcExtra const*)(kRow.FUN_14056d630()), (struct Unk_UgcPlayer*)(pAvatar), 0);
     }
 }
 
@@ -1138,7 +1138,7 @@ bool UIAvatarPC::FUN_1418bb0f0(CItem* pItem, int nEffect)
     if (m_spCustomize == 0 || pItem == 0)
         return false;
     MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
-    if (spData == 0 || ((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053c5c0() != 0x19)
+    if (spData == 0 || ((class CItemData*)(class CItemData*)(spData.operator->()))->GetType() != 0x19)
         return false;
     ATL::CAtlArray<MS2Ptr<CItemData> > kItems;
     ATL::CAtlArray<MS2Ptr<CItemData> > kOthers;
@@ -1163,11 +1163,11 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
         return false;
     if (spData == 0)
         return false;
-    if (((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053c5c0() != 0x19)
+    if (((class CItemData*)(class CItemData*)(spData.operator->()))->GetType() != 0x19)
         return false;
     if (((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(pItems))->IsEmpty())
         return false;
-    unsigned nId = spData->FUN_14053c510();
+    unsigned nId = spData->GetItemId();
     int nZero = 0;
     Unk_AvPackageKey kKey(nId, nZero);
     return FUN_1418bb3f0(&kKey, nEffect, pItems);
@@ -1197,11 +1197,11 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem == 0)
             continue;
-        spItem->FUN_140523c40(spItemData->FUN_14053c510(), 1, 0);
+        spItem->FUN_140523c40(spItemData->GetItemId(), 1, 0);
         int nCustomizeId = FUN_141420f10(spItemData.get(), FUN_1418bd1d0());
         ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140526c10(nCustomizeId);
-        spItem->FUN_140526a70(FUN_14028d0e0());
-        ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140526b30(vfunc_25());
+        spItem->SetItemUid(FUN_14028d0e0());
+        ((class CItem*)(class CItem*)(spItem.operator->()))->SetObjectId(vfunc_25());
         if (FUN_1418bd350(&kItemKey, nCustomizeId))
             kKeys.Add(kItemKey);
         kNewItems.Add(spItem);
@@ -1241,7 +1241,7 @@ __int64 GetServerTime();                                                // the s
 void UIAvatarPC::FUN_1418bbc20(int nValue)
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1f30(nValue);
+        m_spCustomize->UnequipId(nValue);
 }
 MS2_REPLACE_METHOD(0x1418BBC20, UIAvatarPC, FUN_1418bbc20, 73, 0xA926B992);
 
@@ -1257,7 +1257,7 @@ MS2_REPLACE_METHOD(0x1418BBC70, UIAvatarPC, FUN_1418bbc70, 75, 0x8526D769);
 void UIAvatarPC::FUN_1418bbcd0(CItem* pItem)
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1ed0(pItem);
+        m_spCustomize->Unequip(pItem);
 }
 MS2_REPLACE_METHOD(0x1418BBCD0, UIAvatarPC, FUN_1418bbcd0, 75, 0xB39DF306);
 
@@ -1281,7 +1281,7 @@ void UIAvatarPC::FUN_1418bbd30(int nSlot)
 void UIAvatarPC::FUN_1418bbe40()
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1e80();
+        m_spCustomize->ClearPreview();
     m_mapPackages.clear();
 }
 MS2_REPLACE_METHOD(0x1418BBE40, UIAvatarPC, FUN_1418bbe40, 84, 0xF86CA209);
@@ -1335,7 +1335,7 @@ void UIAvatarPC::vfunc_3()
 {
     UIAvatarBase::vfunc_3();
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd20c0();
+        m_spCustomize->RestoreAll();
     m_mapPackages.clear();
 }
 MS2_REPLACE_METHOD(0x1418BC210, UIAvatarPC, vfunc_3, 94, 0x2E4D8367);
@@ -1370,11 +1370,11 @@ void UIAvatarPC::FUN_1418bc380(CItem* pItem)
         return;
     if (m_spCustomize.get())
     {
-        m_spCustomize->FUN_140cd1ed0(pItem);
+        m_spCustomize->Unequip(pItem);
         int nCustomizeId = FUN_141420a30(((struct Unk_UabSection*)((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->FUN_14053eba0())->FUN_14054b2f0(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
         if (spData.get())
-            m_spCustomize->FUN_140cd23e0(MS2Ptr<CItem>(pItem), nCustomizeId);
+            m_spCustomize->ApplyItem(MS2Ptr<CItem>(pItem), nCustomizeId);
     }
 }
 
@@ -1727,7 +1727,7 @@ void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
     __int64 nNow = GetServerTime();
     CMsTime kZero((__time64_t)0);
     CMsTime kNow(nNow);
-    ((class CEquipment*)(void*)(((void*)((class PC*)(class AvatarPC*)(pAvatar))->FUN_1416561a0())))->FUN_1411ea620(kNow, kZero);
+    ((class CEquipment*)(void*)(((void*)((class PC*)(class AvatarPC*)(pAvatar))->FUN_1416561a0())))->SetLayerPeriod(kNow, kZero);
 }
 
 // @0x1418bd7f0
@@ -2314,7 +2314,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
     ++nDepth;
     if (spData == 0)
         return false;
-    int nItemId = spData->FUN_14053c510();
+    int nItemId = spData->GetItemId();
     int nGroup = ((struct ItemFunction*)(void*)(&spData->function.name))->FUN_14054a460();
     if (nGroup == 0)
         return false;
@@ -2330,7 +2330,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
         MS2Ptr<CItemData> spItem = FUN_14053f870(kDrop.m_nItemId);
         if (!spItem)
             continue;
-        if (((class CItemData*)(class CItemData*)(spItem.operator->()))->FUN_14053c5c0() != 0x19)
+        if (((class CItemData*)(class CItemData*)(spItem.operator->()))->GetType() != 0x19)
         {
             if (((class CItemData*)(class CItemData*)(spItem.operator->()))->FUN_14053cbc0())
                 pItems->Add(spItem);

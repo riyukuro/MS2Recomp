@@ -187,9 +187,9 @@ public:
     void SortCharacters();                                  // 0x1418ef290
     void SelectCharacter(unsigned __int64 nId);             // 0x1418ef520
     void RefreshSelection();                                // 0x1418ef560
-    void FUN_1418ef630();                                   // 0x1418ef630 quit the game
-    void FUN_1418ef690(CString strUrl);                     // 0x1418ef690 open the page in the browser dialog
-    void FUN_1418ef890(unsigned __int64 nId);               // 0x1418ef890 attach the burning level-up icon
+    void QuitGame();                                   // 0x1418ef630 quit the game
+    void OpenUrl(CString strUrl);                     // 0x1418ef690 open the page in the browser dialog
+    void AttachBurningLevelupIcon(unsigned __int64 nId);               // 0x1418ef890 attach the burning level-up icon
 
     int m_180;                                              // +0x180
     CharPtr m_188;                                          // +0x188 the selected character

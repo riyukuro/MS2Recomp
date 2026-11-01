@@ -22,6 +22,14 @@
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/creservedwordtable.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 typedef ATL::CAtlMap<unsigned int, CSystemMailContent::Ptr> Unk_SystemMailMap;
 
@@ -84,14 +92,14 @@ void LoadSystemMailContent()
         Unk_SmLog(CLogString::GetInstance(), 1, 0x13, MS2_SM_XML_ERR, "systemMailContent.xml");
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("mail"); pNode != 0; pNode = pNode->FUN_140168650("mail"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
     {
         CSystemMailContent::Ptr spMail(new CSystemMailContent);
         spMail->FUN_1401d1160(strPath);
-        FUN_1408731e0(pNode, "id", spMail->m_nId);
-        FUN_140873420(pNode, "sender", spMail->m_strSender);
-        FUN_140873420(pNode, "subject", spMail->m_strSubject);
-        FUN_140873420(pNode, "content", spMail->m_strContent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spMail->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
+        XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
+        XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);
@@ -111,13 +119,13 @@ void LoadSystemMailContent()
 // @0x140851c40
 void FUN_140851c40(Unk_140165cf0* pRoot)
 {
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("mail"); pNode != 0; pNode = pNode->FUN_140168650("mail"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
     {
         CSystemMailContent::Ptr spMail(new CSystemMailContent);
-        FUN_1408731e0(pNode, "id", spMail->m_nId);
-        FUN_140873420(pNode, "sender", spMail->m_strSender);
-        FUN_140873420(pNode, "subject", spMail->m_strSubject);
-        FUN_140873420(pNode, "content", spMail->m_strContent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spMail->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
+        XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
+        XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
         FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);

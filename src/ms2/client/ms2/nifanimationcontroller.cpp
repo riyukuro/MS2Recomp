@@ -59,14 +59,15 @@ const NiRTTI* CNifAnimationController::GetRTTI() const { return &ms_RTTI; }
 CNifLoadingService* FUN_140a0afd0();                      // the service singleton
 
 // The scene-graph walk (applyeffect.cpp / kfmmodel.cpp declare the same view).
-class Unk_AeSceneIter
+class Unk_NodeQueue
 {
 public:
-    Unk_AeSceneIter(NiAVObject* pRoot);                     // 0x14098cb80
-    ~Unk_AeSceneIter();                                     // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
+    ~Unk_NodeQueue();                                     // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
+typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 
 // @0x141544850
 bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::Point3& kEuler)
@@ -103,7 +104,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
         m_10 = FUN_140a0afd0()->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             m_28 = NiDynamicCast(NiNode, m_10->GetObjectByName("Camera01"));
-            Unk_AeSceneIter walk(m_28);
+            Unk_AeSceneIter walk((NiAVObject*)(m_28));
             while (NiAVObject* pObject = walk.FUN_14098e0d0(true)) {
                 NiTimeController* pCtrl = pObject->GetControllers();
                 while (pCtrl != 0 && pCtrl->GetAnimType() == 1) {

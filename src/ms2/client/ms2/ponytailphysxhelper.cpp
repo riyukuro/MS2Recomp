@@ -47,6 +47,9 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
+class NiActorManager;
+namespace egf { class EntityID; }
+namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
 
 // ---- exe data ----
 extern char DAT_143afa4d8;          // NiNode::ms_RTTI
@@ -93,7 +96,7 @@ class Unk_PonyPlayer : public PC
 {
 };
 struct Unk_PonyWorld {  };      // the local player
-struct Unk_PonyAnimSvc { NiActorManager* FUN_140999440(const egf::EntityID& kId); };   // loaded actor of an entity
+struct Unk_PonyAnimSvc { };   // loaded actor of an entity
 Unk_PonyAnimSvc* FUN_141b6f910();
 
 // The app framework (+8 = the service manager) and the world scene.
@@ -106,7 +109,6 @@ public:
 struct Unk_PonyScene;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_1402bac70(void* pValue);                              // Constants::Value<float>::get
-float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 
 // The model facts of a part and the model's non-virtual helpers (?\equipmodel.cpp, ?\itemugcmesh.cpp).
 struct Unk_PonyRanges { const Unk_CustomizeRange* FUN_140544f20(size_t nIndex); };
@@ -236,6 +238,7 @@ void FUN_141695f10(Unk_PonyPlayer* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTa
 // ---- static initializers (.text$di) ----
 #ifndef MS2_HOOK_DLL
 #include "ms2/placeholder/header_statics_a.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 static CString s_sortNames2[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill2("skill");
 static CString s_stun2("stun");
@@ -353,7 +356,7 @@ void CPonyTailController::vfunc_6()
         FUN_1416955b0(0, 0, &CPonyTailController::FUN_141694fb0, 0);
     egf::EntityID kId;
     pPlayer->FUN_14123c460(kId);
-    NiActorManager* pActor = pSvc->FUN_140999440(kId);
+    NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(pSvc)->GetActorManager(kId);
     if (pActor == 0)
         return;
     Unk_PonyPart* apPart[2] = {&m_kFirst, &m_kSecond};
@@ -431,7 +434,7 @@ void CPonyTailController::vfunc_14(float fValue)
     if (spFirst == (Unk_PickTarget*)0)
         return;
     const Unk_CustomizeRange* pRange = vfunc_23();
-    m_afValue[m_nCurIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
+    m_afValue[m_nCurIndex] = efd::Clamp(fValue, pRange->m_fMin, pRange->m_fMax);
     float fCur = vfunc_21();
     if (FUN_141422340(spFirst.get(), 0) == fCur)
         return;
@@ -595,7 +598,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
     NiActorManager* pActor = 0;
     if (pSvc != 0 && pPlayer != 0)
     {
-        pActor = pSvc->FUN_140999440(pPlayer->FUN_14123c460());
+        pActor = reinterpret_cast<egmAnimation::AnimationService*>(pSvc)->GetActorManager(pPlayer->FUN_14123c460());
     }
     if (m_spPicker.operator CItemPickingHelper*() ? true : false)
     {
@@ -645,7 +648,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     Unk_PonyAnimSvc* pSvc = FUN_141b6f910();
     egf::EntityID kId;
     pPlayer->FUN_14123c460(kId);
-    if (pSvc->FUN_140999440(kId) == 0)
+    if (reinterpret_cast<egmAnimation::AnimationService*>(pSvc)->GetActorManager(kId) == 0)
         return;
     MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
     if (spFirst.get() == 0)
@@ -856,7 +859,7 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
     reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
     if (*(int*)((char*)FUN_141200ab0(spPart.operator->()) + 0x20) != 0)
     {
-        NiNode* pScene = ((class CEffectService*)(struct Unk_PonyScene*)(reinterpret_cast<Unk_PonyScene*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6b10();
+        NiNode* pScene = ((class CEffectService*)(struct Unk_PonyScene*)(reinterpret_cast<Unk_PonyScene*>(TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
         float fTime = (float)((CMainSystem*)(Unk_PonyApp*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
         Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
         Unk_MeshSet& kSet = *pSet;
@@ -887,7 +890,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
 {
     Unk_PonyAnimSvc* pSvc = FUN_141b6f910();
     Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
-    NiActorManager* pActor = pSvc->FUN_140999440(pPlayer->FUN_14123c460());
+    NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(pSvc)->GetActorManager(pPlayer->FUN_14123c460());
     if (pActor == 0)
         return;
     MS2Ptr<Unk_PickTarget> spPart = pPart->m_spModel;

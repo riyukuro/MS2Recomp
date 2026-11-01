@@ -36,19 +36,19 @@ public:
     void FUN_140c6bdb0();                                                  // "setData" of the swf (header)
     void FUN_140c6c250();                                                  // "setAttendance" of the swf (day frames)
     void FUN_140c6c4a0();                                                  // fill the reward list
-    void FUN_140c6c8e0();                                                  // refresh everything
+    void RefreshAll();                                                  // refresh everything
     void FUN_140c6c920();                                                  // "updateAttendance" of the swf
-    bool FUN_140c6cbf0();                                                  // fetch the event record; true when there is one
+    bool LoadEvent();                                                  // fetch the event record; true when there is one
     void SendEventRewardMode25(int nDay);                                          // claim the reward of a day
     void FUN_140c6cd00();                                                  // press the attend button
-    int FUN_140c6d040(unsigned int nDay);                                  // 0 not yet, 1 claimable, 2 claimed
-    int FUN_140c6d130();                                                   // days that can still be caught up
-    CString FUN_140c6d200(unsigned int nDay, unsigned int nCur, int nCatchUp);   // state frame name of a day
-    CString FUN_140c6d390(int nItemId);                                    // icon path of an item
+    int GetDayState(unsigned int nDay);                                  // 0 not yet, 1 claimable, 2 claimed
+    int GetMissedDayCount();                                                   // days that can still be caught up
+    CString GetDayStateFrame(unsigned int nDay, unsigned int nCur, int nCatchUp);   // state frame name of a day
+    CString GetItemIconPath(int nItemId);                                    // icon path of an item
     CString FUN_140c6d470();                                               // frame name of the event
     int FUN_140c6d520();                                                   // table int 0xa8d (this event)
     int FUN_140c6d570();                                                   // table int 0xa8e (this event)
-    CStringW FUN_140c6d5c0();                                              // table string 0xa8c (claimed days)
+    CStringW GetClaimedDays();                                              // table string 0xa8c (claimed days)
 
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);              // bind a list child
 

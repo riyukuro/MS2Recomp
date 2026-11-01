@@ -36,6 +36,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // @0x140a31af0
 static __inline errno_t ms2_memcpy_s_copy1(void* const d, size_t const dsz, void const* const s, size_t const ssz)
@@ -74,7 +75,7 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy2)(void*, 
 extern unsigned char DAT_143afc898;                              // assertions throw when set
 extern "C" float(__cdecl* __imp_acosf)(float);       // acosf through the CRT import table (the exe calls it indirectly)
 extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
-class Unk_BrAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };   // the animation service
+class Unk_BrAnimSvc { public: };   // the animation service
 Unk_BrAnimSvc* FUN_141b6f910();
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);           // the scene node of an entity
 GameObject* FUN_141bd0fa0(WorldService* p, egf::EntityID kId);
@@ -217,7 +218,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
             NiQuaternion kOut(kBlend);
             m_kTransformValue.SetRotate(kOut);
-            NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(pObject->FUN_14123c460());
+            NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->FUN_14123c460());
             if (pActor != 0)
             {
                 NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
@@ -310,7 +311,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 NiQuaternion kOut(kBlend);
                 m_kTransformValue.SetRotate(kOut);
                 kBlend.ToRotation(m_kLastRotate);
-                NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(pObject->FUN_14123c460());
+                NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->FUN_14123c460());
                 if (pActor != 0)
                 {
                     NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
@@ -451,11 +452,11 @@ CBoneRotateManager::CBoneRotateManager()
 // @0x140a34a70
 CBoneRotateManager::~CBoneRotateManager()
 {
-    FUN_140a35900();
+    ClearActions();
 }
 
 // @0x140a34b80
-void CBoneRotateManager::FUN_140a34b80(GameObject* pOwner, CString strBone)
+void CBoneRotateManager::Init(GameObject* pOwner, CString strBone)
 {
     m_pOwner = pOwner;
     m_actions.RemoveAll();
@@ -463,7 +464,7 @@ void CBoneRotateManager::FUN_140a34b80(GameObject* pOwner, CString strBone)
 }
 
 // @0x140a34be0
-void CBoneRotateManager::FUN_140a34be0(Unk_BrMode nMode, GameObject* pTarget, int nParam)
+void CBoneRotateManager::StartMode(Unk_BrMode nMode, GameObject* pTarget, int nParam)
 {
     if (m_bEnabled == false)
         return;
@@ -475,7 +476,7 @@ void CBoneRotateManager::FUN_140a34be0(Unk_BrMode nMode, GameObject* pTarget, in
     {
         Unk_BrAction* pAction = spAction.operator->();
         if (pAction->vfunc_1(m_pOwner->FUN_14123c580(), pTarget->FUN_14123c580(), nParam) == false)
-            FUN_140a34f00();
+            StopLooking();
     }
 }
 
@@ -517,7 +518,7 @@ void CBoneRotateManager::LookAtEntity(const egf::EntityID& kId, CString strBone,
 }
 
 // @0x140a34f00
-void CBoneRotateManager::FUN_140a34f00()
+void CBoneRotateManager::StopLooking()
 {
     m_tmLook.FUN_1408687f0();
     m_tmApply.FUN_1408687f0();
@@ -593,7 +594,7 @@ void CBoneRotateManager::FUN_140a35060()
         }
     }
     else if (m_tmLook.FUN_140868c00() != 0)
-        FUN_140a34f00();
+        StopLooking();
 }
 
 // @0x140a35500
@@ -625,7 +626,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
                 {
                     if (spAction->vfunc_1(m_pOwner->FUN_14123c580(), 0, 5000) == false)
                     {
-                        FUN_140a34f00();
+                        StopLooking();
                     }
                     else
                     {
@@ -660,21 +661,21 @@ void CBoneRotateManager::SetYawBias(float fValue)
 }
 
 // @0x140a35820
-void CBoneRotateManager::FUN_140a35820(float fValue)
+void CBoneRotateManager::SetPitchBias(float fValue)
 {
     if (m_pInterp != 0)
         m_pInterp->SetPitchBias(fValue);
 }
 
 // @0x140a35860
-void CBoneRotateManager::FUN_140a35860(bool bValue)
+void CBoneRotateManager::SetSmooth(bool bValue)
 {
     if (m_pInterp != 0)
         m_pInterp->SetSmooth(bValue);
 }
 
 // @0x140a358a0
-bool CBoneRotateManager::FUN_140a358a0()
+bool CBoneRotateManager::IsSmooth()
 {
     if (m_pInterp != 0)
         return m_pInterp->IsSmooth();
@@ -688,7 +689,7 @@ GameObject* CBoneRotateManager::GetOwner()
 }
 
 // @0x140a35900
-void CBoneRotateManager::FUN_140a35900()
+void CBoneRotateManager::ClearActions()
 {
     POSITION pos = m_actions.GetHeadPosition();
     while (pos != 0)

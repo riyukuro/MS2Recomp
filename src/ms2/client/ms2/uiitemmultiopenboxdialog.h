@@ -26,7 +26,6 @@ public:
     void FUN_140c3f9d0(int nBoxId, int nSlot, CStringW strKey, int nCount);   // set the box to open and the count
     void FUN_140c3fa80(int nOpened, int nResult);               // an answer of the server: count down, report errors
     void FUN_140c3fca0();                                       // refresh the "m_count" text
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
 
 private:
     int m_180;                  // +0x180 item box id

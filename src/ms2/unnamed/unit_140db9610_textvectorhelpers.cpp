@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x140db9610-0x140db9e30 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140db9610.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <atlcoll.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -46,7 +47,7 @@ CStringA FUN_14028ef00(Unk_DbVec3 kVec);                                        
 CStringW FUN_14028efb0(Unk_DbVec3 kVec);                                             // Point3 formatter (wide)
 extern unsigned long long* FUN_14029dcd0();                                     // CRT scanf options
 extern Unk_DbEfdPt2 DAT_143b02320;                                                 // default Point2
-extern Unk_DbEfdPt3 DAT_143b01a60;                                                // default Point3
+#define DAT_143b01a60 (*(Unk_DbEfdPt3*)&efd::Point3::ZERO)          // C3: was extern Unk_DbEfdPt3 DAT_143b01a60
 extern const char DAT_142e36e3c[];                                              // token delimiter (",")
 extern const char DAT_142e36e40[];                                              // token delimiter (",")
 

@@ -201,7 +201,7 @@ public:
     int FUN_140a18070();                                                // (another obj)
     Unk_CameraTargetEntity* FUN_140a38d60();                            // the camera target (another obj)
     void FUN_140aefa70();                                               // toggle the target camera lock (game scene)
-    Unk_CameraFlyBy FUN_140aeffd0(float fDuration, const Unk_CameraSetting& to);  // a fly-by from the current view
+    Unk_CameraFlyBy MakeFlyBy(float fDuration, const Unk_CameraSetting& to);  // a fly-by from the current view
     void FUN_140af1a90();                                               // stop the camera effects
     void FUN_140af1de0();                                               // apply the camera effects
     void FUN_140af1f70();
@@ -211,16 +211,16 @@ public:
     bool FUN_140aed0d0();
     int FUN_140aed0f0();                                                // camera effects enabled
     int FUN_140aed160();
-    void FUN_140aed180(const Unk_CameraSetting& setting);               // remember a setting
+    void RememberSetting(const Unk_CameraSetting& setting);               // remember a setting
     void FUN_140aed1e0(const Unk_CameraSetup& setup);                   // local-target mode: blend to a setup
     void FUN_140aed260();                                               // leave the local-target mode
     void FUN_140aed330();                                               // local-target mode: abort the blend
-    BOOL FUN_140aed3a0();                                               // in the local-target mode
+    BOOL IsLocalTargetMode();                                               // in the local-target mode
     bool FUN_140aed3e0();
-    BOOL FUN_140aed440(Unk_CameraSetting& setting);                     // the current mode's setting
+    BOOL GetModeSetting(Unk_CameraSetting& setting);                     // the current mode's setting
     bool FUN_140aed4b0();
-    void FUN_140aed500(egf::Entity* pEntity, const Unk_CameraSetup& setup);
-    void FUN_140aed540(egf::Entity* pEntity);
+    void SetEntitySetup(egf::Entity* pEntity, const Unk_CameraSetup& setup);
+    void RemoveEntitySetup(egf::Entity* pEntity);
     float FUN_140af0140();
     void FUN_140af0170(float f, bool b);
     int FUN_140af01d0();                                                // camera control type
@@ -228,17 +228,17 @@ public:
     NiPoint3 FUN_140af0250();                                           // camera world direction
     NiPoint3 FUN_140af0340();                                           // camera world up vector
     NiPoint3 FUN_140af0430();                                           // camera world right vector
-    bool FUN_140af0520(const NiPoint2& kScreen, NiPoint3& kOrigin, NiPoint3& kDir);  // screen point to ray
-    bool FUN_140af05d0(const efd::Point3& kWorld, NiPoint2& kScreen);   // world point to screen pixels
+    bool ScreenToRay(const NiPoint2& kScreen, NiPoint3& kOrigin, NiPoint3& kDir);  // screen point to ray
+    bool WorldToScreen(const efd::Point3& kWorld, NiPoint2& kScreen);   // world point to screen pixels
     bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen);   // world point to screen pixels and depth
-    bool FUN_140af0aa0(const efd::Point3& kPos, float fRadius);         // sphere in the view frustum
+    bool IsSphereInFrustum(const efd::Point3& kPos, float fRadius);         // sphere in the view frustum
     void FUN_140af0b70(int bOn, float f1, float f2);
     void FUN_140af0c10();
     float FUN_140af0c70();
     void FUN_140af0cc0(float f);
     float FUN_140af0d30();
     bool FUN_140af0d80();
-    void FUN_140af0de0(MS2Ptr<CCameraEffect> spEffect);                 // add a camera effect
+    void AddEffect(MS2Ptr<CCameraEffect> spEffect);                 // add a camera effect
     float FUN_140ad4b40();                                              // current mode: setting m_0 (another obj)
     Vector3 FUN_140a17e10();                                    // current mode: setting m_c (another obj)
     void FUN_140ad4ff0(float f);                                        // (another obj)

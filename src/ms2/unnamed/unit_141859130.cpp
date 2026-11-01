@@ -11,6 +11,12 @@
 #include <efd/utf8string.h>
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
 
 class Unk_XmlNode { public: public:
     class Unk_XmlNode* FirstChild(char const*);   // C3: was free FUN_140165cf0
@@ -19,7 +25,6 @@ public:
 };
 
 CString FUN_14016a5c0(const char* psz, int n);
-const char* FUN_14086f4b0(Unk_XmlNode* pNode, const char* pszName); // attribute text
 
 #pragma function(memcmp, memset)
 // A GUID kept as 16 raw bytes, compared with memcmp.
@@ -72,10 +77,10 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
     if (pEntity == 0)
         return 0;
     for (pEntity = ((class Unk_XmlNode*)(void*)(pEntity))->FirstChild("entity"); pEntity != 0; pEntity = ((class Unk_XmlNode*)(class Unk_XmlNode*)(pEntity))->NextSibling("entity")) {
-        const char* pszId = FUN_14086f4b0(pEntity, "id");
+        const char* pszId = ((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("id");
         if (pszId == 0)
             continue;
-        const char* pszName = FUN_14086f4b0(pEntity, "name");
+        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("name");
         if (pszName == 0)
             continue;
         CString strName(pszName);

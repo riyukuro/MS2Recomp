@@ -55,7 +55,6 @@ public:
     void FUN_141adad20(int nSceneId);
     void FUN_141adbb40();
     void FUN_141adba40();
-    int FUN_141adc940(int nUiId);
 };
 class Unk_LsWorld { public: void* FUN_141bd0cc0(); };
 class Unk_LsLogin : public CInputKeyHandler
@@ -328,7 +327,7 @@ void UISceneLobbyCreate::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
-        if (FUN_1403ed2b0()->FUN_141adc940(0x4e26) != 0) {
+        if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e26) != 0) {
             (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
             (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
         }
@@ -348,8 +347,8 @@ MS2_REPLACE_METHOD(0x141ACE0B0, UISceneLobbyCreate, vfunc_48, 42, 0x00235EB3);
 void UISceneLobbyCreate::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e26);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef2);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e26);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef2);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
         Unk_LsCamArg arg;
@@ -366,7 +365,7 @@ MS2_REPLACE_METHOD(0x141ACE0E0, UISceneLobbyCreate, vfunc_49, 187, 0x95E5AF8B);
 void UISceneLobbyCreate::vfunc_12()
 {
     UISwfEntity::vfunc_12();
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e26) != 0) {
+    if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e26) != 0) {
         (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
         (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
     }
@@ -401,10 +400,10 @@ MS2_REPLACE_METHOD(0x141ACE340, UISceneLobbySelect, vfunc_48, 32, 0x8AFA6F73);
 // @0x141ace370
 void UISceneLobbySelect::vfunc_49(int n)
 {
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef1);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef2);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef3);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4eea);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef1);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef2);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef3);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4eea);
     FUN_14151f460(1);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
@@ -517,8 +516,8 @@ void UISceneLobbyServer::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     if (n == 0) FUN_141ace9e0();
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef0);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef3);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef0);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef3);
     FUN_14151f460(1);
     FUN_1422e7950();
 }
@@ -562,7 +561,7 @@ void UISceneLobbyServer::FUN_141ace9e0()
     Unk_LsServerDlg* pDlg = ((class Unk_LsServerDlg*)FUN_140c300a0(0x4ef0));
     if (pDlg != 0) {
         Unk_LsUIMsg msg;
-        msg.FUN_1422b82b0("OnReset");
+        msg.AddString("OnReset");
         pDlg->OnMessage(this, &msg);
     }
 }

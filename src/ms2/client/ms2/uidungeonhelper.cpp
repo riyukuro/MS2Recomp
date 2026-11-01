@@ -143,7 +143,6 @@ CStringW FUN_1409e9890(CStringW strKey, const unsigned& a, const unsigned& b);
 CStringW FUN_140298ea0(CStringW);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_1409404f0(__int64);
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 class Unk_DhMsgBox : public CPtred {};
 class Unk_DhNullCallback {
 public: Unk_DhNullCallback(const Unk_DhNullCallback&); ~Unk_DhNullCallback();
@@ -155,7 +154,6 @@ MS2Ptr<Unk_DhMsgBox> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStr
 void FUN_140d73ff0(CStringW);
 CStringW FUN_14062b4f0(CStringW, const int*);
 void FUN_140710590(COutPacket&);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 bool FUN_140930b40();
 void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
@@ -188,7 +186,6 @@ CStringW FUN_140cbf840(int nDungeonKind);
 CStringW FUN_1409e8820(CStringW strKey, const short& n);
 CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
 CStringW FUN_1406e7810(const wchar_t* szFormat, const unsigned& a, const unsigned& b);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140b8f230(int n);
@@ -220,12 +217,12 @@ void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
             if (m_nMeso > 0 || m_nExp > 0) {
                 CStringW text = FUN_140298ea0(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
                 if (m_nMeso > 0)
-                    text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_meso"), FUN_1409404f0(m_nMeso)));
+                    text += StringFormat<CStringW>(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_meso"), FUN_1409404f0(m_nMeso)));
                 if (m_nExp > 0)
-                    text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_exp"), FUN_1409404f0(m_nExp)));
-                tooltip.FUN_1409d8ce0(text);   // the reward lines go in the "itemDamage" field
+                    text += StringFormat<CStringW>(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_exp"), FUN_1409404f0(m_nExp)));
+                tooltip.SetItemDamage(text);   // the reward lines go in the "itemDamage" field
             }
-            FUN_1409b4bc0(*ppOut, tooltip.FUN_1422bb870());
+            **ppOut = tooltip.FUN_1422bb870();
         }
     }
 }
@@ -351,8 +348,8 @@ void UIDungeonSearchUnitedReward::FUN_140e142f0()
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb9))
         return;
     const int nOffset = -22;
-    ((class ASDisplayObject*)(class ASTextField*)(m_daily.get()))->FUN_1422c0840(nOffset);
-    ((class ASDisplayObject*)(class ASTextField*)(m_weekly.get()))->FUN_1422c0840(nOffset);
+    ((class ASDisplayObject*)(class ASTextField*)(m_daily.get()))->MoveY(nOffset);
+    ((class ASDisplayObject*)(class ASTextField*)(m_weekly.get()))->MoveY(nOffset);
     m_resetButton->vfunc_4(true);
     m_resetButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchUnitedReward::FUN_140e14400), 0);
 }
@@ -480,7 +477,7 @@ CStringW FUN_140e14d70(int nMissionId)
     {
         int nBonus = mission->FUN_140b207f0();
         CStringW strBonus = FUN_1409e9890(L"s_dungeonRoom_event_reward_count", nBonus, event.FUN_1403e8bf0()->m_nRewardCount);
-        return FUN_140656190(L"{0} {1}", strCount, strBonus);
+        return StringFormat<CStringW, CStringW>(L"{0} {1}", strCount, strBonus);
     }
     return strCount;
 }
@@ -534,7 +531,7 @@ template MS2Ptr<ASWeeklyRewardItemSlot> Unk_ASCreate<ASWeeklyRewardItemSlot>(int
 // @0x140e159f0
 template <class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);

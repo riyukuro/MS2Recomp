@@ -69,7 +69,7 @@ class Unk_GachaItem : public CItem { };
 class Unk_GachaSelf : public PC { };
 class Unk_GachaWorld { public: Unk_GachaSelf* FUN_141bd0cc0(); };
 class Unk_GachaUIMgr { public: void FUN_141adc530(int); };
-class Unk_GachaFx { public: void FUN_1411a6060(int); int FUN_1411a5a60(const CString&, const CString&); };
+class Unk_GachaFx { public: int FUN_1411a5a60(const CString&, const CString&); };
 CFeatureManager* FUN_140166410();
 class UIWebBrowser : public UIWebBrowserBase { };
 class Unk_GachaUrl { public: const CString& FUN_140298f80(); };
@@ -154,7 +154,7 @@ static bool FUN_140c43260(Unk_GachaDrop a, Unk_GachaDrop b);
 void ASObj::FUN_140c43830(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -199,7 +199,7 @@ void UIItemGachaBoxDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
-    MS2Ptr<ASMovieClip> machine = FUN_140ba7930("m_machine");
+    MS2Ptr<ASMovieClip> machine = GetChild<ASMovieClip>("m_machine");
     if (machine.get())
         machine->FUN_140bc71c0<ASMovieClip>("m_resultItem", m_resultItem);
     m_sndRolling = 0;
@@ -211,7 +211,7 @@ void UIItemGachaBoxDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     FUN_140c43090();
-    reinterpret_cast<Unk_GachaFx*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_sndRolling);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_sndRolling);
 }
 
 // @0x140c403e0
@@ -323,9 +323,9 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_0());
         if (data == 0)
             continue;
-        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->FUN_140545da0(self->FUN_141654700()))
+        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
             continue;
-        if (static_cast<Unk_GachaData*>(data.operator->())->FUN_14053c940(self->FUN_141658e60()) == 0)
+        if (static_cast<Unk_GachaData*>(data.operator->())->IsGenderAllowed(self->FUN_141658e60()) == 0)
             continue;
         filtered.push_back(d);
     }
@@ -383,7 +383,7 @@ int UIItemGachaBoxDialog::FUN_140c41700()
             result = 3;
             break;
         }
-        if (!static_cast<Unk_GachaData*>(data.operator->())->FUN_14053da20()) {
+        if (!static_cast<Unk_GachaData*>(data.operator->())->HasOpenGachaBoxFunction()) {
             result = 3;
             break;
         }
@@ -392,7 +392,7 @@ int UIItemGachaBoxDialog::FUN_140c41700()
             break;
         }
         if (FUN_140166410()->FUN_14036d570(0x10a) == true) {
-            int machine = static_cast<Unk_GachaData*>(data.operator->())->FUN_14053df20();
+            int machine = static_cast<Unk_GachaData*>(data.operator->())->GetOpenGachaBoxParam1();
             if (machine != 0 && need > g_143ab2a90.FUN_140a5f180(machine, 0)) {
                 result = 2;
                 break;
@@ -428,7 +428,7 @@ void UIItemGachaBoxDialog::FUN_140c41c30(int itemId)
     if (box->FUN_140527840() == 0)
         return;
     int gachaId = reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
-    GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
+    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
     if (gacha == 0)
         return;
     m_boxItemId = itemId;
@@ -462,8 +462,8 @@ void UIItemGachaBoxDialog::OnOpenCoinShop()
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
         return;
-    int gachaId = static_cast<Unk_GachaData*>(data.operator->())->FUN_14053dec0();
-    GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
+    int gachaId = static_cast<Unk_GachaData*>(data.operator->())->GetOpenGachaBoxParam0();
+    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
     if (gacha == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::SystemShop), 0);
@@ -505,7 +505,7 @@ bool UIItemGachaBoxDialog::FUN_140c42e70(const ItemEntity& e)
 void UIItemGachaBoxDialog::FUN_140c42ee0(CString state)
 {
     if (state.CompareNoCase("idle") == 0) {
-        reinterpret_cast<Unk_GachaFx*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_sndRolling);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_sndRolling);
         m_sndRolling = reinterpret_cast<Unk_GachaFx*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_sndRolling, "");
     } else if (state.CompareNoCase("open_sound") == 0) {
         FUN_141276180(s_sndClick, "");
@@ -543,7 +543,7 @@ GachaBoxDataPtr UIItemGachaBoxDialog::FUN_140c43110()
     if (box == 0)
         return GachaBoxDataPtr(0);
     int gachaId = reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
-    GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
+    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
     if (gacha == 0)
         return GachaBoxDataPtr(0);
     return gacha;
@@ -567,7 +567,7 @@ MS2Ptr<Unk_GachaText> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v
 // @0x140c436d0
 MS2Ptr<Unk_GachaText> Unk_GachaClip::FUN_140c436d0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140c43580(m_nMovieId, v);
     return MS2Ptr<Unk_GachaText>(0);
@@ -577,7 +577,7 @@ MS2Ptr<Unk_GachaText> Unk_GachaClip::FUN_140c436d0(const CString& strName)
 UIWebBrowser* FUN_140c43790(int nUiId)
 {
     if (reinterpret_cast<Unk_GachaUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get() != 0)
             return dynamic_cast<UIWebBrowser*>(p.operator->());
     }
@@ -595,7 +595,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
     int gachaId = 0;
     MS2Ptr<CItemData> boxData = FUN_14053f870(m_boxItemId);
     if (boxData.get() != 0)
-        gachaId = static_cast<Unk_GachaData*>(boxData.operator->())->FUN_14053dec0();
+        gachaId = static_cast<Unk_GachaData*>(boxData.operator->())->GetOpenGachaBoxParam0();
     if (GACHA_ITEMS.FUN_14028b470() == 1) {
         MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
         if (single == 0)
@@ -621,7 +621,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
         static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
         CString bagKey;
         bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), 1);
-        unsigned int count = item->FUN_140526c50();
+        unsigned int count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_GachaClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);

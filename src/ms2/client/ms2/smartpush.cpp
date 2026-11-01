@@ -219,7 +219,8 @@ public:
     void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& out);
     unsigned FUN_140a635f0(CItem* pItem);                              // use the item
 };
-extern Unk_SpInventory DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_SpInventory
 extern __int64 DAT_143ab2898;                                           // the money
 
 // The additional effect (buff) table seen through an item's skill.
@@ -243,7 +244,7 @@ class Unk_SpSkillTable { public: Unk_SpBuffLevelPtr FUN_140aafef0(int nId, unsig
 void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
@@ -261,13 +262,13 @@ void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
 void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n)
 {
     ASData data;
-    data.FUN_1422b81c0(n);
+    data.AddInt64(n);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
 {
     ASData data;
-    data.FUN_1422b7fd0(b);
+    data.AddBool(b);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 
@@ -329,7 +330,7 @@ void CSmartPush::vfunc_3()
         {
             spBox->FUN_141a01800(1);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
-            spBox->FUN_141a02880(m_data->m_nActionValue, 1, CStringW(L""));
+            spBox->SetBuff(m_data->m_nActionValue, 1, CStringW(L""));
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
         }
@@ -455,7 +456,7 @@ void CSmartPushAutoFishing::vfunc_2()
         if (nCount > 0)
         {
             CSmartPushTable::PackagePtr pkg =
-                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), m_n1c);
+                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
             if (!pkg)
             {
                 CFishingManager::GetInstance()->FUN_140cdbdf0(0);
@@ -468,7 +469,7 @@ void CSmartPushAutoFishing::vfunc_2()
                 CFishingManager::GetInstance()->FUN_140cdbdf0(nCount);
                 vfunc_5(true);
                 CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(
-                    CGameRule::GetInstance()->FUN_140479970(), m_n1c);
+                    CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
                 FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_autofishing_extend_complete"), strTime), 1, 1);
             }
             else
@@ -497,16 +498,16 @@ void CSmartPushAutoFishing::vfunc_3()
     {
         spBox->FUN_141a01800(1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
-        spBox->FUN_141a02880(m_data->m_nActionValue, 1,
+        spBox->SetBuff(m_data->m_nActionValue, 1,
             FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
         spBox->FUN_141a024a0(0);
-        spBox->FUN_141a024e0(GetStringCommon(0xc68), 0);
+        spBox->SetCheckbox0(GetStringCommon(0xc68), 0);
         spBox->SetStrike(strTitle);
-        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
+        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoFishingName());
         for (int i = 0; i < nCount; i++)
         {
             CSmartPushTable::PackagePtr pkg =
-                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), i);
+                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), i);
             Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
@@ -576,7 +577,7 @@ CStringW CSmartPushAutoFishing::vfunc_10()
 int CSmartPushAutoFishing::FUN_140dd06b0()
 {
     CSmartPushTable::PackagePtr pkg =
-        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), m_n1c);
+        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
     if (!pkg)
         return 2;
     if (pkg->m_nMerat != 0)
@@ -590,7 +591,7 @@ int CSmartPushAutoFishing::FUN_140dd06b0()
 bool CSmartPushAutoFishing::FUN_140dd07b0()
 {
     CSmartPushTable::PackagePtr pkg =
-        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), m_n1c);
+        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
     if (!pkg)
         return false;
     __int64 nPrice = 0;
@@ -715,7 +716,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     {
         if (((class Unk_SpInstrument*)FUN_140c8dac0())->GetVolume() == 0 && CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
         {
-            CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
+            CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f07);
             CStringW strKey(L"s_msg_auto_play_instrument_end");
             FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         }
@@ -749,17 +750,17 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
     {
         spBox->FUN_141a01800(1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
-        spBox->FUN_141a02880(m_data->m_nActionValue, 1,
+        spBox->SetBuff(m_data->m_nActionValue, 1,
             FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_desc"),
                 *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get()));
         spBox->FUN_141a024a0(0);
-        spBox->FUN_141a024e0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 0);
+        spBox->SetCheckbox0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 0);
         spBox->SetStrike(strTitle);
-        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
+        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoPlayInstrumentName());
         for (int i = 0; i < nCount; i++)
         {
             CSmartPushTable::PackagePtr pkg =
-                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), i);
+                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), i);
             Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
             Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
@@ -829,7 +830,7 @@ CStringW CSmartPushAutoPlayInstrument::vfunc_10()
 int CSmartPushAutoPlayInstrument::FUN_140dd1aa0()
 {
     CSmartPushTable::PackagePtr pkg =
-        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), m_n1c);
+        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), m_n1c);
     if (!pkg)
         return 2;
     if (pkg->m_nMerat != 0)
@@ -843,7 +844,7 @@ int CSmartPushAutoPlayInstrument::FUN_140dd1aa0()
 bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
 {
     CSmartPushTable::PackagePtr pkg =
-        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), m_n1c);
+        CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), m_n1c);
     if (!pkg)
         return false;
     __int64 nPrice = 0;
@@ -1173,9 +1174,9 @@ void CSmartPushAutoInteraction::vfunc_3()
     }
     int nHave = 0;
     if (m_data->m_requireItem.m_b != 0)
-        nHave = DAT_143ab2a90.FUN_140a5f780(m_data->m_requireItem.m_b, 0);
+        nHave = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5f780(m_data->m_requireItem.m_b, 0);
     else
-        nHave = DAT_143ab2a90.FUN_140a5f180(m_data->m_requireItem.FUN_14026b500(), 0);
+        nHave = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5f180(m_data->m_requireItem.FUN_14026b500(), 0);
     if (nHave == 0)
     {
         FUN_1412751f0(FUN_1405c2690(L"s_mastery_autointeraction_lack_item",
@@ -1445,9 +1446,9 @@ bool CSmartPushAutoInteractObjectBuffItem::FUN_140dd4b70(int nResult, const CMsg
 {
     if (nResult == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(vfunc_14());
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5e2e0(vfunc_14());
         if (spItem.get())
-            DAT_143ab2a90.FUN_140a635f0(spItem.get());
+            reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a635f0(spItem.get());
     }
     return true;
 }
@@ -1487,9 +1488,9 @@ bool CSmartPushAutoFunctionCubeObjectBuffItem::FUN_140dd4ff0(int nResult, const 
 {
     if (nResult == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(vfunc_14());
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5e2e0(vfunc_14());
         if (spItem.get())
-            DAT_143ab2a90.FUN_140a635f0(spItem.get());
+            reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a635f0(spItem.get());
     }
     return true;
 }
@@ -1546,7 +1547,7 @@ CStringW CSmartPushAutoFarmingBuff::GetTypeName()
 int FUN_140dd5340(int nAbility)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(10, items);
+    reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a60880(10, items);
     unsigned nBest = 0;
     int nItemId = 0;
     for (size_t i = 0; i < items.GetCount(); i++)

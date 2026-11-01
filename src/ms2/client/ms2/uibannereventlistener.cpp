@@ -114,12 +114,12 @@ bool FUN_140b887b0(Unk_141bd0cc0* pPlayer);
 class StateMicroGameRps   // C3: member view for the former free stand-ins
 {
 public:
-    class PCBase* FUN_140b879d0();
+    class PCBase* GetRpsPC();
 };
 class StateMicroGameCoupleDance   // C3: member view for the former free stand-ins
 {
 public:
-    class PCBase* FUN_140b89dd0();
+    class PCBase* GetDancePC();
 };
 
 // Message boxes (CMsgBoxData): the button index lives at +0x18 of the timer struct.
@@ -239,7 +239,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0x69, 0);
         return true;
     }
-    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameRps*)(class State*)(pState))->FUN_140b879d0());
+    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameRps*)(class State*)(pState))->GetRpsPC());
     if (!pTarget)
         return true;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
@@ -333,7 +333,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0xda, 0);
         return true;
     }
-    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameCoupleDance*)(class State*)(pState))->FUN_140b89dd0());
+    Unk_141bd0cc0* pTarget = ((class Unk_141bd0cc0*)((class StateMicroGameCoupleDance*)(class State*)(pState))->GetDancePC());
     if (!pTarget)
         return true;
     int nEventId = 0;

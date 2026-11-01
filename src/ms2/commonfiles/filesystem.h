@@ -71,16 +71,16 @@ public:
     bool FUN_1403981b0();
     bool FUN_1403981d0();
     int FUN_1403979e0(TiXmlDocument* document, BufferPtr buffer);
-    int FUN_140397ab0(TiXmlDocument* document, const CStringW& xml);
+    int LoadXmlFromString(TiXmlDocument* document, const CStringW& xml);
     bool FUN_140398200(std::string path);
     bool FUN_140398640(std::string path, bool checkFile);
     int FUN_1403987d0(std::string path);
     bool FUN_14039a160(const char* directory, const char* reference, char* result, unsigned capacity);
     void FUN_14039a640();
-    void FUN_14039a660(CString path, void* pUnused);
+    void MarkCharacterModelLoaded(CString path, void* pUnused);
     unsigned FUN_14039a720();
-    void FUN_14039a740();
-    unsigned long FUN_14039a790(unsigned long magic, unsigned char* data, unsigned long size,
+    void ResetCharacterMask();
+    unsigned long DecryptByMagic(unsigned long magic, unsigned char* data, unsigned long size,
                                 unsigned char** output, unsigned long capacity);
     unsigned long FUN_14039a8a0(unsigned char*,unsigned long,unsigned char**,unsigned long);
     unsigned long FUN_14039aba0(unsigned char*,unsigned long,unsigned char**,unsigned long);
@@ -88,13 +88,13 @@ public:
     unsigned long FUN_14039b180(unsigned char*,unsigned long,unsigned char**,unsigned long);
     unsigned long FUN_14039b470(unsigned long magic, unsigned char* data, unsigned long size,
                                 unsigned char** output, unsigned long capacity);
-    void FUN_14039b660();
-    void FUN_14039b6b0();
-    void FUN_14039b7d0(int enabled);
+    void ClearCache();
+    void PurgeExpiredCache();
+    void SetUseAlternatePaths(int enabled);
     std::string FUN_14039b810(std::string path);
     std::string FUN_14039bb50(std::string path);
     bool FUN_14039bf70();
-    void FUN_14039bf80(std::string& path);
+    void TrimSpaces(std::string& path);
     std::string FUN_14039c050(std::string path, bool checkFile);
     BufferPtr FUN_14039c810(std::string path, int flag);
     BufferPtr FUN_14039cc50(std::string path, int flag);

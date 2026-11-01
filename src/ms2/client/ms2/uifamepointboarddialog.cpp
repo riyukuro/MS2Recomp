@@ -213,7 +213,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
 void ASObj::FUN_140c16160(const char* szName, ASArray arr)
 {
     ASData data;
-    data.FUN_1422b83f0(arr.FUN_1422bb890());
+    data.AddValue(arr.FUN_1422bb890());
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

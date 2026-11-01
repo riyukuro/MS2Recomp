@@ -26,6 +26,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // ---- unit-local views of exe objects ----
 
@@ -127,10 +132,10 @@ Unk_MeEntMgr* FUN_1409670f0();
 void FUN_1411ce4c0(Unk_MeEntMgr* pMgr, Unk_MeEntIter* pIter);
 bool FUN_1411ce510(Unk_MeEntMgr* pMgr, Unk_MeEntIter* pIter, egf::Entity** ppOut);
 egf::Entity* FUN_1411cf440(Unk_MeEntMgr* pMgr, const egf::EntityID& id);
-int FUN_1408a20a0(egf::Entity* pEntity, unsigned int nHash, bool* pbOut);   // read a bool property
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int nHash, bool* pbValue);   // write a bool property
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
-extern char DAT_143b059e8;                                          // the application framework
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 // the render surface -> camera -> frustum
@@ -306,7 +311,7 @@ void UIMinimapEditDialog::OnLoadComplete()
         spFileName->FUN_140bc0550()->FUN_1422e0a60(m_strImageName);
     }
 
-    MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea");
+    MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea");
     if (spArea.get())
     {
         float fLeft = m_spMinimap->m_rcImage.l >= 0.0f ? m_spMinimap->m_rcImage.l : 0.0f;
@@ -389,20 +394,20 @@ void UIMinimapEditDialog::FUN_141a53100()
     TiXmlDocument doc;
     if (doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot == NULL)
             return;
-        if (pRoot->FUN_140165cf0("minimap"))
+        if (((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")))
         {
-            XmlGetChild((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "frustum", *(class NiFrustum*)(&m_spMinimap->m_frustum));
-            FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "screen", &m_spMinimap->m_rcScreen);
-            FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "image", &m_spMinimap->m_rcImage);
-            FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "name", &m_spMinimap->m_strImageName);
+            XmlGetChild((class TiXmlElement*)(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap"))), "frustum", *(class NiFrustum*)(&m_spMinimap->m_frustum));
+            FUN_140874f20(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")), "screen", &m_spMinimap->m_rcScreen);
+            FUN_140874f20(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")), "image", &m_spMinimap->m_rcImage);
+            FUN_140874280(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")), "image", "name", &m_spMinimap->m_strImageName);
             m_strImageName = m_spMinimap->m_strImageName;
-            FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "icon", &m_strImageIcon);
-            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "camera", "position", *(class NiPoint3*)(&m_spMinimap->m_vecCamPos));
-            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "camera", "rotation", *(class NiPoint3*)(&m_spMinimap->m_vecCamRot));
-            XmlGetChildAttr((class TiXmlElement*)(pRoot->FUN_140165cf0("minimap")), "edit", "zoomfactor", *(float*)(&m_spMinimap->m_fZoomFactor));
+            FUN_140874280(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")), "image", "icon", &m_strImageIcon);
+            XmlGetChildAttr((class TiXmlElement*)(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap"))), "camera", "position", *(class NiPoint3*)(&m_spMinimap->m_vecCamPos));
+            XmlGetChildAttr((class TiXmlElement*)(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap"))), "camera", "rotation", *(class NiPoint3*)(&m_spMinimap->m_vecCamRot));
+            XmlGetChildAttr((class TiXmlElement*)(((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap"))), "edit", "zoomfactor", *(float*)(&m_spMinimap->m_fZoomFactor));
             m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
             m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
             CameraMgrMoveTo(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamPos)));
@@ -424,7 +429,7 @@ void UIMinimapEditDialog::FUN_141a53750()
     MS2Ptr<Unk_MeMapInfo> spMap = reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spMap == 0)
         return;
-    if (MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea"))
+    if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
     {
         Unk_MeSurface* pSurface = FUN_140af7da0(FUN_1413f9890());
         if (pSurface != NULL)
@@ -441,7 +446,7 @@ void UIMinimapEditDialog::FUN_141a53750()
                 m_spMinimap->m_rcImage.l = spArea->FUN_1422c10a0();
                 m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + (float)spArea->FUN_1422c1340();
                 m_spMinimap->m_rcImage.t = spArea->FUN_1422c1110();
-                m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + (float)spArea->FUN_1422c13b0();
+                m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + (float)spArea->GetHeightCeil();
             }
         }
     }
@@ -465,17 +470,17 @@ void UIMinimapEditDialog::FUN_141a53750()
         FUN_14086f450(&root);
         FUN_14081ad20(&decl);
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot != NULL)
     {
-        if (pRoot->FUN_140165cf0("minimap") == NULL)
+        if (((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap")) == NULL)
         {
             void* pNew = ::operator new(0x90);
             if (pNew != NULL)
                 FUN_14086f2f0(pNew, "minimap");
             ((void*)((class TiXmlNode*)(void*)(pRoot))->LinkEndChild((class TiXmlNode*)(pNew)));
         }
-        Unk_140165cf0* pMinimap = pRoot->FUN_140165cf0("minimap");
+        Unk_140165cf0* pMinimap = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("minimap"));
         XmlSetChild((class TiXmlElement*)(pMinimap), "frustum", *(class NiFrustum const*)(&m_spMinimap->m_frustum), 1);
         FUN_1408752d0(pMinimap, "screen", &m_spMinimap->m_rcScreen, 1);
         FUN_1408752d0(pMinimap, "image", &m_spMinimap->m_rcImage, 1);
@@ -516,15 +521,15 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
             bool bVisible = false;
             bool bInstanced = false;
             if (spInstancing)
-                FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
+                pEntity->GetPropertyValue(0x23f9860e, bInstanced);
             if (!bInstanced)
             {
-                FUN_1408a20a0(pEntity, 0xa0b6b179, &bVisible);
+                pEntity->GetPropertyValue(0xa0b6b179, bVisible);
                 if (!bVisible)
                     continue;
             }
             bool bFlag = false;
-            if (FUN_1408a20a0(pEntity, 0x4cc1298e, &bFlag) == 0 && bFlag)
+            if (pEntity->GetPropertyValue(0x4cc1298e, bFlag) == 0 && bFlag)
             {
                 if (bInstanced)
                 {
@@ -566,13 +571,13 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
 // @0x141a545a0
 void UIMinimapEditDialog::OnScreenShot()
 {
-    if (MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea"))
+    if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
     {
         NiRect<unsigned int> kRect(0, 0, 0, 0);
         kRect.m_left = (int)(__int64)spArea->FUN_1422c10a0();
         kRect.m_right = kRect.m_left + spArea->FUN_1422c1340();
         kRect.m_top = (int)(__int64)spArea->FUN_1422c1110();
-        kRect.m_bottom = kRect.m_top + spArea->FUN_1422c13b0();
+        kRect.m_bottom = kRect.m_top + spArea->GetHeightCeil();
         CStringW strDirectory;
         if (EnsureScreenshotDirectory(&strDirectory) < 0)
         {

@@ -20,10 +20,12 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // The table file loader helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool FieldWarDataTable::s_bInit;
@@ -44,14 +46,14 @@ FieldWarData::~FieldWarData()
 // @0x1403821a0
 void FieldWarData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "fieldWarID", m_fieldWarID);
-    FUN_140873220(pElem, "fieldWarGroupID", m_fieldWarGroupID);
-    FUN_140873220(pElem, "pickWeight", m_pickWeight);
-    FUN_140873220(pElem, "fieldID", m_fieldID);
-    FUN_140873220(pElem, "rewardID", m_rewardID);
-    FUN_140873220(pElem, "uiFieldID", m_uiFieldID);
-    FUN_1408730a0(pElem, "isChangeMaxUser", m_isChangeMaxUser);
-    FUN_140873220(pElem, "playerCountFactorID", m_playerCountFactorID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "fieldWarID", m_fieldWarID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "fieldWarGroupID", m_fieldWarGroupID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "pickWeight", m_pickWeight);
+    XmlGetAttr((class TiXmlElement*)(pElem), "fieldID", m_fieldID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rewardID", m_rewardID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "uiFieldID", m_uiFieldID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isChangeMaxUser", m_isChangeMaxUser);
+    XmlGetAttr((class TiXmlElement*)(pElem), "playerCountFactorID", m_playerCountFactorID);
 }
 
 // @0x1403822b0
@@ -137,7 +139,7 @@ bool FieldWarDataTable::Load()
     if (pRoot == 0)
         return false;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "fieldWar", "fieldWarID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "fieldWar", "fieldWarID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];

@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0 / OpenDialog
 #include <stdarg.h>
 #include <efd/Win32/Win32PlatformService.h>
 
@@ -54,7 +55,7 @@ public:
     void FUN_141ab9c50(__int64 nTargetId, const CStringW& strText, int nA, int nB);
     void FUN_141ab9ce0(CStringW strA, CStringW strB);
 };
-void FUN_141276180(const CStringA& strTarget, const CStringA& strValue);
+int FUN_141276180(const CString& strTarget, const CString& strValue);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
 void FUN_1403a1280(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg0);
@@ -67,12 +68,9 @@ __int64 FUN_140930ae0();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
 class CUIService;
-template<> CUIService* TSingleton<CUIService>::GetInstance();
 struct Unk_CpUIService {
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                         // 0x141adcea0 object by id
 };
-const CStringA& FUN_141adc5d0(void* pStrings, int nId);
-const CStringA& FUN_141adc530(void* pStrings, int nId);
 class UICashShopDialog* FUN_140b04f80(int);   // C3: was FUN_140b04f80
 void FUN_1410355e0(void* pWindow, CStringA strA, CStringA strB);
 void* FUN_140aadf80();
@@ -343,15 +341,15 @@ void CClientPlatformBase::vfunc_42(void*) {}
 bool CClientPlatformBase::vfunc_43(int, bool, int) { return false; }
 
 // @0x140c75d30
-const CStringA& CClientPlatformBase::vfunc_44()
+void CClientPlatformBase::vfunc_44()
 {
-    return FUN_141adc5d0(TSingleton<CUIService>::GetInstance(), 20156);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)20156);
 }
 
 // @0x140c75d60
-const CStringA& CClientPlatformBase::vfunc_45()
+void CClientPlatformBase::vfunc_45()
 {
-    return FUN_141adc530(TSingleton<CUIService>::GetInstance(), 20156);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)20156);
 }
 
 // @0x140c75d90

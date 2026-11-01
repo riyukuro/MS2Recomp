@@ -19,6 +19,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 #pragma intrinsic(abs)
 
@@ -58,7 +60,6 @@ public:
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -130,7 +131,6 @@ public:
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -236,7 +236,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
             ptPos.z = ptTarget.z;
             Vector3 ptDist = ptTarget.FUN_140965c40(ptPos);
             m_50 = ptDist.FUN_140967ac0();
-            m_50 = FUN_140a17940(m_50, m_124, m_128);
+            m_50 = efd::Clamp(m_50, m_124, m_128);
             m_6c = FUN_14183ce10(m_124, m_50, m_128, m_4c * 180.0f / 3.14159265f, 90.0f);
             if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) <= 5.0f)
             {
@@ -262,7 +262,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                        FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
@@ -272,7 +272,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
             if (fZoom != 0.0f)
             {
                 m_84 += fZoom * 2000.0f;
-                m_84 = FUN_140a17940(m_84, -50.0f, 50.0f);
+                m_84 = efd::Clamp(m_84, -50.0f, 50.0f);
             }
             if (fYaw != 0.0f)
             {
@@ -318,7 +318,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_124, m_128);
+                m_50 = efd::Clamp(m_50, m_124, m_128);
                 ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
                 ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
                 ptPos.z = m_50 * FUN_1409f2310(m_6c) + ptCenter.z;
@@ -372,9 +372,9 @@ void CConsoleCameraMode::vfunc_6(int n)
         vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
-    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
-    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
     m_108 = 1;
 }
 MS2_REPLACE_METHOD(0x14109fc60, CConsoleCameraMode, vfunc_6, 1298, 0x3DB4BDAE);

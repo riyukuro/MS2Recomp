@@ -50,8 +50,6 @@ public:
     void FUN_140f23da0();                                               // "updateReward"
     CString FUN_140f23f10(int nItemId, int nRarity, int nCount);        // bind a reward item, returns its bind id
     void FUN_140f24140(int bEnabled);                                   // enable the m_dice button
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // 0x140bb4cf0 text field child lookup
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child
 
 private:
     ATL::CAtlArray<CString> m_boundIds;                                 // +0x178 bind ids of the reward items

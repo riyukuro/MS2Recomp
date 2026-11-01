@@ -43,9 +43,9 @@ public:
     bool FUN_140b87210(MS2Ptr<Unk_StateArg22> p);           // the request carries the same game
     int FUN_140b872c0();                                    // the partner's actor id
     void FUN_140b87310(int nMode, int nCard, int nPick);    // play a card (UI selection)
-    void FUN_140b876a0();                                   // start the game: reset the payload
+    void ResetRound();                                   // start the game: reset the payload
     void FUN_140b877c0();                                   // show a random chat line of the event
-    PCBase* FUN_140b879d0();                                // the partner actor
+    PCBase* GetRpsPC();                                // the partner actor
     void FUN_140b87a40(unsigned int nSeq);                  // play the default motion
     void FUN_140b87ad0();                                   // show both results
     void FUN_140b87cc0();                                   // reset both controllers
@@ -80,7 +80,7 @@ public:
     int FUN_140b894c0();                                    // the partner's actor id
     void FUN_140b89510(const std::vector<int>& aStages);    // start the dance with the event's stage list
     void FUN_140b89880(int nTime, bool bFlag, int nA, int nB);   // answer a dance request
-    PCBase* FUN_140b89dd0();                                // the partner actor
+    PCBase* GetDancePC();                                // the partner actor
     void FUN_140b89e40(unsigned int nSeq);                  // play the default motion
     void FUN_140b89ed0(double fTime);                       // leave when the partner left
     bool FUN_140b89f90();                                   // the last stage is reached

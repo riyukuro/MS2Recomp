@@ -38,8 +38,8 @@ class Unk_TalkIdState
 public:
     Unk_TalkIdState();                                          // 0x141b1da80
     ~Unk_TalkIdState();                                         // 0x141b22200
-    void FUN_141b1dac0();                                       // reset
-    unsigned FUN_141b1daf0();                                   // the id at the current position (0 past the end)
+    void Reset();                                       // reset
+    unsigned GetCurrentId();                                   // the id at the current position (0 past the end)
     int m_nPos;                                                 // +0x00
     Unk_TalkIdList m_ids;                                       // +0x08
 };
@@ -110,7 +110,7 @@ public:
     void FUN_141b20e60(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
     CStringW FUN_141b20ed0();                               // the name of the current page
     MS2Ptr<CTalkScript> GetScript();                    // the script handle
-    MS2Ptr<CCinematicContent> FUN_141b21030();              // the current page
+    MS2Ptr<CCinematicContent> GetCurrentContent();              // the current page
     void FUN_141b21190(int nFlags, int nParam, int nPage);   // set the state words
     int FUN_141b211d0();                                    // the talk cooldown elapsed
     int GetTalking();                                    // IsTalking

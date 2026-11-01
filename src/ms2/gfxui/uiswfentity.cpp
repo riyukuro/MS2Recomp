@@ -39,7 +39,7 @@ UISwfEntity::UISwfEntity()
     : m_20(s_strNoKey), m_28(2), m_2c(0), m_30(0), m_40(0), m_44(0), m_48(0), m_4c(0), m_50(1), m_54(0), m_58(1),
       m_5c(0), m_60(0)
 {
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(this));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(this));
 }
 
 // @0x1422db5d0
@@ -590,7 +590,7 @@ void UISwfEntity::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pHeight)
     if (pRoot.get()) {
         pRoot->vfunc_2(a1, a2, a3);
         *pWidth = pRoot->FUN_1422c1340();
-        *pHeight = pRoot->FUN_1422c13b0();
+        *pHeight = pRoot->GetHeightCeil();
     }
 }
 MS2_REPLACE_METHOD(0x1422DC960, UISwfEntity, vfunc_44, 173, 0xD653F439);

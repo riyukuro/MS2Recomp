@@ -89,7 +89,6 @@ public:
     char m_pad_18[0x18];
     int m_n30;                                                             // +0x30 the actor's height offset
 };
-class Unk_EmoTable { public: MS2Ptr<Unk_EmoRow> FUN_1407ee1d0(int nEmotion); };
 
 // World service lookups.
 
@@ -109,7 +108,9 @@ public:
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // The actor's pet-buff position buffer (see statesummon.cpp).
-class Unk_CeBuffMgr { public: efd::Point3 FUN_141683290(); };
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_CeBuffMgr { public: };
 Unk_CeBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240
 
 // Entity registry / game objects.
@@ -448,19 +449,19 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
     if (pOwnerPC == 0 || pPartner == 0)
         return;
     StateCoupleEmotionData* pCouple = m_spCoupleData.get();
-    MS2Ptr<Unk_EmoRow> spRow = reinterpret_cast<Unk_EmoTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(pCouple->m_nEmotion);
+    MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(pCouple->m_nEmotion);
     if (spRow == 0)
         return;
-    if (spRow->FUN_1407e9a60() != 0xf)
+    if (reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9a60() != 0xf)
         return;
-    m_pOwner->FUN_141670330((float)spRow->m_n30);
+    m_pOwner->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
     bool bRequester = IsRequester();
-    if (!m_spAnimInfo->Init(spRow->FUN_1407e9c90(), reinterpret_cast<PC*>(pOwnerPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60(), bRequester))
+    if (!m_spAnimInfo->Init(reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->FUN_1407e9c90(), reinterpret_cast<PC*>(pOwnerPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60(), bRequester))
         return;
     if (!m_spAnimInfo->Load(m_spCoupleData->m_nAni))
         return;
     FUN_1409f76f0(&m_spLoopEffectNode, NiNew NiNode(0));
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a6b10()->AttachChild((NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode), false);
+    TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()->AttachChild((NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode), false);
     if (FUN_1417b7e40() == 0x96)
         PlayFirstAni();
 }
@@ -675,7 +676,7 @@ void StateCoupleEmotion::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_CeBuffMgr* pMgr = static_cast<Unk_CeBuffMgr*>(m_pOwner->FUN_14166d240());
-    m_pOwner->vfunc_22(pMgr->FUN_141683290());
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
     {
         Stop(0);

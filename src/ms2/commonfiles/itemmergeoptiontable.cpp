@@ -102,7 +102,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString FUN_1401d9af0(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat, one numeric argument
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
@@ -119,7 +119,7 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
 {
     const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(first),
                                                    fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(second)};
-    log->FUN_1406536f0(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second), args));
+    log->LogWarning(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second), args));
 }
 
 // Option text helpers of the item tooltip (string table lookups and highlight).
@@ -219,7 +219,7 @@ CItemMergeOptionProxy::CItemMergeOptionProxy() : m_nMeso(0)
 void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
 {
     stream.WriteInt64(m_nMeso);
-    m_ingredients.FUN_14026bfd0(stream);
+    m_ingredients.Write(stream);
     stream.WriteInt32((unsigned)m_values.GetCount());
     for (size_t i = 0; i < m_values.GetCount(); i++)
         stream.WriteInt32(m_values[i]);
@@ -247,7 +247,7 @@ void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
 void CItemMergeOptionProxy::FUN_1405bef60(CInPacket& packet)
 {
     m_nMeso = packet.ReadInt64();
-    m_ingredients.FUN_14026c0b0(packet);
+    m_ingredients.Read(packet);
     unsigned __int64 nCount = (unsigned)packet.ReadInt32();
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
@@ -410,7 +410,7 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
         return;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "mergeOption", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "mergeOption", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
@@ -625,8 +625,8 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         CStringW strTag;
         if (((class CInputKeyHandler*)(class Unk_FeatureSet*)((Unk_FeatureSet *)(((class Unk_FeatureSet*)FUN_14025e7c0()))))->IsDebugMode() && nMergeId != 0)
             strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
-        Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
-        Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);
+        Unk_EnchantMap& rNormal = spOption->GetStatMap(4);
+        Unk_SocketSpecialMap& rSpecial = spOption->GetSpecialMap(4);
         for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))
         {
             int nStat = rNormal.GetKeyAt(pos);
@@ -677,10 +677,10 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
 {
     CheckInit();
     MS2Ptr<CItemData> spMaterial = FUN_14053f870(nMaterialId);
-    if (spMaterial == 0 || spMaterial->FUN_14053c5c0() != 0x13)
+    if (spMaterial == 0 || spMaterial->GetType() != 0x13)
         return DataPtr(nullptr);
     int nPart = 0;
-    if (spMaterial->FUN_14053c5e0() == 1)
+    if (spMaterial->GetSubtype() == 1)
     {
         MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
         if (!spItem)

@@ -22,7 +22,7 @@ public:
     int FUN_1405f6190(int nStatId, Unk_Random* pRandom);
     int FUN_1405f6230(int nStatId);
     int FUN_1405f62c0(int nStatId);
-    Unk_OptionNameListPtr FUN_1405f6e40(const CString& strName);     // the exclusive group of a stat name (null: none)
+    Unk_OptionNameListPtr FindOptionNameList(const CString& strName);     // the exclusive group of a stat name (null: none)
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0x118 - 0x10];

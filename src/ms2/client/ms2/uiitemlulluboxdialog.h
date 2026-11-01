@@ -39,11 +39,11 @@ public:
     void SetBoxItemId(int);
     bool FUN_140e9c260(int, const CMsgBoxData&);
     bool FUN_140e9c2a0(int, const CMsgBoxData&);
-    void FUN_140e9c340();
+    void UpdateTitle();
     void FUN_140e9c3e0();
     void FUN_140e9c550();
     void FUN_140e9cde0(int);
-    bool FUN_140e9d1e0(const ItemEntity&);
+    bool IsSpecialItem(const ItemEntity&);
     bool FUN_140e9d2b0();
     void FUN_140e9dc30();
     int FUN_140e9e8f0();
@@ -54,7 +54,6 @@ public:
     MS2Ptr<Unk_LulluBoxCheck> FUN_140e52700(const CString&, MS2Ptr<Unk_LulluBoxCheck>&);
     MS2Ptr<Unk_LulluBoxButton> FUN_140bc6d10(const CString&, MS2Ptr<Unk_LulluBoxButton>&);
     MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString&, MS2Ptr<ASMovieClip>&);
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString&);
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened

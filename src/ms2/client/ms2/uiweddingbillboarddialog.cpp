@@ -38,6 +38,8 @@
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // ---- unit-local views of exe objects ----
 
@@ -49,7 +51,7 @@ public:
 };
 
 // The page buttons of the movie.
-class Unk_140acd6e0 : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned int bEnabled); };
+class Unk_140acd6e0 : public ASMovieClip { public: };
 
 // The packet dispatcher (register / unregister a handler by opcode).
 class Unk_WbPackets
@@ -71,7 +73,6 @@ bool FUN_140164830(const CStringW& a, const CStringW& b);       // names are equ
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);    // formats one number
 CStringTable* GetStringTable();
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -144,14 +145,14 @@ int UIWeddingBillboardDialog::vfunc_65()
 void UIWeddingBillboardDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_WbPackets*)FUN_140bccd50())->FUN_140da51e0(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
 }
 
 // @0x140fc2e70
 void UIWeddingBillboardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_WbPackets*)FUN_140bccd50())->FUN_140da5180(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
     COutPacket packet(static_cast<int>(SendOp::WeddingBillboard), 0);
     packet.Encode1(4);
     packet.Encode4(0);
@@ -253,12 +254,12 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
         nEnd = 0;
     if (nEnd > (int)m_tickets.size())
         nEnd = (int)m_tickets.size();
-    if (MS2Ptr<Unk_140acd6e0> spNext = FUN_140bb4b10("m_nextPage"))
+    if (MS2Ptr<Unk_140acd6e0> spNext = GetChild<Unk_140acd6e0>("m_nextPage"))
         spNext->FUN_1422c1fe0(nEnd == (int)m_tickets.size());
-    if (MS2Ptr<Unk_140acd6e0> spPrev = FUN_140bb4b10("m_prevPage"))
+    if (MS2Ptr<Unk_140acd6e0> spPrev = GetChild<Unk_140acd6e0>("m_prevPage"))
         spPrev->FUN_1422c1fe0(nFirst == 0);
-    if (MS2Ptr<ASTextField> spPage = FUN_140bb4cf0("m_page"))
-        spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_nPage));
+    if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
+        spPage->FUN_1422c4cd0(StringFormat<int>(L"{0}", m_nPage));
     bool bEmpty = true;
     PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -282,12 +283,12 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
             row.FUN_1407cbb20("groomName", ticket.m_strGroom);
             row.FUN_1407cbb20("brideName", ticket.m_strBride);
             row.FUN_1407cbb20("weddingHall", GetStringTable()->FUN_141811980(3, nHallText));
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
             bEmpty = false;
         }
         spList->vfunc_24(true);
     }
-    if (MS2Ptr<ASTextField> spNotice = FUN_140bb4cf0("m_notice"))
+    if (MS2Ptr<ASTextField> spNotice = GetChild<ASTextField>("m_notice"))
         spNotice->vfunc_4(bEmpty);
 }
 

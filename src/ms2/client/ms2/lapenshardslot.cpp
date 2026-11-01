@@ -83,9 +83,6 @@ void FUN_140d73bc0(int nNoticeId, int a, int b, CStringW str);
 void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 LapenshardSlot* FUN_140a6fea0(NotifyContext::BindData* p);
 LapenshardSlot* FUN_140a6fef0(DragSlot* p);
@@ -97,6 +94,7 @@ static CString s_strItemCount = "itemCount";
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x140a6e830
 LapenshardSlot::LapenshardSlot(const CString& strName, int nIndex, MS2Ptr<CItem> spItem, int nSlot, int nKind)
@@ -109,15 +107,15 @@ void FUN_140a6e8e0(const CString& strName, MS2Ptr<CItem> spItem, int nKind)
 {
     LapenshardSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, 0, spItem, 0, nKind);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x140a6e9e0
 void FUN_140a6e9e0(const CString& strName)
 {
-    LapenshardSlot* pSlot = FUN_140a6fea0(FUN_1422c8e90(strName));
+    LapenshardSlot* pSlot = FUN_140a6fea0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140a6ea20
@@ -147,7 +145,7 @@ int LapenshardSlot::vfunc_18(void* p)
     MS2Ptr<CItem> spItem = pFromSlot->vfunc_25();
     if (spItem == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    if (spItem->FUN_140527710() > (unsigned short)pPc->vfunc_78())
+    if (spItem->GetRequiredLevel() > (unsigned short)pPc->vfunc_78())
         return static_cast<DragSlot*>(p)->vfunc_10();
     int nItemId = spItem->FUN_1405276c0();
     int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
@@ -161,8 +159,8 @@ int LapenshardSlot::vfunc_18(void* p)
             return static_cast<DragSlot*>(p)->vfunc_10();
         }
     }
-    SendLapenshard(GetSlot(), spItem->FUN_140526a50());
-    FUN_141404930(spItem->FUN_140526a50());
+    SendLapenshard(GetSlot(), spItem->GetItemUid());
+    FUN_141404930(spItem->GetItemUid());
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
@@ -193,7 +191,7 @@ int LapenshardSlot::vfunc_14()
                 return 0;
             }
         }
-        SendLapenshard(nSlot, spItem->FUN_140526a50());
+        SendLapenshard(nSlot, spItem->GetItemUid());
     }
     else
     {
@@ -207,7 +205,7 @@ int LapenshardSlot::vfunc_14()
         int nPage = ((class Unk_LsHud*)FUN_1409331f0())->GetPage();
         FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
     }
-    FUN_141404930(spItem->FUN_140526a50());
+    FUN_141404930(spItem->GetItemUid());
     return 1;
 }
 
@@ -218,7 +216,7 @@ int LapenshardSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
@@ -238,7 +236,7 @@ int LapenshardSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
@@ -280,7 +278,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
         if (spItem->FUN_140527930()->GetType() == 2)
         {
             __int64 nKey = pPc->FUN_141656a80();
-            spItem->FUN_14052b5e0(nKey, pPc->vfunc_77());
+            spItem->BindToCharacter(nKey, pPc->vfunc_77());
         }
         return spItem;
     }
@@ -328,7 +326,7 @@ int LapenshardSlot::vfunc_0(void* p)
     int nFlags = 0x20;
     int nGrade = spItem->FUN_140526bd0();
     if (m_nSlot != 0)
-        spItem->FUN_140526bf0(spItem->FUN_140527840()->FUN_14053c5a0());
+        spItem->FUN_140526bf0(spItem->FUN_140527840()->GetRank());
     int nResult = 0;
     ASTooltip tip(pPc, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem))
@@ -362,24 +360,24 @@ int LapenshardSlot::vfunc_8(void* p)
         nFlags |= 0x2000;
     }
     ASSlot slot(2);
-    if ((spItem.get() != 0 ? true : false) && spItem->FUN_140526100() != 0)
+    if ((spItem.get() != 0 ? true : false) && spItem->IsLapenshard() != 0)
     {
         int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPc, nFlags);
         if (nOk != 0)
         {
             if (GetSlot() == 0)
             {
-                slot.FUN_1409c0d20(s_strItemCount, spItem->FUN_140526c50());
-                if (spItem->FUN_140526c50() == 0)
-                    slot.FUN_1409c2710(1);
+                slot.FUN_1409c0d20(s_strItemCount, spItem->GetCount());
+                if (spItem->GetCount() == 0)
+                    slot.SetDisable(1);
                 if (spItem->FUN_14052a290(2))
-                    slot.FUN_1409c1f00(1);
+                    slot.SetItemSeal(1);
                 if (spItem->FUN_1405291f0() != 0)
-                    slot.FUN_1409c20d0(1);
+                    slot.SetItemEquip(1);
             }
             else
             {
-                slot.FUN_1409c23e0(0);
+                slot.SetItemGrade(0);
             }
         }
     }
@@ -412,7 +410,7 @@ UILapenshardSystemDialog* FUN_140a6ff40(int nId)
 {
     if (CUIService::GetInstance())
     {
-        MS2Ptr<UIObject> p = CUIService::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = CUIService::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UILapenshardSystemDialog*>((UIObject*)p);
     }

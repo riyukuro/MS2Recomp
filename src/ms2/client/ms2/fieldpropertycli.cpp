@@ -77,7 +77,7 @@ public:
     class Ridee* FUN_1416764a0();
     void* FUN_141676a10();
 public:
-    void FUN_14166ca20(unsigned int);   // C3: was free FUN_14166ca20
+    void AddHideReason(unsigned int);   // C3: was free AddHideReason
 public:
     void RemoveHideReason(unsigned int);   // C3: was free RemoveHideReason
 public:
@@ -148,13 +148,13 @@ void FieldPropertyHideMyPCCli::vfunc_4()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    ((class PCBase*)(void*)(p))->FUN_14166ca20(1);
+    ((class PCBase*)(void*)(p))->AddHideReason(1);
     void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
-        ((class PCBase*)(void*)(q))->FUN_14166ca20(1);
+        ((class PCBase*)(void*)(q))->AddHideReason(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
-        ((class PCBase*)(void*)(p))->FUN_14166ca20(1);            // sic: the exe passes p again
+        ((class PCBase*)(void*)(p))->AddHideReason(1);            // sic: the exe passes p again
 }
 // @0x140b27790
 void FieldPropertyHideMyPCCli::vfunc_5()
@@ -245,7 +245,7 @@ void FieldPropertyEnableLocalCameraCli::vfunc_5() { FUN_140aeb900(FUN_1409478c0(
 // @0x140b27d00
 void FieldPropertyPhotoStudioCli::vfunc_4() { (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f8f))); }
 // @0x140b27d30
-void FieldPropertyPhotoStudioCli::vfunc_5() { reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f8f); }
+void FieldPropertyPhotoStudioCli::vfunc_5() { reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f8f); }
 
 // ---- Entity property helpers (egf::Entity; the change-tracking map lives at entity+0xd0) ----
 void* FUN_1409481f0(void* map, void* it);

@@ -73,7 +73,8 @@ struct Unk_EntityAppFramework                   // the framework
 {
     efd::ServiceManagerPtr manager;
 };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 // The service 0x0610000c: owns the running CAlphaAnimation objects.
 class Unk_AlphaService : public efd::ISystemService
@@ -123,7 +124,6 @@ public:
 Unk_ActorSlots* FUN_141bd0fa0(void* pContext, egf::EntityID id);
 
 unsigned FUN_1408a2010();                       // property type id of bool
-void FUN_1408a20a0(egf::Entity*, unsigned, bool*);      // Entity::GetPropertyValue<bool>
 
 // The property cache of a client entity (egf::Entity subclass: +0xc8 caching enabled, +0xd0 map property id -> entry).
 // Same view as bosstargetcamera.cpp.
@@ -583,7 +583,7 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
             }
             else
             {
-                FUN_1408a20a0(spEntity.data(), 0x2a7fd9f4, &m_bWasShown);
+                spEntity.data()->GetPropertyValue(0x2a7fd9f4, m_bWasShown);
             }
         }
     }

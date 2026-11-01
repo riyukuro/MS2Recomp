@@ -49,11 +49,11 @@ AScript::~AScript()
 }
 
 // @0x1422ba8c0
-CString AScript::FUN_1422ba8c0()
+CString AScript::GetName()
 {
-    return CString(FUN_1422baa20("name").GetString());
+    return CString(GetMember("name").GetString());
 }
-MS2_REPLACE_METHOD(0x1422BA8C0, AScript, FUN_1422ba8c0, 123, 0x6F33CC11);
+MS2_REPLACE_METHOD(0x1422BA8C0, AScript, GetName, 123, 0x6F33CC11);
 
 // @0x1422ba950
 CString AScript::FUN_1422ba950()
@@ -74,21 +74,21 @@ bool AScript::FUN_1422ba9a0()
 MS2_REPLACE_METHOD(0x1422BA9A0, AScript, FUN_1422ba9a0, 72, 0xBA2549F5);
 
 // @0x1422ba9f0
-bool AScript::FUN_1422ba9f0(const char* szMember)
+bool AScript::HasMember(const char* szMember)
 {
     return m_value.HasMember(szMember);
 }
-MS2_REPLACE_METHOD(0x1422BA9F0, AScript, FUN_1422ba9f0, 41, 0x0C97A0D4);
+MS2_REPLACE_METHOD(0x1422BA9F0, AScript, HasMember, 41, 0x0C97A0D4);
 
 // @0x1422baa20
-Scaleform::GFx::Value AScript::FUN_1422baa20(const char* szMember)
+Scaleform::GFx::Value AScript::GetMember(const char* szMember)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
         return v;
     return v;
 }
-MS2_REPLACE_METHOD(0x1422BAA20, AScript, FUN_1422baa20, 170, 0x765E9129);
+MS2_REPLACE_METHOD(0x1422BAA20, AScript, GetMember, 170, 0x765E9129);
 
 // @0x1422baad0
 bool AScript::FUN_1422baad0(const char* szMember, CStringW& strOut)
@@ -237,7 +237,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod)
 }
 
 // @0x1422bb3c0
-Scaleform::GFx::Value AScript::FUN_1422bb3c0()
+Scaleform::GFx::Value AScript::InvokeSelf()
 {
     Scaleform::GFx::Value result;
     if (m_value.InvokeSelf(&result))
@@ -245,54 +245,54 @@ Scaleform::GFx::Value AScript::FUN_1422bb3c0()
     }
     return result;
 }
-MS2_REPLACE_METHOD(0x1422BB3C0, AScript, FUN_1422bb3c0, 113, 0x24A94901);
+MS2_REPLACE_METHOD(0x1422BB3C0, AScript, InvokeSelf, 113, 0x24A94901);
 
 // @0x1422bb440
-CString AScript::FUN_1422bb440()
+CString AScript::ToString()
 {
     return CString(Invoke("toString").GetString());
 }
-MS2_REPLACE_METHOD(0x1422BB440, AScript, FUN_1422bb440, 123, 0x969EBA78);
+MS2_REPLACE_METHOD(0x1422BB440, AScript, ToString, 123, 0x969EBA78);
 
 // @0x1422bb4d0
-CString AScript::FUN_1422bb4d0()
+CString AScript::ToLocaleString()
 {
     return CString(Invoke("toLocaleString").GetString());
 }
-MS2_REPLACE_METHOD(0x1422BB4D0, AScript, FUN_1422bb4d0, 123, 0x61D516CA);
+MS2_REPLACE_METHOD(0x1422BB4D0, AScript, ToLocaleString, 123, 0x61D516CA);
 
 // @0x1422bb560
-int AScript::FUN_1422bb560(Scaleform::GFx::Value v)
+int AScript::IsPrototypeOf(Scaleform::GFx::Value v)
 {
     return Invoke("IsPrototypeOf", v).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422BB560, AScript, FUN_1422bb560, 157, 0x00299AD6);
+MS2_REPLACE_METHOD(0x1422BB560, AScript, IsPrototypeOf, 157, 0x00299AD6);
 
 // @0x1422bb610
-int AScript::FUN_1422bb610(const CString& strName)
+int AScript::HasOwnProperty(const CString& strName)
 {
     return Invoke("hasOwnProperty", strName).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422BB610, AScript, FUN_1422bb610, 144, 0x37F991C7);
+MS2_REPLACE_METHOD(0x1422BB610, AScript, HasOwnProperty, 144, 0x37F991C7);
 
 // @0x1422bb6b0
-int AScript::FUN_1422bb6b0(const CString& strName)
+int AScript::PropertyIsEnumerable(const CString& strName)
 {
     return Invoke("PropertyIsEnumerable", strName).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422BB6B0, AScript, FUN_1422bb6b0, 144, 0xC12A777A);
+MS2_REPLACE_METHOD(0x1422BB6B0, AScript, PropertyIsEnumerable, 144, 0xC12A777A);
 
 // @0x1422bb750
-void AScript::FUN_1422bb750(const CString& strName, int bEnum)
+void AScript::SetPropertyIsEnumerable(const CString& strName, int bEnum)
 {
     FUN_140ee5060("setPropertyIsEnumerable", strName, bEnum != 0);
 }
-MS2_REPLACE_METHOD(0x1422BB750, AScript, FUN_1422bb750, 129, 0x9AEFC7E4);
+MS2_REPLACE_METHOD(0x1422BB750, AScript, SetPropertyIsEnumerable, 129, 0x9AEFC7E4);
 
 // @0x1422bb7e0
 bool AScript::FUN_1422bb7e0(const AScript& obj)
 {
-    if (FUN_1422bb610(DAT_143b0ae38))
+    if (HasOwnProperty(DAT_143b0ae38))
     {
         FUN_140acd1f0(DAT_143b0ae38, obj);
         return true;

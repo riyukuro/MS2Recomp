@@ -44,6 +44,18 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
@@ -84,17 +96,17 @@ CMasteryTable::Mastery::Mastery() : m_nGrade(0), m_nValue(0)
 // @0x1406694a0
 int CMasteryReceipe::Load(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
     FUN_14051fd20(pNode, "masteryType", m_nType);
-    FUN_140873220(pNode, "requireMastery", m_nRequireMastery);
-    FUN_1408732e0(pNode, "requireMeso", m_nRequireMeso);
+    XmlGetAttr((class TiXmlElement*)(pNode), "requireMastery", m_nRequireMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "requireMeso", reinterpret_cast<__int64&>(m_nRequireMeso));
     XmlTokenList(pNode, "requireQuest", m_requireQuest);
-    FUN_1408731a0(pNode, "requireLevel", m_nLevel);
-    FUN_140873220(pNode, "rewardMastery", m_nRewardMastery);
-    FUN_140873220(pNode, "gatheringTime", m_nGatheringTime);
-    FUN_140873220(pNode, "highPropLimitCount", m_nHighPropLimit);
-    FUN_140873220(pNode, "normalPropLimitCount", m_nNormalPropLimit);
-    FUN_1408731e0(pNode, "exceptRewardExp", m_nExceptRewardExp);
+    XmlGetAttr((class TiXmlElement*)(pNode), "requireLevel", reinterpret_cast<unsigned short&>(m_nLevel));
+    XmlGetAttr((class TiXmlElement*)(pNode), "rewardMastery", m_nRewardMastery);
+    XmlGetAttr((class TiXmlElement*)(pNode), "gatheringTime", m_nGatheringTime);
+    XmlGetAttr((class TiXmlElement*)(pNode), "highPropLimitCount", m_nHighPropLimit);
+    XmlGetAttr((class TiXmlElement*)(pNode), "normalPropLimitCount", m_nNormalPropLimit);
+    XmlGetAttr((class TiXmlElement*)(pNode), "exceptRewardExp", reinterpret_cast<int&>(m_nExceptRewardExp));
     if (m_nType == 11)
         m_nLevel = 50;
     ATL::CAtlArray<unsigned> habitats;
@@ -109,14 +121,14 @@ int CMasteryReceipe::Load(Unk_140165cf0* pNode)
     {
         CString strKey = StringFormat("requireItem{0}", i);
         CStringW strValue;
-        FUN_140873420(pNode, strKey, strValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), strKey, strValue);
         m_ingredients.FUN_14026b9d0(strValue);
     }
     for (size_t i = 1; i <= 5; i++)
     {
         CString strKey = StringFormat("rewardItem{0}", i);
         CStringW strValue;
-        FUN_140873420(pNode, strKey, strValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), strKey, strValue);
         ItemEntity item;
         item.vfunc_1(CStringW(strValue));
         if (item.m_itemId != 0)
@@ -171,19 +183,19 @@ int CMasteryTable::LoadMastery()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pType = pRoot->FUN_140165cf0("mastery"); pType != 0; pType = pType->FUN_140168650("mastery"))
+    for (Unk_140165cf0* pType = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mastery")); pType != 0; pType = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pType))->NextSibling("mastery")))
     {
         int nType = 0;
-        FUN_1408731e0(pType, "type", nType);
+        XmlGetAttr((class TiXmlElement*)(pType), "type", reinterpret_cast<int&>(nType));
         if (nType < 0 || nType >= 12)
             continue;
-        for (Unk_140165cf0* pNode = pType->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pType))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             MasteryPtr spMastery(new Mastery);
-            FUN_140873220(pNode, "value", spMastery->m_nValue);
-            FUN_1408731e0(pNode, "grade", spMastery->m_nGrade);
+            XmlGetAttr((class TiXmlElement*)(pNode), "value", spMastery->m_nValue);
+            XmlGetAttr((class TiXmlElement*)(pNode), "grade", reinterpret_cast<int&>(spMastery->m_nGrade));
             ATL::CAtlArray<unsigned> ids;
             ATL::CAtlArray<int> ranks;
             ATL::CAtlArray<int> counts;
@@ -223,12 +235,12 @@ int CMasteryTable::LoadReceipes()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("receipe"); pNode != 0; pNode = pNode->FUN_140168650("receipe"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("receipe")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("receipe")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
-        FUN_140873220(pNode, "id", reinterpret_cast<unsigned&>(nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned&>(nId));
         ReceipePtr spReceipe(new CMasteryReceipe);
         if (spReceipe->Load(pNode) == 0)
             continue;
@@ -261,13 +273,13 @@ int CMasteryTable::LoadDifferentials()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         int nDifference = 0;
         DifferentialPtr spFactor(new DifferentialFactor);
-        FUN_1408731e0(pNode, "differential", nDifference);
-        FUN_140873220(pNode, "factor", spFactor->m_nFactor);
-        FUN_1408733e0(pNode, "icon", spFactor->m_strIcon);
+        XmlGetAttr((class TiXmlElement*)(pNode), "differential", reinterpret_cast<int&>(nDifference));
+        XmlGetAttr((class TiXmlElement*)(pNode), "factor", spFactor->m_nFactor);
+        XmlGetAttr((class TiXmlElement*)(pNode), "icon", spFactor->m_strIcon);
         m_differentials.SetAt(nDifference, spFactor);
     }
     return 1;
@@ -404,7 +416,7 @@ void CMasteryTable::Rewards(int nId, int nJob, ATL::CAtlArray<MS2Ptr<ItemEntity>
                 MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_itemId);
                 if (!spData)
                     continue;
-                if (!spData->limit.FUN_140545da0(nJob))
+                if (!spData->limit.IsJobRecommended(nJob))
                     continue;
                 rOut.Add(spItem);
             }

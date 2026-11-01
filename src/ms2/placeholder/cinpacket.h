@@ -37,12 +37,12 @@ public:
     // Feeds the packet from `buffer` (header first, then payload); returns the new m_nState. If bytes are left over
     // `buffer` is replaced by a slice of them (or cleared). `stateBefore` receives the state on entry.
     int FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer,int* stateBefore,int hasSequence);
-    void FUN_140710280(int connectionState,unsigned* key);       // decrypts the payload in place
+    void DecryptPayload(int connectionState,unsigned* key);       // decrypts the payload in place
     int FUN_14070fe80();                                           // opcode: seeks to 6 and reads a short
-    void FUN_140713940();                                          // reset (state 0, length 0, offset 0)
-    void FUN_140715120(const char* data,unsigned count);           // appends bytes to the payload
-    void FUN_140715280(unsigned offset);                           // SetOffset (throws past the end)
-    CString FUN_140710300() const;                                 // hex dump "%02x " of the buffer, @0x140710300
+    void Reset();                                          // reset (state 0, length 0, offset 0)
+    void AppendData(const char* data,unsigned count);           // appends bytes to the payload
+    void SetOffset(unsigned offset);                           // SetOffset (throws past the end)
+    CString ToHexString() const;                                 // hex dump "%02x " of the buffer, @0x140710300
     short FUN_1407140a0();                                         // Decode2 through the secondary vtable
     Vector3 FUN_1407140d0();                               // three int reads -> point
     unsigned short FUN_141269940(unsigned key) { return m_opcode ^ (unsigned short)((key >> 16) & 0xffff); }

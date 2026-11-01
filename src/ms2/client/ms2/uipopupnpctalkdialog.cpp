@@ -28,6 +28,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <stdlib.h>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -68,9 +69,8 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 CKeyTable* FUN_1409331f0();
-class Unk_PnButton : public ASDisplayObject { public: void FUN_1422cdfb0(const CStringW& strText); };
+class Unk_PnButton : public ASButton { public: };
 class Unk_PnRoot : public AScript {};
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 class Unk_PnActor { public: void vfunc_4(int, int, int); };
 UIFameContentsNotify* FUN_140e77d80(int nType);
 void FUN_140710590(COutPacket& rPacket);
@@ -134,7 +134,7 @@ int UIPopupNpcTalkDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         {
             if (nState == 2)
             {
-                if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
+                if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184) != 0)
                 {
                     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                     packet.Encode1(4);
@@ -187,7 +187,7 @@ void UIPopupNpcTalkDialog::vfunc_o178_3(void* pQuest)
 // @0x140e76db0
 void UIPopupNpcTalkDialog::vfunc_43()
 {
-    MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(FUN_1409ee290(&m_30)));
+    MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(((MS2Ptr<AScript>*)(&m_30))->operator->()));
     if (spEntity.get() != 0)
         spEntity->vfunc_2(2, 0, FUN_1418dd0d0() * -1);
 }
@@ -201,7 +201,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
         return 0;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
-        if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) == 0)
+        if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184) == 0)
         {
             UIFameContentsNotify* pFame = FUN_140e77d80(0x4f5a);
             if (pFame != 0)
@@ -215,7 +215,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
         int nState = FUN_140e77330();
         if (nState != 1 && nState == 2)
         {
-            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                 packet.Encode1(4);
@@ -244,7 +244,7 @@ void UIPopupNpcTalkDialog::FUN_140e770a0(NotifyObject*)
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         unsigned nQuest = quests[i];
-        if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) == 0)
+        if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) == 0)
             continue;
         if (m_198.Lookup(nQuest) != 0)
             continue;
@@ -263,7 +263,7 @@ void UIPopupNpcTalkDialog::FUN_140e771e0(int nQuest)
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x95))
         return;
     int nStep = 0;
-    if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(nQuest) != 0)
         nStep = 300;
     else
         nStep = 100;
@@ -291,17 +291,17 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         return 0;
     if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.FUN_14078fae0())
         return 2;
-    int nDone = ((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184);
+    int nDone = ((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184);
     CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_140e78000());
     if (pCin != 0)
-        static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->Invoke("setPortrait", pCin->m_speakerIllust);
+        static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setPortrait", pCin->m_speakerIllust);
     CStringW strNpc;
     if (nDone != 0)
         strNpc = FUN_1401aa6a0(spQuest->m_2ec);
     else
         strNpc = FUN_1401aa6a0(spQuest->m_2e8);
-    static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->Invoke("setNpc", strNpc);
-    if (MS2Ptr<ASTextField> spScript = FUN_140bb4cf0("m_script"))
+    static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setNpc", strNpc);
+    if (MS2Ptr<ASTextField> spScript = GetChild<ASTextField>("m_script"))
     {
         CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
@@ -324,7 +324,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         CStringW strKey(L"s_field_quest_talk_next");
         if (bLast)
         {
-            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(m_184) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184) != 0)
                 strKey = L"s_field_quest_talk_complete";
             else
                 strKey = L"s_field_quest_talk_ok";
@@ -352,7 +352,7 @@ UIFameContentsNotify* FUN_140e77d80(int nType)
 {
     if (reinterpret_cast<Unk_PnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ui = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nType);
+        MS2Ptr<UIObject> ui = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nType);
         if (ui.get())
             return dynamic_cast<UIFameContentsNotify*>((UIObject*)ui);
     }

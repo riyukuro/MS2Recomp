@@ -237,13 +237,12 @@ CStateService* FUN_140aa6d30();
 class Unk_MessageBoxUI
 {
 public:
-    int FUN_141adc940(int nId);
 };
 template <class T> inline T* Unk_MessageBoxDialog(int nId)
 {
     if (reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>(p.operator->());
     }
@@ -254,7 +253,6 @@ class UIItemRemakeScrollDialog : public UIDialog { public: void FUN_140f59ad0(__
 class Unk_MessageBoxGuideDialog : public UICartoonDialog { public: void FUN_1418dfb30(int nId, int nType, int nLayer);};
 class UICartoonDialog* FUN_140ff7030(int);   // C3: was FUN_140ff7030
 CWebBrowserService* FUN_140cc18a0();
-class Unk_MessageBoxWindow { public: HWND FUN_14209c720(); };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 CPartyManager* FUN_1409670d0();
 class Unk_MessageBoxItemLock { public: void FUN_140612e10(); };
@@ -298,7 +296,7 @@ struct Unk_MessageBoxConsts
     Unk_MessageBoxConstSlot m_guideId;                          // +0xd358
 };
 MS2_CHECK_OFFSET(Unk_MessageBoxConsts, m_guideId, 0xd358);
-Unk_MessageBoxConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MessageBoxConsts* FUN_1401d3200()
 const unsigned int* FUN_1401d7c10(const Unk_MessageBoxConstSlot* pSlot);
 const int* FUN_1402056b0(const Unk_MessageBoxConstSlot* pSlot);
 const CString* FUN_140298f80(const Unk_MessageBoxConstSlot* pSlot);
@@ -395,13 +393,13 @@ public:
     void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
     Unk_MessageBoxActor* FUN_141bd1420(CStringW strName);
-    Unk_MessageBoxActor* FUN_141bd1530(__int64 nId);
 };
 extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/uipetsystemdialog.h"
 #include "ms2/client/ms2/uiitempettrainingdialog.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 class TabContentsPetCompose : public PetSystemTabContents { public: void FUN_140cb48a0(int bUsePoint); };
 class TabContentsPetRemakeOption : public PetSystemTabContents { public: void FUN_140b95280(int bUsePoint); };
@@ -730,7 +728,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         if (spItem->FUN_140526bd0() > 3)
             bAsk = 1;
         else if (spItem->FUN_1405258b0() != 0 ||
-                 spItem->FUN_140527670() * (int)nCount >= *FUN_1401d7c10(&FUN_1401d3200()->m_sellConfirmPrice))
+                 spItem->GetSellPrice() * (int)nCount >= *FUN_1401d7c10(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_sellConfirmPrice))
             bAsk = 1;
     }
     if (bAsk != 0)
@@ -751,9 +749,9 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, strTag);
         if (spBox.get())
         {
-            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+            MS2Ptr<CItem> spCopy = spItem->Clone();
             spCopy->FUN_140526c70(nCount);
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spCopy, spCopy->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01700(0x47e, 0x476, 0);
             FUN_140d73c60(spBox);
@@ -761,7 +759,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
     }
     else
     {
-        FUN_141425fc0(spItem->FUN_140526a50(), nCount, (void*)(spItem.get()));
+        FUN_141425fc0(spItem->GetItemUid(), nCount, (void*)(spItem.get()));
     }
 }
 
@@ -788,7 +786,7 @@ MS2_REPLACE_METHOD(0x1419F8E10, UIMessageBox, FUN_1419f8e10, 163, 0xBFB98928);
 void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
 {
     m_count = 1;
-    FUN_140b632f0()->FUN_1422d4780(this, m_layer);
+    FUN_140b632f0()->AddToLayer(this, m_layer);
     FUN_140b632f0()->FUN_1422d48f0(this, m_layer);
     reinterpret_cast<Unk_MessageBoxSound*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(0x4e48);
     m_data = spData;
@@ -818,7 +816,7 @@ void UIMessageBox::FUN_1419f9110()
     if (!FUN_1419f8270())
     {
         vfunc_8(0);
-        FUN_140b632f0()->FUN_1422d4840(this, 4);
+        FUN_140b632f0()->RemoveFromLayer(this, 4);
         FUN_141276180(s_close, "");
     }
     if (m_data.get() ? true : false)
@@ -865,7 +863,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
     }
     bool bClose = m_closing == 1 ? true : false;
     MS2Ptr<CMsgBoxData> spData = m_data;
-    if (spData->FUN_141a01480())
+    if (spData->HasCallback())
     {
         if (spData->FUN_141a014d0(nButton, &extra))
         {
@@ -882,7 +880,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
         if (pListener)
         {
             Unk_MessageBoxMsg msg(0);
-            msg.FUN_1422b7f70(nButton);
+            msg.AddInt(nButton);
             msg.FUN_1422b8310(strTag);
             bHandled = pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
         }
@@ -936,8 +934,8 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
             {
                 Unk_MessageBoxMsg msg(0x7d1);
                 msg.FUN_1422b8310(strGroup);
-                msg.FUN_1422b7f70(nButton);
-                msg.FUN_1422b83f0(extra);
+                msg.AddInt(nButton);
+                msg.AddValue(extra);
                 pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
             }
         }
@@ -1326,19 +1324,19 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     {
         Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
         if (pDialog)
-            pDialog->FUN_1418dfb30(*FUN_1402056b0(&FUN_1401d3200()->m_guideId), 0x22, m_layer);
+            pDialog->FUN_1418dfb30(*FUN_1402056b0(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideId), 0x22, m_layer);
         return 0;
     }
     else if (nButton == 3)
     {
         CString strUrl;
-        FUN_140cc18a0()->FUN_141b794e0(strUrl, *FUN_140298f80(&FUN_1401d3200()->m_guideUrl));
+        FUN_140cc18a0()->FUN_141b794e0(strUrl, *FUN_140298f80(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideUrl));
         FUN_1418fe1c0(strUrl);
         return 0;
     }
     Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
-    if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *FUN_1402056b0(&FUN_1401d3200()->m_guideId))
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e87);
+    if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *FUN_1402056b0(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideId))
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e87);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FB630, UIMessageBox, FUN_1419fb630, 363, 0x8A536F36);
@@ -1414,7 +1412,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemInventoryMode5(spItem->FUN_140526a50());
+            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemInventoryMode5(spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
@@ -1448,7 +1446,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
         MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(m_data->FUN_141a02c00());
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemStorage(spItem->FUN_140526a50());
+            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemStorage(spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
@@ -1483,7 +1481,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
         MS2Ptr<CItem> spItem(pPlayer->FUN_14152efa0(m_data->FUN_141a02c00(), &nSlot));
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendFittingDoll(nSlot, spItem->FUN_140526a50());
+            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendFittingDoll(nSlot, spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
@@ -1600,10 +1598,10 @@ int UIMessageBox::FUN_1419fc810(int nButton)
                     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, s_143af3da0);
                     if (spBox.get())
                     {
-                        spBox->FUN_141a01600(spItem->FUN_140526a50());
+                        spBox->FUN_141a01600(spItem->GetItemUid());
                         spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                         spBox->FUN_141a01800(2);
-                        spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
+                        spBox->SetCheckbox0(GetStringCommon(0x29e), 0);
                         FUN_140d73c60(spBox);
                     }
                 }
@@ -1640,7 +1638,7 @@ int UIMessageBox::FUN_1419fccb0(int nButton)
     SHELLEXECUTEINFOA info = {};
     info.cbSize = sizeof(info);
     info.fMask = 0;
-    info.hwnd = ((class Unk_MessageBoxWindow*)FUN_140aadf80())->FUN_14209c720();
+    info.hwnd = ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef();
     info.lpVerb = "Open";
     info.lpFile = "IEXPLORE.EXE";
     info.lpDirectory = 0;
@@ -1906,7 +1904,7 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
             return 0;
         Unk_InventorySkillRequest request(nSkill, 1);
         request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(spLevel.operator->()))->FUN_140804450();
-        request.item = spItem->FUN_140526a50();
+        request.item = spItem->GetItemUid();
         MS2Ptr<CSkillRecord> spRecord = pPlayer->FUN_141523bc0()->FUN_141765570(request);
         if (spRecord == 0)
             return 0;
@@ -2101,7 +2099,7 @@ int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        if (reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e83) == 0)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e83) == 0)
         {
             Unk_MessageBoxTradeDialog* pDialog = FUN_14140e820(0x4e83);
             if (pDialog)
@@ -2411,7 +2409,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
     __int64 nId = 0;
     m_data->FUN_140b19130(1, nId);
     Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd1530(nId);
+    Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (!pPlayer || !pTarget)
     {
         (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x8e2), 0));
@@ -2445,7 +2443,7 @@ static int FUN_141a00180(MS2Ptr<CItem> spItem, int nCount)
 {
     if (!spItem)
         return 1;
-    int nHave = spItem->FUN_140526c50();
+    int nHave = spItem->GetCount();
     if (nCount <= 0 || nCount > nHave)
     {
         int nOne = 1;

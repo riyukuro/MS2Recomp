@@ -25,6 +25,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 class Unk_DTEvents {public:void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);};class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_DTPackets {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 NotifySystem* FUN_140939a10();
@@ -32,19 +33,19 @@ class Unk_DTInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1()
 struct Unk_DTInputPrefix {void* p0;Unk_DTInput stream;};
 struct Unk_DTNoticePrefix {void* p0;void* p8;void* p10;int kind;};
 class Unk_DTUIManager {public: };
-template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())){MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);if(p.get())return dynamic_cast<T*>((UIObject*)p);}return 0;}
+template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())){MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);if(p.get())return dynamic_cast<T*>((UIObject*)p);}return 0;}
 template<> inline bool MS2Ptr<Unk_DTReward>::operator==(Unk_DTReward* p)const{return m_p==p;}
 // @0x140c032b0
 UIDTAttendPopup::UIDTAttendPopup(){
  m_2c=0x19;m_80=1;FUN_141925e70(0,1);
  ((class Unk_DTEvents*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
- ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da5180(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
+ ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
  FUN_140939a10()->RegisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c035d0
 UIDTAttendPopup::~UIDTAttendPopup(){
  ((class Unk_DTEvents*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
- ((class Unk_DTPackets*)FUN_140bccd50())->FUN_140da51e0(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
+ ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
  FUN_140939a10()->UnregisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c03850

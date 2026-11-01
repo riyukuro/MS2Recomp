@@ -23,43 +23,43 @@ public:
     virtual ~CItemTransfer();                           // 0x140634930 (scalar deleting 0x140635e80)
     virtual void vfunc_1(COutputStream&);               // 0x140634d00 write
     virtual void vfunc_2(CInputStream&);                // 0x140634e30 read
-    unsigned char FUN_1406352b0();
-    unsigned char FUN_1406351f0(const __int64& nCharId, const CStringW& strName);   // bind to a character
+    unsigned char ClearBinding();
+    unsigned char SetBinding(const __int64& nCharId, const CStringW& strName);   // bind to a character
     int GetCount();
     void SetCount(unsigned);
     int GetMax();
     void SetMax(unsigned);
     void FUN_140635300();
-    MS2Ptr<CItemTransfer> FUN_140634b30();
+    MS2Ptr<CItemTransfer> Clone();
     void SetItem(CItem*);
-    void FUN_140634990(CItem*);
+    void InitFromItem(CItem*);
     CItemTransfer& operator=(const CItemTransfer&);     // 0x140635cf0
     int FUN_140634cc0();
-    int FUN_140635020();
-    int FUN_140635070();
-    unsigned FUN_140635100();                           // m_nRule & 8
+    int DecrementTransferCount();
+    int IncrementTransferCount();
+    unsigned HasBindingRule();                           // m_nRule & 8
     int FUN_140635120();                               // has a binding
-    CItemBinding* FUN_140635160();                      // the binding
+    CItemBinding* GetBinding();                      // the binding
     int GetType();
     bool FUN_1406351b0();
     void FUN_140635320(bool);
-    void FUN_140635350(class PCBase* pPc, CStringW* pName);   // the binding owner name
-    int FUN_1406354d0();
+    void GetBindingOwnerName(class PCBase* pPc, CStringW* pName);   // the binding owner name
+    int IsSellable();
     unsigned FUN_140635520();
     int FUN_140635580();
     unsigned FUN_140635590();
-    int FUN_140635630();
-    unsigned FUN_140635690();
-    int FUN_140635770();
+    int HasTradeCountLeft();
+    unsigned CanListOnBlackMarket();
+    int CanBreak();
     int FUN_140635870();
-    int FUN_1406358c0();
-    int FUN_140635900();
+    int CanRegisterMeratMarket();
+    int CanTransferSocket();
     bool FUN_140635940();
     bool FUN_140635980(const __int64*);
-    bool FUN_140635470(const __int64*);
-    void FUN_1406359c0(__int64*, CStringW*);
-    void FUN_140635a60();
-    static unsigned FUN_140635ae0(int, CItemData*, int);
+    bool IsBindingCompatible(const __int64*);
+    void GetBindingInfo(__int64*, CStringW*);
+    void RefreshRule();
+    static unsigned ComputeRule(int, CItemData*, int);
 
     CItem* m_pItem;                                     // +0x18 the owner item (not owned)
     unsigned m_nRule;                                   // +0x20 transfer rule mask (0x4, 0x8, 0x10 tested)
@@ -103,17 +103,17 @@ public:
   // Packet serialization declarations appended by a4 (unit_1401f9eb0).
   void FUN_140524ad0(COutputStream&);
   void FUN_140524eb0(CInputStream&);
-  __int64 FUN_140526a50();
-  void FUN_140526a70(__int64);
+  __int64 GetItemUid();
+  void SetItemUid(__int64);
   void FUN_140526c10(int);
   int FUN_140526b50();
   void FUN_140526b70(int);
   void FUN_140526c70(int);
   int FUN_140526bd0();
-  int FUN_140528840();                    // 0x140528840 (astooltip.cpp)
+  int GetUgcTag();                    // 0x140528840 (astooltip.cpp)
   int FUN_1405276c0();
   Unk_ItemEquipData* FUN_1405277b0();   // 0x1405277b0
-  int FUN_140527760();                  // 0x140527760
+  int GetIconCode();                  // 0x140527760
   Unk_ItemEquipData* FUN_140527840();   // 0x140527840 the item's data record (equip flags; uiequipiconcontainer.cpp)
   // Inventory ordering accessors, a1 (inventory.cpp).
   int FUN_140525c60();
@@ -128,39 +128,39 @@ public:
   CString FUN_140528590();                // 0x140528590 the item's name (uirewardnotify.cpp)
   int FUN_14052b130(int, int, int);   // can the item be combined with this one (ItemInfoSlot exchange scroll)
   // sb4 (clonecube.cpp): UGC look of the item. The callee returns a byte; callers test eax (declared int there).
-  int FUN_140525f10();                   // 0x140525f10 item data at +0xe8 is a UGC item
-  Unk_ItemUgcInfo* FUN_1405278d0();       // 0x1405278d0 operator-> of the MS2Ptr at +0x118 (UGC info)
-  unsigned __int64 FUN_1405283d0();       // 0x1405283d0 UGC uid of that info (0 when null; avatarcube.cpp)
+  int HasCubeTextureMesh();                   // 0x140525f10 item data at +0xe8 is a UGC item
+  Unk_ItemUgcInfo* GetUgcInfo();       // 0x1405278d0 operator-> of the MS2Ptr at +0x118 (UGC info)
+  unsigned __int64 GetUgcUid();       // 0x1405283d0 UGC uid of that info (0 when null; avatarcube.cpp)
   CStringW FUN_140527b10();               // 0x140527b10 (uiugccubepalettedialog.cpp)
   void FUN_1405288e0(__int64);            // 0x1405288e0 set the count (uiugccubepalettedialog.cpp)
-  class CUgcItemLook* FUN_140528380();    // 0x140528380 the UGC look of the item (ugccubepalette.cpp)
-  void FUN_140528300(class CUgcItemLook*);   // 0x140528300 set the UGC look (uiugccubepalettedialog.cpp)
-  bool FUN_140528cc0();                   // 0x140528cc0 can be item-locked (unit_1406125d0)
-  bool FUN_140528da0();                   // 0x140528da0 can be item-unlocked (unit_1406125d0)
+  class CUgcItemLook* GetUgcLook();    // 0x140528380 the UGC look of the item (ugccubepalette.cpp)
+  void SetUgcLook(class CUgcItemLook*);   // 0x140528300 set the UGC look (uiugccubepalettedialog.cpp)
+  bool CanBeItemLocked();                   // 0x140528cc0 can be item-locked (unit_1406125d0)
+  bool IsItemLocked();                   // 0x140528da0 can be item-unlocked (unit_1406125d0)
   // uiitemenchantdialog.cpp: enchant-related accessors.
   int FUN_140526fc0();                    // 0x140526fc0 enchant level
-  int FUN_1405270a0();                    // 0x1405270a0 enchant exp
-  void FUN_140527110(int);                // 0x140527110 set enchant exp
+  int GetEnchantCharge();                    // 0x1405270a0 enchant exp
+  void SetEnchantCharge(int);                // 0x140527110 set enchant exp
   int FUN_140527270();
   int FUN_140527030();
   Unk_ItemEnchantData* FUN_1405278a0();   // 0x1405278a0 the enchant data object (null when absent)
   Unk_ItemOwnerRef* FUN_140527930();      // 0x140527930 binding owner holder
-  unsigned FUN_140527710();               // 0x140527710 item level
-  int FUN_14052b2e0(int, int, int, int);  // set up from id, rank, 0, count
-  MS2Ptr<CItem> FUN_140524250();          // 0x140524250 copy
-  bool FUN_1405277e0(int);
+  unsigned GetRequiredLevel();               // 0x140527710 item level
+  int InitWithCount(int, int, int, int);  // set up from id, rank, 0, count
+  MS2Ptr<CItem> Clone();          // 0x140524250 copy
+  bool HasStringTag(int);
   bool FUN_140528e20();
   int FUN_140528f90();
   CStringW FUN_140528160();               // 0x140528160 item name
-  int FUN_140526c50();                    // 0x140526c50 count
+  int GetCount();                    // 0x140526c50 count
   int FUN_1405258b0();                    // 0x1405258b0 nonzero: no sell confirm by price (uimessagebox.cpp)
-  __int64 FUN_140527670();                // 0x140527670 unit sell price (uimessagebox.cpp)
-  void FUN_140526b30(int);                // 0x140526b30 set the owner object id (uibeautyshopstyledialog.cpp)
-  void FUN_140528ab0(__int64);            // 0x140528ab0 set the creation time (saved beauty styles)
-  __int64 FUN_140528ae0();                // 0x140528ae0 the creation time
-  void FUN_1405255e0(CInPacket&);         // 0x1405255e0 read the item body (saved beauty styles)
+  __int64 GetSellPrice();                // 0x140527670 unit sell price (uimessagebox.cpp)
+  void SetObjectId(int);                // 0x140526b30 set the owner object id (uibeautyshopstyledialog.cpp)
+  void SetCreationTime(__int64);            // 0x140528ab0 set the creation time (saved beauty styles)
+  __int64 GetCreationTime();                // 0x140528ae0 the creation time
+  void ReadProxyFromPacket(CInPacket&);         // 0x1405255e0 read the item body (saved beauty styles)
   // Delegations to the item table row (item.cpp, w74); names are by address.
-  int FUN_140525640();
+  int IsPetItem();
   int FUN_140525870();
   int FUN_140525ca0();
   int FUN_140525db0();
@@ -168,12 +168,12 @@ public:
   int FUN_140525e50(int, int);
   int FUN_140525eb0(int, int);
   int FUN_140526010();
-  int FUN_140526100();
-  int FUN_1405262c0();
+  int IsLapenshard();
+  int HasQuestStartFunction();
   int FUN_140526320();
-  int FUN_140526790(int);
+  int IsJobAllowed(int);
   int FUN_1405267d0(int);
-  int FUN_140526810(unsigned short);
+  int CanUseAtLevel(unsigned short);
   // Scalar accessors (item.cpp, w87): plain field getters/setters; names are by offset.
   int FUN_14052a020();
   void FUN_14052a040(int);
@@ -232,9 +232,9 @@ public:
   int FUN_140526390();
   int FUN_1405264c0(int, unsigned*);
   int FUN_140526670(int, unsigned*);
-  unsigned FUN_140527a90(size_t);
-  CString FUN_140528230();
-  CStringW FUN_140529410();
+  unsigned GetEquipSlot(size_t);
+  CString GetCategory();
+  CStringW GetCoupleName();
   int FUN_140529560();
   CStringW FUN_140529de0();
   CString FUN_140529eb0();
@@ -242,8 +242,8 @@ public:
   int FUN_14052a060();
   void FUN_14052b370();
   int FUN_14052b420(unsigned);
-  unsigned char FUN_14052b5e0(const __int64& nCharId, const CStringW& strName);   // bind to a character
-  CStringW FUN_140528010();
+  unsigned char BindToCharacter(const __int64& nCharId, const CStringW& strName);   // bind to a character
+  CStringW GetDisplayName();
   bool FUN_140528e80(int, __int64);
   CStringW FUN_1405296c0();
   CStringW FUN_140529890();
@@ -265,11 +265,11 @@ public:
   int FUN_140525950();
   int FUN_1405259e0();
   int FUN_140525a30();
-  int FUN_140525c00();
+  int IsStoryBook();
   bool FUN_140527360();                  // w98
-  int FUN_1405273a0();               // w98
+  int GetTransferCount();               // w98
   void FUN_1405290b0();                  // w98
-  bool FUN_140526e60(int, bool);
+  bool SetEnchantLevel(int, bool);
   bool FUN_140527180(int, bool);
   int FUN_14052a170();                   // w98
   CStringW FUN_14052a4f0();
@@ -283,36 +283,36 @@ public:
   void FUN_140526470(unsigned);
   void FUN_140526640(unsigned);
   bool FUN_140526850();
-  unsigned FUN_140526cc0(int);
+  unsigned AddCount(int);
   int FUN_140526d30();
   void FUN_140526f50(unsigned, bool);
-  int FUN_140527440();
-  void FUN_1405273f0(unsigned);
+  int GetTransferMax();
+  void SetTransferCount(unsigned);
   void FUN_140527490(unsigned);
-  unsigned FUN_1405274e0();
-  unsigned FUN_140527530();
-  int FUN_140527580();
+  unsigned GetRepackLimitCount();
+  unsigned GetRepackConsumeCount();
+  int GetRemainingRePackingCount();
   void FUN_1405275f0();
   __int64 FUN_140527640();
   int FUN_1405279f0();
   unsigned FUN_140527a20();
-  unsigned FUN_1405281e0();
+  unsigned GetSlotMax();
   unsigned short FUN_1405282d0();
   int FUN_140528420();
-  void FUN_140528470(class CBlueprintItemData*);
-  class CBlueprintItemData* FUN_1405284f0();
+  void SetBlueprintData(class CBlueprintItemData*);
+  class CBlueprintItemData* GetBlueprintData();
   __int64 FUN_140528540();
-  bool FUN_140528930();
+  bool IsExpired();
   void FUN_140528b00(const CStringW&);
   CStringW* FUN_140528b40();
   void WriteItemBody(__int64);
   CItemCustomMusicScore* FUN_140527960();
   CItemCustomMusicScore* FUN_140527990();
   CItemSocket* FUN_1405279c0();
-  CItemGem* FUN_140527900();
+  CItemGem* GetGem();
   void FUN_140529210(unsigned, __int64);
-  void FUN_1405292c0(const CItemCoupleInfo&);
-  void FUN_140529330(const CStringW&);
+  void SetCoupleInfo(const CItemCoupleInfo&);
+  void SetCoupleName(const CStringW&);
   __int64 FUN_1405293b0();
   unsigned char FUN_1405294a0();
   void FUN_140529500(const CStringW&);
@@ -390,7 +390,7 @@ private:
   int m_19c;
 };
 MS2_CHECK_SIZE(CItem, 0x1a0);
-// Prefix view of the UGC info behind CItem::FUN_1405278d0 (type name unknown; inventory.cpp views the same +0x30
+// Prefix view of the UGC info behind CItem::GetUgcInfo (type name unknown; inventory.cpp views the same +0x30
 // field as Unk_InventoryStackIdentity::owner).
 class Unk_ItemUgcInfo {
 public:

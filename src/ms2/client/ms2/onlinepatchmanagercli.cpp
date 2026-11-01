@@ -111,11 +111,11 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
     unsigned char type = packet.ReadUInt8();
     if (type == 1) {
         static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
-        FUN_140714f90()->FUN_141538cb0();
+        FUN_140714f90()->SendResponseVersion();
     } else if (type == 2) {
         GetFileSystem()->FUN_140396d00("./DataPatch/");
         static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
-        FUN_140714f90()->FUN_141538cb0();
+        FUN_140714f90()->SendResponseVersion();
     } else if (type == 3) {
         static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
         static_cast<COnlinePatchManagerCli*>(pManager)->CreatePatchDirectory("./DataPatch/");
@@ -132,7 +132,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
             static_cast<COnlinePatchManagerCli*>(pManager)->m_files.push_back(spFile->m_strPath);
         }
         if (static_cast<COnlinePatchManagerCli*>(pManager)->RequestNextFile() != 1) {
-            FUN_140714f90()->FUN_141538cb0();
+            FUN_140714f90()->SendResponseVersion();
         }
     } else if (type == 5) {
         CString strPath = packet.ReadUnicodeStringA();
@@ -152,7 +152,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
                 } else {
                     GetFileSystem()->FUN_140396d00("./DataPatch/");
                     static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
-                    FUN_140714f90()->FUN_141538cb0();
+                    FUN_140714f90()->SendResponseVersion();
                 }
             } else {
                 static_cast<COnlinePatchManagerCli*>(pManager)->RequestFile(spFile.get());

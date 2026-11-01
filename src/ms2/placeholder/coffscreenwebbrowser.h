@@ -25,20 +25,20 @@ public:
     virtual ~COffscreenWebBrowser();                // 0x141611770
 
     void FUN_1416119d0(const CefRefPtr<CefBrowser>& browser);  // attach: after CefBrowserHost::CreateBrowser (with null)
-    void FUN_141611a70();                           // close the browser
-    void FUN_141611b80();                           // stop loading
-    void FUN_141611be0(bool bShow);                 // focus / unfocus
-    void FUN_141611c90(const CStringA& strUrl);     // load an url
-    void FUN_141611d50(int nCommand);               // 1 forward, 2 back, 3 reload
-    void FUN_141611e20(CefRefPtr<CefProcessMessage> message);  // send a process message to the renderer
+    void Close();                           // close the browser
+    void StopLoad();                           // stop loading
+    void SetFocus(bool bShow);                 // focus / unfocus
+    void LoadUrl(const CStringA& strUrl);     // load an url
+    void Navigate(int nCommand);               // 1 forward, 2 back, 3 reload
+    void SendRendererMessage(CefRefPtr<CefProcessMessage> message);  // send a process message to the renderer
     void FUN_141611ea0(int x, int y, unsigned nMsg, WPARAM wParam, LPARAM lParam);    // mouse input
     void FUN_141612210(unsigned nMsg, WPARAM wParam, LPARAM lParam);                  // keyboard input
-    void FUN_1416123d0(int nWidth, int nHeight);    // resize the view (clamped to the 2048x1024 texture)
+    void SetViewSize(int nWidth, int nHeight);    // resize the view (clamped to the 2048x1024 texture)
     void FUN_1416124e0(const char* pszToken, int nWindowType);  // the request headers: local player, guild, token
     void FUN_1416126f0();                           // copy the page into the texture
     void FUN_1416129c0();                           // stop painting
     bool FUN_1416129e0();                           // resume painting
-    CefRefPtr<CefBrowserHost> FUN_141612a10();      // the browser host
+    CefRefPtr<CefBrowserHost> GetBrowserHost();      // the browser host
     CefRefPtr<CefBrowser> FUN_141612aa0();          // the CEF browser
     void* FUN_141612b20();                          // the texture the page is rendered into (NiDynamicTexture*)
     void SetOnNavigate(Delegate<void(const CStringA&)> onNavigate);

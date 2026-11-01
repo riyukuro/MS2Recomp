@@ -17,10 +17,10 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The player's movement controller (PCBase +0x6d8, unit_141682f80): the direction of the forced/knock-back move.
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_FloatMove
 {
 public:
-    Vector3 FUN_141683900();                                       // 0x141683900 the current move direction
 };
 
 float FUN_1410a7600(PCBase* p);                                           // 0x1410a7600 vertical velocity (PCBase +0xbf0)
@@ -93,7 +93,7 @@ void StateFloat::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_FloatMove* pMove = static_cast<Unk_FloatMove*>(m_pOwner->FUN_14166d240());
-    Vector3 kDir = pMove->FUN_141683900();
+    Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683900();
     reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_22(kDir);
 }
 MS2_REPLACE_METHOD(0x1417C84B0, StateFloat, vfunc_8, 162, 0xDBB0643A);

@@ -88,6 +88,7 @@ static CString s_itemPetRank("itemPetRank");
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 static CString s_cap("Cap");
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
@@ -212,7 +213,7 @@ public:
 Unk_PetDialog* FUN_140b99ba0(int nId);
 
 // Client configuration: the pet class that may be levelled sits at +0x84c0, the name length limit at +0x9d08.
-class Unk_PetUIntSlot { public: unsigned* FUN_1401d7c10(); };
+class Unk_PetUIntSlot { public: };
 class Unk_PetIntSlot { public: int* FUN_1402056b0(); };
 class Unk_PetConfig
 {
@@ -223,7 +224,6 @@ public:
     Unk_PetIntSlot m_nameLimit;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 int* FUN_1402056b0(Unk_PetIntSlot* pSlot);
 
 // The exp table: points an (pet class, rank, item class) needs for the next level.
@@ -405,7 +405,7 @@ int FUN_140cbd9d0(int nPet)
     MS2Ptr<CItem> pet = FUN_140cbd900(nPet);
     if (pet == 0)
         return 0;
-    if ((unsigned __int64)pet->FUN_140526a50() > 0)
+    if ((unsigned __int64)pet->GetItemUid() > 0)
         return 1;
     return 0;
 }
@@ -419,7 +419,7 @@ MS2Ptr<Unk_PetRow> FUN_140cbda70(int nPet)
     MS2Ptr<CItemData> data(pet->FUN_140527840());
     if (data == 0)
         return MS2Ptr<Unk_PetRow>(0);
-    return FUN_14052d210()->FUN_1407290f0(data->FUN_14053dc60());
+    return FUN_14052d210()->FUN_1407290f0(data->GetPetId());
 }
 
 // @0x140cbdba0
@@ -445,7 +445,7 @@ __int64 FUN_140cbdc40(int nPet)
 unsigned FUN_140cbdc80(int nPet)
 {
     if (nPet != 0)
-        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b410()->FUN_140c875e0();
+        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b410()->GetSlotCount();
     MS2Ptr<Unk_PetRow> row = FUN_140cbda70(nPet);
     if (row == 0)
         return 0;
@@ -457,7 +457,7 @@ UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId)
 {
     if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIItemAutoUseOptionDialog*>((UIObject*)p);
     }
@@ -469,7 +469,7 @@ UIItemGetOptionDialog* FUN_140cbe260(int nId)
 {
     if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIItemGetOptionDialog*>((UIObject*)p);
     }
@@ -481,7 +481,7 @@ UIOtherPetSystemDialog* FUN_140cbe300(int nId)
 {
     if (reinterpret_cast<Unk_PiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIOtherPetSystemDialog*>((UIObject*)p);
     }
@@ -554,7 +554,7 @@ void PetInfoBasic::vfunc_3()
     if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
     {
         name->FUN_1422c4cd0(pet->FUN_140527b10());
-        static_cast<Unk_PiText*>(name.operator->())->FUN_1422c5910(1);
+        static_cast<Unk_PiText*>(name.operator->())->SetAutoSize(1);
     }
     if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
     {
@@ -563,7 +563,7 @@ void PetInfoBasic::vfunc_3()
     }
     if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
-        if (nPetClass < *FUN_1401d7c10(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass))
+        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
         {
             __int64 nExp = pet->FUN_140528b90();
             __int64 nMax = FUN_1404a1bb0()->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
@@ -953,7 +953,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_revive");
         obj.FUN_1409c0dc0("buttonTooltip", "$s_petsetting_tooltip_revive");
         obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_Tombstone.png"));
-        list->FUN_1422dd230(obj);
+        list->AddItem(obj);
     }
     {
         ASObj obj(2);
@@ -965,7 +965,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_itemuse");
         obj.FUN_1409c0dc0("buffTooltip", "$s_petsetting_auto_itemuse_desc");
         obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_AutoPotion.png"));
-        list->FUN_1422dd230(obj);
+        list->AddItem(obj);
     }
     {
         ASObj obj(2);
@@ -977,7 +977,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_itempick");
         obj.FUN_1409c0dc0("buffTooltip", "$s_petsetting_auto_itempick_desc");
         obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_ItemGet.png"));
-        list->FUN_1422dd230(obj);
+        list->AddItem(obj);
     }
     for (void* pos = row->m_skills.FUN_14063f420(); pos != 0; row->m_skills.FUN_14063f3d0(pos))
     {
@@ -992,7 +992,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         obj.FUN_1407cbb20("buffName", CStringW(strName));
         obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
         obj.FUN_1407cba60(s_iconPath, CString(rec->m_strIcon));
-        list->FUN_1422dd230(obj);
+        list->AddItem(obj);
     }
 }
 
@@ -1223,7 +1223,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_13()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    pPlayer->SendRequestPet(pet->FUN_140526a50());
+    pPlayer->SendRequestPet(pet->GetItemUid());
     return 1;
 }
 
@@ -1238,7 +1238,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_14()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    pPlayer->SendRequestPet(pet->FUN_140526a50());
+    pPlayer->SendRequestPet(pet->GetItemUid());
     return 1;
 }
 
@@ -1294,7 +1294,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_8(void* p)
     if (slot.FUN_1409c3860(pet.get(), pPlayer, 0x49) != 0)
     {
         if (m_nPet != 0)
-            slot.FUN_1409c3750(true);
+            slot.SetUseRightClick(true);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
     }
@@ -1313,7 +1313,7 @@ __int64 TabContentsPetInfo::EquipSlot::FUN_140cbcb00()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    return pet->FUN_140526a50();
+    return pet->GetItemUid();
 }
 
 // ---- TabContentsPetInfo::EquipSlotBag ----

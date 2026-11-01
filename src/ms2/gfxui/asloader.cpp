@@ -95,7 +95,7 @@ MS2_REPLACE_METHOD(0x1422E56A0, ASLoader, RemoveCompleteListener, 123, 0xC983CB1
 // @0x1422e5730
 Scaleform::GFx::Value ASLoader::GetContent()
 {
-    return FUN_1422baa20("content");
+    return GetMember("content");
 }
 MS2_REPLACE_METHOD(0x1422E5730, ASLoader, GetContent, 65, 0x29D49803);
 

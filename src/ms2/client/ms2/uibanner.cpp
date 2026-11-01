@@ -24,6 +24,8 @@
 // The unit's statics: the shared header statics.
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asgameentity.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_BannerClip : public ASGameEntity
@@ -38,7 +40,7 @@ class Unk_BannerASObj : public ASObj
 public:
     void FUN_140ba9670(const char* szName, int n);                                  // set an int member
 };
-struct Unk_BannerCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_BannerCfgFloat { char m_pad[0x58]; };
 struct Unk_BannerCfg
 {
     char m_pad_0000[0x320];
@@ -63,9 +65,7 @@ public:
 class Unk_BannerActor : public PCBase
 {
 };
-PCBase* FUN_140974230(PCBase*);
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 UIBanner* FUN_1409614b0(int nUiId);                                         // the ui object of that id
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
@@ -77,7 +77,7 @@ UIBanner::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nAct
     : UIHudEntity::Entity(nLayer, clip, nActorId)
 {
     m_60 = 0;
-    m_54 = ((struct Unk_BannerCfg*)FUN_1401d3200())->m_320.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_320)->Read();
 }
 
 // @0x140ba8310
@@ -162,7 +162,7 @@ float UIBanner::Entity::vfunc_9()
 // @0x140ba86d0
 PCBase* UIBanner::Entity::FUN_140ba86d0()
 {
-    return FUN_140974230(FUN_140f49330());
+    return efd::DynamicCast<PC, PCBase>(FUN_140f49330());
 }
 
 // @0x140ba8700
@@ -292,7 +292,7 @@ void UIBanner::FUN_140ba8db0(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -321,7 +321,7 @@ UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)
@@ -398,7 +398,7 @@ Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9570(const char* szMethod, Scalef
 void Unk_BannerASObj::FUN_140ba9670(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

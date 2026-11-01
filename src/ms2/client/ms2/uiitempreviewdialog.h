@@ -32,7 +32,6 @@ public:
     void FUN_1412d62d0();                                           // "unloadRenderTarget"
     void FUN_1412d6330(MS2Ptr<CItem> spItem);                       // show the item on the avatar
     void FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::Params& params);   // tooltip callback
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // text field child lookup
 
 private:
     MS2_LAYOUT_FRIEND;

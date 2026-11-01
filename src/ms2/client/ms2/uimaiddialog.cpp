@@ -35,6 +35,8 @@
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/commonfiles/maid.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -184,7 +186,6 @@ public:
     Unk_MaidLimitBox m_maxChars2;                               // +0xa1c8
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_MaidLimitBox* pBox);
 
 // The unit-local view of the profile edit buffer: the 13 texts.
 struct Unk_MaidProfileFields
@@ -198,7 +199,8 @@ extern template class MS2Ptr<CBanTextChecker>;
 
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
-CStringW FUN_1408116a0(int nId, const int& nArg);               // formatted system text
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_1409e90c0(int nId, const int& n1, const int& n2, const int& n3, const int& n4, const int& n5);
 CStringW FUN_140763e10(int nNumber);                            // a number with digit grouping
@@ -209,7 +211,6 @@ void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   /
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);       // str == psz
 void FUN_140710590(COutPacket& packet);                         // send
 UITalkCinematic* FUN_140a7b2b0(int nId);                         // a dialog's position record
 class Unk_MaidUnused;                                            // element of an unused local array (its CAtlArray dtor COMDAT is 0x140164210, not the void* one)
@@ -279,8 +280,8 @@ void UIMaidDialog::vfunc_43()
     UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x14;
+        int nX = pRef->GetLowerCutGlobalY();
+        int nY = pRef->GetIllustGlobalX() - 0x14;
         if (nX != -1 && nY != -1)
         {
             pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0() - 2);
@@ -437,7 +438,7 @@ void UIMaidDialog::FUN_1412d7aa0()
 
     int nMaxExp = FUN_1404eb7e0(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
-    CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
+    CStringW strLevel = BlockFormat<int>(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
         strLevel = FUN_140656190(L"{0} {1}", strLevel, GetStringCommon(0x79b));
     obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));
@@ -482,8 +483,8 @@ void UIMaidDialog::FUN_1412d7aa0()
         obj.FUN_1407cbb20("ownername", CStringW(spMaid.FUN_14067e8c0()->m_strOwnerName));
         obj.FUN_1407cbb20("belongto", CStringW(spMaid.FUN_14067e8c0()->m_strBelongTo));
     }
-    obj.FUN_1407cb9c0("maxChars1", *FUN_1402056b0(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars1));
-    obj.FUN_1407cb9c0("maxChars2", *FUN_1402056b0(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars2));
+    obj.FUN_1407cb9c0("maxChars1", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars1)->Get());
+    obj.FUN_1407cb9c0("maxChars2", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars2)->Get());
     m_30->Invoke("setData", obj);
     if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         m_30->Invoke("showDebugBtn", 1);           // an int, not a bool: the movie gets the Number 1
@@ -500,7 +501,7 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<Unk_MaidUnused*> kArr;
         FUN_14151f200();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnSave"))
+        if (nResult == 0 && operator==(strTag, L"OnSave"))
         {
             COutPacket packet(static_cast<int>(SendOp::Maid), 0);
             packet.WriteUInt8(4);
@@ -574,7 +575,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
         CStringW strBad;
         if (nField == 0 || nField == 1 || nField == 10)
         {
-            if (pCheck->FUN_140225470(strValue, strBad) != 0)
+            if (pCheck->CheckMaidProfileField(strValue, strBad) != 0)
             {
                 FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
                 return 0;
@@ -627,7 +628,7 @@ void UIMaidDialog::FUN_1412d9680()
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
     int nMaxExp = FUN_1404eb7e0(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
-    CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
+    CStringW strLevel = BlockFormat<int>(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
         strLevel = FUN_140656190(L"{0} {1}", strLevel, GetStringCommon(0x79b));
     obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));

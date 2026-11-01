@@ -131,9 +131,9 @@ public:
     void FUN_1410b85f0(Unk_Int3* pMin, Unk_Int3* pMax);
     Cube* FUN_1410b8790(Unk_Int3 pt);
     Cube* FUN_1410b8980(Unk_Int3 pt);
-    Cube* FUN_1410b8a60(Unk_Int3 pt);
+    Cube* GetCubeAtCell(Unk_Int3 pt);
     Cube* FUN_1410b8ab0(Vector3 pt);
-    Cube* FUN_1410b8b00(int nKey);
+    Cube* GetCubeByKey(int nKey);
     Cube* FUN_1410b8be0(const Unk_CMISEntityRef& ref);
     Cube* FUN_1410b8c90(const Unk_CMISEntityRef& ref);
     Cube* FUN_1410b8d90(Cube* pBase, int nOffset, int nField44);
@@ -212,7 +212,7 @@ public:
     bool FUN_1410c2840(Vector3 pt, float fDist);
     int FUN_1410d2340(const Unk_CMISPt2* a, const Unk_CMISPt2* b, float fLimX, float fLimY);
     void FUN_1410caa60(const CString* pKey, int v);
-    void FUN_1410c51d0(int nA, int nB, CStringW strName);
+    void SetOwnerName(int nA, int nB, CStringW strName);
     __int64 FUN_1410c8030(int nA, int nB);
     void FUN_1410c4240(int nGroup, int nBlock, const CStringW& strName, __int64 nUnused, __int64 nOwnerId);
     void FUN_1410c44b0(int nGroup, int nBlock, int bFlag);
@@ -273,7 +273,7 @@ public:
     bool FUN_1410be0c0(Unk_Int3 pt, int nGroup, int nFloor, struct Unk_CMISCell56* pVal);
     int FUN_1410ce310();
     int FUN_1410d33a0(int nKey, Vector3* pOut);
-    CStringW FUN_1410c7f60(int nA, int nB);
+    CStringW GetOwnerName(int nA, int nB);
     void SendRequestCubeMode68(__int64 nId);
     int FUN_1410c3000();
     void FUN_1410c3020(int v);

@@ -15,6 +15,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- unit-local placeholders ----
 
@@ -35,7 +37,6 @@ public:
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
@@ -54,7 +55,6 @@ int LoadTestCamerValue();                           // reloads the camera xml (r
 
 float FUN_14059d930(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -104,9 +104,9 @@ void CPVPCameraMode::vfunc_6(int n)
     m_setting.m_18 = m_c0.m_rot;
     m_pOwner->FUN_140a38dc0(m_c0.m_pos);
     m_pOwner->FUN_140a38e00(m_c0.m_rot);
-    m_9c = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80.FUN_1402bac70();
-    m_a0 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8.FUN_1402bac70();
-    m_a4 = ((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30.FUN_1402bac70();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
 }
 MS2_REPLACE_METHOD(0x1416c4f10, CPVPCameraMode, vfunc_6, 793, 0x057BE7BB);
 
@@ -121,7 +121,7 @@ void CPVPCameraMode::vfunc_8(double fTime)
     {
         Vector3 ptInput = ptMove;
         float fRate = 15.0f;
-        float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+        float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
         float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                    FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
         float fScale = fStep * fMax;

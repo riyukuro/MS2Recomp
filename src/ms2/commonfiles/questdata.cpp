@@ -63,7 +63,7 @@
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140759440 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140759460 ; prop
 // MS2-PIN: ??E?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCQuestData@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759650 ; prop
-// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759670 ; multicopy of 0x14050bdd0 (FUN_140750d90 range-for ++)
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759670 ; multicopy of 0x14050bdd0 (SortNpcQuestIds range-for ++)
 // MS2-PIN: ??RUnk_QuestLevelFree@@QEBA_NV?$MS2Ptr@VCQuestData@@@@@Z 0x140759830 ; unique
 // MS2-PIN: ?Add@?$CAtlArray@V?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@@ATL@@@ATL@@QEAA_KAEBV?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@@Z 0x14075a090 ; prop
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCConditionCommonData@@@@V?$CElementTraits@V?$MS2Ptr@VCConditionCommonData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCConditionCommonData@@@@@Z 0x14075a140 ; prop
@@ -123,6 +123,27 @@ template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::Navigati
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/termtagcontext.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Header statics (the same list as header_statics_a.h, twice: the sort names of two enums).
 #ifndef MS2_HOOK_DLL
@@ -403,7 +424,7 @@ int CQuestManagerCommon::FUN_140745590(int questId)
 }
 
 // @0x140745630
-int CQuestManagerCommon::FUN_140745630(int questId)
+int CQuestManagerCommon::IsQuestActive(int questId)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
@@ -412,7 +433,7 @@ int CQuestManagerCommon::FUN_140745630(int questId)
 }
 
 // @0x1407456d0
-int CQuestManagerCommon::FUN_1407456d0(int questId)
+int CQuestManagerCommon::IsQuestComplete(int questId)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
@@ -479,7 +500,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
         ATL::CAtlArray<unsigned>& progress = data->m_require.m_progressQuest;
         for (size_t i = 0; i < progress.GetCount(); ++i)
         {
-            if (progress[i] != 0 && FUN_140745630(progress[i]) == 0)
+            if (progress[i] != 0 && IsQuestActive(progress[i]) == 0)
                 return 0;
         }
         ATL::CAtlArray<unsigned>& unrequire = data->m_require.m_unrequire;
@@ -489,7 +510,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             {
                 if (FUN_140745590(unrequire[i]) != 0)
                     return 0;
-                if (FUN_140745630(unrequire[i]) != 0)
+                if (IsQuestActive(unrequire[i]) != 0)
                     return 0;
             }
         }
@@ -503,7 +524,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
                 QuestDataTable::GetInstance()->FUN_14074e6c0(groups[i], m_selector, nSeed, picked);
                 for (size_t j = 0; j < picked.GetCount(); ++j)
                 {
-                    if (FUN_140745630(picked[j]) != 0)
+                    if (IsQuestActive(picked[j]) != 0)
                         return 0;
                     if (FUN_140745590(picked[j]) != 0)
                     {
@@ -539,7 +560,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             {
                 if (vfunc_o10_9() == 0)
                     return 0;
-                int nGuildLevel = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7130(vfunc_o10_10());
+                int nGuildLevel = TSingleton<CGuildXmlData>::GetInstance()->GetLevelByExp(vfunc_o10_10());
                 if (nGuildLevel < data->m_require.m_guildLevel)
                     return 0;
             }
@@ -641,7 +662,7 @@ int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, bool bSkip)
         return 6;
     if (bSkip == 0 && npcId != 0 && quest->GetData()->m_2ec != npcId)
         return 6;
-    if (bSkip == 0 && FUN_1407456d0(questId) == 0)
+    if (bSkip == 0 && IsQuestComplete(questId) == 0)
         return 6;
     return 0;
 }
@@ -877,9 +898,9 @@ bool CQuestData::QuestRewardItem::LoadXml(Unk_140165cf0* pElem)
 {
     if (!FUN_14028f650((struct Unk_XmlElement*)(pElem)))
         return false;
-    FUN_140873220(pElem, "code", (unsigned&)m_itemId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "code", (unsigned&)m_itemId);
     Unk_ReadRank((class Unk_XmlNode*)(pElem), "rank", &m_count);
-    FUN_1408731e0(pElem, "count", m_job);
+    XmlGetAttr((class TiXmlElement*)(pElem), "count", reinterpret_cast<int&>(m_job));
     return true;
 }
 
@@ -892,7 +913,7 @@ int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob)
     MS2Ptr<CItemData> item = FUN_14053f870(pItem->m_itemId);
     if (!item)
         return 0;
-    if (!reinterpret_cast<ItemLimit*>(&item->limit)->FUN_140545da0(nJob))
+    if (!reinterpret_cast<ItemLimit*>(&item->limit)->IsJobRecommended(nJob))
         return 0;
     return 1;
 }
@@ -1256,23 +1277,23 @@ unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
 // @0x1407495d0
 bool CQuestData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", (unsigned&)m_id);
-    Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", (unsigned&)m_id);
+    Unk_140165cf0* pBasic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("basic"));
     if (pBasic)
     {
-        FUN_1408731e0(pBasic, "chapterID", m_28);
-        FUN_1408731e0(pBasic, "standardLevel", m_level);
-        FUN_1408730a0(pBasic, "autoStart", (bool&)m_2d);
-        FUN_1408730a0(pBasic, "disableGiveup", (bool&)m_2e);
-        FUN_1408730a0(pBasic, "exceptChapterClear", (bool&)m_2f);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "chapterID", reinterpret_cast<int&>(m_28));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "standardLevel", reinterpret_cast<int&>(m_level));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "autoStart", reinterpret_cast<bool&>((bool&)m_2d));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "disableGiveup", reinterpret_cast<bool&>((bool&)m_2e));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "exceptChapterClear", reinterpret_cast<bool&>((bool&)m_2f));
         FUN_14035ba10(pBasic, "repeatable", &m_20);
         FUN_140751ee0(pBasic, "questType", &m_type);
-        FUN_1408730a0(pBasic, "account", (bool&)m_2c);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "account", reinterpret_cast<bool&>((bool&)m_2c));
         FUN_140873b30(pBasic, "eventTag", m_schedule);
-        FUN_1408730a0(pBasic, "locking", (bool&)m_30);
-        FUN_1408731e0(pBasic, "tabIndex", m_48);
-        FUN_1408730a0(pBasic, "forceRegistGuide", (bool&)m_31);
-        FUN_1408730a0(pBasic, "useNavi", (bool&)m_flag);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "locking", reinterpret_cast<bool&>((bool&)m_30));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "tabIndex", reinterpret_cast<int&>(m_48));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "forceRegistGuide", reinterpret_cast<bool&>((bool&)m_31));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "useNavi", reinterpret_cast<bool&>((bool&)m_flag));
         FUN_14035bc20(pBasic, "alliance", &m_4c);
         FUN_140752570(pBasic, "rank", &m_50);
         XmlQuery((class TiXmlElement*)(pBasic), "usePostbox", (bool&)m_33);
@@ -1293,47 +1314,47 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         else
             m_durationMinutes = FUN_140718170(strPeriod);
     }
-    Unk_140165cf0* pNotify = pElem->FUN_140165cf0("notify");
+    Unk_140165cf0* pNotify = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("notify"));
     if (pNotify)
     {
         FUN_1407521b0(pNotify, "completeUiEffect", &m_2d0.m_id);
-        FUN_1408733e0(pNotify, "acceptSoundKey", m_2d0.m_accept);
-        FUN_1408733e0(pNotify, "completeSoundKey", m_2d0.m_reward);
+        XmlGetAttr((class TiXmlElement*)(pNotify), "acceptSoundKey", m_2d0.m_accept);
+        XmlGetAttr((class TiXmlElement*)(pNotify), "completeSoundKey", m_2d0.m_reward);
     }
-    Unk_140165cf0* pRequire = pElem->FUN_140165cf0("require");
+    Unk_140165cf0* pRequire = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("require"));
     if (pRequire)
     {
-        FUN_1408731a0(pRequire, "level", (unsigned short&)m_require.m_level);
-        FUN_1408731a0(pRequire, "maxLevel", (unsigned short&)m_require.m_maxLevel);
-        FUN_140873220(pRequire, "achievement", m_require.m_achievement);
-        FUN_1408731e0(pRequire, "achievementGrade", m_require.m_achievementGrade);
-        FUN_140873220(pRequire, "gearScore", m_require.m_gearScore);
-        FUN_1408731a0(pRequire, "guildNpcLevel", (unsigned short&)m_require.m_guildNpcLevel);
-        FUN_140873220(pRequire, "dungeon", m_require.m_dungeon);
-        FUN_140873220(pRequire, "unrequireDungeon", m_require.m_unrequireDungeon);
-        FUN_140873220(pRequire, "enterDungeon", m_require.m_enterDungeon);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "level", reinterpret_cast<unsigned short&>((unsigned short&)m_require.m_level));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "maxLevel", reinterpret_cast<unsigned short&>((unsigned short&)m_require.m_maxLevel));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "achievement", m_require.m_achievement);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "achievementGrade", reinterpret_cast<int&>(m_require.m_achievementGrade));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "gearScore", m_require.m_gearScore);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "guildNpcLevel", reinterpret_cast<unsigned short&>((unsigned short&)m_require.m_guildNpcLevel));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "dungeon", m_require.m_dungeon);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "unrequireDungeon", m_require.m_unrequireDungeon);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "enterDungeon", m_require.m_enterDungeon);
         FUN_14035bc20(pRequire, "alliance", &m_require.m_alliance);
-        FUN_1408731e0(pRequire, "fameGrade", m_require.m_fameGrade);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "fameGrade", reinterpret_cast<int&>(m_require.m_fameGrade));
         FUN_14051fd20(pRequire, "masteryType", &m_require.m_masteryType);
-        FUN_1408731e0(pRequire, "masteryGrade", m_require.m_masteryGrade);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "masteryGrade", reinterpret_cast<int&>(m_require.m_masteryGrade));
         XmlTokenList(pRequire, "dungeonBeginner", m_require.m_dungeonBeginner);
-        FUN_1408731e0(pRequire, "mentor", m_require.m_mentor);
-        FUN_1408731e0(pRequire, "mentee", m_require.m_mentee);
-        FUN_1408731e0(pRequire, "vip", m_require.m_vip);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "mentor", reinterpret_cast<int&>(m_require.m_mentor));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "mentee", reinterpret_cast<int&>(m_require.m_mentee));
+        XmlGetAttr((class TiXmlElement*)(pRequire), "vip", reinterpret_cast<int&>(m_require.m_vip));
         XmlTokenList(pRequire, "equipment", m_require.m_equipment);
         XmlTokenList(pRequire, "subJob", m_require.m_subJob);
         XmlTokenList(pRequire, "progressQuest", m_require.m_progressQuest);
-        CString strUnreqAchievement = FUN_14015f710(pRequire, "unreqAchievement", "");
-        CString strQuest = FUN_14015f710(pRequire, "quest", "");
-        CString strJob = FUN_14015f710(pRequire, "job", "");
-        CString strUnrequire = FUN_14015f710(pRequire, "unrequire", "");
-        CString strSelectableQuest = FUN_14015f710(pRequire, "selectableQuest", "");
-        CString strUnrequireGroup = FUN_14015f710(pRequire, "unrequireGroup", "");
-        CString strGuildLevel = FUN_14015f710(pRequire, "guildLevel", "");
+        CString strUnreqAchievement = Unk_ReadString((class Unk_XmlNode*)(pRequire), "unreqAchievement", "");
+        CString strQuest = Unk_ReadString((class Unk_XmlNode*)(pRequire), "quest", "");
+        CString strJob = Unk_ReadString((class Unk_XmlNode*)(pRequire), "job", "");
+        CString strUnrequire = Unk_ReadString((class Unk_XmlNode*)(pRequire), "unrequire", "");
+        CString strSelectableQuest = Unk_ReadString((class Unk_XmlNode*)(pRequire), "selectableQuest", "");
+        CString strUnrequireGroup = Unk_ReadString((class Unk_XmlNode*)(pRequire), "unrequireGroup", "");
+        CString strGuildLevel = Unk_ReadString((class Unk_XmlNode*)(pRequire), "guildLevel", "");
         if (strGuildLevel.GetLength() > 0)
             m_require.m_guildLevel = FUN_140718170(strGuildLevel);
         ATL::CAtlArray<CString> arrUnreqAchievement;
-        FUN_14015f050(strUnreqAchievement, arrUnreqAchievement, ",");
+        Unk_SplitA(const_cast<CStringA&>(strUnreqAchievement), (ATL::CAtlArray<CStringA>*)&(arrUnreqAchievement), ",");
         if (arrUnreqAchievement.GetCount() == 2)
         {
             m_require.m_unreqAchievement = FUN_1407181d0(arrUnreqAchievement[0]);
@@ -1346,16 +1367,16 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         XmlSplit(strUnrequireGroup, m_require.m_unrequireGroup, ",");
         CString strStartTime;
         CString strEndTime;
-        FUN_1408733e0(pRequire, "startTime", strStartTime);
-        FUN_1408733e0(pRequire, "endTime", strEndTime);
-        CString strDayOfWeek = FUN_14015f710(pRequire, "dayOfWeek", "");
+        XmlGetAttr((class TiXmlElement*)(pRequire), "startTime", strStartTime);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "endTime", strEndTime);
+        CString strDayOfWeek = Unk_ReadString((class Unk_XmlNode*)(pRequire), "dayOfWeek", "");
         XmlSplit(strDayOfWeek, m_require.m_dayOfWeek, ",");
         int nGroupId = 0;
-        FUN_1408731e0(pRequire, "groupID", nGroupId);
+        XmlGetAttr((class TiXmlElement*)(pRequire), "groupID", reinterpret_cast<int&>(nGroupId));
         if (nGroupId != 0 && m_30 == 0)
             m_require.m_groupId = nGroupId;
     }
-    for (Unk_140165cf0* pCond = pElem->FUN_140165cf0("condition"); pCond != 0; pCond = pCond->FUN_140168650("condition"))
+    for (Unk_140165cf0* pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
         MS2Ptr<CConditionCommonData> spCond(new CConditionCommonData());
         if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), L"QuestData", FUN_14074b030(this)) == 0)
@@ -1363,7 +1384,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         unsigned nIndex = (unsigned)m_conditions.GetCount();
         m_conditions.Add(spCond);
         Unk_SocketPtr<NavigationData> spNavigation(0);
-        for (Unk_140165cf0* pNavi = pCond->FUN_140165cf0("navi"); pNavi != 0; pNavi = pNavi->FUN_140168650("navi"))
+        for (Unk_140165cf0* pNavi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->FirstChild("navi")); pNavi != 0; pNavi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNavi))->NextSibling("navi")))
         {
             Unk_SocketPtr<NavigationTarget> spTarget(new NavigationTarget());
             FUN_140752630(pNavi, "type", &spTarget->m_kind);
@@ -1379,118 +1400,118 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         if (spNavigation.get() != 0)
             m_navigation.SetAt(nIndex, spNavigation);
     }
-    Unk_140165cf0* pStart = pElem->FUN_140165cf0("start");
+    Unk_140165cf0* pStart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("start"));
     if (pStart)
-        FUN_140873220(pStart, "npc", (unsigned&)m_2e8);
-    Unk_140165cf0* pComplete = pElem->FUN_140165cf0("complete");
+        XmlGetAttr((class TiXmlElement*)(pStart), "npc", (unsigned&)m_2e8);
+    Unk_140165cf0* pComplete = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("complete"));
     if (pComplete)
-        FUN_140873220(pComplete, "npc", (unsigned&)m_2ec);
-    Unk_140165cf0* pCompleteReward = pElem->FUN_140165cf0("completeReward");
+        XmlGetAttr((class TiXmlElement*)(pComplete), "npc", (unsigned&)m_2ec);
+    Unk_140165cf0* pCompleteReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("completeReward"));
     if (pCompleteReward)
     {
-        FUN_1408731e0(pCompleteReward, "money", m_complete.m_money);
-        FUN_1408731e0(pCompleteReward, "exp", m_complete.m_exp);
-        FUN_1408731e0(pCompleteReward, "guildFund", m_complete.m_guildFund);
-        FUN_1408731e0(pCompleteReward, "guildExp", m_complete.m_guildExp);
-        FUN_1408731e0(pCompleteReward, "guildCoin", m_complete.m_guildCoin);
-        FUN_1408731e0(pCompleteReward, "menteeCoin", m_complete.m_menteeCoin);
-        FUN_1408731e0(pCompleteReward, "missionPoint", m_complete.m_missionPoint);
-        FUN_1408731e0(pCompleteReward, "useMainFamePoint", m_complete.m_useMainFamePoint);
-        FUN_140873220(pCompleteReward, "fameLog", m_complete.m_fameLog);
-        FUN_1408731e0(pCompleteReward, "rewardExpExtra", m_complete.m_rewardExpExtra);
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "money", reinterpret_cast<int&>(m_complete.m_money));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "exp", reinterpret_cast<int&>(m_complete.m_exp));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "guildFund", reinterpret_cast<int&>(m_complete.m_guildFund));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "guildExp", reinterpret_cast<int&>(m_complete.m_guildExp));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "guildCoin", reinterpret_cast<int&>(m_complete.m_guildCoin));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "menteeCoin", reinterpret_cast<int&>(m_complete.m_menteeCoin));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "missionPoint", reinterpret_cast<int&>(m_complete.m_missionPoint));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "useMainFamePoint", reinterpret_cast<int&>(m_complete.m_useMainFamePoint));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "fameLog", m_complete.m_fameLog);
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "rewardExpExtra", reinterpret_cast<int&>(m_complete.m_rewardExpExtra));
         Unk_ExpGetInt(pCompleteReward, "relativeExp", &m_complete.m_relativeExp);
         FUN_140752270(pCompleteReward, "relativeMeso", &m_complete.m_relativeMeso);
-        FUN_1408732e0(pCompleteReward, "weddingExp", m_complete.m_weddingExp);
-        FUN_1408731e0(pCompleteReward, "karma", m_complete.m_karma);
-        FUN_1408731e0(pCompleteReward, "lu", m_complete.m_lu);
-        for (Unk_140165cf0* pItem : pCompleteReward->FUN_140165cf0("v"))
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "weddingExp", reinterpret_cast<__int64&>(m_complete.m_weddingExp));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "karma", reinterpret_cast<int&>(m_complete.m_karma));
+        XmlGetAttr((class TiXmlElement*)(pCompleteReward), "lu", reinterpret_cast<int&>(m_complete.m_lu));
+        for (Unk_140165cf0* pItem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCompleteReward))->FirstChild("v")))
         {
             QuestRewardItem item;
             if (item.LoadXml(pItem))
                 m_complete.m_choiceRewards.Add(item);
         }
     }
-    Unk_140165cf0* pAcceptReward = pElem->FUN_140165cf0("acceptReward");
+    Unk_140165cf0* pAcceptReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("acceptReward"));
     if (pAcceptReward)
     {
-        for (Unk_140165cf0* pItem : pAcceptReward->FUN_140165cf0("v"))
+        for (Unk_140165cf0* pItem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAcceptReward))->FirstChild("v")))
         {
             QuestRewardItem item;
             if (item.LoadXml(pItem))
                 m_rewards.push_back(item);
         }
     }
-    Unk_140165cf0* pProgressMap = pElem->FUN_140165cf0("progressMap");
+    Unk_140165cf0* pProgressMap = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("progressMap"));
     if (pProgressMap)
     {
-        CString strProgressMap = FUN_14015f710(pProgressMap, "progressMap", "");
+        CString strProgressMap = Unk_ReadString((class Unk_XmlNode*)(pProgressMap), "progressMap", "");
         XmlSplit(strProgressMap, m_fields, ",");
     }
-    Unk_140165cf0* pGuide = pElem->FUN_140165cf0("guide");
+    Unk_140165cf0* pGuide = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("guide"));
     if (pGuide)
     {
         FUN_140752330(pGuide, "guideType", &m_338.m_value);
         FUN_1407524b0(pGuide, "guideGroup", &m_338.m_4);
-        FUN_1408733e0(pGuide, "guideIcon", m_338.m_8);
+        XmlGetAttr((class TiXmlElement*)(pGuide), "guideIcon", m_338.m_8);
         unsigned short nMinLevel = 0;
         unsigned short nMaxLevel = 0;
-        FUN_1408731a0(pGuide, "guideMinLevel", nMinLevel);
-        FUN_1408731a0(pGuide, "guideMaxLevel", nMaxLevel);
+        XmlGetAttr((class TiXmlElement*)(pGuide), "guideMinLevel", reinterpret_cast<unsigned short&>(nMinLevel));
+        XmlGetAttr((class TiXmlElement*)(pGuide), "guideMaxLevel", reinterpret_cast<unsigned short&>(nMaxLevel));
         m_338.m_levelRange.FUN_14075bc80(nMinLevel, nMaxLevel);
     }
-    Unk_140165cf0* pEventMission = pElem->FUN_140165cf0("eventMission");
+    Unk_140165cf0* pEventMission = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("eventMission"));
     if (pEventMission)
         FUN_1407523f0(pEventMission, "event", &m_350.m_value);
-    Unk_140165cf0* pMentoring = pElem->FUN_140165cf0("mentoringMission");
+    Unk_140165cf0* pMentoring = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("mentoringMission"));
     if (pMentoring)
     {
-        FUN_1408733e0(pMentoring, "mentoringIcon", m_358.m_8);
-        FUN_1408731e0(pMentoring, "openingDay", m_358.m_0);
-        FUN_1408731e0(pMentoring, "mentoringSeason", m_358.m_4);
+        XmlGetAttr((class TiXmlElement*)(pMentoring), "mentoringIcon", m_358.m_8);
+        XmlGetAttr((class TiXmlElement*)(pMentoring), "openingDay", reinterpret_cast<int&>(m_358.m_0));
+        XmlGetAttr((class TiXmlElement*)(pMentoring), "mentoringSeason", reinterpret_cast<int&>(m_358.m_4));
     }
-    Unk_140165cf0* pDispatch = pElem->FUN_140165cf0("dispatch");
+    Unk_140165cf0* pDispatch = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dispatch"));
     if (pDispatch)
     {
         FUN_140751f70(pDispatch, "type", &m_2f0.m_0);
-        FUN_140873220(pDispatch, "field", (unsigned&)m_2f0.m_4);
-        FUN_1408731e0(pDispatch, "portal", m_2f0.m_8);
-        FUN_1408731e0(pDispatch, "script", m_2f0.m_c);
+        XmlGetAttr((class TiXmlElement*)(pDispatch), "field", (unsigned&)m_2f0.m_4);
+        XmlGetAttr((class TiXmlElement*)(pDispatch), "portal", reinterpret_cast<int&>(m_2f0.m_8));
+        XmlGetAttr((class TiXmlElement*)(pDispatch), "script", reinterpret_cast<int&>(m_2f0.m_c));
     }
     if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x42) == 1)
     {
-        Unk_140165cf0* pGotoNpc = pElem->FUN_140165cf0("gotoNpc");
+        Unk_140165cf0* pGotoNpc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoNpc"));
         if (pGotoNpc)
         {
-            FUN_1408731e0(pGotoNpc, "enable", m_300.m_0);
-            FUN_140873220(pGotoNpc, "gotoField", (unsigned&)m_300.m_4);
-            FUN_1408731e0(pGotoNpc, "gotoPortal", m_300.m_8);
+            XmlGetAttr((class TiXmlElement*)(pGotoNpc), "enable", reinterpret_cast<int&>(m_300.m_0));
+            XmlGetAttr((class TiXmlElement*)(pGotoNpc), "gotoField", (unsigned&)m_300.m_4);
+            XmlGetAttr((class TiXmlElement*)(pGotoNpc), "gotoPortal", reinterpret_cast<int&>(m_300.m_8));
         }
     }
-    Unk_140165cf0* pGotoDungeon = pElem->FUN_140165cf0("gotoDungeon");
+    Unk_140165cf0* pGotoDungeon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoDungeon"));
     if (pGotoDungeon)
     {
         FUN_140751e50(pGotoDungeon, "state", &m_30c.m_0);
-        FUN_140873220(pGotoDungeon, "gotoDungeon", (unsigned&)m_30c.m_roomId);
-        FUN_140873220(pGotoDungeon, "gotoInstanceID", (unsigned&)m_30c.m_fieldId);
+        XmlGetAttr((class TiXmlElement*)(pGotoDungeon), "gotoDungeon", (unsigned&)m_30c.m_roomId);
+        XmlGetAttr((class TiXmlElement*)(pGotoDungeon), "gotoInstanceID", (unsigned&)m_30c.m_fieldId);
     }
-    Unk_140165cf0* pRemoteAccept = pElem->FUN_140165cf0("remoteAccept");
+    Unk_140165cf0* pRemoteAccept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteAccept"));
     if (pRemoteAccept)
     {
         FUN_1407520f0(pRemoteAccept, "useRemote", &m_320.m_0);
-        FUN_140873220(pRemoteAccept, "requireField", (unsigned&)m_320.m_4);
+        XmlGetAttr((class TiXmlElement*)(pRemoteAccept), "requireField", (unsigned&)m_320.m_4);
     }
-    Unk_140165cf0* pRemoteComplete = pElem->FUN_140165cf0("remoteComplete");
+    Unk_140165cf0* pRemoteComplete = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteComplete"));
     if (pRemoteComplete)
     {
         FUN_1407520f0(pRemoteComplete, "useRemote", &m_32c.m_0);
-        FUN_140873220(pRemoteComplete, "requireField", (unsigned&)m_32c.m_4);
-        FUN_1408731e0(pRemoteComplete, "requireDungeonClear", m_32c.m_8);
+        XmlGetAttr((class TiXmlElement*)(pRemoteComplete), "requireField", (unsigned&)m_32c.m_4);
+        XmlGetAttr((class TiXmlElement*)(pRemoteComplete), "requireDungeonClear", reinterpret_cast<int&>(m_32c.m_8));
     }
-    Unk_140165cf0* pSummonPortal = pElem->FUN_140165cf0("summonPortal");
+    Unk_140165cf0* pSummonPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("summonPortal"));
     if (pSummonPortal)
     {
-        FUN_140873220(pSummonPortal, "fieldID", (unsigned&)m_318.m_0);
-        FUN_1408731e0(pSummonPortal, "portalID", m_318.m_4);
+        XmlGetAttr((class TiXmlElement*)(pSummonPortal), "fieldID", (unsigned&)m_318.m_0);
+        XmlGetAttr((class TiXmlElement*)(pSummonPortal), "portalID", reinterpret_cast<int&>(m_318.m_4));
     }
     return 1;
 }
@@ -1740,7 +1761,7 @@ int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
 // @0x14074bc40
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId)
 {
-    return QuestDataTable::GetInstance()->FUN_14074c9d0(nQuestId);
+    return QuestDataTable::GetInstance()->GetQuestById(nQuestId);
 }
 
 // @0x14074bc90
@@ -1769,7 +1790,7 @@ QuestDataTable::QuestDataTable()
 // @0x14074c130
 QuestDataTable::~QuestDataTable()
 {
-    FUN_1407511e0();
+    Clear();
 }
 
 
@@ -1788,7 +1809,7 @@ void QuestDataTable::LoadQuestData()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode : pRoot->FUN_140165cf0("quest"))
+    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -1801,7 +1822,7 @@ void QuestDataTable::LoadQuestData()
     SetInit(true);
     FUN_1407503f0();
     FUN_14074fee0();
-    FUN_140750d90();
+    SortNpcQuestIds();
     FUN_140750f30();
     LoadQuestGroupTable();
 
@@ -1822,7 +1843,7 @@ void QuestDataTable::LoadQuestData()
                     bBad = false;
                     for (size_t k = 0; k < spCond->m_code.m_ids.GetCount(); k++)
                     {
-                        MS2Ptr<CQuestData> spOther = FUN_14074c9d0((int)spCond->m_code.m_ids[k]);
+                        MS2Ptr<CQuestData> spOther = GetQuestById((int)spCond->m_code.m_ids[k]);
                         if (spOther.operator->() != 0 && !spOther->GetKind())
                         {
                             bBad = true;
@@ -1844,7 +1865,7 @@ void QuestDataTable::LoadQuestData()
 MS2_REPLACE_METHOD(0x14074C320, QuestDataTable, LoadQuestData, 1691, 0xED84B5B4);
 
 // @0x14074c9d0
-MS2Ptr<CQuestData> QuestDataTable::FUN_14074c9d0(int nQuestId)
+MS2Ptr<CQuestData> QuestDataTable::GetQuestById(int nQuestId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1855,7 +1876,7 @@ MS2Ptr<CQuestData> QuestDataTable::FUN_14074c9d0(int nQuestId)
 }
 
 // @0x14074cad0
-void QuestDataTable::FUN_14074cad0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nType)
+void QuestDataTable::CollectQuestsByType(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nType)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1869,7 +1890,7 @@ void QuestDataTable::FUN_14074cad0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 }
 
 // @0x14074cbf0
-void QuestDataTable::FUN_14074cbf0(int nMapId, ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::GetQuestIdsByMap(int nMapId, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1879,7 +1900,7 @@ void QuestDataTable::FUN_14074cbf0(int nMapId, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x14074cca0
-void QuestDataTable::FUN_14074cca0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nGrade)
+void QuestDataTable::CollectType3QuestsByGuideType(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nGrade)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1895,7 +1916,7 @@ void QuestDataTable::FUN_14074cca0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 }
 
 // @0x14074cde0
-void QuestDataTable::FUN_14074cde0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nFlag)
+void QuestDataTable::CollectEventMissionQuests(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nFlag)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1911,7 +1932,7 @@ void QuestDataTable::FUN_14074cde0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 }
 
 // @0x14074cf20
-void QuestDataTable::FUN_14074cf20(ATL::CAtlArray<int>& out)
+void QuestDataTable::GetChapterIds(ATL::CAtlArray<int>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1920,7 +1941,7 @@ void QuestDataTable::FUN_14074cf20(ATL::CAtlArray<int>& out)
 }
 
 // @0x14074cfd0
-void QuestDataTable::FUN_14074cfd0(int nChapter, ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::GetQuestIdsByChapter(int nChapter, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     IdsPtr spIds(0);
@@ -1931,7 +1952,7 @@ void QuestDataTable::FUN_14074cfd0(int nChapter, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x14074d080
-void QuestDataTable::FUN_14074d080(int nMapId, ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::GetAutoStartAndMapQuestIds(int nMapId, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1963,7 +1984,7 @@ void QuestDataTable::FUN_14074d140(unsigned short nLevel, int nJob, std::vector<
 MS2_REPLACE_METHOD(0x14074D140, QuestDataTable, FUN_14074d140, 350, 0x3F8920CF);
 
 // @0x14074d2b0
-void QuestDataTable::FUN_14074d2b0(Unk_FameAlliance nAlliance, ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::GetQuestIdsByAlliance(Unk_FameAlliance nAlliance, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -1983,7 +2004,7 @@ void QuestDataTable::FUN_14074d360(unsigned nKey, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x14074d410
-void QuestDataTable::FUN_14074d410(ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::GetRemoteAcceptQuestIds(ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2030,7 +2051,7 @@ struct Unk_QuestLevelAbove2
 
 // MS2-FUNCTIONAL: orders m_378 so a quest follows its prerequisite chain and chains are merged by required level
 // @0x14074d480
-void QuestDataTable::FUN_14074d480()
+void QuestDataTable::SortQuestChains()
 {
     QuestVec sorted;
     for (;;)
@@ -2119,10 +2140,10 @@ void QuestDataTable::FUN_14074d480()
             _wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\questdata.cpp", 0x6e3);
     }
 }
-MS2_REPLACE_METHOD(0x14074D480, QuestDataTable, FUN_14074d480, 2780, 0x697FD88B);
+MS2_REPLACE_METHOD(0x14074D480, QuestDataTable, SortQuestChains, 2780, 0x697FD88B);
 
 // @0x14074df70
-QuestDataTable::IdsPtr QuestDataTable::FUN_14074df70(unsigned nKey, int nIndex)
+QuestDataTable::IdsPtr QuestDataTable::GetQuestIdsByKey(unsigned nKey, int nIndex)
 {
     CheckInit();
     IdsPtr spIds(0);
@@ -2132,7 +2153,7 @@ QuestDataTable::IdsPtr QuestDataTable::FUN_14074df70(unsigned nKey, int nIndex)
 }
 
 // @0x14074e030
-bool QuestDataTable::FUN_14074e030(unsigned nNpcId)
+bool QuestDataTable::HasNpcQuests(unsigned nNpcId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2146,7 +2167,7 @@ std::vector<unsigned>& QuestDataTable::FUN_14074e0d0()
 }
 
 // @0x14074e0f0
-std::vector<unsigned>* QuestDataTable::FUN_14074e0f0(int nNpcId)
+std::vector<unsigned>* QuestDataTable::GetQuestIdsByNpc(int nNpcId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2157,7 +2178,7 @@ std::vector<unsigned>* QuestDataTable::FUN_14074e0f0(int nNpcId)
 }
 
 // @0x14074e1c0
-unsigned QuestDataTable::FUN_14074e1c0(int nKey)
+unsigned QuestDataTable::GetChapterRegionCode(int nKey)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2167,7 +2188,7 @@ unsigned QuestDataTable::FUN_14074e1c0(int nKey)
 }
 
 // @0x14074e240
-unsigned QuestDataTable::FUN_14074e240(int nKey)
+unsigned QuestDataTable::GetChapterContinentCode(int nKey)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2199,7 +2220,7 @@ int QuestDataTable::FUN_14074e390(int nGroupId)
 }
 
 // @0x14074e450
-int QuestDataTable::FUN_14074e450(int nGroupId)
+int QuestDataTable::GetGroupPickCount(int nGroupId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2224,7 +2245,7 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
     if (spIds.operator->()->GetCount() == 0)
         return;
     int nFirstId = spIds.operator->()->GetAt(0);
-    MS2Ptr<CQuestData> spFirst = FUN_14074c9d0(nFirstId);
+    MS2Ptr<CQuestData> spFirst = GetQuestById(nFirstId);
     if (spFirst.IsNull())
         return;
     CMsTime now(GetServerTime());
@@ -2252,7 +2273,7 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
     Unk_Random rnd(nRandSeed);
     ATL::CAtlArray<unsigned> candidates;
     candidates.Copy(*reinterpret_cast<const Unk_QuestIdsPtrView*>(&spIds)->FUN_14075b430());
-    int nPicks = GetInstance()->FUN_14074e450(nGroupId);
+    int nPicks = GetInstance()->GetGroupPickCount(nGroupId);
     for (int i = 0; i < nPicks; ++i)
     {
         if (candidates.GetCount() == 0)
@@ -2290,7 +2311,7 @@ int QuestDataTable::FUN_14074e560(unsigned nFirst, unsigned nLast)
 MS2_REPLACE_METHOD(0x14074E560, QuestDataTable, FUN_14074e560, 346, 0x400E3FB6);
 
 // @0x14074eac0
-void QuestDataTable::FUN_14074eac0(int nQuestId, ATL::CAtlMap<unsigned, int>& visited)
+void QuestDataTable::CollectDependentQuests(int nQuestId, ATL::CAtlMap<unsigned, int>& visited)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.IsNull())
@@ -2299,11 +2320,11 @@ void QuestDataTable::FUN_14074eac0(int nQuestId, ATL::CAtlMap<unsigned, int>& vi
         return;
     visited.SetAt(nQuestId, 1);
     for (size_t i = 0; i < spData->m_require.m_requiredBy.GetCount(); ++i)
-        FUN_14074eac0(spData->m_require.m_requiredBy[i], visited);
+        CollectDependentQuests(spData->m_require.m_requiredBy[i], visited);
 }
 
 // @0x14074ebc0
-void QuestDataTable::FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> spData, int nDepth)
+void QuestDataTable::CollectChainQuestIds(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> spData, int nDepth)
 {
     if (nDepth > 1000)
         return;
@@ -2317,10 +2338,10 @@ void QuestDataTable::FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> 
     spIds.get()->Add(FUN_14074b030(spData.operator->()));
     for (size_t i = 0; i < spData->m_require.m_followingQuests.GetCount(); ++i)
     {
-        FUN_14074ebc0(nChain, spIds, FUN_14074c9d0(spData->m_require.m_followingQuests[i]), ++nDepth);
+        CollectChainQuestIds(nChain, spIds, GetQuestById(spData->m_require.m_followingQuests[i]), ++nDepth);
     }
 }
-MS2_REPLACE_METHOD(0x14074EBC0, QuestDataTable, FUN_14074ebc0, 604, 0x6D4ED568);
+MS2_REPLACE_METHOD(0x14074EBC0, QuestDataTable, CollectChainQuestIds, 604, 0x6D4ED568);
 
 // MS2-FUNCTIONAL: by-value smart-pointer argument and stack slot order differ.
 // @0x14074ee30
@@ -2477,7 +2498,7 @@ void QuestDataTable::FUN_14074f160()
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x30, L"주간 퀘스트인데 초기화 날짜가 없습니다. usePeriod에 초기화 요일을 적어주세요 [quest={0}]", reinterpret_cast<const unsigned&>(nQuest));
         }
     }
-    FUN_14074d480();
+    SortQuestChains();
 }
 MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530);
 
@@ -2527,13 +2548,13 @@ void QuestDataTable::LoadQuestGroupTable()
         return;
     }
     Unk_1401b4ec0 guard(m_lock, 1);
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_SocketPtr<CQuestData::GroupPickData> spPick(new CQuestData::GroupPickData);
-        FUN_1408731e0(pNode, "id", spPick->m_18);
-        FUN_1408731e0(pNode, "pickCount", spPick->m_count);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spPick->m_18));
+        XmlGetAttr((class TiXmlElement*)(pNode), "pickCount", reinterpret_cast<int&>(spPick->m_count));
         FUN_140752030(pNode, "dependency", &spPick->m_kind);
         m_3d8.SetAt(spPick->m_18, spPick);
     }
@@ -2591,7 +2612,7 @@ void QuestDataTable::FUN_1407503f0()
         MS2Ptr<CQuestData> spHead(0);
         for (size_t i = 0; i < spIds->GetCount(); i++)
         {
-            MS2Ptr<CQuestData> spQuest = FUN_14074c9d0(spIds->GetAt(i));
+            MS2Ptr<CQuestData> spQuest = GetQuestById(spIds->GetAt(i));
             if (!spQuest)
                 continue;
             if (FUN_14074b070(spQuest.operator->()) == 0 && FUN_14074b050(spQuest.operator->()) != 2 &&
@@ -2607,7 +2628,7 @@ void QuestDataTable::FUN_1407503f0()
                 }
                 for (size_t j = 0; j < prev.GetCount(); j++)
                 {
-                    MS2Ptr<CQuestData> spPrev = FUN_14074c9d0(prev[j]);
+                    MS2Ptr<CQuestData> spPrev = GetQuestById(prev[j]);
                     if (!spPrev)
                         continue;
                     if (spPrev->m_28 != nChain)
@@ -2632,7 +2653,7 @@ void QuestDataTable::FUN_1407503f0()
             else
             {
                 IdsPtr spOrdered((Unk_BmNewTag(0)));
-                FUN_14074ebc0(nChain, spOrdered, spHead, 0);
+                CollectChainQuestIds(nChain, spOrdered, spHead, 0);
                 if (spOrdered->GetCount() == spIds->GetCount())
                     m_chapter.SetAt(nChain, spOrdered);
             }
@@ -2663,7 +2684,7 @@ struct Unk_QuestIdOrder : public Unk_BinaryFunction
 
 // MS2-FUNCTIONAL: sorts the quest id list of every npc
 // @0x140750d90
-void QuestDataTable::FUN_140750d90()
+void QuestDataTable::SortNpcQuestIds()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     Unk_QuestIdOrder pred;
@@ -2672,7 +2693,7 @@ void QuestDataTable::FUN_140750d90()
         std::sort(entry.second.begin(), entry.second.end(), pred);
     }
 }
-MS2_REPLACE_METHOD(0x140750D90, QuestDataTable, FUN_140750d90, 252, 0x26A038B0);
+MS2_REPLACE_METHOD(0x140750D90, QuestDataTable, SortNpcQuestIds, 252, 0x26A038B0);
 
 int __cdecl FUN_140751770(const void* pA, const void* pB);
 
@@ -2693,7 +2714,7 @@ void QuestDataTable::FUN_140750f30()
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (spData->m_30 != 0)
-            FUN_14074eac0(FUN_14074b030(spData.operator->()), m_2d0);
+            CollectDependentQuests(FUN_14074b030(spData.operator->()), m_2d0);
     }
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
@@ -2707,16 +2728,15 @@ void QuestDataTable::FUN_140750f30()
                     bAll = 0;
             }
             if (bAll != 0)
-                FUN_14074eac0(FUN_14074b030(spData.operator->()), m_2d0);
+                CollectDependentQuests(FUN_14074b030(spData.operator->()), m_2d0);
         }
     }
 }
 MS2_REPLACE_METHOD(0x140750F30, QuestDataTable, FUN_140750f30, 681, 0xCC1801CB);
 
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);
 
 // @0x1407511e0
-void QuestDataTable::FUN_1407511e0()
+void QuestDataTable::Clear()
 {
     m_quests.clear();
     m_chapter.RemoveAll();
@@ -2800,7 +2820,7 @@ void FUN_140751560(Unk_140165cf0* pElem, ATL::CAtlArray<CString>& args)
     {
         CString strName;
         strName.Format("arg%d", i + 1);
-        const char* pszValue = FUN_14086f4b0(pElem, strName);
+        const char* pszValue = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute(strName);
         if (pszValue != 0)
             args.SetAtGrow(i, CString(pszValue));
     }
@@ -2867,7 +2887,7 @@ int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, reinterpret_cast<int&>(nValue));
     if (nResult != 0)
         return nResult;
     *pOut = nValue;
@@ -2883,7 +2903,7 @@ int FUN_140751ee0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, reinterpret_cast<int&>(nValue));
     if (nResult != 0)
         return nResult;
     *pOut = nValue;
@@ -2899,7 +2919,7 @@ int FUN_140751f70(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = FUN_140751330(str);
@@ -2915,7 +2935,7 @@ int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = FUN_140751440(str);
@@ -2931,7 +2951,7 @@ int FUN_1407520f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = FUN_1407513c0(str);
@@ -2947,7 +2967,7 @@ int FUN_1407521b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_140219300(str);
@@ -2963,7 +2983,7 @@ int FUN_140752270(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_140217cd0(str);
@@ -2979,7 +2999,7 @@ int FUN_140752330(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_140217a00(str);
@@ -2995,7 +3015,7 @@ int FUN_1407523f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_140217bd0(str);
@@ -3011,7 +3031,7 @@ int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_140217ad0(str);
@@ -3027,7 +3047,7 @@ int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_14021a570(str);
@@ -3043,7 +3063,7 @@ int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     *pOut = Parse_14021a1f0(str);

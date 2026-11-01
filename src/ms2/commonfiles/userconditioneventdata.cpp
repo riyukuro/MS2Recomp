@@ -20,6 +20,16 @@
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/citemoptiontable.h"
 #include "ms2/commonfiles/filesystem.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 typedef ATL::CRBMap<int, CUserConditionEventData::Ptr> Unk_UceMap;
 
@@ -98,52 +108,52 @@ void CUserConditionEventData::Load()
         Unk_UceLog(CLogString::GetInstance(), 1, 0x13, MS2_UCE_XML_ERR, "userConditionEvent.xml");
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("event"); pNode != 0; pNode = pNode->FUN_140168650("event"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("event")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("event")))
     {
         Ptr spData(new CUserConditionEventData);
         spData->FUN_1401d1160(CString(strPath));
-        FUN_1408731e0(pNode, "id", spData->m_nId);
-        FUN_1408731e0(pNode, "gameEventID", spData->m_nGameEventId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spData->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "gameEventID", reinterpret_cast<int&>(spData->m_nGameEventId));
         CString strInfo;
         strInfo.Format("eventID=%u gameEventID=%u", (unsigned)spData->m_nId, (unsigned)spData->m_nGameEventId);
-        Unk_140165cf0* pCondition = pNode->FUN_140165cf0("condition");
+        Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("condition"));
         if (pCondition != 0)
         {
             if (((class CConditionCommonData*)(class CConditionCommonData*)(spData->m_spCondition.get()))->Load((class Unk_ConditionXml*)(pCondition), L"UserConditionEvent", spData->m_nId) == 0)
                 continue;
         }
-        Unk_140165cf0* pNotify = pNode->FUN_140165cf0("notify");
+        Unk_140165cf0* pNotify = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("notify"));
         if (pNotify != 0)
         {
-            FUN_1408731e0(pNotify, "preview", spData->m_notify.m_nPreview);
-            FUN_1408731e0(pNotify, "useNotify", spData->m_notify.m_nUseNotify);
-            spData->m_notify.m_strDescKey = FUN_14015f710(pNotify, "descKey", "");
-            spData->m_notify.m_strDescArg = FUN_14015f710(pNotify, "descArg", "");
-            for (Unk_140165cf0* pAttach = pNotify->FUN_140165cf0("attachment"); pAttach != 0; pAttach = pAttach->FUN_140168650("attachment"))
+            XmlGetAttr((class TiXmlElement*)(pNotify), "preview", reinterpret_cast<int&>(spData->m_notify.m_nPreview));
+            XmlGetAttr((class TiXmlElement*)(pNotify), "useNotify", reinterpret_cast<int&>(spData->m_notify.m_nUseNotify));
+            spData->m_notify.m_strDescKey = Unk_ReadString((class Unk_XmlNode*)(pNotify), "descKey", "");
+            spData->m_notify.m_strDescArg = Unk_ReadString((class Unk_XmlNode*)(pNotify), "descArg", "");
+            for (Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNotify))->FirstChild("attachment")); pAttach != 0; pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
             {
                 Unk_UceAttachment attach;
-                FUN_1408731e0(pAttach, "job", attach.m_nJob);
-                FUN_140873220(pAttach, "itemID", attach.m_nItemId);
+                XmlGetAttr((class TiXmlElement*)(pAttach), "job", reinterpret_cast<int&>(attach.m_nJob));
+                XmlGetAttr((class TiXmlElement*)(pAttach), "itemID", attach.m_nItemId);
                 Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
-                FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
+                XmlGetAttr((class TiXmlElement*)(pAttach), "itemCount", attach.m_nItemCount);
                 if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_notify.m_attachments.Add(attach);
             }
         }
-        Unk_140165cf0* pMail = pNode->FUN_140165cf0("mail");
+        Unk_140165cf0* pMail = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("mail"));
         if (pMail != 0)
         {
-            FUN_1408731e0(pMail, "context", spData->m_mail.m_nContext);
-            FUN_1408731e0(pMail, "useMail", spData->m_mail.m_nUseMail);
-            FUN_1408732e0(pMail, "meso", spData->m_mail.m_nMeso);
-            FUN_1408732e0(pMail, "merat", spData->m_mail.m_nMerat);
-            for (Unk_140165cf0* pAttach = pMail->FUN_140165cf0("attachment"); pAttach != 0; pAttach = pAttach->FUN_140168650("attachment"))
+            XmlGetAttr((class TiXmlElement*)(pMail), "context", reinterpret_cast<int&>(spData->m_mail.m_nContext));
+            XmlGetAttr((class TiXmlElement*)(pMail), "useMail", reinterpret_cast<int&>(spData->m_mail.m_nUseMail));
+            XmlGetAttr((class TiXmlElement*)(pMail), "meso", reinterpret_cast<__int64&>(spData->m_mail.m_nMeso));
+            XmlGetAttr((class TiXmlElement*)(pMail), "merat", reinterpret_cast<__int64&>(spData->m_mail.m_nMerat));
+            for (Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMail))->FirstChild("attachment")); pAttach != 0; pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
             {
                 Unk_UceAttachment attach;
-                FUN_1408731e0(pAttach, "job", attach.m_nJob);
-                FUN_140873220(pAttach, "itemID", attach.m_nItemId);
+                XmlGetAttr((class TiXmlElement*)(pAttach), "job", reinterpret_cast<int&>(attach.m_nJob));
+                XmlGetAttr((class TiXmlElement*)(pAttach), "itemID", attach.m_nItemId);
                 Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
-                FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
+                XmlGetAttr((class TiXmlElement*)(pAttach), "itemCount", attach.m_nItemCount);
                 if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_mail.m_attachments.Add(attach);
             }

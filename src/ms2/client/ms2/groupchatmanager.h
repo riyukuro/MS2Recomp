@@ -87,11 +87,11 @@ public:
     void FUN_14137b7d0(CStringW name);               // removes by name
     void FUN_14137b850();                            // removes all
     Unk_ChatMemberPtr FUN_14137b8b0(__int64 characterId);
-    Unk_ChatMemberPtr FUN_14137ba10(CStringW name);
+    Unk_ChatMemberPtr FindMemberByName(CStringW name);
     int FUN_14137bad0();                             // member count
     int FUN_14137bb00();                             // joined member count
-    void FUN_14137bbe0(ATL::CAtlList<__int64>& ids);
-    void FUN_14137bcd0(ATL::CAtlList<Unk_ChatMemberPtr>& out);
+    void GetMemberIds(ATL::CAtlList<__int64>& ids);
+    void GetMembers(ATL::CAtlList<Unk_ChatMemberPtr>& out);
     void FUN_14137bdc0(ATL::CAtlList<Unk_ChatMemberPtr>& out);   // joined only
     void FUN_14137bee0(ATL::CAtlList<Unk_ChatMemberPtr>& out);   // not joined only
 
@@ -112,11 +112,11 @@ public:
     void FUN_14137e190();
     void FUN_14137e1c0();                            // debug dump
     CStringW FUN_14137e410();
-    void FUN_14137e4a0(Unk_ChatPtrChat chat);
-    void FUN_14137e5c0(unsigned oid);
+    void AddChat(Unk_ChatPtrChat chat);
+    void RemoveChat(unsigned oid);
     Unk_ChatPtrChat FUN_14137e630(unsigned oid);
     void FUN_14137e6f0(__int64 characterId, ATL::CAtlList<unsigned>& oids);
-    int FUN_14137e820();
+    int GetChatCount();
     void Create(CStringW name);
     void Invite(unsigned oid, CStringW name);
     void SendGroupChatMode4(unsigned oid, int flag);

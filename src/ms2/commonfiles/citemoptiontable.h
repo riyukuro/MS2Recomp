@@ -45,35 +45,35 @@ public:
     CItemOptionTable();                                     // 0x1405f4140
     virtual ~CItemOptionTable();                            // 0x1405f4640
 
-    bool FUN_1405f4720();                                   // loads every table
-    void FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
+    bool Init();                                   // loads every table
+    void CalcRemakeIngredients(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
                        const CItemRemakeOptionIngredient& kIngredient);    // the remake cost of an item
-    void FUN_1405f4bb0(int nLevel, int nRank, const CItemRemakeOptionIngredient& kIngredient);
-    int FUN_1405f4d30(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const;   // a random rank
+    void CalcPetRemakeCost(int nLevel, int nRank, const CItemRemakeOptionIngredient& kIngredient);
+    int GetRandomRank(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const;   // a random rank
     MS2Ptr<CItemOption> FUN_1405f4ff0(MS2Ptr<CItemData> spItem, int nRank, Unk_Random* pRandom);
     MS2Ptr<CItemOption> FUN_1405f5290(MS2Ptr<Unk_ItemOptionPreset> spPreset, Unk_Random* pRandom);
-    bool FUN_1405f5620(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
-    bool FUN_1405f5870(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
+    bool RerollRandomOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
+    bool ApplyConstantOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
     bool FUN_1405f59b0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);
     bool FUN_1405f5ba0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);
-    bool FUN_1405f5d90(int nItemId);                        // the item has constant options
+    bool HasConstantOption(int nItemId);                        // the item has constant options
     int FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo);   // always 1
-    MS2Ptr<ItemOptionConstant> FUN_1405f5ee0(unsigned nId, int nGrade) const;  // the best constant row up to a grade
-    MS2Ptr<ItemOptionRandom> FUN_1405f6010(int nId) const;
+    MS2Ptr<ItemOptionConstant> FindConstantOption(unsigned nId, int nGrade) const;  // the best constant row up to a grade
+    MS2Ptr<ItemOptionRandom> GetRandom(int nId) const;
     int FUN_1405f6100(unsigned nStatId);
-    int FUN_1405f6190(unsigned nStatId, Unk_Random* pRandom);
+    int RollVariation(unsigned nStatId, Unk_Random* pRandom);
     int FUN_1405f6230(unsigned nStatId);
     int FUN_1405f62c0(unsigned nStatId);
-    int FUN_1405f6350(unsigned nStatId);
-    std::pair<int, int> FUN_1405f63e0(unsigned nStatId);         // the first and last stat of a variation row
-    std::pair<int, int> FUN_1405f64e0(int nItemId, int nRank, int nStat);
-    std::pair<int, int> FUN_1405f6650(int nItemId, int nRank, unsigned nSpecial);
-    bool FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnused, int nValue);
-    bool FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, int nUnused, int nValue);
-    int FUN_1405f6d40(MS2Ptr<CItemData> spItem, int nRank, unsigned nSpecial);
-    Unk_OptionNameListPtr FUN_1405f6e40(const CString& strName);    // the exclusive group of a stat name (null: none)
-    int FUN_1405f6ed0(Unk_SocketSpecialStat nKey) const;
-    void FUN_1405f6f50(MS2Ptr<CItemData> spItem, int nRank, unsigned nTrials,
+    int GetVariationHighStat(unsigned nStatId);
+    std::pair<int, int> GetVariationRange(unsigned nStatId);         // the first and last stat of a variation row
+    std::pair<int, int> GetRandomOptionRange(int nItemId, int nRank, int nStat);
+    std::pair<int, int> GetRandomSpecialOptionRange(int nItemId, int nRank, unsigned nSpecial);
+    bool IsHighRollValue(MS2Ptr<CItem> spItem, int nStat, int nUnused, int nValue);
+    bool IsHighRollSpecialValue(MS2Ptr<CItem> spItem, unsigned nSpecial, int nUnused, int nValue);
+    int GetSpecialOptionMaxValue(MS2Ptr<CItemData> spItem, int nRank, unsigned nSpecial);
+    Unk_OptionNameListPtr FindOptionNameList(const CString& strName);    // the exclusive group of a stat name (null: none)
+    int GetDisplayOrder(Unk_SocketSpecialStat nKey) const;
+    void SimulateRandomOptions(MS2Ptr<CItemData> spItem, int nRank, unsigned nTrials,
                        const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut);
     void FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsigned nTrials,
                        const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut,

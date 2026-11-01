@@ -24,6 +24,15 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 #include "ms2/client/ms2/windowservice.h"
 namespace egf { class Entity; }
 #include "ms2/client/ms2/statemanager.h"   // C3: TSingleton<> needs the class
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 template <> MS2Ptr<Unk_ASVideoPlayer> UISwfEntity::GetChild<Unk_ASVideoPlayer>(const CString& strName);
 
@@ -38,7 +47,7 @@ class Unk_IntroFiles : public CFileSystem { };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
@@ -62,7 +71,7 @@ UIIntroMovie::~UIIntroMovie()
 // @0x141995190
 int UIIntroMovie::vfunc_52(const CString& strPath, float fVolume)
 {
-    FUN_140b632f0()->FUN_1422d4780(this, 2);
+    FUN_140b632f0()->AddToLayer(this, 2);
     if (!UIVideoContents::vfunc_52(strPath, fVolume))
     {
         ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
@@ -75,7 +84,7 @@ MS2_REPLACE_METHOD(0x141995190, UIIntroMovie, vfunc_52, 96, 0x50BBA5E3);
 // @0x141995200
 int UIIntroMovie::vfunc_53()
 {
-    FUN_140b632f0()->FUN_1422d4840(this, 2);
+    FUN_140b632f0()->RemoveFromLayer(this, 2);
     int b = UIVideoContents::vfunc_53();
     FUN_1422dc080();
     return b;
@@ -199,12 +208,12 @@ void UIIntroMovie::LoadIntroMovie()
     if (((class Unk_IntroFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("introMovie"); pNode != 0; pNode = pNode->FUN_140168650("introMovie")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("introMovie")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("introMovie"))) {
         CStringW strFeature;
-        FUN_140873420(pNode, "feature", strFeature);
+        XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode))) continue;
         CMsTime start;
         CMsTime end;
@@ -214,12 +223,12 @@ void UIIntroMovie::LoadIntroMovie()
         if (start > now && end < now) continue;
         MS2Ptr<MovieInfo> spInfo(new MovieInfo);
         if (spInfo.get() != 0) {
-            FUN_1408733e0(pNode, "url", spInfo->m_strUrl);
+            XmlGetAttr((class TiXmlElement*)(pNode), "url", spInfo->m_strUrl);
             CStringW strSeek;
-            FUN_140873420(pNode, "seekTime", strSeek);
+            XmlGetAttr((class TiXmlElement*)(pNode), "seekTime", strSeek);
             ATL::CAtlArray<float> seekTimes;
             FUN_1402928e0(strSeek, seekTimes, L",");
-            FUN_140873360(pNode, "endTime", spInfo->m_fEndTime);
+            XmlGetAttr((class TiXmlElement*)(pNode), "endTime", reinterpret_cast<float&>(spInfo->m_fEndTime));
             for (size_t i = 0; i < seekTimes.GetCount(); ++i) spInfo->m_seekTimes.AddTail(seekTimes[i]);
             m_78.AddTail(spInfo);
         }

@@ -108,14 +108,14 @@ public:
     virtual ~COutPacketBuffer();                                // 0x1402088e0
     void FUN_140208960(CGameSocket* pSocket, COutPacket& packet);           // flush pending, then send packet
     void RetransmitClientPackets(CGameSocket* pSocket, unsigned lastSequence);
-    void FUN_140208d40();                                       // Clear
+    void Reset();                                       // Clear
     void ShrinkCapturedPackets();
-    void FUN_140209050(unsigned ackSequence);                   // drop acknowledged packets
+    void DiscardAcked(unsigned ackSequence);                   // drop acknowledged packets
     void PushPendingPacket(COutPacket& packet);
     void SetLimit(unsigned limit);
     unsigned FUN_140209360();                                   // sequence of the oldest captured packet
     int GetSequence();                                        // current sequence
-    void FUN_140209450(int enabled);
+    void SetCaptureEnabled(int enabled);
     int GetCaptureEnabled();
     void FUN_1402094b0(int value);
     void FUN_140209510(COutPacket& packet, bool bControl);      // Capture

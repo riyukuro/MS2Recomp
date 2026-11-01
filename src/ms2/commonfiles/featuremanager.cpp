@@ -60,7 +60,7 @@ bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw();     // t
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);
 CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
 int Parse_140219a50(const CString& strType);                                // the server type name -> id
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>* pOut, const wchar_t* pszSep);   // split
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, bool bOn, const char* pszTag);
 class Unk_1406aeee0 { public: void FUN_1406af150(); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
@@ -99,7 +99,7 @@ inline void Unk_FeatureLog2(CLogString* log, unsigned __int64 a, unsigned __int6
                             const wchar_t* format, const T& first)
 {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(first)};
-    log->FUN_1406536f0(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first), args));
+    log->LogWarning(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first), args));
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -112,7 +112,7 @@ CString CFeatureManager::s_strServerType("Live");
 int CFeatureManager::s_nServerType;
 #endif
 
-// The level caps of the ExtendLevel features (FUN_14036dc80 takes the smaller of the base cap and one of these).
+// The level caps of the ExtendLevel features (GetLevelCapClamped takes the smaller of the base cap and one of these).
 static const unsigned short s_nBaseLevelCap = 60;
 static const unsigned short s_nLevelCap55 = 55;
 static const unsigned short s_nLevelCap60 = 60;
@@ -735,9 +735,9 @@ CFeatureManager::~CFeatureManager()
 }
 
 // @0x14036ccb0
-bool CFeatureManager::FUN_14036ccb0()
+bool CFeatureManager::Init()
 {
-    if (!FUN_14036d3d0())
+    if (!BuildIdNameMap())
         return false;
     if (!LoadFeatureSetting())
         return false;
@@ -817,7 +817,7 @@ bool CFeatureManager::LoadFeature()
 }
 
 // @0x14036d3d0
-bool CFeatureManager::FUN_14036d3d0()
+bool CFeatureManager::BuildIdNameMap()
 {
     if (!CFeatureTable::GetInstance()->Init())
         return false;
@@ -831,7 +831,7 @@ bool CFeatureManager::FUN_14036d3d0()
 }
 
 // @0x14036d4b0
-bool CFeatureManager::FUN_14036d4b0(const CStringW& strName)
+bool CFeatureManager::IsFeatureEnabledByName(const CStringW& strName)
 {
     CheckInit();
     if (strName.IsEmpty())
@@ -869,7 +869,7 @@ bool CFeatureManager::FUN_14036d650()
 }
 
 // @0x14036d690
-bool CFeatureManager::FUN_14036d690(int nFeature)
+bool CFeatureManager::IsRedMeratFeatureEnabled(int nFeature)
 {
     if (!FUN_14036d650())
         return false;
@@ -893,15 +893,15 @@ bool CFeatureManager::FUN_14036d710(int nFeature)
 }
 
 // @0x14036d750
-bool CFeatureManager::FUN_14036d750(const CStringW& strList)
+bool CFeatureManager::IsLocaleInList(const CStringW& strList)
 {
     if (strList.IsEmpty())
         return true;
     ATL::CAtlArray<CStringW> locales;
-    FUN_14025a680(strList, &locales, L",");
+    FUN_14025a680(const_cast<CStringW&>(strList), locales, L",");
     for (UINT i = 0; i < locales.GetCount(); i++)
     {
-        if (FUN_14036d960().CompareNoCase(locales[i]) == 0)
+        if (GetLocaleNameW().CompareNoCase(locales[i]) == 0)
             return true;
     }
     return false;
@@ -915,19 +915,19 @@ int CFeatureManager::FUN_14036d8b0()
 }
 
 // @0x14036d8e0
-CString CFeatureManager::FUN_14036d8e0()
+CString CFeatureManager::GetLocaleName()
 {
     return FUN_14016a5c0(FUN_140651390(), 0);
 }
 
 // @0x14036d960
-CStringW CFeatureManager::FUN_14036d960()
+CStringW CFeatureManager::GetLocaleNameW()
 {
     return FUN_14016a730(FUN_140651390(), 0);
 }
 
 // @0x14036d9e0
-int CFeatureManager::FUN_14036d9e0(const CStringW& strName)
+int CFeatureManager::GetFeatureIdByName(const CStringW& strName)
 {
     CheckInit();
     Unk_FeatureId nId = (Unk_FeatureId)0;
@@ -937,7 +937,7 @@ int CFeatureManager::FUN_14036d9e0(const CStringW& strName)
 }
 
 // @0x14036da50
-CStringW CFeatureManager::FUN_14036da50(int nFeature)
+CStringW CFeatureManager::GetFeatureNameById(int nFeature)
 {
     CheckInit();
     CStringW strName(L"");
@@ -947,7 +947,7 @@ CStringW CFeatureManager::FUN_14036da50(int nFeature)
 }
 
 // @0x14036db20
-int CFeatureManager::FUN_14036db20()
+int CFeatureManager::GetLevelCap()
 {
     if (FUN_14036d570(0x2c))
         return 99;
@@ -985,7 +985,7 @@ unsigned short CFeatureManager::FUN_14036dc60()
 }
 
 // @0x14036dc80
-unsigned short CFeatureManager::FUN_14036dc80()
+unsigned short CFeatureManager::GetLevelCapClamped()
 {
     if (FUN_14036d570(0x2c))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap99);
@@ -1011,7 +1011,7 @@ int CFeatureManager::FUN_14036de00()
 }
 
 // @0x14036de20
-CStringW CFeatureManager::FUN_14036de20(const CStringW& strA, const CStringW& strB)
+CStringW CFeatureManager::SelectHigherLevelFeatureName(const CStringW& strA, const CStringW& strB)
 {
     CheckInit();
     if (FUN_14025cd60(strA, strB))
@@ -1036,9 +1036,9 @@ CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& st
     CheckInit();
     if (FUN_14025cd60(strA, strB))
         return strA;
-    if (FUN_14025cd60(FUN_14036d960(), strA))
+    if (FUN_14025cd60(GetLocaleNameW(), strA))
         return strA;
-    else if (FUN_14025cd60(FUN_14036d960(), strB))
+    else if (FUN_14025cd60(GetLocaleNameW(), strB))
         return strB;
     if (strA.IsEmpty())
         return strA;
@@ -1061,7 +1061,7 @@ Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* 
     FUN_140873420(pB, "feature", strFeatureB);
     if (FUN_140164830(strFeatureA, strFeatureB))
     {
-        CStringW strBest = FUN_14036de20(strFeatureA, strFeatureB);
+        CStringW strBest = SelectHigherLevelFeatureName(strFeatureA, strFeatureB);
         if (FUN_14025cd60(strBest, strFeatureA))
             return pA;
         else
@@ -1087,35 +1087,35 @@ Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* 
 // @0x14036e4c0
 bool CFeatureManager::FUN_14036e4c0()
 {
-    return (FUN_14036d8e0() == "KR");
+    return (GetLocaleName() == "KR");
 }
 
 // @0x14036e510
 bool CFeatureManager::FUN_14036e510()
 {
-    return (FUN_14036d8e0() == "CN");
+    return (GetLocaleName() == "CN");
 }
 
 // @0x14036e560
-bool CFeatureManager::FUN_14036e560()
+bool CFeatureManager::IsRegionNA()
 {
-    return (FUN_14036d8e0() == "NA");
+    return (GetLocaleName() == "NA");
 }
 
 // @0x14036e5b0
-bool CFeatureManager::FUN_14036e5b0()
+bool CFeatureManager::IsRegionJP()
 {
-    return (FUN_14036d8e0() == "JP");
+    return (GetLocaleName() == "JP");
 }
 
 // @0x14036e600
-CString CFeatureManager::FUN_14036e600()
+CString CFeatureManager::GetServerTypeName()
 {
     return s_strServerType;
 }
 
 // @0x14036e640
-void CFeatureManager::FUN_14036e640(CString strType)
+void CFeatureManager::SetServerTypeName(CString strType)
 {
     if (strType.IsEmpty())
         return;
@@ -1130,17 +1130,17 @@ int CFeatureManager::FUN_14036e6b0()
 }
 
 // @0x14036e6c0
-bool CFeatureManager::FUN_14036e6c0()
+bool CFeatureManager::IsTestServerType()
 {
     return s_nServerType == 1 || s_nServerType == 2 || s_nServerType == 3;
 }
 
 // @0x14036e700
-int CFeatureManager::FUN_14036e700(const CStringW& strName)
+int CFeatureManager::GetFeatureIdByNameStatic(const CStringW& strName)
 {
     if (GetInstance() == 0)
         return 1;
-    return GetInstance()->FUN_14036d9e0(strName);
+    return GetInstance()->GetFeatureIdByName(strName);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a700-0x142c9a720 .text$yd

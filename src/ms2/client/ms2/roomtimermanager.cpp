@@ -8,16 +8,18 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 // RTTI-only declaration: this unit never constructs or accesses UITimerDialog fields.
 class UITimerDialog : public UITimerBase { int m_188,m_18c; void* m_190; int m_198,m_19c; bool m_1a0; };
 MS2_CHECK_SIZE(UITimerDialog,0x1a8);
 class Unk_RoomUIManager { public: };
-CStringW FUN_1408116a0(int,const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int);
 void FUN_1412751f0(const CStringW&,int,int);
 template<class T> T* FindRoomUI(int id) {
     if(reinterpret_cast<Unk_RoomUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
+        MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(p.get()) return dynamic_cast<T*>((UIObject*)p);
     }
     return 0;
@@ -66,11 +68,11 @@ void RoomTimerManager::Update(Unk_RoomPacket& packet) {
     m_timer->vfunc_84(m_start,m_duration,m_offset);
     if(type==1) {
         if(delta>0) {
-            CStringW message=FUN_1408116a0(0x99f,delta/1000);
+            CStringW message=BlockFormat<int>(0x99f,delta/1000);
             FUN_1412751f0(message,4,1);
             m_timer->vfunc_85();
         } else if(delta<0) {
-            CStringW message=FUN_1408116a0(0x9a1,abs(delta/1000));
+            CStringW message=BlockFormat<int>(0x9a1,abs(delta/1000));
             FUN_1412751f0(message,2,1);
             m_timer->vfunc_86();
         }

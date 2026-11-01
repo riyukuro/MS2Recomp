@@ -27,6 +27,11 @@
 #include <time.h>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
@@ -36,8 +41,8 @@ void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* 
 void FUN_14054c030(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const CString& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);   // string attribute
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);   // split into numbers
 __int64 GetServerTime();                                                  // server time
@@ -92,30 +97,30 @@ bool LoginBgBgmTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return true;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return true;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "login", "clientPropertyBgDay", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "login", "clientPropertyBgDay", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
-        CString strMonth = FUN_14015f710(nodes[i], "month", CString(""));
+        CString strMonth = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "month", CString(""));
         if (strMonth.IsEmpty())
             continue;
         std::vector<unsigned int> months;
         FUN_1401782a0(strMonth, months, ",");
-        CString strBgDay = FUN_14015f710(nodes[i], "clientPropertyBgDay", CString(""));
+        CString strBgDay = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "clientPropertyBgDay", CString(""));
         if (strBgDay.IsEmpty())
             continue;
-        CString strBgmId = FUN_14015f710(nodes[i], "bgmID", CString(""));
+        CString strBgmId = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "bgmID", CString(""));
         if (strBgmId.IsEmpty())
             continue;
         std::vector<unsigned int> bgmIds;
         FUN_1401782a0(strBgmId, bgmIds, ",");
-        CString strBgmParam = FUN_14015f710(nodes[i], "bgmParam", CString(""));
+        CString strBgmParam = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "bgmParam", CString(""));
         std::vector<unsigned int> bgmParams;
         FUN_1401782a0(strBgmParam, bgmParams, ",");
         unsigned nIds = bgmIds.size();

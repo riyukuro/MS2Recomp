@@ -53,13 +53,13 @@ bool TermTagContext::FUN_140866760()
 // @0x140866780
 void TermTagContext::FUN_140866780()
 {
-    CGameRule::GetInstance()->FUN_140479280(MS2Ptr<TermTagContext>(this));
+    CGameRule::GetInstance()->AddTermTag(MS2Ptr<TermTagContext>(this));
 }
 
 // @0x1408667e0
 void TermTagContext::FUN_1408667e0()
 {
-    CGameRule::GetInstance()->FUN_140479330(m_20);
+    CGameRule::GetInstance()->RemoveTermTag(m_20);
 }
 
 // @0x140866820

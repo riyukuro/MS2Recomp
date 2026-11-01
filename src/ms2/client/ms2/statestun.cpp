@@ -104,7 +104,7 @@ void StateStun::vfunc_4(StateData* pData)
     }
     else if (m_n10 == 0x46)
     {
-        const CString& strAnim = m_pOwner->FUN_1416749a0()->FUN_1409716a0();
+        const CString& strAnim = m_pOwner->FUN_1416749a0()->GetStunAnimation();
         efd::utf8string kName((LPCSTR)strAnim);
         m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
     }
@@ -192,7 +192,7 @@ void StateStun::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
         break;
     case 0x46:
         {
-            const CString& strAnim = m_pOwner->FUN_1416749a0()->FUN_1409716a0();
+            const CString& strAnim = m_pOwner->FUN_1416749a0()->GetStunAnimation();
             efd::utf8string kName((LPCSTR)strAnim);
             m_pOwner->FUN_14166dd20(kName, 1.0f, true, false);
         }

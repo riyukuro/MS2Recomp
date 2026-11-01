@@ -151,9 +151,9 @@ void UIWeddingHallListDialog::FUN_140fd9110()
         row.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, pHall->FUN_140906e40(FUN_140900f30(ticket.m_nTime))));
         row.FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
-            pOpenList->FUN_1422dd230(row);
+            pOpenList->AddItem(row);
         else
-            pProgressList->FUN_1422dd230(row);
+            pProgressList->AddItem(row);
     }
     pOpenList->vfunc_24(true);
     pProgressList->vfunc_24(true);

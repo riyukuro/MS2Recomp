@@ -32,22 +32,22 @@ public:
     // optimizer.cpp
     void FUN_14161baf0();                                   // Initialize
     void FUN_14161bb60();                                   // Update
-    unsigned __int64 FUN_14161bdc0() const;                 // pagefile MB
-    unsigned __int64 FUN_14161be50() const;                 // private MB
+    unsigned __int64 GetPagefileUsageMB() const;                 // pagefile MB
+    unsigned __int64 GetPrivateUsageMB() const;                 // private MB
     void FUN_14161bee0();                                   // log the hardware
     float FUN_14161c360();                                  // frame limit from the options
-    void FUN_14161c3f0();                                   // no frame limit
-    void FUN_14161c420(float fLimit);
+    void ClearFrameLimit();                                   // no frame limit
+    void SetFrameLimit(float fLimit);
     void LoadOptimization();                                   // load Optimization.xml
     void FUN_14161c8c0();                                   // log the first MyPC load time
-    void FUN_14161c940(unsigned nCount, int nCycle);        // start frame sampling
-    void FUN_14161c990();                                   // sample the frame rate
+    void StartFrameSampling(unsigned nCount, int nCycle);        // start frame sampling
+    void UpdateFrameSampling();                                   // sample the frame rate
     void FUN_14161cc80(int nFlags, int nLimit, int nEnabled, int nMode);
     void FUN_14161cd00();                                   // clear
     void FUN_14161cd60(unsigned __int64 nId);
     void FUN_14161cdd0(unsigned nId);
     int FUN_14161ce60(unsigned nId);
-    void FUN_14161cee0(int nSuppressed);
+    void SetSuppressed(int nSuppressed);
     int GetSuppressed() const;
     void FUN_14161cf60(PCBase* pPC);
     void FUN_14161d010(const egf::EntityID& kId);

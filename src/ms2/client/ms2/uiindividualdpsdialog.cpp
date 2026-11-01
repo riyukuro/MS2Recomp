@@ -86,7 +86,7 @@ void UIIndividualDPSDialog::FUN_140f4ade0()
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80(), m_nMode);
         static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setMeterText", strMeter);
-        CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
+        CStringW strTime = CBattleRecordManager::GetInstance()->GetElapsedTimeText(m_nGroup);
         static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setTime", strTime);
     }
 }

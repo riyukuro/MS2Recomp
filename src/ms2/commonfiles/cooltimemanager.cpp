@@ -101,11 +101,12 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -135,13 +136,13 @@ void CooltimeManager::Load()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "v", "cooltimeID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "v", "cooltimeID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];
         unsigned nId = 0;
         unsigned nTick = 0;
-        FUN_140873220(pNode, "cooltimeID", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "cooltimeID", nId);
         FUN_1408732a0(pNode, "cooltimeTick", nTick);
         if (nId == 0 || nTick == 0)
             continue;

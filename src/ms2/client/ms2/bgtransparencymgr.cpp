@@ -124,6 +124,7 @@
 #endif
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\bgtransparencymgr.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "bgtransparencymgr.h"
 #include <algorithm>
 #include <atlcoll.h>
@@ -140,11 +141,13 @@
 #include "ms2/client/ms2/hardwareinstancingservice.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2recover.h"
+#include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 BGTransparencyMgr* TSingleton<BGTransparencyMgr>::s_instance;
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
-extern char DAT_143b059e8;                                      // service lookup cell (HardwareInstancingService)
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
 WorldService* FUN_1403ed2d0();                                  // world service singleton
 ecr::PickService* FUN_1413f98f0();                              // pick service (manager id 0x7002004)
@@ -152,22 +155,21 @@ ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
-int FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);        // get a bool property
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nHash, efd::Point3* pOut); // get a point property
 void FUN_140961880(egf::Entity* pEntity, unsigned nHash, float* pOut);       // get a float property
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool* pValue);// set a bool property
 void FUN_14098f4d0(NiAVObject* pNode, bool b);
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
-extern Vector3 DAT_143b01a60;                           // zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
-struct Unk_CmWalker
+struct Unk_NodeQueue
 {
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
-    Unk_CmWalker(NiObject* pRoot);                    // 0x14098cb80
-    ~Unk_CmWalker();                                  // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                    // 0x14098cb80
+    ~Unk_NodeQueue();                                  // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bDescend);
 };
+typedef Unk_NodeQueue Unk_CmWalker;   // C3: was a local stand-in for Unk_NodeQueue
 
 // @0x140a15390
 TSingleton<BGTransparencyMgr>::TSingleton() { s_instance = static_cast<BGTransparencyMgr*>(this); }
@@ -309,9 +311,9 @@ bool BGTransparencyMgr::IsTarget(egf::Entity* pEntity)
     if (FUN_1408a9bd0(pTarget) != 0 && FUN_1408a9bd0(pTarget)->ContainsModel(0x2ea80520))
     {
         bool bValue = false;
-        FUN_1408a20a0(pTarget, 0x9004569a, &bValue);
+        pTarget->GetPropertyValue(0x9004569a, bValue);
         if (!bValue && m_nWorldFlags != 0)
-            FUN_1408a20a0(pTarget, 0x619a775d, &bValue);
+            pTarget->GetPropertyValue(0x619a775d, bValue);
         if (!bValue)
             return false;
     }
@@ -492,7 +494,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                 if (itElement != m_map40.end())
                     continue;
                 bool bFlag = false;
-                if (FUN_1408a20a0(pEntity, 0x9004569a, &bFlag) == 0 && !bFlag)
+                if (pEntity->GetPropertyValue(0x9004569a, bFlag) == 0 && !bFlag)
                     continue;
                 TransparencyElement* pElement = new (efd::MemHint(efd::MemHint::NONE)) TransparencyElement;
                 m_map30[pEntity] = pElement;
@@ -504,7 +506,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                 {
                     FUN_14098f4d0(pRoot, false);
                     NiBound kBound = *((class NiBound const*)&((class NiAVObject*)(pRoot))->GetWorldBound());
-                    Unk_CmWalker kWalker(pRoot);
+                    Unk_CmWalker kWalker((NiAVObject*)(pRoot));
                     while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
                     {
                         NiRenderObject* pMesh = NiDynamicCast(NiRenderObject, pObject);
@@ -560,7 +562,7 @@ void BGTransparencyMgr::SortEntities()
         NiNode* pRoot = FUN_1413fa030(pEntity);
         if (pRoot != 0)
         {
-            Unk_CmWalker kWalker(pRoot);
+            Unk_CmWalker kWalker((NiAVObject*)(pRoot));
             while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
             {
                 NiRenderObject* pNet = NiDynamicCast(NiRenderObject, pObject);
@@ -700,8 +702,8 @@ void BGTransparencyMgr::MoveMissingToFadeIn(Unk_BGTEntitySet& kHit)
 bool BGTransparencyMgr::CompareDistance(egf::Entity* pA, egf::Entity* pB)
 {
     efd::Point3 ptA, ptB;
-    FUN_1409618c0(pA, 0xfd95ca52, &ptA);
-    FUN_1409618c0(pB, 0xfd95ca52, &ptB);
+    reinterpret_cast<egf::Entity*>(pA)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptA));
+    reinterpret_cast<egf::Entity*>(pB)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptB));
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return false;
     Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();

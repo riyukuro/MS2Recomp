@@ -52,6 +52,7 @@
 // MS2-PIN: ??__EDAT_143ac4880@@YAXXZ 0x1400d5710
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pvprankduelcomponent.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/placeholder/cpvprankduelcomponent.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -86,7 +87,7 @@ public:
 public:
     void* FUN_141bd0cc0();   // C3: was free FUN_141bd0cc0
 };
-void FUN_141276180(const CString& strName, const CString& strExtra);
+int FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
@@ -111,7 +112,7 @@ public:
 };
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);
 struct Unk_RankVec3 { float x, y, z; };
-extern Unk_RankVec3 DAT_143b01a60;                                  // the zero position
+#define DAT_143b01a60 (*(Unk_RankVec3*)&efd::Point3::ZERO)          // C3: was extern Unk_RankVec3 DAT_143b01a60
 // The local player actor (COM-style: AddRef slot 1, Release slot 2).
 class PCBase   // C3: member view (real class not in this TU)
 {
@@ -146,7 +147,7 @@ template <class T> T* Unk_RankDialog(int nId)
 {
     if (reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = ((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcea0((eUIClassID)(nId));
+        MS2Ptr<UIObject> p = ((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->FindObject((eUIClassID)(nId));
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }

@@ -34,7 +34,7 @@ public:
     virtual void vfunc_67();                                        // 67
     virtual int vfunc_73();                                         // 73 can open: the club feature flag 0x31
 
-    void FUN_140e0bc30();                                           // refresh the lists, or clear them when no club is joined
+    void RefreshData();                                           // refresh the lists, or clear them when no club is joined
     bool FUN_140e0bcd0(int nResult, const CMsgBoxData& data);       // "add member" input box result
     bool FUN_140e0bdb0(int nResult, const CMsgBoxData& data);       // withdrawal confirm result
     bool FUN_140e0be00(int nResult, const CMsgBoxData& data);       // buff setting confirm result

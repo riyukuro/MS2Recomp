@@ -174,17 +174,17 @@ public:
     int FUN_141527920(void* p);
     int FUN_141527960();
     int FUN_141527c50(int nItemId);                         // the item is worn or in the item list
-    int FUN_141527e00();                                    // no house
+    int HasNoHome();                                    // no house
     int FUN_141527e60();
     int FUN_141527eb0();
     int FUN_141527ed0();
     int FUN_141527f60();
-    int FUN_141527f80(int* pMapId);
+    int GetHomeMapId(int* pMapId);
     int FUN_141528020(efd::Point3& kPos);
     int FUN_141528140();
     int FUN_141528160();
     CStringW FUN_1415281c0();
-    CStringW FUN_141528330();
+    CStringW GetHomeName();
     int FUN_141528970();                                    // open the item remake option talk
     int FUN_1415283c0(int nKind);                           // enter the home convenience state
     int FUN_1415286a0();                                    // enter the home convenience state 3
@@ -228,9 +228,9 @@ public:
     int FUN_14152feb0(int nMode, bool bPalette);            // request the cube build mode (packet 0x36)
     int SendRequestRideMode1(class RideOffAction* pAction);        // get off the ride
     void FUN_141530200();                                   // leave the cube build mode
-    class Unk_PCCubeCraft* FUN_141530290();                 // the cube craft controller in the cube craft mode
+    class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft controller in the cube craft mode
     int FUN_141529a50(int nNpcId);                          // talk to the npc (0: the nearest talkable one)
-    PCBase* FUN_141529640();
+    PCBase* FindTalkableNpc();
     void SendFunctionCube();
     void FUN_14152dbc0();
     void FUN_14152e0c0();

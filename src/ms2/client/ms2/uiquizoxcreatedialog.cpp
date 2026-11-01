@@ -155,7 +155,7 @@ int UIQuizOXCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (args.FUN_1422b9620(pArgs, nArgs) != 0)
             return FUN_140e7e900(this, &args);
     } else if (_stricmp("OnCancel", szMethod) == 0) {
-        CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f47);
+        CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f47);
     }
     return 0;
 }

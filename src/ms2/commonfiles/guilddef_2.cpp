@@ -21,20 +21,20 @@
 // MS2-PIN: ?FUN_1404d54e0@GuildRaidReward@CGuildXmlData@@QEAA_NPEAX@Z 0x1404d54e0 ; unique
 // MS2-PIN: ??0CGuildXmlData@@QEAA@XZ 0x1404d5790 ; unique
 // MS2-PIN: ??1CGuildXmlData@@UEAA@XZ 0x1404d5890 ; unique
-// MS2-PIN: ?FUN_1404d5960@CGuildXmlData@@QEAA_NXZ 0x1404d5960 ; unique
+// MS2-PIN: ?LoadAll@CGuildXmlData@@QEAA_NXZ 0x1404d5960 ; unique
 // MS2-PIN: ?FUN_1404d6ab0@CGuildXmlData@@QEAA_NXZ 0x1404d6ab0 ; unique
-// MS2-PIN: ?FUN_1404d7280@CGuildXmlData@@QEAAHXZ 0x1404d7280 ; unique
-// MS2-PIN: ?FUN_1404d7410@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410 ; unique
-// MS2-PIN: ?FUN_1404d74e0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0 ; unique
-// MS2-PIN: ?FUN_1404d7830@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830 ; unique
-// MS2-PIN: ?FUN_1404d79b0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0 ; unique
-// MS2-PIN: ?FUN_1404d7b40@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40 ; unique
-// MS2-PIN: ?FUN_1404d7cb0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0 ; unique
+// MS2-PIN: ?GetMaxExp@CGuildXmlData@@QEAAHXZ 0x1404d7280 ; unique
+// MS2-PIN: ?GetProperty@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410 ; unique
+// MS2-PIN: ?GetSkill@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0 ; unique
+// MS2-PIN: ?GetEvent@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830 ; unique
+// MS2-PIN: ?GetHouse@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0 ; unique
+// MS2-PIN: ?GetNpc@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40 ; unique
+// MS2-PIN: ?GetRaid@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0 ; unique
 // MS2-PIN: ?FUN_1404d7f20@CNpcShopProductProxy@@QEAAXAEAVCOutputStream@@@Z 0x1404d7f20 ; unique
 // MS2-PIN: ?FUN_1404d80a0@CGuildNpcShop@@QEAAXXZ 0x1404d80a0 ; unique
 // MS2-PIN: ?FUN_1404d80d0@CGuildNpcShop@@QEAA?AV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0 ; unique
 // MS2-PIN: ?FUN_1404d86e0@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0 ; unique
-// MS2-PIN: ?FUN_1404d88e0@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I@Z 0x1404d88e0 ; unique
+// MS2-PIN: ?GetOrCreateShop@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I@Z 0x1404d88e0 ; unique
 // MS2-PIN: ?FUN_1404d8ff0@CGuildNpcShopMgr@@QEAAXIPEAVCInPacket@@@Z 0x1404d8ff0 ; unique
 // MS2-PIN: ?FUN_1404d91e0@Unk_GuildShopOffer@@QEAAXAEAVCOutputStream@@@Z 0x1404d91e0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93a0 ; unique
@@ -245,7 +245,7 @@ class Unk_140165cf0   // C3: member view for the former free stand-ins
 public:
     class Unk_140165cf0* NextSiblingElement();
 };
-extern void FUN_14028faa0(void*,const char*,const char*,std::vector<void*>&);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 extern void FUN_14028fd90(void*,const char*,const char*,const char*,std::vector<void*>&);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -472,7 +472,7 @@ CGuildXmlData::CGuildXmlData(){memset(questFactors,0,sizeof(questFactors));}
 // @0x1404d5890
 CGuildXmlData::~CGuildXmlData(){}
 // @0x1404d5960
-bool CGuildXmlData::FUN_1404d5960(){
+bool CGuildXmlData::LoadAll(){
     if(!LoadGuildProperty())return false;
     if(!LoadGuildBuff())return false;
     if(!LoadGuildEvent())return false;
@@ -492,7 +492,7 @@ bool CGuildXmlData::LoadGuildProperty(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
-    FUN_14028faa0(root,"property","level",nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(root), "property", "level", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
         Unk_PayloadPtr<GuildProperty> value=new GuildProperty;
         if(!value->FUN_1404d4990(nodes[index]))continue;
@@ -565,7 +565,7 @@ bool CGuildXmlData::LoadGuildRaid(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
-    FUN_14028faa0(root,"guildRaid","dungeonRoomID",nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(root), "guildRaid", "dungeonRoomID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
         Unk_PayloadPtr<GuildRaid> value=new GuildRaid;
         if(!value->FUN_1404d53d0(nodes[index]))continue;
@@ -584,7 +584,7 @@ bool CGuildXmlData::LoadGuildQuestRewardFactor(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
-    FUN_14028faa0(root,"guildNpc","level",nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(root), "guildNpc", "level", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
         unsigned short level=0;float guildExp=0,userExp=0,guildFund=0,userMeso=0,guildCoin=0;
         XmlGetAttr((class TiXmlElement*)(nodes[index]), "level", *(unsigned short*)(&level));
@@ -606,7 +606,7 @@ bool CGuildXmlData::LoadGuildContribution(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
-    FUN_14028faa0(root,"contribution","type",nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(root), "contribution", "type", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
         Unk_GuildContribution kind=Unk_GuildContribution_None;int value=0;
         FUN_1404da980(nodes[index],"type",&kind);
@@ -617,61 +617,61 @@ bool CGuildXmlData::LoadGuildContribution(){
     return true;
 }
 // @0x1404d7130
-unsigned CGuildXmlData::FUN_1404d7130(int exp){
+unsigned CGuildXmlData::GetLevelByExp(int exp){
     Unk_GuildXmlDataCheckInit_3460();
     if(property.empty()) return 0;
     for(auto i=property.begin(),e=property.end();i!=e;++i){
         if(exp<i->second->f1c) return i->second->f18;
     }
-    return FUN_1404d72f0();
+    return GetMaxLevel();
 }
-MS2_REPLACE_METHOD(0x1404d7130, CGuildXmlData, FUN_1404d7130, 202, 0x3091EC2D);
+MS2_REPLACE_METHOD(0x1404d7130, CGuildXmlData, GetLevelByExp, 202, 0x3091EC2D);
 // @0x1404d7200
-int CGuildXmlData::FUN_1404d7200(int level){
+int CGuildXmlData::GetAccumExp(int level){
     Unk_GuildXmlDataCheckInit_3460();
     if(level<=0) return 0;
     if(property[level]==0) return 0;
     return property[level]->f1c;
 }
-MS2_REPLACE_METHOD(0x1404d7200, CGuildXmlData, FUN_1404d7200, 110, 0xBE16E0F4);
+MS2_REPLACE_METHOD(0x1404d7200, CGuildXmlData, GetAccumExp, 110, 0xBE16E0F4);
 // @0x1404d7280
-int CGuildXmlData::FUN_1404d7280(){
+int CGuildXmlData::GetMaxExp(){
     if(property.size()<2) return 0;
     auto i=property.rbegin();
     i++;
     return i->second->f1c;
 }
-MS2_REPLACE_METHOD(0x1404d7280, CGuildXmlData, FUN_1404d7280, 106, 0x29C0DD3C);
+MS2_REPLACE_METHOD(0x1404d7280, CGuildXmlData, GetMaxExp, 106, 0x29C0DD3C);
 // @0x1404d72f0
-int CGuildXmlData::FUN_1404d72f0(){
+int CGuildXmlData::GetMaxLevel(){
     Unk_GuildXmlDataCheckInit_3460();
     if(property.empty()) return 0;
     return property.rbegin()->second->f18;
 }
-MS2_REPLACE_METHOD(0x1404d72f0, CGuildXmlData, FUN_1404d72f0, 92, 0x2687DE1D);
+MS2_REPLACE_METHOD(0x1404d72f0, CGuildXmlData, GetMaxLevel, 92, 0x2687DE1D);
 // @0x1404d7360
-float CGuildXmlData::FUN_1404d7360(unsigned short level,int index){
+float CGuildXmlData::GetQuestRewardFactor(unsigned short level,int index){
     Unk_GuildXmlDataCheckInit_3460();
     if(level<0 || level>=300) return 1.0f;
     return questFactors[level][index];
 }
-MS2_REPLACE_METHOD(0x1404d7360, CGuildXmlData, FUN_1404d7360, 92, 0x1CD9898D);
+MS2_REPLACE_METHOD(0x1404d7360, CGuildXmlData, GetQuestRewardFactor, 92, 0x1CD9898D);
 // @0x1404d73d0
-int CGuildXmlData::FUN_1404d73d0(int kind){
+int CGuildXmlData::GetContribution(int kind){
     Unk_GuildXmlDataCheckInit_3460();
     if(kind<=0 || kind>=10) return 0;
     return contribution[kind];
 }
-MS2_REPLACE_METHOD(0x1404d73d0, CGuildXmlData, FUN_1404d73d0, 58, 0x0185980C);
+MS2_REPLACE_METHOD(0x1404d73d0, CGuildXmlData, GetContribution, 58, 0x0185980C);
 // @0x1404d7410
-Unk_PayloadPtr<CGuildXmlData::GuildProperty> CGuildXmlData::FUN_1404d7410(int level){
+Unk_PayloadPtr<CGuildXmlData::GuildProperty> CGuildXmlData::GetProperty(int level){
     Unk_GuildXmlDataCheckInit_3460();
     if(property.find(level)==property.end()) return Unk_PayloadPtr<GuildProperty>(0);
     return property[level];
 }
-MS2_REPLACE_METHOD(0x1404d7410, CGuildXmlData, FUN_1404d7410, 192, 0x621EADAB);
+MS2_REPLACE_METHOD(0x1404d7410, CGuildXmlData, GetProperty, 192, 0x621EADAB);
 // @0x1404d74e0
-Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::FUN_1404d74e0(int id,int level){
+Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::GetSkill(int id,int level){
     Unk_GuildXmlDataCheckInit_3460();
     if(skill.find(id)==skill.end()) return Unk_PayloadPtr<GuildSkill>(0);
     std::vector<Unk_PayloadPtr<GuildSkill>>& list=skill[id];
@@ -680,7 +680,7 @@ Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::FUN_1404d74e0(int id,in
     }
     return Unk_PayloadPtr<GuildSkill>(0);
 }
-MS2_REPLACE_METHOD(0x1404d74e0, CGuildXmlData, FUN_1404d74e0, 325, 0x79DB9B95);
+MS2_REPLACE_METHOD(0x1404d74e0, CGuildXmlData, GetSkill, 325, 0x79DB9B95);
 // @0x1404d7630
 void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
     Unk_GuildXmlDataCheckInit_3460();
@@ -704,62 +704,62 @@ void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7730, CGuildXmlData, FUN_1404d7730, 240, 0xAD6C0DE5);
 // @0x1404d7830
-Unk_PayloadPtr<CGuildXmlData::GuildEvent> CGuildXmlData::FUN_1404d7830(int id){
+Unk_PayloadPtr<CGuildXmlData::GuildEvent> CGuildXmlData::GetEvent(int id){
     Unk_GuildXmlDataCheckInit_3460();
     if(event.find(id)==event.end()) return Unk_PayloadPtr<GuildEvent>(0);
     return event[id];
 }
-MS2_REPLACE_METHOD(0x1404d7830, CGuildXmlData, FUN_1404d7830, 192, 0x7276C91B);
+MS2_REPLACE_METHOD(0x1404d7830, CGuildXmlData, GetEvent, 192, 0x7276C91B);
 // @0x1404d7900
-void CGuildXmlData::FUN_1404d7900(std::vector<int>& out){
+void CGuildXmlData::GetEventIds(std::vector<int>& out){
     Unk_GuildXmlDataCheckInit_3460();
     out.reserve(event.size());
     for(auto i=event.begin(),e=event.end();i!=e;++i) out.push_back(i->first);
 }
-MS2_REPLACE_METHOD(0x1404d7900, CGuildXmlData, FUN_1404d7900, 157, 0xFAEEBFF0);
+MS2_REPLACE_METHOD(0x1404d7900, CGuildXmlData, GetEventIds, 157, 0xFAEEBFF0);
 // @0x1404d79b0
-Unk_PayloadPtr<CGuildXmlData::GuildHouse> CGuildXmlData::FUN_1404d79b0(int level,int theme){
+Unk_PayloadPtr<CGuildXmlData::GuildHouse> CGuildXmlData::GetHouse(int level,int theme){
     Unk_GuildXmlDataCheckInit_3460();
     std::pair<int,int> key(level,theme);
     if(house.find(key)==house.end()) return Unk_PayloadPtr<GuildHouse>(0);
     return house[key];
 }
-MS2_REPLACE_METHOD(0x1404d79b0, CGuildXmlData, FUN_1404d79b0, 217, 0x4798F80C);
+MS2_REPLACE_METHOD(0x1404d79b0, CGuildXmlData, GetHouse, 217, 0x4798F80C);
 // @0x1404d7a90
-void CGuildXmlData::FUN_1404d7a90(std::vector<std::pair<int,int>>& out){
+void CGuildXmlData::GetHouseKeys(std::vector<std::pair<int,int>>& out){
     Unk_GuildXmlDataCheckInit_3460();
     out.reserve(house.size());
     for(auto i=house.begin(),e=house.end();i!=e;++i) out.push_back(i->first);
 }
-MS2_REPLACE_METHOD(0x1404d7a90, CGuildXmlData, FUN_1404d7a90, 157, 0x032A47F6);
+MS2_REPLACE_METHOD(0x1404d7a90, CGuildXmlData, GetHouseKeys, 157, 0x032A47F6);
 // @0x1404d7b40
-Unk_PayloadPtr<CGuildXmlData::GuildNpc> CGuildXmlData::FUN_1404d7b40(Unk_GuildNpcKind kind,int level){
+Unk_PayloadPtr<CGuildXmlData::GuildNpc> CGuildXmlData::GetNpc(Unk_GuildNpcKind kind,int level){
     Unk_GuildXmlDataCheckInit_3460();
     std::pair<Unk_GuildNpcKind,int> key(kind,level);
     if(npc.find(key)==npc.end()) return Unk_PayloadPtr<GuildNpc>(0);
     return npc[key];
 }
-MS2_REPLACE_METHOD(0x1404d7b40, CGuildXmlData, FUN_1404d7b40, 217, 0x88080605);
+MS2_REPLACE_METHOD(0x1404d7b40, CGuildXmlData, GetNpc, 217, 0x88080605);
 // @0x1404d7c20
-void CGuildXmlData::FUN_1404d7c20(std::set<Unk_GuildNpcKind>& out){
+void CGuildXmlData::GetNpcKinds(std::set<Unk_GuildNpcKind>& out){
     Unk_GuildXmlDataCheckInit_3460();
     for(auto i=npc.begin(),e=npc.end();i!=e;++i) out.insert(i->first.first);
 }
-MS2_REPLACE_METHOD(0x1404d7c20, CGuildXmlData, FUN_1404d7c20, 132, 0x7F14F619);
+MS2_REPLACE_METHOD(0x1404d7c20, CGuildXmlData, GetNpcKinds, 132, 0x7F14F619);
 // @0x1404d7cb0
-Unk_PayloadPtr<CGuildXmlData::GuildRaid> CGuildXmlData::FUN_1404d7cb0(unsigned id){
+Unk_PayloadPtr<CGuildXmlData::GuildRaid> CGuildXmlData::GetRaid(unsigned id){
     Unk_GuildXmlDataCheckInit_3460();
     if(raid.find(id)==raid.end()) return Unk_PayloadPtr<GuildRaid>(0);
     return raid[id];
 }
-MS2_REPLACE_METHOD(0x1404d7cb0, CGuildXmlData, FUN_1404d7cb0, 192, 0x4C2B2E5E);
+MS2_REPLACE_METHOD(0x1404d7cb0, CGuildXmlData, GetRaid, 192, 0x4C2B2E5E);
 // @0x1404d7d80
-void CGuildXmlData::FUN_1404d7d80(std::vector<unsigned>& out){
+void CGuildXmlData::GetRaidIds(std::vector<unsigned>& out){
     Unk_GuildXmlDataCheckInit_3460();
     out.reserve(raid.size());
     for(auto i=raid.begin(),e=raid.end();i!=e;++i) out.push_back(i->first);
 }
-MS2_REPLACE_METHOD(0x1404d7d80, CGuildXmlData, FUN_1404d7d80, 157, 0xEC01BA76);
+MS2_REPLACE_METHOD(0x1404d7d80, CGuildXmlData, GetRaidIds, 157, 0xEC01BA76);
 // @0x1404d7e30
 Unk_PayloadPtr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int id){
     Unk_GuildXmlDataCheckInit_3460();
@@ -862,16 +862,16 @@ Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d86e0(unsigned id,__int6
     return ref;
 }
 // @0x1404d87f0
-Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d87f0(unsigned id){
+Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::GetShop(unsigned id){
     if(shops.empty()) return Unk_PayloadPtr<CGuildNpcShop>(0);
     auto i=shops.find(id);
     if(i==shops.end()) return Unk_PayloadPtr<CGuildNpcShop>(0);
     return i->second;
 }
-MS2_REPLACE_METHOD(0x1404d87f0, CGuildNpcShopMgr, FUN_1404d87f0, 231, 0xF18D7394);
+MS2_REPLACE_METHOD(0x1404d87f0, CGuildNpcShopMgr, GetShop, 231, 0xF18D7394);
 // @0x1404d88e0
-Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d88e0(unsigned id){
-    Unk_PayloadPtr<CGuildNpcShop> ref=FUN_1404d87f0(id);
+Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::GetOrCreateShop(unsigned id){
+    Unk_PayloadPtr<CGuildNpcShop> ref=GetShop(id);
     if(ref==0){
         ref=new CGuildNpcShop;
         shops[id]=ref;
@@ -881,7 +881,7 @@ Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d88e0(unsigned id){
 // @0x1404d89e0
 int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created){
     __int64 now=GetServerTime();
-    Unk_PayloadPtr<CGuildNpcShop> shop=FUN_1404d87f0(offer->f20);
+    Unk_PayloadPtr<CGuildNpcShop> shop=GetShop(offer->f20);
     if(shop){
         if(shop->f20!=offer->f28 || shop->f20<now){
             shops.erase(offer->f20);
@@ -905,7 +905,7 @@ int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,b
     return 0;
 }
 // @0x1404d8d50
-void CGuildNpcShopMgr::FUN_1404d8d50(COutputStream& out){
+void CGuildNpcShopMgr::Write(COutputStream& out){
     int n=(int)shops.size();
     out.WriteInt16((unsigned short)n);
     for(auto i=shops.begin();i!=shops.end();++i){
@@ -915,9 +915,9 @@ void CGuildNpcShopMgr::FUN_1404d8d50(COutputStream& out){
         if(ref) ref->FUN_1404d83e0(out);
     }
 }
-MS2_REPLACE_METHOD(0x1404d8d50, CGuildNpcShopMgr, FUN_1404d8d50, 288, 0x239EF7BF);
+MS2_REPLACE_METHOD(0x1404d8d50, CGuildNpcShopMgr, Write, 288, 0x239EF7BF);
 // @0x1404d8e80
-void CGuildNpcShopMgr::FUN_1404d8e80(CInPacket* packet){
+void CGuildNpcShopMgr::Read(CInPacket* packet){
     int n=(unsigned short)packet->ReadInt16();
     shops.clear();
     for(int i=0;i<n;++i){
@@ -930,12 +930,12 @@ void CGuildNpcShopMgr::FUN_1404d8e80(CInPacket* packet){
 }
 // @0x1404d8ff0
 void CGuildNpcShopMgr::FUN_1404d8ff0(unsigned id,CInPacket* packet){
-    Unk_PayloadPtr<CGuildNpcShop> ref=FUN_1404d88e0(id);
+    Unk_PayloadPtr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0) ref->FUN_1404d8520(packet);
 }
 // @0x1404d9060
 void CGuildNpcShopMgr::FUN_1404d9060(unsigned id,CInPacket* packet){
-    Unk_PayloadPtr<CGuildNpcShop> ref=FUN_1404d88e0(id);
+    Unk_PayloadPtr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0){
         Unk_PayloadPtr<CNpcShopProductProxy> product(new CNpcShopProductProxy);
         product->FUN_1404d7fa0(packet);

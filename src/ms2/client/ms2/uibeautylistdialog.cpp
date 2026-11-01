@@ -14,12 +14,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
 
-class Unk_BlConstInt { public: int* FUN_1401d7c10(); };
+class Unk_BlConstInt { public: };
 class Unk_BlGlobals
 {
 public:
@@ -30,10 +31,8 @@ public:
     char m_pad_62a9[0x6358 - 0x62a9];
     Unk_BlConstInt m_6358;
 };
-Unk_BlGlobals* FUN_1401d3200();
 
 class Unk_BlWorld { };
-int FUN_141bd3060(Unk_BlWorld* pWorld);                         // the current map id
 bool FUN_1418fe060();
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -93,11 +92,11 @@ bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
 // @0x140f006b0
 int UIBeautyListDialog::FUN_140f006b0(int nMapId)
 {
-    if (nMapId == *FUN_1401d3200()->m_61f8.FUN_1401d7c10())
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_61f8)->Get()))
         return 1;
-    if (nMapId == *FUN_1401d3200()->m_62a8.FUN_1401d7c10())
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_62a8)->Get()))
         return 1;
-    if (nMapId == *FUN_1401d3200()->m_6358.FUN_1401d7c10())
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_6358)->Get()))
         return 1;
     return 0;
 }
@@ -120,13 +119,13 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         void* pPlayer = ((void*)((WorldService*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
-        int bSalon = FUN_140f006b0(FUN_141bd3060(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())));
+        int bSalon = FUN_140f006b0(((class WorldService*)(class Unk_BlWorld*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd3060());
         int bFlag = FUN_1418fe060();
         if (bFlag == 0 && bSalon == 0)
         {
             if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, L""))
             {
-                box->FUN_140533ff0(nType);
+                box->Append<int>(nType);
                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
                 FUN_140d73c60(box);
             }

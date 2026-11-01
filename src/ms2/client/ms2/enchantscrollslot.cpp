@@ -25,6 +25,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- out-of-unit callees ----
 
@@ -50,9 +51,6 @@ int FUN_141902660(MS2Ptr<CItem> spItem);                // asks whether to refun
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 EnchantScrollSlot* FUN_140cd7a50(NotifyContext::BindData* p);
 UIEnchantScrollDialog* FUN_140cd7aa0(int nClass);
@@ -64,15 +62,15 @@ void FUN_140cd73b0(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 {
     EnchantScrollSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) EnchantScrollSlot(strName, nOwner, spItem);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x140cd74a0
 void FUN_140cd74a0(const CString& strName)
 {
-    EnchantScrollSlot* pSlot = FUN_140cd7a50(FUN_1422c8e90(strName));
+    EnchantScrollSlot* pSlot = FUN_140cd7a50(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140cd74e0
@@ -105,7 +103,7 @@ int EnchantScrollSlot::vfunc_18(void* p)
             COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
             packet.WriteUInt8(1);
             packet.WriteInt64(m_nOwner);
-            packet.WriteInt64(((CItem*)spItem)->FUN_140526a50());
+            packet.WriteInt64(((CItem*)spItem)->GetItemUid());
             FUN_140710590(packet);
         }
     }
@@ -178,7 +176,7 @@ UIEnchantScrollDialog* FUN_140cd7aa0(int nClass)
 {
     if (reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIEnchantScrollDialog*>(spObj.operator->());
     }

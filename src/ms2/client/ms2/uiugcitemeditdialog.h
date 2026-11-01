@@ -64,8 +64,8 @@ public:
     // UIUGCEventListener (+0x188)
     virtual void vfunc_ugc_4(int nDialog);                      // 4 0x141b3d770 the upload moved to this dialog
 
-    void FUN_141b3cd10();                                       // "loadRenderTarget"
-    void FUN_141b3cd70();                                       // "unloadRenderTarget"
+    void LoadRenderTarget();                                       // "loadRenderTarget"
+    void UnloadRenderTarget();                                       // "unloadRenderTarget"
     void FUN_141b3da90(int nModel);                             // create the avatar of a model radio index
     void FUN_141b3e370();                                       // drop every avatar and the render view
     void FUN_141b3e410(MS2Ptr<UIAvatarBase> spAvatar, bool bChanged);   // show an avatar in the render view
@@ -80,7 +80,7 @@ public:
     void FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChanged);    // set the design item
     void FUN_141b401b0(MS2Ptr<CItem> spItem);                   // set the design item (ignores the model change)
     void FUN_141b40220();                                       // drop the design and the image
-    void FUN_141b40270();                                       // "restart"
+    void Restart();                                       // "restart"
     bool FUN_141b40300(__int64 nPrice, int nMeret);             // send the make request
     void FUN_141b40880(ASObj& obj);                             // the model radio buttons
     void FUN_141b40ab0(int nKind, int nImage);                  // switch the content kind and reload the images
@@ -89,11 +89,11 @@ public:
     void FUN_141b41090(ASObj& obj);                             // the category and gender drop downs
     void FUN_141b41700(int nIndex);                             // "selectImage"
     bool FUN_141b417e0();                                       // refresh the preview of the upload
-    void FUN_141b419c0();                                       // "updateSelectedImage"
-    void FUN_141b41a20();                                       // "requestCapture"
+    void UpdateSelectedImage();                                       // "updateSelectedImage"
+    void RequestCapture();                                       // "requestCapture"
     bool FUN_141b41a80(const NiRect<unsigned int>& kRect);      // save the capture, "savedCapture"
     void FUN_141b41cd0();                                       // the capture state machine (per frame)
-    void FUN_141b41e80(int nModel);                             // "changeModel"
+    void ChangeModel(int nModel);                             // "changeModel"
     void FUN_141b41ef0(MS2Ptr<CItemData> spData);               // the content kind of the design
     void FUN_141b41f90(MS2Ptr<CItemData> spData);               // "m_showRadioSelect"
     void FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar, MS2Ptr<CItem> spItem);   // attach the viewer
@@ -101,11 +101,11 @@ public:
     void FUN_141b428d0(int nKind);                              // save a screenshot of the render view
     int FUN_141b42a50(MS2Ptr<UIAvatarPC> spAvatar, int nGender);
     int FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatarBase> spAvatar);   // the model index for a design
-    int FUN_141b430b0();                                        // "getMakeCount"
-    CStringW FUN_141b43140();                                   // the item name input (trimmed)
+    int GetMakeCount();                                        // "getMakeCount"
+    CStringW GetItemName();                                   // the item name input (trimmed)
     __int64 FUN_141b43240(MS2Ptr<CUGCDesignData> spDesign, int nCount);   // the price of nCount items
     int FUN_141b432f0(MS2Ptr<CItemData> spData);                // the UGC content kind of an item
-    MS2Ptr<UIAvatarBase> FUN_141b433f0(int nModel);             // the avatar of a model index
+    MS2Ptr<UIAvatarBase> GetAvatar(int nModel);             // the avatar of a model index
     UIAvatarBase* FUN_141b43490();                              // the shown avatar
     void FUN_141b434c0(ASData& args);                           // onChangeModel
     bool FUN_141b43660(int nImage);                              // select an image of the folder
@@ -121,7 +121,7 @@ public:
     void FUN_141b44d10(ASData& args);                           // onChangeIndexDropDownGender
     void FUN_141b44d50(NotifyObject* pNotify);                  // "NotifyGameEventChanged"
     void FUN_141b44e80(const Scaleform::GFx::FunctionHandler::Params& params);   // "setDesignDataImpl"
-    void FUN_141b45020();                                       // clear the item name input
+    void ClearItemName();                                       // clear the item name input
     void FUN_141b450d0(int nResult);                            // the server answered the make request
     void FUN_141b45180(MS2Ptr<CItem> spItem);                   // the made item: rename box
     void FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* pUgc);   // the made item of a proxy (uncalled)

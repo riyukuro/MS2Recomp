@@ -28,6 +28,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/exptable.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // The own static (the binding tag of the transfer message box), then the sort type names of the header statics.
 static CStringW s_strTrainingBindPet(L"trainingBindPet");
@@ -52,7 +54,7 @@ public:
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
    // exp of a level
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
-class Unk_PtValue { public: unsigned* FUN_1401d7c10(); };
+class Unk_PtValue { public: };
 class Unk_PtConfig { public: unsigned char m_pad[0x84c0]; Unk_PtValue m_petMaxLevel; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PtAttr { public: unsigned FUN_14054c530(const CStringW& strKey, const int& nDefault); };
@@ -99,13 +101,13 @@ UIItemPetTrainingDialog::UIItemPetTrainingDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    ((class Unk_PtPackets*)FUN_140bccd50())->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
 }
 
 // @0x140e57030
 UIItemPetTrainingDialog::~UIItemPetTrainingDialog()
 {
-    ((class Unk_PtPackets*)FUN_140bccd50())->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetTrainingDialog::FUN_140e57cb0));
 }
 
 // @0x140e57150
@@ -155,7 +157,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
-        if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635100() != 0)
+        if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBindingRule() != 0)
         {
             if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635120() == 0)
             {
@@ -163,7 +165,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strTrainingBindPet));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a01600(m_spPet->FUN_140526a50());
+                    box->FUN_141a01600(m_spPet->GetItemUid());
                     box->FUN_141a01ee0(MS2Ptr<CItem>(m_spPet), m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->FUN_141a01700(0x477, 0x478, 0);
                     FUN_140d73c60(box);
@@ -222,7 +224,7 @@ void UIItemPetTrainingDialog::FUN_140e57d60()
         return;
     if (m_spBox == 0 || m_spPet == 0)
         return;
-    __int64 nUid = m_spPet->FUN_140526a50();
+    __int64 nUid = m_spPet->GetItemUid();
     g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
 }
 
@@ -240,19 +242,19 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
 {
     if (spPet == 0)
         return 0;
-    if (spPet->FUN_140525640() == 0)
+    if (spPet->IsPetItem() == 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if ((unsigned)spPet->FUN_140528c20() == *((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10())
+    if ((unsigned)spPet->FUN_140528c20() == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get())
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PtPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
+    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PtPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -312,9 +314,9 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
             }
             nLevel += nUp;
             nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-            if (nLevel >= *((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10())
+            if (nLevel >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get())
             {
-                nLevel = (unsigned short)*((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel.FUN_1401d7c10();
+                nLevel = (unsigned short)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get();
                 nCur = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
                 nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
             }
@@ -322,7 +324,7 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
             CStringW strExp = FUN_14028dfa0(CStringW(L"s_pet_training_dialog_pet_exp"), nLevel, FUN_1409404f0(nCur), FUN_1409404f0(nNeed));
             ASObj obj(2);
             obj.FUN_1407cbb20("petName", CStringW(strName));
-            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
+            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
             obj.FUN_1407cbb20("petExp", CStringW(strExp));
             obj.FUN_1409c1180("petCurrentExp", nCur);
             obj.FUN_1409c1180("petMaxExp", nNeed);

@@ -25,14 +25,14 @@ public:
     int FUN_1422c1530();                                            // 0x1422c1530 height
     void FUN_1422c79e0(int nWidth, int nHeight);                    // 0x1422c79e0 resize
     // mouse / focus members (uinoticedialog.cpp: the hit area of the notice dialog)
-    void FUN_1422c7840(int n);                                      // 0x1422c7840
+    void SetFocusable(int n);                                      // 0x1422c7840
     void FUN_1422c7630(int n);                                      // 0x1422c7630 focus
     int FUN_1422c76c0();                                            // 0x1422c76c0
     void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de700 mouse over listener
     void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de780 mouse out listener
     void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // 0x1422de960 remove the mouse out listener (uiclosetdialog.cpp)
     bool FUN_1422c7b40(CStringW strTooltip);                        // 0x1422c7b40 set the tooltip text (by value: the callee destroys it)
-    void FUN_1422c7d30(int nWidth, int n2);                         // 0x1422c7d30 (uidungeonroomdialog: sub tab 3 gets 300, 0)
+    void SetTooltipOffset(int nWidth, int n2);                         // 0x1422c7d30 (uidungeonroomdialog: sub tab 3 gets 300, 0)
 
     // ---- recovered with ?\asuicomponent.cpp (src/ms2/gfxui/asuicomponent.cpp, 0x1422c70b0-0x1422c8390) ----
     void FUN_1422c7290(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "show" listener
@@ -43,12 +43,12 @@ public:
     void FUN_1422c7510(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "keyFocusChange" listener
     void FUN_1422c7570(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragStart" listener
     void FUN_1422c75d0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragEnd" listener
-    void FUN_1422c7730(int n);                                      // set "displayFocus"
+    void SetDisplayFocus(int n);                                      // set "displayFocus"
     int FUN_1422c7760();                                            // "displayFocus"
-    int FUN_1422c77d0();                                            // "hasFocus"
+    int HasFocus();                                            // "hasFocus"
     int FUN_1422c7890();                                            // "focusable"
-    int FUN_1422c7900();                                            // "actualWidth"
-    int FUN_1422c7970();                                            // "actualHeight"
+    int GetActualWidth();                                            // "actualWidth"
+    int GetActualHeight();                                            // "actualHeight"
     void FUN_1422c7a30(float fWidth, float fHeight);                // setSize (float)
     void FUN_1422c7cd0(const Scaleform::GFx::Value& data);          // set "_tooltipData"
     void FUN_1422c7e20();                                           // register the tooltip (m_bTooltip; FUN_1422c6380)

@@ -49,7 +49,6 @@ public:
     TM_V(16) TM_V(17) TM_V(18) TM_V(19) TM_V(20) TM_V(21) TM_V(22) TM_V(23)
 #undef TM_V
     virtual void vfunc_24(bool bRefresh);                                   // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                    // set the bag id
     void FUN_1422dcca0(int nIndex);                                         // select an entry (-1: none)
     int FUN_1422dccd0();                                                    // the selected entry
     void FUN_1422dd1d0();                                                   // clear
@@ -62,7 +61,6 @@ MS2_CHECK_SIZE(Unk_TmBag, 0x88);
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 
 // Movie helpers: set a member of the movie root to a visibility / enable flag / text.
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
@@ -131,11 +129,11 @@ void UIItemTreasureMapDialog::vfunc_43()
     UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40))) != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x50;
+        int nX = pRef->GetLowerCutGlobalY();
+        int nY = pRef->GetIllustGlobalX() - 0x50;
         if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY, (nX - pDialog->FUN_1422c13b0()) + 0x46);
+            pDialog->vfunc_2(5, nY, (nX - pDialog->GetHeightCeil()) + 0x46);
             return;
         }
     }
@@ -149,7 +147,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140c57ce0("m_board", m_board);
-    MS2Ptr<ASMovieClip> spTargetItems = FUN_140ba7930("m_targetItems");
+    MS2Ptr<ASMovieClip> spTargetItems = GetChild<ASMovieClip>("m_targetItems");
     if (spTargetItems.get() != 0)
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
     FUN_140c55ea0();
@@ -195,7 +193,7 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (TM_PKT->FUN_14070fe80() == 0xf5)
     {
-        if (FUN_140ba28d0(&m_30, 0) != 0)
+        if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
             return;
         int nSub = TM_PKT->ReadUInt8();
         if (nSub == 2)
@@ -247,7 +245,7 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
     MS2Ptr<CItem> spItem = m_items.GetAt(nIndex);
     if (spItem == 0)
         return;
-    __int64 nUid = spItem->FUN_140526a50();
+    __int64 nUid = spItem->GetItemUid();
     COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
     pkt.WriteUInt8(2);
     pkt.WriteInt64(nUid);
@@ -347,7 +345,7 @@ void UIItemTreasureMapDialog::FUN_140c563d0()
         if (g_143ab2a90.FUN_140a63880(m_spTarget.get(), strArg) == 0)
             return;
         m_nState = 1;
-        m_nTargetUid = m_spTarget->FUN_140526a50();
+        m_nTargetUid = m_spTarget->GetItemUid();
         m_spTarget = 0;
         FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
         FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
@@ -482,7 +480,7 @@ void UIItemTreasureMapDialog::FUN_140c57b50()
 // @0x140c57ce0
 MS2Ptr<ASMovieClip> UIItemTreasureMapDialog::FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out)
 {
-    out = FUN_140ba7930(strName);
+    out = GetChild<ASMovieClip>(strName);
     return out;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

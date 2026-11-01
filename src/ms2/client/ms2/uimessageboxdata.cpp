@@ -30,6 +30,8 @@
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
 // 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
 // this unit's range, so the instance is emitted here.
@@ -68,18 +70,14 @@ public:
 class Unk_MsgInput : public ASDisplayObject
 {
 public:
-    CStringW FUN_1422e0b00();                                       // the text
 };
 
 // The AS object `obj` keys. Free functions of other units.
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);         // value is undefined
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_1401d0160(const wchar_t* szLeft, const CStringW& strRight);
 CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
 CString FUN_140513200(const char* szFormat, const unsigned int& nArg);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -188,7 +186,7 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         obj.FUN_1407cb9c0("time", m_timer.m_nSec);
         if (m_timer.m_nShowFormat != 0)
         {
-            CStringW strTail = FUN_1401d0160(L"\n", FUN_1401ceea0(m_timer.m_strFormat, m_timer.m_nSec));
+            CStringW strTail = FUN_1401d0160(L"\n", StringFormat<int>(m_timer.m_strFormat, m_timer.m_nSec));
             obj.FUN_1407cbb20("msg", FUN_1401d0080(m_strMsg, strTail));
         }
     }
@@ -306,7 +304,7 @@ int CMsgBoxData::FUN_141a049a0() const
 }
 
 // @0x141a049d0
-int CMsgBoxData::FUN_141a049d0() const
+int CMsgBoxData::IsTimerExpired() const
 {
     if (FUN_141a049a0())
     {
@@ -323,7 +321,7 @@ int CMsgBoxData::FUN_141a049d0() const
 #pragma warning(disable : 4715)   // the false path returns the first call's (zero) result
 int CMsgBoxData::FUN_141a04a30()
 {
-    if (FUN_141a01480())
+    if (HasCallback())
         return FUN_141a014d0(1, &m_movie);
 }
 #pragma warning(pop)
@@ -335,9 +333,9 @@ const Unk_MsgBoxTimer& CMsgBoxData::GetTimer() const
 }
 
 // @0x141a04aa0
-bool CMsgBoxData::FUN_141a04aa0()
+bool CMsgBoxData::IsCheckbox0Checked()
 {
-    if (FUN_1409b0390(&m_movie))
+    if (((Scaleform::GFx::Value*)(void*)(&m_movie))->IsUndefined())
     {
         MS2_ASSERT_AT(0x3c4, 0);
         return false;
@@ -351,9 +349,9 @@ bool CMsgBoxData::FUN_141a04aa0()
 }
 
 // @0x141a04c20
-bool CMsgBoxData::FUN_141a04c20()
+bool CMsgBoxData::IsCheckbox1Checked()
 {
-    if (FUN_1409b0390(&m_movie))
+    if (((Scaleform::GFx::Value*)(void*)(&m_movie))->IsUndefined())
     {
         MS2_ASSERT_AT(0x3d6, 0);
         return false;
@@ -369,7 +367,7 @@ bool CMsgBoxData::FUN_141a04c20()
 // @0x141a04da0
 CStringW CMsgBoxData::FUN_141a04da0()
 {
-    if (FUN_1409b0390(&m_movie))
+    if (((Scaleform::GFx::Value*)(void*)(&m_movie))->IsUndefined())
     {
         MS2_ASSERT_AT(1000, 0);
         return CStringW(L"");
@@ -378,7 +376,7 @@ CStringW CMsgBoxData::FUN_141a04da0()
     MS2Ptr<Unk_MsgInput> input;
     Unk_MsgInput* pInput = root.FUN_140bbe940("m_textInput", input).get();
     if (pInput != 0)
-        return input->FUN_1422e0b00();
+        return reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
     return CStringW(L"");
 }
 
@@ -570,7 +568,7 @@ void CMsgBoxData::FUN_141a05930(ASObj& obj)
     if (FUN_140166410()->FUN_14036d570(0x2e) == true)
         strDisable += FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_disable_socket");
     strDisable += FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
-    CStringW strDesc = FUN_140656190(L"{0}\n\n{1}", strEnable, strDisable);
+    CStringW strDesc = StringFormat<CStringW, CStringW>(L"{0}\n\n{1}", strEnable, strDisable);
     obj.FUN_1407cbb20("itemLockConfirmDesc", strDesc);
 }
 
@@ -765,7 +763,7 @@ CString FUN_141a06ff0(int nSound)
 #endif
 
 // @0x141a07140
-bool CMsgBoxData::FUN_141a07140(unsigned int nIndex, CString& strOut) const
+bool CMsgBoxData::GetStringArg(unsigned int nIndex, CString& strOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
@@ -774,7 +772,7 @@ bool CMsgBoxData::FUN_141a07140(unsigned int nIndex, CString& strOut) const
 }
 
 // @0x141a071e0
-bool CMsgBoxData::FUN_141a071e0(unsigned int nIndex, bool& bOut) const
+bool CMsgBoxData::GetBoolArg(unsigned int nIndex, bool& bOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
@@ -786,7 +784,7 @@ bool CMsgBoxData::FUN_141a071e0(unsigned int nIndex, bool& bOut) const
 void Unk_MsgASObj::FUN_141a07250(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -913,11 +911,11 @@ MS2_EMIT_CRT_MEMMOVE_S();
 MS2_REPLACE_METHOD(0x141A034D0, CMsgBoxData, FUN_141a034d0, 5147, 0x5C72EDD0);
 MS2_REPLACE_METHOD(0x141A04900, CMsgBoxData, FUN_141a04900, 154, 0x64CD6E62);
 MS2_REPLACE_METHOD(0x141A049A0, CMsgBoxData, FUN_141a049a0, 33, 0x89107F8D);
-MS2_REPLACE_METHOD(0x141A049D0, CMsgBoxData, FUN_141a049d0, 86, 0x2C7D803C);
+MS2_REPLACE_METHOD(0x141A049D0, CMsgBoxData, IsTimerExpired, 86, 0x2C7D803C);
 MS2_REPLACE_METHOD(0x141A04A30, CMsgBoxData, FUN_141a04a30, 63, 0x2C84B9F2);
 MS2_REPLACE_METHOD(0x141A04A80, CMsgBoxData, GetTimer, 17, 0x60BBC863);
-MS2_REPLACE_METHOD(0x141A04AA0, CMsgBoxData, FUN_141a04aa0, 374, 0xD9CE5F6D);
-MS2_REPLACE_METHOD(0x141A04C20, CMsgBoxData, FUN_141a04c20, 374, 0xCBD40F82);
+MS2_REPLACE_METHOD(0x141A04AA0, CMsgBoxData, IsCheckbox0Checked, 374, 0xD9CE5F6D);
+MS2_REPLACE_METHOD(0x141A04C20, CMsgBoxData, IsCheckbox1Checked, 374, 0xCBD40F82);
 MS2_REPLACE_METHOD(0x141A04DA0, CMsgBoxData, FUN_141a04da0, 473, 0x68010C21);
 MS2_REPLACE_METHOD(0x141A050B0, CMsgBoxData, FUN_141a050b0, 239, 0xC461D7FD);
 MS2_REPLACE_METHOD(0x141A051E0, CMsgBoxData, FUN_141a051e0, 317, 0x8B701FF3);
@@ -933,8 +931,8 @@ MS2_REPLACE_METHOD(0x141A05BD0, CMsgBoxData, FUN_141a05bd0, 849, 0xE5ECF5D2);
 MS2_REPLACE_METHOD(0x141A05F30, CMsgBoxData, FUN_141a05f30, 784, 0x0A52D0DA);
 MS2_REPLACE_METHOD(0x141A06250, CMsgBoxData, FUN_141a06250, 379, 0x767DA9E5);
 MS2_REPLACE_METHOD(0x141A063E0, CMsgBoxData, FUN_141a063e0, 245, 0xCDB086A7);
-MS2_REPLACE_METHOD(0x141A07140, CMsgBoxData, FUN_141a07140, 153, 0x45E471F0);
-MS2_REPLACE_METHOD(0x141A071E0, CMsgBoxData, FUN_141a071e0, 103, 0xC313FF72);
+MS2_REPLACE_METHOD(0x141A07140, CMsgBoxData, GetStringArg, 153, 0x45E471F0);
+MS2_REPLACE_METHOD(0x141A071E0, CMsgBoxData, GetBoolArg, 103, 0xC313FF72);
 MS2_REPLACE_METHOD(0x141A06630, CMsgBoxDataItem, FUN_141a06630, 161, 0x524A9354);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbfe20-0x142cbfeb0 .text$yd

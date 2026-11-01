@@ -20,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -38,7 +39,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_140a36020(Unk_PpConst* p);
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
-int* FUN_1402056b0(Unk_PpConst* p);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
@@ -149,7 +149,7 @@ public:
     virtual void vfunc_85();
     virtual Unk_PpHandle vfunc_86();        // 86 0x2b0
 };
-class Unk_PpEntityMgr { public: Unk_PpEntity* FUN_141bd1530(unsigned __int64 nId); };
+class Unk_PpEntityMgr { public: };
 
 // @0x141697140
 CPopupProfileImageData::CPopupProfileImageData()
@@ -157,18 +157,18 @@ CPopupProfileImageData::CPopupProfileImageData()
 }
 
 // @0x141697180
-void CPopupProfileImageData::FUN_141697180(unsigned __int64 nId)
+void CPopupProfileImageData::SetId(unsigned __int64 nId)
 {
     m_nId = nId;
 }
-MS2_REPLACE_METHOD(0x141697180, CPopupProfileImageData, FUN_141697180, 25, 0xAB8BF0FB);
+MS2_REPLACE_METHOD(0x141697180, CPopupProfileImageData, SetId, 25, 0xAB8BF0FB);
 
 // @0x1416971a0
-unsigned __int64 CPopupProfileImageData::FUN_1416971a0()
+unsigned __int64 CPopupProfileImageData::GetId()
 {
     return m_nId;
 }
-MS2_REPLACE_METHOD(0x1416971A0, CPopupProfileImageData, FUN_1416971a0, 15, 0xBBB219C9);
+MS2_REPLACE_METHOD(0x1416971A0, CPopupProfileImageData, GetId, 15, 0xBBB219C9);
 
 // @0x1416971c0
 void CPopupProfileImageData::SetTime(int nTime)
@@ -185,7 +185,7 @@ int CPopupProfileImageData::GetTime()
 MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, GetTime, 14, 0xA25B27BF);
 
 // @0x141697200
-int CPopupProfileImageData::FUN_141697200(int nNow)
+int CPopupProfileImageData::IsExpired(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nExpire = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expire);
@@ -193,7 +193,7 @@ int CPopupProfileImageData::FUN_141697200(int nNow)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, FUN_141697200, 80, 0x8577550E);
+MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, IsExpired, 80, 0x8577550E);
 
 // @0x141697260
 int CPopupProfileImageData::FUN_141697260(int nNow)
@@ -243,9 +243,9 @@ void CPopupProfileImageMan::FUN_141697430()
                 expired.AddTail(nId);
                 continue;
             }
-            if (spData->FUN_141697200(nNow) == 1)
+            if (spData->IsExpired(nNow) == 1)
             {
-                Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntityMgr*>(WorldService::GetInstance())->FUN_141bd1530(nId);
+                Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntity*>(WorldService::GetInstance()->FUN_141bd1530(nId));
                 bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
                 if (bFound)
                     pEntity->vfunc_86().FUN_141667730()->vfunc_3();
@@ -271,7 +271,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     else
     {
         int nNow = GetTickCountMs2();
-        if ((int)m_shown.GetCount() >= *FUN_1402056b0(&((class Unk_PpConstants*)FUN_1401d3200())->m_maxCount))
+        if ((int)m_shown.GetCount() >= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PpConstants*)FUN_1401d3200())->m_maxCount)->Get())
             return 0;
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
@@ -286,7 +286,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
         if (spData == 0)
         {
             spData.AssignRaw(new CPopupProfileImageData);
-            spData->FUN_141697180(nId);
+            spData->SetId(nId);
         }
         else
         {
@@ -312,7 +312,7 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
             m_shown.RemoveKey(nId);
-        Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntityMgr*>(WorldService::GetInstance())->FUN_141bd1530(nId);
+        Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntity*>(WorldService::GetInstance()->FUN_141bd1530(nId));
         bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
         if (bFound)
             pEntity->vfunc_86().FUN_141667730()->vfunc_3();

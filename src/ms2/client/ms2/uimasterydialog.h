@@ -100,7 +100,7 @@ public:
     void FUN_140eb6660(void* pArg);  // 0x140eb6660
     int FUN_140eb6870();  // 0x140eb6870
     void FUN_140eb6920(int nType, int nIndex, ASObj& obj);  // 0x140eb6920
-    void FUN_140eb6c80();  // 0x140eb6c80
+    void CancelCraft();  // 0x140eb6c80
     int FUN_140eb6d40(int nKind, int nId);  // 0x140eb6d40
     CStringW FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec);  // 0x140eb71a0
     int FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0

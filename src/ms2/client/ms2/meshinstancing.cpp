@@ -11,12 +11,13 @@
 #include <ecr/RenderService.h>
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
 efd::IBase* FUN_14098c5b0(void* framework);
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 efd::Point3 FUN_1413fa320(egf::Entity*);
 void FUN_141568ac0(egf::Entity*, const efd::Point3&);
 bool FUN_1413fa390(egf::Entity*);
@@ -61,9 +62,9 @@ void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned c
         id10 = entity->GetEntityID();
         unknown24 = false;
         flag26 = false;
-        FUN_1408a20a0(entity, 0x2a7fd9f4, &flag2a);
-        FUN_1408a20a0(entity, 0xd9f313f2, &flag26);
-        FUN_1408a20a0(entity, 0x861681cb, &flag28);
+        entity->GetPropertyValue(0x2a7fd9f4, flag2a);
+        entity->GetPropertyValue(0xd9f313f2, flag26);
+        entity->GetPropertyValue(0x861681cb, flag28);
         efd::SmartPointer<efd::IBase> guard(FUN_14098c5b0(&DAT_143b059e8));
         capacity = cap;
         flag27 = entity->GetModel()->ContainsModel(0xd8dea70d);
@@ -187,15 +188,15 @@ void MeshInstancing::FUN_14147ccf0() {
 }
 MS2_REPLACE_METHOD(0x14147ccf0, MeshInstancing, FUN_14147ccf0, 226, 0x553DF4FC);
 // @0x14147cde0
-bool MeshInstancing::FUN_14147cde0(egf::EntityID id) {
+bool MeshInstancing::ContainsEntityId(egf::EntityID id) {
     for (std::list<egf::EntityID>::iterator it = config.ids.m_list.begin(); it != config.ids.m_list.end(); ++it) {
         if (*it == id) return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x14147cde0, MeshInstancing, FUN_14147cde0, 133, 0x2F0348E7);
+MS2_REPLACE_METHOD(0x14147cde0, MeshInstancing, ContainsEntityId, 133, 0x2F0348E7);
 // @0x14147ce70
-NiMesh* MeshInstancing::FUN_14147ce70(const NiFixedString& name) {
+NiMesh* MeshInstancing::FindMeshByName(const NiFixedString& name) {
     efd::vector<NiMesh*>& range = meshes;
     for (efd::vector<NiMesh*>::const_iterator end = range.end(), it = range.begin(); it != end; ++it) {
         NiMesh* mesh = *it;
@@ -204,7 +205,7 @@ NiMesh* MeshInstancing::FUN_14147ce70(const NiFixedString& name) {
     return NULL;
 }
 // @0x14147cf40
-unsigned MeshInstancing::FUN_14147cf40() {
+unsigned MeshInstancing::GetVisibleInstanceCount() {
     if (!meshes.empty())
         return NiInstancingUtilities::GetVisibleInstanceCount(meshes[0]);
     return 0;
@@ -212,7 +213,7 @@ unsigned MeshInstancing::FUN_14147cf40() {
 // @0x14147cf90
 int MeshInstancing::FUN_14147cf90(const Unk_MeshInstancingConfig& other) { return FUN_1413d3370(config, other); }
 // @0x14147cfd0
-int MeshInstancing::FUN_14147cfd0(const Unk_MeshInstancingConfig& other) { return ((struct Unk_MeshInstancingConfig*)&(config))->FUN_1413d33c0(other); }
+int MeshInstancing::FUN_14147cfd0(const Unk_MeshInstancingConfig& other) { return ((struct Unk_MeshInstancingConfig*)&(config))->Equals(other); }
 // @0x14147d010
 int MeshInstancing::FUN_14147d010(egf::Entity* entity) {
     if (entity != NULL) {

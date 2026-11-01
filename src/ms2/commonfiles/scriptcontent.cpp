@@ -8,14 +8,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);   // xml attribute -> wide string
-int FUN_1408733e0(Unk_ScriptXmlNode* pNode, const char* pszName, CStringA& rOut);   // xml attribute -> string
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
-int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 class TiXmlElement   // C3: member view for the former free stand-ins
@@ -59,9 +59,9 @@ int CScriptContent::vfunc_2(Unk_ScriptXmlNode* pNode)
 {
     if (pNode == 0)
         return 0;
-    FUN_140873420(pNode, "text", m_text);
-    FUN_1408733e0(pNode, "voiceID", m_voiceId);
-    FUN_1408733e0(pNode, "illust", m_illust);
+    XmlGetAttr((class TiXmlElement*)(pNode), "text", m_text);
+    XmlGetAttr((class TiXmlElement*)(pNode), "voiceID", m_voiceId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "illust", m_illust);
     FUN_1403b4750()->FUN_1416fb380(m_text);
     return 1;
 }
@@ -256,26 +256,26 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
     if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("functionID") != 0)
         XmlGetAttr((class TiXmlElement*)(pNode), "functionID", m_functionId);
     if (((class TiXmlElement*)(class Unk_ScriptXmlNode*)(pNode))->Attribute("otherNpcTalk") != 0)
-        FUN_140873220(pNode, "otherNpcTalk", m_otherNpcTalk);
-    FUN_1408733e0(pNode, "leftIllust", m_leftIllust);
-    FUN_1408733e0(pNode, "rightIllust", m_rightIllust);
-    FUN_1408733e0(pNode, "speakerIllust", m_speakerIllust);
-    FUN_140873220(pNode, "speakerNpc", m_speakerNpc);
-    FUN_1408733e0(pNode, "imagePlate", m_imagePlate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "otherNpcTalk", reinterpret_cast<unsigned int&>(m_otherNpcTalk));
+    XmlGetAttr((class TiXmlElement*)(pNode), "leftIllust", m_leftIllust);
+    XmlGetAttr((class TiXmlElement*)(pNode), "rightIllust", m_rightIllust);
+    XmlGetAttr((class TiXmlElement*)(pNode), "speakerIllust", m_speakerIllust);
+    XmlGetAttr((class TiXmlElement*)(pNode), "speakerNpc", reinterpret_cast<unsigned int&>(m_speakerNpc));
+    XmlGetAttr((class TiXmlElement*)(pNode), "imagePlate", m_imagePlate);
     FUN_14078ebd0(pNode, "myTalk", &m_myTalk);
-    FUN_1408733e0(pNode, "movie", m_movie);
+    XmlGetAttr((class TiXmlElement*)(pNode), "movie", m_movie);
     XmlGetAttr((class TiXmlElement*)(pNode), "redirect", m_redirect);
-    FUN_1408733e0(pNode, "screenEffectMovie", m_screenEffectMovie);
-    FUN_1408733e0(pNode, "screenEffectAction", m_screenEffectAction);
-    FUN_140873220(pNode, "screenEffectValue", m_screenEffectValue);
+    XmlGetAttr((class TiXmlElement*)(pNode), "screenEffectMovie", m_screenEffectMovie);
+    XmlGetAttr((class TiXmlElement*)(pNode), "screenEffectAction", m_screenEffectAction);
+    XmlGetAttr((class TiXmlElement*)(pNode), "screenEffectValue", reinterpret_cast<unsigned int&>(m_screenEffectValue));
     Unk_ScriptPtr<CCinematicDistractor> spDistractor(0);
     for (Unk_ScriptXmlNode* pChoice = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pNode))->FirstChild("distractor")); pChoice != 0; pChoice = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(pChoice))->NextSibling("distractor"))) {
         if (spDistractor == 0)
             spDistractor = new CCinematicDistractor();
         Unk_ScriptChoice choice;
-        FUN_140873420(pChoice, "text", choice.m_text);
-        FUN_1408733e0(pChoice, "goto", choice.m_goto);
-        FUN_1408733e0(pChoice, "gotoFail", choice.m_gotoFail);
+        XmlGetAttr((class TiXmlElement*)(pChoice), "text", choice.m_text);
+        XmlGetAttr((class TiXmlElement*)(pChoice), "goto", choice.m_goto);
+        XmlGetAttr((class TiXmlElement*)(pChoice), "gotoFail", choice.m_gotoFail);
         FUN_1403b4750()->FUN_1416fb380(choice.m_text);
         spDistractor->m_choices.Add(choice);
     }

@@ -6,6 +6,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\drawdebugstring.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <string>
 #include <new>
@@ -16,7 +17,7 @@
 
 // ---- exe callees ----
 extern const NiColorA DAT_143a09680;                                                    // black
-extern const NiPoint3 DAT_143b01a60;                                                    // the zero point
+#define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)          // C3: was extern const NiPoint3 DAT_143b01a60
 NiPoint3* FUN_140194470(NiPoint3* pDst, const NiPoint3* pSrc);                          // NiPoint3 assign
 bool FUN_140552690(const NiPoint3* pA, const NiPoint3* pB);                             // NiPoint3 ==
 void* FUN_140a44830();                                                                  // the debug log singleton

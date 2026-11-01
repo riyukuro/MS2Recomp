@@ -20,6 +20,8 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pvpmanager.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -31,7 +33,6 @@ class Unk_PrWorld                                                   // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    PCBase* FUN_141bd1530(__int64 nCharId);                         // a player by character id
 };
 
 // One row of the result (the ranking's row, see uipvprankingdialog.cpp).
@@ -81,7 +82,6 @@ class Unk_PrItemPtr
 public:
     ~Unk_PrItemPtr() { FUN_1401b50d0(); }
     void* FUN_140203c60() const;
-    Unk_PrItemData* FUN_1401b52a0() const;
     void FUN_1401b50d0();
 private:
     void* unknown;
@@ -93,7 +93,6 @@ Unk_PrItemPtr FUN_14053f870(int nItemId);
 // The AS root with the two-argument Invoke ("showLastResult").
 class Unk_PrScript : public AScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };
 
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
 const int* FUN_1404eb7e0(const int* a, const int* b);               // std::max<int>
@@ -188,7 +187,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
         m_30->Invoke("setRewardText", strText);
         Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
         if (spItem.FUN_140203c60() != 0)
-            m_30->Invoke("setRewardIcon", spItem.FUN_1401b52a0()->FUN_14053fdd0());
+            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
     }
     static_cast<Unk_PrScript*>(m_30.operator->())->FUN_14129cce0("showLastResult", m_180, strText);
 }
@@ -201,7 +200,7 @@ void UIPvPResultDialog::FUN_1413440a0()
     if (bInPvP)
     {
         m_178 = pPC->FUN_140967420().FUN_140965970()->m_nMode;
-        m_17c = pPC->FUN_140967420().FUN_140965970()->FUN_140743940();
+        m_17c = pPC->FUN_140967420().FUN_140965970()->GetRewardItemId();
     }
 }
 
@@ -213,16 +212,16 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
-    PCBase* pOther = reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd1530(pEntry->m_nCharId);
+    PCBase* pOther = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));
     CString strIcon("");
     Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
     if (spItem.FUN_140203c60() != 0)
-        strIcon = spItem.FUN_1401b52a0()->FUN_14053fdd0();
+        strIcon = reinterpret_cast<Unk_PrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath();
     pObj->FUN_1407cb9c0("rank", nRank);
     {
         CStringW strRank(L"-");
         if (pEntry->FUN_141343860() && pEntry->m_bOnline)
-            strRank = FUN_1401ceea0(L"{0}", nRank);
+            strRank = StringFormat<int>(L"{0}", nRank);
         pObj->FUN_1407cbb20("charName", pEntry->m_strName);
         pObj->FUN_1407cbb20("rankText", strRank);
         pObj->FUN_1407cb9c0("score", pEntry->m_nScore);

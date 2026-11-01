@@ -12,13 +12,18 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (same ones the other xml table loaders use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140345b40(); Unk_140165cf0* NextSiblingElement(); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);   // string attribute
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);                     // integer attribute
 int FUN_1406516b0();                                                      // current language id
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
@@ -139,7 +144,7 @@ int CSoundDataTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"failed to read {0}", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -313,13 +318,13 @@ int CSoundDataTable::ParseSection(Unk_140165cf0* pRoot, const char* pszTag, int 
         MS2_ASSERT_AT(0x50, 0);
         return 0;
     }
-    Unk_140165cf0* pSection = pRoot->FUN_140165cf0(pszTag);
+    Unk_140165cf0* pSection = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszTag));
     if (pSection == 0)
         return 0;
     for (Unk_140165cf0* pElem = pSection->FUN_140345b40(); pElem != 0; pElem = pElem->NextSiblingElement())
     {
         CString strId;
-        strId = FUN_14015f710(pElem, "id", CString(""));
+        strId = Unk_ReadString((class Unk_XmlNode*)(pElem), "id", CString(""));
         int nLengthMs = FUN_140197350(pElem, "lengthms", 0);
         CSoundDataEntry* pEntry = &map[strId];
         pEntry->nType = nType;

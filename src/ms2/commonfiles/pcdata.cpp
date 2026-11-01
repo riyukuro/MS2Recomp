@@ -162,7 +162,7 @@ CPCDataPack::~CPCDataPack()
 }
 
 // @0x14071f580
-void CPCDataPack::FUN_14071f580(COutputStream& out)
+void CPCDataPack::Write(COutputStream& out)
 {
     out.WriteInt64(m_n18);
     out.WriteInt64(m_n20);
@@ -180,7 +180,7 @@ void CPCDataPack::FUN_14071f580(COutputStream& out)
 }
 
 // @0x14071f710
-void CPCDataPack::FUN_14071f710(CInputStream& in)
+void CPCDataPack::Read(CInputStream& in)
 {
     m_n18 = in.ReadInt64();
     m_n20 = in.ReadInt64();
@@ -201,8 +201,8 @@ void CPCDataPack::FUN_14071f710(CInputStream& in)
 void CPCDataPack::FUN_14071f8a0(CPCData* pData)
 {
     CByteBuffer buf;
-    m_bufRecord.FUN_140720c30(buf);
-    buf.FUN_140720e90(0);
+    m_bufRecord.AppendRemainingTo(buf);
+    buf.SetOffset(0);
     pData->FUN_14071ec80(buf);
 }
 
@@ -221,7 +221,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
     for (int i = 0; i < nEquip; i++) {
         const MS2Ptr<CItem>& spItem = aEquip.GetAt(i);
         m_bufItems.WriteInt32(spItem->FUN_1405276c0());
-        m_bufItems.WriteInt64(spItem->FUN_140526a50());
+        m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
         m_bufItems.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufItems);
@@ -240,7 +240,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
     for (int j = 0; j < nMore; j++) {
         const MS2Ptr<CItem>& spItem = aMore.GetAt(j);
         m_bufItems.WriteInt32(spItem->FUN_1405276c0());
-        m_bufItems.WriteInt64(spItem->FUN_140526a50());
+        m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
         m_bufItems.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufItems);
@@ -251,7 +251,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
         const MS2Ptr<CItem>& spItem = aExtra.GetAt(k);
         m_bufExtra.WriteUInt8(spItem->FUN_140526b50());
         m_bufExtra.WriteInt32(spItem->FUN_1405276c0());
-        m_bufExtra.WriteInt64(spItem->FUN_140526a50());
+        m_bufExtra.WriteInt64(spItem->GetItemUid());
         m_bufExtra.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufExtra);
     }
@@ -273,8 +273,8 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         }
         spItem->FUN_140526c10(nRarity);
         spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufItems));
-        spItem->FUN_140526a70(nUid);
-        spItem->FUN_140526b30(0);
+        spItem->SetItemUid(nUid);
+        spItem->SetObjectId(0);
         aEquip.Add(spItem);
     }
     bTimed = m_bufItems.ReadBool();
@@ -292,8 +292,8 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         }
         spItem->FUN_140526c10(nRarity);
         spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufItems));
-        spItem->FUN_140526a70(nUid);
-        spItem->FUN_140526b30(0);
+        spItem->SetItemUid(nUid);
+        spItem->SetObjectId(0);
         spItem->FUN_14052a130(2);
         aMore.Add(spItem);
     }
@@ -308,8 +308,8 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
             return;
         }
         spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufExtra));
-        spItem->FUN_140526a70(nUid);
-        spItem->FUN_140526b30(0);
+        spItem->SetItemUid(nUid);
+        spItem->SetObjectId(0);
         aExtra.Add(spItem);
     }
 }
@@ -345,14 +345,14 @@ Unk_Crc32::~Unk_Crc32()
 
 // @0x140720c30 The exe calls the const CAtlArray::operator[] (0x140517f50) on this+0x18 directly, so the member is
 // probably const there. Making it const means changing the shared stream.h declaration, so that is left for now.
-void CByteBuffer::FUN_140720c30(CByteBuffer& dest)
+void CByteBuffer::AppendRemainingTo(CByteBuffer& dest)
 {
     unsigned nCount = m_uLength - m_uOffset;
     dest.WriteBytes(&m_aByteBuff.GetAt(0) + m_uOffset, nCount);
 }
 
 // @0x140720e90
-void CByteBuffer::FUN_140720e90(unsigned uOffset)
+void CByteBuffer::SetOffset(unsigned uOffset)
 {
     if (uOffset <= m_uLength) {
         m_uOffset = uOffset;

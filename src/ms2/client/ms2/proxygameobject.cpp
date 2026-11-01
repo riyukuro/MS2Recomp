@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1416c1cc0-0x1416c2c00 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\proxygameobject.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2/placeholder/cproxygameobject.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -15,8 +16,9 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern __int64 DAT_143ab2828;                                       // the "self" object pointer
-extern Vector3 DAT_143b01a60;                               // the zero point
-extern int DAT_143b059e8;
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(int*)&egf::g_bapiContext)          // C3: was extern int DAT_143b059e8
 
 class Unk_ProxyTarget                                               // what handle +0x18 points at
 {

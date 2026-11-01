@@ -35,7 +35,7 @@ public:
     void FUN_1409adbe0(const char*, Scaleform::GFx::Value);
     template<class T> void Set(const char* name, T value) {
         ASData args;
-        args.FUN_1422b8370(value);
+        args.AddSize(value);
         SetValue(m_value, name, args.FUN_1422b9260());
     }
 private:
@@ -362,7 +362,7 @@ CString UIRpsEventDialog::FUN_140e83120(int itemId) {
     if (!itemId) return "";
     MS2Ptr<CItemData> item = FUN_14053f870(itemId);
     if (item.IsNull()) return "";
-    return item->FUN_14053fdd0();
+    return item->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x140e83120, UIRpsEventDialog, FUN_140e83120, 211, 0x281900C9);
 // @0x140e83200
@@ -406,7 +406,7 @@ void UIRpsEventDialog::FUN_140e83370(MS2Ptr<Unk_RpsEvent> event) {
             obj.FUN_1409c0d20("itemID", entry.itemId);
             obj.FUN_1409adc90("itemRank", (&entry.rank)->vfunc_1());
             obj.FUN_1409c0d20("itemCount", entry.count);
-            obj.FUN_1407cbbe0("itemPiece", item->FUN_14053d990());
+            obj.FUN_1407cbbe0("itemPiece", item->IsPieceItem());
             obj.FUN_1407cba60("iconPath", FUN_140e83120(entry.itemId));
             items.FUN_1422bc050(obj.FUN_1422bb870());
         }

@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/citemdata.h"
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (callee destroys)
@@ -37,7 +38,6 @@ class Unk_EquipItemPtr
 public:
     Unk_EquipItemPtr(const Unk_EquipItemPtr& o) : m_00(o.m_00), m_08(o.m_08) { if (m_08) CPtred::AddRefPtred(static_cast<CPtred*>(m_08)); }   // 0x1403bb3b0
     ~Unk_EquipItemPtr();                                                    // 0x1401b50d0
-    Unk_ItemEquipData* FUN_1401b52a0() const;
     void* m_00; void* m_08;
 };
 
@@ -139,7 +139,7 @@ MS2_REPLACE_METHOD(0x140E2A740, UIEquipIconContainer, FUN_140e2a740, 145, 0xCB8B
 // @0x140e2a7e0
 int UIEquipIconContainer::FUN_140e2a7e0(Unk_EquipItemPtr pItem)
 {
-    if (!pItem.FUN_1401b52a0()->FUN_14053d510())
+    if (!reinterpret_cast<Unk_ItemEquipData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(pItem).operator->())->FUN_14053d510())
         return 0;
     MS2Ptr<ASEquipIcon> pA = FUN_140e2a740(4);
     MS2Ptr<ASEquipIcon> pB = FUN_140e2a740(5);

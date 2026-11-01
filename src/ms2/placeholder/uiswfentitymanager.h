@@ -48,8 +48,8 @@ public:
     virtual void vfunc_21(void* p, float x, float y, float f);                                  // 21 mouse wheel: slot 39
 
     void FUN_1422d0bf0(bool b);                                                                 // m_09 (no loads while set)
-    int FUN_1422d0c10(MS2Ptr<UISceneEntity> p);                                                 // register a scene (UISceneEntity ctor)
-    int FUN_1422d0cd0(MS2Ptr<UISwfEntity> p);                                                   // register (UISwfEntity ctor)
+    int AddScene(MS2Ptr<UISceneEntity> p);                                                 // register a scene (UISceneEntity ctor)
+    int AddEntity(MS2Ptr<UISwfEntity> p);                                                   // register (UISwfEntity ctor)
     int FUN_1422d0dc0(MS2Ptr<UISwfEntity> p);                                                   // unregister (unloads it)
     void FUN_1422d0fb0();                                                                       // unload and drop everything
     void FUN_1422d1180();                                                                       // reload every entity (FUN_1422dc1e0)
@@ -65,12 +65,12 @@ public:
     void FUN_1422d2020();                                                                       //   then this
     void FUN_1422d21b0();                                                                       // all entities: slot 19
     void FUN_1422d2250();                                                                       // drop the pending unloads
-    UISwfEntity* FUN_1422d40b0(int nId);                                                        // the scene of a scene id
+    UISwfEntity* FindSceneById(int nId);                                                        // the scene of a scene id
     MS2Ptr<UISwfEntity> GetUISwfEntity(const CString& strName);                                 // a movie by key (else by class name)
     UISwfEntity* FUN_1422d4380(const CString& strName);                                         // an entity by class name (trimmed, no case)
     MS2Ptr<UISwfEntity> FUN_1422d4580(const CString& strName);                                 // an entity by key (trimmed, no case)
-    void FUN_1422d4780(UISwfEntity* p, int nLayer);                                             // add to a layer
-    void FUN_1422d4840(UISwfEntity* p, int nLayer);                                             // remove from a layer (and layer 1)
+    void AddToLayer(UISwfEntity* p, int nLayer);                                             // add to a layer
+    void RemoveFromLayer(UISwfEntity* p, int nLayer);                                             // remove from a layer (and layer 1)
     void FUN_1422d48f0(UISwfEntity* p, int nLayer);                                             // bring to the top (uimessagebox.cpp)
     UISwfEntity* FUN_1422d4980(int nLayer);                                                     // the dialog on top of a layer
     void FUN_1422d49f0();                                                                       // toggle m_0a

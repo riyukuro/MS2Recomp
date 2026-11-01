@@ -102,13 +102,14 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // The TinyXML attribute readers (commonfiles\xmldata).
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 // The string splitters (commonstringtable.cpp / chapterbooktable.cpp).
-void FUN_14025a680(const CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);
+void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);
 void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* pszDelims);
 
 // @0x1402e1b80
@@ -159,12 +160,12 @@ bool GameEvent::LoadXml(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "gameEventID", *(unsigned int*)&static_cast<int&>(m_id));
     XmlGetAttr((class TiXmlElement*)(pElem), "eventStart", m_28);
     XmlGetAttr((class TiXmlElement*)(pElem), "eventEnd", m_38);
-    FUN_140873420(pElem, "value1", m_68);
-    FUN_140873420(pElem, "value2", m_70);
-    FUN_140873420(pElem, "value3", m_78);
-    FUN_140873420(pElem, "value4", m_80);
-    FUN_140873420(pElem, "partTime", m_90);
-    FUN_140873420(pElem, "dayOfWeek", m_b8);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", m_68);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value2", m_70);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value3", m_78);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value4", m_80);
+    XmlGetAttr((class TiXmlElement*)(pElem), "partTime", m_90);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dayOfWeek", m_b8);
     m_88 = 0;
     m_68.Trim();
     m_70.Trim();
@@ -459,7 +460,7 @@ bool GameEvent::ParsePartTime(const CStringW& text, ATL::CAtlArray<Unk_DayTimeRa
     {
         Unk_DayTime zero(0, 0, 0);
         ATL::CAtlArray<CStringW> tokens;
-        FUN_14025a680(text, tokens, L",");
+        FUN_14025a680(const_cast<CStringW&>(text), tokens, L",");
         for (int i = 0; i < (int)tokens.GetCount(); i++) {
             CStringW& token = tokens[i];
             ATL::CAtlArray<CStringW> parts;

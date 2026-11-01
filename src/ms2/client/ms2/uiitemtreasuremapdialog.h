@@ -48,7 +48,6 @@ public:
     bool FUN_140c57a70(MS2Ptr<CItem> spItem);                        // 0x140c57a70 is a treasure map (the callee drops spItem)
     void FUN_140c57b50();                                            // 0x140c57b50 drop the children
     MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);   // 0x140c57ce0 bind a movie clip child
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);       // movie clip child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

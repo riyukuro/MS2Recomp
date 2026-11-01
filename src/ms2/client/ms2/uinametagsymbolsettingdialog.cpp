@@ -156,13 +156,13 @@ void UINameTagSymbolSettingDialog::OnLoadComplete()
                                                                        info.operator->()->m_38,
                                                                        CString("tooltipDescription")));
             }
-            spList.operator->()->FUN_1422dd230(row);
+            spList.operator->()->AddItem(row);
             if (nId == ((class PCBase*)(struct Unk_NtPlayer*)(pPlayer))->FUN_141661e00())
                 nSelected = nRow;
             ++nRow;
         }
         spList.operator->()->vfunc_24(true);
-        spList.operator->()->FUN_1422dcca0(nSelected);
+        spList.operator->()->SetSelectedIndex(nSelected);
     }
 }
 MS2_REPLACE_METHOD(0x14131DA30, UINameTagSymbolSettingDialog, OnLoadComplete, 1203, 0x2FB46A41);

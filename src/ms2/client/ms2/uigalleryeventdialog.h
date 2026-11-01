@@ -55,9 +55,9 @@ public:
     int FUN_140c17560();
     void FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext>);
     void FUN_140c17d20(Unk_GalleryPtr<Unk_GalleryContext>);
-    void FUN_140c181a0(int);
-    void FUN_140c18330();
-    void FUN_140c18460();
+    void UpdateQuestState(int);
+    void UpdateOpenCount();
+    void UpdateBoardRewardButton();
     void SendEventRewardMode7(int);
     void SendEventRewardMode8(int);
     void SendEventRewardMode9();
@@ -66,7 +66,7 @@ public:
     int FUN_140c18ab0(int);
     int FUN_140c18c60(int);
     void FUN_140c18e10(int, int);
-    bool FUN_140c18f10();
+    bool CheckEventContext();
     virtual int vfunc_48() { return 20313; }
 private:
     MS2_LAYOUT_FRIEND;

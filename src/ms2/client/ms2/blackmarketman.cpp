@@ -29,14 +29,15 @@ class Unk_BmUIService { public:  void FUN_141adc530(int nClass); };
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW BlockFormat(int nId);
-CStringW FUN_1408116a0(int nId, const int& nValue);     // text of an id with one number
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strExtra);
 void FUN_141275260(int, int, int);
 void FUN_141275460(int, int, int, const fmt::ArgList& args);
 void FUN_1412751f0(const CStringW& strText, int, int);
 void FUN_1412751b0(const CStringW& strText, int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // The client constants block: a table of readable values; the exe reads one at +0x6aa8.
@@ -89,7 +90,7 @@ UIBlackMarketDialog* FUN_140a22f10(int nClass)
 {
     if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIBlackMarketDialog*>(spObj.operator->());
     }
@@ -469,7 +470,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
             FUN_141275260(0x87, 1, 1);
         break;
     case 21:
-        FUN_140d73aa0(FUN_1408116a0(0x933, 0x1c), 0, 0, CStringW(L""));
+        FUN_140d73aa0(BlockFormat<int>(0x933, 0x1c), 0, 0, CStringW(L""));
         break;
     case 5:
         FUN_140d73bc0(0x934, 0, 0, CStringW(L""));

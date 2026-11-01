@@ -16,7 +16,7 @@
 void* FUN_1402bcfa0(void* out, unsigned long v);        // Unk_Hex32::Unk_Hex32(ulong)
 void* FUN_1402bd000(void* out, int v);                  // Unk_Fixed32::Unk_Fixed32(int)
 __int64 FUN_14028d260(float v);                             // float -> fixed
-void FUN_14015f050(const CString* s, void* out, const char* sep);   // split into CAtlArray<CString>
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void* FUN_140163230(void* arr);                         // CAtlArray<CString>::CAtlArray
 void FUN_1401641d0(void* arr);                          // CAtlArray<CString>::~CAtlArray
 const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
@@ -86,7 +86,7 @@ CMsTime FUN_140718920(const CString& s) { return CMsTime(); }
 // @0x140718950
 CMsTime FUN_140718950(const CString& s) {
     CAtlArray<CString> parts;
-    FUN_14015f050(&s, &parts, "-");
+    Unk_SplitA(*const_cast<CStringA*>(&s), (ATL::CAtlArray<CStringA>*)(&parts), "-");
     int six = 6;
     int vals[6] = {0};
     int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();
@@ -114,7 +114,7 @@ ATL::CTimeSpan FUN_140718cd0(const CString& s) { return ATL::CTimeSpan(); }
 // @0x140718d00
 ATL::CTimeSpan FUN_140718d00(const CString& s) {
     CAtlArray<CString> parts;
-    FUN_14015f050(&s, &parts, "-");
+    Unk_SplitA(*const_cast<CStringA*>(&s), (ATL::CAtlArray<CStringA>*)(&parts), "-");
     int six = 6;
     int vals[6] = {};
     int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();

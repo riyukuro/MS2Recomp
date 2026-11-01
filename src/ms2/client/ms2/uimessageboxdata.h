@@ -159,11 +159,11 @@ public:
     int FUN_141a034d0(ASObj& obj);                                  // fill the AS object the movie shows
     int FUN_141a04900();                                            // countdown still running (or none)
     int FUN_141a049a0() const;                                      // has a countdown
-    int FUN_141a049d0() const;                                      // the countdown is over
+    int IsTimerExpired() const;                                      // the countdown is over
     int FUN_141a04a30();                                            // arm the movie when it has a priority object
     const Unk_MsgBoxTimer& GetTimer() const;                   // the pressed-button record
-    bool FUN_141a04aa0();                                           // check box 0 state
-    bool FUN_141a04c20();                                           // check box 1 state
+    bool IsCheckbox0Checked();                                           // check box 0 state
+    bool IsCheckbox1Checked();                                           // check box 1 state
     CStringW FUN_141a04da0();                                 // the text input's text
     void FUN_141a050b0();                                           // set the layout and the sound event
     void FUN_141a051e0(ASObj& obj);                                 // type specific members
@@ -179,12 +179,12 @@ public:
     void FUN_141a05f30(ASObj& obj);                                 // clubbuff
     void FUN_141a06250(ASObj& obj);                                 // input_reset
     void FUN_141a063e0(ASObj& obj);                                 // input_multi
-    bool FUN_141a07140(unsigned int nIndex, CString& strOut) const; // the nIndex-th argument as a string
-    bool FUN_141a071e0(unsigned int nIndex, bool& bOut) const;      // the nIndex-th argument as a bool
+    bool GetStringArg(unsigned int nIndex, CString& strOut) const; // the nIndex-th argument as a string
+    bool GetBoolArg(unsigned int nIndex, bool& bOut) const;      // the nIndex-th argument as a bool
 
     // 0x141a01800 / 0x141a014d0 / 0x141a01480 / 0x141a03070 live in uimessagebox.cpp's range.
     void FUN_141a01800(int n);
-    bool FUN_141a01480();
+    bool HasCallback();
     bool FUN_141a014d0(int n, Scaleform::GFx::Value* pMovie);
     bool IsModaless() const;
     int FUN_141a02e50(int nIndex, int nDefault) const;              // the nIndex-th argument as an int
@@ -201,22 +201,25 @@ public:
     void FUN_141a024a0(int n);
     void FUN_141a024c0();                                           // m_20f = true
     void SetAgreement(bool b);
-    void FUN_141a02770(int nWidth, int nHeight);
+    void SetSize(int nWidth, int nHeight);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void FUN_141a01700(int nA, int nB, int nC);
-    void FUN_141a020b0(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
+    void SetItemById(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
     void SetStrike(const CStringW& str);
     void SetSound(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)
-    void FUN_141a02670(bool b);
-    void FUN_141a024e0(CStringW str, bool bSelected);               // check box 0 label and state
-    void FUN_141a02560(CStringW str, bool bSelected);               // check box 1 label and state (skill window reset)
+    void SetCheckbox0Enabled(bool b);
+    void SetCheckbox0(CStringW str, bool bSelected);               // check box 0 label and state
+    void SetCheckbox1(CStringW str, bool bSelected);               // check box 1 label and state (skill window reset)
     void FUN_141a026f0(bool b);                                     // a check is required (skill window reset)
-    void FUN_140533ff0(int n);                                      // appends an int argument (COMDAT outside this class' range)
+    // Appends a message argument: inline COMDATs Append<int> 0x140533ff0, Append<unsigned> 0x140534050, Append<__int64>
+    // 0x1405340b0 (the bodies are in itembreakmanager.cpp).
+    template <class T> void Append(T v);
+    void FUN_140533ff0(int n);                                      // C3: alias of Append<int>, goes once its callers move
     void FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode);   // the character card (uiguilddialog.cpp: change master / expel)
     // Reads argument nIndex back (int: 0x140be25f0, defined in uiclosetdialog.cpp); false when there are fewer arguments.
     template <class T> bool GetArg(unsigned nIndex, T& out) const;
-    void FUN_1405340b0(__int64 n);                                  // appends an __int64 argument (scenestategame.cpp, w97)
-    void FUN_141a01e60(MS2Ptr<CMsgBoxDataItem> spItem);             // add an item entry (the callee destroys it; uiblackmarketpage.cpp)
+    void FUN_1405340b0(__int64 n);                                  // C3: alias of Append<__int64>, goes once its callers move
+    void SetItem(MS2Ptr<CMsgBoxDataItem> spItem);             // add an item entry (the callee destroys it; uiblackmarketpage.cpp)
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)
     void FUN_141a02860(void* p);                                    // unit_140dfef30: the listener of the box (leaveInField)
     void FUN_140e01830(__int64 n);                                  // appends an __int64 argument as text (unit_140dfef30)
@@ -262,10 +265,10 @@ public:
     void SetMsg2(const CStringW& str);                        // msg2
     void SetAlign(int nAlign);                                 // the text align (4: none)
     void FUN_141a01bc0(int nSound);                                 // the sound event by id (FUN_141a06ff0)
-    void FUN_141a02220(MS2Ptr<CMsgBoxDataItem> spItem);             // the second item entry (the callee destroys it)
-    void FUN_141a025e0(CStringW strLabel0, CStringW strLabel1);     // both check box labels
+    void SetSecondItem(MS2Ptr<CMsgBoxDataItem> spItem);             // the second item entry (the callee destroys it)
+    void SetCheckboxLabels(CStringW strLabel0, CStringW strLabel1);     // both check box labels
     void SetRetraction(int n);                                      // the retraction value
-    void FUN_141a02880(int nBuffId, short nLevel, CStringW strExtra);   // buffNotify: the buff and its description
+    void SetBuff(int nBuffId, short nLevel, CStringW strExtra);   // buffNotify: the buff and its description
     void FUN_141a029b0(const Unk_MsgBoxBuff& buff);                 // buffNotify: copy the buff record
     void FUN_141a02a30(const ATL::CAtlArray<ItemEntity>& items);    // the required items
     void FUN_141a02a70(CStringW strTitle, CString strUrl);          // the hyper link

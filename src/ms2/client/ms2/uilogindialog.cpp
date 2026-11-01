@@ -29,6 +29,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
 CString DAT_143af37a0;
@@ -44,15 +48,13 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 class Unk_LoginInput : public ASDisplayObject
 {
 public:
-    CStringW FUN_1422e0b00();                                   // the text
     void FUN_1422e1500(int n1, int n2);                         // set the selection
 };
 
 // The "m_chkLocaledName" check box.
-class Unk_LoginCheck : public ASDisplayObject
+class Unk_LoginCheck : public ASButton
 {
 public:
-    void FUN_1422ce090(int bChecked);
     unsigned char FUN_1422ce0e0();
 };
 
@@ -126,7 +128,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
-class Unk_LoginKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_LoginKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The scene manager and the web page opener.
@@ -181,15 +183,15 @@ UILoginDialog::UILoginDialog()
     m_80 = 0;
     FUN_1422dc3b0(1);
     FUN_141925e70(0, 1);
-    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da5180(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da5180(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0e80
 UILoginDialog::~UILoginDialog()
 {
-    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da51e0(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    ((class Unk_LoginPackets*)FUN_140bccd50())->FUN_140da51e0(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0ff0
@@ -310,7 +312,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
                     if (spInput.get() != 0)
-                        spInput->FUN_1422e1500(0, spInput->FUN_1422e0b00().GetLength());
+                        spInput->FUN_1422e1500(0, reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText().GetLength());
                 }
             }
         }
@@ -452,7 +454,7 @@ CString UILoginDialog::FUN_1419e2370()
     {
         MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
         if (spInput.get() != 0)
-            return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+            return FUN_14016a600(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText(), 0);
     }
     return "";
 }
@@ -463,7 +465,7 @@ CString UILoginDialog::FUN_1419e2450()
     {
         MS2Ptr<Unk_LoginInput> spInput = FUN_1419e25e0();
         if (spInput.get() != 0)
-            return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+            return FUN_14016a600(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText(), 0);
     }
     return "";
 }

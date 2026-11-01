@@ -31,6 +31,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -92,7 +93,6 @@ int FUN_141659690(Unk_UhpPc* pPc);
 class Unk_UhpUIService
 {
 public:
-    int FUN_141adc940(int nId);                                 // the dialog is closed
     void FUN_141adc530(int nId);                                // close
 };
 
@@ -137,7 +137,7 @@ template <class T> T* GetUIDialog(int nId)
 {
     if (reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -225,13 +225,13 @@ int UIUGCHousingPointDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         OnRewardItem();
         return 1;
     } else if (_stricmp("OnOpenLeisureGroup", szMethod) == 0) {
-        if (reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f1e)) {
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f1e)) {
             UIMasteryDialog* pDialog = GetUIDialog<UIMasteryDialog>(0x4f1e);
             if (pDialog != 0)
                 reinterpret_cast<UIMasteryDialog*>(pDialog)->SetMainTab(2, 8);
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f1e)));
         } else {
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f1e);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f1e);
         }
         return 1;
     }
@@ -344,7 +344,7 @@ void UIUGCHousingPointDialog::vfunc_84()
     bool bExtend = true;
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe4))
         bShrink = false;
-    if (((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(99) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
     ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 1, &nNpcCount, &nNpcLimit);
     ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 2, &nPortalCount, &nPortalLimit);

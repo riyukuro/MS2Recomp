@@ -24,9 +24,9 @@ public:
     void FUN_14126fea0(CInputStream& stream, int nOwner);   // 0x14126fea0 read the worn gem items of a packet
     void FUN_141270030(int nGemType, MS2Ptr<CItem> spItem); // 0x141270030 store the item at the index of the type
     unsigned FUN_1412700b0();                               // 0x1412700b0 number of slots
-    int FUN_1412700e0(ATL::CAtlArray<MS2Ptr<CItem> >& out);   // 0x1412700e0 copy of the items; nonempty
+    int GetItems(ATL::CAtlArray<MS2Ptr<CItem> >& out);   // 0x1412700e0 copy of the items; nonempty
     MS2Ptr<CItem> FUN_141270140(int nGemType);              // 0x141270140 the item worn for a gem type (checks its type)
-    bool FUN_141270290(int nItemId);                        // 0x141270290 an item with this item id is worn
+    bool HasItemId(int nItemId);                        // 0x141270290 an item with this item id is worn
     CGemTransparency* FUN_141270360(unsigned char nIndex);  // 0x141270360 the transparency gem (type 1) of slot nIndex
     CGemTransparency* FUN_141270460();                      // 0x141270460 the first transparency gem
     void FUN_1412704d0();                                   // 0x1412704d0 apply the worn gems (CItemGem::vfunc_5)
@@ -38,7 +38,7 @@ public:
     MS2Ptr<CItem> FUN_141270ab0(int nGemType);              // 0x141270ab0 take the item of a type off
     bool FUN_141270bf0(MS2Ptr<CItem> spItem);               // 0x141270bf0 put the gem item on
     bool FUN_141270cd0(int nGemType, MS2Ptr<CItem> spItem); // 0x141270cd0 put the item on at a type
-    void FUN_141270e00(PCGemEquip& other);                  // 0x141270e00 copy the items of another equipment
+    void CopyFrom(PCGemEquip& other);                  // 0x141270e00 copy the items of another equipment
     void FUN_141270f10(ATL::CAtlArray<MS2Ptr<CItem> >& items, int n);   // 0x141270f10 take the worn items from a list
     bool FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect);   // 0x141271090 start the effect of a gem item
     void FUN_1412711e0(MS2Ptr<CItem> spItem);               // 0x1412711e0 stop it

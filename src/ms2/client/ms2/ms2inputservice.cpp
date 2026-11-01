@@ -19,6 +19,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2inputservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "ms2inputservice.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/nipoint3.h"
@@ -33,6 +34,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- out-of-unit callees ----
 
@@ -47,12 +49,6 @@ public:
     bool m_bFlag;
 };
 
-class Unk_140a94350                                     // IME / cursor controller
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
-};
-Unk_140a94350* FUN_140a94350();
 
 class Unk_SettingsHolder;                               // option flags
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -69,7 +65,7 @@ public:
     int FUN_141430b10(__int64 pBinding);
     void FUN_141429e60(const CString& strFile);
 };
-Unk_KeyBindings* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_KeyBindings (calls cast back)
 
 UIMainPlayerInfo* FUN_140931900(int nId);
 
@@ -103,7 +99,7 @@ class Unk_EventSink : public CBigDataLogSystem { };
 extern int DAT_143af7d40;                               // input enabled
 extern float DAT_143ac30a8;                             // last stick x
 extern float DAT_143ac30ac;                             // last stick y
-extern Vector3 DAT_143b01a60;                          // zero vector
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Unk_EventSink* DAT_143ab5c70;                    // UI event sink
 
 class CMsgBoxData : public CPtred
@@ -170,7 +166,7 @@ efd::AsyncResult MS2InputService::OnInit()
         if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xb5) == 1)
             reinterpret_cast<MS2NiInputSystemAccess*>(pInput)->FUN_140d8f490(true);
     }
-    FUN_140a94350()->vfunc_1();
+    ChromaSDK::GetChromaManager()->Initialize();
     if (result == efd::AsyncResult_Failure)
         result = efd::AsyncResult_Complete;
     return result;
@@ -182,7 +178,7 @@ efd::AsyncResult MS2InputService::OnTick()
 {
     if (m_nPadEnabled != 0)
     {
-        FUN_140d8c230();
+        UpdateRumble();
         if (m_nCursorMode != 0)
         {
             if (m_spGamePad)
@@ -229,7 +225,7 @@ efd::AsyncResult MS2InputService::OnTick()
         if (m_spGamePad)
         {
             if (m_spGamePad->ButtonWasPressed((NiInputGamePad::Button)FUN_140d8c0a0(0xc3507)))
-                FUN_140d8bd00();
+                ToggleCursorMode();
         }
         else
         {
@@ -239,7 +235,7 @@ efd::AsyncResult MS2InputService::OnTick()
     else
     {
         if (m_nRumbleActive != 0)
-            FUN_140d8b560(false);
+            StopRumble(false);
     }
     return InputService::OnTick();
 }
@@ -248,7 +244,7 @@ MS2_REPLACE_METHOD(0x140D8A880, MS2InputService, OnTick, 789, 0xA91F074C);
 // @0x140d8aba0
 efd::AsyncResult MS2InputService::OnShutdown()
 {
-    FUN_140a94350()->vfunc_2();
+    ChromaSDK::GetChromaManager()->Finalize();
     m_spKeyboard = 0;
     m_spMouse = 0;
     m_spGamePad = 0;
@@ -263,7 +259,7 @@ bool MS2InputService::FUN_140d8ac50(int nKey, int bAllowGroup)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    int nPacked = FUN_140d8b600(nKey);
+    int nPacked = IsComboKeyDown(nKey);
     if (nPacked == 1)
         return true;
     if (bAllowGroup == 0 && 0x91 < nKey && nKey < 0xa2)
@@ -274,10 +270,10 @@ bool MS2InputService::FUN_140d8ac50(int nKey, int bAllowGroup)
             {
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = FUN_1409331f0()->FUN_14142d190(nSlot);
+                __int64 pBinding = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142d190(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
+                if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141430b10(pBinding) == 0)
                     return true;
                 return false;
             }
@@ -317,10 +313,10 @@ bool MS2InputService::FUN_140d8ad60(int nKey)
                 }
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = FUN_1409331f0()->FUN_14142d190(nSlot);
+                __int64 pBinding = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142d190(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
+                if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141430b10(pBinding) == 0)
                 {
                     if (FUN_140d8cd50(nSlot))
                         return true;
@@ -397,7 +393,7 @@ bool MS2InputService::WasMouseButtonReleased(int nButton)
 MS2_REPLACE_METHOD(0x140D8B0D0, MS2InputService, WasMouseButtonReleased, 90, 0x946DB23B);
 
 // @0x140d8b130
-bool MS2InputService::FUN_140d8b130(int* pnX, int* pnY, int* pnZ)
+bool MS2InputService::GetMouseDelta(int* pnX, int* pnY, int* pnZ)
 {
     if (DAT_143af7d40 == 0)
         return false;
@@ -411,23 +407,23 @@ bool MS2InputService::FUN_140d8b130(int* pnX, int* pnY, int* pnZ)
     }
     return m_spMouse->GetPositionDelta(*pnX, *pnY, *pnZ);
 }
-MS2_REPLACE_METHOD(0x140D8B130, MS2InputService, FUN_140d8b130, 189, 0x76EAE117);
+MS2_REPLACE_METHOD(0x140D8B130, MS2InputService, GetMouseDelta, 189, 0x76EAE117);
 
 // @0x140d8b200
-bool MS2InputService::FUN_140d8b200(int nKey)
+bool MS2InputService::InjectKeyPress(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    if (FUN_140d8b7e0(nKey))
+    if (InjectComboKeyPress(nKey))
         return true;
     return FUN_140d8d840(nKey);
 }
-MS2_REPLACE_METHOD(0x140D8B200, MS2InputService, FUN_140d8b200, 70, 0xD71B8A8F);
+MS2_REPLACE_METHOD(0x140D8B200, MS2InputService, InjectKeyPress, 70, 0xD71B8A8F);
 
 // @0x140d8b250
 bool MS2InputService::InjectKeyRelease(int nKey)
 {
-    if (FUN_140d8b870(nKey))
+    if (InjectComboKeyRelease(nKey))
         return true;
     return FUN_140d8db30(nKey);
 }
@@ -436,7 +432,7 @@ MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, InjectKeyRelease, 57, 0x5191D96
 // @0x140d8b290
 int MS2InputService::FUN_140d8b290(int nKey)
 {
-    if (FUN_1409331f0()->FUN_141431a30(nKey))
+    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a30(nKey))
         return nKey;
     return 0;
 }
@@ -445,7 +441,7 @@ MS2_REPLACE(0x140D8B290, MS2InputService::FUN_140d8b290, 42, 0x6B27C144);
 // @0x140d8b2c0
 int MS2InputService::FUN_140d8b2c0(int nKey)
 {
-    if (FUN_1409331f0()->FUN_141431a60(nKey))
+    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a60(nKey))
         return nKey - 200;
     return -1;
 }
@@ -454,7 +450,7 @@ MS2_REPLACE(0x140D8B2C0, MS2InputService::FUN_140d8b2c0, 50, 0x886E2638);
 // @0x140d8b300
 int MS2InputService::FUN_140d8b300(int nKey)
 {
-    if (FUN_1409331f0()->FUN_141431a90(nKey) != 0 && nKey < 0xa2)
+    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a90(nKey) != 0 && nKey < 0xa2)
     {
         nKey = FUN_140a58540()->FUN_140d8c150(nKey);
         return nKey - 0x92;
@@ -485,19 +481,19 @@ bool MS2InputService::FUN_140d8b370() const
 MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, FUN_140d8b370, 106, 0xB57266D3);
 
 // @0x140d8b3e0
-void MS2InputService::FUN_140d8b3e0(double dSeconds)
+void MS2InputService::StartRumbleFor(double dSeconds)
 {
     if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xc3) != 1)
         return;
     m_nRumbleActive = 1;
     m_dRumbleStart = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     m_dRumbleEnd = m_dRumbleStart + dSeconds;
-    FUN_140d8b470();
+    StartRumble();
 }
-MS2_REPLACE_METHOD(0x140D8B3E0, MS2InputService, FUN_140d8b3e0, 131, 0xDE1C9608);
+MS2_REPLACE_METHOD(0x140D8B3E0, MS2InputService, StartRumbleFor, 131, 0xDE1C9608);
 
 // @0x140d8b470
-void MS2InputService::FUN_140d8b470()
+void MS2InputService::StartRumble()
 {
     if (m_spGamePad && m_nRumbling == 0)
     {
@@ -507,10 +503,10 @@ void MS2InputService::FUN_140d8b470()
         m_nRumbling = 1;
     }
 }
-MS2_REPLACE_METHOD(0x140D8B470, MS2InputService, FUN_140d8b470, 219, 0x4A497FFD);
+MS2_REPLACE_METHOD(0x140D8B470, MS2InputService, StartRumble, 219, 0x4A497FFD);
 
 // @0x140d8b560
-void MS2InputService::FUN_140d8b560(bool bQuickStop)
+void MS2InputService::StopRumble(bool bQuickStop)
 {
     if (m_spGamePad && m_nRumbling != 0)
     {
@@ -519,14 +515,14 @@ void MS2InputService::FUN_140d8b560(bool bQuickStop)
         m_spGamePad->StopRumble(bQuickStop);
     }
 }
-MS2_REPLACE_METHOD(0x140D8B560, MS2InputService, FUN_140d8b560, 152, 0xA695DC52);
+MS2_REPLACE_METHOD(0x140D8B560, MS2InputService, StopRumble, 152, 0xA695DC52);
 
 union Unk_PackedKey { int n; struct { unsigned char b0, b1, b2, b3; } b; };
 
 // The packed modifier-group keys: (kind << 16) | (first << 8) | second, kind 0xf0 / 0xf1; first and second are
 // offsets from the first gamepad button id 0x91.
 // @0x140d8b600
-int MS2InputService::FUN_140d8b600(int nKey)
+int MS2InputService::IsComboKeyDown(int nKey)
 {
     Unk_PackedKey key;
     key.n = nKey;
@@ -542,7 +538,7 @@ int MS2InputService::FUN_140d8b600(int nKey)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D8B600, MS2InputService, FUN_140d8b600, 143, 0x47CF2044);
+MS2_REPLACE_METHOD(0x140D8B600, MS2InputService, IsComboKeyDown, 143, 0x47CF2044);
 
 // @0x140d8b6a0
 int MS2InputService::FUN_140d8b6a0(int nKey)
@@ -583,7 +579,7 @@ int MS2InputService::FUN_140d8b740(int nKey)
 MS2_REPLACE_METHOD(0x140D8B740, MS2InputService, FUN_140d8b740, 143, 0xA4A564C8);
 
 // @0x140d8b7e0
-bool MS2InputService::FUN_140d8b7e0(int nKey)
+bool MS2InputService::InjectComboKeyPress(int nKey)
 {
     Unk_PackedKey key;
     key.n = nKey;
@@ -598,10 +594,10 @@ bool MS2InputService::FUN_140d8b7e0(int nKey)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8B7E0, MS2InputService, FUN_140d8b7e0, 130, 0x0E158E32);
+MS2_REPLACE_METHOD(0x140D8B7E0, MS2InputService, InjectComboKeyPress, 130, 0x0E158E32);
 
 // @0x140d8b870
-bool MS2InputService::FUN_140d8b870(int nKey)
+bool MS2InputService::InjectComboKeyRelease(int nKey)
 {
     Unk_PackedKey key;
     key.n = nKey;
@@ -616,10 +612,10 @@ bool MS2InputService::FUN_140d8b870(int nKey)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8B870, MS2InputService, FUN_140d8b870, 130, 0xE2098423);
+MS2_REPLACE_METHOD(0x140D8B870, MS2InputService, InjectComboKeyRelease, 130, 0xE2098423);
 
 // @0x140d8b900
-void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
+void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
 {
     NiInputSystem* pInput = GetInputSystem();
     if (pInput == NULL)
@@ -640,12 +636,12 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
                     FUN_140d73c60(box);
                 }
             }
-            if (FUN_1409331f0()->FUN_14142c940(0x30d41, 2) == 0)
+            if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142c940(0x30d41, 2) == 0)
             {
                 if (FUN_140a58540()->FUN_140d8ee40() == 2)
-                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
+                    reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
                 else
-                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
+                    reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
             }
         }
         else
@@ -657,10 +653,10 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
             FUN_140d8ee90()->SendLog("controller", StringFormat("{0}", m_nPadKind));
     }
 }
-MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, FUN_140d8b900, 1016, 0x66A2098E);
+MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, SetGamePadEnabled, 1016, 0x66A2098E);
 
 // @0x140d8bd00
-void MS2InputService::FUN_140d8bd00()
+void MS2InputService::ToggleCursorMode()
 {
     m_nCursorMode = m_nCursorMode ^ 1;
     Unk_HudPtr hud = ((class Unk_HudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
@@ -677,7 +673,7 @@ void MS2InputService::FUN_140d8bd00()
         hud.FUN_140a584a0()->FUN_1422cee50(0);
     }
 }
-MS2_REPLACE_METHOD(0x140D8BD00, MS2InputService, FUN_140d8bd00, 210, 0x770EEEE7);
+MS2_REPLACE_METHOD(0x140D8BD00, MS2InputService, ToggleCursorMode, 210, 0x770EEEE7);
 
 // @0x140d8bde0
 float MS2InputService::FUN_140d8bde0()
@@ -743,7 +739,7 @@ MS2_REPLACE_METHOD(0x140D8BE40, MS2InputService, FUN_140d8be40, 600, 0x7CBF8EF8)
 // @0x140d8c0a0
 int MS2InputService::FUN_140d8c0a0(__int64 nSetting)
 {
-    int nKey = FUN_1409331f0()->FUN_14142c940(nSetting, 2);
+    int nKey = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142c940(nSetting, 2);
     nKey = FUN_140d8c150(nKey);
     int nSlot = nKey - 0x92;
     return nSlot;
@@ -789,7 +785,7 @@ int MS2InputService::FUN_140d8c150(int nKey)
 MS2_REPLACE_METHOD(0x140D8C150, MS2InputService, FUN_140d8c150, 158, 0x643CAA41);
 
 // @0x140d8c230
-void MS2InputService::FUN_140d8c230()
+void MS2InputService::UpdateRumble()
 {
     double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (m_nRumbleActive == 0)
@@ -804,10 +800,10 @@ void MS2InputService::FUN_140d8c230()
     }
     else
     {
-        FUN_140d8b560(true);
+        StopRumble(true);
     }
 }
-MS2_REPLACE_METHOD(0x140D8C230, MS2InputService, FUN_140d8c230, 171, 0x76B0BCD7);
+MS2_REPLACE_METHOD(0x140D8C230, MS2InputService, UpdateRumble, 171, 0x76B0BCD7);
 
 // @0x140d8c2f0
 Vector3 MS2InputService::FUN_140d8c2f0()
@@ -886,7 +882,7 @@ int MS2InputService::FUN_140d8c660()
 MS2_REPLACE_METHOD(0x140D8C660, MS2InputService, FUN_140d8c660, 38, 0xE5254B11);
 
 // @0x140d8c690
-CStringW MS2InputService::FUN_140d8c690()
+CStringW MS2InputService::GetPadKindName()
 {
     CStringW strName;
     if (FUN_140d8ee40() == 2)
@@ -894,7 +890,7 @@ CStringW MS2InputService::FUN_140d8c690()
     else
         return CStringW(L"xbox");
 }
-MS2_REPLACE_METHOD(0x140D8C690, MS2InputService, FUN_140d8c690, 157, 0x9EF15297);
+MS2_REPLACE_METHOD(0x140D8C690, MS2InputService, GetPadKindName, 157, 0x9EF15297);
 
 // @0x140d8c750
 CStringW MS2InputService::FUN_140d8c750()

@@ -6,6 +6,7 @@
 // MS2-RANGE: 0x1417d5160-0x1417d6c00 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statejump.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <cstdlib>
@@ -44,7 +45,8 @@ extern efd::Point3 DAT_143a08cf8;                          // the up axis
 
 // The animation service: the sequence id of the model.
 class Unk_JpAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
-Unk_JpAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // The efd::Point3 *.
 class Unk_JpConsts { public: char m_pad[0x48e8]; };
@@ -60,10 +62,11 @@ public:
 inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->FUN_14166d220()); }
 
 // The actor's buffs.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_JpBuff
 {
 public:
-    efd::Point3 FUN_141683290();                          // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
 
@@ -157,7 +160,7 @@ void StateJump::vfunc_4(StateData* pData)
     }
 }
 
-extern const NiPoint3 DAT_143b01a60;
+#define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)          // C3: was extern const NiPoint3 DAT_143b01a60
 
 // @0x1417d5700
 // MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
@@ -179,7 +182,7 @@ void StateJump::vfunc_6()
 {
     State::vfunc_6();
     m_n10 = 0x26;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = reinterpret_cast<Unk_JpAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(0x35, nSeq))
     {
         efd::utf8string strAnim(m_pOwner->vfunc_123(0x35));
@@ -235,7 +238,7 @@ void StateJump::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
     Unk_JpBuff* pBuff = (Unk_JpBuff*)m_pOwner->FUN_14166d240();
-    m_pOwner->vfunc_22(pBuff->FUN_141683290());
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x27;
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
@@ -290,7 +293,7 @@ void StateJump::vfunc_9(double fTime)
 {
     static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     State::vfunc_9(fTime);
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = reinterpret_cast<Unk_JpAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
     nLimit += FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
     if (m_pOwner->FUN_141671a30() != 0)

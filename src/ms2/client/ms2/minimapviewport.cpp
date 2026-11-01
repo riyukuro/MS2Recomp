@@ -16,10 +16,9 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 // The world service (0x1403ed2d0); the client field data it hands out (0x141bd30a0).
-class Unk_MvWorld
+class Unk_MvWorld : public WorldService
 {
 public:
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
 
 // efd::Point3 and efd::Matrix3 helpers (all out of line in the exe).
@@ -37,7 +36,7 @@ MinimapViewport::MinimapViewport()
     , m_rcImage(0.0f, 0.0f, 0.0f, 0.0f)
     , m_rcScreen(0.0f, 0.0f, 0.0f, 0.0f)
 {
-    FUN_1414863e0();
+    ResetScale();
 }
 
 // MS2-FUNCTIONAL: exe copies m_vecCamRot twice with rep movsb (local + by-value arg: a trivially copyable point,
@@ -46,7 +45,7 @@ MinimapViewport::MinimapViewport()
 // @0x141485770
 unsigned MinimapViewport::FUN_141485770(int nScale)
 {
-    FUN_1414863e0();
+    ResetScale();
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_MvWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField ? true : false)
     {
@@ -141,7 +140,7 @@ void MinimapViewport::FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& k
 }
 
 // @0x1414863e0
-void MinimapViewport::FUN_1414863e0()
+void MinimapViewport::ResetScale()
 {
     m_fScale = 1.0f;
 }

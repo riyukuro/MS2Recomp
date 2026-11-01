@@ -93,7 +93,7 @@ CString FUN_1410280d0(int nKind, CString strName);          // the local file of
 CString FUN_141028a90(CString strPath, int n);
 CString FUN_14028d990(const CString& strUrl);
 CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wide
-void FUN_14015f050(const CString& str, CAtlArray<CString>& parts, const char* pszSep);   // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // The game rules: content kinds a rule set disables (rule 0xb: UGC).
 class Unk_UgcContentRule
@@ -163,7 +163,6 @@ public:
     Unk_UgcPlayer* FUN_141bd0cc0();                         // the local player
     Unk_UgcPlayer* FUN_141bd1180(int nObjectId);
     Unk_UgcPlayer* FUN_141bd1290(int nObjectId);
-    Unk_UgcPlayer* FUN_141bd1530(__int64 characterId);
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);
     MS2Ptr<Unk_UgcNameTag> FUN_141bc9be0(int nObjectId);
     void* FUN_141bd0fa0(egf::EntityID id);
@@ -172,6 +171,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -198,7 +198,8 @@ struct Unk_UgcFramework
 {
     efd::ServiceManagerPtr manager;
 };
-extern Unk_UgcFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_UgcFramework*)&egf::g_bapiContext)          // C3: was extern Unk_UgcFramework DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The UGC event dispatcher (the UIUGCEventListener slots).
@@ -278,7 +279,7 @@ template <class T> T* Unk_UgcGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_UgcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -366,7 +367,7 @@ CString CUgcDownloadCtrl::GetFileName()
     if (m_strUrl.Find(".s3.", 0) != -1)
     {
         CAtlArray<CString> parts;
-        FUN_14015f050(m_strUrl, parts, "/");
+        Unk_SplitA(const_cast<CStringA&>(m_strUrl), (ATL::CAtlArray<CStringA>*)&(parts), "/");
         int nLast = parts.GetCount() - 1;
         if (nLast < 0)
             return "";
@@ -812,7 +813,7 @@ void CUgcDownloadProfile::ProcessResult()
                     }
                     else
                     {
-                        Unk_UgcPlayer* pPlayer = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd1530(sp->m_characterId);
+                        Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1530(sp->m_characterId));
                         if (pPlayer)
                         {
                             pPlayer->FUN_1416611b0(strUrl);
@@ -1161,10 +1162,10 @@ void CUgcDownloadShopBanner::ProcessResult()
                 if (pEntity)
                 {
                     Unk_UgcUIMsg msg;
-                    msg.FUN_1422b82b0("setImgPath");
-                    msg.FUN_1422b82b0(sp->m_strKey);
-                    msg.FUN_1422b82b0(m_strPath);
-                    msg.FUN_1422b7fd0(bOk);
+                    msg.AddString("setImgPath");
+                    msg.AddString(sp->m_strKey);
+                    msg.AddString(m_strPath);
+                    msg.AddBool(bOk);
                     pEntity->OnMessage(0, &msg);
                 }
             }

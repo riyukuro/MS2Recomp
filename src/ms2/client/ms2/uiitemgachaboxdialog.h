@@ -44,7 +44,6 @@ public:
     void FUN_140c43010();
     void FUN_140c43090();
     GachaBoxDataPtr FUN_140c43110();
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString&);
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened

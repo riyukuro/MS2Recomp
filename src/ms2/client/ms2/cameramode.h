@@ -79,14 +79,14 @@ struct Unk_CameraSetting
 
     // The member-wise arithmetic (camera.cpp; the interpolators blend settings with them). The compound forms
     // return a copy.
-    Unk_CameraSetting FUN_140ae7e80(float f) const;                     // operator*(float)
-    Unk_CameraSetting FUN_140ae7f70(float f);                           // operator*=(float)
-    Unk_CameraSetting FUN_140ae8020(float f) const;                     // operator/(float)
-    Unk_CameraSetting FUN_140ae8110(float f);                           // operator/=(float)
-    Unk_CameraSetting FUN_140ae81c0(const Unk_CameraSetting& o) const;  // operator+
-    Unk_CameraSetting FUN_140ae82c0(const Unk_CameraSetting& o);        // operator+=
-    Unk_CameraSetting FUN_140ae8380(const Unk_CameraSetting& o) const;  // operator-
-    Unk_CameraSetting FUN_140ae8480(const Unk_CameraSetting& o);        // operator-=
+    Unk_CameraSetting Scaled(float f) const;                     // operator*(float)
+    Unk_CameraSetting ScaleBy(float f);                           // operator*=(float)
+    Unk_CameraSetting Divided(float f) const;                     // operator/(float)
+    Unk_CameraSetting DivideAssign(float f);                           // operator/=(float)
+    Unk_CameraSetting Added(const Unk_CameraSetting& o) const;  // operator+
+    Unk_CameraSetting AddAssign(const Unk_CameraSetting& o);        // operator+=
+    Unk_CameraSetting Subtracted(const Unk_CameraSetting& o) const;  // operator-
+    Unk_CameraSetting SubtractBy(const Unk_CameraSetting& o);        // operator-=
 
     float m_0;                                  // +0x00
     float m_4;                                  // +0x04

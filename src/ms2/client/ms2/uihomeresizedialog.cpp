@@ -22,6 +22,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -128,7 +129,7 @@ void UIHomeResizeDialog::FUN_140c2bf70() { vfunc_84(); }
 // @0x140c2bfa0
 void UIHomeResizeDialog::OnShrinkArea()
 {
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
+    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
@@ -153,7 +154,7 @@ void UIHomeResizeDialog::OnShrinkArea()
 // @0x140c2c2f0
 void UIHomeResizeDialog::OnShrinkHeight()
 {
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
+    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
@@ -273,7 +274,7 @@ void UIHomeResizeDialog::vfunc_84()
     bool bExtend = true;
     if (!FUN_140166410()->FUN_14036d570(0xe4))
         bShrink = false;
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0)
+    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
     ASObj obj(2);
     int nArea;

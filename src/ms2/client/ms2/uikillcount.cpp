@@ -10,6 +10,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 
 // ---- unit-local views of exe objects ----
 
@@ -32,7 +33,6 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-PCBase* FUN_14096e110(void* pObject);                               // the actor behind an object (NULL if none)
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -103,7 +103,7 @@ void UIKillCount::FUN_1419df220()
 // @0x1419df2a0
 void UIKillCount::FUN_1419df2a0(void* pKilled)
 {
-    PCBase* pMob = FUN_14096e110(pKilled);
+    PCBase* pMob = efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pKilled));
     if (pMob != 0)
     {
         __int64 nMax = pMob->FUN_141670a60(4);
@@ -161,7 +161,7 @@ void UIKillCount::FUN_1419df580()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nCount = m_kill.FUN_14064c800();
+    int nCount = m_kill.GetCount();
     if (0 < m_nShown && m_nShown > nCount)
     {
         FUN_1419df220();
@@ -170,14 +170,14 @@ void UIKillCount::FUN_1419df580()
     if (nCount < m_nMinShow)
         return;
     m_nShown = nCount;
-    static_cast<Unk_KcScript*>(m_30.operator->())->FUN_1419df740("show", m_kill.FUN_14064c710(), nCount, m_kill.FUN_14064c6e0());
+    static_cast<Unk_KcScript*>(m_30.operator->())->FUN_1419df740("show", m_kill.GetGrade(), nCount, m_kill.GetBonusExpRate());
     FUN_1419df6a0();
 }
 
 // @0x1419df6a0
 void UIKillCount::FUN_1419df6a0()
 {
-    CStringW strKey = m_kill.FUN_14064c740();
+    CStringW strKey = m_kill.GetKillCountMessage();
     if (!strKey.IsEmpty())
     {
         PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());

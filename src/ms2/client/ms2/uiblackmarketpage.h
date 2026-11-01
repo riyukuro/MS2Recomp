@@ -95,7 +95,7 @@ public:
     virtual MS2Ptr<CBlackMarketProduct> vfunc_6(unsigned __int64 nId);   //  6 0x140f0d500 product of the search result
 
     void FUN_140f0d630(int nMsg, void* p2, void* p3);               // key input: the item name candidates
-    void FUN_140f0d990(int nA, int nB, void* p);                    // rebuild "buildItemList"
+    void BuildItemList(int nA, int nB, void* p);                    // rebuild "buildItemList"
     void FUN_140f0db00(MS2Ptr<CBlackMarketProduct> spEntry, int nState);   // "updateItem" (the callee destroys the entry)
     void FUN_140f0de60(int nA, int nB, void* p);                    // server notice
     void FUN_140f0dfe0(int nAction);                                // reply received
@@ -104,13 +104,13 @@ public:
     void FUN_140f0e940(ASObj& out, int nTabId);                     // the option lists of a low category
     void FUN_140f0efe0(ASObj& out, int nTabId);                     // the low categories of a tab
     void FUN_140f0f0f0(int nFirst, int nEnd, POSITION pos);         // "buildPage" from the search list position
-    void FUN_140f0f1d0();                                           // clear the name input
-    void FUN_140f0f250();                                           // "errorSearchFromDelay"
+    void ClearNameInput();                                           // clear the name input
+    void OnSearchDelayError();                                           // "errorSearchFromDelay"
     int FUN_140f0f2c0();                                            // the search delay is over
     int FUN_140f0f310(ASData* pArgs, int n);                        // read the search condition
     void FUN_140f103c0(unsigned __int64 nId, const CString& strState);   // "OnClickBuy"
     int FUN_140f10720(ASObj& obj, const CStringW& strLabel, const CString& strKey, int nValue);   // dropdown entry
-    void FUN_140f107a0(unsigned __int64 nId, int nCount);           // send the purchase
+    void BuyProduct(unsigned __int64 nId, int nCount);           // send the purchase
     void FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntry);        // ask the count
     void FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntry, int nCount);   // ask the purchase
     bool FUN_140f113e0(int nResult, const CMsgBoxData& box);        // count box result
@@ -163,7 +163,7 @@ public:
 
     void FUN_140f12d40(MS2Ptr<CBlackMarketProduct> spEntry);        // a product was registered (the callee destroys the entry)
     void FUN_140f13030(MS2Ptr<CBlackMarketProduct> spEntry, int nReason);   // a product was removed (0: by the owner)
-    void FUN_140f132c0(CBlackMarketMan::ProductMap& own);           // "buildOwnerItemList"
+    void BuildOwnerItemList(CBlackMarketMan::ProductMap& own);           // "buildOwnerItemList"
     void FUN_140f133b0(int nAction);                                // reply received
     void FUN_140f13420(NotifyContext::BindData* pSlot, CItem& item);   // an item was dropped on the register slot
     void FUN_140f13610(const Scaleform::GFx::FunctionHandler::Params& params);   // "changeTotalPrice"
@@ -258,7 +258,7 @@ public:
     void FUN_140f1cf70();                                           // reset the inputs
     void FUN_140f1d020();                                           // refresh everything
     void FUN_140f1d1c0();                                           // the own list
-    void FUN_140f1d4e0();                                           // "m_currentMeso"
+    void UpdateCurrentMeso();                                           // "m_currentMeso"
     void FUN_140f1d5b0();                                           // the total price
     void FUN_140f1d730();                                           // the rates, market price and fee notice
     void FUN_140f1dab0();                                           // "m_registerCount"

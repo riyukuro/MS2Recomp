@@ -158,8 +158,8 @@ public:
     bool FUN_141880490(MS2Ptr<CUgcUploadCtrl> spCtrl);
     void FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry);  // upload a shot of a character as its profile image
     void FUN_141880c90(MS2Ptr<CUploadFile> spFile);         // upload a file as the profile image
-    void FUN_141880ec0(int nResult);                        // the server answered the upload
-    int FUN_141880fc0();                                    // the current upload has content
+    void OnUploadResult(int nResult);                        // the server answered the upload
+    int HasViewerContent();                                    // the current upload has content
     int FUN_1418810c0(const CStringW& strDir, const wchar_t* szFilter);   // copy a picked design image
     int FUN_141881650(int nType, MS2Ptr<CUploadFile> spFile);   // preview a file
     int FUN_141881800(int nType, int nIndex);
@@ -205,7 +205,7 @@ public:
     int FUN_141885d20(CUgcItemLook* pLook, const int& nObjectId, MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);
     int FUN_141885e20(CUgcItemLook* pLook, const int& nKind, const int& nObjectId, Delegate<CString(const CString&)> fnUrl,
                       MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);   // download an item icon
-    void FUN_141886150(CUgcDownloadParam* pParam, IUgcProxy* pProxy);  // queue a download
+    void PushDownload(CUgcDownloadParam* pParam, IUgcProxy* pProxy);  // queue a download
     MS2Ptr<IUgcProxy> FUN_141886340(int nKind);             // a new proxy of a content kind
     int FUN_1418873c0(Cube* pCube);                         // a cube image (0: not downloaded yet)
     int FUN_141887810(Ridee* pRidee);                       // a mount image (0: not downloaded yet)
@@ -240,7 +240,7 @@ public:
     void FUN_14188f450(CInPacket& packet);
     void FUN_14188fbd0();                                   // the upload went through the game server
     void FUN_14188c6f0();                                   // refresh the rolling images of the banners in the field
-    void FUN_141886270(CString strName, int nResult);       // the result of a running download
+    void SetDownloadResult(CString strName, int nResult);       // the result of a running download
     int FUN_141886980(CUgcItemPC* pItem, CString strPath);  // an equip image (0: not worn)
     int FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture);
     int FUN_141886de0(CUgcItemCube* pItem, NiTexture* pTexture);
@@ -251,7 +251,7 @@ public:
     int FUN_14188a480();                                    // the number of local files
     MS2Ptr<CUploadFile> FUN_14188a4b0(int nIndex);          // the local file at nIndex
     int FUN_14188a5b0(const CStringW& strPath);             // the index of a local file (-1: none)
-    void FUN_14188a6f0(const CStringW& strPath);            // clear the read-only attribute
+    void ClearReadOnlyAttribute(const CStringW& strPath);            // clear the read-only attribute
     void FUN_14188a760(const CStringW& strDir, int bRemoveDir);   // delete a directory tree
     void FUN_14188a7c0(const CStringW& strDir, int bRemoveDir, std::set<CStringW>& exclude);
     int FUN_14188bfd0(const CStringW& strPath, struct _D3DXIMAGE_INFO* pInfo);   // the image size of a file
@@ -260,7 +260,7 @@ public:
     void FUN_14188aca0();                                   // create the Custom directories
     void FUN_14188b480();
     void FUN_14188b4e0();
-    void FUN_14188bb20();
+    void DeleteMappedFiles();
     void FUN_14188bbb0();
     void FUN_14188bce0();
     MS2Ptr<CUgcBannerRollingImage> FUN_14188c300(int nBannerId);  // the active rolling image of a banner

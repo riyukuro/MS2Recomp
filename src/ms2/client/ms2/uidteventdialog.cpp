@@ -26,6 +26,7 @@
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cusereventmanager.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- the unit's header statics (this unit includes them in a different order than header_statics_a.h) ----
 class Unk_1402a9d70
@@ -116,7 +117,6 @@ public:
     virtual ~ASObj();
     void FUN_1409c0d20(const char* szName, unsigned int n);
     void FUN_1407cb9c0(const char* szName, int n);
-    void FUN_1407cba60(const char* szName, CString str);
     void FUN_1407cbb20(const char* szName, CStringW str);
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
@@ -385,7 +385,7 @@ void UIDTEventDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (!FUN_1422dc2d0()) return;
     if (m_30 == NULL) return;
-    if (!m_timer.FUN_140268870(1000)) return;
+    if (!reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000)) return;
     {
         FUN_140f38750();
         Unk_DTUIntArray ids;

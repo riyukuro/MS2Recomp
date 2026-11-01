@@ -51,6 +51,7 @@
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 // The UI type ids (vfunc_48) of the open dialogs that asked for it (m_164), most recently opened/raised first. The
 // element is an enum (CElementTraits<E> passes it by const&; the int specialization would pass it by value).
@@ -83,7 +84,6 @@ public:
     virtual void vfunc_24(bool bInvalidate);                        // MS2: slot 24 (0xc0) validateNow (apply the new size)
     virtual void vfunc_25();                                        // MS2: slot 25 (0xc8) keep the dialog on screen
 
-    void FUN_1422c00f0(float x, float y);                           // set the position
     void FUN_1422c0f60(float* pX, float* pY);                       // get the position
     float FUN_1422c10a0();                                          // x
     float FUN_1422c1110();                                          // y
@@ -105,10 +105,9 @@ public:
     void FUN_1422c0f60(float* pX, float* pY);
 };
 // The button wrapper of the bound children ("m_closeButton", "m_dragBar", "m_webGuideButton").
-class Unk_140acd6e0 : public ASUIComponent
+class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUserData);
 };
 class Unk_ASChildFinder : public ASDisplayObjectContainer
 {
@@ -141,7 +140,9 @@ class Unk_1409331e0;
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138d7e0(Unk_1409331e0* p, int a1, int a2);
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
-class Unk_140166440 { public: void FUN_14015eb90(int a1, int a2, const wchar_t* szFormat, const CString& a3); };
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
+class Unk_140166440 { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141383a70(CString strName);
 void FUN_140d73cd0();
@@ -329,7 +330,7 @@ int UIDialog::vfunc_53(void* pCfg)
             XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
             if (!m_7c) {
                 XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", pDialog->FUN_1422c1340(), 1);
-                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", pDialog->FUN_1422c13b0(), 1);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", pDialog->GetHeightCeil(), 1);
             }
             if (vfunc_52()) {
                 float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
@@ -449,7 +450,7 @@ void UIDialog::FUN_141924510()
     if (m_90 == 0 || m_c4 == 0)
         return;
     if (m_c0 == 0) {
-        bool bNoTween = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_90->FUN_1422baa20("m_openTween")))->IsNull() == false;
+        bool bNoTween = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_90->GetMember("m_openTween")))->IsNull() == false;
         if (bNoTween)
             m_30->Invoke("stopOpenTweens");
     }
@@ -559,7 +560,7 @@ void UIDialog::vfunc_62(int nWidth, int nHeight)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
-        int nCurHeight = pDialog->FUN_1422c13b0();
+        int nCurHeight = pDialog->GetHeightCeil();
         int nCurWidth = pDialog->FUN_1422c1340();
         pDialog->FUN_1422c79e0((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
         pDialog->vfunc_24(true);
@@ -651,7 +652,7 @@ void UIDialog::vfunc_68()
         m_c4 = nTween;
     }
     if (((class Unk_140166440*)GetLogString()))
-        ((class Unk_140166440*)GetLogString())->FUN_14015eb90(0xb, 0x131, L"Close Dialog [{0}]", GetTypeName());
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 0xb, 0x131, L"Close Dialog [{0}]", GetTypeName());
 }
 MS2_REPLACE_METHOD(0x141924df0, UIDialog, vfunc_68, 425, 0x36D99C6E);
 
@@ -1082,7 +1083,7 @@ void UIDialog::FUN_141926620(int* pnAlign, float* pX, float* pY)
         float x = pDialog->FUN_1422c10a0();
         float y = pDialog->FUN_1422c1110();
         float fWidth = (float)pDialog->FUN_1422c1340();
-        float fHeight = (float)pDialog->FUN_1422c13b0();
+        float fHeight = (float)pDialog->GetHeightCeil();
         float fHalfWidth = (float)pDialog->FUN_1422c1500() * 0.5f;
         float fHalfHeight = (float)pDialog->FUN_1422c1530() * 0.5f;
         if (x <= fHalfWidth && y <= fHalfHeight) {

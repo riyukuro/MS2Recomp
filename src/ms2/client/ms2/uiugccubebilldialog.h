@@ -60,7 +60,6 @@ public:
     bool FUN_140ee8000(int nButton, const CMsgBoxData& box);   // 0x140ee8000 the blueprint open box result (unit_140d1ae30)
     void SendRequestCube();                               // 0x140ee80a0 buy: ask the server for the bill / the purchase
     MS2Ptr<Unk_UcbButton> FUN_140bb4b10(const CString& strName);        // 0x140bb4b10 bind a button child (a UIDialog member)
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // 0x140bb4cf0 text field child lookup (a UIDialog member)
 
     static PendingCost s_pending;                       // DAT_143ac8f00
     static Cost s_cost;                                 // DAT_143ac8f20

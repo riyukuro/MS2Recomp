@@ -24,13 +24,13 @@
 #include "ms2/placeholder/cgameoption.h"
 #include <string.h>
 #include <algorithm>
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // ---- unit-local views of exe objects ----
 
 class Unk_ExpCfg
 {
 public:
-    unsigned int* FUN_1401d7c10();                                  // the value
 };
 class Unk_ExpGlobals
 {
@@ -244,7 +244,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             float fShow = (std::min)(100.0f, fPct);
             if (DAT_143ab28a8 != 0)
                 fShow = (std::max)(0.01f, fShow);
-            unsigned int nUnit = *((class Unk_ExpGlobals*)FUN_1401d3200())->m_6b00.FUN_1401d7c10() / 100;
+            unsigned int nUnit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_ExpGlobals*)FUN_1401d3200())->m_6b00)->Get() / 100;
             strText += FUN_14028dfa0(CStringW(L"s_tooltip_rest_exp"), nLevel, fShow, nUnit);
             if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);

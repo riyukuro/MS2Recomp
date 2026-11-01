@@ -25,29 +25,29 @@ public:
 #endif
 
     void FUN_1422e2d50(MS2Ptr<ASDataProvider> spProvider);              // set the data provider (by value: the callee destroys it)
-    void FUN_1422e2db0(const Scaleform::GFx::Value& v);                 // set "dataProvider"
-    MS2Ptr<ASDataProvider> FUN_1422e2e00();                             // the data provider (uiclosetdialog.cpp)
-    void FUN_1422e2e70(const CString& strName);                         // set "itemRendererName"
-    void FUN_1422e2ec0(float f);                                        // set "spacing"
-    float FUN_1422e2f00();                                              // "spacing"
-    void FUN_1422e2f70(const CString& strDirection);                    // set "direction"
-    CString FUN_1422e2fc0();                                            // "direction"
-    void FUN_1422e3050(const CString& strAutoSize);                     // set "autoSize"
-    CString FUN_1422e30a0();                                            // "autoSize"
-    void FUN_1422e3130(float f);                                        // set "buttonWidth"
+    void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider"
+    MS2Ptr<ASDataProvider> GetDataProvider();                             // the data provider (uiclosetdialog.cpp)
+    void SetItemRendererName(const CString& strName);                         // set "itemRendererName"
+    void SetSpacing(float f);                                        // set "spacing"
+    float GetSpacing();                                              // "spacing"
+    void SetDirection(const CString& strDirection);                    // set "direction"
+    CString GetDirection();                                            // "direction"
+    void SetAutoSize(const CString& strAutoSize);                     // set "autoSize"
+    CString GetAutoSize();                                            // "autoSize"
+    void SetButtonWidth(float f);                                        // set "buttonWidth"
     float FUN_1422e3170();                                              // "buttonWidth"
-    void FUN_1422e31e0(int nIndex);                                     // select a button ("selectedIndex")
-    int FUN_1422e3210();                                                // the selected button (uiguilddialog.cpp)
-    void FUN_1422e3270();                                               // invalidateSettings()
-    MS2Ptr<ASButton> FUN_1422e32b0(int nIndex);                         // the button of an entry (getButtonAt)
-    unsigned FUN_1422e3380();                                           // 0x1422e3380 the button count
+    void SetSelectedIndex(int nIndex);                                     // select a button ("selectedIndex")
+    int GetSelectedIndex();                                                // the selected button (uiguilddialog.cpp)
+    void InvalidateSettings();                                               // invalidateSettings()
+    MS2Ptr<ASButton> GetButtonAt(int nIndex);                         // the button of an entry (getButtonAt)
+    unsigned GetItemCount();                                           // 0x1422e3380 the button count
     void FUN_1422e3400();                                               // clear the data provider
-    void FUN_1422e3460(const ASObj& item);                              // append a button (pushed to the data provider)
-    void FUN_1422e34d0(const CStringW& strLabel);                       // append a button { label }
+    void AddItem(const ASObj& item);                              // append a button (pushed to the data provider)
+    void AddLabelItem(const CStringW& strLabel);                       // append a button { label }
     void FUN_1422e3590(const CStringW& strLabel);                       // 0x1422e3590 select the button of a label (uimessenger.cpp)
     CStringW FUN_1422e3790();                                           // 0x1422e3790 the selected label
     CStringW FUN_1422e37e0(int nIndex);                                 // 0x1422e37e0 the label of a button
-    void FUN_1422e3a00(int nIndex);                                     // remove a button
+    void RemoveItemAt(int nIndex);                                     // remove a button
     void FUN_1422e3a70(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
     void FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew); // 0x1422e3c70 relabel a button
     int FUN_1422e3ee0(const CString& strField, Scaleform::GFx::Value& vOut);   // a field of the selected entry (0: none / null)

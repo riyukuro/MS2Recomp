@@ -73,10 +73,10 @@ public:
     int IsLoaded();                                                    // 0x14127ab40 loaded
     int FUN_14127ab60(CString strLabel);                                    // 0x14127ab60 bgGotoAndPlay
     int FUN_14127ac70(CString strLabel);                                    // 0x14127ac70 bgGotoAndStop
-    int FUN_14127ad80();                                                    // 0x14127ad80 bgPlay
-    int FUN_14127ae10();                                                    // 0x14127ae10 bgStop
-    void FUN_14127aea0(int bShow);                                          // 0x14127aea0 showBackgroundColor
-    void FUN_14127af40(unsigned long nColor);                               // 0x14127af40 setBackgroundColor
+    int Play();                                                    // 0x14127ad80 bgPlay
+    int Stop();                                                    // 0x14127ae10 bgStop
+    void ShowBackgroundColor(int bShow);                                          // 0x14127aea0 showBackgroundColor
+    void SetBackgroundColor(unsigned long nColor);                               // 0x14127af40 setBackgroundColor
 
     int AppendScene();                                                   // AppendScene
     int FUN_14127b290();                                                   // RemoveScene

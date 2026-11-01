@@ -190,16 +190,16 @@ public:
     int FUN_140476cf0(int nEvent, int nLevel);
     void FUN_140476d50(int nEvent, int nLevel, unsigned* pRate, int* pIndex);
     void FUN_140476ef0(ATL::CAtlArray<int>& out, int nLevel, unsigned nMin);
-    void FUN_140477020(int eventId, int a, int b, int c);   // GameEventSaleChat start
-    void FUN_1404770e0(int eventId);
-    __int64 FUN_140477180();
-    __int64 FUN_140477210();
-    __int64 FUN_1404772a0();
+    void SetChatMeratRates(int eventId, int a, int b, int c);   // GameEventSaleChat start
+    void RemoveChatMeratRates(int eventId);
+    __int64 GetSuperChatMeratCost();
+    __int64 GetWorldChatMeratCost();
+    __int64 GetChannelChatMeratCost();
     __int64 FUN_140477330();
-    void FUN_140477360(int eventId, MS2Ptr<SAHotTimeEventContext> spContext);
-    void FUN_140477420(int eventId);
+    void AddHotTimeEvent(int eventId, MS2Ptr<SAHotTimeEventContext> spContext);
+    void RemoveHotTimeEvent(int eventId);
     int FUN_1404774a0(unsigned key, int bAll);
-    void FUN_140477590(ATL::CAtlList<MS2Ptr<SAHotTimeEventContext> >& list);
+    void GetHotTimeEvents(ATL::CAtlList<MS2Ptr<SAHotTimeEventContext> >& list);
     int FUN_140477640(int bPcBang);
     int FUN_1404776f0(int key);
     void FUN_1404777a0(int key, int value);
@@ -207,47 +207,47 @@ public:
     void FUN_1404779b0(CInPacket& packet);
     void FUN_140477ab0(ATL::CAtlArray<std::pair<int, int> >& out);
     BOOL FUN_140477bb0();
-    void FUN_140477bd0(int eventId, MS2Ptr<MesoRevivalEventContext> spContext);
-    void FUN_140477c90(int eventId);
+    void AddMesoRevivalEvent(int eventId, MS2Ptr<MesoRevivalEventContext> spContext);
+    void RemoveMesoRevivalEvent(int eventId);
     int FUN_140477d10(int bAll);
-    void FUN_140477dc0(unsigned eventId);                   // GameEventFreeAirTaxi
-    void FUN_140477e30(unsigned eventId);
-    BOOL FUN_140477ea0();
-    void FUN_140477f20(int value, CStringW text);           // GameEventUserCondition
-    void FUN_140477fb0(int value);
-    CStringW FUN_140478020(int value);
-    BOOL FUN_1404780e0(int value);
-    void FUN_140478170(int eventId, MS2Ptr<OntimeEventContext> spContext);   // GameEventOntime
-    void FUN_1404781f0(int eventId);
+    void AddFreeAirTaxiEvent(unsigned eventId);                   // GameEventFreeAirTaxi
+    void RemoveFreeAirTaxiEvent(unsigned eventId);
+    BOOL IsFreeAirTaxiActive();
+    void SetUserConditionText(int value, CStringW text);           // GameEventUserCondition
+    void RemoveUserCondition(int value);
+    CStringW GetUserConditionText(int value);
+    BOOL HasUserCondition(int value);
+    void AddOntimeEvent(int eventId, MS2Ptr<OntimeEventContext> spContext);   // GameEventOntime
+    void DeactivateOntimeEvent(int eventId);
     MS2Ptr<const OntimeEventContext> FUN_140478280();
-    MS2Ptr<const OntimeEventContext> FUN_1404783e0(int eventId);
-    void FUN_1404784b0(int a, __int64 b, CStringW str);     // GameEventUgcMapCommendationGM
-    void FUN_140478640(int a);
-    MS2Ptr<UgcMapCommendationGMEvent> FUN_1404786b0(int a);
+    MS2Ptr<const OntimeEventContext> GetOntimeEvent(int eventId);
+    void SetUgcMapCommendationEvent(int a, __int64 b, CStringW str);     // GameEventUgcMapCommendationGM
+    void RemoveUgcMapCommendationEvent(int a);
+    MS2Ptr<UgcMapCommendationGMEvent> GetUgcMapCommendationEvent(int a);
     void FUN_140478770(int value, int key, int sub);
     void FUN_1404788a0(int value, int key, int sub);
     void FUN_140478960(int key, ATL::CRBMap<int, int>& out);
     void FUN_140478a40(int value);                          // GameEventDeleteUrlCache
     int FUN_140478a60();
-    void FUN_140478a80(int eventId, int rate);              // GameEventSaleEnchant
-    void FUN_140478af0(int eventId);
-    unsigned FUN_140478b60();
-    void FUN_140478bd0(int eventId, int type, int rate);    // GameEventSaleRemake
-    void FUN_140478c50(int eventId, int type);
+    void SetSaleEnchantRate(int eventId, int rate);              // GameEventSaleEnchant
+    void RemoveSaleEnchantRate(int eventId);
+    unsigned GetSaleEnchantRate();
+    void SetRemakeSaleRate(int eventId, int type, int rate);    // GameEventSaleRemake
+    void RemoveRemakeSaleRate(int eventId, int type);
     unsigned FUN_140478cd0(MS2Ptr<CItemData> spItem);
-    unsigned FUN_140478db0(int type);
-    void FUN_140478e80(int eventId, int rate);              // GameEventSaleGemStoneUpgrade
-    void FUN_140478ef0(int eventId);
-    unsigned FUN_140478f60();
-    void FUN_140478fd0(CStringW tag, MS2Ptr<EventQuestContext> spContext);  // GameEventQuestTag
-    void FUN_140479070(CStringW tag);
-    BOOL FUN_140479100(CStringW tag);
-    MS2Ptr<EventQuestContext> FUN_1404791b0(CStringW tag);
-    void FUN_140479280(MS2Ptr<TermTagContext> spContext);
-    void FUN_140479330(const CStringW& name);
-    bool FUN_1404793a0(const CStringW& name);
-    MS2Ptr<TermTagContext> FUN_140479410(const CStringW& name);
-    void FUN_140479510(int rate, __int64 beginTime, __int64 endTime);       // GameEventBlackMarketFeeDiscount
+    unsigned GetRemakeSaleRate(int type);
+    void SetSaleGemStoneUpgradeRate(int eventId, int rate);              // GameEventSaleGemStoneUpgrade
+    void RemoveSaleGemStoneUpgradeRate(int eventId);
+    unsigned GetSaleGemStoneUpgradeRate();
+    void AddEventQuest(CStringW tag, MS2Ptr<EventQuestContext> spContext);  // GameEventQuestTag
+    void RemoveEventQuest(CStringW tag);
+    BOOL HasEventQuest(CStringW tag);
+    MS2Ptr<EventQuestContext> GetEventQuest(CStringW tag);
+    void AddTermTag(MS2Ptr<TermTagContext> spContext);
+    void RemoveTermTag(const CStringW& name);
+    bool HasTermTag(const CStringW& name);
+    MS2Ptr<TermTagContext> GetTermTag(const CStringW& name);
+    void SetBlackMarketFeeDiscount(int rate, __int64 beginTime, __int64 endTime);       // GameEventBlackMarketFeeDiscount
     int FUN_140479560();
     __int64 FUN_140479580();
     __int64 FUN_1404795a0();
@@ -255,69 +255,69 @@ public:
     int FUN_1404795e0();
     void FUN_140479600(int value);                          // GameEventUGCMapSaleCoupon
     int FUN_140479620();
-    void FUN_140479640(int eventId, int rate);              // GameEventUGCMapContractSale
-    void FUN_1404796b0(int eventId);
-    unsigned FUN_140479720();
-    void FUN_140479790(int eventId, int rate);              // GameEventUGCMapExtensionSale
-    void FUN_140479800(int eventId);
-    unsigned FUN_140479870();
+    void SetUgcMapContractSaleRate(int eventId, int rate);              // GameEventUGCMapContractSale
+    void RemoveUgcMapContractSaleRate(int eventId);
+    unsigned GetUgcMapContractSaleRate();
+    void SetUgcMapExtensionSaleRate(int eventId, int rate);              // GameEventUGCMapExtensionSale
+    void RemoveUgcMapExtensionSaleRate(int eventId);
+    unsigned GetUgcMapExtensionSaleRate();
     void FUN_1404798e0(int value);                          // GameEventSaleAutoFishing
     int FUN_140479900();
-    void FUN_140479920(CStringW str);
-    CStringW FUN_140479970();
+    void SetAutoFishingName(CStringW str);
+    CStringW GetAutoFishingName();
     void FUN_140479a00(int value);                          // GameEventSaleAutoPlayInstrument
     int FUN_140479a20();
-    void FUN_140479a40(CStringW str);
-    CStringW FUN_140479a90();
+    void SetAutoPlayInstrumentName(CStringW str);
+    CStringW GetAutoPlayInstrumentName();
     bool FUN_140479b20(unsigned roomId);
     bool FUN_140479bd0(Unk_DungeonGroupType group);
-    void FUN_140479c80(MS2Ptr<DungeonRoomShutdownContext> spContext);       // GameEventDungeonRoomShutdown
+    void SetDungeonRoomShutdown(MS2Ptr<DungeonRoomShutdownContext> spContext);       // GameEventDungeonRoomShutdown
     bool FUN_140479cf0(unsigned roomId);
     void FUN_140479da0(MS2Ptr<DungeonRoomShutdownContext> spContext);
-    bool FUN_140479e10(unsigned dungeonId);
-    void FUN_140479f30(std::vector<MS2Ptr<EventTimeLimitDungeonContext> >& contexts); // GameEventDungeonEnterTimeLimit
-    void FUN_14047a0a0(int eventId);
-    void FUN_14047a1b0(unsigned dungeonId, std::vector<Unk_DayTimeRange>& out);
-    bool FUN_14047a270(unsigned id);
-    void FUN_14047a360(std::set<unsigned> ids);             // GameEventFieldShutdown on
-    void FUN_14047a3d0();                                   // ... off
-    bool FUN_14047a420(unsigned dungeonId, MS2Ptr<DungeonExtraRewardCountCtx> spCount); // GameEventDungeonExtraReward
-    void FUN_14047a4e0(unsigned dungeonId, int eventId);
-    MS2Ptr<DungeonExtraRewardCountCtx> FUN_14047a5b0(unsigned dungeonId);
-    void FUN_14047a6a0(int eventId, MS2Ptr<NpcEventDropEventContext> spContext);   // GameEventNpcEventDrop
-    void FUN_14047a730(int eventId);
-    void FUN_14047a7a0(std::vector<MS2Ptr<NpcEventDropEventContext> >& out);
+    bool IsEventTimeLimitDungeonOpen(unsigned dungeonId);
+    void AddEventTimeLimitDungeons(std::vector<MS2Ptr<EventTimeLimitDungeonContext> >& contexts); // GameEventDungeonEnterTimeLimit
+    void RemoveEventTimeLimitDungeons(int eventId);
+    void GetEventTimeLimitDungeonRanges(unsigned dungeonId, std::vector<Unk_DayTimeRange>& out);
+    bool IsFieldShutdown(unsigned id);
+    void SetFieldShutdownIds(std::set<unsigned> ids);             // GameEventFieldShutdown on
+    void ClearFieldShutdownIds();                                   // ... off
+    bool AddDungeonExtraRewardCount(unsigned dungeonId, MS2Ptr<DungeonExtraRewardCountCtx> spCount); // GameEventDungeonExtraReward
+    void RemoveDungeonExtraRewardCount(unsigned dungeonId, int eventId);
+    MS2Ptr<DungeonExtraRewardCountCtx> GetDungeonExtraRewardCount(unsigned dungeonId);
+    void AddNpcEventDrop(int eventId, MS2Ptr<NpcEventDropEventContext> spContext);   // GameEventNpcEventDrop
+    void RemoveNpcEventDrop(int eventId);
+    void GetNpcEventDrops(std::vector<MS2Ptr<NpcEventDropEventContext> >& out);
     void FUN_14047a8c0(int type);                           // GameEventItemBuff
     int FUN_14047a8e0();
     void FUN_14047a900(MS2Ptr<DungeonBonusRewardCtx> spContext);
     void FUN_14047aa00(MS2Ptr<DungeonBonusRewardCtx> spContext);
-    MS2Ptr<DungeonBonusRewardCtx> FUN_14047ab70(Unk_DungeonGroupType group);
-    MS2Ptr<DungeonBonusRewardCtx> FUN_14047ad00(unsigned dungeonId);
-    MS2Ptr<DungeonBonusRewardCtx> FUN_14047ae90(const std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts);
+    MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByGroup(Unk_DungeonGroupType group);
+    MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByDungeon(unsigned dungeonId);
+    MS2Ptr<DungeonBonusRewardCtx> MergeDungeonBonusRewards(const std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts);
     void FUN_14047afb0(MS2Ptr<DungeonBonusRewardCtx> spContext);
     void FUN_14047b070(MS2Ptr<DungeonBonusRewardCtx> spContext);
     MS2Ptr<DungeonBonusRewardCtx> FUN_14047b170(unsigned dungeonId);
     void FUN_14047b300(unsigned dungeonId, Unk_DungeonGroupType group, std::vector<unsigned>& out);
-    void FUN_14047b540(MS2Ptr<SkillUpgradeSaleEventContext> spContext);     // GameEventSaleSkillUpgrade
-    void FUN_14047b5c0(unsigned skillId);
-    MS2Ptr<SkillUpgradeSaleEventContext> FUN_14047b620(unsigned skillId);
+    void SetSkillUpgradeSale(MS2Ptr<SkillUpgradeSaleEventContext> spContext);     // GameEventSaleSkillUpgrade
+    void RemoveSkillUpgradeSale(unsigned skillId);
+    MS2Ptr<SkillUpgradeSaleEventContext> GetSkillUpgradeSale(unsigned skillId);
     void FUN_14047b6d0(const CStringW& str);
     CStringW FUN_14047b740();
     unsigned FUN_14047b7c0(float rate, int value);
     unsigned FUN_14047b860(float rate, unsigned value);
-    void FUN_14047b8f0(MS2Ptr<BlueMarbleEventContext> spContext);                  // GameEventBlueMarble
-    MS2Ptr<BlueMarbleEventContext> FUN_14047b940();
+    void SetBlueMarbleEvent(MS2Ptr<BlueMarbleEventContext> spContext);                  // GameEventBlueMarble
+    MS2Ptr<BlueMarbleEventContext> GetBlueMarbleEvent();
     void FUN_14047b990(int value);
     int FUN_14047b9b0();
-    void FUN_14047b9d0(int eventId, int rate);                                     // GameEventSaleUGCDesign
-    void FUN_14047ba40(int eventId);
-    unsigned FUN_14047bab0();
-    void FUN_14047bb20(bool bOn, const CMsTime& time);                             // GameEventLoginNotice
+    void SetSaleUgcDesignRate(int eventId, int rate);                                     // GameEventSaleUGCDesign
+    void RemoveSaleUgcDesignRate(int eventId);
+    unsigned GetSaleUgcDesignRate();
+    void SetLoginNotice(bool bOn, const CMsTime& time);                             // GameEventLoginNotice
     bool FUN_14047bb90();
     CMsTime FUN_14047bbe0();
     __int64 FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price);
-    void FUN_14047be80(int eventId, ATL::CRBMultiMap<Unk_SaleHousingKey, MS2Ptr<SaleCube> >& cubes);   // GameEventSaleHousing
-    void FUN_14047bfc0(int eventId);
+    void SetSaleCubes(int eventId, ATL::CRBMultiMap<Unk_SaleHousingKey, MS2Ptr<SaleCube> >& cubes);   // GameEventSaleHousing
+    void RemoveSaleCubes(int eventId);
     void FUN_14047c020(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c); // GameEventEpicRestart
     void FUN_14047c1e0();
     int FUN_14047c240();
@@ -326,34 +326,34 @@ public:
     BOOL FUN_14047c530(unsigned value);
     int FUN_14047c600();
     int FUN_14047c6a0();
-    void FUN_14047c740(int level, const CStringW& str);                            // GameEventLevelUpPackage
+    void SetLevelUpPackage(int level, const CStringW& str);                            // GameEventLevelUpPackage
     void FUN_14047c7c0();
     int FUN_14047c820();
     void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
-    void FUN_14047c8e0(MS2Ptr<StampEventContext> spContext);                      // GameEventStampEvent
-    void FUN_14047c990(MS2Ptr<StampEventContext> spContext);
+    void AddStampEvent(MS2Ptr<StampEventContext> spContext);                      // GameEventStampEvent
+    void RemoveStampEvent(MS2Ptr<StampEventContext> spContext);
     MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
-    void FUN_14047cd30(MS2Ptr<LongTermAttendGiftContext> spContext);             // GameEventLongTermAttendGift start
-    void FUN_14047cdd0(MS2Ptr<LongTermAttendGiftContext> spContext);             // ... end
-    MS2Ptr<LongTermAttendGiftContext> FUN_14047ce70();
-    void FUN_14047cef0(MS2Ptr<GalleryContext> spContext);                        // GameEventGallery
-    MS2Ptr<GalleryContext> FUN_14047cf60();
-    void FUN_14047cfe0(MS2Ptr<SnowmanContext> spContext);                        // GameEventSnowman
-    MS2Ptr<SnowmanContext> FUN_14047d050();
-    void FUN_14047d0d0(MS2Ptr<RpsContext> spContext);                            // GameEventRps
-    MS2Ptr<RpsContext> FUN_14047d140();
-    void FUN_14047d1c0(MS2Ptr<ReactorContext> spContext);                        // GameEventReactor
-    MS2Ptr<ReactorContext> FUN_14047d230();
-    void FUN_14047d2b0(MS2Ptr<TreeWateringContext> spContext);                   // GameEventTreeWatering
-    MS2Ptr<TreeWateringContext> FUN_14047d320();
+    void SetLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext);             // GameEventLongTermAttendGift start
+    void ClearLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext);             // ... end
+    MS2Ptr<LongTermAttendGiftContext> GetLongTermAttendGift();
+    void SetGallery(MS2Ptr<GalleryContext> spContext);                        // GameEventGallery
+    MS2Ptr<GalleryContext> GetGallery();
+    void SetSnowman(MS2Ptr<SnowmanContext> spContext);                        // GameEventSnowman
+    MS2Ptr<SnowmanContext> GetSnowman();
+    void SetRps(MS2Ptr<RpsContext> spContext);                            // GameEventRps
+    MS2Ptr<RpsContext> GetRps();
+    void SetReactor(MS2Ptr<ReactorContext> spContext);                        // GameEventReactor
+    MS2Ptr<ReactorContext> GetReactor();
+    void SetTreeWatering(MS2Ptr<TreeWateringContext> spContext);                   // GameEventTreeWatering
+    MS2Ptr<TreeWateringContext> GetTreeWatering();
     void FUN_14047d3a0(MS2Ptr<Unk_GameRuleC00Context> spContext);
     MS2Ptr<Unk_GameRuleC00Context> FUN_14047d410();
     void FUN_14047d490(unsigned value);
     float FUN_14047d4e0();
     void FUN_14047d570(unsigned value);
     float FUN_14047d5c0();
-    void FUN_14047d650(MS2Ptr<TimeRunEventContext> spContext);              // GameEventTimeRunEvent start / end (null)
-    MS2Ptr<TimeRunEventContext> FUN_14047d6c0();
+    void SetTimeRunEvent(MS2Ptr<TimeRunEventContext> spContext);              // GameEventTimeRunEvent start / end (null)
+    MS2Ptr<TimeRunEventContext> GetTimeRunEvent();
     int FUN_14047d740(unsigned questId);
     void FUN_14047d820(int eventId, const CStringW& text);
     void FUN_14047d900(int eventId);
@@ -368,45 +368,45 @@ public:
     void FUN_14047e020(unsigned __int64 id);
     void FUN_14047e0e0();
     bool FUN_14047e150(unsigned __int64 nId);
-    void FUN_14047e230(unsigned __int64 nId);                                            // ignore the construction lock of one id
-    void FUN_14047e300();                                                        // ... clear them
+    void AddIgnoredConstructionLockId(unsigned __int64 nId);                                            // ignore the construction lock of one id
+    void ClearIgnoredConstructionLockIds();                                                        // ... clear them
     unsigned FUN_14047e370(unsigned key);
-    void FUN_14047e530(MS2Ptr<EnchantRateEventContext> spContext);                // GameEventEnchantRate
-    void FUN_14047e630(int eventId);
-    void FUN_14047e740(bool bOpen);                                               // GameEventRankDuel
+    void AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext);                // GameEventEnchantRate
+    void RemoveEnchantRateEvent(int eventId);
+    void SetRankDuelOpen(bool bOpen);                                               // GameEventRankDuel
     bool FUN_14047e790();
-    void FUN_14047e830(bool bOpen);                                               // GameEventGuildChampionship
-    bool FUN_14047e880();
-    void FUN_14047e8e0(unsigned a, unsigned b, MS2Ptr<QuestAdditionalRewardContext> spContext);   // GameEventQuestAdditionalReward
-    void FUN_14047e980(unsigned a, unsigned b);
-    unsigned FUN_14047ea00(unsigned a, unsigned b, int index);
-    unsigned FUN_14047eb30(unsigned a, unsigned b, unsigned itemId);
+    void SetGuildChampionshipOpen(bool bOpen);                                               // GameEventGuildChampionship
+    bool IsGuildChampionshipOpen();
+    void SetQuestAdditionalReward(unsigned a, unsigned b, MS2Ptr<QuestAdditionalRewardContext> spContext);   // GameEventQuestAdditionalReward
+    void RemoveQuestAdditionalReward(unsigned a, unsigned b);
+    unsigned GetQuestAdditionalRewardRate(unsigned a, unsigned b, int index);
+    unsigned GetQuestAdditionalRewardItemRate(unsigned a, unsigned b, unsigned itemId);
     void FUN_14047ec80(bool bOpen);                         // guild vs game open
     bool FUN_14047eca0();
-    void FUN_14047ecc0(CStringW tag, std::vector<ItemEntity>& out);
-    void FUN_14047ee40(int key, MS2Ptr<Unk_ItemTagRewardContext> spContext);
-    void FUN_14047ef00(int key);
-    void FUN_14047ef70(int eventId, int value);                                   // GameEventPetMastery
-    void FUN_14047efe0(int eventId);
-    int FUN_14047f050(int value);
-    bool FUN_14047f0f0();
+    void GetItemTagRewards(CStringW tag, std::vector<ItemEntity>& out);
+    void AddItemTagReward(int key, MS2Ptr<Unk_ItemTagRewardContext> spContext);
+    void RemoveItemTagReward(int key);
+    void SetPetMasteryRate(int eventId, int value);                                   // GameEventPetMastery
+    void RemovePetMasteryRate(int eventId);
+    int ApplyPetMasteryBonus(int value);
+    bool IsPetMasteryEventActive();
     void FUN_14047f180(int eventId, int value);
     void FUN_14047f1f0(int eventId);
     int FUN_14047f260(int value);
     bool FUN_14047f300();
-    void FUN_14047f390(int eventId, int rate);                                    // GameEventPetBattleExp
-    void FUN_14047f400(int eventId);
-    __int64 FUN_14047f470(__int64 value);
-    unsigned FUN_14047f520();
-    void FUN_14047f590(int eventId, int rate);                                    // GameEventPetComposeSale
-    void FUN_14047f600(int eventId);
-    __int64 FUN_14047f670(__int64 value);
-    unsigned FUN_14047f720(unsigned value);
-    void FUN_14047f7a0(int nEventId, int nRate);                                 // pet crystal sale rate
-    void FUN_14047f810(int nEventId);                                            // ... removed
-    unsigned FUN_14047f880();
-    void FUN_14047f8f0(int nEventId, int nRate);                                 // lapenshard upgrade (RGB) sale rate
-    void FUN_14047f960(int nEventId);                                            // ... removed
+    void SetPetBattleExpRate(int eventId, int rate);                                    // GameEventPetBattleExp
+    void RemovePetBattleExpRate(int eventId);
+    __int64 ApplyPetBattleExpBonus(__int64 value);
+    unsigned GetPetComposeSaleRate();
+    void SetPetComposeSaleRate(int eventId, int rate);                                    // GameEventPetComposeSale
+    void RemovePetComposeSaleRate(int eventId);
+    __int64 ApplyPetComposeSale(__int64 value);
+    unsigned ApplyPetCrystalSale(unsigned value);
+    void SetPetCrystalSaleRate(int nEventId, int nRate);                                 // pet crystal sale rate
+    void RemovePetCrystalSaleRate(int nEventId);                                            // ... removed
+    unsigned GetLapenshardUpgradeSaleRate();
+    void SetLapenshardUpgradeSaleRate(int nEventId, int nRate);                                 // lapenshard upgrade (RGB) sale rate
+    void RemoveLapenshardUpgradeSaleRate(int nEventId);                                            // ... removed
     void FUN_14047f9d0();                                   // recomputes the SA hot time sums
     void FUN_14047fc60();                                   // recomputes the meso revival flags
 

@@ -119,16 +119,16 @@ void UIGemSettingDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
-    FUN_141946b10("m_cp", pGem->FUN_1405a4140(0));
-    FUN_141946b10("m_ey", pGem->FUN_1405a4140(1));
-    FUN_141946b10("m_cl", pGem->FUN_1405a4140(2));
-    FUN_141946b10("m_pa", pGem->FUN_1405a4140(3));
-    FUN_141946b10("m_mt", pGem->FUN_1405a4140(4));
-    FUN_141946b10("m_ea", pGem->FUN_1405a4140(5));
-    FUN_141946b10("m_fh", pGem->FUN_1405a4140(6));
-    FUN_141946b10("m_gl", pGem->FUN_1405a4140(7));
-    FUN_141946b10("m_ri", pGem->FUN_1405a4140(8));
-    FUN_141946b10("m_sh", pGem->FUN_1405a4140(9));
+    FUN_141946b10("m_cp", pGem->IsSlotHidden(0));
+    FUN_141946b10("m_ey", pGem->IsSlotHidden(1));
+    FUN_141946b10("m_cl", pGem->IsSlotHidden(2));
+    FUN_141946b10("m_pa", pGem->IsSlotHidden(3));
+    FUN_141946b10("m_mt", pGem->IsSlotHidden(4));
+    FUN_141946b10("m_ea", pGem->IsSlotHidden(5));
+    FUN_141946b10("m_fh", pGem->IsSlotHidden(6));
+    FUN_141946b10("m_gl", pGem->IsSlotHidden(7));
+    FUN_141946b10("m_ri", pGem->IsSlotHidden(8));
+    FUN_141946b10("m_sh", pGem->IsSlotHidden(9));
 }
 
 // @0x141946510

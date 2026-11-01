@@ -32,16 +32,16 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 int FUN_1416595d0(PCBase*);
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_PCCubeCraft* FUN_141530290();
+    class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
 int FUN_1410a8a90(Unk_CubeCraftCore*);
 // WorldService singleton viewed through its +0x298 current-field handle getter (0x141bd30a0).
-class Unk_CubeWorld { public: MS2Ptr<CFieldDataCli> FUN_141bd30a0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 class UIUGCCubePaletteDialog;
 UIUGCCubePaletteDialog* FUN_140ef4a50(int);
@@ -58,22 +58,22 @@ CubeHolderManager::~CubeHolderManager() {}
 
 // Constructs a local RTTI object; not hooked.
 // @0x1410b4f60
-void CubeHolderManager::FUN_1410b4f60(const Unk_CubePaletteFilter& filter) {
+void CubeHolderManager::LoadCubes(const Unk_CubePaletteFilter& filter) {
     if(palette==0) palette.AssignRaw(new UGCCubePalette);
     cubes.RemoveAll();
     palette->FUN_140df1a40(cubes,const_cast<Unk_CubePaletteFilter&>(filter));
 }
 // @0x1410b5030
-int CubeHolderManager::FUN_1410b5030(CubeArray& out) {
+int CubeHolderManager::GetCubes(CubeArray& out) {
     for(unsigned i=0;i<cubes.GetCount();++i) out.Add(cubes[i]);
     return cubes.IsEmpty() ? 0 : 1;
 }
-MS2_REPLACE_METHOD(0x1410B5030, CubeHolderManager, FUN_1410b5030, 153, 0xA3D8AD39);
+MS2_REPLACE_METHOD(0x1410B5030, CubeHolderManager, GetCubes, 153, 0xA3D8AD39);
 // Constructs a local RTTI object (filter); not hooked.
 // @0x1410b50d0
 int CubeHolderManager::FUN_1410b50d0(MS2Ptr<CubeItemInfo>& out) {
     selected=0;
-    if(cubes.IsEmpty()) { Unk_CubePaletteFilter filter;FUN_1410b4f60(filter); }
+    if(cubes.IsEmpty()) { Unk_CubePaletteFilter filter;LoadCubes(filter); }
     for(unsigned i=0;i<cubes.GetCount();++i) {
         CubePtr cube=cubes[i];
         if(cube==0) continue;
@@ -117,21 +117,21 @@ MS2Ptr<CubeItemInfo> CubeHolderManager::FUN_1410b55b0() {
 MS2_REPLACE_METHOD(0x1410B5540, CubeHolderManager, FUN_1410b5540, 95, 0x3B066F7B);
 MS2_REPLACE_METHOD(0x1410B55B0, CubeHolderManager, FUN_1410b55b0, 125, 0xB63FE91C);
 // @0x1410b5640
-MS2Ptr<CubeItemInfo> CubeHolderManager::FUN_1410b5640(int index) {
+MS2Ptr<CubeItemInfo> CubeHolderManager::GetInfoByIndex(int index) {
     CubePtr cube=FUN_1410b57f0(index);
     if(cube.get()) return cube->FUN_140def3d0();
     return MS2Ptr<CubeItemInfo>(0);
 }
-MS2_REPLACE_METHOD(0x1410B5640, CubeHolderManager, FUN_1410b5640, 166, 0xB1C66128);
+MS2_REPLACE_METHOD(0x1410B5640, CubeHolderManager, GetInfoByIndex, 166, 0xB1C66128);
 // @0x1410b56f0
-MS2Ptr<CubeItemInfo> CubeHolderManager::FUN_1410b56f0(__int64 instanceId) {
+MS2Ptr<CubeItemInfo> CubeHolderManager::GetInfoByInstanceId(__int64 instanceId) {
     CubePtr cube=FUN_1410b5a70(instanceId);
     if(cube.get()) return cube->FUN_140def3d0();
     return MS2Ptr<CubeItemInfo>(0);
 }
-MS2_REPLACE_METHOD(0x1410B56F0, CubeHolderManager, FUN_1410b56f0, 166, 0xCC45B9C2);
+MS2_REPLACE_METHOD(0x1410B56F0, CubeHolderManager, GetInfoByInstanceId, 166, 0xCC45B9C2);
 // @0x1410b57a0
-CubeHolderManager::CubePtr CubeHolderManager::FUN_1410b57a0() { return selected; }
+CubeHolderManager::CubePtr CubeHolderManager::GetSelected() { return selected; }
 // @0x1410b57f0
 CubeHolderManager::CubePtr CubeHolderManager::FUN_1410b57f0(int index) {
     if(index==0) return CubePtr(0);
@@ -142,7 +142,7 @@ CubeHolderManager::CubePtr CubeHolderManager::FUN_1410b57f0(int index) {
     }
     return CubePtr(0);
 }
-MS2_REPLACE_METHOD(0x1410B57A0, CubeHolderManager, FUN_1410b57a0, 65, 0xEB612B86);
+MS2_REPLACE_METHOD(0x1410B57A0, CubeHolderManager, GetSelected, 65, 0xEB612B86);
 MS2_REPLACE_METHOD(0x1410B57F0, CubeHolderManager, FUN_1410b57f0, 313, 0xD8172207);
 // @0x1410b5930
 CubeHolderManager::CubePtr CubeHolderManager::FUN_1410b5930(int itemId) {
@@ -167,11 +167,11 @@ CubeHolderManager::CubePtr CubeHolderManager::FUN_1410b5a70(__int64 instanceId) 
 }
 MS2_REPLACE_METHOD(0x1410B5A70, CubeHolderManager, FUN_1410b5a70, 315, 0xDAAB77E4);
 // @0x1410b5bc0
-int CubeHolderManager::FUN_1410b5bc0() {
+int CubeHolderManager::GetSelectedItemId() {
     if(selected==0) return 0;
     return selected->FUN_140def3d0()->itemId;
 }
-MS2_REPLACE_METHOD(0x1410B5BC0, CubeHolderManager, FUN_1410b5bc0, 129, 0x271D420E);
+MS2_REPLACE_METHOD(0x1410B5BC0, CubeHolderManager, GetSelectedItemId, 129, 0x271D420E);
 // @0x1410b5c50
 int CubeHolderManager::FUN_1410b5c50(int index) {
     CubePtr cube=FUN_1410b57f0(index);
@@ -180,7 +180,7 @@ int CubeHolderManager::FUN_1410b5c50(int index) {
 }
 MS2_REPLACE_METHOD(0x1410B5C50, CubeHolderManager, FUN_1410b5c50, 127, 0x04DC8125);
 // @0x1410b5ce0
-unsigned CubeHolderManager::FUN_1410b5ce0() {
+unsigned CubeHolderManager::GetSelectedPage() {
     unsigned index=FUN_1410b5d70();
     if(index>0) {
         unsigned page=(index-1)/10;
@@ -189,7 +189,7 @@ unsigned CubeHolderManager::FUN_1410b5ce0() {
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1410B5CE0, CubeHolderManager, FUN_1410b5ce0, 124, 0x63B03BF7);
+MS2_REPLACE_METHOD(0x1410B5CE0, CubeHolderManager, GetSelectedPage, 124, 0x63B03BF7);
 // @0x1410b5d70
 int CubeHolderManager::FUN_1410b5d70() {
     if(selected==0) return 0;
@@ -197,12 +197,12 @@ int CubeHolderManager::FUN_1410b5d70() {
 }
 MS2_REPLACE_METHOD(0x1410B5D70, CubeHolderManager, FUN_1410b5d70, 69, 0xA29D55F1);
 // @0x1410b5dc0
-MS2Ptr<CItem> CubeHolderManager::FUN_1410b5dc0(__int64 instanceId) {
+MS2Ptr<CItem> CubeHolderManager::FindItemByInstanceId(__int64 instanceId) {
     MS2Ptr<CItem> item=g_143ab2a90.FUN_140a5d680(instanceId);
     if(item.get()) return item;
     return DAT_143ab2e20.FUN_1408fbf90(instanceId);
 }
-MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FUN_1410b5dc0, 170, 0xC00EE4A8);
+MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FindItemByInstanceId, 170, 0xC00EE4A8);
 // @0x1410b5e70
 int CubeHolderManager::FUN_1410b5e70() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -214,7 +214,7 @@ MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5
 int CubeHolderManager::FUN_1410b5eb0() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
-    Unk_CubeCraftCore* craft=((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pc))->FUN_141530290());
+    Unk_CubeCraftCore* craft=((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pc))->GetActiveCubeCraft());
     if(craft==0) return 0;
     return FUN_1410a8a90(craft);
 }
@@ -222,7 +222,7 @@ MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, FUN_1410b5eb0, 81, 0x1BD6028B
 // @0x1410b5f10
 int CubeHolderManager::FUN_1410b5f10(int itemId) {
     if(FUN_1410b5eb0()==2) return 0;
-    MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->FUN_141bd30a0();
     if(field==0) return 0;
     MS2Ptr<CItemData> item=FUN_14053f870(itemId);
     if(item==0) return 0;
@@ -236,11 +236,11 @@ int CubeHolderManager::FUN_1410b6060(unsigned index) {
         return 1;
     } else {
         if(cubes.GetCount()<=index) return 1;
-        MS2Ptr<CubeItemInfo> info=FUN_1410b5640(index);
+        MS2Ptr<CubeItemInfo> info=GetInfoByIndex(index);
         if(info==0) return 2;
         MS2Ptr<CItemData> item=FUN_14053f870(info->itemId);
         if(item==0) return 2;
-        MS2Ptr<CFieldDataCli> field=static_cast<Unk_CubeWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->FUN_141bd30a0();
         if((item->install.space&field->m_nIndoorMask)!=field->m_nIndoorMask) return 3;
     }
     return 0;
@@ -248,14 +248,14 @@ int CubeHolderManager::FUN_1410b6060(unsigned index) {
 MS2_REPLACE_METHOD(0x1410B6060, CubeHolderManager, FUN_1410b6060, 408, 0xFA708C3B);
 // @0x1410b6210
 void CubeHolderManager::FUN_1410b6210() {
-    unsigned page=FUN_1410b5ce0();
+    unsigned page=GetSelectedPage();
     unsigned index=(page-1)*10+1;
     if(page>0) FUN_1410b6340(index);
 }
 MS2_REPLACE_METHOD(0x1410B6210, CubeHolderManager, FUN_1410b6210, 64, 0x5214C64F);
 // @0x1410b6260
 void CubeHolderManager::FUN_1410b6260() {
-    unsigned page=FUN_1410b5ce0();
+    unsigned page=GetSelectedPage();
     unsigned last=(unsigned)((cubes.GetCount()-1)/10);
     unsigned next=(page+1)*10+1;
     if(page<last) FUN_1410b6340(next);

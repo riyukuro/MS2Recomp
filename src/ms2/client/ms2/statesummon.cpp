@@ -15,6 +15,7 @@
 // MS2-PIN: ??_GStateSummonRevive@@UEAAPEAXI@Z 0x1417fa080 ; order
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statesummon.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <float.h>
@@ -41,6 +42,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -53,7 +56,7 @@ class Unk_PetRow : public CPtred { };
 class Unk_PCBaseComp_aa8 : public CPtred { };
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The item-data tables.
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row
@@ -84,7 +87,8 @@ public:
 void* FUN_140b12380(class Unk_WsC_GameObj*);   // C3: was FUN_140b12380
 
 // The actor registry the pet state queries by entity id.
-void* FUN_141b6f910();                                                     // 0x141b6f910
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                                                     // 0x141b6f910
 int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x140b7f6a0 the actor id at that key
 
 // The client settings / skill services.
@@ -132,7 +136,6 @@ class Unk_SSGConstValue   // C3: member view for the former free stand-ins
 public:
     int FUN_140ad5c50();
 };
-const unsigned* FUN_1401d7c10(const void* pValue);                         // 0x1401d7c10 Value<unsigned>::Get
 
 // The casting bar (statehomeconvenient.cpp / statenurturing.cpp own the real dialog).
 class UICastingBar : public UIObject
@@ -147,7 +150,8 @@ CStringW GetStringCommon(int nId);                                           // 
 int FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
-class Unk_SmBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_SmBuffMgr { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SmPointSlots
 {
@@ -179,7 +183,7 @@ MS2_CHECK_SIZE(Unk_SummonUid3, 8);
 void FUN_1401fea90(unsigned char* payload, COutputStream& stream);         // 0x1401fea90 writes the uid (subtype 0)
 void FUN_1401febb0(unsigned char* payload, COutputStream& stream);         // 0x1401febb0 writes the uid (subtype 3)
 
-extern Vector3 DAT_143b01a60;                                      // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- unit statics (.text$di): the shared sort-name / skill / stun / condition / command statics ----
 
@@ -221,24 +225,24 @@ void StateSummon::vfunc_4(StateData* pData)
     m_spData.AssignRaw(dynamic_cast<StateSummonData*>(pData));
     if (m_spData)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
             reinterpret_cast<__int64>(m_spData.get()->m_pSummon));
         if (spItem.get() != 0)
         {
-            if (spItem->FUN_140525640() != 0)
+            if (spItem->IsPetItem() != 0)
             {
-                int nPetId = spItem->FUN_140527840()->FUN_14053dc60();
+                int nPetId = spItem->FUN_140527840()->GetPetId();
                 MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
-                    nDuration = *FUN_1401d7c10(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7d30);
+                    nDuration = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7d30)->Get();
                 }
                 m_n10 = 0x83;
             }
-            else if (spItem->FUN_140527840()->FUN_14053cc80())
+            else if (spItem->FUN_140527840()->IsRideItem())
             {
-                int nRideeId = spItem->FUN_140527840()->FUN_14053dd80();
+                int nRideeId = spItem->FUN_140527840()->GetRideeId();
                 MS2Ptr<Unk_RideeData> spRow = FUN_1407844b0(nRideeId);
                 if (spRow.get() != 0)
                 {
@@ -319,20 +323,20 @@ void StateSummon::vfunc_8(double fTime)
     {
         if (m_spData)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
                 reinterpret_cast<__int64>(m_spData.get()->m_pSummon));
             if (spItem.get() != 0)
             {
-                if (spItem->FUN_140525640() != 0)
+                if (spItem->IsPetItem() != 0)
                 {
-                    int nPetId = spItem->FUN_140527840()->FUN_14053dc60();
+                    int nPetId = spItem->FUN_140527840()->GetPetId();
                     MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
                     if (spRow.get() != 0)
                     {
                         if (m_spData.get()->m_b18 != 0)
                         {
                             Unk_SummonUid3 uid;
-                            uid.m_nUid = spItem->FUN_140526a50();
+                            uid.m_nUid = spItem->GetItemUid();
                             COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                             packet.Encode1(3);
                             FUN_1401febb0(reinterpret_cast<unsigned char*>(&uid),
@@ -342,7 +346,7 @@ void StateSummon::vfunc_8(double fTime)
                         else
                         {
                             Unk_SummonUid0 uid;
-                            uid.m_nUid = spItem->FUN_140526a50();
+                            uid.m_nUid = spItem->GetItemUid();
                             COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                             packet.Encode1(0);
                             FUN_1401fea90(reinterpret_cast<unsigned char*>(&uid),
@@ -351,9 +355,9 @@ void StateSummon::vfunc_8(double fTime)
                         }
                     }
                 }
-                else if (spItem->FUN_140527840()->FUN_14053cc80())
+                else if (spItem->FUN_140527840()->IsRideItem())
                 {
-                    int nItemId = spItem->FUN_140527840()->FUN_14053dd80();
+                    int nItemId = spItem->FUN_140527840()->GetRideeId();
                     MS2Ptr<Unk_RideeData> spRow = FUN_1407844b0(nItemId);
                     if (spRow.get() != 0)
                     {
@@ -361,7 +365,7 @@ void StateSummon::vfunc_8(double fTime)
                         MS2Ptr<RideOnActionUseItem> spAction(new RideOnActionUseItem());
                         *reinterpret_cast<int*>(reinterpret_cast<char*>(spAction.operator->()) + 0x1c) = nItemId;
                         *reinterpret_cast<__int64*>(reinterpret_cast<char*>(spAction.operator->()) + 0x38) =
-                            spItem->FUN_140526a50();
+                            spItem->GetItemUid();
                         *(reinterpret_cast<char*>(spAction.operator->()) + 0x28) =
                             *(static_cast<char*>(((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_14124ab20())) + 2);
                         COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
@@ -378,7 +382,7 @@ void StateSummon::vfunc_8(double fTime)
 
     Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -565,12 +569,12 @@ void StateRecall::vfunc_8(double fTime)
             }
             else
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
                     reinterpret_cast<__int64>(pSummon));
                 if (spItem.get() != 0)
                 {
                     CStringW strName(L"");
-                    DAT_143ab2a90.FUN_140a63880(spItem.operator->(), strName);
+                    g_143ab2a90.FUN_140a63880(spItem.operator->(), strName);
                 }
             }
         }
@@ -580,7 +584,7 @@ void StateRecall::vfunc_8(double fTime)
 
     Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -656,7 +660,7 @@ void StateSummonIdle::vfunc_9(double fTime)
         return;
     }
 
-    int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     switch (m_n10)
     {
     case 1:
@@ -726,12 +730,10 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
     void* pManager = ((void*)((class CPet*)(class PCBase*)(pPet))->FUN_140b10360());
     if (pManager != 0)
     {
-        if (pState->m_t48.FUN_140268870(*FUN_1401d7c10(
-                reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7de0)) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(pState->m_t48).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7de0)->Get()) != 0)
             FUN_1417f94a0(pState, 0x5a);
 
-        if (pState->m_t50.FUN_140268870(*FUN_1401d7c10(
-                reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7e90)) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(pState->m_t50).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e90)->Get()) != 0)
         {
             int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(FUN_140c8b450(((void*)FUN_140535320()))) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
@@ -856,7 +858,7 @@ void StateSummonRevive::vfunc_9(double fTime)
         return;
     }
 
-    int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     if (m_pOwner->FUN_14166de90(0, nActorId) == 0)
         m_pOwner->FUN_14166dda0(0);
 }
@@ -885,7 +887,7 @@ void StateSummonExpire::vfunc_3(double fTime)
     MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b102b0();
     if (spRow == 0)
         return;
-    if (m_t40.FUN_140268870(*FUN_1401d7c10(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x7e38)) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_t40).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)
         ((class CPet*)(class PCBase*)(pPet))->FUN_140b114e0(0x5b);
 }
 

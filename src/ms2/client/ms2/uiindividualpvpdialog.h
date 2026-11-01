@@ -40,8 +40,6 @@ public:
     void FUN_1412cbe90();                                       // release the bound icons
     void FUN_1412cbf20();                                       // hide the three buttons
 
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);     // 0x140bb4cf0 bind a text field child
 
 private:
     MS2_LAYOUT_FRIEND;

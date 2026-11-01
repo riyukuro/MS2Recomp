@@ -46,8 +46,8 @@ public:
     void FUN_1419a1d20(int nIndex);                             // a bag slot changed
     CString FUN_1419a1dc0(int nItemId, int nRarity, int nCount);   // bind a reward item; the binding name
     void FUN_1419a1fb0();                                       // release the reward bindings
-    void FUN_1419a2060();                                       // "startBreak"
-    void FUN_1419a2110();                                       // "endBreak"
+    void StartBreak();                                       // "startBreak"
+    void EndBreak();                                       // "endBreak"
 
 protected:
     MS2_LAYOUT_FRIEND;
@@ -77,7 +77,7 @@ public:
     virtual bool vfunc_87(int nResult, const CMsgBoxData& box); // 87 0x1419a4420
     virtual int vfunc_88();                                     // 88 0x1419a2e10
 
-    void FUN_1419a4460();                                       // "resetBreak"
+    void ResetBreak();                                       // "resetBreak"
     void FUN_1419a44d0(CInPacket* pPacket);                     // the preview list
     CString FUN_1419a4aa0(int nItemId);                         // bind a preview item; the binding name
     void FUN_1419a4c80();                                       // release the preview bindings

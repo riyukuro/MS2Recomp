@@ -128,7 +128,8 @@ static bool g_backgroundWarning=false;
 #pragma pop_macro("min")
 void FUN_140de8bd0(egf::Entity*,unsigned,efd::AssetID*);
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 // A using-declaration makes the SDK's protected dirty set public, so FUN_1414b91b0 reads it as a plain

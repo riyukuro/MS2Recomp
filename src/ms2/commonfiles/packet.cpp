@@ -140,10 +140,10 @@ CInPacket::CInPacket(CInPacket& iPacket)
     m_40 = iPacket.m_40;
     m_packetLength = iPacket.m_packetLength;
     m_offset = iPacket.m_offset;
-    iPacket.FUN_140713940();
+    iPacket.Reset();
 }
 // @0x14070fe80
-int CInPacket::FUN_14070fe80() { FUN_140715280(6); return (unsigned short)FUN_1407140a0(); }
+int CInPacket::FUN_14070fe80() { SetOffset(6); return (unsigned short)FUN_1407140a0(); }
 // @0x14070feb0
 bool CInPacket::ReadBool() { return ReadUInt8() ? true : false; }
 // @0x14070ff00
@@ -157,7 +157,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
         if (hasSequence != 0) headerLen += sizeof(int);
         MS2_PK_ASSERT(0x105, "headerLen > m_uLength", headerLen > (unsigned)m_length);
         unsigned count = pkmin<unsigned>(remaining, headerLen - m_length);
-        FUN_140715120(data, count);
+        AppendData(data, count);
         if ((unsigned)m_length >= headerLen) {
             m_nState = RS_DATA;
             m_opcode = ReadInt16();
@@ -177,7 +177,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
     }
     MS2_PK_ASSERT(0x11c, "m_nState == RS_DATA", m_nState == RS_DATA);
     int count = pkmin<unsigned>(remaining, (m_packetLength + 6) - m_length);
-    FUN_140715120(data, count);
+    AppendData(data, count);
     if ((unsigned)m_length >= m_packetLength + 6U) m_nState = RS_COMPLETED;
     remaining -= count;
     CPacketBuffer* rest;
@@ -190,12 +190,12 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
     return m_nState;
 }
 // @0x140710280
-void CInPacket::FUN_140710280(int connectionState, unsigned* key)
+void CInPacket::DecryptPayload(int connectionState, unsigned* key)
 {
     FUN_1401cde60(GetBufferCryptManager(), &m_data[0] + m_offset, m_length - m_offset, connectionState, key);
 }
 // @0x140710300
-CString CInPacket::FUN_140710300() const
+CString CInPacket::ToHexString() const
 {
     CString result;
     const unsigned char* data = &m_data[0];
@@ -482,7 +482,7 @@ int CIOBuffer::DecodeStr(CStringW& value, const unsigned char* data, unsigned si
 
 // ---- CInPacket accessors and decoders ----------------------------------------------------------------------------------------
 // @0x140713940
-void CInPacket::FUN_140713940() { m_nState = RS_HEADER; m_length = 0; m_offset = 0; }
+void CInPacket::Reset() { m_nState = RS_HEADER; m_length = 0; m_offset = 0; }
 // @0x140714fb0
 unsigned CInPacket::GetOffset() { return m_offset; }
 // @0x140714fd0
@@ -582,7 +582,7 @@ float CInPacket::ReadShortDiv10() { float r = (float)ReadInt16() / 10.0f; return
 // @0x140714d60
 float CInPacket::ReadShortDivScaled(int scale) { float r = (float)ReadInt16() / (float)scale; return r; }
 // @0x140715120
-void CInPacket::FUN_140715120(const char* data, unsigned count)
+void CInPacket::AppendData(const char* data, unsigned count)
 {
     if (m_length + count > m_data.GetCount()) {
         size_t newSize = m_data.GetCount();
@@ -593,7 +593,7 @@ void CInPacket::FUN_140715120(const char* data, unsigned count)
     m_length += count;
 }
 // @0x140715280
-void CInPacket::FUN_140715280(unsigned offset)
+void CInPacket::SetOffset(unsigned offset)
 {
     if (offset <= (unsigned)m_length) { m_offset = offset; return; }
     MS2_PK_DECODE_FAIL("SetOffset", 0x26);
@@ -653,7 +653,7 @@ MS2_REPLACE(0x14070fc80, FUN_14070fc80, 122, 0x93D8A2F2);
 MS2_REPLACE_METHOD(0x14070fe80, CInPacket, FUN_14070fe80, 42, 0xF20168B1);
 MS2_REPLACE_METHOD_VIA(0x14070feb0, CInPacket, CInputStream, ReadBool, 67, 0xE061F660);
 MS2_REPLACE_METHOD(0x14070ff00, CInPacket, FUN_14070ff00, 889, 0xCC51CDC9);
-MS2_REPLACE_METHOD(0x140710280, CInPacket, FUN_140710280, 120, 0xA9790E51);
+MS2_REPLACE_METHOD(0x140710280, CInPacket, DecryptPayload, 120, 0xA9790E51);
 MS2_REPLACE(0x1407103f0, FUN_1407103f0, 262, 0x9CDB8DAB);
 MS2_REPLACE(0x140710590, FUN_140710590, 42, 0x7966F887);
 MS2_REPLACE(0x1407105c0, FUN_1407105c0, 259, 0x35988C99);
@@ -679,7 +679,7 @@ MS2_REPLACE_METHOD(0x140713f20, CIOBuffer, DecodeBuffer, 233, 0x7D7D786A);
 MS2_REPLACE_METHOD(0x140714ab0, CIOBuffer, Decodef, 221, 0xA8F68AC2);
 MS2_REPLACE_METHOD(0x140714210, CIOBuffer, DecodeStrA, 745, 0x6A5F9DFD);
 MS2_REPLACE_METHOD(0x1407145e0, CIOBuffer, DecodeStr, 747, 0x9D146BE9);
-MS2_REPLACE_METHOD(0x140713940, CInPacket, FUN_140713940, 42, 0x52DF3817);
+MS2_REPLACE_METHOD(0x140713940, CInPacket, Reset, 42, 0x52DF3817);
 MS2_REPLACE_METHOD(0x140714fb0, CInPacket, GetOffset, 14, 0x921EE467);
 MS2_REPLACE_METHOD(0x140714fd0, CInPacket, GetType, 37, 0x9128F8DB);
 MS2_REPLACE_METHOD_VIA(0x140713a60, CInPacket, CInputStream, ReadUInt8, 113, 0xFD8B0C01);
@@ -694,6 +694,6 @@ MS2_REPLACE_METHOD_VIA(0x140714c70, CInPacket, CInputStream, ReadShortX10, 68, 0
 MS2_REPLACE_METHOD_VIA(0x140714cc0, CInPacket, CInputStream, ReadShortScaled, 74, 0x3B9319CB);
 MS2_REPLACE_METHOD_VIA(0x140714d10, CInPacket, CInputStream, ReadShortDiv10, 68, 0xB7280D8D);
 MS2_REPLACE_METHOD_VIA(0x140714d60, CInPacket, CInputStream, ReadShortDivScaled, 74, 0xBC626986);
-MS2_REPLACE_METHOD(0x140715120, CInPacket, FUN_140715120, 229, 0x44DDABF1);
-MS2_REPLACE_METHOD(0x140715280, CInPacket, FUN_140715280, 207, 0x044530BA);
+MS2_REPLACE_METHOD(0x140715120, CInPacket, AppendData, 229, 0x44DDABF1);
+MS2_REPLACE_METHOD(0x140715280, CInPacket, SetOffset, 207, 0x044530BA);
 

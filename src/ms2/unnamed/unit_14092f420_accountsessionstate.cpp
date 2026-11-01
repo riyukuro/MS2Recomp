@@ -400,7 +400,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (((class CItem*)(class CItem*)(spItem))->FUN_140526100() != 0)
+                if (((class CItem*)(class CItem*)(spItem))->IsLapenshard() != 0)
                     return 0;
             }
         }
@@ -457,7 +457,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (((class CItem*)(class CItem*)(spItem))->FUN_140526100() != 0)
+                if (((class CItem*)(class CItem*)(spItem))->IsLapenshard() != 0)
                     return 0;
             }
         }
@@ -1069,7 +1069,7 @@ UIMainPlayerInfo* FUN_140931900(int nUiId)
 {
     if (reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUi = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spUi = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUi.get() != 0)
             return dynamic_cast<UIMainPlayerInfo*>((UIObject*)spUi);
     }

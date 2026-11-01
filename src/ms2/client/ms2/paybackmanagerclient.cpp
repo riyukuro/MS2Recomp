@@ -33,6 +33,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <algorithm>
 #include <vector>
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -99,7 +100,6 @@ __int64 GetServerTime();                                            // the serve
 __int64 GetNextMonthStart(__int64 nTime);                               // midnight of the day
 int GetDaysInMonth(int year, int month);                             // days of the month
  // child member by name
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);         // value is undefined
 
 bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs);
 UIPaybackDialog* FUN_140a8c5f0(int nId);
@@ -111,7 +111,7 @@ PaybackManagerClient::PaybackManagerClient()
 }
 
 // @0x140a8afb0
-void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
+void PaybackManagerClient::OnPaybackPacket(CInPacket& packet)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return;
@@ -127,9 +127,9 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
             FUN_1407a9710(status, packet);
             m_nLevel = status.m_00;
             m_nMerat = (unsigned)status.m_08;
-            if (!((class PaybackManagerClient*)FUN_1409c1740())->FUN_140a8be20(0))
+            if (!((class PaybackManagerClient*)FUN_1409c1740())->IsAvailable(0))
             {
-                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f93);
+                TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f93);
                 break;
             }
             UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
@@ -155,18 +155,18 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
 }
 
 // @0x140a8b240
-void PaybackManagerClient::FUN_140a8b240(CStringW& strButton, bool& bShow)
+void PaybackManagerClient::GetMenuButton(CStringW& strButton, bool& bShow)
 {
-    if (!FUN_140a8be20(0))
+    if (!IsAvailable(0))
         return;
     strButton = L"$s_meratmarket_btn_payback";
     bShow = true;
 }
 
 // @0x140a8b290
-void PaybackManagerClient::FUN_140a8b290()
+void PaybackManagerClient::TogglePaybackDialog()
 {
-    if (!FUN_140a8be20(1))
+    if (!IsAvailable(1))
         return;
     if (TSingleton<PaybackTable>::GetInstance()->IsResetWindow() == 1)
         FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
@@ -197,7 +197,7 @@ MS2Ptr<CMeratMarketProduct> PaybackManagerClient::FUN_140a8b360() const
 // @0x140a8b490
 void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
 {
-    if (!FUN_140a8be20(0))
+    if (!IsAvailable(0))
         return;
     if (m_products.empty())
         return;
@@ -216,8 +216,8 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         MS2Ptr<ASMeratMarketBuyBillData> spBuy(dynamic_cast<ASMeratMarketBuyBillData*>(spBill.get()));
         if (spBuy == 0)
             continue;
-        Scaleform::GFx::Value serial = reinterpret_cast<AScript*>(spBill.operator->())->FUN_1422baa20("serialID");
-        if (FUN_1409b0390(&serial) == 0)
+        Scaleform::GFx::Value serial = reinterpret_cast<AScript*>(spBill.operator->())->GetMember("serialID");
+        if (((Scaleform::GFx::Value*)(void*)(&serial))->IsUndefined() == 0)
         {
             int nSerial = ((Scaleform::GFx::Value*)&(serial))->GetUInt();
             if (nSerial == spFirst->m_premium.m_nId)
@@ -275,7 +275,7 @@ CStringW PaybackManagerClient::FUN_140a8ba00()
 }
 
 // @0x140a8bcc0
-bool PaybackManagerClient::FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct)
+bool PaybackManagerClient::NotifyResetWindow(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return false;
@@ -290,9 +290,9 @@ bool PaybackManagerClient::FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct)
 }
 
 // @0x140a8be20
-bool PaybackManagerClient::FUN_140a8be20(unsigned char bNotify)
+bool PaybackManagerClient::IsAvailable(unsigned char bNotify)
 {
-    if (!FUN_140a8be80(bNotify))
+    if (!IsEnabled(bNotify))
         return false;
     if (!TSingleton<PaybackTable>::GetInstance()->InPeriod(GetServerTime()))
         return false;
@@ -300,13 +300,13 @@ bool PaybackManagerClient::FUN_140a8be20(unsigned char bNotify)
 }
 
 // @0x140a8be80
-bool PaybackManagerClient::FUN_140a8be80(unsigned char bNotify)
+bool PaybackManagerClient::IsEnabled(unsigned char bNotify)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return false;
     if (!TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(CStringW(L"FinishPayback")))
         return false;
-    if (((struct Unk_PbConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x6f) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_PbConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(0x6f)) != 0)
     {
         if (bNotify != 0)
             FUN_141275260(0x2f7, 1, 1);
@@ -350,16 +350,16 @@ UIPaybackDialog* FUN_140a8c5f0(int nId)
     return 0;
 }
 
-MS2_REPLACE_METHOD(0x140A8AFB0, PaybackManagerClient, FUN_140a8afb0, 640, 0x6AD27234);
+MS2_REPLACE_METHOD(0x140A8AFB0, PaybackManagerClient, OnPaybackPacket, 640, 0x6AD27234);
 MS2_REPLACE_METHOD(0x140A8B490, PaybackManagerClient, FUN_140a8b490, 1382, 0xA2727696);
-MS2_REPLACE_METHOD(0x140A8B240, PaybackManagerClient, FUN_140a8b240, 71, 0x9AE2BB34);
-MS2_REPLACE_METHOD(0x140A8B290, PaybackManagerClient, FUN_140a8b290, 129, 0x0F49EC32);
+MS2_REPLACE_METHOD(0x140A8B240, PaybackManagerClient, GetMenuButton, 71, 0x9AE2BB34);
+MS2_REPLACE_METHOD(0x140A8B290, PaybackManagerClient, TogglePaybackDialog, 129, 0x0F49EC32);
 MS2_REPLACE_METHOD(0x140A8B340, PaybackManagerClient, GetMerat, 14, 0xAAC7684B);
 MS2_REPLACE_METHOD(0x140A8B360, PaybackManagerClient, FUN_140a8b360, 279, 0x2D2911F8);
 MS2_REPLACE_METHOD(0x140A8BA00, PaybackManagerClient, FUN_140a8ba00, 689, 0x75A28861);
-MS2_REPLACE_METHOD(0x140A8BCC0, PaybackManagerClient, FUN_140a8bcc0, 335, 0x0FAD4756);
-MS2_REPLACE_METHOD(0x140A8BE20, PaybackManagerClient, FUN_140a8be20, 88, 0x4E7C3E13);
-MS2_REPLACE_METHOD(0x140A8BE80, PaybackManagerClient, FUN_140a8be80, 194, 0x56B32531);
+MS2_REPLACE_METHOD(0x140A8BCC0, PaybackManagerClient, NotifyResetWindow, 335, 0x0FAD4756);
+MS2_REPLACE_METHOD(0x140A8BE20, PaybackManagerClient, IsAvailable, 88, 0x4E7C3E13);
+MS2_REPLACE_METHOD(0x140A8BE80, PaybackManagerClient, IsEnabled, 194, 0x56B32531);
 MS2_REPLACE_METHOD(0x140A8BF50, PaybackManagerClient, FUN_140a8bf50, 355, 0x5EDCF4BB);
 MS2_REPLACE(0x140A8C0C0, FUN_140a8c0c0, 72, 0x310D5C05);
 MS2_REPLACE(0x140A8C5F0, FUN_140a8c5f0, 147, 0xB8E36C24);

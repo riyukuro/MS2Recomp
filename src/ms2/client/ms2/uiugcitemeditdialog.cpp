@@ -137,7 +137,6 @@ private:
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffef0(int& nFlags, int nBit);                      // nFlags &= ~nBit
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);     // null
 Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);                // skinColors of the skin colour table
@@ -283,7 +282,7 @@ int UIUGCItemEditDialog::vfunc_73()
     {
         MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
         if (spUpload.get() != 0)
-            spUpload->m_itemUid = m_spEditItem->FUN_140526a50();
+            spUpload->m_itemUid = m_spEditItem->GetItemUid();
     }
     return 1;
 }
@@ -318,7 +317,7 @@ void UIUGCItemEditDialog::OnLoadComplete()
     if (!((Scaleform::GFx::Value*)(void*)(&ret))->IsNull())
     {
         AScript root((const Scaleform::GFx::Value&)ret, 2);
-        m_nImagesPerPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root.FUN_1422baa20("imageListCountPerPage")))->GetUInt();
+        m_nImagesPerPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root.GetMember("imageListCountPerPage")))->GetUInt();
     }
     FUN_141b40c30();
     ((class CUgcManager*)FUN_14052d220())->m_str1b0 = "";
@@ -403,7 +402,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickCancle", szMethod) == 0)
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
         return 1;
     }
     else if (_stricmp("onClickNewDraw", szMethod) == 0)
@@ -447,11 +446,11 @@ void UIUGCItemEditDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
 {
     if (!(!(p2 == 0) && p3 != 0))
         return;
-    UIAvatarBase* pAvatar = FUN_141b433f0(m_nModel).get();
+    UIAvatarBase* pAvatar = GetAvatar(m_nModel).get();
     if (pAvatar == 0)
     {
         m_nModel = 1;
-        pAvatar = FUN_141b433f0(m_nModel).get();
+        pAvatar = GetAvatar(m_nModel).get();
     }
     if (pAvatar == 0)
         return;
@@ -463,7 +462,7 @@ void UIUGCItemEditDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
 void UIUGCItemEditDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_141b3cd70();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x141B3CCA0, UIUGCItemEditDialog, vfunc_16, 34, 0x6D66C0A2);
 
@@ -472,21 +471,21 @@ bool UIUGCItemEditDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17())
         return false;
-    FUN_141b3cd10();
+    LoadRenderTarget();
     return true;
 }
 MS2_REPLACE_METHOD(0x141B3CCD0, UIUGCItemEditDialog, vfunc_17, 47, 0x5B5734A2);
 
 // @0x141b3cd10
-void UIUGCItemEditDialog::FUN_141b3cd10()
+void UIUGCItemEditDialog::LoadRenderTarget()
 {
     if (m_30.get() != 0)
         m_30->Invoke("loadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x141B3CD10, UIUGCItemEditDialog, FUN_141b3cd10, 83, 0x31849E8B);
+MS2_REPLACE_METHOD(0x141B3CD10, UIUGCItemEditDialog, LoadRenderTarget, 83, 0x31849E8B);
 
 // @0x141b3cd70
-void UIUGCItemEditDialog::FUN_141b3cd70()
+void UIUGCItemEditDialog::UnloadRenderTarget()
 {
     if (m_30.get() != 0)
     {
@@ -496,7 +495,7 @@ void UIUGCItemEditDialog::FUN_141b3cd70()
         m_30->Invoke("unloadRenderTarget");
     }
 }
-MS2_REPLACE_METHOD(0x141B3CD70, UIUGCItemEditDialog, FUN_141b3cd70, 127, 0xDF28CE97);
+MS2_REPLACE_METHOD(0x141B3CD70, UIUGCItemEditDialog, UnloadRenderTarget, 127, 0xDF28CE97);
 
 // @0x141b3ce00
 int UIUGCItemEditDialog::vfunc_65()
@@ -522,7 +521,7 @@ void UIUGCItemEditDialog::vfunc_67()
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
-    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
     FUN_141b3e370();
     m_nKind = 0;
     m_nRadioMode = 1;
@@ -545,7 +544,7 @@ MS2_REPLACE_METHOD(0x141B3CEA0, UIUGCItemEditDialog, vfunc_67, 728, 0x0D5C51DA);
 void UIUGCItemEditDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_141b3cd70();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x141B3D180, UIUGCItemEditDialog, vfunc_26, 34, 0xCEE6C42D);
 
@@ -585,16 +584,16 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     UIObject::vfunc_49(pRetVal, pArgs);
     CString strType = pArgs->FUN_1422b8d30();
     Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
-    if (FUN_1409b0390(&arg) || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
+    if (((Scaleform::GFx::Value*)(void*)(&arg))->IsUndefined() || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
     if ((strType == "design"))
     {
-        Scaleform::GFx::Value data = root.FUN_1422baa20("data");
-        if (((Scaleform::GFx::Value*)(void*)(&data))->IsNull() || FUN_1409b0390(&data))
+        Scaleform::GFx::Value data = root.GetMember("data");
+        if (((Scaleform::GFx::Value*)(void*)(&data))->IsNull() || ((Scaleform::GFx::Value*)(void*)(&data))->IsUndefined())
             return;
         AScript row((const Scaleform::GFx::Value&)data, 2);
-        int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.FUN_1422baa20("itemID")))->GetUInt();
+        int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.GetMember("itemID")))->GetUInt();
         MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(nItemId);
         if (spDesign.get() != 0)
         {
@@ -606,20 +605,20 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     else if ((strType == "image"))
     {
 #ifdef __clang__
-        AScript data(root.FUN_1422baa20("data"), 2);
+        AScript data(root.GetMember("data"), 2);
 #else
         // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
-        AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+        AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
         if (!data.FUN_1422ba9a0())
         {
             ASTooltip tip(1, 2);
             CStringW strTip = data.FUN_1422bb2b0("tooltip");
-            if (tip.FUN_1409e26b0(strTip) != 0)
+            if (tip.ApplyTextTooltip(strTip) != 0)
             {
-                tip.FUN_1409c6dc0(2);
-                tip.FUN_1409c6e60(-4);
-                tip.FUN_1409c6e90(1);
+                tip.SetTooltipAlign(2);
+                tip.SetOffsetX(-4);
+                tip.SetOffsetY(1);
                 FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
             }
         }
@@ -632,8 +631,8 @@ void UIUGCItemEditDialog::vfunc_ugc_4(int nDialog)
 {
     if (vfunc_48() != nDialog)
         return;
-    FUN_141b41a20();
-    FUN_141b419c0();
+    RequestCapture();
+    UpdateSelectedImage();
 }
 
 // @0x141b3d7e0
@@ -657,7 +656,7 @@ int UIUGCItemEditDialog::vfunc_o178_1(void* pAvatar)
         return 0;
     if (!FUN_1418ffe80(m_nDirty, 1))
         return 0;
-    if (pAvatar == FUN_141b433f0(m_nModel).get())
+    if (pAvatar == GetAvatar(m_nModel).get())
     {
         FUN_141b3e410(MS2Ptr<UIAvatarBase>(static_cast<UIAvatarBase*>(pAvatar)), true);
         if (m_spItem.get() ? true : false)
@@ -744,7 +743,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
     }
     FUN_1418ffec0((unsigned int*)(&m_nDirty), 1);
     if (m_spView == 0)
-        FUN_141b3cd10();
+        LoadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x141B3DA90, UIUGCItemEditDialog, FUN_141b3da90, 2259, 0x4C54D003);
 
@@ -809,7 +808,7 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
             fAngle = FUN_141b48480(1, nSlot);
         else if (spData->FUN_14053cb80())
             fAngle = FUN_141b48480(6, 0);
-        else if (spData->FUN_14053cc80())
+        else if (spData->IsRideItem())
             fAngle = FUN_141b48480(9, 0);
     }
     else
@@ -843,7 +842,7 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
     MS2Ptr<CItemData> spData = FUN_14053f870(m_spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<UIAvatarBase> spAvatar = FUN_141b433f0(m_nModel);
+    MS2Ptr<UIAvatarBase> spAvatar = GetAvatar(m_nModel);
     if (spAvatar == 0)
         return false;
     int nKind = spAvatar->GetKind();
@@ -865,7 +864,7 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
         bool bMyModel = m_nModel == 0 || m_nModel == 2;
         bool bMale = spPC->FUN_1418bc740() == 0;
         int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
-        MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(m_spItem->FUN_140526a50());
+        MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(m_spItem->GetItemUid());
         if ((spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false))
             nSlot = spEquip->GetItem()->FUN_140526c30();
         if (nSlot == 8)
@@ -994,7 +993,7 @@ bool UIUGCItemEditDialog::FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem)
     ASSlot slot(2);
     if (slot.FUN_1409c4510(nItemId, spItem->FUN_140526bd0(), 1) == 0)
         return false;
-    int nSlotMax = spItem->FUN_140526c50();
+    int nSlotMax = spItem->GetCount();
     obj.FUN_1409adbe0("iconData", FUN_1406146a0(slot.FUN_1422bb870()));
     obj.FUN_1409c0d20("itemID", nItemId);
     obj.FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, nItemId));
@@ -1016,7 +1015,7 @@ void UIUGCItemEditDialog::FUN_141b3f960(ASObj& obj, MS2Ptr<CUGCDesignData> spDes
     if (m_spEditItem.get() != 0)
         return;
     __int64 nPrice = spDesign->m_nPrice;
-    int nRate = ((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0();
+    int nRate = ((class CGameRule*)FUN_1401c0d90())->GetSaleUgcDesignRate();
     __int64 nSalePrice = FUN_14088df20(nRate, 10000, spDesign->m_nSalePrice);
     if (nPrice != nSalePrice)
         obj.FUN_1407cbb20("price", FUN_1409404f0(nPrice));
@@ -1049,7 +1048,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
         int nModel = FUN_141b42b20(spData, m_spAvatar);
         if (nModel != m_nModel)
         {
-            FUN_141b41e80(nModel);
+            ChangeModel(nModel);
             *pbModelChanged = true;
             return;
         }
@@ -1060,9 +1059,9 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
             {
                 if (spPC->FUN_1418bd1d0() != 0 && ((CItemData*)spData != 0 ? true : false))
                 {
-                    if (spData->FUN_14053c940(spPC->FUN_1418bc740()))
+                    if (spData->IsGenderAllowed(spPC->FUN_1418bc740()))
                     {
-                        spItem->FUN_140526b30(m_spAvatar->vfunc_25());
+                        spItem->SetObjectId(m_spAvatar->vfunc_25());
                         spPC->vfunc_2();
                         spPC->FUN_1418baf40(spItem.get());
                         FUN_1418ffec0((unsigned int*)(&m_nDirty), 4);
@@ -1087,7 +1086,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
         }
         if (m_nModel != 1)
         {
-            FUN_141b41e80(1);
+            ChangeModel(1);
             *pbModelChanged = true;
         }
     }
@@ -1110,14 +1109,14 @@ void UIUGCItemEditDialog::FUN_141b40220()
 MS2_REPLACE_METHOD(0x141B40220, UIUGCItemEditDialog, FUN_141b40220, 71, 0x71650D9C);
 
 // @0x141b40270
-void UIUGCItemEditDialog::FUN_141b40270()
+void UIUGCItemEditDialog::Restart()
 {
     if (m_30 == 0)
         return;
     FUN_141b401b0(MS2Ptr<CItem>(0));
     m_30->Invoke("restart");
 }
-MS2_REPLACE_METHOD(0x141B40270, UIUGCItemEditDialog, FUN_141b40270, 131, 0x98AA674E);
+MS2_REPLACE_METHOD(0x141B40270, UIUGCItemEditDialog, Restart, 131, 0x98AA674E);
 
 // @0x141b40300
 bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
@@ -1133,7 +1132,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_invalid_design"), 0, 0, CStringW(L""));
         return false;
     }
-    int nCount = FUN_141b430b0();
+    int nCount = GetMakeCount();
     __int64 nTotal = m_spEditItem == 0 ? FUN_141b43240(spDesign, nCount) : 0;
     if (nPrice != nTotal)
     {
@@ -1158,7 +1157,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
         if (!FUN_1418ff110(nPriceType, nTotal, true))
             return false;
     }
-    CStringW strName = FUN_141b43140();
+    CStringW strName = GetItemName();
     int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
     return nRet == 1 ? true : false;
 }
@@ -1233,7 +1232,7 @@ void UIUGCItemEditDialog::FUN_141b40c30()
         ATL::CAtlMap<unsigned int, CUGCDesignDataPtr>& map = CUGCDesignTable::GetInstance()->GetMap();
         if (map.IsEmpty())
             return;
-        m_bEventSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0() > 0;
+        m_bEventSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->GetSaleUgcDesignRate() > 0;
         ASDataProvider items(2);
         for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos))
         {
@@ -1347,22 +1346,22 @@ bool UIUGCItemEditDialog::FUN_141b417e0()
 MS2_REPLACE_METHOD(0x141B417E0, UIUGCItemEditDialog, FUN_141b417e0, 474, 0x20AE6F27);
 
 // @0x141b419c0
-void UIUGCItemEditDialog::FUN_141b419c0()
+void UIUGCItemEditDialog::UpdateSelectedImage()
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("updateSelectedImage");
 }
-MS2_REPLACE_METHOD(0x141B419C0, UIUGCItemEditDialog, FUN_141b419c0, 89, 0xDD4D8B79);
+MS2_REPLACE_METHOD(0x141B419C0, UIUGCItemEditDialog, UpdateSelectedImage, 89, 0xDD4D8B79);
 
 // @0x141b41a20
-void UIUGCItemEditDialog::FUN_141b41a20()
+void UIUGCItemEditDialog::RequestCapture()
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("requestCapture");
 }
-MS2_REPLACE_METHOD(0x141B41A20, UIUGCItemEditDialog, FUN_141b41a20, 89, 0xD3BAD29F);
+MS2_REPLACE_METHOD(0x141B41A20, UIUGCItemEditDialog, RequestCapture, 89, 0xD3BAD29F);
 
 // @0x141b41a80
 bool UIUGCItemEditDialog::FUN_141b41a80(const NiRect<unsigned int>& kRect)
@@ -1411,13 +1410,13 @@ void UIUGCItemEditDialog::FUN_141b41cd0()
 }
 
 // @0x141b41e80
-void UIUGCItemEditDialog::FUN_141b41e80(int nModel)
+void UIUGCItemEditDialog::ChangeModel(int nModel)
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("changeModel", nModel);
 }
-MS2_REPLACE_METHOD(0x141B41E80, UIUGCItemEditDialog, FUN_141b41e80, 98, 0xA2958292);
+MS2_REPLACE_METHOD(0x141B41E80, UIUGCItemEditDialog, ChangeModel, 98, 0xA2958292);
 
 // @0x141b41ef0
 void UIUGCItemEditDialog::FUN_141b41ef0(MS2Ptr<CItemData> spData)
@@ -1471,7 +1470,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
     item.m_nRarity = 1;
     if (spItem.get() != 0)
     {
-        item.m_itemUid = spItem->FUN_140526a50();
+        item.m_itemUid = spItem->GetItemUid();
         item.m_nItemId = spItem->FUN_1405276c0();
     }
     if (nKind == 1)
@@ -1541,7 +1540,7 @@ void UIUGCItemEditDialog::FUN_141b428d0(int nKind)
 #endif
         if (m_spView->FUN_141ab7870(strPath, 1) == true)
         {
-            ((class CUgcManager*)FUN_14052d220())->m_str1b0 = FUN_141b43140();
+            ((class CUgcManager*)FUN_14052d220())->m_str1b0 = GetItemName();
             ((class CUgcManager*)FUN_14052d220())->m_str1b8 = strPath;
             return;
         }
@@ -1572,26 +1571,26 @@ int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatar
             return 2;
         bool bJob = true;
         if (spData->FUN_14053d2f0())
-            bJob = spData->limit.FUN_140545da0(pPC->FUN_141654700());
+            bJob = spData->limit.IsJobRecommended(pPC->FUN_141654700());
         int nGender = pPC->FUN_141658e60();
         if ((spAvatar.get() ? true : false) && spAvatar->GetKind() == 1)
         {
             MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
-            if ((spPC.get() ? true : false) && FUN_141b433f0(1).get() != spAvatar.get())
+            if ((spPC.get() ? true : false) && GetAvatar(1).get() != spAvatar.get())
             {
                 int nPCGender = spPC->FUN_1418bc740();
                 if (nPCGender == nGender)
                 {
-                    if (!spData->FUN_14053c940(nGender))
+                    if (!spData->IsGenderAllowed(nGender))
                         return 2;
                     return bJob ? 0 : 2;
                 }
-                if (!spData->FUN_14053c940(nGender))
+                if (!spData->IsGenderAllowed(nGender))
                     return 2;
                 return bJob ? 1 : 2;
             }
         }
-        if (!spData->FUN_14053c940(nGender))
+        if (!spData->IsGenderAllowed(nGender))
             return 2;
         return bJob ? 1 : 2;
     }
@@ -1599,7 +1598,7 @@ int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatar
     {
         if (spData->FUN_14053cb80())
             return 3;
-        else if (spData->FUN_14053cc80())
+        else if (spData->IsRideItem())
             return 4;
     }
     return 2;
@@ -1607,32 +1606,32 @@ int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatar
 MS2_REPLACE_METHOD(0x141B42B20, UIUGCItemEditDialog, FUN_141b42b20, 1397, 0x18B9029F);
 
 // @0x141b430b0
-int UIUGCItemEditDialog::FUN_141b430b0()
+int UIUGCItemEditDialog::GetMakeCount()
 {
     if (m_30 == 0)
         return 0;
     return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("getMakeCount")))->GetInt();
 }
-MS2_REPLACE_METHOD(0x141B430B0, UIUGCItemEditDialog, FUN_141b430b0, 133, 0xBA01D8DF);
+MS2_REPLACE_METHOD(0x141B430B0, UIUGCItemEditDialog, GetMakeCount, 133, 0xBA01D8DF);
 
 // @0x141b43140
-CStringW UIUGCItemEditDialog::FUN_141b43140()
+CStringW UIUGCItemEditDialog::GetItemName()
 {
     MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputItemName");
     if (spInput == 0)
         return L"";
-    CStringW strName = spInput->FUN_1422e0b00();
+    CStringW strName = spInput->GetText();
     strName.Trim();
     return strName;
 }
-MS2_REPLACE_METHOD(0x141B43140, UIUGCItemEditDialog, FUN_141b43140, 241, 0x3653069E);
+MS2_REPLACE_METHOD(0x141B43140, UIUGCItemEditDialog, GetItemName, 241, 0x3653069E);
 
 // @0x141b43240
 __int64 UIUGCItemEditDialog::FUN_141b43240(MS2Ptr<CUGCDesignData> spDesign, int nCount)
 {
     if (spDesign == 0)
         return 0;
-    int nRate = ((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0();
+    int nRate = ((class CGameRule*)FUN_1401c0d90())->GetSaleUgcDesignRate();
     __int64 nUnit = FUN_14088df20(nRate, 10000, spDesign->m_nSalePrice);
     return nUnit * nCount;
 }
@@ -1647,14 +1646,14 @@ int UIUGCItemEditDialog::FUN_141b432f0(MS2Ptr<CItemData> spData)
         return 1;
     if (spData->FUN_14053cb80())
         return 2;
-    if (spData->FUN_14053cc80())
+    if (spData->IsRideItem())
         return 7;
     return 0;
 }
 MS2_REPLACE_METHOD(0x141B432F0, UIUGCItemEditDialog, FUN_141b432f0, 243, 0x99491B13);
 
 // @0x141b433f0
-MS2Ptr<UIAvatarBase> UIUGCItemEditDialog::FUN_141b433f0(int nModel)
+MS2Ptr<UIAvatarBase> UIUGCItemEditDialog::GetAvatar(int nModel)
 {
     if (nModel < 0 || nModel >= (int)m_avatars.GetCount())
         return MS2Ptr<UIAvatarBase>(0);
@@ -1673,7 +1672,7 @@ void UIUGCItemEditDialog::FUN_141b434c0(ASData& args)
 {
     int nModel = args.FUN_1422b8a10();
     m_nModel = nModel;
-    MS2Ptr<UIAvatarBase> spAvatar = FUN_141b433f0(nModel);
+    MS2Ptr<UIAvatarBase> spAvatar = GetAvatar(nModel);
     if (m_spView == 0 || spAvatar == 0)
     {
         FUN_141b3da90(nModel);
@@ -1701,7 +1700,7 @@ bool UIUGCItemEditDialog::FUN_141b43660(int nImage)
             FUN_141275260(0x2e1, 1, 1);
             return false;
         }
-        FUN_141b41a20();
+        RequestCapture();
     }
     return true;
 }
@@ -1711,7 +1710,7 @@ bool UIUGCItemEditDialog::FUN_141b437c0(ASData& args)
 {
     Scaleform::GFx::Value arg = args.FUN_1422b9260();
     AScript row((const Scaleform::GFx::Value&)arg, 2);
-    int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.FUN_1422baa20("itemID")))->GetUInt();
+    int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(row.GetMember("itemID")))->GetUInt();
     if (nItemId == 0)
         return false;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -1724,7 +1723,7 @@ bool UIUGCItemEditDialog::FUN_141b437c0(ASData& args)
     if (spItem == 0)
         return false;
     spItem->FUN_140523c40(nItemId, spDesign->m_nItemGrade, 0);
-    spItem->FUN_140526a70(FUN_14028d0e0());
+    spItem->SetItemUid(FUN_14028d0e0());
     FUN_141b41ef0(spData);
     bool bModelChanged = false;
     FUN_141b3fb60(spItem, &bModelChanged);
@@ -1756,13 +1755,13 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return false;
     }
-    int nCount = FUN_141b430b0();
+    int nCount = GetMakeCount();
     if (nCount == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_check_make_count"), 0, 0, CStringW(L""));
         return false;
     }
-    CStringW strName = FUN_141b43140();
+    CStringW strName = GetItemName();
     CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get();
     if (pChecker != 0)
     {
@@ -1859,7 +1858,7 @@ MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, OnClickInitialize, 131, 0x5
 // @0x141b44a20
 void UIUGCItemEditDialog::OnClickNewDraw()
 {
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
         return;
     FUN_141b40ab0(m_nKind, 0);
 }
@@ -1900,7 +1899,7 @@ void UIUGCItemEditDialog::FUN_141b44b90(ASData& args)
     if (((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript tab((const Scaleform::GFx::Value&)arg, 2);
-    bool bSortGender = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(tab.FUN_1422baa20("sortGender")))->GetBool();
+    bool bSortGender = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(tab.GetMember("sortGender")))->GetBool();
     int nGender = 0;
     if (bSortGender)
     {
@@ -1930,7 +1929,7 @@ void UIUGCItemEditDialog::FUN_141b44d50(NotifyObject* pNotify)
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
     if (pEvent != 0 && FUN_140841300(pEvent->m_eventName, "SaleUgcDesign") && UISwfEntity::FUN_1422dc430() != 0)
     {
-        bool bSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->FUN_14047bab0() > 0;
+        bool bSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->GetSaleUgcDesignRate() > 0;
         bool bChanged = m_bEventSale != bSale;
         if (bChanged)
             FUN_1418ffec0((unsigned int*)(&m_nDirty), 2);
@@ -1964,14 +1963,14 @@ void UIUGCItemEditDialog::FUN_141b44e80(const Scaleform::GFx::FunctionHandler::P
 MS2_REPLACE_METHOD(0x141B44E80, UIUGCItemEditDialog, FUN_141b44e80, 408, 0xF39EEF4A);
 
 // @0x141b45020
-void UIUGCItemEditDialog::FUN_141b45020()
+void UIUGCItemEditDialog::ClearItemName()
 {
     MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputItemName");
     if (spInput == 0)
         return;
     spInput->FUN_1422e0ab0(L"");
 }
-MS2_REPLACE_METHOD(0x141B45020, UIUGCItemEditDialog, FUN_141b45020, 170, 0x7E70A9EB);
+MS2_REPLACE_METHOD(0x141B45020, UIUGCItemEditDialog, ClearItemName, 170, 0x7E70A9EB);
 
 // @0x141b450d0
 void UIUGCItemEditDialog::FUN_141b450d0(int nResult)
@@ -2012,7 +2011,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, CStringW(L""));
     if (spBox == 0)
         return;
-    CStringW strName = FUN_141b43140();
+    CStringW strName = GetItemName();
     spBox->FUN_141a01ee0(m_spMadeItem, strName, 1, 0, -1, -1, 1);
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b46070));
     FUN_140d73c60(spBox);
@@ -2031,7 +2030,7 @@ void UIUGCItemEditDialog::FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* p
     MS2Ptr<CItem> spItem(new CItem);
     spItem->FUN_140523c40(nItemId, spDesign->m_nItemGrade, 0);
     spItem->FUN_140526c70(pProxy->m_nCount);
-    spItem->FUN_1405278d0()->FUN_140632200(pUgc);
+    spItem->GetUgcInfo()->FUN_140632200(pUgc);
     CString strDir = ((class Unk_UgcPathConfig*)FUN_1401d31f0())->m_strUploadDir;
     spItem->SetName(strDir);
     FUN_141b45180(spItem);
@@ -2124,11 +2123,11 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
             m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
         if (!((class CUgcManager*)FUN_14052d220())->FUN_14187f410())
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
         if (m_spEditItem.get() != 0)
-            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
         else
-            FUN_141b40270();
+            Restart();
     }
     return true;
 }
@@ -2200,7 +2199,7 @@ UGCItemSlot* FUN_141b46a20(const CString& strName)
 inline void ASObj::FUN_141b46a40(const char* szName, ASFunction fn)
 {
     ASData data;
-    data.FUN_1422b83f0(fn.FUN_1422bb890());
+    data.AddValue(fn.FUN_1422bb890());
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2208,7 +2207,7 @@ inline void ASObj::FUN_141b46a40(const char* szName, ASFunction fn)
 inline void ASObj::FUN_141b46af0(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2216,7 +2215,7 @@ inline void ASObj::FUN_141b46af0(const char* szName, int n)
 inline void ASObj::FUN_141b46b90(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -2308,7 +2307,7 @@ bool FUN_141b48710(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return false;
-    if (spData->FUN_14053ce40() || spData->FUN_14053cb40() || spData->FUN_14053cd50() || spData->FUN_14053cc80())
+    if (spData->FUN_14053ce40() || spData->FUN_14053cb40() || spData->FUN_14053cd50() || spData->IsRideItem())
         return true;
     return false;
 }
@@ -2345,7 +2344,7 @@ bool FUN_141b48950(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    if (spItem->FUN_140528930() == true)
+    if (spItem->IsExpired() == true)
         return false;
     return FUN_141b488c0(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())));
 }
@@ -2495,7 +2494,7 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
         return MS2Ptr<CItemData>(0);
     if (spItem->FUN_140525a30() == 0)
         return MS2Ptr<CItemData>(0);
-    CItemGem* pGem = spItem->FUN_140527900();
+    CItemGem* pGem = spItem->GetGem();
     if (pGem == 0)
         return MS2Ptr<CItemData>(0);
     if (pGem->vfunc_1() != GEM_PETSKIN)
@@ -2532,13 +2531,13 @@ MS2Ptr<CItemData> FUN_141b49860(const Unk_PackageItems& packages, bool bSkipAcce
             continue;
         if (spData->FUN_14053ce40())
             return spData;
-        else if (spData->FUN_14053cc80())
+        else if (spData->IsRideItem())
             return spData;
         else if (spData->FUN_14053cd50())
             return spData;
         else if (spData->FUN_14053cb40())
             return spData;
-        if (!bSkipAccessory && spData->FUN_14053cc40())
+        if (!bSkipAccessory && spData->IsPetItem())
             return spData;
     }
     return MS2Ptr<CItemData>(0);
@@ -2550,7 +2549,7 @@ bool FUN_141b49b50(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return false;
-    return spData->FUN_14053c5c0() == 0x19 && spData->function.name != L"UGCMapPackage";
+    return spData->GetType() == 0x19 && spData->function.name != L"UGCMapPackage";
 }
 MS2_REPLACE_OVERLOAD(0x141B49B50, bool(MS2Ptr<CItemData>), FUN_141b49b50, 167, 0xAE2BC220);
 

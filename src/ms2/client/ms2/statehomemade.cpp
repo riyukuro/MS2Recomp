@@ -11,6 +11,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statehomemade.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <float.h>
 #include <errno.h>
@@ -37,7 +38,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_HmPos
@@ -117,7 +118,8 @@ Unk_HmGatherMgr* FUN_1409670c0();
 // The equipment of a player: the worn item of a slot.
 class Unk_HmEquip : public PCGemEquip { };
 
-class Unk_HmBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_HmBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_HmSlots
 {
@@ -256,7 +258,7 @@ void StateHomemade::vfunc_8(double fTime)
         pPC->vfunc_59(0x37, spData.get(), 0x8f, 0);
     }
     Unk_HmBuffMgr* pBuff = ((Unk_HmBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
+    reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }

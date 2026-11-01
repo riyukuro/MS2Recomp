@@ -45,7 +45,7 @@ public:
     virtual ~CItemGemStoneUpgradeTable();                       // 0x1405b0d20 (??_G 0x1405b2740)
 
     int Load();                                                 // 0x1405b0dc0 itemGemstoneUpgrade.xml
-    DataPtr FUN_1405b1a60(unsigned nId);                        // 0x1405b1a60 find a row (an empty pointer for none)
+    DataPtr FindData(unsigned nId);                        // 0x1405b1a60 find a row (an empty pointer for none)
     int Reload();                                               // 0x1405b1b50 clears the rows and loads again
     static void CheckInit();                                    // 0x1405b27c0
     static void SetInit(bool b);                                // 0x1405b36e0

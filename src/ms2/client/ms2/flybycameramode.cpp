@@ -212,7 +212,7 @@ template<class T> T TLinearInterpolator<T>::vfunc_2(float fDelta)
     }
     if (!this->m_modifier.IsNull())
         this->m_to = this->m_modifier(this->m_to);
-    return this->m_from.FUN_140ae7e80(1.0f - fT).FUN_140ae81c0(this->m_to.FUN_140ae7e80(fT));
+    return this->m_from.Scaled(1.0f - fT).Added(this->m_to.Scaled(fT));
 }
 
 template<class T> TLogInterpolator<T>::TLogInterpolator(float fDuration, const T& from, const T& to)
@@ -241,7 +241,7 @@ template<class T> T TLogInterpolator<T>::vfunc_2(float fDelta)
     }
     if (!this->m_modifier.IsNull())
         this->m_to = this->m_modifier(this->m_to);
-    return this->m_from.FUN_140ae7e80(1.0f - fT).FUN_140ae81c0(this->m_to.FUN_140ae7e80(fT));
+    return this->m_from.Scaled(1.0f - fT).Added(this->m_to.Scaled(fT));
 }
 
 template<class T> TExpInterpolator<T>::TExpInterpolator(float fDuration, const T& from, const T& to)
@@ -270,7 +270,7 @@ template<class T> T TExpInterpolator<T>::vfunc_2(float fDelta)
     }
     if (!this->m_modifier.IsNull())
         this->m_to = this->m_modifier(this->m_to);
-    return this->m_from.FUN_140ae7e80(1.0f - fT).FUN_140ae81c0(this->m_to.FUN_140ae7e80(fT));
+    return this->m_from.Scaled(1.0f - fT).Added(this->m_to.Scaled(fT));
 }
 
 // explicit instantiation of the classes in the order the exe emitted them

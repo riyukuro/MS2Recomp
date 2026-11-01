@@ -13,6 +13,7 @@
 #include <efd/Helpers.h>
 #include <NiColor.h>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 CNetworkService* FUN_140714f90();
 void* FUN_140aae430();
@@ -23,7 +24,8 @@ void FUN_141740b00(int, int, int, const CStringW&, const unsigned short*);
 CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_140298ea0(CStringW);
-CStringW FUN_1408116a0(int, const int&);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
 extern void (*DAT_143b03490)(short, unsigned char, const char*);
@@ -95,7 +97,7 @@ void CSceneStateMove::OnUpdate(double fTime)
     {
         if (m_bFailed == 0)
         {
-            if (FUN_140714f90()->FUN_141539180())
+            if (FUN_140714f90()->RestoreServerAddress())
             {
                 CStringW text = FUN_140298ea0(CStringW(L"s_reconnect_to_server_fail"));
                 void* loading = ((void*)FUN_141540270(0x3ed));
@@ -111,12 +113,12 @@ void CSceneStateMove::OnUpdate(double fTime)
         m_nRetry = 6;
         if (DAT_143b03490)
         {
-            DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(FUN_1408116a0(0x20f, 7), 0)));
+            DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(BlockFormat<int>(0x20f, 7), 0)));
         }
         FUN_140d86260()->vfunc_58(0x20f, 7);
         {
             CStringW title(L"MS2");
-            FUN_141b6fcf0(FUN_1408116a0(0x20f, 7), title, 0);
+            FUN_141b6fcf0(BlockFormat<int>(0x20f, 7), title, 0);
         }
         TerminateProcess(GetCurrentProcess(), 2);
     }

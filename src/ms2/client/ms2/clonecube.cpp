@@ -409,14 +409,14 @@ bool CloneCube::vfunc_61(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         MS2Ptr<CItemData> spCurData(m_spItemData);
         MS2Ptr<CItem> spCurItem(m_spItem);
         if ((spData.get() ? true : false) && (spCurData.get() ? true : false)
-            && spData->FUN_14053c510() == spCurData->FUN_14053c510())
+            && spData->GetItemId() == spCurData->GetItemId())
         {
             if (spCurItem == spItem.get())
                 return true;
-            __int64 nCurUid = (spCurItem.get() ? true : false) && ((CItem*)spCurItem)->FUN_140525f10()
-                ? ((CItem*)spCurItem)->FUN_1405278d0()->m_nUgcUid : 0;
-            __int64 nUid = (spItem.get() ? true : false) && ((CItem*)spItem)->FUN_140525f10()
-                ? ((CItem*)spItem)->FUN_1405278d0()->m_nUgcUid : 0;
+            __int64 nCurUid = (spCurItem.get() ? true : false) && ((CItem*)spCurItem)->HasCubeTextureMesh()
+                ? ((CItem*)spCurItem)->GetUgcInfo()->m_nUgcUid : 0;
+            __int64 nUid = (spItem.get() ? true : false) && ((CItem*)spItem)->HasCubeTextureMesh()
+                ? ((CItem*)spItem)->GetUgcInfo()->m_nUgcUid : 0;
             if (nCurUid == nUid)
                 return true;
         }

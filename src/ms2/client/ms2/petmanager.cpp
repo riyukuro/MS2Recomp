@@ -42,6 +42,13 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // The sound ids of the pet: the summon effect sound and the level up sound (initialized before everything else).
@@ -52,7 +59,7 @@ static CString s_strGemUpgradeSound = "System_Gemstone_Upgrade_01";
 class UIGameMenuDialog   // C3: member view (real class not in this TU)
 {
 public:
-    void FUN_141938270(int, int, int);
+    void InitPetInfo(int, int, int);
 };
 class Unk_PmGameMenu { public:  };
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
@@ -62,7 +69,7 @@ public:
     void FUN_14199a3f0(__int64);
 };
 class Unk_PmInventoryDialog { public:  };
-Unk_PmInventoryDialog* FUN_1405344f0(int nId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_PmInventoryDialog* FUN_1405344f0 (calls cast back)
 class Unk_PmPetDialog : public UIPetSystemDialog { };
 Unk_PmPetDialog* FUN_140b99ba0(int nId);
 
@@ -151,14 +158,14 @@ Unk_PmFixedItem* FUN_140c8dac0()
 // @0x140c86860
 CPetInventory::CPetInventory() : m_items(10)
 {
-    FUN_140c868d0();
+    ResetSlots();
 }
 // @0x140c8d680
 CPetInventory::~CPetInventory()
 {
 }
 // @0x140c868d0
-void CPetInventory::FUN_140c868d0()
+void CPetInventory::ResetSlots()
 {
     if (reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance()) == 0)
         return;
@@ -181,15 +188,15 @@ void CPetInventory::FUN_140c868d0()
     m_n80 = 0;
 }
 // @0x140c869e0
-int CPetInventory::FUN_140c869e0(CItem* pItem)
+int CPetInventory::AddItem(CItem* pItem)
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    if (m_items.Lookup(pItem->FUN_140526a50()) != 0)
+    if (m_items.Lookup(pItem->GetItemUid()) != 0)
         return 0x11;
     int nSlot = pItem->FUN_140526b50();
     if (nSlot == -1)
     {
-        nSlot = FUN_140c87b90();
+        nSlot = FindEmptySlot();
         if (nSlot == -1)
             return 0xd;
         pItem->FUN_140526b70(nSlot);
@@ -202,12 +209,12 @@ int CPetInventory::FUN_140c869e0(CItem* pItem)
         if (m_slots[nSlot].get() != 0)
             return 0x11;
     }
-    m_items.SetAt(pItem->FUN_140526a50(), ItemPtr(pItem));
+    m_items.SetAt(pItem->GetItemUid(), ItemPtr(pItem));
     m_slots[nSlot].AssignRaw(pItem);
     return 0;
 }
 // @0x140c86bb0
-void CPetInventory::FUN_140c86bb0(unsigned __int64 nUid)
+void CPetInventory::RemoveItem(unsigned __int64 nUid)
 {
     ItemPtr spItem;
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -222,7 +229,7 @@ void CPetInventory::FUN_140c86bb0(unsigned __int64 nUid)
     }
 }
 // @0x140c86c90
-CPetInventory::ItemPtr CPetInventory::FUN_140c86c90(int nSlot)
+CPetInventory::ItemPtr CPetInventory::GetItemBySlot(int nSlot)
 {
     ItemPtr spItem(0);
     int nCount = (int)m_slots.GetCount();
@@ -235,7 +242,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86c90(int nSlot)
     return spItem;
 }
 // @0x140c86d90
-CPetInventory::ItemPtr CPetInventory::FUN_140c86d90(int nItemId)
+CPetInventory::ItemPtr CPetInventory::FindUsableItemById(int nItemId)
 {
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -252,7 +259,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86d90(int nItemId)
     return ItemPtr(0);
 }
 // @0x140c86f20
-size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
+size_t CPetInventory::CollectItemsById(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
 {
     {
         Unk_1401b4ec0 guard(m_lock, 1);
@@ -263,7 +270,7 @@ size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result,
             {
                 if (nMode == 2)
                     result.AddTail(spItem);
-                else if (spItem->FUN_140526c50() < spItem->FUN_1405281e0())
+                else if (spItem->GetCount() < spItem->GetSlotMax())
                     result.AddTail(spItem);
             }
         }
@@ -278,8 +285,8 @@ size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result,
         {
             for (int j = 0; j < nLast; ++j)
             {
-                nFirst = result.GetAt(result.FindIndex(j))->FUN_140526c50();
-                nSecond = result.GetAt(result.FindIndex(j + 1))->FUN_140526c50();
+                nFirst = result.GetAt(result.FindIndex(j))->GetCount();
+                nSecond = result.GetAt(result.FindIndex(j + 1))->GetCount();
                 if (nMode == 2)
                 {
                     if (nFirst > nSecond)
@@ -296,7 +303,7 @@ size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result,
     return result.GetCount();
 }
 // @0x140c87250
-CPetInventory::ItemPtr CPetInventory::FUN_140c87250(unsigned __int64 nUid)
+CPetInventory::ItemPtr CPetInventory::GetItemByUid(unsigned __int64 nUid)
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     ItemPtr spItem;
@@ -325,7 +332,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
     return ItemPtr(0);
 }
 // @0x140c874f0
-int CPetInventory::FUN_140c874f0()
+int CPetInventory::GetUsedSlotCount()
 {
     int nUsed = 0;
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -339,12 +346,12 @@ int CPetInventory::FUN_140c874f0()
     return nUsed;
 }
 // @0x140c875e0
-int CPetInventory::FUN_140c875e0()
+int CPetInventory::GetSlotCount()
 {
     return (int)m_slots.GetCount();
 }
 // @0x140c87610
-int CPetInventory::FUN_140c87610()
+int CPetInventory::HasEmptySlot()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     unsigned nCount = (unsigned)m_slots.GetCount();
@@ -362,19 +369,19 @@ int CPetInventory::FUN_140c87610()
     return 0;
 }
 // @0x140c87780
-int CPetInventory::FUN_140c87780(int nItemId, int nCount)
+int CPetInventory::HasEnoughItems(int nItemId, int nCount)
 {
-    int nHave = FUN_140c87840(nItemId, 0);
+    int nHave = GetItemCount(nItemId, 0);
     return nHave >= nCount;
 }
 // @0x140c877e0
 int CPetInventory::FUN_140c877e0(int nItemId, int nRarity, int nCount)
 {
-    int nHave = FUN_140c87840(nItemId, nRarity);
+    int nHave = GetItemCount(nItemId, nRarity);
     return nHave >= nCount;
 }
 // @0x140c87840
-int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
+int CPetInventory::GetItemCount(int nItemId, int nRarity)
 {
     if (nItemId == 0)
         return 0;
@@ -394,12 +401,12 @@ int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
             continue;
         if (nRarity != 0 && spItem->FUN_140526bd0() != nRarity)
             continue;
-        nTotal += spItem->FUN_140526c50();
+        nTotal += spItem->GetCount();
     }
     return nTotal;
 }
 // @0x140c87a00
-int CPetInventory::FUN_140c87a00(int nItemId)
+int CPetInventory::GetStackRoom(int nItemId)
 {
     int nRoom = 0;
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -408,12 +415,12 @@ int CPetInventory::FUN_140c87a00(int nItemId)
     {
         ItemPtr spItem = m_slots[i];
         if (static_cast<bool>(spItem.get()) && spItem->FUN_1405276c0() == nItemId)
-            nRoom += spItem->FUN_1405281e0() - spItem->FUN_140526c50() < 0 ? 0 : spItem->FUN_1405281e0() - spItem->FUN_140526c50();
+            nRoom += spItem->GetSlotMax() - spItem->GetCount() < 0 ? 0 : spItem->GetSlotMax() - spItem->GetCount();
     }
     return nRoom;
 }
 // @0x140c87b90
-unsigned CPetInventory::FUN_140c87b90()
+unsigned CPetInventory::FindEmptySlot()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
@@ -425,11 +432,11 @@ unsigned CPetInventory::FUN_140c87b90()
     return 0xffffffff;
 }
 // @0x140c87c80
-int CPetInventory::FUN_140c87c80(ItemPtr spItem, int nNeed)
+int CPetInventory::FindSlotForItem(ItemPtr spItem, int nNeed)
 {
-    if ((spItem.get() ? true : false) && spItem->FUN_1405281e0() > 1)
+    if ((spItem.get() ? true : false) && spItem->GetSlotMax() > 1)
     {
-        int nStock = FUN_140c87a00(spItem->FUN_1405276c0());
+        int nStock = GetStackRoom(spItem->FUN_1405276c0());
         if (nStock < nNeed)
             return -1;
         int nCount = (int)m_slots.GetCount();
@@ -438,16 +445,16 @@ int CPetInventory::FUN_140c87c80(ItemPtr spItem, int nNeed)
             ItemPtr spSlot = m_slots[i];
             if ((spSlot.get() ? true : false) && spSlot->FUN_1405276c0() == spItem->FUN_1405276c0())
             {
-                int nRoom = (spSlot->FUN_1405281e0() - spSlot->FUN_140526c50() < 0) ? 0 : spSlot->FUN_1405281e0() - spSlot->FUN_140526c50();
+                int nRoom = (spSlot->GetSlotMax() - spSlot->GetCount() < 0) ? 0 : spSlot->GetSlotMax() - spSlot->GetCount();
                 if (0 < nRoom)
                     return spSlot->FUN_140526b50();
             }
         }
     }
-    return FUN_140c87b90();
+    return FindEmptySlot();
 }
 // @0x140c87ef0
-void CPetInventory::FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result)
+void CPetInventory::GetAllItems(ATL::CAtlArray<ItemPtr>& result)
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
@@ -457,12 +464,12 @@ void CPetInventory::FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result)
     }
 }
 // @0x140c87fb0
-bool CPetInventory::FUN_140c87fb0(int nItemId)
+bool CPetInventory::UseItemById(int nItemId)
 {
-    ItemPtr spItem = FUN_140c86d90(nItemId);
+    ItemPtr spItem = FindUsableItemById(nItemId);
     if (spItem == 0)
         return false;
-    return FUN_140c88f70(spItem);
+    return UseItemSkill(spItem);
 }
 // @0x140c88050
 bool CPetInventory::FUN_140c88050(int nItemId)
@@ -470,7 +477,7 @@ bool CPetInventory::FUN_140c88050(int nItemId)
     ItemPtr spItem = FUN_140c87300(nItemId, 0);
     if (spItem == 0)
         return false;
-    return FUN_140c88f70(spItem);
+    return UseItemSkill(spItem);
 }
 // @0x140c88100
 void CPetInventory::SendRequestPetInventoryMode7()
@@ -491,7 +498,7 @@ void CPetInventory::SendRequestPetInventoryMode3(__int64 nUid, int nSlot)
     FUN_140710590(packet);
 }
 // @0x140c88200
-void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
+void CPetInventory::SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nCount)
 {
     if (nCount < 1)
         return;
@@ -500,14 +507,14 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
     ItemPtr spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == 0)
         return;
-    if (spItem->FUN_140525640() != 0)
+    if (spItem->IsPetItem() != 0)
     {
         FUN_140d73bc0(0xc16, 0, 0, L"");
         return;
     }
     if (((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053cd10())
     {
-        if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->FUN_140526a50())
+        if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->GetItemUid())
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
             return;
@@ -515,7 +522,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
     }
     if (nSlot == -1)
     {
-        nSlot = FUN_140c87c80(spItem, nCount);
+        nSlot = FindSlotForItem(spItem, nCount);
         if (nSlot == -1)
         {
             FUN_141275260(0xf2, 1, 1);
@@ -525,7 +532,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
     ItemPtr spPet = g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
     if (spPet == 0)
         return;
-    if (spPet->FUN_140528930())
+    if (spPet->IsExpired())
         return;
     COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
     packet.Encode1(0);
@@ -549,17 +556,17 @@ void CPetInventory::SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nC
     FUN_140710590(packet);
 }
 // @0x140c88650
-bool CPetInventory::FUN_140c88650(int nButton, const CMsgBoxData& box)
+bool CPetInventory::OnMoveToPetCountResult(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
     {
         int nCount = _wtoi(box.FUN_141a02d50().Trim(L','));
-        FUN_140c88200(box.FUN_141a02c20(), box.FUN_141a02c80(), nCount);
+        SendRequestPetInventoryMode0(box.FUN_141a02c20(), box.FUN_141a02c80(), nCount);
     }
     return true;
 }
 // @0x140c88700
-bool CPetInventory::FUN_140c88700(int nButton, const CMsgBoxData& box)
+bool CPetInventory::OnMoveFromPetCountResult(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
     {
@@ -569,14 +576,14 @@ bool CPetInventory::FUN_140c88700(int nButton, const CMsgBoxData& box)
     return true;
 }
 // @0x140c887b0
-void CPetInventory::FUN_140c887b0(ItemPtr spItem, int nSlot)
+void CPetInventory::MoveItemToPetInventory(ItemPtr spItem, int nSlot)
 {
     if (spItem == 0)
         return;
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (spItem->FUN_140525640() != 0)
+    if (spItem->IsPetItem() != 0)
     {
         FUN_140d73bc0(0xc16, 0, 0, CStringW(L""));
         return;
@@ -584,31 +591,31 @@ void CPetInventory::FUN_140c887b0(ItemPtr spItem, int nSlot)
     if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
         return;
     ItemPtr spPet = g_143ab2a90.FUN_140a5d680(pPlayer->FUN_1416769f0());
-    if ((spPet.get() ? true : false) && spPet->FUN_140528930())
+    if ((spPet.get() ? true : false) && spPet->IsExpired())
     {
         FUN_140d73bc0(0xc15, 0, 0, CStringW(L""));
         return;
     }
     if (!spItem->FUN_140526850())
     {
-        ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c88200(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
+        ((class CPetManager*)FUN_140535320())->GetInventory()->SendRequestPetInventoryMode0(spItem->GetItemUid(), nSlot, spItem->GetCount());
     }
     else
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc0f, 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->FUN_140526c50());
+            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->GetCount());
             spBox->FUN_141a01620(nSlot);
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
-            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->FUN_140c8b410(), &CPetInventory::FUN_140c88650));
+            spBox->FUN_141a01600(spItem->GetItemUid());
+            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveToPetCountResult));
             FUN_140d73c60(spBox);
         }
     }
 }
 // @0x140c88c30
-void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
+void CPetInventory::MoveItemFromPetInventory(ItemPtr spItem, int nSlot)
 {
     if (spItem == 0)
         return;
@@ -619,24 +626,24 @@ void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
         return;
     if (!spItem->FUN_140526850())
     {
-        ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->SendRequestPetInventoryMode1(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
+        ((class CPetManager*)FUN_140535320())->GetInventory()->SendRequestPetInventoryMode1(spItem->GetItemUid(), nSlot, spItem->GetCount());
     }
     else
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc10, 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->FUN_140526c50());
+            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->GetCount());
             spBox->FUN_141a01620(nSlot);
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
-            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->FUN_140c8b410(), &CPetInventory::FUN_140c88700));
+            spBox->FUN_141a01600(spItem->GetItemUid());
+            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveFromPetCountResult));
             FUN_140d73c60(spBox);
         }
     }
 }
 // @0x140c88f70
-bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
+bool CPetInventory::UseItemSkill(ItemPtr spItem)
 {
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -654,7 +661,7 @@ bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
     Unk_InventorySkillRequest request(((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053dc20(), 1);
     request.remap = ((class SkillLevelData*)(class Unk_PmSkillLevel*)(spLevel.operator->()))->FUN_140804450();
     request.itemUse = true;
-    request.item = spItem->FUN_140526a50();
+    request.item = spItem->GetItemUid();
     MS2Ptr<CSkillRecord> spRecord = ((Unk_PmSkills*)((MyPC*)(Unk_PmPlayer*)(pPlayer))->FUN_141523bc0())->FUN_141765570(request);
     if (spRecord == 0)
         return false;
@@ -667,39 +674,39 @@ Unk_PetManagerEmpty::Unk_PetManagerEmpty()
 {
 }
 // @0x140c89220
-int CPetManager::FUN_140c89220(int nItemId)
+int CPetManager::UseItemById(int nItemId)
 {
-    if (((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87fb0(nItemId))
+    if (((class CPetManager*)FUN_140535320())->GetInventory()->UseItemById(nItemId))
         return 1;
     return g_143ab2a90.FUN_140a63000(nItemId);
 }
 // @0x140c89270
 int CPetManager::FUN_140c89270(int nItemId)
 {
-    if (((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c88050(nItemId))
+    if (((class CPetManager*)FUN_140535320())->GetInventory()->FUN_140c88050(nItemId))
         return 1;
     return g_143ab2a90.FUN_140a63360(nItemId);
 }
 // @0x140c892c0
-MS2Ptr<CItem> CPetManager::FUN_140c892c0(int nItemId)
+MS2Ptr<CItem> CPetManager::FindItemById(int nItemId)
 {
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c86d90(nItemId);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->FindUsableItemById(nItemId);
     if (spItem.get() != 0)
         return spItem;
     return g_143ab2a90.FUN_140a5e2e0(nItemId);
 }
 // @0x140c89380
-MS2Ptr<CItem> CPetManager::FUN_140c89380(unsigned __int64 nUid)
+MS2Ptr<CItem> CPetManager::FindItemByUid(unsigned __int64 nUid)
 {
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87250(nUid);
+    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(nUid);
     if (spItem.get() != 0)
         return spItem;
     return g_143ab2a90.FUN_140a5d680(nUid);
 }
 // @0x140c89440
-int CPetManager::FUN_140c89440(int nItemId, int nRarity)
+int CPetManager::CountItems(int nItemId, int nRarity)
 {
-    int nPet = ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c87840(nItemId, nRarity);
+    int nPet = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemCount(nItemId, nRarity);
     int nBag = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
     return nPet + nBag;
 }
@@ -719,31 +726,31 @@ void CPetManager::OnResponsePet(CInPacket& in)
     int nMode = in.ReadUInt8();
     switch (nMode)
     {
-    case 7: FUN_140c89810(in); break;
-    case 8: FUN_140c898f0(in); break;
-    case 9: FUN_140c89980(in); break;
-    case 0: FUN_140c89b20(in); break;
-    case 1: FUN_140c89d00(in); break;
-    case 2: FUN_140c89ea0(in); break;
-    case 4: FUN_140c8a140(in); break;
-    case 5: FUN_140c8a420(in); break;
-    case 6: FUN_140c8a390(in); break;
+    case 7: OnPetCountList(in); break;
+    case 8: OnPetCountUpdate(in); break;
+    case 9: OnPetInfo(in); break;
+    case 0: OnPetSummoned(in); break;
+    case 1: OnPetUnsummoned(in); break;
+    case 2: OnPetSummonSound(in); break;
+    case 4: OnPetRenamed(in); break;
+    case 5: OnPetOptionsUpdate(in); break;
+    case 6: OnPetFlagsUpdate(in); break;
     case 10: FUN_140c8a4b0(in); break;
     case 0x12: FUN_140c8a640(in); break;
     case 0x11: FUN_140c8a7a0(in); break;
-    case 0xb: FUN_140c8a940(in); break;
+    case 0xb: OnPetLevelUp(in); break;
     case 0xc: FUN_140c8ab80(in); break;
     case 0x10: FUN_140c8ac50(in); break;
-    case 0x13: FUN_140c8ae50(in); break;
+    case 0x13: OnPetError(in); break;
     case 0x15: FUN_140c8afa0(in); break;
-    case 0xf: FUN_140c8b070(in); break;
-    case 0x14: FUN_140c8b0c0(in); break;
+    case 0xf: OnPetAutoChanged(in); break;
+    case 0x14: OnPetTrapSkillConsumed(in); break;
     }
 }
 // @0x140c89810
-void CPetManager::FUN_140c89810(CInPacket& in)
+void CPetManager::OnPetCountList(CInPacket& in)
 {
-    FUN_140c8b1f0();
+    ClearCounts();
     int nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
@@ -753,14 +760,14 @@ void CPetManager::FUN_140c89810(CInPacket& in)
     }
 }
 // @0x140c898f0
-void CPetManager::FUN_140c898f0(CInPacket& in)
+void CPetManager::OnPetCountUpdate(CInPacket& in)
 {
     unsigned long nKey = in.ReadInt32();
     long nValue = (unsigned short)in.ReadInt16();
     m_counts[nKey] = nValue;
 }
 // @0x140c89980
-void CPetManager::FUN_140c89980(CInPacket& in)
+void CPetManager::OnPetInfo(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
@@ -768,7 +775,7 @@ void CPetManager::FUN_140c89980(CInPacket& in)
         return;
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
-        ((class CPetManager*)FUN_140535320())->FUN_140c8b410()->FUN_140c868d0();
+        ((class CPetManager*)FUN_140535320())->GetInventory()->ResetSlots();
         m_info.FUN_1401ffd00(&in);
         if (m_info.identity.name.IsEmpty())
         {
@@ -783,7 +790,7 @@ void CPetManager::FUN_140c89980(CInPacket& in)
     }
 }
 // @0x140c89b20
-void CPetManager::FUN_140c89b20(CInPacket& in)
+void CPetManager::OnPetSummoned(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     int nValue = in.ReadInt32();
@@ -796,20 +803,20 @@ void CPetManager::FUN_140c89b20(CInPacket& in)
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
         ((class CPetManager*)FUN_140535320())->SetSummonUid(pPlayer->FUN_1416769f0());
-        Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+        Unk_PmInventoryDialog* pInventory = reinterpret_cast<Unk_PmInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
         if (pInventory != 0)
             ((UIInventoryDialog*)(Unk_PmInventoryDialog*)(pInventory))->FUN_14199a3f0(pPlayer->FUN_1416769f0());
         Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
         {
-            MS2Ptr<Unk_PetRow> spRow = ((class CPetManager*)FUN_140535320())->FUN_140c8b470();
+            MS2Ptr<Unk_PetRow> spRow = ((class CPetManager*)FUN_140535320())->GetSummonedPetRow();
             if (spRow.get() != 0)
-                ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->FUN_141938270(1, spRow->m_nF18 == 1, m_nAuto);
+                ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(1, spRow->m_nF18 == 1, m_nAuto);
         }
     }
 }
 // @0x140c89d00
-void CPetManager::FUN_140c89d00(CInPacket& in)
+void CPetManager::OnPetUnsummoned(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     __int64 nUid = in.ReadInt64();
@@ -822,12 +829,12 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
         ((class CPetManager*)FUN_140535320())->SetSummonUid(0);
-        Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+        Unk_PmInventoryDialog* pInventory = reinterpret_cast<Unk_PmInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
         if (pInventory != 0)
             ((UIInventoryDialog*)(Unk_PmInventoryDialog*)(pInventory))->FUN_14199a3f0(nUid);
         Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
-            ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->FUN_141938270(0, 0, 0);
+            ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(0, 0, 0);
         Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(2);
@@ -837,10 +844,10 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
 extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
 
 // @0x140c89ea0
-void CPetManager::FUN_140c89ea0(CInPacket& in)
+void CPetManager::OnPetSummonSound(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
-    CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
+    CPet* pPet = static_cast<CPet*>(GetPlayerPet(nObjectId));
     if (pPet == 0)
         return;
     Unk_PmPlayer* pLocal = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -859,12 +866,12 @@ void CPetManager::FUN_140c89ea0(CInPacket& in)
     }
 }
 // @0x140c8a140
-void CPetManager::FUN_140c8a140(CInPacket& in)
+void CPetManager::OnPetRenamed(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     Unk_PetIdentity identity;
     identity.FUN_1401fef40(&in);
-    CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
+    CPet* pPet = static_cast<CPet*>(GetPlayerPet(nObjectId));
     if (pPet != 0)
     {
         pPet->vfunc_76(identity.name);
@@ -879,14 +886,14 @@ void CPetManager::FUN_140c8a140(CInPacket& in)
             return;
         m_info.identity.FUN_1401ff0f0(identity);
         spItem->FUN_140528b00(m_info.identity.name);
-        ((class CPetManager*)FUN_140535320())->FUN_140c8b450()->identity.extra = identity.extra;
+        ((class CPetManager*)FUN_140535320())->GetInfo()->identity.extra = identity.extra;
         Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(0xd);
     }
 }
 // @0x140c8a390
-void CPetManager::FUN_140c8a390(CInPacket& in)
+void CPetManager::OnPetFlagsUpdate(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
@@ -896,7 +903,7 @@ void CPetManager::FUN_140c8a390(CInPacket& in)
         FUN_1401ff930((unsigned char*)(&m_info.flags), (void*)(&in));
 }
 // @0x140c8a420
-void CPetManager::FUN_140c8a420(CInPacket& in)
+void CPetManager::OnPetOptionsUpdate(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
@@ -969,7 +976,7 @@ void CPetManager::FUN_140c8a7a0(CInPacket& in)
     }
 }
 // @0x140c8a940
-void CPetManager::FUN_140c8a940(CInPacket& in)
+void CPetManager::OnPetLevelUp(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     short nLevel = (short)in.ReadInt32();
@@ -980,14 +987,14 @@ void CPetManager::FUN_140c8a940(CInPacket& in)
     {
         if (pPlayer->FUN_1416769f0() == nUid)
         {
-            CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
+            CPet* pPet = static_cast<CPet*>(GetPlayerPet(nObjectId));
             if (pPet != 0)
             {
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = ((struct Unk_PmConfig*)FUN_1401d31f0())->m_strLevelUpEffect;
-                kTarget.m_nKind = reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pPet);
-                kTarget.FUN_140a53190(pPet->FUN_14123c580());
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+                NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PmConfig*)FUN_1401d31f0())->m_strLevelUpEffect;
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pPet);
+                ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(pPet->FUN_14123c580());
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
             }
         }
         if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
@@ -1027,14 +1034,14 @@ void CPetManager::FUN_140c8ac50(CInPacket& in)
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_140523c40(nId, nRarity, 0))
     {
-        spItem->FUN_140526b30(nObjectId);
-        spItem->FUN_140526a70(nUid);
+        spItem->SetObjectId(nObjectId);
+        spItem->SetItemUid(nUid);
         spItem->FUN_140524eb0(in);
         FUN_140e6d4a0(nObjectId, spItem);
     }
 }
 // @0x140c8ae50
-void CPetManager::FUN_140c8ae50(CInPacket& in)
+void CPetManager::OnPetError(CInPacket& in)
 {
     int nError = in.ReadInt32();
     switch (nError)
@@ -1062,12 +1069,12 @@ void CPetManager::FUN_140c8afa0(CInPacket& in)
     pPlayer->FUN_141663150(in);
 }
 // @0x140c8b070
-void CPetManager::FUN_140c8b070(CInPacket& in)
+void CPetManager::OnPetAutoChanged(CInPacket& in)
 {
     m_nAuto = in.ReadBool();
 }
 // @0x140c8b0c0
-void CPetManager::FUN_140c8b0c0(CInPacket& in)
+void CPetManager::OnPetTrapSkillConsumed(CInPacket& in)
 {
     int nSkillId = in.ReadInt32();
     MS2Ptr<CItemData> spData = FUN_14053f870(nSkillId);
@@ -1076,19 +1083,19 @@ void CPetManager::FUN_140c8b0c0(CInPacket& in)
     FUN_1412751b0(FUN_14028dfa0<CStringW>(L"s_skill_consume_by_pet_trap", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nSkillId)), 0x14);
 }
 // @0x140c8b1f0
-void CPetManager::FUN_140c8b1f0()
+void CPetManager::ClearCounts()
 {
     m_counts.clear();
 }
 // @0x140c8b220
-int CPetManager::FUN_140c8b220(int nKey)
+int CPetManager::GetCountByKey(int nKey)
 {
     if (m_counts.find(reinterpret_cast<unsigned long&>(nKey)) == m_counts.end())
         return 0;
     return m_counts[reinterpret_cast<unsigned long&>(nKey)];
 }
 // @0x140c8b2b0
-int CPetManager::FUN_140c8b2b0()
+int CPetManager::HasSummonedPet()
 {
     if ((unsigned __int64)GetSummonUid() > 0)
         return 1;
@@ -1120,7 +1127,7 @@ int CPetManager::SendRequestPet()
     return m_nAuto;
 }
 // @0x140c8b410
-CPetInventory* CPetManager::FUN_140c8b410()
+CPetInventory* CPetManager::GetInventory()
 {
     return &m_inv;
 }
@@ -1130,12 +1137,12 @@ Unk_PetManagerEmpty* CPetManager::FUN_140c8b430()
     return &m_a0;
 }
 // @0x140c8b450
-CCPetInfoPacket::Info* CPetManager::FUN_140c8b450()
+CCPetInfoPacket::Info* CPetManager::GetInfo()
 {
     return &m_info;
 }
 // @0x140c8b470
-MS2Ptr<Unk_PetRow> CPetManager::FUN_140c8b470()
+MS2Ptr<Unk_PetRow> CPetManager::GetSummonedPetRow()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetSummonUid());
     if (spItem == 0)
@@ -1143,10 +1150,10 @@ MS2Ptr<Unk_PetRow> CPetManager::FUN_140c8b470()
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
     if (spData == 0)
         return MS2Ptr<Unk_PetRow>(0);
-    return ((class Unk_PmPetRowTable*)FUN_14052d210())->FUN_1407290f0(spData->FUN_14053dc60());
+    return ((class Unk_PmPetRowTable*)FUN_14052d210())->FUN_1407290f0(spData->GetPetId());
 }
 // @0x140c8b5c0
-void* CPetManager::FUN_140c8b5c0(int nObjectId)
+void* CPetManager::GetPlayerPet(int nObjectId)
 {
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
     if (pPlayer == 0)

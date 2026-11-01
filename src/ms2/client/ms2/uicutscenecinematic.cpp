@@ -52,6 +52,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/soundproperty.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- unit-local views of exe objects (Unk_ names and member names are invented) ----
 
@@ -83,22 +84,12 @@ int FUN_141658e60(PCBase* pPC);                                   // gender
 class Unk_CscEffects : public CEffectService
 {
 public:
-    void FUN_1411a6060(int nHandle);                                // stop it
 };
 class Unk_CscVoiceProp : public CPtred { public: void FUN_141791400(int nGender, int nJob, CString& strEvent); };
 class Unk_CscSoundProps { public: MS2Ptr<Unk_CscVoiceProp> FUN_141793110(const CString& strName); };
    // the length of a sound, -1 if absent
 CSoundService* FUN_140c9cb10();
 
-class Unk_140a94350
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_140a94350* FUN_140a94350();
 class Unk_CscKeyGroups { public: void FUN_1422b9fd0(int nGroup); int FUN_1422b9e00(); };
 CFeatureManager* FUN_140166410();
 CInputKeyHandler* FUN_14025e7c0();
@@ -109,9 +100,9 @@ public:
 };
 class Unk_CscOption { public: unsigned char* FUN_140a58500(); };   // the gamepad state (first byte: a pad is in use)
 class Unk_CscKeyTable { public: CStringW FUN_14142d760(int nKey, int nKind); };   // the key name of a binding
-Unk_CscKeyTable* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_CscKeyTable (calls cast back)
 class Unk_CscUiScale { public: float FUN_1422afec0(int nUiId); };
-Unk_CscUiScale* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_CscUiScale (calls cast back)
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);   // new ASGameEntity(root, nUiId)
 
 class Unk_CscTextKeys : public CServerStringGroup { };
@@ -167,8 +158,8 @@ UICutSceneCinematic::BalloonGroup::BalloonGroup()
 void UICutSceneCinematic::vfunc_2()
 {
     FUN_1422dbf00(m_2c, 0, 0);
-    FUN_140b632f0()->FUN_1422d4780(this, 4);
-    FUN_140a94350()->vfunc_10(0xb);
+    FUN_140b632f0()->AddToLayer(this, 4);
+    ChromaSDK::GetChromaManager()->SetState(0xb);
 }
 MS2_REPLACE_METHOD(0x1419075C0, UICutSceneCinematic, vfunc_2, 93, 0x3990A77A);
 
@@ -187,8 +178,8 @@ void UICutSceneCinematic::vfunc_3()
     m_strText.Empty();
     m_bSkipped = false;
     FUN_1422dc080();
-    FUN_140b632f0()->FUN_1422d4840(this, 4);
-    FUN_140a94350()->vfunc_10(0);
+    FUN_140b632f0()->RemoveFromLayer(this, 4);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 MS2_REPLACE_METHOD(0x141907630, UICutSceneCinematic, vfunc_3, 219, 0x828082D7);
 
@@ -212,7 +203,7 @@ void UICutSceneCinematic::OnLoadComplete()
     }
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<Unk_CscOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
-        strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<Unk_CscKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
     FUN_141907d60(m_nSkipState, CStringW(strKey), CStringW(m_strSkipLabel));
 }
 
@@ -232,7 +223,7 @@ void UICutSceneCinematic::vfunc_43()
     if (spEntity.get())
     {
         spEntity->vfunc_2(5, 1, 1);
-        float fScale = FUN_14025e7a0()->FUN_1422afec0(m_28);
+        float fScale = reinterpret_cast<Unk_CscUiScale*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
         spEntity->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
     }
 }
@@ -246,7 +237,7 @@ int UICutSceneCinematic::vfunc_13()
     if (FUN_140166410()->FUN_14036d570(2) && FUN_14025e7c0()->FUN_14116d950(0x2a, 0, 0) && FUN_14025e7c0()->FUN_14116d950(1, 0, 0))
     {
         SendTrigger();
-        FUN_141908040(false);
+        SetCinematicKeyMode(false);
         FUN_1419080b0();
         return 1;
     }
@@ -286,12 +277,12 @@ void UICutSceneCinematic::FUN_141907f80(int nId, CStringW strText)
     m_strText = strText;
     FUN_1419092a0(m_strText);
     FUN_141909490();
-    FUN_140a94350()->vfunc_10(0xb);
+    ChromaSDK::GetChromaManager()->SetState(0xb);
 }
 MS2_REPLACE_METHOD(0x141907F80, UICutSceneCinematic, FUN_141907f80, 174, 0x4D855AE2);
 
 // @0x141908040
-void UICutSceneCinematic::FUN_141908040(bool bOn)
+void UICutSceneCinematic::SetCinematicKeyMode(bool bOn)
 {
     if (bOn)
     {
@@ -304,7 +295,7 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
         ((Unk_CscKeyGroups*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
     }
 }
-MS2_REPLACE_METHOD(0x141908040, UICutSceneCinematic, FUN_141908040, 95, 0x0200FE35);
+MS2_REPLACE_METHOD(0x141908040, UICutSceneCinematic, SetCinematicKeyMode, 95, 0x0200FE35);
 
 // @0x1419080b0
 void UICutSceneCinematic::FUN_1419080b0()
@@ -315,12 +306,12 @@ void UICutSceneCinematic::FUN_1419080b0()
     m_30->Invoke("hideDirect");
     FUN_140cffa50(FUN_1422dbb40(), "m_bgInstance", "_out");
     FUN_140cffa50(FUN_1422dbb40(), "m_document", "_out");
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 MS2_REPLACE_METHOD(0x1419080B0, UICutSceneCinematic, FUN_1419080b0, 460, 0xB4DFB1FB);
 
 // @0x141908290
-void UICutSceneCinematic::FUN_141908290(CInPacket& packet)
+void UICutSceneCinematic::OnPacket(CInPacket& packet)
 {
     int nType = packet.ReadUInt8();
     switch (nType)
@@ -339,24 +330,24 @@ void UICutSceneCinematic::FUN_141908290(CInPacket& packet)
     case 5: FUN_14190afb0(packet); break;
     }
 }
-MS2_REPLACE_METHOD(0x141908290, UICutSceneCinematic, FUN_141908290, 327, 0x2227BCC9);
+MS2_REPLACE_METHOD(0x141908290, UICutSceneCinematic, OnPacket, 327, 0x2227BCC9);
 
 // @0x141908410
-void UICutSceneCinematic::FUN_141908410()
+void UICutSceneCinematic::HideScript()
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("hideScript");
 }
-MS2_REPLACE_METHOD(0x141908410, UICutSceneCinematic, FUN_141908410, 89, 0x4D1B078C);
+MS2_REPLACE_METHOD(0x141908410, UICutSceneCinematic, HideScript, 89, 0x4D1B078C);
 
 // @0x141908470
-void UICutSceneCinematic::FUN_141908470(CStringW strName, CStringW strText, CStringW strIllust, int nFlag)
+void UICutSceneCinematic::SetScript(CStringW strName, CStringW strText, CStringW strIllust, int nFlag)
 {
     if (m_30.get())
         m_30->Invoke("setScript", CStringW(strName), CStringW(strText), CStringW(strIllust), nFlag);
 }
-MS2_REPLACE_METHOD(0x141908470, UICutSceneCinematic, FUN_141908470, 361, 0x81464EF3);
+MS2_REPLACE_METHOD(0x141908470, UICutSceneCinematic, SetScript, 361, 0x81464EF3);
 
 // @0x1419085e0
 void UICutSceneCinematic::FUN_1419085e0(NotifyObject* pNotice)
@@ -377,19 +368,19 @@ void UICutSceneCinematic::FUN_141908620(NotifyObject* pNotice)
 MS2_REPLACE_METHOD(0x141908620, UICutSceneCinematic, FUN_141908620, 94, 0x765E5887);
 
 // @0x141908690
-void UICutSceneCinematic::FUN_141908690()
+void UICutSceneCinematic::ClearTalks()
 {
-    FUN_141908410();
+    HideScript();
     m_talks.RemoveAll();
     m_spTalk = 0;
     m_nTalkEnd = 0;
     if (m_nVoice != 0)
     {
-        reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nVoice);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nVoice);
         m_nVoice = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141908690, UICutSceneCinematic, FUN_141908690, 132, 0x45B8DE86);
+MS2_REPLACE_METHOD(0x141908690, UICutSceneCinematic, ClearTalks, 132, 0x45B8DE86);
 
 // @0x141908720
 void UICutSceneCinematic::FUN_141908720(float fDelta)
@@ -409,11 +400,11 @@ void UICutSceneCinematic::FUN_141908750()
     {
         if (nTick < m_nTalkEnd)
             return;
-        FUN_141908410();
+        HideScript();
         m_spTalk = 0;
         if (m_nVoice != 0)
         {
-            reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nVoice);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nVoice);
             m_nVoice = 0;
         }
     }
@@ -427,11 +418,11 @@ void UICutSceneCinematic::FUN_141908750()
     {
         MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
-            FUN_141908470(pPC->vfunc_77(), CStringW(m_spTalk->m_strText), CStringW(), 0);
+            SetScript(pPC->vfunc_77(), CStringW(m_spTalk->m_strText), CStringW(), 0);
     }
     else
     {
-        FUN_141908470(FUN_1401aa6a0(m_spTalk->m_nNpcId), CStringW(m_spTalk->m_strText), FUN_14016a730(FUN_140cc2c70(m_spTalk->m_strIllust), 0), m_spTalk->m_nFlag);
+        SetScript(FUN_1401aa6a0(m_spTalk->m_nNpcId), CStringW(m_spTalk->m_strText), FUN_14016a730(FUN_140cc2c70(m_spTalk->m_strIllust), 0), m_spTalk->m_nFlag);
     }
     if (!m_spTalk->m_strSound.IsEmpty())
         m_nVoice = reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(m_spTalk->m_strSound);
@@ -604,7 +595,7 @@ MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, FUN_1419096c0, 57, 0x1B8A4E
 void UICutSceneCinematic::FUN_141909700(CInPacket& packet)
 {
     bool bOn = packet.ReadBool();
-    FUN_141908040(bOn);
+    SetCinematicKeyMode(bOn);
 }
 MS2_REPLACE_METHOD(0x141909700, UICutSceneCinematic, FUN_141909700, 71, 0x9EF82459);
 
@@ -670,7 +661,7 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
 // @0x141909e80
 void UICutSceneCinematic::FUN_141909e80(CInPacket& packet)
 {
-    FUN_141908690();
+    ClearTalks();
 }
 MS2_REPLACE_METHOD(0x141909E80, UICutSceneCinematic, FUN_141909e80, 29, 0xE78F1D46);
 
@@ -739,7 +730,7 @@ void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
     m_strSkipMsg = packet.ReadString();
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<Unk_CscOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
-        strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<Unk_CscKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
     FUN_141907d60(nType, CStringW(strKey), CStringW(strLabel));
 }
 MS2_REPLACE_METHOD(0x14190A4C0, UICutSceneCinematic, FUN_14190a4c0, 523, 0xECC7A13D);
@@ -790,7 +781,7 @@ void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
     FUN_1419092a0(m_strText);
     FUN_141909550();
     if (!FUN_1419096c0())
-        FUN_141908040(true);
+        SetCinematicKeyMode(true);
     if (!strSound.IsEmpty())
         reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(strSound);
 }
@@ -804,7 +795,7 @@ void UICutSceneCinematic::FUN_14190aee0(CInPacket& packet)
     FUN_1419092a0(m_strText);
     FUN_141909610();
     if (!FUN_1419096c0())
-        FUN_141908040(true);
+        SetCinematicKeyMode(true);
 }
 MS2_REPLACE_METHOD(0x14190AEE0, UICutSceneCinematic, FUN_14190aee0, 190, 0xC358CCEE);
 

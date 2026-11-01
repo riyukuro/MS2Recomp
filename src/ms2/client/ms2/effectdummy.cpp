@@ -7,6 +7,11 @@
 #include "effectdummy.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // ---- out-of-unit callees ----
 
@@ -17,7 +22,7 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);      // FirstChildElement
     Unk_140165cf0* NextSiblingElement();                    // NextSiblingElement
 };
-void FUN_1408733e0(Unk_140165cf0* pNode, const char* pszAttr, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
@@ -75,15 +80,15 @@ void CEffectDummy::Parse(Unk_140165cf0* pNode)
 {
     if (pNode == 0)
         return;
-    FUN_1408733e0(pNode, "name", m_strName);
-    Unk_140165cf0* pAttach = pNode->FUN_140165cf0("attachInfo");
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
+    Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
     if (pAttach)
     {
-        FUN_1408733e0(pAttach, "parentNode", m_strParentNode);
+        XmlGetAttr((class TiXmlElement*)(pAttach), "parentNode", m_strParentNode);
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", m_bApplyWorldTransform);
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", m_bApplyLocalScale);
     }
-    Unk_140165cf0* pXf = pNode->FUN_140165cf0("transform");
+    Unk_140165cf0* pXf = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pXf)
     {
         XmlGetAttr((class TiXmlElement*)(pXf), "translate", *(class NiPoint3*)&static_cast<struct Unk_DummyVec3&>(m_vTranslate));
@@ -156,7 +161,7 @@ EffectDummyGroup::EffectDummyGroup()
 // @0x140a514e0
 void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
 {
-    for (Unk_140165cf0* pDummy = reinterpret_cast<Unk_140165cf0*>(pNode)->FUN_140165cf0("dummy"); pDummy != 0; pDummy = pDummy->NextSiblingElement())
+    for (Unk_140165cf0* pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(pNode)))->FirstChild("dummy")); pDummy != 0; pDummy = pDummy->NextSiblingElement())
     {
         DummyPtr p(new CEffectDummy);
         p->Parse(pDummy);

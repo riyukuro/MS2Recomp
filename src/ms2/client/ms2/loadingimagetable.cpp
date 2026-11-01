@@ -33,6 +33,16 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -90,12 +100,12 @@ bool CLoadingImageTable::LoadingImage::IsSameCondition(const LoadingImage& o) co
 // @0x140d44100
 int CLoadingImageTable::LoadingImage::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "code", m_nCode);
+    XmlGetAttr((class TiXmlElement*)(pElem), "code", reinterpret_cast<unsigned int&>(m_nCode));
     XmlGetAttr((class TiXmlElement*)(pElem), "startTime", m_startTime);
     XmlGetAttr((class TiXmlElement*)(pElem), "endTime", m_endTime);
     ParseExceptMap(pElem, "exceptMap", m_exceptMaps);
     CString strBg;
-    FUN_1408733e0(pElem, "bgLoading", strBg);
+    XmlGetAttr((class TiXmlElement*)(pElem), "bgLoading", strBg);
     if (strBg.GetLength() != 0)
     {
         if (strBg.Find(".dds", 0) == -1)
@@ -169,7 +179,7 @@ int CLoadingImageTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("image"); pNode != 0; pNode = pNode->FUN_140168650("image"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("image")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("image")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -182,7 +192,7 @@ int CLoadingImageTable::Load()
                 m_mapImages.Insert(spImage.get()->m_nCode, spImage);
         }
         CString strMovie;
-        FUN_1408733e0(pNode, "movieFileName", strMovie);
+        XmlGetAttr((class TiXmlElement*)(pNode), "movieFileName", strMovie);
         if (strMovie.GetLength() != 0)
         {
             MoviePtr spMovie(new LoadingMovie);
@@ -205,7 +215,7 @@ int CLoadingImageTable::Load()
                     spMovie.get()->m_files.insert(std::make_pair(0u, strFile));
                 }
             }
-            FUN_1408731e0(pNode, "playOneTime", spMovie.get()->m_nPlayOneTime);
+            XmlGetAttr((class TiXmlElement*)(pNode), "playOneTime", reinterpret_cast<int&>(spMovie.get()->m_nPlayOneTime));
             m_movies.SetAt(spImage.get()->m_nCode, spMovie);
         }
     }
@@ -308,11 +318,11 @@ void CLoadingImageTable::CollectImages(int nMapCode, ATL::CAtlArray<ImagePtr>& a
 int CLoadingImageTable::ParseExceptMap(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<Unk_MapRange>& aOut)
 {
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet == 0)
     {
         ATL::CAtlArray<CString> tokens;
-        FUN_14015f050(str, tokens, ",");
+        Unk_SplitA(const_cast<CStringA&>(str), (ATL::CAtlArray<CStringA>*)&(tokens), ",");
         for (size_t i = 0; i < tokens.GetCount(); i++)
         {
             ATL::CAtlArray<int> parts;

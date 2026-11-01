@@ -220,12 +220,6 @@ public:
     Unk_IoCutRef FUN_141bd30a0();
     void FUN_141bdb0f0(CString strKey, Unk_IoRankPtr spRank);
 };
-class Unk_IoFxMgr
-{
-public:
-    int FUN_1411a49c0(NoticeMessage* pRequest);
-    void FUN_1411a6060(int nHandle);
-};
 class Unk_IoQuestEval
 {
 public:
@@ -270,9 +264,7 @@ int FUN_14053feb0(int nItemId);
 struct Unk_IoRefOwner;
 
 // entity and property access
-int FUN_1409618c0(Unk_Entity* e, unsigned nHash, Vector3* pOut);
 int FUN_1408a2020(Unk_Entity* e, unsigned nHash, int* pOut);
-int FUN_1408a20a0(Unk_Entity* e, unsigned nHash, bool* pOut);
 int FUN_140961880(Unk_Entity* e, unsigned nHash, float* pOut);   // float property
 struct Unk_IoColour   // efd::Color-like rgb (no ctor; non-POD so it is not a /GS buffer)
 {
@@ -298,7 +290,8 @@ void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_140de0cb0(efd::AssetID* pDst, efd::utf8string* pStr);
 void FUN_1408a8900(efd::utf8string* p);
 class Unk_IoSoundMgr { public: bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& strName, float fVol, bool bLoop); };
-Unk_IoSoundMgr* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // physics prop object of a mesh interact object
 // efd::MemHint, passed by value to the MemObject operator new
@@ -358,7 +351,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
    // member (this=rcx, hidden return=rdx)
 CKeyTable* FUN_1409331f0();
-class Unk_IoUiMgr { public: void FUN_141adc530(int n); int FUN_141adc940(int n); };
+class Unk_IoUiMgr { public: void FUN_141adc530(int n); };
 UISwfEntityManager* FUN_140b632f0();
 DWORD GetTickCountMs2();
 
@@ -443,7 +436,7 @@ CInteractObject::~CInteractObject()
 {
     FUN_1413fdc50();
     if (m_nParticle != 0)
-        reinterpret_cast<Unk_IoFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nParticle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nParticle);
     m_spRow = 0;
     m_ent = 0;
 }
@@ -563,7 +556,7 @@ void CInteractObject::FUN_1413fda50()
         request.m_strName = strAsset;
         request.m_nObject = 0;
         request.m_p18 = &xf;
-        m_nEffect = reinterpret_cast<Unk_IoFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&request));
         m_nShownState = m_nState;
     }
 }
@@ -573,7 +566,7 @@ void CInteractObject::FUN_1413fdc50()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<Unk_IoFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
         m_nShownState = 3;
     }
@@ -622,7 +615,7 @@ int CInteractObject::FUN_1413fde40()
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e5c0(m_spRow->m_item.m_nCode, nRarity);
         if (!spItem)
             return 0;
-        if ((unsigned)((CItem*)spItem)->FUN_140526c50() < m_spRow->m_item.m_nConsume)
+        if ((unsigned)((CItem*)spItem)->GetCount() < m_spRow->m_item.m_nConsume)
             return 0;
         if (((CItem*)spItem)->FUN_140526bd0() != nRarity)
             return 0;
@@ -758,7 +751,7 @@ void CInteractObject::vfunc_12()
         Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer != 0)
             request.SetActor(pPlayer->FUN_14123c580());
-        m_nParticle = reinterpret_cast<Unk_IoFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
+        m_nParticle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&request));
     }
 }
 
@@ -1015,7 +1008,7 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     else if (m_nAssetType == 2)
     {
         efd::utf8string str(strAsset);
-        FUN_141b6f910()->FUN_1409a1fc0(IO_ENT(m_ent)->GetEntityID(), str, 1.0f, false);
+        reinterpret_cast<Unk_IoSoundMgr*>(FUN_141b6f910())->FUN_1409a1fc0(IO_ENT(m_ent)->GetEntityID(), str, 1.0f, false);
     }
 }
 
@@ -1161,7 +1154,7 @@ void CInteractUIObject::vfunc_11()
     CInteractObject::vfunc_11();
     if (m_nDialogId == 0)
         return;
-    if (reinterpret_cast<Unk_IoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(m_nDialogId) != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)m_nDialogId) != 0)
     {
         m_nDialogId = 0;
         return;
@@ -1169,12 +1162,12 @@ void CInteractUIObject::vfunc_11()
     Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)m_nDialogId);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)m_nDialogId);
         return;
     }
     float fRange = GetRow()->m_validate.m_fInteractionDistance;
     if (pPlayer->FUN_1416767d0().FUN_140965c40(GetPos()).FUN_140967ac0() > fRange)
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)m_nDialogId);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)m_nDialogId);
 }
 
 // ================================================================================================================
@@ -1245,7 +1238,7 @@ public:
 };
 typedef TiXmlElement Unk_IoXmlElem;
 const char* FUN_1408782b0(Unk_IoXmlElem* p, const char* pszXml, void* pData, int nEncoding);   // Parse
-CString FUN_14015f710(Unk_IoXmlElem* p, const char* pszName, CString strDefault);
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 CStringW FUN_1401bf530(Unk_IoXmlElem* p, const char* pszName, CStringW strDefault);
 int FUN_140197350(class Unk_140165cf0*, char const*, int);   // C3: was FUN_140197350
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned __int64&);   // C3: was FUN_140873320
@@ -1306,7 +1299,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
         if (pEnd == 0)
             return;
-        CString strMark = FUN_14015f710(&elem, "mark", CString(""));
+        CString strMark = Unk_ReadString((class Unk_XmlNode*)(&elem), "mark", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strGuildName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nGuildRank = FUN_140197350((class Unk_140165cf0*)(&elem), "rank", 0);
@@ -1324,7 +1317,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
         if (pEnd == 0)
             return;
-        CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
+        CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharTrophy = FUN_140197350((class Unk_140165cf0*)(&elem), "trophy", 0);
@@ -1339,7 +1332,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
         if (pEnd == 0)
             return;
-        CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
+        CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharBuildPoint = FUN_140197350((class Unk_140165cf0*)(&elem), "build_point", 0);
@@ -1354,7 +1347,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
         if (pEnd == 0)
             return;
-        CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
+        CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharScore = FUN_140197350((class Unk_140165cf0*)(&elem), "score", 0);

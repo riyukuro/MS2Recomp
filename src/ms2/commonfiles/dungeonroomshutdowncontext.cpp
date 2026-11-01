@@ -17,6 +17,13 @@
 #include "ms2/placeholder/dungeonroomshutdowncontext.h"
 
 #include "ms2/placeholder/dungeongrouptype.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Out-of-unit helpers.
 int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // enum attribute by name
@@ -41,16 +48,16 @@ DungeonRoomShutdownContext::DungeonRoomShutdownContext()
 void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dungeonRoom"); pNode != 0;
-         pNode = pNode->FUN_140168650("dungeonRoom"))
+         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRoom")))
     {
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         if (nId != 0)
             m_roomIds.insert(nId);
     }
@@ -60,13 +67,13 @@ void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
 void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dungeonGroup"); pNode != 0;
-         pNode = pNode->FUN_140168650("dungeonGroup"))
+         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonGroup")))
     {
         Unk_DungeonGroupType eType = Unk_DungeonGroupType_None;
         FUN_140179060(pNode, "type", eType);

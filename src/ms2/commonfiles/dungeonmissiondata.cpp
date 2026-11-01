@@ -26,6 +26,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // The common log (GetLogString()).
 class Unk_CommonLog
@@ -88,11 +93,11 @@ DungeonMissionData::DungeonMissionData()
 // @0x140314960
 bool DungeonMissionData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_id);
-    FUN_140873420(pElem, "type", m_type);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_id);
+    XmlGetAttr((class TiXmlElement*)(pElem), "type", m_type);
     XmlGetAttr((class TiXmlElement*)(pElem), "maxScore", m_maxScore);
     XmlGetAttr((class TiXmlElement*)(pElem), "applyCount", m_applyCount);
-    FUN_1408730a0(pElem, "isPenaltyType", m_isPenaltyType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isPenaltyType", reinterpret_cast<bool&>(m_isPenaltyType));
     if (m_id == 0)
     {
         reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DungeonMissionData ID Error"));
@@ -151,7 +156,7 @@ MS2_REPLACE_METHOD(0x140314D00, DungeonMissionData, GetName, 76, 0x106F6DFC);
 MS2Ptr<DungeonMissionData> DungeonMissionData::Create(Unk_140165cf0* pElem)
 {
     CStringW strType;
-    FUN_140873420(pElem, "type", strType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "type", strType);
     if (strType.GetLength() == 0)
         return MS2Ptr<DungeonMissionData>(0);
     CStringW strClass = StringFormat(L"DungeonMissionData{0}", strType);
@@ -185,8 +190,8 @@ bool DungeonMissionDataPlayTime::Load(Unk_140165cf0* pElem)
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
     m_value2 = 0;
-    FUN_1408731e0(pElem, "value1", m_value1);
-    FUN_1408731e0(pElem, "value2", m_value2);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", reinterpret_cast<int&>(m_value1));
+    XmlGetAttr((class TiXmlElement*)(pElem), "value2", reinterpret_cast<int&>(m_value2));
     return true;
 }
 MS2_REPLACE_METHOD(0x140314FD0, DungeonMissionDataPlayTime, Load, 118, 0x8E0B5B21);
@@ -219,7 +224,7 @@ bool DungeonMissionDataLimitUserCount::Load(Unk_140165cf0* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 1;
-    FUN_140873220(pElem, "value1", m_value1);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", m_value1);
     return true;
 }
 MS2_REPLACE_METHOD(0x140315110, DungeonMissionDataLimitUserCount, Load, 77, 0xA9BBDACF);
@@ -246,7 +251,7 @@ bool DungeonMissionDataKillNpc::Load(Unk_140165cf0* pElem)
     DungeonMissionData::Load(pElem);
     m_value2 = 1;
     XmlTokenList(pElem, "value1", m_value1);
-    FUN_140873220(pElem, "value2", m_value2);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value2", m_value2);
     if (m_value2 <= 0)
     {
         reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x13, StringFormat(L"DataKillNpc mission value2 is 0"));
@@ -303,7 +308,7 @@ bool DungeonMissionDataUseSkill::Load(Unk_140165cf0* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
-    FUN_140873220(pElem, "value1", m_value1);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", m_value1);
     return true;
 }
 MS2_REPLACE_METHOD(0x1403154E0, DungeonMissionDataUseSkill, Load, 77, 0x8847D090);
@@ -379,7 +384,7 @@ bool DungeonMissionDataUseInteractObject::Load(Unk_140165cf0* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
-    FUN_1408731e0(pElem, "value1", m_value1);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", reinterpret_cast<int&>(m_value1));
     return true;
 }
 MS2_REPLACE_METHOD(0x1403157F0, DungeonMissionDataUseInteractObject, Load, 77, 0x13D665CC);
@@ -404,7 +409,7 @@ MS2_REPLACE_METHOD(0x1403158B0, DungeonMissionDataDamageToNpc, GetTypeName, 61, 
 bool DungeonMissionDataDamageToNpc::Load(Unk_140165cf0* pElem)
 {
     DungeonMissionData::Load(pElem);
-    FUN_1408732e0(pElem, "value1", m_value1);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value1", reinterpret_cast<__int64&>(m_value1));
     XmlTokenList(pElem, "value2", m_value2);
     m_damagePerApply = m_value1 / m_applyCount;
     return true;

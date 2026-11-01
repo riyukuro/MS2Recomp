@@ -27,6 +27,8 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItemData>::operator->
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -117,7 +119,6 @@ class Unk_ThItemRef
 {
 public:
     bool FUN_1401b5240(int n) const;
-    Unk_ThItemRec* FUN_1401b52a0() const;
     ~Unk_ThItemRef();                                           // 0x1401b50d0 (release)
 private:
     void* m_0;
@@ -252,10 +253,9 @@ class Unk_ThStrTbl { public: CStringW FUN_141811980(int nType, unsigned nId) con
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
 class Unk_ThUgc { public: CStringW FUN_140b15150(unsigned __int64 nId) const; };
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
+void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
 
 // Unrecovered string formatters whose instances live in other units.
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& a);
 CStringW FUN_140292a70(const wchar_t* pszFormat, const unsigned& a);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
@@ -358,11 +358,11 @@ void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
-    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
         return;
-    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 0)
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 0)
     {
-        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, CStringW(L""));
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, CStringW(L""));
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
     }
@@ -376,18 +376,18 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
-    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
         return;
-    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 1)
     {
-        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, L"");
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
-        nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
+        nSize = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 2)
     {
-        const CStringW& strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, L"");
+        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
         nColor1 = nColor2;
     }
@@ -401,18 +401,18 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
-    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"WeddingChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"WeddingChat"))
         return;
-    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 1)
     {
-        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, L"");
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
-        nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
+        nSize = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 2)
     {
-        const CStringW& strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, L"");
+        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
         nColor1 = nColor2;
     }
@@ -690,7 +690,7 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
 // @0x141841fd0
 CStringW FUN_141841fd0(CStringW strName, unsigned nSize)
 {
-    CStringW strLink = FUN_1401e8510(L"'event:inviteParty,{0}'", strName);
+    CStringW strLink = StringFormat<CStringW>(L"'event:inviteParty,{0}'", strName);
     CStringW strInvite = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_invite_party"), strLink);
     CStringW strMessage = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_html_chat_invite_party_message"), strName, strInvite);
     return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color16, nSize, strMessage);

@@ -54,8 +54,11 @@ public:
 extern NiFixedString DAT_143ae51d8;                                         // the default target node name
 const char* FUN_142087e50(NiFixedString* pName);                            // NiFixedString to char*
 
-class Unk_TexAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
-Unk_TexAnimSvc* FUN_141b6f910();
+class Unk_TexAnimSvc { public: };
+class NiActorManager;
+namespace egf { class EntityID; }
+namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
+egmAnimation::AnimationService* FUN_141b6f910();
 NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName);             // child node by name
 extern const NiRTTI Unk_RenderObjectRTTI;                                   // 0x143afa7d0
 class MyPC;
@@ -434,7 +437,7 @@ NiAVObject* CTextureAnimation::FUN_141849060(const CString& strName)
 {
     if (m_pOwner == 0)
         return 0;
-    NiActorManager* pActorMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460());
+    NiActorManager* pActorMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_TexAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460());
     if (pActorMgr == 0)
         return 0;
     NiObject* pRoot = pActorMgr->GetNIFRoot();
@@ -543,7 +546,7 @@ int UITextureDensityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nMode = data.FUN_1422b8a10();
             m_nMode = nMode;
-            ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a4660(nMode);
+            ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetDensityMode(nMode);
         }
         return 1;
     }

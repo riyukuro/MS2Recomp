@@ -22,6 +22,15 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern Vector3 DAT_143b01a60;                               // the zero point
@@ -57,9 +66,7 @@ public:
 class Unk_Entity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Vector3* pOut);
     void FUN_140961880(unsigned nProp, float* pOut);
-    void FUN_1408a20a0(unsigned nProp, bool* pOut);
     void FUN_1408a2020(unsigned nProp, int* pOut);
     void FUN_1408a2060(unsigned nProp, efd::utf8string* pOut);
     void FUN_14098c6e0(unsigned nProp, const bool* pValue);
@@ -81,7 +88,6 @@ public:
     Unk_Ptr1401cd040(void* p);                                      // 0x1401cd0b0
     ~Unk_Ptr1401cd040();                                            // 0x1401cd150
     void* FUN_140885310();                                          // get
-    Unk_VibSvc* FUN_1401cd1a0();                                    // operator->
     void* m_p;
 };
 void* FUN_1401cd040(int* p);
@@ -220,11 +226,11 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
         {
             efd::utf8string strFx;
             pEntity->FUN_1408a2060(0xdd2ac78a, &strFx);
-            Unk_VibEffectReq req;
-            req.m_name = strFx.c_str();
-            req.m_type = 7;
-            req.m_pXform = &xf;
-            reinterpret_cast<Unk_VibFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(req);
+            NoticeMessage req;   // C3: was Unk_VibEffectReq
+            ((Unk_VibEffectReq&)(req)).m_name = strFx.c_str();
+            ((Unk_VibEffectReq&)(req)).m_type = 7;
+            ((Unk_VibEffectReq&)(req)).m_pXform = &xf;
+            reinterpret_cast<Unk_VibFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(((Unk_VibEffectReq&)(req)));
         }
         Unk_VibZone* pZone = params.FUN_140975bd0()->FUN_141759830();
         if (pZone != 0) {
@@ -243,11 +249,11 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
                 xf2.m_rot = *pObj->FUN_1410b23c0();
                 efd::utf8string strFx2;
                 pEntity->FUN_1408a2060(0xdd2ac78a, &strFx2);
-                Unk_VibEffectReq req2;
-                req2.m_name = strFound;
-                req2.m_type = 7;
-                req2.m_pXform = &xf2;
-                reinterpret_cast<Unk_VibFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(req2);
+                NoticeMessage req2;   // C3: was Unk_VibEffectReq
+                ((Unk_VibEffectReq&)(req2)).m_name = strFound;
+                ((Unk_VibEffectReq&)(req2)).m_type = 7;
+                ((Unk_VibEffectReq&)(req2)).m_pXform = &xf2;
+                reinterpret_cast<Unk_VibFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(((Unk_VibEffectReq&)(req2)));
             }
         }
     }
@@ -257,7 +263,7 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
 // @0x1411cb9f0
 CEntityVibrator::~CEntityVibrator()
 {
-    FUN_1411cd040();
+    ReleaseActor();
 }
 
 // @0x1411cba60
@@ -274,7 +280,7 @@ int CEntityVibrator::FUN_1411cba60()
         if (m_68 != 0) {
             int bLate = nNow > m_30 + 3000U;
             if (m_68->isSleeping() || bLate) {
-                FUN_1411cd040();
+                ReleaseActor();
             } else {
                 FUN_1411cd0c0();
             }
@@ -309,13 +315,13 @@ int CEntityVibrator::FUN_1411cba60()
             Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
             Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
             float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
-            FUN_1411cda60(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
+            SetPosition(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
             if (1.0f <= fK) {
-                FUN_1411cda60(m_48);
+                SetPosition(m_48);
                 FUN_1411cdb00(m_54);
                 Unk_Ptr1401cd040 com(FUN_1401cd040(&DAT_143b059e8));
                 if (com.FUN_140885310() != 0) {
-                    com.FUN_1401cd1a0()->FUN_1410c5570(m_entity);
+                    reinterpret_cast<Unk_VibSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(com).operator->())->FUN_1410c5570(m_entity);
                 }
                 if (!m_a8) {
                     if (FUN_141689a10(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()))) {
@@ -352,10 +358,10 @@ int CEntityVibrator::FUN_1411cba60()
                 m_3c.FUN_140968990();
                 m_60 = (fOffset < 0.0f);
             }
-            FUN_1411cda60(m_48.FUN_14097fd50(m_3c.FUN_14097fc90(fOffset)));
+            SetPosition(m_48.FUN_14097fd50(m_3c.FUN_14097fc90(fOffset)));
             return 1;
         } else {
-            FUN_1411cda60(m_48);
+            SetPosition(m_48);
             FUN_1411cdb00(m_54);
             return 0;
         }
@@ -389,7 +395,7 @@ void CEntityVibrator::MakePhysxActor(Unk_VibParamRef params)
     if (com.FUN_140885310() != 0) {
         unsigned __int64 nId;
         void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
-        com.FUN_1401cd1a0()->FUN_1410c5340(pId);
+        reinterpret_cast<Unk_VibSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(com).operator->())->FUN_1410c5340(pId);
     }
     DAT_143ad1b20 = DAT_143ad1b20 + 1;
     int nMask = DAT_143ad1b20 % DAT_1439f7060;
@@ -461,7 +467,7 @@ void CEntityVibrator::MakePhysxActor(Unk_VibParamRef params)
 MS2_REPLACE_METHOD(0x1411CC570, CEntityVibrator, MakePhysxActor, 2745, 0x0AC715A7);
 
 // @0x1411cd040
-void CEntityVibrator::FUN_1411cd040()
+void CEntityVibrator::ReleaseActor()
 {
     if (m_68 != 0) {
         NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
@@ -473,7 +479,7 @@ void CEntityVibrator::FUN_1411cd040()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411CD040, CEntityVibrator, FUN_1411cd040, 118, 0xD620F7BF);
+MS2_REPLACE_METHOD(0x1411CD040, CEntityVibrator, ReleaseActor, 118, 0xD620F7BF);
 
 // @0x1411cd0c0
 void CEntityVibrator::FUN_1411cd0c0()
@@ -499,7 +505,7 @@ void CEntityVibrator::FUN_1411cd0c0()
             FUN_140ad0c10(&ptEuler, -57.295776f);
             FUN_1411cdb00(ptEuler);
         }
-        FUN_1411cda60(ptPos);
+        SetPosition(ptPos);
     }
 }
 MS2_REPLACE_METHOD(0x1411CD0C0, CEntityVibrator, FUN_1411cd0c0, 740, 0x0D133312);
@@ -507,12 +513,12 @@ MS2_REPLACE_METHOD(0x1411CD0C0, CEntityVibrator, FUN_1411cd0c0, 740, 0x0D133312)
 // @0x1411cd3b0
 void CEntityVibrator::FUN_1411cd3b0()
 {
-    FUN_1411cda60(m_48);
+    SetPosition(m_48);
     FUN_1411cdb00(m_54);
     if (m_7c != 0) {
         Unk_Ptr1401cd040 com(FUN_1401cd040(&DAT_143b059e8));
         if (com.FUN_140885310() != 0) {
-            com.FUN_1401cd1a0()->FUN_1410c5570(m_entity);
+            reinterpret_cast<Unk_VibSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(com).operator->())->FUN_1410c5570(m_entity);
         }
         if (!m_a8) {
             if (FUN_141689a10(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()))) {
@@ -546,8 +552,8 @@ void CEntityVibrator::FUN_1411cd570(Unk_Entity* pEntity)
     m_8c = 0;
     m_a4 = 1.0f;
     m_ab = false;
-    m_entity.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &m_48);
-    m_entity.FUN_1408a9280()->FUN_1409618c0(0x68c7c29d, &m_54);
+    reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_48));
+    reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_54));
     m_ac = m_48;
     m_b8 = m_54;
     m_entity.FUN_1408a9280()->FUN_140961880(0x4e98cfb7, &m_20);
@@ -567,21 +573,21 @@ void CEntityVibrator::FUN_1411cd570(Unk_Entity* pEntity)
         m_28 = 1.0f;
     }
     m_64 = FUN_140768090() * 6.2831855f;
-    m_entity.FUN_1408a9280()->FUN_1409618c0(0x9dc22aea, &m_98);
-    m_entity.FUN_1408a9280()->FUN_1408a20a0(0x7e5f4195, &m_a8);
+    reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(m_98));
+    reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue(0x7e5f4195, m_a8);
     int nTimeA = 0;
     m_entity.FUN_1408a9280()->FUN_1408a2020(0x4764b338, &nTimeA);
     m_94 = nTimeA;
     int nTimeB = 0;
     m_entity.FUN_1408a9280()->FUN_1408a2020(0x292206c1, &nTimeB);
     m_90 = nTimeB;
-    m_entity.FUN_1408a9280()->FUN_1408a20a0(0x9004569a, &m_ab);
+    reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue(0x9004569a, m_ab);
     m_d0 = 0;
 }
 MS2_REPLACE_METHOD(0x1411CD570, CEntityVibrator, FUN_1411cd570, 1251, 0xF0018A6D);
 
 // @0x1411cda60
-void CEntityVibrator::FUN_1411cda60(Vector3 pos)
+void CEntityVibrator::SetPosition(Vector3 pos)
 {
     if (m_ac.FUN_140552700(pos)) {
         if (!FUN_140a33ff0(&pos)) {
@@ -591,7 +597,7 @@ void CEntityVibrator::FUN_1411cda60(Vector3 pos)
         m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, m_ac);
     }
 }
-MS2_REPLACE_METHOD(0x1411CDA60, CEntityVibrator, FUN_1411cda60, 144, 0x24E4DCF5);
+MS2_REPLACE_METHOD(0x1411CDA60, CEntityVibrator, SetPosition, 144, 0x24E4DCF5);
 
 // @0x1411cdb00
 void CEntityVibrator::FUN_1411cdb00(Vector3 rot)

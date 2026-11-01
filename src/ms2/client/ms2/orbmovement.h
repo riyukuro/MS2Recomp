@@ -17,7 +17,7 @@ public:
     virtual INodeMovement* vfunc_1() const = 0;                 // slot 1: clone
     virtual NiTransform vfunc_2(double dTime, const NiTransform& kTarget) = 0;     // slot 2: step towards the target
 
-    NiTransform FUN_141625430(double dTime, const NiTransform& kTarget);  // first call snaps, then steps
+    NiTransform UpdateMovement(double dTime, const NiTransform& kTarget);  // first call snaps, then steps
     void FUN_1416263a0(const NiTransform& kTarget);             // snap onto the target
     void FUN_1416256f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut);  // lerp/slerp
     void FUN_1416260f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut);  // slerp the rotation only

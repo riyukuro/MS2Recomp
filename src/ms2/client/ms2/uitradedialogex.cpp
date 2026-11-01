@@ -30,6 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/trademanagerex.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -41,7 +42,7 @@ class UIInventoryDialog : public UIDialog
 public:
     void FUN_141999e00();
 };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
 typedef UIMsg Unk_TdUIMsg;
@@ -64,7 +65,6 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 // The trade slot bags (trademanagerex_2.cpp) and the registry of bound slot bags.
 void FUN_14185e850(const CString& strName, int nCount, bool bMine);
 void FUN_14185e920(const CString& strName);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
 TradeSlot* FUN_14140e720(DragSlot* p);                         // the trade slot behind a drag source (null: not one)
 
@@ -166,7 +166,7 @@ void UITradeDialogEx::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode7();
     TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d7b0();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         if (pInv->vfunc_55() == 0)
@@ -188,15 +188,15 @@ void UITradeDialogEx::vfunc_67()
 void UITradeDialogEx::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         m_bDockedOnInventory = pInv->vfunc_55() == 0;
         if (m_bDockedOnInventory == 0)
         {
             Unk_TdUIMsg msg;
-            msg.FUN_1422b82b0("openWindowPos");
-            msg.FUN_1422b7f70(vfunc_48());
+            msg.AddString("openWindowPos");
+            msg.AddInt(vfunc_48());
             pInv->OnMessage(this, &msg);
         }
         else
@@ -324,7 +324,7 @@ void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
     if (FUN_140ba28d0(&m_30, 0))
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
-    TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strBagId));
+    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
         efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
@@ -341,7 +341,7 @@ void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
     if (FUN_140ba28d0(&m_30, 0))
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
-    TradeSlotBag* pBag = FUN_14185edc0(FUN_1422c8e90(strBagId));
+    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
         efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
@@ -411,11 +411,11 @@ void UITradeDialogEx::FUN_141b284b0()
     if ((m_spMyInput = TD_ROOT->FUN_140bbe880<ASTextInput>("m_myInputMeso")).get())
     {
         m_spMyInput->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b291a0));
-        if ((m_spMyInputText = m_spMyInput->FUN_1422e1490()).get())
+        if ((m_spMyInputText = m_spMyInput->GetTextField()).get())
         {
             __int64 nMax = FUN_14087d0f0();
             int nMaxChars = FUN_1409404f0(nMax).GetLength();
-            static_cast<ASTextField*>(m_spMyInputText.operator->())->FUN_1422c5170(nMaxChars);
+            static_cast<ASTextField*>(m_spMyInputText.operator->())->SetMaxChars(nMaxChars);
             m_spMyInputText->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b29330), 0, 0);
         }
     }
@@ -499,9 +499,9 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
 void UITradeDialogEx::FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     AScript evt(params.pArgs[0], 2);
-    Scaleform::GFx::Value target = evt.FUN_1422baa20("target");
+    Scaleform::GFx::Value target = evt.GetMember("target");
     ASTextInput input(target, m_28);
-    CStringW strDigits = FUN_14083cf10(input.FUN_1422e0b00());
+    CStringW strDigits = FUN_14083cf10(input.GetText());
     __int64 nMeso = FUN_140718320(strDigits);
     if (m_nMyMeso < nMeso)
     {
@@ -517,9 +517,9 @@ void UITradeDialogEx::FUN_141b29330(const Scaleform::GFx::FunctionHandler::Param
     if (m_spMyInput == 0)
         return;
     AScript evt(params.pArgs[0], 2);
-    Scaleform::GFx::Value target = evt.FUN_1422baa20("target");
+    Scaleform::GFx::Value target = evt.GetMember("target");
     ASTextField text(target, m_28);
-    CStringW strDigits = FUN_14083cf10(m_spMyInput->FUN_1422e0b00());
+    CStringW strDigits = FUN_14083cf10(m_spMyInput->GetText());
     __int64 nParsed = FUN_140718320(strDigits);
     __int64 nMeso = nParsed;
     if (nMeso < 0)

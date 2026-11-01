@@ -442,7 +442,6 @@ MS2_CHECK_SIZE(UISceneLogo, 0xa8);
 MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 
 // Stand-ins for unrecovered singletons MS2 drives.
-class Unk_Ms2Window { public: HWND FUN_14209c720(); };                       // efd::Win32PlatformService::GetWindowRef
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class Unk_Ms2SceneState { public: void FUN_1417e25a0(int nScene); };
 CNetworkService* FUN_140714f90();
@@ -525,6 +524,13 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 #undef min
 #undef max
 #include <NiPhysXParticle.h>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 #pragma pop_macro("max")
 #pragma pop_macro("min")
 // @0x1400f8560
@@ -602,7 +608,7 @@ MS2_REPLACE_METHOD(0x141489F20, MS2, Quit, 18, 0xE74CD770);
 void MS2::Tick()
 {
     m_uiLastTickTime = GetTickCountMs2();
-    FUN_140714f90()->FUN_141538f80();
+    FUN_140714f90()->ProcessReceivedPackets();
     if (m_spServiceManager)
         m_spServiceManager->RunOnce();
 }
@@ -693,11 +699,11 @@ void MS2::Precache()
 // @0x14148a530
 void MS2::RegisterUIScenes()
 {
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(new UISceneLogo));
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(new UISceneModeSelect));
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(new UISceneLogin));
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(new UISceneLobby));
-    FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(new UISceneGame));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogo));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneModeSelect));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogin));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLobby));
+    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneGame));
 }
 MS2_REPLACE_METHOD(0x14148A530, MS2, RegisterUIScenes, 745, 0x75D64F29);
 // @0x14148a820
@@ -785,9 +791,9 @@ void MS2::PrepareShaderCache()
         Unk_140165cf0* pRoot;
         Unk_140165cf0* pShader;
         if (CreateDirectoryA(strCurrent, NULL) == 0 && (pRoot = DocRootElement(&kDoc)) != NULL &&
-            (pShader = pRoot->FUN_140165cf0("shader")) != NULL)
+            (pShader = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shader"))) != NULL)
         {
-            FUN_1408731e0(pShader, "ver", nVersion);
+            XmlGetAttr((class TiXmlElement*)(pShader), "ver", reinterpret_cast<int&>(nVersion));
             if (nVersion != 8)
             {
                 XmlSetAttr((class TiXmlElement*)(pShader), "ver", 8);
@@ -847,8 +853,8 @@ MS2_REPLACE_METHOD(0x14148B090, MS2, SetCrashOnShutdown, 21, 0x28735968);
 // @0x14148b0b0
 void MS2::Shutdown()
 {
-    if (((class Unk_Ms2Window*)FUN_140aadf80()) && ((class Unk_Ms2Window*)FUN_140aadf80())->FUN_14209c720())
-        KillTimer(((class Unk_Ms2Window*)FUN_140aadf80())->FUN_14209c720(), 1000);
+    if (((class Unk_Ms2Window*)FUN_140aadf80()) && ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef())
+        KillTimer(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 1000);
     if (reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance()))
         reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0);
     if (CrashManagerCli::GetInstance())
@@ -882,7 +888,7 @@ void MS2::Shutdown()
 // @0x14148b340
 bool MS2::OnLostDevice(void* pvData)
 {
-    RecodeMgr::GetInstance()->FUN_140c9bc00();
+    RecodeMgr::GetInstance()->StopRecording();
     return true;
 }
 MS2_REPLACE(0x14148B340, MS2::OnLostDevice, 29, 0x4B7A9898);
@@ -903,7 +909,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
 
     efd::SmartPointer<CMainSystem> spMainSystem = EE_NEW CMainSystem;
     spMainSystem->SetMainThreadId(GetCurrentThreadId());
-    spMainSystem->FUN_141472eb0(spConfig);
+    spMainSystem->LoadDataPath(spConfig);
     m_spServiceManager->RegisterSystemService(spMainSystem, 9999);
 
     efd::MessageServicePtr spMessageService = EE_NEW MS2MessageService;
@@ -1038,7 +1044,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     DAT_143b0d368 = CUIService::FUN_141ade400;
     FUN_1414a56c0()->SetFont(FUN_140652330(DAT_143ab0248));
     efd::SmartPointer<CWebBrowserService> spWebBrowser = EE_NEW CWebBrowserService(hInstance);
-    spWebBrowser->FUN_141b77e10();
+    spWebBrowser->EnsureCefInitialized();
     m_spServiceManager->RegisterSystemService(spWebBrowser);
     efd::SmartPointer<MS2PropertyVisualizationService> spPropertyVisualization = EE_NEW MS2PropertyVisualizationService();
     m_spServiceManager->RegisterSystemService(spPropertyVisualization);
@@ -1166,10 +1172,10 @@ MS2_REPLACE_METHOD(0x14148F180, MS2, OnTick, 55, 0xFB1E44E9);
 // @0x14148f1c0
 efd::AsyncResult MS2::OnShutdown()
 {
-    RecodeMgr::GetInstance()->FUN_140c9bc00();
+    RecodeMgr::GetInstance()->StopRecording();
     RecodeMgr::GetInstance()->FUN_140c9bb20();
     if (CAsyncImageLoader::GetInstance())
-        CAsyncImageLoader::GetInstance()->FUN_140a58b10();
+        CAsyncImageLoader::GetInstance()->Shutdown();
     efd::AsyncResult eResult = efd::AsyncResult_Complete;
     CGameOption::GetInstance()->FUN_1412438e0();
     m_spDirShadowMaterial = 0;
@@ -1554,7 +1560,7 @@ static int Unk_WorkerThreadCount()
 // @0x141498c60 (COMDAT)
 inline void Unk_GameLog(CLogString* pLog, unsigned __int64 a, unsigned __int64 b, int nCategory, const wchar_t* pszFormat)
 {
-    pLog->FUN_140653690(a, b, nCategory, pszFormat, fmt::ArgList());
+    pLog->LogInfo(a, b, nCategory, pszFormat, fmt::ArgList());
 }
 // @0x141492c10 (COMDAT)
 template <class T, class U>
@@ -1563,7 +1569,7 @@ inline void Unk_GameLog(CLogString* pLog, unsigned __int64 a, unsigned __int64 b
 {
     const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(first),
         fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(second)};
-    pLog->FUN_140653690(a, b, nCategory, pszFormat, fmt::ArgList(fmt::internal::make_type(first, second), args));
+    pLog->LogInfo(a, b, nCategory, pszFormat, fmt::ArgList(fmt::internal::make_type(first, second), args));
 }
 
 // ---- CReactorDataTable (constructed by InitInstance's creators; reactordata.h declares them only)
@@ -1605,12 +1611,12 @@ BOOL CGameApp::InitInstance()
     DAT_143b15f90 = FUN_141b6db40;
     AfxEnableControlContainer();
     Unk_SingletonCreator<CLogString>::CreateInstance();
-    TSingleton<CLogString>::GetInstance()->FUN_140652a40(CStringW(L"client"));
+    TSingleton<CLogString>::GetInstance()->Init(CStringW(L"client"));
     if (DAT_1439f7de4 > 0)
-        TSingleton<CLogString>::GetInstance()->FUN_1406537e0(DAT_1439f7de4);
+        TSingleton<CLogString>::GetInstance()->SetFileLevel(DAT_1439f7de4);
     else
-        TSingleton<CLogString>::GetInstance()->FUN_1406537e0(11);
-    TSingleton<CLogString>::GetInstance()->FUN_140653800(11);
+        TSingleton<CLogString>::GetInstance()->SetFileLevel(11);
+    TSingleton<CLogString>::GetInstance()->SetDebugLevel(11);
     Unk_GameLog(TSingleton<CLogString>::GetInstance(), 0, 0, 1, L"==============================");
     Unk_GameLog(TSingleton<CLogString>::GetInstance(), 0, 0, 1, L"Game Start: [build={0}] [tick={1}]", FUN_14028dbd0(),
                 GetTickCountMs2());
@@ -1721,10 +1727,10 @@ BOOL CGameApp::InitInstance()
     {
         Unk_SingletonCreator<CIgnoreFile>::CreateInstance();
         if (FUN_1406516b0() == 3)
-            TSingleton<CIgnoreFile>::GetInstance()->FUN_14050e200(std::string("./data/xmldebug/ignorepackfile_cn.xml"),
+            TSingleton<CIgnoreFile>::GetInstance()->Load(std::string("./data/xmldebug/ignorepackfile_cn.xml"),
                 FUN_1414a5690(TSingleton<CFileSystem>::GetInstance()));
         else
-            TSingleton<CIgnoreFile>::GetInstance()->FUN_14050e200(std::string("./data/xmldebug/ignorepackfile.xml"),
+            TSingleton<CIgnoreFile>::GetInstance()->Load(std::string("./data/xmldebug/ignorepackfile.xml"),
                 FUN_1414a5690(TSingleton<CFileSystem>::GetInstance()));
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140398190())
@@ -1737,7 +1743,7 @@ BOOL CGameApp::InitInstance()
     InitShaderConstantNames();
     InitDummyNames();
     Unk_SingletonCreator<CFeatureManager>::CreateInstance();
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036ccb0())
+    if (!TSingleton<CFeatureManager>::GetInstance()->Init())
     {
         FUN_141b6fc50(CString("Cant find feature File"), CString(""), 0);
         return FALSE;
@@ -1866,7 +1872,7 @@ BOOL CGameApp::InitInstance()
     ((class CMaidRecipeGroupTable*)(class CMaidRecipeGroupTable*)(Unk_SingletonCreator<CMaidRecipeGroupTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CCashCallManager>::CreateInstance();
     Unk_SingletonCreator<CGuildXmlData>::CreateInstance();
-    TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d5960();
+    TSingleton<CGuildXmlData>::GetInstance()->LoadAll();
     Unk_SingletonCreator<CClubDataTable>::CreateInstance();
     TSingleton<CClubDataTable>::GetInstance()->FUN_1402113c0();
     Unk_SingletonCreator<CSpecialDungeonDataTable>::CreateInstance();
@@ -2033,7 +2039,7 @@ BOOL CGameApp::InitInstance()
     LoadShopBeautyCoupon();
     Unk_SingletonCreator<CUGCMapSetItemTable>::CreateInstance();
     Unk_SingletonCreator<CFameTable>::CreateInstance()->Load();
-    Unk_SingletonCreator<CItemEnchantTransformTable>::CreateInstance()->FUN_1405915b0();
+    Unk_SingletonCreator<CItemEnchantTransformTable>::CreateInstance()->Init();
     Unk_SingletonCreator<CMouseController>::CreateInstance();
     Unk_SingletonCreator<CAdventureLevelTable>::CreateInstance()->LoadAll();
     Unk_SingletonCreator<CSoundDataTable>::CreateInstance()->Load();
@@ -2079,7 +2085,7 @@ BOOL CGameApp::InitInstance()
     if (TSingleton<CUgcDownloadLoad>::GetInstance())
         ((class CUgcDownloadLoad*)(class CUgcDownloadLoad*)(TSingleton<CUgcDownloadLoad>::GetInstance()))->Stop();
     if (TSingleton<CAsyncImageLoader>::GetInstance())
-        TSingleton<CAsyncImageLoader>::GetInstance()->FUN_140a58b10();
+        TSingleton<CAsyncImageLoader>::GetInstance()->Shutdown();
     FUN_14149fec0();
     FUN_1414a3430();
     FUN_1414a2590();
@@ -2286,7 +2292,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_69();
     GetClientPlatform()->vfunc_70();
     if (TSingleton<CLogString>::GetInstance())
-        TSingleton<CLogString>::GetInstance()->FUN_140652bc0();
+        TSingleton<CLogString>::GetInstance()->StopThread();
     FUN_1414a1e70();
     FUN_1414a48d0();
     FUN_1414a4870();
@@ -2437,7 +2443,7 @@ efd::utf8string MakeWindowTitle()
     strPid.Format(" [PID:%u]", GetCurrentProcessId());
     CString strVersion;
     efd::utf8string strTitle(FUN_14028dc80(0xc3b));
-    CString strServer = Unk_SocketFormat(" - S:{0}, {1}", CFeatureManager::GetInstance()->FUN_14036d8b0(), CFeatureManager::GetInstance()->FUN_14036d8e0());
+    CString strServer = Unk_SocketFormat(" - S:{0}, {1}", CFeatureManager::GetInstance()->FUN_14036d8b0(), CFeatureManager::GetInstance()->GetLocaleName());
     strTitle += " (x64)";
     strVersion.Format(" (Ver.%X)", 0x9dd);
     if (DAT_143ab0248 == 1 || DAT_143ab0248 == 2 || DAT_143ab0248 == 3)

@@ -90,7 +90,7 @@ class GameEventAttendGiftCli : public GameEventAttendGift
 public:
     GameEventAttendGiftCli();
     bool FUN_140ce3510();
-    bool FUN_140ce35c0();
+    bool IsCheckedInToday();
     unsigned FUN_140ce3660();
     unsigned GetAttendedDays();
     MS2Ptr<ItemGift> FUN_140ce3710(unsigned nDay);
@@ -122,7 +122,7 @@ public:
     GameEventCashAttendCli();
     bool FUN_140ce3d90();
     bool FUN_140ce3da0();
-    unsigned GetDayCount();
+    unsigned GetGroupCount();
     unsigned GetAttendedDays();
     int GetUsablePoints();
     CStringW GetEventName();

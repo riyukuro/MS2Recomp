@@ -23,7 +23,7 @@ public:
     int FUN_1411dc190(void*);
     struct Unk_EquipItemData* FUN_1411dc7f0();
     MS2Ptr<class CItem> FUN_1411dc7a0();   // the item
-    void FUN_1411dde50(class CEquipModel*);
+    void AddModel(class CEquipModel*);
 };
    bool FUN_14053cfd0(void* p);
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
@@ -434,7 +434,7 @@ void FUN_141566b60(void* self)
 // @0x141566cb0
 void FUN_141566cb0(CNifModel* p)
 {
-    ((class CEquipItem*)(void*)(FUN_1405a8ed0(&p->m_spOwner)))->FUN_1411dde50((class CEquipModel*)(p));
+    ((class CEquipItem*)(void*)(FUN_1405a8ed0(&p->m_spOwner)))->AddModel((class CEquipModel*)(p));
     FUN_141203db0((class CEquipModel*)(p));
     p->vfunc_6();
     p->m_i118 = 1;

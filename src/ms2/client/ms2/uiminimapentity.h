@@ -88,7 +88,7 @@ public:
     bool FUN_141a32640(CNpcData* pNpc);                         // NpcVisible
     CString FUN_141a32750(NpcDataCli* pNpc);                    // NpcIcon
     CString FUN_141a329e0(const CString& strIcon);              // NpcState
-    CString FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon);   // NpcLayer
+    CString GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon);   // NpcLayer
     CStringW FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy);       // BuddyHomeText
 
     MS2Ptr<ASMovieClip> m_clip;                                 // +0x18
@@ -307,7 +307,7 @@ public:
     void FUN_141a3b130(unsigned __int64 nId, int nColor, const efd::Point3& kPos);   // AddPing
     void FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos);   // UpdatePing
     void FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId);   // PingSelection
-    EntityPtr FUN_141a3b510(ProxyPtr spProxy);                  // FindProxyEntity
+    EntityPtr FindEntityByProxy(ProxyPtr spProxy);                  // FindProxyEntity
     HomeListPtr FUN_141a3b660(const int& nField);               // PortalHomes
     void FUN_141a3b6f0();                                       // BuildShowAttributes
     bool FUN_141a3bda0(ASObj& data, ProxyPtr spProxy);          // BuildPlayerData
@@ -366,9 +366,9 @@ public:
     void FUN_141a45790(float x, float y, unsigned __int64 nId); // ShowPlayerMenu
     void FUN_141a458d0(bool b);                                 // SetInputMode
     float FUN_141a45920(PCBase* pPC);                           // PlayerHeading
-    bool FUN_141a45ad0(int& nWidth, int& nHeight);              // WindowSize
+    bool GetWindowSize(int& nWidth, int& nHeight);              // WindowSize
     bool FUN_141a45b70(ProxyPtr spProxy);                       // ProxyVisible
-    bool FUN_141a45c70(const CString& strIcon);                 // IsBossIcon
+    bool IsBossIcon(const CString& strIcon);                 // IsBossIcon
     bool FUN_141a45ce0();                                       // CanPing
     CStringW FUN_141a45d50(const unsigned __int64& nId);        // PingText
     CStringW FUN_141a45ed0(const int& nId, int nKind);          // QuestGuideText

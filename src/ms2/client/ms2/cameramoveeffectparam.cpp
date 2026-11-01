@@ -17,6 +17,11 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Game TinyXML element: FirstChildElement.
 class Unk_140165cf0
@@ -27,7 +32,7 @@ public:
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
@@ -46,16 +51,16 @@ CCameraMoveEffectParam::CCameraMoveEffectParam()
 void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "filePath", m_strFilePath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "filePath", m_strFilePath);
     bool bUpdateTranslate = false;
     bool bUpdateRotation = false;
-    Unk_140165cf0* pTransform = pNode->FUN_140165cf0("transform");
+    Unk_140165cf0* pTransform = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pTransform)
     {
         FUN_140874670(pTransform, "translate", m_kTranslate);
         FUN_140874670(pTransform, "rotation", m_kRotation);
     }
-    Unk_140165cf0* pAttach = pNode->FUN_140165cf0("attachInfo");
+    Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
     if (pAttach)
     {
         const char* pszAttach = ((class TiXmlElement*)(class Unk_140165cf0*)(pAttach))->Attribute("attachToNode");
@@ -69,9 +74,9 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
             }
         }
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyNodeTransform", m_bApplyNodeTransform);
-        FUN_1408733e0(pAttach, "parentNode", m_strParentNode);
+        XmlGetAttr((class TiXmlElement*)(pAttach), "parentNode", m_strParentNode);
     }
-    Unk_140165cf0* pUpdate = pNode->FUN_140165cf0("update");
+    Unk_140165cf0* pUpdate = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("update"));
     if (pUpdate)
     {
         XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bUpdateTranslate);

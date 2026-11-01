@@ -11,7 +11,7 @@
 
 // ---- out-of-unit callees ----
 class Unk_BuildKeyTable { public: CStringW FUN_14142d760(int nId, int n); };
-Unk_BuildKeyTable* FUN_1409331f0();                                     // the key table
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_BuildKeyTable (calls cast back)
 
 // the slot list of ASGameEntity is not recovered: only slot 25 is called here
 class Unk_BuildBtnEntity : public ASGameEntity
@@ -77,7 +77,7 @@ void UIBuildBtnGuide::FUN_1418dcde0(int nGuide)
     int nKey = vfunc_9();
     if (m_70 == nGuide)
         return;
-    m_30->Invoke("setKey", FUN_1409331f0()->FUN_14142d760(0x493ed, 0));
+    m_30->Invoke("setKey", reinterpret_cast<Unk_BuildKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0));
     m_30->Invoke("showGuide", nGuide);
     m_70 = nGuide;
 }

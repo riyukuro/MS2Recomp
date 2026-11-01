@@ -36,8 +36,6 @@ public:
     void FUN_140fb9150();                                           // 0x140fb9150 fill the benefit list of the movie
     int FUN_140fb9720(unsigned nBenefitId);                         // 0x140fb9720 the benefit is still claimable (VIP and not claimed)
 
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // text field child lookup (a UIDialog member)
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // movie clip child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

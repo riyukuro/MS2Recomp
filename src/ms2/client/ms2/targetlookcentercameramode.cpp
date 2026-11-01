@@ -12,6 +12,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 extern "C" float (__cdecl* __imp_atan2f)(float, float);      // the exe calls atan2f through its import
 
@@ -26,7 +27,6 @@ WorldService* FUN_1403ed2d0();
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
 float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
@@ -153,7 +153,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
                                        FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
@@ -163,7 +163,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             if (fZoom != 0.0f)
             {
                 m_84 += fZoom * 2000.0f;
-                m_84 = FUN_140a17940(m_84, -150.0f, 150.0f);
+                m_84 = efd::Clamp(m_84, -150.0f, 150.0f);
             }
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
@@ -173,7 +173,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
-                m_50 = FUN_140a17940(m_50, m_58, m_54 + m_b4);
+                m_50 = efd::Clamp(m_50, m_58, m_54 + m_b4);
                 m_6c -= fPitch;
                 if (0.15f >= m_6c)
                     m_6c = 0.15f;

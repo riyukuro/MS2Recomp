@@ -230,7 +230,7 @@ MS2_REPLACE_METHOD(0x140E8CB80, UISelectSuperWorldChatDialog, FUN_140e8cb80, 362
 // @0x140e8cee0
 template <class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_SptASCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);

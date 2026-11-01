@@ -84,12 +84,13 @@ struct Unk_ICCWorld
 };
 struct Unk_ICCEntityLoader
 {
-    void* FUN_140999440(const Unk_ICCEntityRef& kEntity);       // the entity's loaded scene, NULL while loading
 };
-Unk_ICCEntityLoader* FUN_141b6f910();
+class NiActorManager;
+namespace egf { class EntityID; }
+namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
+egmAnimation::AnimationService* FUN_141b6f910();
 
 int FUN_14151f6e0();                                            // customizing is allowed now (my PC state)
-float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 NiAVObject* FUN_141167cf0(const CString& strName);              // scene node by name (picking mesh)
 void FUN_141414180(NiPointer<CItemCustomizeController> spController);   // unregisters a closed controller (TU 2)
 
@@ -114,7 +115,6 @@ bool FUN_140998dc0(const void* pName, const char* psz);         // name == psz
 
 struct Unk_ICCConfigFloat
 {
-    float FUN_1402bac70();
     char m_pad[0x58];
 };
 struct Unk_ICCConfig
@@ -136,6 +136,8 @@ efd::ServiceManager* FUN_140af8310(char* pManager);
 NiImplementRootRTTI(CItemCustomizeController);
 #endif
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // @0x141410cd0
 CItemCustomizeController::CItemCustomizeController()
@@ -246,7 +248,7 @@ void CItemCustomizeController::vfunc_7(float fValue)
     {
         float fMin, fMax;
         vfunc_25(&fMin, &fMax);
-        FUN_140a17940(fValue, fMin, fMax);      // result unused in the original
+        efd::Clamp(fValue, fMin, fMax);      // result unused in the original
         vfunc_14(fValue);
     }
 }
@@ -258,7 +260,7 @@ void CItemCustomizeController::vfunc_8(int nIndex, float fValue)
     {
         float fMin, fMax;
         vfunc_26(nIndex, &fMin, &fMax);
-        FUN_140a17940(fValue, fMin, fMax);      // result unused in the original
+        efd::Clamp(fValue, fMin, fMax);      // result unused in the original
         vfunc_15(nIndex, fValue);
     }
 }
@@ -362,7 +364,7 @@ void CItemCustomizeController::ReadValues()
                 float fValue = spPart.get()->FUN_141422340(i);
                 float fMin, fMax;
                 vfunc_26(i, &fMin, &fMax);
-                m_afValue[i] = FUN_140a17940(fValue, fMin, fMax);
+                m_afValue[i] = efd::Clamp(fValue, fMin, fMax);
             }
         }
     }
@@ -452,10 +454,10 @@ void CItemCustomizeController::UpdateDrag()
     Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_ICCEntityLoader* pLoader = FUN_141b6f910();
+    Unk_ICCEntityLoader* pLoader = reinterpret_cast<Unk_ICCEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
-    void* pScene = pLoader->FUN_140999440(pPlayer->FUN_14123c460());
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_ICCEntityRef&>(pPlayer->FUN_14123c460())));
     if (pScene == 0)
         return;
     void* pCameraManager = ((void*)FUN_1413f9a70());
@@ -616,7 +618,7 @@ float CItemCustomizeController::GetHighlightScale(NiAVObject* pNode)
 {
     CString strUnused;
     if (pNode && FUN_140998dc0(((void const*)&((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName()), "HR1:1"))
-        return ((struct Unk_ICCConfig*)FUN_1401d3200())->m_2ce0.FUN_1402bac70();
+        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2ce0)->Read();
     else
-        return ((struct Unk_ICCConfig*)FUN_1401d3200())->m_2d38.FUN_1402bac70();
+        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2d38)->Read();
 }

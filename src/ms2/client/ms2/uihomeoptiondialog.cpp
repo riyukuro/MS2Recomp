@@ -26,13 +26,16 @@
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uihidesettingdialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of exe types ----
 
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 // The home (cube map information) service: the nine permission rows of the home.
 class Unk_HoService : public efd::ISystemService {
@@ -50,7 +53,6 @@ class Unk_HoServicePtr
 public:
     Unk_HoServicePtr(Unk_HoService* p);                             // 0x1401cd0b0
     ~Unk_HoServicePtr();                                            // 0x1401cd150
-    Unk_HoService* FUN_1401cd1a0() const;                           // operator->
     Unk_HoService* FUN_140885310() const;                           // get
     bool FUN_140ef4cb0(int n);                                      // operator== against a raw pointer
 private:
@@ -72,15 +74,13 @@ void FUN_14151f200();
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 int* FUN_1404eb7e0(int* pnA, int* pnB);                             // the larger of two ints
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
-bool FUN_140841300(const CStringW& str, const char* psz);
 
 
 // @0x140fa9c90
 void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char b)
 {
     ASData data;
-    data.FUN_1422b7f70(b);
+    data.AddInt(b);
     ((Scaleform::GFx::Value*)(void*)(reinterpret_cast<Scaleform::GFx::Value*>(reinterpret_cast<char*>(pObj) + 0x20)))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -138,7 +138,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
             if (spService.FUN_140ef4cb0(0))
                 return 1;
-            if (spService.FUN_1401cd1a0()->FUN_1410d5640() == 0)
+            if (reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5640() == 0)
             {
                 FUN_140d73bc0(0x6e1, 0, 0, CStringW(L""));
                 return 1;
@@ -184,13 +184,13 @@ int UIHomeOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         if (nAnswer == 0)
         {
-            if (FUN_1403b3c40(strTag, L"OnReset"))
+            if (operator==(strTag, L"OnReset"))
                 m_30->Invoke("reset");
-            else if (FUN_140841300(strTag, "OnKickUser"))
+            else if (operator==(strTag, "OnKickUser"))
                 SendRequestCubeMode49();
-            else if (FUN_140841300(strTag, "onApply"))
+            else if (operator==(strTag, "onApply"))
                 m_30->Invoke("requestData", false);
-            else if (FUN_140841300(strTag, "OnConfirm"))
+            else if (operator==(strTag, "OnConfirm"))
                 m_30->Invoke("requestData", true);
         }
         return 1;
@@ -217,8 +217,8 @@ void UIHomeOptionDialog::FUN_140fa97a0()
         for (int i = 0; i < 9; ++i)
         {
             int nRow = i;
-            bool bOn = spService.FUN_1401cd1a0()->FUN_1410c3e00(nRow);
-            int nLevel = spService.FUN_1401cd1a0()->FUN_1410c3e80(nRow);
+            bool bOn = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e00(nRow);
+            int nLevel = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e80(nRow);
             int nValue;
             if (!bOn)
                 nValue = 0;

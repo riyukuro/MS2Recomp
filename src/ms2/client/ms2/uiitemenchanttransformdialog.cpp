@@ -32,6 +32,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/itemenchanttransformtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -44,7 +45,7 @@ public:
     void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
     void FUN_141a01700(int a, int b, int c);
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
-    void FUN_140533ff0(int n);
+    template <class T> void Append(T v);                            // Append<int> 0x140533ff0 (inline COMDAT)
 };
 extern template class MS2Ptr<CMsgBoxData>;
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
@@ -64,7 +65,6 @@ class Unk_TfBag : public AScript
 public:
     void FUN_1422dcca0(int n);
     void FUN_1422dd1d0();                               // clear
-    void FUN_1407cba60(const char* szName, CString str);
     virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
@@ -182,8 +182,8 @@ void UIItemEnchantTransformDialog::vfunc_43()
     if (dialog != 0) {
         UITalkCinematic* inv = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
         if (inv != 0) {
-            int x = inv->FUN_141b1d3d0();
-            int y = inv->FUN_141b1d460() - 0x50;
+            int x = inv->GetLowerCutGlobalY();
+            int y = inv->GetIllustGlobalX() - 0x50;
             if (x != -1 && y != -1) {
                 dialog->vfunc_2(5, y, x - dialog->FUN_1422c13b0());
                 return;
@@ -319,10 +319,10 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
-            box->FUN_141a01600(item->FUN_140526a50());
+            box->FUN_141a01600(item->GetItemUid());
             box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->FUN_141a01700(0x475, 0x476, 0);
-            box->FUN_140533ff0(nIndex);
+            box->Append<int>(nIndex);
             FUN_140d73c60(box);
         }
     } else {
@@ -388,7 +388,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
 // @0x140c3e820
 void UIItemEnchantTransformDialog::OnSubmitTransform()
 {
-    if (((class Unk_TfBanConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x54) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((class Unk_TfBanConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x54)) != 0)
         FUN_141275260(0x2f7, 1, 1);
     if (m_state != 1)
         return;
@@ -402,7 +402,7 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
         return;
     }
     COutPacket pkt(static_cast<int>(SendOp::TransferEnchant), 0);
-    pkt.Encode8(m_selected->FUN_140526a50());
+    pkt.Encode8(m_selected->GetItemUid());
     FUN_140710590(pkt);
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)

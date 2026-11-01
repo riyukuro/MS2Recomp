@@ -62,14 +62,14 @@ MS2_REPLACE_METHOD(0x1422CFE90, ASStage, FUN_1422cfe90, 40, 0x6226BB45);
 // @0x1422cfec0
 int ASStage::FUN_1422cfec0()
 {
-    return FUN_1422baa20("stageWidth").GetInt();
+    return GetMember("stageWidth").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422CFEC0, ASStage, FUN_1422cfec0, 88, 0x6AB19A62);
 
 // @0x1422cff20
 int ASStage::FUN_1422cff20()
 {
-    return FUN_1422baa20("stageHeight").GetInt();
+    return GetMember("stageHeight").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422CFF20, ASStage, FUN_1422cff20, 88, 0xB85A16CE);
 

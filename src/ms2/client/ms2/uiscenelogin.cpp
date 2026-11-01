@@ -19,6 +19,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/filepreload_1.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -68,15 +69,12 @@ class Unk_LgUIMgr                                       // the UI service (FUN_1
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);          // looks a UI up by id
     void FUN_141adbe00(float f, int n);
-    void FUN_141adc5d0(int nUiId);                      // hide
 };
 class Unk_LgWorld;                                      // FUN_1403ed2d0
 class Unk_LgHost;                                       // FUN_14025e7a0
 class Unk_LgPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1409331f0 (m_8 +8)
 class Unk_LgInput;                                      // FUN_14025e7c0
 class Unk_LgNet { public: int FUN_1415384e0(); void FUN_1415382c0(); };   // FUN_140714f90
-class Unk_LgPopup { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(int n); };   // FUN_140a94350
 class Unk_LgMsgBox { public: virtual int vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
@@ -100,12 +98,12 @@ public:
     class GFxMovie* FUN_1422b01a0(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
-bool FUN_14116d9c0(Unk_LgInput* p, int a, int b, int c);
 bool FUN_14116dd30(Unk_LgInput* p, int a, int b, int c);
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14116d840();
+    bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d9c0
 };
 int FUN_141210c60(Unk_LgPreload* p);
 int FUN_1406c34c0();
@@ -113,10 +111,8 @@ CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
 void* FUN_140d86260();   // C3: was FUN_140d86260
 Unk_LgNet* FUN_140714f90();
-Unk_LgPopup* FUN_140a94350();
 Unk_LgState* FUN_140aa6d30();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);            // has the AS object been released
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 UIIntroMovie* FUN_140e85420(int nUiId);
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
@@ -164,7 +160,7 @@ CString UISceneLogin::GetTypeName()
 void UISceneLogin::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    FUN_140a94350()->vfunc_10(3);
+    ChromaSDK::GetChromaManager()->SetState(3);
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
@@ -173,7 +169,7 @@ void UISceneLogin::vfunc_48(int n)
     if (pDlg != 0)
     {
         Unk_OsUIMsg kMsg;
-        kMsg.FUN_1422b82b0("OnReset");
+        kMsg.AddString("OnReset");
         pDlg->OnMessage(this, &kMsg);
     }
     FUN_1422e7950();
@@ -189,9 +185,9 @@ void UISceneLogin::vfunc_49(int n)
         m_nProgress = 0;
     else
         m_nProgress = 0x4000;
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4e22);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e22);
     if (((CUIService*)FUN_1403ed2b0())->FUN_141adc890((eUIClassID)(0x4eef)) != 0)
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4eef);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4eef);
     UISceneEntity::vfunc_49(n);
 }
 
@@ -229,7 +225,7 @@ void UISceneLogin::vfunc_15()
         }
         m_nShown = 1;
         m_nExitFlag = 1;
-        FUN_140a94350()->vfunc_10(4);
+        ChromaSDK::GetChromaManager()->SetState(4);
     }
 }
 
@@ -354,7 +350,7 @@ void UISceneLogin::FUN_141acf470()
 // @0x141acf5a0
 void UISceneLogin::ShowTitle()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     ASObj kObj(2);
     FUN_141acfba0(&kObj);
@@ -419,7 +415,7 @@ void UISceneLogin::FUN_141acf890()
             ((Unk_LgAS*)m_30.operator->())->FUN_141acffa0("showPrograssBar", nCount, 0x10);
         }
         m_nProgressDirty = 0;
-        FUN_140a94350()->vfunc_10(3);
+        ChromaSDK::GetChromaManager()->SetState(3);
     }
 }
 
@@ -434,7 +430,7 @@ void UISceneLogin::FUN_141acfa00()
 // @0x141acfa70
 void UISceneLogin::FUN_141acfa70()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     m_30->Invoke("hide");
 }
@@ -504,7 +500,7 @@ void UISceneLogin::OnEndPopdown()
 static int FUN_141acfd00()
 {
     if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LgPlayerState*)FUN_1409331f0()))) == 0)
-        return FUN_14116d9c0(((class Unk_LgInput*)FUN_14025e7c0()), 0x75, 0, 0);
+        return reinterpret_cast<CInputKeyHandler*>(((class Unk_LgInput*)FUN_14025e7c0()))->FUN_14116d9c0(0x75, 0, 0);
     return FUN_14116dd30(((class Unk_LgInput*)FUN_14025e7c0()), 0x493ef, 0, 0);
 }
 

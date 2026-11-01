@@ -32,22 +32,22 @@ public:
     CItemEnchantInfo* GetEnchant();           // the enchant record (null when absent)
     Unk_ItemPlusInfo* FUN_140630d90();           // the unlimited-enchant record
     CItemOption* GetOption();                // the option record
-    void FUN_1406306f0(int, int, int);
-    void FUN_14062fda0(COutputStream&);
-    MS2Ptr<CItemStatus> FUN_14062fbc0();
-    void FUN_14062fe20(CInputStream&);
+    void GenerateOptions(int, int, int);
+    void WriteToStream(COutputStream&);
+    MS2Ptr<CItemStatus> Clone();
+    void ReadFromStream(CInputStream&);
     int FUN_14062fea0(unsigned nType);
     int FUN_14062ff70(unsigned nType);
-    int FUN_14062ffb0(unsigned nType, int nWhich, int nSub);
+    int GetStatValue(unsigned nType, int nWhich, int nSub);
     int FUN_140630290(unsigned nType, int nWhich, int nSub);
-    unsigned short FUN_140630d00();
-    float FUN_1406303e0(unsigned nType);
-    int FUN_1406304b0(int nSub, int nWhich, unsigned nType);
-    CStringW FUN_1406305e0(int nSub, unsigned nType, void* pArg);
-    bool FUN_140630dc0(int nType);
+    unsigned short GetEnchantLevel();
+    float GetEnchantRatio(unsigned nType);
+    int HasOptionEntry(int nSub, int nWhich, unsigned nType);
+    CStringW GetSpecialStatText(int nSub, unsigned nType, void* pArg);
+    bool IsRatioStat(int nType);
     bool FUN_140630810();
     void FUN_140630840();
-    int FUN_1406308a0(MS2Ptr<CItemStatus> spOther);    // 0x1406308a0 take over the options of another status
+    int CopyGroup4From(MS2Ptr<CItemStatus> spOther);    // 0x1406308a0 take over the options of another status
 
     MS2Ptr<CItemOption> m_spOption;             // +0x18
     Unk_EnchantPtr<CItemEnchantInfo> m_spEnchant;   // +0x28
@@ -59,21 +59,21 @@ class CItemUgc : public CPtred
 public:
     CItemUgc();                             // 0x140631d70
     virtual ~CItemUgc();                    // 0x140631de0 (??_G 0x140633490)
-    void FUN_140631e50();                   // resets the look
+    void ResetLook();                   // resets the look
     int FUN_1406321a0();
     int FUN_1406321d0();
-    void FUN_140631f50(COutputStream&);
-    MS2Ptr<CItemUgc> FUN_140631e80();
-    void FUN_140631fa0(CInputStream&);
-    void FUN_140631ff0(CUgcItemLook* pLook);
-    unsigned __int64 FUN_140632030();                // the ugc id of the look
+    void WriteToStream(COutputStream&);
+    MS2Ptr<CItemUgc> Clone();
+    void ReadFromStream(CInputStream&);
+    void SetLook(CUgcItemLook* pLook);
+    unsigned __int64 GetUgcId();                // the ugc id of the look
     int FUN_140632050();
-    void FUN_140632070(CBlueprintItemData* pBlueprint);
+    void SetBlueprint(CBlueprintItemData* pBlueprint);
     __int64 FUN_1406320c0();
     int FUN_1406320e0();
-    CString FUN_140632100();
+    CString GetLookLocalPath();
     CStringW FUN_140632150();
-    void FUN_140632200(CItemUgc* pSource);
+    void CopyLookFrom(CItemUgc* pSource);
     CUgcItemLook m_look;                    // +0x18
     CBlueprintItemData m_blueprint;         // +0x80
 };
@@ -144,11 +144,11 @@ class CItemCustomMusicScore : public CPtred
 public:
     CItemCustomMusicScore();                // 0x14052c1a0
     bool FUN_140632780();
-    void FUN_140632500(COutputStream&);
-    MS2Ptr<CItemCustomMusicScore> FUN_1406322c0();
-    void FUN_140632620(CInputStream&);
+    void WriteToStream(COutputStream&);
+    MS2Ptr<CItemCustomMusicScore> Clone();
+    void ReadFromStream(CInputStream&);
     virtual ~CItemCustomMusicScore();       // (??_G 0x14052cfc0)
-    void FUN_1406328c0();                   // reset the score (elsewhere)
+    void Reset();                   // reset the score (elsewhere)
 
     int m_n18;                              // +0x18
     int m_n1c;                              // +0x1c a music book id
@@ -160,11 +160,11 @@ public:
     __int64 m_n40;                          // +0x40
     __int64 m_n48;                          // +0x48
     Unk_MusicNoteBlock m_note;              // +0x50
-    unsigned m_b70 : 1;                     // +0x70 (cleared by FUN_1406328c0)
+    unsigned m_b70 : 1;                     // +0x70 (cleared by Reset)
     unsigned m_b70b : 1;
     unsigned m_n70c : 30;
     int m_pad74;
-    void FUN_1406327c0(const struct Unk_MusicScoreInfo& info);   // copy from a market listing's score (itemsocketsystemutil.cpp)
+    void SetFromScoreInfo(const struct Unk_MusicScoreInfo& info);   // copy from a market listing's score (itemsocketsystemutil.cpp)
 };
 MS2_CHECK_SIZE(CItemCustomMusicScore, 0x78);
 MS2_CHECK_OFFSET(CItemCustomMusicScore, m_n48, 0x48);

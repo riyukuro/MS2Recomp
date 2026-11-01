@@ -16,6 +16,8 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -23,10 +25,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> EsClickDelegate;
 
-class Unk_EsButton : public ASDisplayObject
+class Unk_EsButton : public ASButton
 {
 public:
-    void FUN_1422ce240(const EsClickDelegate& onClick, int nFlags);     // click callback
 };
 
 // The click event: the pressed button is read from +0x30.
@@ -69,7 +70,6 @@ public:
     static class WorldService* GetInstance();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(char* pEntry);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 
@@ -114,11 +114,11 @@ void UIEnchantSelectDialog::OnLoadComplete()
     FUN_1419260d0("m_webGuideButton", 0);
     Unk_EsButton* pType1 = FUN_140bc6d10("m_type1Button", m_type1Button).get();
     if (pType1 != 0)
-        m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), 1);
+        m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)1);
     Unk_EsButton* pType2 = FUN_140bc6d10("m_type2Button", m_type2Button).get();
     if (pType2 != 0)
-        m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), 2);
-    if (MS2Ptr<ASMovieClip> recommend = FUN_140ba7930("m_recommendType2"))
+        m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)2);
+    if (MS2Ptr<ASMovieClip> recommend = GetChild<ASMovieClip>("m_recommendType2"))
         recommend->vfunc_4(FUN_140166410()->FUN_14036d570(0xfc));
     {
         CString strArg("enchant");
@@ -151,7 +151,7 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     }
     if (nNpcId > 0)
     {
-        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *FUN_1402056b0(((char*)FUN_1401d3200()) + 0x69a0)).FUN_14078f3a0())
+        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x69a0)->Get()).FUN_14078f3a0())
         {
             ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
             ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));

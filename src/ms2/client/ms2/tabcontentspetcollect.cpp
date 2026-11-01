@@ -50,6 +50,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetcollect.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include <algorithm>
 #include <map>
 #include <vector>
@@ -92,7 +93,6 @@ public:
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, const Scaleform::GFx::Value& src);
 
 // The pet table singleton and the pet collect table inside it.
 CPetDataTable* FUN_14052d210();
@@ -193,7 +193,7 @@ public:
     Unk_PcCameraPtr FUN_1418b9bc0();
 };
 
-extern Vector3 DAT_143b01a60;
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- TabContentsPetCollect ----
 
@@ -234,7 +234,7 @@ void TabContentsPetCollect::FUN_140cac6a0()
         int nCount = 0;
         for (std::map<DWORD, int>::iterator it = rPets.begin(), itEnd = rPets.end(); it != itEnd; ++it)
         {
-            int nGrade = FUN_140535320()->FUN_140c8b220(it->first);
+            int nGrade = FUN_140535320()->GetCountByKey(it->first);
             if (nGrade == 0)
                 continue;
             nCount = nCount + 1;
@@ -302,13 +302,13 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         MS2Ptr<Unk_PcNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
         if (spNpc == 0) \
             continue; \
-        int nGrade = FUN_140535320()->FUN_140c8b220(*pPet); \
+        int nGrade = FUN_140535320()->GetCountByKey(*pPet); \
         if (nGrade <= 0 && !spPet->m_bCollectPreview) \
             continue; \
         CString strIcon; \
         MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1)); \
         if (spData.get() != 0) \
-            strIcon = spData->FUN_14053fdd0(); \
+            strIcon = spData->GetIconPath(); \
         objPet.FUN_1407cba60("iconPath", strIcon); \
         objPet.FUN_1409c0d20("petID", *pPet); \
         objPet.FUN_1407cb9c0("grade", nGrade); \
@@ -406,7 +406,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));
         if (spData == 0)
             return;
-        int nGrade = FUN_140535320()->FUN_140c8b220(nPet);
+        int nGrade = FUN_140535320()->GetCountByKey(nPet);
         int nShown = nGrade;
         if (nShown == 0)
             nShown = 1;
@@ -474,9 +474,9 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         if (spPet->m_nSlotNum > 0)
             strTip += FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_collect_pet_tooltip_bag_size"), spPet->m_nSlotNum);
         ASTooltip tip(1, 2);
-        tip.FUN_1409c6dc0(5);
-        if (tip.FUN_1409e26b0(strTip) != 0)
-            FUN_1409b4bc0(static_cast<Scaleform::GFx::Value*>(pOut), tip.FUN_1422bb870());
+        tip.SetTooltipAlign(5);
+        if (tip.ApplyTextTooltip(strTip) != 0)
+            *static_cast<Scaleform::GFx::Value*>(pOut) = tip.FUN_1422bb870();
     }
 }
 }
@@ -497,7 +497,7 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
             MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));
             if (spData.get() != 0)
             {
-                if (spData->FUN_14053cc40())
+                if (spData->IsPetItem())
                 {
                     if (m_avatar == 0)
                     {
@@ -508,7 +508,7 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
                     {
                         m_avatar->FUN_1418bebd0(spData.get());
                     }
-                    int nGrade = FUN_140535320()->FUN_140c8b220(nPet);
+                    int nGrade = FUN_140535320()->GetCountByKey(nPet);
                     PC(m_ui)->FUN_140caf230("setAvatarGrade", nGrade);
                 }
             }

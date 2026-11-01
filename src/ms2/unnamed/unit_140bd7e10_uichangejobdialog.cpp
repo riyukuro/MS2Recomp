@@ -66,7 +66,6 @@ struct Unk_CjSkillRef
     Unk_CjSkillRow* FUN_14063ed50() const;                      // operator->
     void* m_0; void* m_8;
 };
-class Unk_CjSkillTable { public: Unk_CjSkillRef FUN_1407ee1d0(int nSkillId); };
 
 class Unk_CjTable
 {
@@ -190,12 +189,12 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
     ASArray skills2(2);
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills1.GetCount(); i++)
     {
-        Unk_CjSkillRef spSkill = reinterpret_cast<Unk_CjSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills1[i]);
-        if (spSkill.FUN_14063eab0(0))
+        MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(spData.FUN_1401d75d0()->m_skills1[i]);
+        if (spSkill == 0)
             continue;
         ASObj skill(2);
         skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills1[i]);
-        skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
+        skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills1[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
@@ -203,12 +202,12 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
     }
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills2.GetCount(); i++)
     {
-        Unk_CjSkillRef spSkill = reinterpret_cast<Unk_CjSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills2[i]);
-        if (spSkill.FUN_14063eab0(0))
+        MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(spData.FUN_1401d75d0()->m_skills2[i]);
+        if (spSkill == 0)
             continue;
         ASObj skill(2);
         skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills2[i]);
-        skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
+        skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills2[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
@@ -228,7 +227,7 @@ int UIChangeJobDialog::FUN_140bd88e0()
     if (CjTable()->FUN_1401d6ce0(FUN_141654700(pPC), FUN_141654730(pPC), (unsigned short)pPC->vfunc_78()) == 0)
         return 0;
     int nNext = CjTable()->FUN_1401d6d70(FUN_141654730(pPC));
-    int nState = FUN_141523ba0(pPC)->FUN_1416cae20(nNext);
+    int nState = FUN_141523ba0(pPC)->GetQuestState(nNext);
     if (nState == 1 || nState == 2)
         return 0;
     return 1;

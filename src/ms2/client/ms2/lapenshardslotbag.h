@@ -32,8 +32,8 @@ public:
     virtual CString vfunc_15(int nIndex);                        // 15 0x140a70730 "<bag name>.<index>"
     virtual DragSlot* vfunc_16(int nIndex);                      // 16 0x140a707f0 new LapenshardSlot for the index
 
-    int FUN_140a70a30();                                         // the number of slots (items, or equip slots)
-    int FUN_140a70b20(int nIndex);                               // the lapenshard slot number of an equip slot index
+    int GetSlotCount();                                         // the number of slots (items, or equip slots)
+    int GetEquipSlot(int nIndex);                               // the lapenshard slot number of an equip slot index
 
 public:
     MS2_LAYOUT_FRIEND;

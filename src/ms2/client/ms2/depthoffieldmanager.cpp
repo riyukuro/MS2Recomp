@@ -28,7 +28,7 @@ void FUN_1414cf920(void* p, unsigned char v);
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
-    class PostProcessEffect* FUN_1416a3a90(int);
+    class PostProcessEffect* GetStep(int);
 };
 void FUN_1416a3920(void* p, int n, unsigned char v);
 void FUN_1416aa6a0(void* p, int n, unsigned char v);
@@ -63,7 +63,7 @@ CDepthOfFieldManager::~CDepthOfFieldManager()
 // @0x141177fa0
 void CDepthOfFieldManager::FUN_141177fa0()
 {
-    m_10 = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416a3a90(4));
+    m_10 = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(4));
     FUN_141178020(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(FUN_1409a8b10()))->FUN_1409a8ac0())));
 }
 MS2_REPLACE_METHOD(0x141177FA0, CDepthOfFieldManager, FUN_141177fa0, 75, 0xEEBEED69);

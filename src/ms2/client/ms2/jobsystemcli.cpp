@@ -27,7 +27,6 @@ class Unk_JscSkillRow : public CPtred { public:  };
 class Unk_JscSkillTable
 {
 public:
-    MS2Ptr<Unk_JscSkillRow> FUN_1407ee1d0(int nSkillId);
     MS2Ptr<SkillLevelData> FUN_1407ee2f0(int nSkillId, short nLevel);
 };
 
@@ -101,7 +100,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
 // @0x140a6da90
 bool JobSystemCli::vfunc_2(unsigned nSkillId)
 {
-    MS2Ptr<Unk_JscSkillRow> spRow = reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+    MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spRow.IsNull())
         return false;
     if (!((SkillData*)(spRow).operator->())->FUN_1407e9f30())
@@ -236,7 +235,7 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
 {
     if (m_pOwner != 0)
     {
-        MS2Ptr<Unk_JscSkillRow> spRow = reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spRow.IsNull())
             return;
         FUN_14165c720(m_pOwner, nSkillId, nLevel);

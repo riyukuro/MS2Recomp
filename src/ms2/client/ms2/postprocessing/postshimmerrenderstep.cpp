@@ -50,7 +50,7 @@ public:
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Global shader constant setters (validate, then NiShaderFactory::UpdateGlobalShaderConstant). The float one lives in
 // another unit; the NiPoint2 one is emitted here.
@@ -228,7 +228,7 @@ void PostShimmerEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "blendingMax", m_fBlendingMax);
     XmlGetAttr((class TiXmlElement*)(pNode), "moveX", m_fMoveX);
     XmlGetAttr((class TiXmlElement*)(pNode), "moveY", m_fMoveY);
-    FUN_1408733e0(pNode, "texture", m_strTexture);
+    XmlGetAttr((class TiXmlElement*)(pNode), "texture", m_strTexture);
 }
 MS2_REPLACE_METHOD(0x140c8fa20, PostShimmerEffectParam, vfunc_1, 179, 0xCCA48F6B);
 

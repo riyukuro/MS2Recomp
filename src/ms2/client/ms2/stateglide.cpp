@@ -69,10 +69,11 @@ class Unk_GlideWorld { public: efd::Point3 FUN_141bd3820(); };
 // The actor's buff set: the airborne check.
 
 // The actor's buff view: the movement direction.
-class Unk_GlideBuff { public: efd::Point3 FUN_141683900(); };
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
+class Unk_GlideBuff { public: };
 
 // The actor's player character (+ the buff based speed bonus).
-PC* FUN_140974230(PCBase* p);
 
 // The cube grid: the cell of a cube key and the centre point of a cell.
 struct Unk_GlCell { Unk_GlCell(); int x, y, z; };
@@ -225,8 +226,8 @@ void StateGlide::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
     Unk_GlideBuff* pBuff = (Unk_GlideBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683900();
-    reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+    Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+    reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
     if (m_pOwner->FUN_1416749c0())
         m_n10 = 100;
     else
@@ -334,7 +335,7 @@ float StateGlide::FUN_1417c99f0()
 float StateGlide::FUN_1417c9ad0()
 {
     float fBonus = 0.0f;
-    PC* pActor = FUN_140974230(m_pOwner);
+    PC* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
     if (pActor != 0)
     {
         fBonus += pActor->FUN_141662930(0x73);

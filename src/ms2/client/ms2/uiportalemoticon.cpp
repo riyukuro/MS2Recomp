@@ -4,6 +4,7 @@
 // MS2-PIN: ??_GUIPortalEmoticon@@UEAAPEAXI@Z 0x140f9c130
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiportalemoticon.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include "uiportalemoticon.h"
 
@@ -48,7 +49,7 @@ public:
     virtual void vfunc_24(bool b);
 };
 
-extern const Vector3 DAT_143b01a60;                          // the zero point
+#define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,7 +141,7 @@ void UIPortalEmoticon::vfunc_52()
     {
         spEntity->Invoke("open", m_strName);
         spEntity->vfunc_24(true);   // invalidate + validateNow
-        spEntity->FUN_1422bfe00(50.0f);
+        spEntity->SetAlpha(50.0f);
         vfunc_8(1);
         m_bPending = 0;
     }

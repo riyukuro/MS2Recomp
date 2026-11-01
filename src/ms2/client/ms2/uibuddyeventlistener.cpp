@@ -70,6 +70,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/client/ms2/homeblockmanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_sortB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strPcInviteSuccess = "PC_InviteSuccess";
@@ -108,7 +109,6 @@ public:
 
 class Unk_BdStream { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); Unk_BdStream m_stream; int FUN_14070fe80(); void FUN_140715280(unsigned); };
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
 CommonString* FUN_14025e7d0();                              // the CommonString singleton
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
@@ -167,7 +167,6 @@ class Unk_BdWorld : public WorldService
 public:
     void FUN_141bc9c60(Unk_BdProxyRef* pOut, __int64 nId);      // the proxy of a character id
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nId);  // the same, as the exe's by-value return
-    Unk_BdActor* FUN_141bd1530(unsigned __int64 nId);           // the actor of an entity id
 };
 void FUN_140ac5dd0(void* pMap, void** pos);                     // GetNext
 
@@ -220,14 +219,14 @@ int FUN_141276180(const CString& strSound, const CString& strExtra);
 int FUN_141276c80(const CStringW& str, bool bCheckSelf, CStringW& strOut);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);       // case-insensitive equal
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 // The string tables and the text formatters (they return the text through the hidden out pointer).
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_14093fa20(int nId, const CStringW& str, int* pnArg);
-CStringW FUN_1408116a0(int nId, int* pnArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_140811740(int nId, int* pnA, int* pnB);
 CStringW FUN_140a228f0(int nId, int* pnArg, const CStringW& str);
 CStringW FUN_140c348b0(int nId, short* pnArg, const CStringW& str);
@@ -335,9 +334,9 @@ void UICommunityDialog::vfunc_72()
     m_198 = 0;
     if (m_19c != 0)
     {
-        if (MS2Ptr<Unk_BdList> spList = FUN_1409ee290(&m_30)->FUN_140accef0<Unk_BdList>("m_list"))
+        if (MS2Ptr<Unk_BdList> spList = ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_140accef0<Unk_BdList>("m_list"))
         {
-            int nCount = spList->FUN_1422dcd80()->FUN_1422bc5d0();
+            int nCount = spList->FUN_1422dcd80()->GetLength();
             FUN_1418d77f0(m_194, nCount);
         }
     }
@@ -489,7 +488,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             Unk_BuddyRequest request;
             request.protocol = 3;
             request.id = FUN_140718350(data.FUN_1422b8d30());
-            FUN_1418d8f90()->FUN_140ae4820(request);
+            FUN_1418d8f90()->SendBuddyRequest(request);
             return 1;
         }
     }
@@ -501,7 +500,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             Unk_BuddyRequest request;
             request.protocol = 4;
             request.id = FUN_140718350(data.FUN_1422b8d30());
-            FUN_1418d8f90()->FUN_140ae4820(request);
+            FUN_1418d8f90()->SendBuddyRequest(request);
             return 1;
         }
     }
@@ -513,7 +512,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             Unk_BuddyRequest request;
             request.protocol = 7;
             request.id = FUN_140718350(data.FUN_1422b8d30());
-            FUN_1418d8f90()->FUN_140ae4820(request);
+            FUN_1418d8f90()->SendBuddyRequest(request);
             return 1;
         }
     }
@@ -525,7 +524,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             Unk_BuddyRequest request;
             request.protocol = 0x11;
             request.id = FUN_140718350(data.FUN_1422b8d30());
-            FUN_1418d8f90()->FUN_140ae4820(request);
+            FUN_1418d8f90()->SendBuddyRequest(request);
             return 1;
         }
     }
@@ -539,7 +538,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             unsigned __int64 nTarget = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName;
             {
-                CBuddyManager::Ptr spBuddy = FUN_1418d8f90()->FUN_140ae4b70(nTarget);
+                CBuddyManager::Ptr spBuddy = FUN_1418d8f90()->FindById(nTarget);
                 if (spBuddy.get() != 0)
                 {
                     nId = spBuddy->FUN_1401cc230();
@@ -550,7 +549,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 {
                     nId = nTarget;
                     nKind = 8;
-                    Unk_BdActor* pActor = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bd1530(nId);
+                    Unk_BdActor* pActor = reinterpret_cast<Unk_BdActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
                     if (pActor != 0)
                         strName = pActor->vfunc_77();
                 }
@@ -601,7 +600,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             else
             {
-                CBuddyManager::Ptr spBuddy = FUN_1418d8f90()->FUN_140ae4b70(nTarget);
+                CBuddyManager::Ptr spBuddy = FUN_1418d8f90()->FindById(nTarget);
                 if (spBuddy.get() != 0)
                 {
                     Unk_BdMenu* pMenu = ((class Unk_BdMenu*)FUN_140c30140(0x4e39));
@@ -643,7 +642,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             request.name = strName;
             request.memo = strMemo;
             request.id = nId;
-            FUN_1418d8f90()->FUN_140ae4820(request);
+            FUN_1418d8f90()->SendBuddyRequest(request);
         }
         else if (m_190 == 4)
         {
@@ -698,7 +697,7 @@ void UICommunityDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& 
         else
         {
             unsigned __int64 nId = FUN_141b71960(pArgs->FUN_1422b8d30());
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
             if (spBuddy.get() != 0)
                 pTrophy = spBuddy->FUN_1401cc330();
         }
@@ -725,7 +724,7 @@ void UICommunityDialog::vfunc_ugc_1(void* p, CString str)
     }
     else
     {
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880((__int64)p);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount((__int64)p);
         if (spBuddy.get() != 0)
             strId = FUN_140719530(spBuddy->id);
     }
@@ -832,7 +831,7 @@ void UICommunityDialog::vfunc_buddy_8(__int64 nId)
 // @0x1418d59c0
 void UICommunityDialog::vfunc_buddy_9(__int64 nId)
 {
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
     if (spBuddy.get() != 0)
     {
         int bUpdate = (spBuddy->FUN_1401cc5d0() != 0 && m_190 == 2) || (spBuddy->FUN_1401cc5f0() != 0 && m_190 == 1)
@@ -847,7 +846,7 @@ void UICommunityDialog::vfunc_buddy_11(__int64 nId)
 {
     if (m_190 != 3)
         return;
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
     if (spBuddy == NULL)
         return;
     int bBanned = spBuddy->FUN_1401cc5b0();
@@ -987,7 +986,7 @@ void UICommunityDialog::FUN_1418d6430(int nTab)
     }
     ASArray arr(2);
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-    FUN_1418d8f90()->FUN_140ae4df0(buddies);
+    FUN_1418d8f90()->GetAllBuddies(buddies);
     size_t nOnline = 0;
     size_t aCount[5] = {};
     if (!buddies.IsEmpty())
@@ -1130,8 +1129,8 @@ void UICommunityDialog::FUN_1418d6d00()
 void UICommunityDialog::FUN_1418d6ed0(int nA, int nB)
 {
     Unk_BdUIMsg msg;
-    msg.FUN_1422b7f70(nA);
-    msg.FUN_1422b7f70(nB);
+    msg.AddInt(nA);
+    msg.AddInt(nB);
     UIDialog* pDialog = ((class UIDialog*)FUN_140ae5a30(0x4e4e));
     if (pDialog != 0)
         pDialog->OnMessage(this, &msg);
@@ -1169,7 +1168,7 @@ void UICommunityDialog::FUN_1418d71d0(int nTab, __int64 nId)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    FUN_1418d7000(nTab, TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId));
+    FUN_1418d7000(nTab, TSingleton<CBuddyManager>::GetInstance()->FindById(nId));
 }
 
 // @0x1418d7240
@@ -1180,7 +1179,7 @@ void UICommunityDialog::FUN_1418d7240(__int64 nId)
     CString strId = FUN_140719530(nId);
     if (m_190 == 1)
     {
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5f0() != 0 && spBuddy->FUN_1401cc680() != 0)
@@ -1208,7 +1207,7 @@ void UICommunityDialog::FUN_1418d74f0(__int64 nId)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(nId);
+    CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
     if (spBuddy.get() != 0)
     {
         CString strId = FUN_140719530(nId);
@@ -1221,7 +1220,7 @@ void UICommunityDialog::FUN_1418d74f0(__int64 nId)
 int UICommunityDialog::FUN_1418d76c0()
 {
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-    FUN_1418d8f90()->FUN_140ae4df0(buddies);
+    FUN_1418d8f90()->GetAllBuddies(buddies);
     size_t nOnline = 0;
     if (!buddies.IsEmpty())
     {
@@ -1246,13 +1245,13 @@ void UICommunityDialog::FUN_1418d77f0(int nOnline, int nTotal)
         strText = FUN_14093fa20(0x60e, GetStringTable()->FUN_141811980(3, nMapId), &nTotal);
     }
     else if (m_190 == 2)
-        strText = FUN_1408116a0(0x60f, &nTotal);
+        strText = BlockFormat<int>(0x60f, nTotal);
     else if (m_190 == 3)
-        strText = FUN_1408116a0(0x610, &nTotal);
+        strText = BlockFormat<int>(0x610, nTotal);
     else if (m_190 == 1)
         strText = FUN_140811740(0x612, &nOnline, &nTotal);
     else if (m_190 == 4)
-        strText = FUN_1408116a0(0x611, &nTotal);
+        strText = BlockFormat<int>(0x611, nTotal);
     m_30->Invoke("setOnline", CStringW(strText));
 }
 
@@ -1343,7 +1342,7 @@ int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
         __int64 nId = (__int64)ref->FUN_1416c22f0();
         CString strId = FUN_140719530(nId);
         pRow->FUN_1407cba60("buddysn", CString(strId));
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nId);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nId);
         int bBuddy = (!spBuddy.operator!() && spBuddy->FUN_1401cc5f0() != 0) ? 1 : 0;
         pRow->FUN_1407cb9c0("isBuddy", bBuddy);
         int bParty = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nId).get() != 0;
@@ -1746,21 +1745,21 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nButton == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();
-            if (FUN_1403b3c40(strTag, L"delBuddy"))
+            if (operator==(strTag, L"delBuddy"))
             {
                 Unk_BuddyRequest request;
                 request.protocol = 7;
                 request.id = m_190;
-                FUN_1418dcb70()->FUN_140ae4820(request);
+                FUN_1418dcb70()->SendBuddyRequest(request);
             }
-            else if (FUN_1403b3c40(strTag, L"delBanBuddy"))
+            else if (operator==(strTag, L"delBanBuddy"))
             {
                 Unk_BuddyRequest request;
                 request.protocol = 6;
                 request.id = m_190;
-                FUN_1418dcb70()->FUN_140ae4820(request);
+                FUN_1418dcb70()->SendBuddyRequest(request);
             }
-            else if (FUN_1403b3c40(strTag, L"banBuddy"))
+            else if (operator==(strTag, L"banBuddy"))
             {
                 if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
                 {
@@ -1772,7 +1771,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         request.name = m_188;
                         request.memo = m_1a0.Trim();
                         request.id = m_190;
-                        FUN_1418dcb70()->FUN_140ae4820(request);
+                        FUN_1418dcb70()->SendBuddyRequest(request);
                     }
                     else
                     {
@@ -1780,7 +1779,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                 }
             }
-            else if (FUN_1403b3c40(strTag, L"homeBlock"))
+            else if (operator==(strTag, L"homeBlock"))
             {
                 if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
                 {
@@ -1791,14 +1790,14 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
                 }
             }
-            else if (FUN_1403b3c40(strTag, L"delHomeBlock"))
+            else if (operator==(strTag, L"delHomeBlock"))
             {
                 TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47060(m_190);
             }
         }
         else if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
         {
-            static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("errorName");
+            static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("errorName");
         }
         FUN_14151f200();
     }
@@ -1816,12 +1815,12 @@ int UICommunityQueryDialog::vfunc_13()
         return 0;
     if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
     {
-        static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("onEnterKey");
+        static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("onEnterKey");
         return 1;
     }
     else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
     {
-        static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("onTabKey");
+        static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("onTabKey");
         return 1;
     }
     return 0;
@@ -1851,7 +1850,7 @@ void UICommunityQueryDialog::FUN_1418db750()
     {
         if (m_190 > 0)
         {
-            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4b70(m_190);
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(m_190);
             if (spBuddy.get() != 0)
                 strName = *spBuddy->FUN_1401cc590();
         }
@@ -1862,7 +1861,7 @@ void UICommunityQueryDialog::FUN_1418db750()
         if (spHome.get() != 0)
             strName = spHome->m_50;
     }
-    static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1418dca10("initData", m_180, CStringW(m_188), CStringW(strName));
+    static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1418dca10("initData", m_180, CStringW(m_188), CStringW(strName));
     vfunc_8(1);
 }
 
@@ -1916,7 +1915,7 @@ void UICommunityQueryDialog::FUN_1418dba00(Unk_BuddyResponse& response)
             FUN_141275260(0x613, 1, 1);
         }
         if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
-            static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("errorName");
+            static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("errorName");
     }
     FUN_1418db6d0();
 }
@@ -1940,7 +1939,7 @@ void UICommunityQueryDialog::FUN_1418dbcb0(int nMode)
                 request.protocol = 2;
                 request.name = m_188;
                 request.memo = strMemo;
-                FUN_1418dcb70()->FUN_140ae4820(request);
+                FUN_1418dcb70()->SendBuddyRequest(request);
                 CString strExtra("");
                 FUN_141276180(s_strPcInviteSuccess, strExtra);
             }
@@ -1984,7 +1983,7 @@ void UICommunityQueryDialog::FUN_1418dbcb0(int nMode)
             request.name = m_188;
             request.memo = strMemo;
             request.id = m_190;
-            FUN_1418dcb70()->FUN_140ae4820(request);
+            FUN_1418dcb70()->SendBuddyRequest(request);
         }
     }
     break;
@@ -2025,7 +2024,7 @@ int UICommunityQueryDialog::FUN_1418dc410(const CStringW& str)
         }
     }
     if (bRejected != 0 && ((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
-        static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("errorName");
+        static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("errorName");
     return bRejected;
 }
 
@@ -2036,7 +2035,7 @@ int UICommunityQueryDialog::FUN_1418dc540(const CStringW& str)
         return 1;
     int bRejected = 0;
     {
-        CBuddyManager::Ptr spBuddy = FUN_1418dcb70()->FUN_140ae4950(str);
+        CBuddyManager::Ptr spBuddy = FUN_1418dcb70()->FindByName(str);
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)
@@ -2062,7 +2061,7 @@ int UICommunityQueryDialog::FUN_1418dc540(const CStringW& str)
         }
     }
     if (bRejected != 0 && ((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
-        static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("errorName");
+        static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("errorName");
     return bRejected;
 }
 
@@ -2073,7 +2072,7 @@ int UICommunityQueryDialog::FUN_1418dc7f0(const CStringW& str)
         return 1;
     int bRejected = 0;
     {
-        CBuddyManager::Ptr spBuddy = FUN_1418dcb70()->FUN_140ae4950(str);
+        CBuddyManager::Ptr spBuddy = FUN_1418dcb70()->FindByName(str);
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)
@@ -2084,7 +2083,7 @@ int UICommunityQueryDialog::FUN_1418dc7f0(const CStringW& str)
         }
     }
     if (bRejected != 0 && ((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
-        static_cast<Unk_BdScript*>(FUN_1409ee290(&m_30))->FUN_1422bb330("errorName");
+        static_cast<Unk_BdScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_1422bb330("errorName");
     return bRejected;
 }
 

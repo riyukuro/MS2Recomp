@@ -11,6 +11,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -21,8 +26,7 @@ public:
     Unk_140165cf0* FUN_14086e7e0(const char* pszName);              // next sibling element (by name)
 };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned int& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 short FUN_140315da0(const short& nValue, short nMin, short nMax);      // clamp
 
@@ -57,10 +61,10 @@ bool MentoringDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
-    Unk_140165cf0* pConfig = pRoot->FUN_140165cf0("MentoringConfig");
+    Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("MentoringConfig"));
     if (pConfig != 0)
         LoadConfig(pConfig);
     return true;
@@ -69,15 +73,15 @@ bool MentoringDataTable::Load()
 // @0x14069bf00
 void MentoringDataTable::LoadConfig(Unk_140165cf0* pConfig)
 {
-    Unk_140165cf0* pAttend = pConfig->FUN_140165cf0("AttendReward");
+    Unk_140165cf0* pAttend = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pConfig))->FirstChild("AttendReward"));
     if (pAttend != 0)
         LoadRewardCoins(pAttend, "RewardCoin", &m_attendRewardCoins);
-    FUN_140873220(pConfig, "maxMentorDailyRewardCoin", m_nMaxMentorDailyRewardCoin);
-    FUN_140873220(pConfig, "maxMenteeDailyRewardCoin", m_nMaxMenteeDailyRewardCoin);
+    XmlGetAttr((class TiXmlElement*)(pConfig), "maxMentorDailyRewardCoin", reinterpret_cast<unsigned int&>(m_nMaxMentorDailyRewardCoin));
+    XmlGetAttr((class TiXmlElement*)(pConfig), "maxMenteeDailyRewardCoin", reinterpret_cast<unsigned int&>(m_nMaxMenteeDailyRewardCoin));
     XmlGetAttr((class TiXmlElement*)(pConfig), "isShowIcon", m_bShowIcon);
-    Unk_140165cf0* pMentor = pConfig->FUN_140165cf0("MentorReward");
+    Unk_140165cf0* pMentor = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pConfig))->FirstChild("MentorReward"));
     if (pMentor != 0)
-        FUN_140873220(pMentor, "coin", m_nMentorRewardCoin);
+        XmlGetAttr((class TiXmlElement*)(pMentor), "coin", reinterpret_cast<unsigned int&>(m_nMentorRewardCoin));
 }
 
 // @0x14069bff0
@@ -135,7 +139,7 @@ static int LoadRewardCoins(Unk_140165cf0* pParent, const char* pszName, std::vec
     for (Unk_140165cf0* pChild = pParent->FUN_14086e8d0(pszName); pChild != 0; pChild = pChild->FUN_14086e7e0(pszName))
     {
         unsigned int nCoin;
-        FUN_140873220(pChild, "v", nCoin);
+        XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<unsigned int&>(nCoin));
         pOut->push_back(nCoin);
         nCount++;
     }

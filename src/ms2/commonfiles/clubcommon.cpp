@@ -30,6 +30,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 #define CLUB_JOIN_MAX 3
 
@@ -282,7 +288,7 @@ Club::SaveMember::~SaveMember()
 // @0x14020d270
 CClubMemberProxy::CClubMemberProxy()
 {
-    FUN_14020d380();
+    Reset();
 }
 
 // @0x14020d310
@@ -291,7 +297,7 @@ CClubMemberProxy::~CClubMemberProxy()
 }
 
 // @0x14020d380
-void CClubMemberProxy::FUN_14020d380()
+void CClubMemberProxy::Reset()
 {
     m_accountId = 0;
     m_characterId = 0;
@@ -306,29 +312,29 @@ void CClubMemberProxy::FUN_14020d380()
     m_48 = 0;
     m_50 = 0;
     m_trophy.FUN_140267bd0();
-    FUN_14020e650(CStringW(L""));
-    FUN_14020e740(CString(""));
+    SetName(CStringW(L""));
+    SetPicture(CString(""));
 }
 
 // @0x14020d4a0
 void CClubMemberProxy::FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture)
 {
-    FUN_14020d380();
+    Reset();
     m_jobCode = nJobCode;
     m_job = nJob;
     m_level = nLevel;
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020d580
-void CClubMemberProxy::FUN_14020d580(COutputStream& out)
+void CClubMemberProxy::WriteMapId(COutputStream& out)
 {
     out.WriteInt32(m_mapId);
 }
 
 // @0x14020d5c0
-void CClubMemberProxy::FUN_14020d5c0(CInPacket& packet)
+void CClubMemberProxy::ReadMapId(CInPacket& packet)
 {
     m_mapId = packet.ReadInt32();
 }
@@ -348,7 +354,7 @@ void CClubMemberProxy::FUN_14020d640(CInPacket* packet)
 // @0x14020d690
 void CClubMemberProxy::FUN_14020d690(COutputStream& out)
 {
-    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteUnicodeString(GetName());
     out.WriteInt32(m_jobCode);
     out.WriteInt32(m_job);
     out.WriteInt16(m_level);
@@ -365,8 +371,8 @@ void CClubMemberProxy::FUN_14020d770(CInPacket& packet)
     m_job = packet.ReadInt32();
     m_level = packet.ReadInt16();
     strPicture = packet.ReadUnicodeStringA();
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020d9a0
@@ -374,14 +380,14 @@ void CClubMemberProxy::FUN_14020d9a0(COutputStream& out)
 {
     out.WriteInt64(m_accountId);
     out.WriteInt64(m_characterId);
-    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteUnicodeString(GetName());
     out.WriteUInt8(m_gender);
     out.WriteInt32(m_jobCode);
     out.WriteInt32(m_job);
     out.WriteInt16(m_level);
     out.WriteInt32(m_mapId);
     out.WriteInt16((short)m_channel);
-    out.WriteUnicodeStringA(FUN_14020e6c0());
+    out.WriteUnicodeStringA(GetPicture());
     out.WriteInt32(m_40);
     out.WriteInt32(m_44);
     out.WriteInt32(m_48);
@@ -409,18 +415,18 @@ void CClubMemberProxy::FUN_14020db80(CInputStream* in)
     m_48 = in->ReadInt32();
     m_50 = in->ReadInt64();
     m_trophy.FUN_140267fb0(*in);
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020de80
 void CClubMemberProxy::FUN_14020de80(COutputStream& out)
 {
-    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteUnicodeString(GetName());
     out.WriteInt32(m_jobCode);
     out.WriteInt32(m_job);
     out.WriteInt16(m_level);
-    out.WriteUnicodeStringA(FUN_14020e6c0());
+    out.WriteUnicodeStringA(GetPicture());
 }
 
 // @0x14020df70
@@ -433,8 +439,8 @@ void CClubMemberProxy::FUN_14020df70(CInputStream* in)
     m_job = in->ReadInt32();
     m_level = in->ReadInt16();
     strPicture = in->ReadUnicodeStringA();
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020e130
@@ -457,8 +463,8 @@ void CClubMemberProxy::FUN_14020e130(const CClubMemberProxy& o)
     m_48 = o.m_48;
     m_50 = o.m_50;
     m_trophy.FUN_140267ea0(o.m_trophy);
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020e350
@@ -481,33 +487,33 @@ void CClubMemberProxy::FUN_14020e350(Unk_UserProxy* p)
     m_48 = p->m_a0;
     m_50 = p->m_a8;
     m_trophy.FUN_140267ea0(*reinterpret_cast<const Unk_GuildTriple*>(&p->m_d4));
-    FUN_14020e650(strName);
-    FUN_14020e740(strPicture);
+    SetName(strName);
+    SetPicture(strPicture);
 }
 
 // @0x14020e5d0
-CStringW CClubMemberProxy::FUN_14020e5d0()
+CStringW CClubMemberProxy::GetName()
 {
     Unk_UserProxyWriteLock g(m_lock, 1);
     return m_name;
 }
 
 // @0x14020e650
-void CClubMemberProxy::FUN_14020e650(CStringW strName)
+void CClubMemberProxy::SetName(CStringW strName)
 {
     Unk_UserProxyWriteLock g(m_lock, 1);
     m_name = strName;
 }
 
 // @0x14020e6c0
-CString CClubMemberProxy::FUN_14020e6c0()
+CString CClubMemberProxy::GetPicture()
 {
     Unk_UserProxyWriteLock g(m_lock, 1);
     return m_picture;
 }
 
 // @0x14020e740
-void CClubMemberProxy::FUN_14020e740(CString strPicture)
+void CClubMemberProxy::SetPicture(CString strPicture)
 {
     Unk_UserProxyWriteLock g(m_lock, 1);
     m_picture = strPicture;
@@ -518,20 +524,20 @@ void CClubMemberProxy::FUN_14020e740(CString strPicture)
 // @0x14020e7b0
 CClubMember::CClubMember()
 {
-    FUN_14020e890();
+    Reset();
 }
 
 // @0x14020e820
 CClubMember::~CClubMember()
 {
-    FUN_14020e890();
+    Reset();
 }
 
 // @0x14020e890
-void CClubMember::FUN_14020e890()
+void CClubMember::Reset()
 {
     m_18 = 0;
-    m_info.FUN_14020d380();
+    m_info.Reset();
     m_c8 = 0;
     m_cc = 0;
     m_d0 = 0;
@@ -559,17 +565,17 @@ void CClubMember::FUN_14020e950(CClubMember* o)
 // @0x14020ea20
 void CClubMember::FUN_14020ea20(COutputStream& out)
 {
-    FUN_14020eaa0(out);
+    Write(out);
 }
 
 // @0x14020ea50
-void CClubMember::FUN_14020ea50(CInPacket* packet)
+void CClubMember::ReadPacket(CInPacket* packet)
 {
-    FUN_14020eba0(packet);
+    Read(packet);
 }
 
 // @0x14020eaa0
-void CClubMember::FUN_14020eaa0(COutputStream& out)
+void CClubMember::Write(COutputStream& out)
 {
     out.WriteUInt8((unsigned char)m_c8);
     if (m_c8 == 2)
@@ -588,7 +594,7 @@ void CClubMember::FUN_14020eaa0(COutputStream& out)
 }
 
 // @0x14020eba0
-void CClubMember::FUN_14020eba0(CInputStream* in)
+void CClubMember::Read(CInputStream* in)
 {
     m_c8 = in->ReadUInt8();
     if (m_c8 == 2)
@@ -617,7 +623,7 @@ int CClubMember::FUN_14020eca0(Club::SaveMember* pSave)
     pSave->m_job = m_info.m_job;
     pSave->m_level = (unsigned short)m_info.m_level;
     pSave->m_mapId = m_info.m_mapId;
-    pSave->m_picture = (const char*)m_info.FUN_14020e6c0();
+    pSave->m_picture = (const char*)m_info.GetPicture();
     pSave->m_d8 = m_d8;
     FUN_14020edb0(0);
     return 1;
@@ -764,7 +770,7 @@ void CClub::SetCreationTime(__int64 n)
 }
 
 // @0x14020f380
-unsigned CClub::FUN_14020f380()
+unsigned CClub::GetMaxMemberCount()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -778,7 +784,7 @@ unsigned CClub::FUN_14020f380()
 }
 
 // @0x14020f3f0
-void CClub::FUN_14020f3f0(__int64 n)
+void CClub::SetNameChangeAvailableTime(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -791,7 +797,7 @@ void CClub::FUN_14020f3f0(__int64 n)
 }
 
 // @0x14020f460
-__int64 CClub::FUN_14020f460()
+__int64 CClub::GetNameChangeAvailableTime()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -805,7 +811,7 @@ __int64 CClub::FUN_14020f460()
 }
 
 // @0x14020f4e0
-void CClub::FUN_14020f4e0(int nState)
+void CClub::SetState(int nState)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -818,7 +824,7 @@ void CClub::FUN_14020f4e0(int nState)
 }
 
 // @0x14020f540
-unsigned CClub::FUN_14020f540()
+unsigned CClub::GetState()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -832,7 +838,7 @@ unsigned CClub::FUN_14020f540()
 }
 
 // @0x14020f5b0
-void CClub::FUN_14020f5b0(int nBuffId, int nBuffLevel)
+void CClub::SetBuff(int nBuffId, int nBuffLevel)
 {
     {
         if (Unk_LockGuard guard = m_lock)
@@ -849,7 +855,7 @@ void CClub::FUN_14020f5b0(int nBuffId, int nBuffLevel)
 }
 
 // @0x14020f640
-int CClub::FUN_14020f640()
+int CClub::GetBuffId()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -863,7 +869,7 @@ int CClub::FUN_14020f640()
 }
 
 // @0x14020f6b0
-unsigned CClub::FUN_14020f6b0()
+unsigned CClub::GetBuffLevel()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -877,7 +883,7 @@ unsigned CClub::FUN_14020f6b0()
 }
 
 // @0x14020f720
-void CClub::FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused)
+void CClub::SetLeaderInfo(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused)
 {
     {
         if (Unk_LockGuard guard = m_lock)
@@ -895,7 +901,7 @@ void CClub::FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW str
 }
 
 // @0x14020f7e0
-__int64 CClub::FUN_14020f7e0()
+__int64 CClub::GetLeaderAccountId()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -909,7 +915,7 @@ __int64 CClub::FUN_14020f7e0()
 }
 
 // @0x14020f850
-__int64 CClub::FUN_14020f850()
+__int64 CClub::GetLeaderCharacterId()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -923,7 +929,7 @@ __int64 CClub::FUN_14020f850()
 }
 
 // @0x14020f8c0
-CStringW CClub::FUN_14020f8c0()
+CStringW CClub::GetLeaderName()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1001,15 +1007,15 @@ void CClub::FUN_14020fb20(COutputStream& out)
     {
         out.WriteInt64(FUN_14020f0c0());
         out.WriteUnicodeString(FUN_14020f1a0());
-        out.WriteInt64(FUN_14020f7e0());
-        out.WriteInt64(FUN_14020f850());
-        out.WriteUnicodeString(FUN_14020f8c0());
+        out.WriteInt64(GetLeaderAccountId());
+        out.WriteInt64(GetLeaderCharacterId());
+        out.WriteUnicodeString(GetLeaderName());
         out.WriteInt64(m_creationTime);
         out.WriteUInt8((unsigned char)m_state);
-        out.WriteInt32(FUN_14020f640());
-        out.WriteInt32(FUN_14020f6b0());
+        out.WriteInt32(GetBuffId());
+        out.WriteInt32(GetBuffLevel());
         out.WriteInt64(m_90);
-        FUN_1402100e0(out);
+        WriteMembers(out);
     }
 }
 
@@ -1032,19 +1038,19 @@ void CClub::FUN_14020fd80(CInPacket& packet)
         int nBuffId = packet.ReadInt32();
         int nBuffLevel = packet.ReadInt32();
         __int64 n90 = packet.ReadInt64();
-        FUN_14020f4e0(nState);
+        SetState(nState);
         SetClubId(nId);
         FUN_14020f230(strName);
-        FUN_14020f720(nLeaderAccount, nLeaderCharacter, strLeader, 1);
+        SetLeaderInfo(nLeaderAccount, nLeaderCharacter, strLeader, 1);
         SetCreationTime(nCreated);
-        FUN_14020f5b0(nBuffId, nBuffLevel);
-        FUN_14020f3f0(n90);
-        FUN_1402101e0(packet);
+        SetBuff(nBuffId, nBuffLevel);
+        SetNameChangeAvailableTime(n90);
+        ReadMembers(packet);
     }
 }
 
 // @0x1402100e0
-void CClub::FUN_1402100e0(COutputStream& out)
+void CClub::WriteMembers(COutputStream& out)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1052,7 +1058,7 @@ void CClub::FUN_1402100e0(COutputStream& out)
     }
     else
     {
-        int nCount = FUN_140210df0();
+        int nCount = GetMemberCount();
         out.WriteUInt8((unsigned char)nCount);
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos))
         {
@@ -1063,7 +1069,7 @@ void CClub::FUN_1402100e0(COutputStream& out)
 }
 
 // @0x1402101e0
-void CClub::FUN_1402101e0(CInPacket& packet)
+void CClub::ReadMembers(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1075,7 +1081,7 @@ void CClub::FUN_1402101e0(CInPacket& packet)
         for (int i = 0; i < count; i++)
         {
             MS2Ptr<CClubMember> sp(new CClubMember);
-            sp->FUN_14020ea50(&packet);
+            sp->ReadPacket(&packet);
             vfunc_4(sp);
         }
     }
@@ -1094,7 +1100,7 @@ int CClub::vfunc_4(MS2Ptr<CClubMember> spMember)
     {
         if ((int)m_members.GetCount() >= 10)
             return 0;
-        m_members.SetAt(spMember->m_info.FUN_14020e5d0(), spMember);
+        m_members.SetAt(spMember->m_info.GetName(), spMember);
         if (m_leader == 0 && spMember->m_info.m_characterId == m_leaderCharacterId)
             m_leader = spMember;
         return 1;
@@ -1115,7 +1121,7 @@ void CClub::vfunc_5(CStringW strName)
 }
 
 // @0x140210560
-MS2Ptr<CClubMember> CClub::FUN_140210560(CStringW strName)
+MS2Ptr<CClubMember> CClub::FindMemberByName(CStringW strName)
 {
     MS2Ptr<CClubMember> sp(0);
     if (Unk_LockGuard guard = m_lock)
@@ -1130,7 +1136,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210560(CStringW strName)
 }
 
 // @0x140210630
-MS2Ptr<CClubMember> CClub::FUN_140210630(__int64 nId)
+MS2Ptr<CClubMember> CClub::FindMemberById(__int64 nId)
 {
     MS2Ptr<CClubMember> spFound(0);
     if (Unk_LockGuard guard = m_lock)
@@ -1153,7 +1159,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210630(__int64 nId)
 }
 
 // @0x1402107a0
-void CClub::FUN_1402107a0(const CStringW& strOldName, const CStringW& strNewName)
+void CClub::RenameMember(const CStringW& strOldName, const CStringW& strNewName)
 {
     MS2Ptr<CClubMember> sp(0);
     if (Unk_LockGuard guard = m_lock)
@@ -1165,7 +1171,7 @@ void CClub::FUN_1402107a0(const CStringW& strOldName, const CStringW& strNewName
         if (m_members.Lookup(strOldName, sp) == true)
         {
             m_members.RemoveKey(strOldName);
-            sp->m_info.FUN_14020e650(strNewName);
+            sp->m_info.SetName(strNewName);
             m_members.SetAt(strNewName, sp);
         }
     }
@@ -1190,7 +1196,7 @@ void CClub::FUN_1402108e0(ATL::CAtlArray<__int64>& ids)
 }
 
 // @0x1402109d0
-void CClub::FUN_1402109d0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
+void CClub::GetAllMembers(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1209,7 +1215,7 @@ void CClub::FUN_1402109d0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 }
 
 // @0x140210ad0
-void CClub::FUN_140210ad0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
+void CClub::GetDirtyMembers(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1270,7 +1276,7 @@ unsigned CClub::FUN_140210cf0()
 }
 
 // @0x140210df0
-int CClub::FUN_140210df0()
+int CClub::GetMemberCount()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1304,7 +1310,7 @@ int CClub::FUN_140210e70()
 }
 
 // @0x140210f70
-MS2Ptr<CClubMember> CClub::FUN_140210f70()
+MS2Ptr<CClubMember> CClub::GetLeader()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1318,7 +1324,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210f70()
 }
 
 // @0x140211000
-void CClub::FUN_140211000(MS2Ptr<CClubMember> spLeader)
+void CClub::SetLeaderMember(MS2Ptr<CClubMember> spLeader)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1331,7 +1337,7 @@ void CClub::FUN_140211000(MS2Ptr<CClubMember> spLeader)
 }
 
 // @0x140211080
-int CClub::FUN_140211080(CStringW strName)
+int CClub::IsLeaderName(CStringW strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1339,7 +1345,7 @@ int CClub::FUN_140211080(CStringW strName)
     }
     else
     {
-        MS2Ptr<CClubMember> sp = FUN_140210560(strName);
+        MS2Ptr<CClubMember> sp = FindMemberByName(strName);
         if (sp == 0)
             return 0;
         if (sp->m_info.m_characterId == m_leaderCharacterId)
@@ -1421,7 +1427,7 @@ int CClubDataTable::LoadClubBuff()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("clubBuff"); pNode != 0; pNode = pNode->FUN_140168650("clubBuff"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("clubBuff"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("clubBuff")))
     {
         BuffPtr sp(new ClubBuffData);
         sp->FUN_140211280(pNode);
@@ -1658,10 +1664,10 @@ MS2_REPLACE_METHOD(0x14020cce0, Club::UserClub, FUN_14020cce0, 171, 0x1D2D6638);
 MS2_REPLACE_METHOD(0x14020cda0, Club::UserClub, FUN_14020cda0, 169, 0xD83E39ED);
 MS2_REPLACE_METHOD(0x14020ce50, Club::UserClub, FUN_14020ce50, 355, 0x5318A284);
 MS2_REPLACE_METHOD(0x14020cfc0, Club::UserClub, FUN_14020cfc0, 427, 0xB8263F99);
-MS2_REPLACE_METHOD(0x14020d380, CClubMemberProxy, FUN_14020d380, 270, 0x7284E1A2);
+MS2_REPLACE_METHOD(0x14020d380, CClubMemberProxy, Reset, 270, 0x7284E1A2);
 MS2_REPLACE_METHOD(0x14020d4a0, CClubMemberProxy, FUN_14020d4a0, 217, 0xEE53AE2B);
-MS2_REPLACE_METHOD(0x14020d580, CClubMemberProxy, FUN_14020d580, 43, 0x5228BC05);
-MS2_REPLACE_METHOD(0x14020d5c0, CClubMemberProxy, FUN_14020d5c0, 61, 0x4CD742F6);
+MS2_REPLACE_METHOD(0x14020d580, CClubMemberProxy, WriteMapId, 43, 0x5228BC05);
+MS2_REPLACE_METHOD(0x14020d5c0, CClubMemberProxy, ReadMapId, 61, 0x4CD742F6);
 MS2_REPLACE_METHOD(0x14020d610, CClubMemberProxy, FUN_14020d610, 34, 0xEDF9DFF8);
 MS2_REPLACE_METHOD(0x14020d640, CClubMemberProxy, FUN_14020d640, 67, 0x531AF82C);
 MS2_REPLACE_METHOD(0x14020d690, CClubMemberProxy, FUN_14020d690, 204, 0x4CEE299F);
@@ -1672,16 +1678,16 @@ MS2_REPLACE_METHOD(0x14020de80, CClubMemberProxy, FUN_14020de80, 227, 0x5FE41701
 MS2_REPLACE_METHOD(0x14020df70, CClubMemberProxy, FUN_14020df70, 429, 0xF2A1C911);
 MS2_REPLACE_METHOD(0x14020e130, CClubMemberProxy, FUN_14020e130, 535, 0x8241E2B1);
 MS2_REPLACE_METHOD(0x14020e350, CClubMemberProxy, FUN_14020e350, 629, 0x59329419);
-MS2_REPLACE_METHOD(0x14020e5d0, CClubMemberProxy, FUN_14020e5d0, 116, 0xF3D7B713);
-MS2_REPLACE_METHOD(0x14020e650, CClubMemberProxy, FUN_14020e650, 105, 0x9E780C65);
-MS2_REPLACE_METHOD(0x14020e6c0, CClubMemberProxy, FUN_14020e6c0, 116, 0x033B5C7C);
-MS2_REPLACE_METHOD(0x14020e740, CClubMemberProxy, FUN_14020e740, 105, 0xBD91D60C);
-MS2_REPLACE_METHOD(0x14020e890, CClubMember, FUN_14020e890, 171, 0xB4B40855);
+MS2_REPLACE_METHOD(0x14020e5d0, CClubMemberProxy, GetName, 116, 0xF3D7B713);
+MS2_REPLACE_METHOD(0x14020e650, CClubMemberProxy, SetName, 105, 0x9E780C65);
+MS2_REPLACE_METHOD(0x14020e6c0, CClubMemberProxy, GetPicture, 116, 0x033B5C7C);
+MS2_REPLACE_METHOD(0x14020e740, CClubMemberProxy, SetPicture, 105, 0xBD91D60C);
+MS2_REPLACE_METHOD(0x14020e890, CClubMember, Reset, 171, 0xB4B40855);
 MS2_REPLACE_METHOD(0x14020e950, CClubMember, FUN_14020e950, 190, 0xDDB0C5F0);
 MS2_REPLACE_METHOD(0x14020ea20, CClubMember, FUN_14020ea20, 34, 0x04FC75E7);
-MS2_REPLACE_METHOD(0x14020ea50, CClubMember, FUN_14020ea50, 67, 0xD06EF7E8);
-MS2_REPLACE_METHOD(0x14020eaa0, CClubMember, FUN_14020eaa0, 245, 0xADC73256);
-MS2_REPLACE_METHOD(0x14020eba0, CClubMember, FUN_14020eba0, 249, 0x5D098D43);
+MS2_REPLACE_METHOD(0x14020ea50, CClubMember, ReadPacket, 67, 0xD06EF7E8);
+MS2_REPLACE_METHOD(0x14020eaa0, CClubMember, Write, 245, 0xADC73256);
+MS2_REPLACE_METHOD(0x14020eba0, CClubMember, Read, 249, 0x5D098D43);
 MS2_REPLACE_METHOD(0x14020eca0, CClubMember, FUN_14020eca0, 265, 0xA7ED6637);
 MS2_REPLACE_METHOD(0x14020edb0, CClubMember, FUN_14020edb0, 25, 0xC37424D3);
 MS2_REPLACE_METHOD(0x14020edd0, CClubMember, FUN_14020edd0, 17, 0xE3FAF62F);
@@ -1693,39 +1699,39 @@ MS2_REPLACE_METHOD(0x14020f1a0, CClub, FUN_14020f1a0, 137, 0x7E65C264);
 MS2_REPLACE_METHOD(0x14020f230, CClub, FUN_14020f230, 101, 0x8FDA9E25);
 MS2_REPLACE_METHOD(0x14020f2a0, CClub, GetCreationTime, 104, 0x4EE10C12);
 MS2_REPLACE_METHOD(0x14020f310, CClub, SetCreationTime, 91, 0x921AF091);
-MS2_REPLACE_METHOD(0x14020f380, CClub, FUN_14020f380, 101, 0x9DF0D68C);
-MS2_REPLACE_METHOD(0x14020f3f0, CClub, FUN_14020f3f0, 94, 0x9A43EB30);
-MS2_REPLACE_METHOD(0x14020f460, CClub, FUN_14020f460, 107, 0xAD41B767);
-MS2_REPLACE_METHOD(0x14020f4e0, CClub, FUN_14020f4e0, 88, 0xE462DA0C);
-MS2_REPLACE_METHOD(0x14020f540, CClub, FUN_14020f540, 101, 0x8753A277);
-MS2_REPLACE_METHOD(0x14020f5b0, CClub, FUN_14020f5b0, 126, 0xA8B2CCB9);
-MS2_REPLACE_METHOD(0x14020f640, CClub, FUN_14020f640, 101, 0xA3401D91);
-MS2_REPLACE_METHOD(0x14020f6b0, CClub, FUN_14020f6b0, 101, 0xB74E3800);
-MS2_REPLACE_METHOD(0x14020f720, CClub, FUN_14020f720, 172, 0xC453DD28);
-MS2_REPLACE_METHOD(0x14020f7e0, CClub, FUN_14020f7e0, 104, 0x6AA63B60);
-MS2_REPLACE_METHOD(0x14020f850, CClub, FUN_14020f850, 104, 0x92D7418F);
-MS2_REPLACE_METHOD(0x14020f8c0, CClub, FUN_14020f8c0, 137, 0xE324CAAA);
+MS2_REPLACE_METHOD(0x14020f380, CClub, GetMaxMemberCount, 101, 0x9DF0D68C);
+MS2_REPLACE_METHOD(0x14020f3f0, CClub, SetNameChangeAvailableTime, 94, 0x9A43EB30);
+MS2_REPLACE_METHOD(0x14020f460, CClub, GetNameChangeAvailableTime, 107, 0xAD41B767);
+MS2_REPLACE_METHOD(0x14020f4e0, CClub, SetState, 88, 0xE462DA0C);
+MS2_REPLACE_METHOD(0x14020f540, CClub, GetState, 101, 0x8753A277);
+MS2_REPLACE_METHOD(0x14020f5b0, CClub, SetBuff, 126, 0xA8B2CCB9);
+MS2_REPLACE_METHOD(0x14020f640, CClub, GetBuffId, 101, 0xA3401D91);
+MS2_REPLACE_METHOD(0x14020f6b0, CClub, GetBuffLevel, 101, 0xB74E3800);
+MS2_REPLACE_METHOD(0x14020f720, CClub, SetLeaderInfo, 172, 0xC453DD28);
+MS2_REPLACE_METHOD(0x14020f7e0, CClub, GetLeaderAccountId, 104, 0x6AA63B60);
+MS2_REPLACE_METHOD(0x14020f850, CClub, GetLeaderCharacterId, 104, 0x92D7418F);
+MS2_REPLACE_METHOD(0x14020f8c0, CClub, GetLeaderName, 137, 0xE324CAAA);
 MS2_REPLACE_METHOD(0x14020f950, CClub, FUN_14020f950, 104, 0x5D02D2F3);
 MS2_REPLACE_METHOD(0x14020f9c0, CClub, FUN_14020f9c0, 91, 0x1E9456D4);
 MS2_REPLACE_METHOD(0x14020fa30, CClub, FUN_14020fa30, 107, 0x8E973528);
 MS2_REPLACE_METHOD(0x14020fab0, CClub, FUN_14020fab0, 94, 0xFAB60467);
 MS2_REPLACE_METHOD(0x14020fb20, CClub, FUN_14020fb20, 601, 0x8013A294);
 MS2_REPLACE_METHOD(0x14020fd80, CClub, FUN_14020fd80, 843, 0x27E47F04);
-MS2_REPLACE_METHOD(0x1402100e0, CClub, FUN_1402100e0, 247, 0xA33DCD1F);
-MS2_REPLACE_METHOD(0x1402101e0, CClub, FUN_1402101e0, 344, 0xDDF15478);
-MS2_REPLACE_METHOD(0x140210560, CClub, FUN_140210560, 193, 0x4494E456);
-MS2_REPLACE_METHOD(0x140210630, CClub, FUN_140210630, 350, 0x56CA7577);
-MS2_REPLACE_METHOD(0x1402107a0, CClub, FUN_1402107a0, 299, 0x2D1F9475);
+MS2_REPLACE_METHOD(0x1402100e0, CClub, WriteMembers, 247, 0xA33DCD1F);
+MS2_REPLACE_METHOD(0x1402101e0, CClub, ReadMembers, 344, 0xDDF15478);
+MS2_REPLACE_METHOD(0x140210560, CClub, FindMemberByName, 193, 0x4494E456);
+MS2_REPLACE_METHOD(0x140210630, CClub, FindMemberById, 350, 0x56CA7577);
+MS2_REPLACE_METHOD(0x1402107a0, CClub, RenameMember, 299, 0x2D1F9475);
 MS2_REPLACE_METHOD(0x1402108e0, CClub, FUN_1402108e0, 232, 0x9C367E6C);
-MS2_REPLACE_METHOD(0x1402109d0, CClub, FUN_1402109d0, 238, 0x294EFCCD);
-MS2_REPLACE_METHOD(0x140210ad0, CClub, FUN_140210ad0, 261, 0xF499838B);
+MS2_REPLACE_METHOD(0x1402109d0, CClub, GetAllMembers, 238, 0x294EFCCD);
+MS2_REPLACE_METHOD(0x140210ad0, CClub, GetDirtyMembers, 261, 0xF499838B);
 MS2_REPLACE_METHOD(0x140210be0, CClub, FUN_140210be0, 257, 0x4FE9F893);
 MS2_REPLACE_METHOD(0x140210cf0, CClub, FUN_140210cf0, 245, 0xC66CEF69);
-MS2_REPLACE_METHOD(0x140210df0, CClub, FUN_140210df0, 112, 0x7B6C7A99);
+MS2_REPLACE_METHOD(0x140210df0, CClub, GetMemberCount, 112, 0x7B6C7A99);
 MS2_REPLACE_METHOD(0x140210e70, CClub, FUN_140210e70, 246, 0x5286CF04);
-MS2_REPLACE_METHOD(0x140210f70, CClub, FUN_140210f70, 138, 0x038BCF06);
-MS2_REPLACE_METHOD(0x140211000, CClub, FUN_140211000, 113, 0x3186B5D2);
-MS2_REPLACE_METHOD(0x140211080, CClub, FUN_140211080, 356, 0x330D17F1);
+MS2_REPLACE_METHOD(0x140210f70, CClub, GetLeader, 138, 0x038BCF06);
+MS2_REPLACE_METHOD(0x140211000, CClub, SetLeaderMember, 113, 0x3186B5D2);
+MS2_REPLACE_METHOD(0x140211080, CClub, IsLeaderName, 356, 0x330D17F1);
 MS2_REPLACE_METHOD(0x140211280, CClubDataTable::ClubBuffData, FUN_140211280, 106, 0x47549914);
 MS2_REPLACE_METHOD(0x1402113c0, CClubDataTable, FUN_1402113c0, 37, 0x66A38C51);
 MS2_REPLACE_METHOD(0x1402113f0, CClubDataTable, LoadClubBuff, 672, 0x5962A366);

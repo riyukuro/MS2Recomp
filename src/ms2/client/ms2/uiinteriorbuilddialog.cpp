@@ -72,7 +72,6 @@ public:
 
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);    // message box
 void FUN_14151f200();                                                   // close the current message box
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);             // string equals
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide to narrow
 CStringW BlockFormat(int nId);                                          // string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& arg);             // string table text with one argument
@@ -147,7 +146,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nAnswer == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();
-            if (FUN_1403b3c40(strTag, L"indoorSizeDifferent") || FUN_1403b3c40(strTag, L"indoorEmpty"))
+            if (operator==(strTag, L"indoorSizeDifferent") || operator==(strTag, L"indoorEmpty"))
             {
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
                 if (spItem == 0)

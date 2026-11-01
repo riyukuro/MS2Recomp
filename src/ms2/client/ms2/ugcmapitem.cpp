@@ -261,13 +261,13 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
             if (spNew.get() != 0)
             {
                 spNew->FUN_14052b130(nItemId, 1, 0);
-                spNew->FUN_140526a70(spItem->GetUid());
-                if (spNew->FUN_1405278d0() != 0)
+                spNew->SetItemUid(spItem->GetUid());
+                if (spNew->GetUgcInfo() != 0)
                 {
                     {
                         MS2Ptr<CUgcItemLook> spItemLook = spItem->GetLook();
                         if (spItemLook.get() != 0)
-                            ((class CUgcItemLook*)(class CUgcItemLook*)(&reinterpret_cast<CItemUgc*>(spNew->FUN_1405278d0())->m_look))->CopyFrom(spItemLook.get());
+                            ((class CUgcItemLook*)(class CUgcItemLook*)(&reinterpret_cast<CItemUgc*>(spNew->GetUgcInfo())->m_look))->CopyFrom(spItemLook.get());
                     }
                     out.Add(spNew);
                 }

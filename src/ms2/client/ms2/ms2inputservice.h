@@ -47,36 +47,36 @@ public:
     bool IsMouseButtonDown(int nButton);                    // mouse button is held
     bool WasMouseButtonPressed(int nButton);                    // mouse button was pressed
     bool WasMouseButtonReleased(int nButton);                    // mouse button was released
-    bool FUN_140d8b130(int* pnX, int* pnY, int* pnZ);   // mouse movement deltas
-    bool FUN_140d8b200(int nKey);                       // inject a press
+    bool GetMouseDelta(int* pnX, int* pnY, int* pnZ);   // mouse movement deltas
+    bool InjectKeyPress(int nKey);                       // inject a press
     bool InjectKeyRelease(int nKey);                       // inject a release
     static int FUN_140d8b290(int nKey);                 // keyboard code of a key id (0 if not a keyboard key)
     static int FUN_140d8b2c0(int nKey);                 // mouse button of a key id (-1 if not a mouse button)
     static int FUN_140d8b300(int nKey);                      // gamepad button of a key id (-1 if none)
     bool FUN_140d8b360() const;                         // always true
     bool FUN_140d8b370() const;                         // a keyboard key is held or a gamepad is present
-    void FUN_140d8b3e0(double dSeconds);                // rumble for the given time
-    void FUN_140d8b470();                               // start rumbling
-    void FUN_140d8b560(bool bQuickStop);                // stop rumbling
-    int FUN_140d8b600(int nKey);                        // modifier group (both held) test: down
+    void StartRumbleFor(double dSeconds);                // rumble for the given time
+    void StartRumble();                               // start rumbling
+    void StopRumble(bool bQuickStop);                // stop rumbling
+    int IsComboKeyDown(int nKey);                        // modifier group (both held) test: down
     int FUN_140d8b6a0(int nKey);                        // modifier group test: pressed
     int FUN_140d8b740(int nKey);                        // modifier group test: released
-    bool FUN_140d8b7e0(int nKey);                       // modifier group inject press
-    bool FUN_140d8b870(int nKey);                       // modifier group inject release
-    void FUN_140d8b900(bool bEnable, bool bNotify);     // enable / disable gamepad input
-    void FUN_140d8bd00();                               // toggle gamepad cursor mode
+    bool InjectComboKeyPress(int nKey);                       // modifier group inject press
+    bool InjectComboKeyRelease(int nKey);                       // modifier group inject release
+    void SetGamePadEnabled(bool bEnable, bool bNotify);     // enable / disable gamepad input
+    void ToggleCursorMode();                               // toggle gamepad cursor mode
     float FUN_140d8bde0();                              // cursor speed x
     float FUN_140d8be10();                         // cursor speed y
     void FUN_140d8be40();                               // find a gamepad
     int FUN_140d8c0a0(__int64 nSetting);   // gamepad button for a key setting
     int FUN_140d8c150(int nKey);                        // remap a gamepad key id for the dual layout
-    void FUN_140d8c230();                               // rumble timer update
+    void UpdateRumble();                               // rumble timer update
     Vector3 FUN_140d8c2f0();                           // gamepad left stick as a direction
     int FUN_140d8c450();                                // left stick Y percent
     int FUN_140d8c4d0();                                // left stick X percent
     bool FUN_140d8c550();                               // stick changed direction
     int FUN_140d8c660();                                // pad kind (3 folds into 1)
-    CStringW FUN_140d8c690();                           // layout name
+    CStringW GetPadKindName();                           // layout name
     CStringW FUN_140d8c750();           // layout display text
     bool FUN_140d8c8d0(int nResult, const CMsgBoxData& data);   // message box callback: resume the input system
     bool FUN_140d8c920(int nKey);                       // key is held

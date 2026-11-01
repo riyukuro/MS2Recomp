@@ -23,6 +23,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -42,7 +43,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
+
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
@@ -164,11 +165,11 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     Unk_EnchantItemPtr item = FUN_14053f870(nItemId);
     if (item.FUN_1402ffd90())
         return 0;
-    if (item.FUN_1401b52a0()->m_strFunction != L"EnchantScroll")
+    if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_strFunction != L"EnchantScroll")
         return 0;
-    if (item.FUN_1401b52a0()->m_params.FUN_1408d2380() == 0)
+    if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params.FUN_1408d2380() == 0)
         return 0;
-    m_nScrollId = item.FUN_1401b52a0()->m_params.FUN_1408d1f60(0, 0);
+    m_nScrollId = reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params.FUN_1408d1f60(0, 0);
     CEnchantScrollTable::ScrollPtr scroll = CEnchantScrollTable::GetInstance()->FindScroll(m_nScrollId);
     if (scroll.IsNull())
         return 0;
@@ -205,7 +206,7 @@ CString CEnchantScrollRecipe::GetRewardName()
     Unk_EnchantItemPtr item = FUN_14053f870(m_scroll.vfunc_o18_0());
     if (item.FUN_1402ffd90())
         return CString("");
-    return item.FUN_1401b52a0()->FUN_14053fdd0();
+    return reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053fdd0();
 }
 
 // @0x14034dcb0
@@ -237,7 +238,7 @@ int CEnchantScrollTable::LoadScrolls()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -264,7 +265,7 @@ int CEnchantScrollTable::LoadRecipes()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

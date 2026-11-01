@@ -13,6 +13,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <typeinfo>
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -20,7 +27,7 @@ class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();
@@ -75,14 +82,14 @@ bool CIndividualArenaDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
     std::auto_ptr<IndividualArenaStringMap> strings = MakeIndividualArenaStringMap();
     if (strings.get() == 0)
         return false;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("individualArena"); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("individualArena")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("individualArena")); pNode != 0;
+         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("individualArena"))))
     {
         int nType = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "arenaType", nType);
@@ -91,7 +98,7 @@ bool CIndividualArenaDataTable::Load()
         DataPtr data(MS2SvrNewTag(0));
         XmlGetAttr((class TiXmlElement*)(pNode), "arenaType", data->m_nArenaType);
         CStringW strName;
-        FUN_140873420(pNode, "arenaName", strName);
+        XmlGetAttr((class TiXmlElement*)(pNode), "arenaName", strName);
         const IndividualArenaStringMap::CPair* pName = strings->Lookup(strName);
         if (pName == 0)
         {
@@ -100,7 +107,7 @@ bool CIndividualArenaDataTable::Load()
         }
         data->m_nNameId = pName->m_value;
         CStringW strDetail;
-        FUN_140873420(pNode, "arenaDetail", strDetail);
+        XmlGetAttr((class TiXmlElement*)(pNode), "arenaDetail", strDetail);
         const IndividualArenaStringMap::CPair* pDetail = strings->Lookup(strDetail);
         if (pDetail == 0)
         {
@@ -108,7 +115,7 @@ bool CIndividualArenaDataTable::Load()
             return false;
         }
         data->m_nDetailId = pDetail->m_value;
-        FUN_1408733e0(pNode, "bannerPath", data->m_strBannerPath);
+        XmlGetAttr((class TiXmlElement*)(pNode), "bannerPath", data->m_strBannerPath);
         XmlGetAttr((class TiXmlElement*)(pNode), "fieldID", data->m_nFieldID);
         XmlGetAttr((class TiXmlElement*)(pNode), "playerCount", data->m_nPlayerCount);
         XmlGetAttr((class TiXmlElement*)(pNode), "rewardItemId1", data->m_nRewardItemId1);

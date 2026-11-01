@@ -36,7 +36,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // The key input state (singleton).
-class Unk_14025e7c0 : public CInputKeyHandler { public: bool FUN_14116d9c0(int nKey, int a, int b);};
+class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The player manager (singleton): the local player.
@@ -186,7 +186,7 @@ void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
             ASObj row(2);
             row.FUN_1407cbb20("code", strId);
             row.FUN_1407cbb20("field", strName);
-            ((ASScrollingList*)list)->FUN_1422dd230(row);
+            ((ASScrollingList*)list)->AddItem(row);
         }
     }
     ((ASScrollingList*)list)->vfunc_24(true);

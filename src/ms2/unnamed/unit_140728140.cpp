@@ -20,6 +20,8 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // return types of the getters this unit calls
@@ -29,7 +31,7 @@ class CFileSystem;
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const unsigned& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -41,9 +43,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
-void FUN_14015f050(const CStringA& str, ATL::CAtlArray<CStringA>* pOut, const char* pszSep);   // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned int>& rOut, const wchar_t* pszSep);          // split into ints
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
 
@@ -109,7 +111,7 @@ bool CPetData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "tamingGroupID", m_nTamingGroupId);
     XmlGetAttr((class TiXmlElement*)(pNode), "enablePetExtraction", m_bEnablePetExtraction);
     XmlGetAttr((class TiXmlElement*)(pNode), "itemIDs", m_nItemIds);
-    FUN_14015f050(FUN_14015f710(pNode, "tamingAiPresets", CString("")), &m_tamingAiPresets, ",");
+    Unk_SplitA(const_cast<CStringA&>(Unk_ReadString((class Unk_XmlNode*)(pNode), "tamingAiPresets", CString(""))), (ATL::CAtlArray<CStringA>*)(&m_tamingAiPresets), ",");
     unsigned int nSkillId = 0;
     unsigned short nSkillLevel = 0;
     XmlGetAttr((class TiXmlElement*)(pNode), "passiveSkillId", nSkillId);
@@ -124,8 +126,8 @@ bool CPetData::Load(Unk_140165cf0* pNode)
     {
         CStringW strIds;
         CStringW strLevels;
-        FUN_140873420(pNode, "additionalEffectID", strIds);
-        FUN_140873420(pNode, "additionalEffectLevel", strLevels);
+        XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectID", strIds);
+        XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectLevel", strLevels);
         std::vector<unsigned int> ids;
         std::vector<unsigned short> levels;
         FUN_1402929a0(strIds, ids, L",");
@@ -179,7 +181,7 @@ bool CPetDataTable::LoadProperties()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     Unk_1401b4ec0 lock(m_lock, 1);
@@ -187,7 +189,7 @@ bool CPetDataTable::LoadProperties()
     m_pets.RemoveAll();
     m_petsByKfm.RemoveAll();
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "pets", "code", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "pets", "code", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];
@@ -209,7 +211,7 @@ bool CPetDataTable::LoadProperties()
             {
                 if (Contains(spNpc->m_model.m_strKfm))
                 {
-                    FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다IsPetKFM failed. {0}]",
+                    Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다IsPetKFM failed. {0}]",
                                   spNpc->m_model.m_strKfm);
                     return false;
                 }

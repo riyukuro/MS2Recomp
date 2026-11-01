@@ -16,6 +16,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -135,19 +144,19 @@ int CSkillSetTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("skillSet"); pNode != 0; pNode = pNode->FUN_140168650("skillSet"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("skillSet")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("skillSet")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CSkillSetPtr spSet(new CSkillSet);
-        FUN_140873220(pNode, "id", spSet->m_nId);
-        FUN_1408731e0(pNode, "version", spSet->m_nVersion);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", spSet->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "version", reinterpret_cast<int&>(spSet->m_nVersion));
         XmlGetBool((class TiXmlElement*)(pNode), "slotLock", spSet->m_nSlotLock);
-        CString strSkillIds = FUN_14015f710(pNode, "skillIDs", CString(""));
-        CString strSkillLevels = FUN_14015f710(pNode, "skillLevels", CString(""));
-        CString strLearnIds = FUN_14015f710(pNode, "learnSkillIDs", CString(""));
-        CString strLearnLevels = FUN_14015f710(pNode, "learnSkillLevels", CString(""));
-        CString strItemIds = FUN_14015f710(pNode, "itemIDs", CString(""));
+        CString strSkillIds = Unk_ReadString((class Unk_XmlNode*)(pNode), "skillIDs", CString(""));
+        CString strSkillLevels = Unk_ReadString((class Unk_XmlNode*)(pNode), "skillLevels", CString(""));
+        CString strLearnIds = Unk_ReadString((class Unk_XmlNode*)(pNode), "learnSkillIDs", CString(""));
+        CString strLearnLevels = Unk_ReadString((class Unk_XmlNode*)(pNode), "learnSkillLevels", CString(""));
+        CString strItemIds = Unk_ReadString((class Unk_XmlNode*)(pNode), "itemIDs", CString(""));
         XmlSplit(strSkillIds, spSet->m_arrSkillIds, ",");
         XmlSplit(strSkillLevels, spSet->m_arrSkillLevels, ",");
         XmlSplit(strLearnIds, spSet->m_arrLearnSkillIds, ",");

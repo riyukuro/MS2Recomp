@@ -38,7 +38,6 @@ public:
     int FUN_140ee4b00();                                                    // selected day tab + 1, -1 when unbound
     int FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext);               // elapsed days, at most 6
     void FUN_140ee4ca0();                                                   // setTabCount per day
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);              // text field child lookup
     MS2Ptr<Unk_TrList> FUN_140c02900(const CString& strName);               // list child lookup
     MS2Ptr<Unk_TrTab> FUN_140c02870(const CString& strName);                // tab strip child lookup
 

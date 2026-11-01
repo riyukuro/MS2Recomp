@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // return types of the getters this unit calls
 class CUIService;
@@ -101,7 +102,7 @@ CGuideConditionInput::CGuideConditionInput()
 void CGuideConditionInput::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_140873220(pElem, "tick", m_nTick);
+    XmlGetAttr((class TiXmlElement*)(pElem), "tick", m_nTick);
 }
 MS2_REPLACE_METHOD(0x1413A6670, CGuideConditionInput, vfunc_2, 63, 0x3E7F60A9);
 

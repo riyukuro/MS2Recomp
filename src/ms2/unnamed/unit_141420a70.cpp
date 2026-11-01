@@ -91,7 +91,7 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
     }
     else if (pData->FUN_14053d510())
     {
-        if (pData->FUN_14053cf90())
+        if (pData->HasSkinType())
         {
             Unk_CustomizeHandle a4 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655c90(4);
             Unk_CustomizeHandle a5 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655c90(5);

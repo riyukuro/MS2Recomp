@@ -33,7 +33,7 @@ public:
     // Opens the dialog for one page: rooms = the dungeon ids of its group, pSelected = the ids ticked so far.
     void FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);   // 0x140e27ed0
     void FUN_140e27f80();                                       // title and the "recommended" radio
-    void FUN_140e28100();                                       // the list's row count
+    void UpdateListCount();                                       // the list's row count
     void FUN_140e28170(const Scaleform::GFx::FunctionHandler::Params& params);   // the radio was clicked: select all
     void FUN_140e281f0(const Scaleform::GFx::FunctionHandler::Params& params);   // OK
     void FUN_140e28280(const Scaleform::GFx::FunctionHandler::Params& params);   // a row was filled

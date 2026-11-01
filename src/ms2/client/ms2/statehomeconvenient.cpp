@@ -5,6 +5,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statehomeconvenientdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <new>
 #include <stdlib.h>
@@ -24,7 +25,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // The state-sync record (Unk_StateArg22 in statemanager.h) as StateData slots 1/2 see it: +0x70 carries the kind.
 class Unk_StateDataArg
@@ -91,7 +92,8 @@ class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoCutscene* GetInstance();
 };
-class Unk_HcBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_HcBuffMgr { public: };
 // the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
 class Unk_HcSlots
 {
@@ -340,7 +342,7 @@ void StateHomeConvenient::vfunc_8(double fTime)
     if (!pPC)
         return;
     Unk_HcBuffMgr* pMgr = ((class Unk_HcBuffMgr*)((class PCBase*)(class PCBase*)(pPC))->FUN_14166d240());
-    reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
+    reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
     if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else

@@ -31,11 +31,11 @@ CPartyMember::~CPartyMember()
 }
 
 // @0x141637a40
-void CPartyMember::FUN_141637a40(bool bOffline)
+void CPartyMember::SetOffline(bool bOffline)
 {
     offline = bOffline;
 }
-MS2_REPLACE_METHOD(0x141637A40, CPartyMember, FUN_141637a40, 23, 0x5185E109);
+MS2_REPLACE_METHOD(0x141637A40, CPartyMember, SetOffline, 23, 0x5185E109);
 
 // @0x141637a60
 void CPartyMember::FUN_141637a60(short nValue)
@@ -62,18 +62,18 @@ void CPartyMember::FUN_141637ad0(int nValue)
 MS2_REPLACE_METHOD(0x141637AD0, CPartyMember, FUN_141637ad0, 22, 0x5E3B67AF);
 
 // @0x141637af0
-void CPartyMember::FUN_141637af0(int nValue)
+void CPartyMember::SetLeader(int nValue)
 {
     leader = nValue;
 }
-MS2_REPLACE_METHOD(0x141637AF0, CPartyMember, FUN_141637af0, 22, 0xF6E32213);
+MS2_REPLACE_METHOD(0x141637AF0, CPartyMember, SetLeader, 22, 0xF6E32213);
 
 // @0x141637b10
-void CPartyMember::FUN_141637b10(int nValue)
+void CPartyMember::SetRole(int nValue)
 {
     role = nValue;
 }
-MS2_REPLACE_METHOD(0x141637B10, CPartyMember, FUN_141637b10, 22, 0x6E748507);
+MS2_REPLACE_METHOD(0x141637B10, CPartyMember, SetRole, 22, 0x6E748507);
 
 // @0x141637b30
 void CPartyMember::FUN_141637b30(int nValue)
@@ -83,11 +83,11 @@ void CPartyMember::FUN_141637b30(int nValue)
 MS2_REPLACE_METHOD(0x141637B30, CPartyMember, FUN_141637b30, 25, 0x0BE2A528);
 
 // @0x141637b50
-void CPartyMember::FUN_141637b50(const Unk_PartyCounters* pCounters)
+void CPartyMember::SetCounters(const Unk_PartyCounters* pCounters)
 {
     ((class Unk_LockedIntMap*)(struct Unk_PartyCounters*)(&counters))->Assign((class Unk_LockedIntMap*)(pCounters));
 }
-MS2_REPLACE_METHOD(0x141637B50, CPartyMember, FUN_141637b50, 43, 0x0B77F2C1);
+MS2_REPLACE_METHOD(0x141637B50, CPartyMember, SetCounters, 43, 0x0B77F2C1);
 
 // @0x141637b90
 __int64 FUN_141637b90(CPartyMember* pMember)

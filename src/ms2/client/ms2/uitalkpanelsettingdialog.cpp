@@ -20,6 +20,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uimessenger.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- statics (init order: the shared header's sort type names, then the file's key input controller) ----
 
@@ -47,7 +50,6 @@ public:
     void FUN_1422e0a60(const CString& strText);             // set the text (narrow)
     void FUN_1422e0ab0(const CStringW& strText);            // set the text
     void FUN_1422e1500(int nBegin, int nEnd);               // select a range
-    CStringW FUN_1422e0b00();                               // the text
     int FUN_1422c76c0();                                    // has focus
 };
 // "m_entire": the "all tabs share one look" check.
@@ -67,14 +69,12 @@ public:
 class Unk_TpsRadio : public AScript
 {
 public:
-    void FUN_1422ce090(int bChecked);
     bool FUN_1422ce0e0();
 };
 // "m_apply": the apply button.
-class Unk_TpsButton : public ASDisplayObject
+class Unk_TpsButton : public ASMovieClip
 {
 public:
-    void FUN_1422c1fe0(unsigned int bEnabled);
     void FUN_1422c7730(int bEnabled);
 };
 // The root clip's child lookups by name (one COMDAT per wrapper class).
@@ -144,7 +144,7 @@ struct Unk_TpsReqValue
 MS2_CHECK_SIZE(Unk_TpsReqValue, 0x20);
 
 CFeatureManager* FUN_140166410();
-class Unk_TpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_TpsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CommonString* FUN_14025e7d0();
 CStringW BlockFormat(int nStringId);
@@ -352,7 +352,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
 CStringW UITalkPanelSettingDialog::FUN_141b23550()
 {
     if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
-        return spTab->FUN_1422e0b00();
+        return reinterpret_cast<ASTextInput*>(spTab.operator->())->GetText();
     return L"";
 }
 
@@ -486,9 +486,9 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
     if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow"))
-        sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
+        reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
     if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageHide"))
-        sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
+        reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_subjectAll", pSetting->FUN_141482200()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_social", pSetting->FUN_141482200()->m_nSocial);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_party", pSetting->FUN_141482200()->m_nParty);

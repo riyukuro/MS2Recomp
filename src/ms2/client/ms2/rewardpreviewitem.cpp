@@ -32,6 +32,12 @@
 // The statics of the common header (the sort names, "skill", "stun" and the condition map).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -41,7 +47,7 @@ void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140c09130(Unk_140165cf0* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
 CString FUN_14016a5c0(const char* pszName, int nFlags);                // undecorated class name
 CString FUN_14016a600(const wchar_t* psz, int nFlags);                  // wide -> multibyte
@@ -120,19 +126,19 @@ bool RewardPreviewItem::Compare(MS2Ptr<RewardPreviewItem> spA, MS2Ptr<RewardPrev
         return false;
     if (spA->GetItemTag() != spB->GetItemTag())
         return spA->GetItemTag() > spB->GetItemTag();
-    int nRankA = spDataA->FUN_14053c5a0();
-    int nRankB = spDataB->FUN_14053c5a0();
+    int nRankA = spDataA->GetRank();
+    int nRankB = spDataB->GetRank();
     if (nRankA == 0)
         nRankA = spA->m_item.vfunc_o18_1();
     if (nRankB == 0)
         nRankB = spB->m_item.vfunc_o18_1();
     if (nRankA != nRankB)
         return nRankA > nRankB;
-    if (spDataA->FUN_14053c5c0() != spDataB->FUN_14053c5c0())
-        return spDataA->FUN_14053c5c0() < spDataB->FUN_14053c5c0();
-    if (spDataA->FUN_14053c5c0() == 1 && spDataA->FUN_14053c5e0() != spDataB->FUN_14053c5e0())
-        return spDataA->FUN_14053c5e0() > spDataB->FUN_14053c5e0();
-    return (unsigned)spDataA->FUN_14053c510() < (unsigned)spDataB->FUN_14053c510();
+    if (spDataA->GetType() != spDataB->GetType())
+        return spDataA->GetType() < spDataB->GetType();
+    if (spDataA->GetType() == 1 && spDataA->GetSubtype() != spDataB->GetSubtype())
+        return spDataA->GetSubtype() > spDataB->GetSubtype();
+    return (unsigned)spDataA->GetItemId() < (unsigned)spDataB->GetItemId();
 }
 MS2_REPLACE(0x140DC3140, RewardPreviewItem::Compare, 1249, 0x17710CF3);
 
@@ -171,8 +177,8 @@ RewardPreviewInfo::RewardPreviewInfo()
 // @0x140dc37b0
 void RewardPreviewInfo::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_id);
-    for (Unk_140165cf0* pNode = pElem->FUN_140165cf0("item"); pNode != 0; pNode = pNode->FUN_140168650("item"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
+    for (Unk_140165cf0* pNode = pElem->FUN_140165cf0("item"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
         if (!FUN_14028f710(pNode))
             continue;
@@ -389,10 +395,10 @@ bool CRewardPreviewTable::LoadBoss()
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = pNode->FUN_140168650("preview"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         unsigned nId = 0;
-        if (FUN_140873220(pNode, "id", nId) != 0)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId)) != 0)
             continue;
         MS2Ptr<RewardPreviewInfo> spInfo(new RewardPreviewInfo);
         spInfo->Load(pNode);
@@ -415,10 +421,10 @@ bool CRewardPreviewTable::LoadDungeon()
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = pNode->FUN_140168650("preview"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         int nId;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         if (nId == 0)
             continue;
         MS2Ptr<RewardPreviewInfo> spInfo(new RewardPreviewInfo);

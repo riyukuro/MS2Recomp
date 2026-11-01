@@ -62,8 +62,7 @@
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 int FUN_140768010(int, int);   // C3: was FUN_140768010
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
-void FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
+int FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
 void FUN_140710590(COutPacket& packet);                             // send
 
 // ---- statics (the .text$di part) -------------------------------------------------------------------------------------
@@ -81,7 +80,7 @@ UITriggerTimerDialog* FindTimerDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UITriggerTimerDialog*>((UIObject*)p);
     }
@@ -163,7 +162,7 @@ void UITypingGameDialog::vfunc_67()
 void UITypingGameDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     FUN_140ee5a20();
 }
@@ -172,7 +171,7 @@ void UITypingGameDialog::OnLoadComplete()
 void UITypingGameDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (!m_bPlaying)
         return;
@@ -205,7 +204,7 @@ int UITypingGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 // @0x140ee5a20
 void UITypingGameDialog::FUN_140ee5a20()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     ASArray kSequence(2);
     for (unsigned i = 0; i < (unsigned)m_nCount; i++)
@@ -222,7 +221,7 @@ void UITypingGameDialog::FUN_140ee5a20()
 // @0x140ee5ba0
 void UITypingGameDialog::OnShowNumberComplete()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     m_timer.FUN_140868750(m_nLimitMs);
     FUN_140ee6190(m_nLimitMs);
@@ -232,7 +231,7 @@ void UITypingGameDialog::OnShowNumberComplete()
 // @0x140ee5c10
 void UITypingGameDialog::FUN_140ee5c10()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     if (m_answer.size() <= m_nIndex)
     {
@@ -344,7 +343,7 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
     }
     else
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e95);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e95);
     }
 }
 

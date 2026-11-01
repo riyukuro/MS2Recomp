@@ -67,7 +67,7 @@ void CFieldMaidManager::OnPacket(CInPacket* pPacket)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
         spMaid->SetMode(pPacket->ReadUInt8());
-        spMaid->FUN_14067d730(pPacket);
+        spMaid->ReadFromPacket(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
     else if (cMode == 1)
@@ -111,7 +111,7 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
         {
             MS2Ptr<CMaid> spMaid(new CMaid);
             spMaid->SetMode(pPacket->ReadUInt8());
-            spMaid->FUN_14067d730(pPacket);
+            spMaid->ReadFromPacket(pPacket);
             m_mapMaid.SetAt(spMaid->m_nId, spMaid);
         }
     }
@@ -119,14 +119,14 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
         spMaid->SetMode(pPacket->ReadUInt8());
-        spMaid->FUN_14067d730(pPacket);
+        spMaid->ReadFromPacket(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
     else if (cMode == 3)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
         spMaid->SetMode(pPacket->ReadUInt8());
-        spMaid->FUN_14067d730(pPacket);
+        spMaid->ReadFromPacket(pPacket);
         int bNewer = 0;
         {
             MS2Ptr<CMaid> spOld = GetMaid(spMaid->m_nId);

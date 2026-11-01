@@ -61,6 +61,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local views of exe objects ----
 
@@ -118,13 +119,13 @@ UIItemPetStudyDialog::UIItemPetStudyDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    ((class Unk_PsPackets*)FUN_140bccd50())->FUN_140da5180(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54cd0
 UIItemPetStudyDialog::~UIItemPetStudyDialog()
 {
-    ((class Unk_PsPackets*)FUN_140bccd50())->FUN_140da51e0(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54df0
@@ -170,7 +171,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
-        if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635100() != 0)
+        if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBindingRule() != 0)
         {
             if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635120() == 0)
             {
@@ -178,7 +179,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strStudyBindPet));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a01600(m_spPet->FUN_140526a50());
+                    box->FUN_141a01600(m_spPet->GetItemUid());
                     box->FUN_141a01ee0(m_spPet, m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->FUN_141a01700(0x477, 0x478, 0);
                     FUN_140d73c60(box);
@@ -236,7 +237,7 @@ void UIItemPetStudyDialog::FUN_140e558d0()
         return;
     if (m_spBox == 0 || m_spPet == 0)
         return;
-    __int64 nUid = m_spPet->FUN_140526a50();
+    __int64 nUid = m_spPet->GetItemUid();
     g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
 }
 
@@ -256,13 +257,13 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
         return 0;
     if (spPet == 0)
         return 0;
-    if (spPet->FUN_140525640() == 0)
+    if (spPet->IsPetItem() == 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PsPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
+    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PsPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -281,7 +282,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spPet->FUN_1405279c0()->FUN_140620f40(m_spBox->FUN_1405276c0()) != 0)
+    if (spPet->FUN_1405279c0()->HasGemId(m_spBox->FUN_1405276c0()) != 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_already_option"), 1, 0);
@@ -325,7 +326,7 @@ void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
             CStringW strName = spPet->FUN_140528160();
             ASObj obj(2);
             obj.FUN_1407cbb20("petName", CStringW(strName));
-            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
+            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
             m_30->Invoke("selectPet", obj.FUN_1422bb870());
         }
     }

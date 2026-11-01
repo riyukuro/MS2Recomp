@@ -48,7 +48,7 @@ public:
 };
 Unk_PxGameCtx* FUN_1403ed2d0();
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // The feature switches (FUN_140166410 returns the manager).
 class Unk_PxFeatures { public: bool FUN_14036d570(int nFeature); };
@@ -61,7 +61,7 @@ public:
     void FUN_141999f60();
     void FUN_141999e00();
 };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -244,13 +244,13 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
     {
         __int64 nUidPet = static_cast<CInPacket*>(pPacket)->ReadInt64();
         __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
-        MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(nUidPet);
+        MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(nUidPet);
         if (spPet.IsNull())
             break;
-        MS2Ptr<CItem> spResult = DAT_143ab2a90.FUN_140a5d680(nUidResult);
+        MS2Ptr<CItem> spResult = g_143ab2a90.FUN_140a5d680(nUidResult);
         if (spResult.IsNull())
             break;
-        CItemGem* pGem = spResult->FUN_140527900();
+        CItemGem* pGem = spResult->GetGem();
         if (pGem == 0)
             break;
         MS2Ptr<CGemBase> spGem = pGem->GetGem();
@@ -283,10 +283,10 @@ bool UIPetExtractionScrollDialog::FUN_140e71880(int nResult, const CMsgBoxData& 
 {
     if (nResult != 0)
         return true;
-    MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if (spScroll.IsNull())
         return true;
-    DAT_143ab2a90.FUN_140a63880(spScroll.get(), FUN_1406c6bd0(L"{0}", m_nTargetUid));
+    g_143ab2a90.FUN_140a63880(spScroll.get(), FUN_1406c6bd0(L"{0}", m_nTargetUid));
     return true;
 }
 
@@ -335,12 +335,12 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (spPet == 0)
         return;
-    if (spPet->FUN_140525640() == 0)                    // not a pet
+    if (spPet->IsPetItem() == 0)                    // not a pet
         return;
-    int nPetId = spPet->FUN_140527840()->FUN_14053dc60();
+    int nPetId = spPet->FUN_140527840()->GetPetId();
     MS2Ptr<CPetData> spPetData = FUN_14052d210()->Find(nPetId);
     if (spPetData.IsNull())
         return;
@@ -358,10 +358,10 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         return;
     if (spResult->FUN_140525a30() == 0)                 // not a gem
         return;
-    CItemGem* pGem = spResult->FUN_140527900();
+    CItemGem* pGem = spResult->GetGem();
     if (pGem == 0)
         return;
-    pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
+    pGem->CreateGem(spData->FUN_14053e900(), spData->FUN_14053c650());
     MS2Ptr<CGemBase> spGem = pGem->GetGem();
     if (spGem.IsNull())
         return;
@@ -371,10 +371,10 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pSkin == 0)
         return;
     pSkin->m_nPetId = nPetId;
-    unsigned nSockets = FUN_14052d200()->FUN_14062d4b0(spData->property.socketDataId, spResult->FUN_140526bd0(), spResult->FUN_140527840());
+    unsigned nSockets = FUN_14052d200()->GetMaxSocketCount(spData->property.socketDataId, spResult->FUN_140526bd0(), spResult->FUN_140527840());
     CItemSocket* pSocket = spResult->FUN_1405279c0();
     if (pSocket != 0)
-        pSocket->FUN_140620840(nSockets, 0);
+        pSocket->InitSlots(nSockets, 0);
     m_nTargetUid = nItemUid;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
@@ -398,7 +398,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 // @0x140e72860
 void UIPetExtractionScrollDialog::FUN_140e72860(__int64 nScrollUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nScrollUid);
     if (spItem == 0)
         return;
     m_nScrollUid = nScrollUid;
@@ -407,7 +407,7 @@ void UIPetExtractionScrollDialog::FUN_140e72860(__int64 nScrollUid)
 // @0x140e728e0
 void UIPetExtractionScrollDialog::FUN_140e728e0()
 {
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         pInv->FUN_141999f60();
@@ -418,7 +418,7 @@ void UIPetExtractionScrollDialog::FUN_140e728e0()
 // @0x140e72920
 void UIPetExtractionScrollDialog::OnOk()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(

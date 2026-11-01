@@ -68,7 +68,7 @@
 ?AddRef@?$Unk_14102fe10@VUnk_140bfc2e0@@@@AEBAXXZ	140bfc790	func
 ?FUN_1403ed2d0@@YAPEAVUnk_AttendAvatarMgr@@XZ	1403ed2d0	func
 ?FUN_140482280@Unk_AttendTable@@QEAA_NHAEB_N@Z	140482280	func
-?FUN_140526a50@CItem@@QEAA_JXZ	140526a50	func
+?GetItemUid@CItem@@QEAA_JXZ	140526a50	func
 ?FUN_1405340b0@Unk_AttendMsgBox@@QEAAX_J@Z	1405340b0	func
 ?FUN_14083bab0@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBVUnk_AttendDate@@V12@@Z	14083bab0	func
 ?FUN_1409617d0@Unk_AttendTable@@QEAAHHIAEBH@Z	1409617d0	func
@@ -141,9 +141,9 @@
 ?FUN_140690330@CMailInfo@@QEAAX_J@Z	140690330	func
 ?FUN_140690350@CMailInfo@@QEAA_JXZ	140690350	func
 ?FUN_140690370@CMailInfo@@QEAAHXZ	140690370	func
-?FUN_140690390@CMailInfo@@QEAAX_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	140690390	func
+?SetSender@CMailInfo@@QEAAX_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	140690390	func
 ?FUN_140690460@CMailInfo@@QEAAX_J@Z	140690460	func
-?FUN_140690540@CMailInfo@@QEAAXV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z	140690540	func
+?SetTitleAndContent@CMailInfo@@QEAAXV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z	140690540	func
 ?FUN_140690d20@CMailInfo@@QEAAX_J0@Z	140690d20	func
 ?FUN_1406910e0@CMailInfo@@QEAAX_J@Z	1406910e0	func
 ?FUN_140691130@CMailInfo@@QEAA_NXZ	140691130	func
@@ -4053,8 +4053,8 @@ FMOD_System_Create	142303a95	func
 ??1?$MS2Ptr@VASMovieClipLoader@@@@QEAA@XZ	140b62a30	func
 ?get@?$MS2Ptr@VASMovieClipLoader@@@@QEBAPEAVASMovieClipLoader@@XZ	1422b4750	func
 ??C?$MS2Ptr@VASMovieClipLoader@@@@QEBAPEAVASMovieClipLoader@@XZ	1422b48e0	func
-?FUN_1422b03f0@GFxManager@@QEAA?AV?$MS2Ptr@VASMovieClipLoader@@@@H@Z	1422b03f0	func
-?FUN_1422af2d0@GFxManager@@QEAAHH@Z	1422af2d0	func
+?GetMovieClipLoader@GFxManager@@QEAA?AV?$MS2Ptr@VASMovieClipLoader@@@@H@Z	1422b03f0	func
+?IsTextFieldFocused@GFxManager@@QEAAHH@Z	1422af2d0	func
 ?FUN_1422af7a0@GFxManager@@QEAAHH@Z	1422af7a0	func
 ?FUN_1422aed30@GFxManager@@QEAAX_N@Z	1422aed30	func
 ?FUN_14025e7a0@@YAPEAVGFxManager@@XZ	14025e7a0	func
@@ -16793,7 +16793,7 @@ DAT_14313b9c8	14313b9c8	data
 ?DAT_143ae28ec@@3DA	143ae28ec	data
 ?DAT_143ae28ed@@3DA	143ae28ed	data
 ?Load@CAchieveCategory@@SAHXZ	14093e610	func
-?FUN_1406308a0@CItemStatus@@QEAAHV?$MS2Ptr@VCItemStatus@@@@@Z	1406308a0	func
+?CopyGroup4From@CItemStatus@@QEAAHV?$MS2Ptr@VCItemStatus@@@@@Z	1406308a0	func
 ?Get@CPCEffectDummy@@QEAAHHIAEAVCEffectDummy@@@Z	1416845c0	func
 ??0Unk_FcSoundReqL@@QEAA@XZ	140a52ef0	func
 ??1Unk_FcSoundReqL@@QEAA@XZ	1405a89e0	func

@@ -12,6 +12,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- unit-local views of exe objects ----
 
@@ -19,7 +20,6 @@
 class Unk_AuCfgValue
 {
 public:
-    float FUN_1402bac70();
     const float& FUN_140298f40();
     char m_pad[0x58];
 };
@@ -37,7 +37,6 @@ void* FUN_14123ed90(CMeshUpdateGate* pGate, unsigned int nFlags) throw();
 class Unk_AuEntity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Vector3* pOut);          // get a point property
 };
 
 // @0x1414a8240
@@ -45,11 +44,11 @@ MS2ActorUpdater::MS2ActorUpdater(const egf::EntityID& kId)
     : m_kId(kId), m_fDistA(0.0f), m_fDistB(0.0f)
 {
     m_pGate = new CMeshUpdateGate;
-    float fRate = ((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateRate.FUN_1402bac70();
+    float fRate = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateRate)->Read();
     if (fRate <= 0.0f)
         fRate = 60.0f;
     ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pGate))->FUN_14108c240(1.0f / fRate);
-    m_pGate->FUN_14123ef30(((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_1402bac70());
+    m_pGate->FUN_14123ef30(reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->Read());
 }
 
 // @0x1414a8380
@@ -70,7 +69,7 @@ float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
-        ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);
+        reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
     m_fDistB = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
     return m_fDistB;
 }
@@ -81,7 +80,7 @@ float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
-        ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);
+        reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
     m_fDistA = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
     return m_fDistA;
 }

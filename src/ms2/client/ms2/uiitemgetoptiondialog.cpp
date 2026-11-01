@@ -12,15 +12,14 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local views of exe types ----
 
 // The check box child.
-class Unk_GoCheck : public ASDisplayObject
+class Unk_GoCheck : public ASButton
 {
 public:
-    void FUN_1422ce090(int checked);
-    void FUN_1422c1fe0(int bEnabled);
 };
 // The combo child.
 class Unk_GoCombo : public ASDisplayObject { public: int FUN_1422df6c0(); void FUN_1422df690(int nIndex); };

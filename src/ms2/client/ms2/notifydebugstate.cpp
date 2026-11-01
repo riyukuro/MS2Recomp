@@ -41,6 +41,7 @@
 #include "ms2/client/ms2/chatemoticoncli.h"
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // The notices CMyCharacter posts (the name virtual GetTypeName is defined in unit_140db46d0).
 class NotifyDebugState : public NotifyObject
@@ -109,13 +110,13 @@ CMyCharacter::~CMyCharacter()
 // @0x140d9f040
 void CMyCharacter::FUN_140d9f040()
 {
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
 }
 
 // @0x140d9f0c0
 void CMyCharacter::FUN_140d9f0c0()
 {
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
 }
 
 // @0x140d9f140
@@ -126,7 +127,7 @@ void CMyCharacter::FUN_140d9f140()
     m_nExpire = 0;
     m_times.RemoveAll();
     m_states.clear();
-    FUN_140d9f4b0();
+    ClearStage();
 }
 
 // @0x140d9fc80
@@ -183,14 +184,14 @@ void CMyCharacter::FUN_140d9f310(__int64 nExpire)
 }
 
 // @0x140d9f400
-void CMyCharacter::FUN_140d9f400(int nA, int nB, bool bFlag)
+void CMyCharacter::CreateStage(int nA, int nB, bool bFlag)
 {
     m_spStage.AssignRaw(new RoomStageDungeonCli(nA, nB));
     m_spStage->SetFlag(bFlag);
 }
 
 // @0x140d9f4b0
-void CMyCharacter::FUN_140d9f4b0()
+void CMyCharacter::ClearStage()
 {
     m_spStage = 0;
 }
@@ -202,13 +203,13 @@ MS2Ptr<RoomStageDungeonCli> CMyCharacter::GetStage()
 }
 
 // @0x140d9f530
-bool CMyCharacter::FUN_140d9f530(int nId)
+bool CMyCharacter::HasTime(int nId)
 {
     return m_times.Lookup(nId) != 0;
 }
 
 // @0x140d9f580
-__int64 CMyCharacter::FUN_140d9f580(int nId)
+__int64 CMyCharacter::GetTime(int nId)
 {
     __int64 nTime = 0;
     if (m_times.Lookup(nId, nTime))
@@ -254,7 +255,7 @@ void CMyCharacter::FUN_140d9f710(CInPacket& packet)
 }
 
 // @0x140d9f880
-unsigned CMyCharacter::FUN_140d9f880(unsigned long nId)
+unsigned CMyCharacter::GetDungeonEnterState(unsigned long nId)
 {
     std::map<unsigned long, unsigned>::iterator it = m_states.find(nId);
     if (it == m_states.end())

@@ -19,11 +19,11 @@ class CPopupProfileImageData : public CPtred
 public:
     CPopupProfileImageData();                               // 0x141697140
     virtual ~CPopupProfileImageData() = default;            //  0 0x141697eb0 (??_G 0x141698080)
-    void FUN_141697180(unsigned __int64 nId);               // set the character id
-    unsigned __int64 FUN_1416971a0();                       // the character id
+    void SetId(unsigned __int64 nId);               // set the character id
+    unsigned __int64 GetId();                       // the character id
     void SetTime(int nTime);                          // set the tick it was shown
     int GetTime();                                    // the tick it was shown
-    int FUN_141697200(int nNow);                            // shown long enough ago to be dropped
+    int IsExpired(int nNow);                            // shown long enough ago to be dropped
     int FUN_141697260(int nNow);                            // same, with the extra delay of the character's state
 private:
     MS2_LAYOUT_FRIEND;

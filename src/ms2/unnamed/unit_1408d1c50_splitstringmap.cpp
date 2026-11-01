@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <atlcoll.h>
 
 // A CAtlArray<CStringW> (data, size, capacity, grow-by; ctor 0x140163270).
 struct Unk_SsParts { void* m_p; unsigned __int64 m_n; unsigned __int64 m_max; int m_nGrow; };
@@ -16,7 +17,7 @@ struct Unk_SsMap { char m_data[0x50]; };
 Unk_SsMap* FUN_140163400(Unk_SsMap* pMap, unsigned nBins, float fOptimal, float fLow, float fHigh, unsigned nBlock);
 void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
 // Splits the string at the delimiters into the array (CStringW::Tokenize loop).
-void FUN_14025a680(CStringW& strSource, Unk_SsParts* pOut, const wchar_t* pszDelims);
+void FUN_14025a680(CStringW& strSource, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelims);
 
 class Unk_SplitStr
 {
@@ -45,14 +46,14 @@ Unk_SplitStr::Unk_SplitStr(CStringW strName, CStringW strDelims)
 void Unk_SplitStr::FUN_1408d1d80(CStringW strName, CStringW strDelims)
 {
     m_strName = strName;
-    FUN_14025a680(strName, &m_parts, strDelims);
+    FUN_14025a680(strName, reinterpret_cast<ATL::CAtlArray<CStringW>&>(m_parts), strDelims);
 }
 
 // @0x1408d1e00
 void Unk_SplitStr::FUN_1408d1e00(CStringW strName, CStringW strDelims)
 {
     m_strName = strName;
-    FUN_14025a680(strName, &m_parts, strDelims);
+    FUN_14025a680(strName, reinterpret_cast<ATL::CAtlArray<CStringW>&>(m_parts), strDelims);
 }
 
 // @0x1408d1e80

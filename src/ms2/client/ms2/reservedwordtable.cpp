@@ -33,13 +33,14 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 typedef ATL::CAtlArray<CStringW> CStrArray;
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unrecovered helpers (externs bound by VA).
 // ---------------------------------------------------------------------------------------------------------------
-void FUN_14025a680(const CStringW& str, CStrArray& rOut, const wchar_t* pszSep);    // splits into parts
+void FUN_14025a680(CStringW& str, CStrArray& rOut, const wchar_t* pszSep);    // splits into parts
 void FUN_14083d2b0(CStringW& str);                                                  // strips the markup of a word
 int FUN_1413faab0(wchar_t ch);                                                      // 1: the word ends in a final consonant
 int FUN_1413fab50(wchar_t ch);                                                      // the same for the second josa pair
@@ -94,10 +95,10 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140763e10(int nMoney);                         // a money text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1408116a0(int nStringId, const int& nArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(int* pValue);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1409e90c0(int nStringId, const int& nA, const int& nB, const int& nC, const int& nD, const int& nE);
@@ -273,12 +274,12 @@ void CReservedWordTable::FUN_1416fb380(CStringW& str)
 MS2_REPLACE_METHOD(0x1416FB380, CReservedWordTable, FUN_1416fb380, 46, 0xF2AE5A81);
 
 // @0x1416fb3c0
-int CReservedWordTable::FUN_1416fb3c0(CStringW& str)
+int CReservedWordTable::ReplaceColorWords(CStringW& str)
 {
     FUN_1416fc540(str, m_mapColor);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1416FB3C0, CReservedWordTable, FUN_1416fb3c0, 53, 0xA68264A1);
+MS2_REPLACE_METHOD(0x1416FB3C0, CReservedWordTable, ReplaceColorWords, 53, 0xA68264A1);
 
 // @0x1416fb400
 void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
@@ -312,7 +313,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             }
             nPassed = spMaid->GetOverDays();
             __int64 nBase = (std::max)(spMaid->m_nExpireTime, GetServerTime());
-            __int64 nExtend = nBase + *FUN_1402056b0(&((struct Unk_RwConfig*)FUN_1401d3200())->m_nValue) * 24 * 60 * 60;
+            __int64 nExtend = nBase + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_RwConfig*)FUN_1401d3200())->m_nValue)->Get() * 24 * 60 * 60;
             CMsTime kEnd(spMaid->m_nExpireTime);
             CMsTime kExtendTime(nExtend);
             strEnd = FUN_1409e90c0(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());
@@ -324,7 +325,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
     str.Replace(L"$MaidName$", ((CNpc*)pMaid)->FUN_141093310());
     str.Replace(L"$MaidEndDate$", strEnd);
     str.Replace(L"$MaidExtendDate$", strExtend);
-    CStringW strPassed = FUN_1408116a0(0x7a5, nPassed);
+    CStringW strPassed = BlockFormat<int>(0x7a5, nPassed);
     FUN_1416fc710(strPassed, nPassed);
     str.Replace(L"$MaidPassedDay$", strPassed);
 }
@@ -992,7 +993,7 @@ static void Rw_ItemBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     if (spItem->property.flag09)
     {
         CString strView;
-        switch (spItem->FUN_14053c5c0())
+        switch (spItem->GetType())
         {
         case 1:
             strView = "ItemEquipView";
@@ -1148,7 +1149,7 @@ UIRouletteDialog* FUN_1416ffcb0(int nId)
 {
     if (reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spDialog.get())
             return dynamic_cast<UIRouletteDialog*>((UIObject*)spDialog);
     }

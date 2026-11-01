@@ -26,7 +26,6 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<Unk_EsButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_EsButton>& out);   // 0x140bc6d10 returns by value (hidden return pointer)
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
 
     MS2Ptr<Unk_EsButton> m_type1Button;                         // +0x178 "m_type1Button"
     MS2Ptr<Unk_EsButton> m_type2Button;                         // +0x188 "m_type2Button"

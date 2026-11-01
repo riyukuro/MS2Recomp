@@ -180,8 +180,8 @@ class MsTransform : public CPtred
 {
 public:
     MsTransform();                  // 0x140546860
-    void FUN_1405468d0(Unk_140165cf0* pElem);       // XML read
-    void FUN_140546940(void* pElem);                // XML write
+    void LoadXml(Unk_140165cf0* pElem);       // XML read
+    void SaveXml(void* pElem);                // XML write
     NiPoint3 position;              // +0x18 (NiPoint3() COMDAT 0x1405522f0)
     NiPoint3 rotation;              // +0x24
     float scale;                    // +0x30 (default 1.0)
@@ -231,7 +231,7 @@ public:
     void FUN_14054b230(void* pParent);           // XML write (nothing)
     void FUN_14054b250(const CString& strName);     // renames every part of every group
     std::vector<CString>* FUN_14054b2c0(int nGender);   // the <cutting> names of a gender
-    const ModelGroup* FUN_14054b2f0(size_t nIndex) const;       // the nIndex-th group (a static empty one when out of range)
+    const ModelGroup* GetGroup(size_t nIndex) const;       // the nIndex-th group (a static empty one when out of range)
     int FUN_14054b3b0();            // m_nUnk28
     size_t FUN_14054b3d0();         // number of groups
     int FUN_14054b400() const;      // type of the first group, 0 when none
@@ -246,7 +246,7 @@ public:
     ItemModelHead* FUN_14054b670(); // &head
     ItemModelHead* FUN_14054b690(); // &head
     CharacterDecalData* FUN_14054b6b0();            // the decal block (may be null)
-    CStringW FUN_14054b6e0();       // name
+    CStringW GetName();       // name
     int m_nUnk28;                   // +0x28
     std::vector<ModelGroup> groups; // +0x30
     ItemModelHead head;             // +0x48

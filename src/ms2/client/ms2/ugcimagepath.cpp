@@ -29,7 +29,7 @@ extern unsigned DAT_143ab2830;                              // my character's jo
 CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wide
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
 CString FUN_14028d990(const CString& strUrl);
-void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& parts, const char* pszSep);   // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // The placeholder images of the config singleton (DAT_143aac5c0).
@@ -177,7 +177,7 @@ CString FUN_141027490(CString strId)
 {
     CString strResult;
     ATL::CAtlArray<CString> parts;
-    FUN_14015f050(strId, parts, "/");
+    Unk_SplitA(const_cast<CStringA&>(strId), (ATL::CAtlArray<CStringA>*)&(parts), "/");
     if (parts.GetCount() == 5)
         strResult = Unk_SocketFormat("{0}{1}_{2}_{3}", parts[1], parts[2], parts[3], parts[4]);
     return strResult;
@@ -188,7 +188,7 @@ CString FUN_141027600(CString strId)
 {
     CString strResult;
     ATL::CAtlArray<CString> parts;
-    FUN_14015f050(strId, parts, "/");
+    Unk_SplitA(const_cast<CStringA&>(strId), (ATL::CAtlArray<CStringA>*)&(parts), "/");
     if (parts.GetCount() == 6)
         strResult = Unk_SocketFormat("{0}{1}_{2}_{3}", parts[1], parts[2], parts[3], parts[5]);
     return strResult;
@@ -199,7 +199,7 @@ CString FUN_141027770(CString strId)
 {
     CString strResult;
     ATL::CAtlArray<CString> parts;
-    FUN_14015f050(strId, parts, "/");
+    Unk_SplitA(const_cast<CStringA&>(strId), (ATL::CAtlArray<CStringA>*)&(parts), "/");
     if (parts.GetCount() == 3)
         strResult = Unk_SocketFormat("{0}", parts[2]);
     return strResult;
@@ -421,7 +421,7 @@ CString FUN_141028a90(CString strId, int bDefault)
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl)
 {
     {
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(nId);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nId);
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)

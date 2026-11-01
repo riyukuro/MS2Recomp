@@ -25,7 +25,7 @@ public:
     virtual ~CNodeViewerDlg();                                      // 0x140c7ef70 (deleting dtor 0x140c7fb70)
 
     void FUN_140c7f0f0();                                           // find the node named m_strNode and mark it
-    void FUN_140c7f5b0(CString kName);                              // tree selection callback
+    void SetNodeName(CString kName);                              // tree selection callback
 public:
     virtual void DoDataExchange(CDataExchange* pDX);                // slot 66
     virtual BOOL OnInitDialog();                                    // slot 96

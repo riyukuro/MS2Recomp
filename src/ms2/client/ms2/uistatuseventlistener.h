@@ -66,7 +66,6 @@ public:
     virtual void vfunc_il13();                                  // o180 13 0x141b10980 everything changed
 
     // ---- non-virtual members, sorted by address ----
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // movie clip child lookup (GetChild<ASMovieClip>)
     MS2Ptr<Unk_StExpandClip> FUN_140e6d820(const CString& strName);   // the "m_expand" clip (GetChild)
     void FUN_141b109a0();                                       // the slots were expanded: play "m_expandEff"
     int FUN_141b10af0();                                        // may be used (no talk running, not closed)

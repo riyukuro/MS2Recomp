@@ -31,10 +31,10 @@ class UIDungeonSearchPage : public CPtred
 public:
     explicit UIDungeonSearchPage(int nPage);                                    // 0x140e186e0
     bool Init(MS2Ptr<ASMovieClip> root);                                        // 0x140e18790
-    void FUN_140e18f30();                                                       // releases the bound clips
+    void ReleaseControls();                                                       // releases the bound clips
     void FUN_140e18f90();                                                       // title and progress icon
     void FUN_140e19220();                                                       // clears the room id list
-    void FUN_140e19250(std::set<unsigned>& rooms);                              // swaps in the room id set
+    void SetRooms(std::set<unsigned>& rooms);                              // swaps in the room id set
     bool FUN_140e19290(int nResult, const CMsgBoxData& data);                   // message box answer
     void FUN_140e192d0(const Scaleform::GFx::FunctionHandler::Params& params);  // find button
     void SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params);  // cancel button
@@ -74,7 +74,7 @@ public:
     void FUN_140e1b640(CInPacket& packet);                                      // packet 0x53: refresh the pages
     void FUN_140e1b6f0(CInPacket& packet);                                      // packet 0x1a: reward reset result
     void FUN_140e1b760(CInPacket& packet);                                                     // united reward reset message
-    void FUN_140e1b800(NotifyObject* pNotify);                                  // NotifyGameStart: pages
+    void RefreshPages(NotifyObject* pNotify);                                  // NotifyGameStart: pages
     void FUN_140e1b850(const Scaleform::GFx::FunctionHandler::Params& params);  // opens the select dialog
     void SendRoomDungeonMode4(const Scaleform::GFx::FunctionHandler::Params& params);  // category 4 packet
     void SendRoomDungeonMode12(const Scaleform::GFx::FunctionHandler::Params& params);  // category 12 packet
@@ -82,7 +82,7 @@ public:
     void SendRoomDungeonMode14(const Scaleform::GFx::FunctionHandler::Params& params);  // category 14 packet
     void FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params);  // opens UI 0x4eda
     void FUN_140e1ba80(int nPage, std::set<unsigned>& rooms);                   // sets the room set of a page
-    MS2Ptr<UIDungeonSearchPage> FUN_140e1baf0(int nPage);                       // page 1 = custom, otherwise random
+    MS2Ptr<UIDungeonSearchPage> GetPage(int nPage);                       // page 1 = custom, otherwise random
     void FUN_140e1bb70();                                                       // enables the category buttons
     void FUN_140e1bc70(int nContent, int nButton);                              // enables one category button
     void FUN_140e1bd90(int nContent, int nButton);                              // disables one category button

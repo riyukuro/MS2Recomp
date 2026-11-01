@@ -143,21 +143,21 @@ public:
     void FUN_140690330(__int64 id);
     __int64 FUN_140690350();
     int FUN_140690370();
-    void FUN_140690390(__int64 value, CStringW text);
+    void SetSender(__int64 value, CStringW text);
     __int64 FUN_1406903f0();
-    CStringW FUN_140690410() const;
+    CStringW GetSenderName() const;
     void FUN_140690460(__int64 value);
     __int64 FUN_140690480();
     void FUN_1406904a0(CStringW text);
     CStringW FUN_1406904f0() const;
-    void FUN_140690540(CStringW a, CStringW b);
-    CStringW FUN_1406905b0() const;
-    CStringW FUN_140690600() const;
+    void SetTitleAndContent(CStringW a, CStringW b);
+    CStringW GetTitle() const;
+    CStringW GetContent() const;
     void SetAttachment(int slot, Unk_MailAttachPtr attach);
-    void FUN_1406906c0(int slot, __int64 time);               // per-attachment receive time
-    Unk_MailAttachPtr FUN_140690790(int slot) const;
+    void SetAttachmentReceiveTime(int slot, __int64 time);               // per-attachment receive time
+    Unk_MailAttachPtr GetAttachment(int slot) const;
     int FUN_140690840() const;                                 // attachments already received
-    __int64 FUN_140690920(int slot) const;
+    __int64 GetAttachmentReceiveTime(int slot) const;
     int FUN_1406909b0() const;
     int FUN_140690b80() const;
     void FUN_140690d20(__int64 a, __int64 b);
@@ -171,22 +171,22 @@ public:
     __int64 FUN_140690ed0() const;
     __int64 FUN_140690ef0() const;
     void FUN_140690f10(__int64 time);
-    bool FUN_140690fa0(int type, int sub, Unk_MailBenefit* out) const;
-    void FUN_140691090();
+    bool FindBenefit(int type, int sub, Unk_MailBenefit* out) const;
+    void MarkRead();
     void FUN_1406910e0(__int64 value);
     __int64 FUN_140691110() const;
     int FUN_140691130();
     __int64 FUN_140691160() const;
-    int FUN_140691180() const;
+    int IsExpired() const;
     __int64 FUN_1406911c0() const;
     void FUN_1406911e0(int state);
     int FUN_140691200() const;
     int FUN_140691220();
     void FUN_1406913e0(CInPacket& packet);                    // read the mail body
-    CStringW FUN_1406922d0() const;                            // formatted date
-    void FUN_1406923a0(int slot, MS2Ptr<CMailAdItem> ad);
+    CStringW GetDateString() const;                            // formatted date
+    void SetAd(int slot, MS2Ptr<CMailAdItem> ad);
     void FUN_140692420(__int64 time);
-    MS2Ptr<CMailAdItem> FUN_140692480(int slot) const;
+    MS2Ptr<CMailAdItem> GetAd(int slot) const;
     __int64 FUN_140692510() const;                             // sum of the ads' +0x30
     __int64 FUN_1406925a0() const;                             // sum of the ads' +0x38
     int FUN_140692630() const;

@@ -63,7 +63,7 @@ int PCInfo::FUN_140dba260()
 }
 
 // @0x140dba280
-void PCInfo::FUN_140dba280(CInPacket* pPacket)
+void PCInfo::ReadStats(CInPacket* pPacket)
 {
     unsigned char nCount = pPacket->ReadUInt8();
     if (nCount == 0x23)
@@ -118,9 +118,9 @@ MS2Ptr<CItem> PCInfo::FUN_140dba560(int nGemType)
     for (size_t i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = m_aItems.GetAt(i);
-        if (spItem == 0 || ((CItem*)spItem)->FUN_140527900() == 0)
+        if (spItem == 0 || ((CItem*)spItem)->GetGem() == 0)
             continue;
-        int nType = ((CItem*)spItem)->FUN_140527900()->vfunc_1();
+        int nType = ((CItem*)spItem)->GetGem()->vfunc_1();
         if (nType == nGemType)
             return spItem;
     }
@@ -128,7 +128,7 @@ MS2Ptr<CItem> PCInfo::FUN_140dba560(int nGemType)
 }
 
 // @0x140dba700
-MS2Ptr<CItem> PCInfo::FUN_140dba700(Unk_InventoryEquipSlot nSlot)
+MS2Ptr<CItem> PCInfo::GetEquipItemSet0(Unk_InventoryEquipSlot nSlot)
 {
     MS2Ptr<CItem> spItem(0);
     m_mapEquip0.Lookup(nSlot, spItem);
@@ -152,10 +152,10 @@ MS2Ptr<CItem> PCInfo::FUN_140dba820(Unk_InventoryEquipSlot nSlot)
 }
 
 // @0x140dba8b0
-MS2Ptr<CItem> PCInfo::FUN_140dba8b0(int nKind, Unk_InventoryEquipSlot nSlot)
+MS2Ptr<CItem> PCInfo::GetEquipItemByKind(int nKind, Unk_InventoryEquipSlot nSlot)
 {
     if (nKind == 0)
-        return FUN_140dba700(nSlot);
+        return GetEquipItemSet0(nSlot);
     else if (nKind == 1)
         return FUN_140dba790(nSlot);
     else if (nKind == 2)
@@ -173,7 +173,7 @@ void PCInfo::FUN_140dba990(ATL::CAtlArray<MS2Ptr<CItem> >& aItems)
 // @0x140dbaa10
 int PCInfo::FUN_140dbaa10()
 {
-    MS2Ptr<CItem> spItem = FUN_140dba700((Unk_InventoryEquipSlot)5);
+    MS2Ptr<CItem> spItem = GetEquipItemSet0((Unk_InventoryEquipSlot)5);
     if (spItem == 0)
         return 0;
     return ((CItem*)spItem)->FUN_140526bd0();

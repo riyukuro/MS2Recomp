@@ -19,24 +19,16 @@
 #include <errno.h>
 #include <string.h>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 // ---- unit-local views of exe objects ----
 
-class Unk_140a94350                                                 // the scene sound/cinematic manager
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_140a94350* FUN_140a94350();
 
 class Unk_140a87690 : public CServerStringGroup { };      // the text filter
 class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
 
 class Unk_ExpUiScale { public: float FUN_1422afec0(int nUiId); };
-Unk_ExpUiScale* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_ExpUiScale (calls cast back)
 
 int FUN_1412755a0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -104,7 +96,7 @@ void UIMassiveEvent::vfunc_43()
     if (spRoot.get())
     {
         spRoot->vfunc_2(5, 0, 0);
-        float fScale = FUN_14025e7a0()->FUN_1422afec0(m_28);
+        float fScale = reinterpret_cast<Unk_ExpUiScale*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
         reinterpret_cast<AScript*>(spRoot.operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
         spRoot->vfunc_3(1);
     }
@@ -329,7 +321,7 @@ void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuratio
         FUN_141276180(s_strPcWin, "");
         FUN_141276180(s_strSuccess, "");
         FUN_141276180(s_strBattleWin, "");
-        FUN_140a94350()->vfunc_10(9);
+        ChromaSDK::GetChromaManager()->SetState(9);
         break;
     case 3:
         break;
@@ -337,7 +329,7 @@ void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuratio
         break;
     case 5:
         FUN_141276180(s_strBattleWin, "");
-        FUN_140a94350()->vfunc_10(9);
+        ChromaSDK::GetChromaManager()->SetState(9);
         break;
     case 6:
         strText.Replace(L"\\n", L"\n");

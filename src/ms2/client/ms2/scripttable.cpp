@@ -15,10 +15,17 @@
 #include "ms2/ms2recover.h"
 #include <typeinfo>
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
-void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
 CString FUN_140651350();                                                 // the locale folder name
 CString FUN_14016a5c0(const char* psz, int n);
@@ -68,17 +75,17 @@ void CScriptTable::Load()
             Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
             if (pRoot == 0)
             {
-                FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", files[i]);
+                Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", files[i]);
                 return;
             }
-            for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+            for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
             {
                 if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                     continue;
                 unsigned __int64 nId = 0;
                 CStringW strName;
                 XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
-                FUN_140873420(pKey, "name", strName);
+                XmlGetAttr((class TiXmlElement*)(pKey), "name", strName);
                 if (m_mapScripts.Lookup(nId) != 0)
                 {
                     const CString& rFile = files[i];

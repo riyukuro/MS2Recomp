@@ -96,8 +96,7 @@ class Unk_AqRoot : public AScript { public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);     // Invoke(method, object)
 };
 
-class Unk_140acd6e0 : public ASDisplayObject { public:
-    void FUN_1422c1fe0(unsigned);                                       // set enabled
+class Unk_140acd6e0 : public ASMovieClip { public:
 };
 
 // The talk script of an npc (Unk_PnScriptPtr, the 16-byte handle): the contents array at +0x68.
@@ -160,7 +159,8 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 class Unk_AqItemTable;
 unsigned FUN_1405575b0(Unk_AqItemTable* p, int nTag);                  // the item of a tag
 class Unk_AqInventory { public: char m_pad; };
-extern Unk_AqInventory DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_AqInventory
 int FUN_140a5f780(Unk_AqInventory* pInv, int nTag, int n);              // item count by tag
 extern int DAT_143abdc30;                                               // the alliance npc shown
 class Unk_AqMsgBox : public CPtred {};
@@ -217,7 +217,6 @@ void FUN_140710590(COutPacket&);
 void FUN_1411a4f40(void* pEffects, CString strSound, const Unk_AqPos& kPos);
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                  // has the AS object been released
 
 // Small COMDATs of the unit.
 int FUN_140bfc5b0(CQuestManagerCommon* p) { return p->m_selector; }     // @0x140bfc5b0
@@ -336,7 +335,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nQuest = data.FUN_1422b8b10();
-            if (((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(nQuest) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.WriteUInt8(8);
@@ -513,7 +512,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
 {
     int nAlliance = FUN_140bf6af0(DAT_143abdc30);
     ATL::CAtlArray<unsigned> ids;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(nAlliance), ids);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByAlliance(static_cast<Unk_FameAlliance>(nAlliance), ids);
     std::vector<MS2Ptr<CQuestData> > quests;
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
@@ -620,7 +619,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
                     unsigned nPrev = FUN_140bf9580(nQuest);
                     if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nPrev) != 0)
                         row.FUN_1407cbb20("complete", FUN_140bf6c90(nQuest));
-                    else if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nPrev) != 0)
+                    else if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nPrev) != 0)
                         row.FUN_1407cbb20("complete", GetStringCommonByKey(L"s_alliance_quest_rumble_warn"));
                 }
             }
@@ -634,7 +633,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             else
             {
                 strButton = GetStringCommonByKey(L"s_alliance_quest_complete");
-                bEnabled = ((class CQuestManager*)FUN_140764020())->FUN_1407456d0(nQuest);
+                bEnabled = ((class CQuestManager*)FUN_140764020())->IsQuestComplete(nQuest);
             }
             row.FUN_1407cb9c0("enabled", bEnabled);
             row.FUN_1407cbb20("buttonStr", strButton);
@@ -654,7 +653,7 @@ int UIAllianceQuestDialog::FUN_140bf8800(unsigned nQuest)
         return 0;
     if (FUN_14074b1c0(spData.get(), 2) == 0)
         return 0;
-    if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) == 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) == 0)
         return 0;
     return 1;
 }
@@ -663,7 +662,7 @@ int UIAllianceQuestDialog::FUN_140bf8800(unsigned nQuest)
 int UIAllianceQuestDialog::FUN_140bf8900()
 {
     ATL::CAtlArray<unsigned> ids;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByAlliance(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -685,7 +684,7 @@ int UIAllianceQuestDialog::FUN_140bf8900()
 int UIAllianceQuestDialog::FUN_140bf8ab0()
 {
     ATL::CAtlArray<unsigned> ids;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByAlliance(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -712,7 +711,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     int nCost = reinterpret_cast<Unk_AqTicketRules*>(((class Unk_AqTicketRules*)FUN_1401c0db0()))->FUN_14067a0b0(spData->m_4c, spData->m_50);
     if (nCost == 0)
         return;
-    int nCount = FUN_140a5f780(&DAT_143ab2a90, 0xd1, 0);
+    int nCount = FUN_140a5f780(&reinterpret_cast<Unk_AqInventory&>(g_143ab2a90), 0xd1, 0);
     unsigned nItem = FUN_1405575b0(reinterpret_cast<Unk_AqItemTable*>(TSingleton<CItemDataTable>::GetInstance()), 0xd1);
     if (nCount < nCost)
     {
@@ -770,7 +769,7 @@ void UIAllianceQuestDialog::FUN_140bf91b0()
 {
     m_1c0.RemoveAll();
     ATL::CAtlArray<unsigned> ids;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByAlliance(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -792,7 +791,7 @@ void UIAllianceQuestDialog::FUN_140bf9360()
 {
     m_1e0.RemoveAll();
     ATL::CAtlArray<unsigned> ids;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d2b0(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByAlliance(static_cast<Unk_FameAlliance>(FUN_140bf6af0(DAT_143abdc30)), ids);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         unsigned nQuest = ids[i];
@@ -822,7 +821,7 @@ int UIAllianceQuestDialog::FUN_140bf9530(int nQuest)
 // @0x140bf9580
 unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
 {
-    if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) != 0)
         return nQuest;
     if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest) != 0)
     {
@@ -949,7 +948,7 @@ template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Val
 // @0x140bfa6a0
 template<class T> MS2Ptr<T> AScript::FUN_140bfa6a0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -958,7 +957,7 @@ template<class T> MS2Ptr<T> AScript::FUN_140bfa6a0(const CString& strName)
 // @0x140bfa760
 MS2Ptr<Unk_AqList> UIAllianceQuestDialog::FUN_140bfa760(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<Unk_AqList>(0);
     return FUN_1409ee290(&m_30)->FUN_140bfa6a0<Unk_AqList>(strName);
 }

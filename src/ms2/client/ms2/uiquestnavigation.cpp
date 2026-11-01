@@ -8,6 +8,7 @@
 #define NOMINMAX                        // NxPhysics (interactobject.h)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiquestnavigation.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uiquestnavigation.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/asdata.h"
@@ -88,7 +89,7 @@ const Vector3& FUN_140947900(void* pNode);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-extern Vector3 DAT_143b01a60;                           // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 // GameObject's vtable as far as slot 18 (0x90): in the exe vfunc_18 returns the position in a Vector3 (pcbase.h and gameobject.h
 // declare NiPoint3), so the vfunc_7 overrides call it into their own return slot through this view.
 class Unk_QnPosView
@@ -602,7 +603,7 @@ void UIQuestNavigation::vfunc_15()
         {
             if (static_cast<bool>(spEntity->m_20.get()))
             {
-                spEntity->m_20->FUN_1422bfe00(fAlpha);
+                spEntity->m_20->SetAlpha(fAlpha);
                 spEntity->m_1c = fAlpha;
             }
         }

@@ -63,7 +63,6 @@ class Unk_StWorld { public: PCBase* FUN_141bd0cc0(); };
 int FUN_141654730(PCBase* p);                                               // the job code
 const CStringW& FUN_141656be0(PCBase* p);                                   // the player name
 struct Unk_PCEquipSet;
-Unk_PCEquipSet* FUN_1416561a0(PCBase* p);                                   // the equip holder
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
@@ -93,17 +92,20 @@ class Unk_StItemNames;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/placeholder/citem.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // The inventory dialog (UI id 0x4e2d) the store window is placed next to.
 class UIInventoryDialog : public UIDialog { };
-UIInventoryDialog* FUN_1405344f0(int nUiId);
+template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 class ASDialog : public ASDisplayObject { };
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
 typedef UIMsg Unk_OsUIMsg;
 
 // The bound slot bag of a bag id and the control state it keeps.
-Unk_StBagBind* FUN_1422c8e90(const CString& strBagId);
 StoreSlotBag* FUN_14180b940(Unk_StBagBind* pBind);
 void FUN_14180b230(CString* pBagId);                                        // drop the bag bound to the id
 void FUN_14180b170(CString* pBagId, int nSlot, int nSize);                  // create the bag
@@ -200,7 +202,7 @@ struct Unk_DictRequestValue
 };
 
 // Input state, the movie manager, string helpers and message boxes.
-class Unk_StInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
+class Unk_StInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 int FUN_1402c4c90(void* p, int n);
@@ -228,7 +230,6 @@ int FUN_1412772f0(__int64 n, int a);
 int FUN_141276180(const CString& strKey, const CString& strValue);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 CStringW* FUN_140159a00(ATL::CAtlArray<CStringW>* p, size_t i);
-unsigned char FUN_1403b3c40(const CStringW& a, const wchar_t* b);
 const __int64& FUN_1402e49a0(const __int64* a, const __int64* b);           // std::min
 class UITalkManager   // C3: member view for the former free stand-ins
 {
@@ -387,7 +388,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     }
     else if (nEvent == 6)
     {
-        ((class CEquipment*)(struct Unk_PCEquipSet*)(FUN_1416561a0(pPlayer)))->FUN_1411e7660();
+        ((class CEquipment*)(struct Unk_PCEquipSet*)(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0()))->FUN_1411e7660();
         ST_EACH_LISTENER(i6, pL)
             pL->vfunc_oa0_9((unsigned short)pPlayer->vfunc_78());
         TSingleton<CPartyManager>::GetInstance()->FUN_14162aa10(TPtr<PCBase>(pPlayer));
@@ -598,7 +599,7 @@ MS2_REPLACE_METHOD(0x141B0EEC0, UIStoreDialog, vfunc_65, 119, 0x19826C4E);
 void UIStoreDialog::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
         m_194 = pInv->vfunc_55() == 0 ? 1 : 0;
@@ -608,8 +609,8 @@ void UIStoreDialog::vfunc_66()
             if (pDlg != 0)
             {
                 Unk_OsUIMsg msg;
-                msg.FUN_1422b82b0("openWindowPos");
-                msg.FUN_1422b7f70(vfunc_48());
+                msg.AddString("openWindowPos");
+                msg.AddInt(vfunc_48());
                 pInv->OnMessage(this, &msg);
             }
         }
@@ -648,7 +649,7 @@ MS2_REPLACE_METHOD(0x141B0F1E0, UIStoreDialog, vfunc_54, 34, 0x95C54B23);
 // @0x141b0f210
 int UIStoreDialog::vfunc_73()
 {
-    if (FUN_1402c4c90(((char*)FUN_14025e7b0()) + 8, 0xc) != 0)
+    if (reinterpret_cast<CContentShutdown*>(((char*)FUN_14025e7b0()) + 8)->Get((CContentShutdown::Content)(0xc)) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -727,7 +728,7 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         int nResult = 1;
         if (nAnswer == 0)
         {
-            if (FUN_1403b3c40(strTag, L"askClose"))
+            if (operator==(strTag, L"askClose"))
             {
                 nResult = 0;
                 FUN_14151f200();
@@ -743,9 +744,9 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     if (!strAmount.IsEmpty())
                     {
                         __int64 nAmount = _wtoi64(strAmount);
-                        if (FUN_1403b3c40(strCmd, L"deposit"))
+                        if (operator==(strCmd, L"deposit"))
                             nResult = FUN_141b11190(nAmount);
-                        else if (FUN_1403b3c40(strCmd, L"withdraw"))
+                        else if (operator==(strCmd, L"withdraw"))
                             nResult = FUN_141b11350(nAmount);
                     }
                 }
@@ -935,7 +936,7 @@ void UIStoreDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (FUN_1422dc390() != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_StBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
         if (pBag != 0)
             ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -947,7 +948,7 @@ void UIStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (FUN_1422dc390() != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_StBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
         if (pBag != 0)
             ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -957,7 +958,7 @@ MS2_REPLACE_METHOD_VIA(0x141B107E0, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b10860
 void UIStoreDialog::vfunc_oa0_25(void* a1)
 {
-    Unk_StBagCtl* pCtl = FUN_140c544d0(FUN_1422c8e90(m_188));
+    Unk_StBagCtl* pCtl = FUN_140c544d0(reinterpret_cast<Unk_StBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_11(a1);
 }
@@ -966,7 +967,7 @@ MS2_REPLACE_METHOD_VIA(0x141B10860, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b108c0
 void UIStoreDialog::vfunc_oa0_26(void* a1)
 {
-    Unk_StBagCtl* pCtl = FUN_140c544d0(FUN_1422c8e90(m_188));
+    Unk_StBagCtl* pCtl = FUN_140c544d0(reinterpret_cast<Unk_StBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_12(a1);
 }
@@ -999,7 +1000,7 @@ void UIStoreDialog::FUN_141b109a0()
     if (vfunc_55() != 0 || FUN_1422dc390() == 0)
         return;
     m_198 = 6;
-    if (MS2Ptr<ASMovieClip> spEff = FUN_140ba7930("m_expandEff"))
+    if (MS2Ptr<ASMovieClip> spEff = GetChild<ASMovieClip>("m_expandEff"))
     {
         spEff->vfunc_3(1);
         spEff->vfunc_12(1);
@@ -1054,7 +1055,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
             aCandidates.FUN_1422bbf00(row);
         }
     }
-    int nShown = aCandidates.FUN_1422bc5d0() > 5 ? 5 : aCandidates.FUN_1422bc5d0();
+    int nShown = aCandidates.GetLength() > 5 ? 5 : aCandidates.GetLength();
     static_cast<ASObj*>(static_cast<AScript*>(FUN_140bc0550(&m_1a8)))->FUN_1407cb9c0("m_rowCount", nShown);
     FUN_140bc0550(&m_1a8)->FUN_140bbeaa0("setCandidates", aCandidates);
 }
@@ -1221,7 +1222,7 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_StBagBind*>(Unk_NotifyContext::FUN_1422c8e90(m_188)));
         if (pBag != 0)
         {
             int nIndex = pBag->FUN_14180b3e0(CStringW(strText));

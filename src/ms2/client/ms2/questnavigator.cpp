@@ -64,7 +64,7 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    class NiNode* FUN_1411a6b10();
+    class NiNode* GetLeastLoadedRoot();
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -216,7 +216,7 @@ void CQuestNavigator::vfunc_o178_7(int nQuestId, int a2)
 
 // Detach the beam from its parent and drop it.
 // @0x140c99e30
-void CQuestNavigator::FUN_140c99e30()
+void CQuestNavigator::RemoveNavigationEffect()
 {
     if ((NiNode*)m_10 != 0)
     {
@@ -288,7 +288,7 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
         m_10 = (NiNode*)NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(FUN_1409849b0(((class Unk_QnModelLoader*)FUN_140a0afd0())->FUN_141551ea0(strPath, 0, 5, 0, 0))));
         if ((NiNode*)m_10 != 0)
         {
-            NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a6b10();
+            NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
             if (pScene != 0)
             {
                 pScene->AttachChild(m_10, true);
@@ -356,7 +356,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         if (WorldService::GetInstance()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
-            if (static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).FUN_1407456d0(pResult->m_18) != 0)
+            if (static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).IsQuestComplete(pResult->m_18) != 0)
                 pResult->m_1c = 2;
             else
                 pResult->m_1c = 1;
@@ -400,7 +400,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
             }
             if (bFound == 0)
             {
-                int nNextMap = FUN_140c9b8e0()->FUN_140c912d0(nCurrentMap, nTargetMap);
+                int nNextMap = FUN_140c9b8e0()->GetNextMapOnPath(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
                     MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FUN_141bc2880(nNextMap);
@@ -545,7 +545,7 @@ UIMinimapDialog* FUN_140c9b540(int nId)
 {
     if (reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = ((CUIService*)(Unk_QnUIMgr*)(reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcea0((eUIClassID)(nId));
+        MS2Ptr<UIObject> p = ((CUIService*)(Unk_QnUIMgr*)(reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance())))->FindObject((eUIClassID)(nId));
         if (p.get())
             return dynamic_cast<UIMinimapDialog*>((UIObject*)p);
     }

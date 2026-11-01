@@ -51,16 +51,16 @@ void ASTextInput::FUN_1422e0920(const ASCallback& cb)
 MS2_REPLACE_METHOD(0x1422E0920, ASTextInput, FUN_1422e0920, 107, 0xDB00C72D);
 
 // @0x1422e09a0
-void ASTextInput::FUN_1422e09a0(int bFocusable)
+void ASTextInput::SetFocusable(int bFocusable)
 {
     FUN_1407cbbe0("focusable", bFocusable != 0);
 }
-MS2_REPLACE_METHOD(0x1422E09A0, ASTextInput, FUN_1422e09a0, 60, 0x861540F4);
+MS2_REPLACE_METHOD(0x1422E09A0, ASTextInput, SetFocusable, 60, 0x861540F4);
 
 // @0x1422e09f0
 int ASTextInput::FUN_1422e09f0()
 {
-    return FUN_1422baa20("focusable").GetBool();
+    return GetMember("focusable").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E09F0, ASTextInput, FUN_1422e09f0, 91, 0x0236B36C);
 
@@ -79,11 +79,11 @@ void ASTextInput::FUN_1422e0ab0(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1422E0AB0, ASTextInput, FUN_1422e0ab0, 72, 0x34312FD5);
 
 // @0x1422e0b00
-CStringW ASTextInput::FUN_1422e0b00()
+CStringW ASTextInput::GetText()
 {
-    return XmlWide(FUN_1422baa20("text").GetString());
+    return XmlWide(GetMember("text").GetString());
 }
-MS2_REPLACE_METHOD(0x1422E0B00, ASTextInput, FUN_1422e0b00, 122, 0x3FE447E4);
+MS2_REPLACE_METHOD(0x1422E0B00, ASTextInput, GetText, 122, 0x3FE447E4);
 
 // @0x1422e0b80
 void ASTextInput::FUN_1422e0b80(const CString& strHtml)
@@ -100,65 +100,65 @@ void ASTextInput::FUN_1422e0bd0(const CStringW& strHtml)
 MS2_REPLACE_METHOD(0x1422E0BD0, ASTextInput, FUN_1422e0bd0, 72, 0xA9D05A60);
 
 // @0x1422e0c20
-CStringW ASTextInput::FUN_1422e0c20()
+CStringW ASTextInput::GetHtmlText()
 {
-    return XmlWide(FUN_1422baa20("htmlText").GetString());
+    return XmlWide(GetMember("htmlText").GetString());
 }
-MS2_REPLACE_METHOD(0x1422E0C20, ASTextInput, FUN_1422e0c20, 122, 0xB38E2811);
+MS2_REPLACE_METHOD(0x1422E0C20, ASTextInput, GetHtmlText, 122, 0xB38E2811);
 
 // @0x1422e0ca0
-void ASTextInput::FUN_1422e0ca0(int bPassword)
+void ASTextInput::SetDisplayAsPassword(int bPassword)
 {
     FUN_1407cbbe0("displayAsPassword", bPassword != 0);
 }
-MS2_REPLACE_METHOD(0x1422E0CA0, ASTextInput, FUN_1422e0ca0, 60, 0xD9A25FD8);
+MS2_REPLACE_METHOD(0x1422E0CA0, ASTextInput, SetDisplayAsPassword, 60, 0xD9A25FD8);
 
 // @0x1422e0cf0
 int ASTextInput::FUN_1422e0cf0()
 {
-    return FUN_1422baa20("displayAsPassword").GetBool();
+    return GetMember("displayAsPassword").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E0CF0, ASTextInput, FUN_1422e0cf0, 91, 0xC3CC33EA);
 
 // @0x1422e0d60
-void ASTextInput::FUN_1422e0d60(int nMaxChars)
+void ASTextInput::SetMaxChars(int nMaxChars)
 {
     FUN_1409c4a30("maxChars", (float)nMaxChars);
 }
-MS2_REPLACE_METHOD(0x1422E0D60, ASTextInput, FUN_1422e0d60, 44, 0x42EED258);
+MS2_REPLACE_METHOD(0x1422E0D60, ASTextInput, SetMaxChars, 44, 0x42EED258);
 
 // @0x1422e0da0
-int ASTextInput::FUN_1422e0da0()
+int ASTextInput::GetMaxChars()
 {
-    return FUN_1422baa20("maxChars").GetUInt();
+    return GetMember("maxChars").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422E0DA0, ASTextInput, FUN_1422e0da0, 88, 0x557E07B7);
+MS2_REPLACE_METHOD(0x1422E0DA0, ASTextInput, GetMaxChars, 88, 0x557E07B7);
 
 // @0x1422e0e00
-void ASTextInput::FUN_1422e0e00(int bEditable)
+void ASTextInput::SetEditable(int bEditable)
 {
     FUN_1407cbbe0("editable", bEditable != 0);
 }
-MS2_REPLACE_METHOD(0x1422E0E00, ASTextInput, FUN_1422e0e00, 60, 0x67084F97);
+MS2_REPLACE_METHOD(0x1422E0E00, ASTextInput, SetEditable, 60, 0x67084F97);
 
 // @0x1422e0e50
 int ASTextInput::FUN_1422e0e50()
 {
-    return FUN_1422baa20("editable").GetBool();
+    return GetMember("editable").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E0E50, ASTextInput, FUN_1422e0e50, 91, 0x1579A70B);
 
 // @0x1422e0ec0
-void ASTextInput::FUN_1422e0ec0(int bEnabled)
+void ASTextInput::SetTabEnabled(int bEnabled)
 {
     FUN_1407cbbe0("tabEnabled", bEnabled != 0);
 }
-MS2_REPLACE_METHOD(0x1422E0EC0, ASTextInput, FUN_1422e0ec0, 60, 0x1C4FE222);
+MS2_REPLACE_METHOD(0x1422E0EC0, ASTextInput, SetTabEnabled, 60, 0x1C4FE222);
 
 // @0x1422e0f10
 int ASTextInput::FUN_1422e0f10()
 {
-    return FUN_1422baa20("tabEnabled").GetBool();
+    return GetMember("tabEnabled").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E0F10, ASTextInput, FUN_1422e0f10, 91, 0x852335CE);
 
@@ -172,58 +172,58 @@ MS2_REPLACE_METHOD(0x1422E0F80, ASTextInput, FUN_1422e0f80, 60, 0xB60CBD41);
 // @0x1422e0fd0
 int ASTextInput::FUN_1422e0fd0()
 {
-    return FUN_1422baa20("tabIndex").GetBool();
+    return GetMember("tabIndex").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E0FD0, ASTextInput, FUN_1422e0fd0, 91, 0xC18DC610);
 
 // @0x1422e1040
-void ASTextInput::FUN_1422e1040(int bActAsButton)
+void ASTextInput::SetActAsButton(int bActAsButton)
 {
     FUN_1407cbbe0("actAsButton", bActAsButton != 0);
 }
-MS2_REPLACE_METHOD(0x1422E1040, ASTextInput, FUN_1422e1040, 60, 0xBD97A66E);
+MS2_REPLACE_METHOD(0x1422E1040, ASTextInput, SetActAsButton, 60, 0xBD97A66E);
 
 // @0x1422e1090
 int ASTextInput::FUN_1422e1090()
 {
-    return FUN_1422baa20("actAsButton").GetBool();
+    return GetMember("actAsButton").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E1090, ASTextInput, FUN_1422e1090, 91, 0x5D0D871B);
 
 // @0x1422e1100
-void ASTextInput::FUN_1422e1100(int bAlways)
+void ASTextInput::SetAlwaysShowSelection(int bAlways)
 {
     FUN_1407cbbe0("alwaysShowSelection", bAlways != 0);
 }
-MS2_REPLACE_METHOD(0x1422E1100, ASTextInput, FUN_1422e1100, 60, 0xBB9932B2);
+MS2_REPLACE_METHOD(0x1422E1100, ASTextInput, SetAlwaysShowSelection, 60, 0xBB9932B2);
 
 // @0x1422e1150
 int ASTextInput::FUN_1422e1150()
 {
-    return FUN_1422baa20("alwaysShowSelection").GetBool();
+    return GetMember("alwaysShowSelection").GetBool();
 }
 MS2_REPLACE_METHOD(0x1422E1150, ASTextInput, FUN_1422e1150, 91, 0xDD9D497A);
 
 // @0x1422e11c0
-void ASTextInput::FUN_1422e11c0(const CString& strRestrict)
+void ASTextInput::SetRestrict(const CString& strRestrict)
 {
-    FUN_1422e1490()->FUN_1422c5710(strRestrict);
+    GetTextField()->SetRestrict(strRestrict);
 }
-MS2_REPLACE_METHOD(0x1422E11C0, ASTextInput, FUN_1422e11c0, 92, 0x14F1B453);
+MS2_REPLACE_METHOD(0x1422E11C0, ASTextInput, SetRestrict, 92, 0x14F1B453);
 
 // @0x1422e1230
-CString ASTextInput::FUN_1422e1230()
+CString ASTextInput::GetRestrict()
 {
-    return FUN_1422e1490()->FUN_1422c5760();
+    return GetTextField()->GetRestrict();
 }
-MS2_REPLACE_METHOD(0x1422E1230, ASTextInput, FUN_1422e1230, 115, 0xEE2E454F);
+MS2_REPLACE_METHOD(0x1422E1230, ASTextInput, GetRestrict, 115, 0xEE2E454F);
 
 // @0x1422e12b0
-int ASTextInput::FUN_1422e12b0()
+int ASTextInput::GetLength()
 {
-    return FUN_1422baa20("length").GetUInt();
+    return GetMember("length").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422E12B0, ASTextInput, FUN_1422e12b0, 88, 0x7CFECEAD);
+MS2_REPLACE_METHOD(0x1422E12B0, ASTextInput, GetLength, 88, 0x7CFECEAD);
 
 // @0x1422e1310
 void ASTextInput::FUN_1422e1310(const CString& strText)
@@ -254,11 +254,11 @@ void ASTextInput::FUN_1422e1430(const CStringW& strHtml)
 MS2_REPLACE_METHOD(0x1422E1430, ASTextInput, FUN_1422e1430, 87, 0xFCBDD19D);
 
 // @0x1422e1490
-MS2Ptr<ASTextField> ASTextInput::FUN_1422e1490()
+MS2Ptr<ASTextField> ASTextInput::GetTextField()
 {
     return FUN_1409b4620("textField");
 }
-MS2_REPLACE_METHOD(0x1422E1490, ASTextInput, FUN_1422e1490, 102, 0xD6FCC66F);
+MS2_REPLACE_METHOD(0x1422E1490, ASTextInput, GetTextField, 102, 0xD6FCC66F);
 
 // @0x1422e1500
 void ASTextInput::FUN_1422e1500(int nBegin, int nEnd)
@@ -266,7 +266,7 @@ void ASTextInput::FUN_1422e1500(int nBegin, int nEnd)
     if (!FUN_1422c76c0())
         FUN_1422c7630(1);
     vfunc_24(true);
-    FUN_1422e1490()->FUN_1422c5cf0(nBegin, nEnd);
+    GetTextField()->SetSelection(nBegin, nEnd);
 }
 MS2_REPLACE_METHOD(0x1422E1500, ASTextInput, FUN_1422e1500, 150, 0x62B5C952);
 

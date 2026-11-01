@@ -21,9 +21,6 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for
 CStringW GetStringCommon(int id);                         // string table lookup
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 MailItemSlot* FUN_1414729b0(NotifyContext::BindData* p);
 
@@ -31,6 +28,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(MailItemSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x1414723a0
 MailItemSlot::MailItemSlot(const CString& strName, MS2Ptr<CItem> spItem, int nValue, int nIndex)
@@ -119,15 +117,15 @@ void FUN_1414727e0(const CString& strName, MS2Ptr<CItem> spItem, int nValue, int
 {
     MailItemSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) MailItemSlot(strName, spItem, nValue, nIndex);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
 // @0x1414728e0
 void FUN_1414728e0(const CString& strName)
 {
-    MailItemSlot* pSlot = FUN_1414729b0(FUN_1422c8e90(strName));
+    MailItemSlot* pSlot = FUN_1414729b0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x141472920

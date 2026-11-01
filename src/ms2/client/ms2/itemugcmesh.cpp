@@ -246,7 +246,7 @@ void* FUN_140166440();                                              // the logge
 bool FUN_1411c9940(NiAVObject* pObj);                               // object is a node
 int FUN_141676b00(Unk_UgcPlayer* pPlayer, __int64 nUid);
 void FUN_140710590(COutPacket& kPacket);
-void FUN_141276180(void* pObj, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_1412750f0(void* pCallback, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -905,7 +905,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         {
             CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->FUN_140527870();
             Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558e80(
-                nItemId, spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>(pExtra, &CItemExtraData::FUN_140599480));
+                nItemId, spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>(pExtra, &CItemExtraData::IsSameColor));
             if (FUN_14059cf00(&kRow) != 0)
                 return 1;
         }
@@ -1087,7 +1087,7 @@ CStringW FUN_141425950(unsigned nItemId)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId);
-    if (((Unk_UgcItemData*)spData.operator->())->FUN_14053c5c0() == 0xb)
+    if (((Unk_UgcItemData*)spData.operator->())->GetType() == 0xb)
     {
         CStringW strLinked = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
         Unk_UgcRow2Ptr kRow = FUN_14052d210()->FUN_1407290f0(((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
@@ -1112,13 +1112,13 @@ CStringW FUN_141425c00(int nCategory)
     for (unsigned __int64 i = 0; i < aItems.size(); i++)
     {
         MS2Ptr<CItemData> spData = aItems[i];
-        if (spData.get() != 0 && ((Unk_UgcItemData*)spData.operator->())->FUN_14053ec50() == nCategory)
+        if (spData.get() != 0 && ((Unk_UgcItemData*)spData.operator->())->GetItemPreset() == nCategory)
         {
             strName = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053c510());
             if (!strName.IsEmpty())
                 return strName;
             else
-                return ((Unk_UgcItemData*)spData.operator->())->FUN_14053eba0()->FUN_14054b6e0();
+                return ((Unk_UgcItemData*)spData.operator->())->FUN_14053eba0()->GetName();
         }
     }
     return CStringW((const wchar_t*)0);
@@ -1171,7 +1171,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
     FUN_140710590(kPacket);
     {
         CString strEmpty("");
-        FUN_141276180(&s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
+        FUN_141276180(s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
     }
     if (pCallback != 0)
         FUN_1412750f0(pCallback, nCount, 0x28b, 0x28a);

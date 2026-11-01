@@ -428,22 +428,22 @@ pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d4490@CGuild
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d44e0@CGuildPVPSeasonHistoryData@@QEAAXAEAVCOutputStream@@@Z 0x1404d44e0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d4680@CGuildPVPSeasonHistoryData@@QEAAXAEAVCInputStream@@@Z 0x1404d4680: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d54e0@GuildRaidReward@CGuildXmlData@@QEAA_NPEAX@Z 0x1404d54e0: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d5960@CGuildXmlData@@QEAA_NXZ 0x1404d5960: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d6ab0@CGuildXmlData@@QEAA_NXZ 0x1404d6ab0: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7280@CGuildXmlData@@QEAAHXZ 0x1404d7280: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7410@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d74e0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7830@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d79b0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7b40@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7cb0@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d7f20@CNpcShopProductProxy@@QEAAXAEAVCOutputStream@@@Z 0x1404d7f20: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d80a0@CGuildNpcShop@@QEAAXXZ 0x1404d80a0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d80d0@CGuildNpcShop@@QEAA?AV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d86e0@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0: already attributed (tag), ignored
-pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d88e0@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I@Z 0x1404d88e0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d8ff0@CGuildNpcShopMgr@@QEAAXIPEAVCInPacket@@@Z 0x1404d8ff0: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?FUN_1404d91e0@Unk_GuildShopOffer@@QEAAXAEAVCOutputStream@@@Z 0x1404d91e0: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetEvent@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetHouse@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetMaxExp@CGuildXmlData@@QEAAHXZ 0x1404d7280: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetNpc@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetOrCreateShop@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I@Z 0x1404d88e0: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetProperty@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetRaid@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?GetSkill@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0: already attributed (tag), ignored
+pin already attributed	commonfiles/guilddef_2.cpp: MS2-PIN ?LoadAll@CGuildXmlData@@QEAA_NXZ 0x1404d5960: already attributed (tag), ignored
 pin already attributed	commonfiles/guilddef_5.cpp: MS2-PIN ?GetStartPosition@?$CAtlMap@_J_JV?$CElementTraits@_J@ATL@@V12@@ATL@@QEBAPEAU__POSITION@@XZ 0x1404f4d40: already attributed (tag), ignored
 pin already attributed	commonfiles/itemdatatable.cpp: MS2-PIN ?FindPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HAEBH0@Z 0x1405590e0: already attributed (tag), ignored
 pin already attributed	commonfiles/itemdatatable.cpp: MS2-PIN ?FindPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HAEBH@Z 0x140558cc0: already attributed (tag), ignored
@@ -457,7 +457,7 @@ pin already attributed	commonfiles/masterytable.cpp: MS2-PIN ?Receipes@CMasteryT
 pin already attributed	commonfiles/masterytable.cpp: MS2-PIN ?Rewards@CMasteryTable@@QEAAXHHAEAV?$CAtlArray@V?$MS2Ptr@UItemEntity@@@@V?$CElementTraits@V?$MS2Ptr@UItemEntity@@@@@ATL@@@ATL@@@Z 0x14066b100: already attributed (tag), ignored
 pin already attributed	commonfiles/masterytable.cpp: MS2-PIN ?SuccessDescription@CMasteryTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HHH@Z 0x14066c110: already attributed (tag), ignored
 pin already attributed	commonfiles/matchpartyrecruitschcond.cpp: MS2-PIN ??1CMatchPartyRecruitSchCond@@UEAA@XZ 0x140694410: already attributed (tag), ignored
-pin already attributed	commonfiles/meratmarketbasketinfo.cpp: MS2-PIN ?ReleaseImpl@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXPEAX@Z 0x1406ae740: already attributed (tag), ignored
+pin already attributed	commonfiles/meratmarketbasketinfo.cpp: MS2-PIN ?ReleaseImpl@?$MS2Ptr@UUnk_MmSaleCtx@@@@AEAAXPEAX@Z 0x1406ae740: already attributed (tag), ignored
 pin already attributed	commonfiles/ms2filestring.cpp: MS2-PIN ?GetTexturePaths@CPackFile@@QEAAXAEAV?$list@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 0x1406b1830: already attributed (tag), ignored
 pin already attributed	commonfiles/ms2filestring.cpp: MS2-PIN ?Open@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBD@Z 0x1406af680: already attributed (tag), ignored
 pin already attributed	commonfiles/ms2filestring.cpp: MS2-PIN ?Read@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAPEAEPEA_K_N@Z 0x1406b0e20: already attributed (tag), ignored
@@ -1658,8 +1658,8 @@ pin names no function	client/ms2/uiworldmapdialog.cpp: MS2-PIN ?GetTypeName@?$De
 pin names no function	client/ms2/uiworldmapdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiwritemusicdialog.cpp: MS2-PIN ??D?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEBAAEBU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@XZ: no such function in the obj
 pin names no function	client/ms2/uiwritemusicdialog.cpp: MS2-PIN ??D?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@XZ: no such function in the obj
-pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??FUN_14136a630@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
-pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??FUN_14136ac60@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
+pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??CompleteEpicChapter@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
+pin names no function	client/ms2/usercommandcli.cpp: MS2-PIN ??__Fs_trace@?9??CompleteEpicQuest@CUserCommandCli@@QEAAHAEAUUnk_CommandArgs@@@Z@YAXXZ: no such function in the obj
 pin names no function	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z: no such function in the obj
 pin names no function	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b89950@@YAHPEAVWeddingManager@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsA_BallRef@@QEAA@PEAX@Z: no such function in the obj

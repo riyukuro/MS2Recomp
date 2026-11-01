@@ -50,7 +50,8 @@ class Unk_TabInventory : public UIDialog
 public:
     int FUN_141999de0();                                    // the selected tab
 };
-Unk_TabInventory* FUN_1405344f0(int nId);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_TabInventory* FUN_1405344f0 (calls cast back)
 
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -133,7 +134,7 @@ MS2_REPLACE_METHOD(0x1413A7A00, CGuideConditionInventoryTab, GetTypeName, 61, 0x
 // @0x1413a7a50
 int CGuideConditionInventoryTab::vfunc_3()
 {
-    Unk_TabInventory* pInv = FUN_1405344f0(0x4e2d);
+    Unk_TabInventory* pInv = reinterpret_cast<Unk_TabInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInv != 0 && pInv->vfunc_55() == 0)
         return FUN_1413a5600(m_n20 == pInv->FUN_141999de0());
     return 0;

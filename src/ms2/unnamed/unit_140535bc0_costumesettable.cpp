@@ -29,6 +29,12 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
 class CostumeSetTable;
@@ -48,14 +54,14 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);                           // undecorated class name
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int FUN_1405451c0(const CString& str);                                   // text -> number
 CString FUN_1405451e0(unsigned n);                                       // number -> text
 Unk_LaunchOptions* FUN_1406aeee0();
@@ -170,19 +176,19 @@ int CostumeSetTable::LoadXml()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pSet = pRoot->FUN_140165cf0("costumeSet"); pSet != 0; pSet = pSet->FUN_140168650("costumeSet"))
+    for (Unk_140165cf0* pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("costumeSet")); pSet != 0; pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->NextSibling("costumeSet")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
             continue;
         unsigned nSetId = 0;
         XmlGetAttr((class TiXmlElement*)(pSet), "id", nSetId);
-        for (Unk_140165cf0* pNode = pSet->FUN_140165cf0("set"); pNode != 0; pNode = pNode->FUN_140168650("set"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->FirstChild("set")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("set")))
         {
             CostumeSetPtr spSet(new CostumeSet);
             spSet->m_nSetId = nSetId;
@@ -192,8 +198,8 @@ int CostumeSetTable::LoadXml()
                 continue;
             CString strSlots;
             ATL::CAtlArray<CString> arrSlots;
-            FUN_1408733e0(pNode, "transparencySlots", strSlots);
-            FUN_14015f050(strSlots, arrSlots, ",");
+            XmlGetAttr((class TiXmlElement*)(pNode), "transparencySlots", strSlots);
+            Unk_SplitA(strSlots, (ATL::CAtlArray<CStringA>*)&(arrSlots), ",");
             for (unsigned i = 0; i < arrSlots.GetCount(); i++)
             {
                 int nSlot = FUN_1405451c0(arrSlots[i]);
@@ -220,12 +226,12 @@ int CostumeSetTable::LoadXml()
                     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
                     if (item == 0)
                     {
-                        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
                     if (((class ItemModelData*)(class ItemModelData*)(item->FUN_14053eba0()))->FUN_14054b400() != nKey)
                     {
-                        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
                 }

@@ -37,19 +37,19 @@ public:
     ASData();
     // ~ASData is implicit (0x1406147b0, emitted with unit_1406125d0): the exe dtor stores no vftable pointer, which
     // cl only omits in a compiler-generated destructor.
-    void FUN_1422b7f70(int n);                                                      // append an int argument
-    void FUN_1422b7fd0(bool b);                                                     // append a bool argument
+    void AddInt(int n);                                                      // append an int argument
+    void AddBool(bool b);                                                     // append a bool argument
     void FUN_1422b8030(unsigned int n);                                             // append an unsigned argument
-    void FUN_1422b8090(unsigned long n);                                            // append an unsigned long argument
-    void FUN_1422b80f0(float f);                                                    // append a float argument
-    void FUN_1422b8160(double d);                                                   // append a number argument
-    void FUN_1422b81c0(__int64 n);                                                  // append a 64-bit argument
-    void FUN_1422b8230(ASData* pOther);                                             // append all arguments of another ASData
+    void AddULong(unsigned long n);                                            // append an unsigned long argument
+    void AddFloat(float f);                                                    // append a float argument
+    void AddDouble(double d);                                                   // append a number argument
+    void AddInt64(__int64 n);                                                  // append a 64-bit argument
+    void AddArgsFrom(ASData* pOther);                                             // append all arguments of another ASData
     void FUN_1422b8270(const AScript& obj);                                         // append an AS object argument
-    void FUN_1422b82b0(const char* sz);                                             // append a string argument
+    void AddString(const char* sz);                                             // append a string argument
     void FUN_1422b8310(const wchar_t* sz);                                          // append a wide string argument
-    void FUN_1422b8370(size_t n);                                                   // append a size argument
-    void FUN_1422b83f0(const Scaleform::GFx::Value& v);                             // append a value argument
+    void AddSize(size_t n);                                                   // append a size argument
+    void AddValue(const Scaleform::GFx::Value& v);                             // append a value argument
     void FUN_1422b8420(int* pOut);                                                  // next argument as int
     void FUN_1422b84a0(bool* pOut);                                                 // next argument as bool
     void FUN_1422b8520(unsigned int* pOut);                                         // next argument as unsigned
@@ -70,7 +70,7 @@ public:
     CString FUN_1422b8d30();                                                        // next argument as a string ("" if not a string)
     CStringW FUN_1422b8f40();                                                       // next argument as a wide string
     __int64 FUN_1422b9110();                                                        // next argument as __int64
-    unsigned __int64 FUN_1422b91a0();                                               // next argument as unsigned __int64
+    unsigned __int64 PopUInt64();                                               // next argument as unsigned __int64
     Scaleform::GFx::Value FUN_1422b9260();                                          // next argument
     bool FUN_1422b9330();                                                           // no arguments left
     int FUN_1422b9360();                                                            // argument count

@@ -42,7 +42,8 @@ public:
     int FUN_140999490(const Unk_GoModelKey& id, const efd::utf8string& kName);                  // sequence id, -2 when absent
     void FUN_1409a1fc0(const Unk_GoModelKey& id, const efd::utf8string& kName, float fBlend, bool b);   // play
 };
-Unk_AcAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
 // The UGC cube manager (singleton behind FUN_14052d220).
@@ -103,10 +104,10 @@ void AvatarCube::vfunc_12()
     {
         efd::utf8string kIdle((const char*)FUN_1409a2360("Idle_A", 0));
         Unk_AcKey kId1;
-        if (FUN_141b6f910()->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
+        if (reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
             Unk_AcKey kId2;
-            FUN_141b6f910()->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId2)), kIdle, 1.0f, true);
+            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId2)), kIdle, 1.0f, true);
         }
     }
 }
@@ -122,9 +123,9 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() ? true : false)
     {
-        if (spItem->FUN_1405278d0())
+        if (spItem->GetUgcInfo())
         {
-            CString strFile = FUN_1410280d0(2, spItem->FUN_1405278d0()->m_strName);
+            CString strFile = FUN_1410280d0(2, spItem->GetUgcInfo()->m_strName);
             if (_access(strFile, 0))
             {
                 ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
@@ -132,7 +133,7 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
             else
             {
                 CUgcItemCube kCube(spItem.get(), FUN_14123c460());
-                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141886cc0(&kCube, CString(strFile), spItem->FUN_1405283d0()) == 0)
+                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141886cc0(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
                 {
                     ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
                 }

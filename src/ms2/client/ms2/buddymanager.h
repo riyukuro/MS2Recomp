@@ -85,12 +85,12 @@ public:
     typedef Unk_BuddyPtr<CBuddy> Ptr;
     CBuddyManager(); virtual ~CBuddyManager();
     void FUN_140ae2e90(Unk_BuddyInput&);
-    void FUN_140ae4820(Unk_BuddyRequest&);
-    Ptr FUN_140ae4880(__int64); Ptr FUN_140ae4950(const CStringW&); Ptr FUN_140ae4ad0(); Ptr FUN_140ae4b70(__int64);
-    Ptr FUN_140ae4c30(__int64,__int64,const CStringW&);
-    bool FUN_140ae4d70(__int64); void FUN_140ae4df0(ATL::CAtlArray<Ptr>&); unsigned int FUN_140ae4ed0();
+    void SendBuddyRequest(Unk_BuddyRequest&);
+    Ptr FindByAccount(__int64); Ptr FindByName(const CStringW&); Ptr GetNewestBuddy(); Ptr FindById(__int64);
+    Ptr FindBuddy(__int64,__int64,const CStringW&);
+    bool FUN_140ae4d70(__int64); void GetAllBuddies(ATL::CAtlArray<Ptr>&); unsigned int GetBuddyCount();
     int FUN_140ae4f50(); int FUN_140ae5070(); void FUN_140ae5190(); unsigned FUN_140ae51b0(__int64); unsigned FUN_140ae5240(const CStringW&);
-    int FUN_140ae52d0(int,int); int FUN_140ae5410(CStringW); void SendBuddyMode20(); void FUN_140ae5630(Ptr); void FUN_140ae5750(__int64); void FUN_140ae5850(Ptr); void FUN_140ae5910();
+    int FUN_140ae52d0(int,int); int FUN_140ae5410(CStringW); void SendBuddyMode20(); void AddBuddy(Ptr); void FUN_140ae5750(__int64); void RemoveBuddy(Ptr); void ClearBuddies();
     ATL::CAtlList<Ptr> list;
     ATL::CAtlMap<__int64,Ptr> ids,accounts;
     CLockCriticalSection lock;

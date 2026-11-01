@@ -94,6 +94,9 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/seasondatatable.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -118,13 +121,11 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ArcClickD
 typedef Delegate<bool(int, const CMsgBoxData&)> ArcBoxDelegate;
 
 // The game buttons and the enter button.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422ce240(const ArcClickDelegate& onClick, void* pUserData);   // click callback
-    void FUN_1422cdfb0(const CStringW& strLabel);                           // the button text
     void FUN_1422c1fe0(unsigned bEnabled);                                  // enable / disable
-    void FUN_1422ce090(int bSelected);                                      // selected state
 };
 
 // The ranking view movie clip (the enter button is one of its children).
@@ -264,13 +265,13 @@ void UIArcadeMainDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    m_rankView = FUN_140ba7930("m_rankingInfo");
-    m_emptyView = FUN_140ba7930("m_rankingEmpty");
+    m_rankView = GetChild<ASMovieClip>("m_rankingInfo");
+    m_emptyView = GetChild<ASMovieClip>("m_rankingEmpty");
     for (int i = 0; i < 9; i++)
     {
         int nNo = i + 1;
         CString strName = FUN_1402bb1c0("m_game{0}", &nNo);
-        m_buttons[i] = FUN_140bb4b10(strName);
+        m_buttons[i] = GetChild<Unk_140acd6e0>(strName);
         if (m_buttons[i].get() != 0)
             m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), FUN_140bb9630(i));
     }
@@ -422,7 +423,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, L"");
             if (spBox.get() != 0)
             {
-                spBox->FUN_140533ff0(spGame->m_nId);
+                spBox->Append<int>(spGame->m_nId);
                 spBox->FUN_141a027c0(ArcBoxDelegate(this, &UIArcadeMainDialog::FUN_140ef7ab0));
                 FUN_140d73c60(spBox);
             }
@@ -605,7 +606,7 @@ void UIArcadeMainDialog::FUN_140ef7ea0()
     if (m_strUrl.GetLength() < 1)
         return;
     m_nRequestTick = GetTickCountMs2();
-    if (((struct Unk_ArcConfigRoot*)FUN_14025e7b0())->m_config.FUN_1402c4c90(0x32) == 0)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_ArcConfigRoot*)FUN_14025e7b0())->m_config).Get((CContentShutdown::Content)(0x32)) == 0)
     {
         if (FUN_140166410()->FUN_14036d570(0x3f) == true)
         {
@@ -651,7 +652,7 @@ void UIArcadeMainDialog::FUN_140ef80f0(CStringW strXml)
             CStringW strName((const wchar_t*)0);
             int nScore = 0;
             int nRank = 0;
-            FUN_140873420(pInfo, "name", &strName);
+            XmlGetAttr((class TiXmlElement*)(pInfo), "name", strName);
             XmlGetAttr((class TiXmlElement*)(pInfo), "score", *(int*)(&nScore));
             XmlGetAttr((class TiXmlElement*)(pInfo), "rank", *(int*)(&nRank));
             if (nRank <= 0 || 0)    // the exe keeps a constant-false operand here (xor eax,eax; test eax,eax)

@@ -529,7 +529,7 @@ class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 class CQuestNavigationMap   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140c909a0();
+    void Rebuild();
     int InitTraceTable();
 };
 class CEnchantScrollTable   // C3: member view for the former free stand-ins
@@ -707,7 +707,7 @@ UINT CFilePreload::FUN_141211b80(void* context) {
         if(self->stopped==0) {
             self->FUN_141210e10(false);
             ((class CItemDataTable*)(void*)(FUN_140281980()))->LoadAllItemData();
-            if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->FUN_140c909a0();
+            if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->Rebuild();
             self->FUN_141210f00(false);
         }
         self->FUN_141211c20();

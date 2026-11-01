@@ -123,9 +123,9 @@ public:
     bool FUN_141683100(int nKey);
     bool FUN_141683150(int nKey);
     bool FUN_141683200(int nKey);
-    Vector3* FUN_141683290(Vector3* pOut);
-    Vector3* FUN_1416836d0(Vector3* pOut);
-    Vector3* FUN_141683900(Vector3* pOut);
+    Vector3 FUN_141683290();
+    Vector3 FUN_1416836d0();
+    Vector3 FUN_141683900();
     bool FUN_1416839b0();
     void FUN_141683a90();
     bool FUN_141683ef0();
@@ -322,12 +322,11 @@ bool Unk_PCMove::FUN_141683200(int nKey)
 }
 
 // @0x141683290
-Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
+Vector3 Unk_PCMove::FUN_141683290()
 {
     Vector3 kDir = DAT_143b01a60;
     if (((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x15) != 0 || ((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x14) != 0) {
-        *pOut = kDir;
-        return pOut;
+        return kDir;
     }
     if (FUN_141682fe0(0x30d43)) {
         kDir.x = 1.0f;
@@ -374,17 +373,14 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb5)) {
         if (*static_cast<bool*>(((void*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))) != 0) {
             if (!FUN_141683ef0()) {
-                *pOut = DAT_143b01a60;
-                return pOut;
+                return DAT_143b01a60;
             }
             if (!((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8c550()) {
-                *pOut = DAT_143b01a60;
-                return pOut;
+                return DAT_143b01a60;
             }
             if (FUN_140a58520(((void*)FUN_140a58540())) != 0) {
                 if (FUN_1416839b0()) {
-                    *pOut = DAT_143b01a60;
-                    return pOut;
+                    return DAT_143b01a60;
                 }
             } else {
                 Vector3 kCur = reinterpret_cast<Unk_PcmInput*>(((void*)FUN_140a58540()))->FUN_140d8c2f0();
@@ -395,12 +391,11 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
     }
     if (bFlipped)
         FUN_140ad0c10(&kDir, -1.0f);
-    *pOut = kDir;
-    return pOut;
+    return kDir;
 }
 
 // @0x1416836d0
-Vector3* Unk_PCMove::FUN_1416836d0(Vector3* pOut)
+Vector3 Unk_PCMove::FUN_1416836d0()
 {
     Vector3 kDir = DAT_143b01a60;
     if (FUN_141683100(0x30d43)) {
@@ -436,23 +431,19 @@ Vector3* Unk_PCMove::FUN_1416836d0(Vector3* pOut)
                 FUN_140ad0c10(&kDir, -1.0f);
         }
     }
-    *pOut = kDir;
-    return pOut;
+    return kDir;
 }
 
 // @0x141683900
-Vector3* Unk_PCMove::FUN_141683900(Vector3* pOut)
+Vector3 Unk_PCMove::FUN_141683900()
 {
     if (!FUN_141683ef0()) {
-        *pOut = DAT_143b01a60;
-        return pOut;
+        return DAT_143b01a60;
     }
     if (!FUN_1416839b0() && (m_moving != 0 || FUN_140868ba0(m_timer) != 0)) {
-        *pOut = m_dir;
-        return pOut;
+        return m_dir;
     } else {
-        FUN_141683290(pOut);
-        return pOut;
+        return FUN_141683290();
     }
 }
 

@@ -32,8 +32,6 @@ public:
     virtual void vfunc_25();                                // 25 0x1422de610 invoke AS "alignment" (UpdateAlignment)
     int FUN_1422c1500();                                    // width
     int FUN_1422c1530();                                    // height
-    void FUN_1422bffe0(int x, int y);                       // set the position
-    void FUN_1422c00f0(float x, float y);                   // set the position (float)
     void FUN_1422c0f60(float* pX, float* pY);               // get the position
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, int n);   // "createEntity" (UIHudEntity family)
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool b);     // "updateEntity"

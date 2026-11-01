@@ -45,6 +45,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 
 // ---- header statics (dynamic initializers 0x1400e1660..0x1400e17d0; the same group as uiskillbookautodistributedialog.cpp) ----
 #ifndef MS2_HOOK_DLL
@@ -121,13 +123,12 @@ public:
     int FUN_14142b250(int nKey, int a, unsigned __int64 nAction, int b, int nSet);
     void FUN_14142a8b0(unsigned __int64 nAction);
 };
-Unk_ScKeys* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_ScKeys (calls cast back)
 
 // The hot key label of the movie and the tab buttons.
-class Unk_140acd6e0 : public ASDisplayObject
+class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422cdfb0(const CStringW& strLabel);                   // the button text
     void FUN_1422c7630(int n);                                      // focus
     MS2Ptr<ASDisplayObject> FUN_1422ce400();                        // the key cap child
 };
@@ -171,7 +172,6 @@ MS2_CHECK_SIZE(Unk_ScReqValue, 0x20);                               // ctor 0x14
 void* FUN_140d86260();   // C3: was FUN_140d86260
 CStringW BlockFormat(int nStringId);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 CStringW GetStringCommon(int nId);
 CStringTable* GetStringTable();
 void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
@@ -182,7 +182,6 @@ UIMessageBox* FUN_14151f890();
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);                    // the learned skill tooltip
-void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
 
 // ---- the hot key state ----
 
@@ -297,13 +296,13 @@ int UISkillCompactControlDialog::vfunc_13()
     {
         bool bGot = false;
         int nKey = 0;
-        int nPressed = FUN_1409331f0()->FUN_14142e470(0);
+        int nPressed = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142e470(0);
         if (nPressed != 0)
         {
-            nKey = FUN_1409331f0()->FUN_14142e340(0);
+            nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142e340(0);
             if (nPressed != nKey)
             {
-                if (FUN_1409331f0()->FUN_141430cb0(nKey) != 0)
+                if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_141430cb0(nKey) != 0)
                 {
                     DAT_143acbd08 = 0;
                     bGot = false;
@@ -330,7 +329,7 @@ int UISkillCompactControlDialog::vfunc_13()
         }
         else
         {
-            nKey = FUN_1409331f0()->FUN_14142e340(0);
+            nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142e340(0);
             if (nKey != 0)
             {
                 DAT_143acbd08 = 0;
@@ -338,7 +337,7 @@ int UISkillCompactControlDialog::vfunc_13()
             }
             else if (DAT_143acbd08 != 0)
             {
-                if (FUN_1409331f0()->FUN_141430b90(DAT_143acbd08) != 0)
+                if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_141430b90(DAT_143acbd08) != 0)
                 {
                     DAT_143acbd08 = 0;
                     bGot = false;
@@ -351,7 +350,7 @@ int UISkillCompactControlDialog::vfunc_13()
         }
         if (bGot && nKey != 0)
         {
-            int nSet = FUN_1409331f0()->FUN_1414319f0();
+            int nSet = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_1414319f0();
             if (nSet == 2)
             {
                 if (nKey < 0x91)
@@ -365,7 +364,7 @@ int UISkillCompactControlDialog::vfunc_13()
                 FUN_140d73aa0(BlockFormat(0x854), 0, static_cast<IMessageListener*>(this), CStringW(L""));
                 return 0;
             }
-            if (FUN_1409331f0()->FUN_14142cc40(nKey) != 0)
+            if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142cc40(nKey) != 0)
             {
                 if (FUN_140fa23a0(nKey) != 0)
                 {
@@ -380,14 +379,14 @@ int UISkillCompactControlDialog::vfunc_13()
                 {
                     m_cur.m_nState = 1;
                     m_cur.m_nKey = nKey;
-                    unsigned __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
+                    unsigned __int64 nAction = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142d190(nKey);
                     CStringW strName;
-                    if (FUN_1409331f0()->FUN_14142cf10(nAction) != 0)
-                        strName = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0(FUN_1409331f0()->FUN_14142d190(nKey)),
-                                                FUN_1409331f0()->FUN_14142d220(nKey));
+                    if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142cf10(nAction) != 0)
+                        strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0(reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142d190(nKey)),
+                                                reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142d220(nKey));
                     else
                         strName = GetStringTable()->FUN_1418125b0((unsigned)nAction);
-                    if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
+                    if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_141430470(nAction) == 0)
                     {
                         FUN_140d73aa0(FUN_14052bd00(0x84f, strName), 1, static_cast<IMessageListener*>(this), CStringW(L""));
                     }
@@ -458,7 +457,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
-            int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strName)), 0);
+            int nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142c940(FUN_140fa2520(CStringW(strName)), 0);
             FUN_140fa23f0(nKey, 0);
             FUN_140fa29f0(CStringW(strName));
         }
@@ -468,8 +467,8 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
     {
         m_cur.Clear();
         m_cur.m_strTab = m_strTab;
-        int nSet = FUN_1409331f0()->FUN_1414319f0();
-        int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), nSet);
+        int nSet = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_1414319f0();
+        int nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), nSet);
         m_prev.Clear();
         m_prev.m_nKey = nKey;
         m_prev.m_strTab = m_strTab;
@@ -528,7 +527,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         }
         m_cur.Clear();
         m_cur.m_strTab = m_strTab;
-        int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), 0);
+        int nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), 0);
         FUN_140fa23f0(nKey, 0);
         FUN_140fa2180(CStringW(m_strTab));
         FUN_140fa1400();
@@ -571,7 +570,7 @@ void UISkillCompactControlDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         ASTooltip tip(pPlayer, 0x10, 2);
         if (FUN_1409e1b80(&tip, nSkillId, 0) != 0)
         {
-            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            *pRetVal = tip.FUN_1422bb870();
             return;
         }
     }
@@ -896,11 +895,11 @@ void UISkillCompactControlDialog::FUN_140fa1ff0()
 // @0x140fa2180
 void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 {
-    int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
+    int nKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_1414319f0());
     MS2Ptr<Unk_140acd6e0> spHotKey = static_cast<Unk_ScButtonView*>(m_30.operator->())->FUN_140acce30("m_hotKey");
     if (spHotKey)
     {
-        CStringW strKey = FUN_1409331f0()->FUN_14142d220(nKey);
+        CStringW strKey = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142d220(nKey);
         spHotKey->FUN_1422cdfb0(strKey);
         spHotKey->FUN_1422c7630(0);
         if (nKey > 0x91)
@@ -914,20 +913,20 @@ void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 // @0x140fa23a0
 int UISkillCompactControlDialog::FUN_140fa23a0(int nKey)
 {
-    return FUN_1409331f0()->FUN_14142d190(nKey) == 0;
+    return reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142d190(nKey) == 0;
 }
 
 // @0x140fa23f0
 int UISkillCompactControlDialog::FUN_140fa23f0(int nKey, __int64 nId)
 {
-    int nSet = FUN_1409331f0()->FUN_1414319f0();
-    if (FUN_1409331f0()->FUN_14142b250(nKey, 2, nId, 0, nSet) != 0)
+    int nSet = reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_1414319f0();
+    if (reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142b250(nKey, 2, nId, 0, nSet) != 0)
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(m_cur.m_strTab));
         if (spConfig.IsNull() != 0)
             return 0;
         spConfig->m_30 = nId;
-        FUN_1409331f0()->FUN_14142a8b0(nId);
+        reinterpret_cast<Unk_ScKeys*>(FUN_1409331f0())->FUN_14142a8b0(nId);
         FUN_140fa1400();
         return 1;
     }

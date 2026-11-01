@@ -32,6 +32,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -66,16 +67,6 @@ extern NiPoint3 DAT_143b01a60;                                          // the z
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
-// The hud object the character picker tells about the job (slot 14).
-class Unk_CsHud
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(int nJobCode);
-};
-Unk_CsHud* FUN_140a94350();
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 inline CSceneStateMulti* FUN_140f30370();
 
@@ -291,7 +282,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             {
                 CStringW strLocale;
                 FUN_140873b30(pGroup, "locale", strLocale);
-                if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d750(strLocale))
+                if (!((class CFeatureManager*)FUN_140166410())->IsLocaleInList(strLocale))
                     continue;
                 if (strLocale.IsEmpty())
                     pDisplayAny = pGroup;
@@ -309,9 +300,9 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
         {
             CStringW strFeature;
             XmlGetAttr((class TiXmlElement*)(pRow), "feature", strFeature);
-            if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d4b0(strFeature))
+            if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabledByName(strFeature))
                 continue;
-            CStringW strMax = ((class CFeatureManager*)FUN_140166410())->FUN_14036de20(strBest, strFeature);
+            CStringW strMax = ((class CFeatureManager*)FUN_140166410())->SelectHigherLevelFeatureName(strBest, strFeature);
             if (FUN_14025cd60(strMax, strFeature))
             {
                 pSelected = pRow;
@@ -393,7 +384,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
         if (box.get() != 0)
         {
             box.operator->()->SetTitle(L"$s_msgbox_ugc_turms_title");
-            box.operator->()->FUN_140533ff0(nJobCode);
+            box.operator->()->Append<int>(nJobCode);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
     }
@@ -480,7 +471,7 @@ void UICharacterCreateSelectDialog::FUN_140f2ffb0(int nJobCode)
     }
     if (spJob.operator->()->m_characterVoice.GetLength() > 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spJob.operator->()->m_characterVoice), DAT_143b01a60);
-    FUN_140a94350()->vfunc_14(nJobCode);
+    ChromaSDK::GetChromaManager()->SetColorMode(nJobCode);
 }
 MS2_REPLACE_METHOD(0x140F2FFB0, UICharacterCreateSelectDialog, FUN_140f2ffb0, 340, 0x1693AEC9);
 

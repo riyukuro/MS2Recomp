@@ -33,7 +33,7 @@ public:
 };
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB); // names are equal
 CStringW FUN_14052bd00(int nId, const CStringW& strName);       // string table text with one name
-void FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
+int FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
 void FUN_1412751b0(const CStringW& strMsg, int nType);
 void FUN_141925e70(int, int);
 

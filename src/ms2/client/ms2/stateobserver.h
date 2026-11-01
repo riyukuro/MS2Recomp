@@ -41,10 +41,10 @@ public:
     MS2Ptr<StateData> vfunc_27();                           // 0x140ac5c80
     bool vfunc_28(MS2Ptr<Unk_StateArg22> p);                // 0x140ac40f0
 
-    CStringW FUN_140ac4170();                               // the observed player's name
-    void FUN_140ac4270();                                   // observe the previous candidate
-    void FUN_140ac43e0();                                   // observe the next candidate
-    void FUN_140ac4550();                                   // observe the nearest candidate other than the current one
+    CStringW GetTargetName();                               // the observed player's name
+    void ObservePrevious();                                   // observe the previous candidate
+    void ObserveNext();                                   // observe the next candidate
+    void ObserveOther();                                   // observe the nearest candidate other than the current one
     void FUN_140ac45e0();                                   // enter: hide the HUD, register the kill notice
     void FUN_140ac4760();                                   // leave: restore the HUD, unregister the kill notice
     void FUN_140ac48e0();                                   // follow the observed player's position

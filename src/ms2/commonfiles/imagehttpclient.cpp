@@ -197,7 +197,7 @@ unsigned CImageHttpClient::SendTemporaryKey()
 // @0x140511c10
 bool CImageHttpClient::CanSend()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e5b0())
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsRegionJP())
         return false;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xf7))
         return false;

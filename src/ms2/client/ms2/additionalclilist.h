@@ -46,26 +46,26 @@ public:
     void FUN_14096fb20(int nEvent);                         // drop the records of an invoke event
     void FUN_14096fc00(int nKey);                           // drop a record
     MS2Ptr<AdditionalCli> FUN_14096fc80(int nKey);          // a record by key
-    MS2Ptr<AdditionalCli> FUN_14096fd30(int nType);         // the first active record of an event buff type
+    MS2Ptr<AdditionalCli> FindEnabledByEventBuffType(int nType);         // the first active record of an event buff type
     MS2Ptr<AdditionalCli> FUN_14096fe60(unsigned nId, unsigned short nLevel, unsigned nCount, bool bAll, int nCompare);
     int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare);
-    int FUN_1409700d0(int nType);                           // an active record of a main type
-    int FUN_1409701d0(int nType);                           // an active record of an event buff type
-    int FUN_1409702d0(int nGroup);                          // an active record of a group
-    bool FUN_1409703d0(int nSlot);                          // the item slot is disabled
+    int HasEnabledWithMainType(int nType);                           // an active record of a main type
+    int HasEnabledWithEventBuffType(int nType);                           // an active record of an event buff type
+    int HasEnabledInGroup(int nGroup);                          // an active record of a group
+    bool IsItemSlotDisabled(int nSlot);                          // the item slot is disabled
     void FUN_140970420(double dTime);                       // per-frame update
-    void FUN_140970490();                                   // clear
-    float FUN_1409705d0();                                  // scale
+    void ClearAll();                                   // clear
+    float GetScaleMultiplier();                                  // scale
     float GetAlpha();                                  // the applied alpha
-    float FUN_140970720();                                  // the alpha the records ask for
-    __int64 FUN_1409708a0();                                // shield total
+    float ComputeAlphaBlending();                                  // the alpha the records ask for
+    __int64 GetTotalShieldValue();                                // shield total
     int FUN_140970990();                                    // hide
     unsigned FUN_1409709b0();                               // stun kind
     int FUN_1409709d0();                                    // stunned
     int FUN_140970a00();                                    // no fly
     bool IsPvpOnOff();                                   // pvp on
     int FUN_140970a40();                                    // confusion move
-    int FUN_140970a60(unsigned nSkillId);                   // the skill is disabled
+    int IsSkillUseDisabled(unsigned nSkillId);                   // the skill is disabled
     bool IsDisableRevivalHere();                                   // revival disabled here
     int GetInvincible();                                    // invincible
     int GetForceApplyTarget();                                    // force apply target
@@ -73,19 +73,19 @@ public:
     unsigned FUN_140970bf0();                               // skill use disable mask
     int FUN_140970c10(SkillAttackData* pAttack, int nPush); // the super armor resists the attack
     bool IsInfinitySP();                                   // infinity sp
-    unsigned FUN_140970d90(unsigned nId, unsigned short nLevel);   // overlap count of a record
-    int FUN_140970eb0(float& fOut);                         // fixed z rotation
+    unsigned GetOverlapCount(unsigned nId, unsigned short nLevel);   // overlap count of a record
+    int TryGetFixedZRotation(float& fOut);                         // fixed z rotation
     __int64 FUN_140970f00(int nType, __int64 nValue);       // consume value scaled by the rates
     float FUN_140970fb0();                                  // sp consume -> hp rate
     float FUN_140970fd0();                                  // sp rate
     void FUN_140970ff0(CInPacket& packet);                  // the full list (field enter)
-    void FUN_140971150();                                   // re-apply the alpha
-    unsigned FUN_1409711c0();                               // ignored collision groups
-    int FUN_140971260(int nId);                             // an active record of an id
-    int FUN_140971300(int nId, int nCaster);                // an active record of an id by a caster
+    void ApplyAlphaBlending();                                   // re-apply the alpha
+    unsigned GetIgnoreCollisionGroups();                               // ignored collision groups
+    int HasEnabledWithId(int nId);                             // an active record of an id
+    int HasEnabledWithIdAndCaster(int nId, int nCaster);                // an active record of an id by a caster
     void FUN_1409713b0();                                   // stun state
-    CString FUN_1409716a0();                                // stun animation
-    int FUN_1409716f0(SAType eType);                        // special ability value
+    CString GetStunAnimation();                                // stun animation
+    int GetSpecialAbility(SAType eType);                        // special ability value
     void FUN_140971720(StatMap& skills, StatMap& effects);  // invoke effect options per skill / effect
     void FUN_140972380(CSpecialEffectCtx* pCtx);            // run the special effects of a kind
     void FUN_1409725d0();                                   // dirty

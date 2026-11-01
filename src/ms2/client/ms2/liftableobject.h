@@ -18,8 +18,8 @@ public:
 
     CString GetName() const;                              // the name key
     void SetName(CString strName);                        // set the name key
-    int FUN_141447340() const;                                  // can be picked up now
-    int FUN_141447390(Unk_Entity* pEntity, bool bFixed, int nKind);   // bind the prop entity
+    int CanLift() const;                                  // can be picked up now
+    int Init(Unk_Entity* pEntity, bool bFixed, int nKind);   // bind the prop entity
     void FUN_141447410(Unk_Entity* pEntity);                    // bind and read the entity's properties
     void FUN_1414477f0(CString strA, CString strB);                   // quest-mask check, mask 0
     void FUN_141447850(CString strA, CString strB);                   // quest-mask check, mask 1
@@ -31,7 +31,7 @@ public:
     void FUN_141447aa0(bool bValue);
     float GetRange() const;
     int GetState() const;
-    void FUN_141447b00(int nState);                             // set state, collision group
+    void SetState(int nState);                             // set state, collision group
     void FUN_141447c10();                                       // stop the cooldown
     Vector3 FUN_141447c80() const;                      // +0xc4
     int FUN_141447cc0() const;                                  // +0xa8

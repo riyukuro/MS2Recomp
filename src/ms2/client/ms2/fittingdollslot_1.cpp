@@ -296,7 +296,7 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
         MS2Ptr<CItem> spNew(new CItem());
         if (spNew->FUN_140523c40(kItems[i], 1, 0))
         {
-            spNew->FUN_140526b30(FUN_14123c580());
+            spNew->SetObjectId(FUN_14123c580());
             FUN_141653d10(spNew);
         }
     }
@@ -362,11 +362,11 @@ void FittingDollPC::vfunc_9(void* p)
 MS2_REPLACE_METHOD(0x14121c140, FittingDollPC, vfunc_9, 34, 0xD0A70947);
 
 // @0x14121c170
-void FittingDollPC::FUN_14121c170(NiFixedString kParentName)
+void FittingDollPC::SetParentName(NiFixedString kParentName)
 {
     parentName = kParentName;
 }
-MS2_REPLACE_METHOD(0x14121c170, FittingDollPC, FUN_14121c170, 63, 0x18348364);
+MS2_REPLACE_METHOD(0x14121c170, FittingDollPC, SetParentName, 63, 0x18348364);
 
 // @0x14121c1c0
 // The doll hovers ten units above the position it is given.

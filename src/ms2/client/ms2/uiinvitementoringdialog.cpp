@@ -30,6 +30,7 @@
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/buddymanager.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -133,7 +134,6 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, 
 
 class Unk_InvUiMgr { public: };
 
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
 // The popup-menu request (0x78 bytes), built by the ctor at 0x140c302f0 and released by the dtor at 0x140c304c0.
 class Unk_PopupMenuInfo
@@ -192,10 +192,10 @@ void UIInviteMentoringDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_bMentorPage)
     {
-        FUN_1409ee290(&m_30)->FUN_1422bb870().GotoAndStop("mentor");
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1422bb870().GotoAndStop("mentor");
         {
             CString strPage("mentorPage");
-            m_spPage = FUN_140ba7930(strPage);
+            m_spPage = GetChild<ASMovieClip>(strPage);
         }
         FUN_141925fa0(CString("m_mentorDragBar"));
         CMenteeSearchParam param;
@@ -204,10 +204,10 @@ void UIInviteMentoringDialog::OnLoadComplete()
     }
     else
     {
-        FUN_1409ee290(&m_30)->FUN_1422bb870().GotoAndStop("mentee");
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1422bb870().GotoAndStop("mentee");
         {
             CString strPage("menteePage");
-            m_spPage = FUN_140ba7930(strPage);
+            m_spPage = GetChild<ASMovieClip>(strPage);
         }
         FUN_141925fa0(CString("m_menteeDragBar"));
         COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
@@ -222,7 +222,7 @@ Unk_PopupMenu* FUN_140c30140(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get() != 0)
             return reinterpret_cast<Unk_PopupMenu*>(dynamic_cast<UIPopUpMenu*>(spObj.operator->()));
     }
@@ -234,7 +234,7 @@ UIDialog* FUN_140c300a0(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIDialog*>(spObj.operator->());
     }
@@ -288,7 +288,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     else if (_stricmp(szMethod, "OnAcceptMentoring") == 0)
     {
-        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
+        if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x42)) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -307,7 +307,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             if (spBox.get() != 0)
             {
                 spBox->FUN_141a024a0(0);
-                spBox->FUN_1405340b0(nSerial);
+                spBox->Append<__int64>(nSerial);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInviteMentoringDialog::FUN_140c2fae0));
                 FUN_140d73c60(spBox);
                 return 1;
@@ -317,7 +317,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     else if (_stricmp(szMethod, "OnRejectMentoring") == 0)
     {
-        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
+        if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x42)) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;
@@ -353,10 +353,10 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             }
             CString strChar = FUN_140719530(nChar);
             Unk_InvUIMsg msg;
-            Unk_InvArgs(msg).FUN_1422b7f70(0);
-            Unk_InvArgs(msg).FUN_1422b7f70(1);
+            Unk_InvArgs(msg).AddInt(0);
+            Unk_InvArgs(msg).AddInt(1);
             Unk_InvArgs(msg).FUN_1422b8310(strName);
-            Unk_InvArgs(msg).FUN_1422b82b0(strChar);
+            Unk_InvArgs(msg).AddString(strChar);
             UICommunityQueryDialog* pQuery = FUN_140ae5a30(0x4e4e);
             if (pQuery != 0)
                 pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
@@ -470,7 +470,7 @@ void UIInviteMentoringDialog::FUN_140c2f490()
 // @0x140c2f860
 void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& strName)
 {
-    if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x41) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x41)) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return;

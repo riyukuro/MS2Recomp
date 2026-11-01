@@ -36,7 +36,6 @@ class ASDialog : public ASDisplayObject
 class Unk_BrmAS : public AScript
 {
 public:
-    void FUN_1407cba60(const char* szName, CString str);
 };
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
@@ -85,9 +84,6 @@ CStringW FUN_1401aa6a0(int nId);                        // npc name
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p);
 void FUN_140f250b0(const CString& strName, int nCount, int nNpcId);
 void FUN_140f25170(const CString& strName);
@@ -100,6 +96,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIBossRewardPreviewDialog::SlotBag);
 static CString s_strIconPath = "iconPath";
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x140f26120 the string table text formatted with the npc name and a literal
 CStringW FUN_140f26120(CStringW strKey, const CStringW& strName, const wchar_t (&sz)[3])
@@ -159,18 +156,18 @@ void FUN_140f250b0(const CString& strName, int nCount, int nNpcId)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140f25170 destroy the registered bag
 void FUN_140f25170(const CString& strName)
 {
-    UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(FUN_1422c8e90(strName));
+    UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

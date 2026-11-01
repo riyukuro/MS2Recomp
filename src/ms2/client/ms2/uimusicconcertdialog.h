@@ -39,9 +39,7 @@ public:
     bool SendPlayInstrumentMode11(int nResult, const class CMsgBoxData& box);   // confirm register: packet 0x74 / 0xb
     bool SendPlayInstrumentMode12(int nResult, const class CMsgBoxData& box);   // confirm unregister: packet 0x74 / 0xc
 
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);          // 0x140ba7930 bind a movie clip child
     MS2Ptr<Unk_MusicButton> FUN_140bb4b10(const CString& strName);      // 0x140bb4b10 bind a button child
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // 0x140bb4cf0 bind a text field child
 
 private:
     MS2_LAYOUT_FRIEND;

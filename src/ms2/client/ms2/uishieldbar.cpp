@@ -14,6 +14,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_ShieldClip : public ASMovieClip
@@ -34,7 +36,7 @@ public:
     void FUN_1422c00f0(float x, float y);
     void FUN_1422c0290(float cx, float cy);
 };
-struct Unk_ShieldCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_ShieldCfgFloat { char m_pad[0x58]; };
 struct Unk_ShieldCfgInt { int* FUN_1402056b0(); void* m_unknown; };
 struct Unk_ShieldCfg
 {
@@ -68,11 +70,9 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-PCBase* FUN_140974230(PCBase*);
 struct Unk_ShieldCfgData { char m_pad[0xb]; bool m_b; char m_c; bool m_d; };
 class Unk_ShieldCfgHolder { public: Unk_ShieldCfgData* FUN_140b123b0(); };
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_ShieldUIMgr { public: };
 
 // @0x140e855f0
@@ -84,7 +84,7 @@ UIShieldBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 0;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = ((struct Unk_ShieldCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ShieldCfg*)FUN_1401d3200())->m_2c8)->Read();
 }
 
 // @0x140e856c0
@@ -264,7 +264,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
         return reinterpret_cast<Unk_ShieldCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_b;
     else
     {
-        PCBase* pPc = FUN_140974230(pActor);
+        PCBase* pPc = efd::DynamicCast<PC, PCBase>(pActor);
         if (pPc != 0)
         {
             if (pPlayer->FUN_1415278d0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
@@ -304,7 +304,7 @@ UIShieldBar* FUN_140e86a50(int nUiId)
 {
     if (reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIShieldBar*>((UIObject*)p);
     }
@@ -342,7 +342,7 @@ void UIShieldBar::FUN_140e86430(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -370,7 +370,7 @@ UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_ShieldEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
                 if (p)

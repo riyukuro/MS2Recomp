@@ -847,11 +847,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The state object of the local player (0x1403ed2d0 singleton -> 0x141bd0cc0).
 class Unk_14166ccb0 : public StateMicroGameRps { };
-class Unk_141bd0cc0 : public PCBase
-{
-public:
-    Unk_14166ccb0* FUN_14166ccb0();
-};
+class Unk_141bd0cc0 : public PCBase { };   // C3: FUN_14166ccb0 is PCBase's
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -885,7 +881,7 @@ MS2_REPLACE_METHOD(0x140E660C0, UIMicroGameRps, GetTypeName, 61, 0xE98C0E76);
 void UIMicroGameRps::vfunc_15()
 {
     if (FUN_140e66710() != 0)
-        FUN_140e663b0();
+        Hide();
     else
         FUN_140e664a0();
 }
@@ -907,7 +903,7 @@ MS2_REPLACE_METHOD(0x140E66160, UIMicroGameRps, vfunc_2, 24, 0xEF4E921A);
 // @0x140e66180
 void UIMicroGameRps::vfunc_3()
 {
-    FUN_140e663b0();
+    Hide();
     UIHeadUpDisplay::vfunc_3();
 }
 MS2_REPLACE_METHOD(0x140E66180, UIMicroGameRps, vfunc_3, 34, 0xD551E9EA);
@@ -940,7 +936,7 @@ int UIMicroGameRps::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 MS2_REPLACE_METHOD(0x140E661B0, UIMicroGameRps, vfunc_28, 370, 0xB3BFB6DD);
 
 // @0x140e66330
-void UIMicroGameRps::FUN_140e66330()
+void UIMicroGameRps::PopUp()
 {
     if (m_30 == NULL)
         return;
@@ -948,10 +944,10 @@ void UIMicroGameRps::FUN_140e66330()
     FUN_140e664a0();
     m_30->Invoke("popUp");
 }
-MS2_REPLACE_METHOD(0x140E66330, UIMicroGameRps, FUN_140e66330, 111, 0xEB1146CD);
+MS2_REPLACE_METHOD(0x140E66330, UIMicroGameRps, PopUp, 111, 0xEB1146CD);
 
 // @0x140e663b0
-void UIMicroGameRps::FUN_140e663b0()
+void UIMicroGameRps::Hide()
 {
     if (m_30 == NULL)
         return;
@@ -960,7 +956,7 @@ void UIMicroGameRps::FUN_140e663b0()
     m_68 = 0;
     m_30->Invoke("hide");
 }
-MS2_REPLACE_METHOD(0x140E663B0, UIMicroGameRps, FUN_140e663b0, 117, 0x9B525C31);
+MS2_REPLACE_METHOD(0x140E663B0, UIMicroGameRps, Hide, 117, 0x9B525C31);
 
 // @0x140e66430
 void UIMicroGameRps::vfunc_41(const Scaleform::GFx::Value& root)
@@ -1012,7 +1008,7 @@ void UIMicroGameRps::OnRandChat()
         return;
     if (pState->FUN_14166c930() != 0x3c)
         return;
-    Unk_14166ccb0* p = pState->FUN_14166ccb0();
+    Unk_14166ccb0* p = reinterpret_cast<Unk_14166ccb0*>(pState->FUN_14166ccb0());
     if (p == NULL)
         return;
     p->FUN_140b877c0();

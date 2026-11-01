@@ -99,21 +99,21 @@ struct Unk_PremiumOptionLess
 ASBillData::ASBillData(int nMovieId)
     : ASObj(nMovieId)
 {
-    FUN_1409ab900();
+    ResetDefaults();
 }
 
 // @0x1409ab810
 ASBillData::ASBillData(const Scaleform::GFx::Value& v, int nMovieId)
     : ASObj(v, nMovieId)
 {
-    FUN_1409ab900();
+    ResetDefaults();
 }
 
 // @0x1409ab870
 ASBillData::ASBillData(Scaleform::GFx::Value& v, int nMovieId)
     : ASObj(v, nMovieId)
 {
-    FUN_1409ab900();
+    ResetDefaults();
 }
 
 // @0x1409ab8d0
@@ -122,7 +122,7 @@ ASBillData::~ASBillData()
 }
 
 // @0x1409ab900
-void ASBillData::FUN_1409ab900()
+void ASBillData::ResetDefaults()
 {
     m_b40 = false;
     m_n44 = 1;
@@ -131,68 +131,68 @@ void ASBillData::FUN_1409ab900()
 }
 
 // @0x1409ab940
-void ASBillData::FUN_1409ab940(Scaleform::GFx::Value& vSlot)
+void ASBillData::SetIconData(Scaleform::GFx::Value& vSlot)
 {
     FUN_1409adbe0("iconData", vSlot);
 }
-MS2_REPLACE_METHOD(0x1409AB940, ASBillData, FUN_1409ab940, 71, 0x73D0CD34);
+MS2_REPLACE_METHOD(0x1409AB940, ASBillData, SetIconData, 71, 0x73D0CD34);
 
 // @0x1409ab990
-void ASBillData::FUN_1409ab990(MS2Ptr<CItemData> spItem, int nRank)
+void ASBillData::SetIconFromItem(MS2Ptr<CItemData> spItem, int nRank)
 {
     if (spItem == 0)
         return;
     ASObj icon(2);
-    icon.FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
+    icon.FUN_1407cba60("iconPath", spItem->GetIconPath());
     icon.FUN_1409adc90("itemGrade", nRank);
-    FUN_1409ab940(icon.FUN_1422bb870());
+    SetIconData(icon.FUN_1422bb870());
 }
-MS2_REPLACE_METHOD(0x1409AB990, ASBillData, FUN_1409ab990, 234, 0x5F038C27);
+MS2_REPLACE_METHOD(0x1409AB990, ASBillData, SetIconFromItem, 234, 0x5F038C27);
 
 // @0x1409aba80
-void ASBillData::FUN_1409aba80(const CStringW& strName)
+void ASBillData::SetItemName(const CStringW& strName)
 {
     FUN_1407cbb20("itemName", strName);
 }
-MS2_REPLACE_METHOD(0x1409ABA80, ASBillData, FUN_1409aba80, 72, 0x1A28C6D2);
+MS2_REPLACE_METHOD(0x1409ABA80, ASBillData, SetItemName, 72, 0x1A28C6D2);
 
 // @0x1409abad0
-void ASBillData::FUN_1409abad0(const CStringW& strPrice, __int64 nPrice)
+void ASBillData::SetSalePrice(const CStringW& strPrice, __int64 nPrice)
 {
     FUN_1407cbb20("strSalePrice", strPrice);
     FUN_1407cba60("salePrice", FUN_1407194b0(nPrice));
 }
-MS2_REPLACE_METHOD(0x1409ABAD0, ASBillData, FUN_1409abad0, 129, 0x76980772);
+MS2_REPLACE_METHOD(0x1409ABAD0, ASBillData, SetSalePrice, 129, 0x76980772);
 
 // @0x1409abb60
-void ASBillData::FUN_1409abb60(const CStringW& strPrice, __int64 nPrice)
+void ASBillData::SetRandomPaybackPrice(const CStringW& strPrice, __int64 nPrice)
 {
     FUN_1407cbb20("strRandomPaybackPrice", strPrice);
     FUN_1407cba60("randomPaybackPrice", FUN_1407194b0(nPrice));
 }
-MS2_REPLACE_METHOD(0x1409ABB60, ASBillData, FUN_1409abb60, 129, 0x0E42B535);
+MS2_REPLACE_METHOD(0x1409ABB60, ASBillData, SetRandomPaybackPrice, 129, 0x0E42B535);
 
 // @0x1409abbf0
-void ASBillData::FUN_1409abbf0(const CStringW& strExtra)
+void ASBillData::SetSelectedOption(const CStringW& strExtra)
 {
     FUN_1407cbb20("selectedOption", strExtra);
 }
-MS2_REPLACE_METHOD(0x1409ABBF0, ASBillData, FUN_1409abbf0, 72, 0x365E5D36);
+MS2_REPLACE_METHOD(0x1409ABBF0, ASBillData, SetSelectedOption, 72, 0x365E5D36);
 
 // @0x1409abc40
-void ASBillData::FUN_1409abc40(Scaleform::GFx::Value& vOptions)
+void ASBillData::SetOptionArray(Scaleform::GFx::Value& vOptions)
 {
     FUN_1409adbe0("arrOption", vOptions);
 }
-MS2_REPLACE_METHOD(0x1409ABC40, ASBillData, FUN_1409abc40, 71, 0xC2269486);
+MS2_REPLACE_METHOD(0x1409ABC40, ASBillData, SetOptionArray, 71, 0xC2269486);
 
 // @0x1409abc90
-void ASBillData::FUN_1409abc90(bool b)
+void ASBillData::SetEnableGift(bool b)
 {
     m_b40 = b;
     FUN_1407cbbe0("enableGift", b);
 }
-MS2_REPLACE_METHOD(0x1409ABC90, ASBillData, FUN_1409abc90, 54, 0xB0F6926C);
+MS2_REPLACE_METHOD(0x1409ABC90, ASBillData, SetEnableGift, 54, 0xB0F6926C);
 
 // @0x1409abcd0
 void ASBillData::FUN_1409abcd0(int nPayType)
@@ -202,11 +202,11 @@ void ASBillData::FUN_1409abcd0(int nPayType)
 MS2_REPLACE_METHOD(0x1409ABCD0, ASBillData, FUN_1409abcd0, 22, 0x1DE9BE0F);
 
 // @0x1409abcf0
-void ASBillData::FUN_1409abcf0(bool b)
+void ASBillData::SetUseDropDown(bool b)
 {
     FUN_1407cbbe0("useDropDown", b);
 }
-MS2_REPLACE_METHOD(0x1409ABCF0, ASBillData, FUN_1409abcf0, 41, 0xFD21E71E);
+MS2_REPLACE_METHOD(0x1409ABCF0, ASBillData, SetUseDropDown, 41, 0xFD21E71E);
 
 // @0x1409abd20
 void ASBillData::FUN_1409abd20(bool b)
@@ -232,26 +232,26 @@ MS2_REPLACE_METHOD(0x1409ABD60, ASBillData, vfunc_1, 8, 0x7F371472);
 // @0x1409abd70
 __int64 ASBillData::vfunc_2()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac0b0();
+    Scaleform::GFx::Value vData = GetSelectCurData();
     if (!vData.IsUndefined())
     {
         ASObj data(vData, 2);
-        return FUN_1409ac2c0(&data);
+        return GetSalePriceFromData(&data);
     }
-    return FUN_1409ac2c0(this);
+    return GetSalePriceFromData(this);
 }
 MS2_REPLACE_METHOD(0x1409ABD70, ASBillData, vfunc_2, 179, 0xFEAC3D06);
 
 // @0x1409abe30
 __int64 ASBillData::vfunc_3()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac190();
+    Scaleform::GFx::Value vData = GetSelectPrevData();
     if (!vData.IsUndefined())
     {
         ASObj data(vData, 2);
-        return FUN_1409ac2c0(&data);
+        return GetSalePriceFromData(&data);
     }
-    return FUN_1409ac2c0(this);
+    return GetSalePriceFromData(this);
 }
 MS2_REPLACE_METHOD(0x1409ABE30, ASBillData, vfunc_3, 179, 0xA6435739);
 
@@ -321,47 +321,47 @@ void FUN_1409abfa0(CAtlArray<int>& arrIds, CAtlArray<MS2Ptr<ASBillData> >& arrBi
 MS2_REPLACE(0x1409ABFA0, FUN_1409abfa0, 262, 0x2A82FF5F);
 
 // @0x1409ac0b0
-Scaleform::GFx::Value ASBillData::FUN_1409ac0b0()
+Scaleform::GFx::Value ASBillData::GetSelectCurData()
 {
-    Scaleform::GFx::Value vSelect = FUN_1409ac270();
+    Scaleform::GFx::Value vSelect = GetSelectData();
     if (!vSelect.IsUndefined())
     {
         ASObj select(vSelect, 2);
-        return select.FUN_1422baa20("curData");
+        return select.GetMember("curData");
     }
     return Scaleform::GFx::Value();
 }
-MS2_REPLACE_METHOD(0x1409AC0B0, ASBillData, FUN_1409ac0b0, 209, 0xE5BA6A3E);
+MS2_REPLACE_METHOD(0x1409AC0B0, ASBillData, GetSelectCurData, 209, 0xE5BA6A3E);
 
 // @0x1409ac190
-Scaleform::GFx::Value ASBillData::FUN_1409ac190()
+Scaleform::GFx::Value ASBillData::GetSelectPrevData()
 {
-    Scaleform::GFx::Value vSelect = FUN_1409ac270();
+    Scaleform::GFx::Value vSelect = GetSelectData();
     if (!vSelect.IsUndefined())
     {
         ASObj select(vSelect, 2);
-        return select.FUN_1422baa20("prevData");
+        return select.GetMember("prevData");
     }
     return Scaleform::GFx::Value();
 }
-MS2_REPLACE_METHOD(0x1409AC190, ASBillData, FUN_1409ac190, 209, 0x0D3D0055);
+MS2_REPLACE_METHOD(0x1409AC190, ASBillData, GetSelectPrevData, 209, 0x0D3D0055);
 
 // @0x1409ac270
-Scaleform::GFx::Value ASBillData::FUN_1409ac270()
+Scaleform::GFx::Value ASBillData::GetSelectData()
 {
-    return FUN_1422baa20("selectData");
+    return GetMember("selectData");
 }
-MS2_REPLACE_METHOD(0x1409AC270, ASBillData, FUN_1409ac270, 65, 0xA5AB95CF);
+MS2_REPLACE_METHOD(0x1409AC270, ASBillData, GetSelectData, 65, 0xA5AB95CF);
 
 // @0x1409ac2c0
-__int64 ASBillData::FUN_1409ac2c0(ASObj* pData)
+__int64 ASBillData::GetSalePriceFromData(ASObj* pData)
 {
     const CString& strName = CString("salePrice");
     CString strValue;
     pData->FUN_1422bac00(strName, strValue);
     return FUN_1407182f0(strValue);
 }
-MS2_REPLACE_METHOD(0x1409AC2C0, ASBillData, FUN_1409ac2c0, 141, 0x06C8075C);
+MS2_REPLACE_METHOD(0x1409AC2C0, ASBillData, GetSalePriceFromData, 141, 0x06C8075C);
 
 // ======== ASMeratMarketBuyBillData ========
 
@@ -378,10 +378,10 @@ void ASMeratMarketBuyBillData::FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProdu
     }
     else if (spProduct->IsUgc())
     {
-        FUN_1409aba80(spProduct->GetName());
+        SetItemName(spProduct->GetName());
         __int64 nPrice = spProduct->GetSalePrice();
         CStringW strPrice = FUN_1418fec00(nCurrency, nPrice, false);
-        FUN_1409abad0(strPrice, nPrice);
+        SetSalePrice(strPrice, nPrice);
         Unk_BillOwner owner;
         owner.id = DAT_143ab2820;
         owner.kind = DAT_143ab2830;
@@ -389,7 +389,7 @@ void ASMeratMarketBuyBillData::FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProdu
         owner.m_n18 = DAT_143ab2834;
         // ugcdef.h types the owner as the 0x18-byte Unk_CommonOwner
         bool bGift = spProduct->m_ugc.FUN_1408963f0(reinterpret_cast<Unk_CommonOwner&>(owner));
-        FUN_1409abc90(bGift);
+        SetEnableGift(bGift);
         FUN_1409abcd0(nCurrency);
     }
 }
@@ -409,20 +409,20 @@ MS2_REPLACE_METHOD(0x1409AC5E0, ASMeratMarketBuyBillData, FUN_1409ac5e0, 255, 0x
 // @0x1409ac6f0
 void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency)
 {
-    FUN_1409aba80(pProduct->GetName());
+    SetItemName(pProduct->GetName());
     __int64 nPrice = pProduct->GetSalePriceOf(nOption);
     CStringW strPrice = FUN_1418fec00(nCurrency, nPrice, false);
-    FUN_1409abad0(strPrice, nPrice);
+    SetSalePrice(strPrice, nPrice);
     if (pProduct->m_nType == 7)
     {
         __int64 nRandom = pProduct->FUN_1406a0270();
         CStringW strRandom = FUN_1418fec00(nCurrency, nRandom, false);
-        FUN_1409abb60(strRandom, nRandom);
+        SetRandomPaybackPrice(strRandom, nRandom);
     }
     if (FUN_1409acfe0(pProduct, nOption, nCurrency))
-        FUN_1409abcf0(true);
+        SetUseDropDown(true);
     bool bGift = pProduct->FUN_1406a1c70(0);
-    FUN_1409abc90(bGift);
+    SetEnableGift(bGift);
     MS2Ptr<CItemData> spItem = FUN_14053f870(pProduct->m_nItemId);
     if (spItem.get() != 0)
     {
@@ -431,7 +431,7 @@ void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduc
     }
     FUN_1409abcd0(nCurrency);
     FUN_1409b0430(nOption);
-    bool bPoint = FUN_1406a5930() && pProduct->FUN_14069ff00();
+    bool bPoint = FUN_1406a5930() && pProduct->HasPointPrice();
     if (bPoint)
     {
         FUN_1409b0450(true);
@@ -447,12 +447,12 @@ MS2_REPLACE_METHOD(0x1409AC6F0, ASMeratMarketBuyBillData, FUN_1409ac6f0, 769, 0x
 void ASMeratMarketBuyBillData::FUN_1409aca00(CMeratMarketPremiumProduct* pOption, MS2Ptr<CMeratMarketProduct> spProduct)
 {
     SetProduct(spProduct);
-    FUN_1409aba80(pOption->GetName());
+    SetItemName(pOption->GetName());
     CStringW strOption = FUN_140ebd870(pOption);
     FUN_1407cbb20("selectedOption", strOption);
     {
         CStringW strEmpty(L"");
-        FUN_1409abad0(strEmpty, 0);
+        SetSalePrice(strEmpty, 0);
     }
     FUN_1409b0430(pOption->m_nId);
 }
@@ -461,7 +461,7 @@ MS2_REPLACE_METHOD(0x1409ACA00, ASMeratMarketBuyBillData, FUN_1409aca00, 330, 0x
 // @0x1409acb50
 int ASMeratMarketBuyBillData::FUN_1409acb50()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac0b0();
+    Scaleform::GFx::Value vData = GetSelectCurData();
     if (vData.IsUndefined() || vData.IsNull())
         return m_n78;
     return FUN_1409ada50(vData);
@@ -494,7 +494,7 @@ MS2_REPLACE_METHOD(0x1409ACC30, ASMeratMarketBuyBillData, vfunc_1, 116, 0xE74800
 // @0x1409accb0
 __int64 ASMeratMarketBuyBillData::vfunc_6()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac0b0();
+    Scaleform::GFx::Value vData = GetSelectCurData();
     if (!vData.IsUndefined())
     {
         ASObj data(vData, 2);
@@ -507,7 +507,7 @@ MS2_REPLACE_METHOD(0x1409ACCB0, ASMeratMarketBuyBillData, vfunc_6, 251, 0xAC39F2
 // @0x1409acdc0
 __int64 ASMeratMarketBuyBillData::vfunc_7()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac190();
+    Scaleform::GFx::Value vData = GetSelectPrevData();
     if (!vData.IsUndefined())
     {
         ASObj data(vData, 2);
@@ -520,7 +520,7 @@ MS2_REPLACE_METHOD(0x1409ACDC0, ASMeratMarketBuyBillData, vfunc_7, 251, 0x7F3079
 // @0x1409aced0
 __int64 ASMeratMarketBuyBillData::vfunc_9()
 {
-    Scaleform::GFx::Value vData = FUN_1409ac0b0();
+    Scaleform::GFx::Value vData = GetSelectCurData();
     if (!vData.IsUndefined())
     {
         ASObj data(vData, 2);
@@ -564,7 +564,7 @@ bool ASBillData::FUN_1409acfe0(CMeratMarketPremiumProduct* pProduct, int nOption
         FUN_1409ad420(arrOptions, nCurrency, spSub.get(), bDay, pBase);
     }
     FUN_1407cb9c0("selectedOptionIndex", nSelected);
-    FUN_1409abc40(arrOptions.FUN_1422bb870());
+    SetOptionArray(arrOptions.FUN_1422bb870());
     return true;
 }
 MS2_REPLACE_METHOD(0x1409ACFE0, ASBillData, FUN_1409acfe0, 876, 0x736BBBD2);
@@ -686,7 +686,7 @@ __int64 ASMeratMarketBuyBillData::FUN_1409adb70(const CString& strName, ASObj* p
 void ASObj::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
 {
     ASData data;
-    data.FUN_1422b83f0(v);
+    data.AddValue(v);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
@@ -694,7 +694,7 @@ void ASObj::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
 void ASObj::FUN_1409adc90(const char* szName, int n)
 {
     ASData data;
-    data.FUN_1422b7f70(n);
+    data.AddInt(n);
     ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 

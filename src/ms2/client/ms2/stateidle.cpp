@@ -7,6 +7,7 @@
 #pragma function(memmove)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateidle.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <string.h>
 
@@ -36,10 +37,13 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/bonerotateinterpolator.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // The item a state is told about in its slots 29/30.
 class Unk_StateArg29 : public CItem { };
@@ -52,10 +56,18 @@ public:
 };
 
 // Buff container of an actor.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SiBuffMgr
 {
 public:
-    Vector3 FUN_141683290();                     // knock-back direction
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
@@ -94,13 +106,13 @@ class Unk_SiAnimSvc
 {
 public:
     unsigned FUN_140b7f6a0(const egf::EntityID& kKey);
-    NiActorManager* FUN_140999440(const egf::EntityID& kKey);
 };
-Unk_SiAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // Config constants singleton (FUN_1401d3200).
 class Unk_SiDelay { public: unsigned FUN_14025a620(); char m_c; };
-class Unk_SiUInt { public: unsigned* FUN_1401d7c10(); char m_c; };
+class Unk_SiUInt { public: char m_c; };
 class Unk_SiName { public: CString* FUN_140298f80(); char m_c; };
 class Unk_SiConsts
 {
@@ -250,7 +262,7 @@ void StateIdle::vfunc_8(double fTime)
         return;
     int nWater = m_pOwner->FUN_141675ed0();
     Unk_SiBuffMgr* pBuff = static_cast<Unk_SiBuffMgr*>(m_pOwner->FUN_14166d240());
-    Vector3 kPos = static_cast<const Vector3&>(pBuff->FUN_141683290());
+    Vector3 kPos = static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
     m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
     if (m_pOwner->FUN_141676b70() != 0)
     {
@@ -314,7 +326,7 @@ void StateIdle::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     efd::UInt64 qwKey;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+    unsigned nSeq = reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     const efd::ClassInfo* pDesc;
     if (m_pOwner != 0)
         pDesc = m_pOwner->GetClassDesc();
@@ -707,11 +719,11 @@ void StateIdle::FUN_1417cf260()
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = AsPC(pPC)->FUN_14165e010(0x30);
-        kTarget.m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
-        kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-        m_nSoundIdle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = AsPC(pPC)->FUN_14165e010(0x30);
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
+        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        m_nSoundIdle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
@@ -722,23 +734,23 @@ void StateIdle::FUN_1417cf360()
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_EffectTarget kTarget;
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         if (AsPC(pPC)->FUN_141654700() == 0x32)
         {
-            kTarget.m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
         }
         else if (AsPC(pPC)->FUN_141654700() == 0x6e)
         {
-            kTarget.m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
         }
         else
         {
             return;
         }
-        kTarget.m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
-        kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
-        kTarget.m_b30 = true;
-        m_nSoundEmotion = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
+        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
+        m_nSoundEmotion = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
@@ -756,7 +768,7 @@ void StateIdle::FUN_1417cf4a0()
 void StateIdle::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 {
     State::vfunc_29(p);
-    MS2Ptr<CItemGem> spGem(p->FUN_140527900());
+    MS2Ptr<CItemGem> spGem(p->GetGem());
     bool bGem = (spGem.get() ? true : false) && (spGem->GetGem().get() ? true : false);
     if (bGem && m_n10 == 7)
     {
@@ -784,7 +796,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_n10 = 1;
     efd::UInt64 qwKey;
-    NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     if (pMgr != 0)
     {
         unsigned nSeq = static_cast<NiActorManager*>(pMgr)->GetTargetAnimation();
@@ -866,7 +878,7 @@ void StateIdlePet::vfunc_9(double fTime)
     else
     {
         efd::UInt64 qwKey;
-        unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+        unsigned nSeq = reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
         switch (m_n10)
         {
         case 1:
@@ -932,9 +944,9 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet != 0)
     {
-        if (m_timerVoiceA.FUN_140268870(*((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA.FUN_1401d7c10()) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceA).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA)->Get()) != 0)
             FUN_1417d0540(0x5a);
-        if (m_timerVoiceB.FUN_140268870(*((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB.FUN_1401d7c10()) != 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceB).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB)->Get()) != 0)
         {
             int nPetId = FUN_140c8b450(((class Unk_SiPetMgr*)FUN_140535320()))->m_book.FUN_140b11e90(pPet);
             if (nPetId != 0)

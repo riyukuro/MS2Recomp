@@ -22,7 +22,7 @@ static CString s_143ab25d8("mail_recieve");
 // @0x1408e2ed0
 CUserMail::CUserMail() {
     FUN_1408e3030();
-    FUN_1408e3ff0(1);
+    ResetSendDraft(1);
     m_d0 = 0;
     m_dc = 0;
     m_d8 = 0;
@@ -51,12 +51,12 @@ int CUserMail::FUN_1408e3050() {
 CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CStringW d, CStringW e) {
     MailPtr mail(new CMailInfo(1));
     mail->FUN_140690330(0);
-    mail->FUN_140690390(a, b);
+    mail->SetSender(a, b);
     mail->FUN_140690460(c);
-    mail->FUN_140690540(d, e);
+    mail->SetTitleAndContent(d, e);
     mail->FUN_140690d20(FUN_1408e44e0(), 0);
     for (int i = 0; i < 5; ++i) {
-        KeepPtr keep = FUN_1408e43c0(i);
+        KeepPtr keep = GetSendKeep(i);
         if (keep == 0)
             continue;
         Unk_MailAttachPtr attach(0);
@@ -71,7 +71,7 @@ CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CS
 }
 
 // @0x1408e3490
-void CUserMail::FUN_1408e3490(unsigned v) {
+void CUserMail::SetUnreadCount(unsigned v) {
     m_00 = v;
     if (v > 0) {
         if (!FUN_141bcb0a0(FUN_1403ed2d0())) {
@@ -79,7 +79,7 @@ void CUserMail::FUN_1408e3490(unsigned v) {
         }
     }
 }
-MS2_REPLACE_METHOD(0x1408E3490, CUserMail, FUN_1408e3490, 71, 0x7046536C);
+MS2_REPLACE_METHOD(0x1408E3490, CUserMail, SetUnreadCount, 71, 0x7046536C);
 
 // @0x1408e34e0
 int CUserMail::FUN_1408e34e0() {
@@ -101,7 +101,7 @@ MS2_REPLACE_METHOD(0x1408E3520, CUserMail, FUN_1408e3520, 14, 0x7AB52803);
 
 // @0x1408e3540
 void CUserMail::FUN_1408e3540(__int64 key, __int64 value) {
-    MailPtr mail = FUN_1408e3720(key);
+    MailPtr mail = FindMailById(key);
     if (mail.get() != 0) {
         mail->FUN_1406910e0(value);
     }
@@ -109,7 +109,7 @@ void CUserMail::FUN_1408e3540(__int64 key, __int64 value) {
 MS2_REPLACE_METHOD(0x1408E3540, CUserMail, FUN_1408e3540, 103, 0x4560EA11);
 
 // @0x1408e35b0
-void CUserMail::FUN_1408e35b0(MailArray& out, int kind) {
+void CUserMail::GetMailsByKind(MailArray& out, int kind) {
     for (size_t i = 0; i < m_mails.GetCount(); ++i) {
         MailPtr mail = m_mails[i];
         if (mail->FUN_140690370() != kind)
@@ -119,14 +119,14 @@ void CUserMail::FUN_1408e35b0(MailArray& out, int kind) {
 }
 
 // @0x1408e3680
-void CUserMail::FUN_1408e3680(MailArray& out) {
+void CUserMail::GetAllMails(MailArray& out) {
     out.RemoveAll();
     Unk_LockGuard guard(m_lock);
     if (guard != 0) {} else {
         out.Copy(m_mails);
     }
 }
-MS2_REPLACE_METHOD(0x1408E3680, CUserMail, FUN_1408e3680, 112, 0x4CF2FE87);
+MS2_REPLACE_METHOD(0x1408E3680, CUserMail, GetAllMails, 112, 0x4CF2FE87);
 
 // @0x1408e3700
 CUserMail::MailArray& CUserMail::FUN_1408e3700() {
@@ -135,7 +135,7 @@ CUserMail::MailArray& CUserMail::FUN_1408e3700() {
 MS2_REPLACE_METHOD(0x1408E3700, CUserMail, FUN_1408e3700, 17, 0xF6474C33);
 
 // @0x1408e3720
-CUserMail::MailPtr CUserMail::FUN_1408e3720(__int64 key) {
+CUserMail::MailPtr CUserMail::FindMailById(__int64 key) {
     MailPtr found(0);
     {
         Unk_LockGuard guard(m_lock);
@@ -147,7 +147,7 @@ CUserMail::MailPtr CUserMail::FUN_1408e3720(__int64 key) {
 }
 
 // @0x1408e37e0
-CUserMail::MailPtr CUserMail::FUN_1408e37e0(int index) {
+CUserMail::MailPtr CUserMail::GetMailAt(int index) {
     MailPtr found(0);
     {
         Unk_LockGuard guard(m_lock);
@@ -162,13 +162,13 @@ CUserMail::MailPtr CUserMail::FUN_1408e37e0(int index) {
 }
 
 // @0x1408e38f0
-CUserMail::MailPtr CUserMail::FUN_1408e38f0() {
-    return FUN_1408e37e0(m_mails.GetCount() - 1);
+CUserMail::MailPtr CUserMail::GetLastMail() {
+    return GetMailAt(m_mails.GetCount() - 1);
 }
-MS2_REPLACE_METHOD(0x1408E38F0, CUserMail, FUN_1408e38f0, 83, 0xC2E6188C);
+MS2_REPLACE_METHOD(0x1408E38F0, CUserMail, GetLastMail, 83, 0xC2E6188C);
 
 // @0x1408e3950
-unsigned CUserMail::FUN_1408e3950(__int64 id) {
+unsigned CUserMail::FindMailIndexById(__int64 id) {
     unsigned result = 0xffffffff;
     {
         Unk_LockGuard guard(m_lock);
@@ -187,7 +187,7 @@ unsigned CUserMail::FUN_1408e3950(__int64 id) {
 }
 
 // @0x1408e3a60
-void CUserMail::FUN_1408e3a60(MailPtr mail) {
+void CUserMail::AddMailIfNew(MailPtr mail) {
     if (mail == 0)
         return;
     Unk_LockGuard guard(m_lock);
@@ -206,7 +206,7 @@ int CUserMail::FUN_1408e3b70(__int64 id, int force, int reason) {
     {
         Unk_LockGuard guard(m_lock);
         if (guard != 0) {} else {
-            mail = FUN_1408e3720(id);
+            mail = FindMailById(id);
             if (mail == 0) {
                 return 0;
             }
@@ -238,15 +238,15 @@ unsigned CUserMail::FUN_1408e3da0() {
 MS2_REPLACE_METHOD(0x1408E3DA0, CUserMail, FUN_1408e3da0, 39, 0x7E9110C6);
 
 // @0x1408e3dd0
-int CUserMail::FUN_1408e3dd0(int kind) {
+int CUserMail::GetMailCountByKind(int kind) {
     MailArray list;
-    FUN_1408e35b0(list, kind);
+    GetMailsByKind(list, kind);
     return (int)list.GetCount();
 }
-MS2_REPLACE_METHOD(0x1408E3DD0, CUserMail, FUN_1408e3dd0, 86, 0x9D7B6126);
+MS2_REPLACE_METHOD(0x1408E3DD0, CUserMail, GetMailCountByKind, 86, 0x9D7B6126);
 
 // @0x1408e3e30
-int CUserMail::FUN_1408e3e30() {
+int CUserMail::CountUnreadMails() {
     int count = 0;
     for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
         MailPtr mail = m_mails[i];
@@ -260,7 +260,7 @@ int CUserMail::FUN_1408e3e30() {
 }
 
 // @0x1408e3f00
-int CUserMail::FUN_1408e3f00(int kind) {
+int CUserMail::CountUnreadMailsByKind(int kind) {
     int count = 0;
     for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
         MailPtr mail = m_mails[i];
@@ -274,7 +274,7 @@ int CUserMail::FUN_1408e3f00(int kind) {
 }
 
 // @0x1408e3ff0
-void CUserMail::FUN_1408e3ff0(int skipTotal) {
+void CUserMail::ResetSendDraft(int skipTotal) {
     m_08 = 0;
     m_keeps.SetCount(5, -1);
     for (int i = 0; i < 5; ++i) {
@@ -288,7 +288,7 @@ void CUserMail::FUN_1408e3ff0(int skipTotal) {
 }
 
 // @0x1408e4090
-void CUserMail::FUN_1408e4090(int index) {
+void CUserMail::ClearSendKeep(int index) {
     if (index < 0 || index >= 5)
         return;
     {
@@ -301,7 +301,7 @@ void CUserMail::FUN_1408e4090(int index) {
 }
 
 // @0x1408e4120
-void CUserMail::FUN_1408e4120(int index, Unk_MailAttachPtr attach) {
+void CUserMail::SetSendKeepAttachment(int index, Unk_MailAttachPtr attach) {
     if (index < 0 || index >= 5) {
         return;
     }
@@ -316,7 +316,7 @@ void CUserMail::FUN_1408e4120(int index, Unk_MailAttachPtr attach) {
 }
 
 // @0x1408e4270
-void CUserMail::FUN_1408e4270(int index, MS2Ptr<CItem> item) {
+void CUserMail::SetSendKeepItem(int index, MS2Ptr<CItem> item) {
     if (index < 0 || index >= 5) {
         return;
     }
@@ -331,7 +331,7 @@ void CUserMail::FUN_1408e4270(int index, MS2Ptr<CItem> item) {
 }
 
 // @0x1408e43c0
-CUserMail::KeepPtr CUserMail::FUN_1408e43c0(int index) {
+CUserMail::KeepPtr CUserMail::GetSendKeep(int index) {
     if (index < 0 || index >= 5) {
         return KeepPtr(0);
     }
@@ -340,7 +340,7 @@ CUserMail::KeepPtr CUserMail::FUN_1408e43c0(int index) {
 }
 
 // @0x1408e4470
-void CUserMail::FUN_1408e4470(__int64 value) {
+void CUserMail::SetSendMoney(__int64 value) {
     {
         Unk_LockGuard guard(m_lock);
         if (guard != 0) {} else {
@@ -357,7 +357,7 @@ __int64 CUserMail::FUN_1408e44e0() {
 MS2_REPLACE_METHOD(0x1408E44E0, CUserMail, FUN_1408e44e0, 15, 0x5B8A7339);
 
 // @0x1408e4500
-int CUserMail::FUN_1408e4500() {
+int CUserMail::FindFreeSendSlot() {
     {
         Unk_LockGuard guard(m_lock);
         if (guard != 0) {} else {
@@ -397,7 +397,7 @@ __int64 CUserMail::FUN_1408e4810() {
 MS2_REPLACE_METHOD(0x1408E4810, CUserMail, FUN_1408e4810, 15, 0xAC153A31);
 
 // @0x1408e4830
-__int64 CUserMail::FUN_1408e4830(__int64 amount) {
+__int64 CUserMail::CalcSendFee(__int64 amount) {
     __int64 fee = 0;
     if (amount == 0) {
         fee = 0;
@@ -408,7 +408,7 @@ __int64 CUserMail::FUN_1408e4830(__int64 amount) {
     }
     return fee;
 }
-MS2_REPLACE_METHOD(0x1408E4830, CUserMail, FUN_1408e4830, 90, 0xBA2C3F2C);
+MS2_REPLACE_METHOD(0x1408E4830, CUserMail, CalcSendFee, 90, 0xBA2C3F2C);
 
 // @0x1408e4890
 void CUserMail::FUN_1408e4890() {

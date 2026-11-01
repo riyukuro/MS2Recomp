@@ -49,10 +49,10 @@ public:
     virtual ~GFxManager();                                          // 0 0x1422ad3a0 (??_G 0x1422b4d60)
     int FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer);            // initialise Scaleform (GFxService::OnInit; 0 = failed)
     int FUN_1422adb80(unsigned int uiWidth, unsigned int uiHeight); // the render target size (device restored); 1
-    int FUN_1422adc90(GFxMovie* pMovie);                           // load and add the background movie (id 4)
-    int FUN_1422addb0();                                            // remove it
-    int FUN_1422ade10(GFxMovie* pMovie);                           // load and add the damage text movie (id 1)
-    int FUN_1422adf30();                                            // remove it
+    int LoadBackgroundMovie(GFxMovie* pMovie);                           // load and add the background movie (id 4)
+    int UnloadBackgroundMovie();                                            // remove it
+    int LoadDamageTextMovie(GFxMovie* pMovie);                           // load and add the damage text movie (id 1)
+    int UnloadDamageTextMovie();                                            // remove it
     void Render();                                           // render the movies (NiGFxOverlayClick)
     void FUN_1422ae180();                                           // per tick (GFxService::OnTick)
     void FUN_1422ae360();                                           // shutdown (GFxService::OnShutdown)
@@ -61,9 +61,9 @@ public:
     void FUN_1422ae7d0();                                           // hand the HAL and the Renderer2D to every movie
     void FUN_1422ae920(int n);                                      // m_184 =
     int FUN_1422ae940();                                            // m_184: nonzero = advance in one step
-    void FUN_1422ae960(int bVisible);                               // "setVisible" of every movie clip loader
-    void FUN_1422aeaa0(int nStep);                                  // "setVisibleStep"
-    void FUN_1422aebe0(int nLayer, bool bVisible);                  // "setVisibleLayer"
+    void SetMoviesVisible(int bVisible);                               // "setVisible" of every movie clip loader
+    void SetMoviesVisibleStep(int nStep);                                  // "setVisibleStep"
+    void SetMoviesLayerVisible(int nLayer, bool bVisible);                  // "setVisibleLayer"
     void FUN_1422aed30(bool b);                                     // GFxMovie::vfunc_5 of every movie
     void FUN_1422aee20(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_pfnFormat =
     void FUN_1422aee50(TFunctor<bool, ParamList<HWND, EmptyParam> > fn);   // m_fnIme = fn (by value)
@@ -74,7 +74,7 @@ public:
     void FUN_1422aef90(int bPause);                                 // pause every movie
     int IsArchive();                                            // m_b0 (resources from the archive)
     void FUN_1422af0b0(int bArchive, int bRelease);                 // the movie paths (gfx / gfxDebug)
-    int FUN_1422af2d0(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
+    int IsTextFieldFocused(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
     int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager
     int FUN_1422af580(int nMovieId);                                // the window has the focus and the movie takes text input
     CStringW FUN_1422af5f0(int nMovieId);                           // the IME composition string
@@ -96,15 +96,15 @@ public:
     Unk_NotifyContext* GetNotifyContext();                             // the notify context (SmartPointer at +0x98)
     Scaleform::GFx::Loader* FUN_1422b0290();                        // the loader
     Unk_GFxUIRenderer2D* FUN_1422b02b0();                           // the movie renderer's Renderer2D (+0x40 member, slot 2)
-    MS2Ptr<ASStage> FUN_1422b02f0(int nMovieId);                    // the stage of a movie (null if the movie is not loaded)
-    MS2Ptr<ASMouseCursor> FUN_1422b0370(int nMovieId);              // the mouse cursor of a movie
-    MS2Ptr<ASMovieClipLoader> FUN_1422b03f0(int nGroup);            // the movie clip loader of a GFX_* group (by value)
+    MS2Ptr<ASStage> GetStage(int nMovieId);                    // the stage of a movie (null if the movie is not loaded)
+    MS2Ptr<ASMouseCursor> GetMouseCursor(int nMovieId);              // the mouse cursor of a movie
+    MS2Ptr<ASMovieClipLoader> GetMovieClipLoader(int nGroup);            // the movie clip loader of a GFX_* group (by value)
     void FUN_1422b0470(int nMovieId, int* pnWidth, int* pnHeight);  // the viewport size of a movie
     int FUN_1422b04d0(int nMovieId);                                // its width
     int FUN_1422b0520(int nMovieId);                                // its height
     CStringW FUN_1422b0570(const CString& strKey);                  // the localized string of a key ("" without string table)
     int FUN_1422b0610(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
-    void FUN_1422b0690(TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > fn);
+    void SetSoundCallback(TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > fn);
     void FUN_1422b06e0(int nMovieId, int* pnWidth, int* pnHeight);  // the stage size of a movie
     void FUN_1422b0790(int nMovieId);                               // remember the stage size of a movie ("initializeClass")
     void FUN_1422b0840(int nMovieId, int* pnWidth, int* pnHeight);  // the remembered stage size

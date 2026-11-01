@@ -17,6 +17,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -42,7 +43,7 @@ void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString s
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
-void FUN_141276180(const CString& strName, const CString& strArg);      // play a system sound
+int FUN_141276180(const CString& strName, const CString& strArg);      // play a system sound
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 class WorldService   // C3: member view for the former free stand-ins
@@ -52,7 +53,6 @@ public:
     static class WorldService* GetInstance();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned short* FUN_1401d7c10(void* pEntry);                            // a constant entry
 void* FUN_140aa6d30();                                                  // the scene manager
 class CStateService   // C3: member view for the former free stand-ins
 {
@@ -142,7 +142,7 @@ void UIGlobalPortalDialog::vfunc_72()
     PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    unsigned short nLimit = *FUN_1401d7c10(((char*)FUN_1401d3200()) + 0xe150);
+    unsigned short nLimit = *reinterpret_cast<unsigned short*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)FUN_1401d3200()) + 0xe150)->Get());
     if (nLimit != 0 && (unsigned short)pPlayer->vfunc_78() < nLimit)
     {
         m_nRetryTime = 0;

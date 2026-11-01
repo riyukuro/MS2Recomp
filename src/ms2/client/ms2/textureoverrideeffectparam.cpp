@@ -51,7 +51,7 @@ private:
 };
 
 CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);   // resource path join
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);   // TinyXML string attribute
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // @0x14184b540
 TextureOverrideEffectParam::TextureOverrideEffectParam()
@@ -63,7 +63,7 @@ TextureOverrideEffectParam::TextureOverrideEffectParam()
 void TextureOverrideEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "texturepath", m_strTexturePath);
+    XmlGetAttr((class TiXmlElement*)(pNode), "texturepath", m_strTexturePath);
 }
 MS2_REPLACE_METHOD(0x14184b590, TextureOverrideEffectParam, vfunc_1, 63, 0x5AA431A8);
 

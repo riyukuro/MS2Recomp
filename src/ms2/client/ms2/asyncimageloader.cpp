@@ -132,7 +132,7 @@ CAsyncImageLoader::~CAsyncImageLoader()
 }
 
 // @0x140a589d0
-void CAsyncImageLoader::FUN_140a589d0(const CString& strFile, Unk_GfxRef spImage)
+void CAsyncImageLoader::QueueImage(const CString& strFile, Unk_GfxRef spImage)
 {
     GfxImageLoaderParam* pParam = new GfxImageLoaderParam;
     pParam->m_18 = strFile;
@@ -152,7 +152,7 @@ void CAsyncImageLoader::FUN_140a589d0(const CString& strFile, Unk_GfxRef spImage
 }
 
 // @0x140a58b10
-void CAsyncImageLoader::FUN_140a58b10()
+void CAsyncImageLoader::Shutdown()
 {
     if (m_28 != 0)
         SetEvent(m_28);
@@ -162,7 +162,7 @@ void CAsyncImageLoader::FUN_140a58b10()
         ReleaseSemaphore(m_30, 1, 0);
         FUN_1401d3510(0xffffffff);
     }
-    FUN_140a597a0();
+    ClearQueues();
 }
 
 // @0x140a58b90
@@ -318,7 +318,7 @@ bool CAsyncImageLoader::FUN_140a59540(ParamPtr spParam)
 }
 
 // @0x140a597a0
-void CAsyncImageLoader::FUN_140a597a0()
+void CAsyncImageLoader::ClearQueues()
 {
     Unk_LockGuard guard(m_38);
     if (guard != 0)
@@ -406,7 +406,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
         return pImage;
     } while (0);
-    CAsyncImageLoader::GetInstance()->FUN_140a589d0(strFile, Unk_GfxRef(pImage));
+    CAsyncImageLoader::GetInstance()->QueueImage(strFile, Unk_GfxRef(pImage));
     // The placeholder shown until the file is read: a half transparent fill of the image size.
     NiPointer<NiPixelData> spFill = NiNew NiPixelData(MS2_IMAGE_SIZE(pImage).m_w, MS2_IMAGE_SIZE(pImage).m_h,
                                                       DAT_1439fb040, 1, 1);

@@ -36,7 +36,6 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 void FUN_140a38a50(egf::Entity* pEntity, unsigned uPropId, const Vector3& pt);   // write a Point3 property
 class NxBounds3   // C3: member view for the former free stand-ins
 {
@@ -151,13 +150,13 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
     Vector3 ptRot;
     Vector3 ptSize;
     Vector3 ptCenter;
-    if (FUN_1409618c0(pEntity, 0xfb190620, &ptSize) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfb190620, (efd::Point3&)(ptSize)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0x1e1de032, &ptCenter) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x1e1de032, (efd::Point3&)(ptCenter)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos)) != 0)
         return 0;
-    if (FUN_1409618c0(pEntity, 0x68c7c29d, &ptRot) != 0)
+    if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot)) != 0)
         return 0;
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     ((class NxBounds3*)(struct Unk_CtbBounds3*)(&m_bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
@@ -222,7 +221,7 @@ int CPortal::FUN_14169b890()
         if (pEntity == 0)
             return 0;
         Vector3 ptPos = DAT_143b01a60;
-        FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
+        reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos));
         m_tooltip.AssignRaw(new UIDebugTooltip(CString("")));
         m_tooltip->m_68 = 0;
         Vector3 ptCopy = ptPos;
@@ -360,9 +359,9 @@ void CPortal::FUN_14169c280()
 // @0x14169c330
 int CPortal::FUN_14169c330()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d4b0(m_strFeature))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabledByName(m_strFeature))
         return false;
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d750(m_strLocale))
+    if (!((class CFeatureManager*)FUN_140166410())->IsLocaleInList(m_strLocale))
         return false;
     return true;
 }
@@ -566,7 +565,7 @@ Vector3 CPortal::FUN_14169d2f0()
     if (pEntity == 0)
         return DAT_143b01a60;
     Vector3 ptPos = DAT_143b01a60;
-    FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
+    reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos));
     return ptPos;
 }
 

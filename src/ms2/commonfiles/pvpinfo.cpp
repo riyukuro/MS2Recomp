@@ -37,7 +37,7 @@ CPvPInfo::~CPvPInfo()
 }
 
 // @0x140743550
-bool CPvPInfo::FUN_140743550()
+bool CPvPInfo::HasPoint()
 {
     return 0 < m_nPoint;
 }
@@ -73,7 +73,7 @@ bool CPvPInfo::FUN_140743690()
 }
 
 // @0x1407436d0
-bool CPvPInfo::FUN_1407436d0()
+bool CPvPInfo::IsOnePunchMode()
 {
     return m_nMode == 5;
 }
@@ -85,7 +85,7 @@ int CPvPInfo::GetPoint()
 }
 
 // @0x140743730
-void CPvPInfo::FUN_140743730()
+void CPvPInfo::Reset()
 {
     m_nPoint = 0;
     m_nTeam = 0;
@@ -99,7 +99,7 @@ void CPvPInfo::FUN_140743730()
 }
 
 // @0x1407437b0
-void CPvPInfo::FUN_1407437b0(int nDelta)
+void CPvPInfo::AddKill(int nDelta)
 {
     m_nKill += nDelta;
     m_nKill = (std::max)(m_nKill, 0);
@@ -112,7 +112,7 @@ void CPvPInfo::FUN_140743810(__int64 nDelta)
 }
 
 // @0x140743840
-void CPvPInfo::FUN_140743840(int nDelta)
+void CPvPInfo::AddWinAndStart(int nDelta)
 {
     m_nWin += nDelta;
     m_nWin = (std::max)(m_nWin, 0);
@@ -121,29 +121,29 @@ void CPvPInfo::FUN_140743840(int nDelta)
 }
 
 // @0x1407438b0
-void CPvPInfo::FUN_1407438b0(int nDelta)
+void CPvPInfo::AddLose(int nDelta)
 {
     m_nLose += nDelta;
     m_nLose = (std::max)(m_nLose, 0);
 }
 
 // @0x140743910
-void CPvPInfo::FUN_140743910()
+void CPvPInfo::RandomizeTeam()
 {
     m_nTeam = FUN_140768010(2, 0);
 }
 
 // @0x140743940
-int CPvPInfo::FUN_140743940()
+int CPvPInfo::GetRewardItemId()
 {
-    if (FUN_1407436d0())
+    if (IsOnePunchMode())
         return *Client::Constants::GetInstance()->PvpOnePunchRewardItem.Get();
     else
         return *Client::Constants::GetInstance()->PvpFFARewardItem.Get();
 }
 
 // @0x1407439a0
-void CPvPInfo::FUN_1407439a0(COutputStream* pOut)
+void CPvPInfo::WritePointTeamMode(COutputStream* pOut)
 {
     pOut->WriteInt32(m_nPoint);
     pOut->WriteUInt8((unsigned char)m_nTeam);
@@ -151,7 +151,7 @@ void CPvPInfo::FUN_1407439a0(COutputStream* pOut)
 }
 
 // @0x140743a10
-void CPvPInfo::FUN_140743a10(CInPacket& packet)
+void CPvPInfo::ReadPointTeamMode(CInPacket& packet)
 {
     m_nPoint = packet.ReadInt32();
     m_nTeam = packet.ReadUInt8();
@@ -159,7 +159,7 @@ void CPvPInfo::FUN_140743a10(CInPacket& packet)
 }
 
 // @0x140743ab0
-void CPvPInfo::FUN_140743ab0(COutputStream* pOut)
+void CPvPInfo::WriteRecordToStream(COutputStream* pOut)
 {
     pOut->WriteInt32(m_nWin);
     pOut->WriteInt32(m_nLose);
@@ -167,7 +167,7 @@ void CPvPInfo::FUN_140743ab0(COutputStream* pOut)
 }
 
 // @0x140743b20
-void CPvPInfo::FUN_140743b20(CInPacket& packet)
+void CPvPInfo::ReadRecordFromPacket(CInPacket& packet)
 {
     m_nWin = packet.ReadInt32();
     m_nLose = packet.ReadInt32();

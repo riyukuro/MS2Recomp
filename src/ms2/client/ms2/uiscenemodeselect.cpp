@@ -12,6 +12,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -47,7 +48,6 @@ public:
     class GFxMovie* FUN_1422b01a0(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
-bool FUN_14116d9c0(Unk_SmLogin* p, int a, int b, int c);
 bool FUN_14116dd30(Unk_SmLogin* p, int a, int b, int c);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
@@ -95,7 +95,7 @@ void UISceneModeSelect::vfunc_48(int n)
 // @0x140e85150
 void UISceneModeSelect::vfunc_49(int n)
 {
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e22);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e22);
     UISceneEntity::vfunc_49(n);
 }
 
@@ -161,7 +161,7 @@ int UISceneModeSelect::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 static int FUN_140e853c0()
 {
     if (FUN_140e85580(((class Unk_SmPlayerState*)FUN_1409331f0())) == 0)
-        return FUN_14116d9c0(((class Unk_SmLogin*)FUN_14025e7c0()), 0x75, 0, 0);
+        return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116d9c0(0x75, 0, 0);
     return FUN_14116dd30(((class Unk_SmLogin*)FUN_14025e7c0()), 0x493ef, 0, 0);
 }
 
@@ -170,7 +170,7 @@ UIIntroMovie* FUN_140e85420(int nUiId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIIntroMovie*>((UIObject*)spUI);
     }

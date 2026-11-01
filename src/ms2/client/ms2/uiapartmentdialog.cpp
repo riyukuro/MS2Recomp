@@ -104,21 +104,21 @@ void UIApartmentDialog::OnLoadComplete()
     m_nStyle = 0;
     if (m_group.FUN_1408ad2f0() != 0)
         m_nStyle = 1;
-    m_broker = FUN_140bb4b10("m_broker");
+    m_broker = GetChild<Unk_140acd6e0>("m_broker");
     static_cast<Unk_AptScript*>(m_30.operator->())->FUN_1418b7550("setStyle", m_nStyle);
     if (m_nStyle == 0)
     {
-        m_door0 = FUN_140bb4b10("m_door0");
-        m_door1 = FUN_140bb4b10("m_door1");
-        m_door2 = FUN_140bb4b10("m_door2");
+        m_door0 = GetChild<Unk_140acd6e0>("m_door0");
+        m_door1 = GetChild<Unk_140acd6e0>("m_door1");
+        m_door2 = GetChild<Unk_140acd6e0>("m_door2");
     }
     else
     {
-        m_door0 = FUN_140bb4b10("m_door3");
-        m_door1 = FUN_140bb4b10("m_door4");
-        m_door2 = FUN_140bb4b10("m_door5");
+        m_door0 = GetChild<Unk_140acd6e0>("m_door3");
+        m_door1 = GetChild<Unk_140acd6e0>("m_door4");
+        m_door2 = GetChild<Unk_140acd6e0>("m_door5");
     }
-    m_contract = FUN_140bb4b10("m_contractButton");
+    m_contract = GetChild<Unk_140acd6e0>("m_contractButton");
     m_broker->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
     m_door0->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
     m_door1->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);

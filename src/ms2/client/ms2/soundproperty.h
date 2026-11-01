@@ -132,7 +132,7 @@ public:
 
     unsigned Load();                                            // 0x141791940 (all five tables)
     unsigned FUN_141792d70(int nAttack, int nDefence);          // a random hit sound id of the materials
-    int FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventVoice* pOut);   // the event voice for the actor
+    int GetEventVoice(int nEventId, GameObject* pActor, Unk_EventVoice* pOut);   // the event voice for the actor
     SystemPtr FUN_141792ee0(const CString& strName, const CString& strArg);       // system sound property
     VoicePtr FUN_141793110(const CString& strName);                               // trigger voice property
     void FUN_141793210(Unk_VoiceGroupMap& rOut);                // every trigger voice -> its sound names

@@ -36,8 +36,8 @@ public:
     int Load();                                 // 0x14058dc50 parses the xml into the map
     int FUN_14058df90(CItem* pItem);            // the item may start an enchant (level band, grade, not excluded)
     int FUN_14058e230(CItem* pItem);            // the same without the enchant grade test
-    unsigned FUN_14058e3a0(CItem* pItem);       // the item is at the limit grade
-    bool FUN_14058e4a0(CItemData* pData);       // the item data has a limit row
+    unsigned IsMaxGrade(CItem* pItem);       // the item is at the limit grade
+    bool HasLimit(CItemData* pData);       // the item data has a limit row
     int FUN_14058e500(unsigned nItemId, int nGrade);   // the item id may be enchanted to a grade
 
     static void CheckInit();                    // 0x14058f330

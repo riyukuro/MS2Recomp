@@ -26,6 +26,8 @@
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 class Unk_MentorInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 class CInPacket {public:void* p0;Unk_MentorInput stream;};
 class Unk_MentorPacketManager {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};
@@ -53,16 +55,16 @@ UIMentoringDialog::UIMentoringDialog():m_page(0),m_pages(17,0.75f,0.25f,2.25f,10
  FUN_141924170(1);
  AddPage(new UIMentoringBuffPage(this));AddPage(new UIMentoringMenteePage(this));AddPage(new UIMentoringMentorPage(this));
  AddPage(new UIMentoringMenteeRegisterPage(this));AddPage(new UIMentoringMentorRegisterPage(this));AddPage(new Unk_MentorMission(this));AddPage(new UIMentoringRewardPage(this));
- ((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da5180(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
- ((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da5180(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
+ ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
+ ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
 }
 // @0x140e5e190
-UIMentoringDialog::~UIMentoringDialog(){((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));((class Unk_MentorPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
+UIMentoringDialog::~UIMentoringDialog(){((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
 // @0x140e5e330
 CString UIMentoringDialog::GetTypeName(){return "MentoringDialog";}
 MS2_REPLACE_METHOD(0x140E5E330, UIMentoringDialog, GetTypeName, 61, 0x24A44C72);
 // @0x140e5e380
-void UIMentoringDialog::vfunc_67(){UIDialog::vfunc_67();TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f4c);}
+void UIMentoringDialog::vfunc_67(){UIDialog::vfunc_67();TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4c);}
 MS2_REPLACE_METHOD(0x140E5E380, UIMentoringDialog, vfunc_67, 42, 0x2187958A);
 // @0x140e5e3b0
 void UIMentoringDialog::OnLoadComplete(){UIDialog::OnLoadComplete();Refresh();}
@@ -105,7 +107,7 @@ MS2_REPLACE_METHOD(0x140E5EBA0, UIMentoringDialog, Notify, 129, 0x15D26F72);
 void UIMentoringDialog::UpdateCounts(){if(m_30==0)return;for(size_t i=0;i<m_tabs.size();i++)m_30->Invoke("setTabCount",m_tabs[i]->vfunc_6(),m_tabs[i]->vfunc_8());}
 MS2_REPLACE_METHOD(0x140E5EC30, UIMentoringDialog, UpdateCounts, 352, 0x5ACF5D77);
 // @0x140e5eda0
-int UIMentoringDialog::IsAvailable(){Unk_MentorActor* actor=((Unk_MentorActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return false;if(FUN_140302b00()->FUN_14041d160()->GetId()==0)return false;if(((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4a))return false;return true;}
+int UIMentoringDialog::IsAvailable(){Unk_MentorActor* actor=((Unk_MentorActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return false;if(FUN_140302b00()->FUN_14041d160()->GetId()==0)return false;if(reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x4a)))return false;return true;}
 MS2_REPLACE_METHOD(0x140E5EDA0, UIMentoringDialog, IsAvailable, 108, 0x0726E828);
 // @0x140e5ee20
 void UIMentoringDialog::SetTabs(ATL::CAtlArray<CString>& tabs){m_tabs.clear();if(MS2Ptr<Unk_MentorTab> tab=GetChild<Unk_MentorTab>("m_tab")){for(size_t i=0;i<tabs.GetCount();i++){Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(tabs.GetAt(i),page)){ASObj obj(2);obj.FUN_1407cba60("page",tabs.GetAt(i));obj.FUN_1407cbb20("label",page->vfunc_7());tab->FUN_1422e3460(obj);m_tabs.push_back(page);}}tab->vfunc_24(1);tab->FUN_1422e31e0(0);}UpdateCounts();}

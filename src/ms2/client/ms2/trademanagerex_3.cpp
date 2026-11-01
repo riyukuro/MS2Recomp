@@ -20,8 +20,6 @@ public:
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // Registry of named bags/slots (GFx bind data): lookup by name, add, remove.
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(TradeSlotBag);
@@ -94,7 +92,7 @@ __int64 FUN_14185ec90(int nSlot)
         if (spItem.get() ? true : false)
         {
             if (((CItem*)spItem)->FUN_140526b50() == nSlot)
-                return ((CItem*)spItem)->FUN_140526a50();
+                return ((CItem*)spItem)->GetItemUid();
         }
     }
     return 0;

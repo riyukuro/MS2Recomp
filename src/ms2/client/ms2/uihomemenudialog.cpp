@@ -34,6 +34,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -61,7 +62,8 @@ class ASDialog : public ASDisplayObject {};
 
 // The entity application framework (global at 0x143b059e8) and the cube service (class id 0x06100017).
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 // The three-flag record of the cube service (ctor 0x140b68e60).
 struct Unk_CMISFlags3
@@ -217,14 +219,12 @@ efd::ServiceManager* FUN_1413f9850();
 ecr::RenderService* FUN_1413f9890();
 
 // A child of the movie (a button or a check box), held through MS2Ptr (dtor 0x140acd6e0).
-class Unk_140acd6e0 : public ASDisplayObject {
+class Unk_140acd6e0 : public ASButton {
 public:
     void FUN_1422c1fe0(unsigned enabled);
-    void FUN_1422ce090(int checked);
 };
 class Unk_HmMovieEntity : public UIDialog {
 public:
-    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);
 };
 
 bool FUN_141902580(bool bMessage);
@@ -584,9 +584,9 @@ void UIHomeMenuDialog::OnHomeDemolish()
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01800(2);
-        ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->FUN_141a024e0(GetStringCommon(0x9d1), 0);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetCheckbox0(GetStringCommon(0x9d1), 0);
         ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetAgreement(0);
-        ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->FUN_141a02770(0x1c0, 400);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetSize(0x1c0, 400);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::SendRequestCube));
         FUN_140d73c60(spBox);
     }
@@ -623,40 +623,40 @@ void UIHomeMenuDialog::FUN_140c2a780()
     int bCraft = FUN_140c2af70();
     int bDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
     int bBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_craftMode"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_craftMode"))
     {
         sp->FUN_1422ce090(bCraft);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_designMode"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_designMode"))
     {
         sp->FUN_1422ce090(bDesign);
         if (bBlueprint != 0)
             sp->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintMode"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintMode"))
     {
         sp->FUN_1422ce090(bBlueprint);
         sp->FUN_1422c1fe0(FUN_141902580(0));
         if (bDesign != 0)
             sp->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_freeCamera"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_freeCamera"))
     {
         sp->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintSave"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintSave"))
     {
         sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintImport"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintImport"))
     {
         sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintExport"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintExport"))
     {
         sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintShop"))
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintShop"))
     {
         sp->FUN_1422c1fe0(FUN_1419025f0(0));
     }
@@ -710,7 +710,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
         Unk_CMISFlags3 state = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
         Unk_CMISFlags3* pState = &state;
         TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(pState->c);
-        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3e);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
 }
 
@@ -809,7 +809,7 @@ UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId)
 {
     if (reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIHomeSaveSlotDialog*>(spUI.operator->());
     }

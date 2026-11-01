@@ -21,7 +21,6 @@ private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
 class Unk_UIService { public: Unk_CommandUIRef FUN_141adcea0(int nId); };   // dialog by id
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 
 // @0x140bc16c0
 UIBottomCenterAlignManager::UIBottomCenterAlignManager()
@@ -40,7 +39,7 @@ UIHighlightGameMenu* FUN_140bc17d0(int nId)
     {
         Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIHighlightGameMenu*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIHighlightGameMenu*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }
@@ -52,7 +51,7 @@ UIRecallScrollNotifyDialog* FUN_140bc1870(int nId)
     {
         Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIRecallScrollNotifyDialog*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UIRecallScrollNotifyDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

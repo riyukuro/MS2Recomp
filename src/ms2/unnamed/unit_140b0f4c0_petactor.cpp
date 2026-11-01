@@ -50,6 +50,16 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void* m_storage[14];
+};
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
@@ -132,7 +142,6 @@ float FUN_140291d10(int);   // C3: was FUN_140291d10
 CString FUN_140291c10(int nFxId);
 __int64 FUN_14028d260(float fTime);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 bool FUN_14028d470(float a, float b);
 
@@ -323,7 +332,7 @@ float CPet::vfunc_89()
         Unk_OwnerPC* pOwner = static_cast<Unk_OwnerPC*>(FUN_141094f60());
         if (pOwner == 0)
             break;
-        CGemPetSkin* pGem = pOwner->FUN_14165df00().get();
+        CGemPetSkin* pGem = pOwner->GetPetSkinGem().get();
         if (pGem == 0)
             break;
         MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pGem->m_nPetId);
@@ -469,7 +478,7 @@ void CPet::FUN_140b10400()
         return;
     if (m_spRow == 0)
         return;
-    if (m_tm1068.FUN_140268870(100) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tm1068).Check(100) == 0)
         return;
     if (vfunc_65() == 0)
         return;
@@ -496,11 +505,11 @@ void CPet::FUN_140b10510()
             {
                 if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
                 {
-                    Unk_EffectTarget kTarget;
-                    kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
-                    kTarget.m_nKind = 0;
-                    kTarget.FUN_140a53190(FUN_14123c580());
-                    m_nFxMax = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+                    ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
+                    ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+                    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+                    m_nFxMax = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 }
             }
         }
@@ -523,14 +532,14 @@ void CPet::FUN_140b10510()
         void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
         if (pLocal != 0)
         {
-            Unk_EffectTarget kTarget;
+            NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
-                kTarget.m_strName = FUN_140291c10(m_nGradeFx);
+                ((Unk_EffectTarget&)(kTarget)).m_strName = FUN_140291c10(m_nGradeFx);
             else
-                kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
-            kTarget.m_nKind = 0;
-            kTarget.FUN_140a53190(FUN_14123c580());
-            m_nFxOther = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+                ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
+            ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+            ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+            m_nFxOther = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         }
     }
 }
@@ -617,7 +626,7 @@ void CPet::FUN_140b10c80(CStringW str)
                     strPrefix = GetStringCommonByKey(L"s_pet_tamingnpc_max_perfix_name");
                 else
                     strPrefix = GetStringCommonByKey(L"s_pet_tamingnpc_default_perfix_name");
-                strName = FUN_140656190(GetStringCommonByKey(L"s_pet_tamingnpc_name"), strPrefix, strName);
+                strName = StringFormat<CStringW, CStringW>(GetStringCommonByKey(L"s_pet_tamingnpc_name"), strPrefix, strName);
             }
             vfunc_76(strName);
         }
@@ -670,9 +679,9 @@ int CPet::FUN_140b11180()
         return 0;
     if (pOwner->FUN_14166ce30() != 0)
         return 0;
-    if (((struct Unk_PetConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(3) == 1)
+    if (reinterpret_cast<CContentShutdown&>(((struct Unk_PetConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(3)) == 1)
         return 0;
-    if (m_tm10a8.FUN_140268870(1000) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tm10a8).Check(1000) != 0)
     {
         int nItemId = FUN_140b11c20(&FUN_140c8b450(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320())))->m_book, pOwner);
         if (nItemId == 0)
@@ -753,11 +762,11 @@ void CPet::FUN_140b114e0(int nAnimId)
 // @0x140b11760
 void CPet::FUN_140b11760(CString strEffect)
 {
-    Unk_EffectTarget kTarget;
-    kTarget.m_strName = strEffect;
-    kTarget.m_nKind = vfunc_58();
-    kTarget.FUN_140a53190(FUN_14123c580());
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+    ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
+    ((Unk_EffectTarget&)(kTarget)).m_nKind = vfunc_58();
+    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
 }
 
 // @0x140b11810

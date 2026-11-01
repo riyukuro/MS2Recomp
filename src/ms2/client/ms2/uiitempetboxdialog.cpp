@@ -256,7 +256,7 @@ void UIItemPetBoxDialog::vfunc_26()
 void UIItemPetBoxDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140e4f9a0();
+    ClearCards();
     FUN_140e4f9e0();
 }
 
@@ -308,7 +308,7 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
                 bool special = PETBOX_PKT->ReadBool();
                 if (special)
                     m_special2.insert(PETBOX_ITEMS.FUN_140be9400(i));
-                if (FUN_140e4fc90(PETBOX_ITEMS.FUN_140be9400(i)) == true)
+                if (IsSpecialItem(PETBOX_ITEMS.FUN_140be9400(i)) == true)
                     hasSpecial = true;
             }
             FUN_140e504e0();
@@ -397,12 +397,12 @@ int UIItemPetBoxDialog::vfunc_o178_1(void* av)
         }
     }
     if (found >= 0)
-        FUN_140e4f6d0(found);
+        LoadCardRenderTarget(found);
     return 1;
 }
 
 // @0x140e4f6d0
-void UIItemPetBoxDialog::FUN_140e4f6d0(int idx)
+void UIItemPetBoxDialog::LoadCardRenderTarget(int idx)
 {
     if (idx > (int)m_cards.size())
         return;
@@ -429,7 +429,7 @@ void UIItemPetBoxDialog::FUN_140e4f8e0()
 }
 
 // @0x140e4f9a0
-void UIItemPetBoxDialog::FUN_140e4f9a0()
+void UIItemPetBoxDialog::ClearCards()
 {
     FUN_140e4f8e0();
     m_cards.clear();
@@ -485,7 +485,7 @@ bool UIItemPetBoxDialog::FUN_140e4fc50(int result, const CMsgBoxData&)
 }
 
 // @0x140e4fc90
-bool UIItemPetBoxDialog::FUN_140e4fc90(const ItemEntity& e)
+bool UIItemPetBoxDialog::IsSpecialItem(const ItemEntity& e)
 {
     if (m_special1.find(e) != m_special1.end())
         return true;
@@ -519,8 +519,8 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         if (idata == 0)
             continue;
         ItemLimit* jobs = reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138);
-        if (jobs->FUN_140545da0(self->FUN_141654700())) {
-            if (static_cast<Unk_PetBoxData*>(idata.operator->())->FUN_14053c940(self->FUN_141658e60()) != 0)
+        if (jobs->IsJobRecommended(self->FUN_141654700())) {
+            if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()) != 0)
                 filtered.FUN_140313cd0(d);
         }
     }
@@ -567,7 +567,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
             return;
         MS2Ptr<ASMovieClip> unc = single->FUN_1409b4560("m_uncommonEffect");
         if (unc.get()) {
-            if (FUN_140e4fc90(e) == true)
+            if (IsSpecialItem(e) == true)
                 unc->vfunc_4(true);
             else
                 unc->vfunc_4(false);
@@ -575,7 +575,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         item->FUN_140526c70(e.vfunc_o18_2());
         CString bagKey;
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
-        int count = item->FUN_140526c50();
+        int count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
@@ -607,7 +607,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
                 PETBOX_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
                 if (unc.get()) {
-                    if (FUN_140e4fc90(e) == true) {
+                    if (IsSpecialItem(e) == true) {
                         unc->vfunc_4(true);
                         unc->vfunc_12(1);
                     } else
@@ -626,7 +626,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
 {
     if (m_30 == 0)
         return;
-    FUN_140e4f9a0();
+    ClearCards();
     if (PETBOX_ITEMS.FUN_140c0e9f0())
         return;
     if (PETBOX_ITEMS.FUN_14028b470() == 1) {
@@ -637,7 +637,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
             FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(0));
             MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(0).m_itemId);
             if (idata.get() != 0) {
-                if (static_cast<Unk_PetBoxData*>(idata.operator->())->FUN_14053cc40()) {
+                if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
                     UIAvatarPet* av = new UIAvatarPet(idata.get());
                     av->vfunc_1(this);
                     Unk_PetBoxCard c;
@@ -667,7 +667,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
                 FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(i));
                 MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(i).m_itemId);
                 if (idata.get() != 0) {
-                    if (static_cast<Unk_PetBoxData*>(idata.operator->())->FUN_14053cc40()) {
+                    if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
                         UIAvatarPet* av = new UIAvatarPet(idata.get());
                         av->vfunc_1(this);
                         Unk_PetBoxCard c;
@@ -709,7 +709,7 @@ int UIItemPetBoxDialog::FUN_140e51ca0()
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
         return -1;
-    CString tag = PETBOX_ATTR(data)->FUN_1409e8560(L"itemTag", "");
+    CString tag = PETBOX_ATTR(data)->GetString(L"itemTag", "");
     int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
     if (tagId == 0)
         return -1;
@@ -764,7 +764,7 @@ void UIItemPetBoxDialog::FUN_140e52110()
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
         return;
-    CString tag = PETBOX_ATTR(data)->FUN_1409e8560(L"itemTag", "");
+    CString tag = PETBOX_ATTR(data)->GetString(L"itemTag", "");
     int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
     MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(tagId);
     if (inv == 0)
@@ -800,16 +800,16 @@ MS2_REPLACE_METHOD(0x140E4F1E0, UIItemPetBoxDialog, vfunc_28, 248, 0x7ABDB895);
 MS2_REPLACE_METHOD(0x140E4F2E0, UIItemPetBoxDialog, vfunc_25, 683, 0x523E66EC);
 MS2_REPLACE_METHOD(0x140E4F5A0, UIItemPetBoxDialog, vfunc_16, 34, 0x867535AC);
 MS2_REPLACE_METHOD(0x140E4F5D0, UIItemPetBoxDialog, vfunc_17, 47, 0xA0F8AF34);
-MS2_REPLACE_METHOD(0x140E4F6D0, UIItemPetBoxDialog, FUN_140e4f6d0, 244, 0x58DDE214);
+MS2_REPLACE_METHOD(0x140E4F6D0, UIItemPetBoxDialog, LoadCardRenderTarget, 244, 0x58DDE214);
 MS2_REPLACE_METHOD(0x140E4F7D0, UIItemPetBoxDialog, FUN_140e4f7d0, 251, 0xFE9B33A1);
 MS2_REPLACE_METHOD(0x140E4F8E0, UIItemPetBoxDialog, FUN_140e4f8e0, 176, 0x6354CE48);
-MS2_REPLACE_METHOD(0x140E4F9A0, UIItemPetBoxDialog, FUN_140e4f9a0, 43, 0x34618B18);
+MS2_REPLACE_METHOD(0x140E4F9A0, UIItemPetBoxDialog, ClearCards, 43, 0x34618B18);
 MS2_REPLACE_METHOD(0x140E4F9E0, UIItemPetBoxDialog, FUN_140e4f9e0, 117, 0x33366119);
 MS2_REPLACE_METHOD(0x140E4FA60, UIItemPetBoxDialog, FUN_140e4fa60, 259, 0x6554B4A2);
 MS2_REPLACE_METHOD(0x140E4FB70, UIItemPetBoxDialog, FUN_140e4fb70, 182, 0x99CD677A);
 MS2_REPLACE_METHOD(0x140E4FC30, UIItemPetBoxDialog, SetBoxItemId, 25, 0x9BF64FA6);
 MS2_REPLACE_METHOD(0x140E4FC50, UIItemPetBoxDialog, FUN_140e4fc50, 50, 0x3FD9DD97);
-MS2_REPLACE_METHOD(0x140E4FC90, UIItemPetBoxDialog, FUN_140e4fc90, 187, 0x768844F2);
+MS2_REPLACE_METHOD(0x140E4FC90, UIItemPetBoxDialog, IsSpecialItem, 187, 0x768844F2);
 MS2_REPLACE_METHOD(0x140E519B0, UIItemPetBoxDialog, FUN_140e519b0, 734, 0x3387E636);
 MS2_REPLACE_METHOD(0x140E51CA0, UIItemPetBoxDialog, FUN_140e51ca0, 401, 0x3F87147F);
 MS2_REPLACE_METHOD(0x140E52670, UIItemPetBoxDialog, FUN_140e52670, 139, 0x2C5278D7);

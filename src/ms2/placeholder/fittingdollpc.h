@@ -81,7 +81,7 @@ class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialo
 class CEquipModel;     // equipmodel.h (the attach-effect models of the worn weapons)
 class CWeaponAction;   // +0xd70 the action prefix row of the worn weapon pair (weaponactiontable.h)
 class Unk_PCLinkFD8;  // +0xfd8 (create 0x141993100, release 0x141993180)
-class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; FUN_1416623d0 sets them)
+class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; SetGuide sets them)
 class JobSystemCli;
 class CubeItemInfo;
 class CSkillTierOptionManager;
@@ -220,8 +220,8 @@ public:
     void FUN_14165cac0();                                   // create the tomb stone entity (+0xfc8)
     int FUN_14165a540();                                    // step onto the cube under / next to the actor
     int FUN_14165b500(int nKind);                           // climb: 1 onto a wall ahead, 2 down the side of the cube below
-    MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
-    MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
+    MS2Ptr<class CGemPetSkin> GetPetSkinGem();              // the worn pet skin gem (feature 0x6c)
+    MS2Ptr<class CGemSwim> GetSwimGem();                 // the worn swim gem (feature 0x68)
     void FUN_141660ee0();                                   // the equipment finished loading (once: +0xd40)
     void FUN_1416599b0();                                   // drop the followed entity (+0xdb0) beyond 70 units
     egf::Entity* FUN_141659af0(int nKind);                  // the ladder / rope entity at hand (models 0xbadf0a13, 0xc13e30c8)
@@ -305,9 +305,9 @@ public:
     void FUN_141661ac0();                                   // reset +0x10ec / +0x10e8 once the end tick passed
     int FUN_141661bc0();                                    // +0xff0 the party id
     int FUN_141661c50();                                    // +0x10f4 the title
-    void FUN_1416623d0(efd::SmartPointer<CGuideObject> spGuide, int nIndex);   // +0x1228[nIndex] (0..2)
-    CGuideObject* FUN_141662440(int nIndex);                // +0x1228[nIndex] (0..2)
-    int FUN_141662490(int nIndex);                          // a guide is set
+    void SetGuide(efd::SmartPointer<CGuideObject> spGuide, int nIndex);   // +0x1228[nIndex] (0..2)
+    CGuideObject* GetGuide(int nIndex);                // +0x1228[nIndex] (0..2)
+    int HasGuide(int nIndex);                          // a guide is set
     class CConstructionGuideObject* FUN_1416625b0();        // guide 0
     class CFishingGuideObject* FUN_1416625e0();             // guide 1
     class CSkillMagicControlGuide* FUN_141662610();         // guide 2
@@ -333,9 +333,9 @@ public:
     void FUN_141663620();                                   // start the couple effect (or remember it)
     void FUN_1416636e0(MS2Ptr<CItem> spItem, int nGemId);   // create the couple effect of a couple item (itemgem.cpp)
     void FUN_141663680();                                   // stop the couple effect
-    void FUN_141663870();                                   // drop the couple effect
+    void ClearCouple();                                   // drop the couple effect
     CStringW FUN_1416638b0();                               // the couple effect name
-    int FUN_141663940();                                    // the couple type (0: none)
+    int GetCoupleType();                                    // the couple type (0: none)
     __int64 FUN_141663990();                                // the couple partner id (0: none)
     int FUN_141663a20();                                    // +0x11f4, reset when +0x11f8 expired
     int FUN_141663ac0();                                    // +0x11f8 is unset or expired
@@ -361,7 +361,7 @@ public:
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_14165d550(int bHide);                          // the tomb stone breaks (bHide: hide its entity)
     void FUN_1416629d0(Vector3 kPos, Vector3 kRot);   // scenestategame 0x141721a30
-    MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
+    MS2Ptr<Unk_PCWaterGunInfo> GetWaterGunInfo();             // the water gun battle info (+0x1260)
     void FUN_141662640(__int64 nValue);                      // scenestategame 0x1417340f0
     void FUN_141662690(int nValue);
     void FUN_141662710(int nValue);
@@ -382,9 +382,9 @@ public:
     void FUN_141663b10(short n);
     void FUN_141663060(int n);
     void FUN_1416630a0(int n);
-    void FUN_141662790(int nIndex, int nValue);
-    unsigned int FUN_141662750(int nIndex);                 // 0x141662750 mastery exp (+0x1150[nIndex], 0..11)
-    int FUN_1416627d0(int nIndex);                          // 0x1416627d0 mastery grade of the exp
+    void SetMastery(int nIndex, int nValue);
+    unsigned int GetMastery(int nIndex);                 // 0x141662750 mastery exp (+0x1150[nIndex], 0..11)
+    int GetMasteryGrade(int nIndex);                          // 0x1416627d0 mastery grade of the exp
     void FUN_141660fc0(CString str);
     void FUN_14165f090(int n);
     void FUN_141653d10(MS2Ptr<CItem> spItem);
@@ -479,7 +479,7 @@ public:
     __int64 m_n1140;                                        // +0x1140
     int m_n1148;                                            // +0x1148
     int m_n114c;                                            // +0x114c
-    unsigned int m_aMastery1150[12];                        // +0x1150 mastery exp (FUN_141662750)
+    unsigned int m_aMastery1150[12];                        // +0x1150 mastery exp (GetMastery)
     float m_f1180;                                          // +0x1180 (ctor: 1.0)
     int m_n1184;                                            // +0x1184
     int m_n1188;                                            // +0x1188
@@ -504,7 +504,7 @@ public:
     std::set<unsigned int> m_set1210;                       // +0x1210
     int m_n1220;                                            // +0x1220
     bool m_b1224;                                           // +0x1224 (FUN_1416642c0)
-    efd::SmartPointer<CGuideObject> m_spGuide1228[3];       // +0x1228 the cube guides (FUN_1416623d0)
+    efd::SmartPointer<CGuideObject> m_spGuide1228[3];       // +0x1228 the cube guides (SetGuide)
     MS2Ptr<Unk_PCInteractMode> m_spInteractMode;            // +0x1240 (a CPvPInfo; actionkeyobject.cpp)
     MS2Ptr<HideAndSeek::Info> m_spHideAndSeek1250;          // +0x1250
     MS2Ptr<WaterGunBattleInfo> m_spWaterGun1260;            // +0x1260
@@ -574,7 +574,7 @@ public:
     virtual void vfunc_138(NiAVObject* pRoot, int n, const Unk_CharEquip* pEquip);  // 138 0x14121c230
     virtual int vfunc_145();                                // 145 0x14121ca50
 
-    void FUN_14121c170(NiFixedString parentName);
+    void SetParentName(NiFixedString parentName);
     int FUN_14121c710();                                    // 0x14121c710 (scenestategame 0x7b mode 7: 1 selects the equip set)
     int FUN_14121bab0(int nItemId);                         // 0x14121bab0 set up the doll from an item (false when the item has no doll)
     void* FUN_14121c6c0();                                  // 0x14121c6c0 return unknown12f0

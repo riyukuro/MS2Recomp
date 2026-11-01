@@ -33,6 +33,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_WcClip : public AScript {
@@ -55,7 +57,6 @@ class Unk_WcButton : public Unk_WcClip {
 public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, size_t);
     void FUN_1422cdfb0(const CStringW&);
-    void FUN_1422ce090(int);
 };
 class Unk_WcTitle { public: void FUN_1422e4a50(const CStringW&); };
 // MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of this unit (explicit specializations, defined last).
@@ -249,11 +250,11 @@ UIWorldChampionRewardDialog::UIWorldChampionRewardDialog()
     : m_season(0), m_step(0), m_maxStep(0), m_page(0), m_maxPage(0) {
     m_80 = 0;
     FUN_141924170(1);
-    FUN_140bccd50()->FUN_140da5180(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::FUN_140feb1b0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::FUN_140feb1b0));
 }
 // @0x140fe9f50
 UIWorldChampionRewardDialog::~UIWorldChampionRewardDialog() {
-    FUN_140bccd50()->FUN_140da51e0(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::FUN_140feb1b0));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::FUN_140feb1b0));
 }
 // @0x140fea0f0
 CString UIWorldChampionRewardDialog::GetTypeName() { return "WorldChampionRewardDialog"; }
@@ -315,7 +316,7 @@ void UIWorldChampionRewardDialog::FUN_140feb2c0(CInPacket& packet) {
     packet.stream.FUN_140408160(m_rewardVector);
     MS2_ASSERT_AT(112, (size_t)m_maxStep == m_rewardVector.size());
     m_selected = m_step;
-    FUN_140feb630();
+    UpdatePageFromStep();
     if (FUN_141924630()) FUN_140feb6b0();
     else FUN_141924680();
 }
@@ -336,12 +337,12 @@ void UIWorldChampionRewardDialog::SendWorldChampionMode8() {
 }
 MS2_REPLACE_METHOD(0x140feb5b0, UIWorldChampionRewardDialog, SendWorldChampionMode8, 110, 0x9A7244DB);
 // @0x140feb630
-void UIWorldChampionRewardDialog::FUN_140feb630() {
+void UIWorldChampionRewardDialog::UpdatePageFromStep() {
     if (m_maxStep < 1 || m_step > m_maxStep) return;
     m_maxPage = (m_maxStep - 1) / 10;
     m_page = (m_step - 1) / 10;
 }
-MS2_REPLACE_METHOD(0x140feb630, UIWorldChampionRewardDialog, FUN_140feb630, 119, 0xD2290294);
+MS2_REPLACE_METHOD(0x140feb630, UIWorldChampionRewardDialog, UpdatePageFromStep, 119, 0xD2290294);
 // @0x140feb6b0
 void UIWorldChampionRewardDialog::FUN_140feb6b0() {
     FUN_140feb870();
@@ -358,7 +359,7 @@ void UIWorldChampionRewardDialog::FUN_140feb870() {
         if (step > m_maxStep) { m_stepSlotVecotr[i]->vfunc_4(0); continue; }
         m_stepSlotVecotr[i]->vfunc_4(1);
         m_stepSlotButtonVecotr[i]->FUN_1422cdfb0(FUN_14028dfa0(L"s_world_champion_step_button", step));
-        m_stepSlotButtonVecotr[i]->FUN_1422ce090(m_selected == step);
+        reinterpret_cast<ASButton*>(m_stepSlotButtonVecotr[i].operator->())->FUN_1422ce090(m_selected == step);
         if (step < m_step) m_stepSlotVecotr[i]->vfunc_15("finish");
         else if (step == m_step) m_stepSlotVecotr[i]->vfunc_15("process");
         else if (step > m_step) m_stepSlotVecotr[i]->vfunc_15("hold");

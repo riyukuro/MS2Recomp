@@ -34,6 +34,8 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/maidgradejockpottable.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // ---- statics of the unit's header (init order: maid sound names, then the market sort names) ----------------------------
 static CString s_strMaidCancel = "maid_Cancel";
@@ -127,13 +129,15 @@ public:
     unsigned FUN_140a5f780(int nGroup, int nRarity);            // owned count of the group
 };
 class Unk_MfEquipSet { public: float FUN_1411e1110(int nStat); };
-class Unk_MfPC { public: Unk_MfEquipSet* FUN_1416561a0(); };
+class Unk_MfPC { public: };
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
 class Unk_MfWordTable : public CReservedWordTable { public: void FUN_1416fb400(CStringW& str, Unk_MfNpc* pNpc);};
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 
-extern Unk_EntityAppFramework DAT_143b059e8;
-extern Unk_MfInventory DAT_143ab2a90;                           // the player's inventory
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MfInventory // the player's inventory
 extern __int64 DAT_143ab2820;                                   // own account id
 
 // ---- out-of-unit callees ----
@@ -152,7 +156,8 @@ void FUN_140710590(COutPacket& packet);                         // send
 struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the dialog's UI object
 int FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1408116a0(int nStringId, const int& nValue);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 void FUN_140694050(class CManufacture&, class CByteBuffer&);   // C3: was FUN_140694050
 void FUN_1412dc3c0(UIManufactureStatus* pDlg);
 
@@ -320,10 +325,10 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : FUN_14053feb0(nItemId);
                 unsigned nOwned = 0;
                 if (spIng->FUN_140684c80() == 0)
-                    nOwned = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
+                    nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f180(nItemId, nRarity);
                 else
-                    nOwned = DAT_143ab2a90.FUN_140a5f780(spIng->FUN_140684c80(), nRarity);
-                unsigned nNeed = FUN_1401c0d90()->FUN_14047b860(pPC->FUN_1416561a0()->FUN_1411e1110(0x3f), spIng->m_nCount);
+                    nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(spIng->FUN_140684c80(), nRarity);
+                unsigned nNeed = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<Unk_MfEquipSet*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1110(0x3f), spIng->m_nCount);
                 if (nNeed > nOwned)
                 {
                     *pnResult = 8;
@@ -524,7 +529,7 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
     case 0x14:
     {
         int nArg = nType;
-        strText = FUN_1408116a0(0x7c6, nArg);
+        strText = BlockFormat<int>(0x7c6, nArg);
         break;
     }
     case 0x15:

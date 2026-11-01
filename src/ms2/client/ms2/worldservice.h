@@ -231,6 +231,7 @@ struct Unk_WsVad0 { void* p0; void* p1; };
 // Target of the MS2Ptr members (some CPtred subclass; TYPE? per member).
 class Unk_WsPtred : public CPtred {};
 class CPortal;                                           // m_350 value (FUN_141bc2880)
+class CFieldDataCli;                                     // m_298 value (FUN_141bd30a0, fielddatacli.h)
 class Unk_WsRec708;                                      // m_708 value (defined in worldservice.cpp#1 / #4)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
 {
@@ -310,7 +311,7 @@ public:
     void FUN_141bbf9f0(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
     void FUN_141bbfde0(const egmAnimation::ActorRemovedMessage* pMsg, efd::Category targetChannel);
     void FUN_141bc0f50(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
-    efd::SmartPointer<egf::EntityManager> FUN_141bc16d0();   // copy of m_268
+    efd::SmartPointer<egf::EntityManager> GetEntityManager();   // copy of m_268
     int FUN_141bc2b30();                                // sum of m_350 values' +0x188
     void FUN_141bc7440();
     void* FUN_141bc8070();                              // FUN_141bd3620()->vfunc(0x4a0) or 0
@@ -319,13 +320,13 @@ public:
     void FUN_141bc9fd0(int key);                        // m_9d0.SetAt(key, 0)
     void FUN_141bca010();                               // re-arm the 0xa5 timer (m_a70/m_a74/m_a78)
     void FUN_141bca090();                               // timer expired -> send 0xa5(1)
-    void FUN_141bca110(bool b);                         // send COutPacket 0xa5 { u8 b }
+    void SendSyncWorld(bool b);                         // send COutPacket 0xa5 { u8 b }
     void FUN_141bca170(int interval);                   // m_a70 = interval
     void FUN_141bca1e0();                               // m_2b8 = 1 ...
     void FUN_141bca240();
     void* FUN_141bd0cc0();                              // the local player: m_2d8's pointee, a MyPC (cast with static_cast<PC*>; fittingdollpc.h has PC with slots to 146)
     void FUN_141bcf9f0();                               // (unrecovered, #1)
-    void FUN_141bcfad0();                               // (unrecovered, #1)
+    void NotifyChangeServer();                               // (unrecovered, #1)
     void FUN_141bca390(unsigned key);                   // m_1a8.RemoveKey
     void FUN_141bca630();
     void FUN_141bc58d0(void* pOut);                     // copy m_510's pointers into *pOut
@@ -382,7 +383,7 @@ public:
     void FUN_141bc5ab0(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5ab0
     void FUN_141bc5b30(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5b30
     efd::SmartPointer<class Unk_WsB_RefObj> FUN_141bc5bb0(unsigned __int64 key); // 0x141bc5bb0
-    void FUN_141bc5c40(MS2Ptr<class Unk_WsB_Prop> prop); // 0x141bc5c40
+    void AddProp(MS2Ptr<class Unk_WsB_Prop> prop); // 0x141bc5c40
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
     void FUN_141bc5fb0(void* out, int category); // 0x141bc5fb0
@@ -454,8 +455,8 @@ public:
     CStringW FUN_141bd0d30();                           // m_2d8's name or ""
     int FUN_141bd0dd0(Vector3* pos, Vector3* dir);
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* p);
-    class Unk_WsC_GameObj* FUN_141bd0fa0(const egf::EntityID& id);   // the game object of an entity
-    class Unk_WsC_GameObj* FUN_141bd0fe0(unsigned __int64 key);
+    class Unk_WsC_GameObj* FindObjectByEntityId(const egf::EntityID& id);   // the game object of an entity
+    class Unk_WsC_GameObj* FindObjectByKey(unsigned __int64 key);
     class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);
     class Unk_WsC_GameObj* FUN_141bd1180(int id);
     class Unk_WsC_GameObj* FUN_141bd1200(int id);
@@ -488,7 +489,7 @@ public:
     int FUN_141bd3040();                                // return m_28c
     int FUN_141bd3060();                                // return m_284
     CStringW* FUN_141bd3080();                          // &m_290
-    MS2Ptr<Unk_WsPtred298> FUN_141bd30a0();             // copy of m_298
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();              // copy of m_298
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
     class Unk_WsA_GoFieldRef FUN_141bd3210(Vector3 pt);   // field object containing pt, else the nearest (m_2f8)
     class Unk_WsA_GoFieldRef FUN_141bd3430(unsigned __int64 key); // m_2f8 lookup
@@ -577,7 +578,7 @@ public:
     void FUN_141bdaa20();                               // m_890 operation
     efd::SmartPointer<egf::Entity> FUN_141bdaa50(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
     void FUN_141bdaae0();                               // show the node viewer dialog
-    void FUN_141bdabb0();                               // show the research and development dialog
+    void ShowResearchAndDevelopmentDialog();                               // show the research and development dialog
     void FUN_141bdac80(CStringA text);                  // append a line to that dialog
     void FUN_141bdad00(int kind, struct Unk_WsD_Msg* msg);   // forward kind 0x17 / 0x18 / 0x19 messages to m_aa0
     void FUN_141bdb5a0(int v);                          // m_ae0 = v
@@ -628,7 +629,7 @@ public:
     int m_288;                                          // +0x288
     int m_28c;                                          // +0x28c = 1
     CStringW m_290;                                     // +0x290
-    MS2Ptr<Unk_WsPtred298> m_298;                           // +0x298 0x141bf14b0(0) / 0x1408850f0 TYPE?
+    MS2Ptr<CFieldDataCli> m_298;                            // +0x298 the current field (CFieldDataCli::Find); WorldService views it as Unk_WsPtred298
     int m_2a8;                                          // +0x2a8 = 1
     int m_2ac;                                          // +0x2ac
     int m_2b0;                                          // +0x2b0

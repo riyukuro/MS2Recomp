@@ -36,14 +36,14 @@ MS2_REPLACE_METHOD(0x1422E45F0, ASTextArea, FUN_1422e45f0, 40, 0xA9BCC004);
 // @0x1422e4620
 int ASTextArea::FUN_1422e4620()
 {
-    return FUN_1422baa20("position").GetInt();
+    return GetMember("position").GetInt();
 }
 MS2_REPLACE_METHOD(0x1422E4620, ASTextArea, FUN_1422e4620, 88, 0xEA75B308);
 
 // @0x1422e4680
 int ASTextArea::FUN_1422e4680()
 {
-    if (FUN_1422e4620() == FUN_1422e1490()->FUN_1422c58b0())
+    if (FUN_1422e4620() == GetTextField()->GetMaxScrollV())
         return 1;
     return 0;
 }
@@ -52,7 +52,7 @@ MS2_REPLACE_METHOD(0x1422E4680, ASTextArea, FUN_1422e4680, 148, 0x165DC057);
 // @0x1422e4720
 void ASTextArea::FUN_1422e4720()
 {
-    FUN_1422e45f0(FUN_1422e1490()->FUN_1422c58b0());
+    FUN_1422e45f0(GetTextField()->GetMaxScrollV());
 }
 MS2_REPLACE_METHOD(0x1422E4720, ASTextArea, FUN_1422e4720, 94, 0x3285D998);
 

@@ -24,6 +24,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- globals ----
 extern int DAT_1439f86ac;                                           // nonzero: net streams are enabled
@@ -58,7 +59,6 @@ public:
     class GFxVideo* GetVideo();
 };
 void* FUN_140aadf80();
-void* FUN_14209c720(void* p);
 void FUN_1422ec700(void* p, void* q);
 class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
@@ -398,7 +398,7 @@ int CSoundService::FUN_1417ae990()
     {
         if (((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()) != 0)
         {
-            FUN_1422ec700(((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()), FUN_14209c720(FUN_140aadf80()));
+            FUN_1422ec700(((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()), ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
         }
     }
     if (GetSystem() != 0)

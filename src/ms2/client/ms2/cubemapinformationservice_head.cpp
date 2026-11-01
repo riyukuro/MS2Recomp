@@ -20,7 +20,7 @@
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text by key
 CStringW GetStringCommon(int nStringId);                         // string table text by id
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_1412751f0(const CStringW&, int, int);                 // show a notice
 class Unk_LockUIManager;
 

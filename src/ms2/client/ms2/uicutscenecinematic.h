@@ -75,14 +75,14 @@ public:
 
     void FUN_141907d60(int nState, CStringW strKey, CStringW strLabel);   // set the skip button (by value: the callee destroys them)
     void FUN_141907f80(int nId, CStringW strText);                  // show a cinematic (mode 1)
-    void FUN_141908040(bool bOn);                                   // the cinematic key group on/off
+    void SetCinematicKeyMode(bool bOn);                                   // the cinematic key group on/off
     void FUN_1419080b0();                                           // close everything
-    void FUN_141908290(CInPacket& packet);                          // the cinematic packet
-    void FUN_141908410();                                           // hideScript
-    void FUN_141908470(CStringW strName, CStringW strText, CStringW strIllust, int nFlag);   // setScript (by value)
+    void OnPacket(CInPacket& packet);                          // the cinematic packet
+    void HideScript();                                           // hideScript
+    void SetScript(CStringW strName, CStringW strText, CStringW strIllust, int nFlag);   // setScript (by value)
     void FUN_1419085e0(NotifyObject* pNotice);                      // NotifyRemoveGameObject
     void FUN_141908620(NotifyObject* pNotice);                      // NotifyFadeInComplete
-    void FUN_141908690();                                           // drop the script lines
+    void ClearTalks();                                           // drop the script lines
     void FUN_141908720(float fDelta);                               // update
     void FUN_141908750();                                           // update the script line
     void FUN_141908c00();                                           // update the balloons

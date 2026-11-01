@@ -29,6 +29,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\caprotationcontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "caprotationcontroller.h"
 #include "ms2/placeholder/citem.h"
 #include <efd/MemObject.h>
@@ -44,9 +45,12 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- exe data ----
-extern Vector3 DAT_143b01a60;       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
 extern Vector3 DAT_143a08cf8;       // the up axis
 struct Unk_PickXY { float x, y; };          // cursor position
@@ -116,14 +120,13 @@ public:
     float FUN_14123c260();                                      // model scale
 };
 struct Unk_CapWorld { Unk_CapPlayer* FUN_141bd0cc0(); };        // the local player
-void* FUN_1416561a0(Unk_CapPlayer* pPlayer);                    // the player's customize state
 void FUN_1411e5c10(void* pState);                               // applies the customization
 
 struct Unk_CapEntityLoader
 {
-    void* FUN_140999440(const Unk_CapEntityKey& kEntity);       // the entity's loaded scene, NULL while loading
 };
-Unk_CapEntityLoader* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 struct Unk_CapCursor : public CWindowService { };   // cursor position in pixels
 Unk_CapCursor* FUN_140aadf80();
@@ -136,7 +139,6 @@ struct Unk_CapCamera : public CameraMgr
 struct Unk_CapInput { bool FUN_14116d950(int nKey, int nA, int nB); };   // key state
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 float Unk_Acos(float fCos);                                     // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 void FUN_142084020(Unk_EfdMatrix3* p, float fY, float fX, float fZ);   // efd::Matrix3::FromEulerAnglesYXZ
@@ -154,15 +156,16 @@ struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() co
 const Vector3& FUN_140947900(NiAVObject* pNode);        // world translate
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // The loaded meshes of a part model: a std::set<NiAVObjectPtr> (equipmodel.h).
@@ -342,11 +345,11 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         return;
     if (m_spPart == (Unk_PickTarget*)0)
         return;
-    Unk_CapEntityLoader* pLoader = FUN_141b6f910();
+    Unk_CapEntityLoader* pLoader = reinterpret_cast<Unk_CapEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
     Unk_CapEntityKey kKey;
-    void* pScene = pLoader->FUN_140999440(pPlayer->FUN_14123c460(kKey));
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_CapEntityKey&>(pPlayer->FUN_14123c460(kKey))));
     if (pScene == 0)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
@@ -402,7 +405,7 @@ void CCapRotationController::vfunc_33()
     UpdateRotationMatrix();
     Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer != 0)
-        FUN_1411e5c10(FUN_1416561a0(pPlayer));
+        FUN_1411e5c10(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0()));
     if (m_pListener != 0)
         static_cast<Unk_CapListener*>(m_pListener)->vfunc_5(this, m_spPart.get());
 }
@@ -466,7 +469,7 @@ int CCapRotationController::InitPart()
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {
         NiAVObjectPtr spNode(*it);
-        Unk_SceneWalker walker(spNode.operator NiAVObject*());
+        Unk_SceneWalker walker((NiAVObject*)(spNode.operator NiAVObject*()));
         NiAVObject* pObject;
         while ((pObject = walker.Next(true)) != 0)
         {
@@ -560,7 +563,7 @@ float CCapRotationController::WrapAngle(float fDegrees, float fMin, float fMax)
         fDegrees += 360.0f;
     else if (fDegrees > 180.0f)
         fDegrees -= 360.0f;
-    return FUN_140a17940(fDegrees, fMin, fMax);
+    return efd::Clamp(fDegrees, fMin, fMax);
 }
 
 // @0x140b02b90

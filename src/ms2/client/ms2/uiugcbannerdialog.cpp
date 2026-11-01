@@ -116,16 +116,13 @@ void GallerySet(Scaleform::GFx::Value*, const Unk_GalleryAS&);
 
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 template <class T> T* UgcFindDialog(eUIClassID nId);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pScript, int n);      // the movie root is null
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
 int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted table string
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int nFlag);   // a price as text
@@ -216,7 +213,7 @@ void UIUGCBannerDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
-    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
     m_188 = 0;
     m_1f8.RemoveAll();
     m_228 = 0;
@@ -331,7 +328,7 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (FUN_140d74e80(strTag) != 0)
                 ((class CUgcManager*)FUN_14052d220())->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
                                                reinterpret_cast<const Unk_BannerDay&>(m_1c0));
-            else if (FUN_1403b3c40(strTag, L"noexist"))
+            else if (operator==(strTag, L"noexist"))
             {
                 FUN_141b358d0();
                 FUN_141b364a0(-1);
@@ -460,20 +457,20 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (root.FUN_1422ba9a0() == 0)
         {
 #ifdef __clang__
-            AScript data(root.FUN_1422baa20("data"), 2);
+            AScript data(root.GetMember("data"), 2);
 #else
             // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
-            AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+            AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
             if (data.FUN_1422ba9a0() == 0)
             {
                 ASTooltip tip(1, 2);
                 CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
-                if (tip.FUN_1409e26b0(strText) != 0)
+                if (tip.ApplyTextTooltip(strText) != 0)
                 {
-                    tip.FUN_1409c6dc0(2);
-                    tip.FUN_1409c6e60(-4);
-                    tip.FUN_1409c6e90(1);
+                    tip.SetTooltipAlign(2);
+                    tip.SetOffsetX(-4);
+                    tip.SetOffsetY(1);
                     *pRetVal = tip.FUN_1422bb870();
                 }
             }
@@ -492,7 +489,7 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), banner->GetHourly(nHour), 0);
             CStringW strText = FUN_14052bd00(0x9b6, strPrice);
             ASTooltip tip(1, 2);
-            if (tip.FUN_1409e26b0(strText) != 0)
+            if (tip.ApplyTextTooltip(strText) != 0)
                 *pRetVal = tip.FUN_1422bb870();
         }
     }
@@ -666,7 +663,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 // @0x141b36080
 int UIUGCBannerDialog::OnNewDraw()
 {
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
         return 0;
     FUN_141b358d0();
     return 1;
@@ -785,7 +782,7 @@ void UIUGCBannerDialog::FUN_141b366b0()
 // @0x141b36750
 void UIUGCBannerDialog::FUN_141b36750(__int64 nPrice)
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     if (m_238 == 0)
         m_238 = reinterpret_cast<Unk_WcTitleFinder*>(m_30.operator->())->FUN_140c436d0("m_labelMeso");

@@ -109,12 +109,12 @@
 #include <cstring>
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 // @0x1414d9cb0
 inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
-void FUN_1409618c0(egf::Entity*, unsigned, efd::Point3*);
-void FUN_1408a20a0(egf::Entity*, unsigned, bool*);
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 efd::ISystemService* FUN_1401cd040(char*);
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
@@ -175,8 +175,8 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
             } else {
                 PropData* data = it->second;
                 SceneData* scene = NULL;
-                FUN_1409618c0(entity, 0xfd95ca52, &data->m_initialTranslation);
-                FUN_1409618c0(entity, 0x68c7c29d, &data->m_initialEulerAngles);
+                reinterpret_cast<egf::Entity*>(entity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(data->m_initialTranslation));
+                reinterpret_cast<egf::Entity*>(entity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(data->m_initialEulerAngles));
                 if (!data->m_currentSceneName.empty()) {
                     scene = GetSceneData(data->m_currentSceneName, false);
                     AppendPropData(data, scene->m_pPropsPending);
@@ -190,7 +190,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                     NxMat34 pose(NX_IDENTITY_MATRIX);
                     NiPhysXTypes::NiTransformToNxMat34(rotation, translation, pose);
                     bool cube = false;
-                    FUN_1408a20a0(entity, 0x38141815, &cube);
+                    entity->GetPropertyValue(0x38141815, cube);
                     if (cube) {
                         efd::SmartPointer<efd::ISystemService> service(FUN_1401cd040(&DAT_143b059e8));
                         NxActor* actor = FUN_1410c5420(service, entity->GetEntityID());

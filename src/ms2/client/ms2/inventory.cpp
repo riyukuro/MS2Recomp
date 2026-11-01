@@ -209,6 +209,7 @@ static CString s_chartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Cr
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 class Unk_ItemEquipData : public CItemData { };   // CItem::FUN_140527840's record (item.cpp)
 struct Unk_EquipItemData : public CItemData {};    // CEquipItem::FUN_1411dc7f0's record (as customize.cpp)
 #ifndef MS2_HOOK_DLL   // s_warningBag: the exe's object at 0x143ab78e8, which other units reach as DAT_143ab78e8 (the hook DLL binds it)
@@ -284,7 +285,7 @@ MS2_CHECK_SIZE(Unk_InventoryStackIdentity, 0x38); // accessed prefix only, never
 MS2_CHECK_OFFSET(Unk_InventoryStackIdentity, owner, 0x30);
 
 // Typed prefixes of the constants manager; it is never constructed here.
-struct Unk_InventoryIntSetting { unsigned char prefix[0x50]; unsigned value; unsigned pad; unsigned* FUN_1401d7c10(); };
+struct Unk_InventoryIntSetting { unsigned char prefix[0x50]; unsigned value; unsigned pad; };
 MS2_CHECK_SIZE(Unk_InventoryIntSetting, 0x58);
 struct Unk_InventoryArraySetting {
     void* unknown0;
@@ -391,7 +392,8 @@ public:
 extern Unk_InventoryCharacters DAT_143ab2a30;
 bool FUN_1403344a0(const Unk_InventoryCharacterIterator&, const Unk_InventoryCharacterIterator&);
 class Unk_InventoryDialog { public: int FUN_141999de0(); };
-Unk_InventoryDialog* FUN_1405344f0(int);
+class UIInventoryDialog;
+template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_InventoryDialog* FUN_1405344f0 (calls cast back)
 class Unk_InventoryStateManager;
 extern Unk_InventoryStateManager* DAT_143ab5cc8;
 extern Unk_InventoryListener* DAT_143ab7908;
@@ -444,7 +446,7 @@ void Unk_Inventory::FUN_140a5ca60(int category) {
         for (int i = 0; i < count; ++i) {
             ItemPtr item = found[i];
             if (item == nullptr) continue;
-            FUN_140a5d390(item->FUN_140526a50());
+            FUN_140a5d390(item->GetItemUid());
         }
     }
 }
@@ -462,7 +464,7 @@ void Unk_Inventory::FUN_140a5cb80(int category, int extra) {
                 CItem* item = bag[i].get();
                 if (item != nullptr) {
                     removed.Add(item);
-                    FUN_140a5d390(item->FUN_140526a50());
+                    FUN_140a5d390(item->GetItemUid());
                     bag[i] = 0;
                 }
             }
@@ -523,14 +525,14 @@ int Unk_Inventory::FUN_140a5d050(int category) {
 }
 MS2_REPLACE_METHOD(0x140a5d050, Unk_Inventory, FUN_140a5d050, 140, 0x437B4833);
 // @0x140a5d0f0
-unsigned __int64 Unk_Inventory::FUN_140a5d0f0() { return *((struct Unk_InventoryConstants*)FUN_1401d3200())->value6ee8.FUN_1401d7c10(); }
+unsigned __int64 Unk_Inventory::FUN_140a5d0f0() { return *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->value6ee8)->Get(); }
 MS2_REPLACE_METHOD(0x140a5d0f0, Unk_Inventory, FUN_140a5d0f0, 35, 0xEEBD98E0);
 // @0x140a5d120
 int Unk_Inventory::FUN_140a5d120(CItem* item) {
     int category = FUN_140a617f0(ItemPtr(item));
     if (category < 0 || category >= 15) return 11;
     if (Unk_LockGuard guard = lock) {} else {
-        if (items.Lookup(item->FUN_140526a50()) != nullptr) return 17;
+        if (items.Lookup(item->GetItemUid()) != nullptr) return 17;
         int slot = item->FUN_140526b50();
         if (slot != -1) {
             int count = (int)slots[category].GetCount();
@@ -542,7 +544,7 @@ int Unk_Inventory::FUN_140a5d120(CItem* item) {
             slot = newSlot;
             item->FUN_140526b70(slot);
         }
-        items.SetAt(item->FUN_140526a50(), item);
+        items.SetAt(item->GetItemUid(), item);
         slots[category][slot].AssignRaw(item);
     }
     return 0;
@@ -567,12 +569,12 @@ MS2_REPLACE_METHOD(0x140a5d390, Unk_Inventory, FUN_140a5d390, 408, 0x3477AB4B);
 // @0x140a5d530
 void Unk_Inventory::FUN_140a5d530(CItem* item) {
     if (item == nullptr) return;
-    ItemPtr old = FUN_140a5d680(item->FUN_140526a50());
+    ItemPtr old = FUN_140a5d680(item->GetItemUid());
     if (old.get() != nullptr) {
         int slot = old->FUN_140526b50();
         int category = FUN_140a617f0(old);
         item->FUN_140526b70(slot);
-        items.SetAt(old->FUN_140526a50(), item);
+        items.SetAt(old->GetItemUid(), item);
         slots[category][slot].AssignRaw(item);
     }
 }
@@ -597,7 +599,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5d760(int skill, int ignoreUsabili
             if (!item) continue;
             int itemSkill = item->FUN_140527840()->FUN_14053dc20();
             if (itemSkill == 0 || itemSkill != skill) continue;
-            if (item->FUN_140526100() != 0) continue;
+            if (item->IsLapenshard() != 0) continue;
             if (ignoreUsability == 0 && player->FUN_141662eb0(item.get()) == 0) continue;
             return item;
         }
@@ -656,7 +658,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e040(int tag) {
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
             if (item == nullptr) continue;
-            if (!item->FUN_1405277e0(tag)) continue;
+            if (!item->HasStringTag(tag)) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             found.push_back(item);
         }
@@ -722,7 +724,7 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
             ItemPtr item = bag[i];
             if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
             if (order == 2) result.AddTail(item);
-            else if ((unsigned)item->FUN_140526c50() < item->FUN_1405281e0()) result.AddTail(item);
+            else if ((unsigned)item->GetCount() < item->GetSlotMax()) result.AddTail(item);
         }
     } }
     if (result.GetCount() > 1) {
@@ -732,8 +734,8 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
         int second = 0;
         for (int i = 0; i < count; ++i) {
             for (int j = 0; j < last; ++j) {
-                first = result.GetAt(result.FindIndex(j))->FUN_140526c50();
-                second = result.GetAt(result.FindIndex(j + 1))->FUN_140526c50();
+                first = result.GetAt(result.FindIndex(j))->GetCount();
+                second = result.GetAt(result.FindIndex(j + 1))->GetCount();
                 if (order == 2) {
                     if (first > second) result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
                 }
@@ -778,7 +780,7 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
             if (*(filter + 1) != 0 && item->FUN_140526bd0() != *(filter + 1)) continue;
             if (*(filter + 2) != 0 && item->FUN_140528e20()) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
-            count += item->FUN_140526c50();
+            count += item->GetCount();
         }
     }
     return count;
@@ -861,7 +863,7 @@ int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
             if (item == nullptr) continue;
-            if (!item->FUN_1405277e0(tag)) continue;
+            if (!item->HasStringTag(tag)) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             if (rarity != 0 && item->FUN_140526bd0() != rarity) continue;
             count += item->vfunc_4();
@@ -883,7 +885,7 @@ int Unk_Inventory::FUN_140a5f990(CStringW function) {
                 if (item == nullptr) continue;
                 if (item->FUN_140527840()->function.name != function) continue;
                 if (player->FUN_141662eb0(item.get()) == 0) continue;
-                count += item->FUN_140526c50();
+                count += item->GetCount();
             }
         }
     }
@@ -906,12 +908,12 @@ int Unk_Inventory::FUN_140a5fbd0(int skill, int includeEquipment) {
                 if (itemSkill == 0 || itemSkill != skill) continue;
                 if (includeEquipment == 0) {
                     if (item->FUN_140527840()->FUN_14053cbc0()) continue;
-                    if (item->FUN_140525640() != 0) continue;
-                    if (item->FUN_140527840()->FUN_14053cc80()) continue;
+                    if (item->IsPetItem() != 0) continue;
+                    if (item->FUN_140527840()->IsRideItem()) continue;
                 }
-                if (item->FUN_140526100() != 0) continue;
+                if (item->IsLapenshard() != 0) continue;
                 if (player->FUN_141662eb0(item.get()) == 0) continue;
-                count += item->FUN_140526c50();
+                count += item->GetCount();
             }
         }
     }
@@ -932,14 +934,14 @@ int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
             if (item == nullptr || item->FUN_1405276c0() != reference->FUN_1405276c0()) continue;
-            if (reference->FUN_140525f10() != 0) {
-                if (item->FUN_140525f10() == 0) continue;
-                Unk_InventoryStackIdentity* first = ((Unk_InventoryStackIdentity*)reference->FUN_1405278d0());
-                Unk_InventoryStackIdentity* second = ((Unk_InventoryStackIdentity*)item->FUN_1405278d0());
+            if (reference->HasCubeTextureMesh() != 0) {
+                if (item->HasCubeTextureMesh() == 0) continue;
+                Unk_InventoryStackIdentity* first = ((Unk_InventoryStackIdentity*)reference->GetUgcInfo());
+                Unk_InventoryStackIdentity* second = ((Unk_InventoryStackIdentity*)item->GetUgcInfo());
                 if (first != nullptr && second != nullptr && first->owner != second->owner) continue;
-                capacity += item->FUN_1405281e0() - item->FUN_140526c50() < 0 ? 0 : item->FUN_1405281e0() - item->FUN_140526c50();
+                capacity += item->GetSlotMax() - item->GetCount() < 0 ? 0 : item->GetSlotMax() - item->GetCount();
             }
-            else capacity += item->FUN_1405281e0() - item->FUN_140526c50() < 0 ? 0 : item->FUN_1405281e0() - item->FUN_140526c50();
+            else capacity += item->GetSlotMax() - item->GetCount() < 0 ? 0 : item->GetSlotMax() - item->GetCount();
         }
     }
     return capacity;
@@ -960,12 +962,12 @@ int Unk_Inventory::FUN_140a603e0(int category, int from, int to) {
     if (Unk_LockGuard guard = lock) {} else {
         ItemPtr first = FUN_140a60280(category, from);
         if (first.get() != nullptr) {
-            FUN_140a5d390(first->FUN_140526a50());
+            FUN_140a5d390(first->GetItemUid());
             first->FUN_140526b70(to);
         }
         ItemPtr second = FUN_140a60280(category, to);
         if (second.get() != nullptr) {
-            FUN_140a5d390(second->FUN_140526a50());
+            FUN_140a5d390(second->GetItemUid());
             second->FUN_140526b70(from);
         }
         if (first.get() != nullptr) FUN_140a5d120(first.get());
@@ -1021,7 +1023,7 @@ void Unk_Inventory::FUN_140a609a0(int category, ATL::CAtlArray<unsigned __int64>
         for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
             ItemPtr item = slots[category][i];
             if (item == nullptr) continue;
-            result.Add(item->FUN_140526a50());
+            result.Add(item->GetItemUid());
         }
     }
 }
@@ -1032,7 +1034,7 @@ int Unk_Inventory::FUN_140a60ad0(int type) {
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (item->FUN_140527840()->FUN_14053c5c0() != type) continue;
+        if (item->FUN_140527840()->GetType() != type) continue;
         if (!item->FUN_140528980()) continue;
         return 1;
     }
@@ -1046,7 +1048,7 @@ int Unk_Inventory::FUN_140a60c20(int type) {
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (type != 0 && item->FUN_140527840()->FUN_14053c5c0() != type) continue;
+        if (type != 0 && item->FUN_140527840()->GetType() != type) continue;
         if (!item->FUN_140528980()) continue;
         ++count;
     }
@@ -1059,7 +1061,7 @@ int Unk_Inventory::FUN_140a60d70(int type) {
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (item->FUN_140527760() != type) continue;
+        if (item->GetIconCode() != type) continue;
         if (!item->FUN_140528980()) continue;
         return 1;
     }
@@ -1072,7 +1074,7 @@ int Unk_Inventory::FUN_140a60ec0(int tag) {
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (!item->FUN_1405277e0(tag)) continue;
+        if (!item->HasStringTag(tag)) continue;
         if (!item->FUN_140528980()) continue;
         return 1;
     }
@@ -1110,7 +1112,7 @@ int Unk_Inventory::FUN_140a612b0(int category, ItemPtr item, int quantity) {
     bool bHasItem;
     if (item.get() != nullptr) bHasItem = true;
     else bHasItem = false;
-    if (bHasItem && item->FUN_1405281e0() > 1) {
+    if (bHasItem && item->GetSlotMax() > 1) {
         int nFree = FUN_140a5fe70(category, item);
         if (nFree >= quantity) return 0;
     }
@@ -1207,7 +1209,7 @@ int Unk_Inventory::FUN_140a61b40(int category) {
         if (data == nullptr) continue;
         if (!data->FUN_14053c7c0()) continue;
         limit = data->property.slotMax;
-        if ((unsigned)item->FUN_140526c50() < limit) {
+        if ((unsigned)item->GetCount() < limit) {
             unsigned previous;
             if (seen.Lookup(item->FUN_1405276c0(), previous)) return 1;
             else seen.SetAt(item->FUN_1405276c0(), i);
@@ -1232,7 +1234,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     }
     if (FUN_140a65e30(item.get()) != 0) return 0;
     Unk_InventoryUsePacket payload;
-    payload.id = item->FUN_140526a50();
+    payload.id = item->GetItemUid();
     payload.argument = argument;
     COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);
     payload.FUN_1401fbc40(packet);
@@ -1240,7 +1242,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
         if (data.get() != nullptr)
-            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return 1;
 }
@@ -1270,7 +1272,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
             if (box.get() != nullptr) {
                 FUN_140534050(box.operator->(), slot);
                 FUN_140534050(box.operator->(), mode);
-                FUN_141a01600(box.operator->(), item->FUN_140526a50());
+                FUN_141a01600(box.operator->(), item->GetItemUid());
                 FUN_141a01ee0(box.operator->(), ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
                 FUN_141a01700(box.operator->(), 1143, 1144, 0);
                 FUN_140d73c60(box);
@@ -1280,7 +1282,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     }
     if (g_143ab2a90.FUN_140a661e0(item) == 0) return 0;
     Unk_InventoryEquipPacket payload;
-    payload.id = item->FUN_140526a50();
+    payload.id = item->GetItemUid();
     payload.slot = selected;
     payload.FUN_1401fb870(mode);
     COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
@@ -1289,7 +1291,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     FUN_140710590(packet);
     MS2Ptr<CItemData> data(item->FUN_140527840());
     if (data.get() != nullptr)
-        reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+        reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a62270, Unk_Inventory, FUN_140a62270, 1692, 0x65CDD949);
@@ -1312,7 +1314,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
         if (data.get() != nullptr)
-            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return 1;
 }
@@ -1334,12 +1336,12 @@ unsigned Unk_Inventory::FUN_140a62d30(int skill) {
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(8)) { FUN_141275260(2184, 1, 1); return 0; }
     if (item->FUN_140527840()->FUN_14053d270() ||
         item->FUN_140527840()->FUN_14053cb40() ||
-        item->FUN_140527840()->FUN_14053cc80()) {
+        item->FUN_140527840()->IsRideItem()) {
         MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(skill, 1);
         if (data == 0) return 0;
         Unk_InventorySkillRequest request(skill, 1);
         request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
-        request.item = item->FUN_140526a50();
+        request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
@@ -1363,7 +1365,7 @@ unsigned Unk_Inventory::FUN_140a63000(int itemId) {
         Unk_InventorySkillRequest request(metadata->FUN_14053dc20(), 1);
         request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
         request.itemUse = true;
-        request.item = item->FUN_140526a50();
+        request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
@@ -1384,7 +1386,7 @@ unsigned Unk_Inventory::FUN_140a63360(int skill) {
         if (data == 0) return 0;
         Unk_InventorySkillRequest request(skill, 1);
         request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
-        request.item = item->FUN_140526a50();
+        request.item = item->GetItemUid();
         request.itemUse = true;
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
@@ -1401,7 +1403,7 @@ unsigned Unk_Inventory::FUN_140a635f0(CItem* item) {
     if (!player) return 0;
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(8)) { FUN_141275260(2184, 1, 1); return 0; }
     if (item->FUN_140527840()->FUN_14053d270() || item->FUN_140527840()->FUN_14053cb40() ||
-        item->FUN_140527840()->FUN_14053cc80()) {
+        item->FUN_140527840()->IsRideItem()) {
         int skill = FUN_141769320(MS2Ptr<CItemData>(item->FUN_140527840()));
         unsigned short level = 1;
         MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(skill, level);
@@ -1410,7 +1412,7 @@ unsigned Unk_Inventory::FUN_140a635f0(CItem* item) {
         Unk_InventorySkillRequest request(skill, 1);
         request.level = level;
         request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
-        request.item = item->FUN_140526a50();
+        request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
@@ -1423,7 +1425,7 @@ int Unk_Inventory::FUN_140a63880(CItem* item, const CStringW& argument) {
     if (!(item != nullptr && item->FUN_140527840() != nullptr))
         return 0;
     if (item->FUN_140527840()->FUN_14053cd90())
-        return FUN_140a61db0(item->FUN_140526a50(), argument);
+        return FUN_140a61db0(item->GetItemUid(), argument);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a63880, Unk_Inventory, FUN_140a63880, 108, 0x9F2455BA);
@@ -1467,16 +1469,16 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     if (!data.get()->FUN_14053c710()) return 0;
     bool codi = CFeatureManager::GetInstance()->FUN_14036d570(0x8e);
     if (mode == 2) {
-        if (!codi || !data.get()->FUN_14053cf90()) {
+        if (!codi || !data.get()->HasSkinType()) {
             FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, nullptr, L"");
             return 0;
         }
     } else if (mode == 1) {
-        if (!data.get()->FUN_14053cf90()) { FUN_140d73bc0(0xd3, 0, nullptr, L""); return 0; }
+        if (!data.get()->HasSkinType()) { FUN_140d73bc0(0xd3, 0, nullptr, L""); return 0; }
     }
     int mask = player->FUN_141658e60();
     bool gotoCheck = true;   // false: the combined-slot path ran and jumped past the generic check
-    if (mode != 2 && !data.get()->FUN_14053cf90()) {
+    if (mode != 2 && !data.get()->HasSkinType()) {
         int type = data.get()->FUN_14053c620();
         gotoCheck = false;
         if (!data.get()->FUN_14053d460()) {
@@ -1520,12 +1522,12 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
         if (item->FUN_140525e50(mask, result) == 0) { FUN_140d73bc0(0xd2, 0, nullptr, L""); return 0; }
     }
     if (FUN_140a61430(FUN_140a617f0(ItemPtr(item))) == 0) {
-        int pairMode = data.get()->FUN_14053cf90() ? 1 : 0;
+        int pairMode = data.get()->HasSkinType() ? 1 : 0;
         if (codi && item->FUN_14052a170() == 2) pairMode = 2;
         if (data.get()->FUN_14053d460() && Unk_InventoryPairMismatch(player, 4, 5, pairMode)) return 0;
         if (data.get()->FUN_14053d2b0() && Unk_InventoryPairMismatch(player, 8, 9, pairMode)) return 0;
     }
-    if (item->FUN_140525f10() != 0) {
+    if (item->HasCubeTextureMesh() != 0) {
         Unk_InventoryBlockRef block;
         FUN_140a2f620(FUN_140a6a830(), &block, 4);
         if (FUN_1401cb3d0(&block) != nullptr) { FUN_140a2ff20(&block, 4, 0); return 0; }
@@ -1554,7 +1556,7 @@ int Unk_Inventory::FUN_140a65770(CItem* item) {
     if (item == nullptr) return 11;
     CItemData* data = item->FUN_140527840();
     if (data == nullptr) return 11;
-    if (item->FUN_140528930() && !data->FUN_14053cde0()) return 5;
+    if (item->IsExpired() && !data->HasMaidId()) return 5;
     int result = FUN_140a65860(MS2Ptr<CItemData>(data), item->FUN_140526bd0());
     if (result != 0) return result;
     if (!item->FUN_140528980()) return 10;
@@ -1566,12 +1568,12 @@ int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 11;
     if (data == nullptr) return 11;
-    if (data->FUN_14053ce20() && player->FUN_141658f30() == 0) return 6;
-    if (data->FUN_14053c940(player->FUN_141658e60()) == 0) return 2;
+    if (data->IsPCBangItem() && player->FUN_141658f30() == 0) return 6;
+    if (data->IsGenderAllowed(player->FUN_141658e60()) == 0) return 2;
     if (data->IsJobAllowed(player->FUN_141654700()) == 0) return 3;
-    if (data->FUN_14053c9a0((unsigned short)player->vfunc_78()) == 0) return 1;
+    if (data->IsLevelAllowed((unsigned short)player->vfunc_78()) == 0) return 1;
     if (data->FUN_14053d1f0() && player->FUN_141662de0() == 0) return 7;
-    if (data->FUN_14053d210() && !TSingleton<WeddingManager>::GetInstance()->IsInProgress()) return 7;
+    if (data->HasWeddingLimit() && !TSingleton<WeddingManager>::GetInstance()->IsInProgress()) return 7;
     if (data->FUN_14053ce40()) {
         if (player->FUN_141523bc0()->FUN_141768fb0(data->FUN_14053dc20(), data->FUN_14053dc40()) != 0) return 9;
     }
@@ -1580,7 +1582,7 @@ int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a65b70
 int Unk_Inventory::FUN_140a65b70() {
-    Unk_InventoryDialog* dialog = FUN_1405344f0(20013);
+    Unk_InventoryDialog* dialog = reinterpret_cast<Unk_InventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(20013));
     if (dialog != nullptr)
         return dialog->FUN_141999de0();
     return -1;
@@ -1592,11 +1594,11 @@ int Unk_Inventory::SendEmotion(CItem* item) {
     if (player == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (item == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (item->FUN_140527840() == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
-    if (item->FUN_140527840()->FUN_14053c5c0() != 24) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
+    if (item->FUN_140527840()->GetType() != 24) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (player->FUN_141523bc0()->FUN_141768fb0(item->FUN_140527840()->FUN_14053dc20(), item->FUN_140527840()->FUN_14053dc40()) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
     COutPacket packet(static_cast<int>(SendOp::Emote), 0);
     packet.Encode1(1);
-    packet.Encode8(item->FUN_140526a50());
+    packet.Encode8(item->GetItemUid());
     FUN_140710590(packet);
     return 1;
 }
@@ -1646,7 +1648,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     if (FUN_1406344b0(ItemPtr(item), &character, &output)) return 1;
     name = output.name;
     bool allowed = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && item->FUN_1405258b0() != 0;
-    bool enchanted = ((Unk_InventoryEnchant*)item->FUN_1405279c0())->FUN_1406210e0();
+    bool enchanted = ((Unk_InventoryEnchant*)item->FUN_1405279c0())->HasAnyGem();
     if (allowed && enchanted) { *reason = 2; return 0; }
     if (allowed) return 1;
     unsigned __int64 owner = output.characterId;
@@ -1742,7 +1744,7 @@ MS2_REPLACE_METHOD(0x140a66990, Unk_Inventory, FUN_140a66990, 328, 0xA98001E1);
 void Unk_Inventory::FUN_140a66ae0(ItemPtr item) {
     if (FUN_140a67020(item) == 0) return;
     if (FUN_140a66f20() == 0) {
-        if (FUN_140a62270(item.get(), 0, 0, 0) != 0) FUN_140a66f40(item->FUN_140526a50());
+        if (FUN_140a62270(item.get(), 0, 0, 0) != 0) FUN_140a66f40(item->GetItemUid());
     } else FUN_140a673e0(item);
 }
 MS2_REPLACE_METHOD(0x140a66ae0, Unk_Inventory, FUN_140a66ae0, 276, 0x03FB783B);
@@ -1765,7 +1767,7 @@ void Unk_Inventory::FUN_140a66ca0(ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr>&
     for (size_t i = 0; i < candidates.GetCount(); ++i) {
         ItemPtr item = candidates[i];
         if (item.get() != nullptr) {
-            if (FUN_140a67390(item->FUN_140526a50())) continue;
+            if (FUN_140a67390(item->GetItemUid())) continue;
             Unk_InventoryEquipSlot slot = (Unk_InventoryEquipSlot)((int)item->FUN_140527a20());
             int mode = item->FUN_14052a170();
             if (mode == 0) {
@@ -1805,15 +1807,15 @@ int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     if (item == nullptr) return 0;
     if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return 0;
     if (FUN_140a67000() == 0) return 0;
-    __int64 id = item->FUN_140526a50();
+    __int64 id = item->GetItemUid();
     if (!item->FUN_140527840()->FUN_14053cbc0()) return 0;
     if (!FUN_140a5d680(id)) return 0;
     if (FUN_140a67390(id)) return 0;
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
     unsigned short level = (unsigned short)player->vfunc_78();
-    if ((unsigned)level < *((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMinLevel.FUN_1401d7c10() ||
-        (unsigned)level > *((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMaxLevel.FUN_1401d7c10()) return 0;
+    if ((unsigned)level < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMinLevel)->Get() ||
+        (unsigned)level > *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMaxLevel)->Get()) return 0;
     int slot = ((int)item->FUN_140527a20());
     int mode = item->FUN_14052a170();
     if (mode == 0) {
@@ -1843,8 +1845,8 @@ void Unk_Inventory::FUN_140a674c0(ItemPtr item) {
     if (item == nullptr) return;
     if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return;
     if (Unk_LockGuard guard = lock) {} else {
-        if (excludedItems.Find(item->FUN_140526a50(), nullptr) == nullptr)
-            excludedItems.AddTail(item->FUN_140526a50());
+        if (excludedItems.Find(item->GetItemUid(), nullptr) == nullptr)
+            excludedItems.AddTail(item->GetItemUid());
     }
 }
 MS2_REPLACE_METHOD(0x140a674c0, Unk_Inventory, FUN_140a674c0, 243, 0xD2BF86FC);

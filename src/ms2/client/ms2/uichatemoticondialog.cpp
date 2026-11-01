@@ -109,7 +109,6 @@ CMyCharacter* FUN_140931510();
 __int64 GetServerTime();                                            // server time
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);                         // the string table text with five numbers
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 int FUN_140bd5bd0();                                                // the ui id of the Merat market dialog
 
 // The movie root of every dialog is an ASDialog.
@@ -254,7 +253,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return;
-    MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FUN_140a3a640(spEmo->m_nGroupId);
+    MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FindGroup(spEmo->m_nGroupId);
     if (spGroup.IsNull())
         return;
     if (spGroup->m_nExpire >= (std::numeric_limits<__int64>::max)())
@@ -271,10 +270,10 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     int nYear = expire.GetYear();
     CStringW strText = FUN_1409e90c0(nStringId, nYear, nMonth, nDay, nHour, nMinute);
     ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 1, 2);
-    tooltip.FUN_1409c6dc0(4);
-    if (tooltip.FUN_1409e26b0(strText) == 0)
+    tooltip.SetTooltipAlign(4);
+    if (tooltip.ApplyTextTooltip(strText) == 0)
         return;
-    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+    *pRetVal = tooltip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x140BD11E0, UIChatEmoticonDialog, vfunc_49, 845, 0x47E5F6B8);
 
@@ -289,7 +288,7 @@ int UIChatEmoticonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
         int nTab = data.FUN_1422b8b10();
-        FUN_140bd27e0(nTab);
+        SelectTab(nTab);
     }
     else if (_stricmp(szMethod, "onSelectEmoticon") == 0)
     {
@@ -299,7 +298,7 @@ int UIChatEmoticonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         int nEmoticonId = data.FUN_1422b8b10();
         if (nEmoticonId == 0)
             return 0;
-        FUN_140bd28b0(nEmoticonId);
+        PostEmoticonSelected(nEmoticonId);
     }
     else if (_stricmp(szMethod, "onClickShopButton") == 0)
     {
@@ -385,7 +384,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         items.FUN_1422bbf00(item);
         if (bEnable)
         {
-            MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FUN_140a3a640(spEmo->m_nGroupId);
+            MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FindGroup(spEmo->m_nGroupId);
             if (spGroup)
                 m_nNextExpire = (std::min)(m_nNextExpire, spGroup->m_nExpire);
         }
@@ -460,37 +459,37 @@ void UIChatEmoticonDialog::FUN_140bd2620()
 MS2_REPLACE_METHOD(0x140BD2620, UIChatEmoticonDialog, FUN_140bd2620, 44, 0x02338A12);
 
 // @0x140bd2660
-void UIChatEmoticonDialog::FUN_140bd2660()
+void UIChatEmoticonDialog::ClearEmoticonData()
 {
     m_setNewGroups.clear();
     m_tabs.clear();
     m_setNewTabs.clear();
     m_emoticons.clear();
 }
-MS2_REPLACE_METHOD(0x140BD2660, UIChatEmoticonDialog, FUN_140bd2660, 90, 0xFAB0507E);
+MS2_REPLACE_METHOD(0x140BD2660, UIChatEmoticonDialog, ClearEmoticonData, 90, 0xFAB0507E);
 
 // @0x140bd26c0
-void UIChatEmoticonDialog::FUN_140bd26c0(unsigned nGroupId)
+void UIChatEmoticonDialog::AddNewGroup(unsigned nGroupId)
 {
     m_setNewGroups.insert(nGroupId);
     if (((class Unk_EdRestrictions*)FUN_1409331e0()) == 0)
         return;
     ((class Unk_EdRestrictions*)FUN_1409331e0())->FUN_14138d7e0(9, 0);
 }
-MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, FUN_140bd26c0, 80, 0x9F8D5E99);
+MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, AddNewGroup, 80, 0x9F8D5E99);
 
 // @0x140bd2720
-CStringW UIChatEmoticonDialog::FUN_140bd2720(int nEmoticonId)
+CStringW UIChatEmoticonDialog::GetEmoticonCommand(int nEmoticonId)
 {
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return CStringW(L"");
     return CStringW(spEmo->m_strCommand);
 }
-MS2_REPLACE_METHOD(0x140BD2720, UIChatEmoticonDialog, FUN_140bd2720, 182, 0xB154531B);
+MS2_REPLACE_METHOD(0x140BD2720, UIChatEmoticonDialog, GetEmoticonCommand, 182, 0xB154531B);
 
 // @0x140bd27e0
-void UIChatEmoticonDialog::FUN_140bd27e0(int nTab)
+void UIChatEmoticonDialog::SelectTab(int nTab)
 {
     if (nTab == -2)
     {
@@ -507,15 +506,15 @@ void UIChatEmoticonDialog::FUN_140bd27e0(int nTab)
         FUN_140bd1a60();
     }
 }
-MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, FUN_140bd27e0, 187, 0x7E8060C4);
+MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, SelectTab, 187, 0x7E8060C4);
 
 // @0x140bd28b0
-void UIChatEmoticonDialog::FUN_140bd28b0(int nEmoticonId)
+void UIChatEmoticonDialog::PostEmoticonSelected(int nEmoticonId)
 {
     const CStringW& strTarget = ((class Unk_EdChat*)FUN_141482e80())->FUN_1414829e0();
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
 }
-MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, FUN_140bd28b0, 205, 0x4516C159);
+MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, PostEmoticonSelected, 205, 0x4516C159);
 
 // ---- template tail the recovered source does not instantiate ----------------------------------------------------------
 // The exe keeps these COMDAT members of the dialog's and the pack state's containers (std::list<int>,

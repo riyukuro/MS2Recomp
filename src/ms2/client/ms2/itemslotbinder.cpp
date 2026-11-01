@@ -72,7 +72,7 @@ CString ItemSlotBinder::FUN_140d43510(const void* pItem)
     {
         item->FUN_140526c70(((Unk_SlotBindInfo*)pItem)->vfunc_2());
         if (((Unk_SlotBindInfo*)pItem)->vfunc_3() != 0)
-            item->FUN_1405273f0(0);
+            item->SetTransferCount(0);
         m_20++;
         CString strName = StringFormat("{0}_{1}", m_18, m_20);
         FUN_141415450(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);

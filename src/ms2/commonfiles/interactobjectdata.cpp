@@ -54,7 +54,7 @@ int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMas
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // data file path
 CString FUN_14016a5c0(const char* psz, int n);
 CLogString* GetLogString();
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                      // the item data of an id
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 // The one-argument log of additionalactionadditional.cpp (an FMT_VARIADIC instance it emitted first).
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 

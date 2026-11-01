@@ -7,7 +7,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 template<class S> void TokenizeEvent(const CStringW&, ATL::CAtlArray<S>&, const wchar_t*);
-void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
+void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 int FUN_140718170(const CString&);
 Unk_EventTime FUN_140718950(const CString&);
 CString FUN_140274f70(const CStringW&);
@@ -51,7 +51,7 @@ MS2_REPLACE_METHOD(0x1408D5630, UserEventContext, FUN_1408d5630, 393, 0x3753F83F
 // @0x1408d57c0
 bool UserEventContext::FUN_1408d57c0(const CStringW& text) {
     ATL::CAtlArray<CStringW> entries;
-    FUN_14025a680(text, entries, L"|");
+    FUN_14025a680(const_cast<CStringW&>(text), entries, L"|");
     for (size_t i=0; i<entries.GetCount(); ++i) {
         const CStringW& entry = entries.GetAt(i);
         if (!FUN_1408d5630(entry)) return false;

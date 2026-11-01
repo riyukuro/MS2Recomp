@@ -149,7 +149,7 @@ int CItemGemStoneUpgradeTable::Load()
             MS2Ptr<CItemData> next = FUN_14053f870(data->m_nLinked);
             if (next.get() != 0 && nTransfer != next->limit.transferType)
             {
-                unsigned nNextId = next->FUN_14053c510();
+                unsigned nNextId = next->GetItemId();
                 Unk_GemLog(CLogString::GetInstance(), 2, 0x13,
                            L"젬스톤 거래타입(귀속,거래불가 등)이 같지않습니다(itemID: {0}, nextItemID: {1}). itemProperty transferType을 확인해 주세요. [{2}]",
                            nItemId, nNextId, strPath);
@@ -180,7 +180,7 @@ int CItemGemStoneUpgradeTable::Load()
                     }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_GemIngredientTag(info.operator->(), nTag);
-                    pIngredients->FUN_14026bca0(info);
+                    pIngredients->AddIngredient(info);
                 }
             }
         }
@@ -230,7 +230,7 @@ int CItemGemStoneUpgradeTable::Load()
 }
 
 // @0x1405b1a60
-CItemGemStoneUpgradeTable::DataPtr CItemGemStoneUpgradeTable::FUN_1405b1a60(unsigned nId)
+CItemGemStoneUpgradeTable::DataPtr CItemGemStoneUpgradeTable::FindData(unsigned nId)
 {
     CheckInit();
     if (m_rows.IsEmpty())

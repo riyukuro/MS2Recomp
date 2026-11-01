@@ -27,9 +27,9 @@ public:
     ASTooltip(const ASTooltip& o);                                  // 0x140f47c60 (inline COMDAT, uigamedictionarydialog.cpp)
     // ~ASTooltip is implicit (0x1409b4af0): the exe dtor stores no vftable.
     void FUN_1409c7b10(CItem* pItem);                                    // itemDamage (sum of the damage lines)
-    void FUN_1409c7c10(CItem* pItem);
-    void FUN_1409c7c70(CItem* pItem);
-    void FUN_1409c7f70(CItem* pItem);
+    void SetItemName(CItem* pItem);
+    void SetItemGrade(CItem* pItem);
+    void SetUgcTag(CItem* pItem);
     void FUN_1409c7fc0(CItem* pItem);                                    // picks the plain or the extended item layout
     void FUN_1409c9170(CItem* pItem);
     void FUN_1409cc090(CItem* pItem);
@@ -38,45 +38,45 @@ public:
     void FUN_1409d9330(CItem* pItem, CStringW& strOut);
     void FUN_1409d99a0(CItem* pItem, CStringW& strOut);
     void FUN_1409d9aa0(CItem* pItem, CStringW& strOut);
-    void FUN_1409d4350(CItemData* pData);
+    void SetItemPiece(CItemData* pData);
     void FUN_1409d43b0(CItem* pItem);
-    void FUN_1409d43e0(CItem* pItem);
+    void SetItemPetRankAndDisableShadow(CItem* pItem);
     void FUN_1409d4460(CItem* pItem);
     void FUN_1409d46a0(CItem* pItem);
-    void FUN_1409d5530(unsigned nId);
+    void SetItemNameById(unsigned nId);
     void FUN_1409d55a0(int nId, int n);
     void FUN_1409d8300(int n);
     void FUN_1409d77b0(int n);
-    void FUN_1409d5160(unsigned nItemId);
-    void FUN_1409d5200(unsigned nItemId);
-    void FUN_1409d52a0(unsigned nItemId);
-    void FUN_1409d5340(unsigned nItemId);
-    void FUN_1409d53f0(unsigned nItemId);
-    void FUN_1409d5490(unsigned nItemId);
-    void FUN_1409d8c80(const CStringW& str);
-    void FUN_1409d8ce0(CStringW str);                                    // itemDamage (by value: the callee destroys it)
-    void FUN_1409d8d50(bool b);
+    void SetItemPetFlag(unsigned nItemId);
+    void SetItemCashFlag(unsigned nItemId);
+    void SetItemSkinFlag(unsigned nItemId);
+    void SetItemPcBangFlag(unsigned nItemId);
+    void SetItemVIPFlag(unsigned nItemId);
+    void SetItemWeddingFlag(unsigned nItemId);
+    void SetItemEquip(const CStringW& str);
+    void SetItemDamage(CStringW str);                                    // itemDamage (by value: the callee destroys it)
+    void SetItemPetSkin(bool b);
     void FUN_1409dbc30(const CStringW& str);                             // set m_50
     void FUN_1409d74a0(int nItemId);
     __int64 FUN_1409c6540();                                             // m_40
     void FUN_140be62e0(void* pOwner) { m_40 = reinterpret_cast<__int64>(pOwner); }   // 0x140be62e0 set m_40 (the player; uiclosetdialog.cpp)
     unsigned FUN_1409c6560();                                            // m_48 (flags; 0x100 = no extra buttons)
     void FUN_1409c6580(unsigned n);
-    void FUN_1409c65a0();                                                // enableUseDbClick = string 0x762
-    void FUN_1409c6880();                                                // enablePuton = string 0x751 (unless flag 0x100)
-    void FUN_1409c68e0();                                                // enableCompareSwap = string 0x765 (unless flag 0x100)
-    void FUN_1409c6940(const CStringW& strText);                         // enableLClick (unless flag 0x100)
+    void SetEnableUseDbClickDefault();                                                // enableUseDbClick = string 0x762
+    void SetEnablePutonDefault();                                                // enablePuton = string 0x751 (unless flag 0x100)
+    void SetEnableCompareSwapDefault();                                                // enableCompareSwap = string 0x765 (unless flag 0x100)
+    void SetEnableLClick(const CStringW& strText);                         // enableLClick (unless flag 0x100)
     void FUN_1409c6c80();                                                // closeButton = true
     void FUN_1409c6d10(const CString& str);                              // string member DAT_143ab45a8
-    void FUN_1409c6e30(int n);
-    void FUN_1409c6ec0(int n);
-    void FUN_1409c6dc0(int n);
-    void FUN_1409c6d70(const CString& strClass);                         // set the AS class name
-    void FUN_1409c6e00(int n);
-    void FUN_1409c6e60(int n);
-    void FUN_1409c6cb0(const CStringW& strText);                         // set the text
-    void FUN_1409c6e90(int n);
-    int FUN_1409e26b0(const CStringW& strText);
+    void SetOffDelay(int n);
+    void SetMaxWidth(int n);
+    void SetTooltipAlign(int n);
+    void SetTooltipClass(const CString& strClass);                         // set the AS class name
+    void SetOnDelay(int n);
+    void SetOffsetX(int n);
+    void SetText(const CStringW& strText);                         // set the text
+    void SetOffsetY(int n);
+    int ApplyTextTooltip(const CStringW& strText);
     int FUN_1409e1c50(unsigned nSkillId, unsigned short nLevel, int n);       // skill tooltip (skill window)
     int FUN_1409e1770(int a1, int a2);
     int FUN_1409e21a0(unsigned nId, unsigned nGrade);                   // achievement tooltip (uiachievedialog.cpp)
@@ -84,7 +84,7 @@ public:
     int FUN_1409e2750(void* pSkillAttr, int a1, unsigned a2);              // additional effect (buff) tooltip: an AdditionalLevelData, align, remaining ms (unsigned: jae/jb)
     void FUN_1409db870(Unk_GalleryPtr<Unk_GalleryItem> item);
     void FUN_1409c69b0(const CStringW& strTitle);                        // set the tooltip title line
-    void FUN_1409c65f0(const CStringW& strText);                         // set the tooltip text line
+    void SetEnableUseDbClick(const CStringW& strText);                         // set the tooltip text line
     void FUN_1409c6640(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
     void FUN_1409c6ef0(const CStringW& strText);                        // append to textBgArr
     int FUN_1409e13a0(CItem* pCompare, CItem* pItem);                   // item tooltip with the default flags
@@ -107,7 +107,7 @@ public:
     // ---- astooltip.cpp part 2 members (owner: part 2 agent; append here only) ----
     void FUN_1409cc800(CItem* pItem);                                    // itemSocket (the socket rows)
     void FUN_1409cd5b0(CItem* pItem);                                    // itemMerge
-    void FUN_1409cd6b0(CItem* pItem);                                    // iconPath
+    void SetItemIconPath(CItem* pItem);                                    // iconPath
     void FUN_1409cd750(CItem* pItem);                                    // the double-click / equip hints
     void FUN_1409cd9c0(CItem* pItem);                                    // itemSellPrice / notExchange
     void FUN_1409ce5f0(CItem* pItem);                                    // itemCreateTime (+ designOrgItemName)
@@ -131,11 +131,11 @@ public:
     void FUN_1409d3010(CItem* pItem);                                    // customizeColorData
     void FUN_1409d46e0(CItem* pItem);                                    // unlimited (enchant level)
     void FUN_1409d5610(int nItemId);                                     // itemKinds
-    void FUN_1409d56b0(int nItemId);                                     // itemMovie
+    void SetItemMovie(int nItemId);                                     // itemMovie
     void FUN_1409d5770(int nItemId);                                     // iconPath
     void FUN_1409d5850(int nItemId);                                     // (empty)
     void FUN_1409d5860(int nItemId, int nRarity);                        // not-exchange lines of a fresh item
-    void FUN_1409d5aa0(int nItemId);                                     // itemDescription
+    void SetItemDescription(int nItemId);                                     // itemDescription
     void FUN_1409d7560(int nItemId, int nRank);                          // itemPetRank
     void FUN_1409d7630(int nItemId);                                     // extraComment
     CStringW FUN_1409daa30(MS2Ptr<CItemData> spData);                    // part 4 (declared by part 3): chat emoticon comment (by value: the callee destroys it)
@@ -145,7 +145,7 @@ public:
     void FUN_1409d8650(int nItemId, int nGrade, int nSockets);           // the break ingredients
     void FUN_1409d8800(MS2Ptr<CItemData> spData);                        // ugcItemLimitRegister (by value: the callee destroys it)
     void FUN_1409d88e0(MS2Ptr<CItem> spItem);                            // ugcItemLimitRegister (by value: the callee destroys it)
-    void FUN_1409d8bf0(bool bEnable);                                    // itemEquip
+    void SetItemEquipText(bool bEnable);                                    // itemEquip
     void FUN_1409e72a0(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
     void FUN_1409e7460(class Unk_IngVec* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
     void FUN_1409d3470(CItem* pItem);                                    // extraComment (gemstone upgrade / mastery / emoticon)
@@ -164,21 +164,21 @@ public:
     CStringW FUN_1409da3d0(MS2Ptr<CItemData> spData);                    // music score period text (from the table)
     CStringW FUN_1409da690(CItem* pItem);                                // mastery recipes using the item
     CStringW FUN_1409daff0(MS2Ptr<CItemData> spData);                    // chat emoticon description
-    MS2Ptr<AScript> FUN_1409db6b0();                                     // rhsTooltip
-    MS2Ptr<AScript> FUN_1409db730();                                     // lhsTooltip
+    MS2Ptr<AScript> GetRhsTooltip();                                     // rhsTooltip
+    MS2Ptr<AScript> GetLhsTooltip();                                     // lhsTooltip
     void FUN_1409db870(MS2Ptr<CItemData> spData);                        // the exe's real parameter (copy 0x1403bb3b0 / dtor 0x1401b50d0)
     void FUN_1409dbbc0(CStringW str);                                    // itemName (by value)
     void FUN_1409dbc60(int nSkillId, const CStringW& strSuffix);         // skillName
     void FUN_1409dbd30(int nSkillId);                                    // skillElement
-    void FUN_1409dbef0(int nSkillId);                                    // iconPath of a skill
+    void SetSkillIconPath(int nSkillId);                                    // iconPath of a skill
     void FUN_1409dbfa0(int nSkillId);                                    // skill key slot hint
-    void FUN_1409dc130(int nSkillId, unsigned short nLevel);             // skillDescription
+    void SetSkillDescription(int nSkillId, unsigned short nLevel);             // skillDescription
     void FUN_1409dc1f0(int nSkillId, unsigned short nLevel);             // statDescription (level, sp, ep, cooltime)
     void FUN_1409dc700(int nSkillId, unsigned short nLevel);             // extraDescription
     void FUN_1409dcf10(int nSkillId, unsigned short nLevel, int bFromDialog);   // requireDescription
     void FUN_1409ddc40(class CMeratMarketProduct* pProduct);              // marketDesc (UGC market product)
-    void FUN_1409de020(class CMeratMarketPremiumProduct* pProduct);       // the buy limit of a premium product
-    void FUN_1409de070(int nScope, int nReset, int nCount);              // the buy limit text
+    void SetBuyLimitTextFromProduct(class CMeratMarketPremiumProduct* pProduct);       // the buy limit of a premium product
+    void SetBuyLimitText(int nScope, int nReset, int nCount);              // the buy limit text
     void FUN_1409de140(ASArray* pRows, int nItemId, int nRank);          // the item name row
     void FUN_1409de630(ASArray* pRows, int nItemId);                     // the trade rows
     void FUN_1409dea00(ASArray* pRows, int nItemId);                     // the housing category row

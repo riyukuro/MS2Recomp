@@ -15,6 +15,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
@@ -59,17 +67,17 @@ int CJobConditionTable::LoadFile(const CString& strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nNpcId = 0;
-        FUN_1408731e0(pNode, "npcID", nNpcId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "npcID", reinterpret_cast<int&>(nNpcId));
         if (nNpcId == 0)
             continue;
         NpcJobDataPtr spData(Unk_JobNewTag(0));
-        FUN_140873220(pNode, "moveFieldID", spData->m_nMoveFieldId);
-        FUN_1408731e0(pNode, "movePortalID", spData->m_nMovePortalId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "moveFieldID", spData->m_nMoveFieldId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "movePortalID", reinterpret_cast<int&>(spData->m_nMovePortalId));
         FUN_1406363a0(pNode, "jobCode", &spData->m_nJobCode);
         if (Unk_LockGuard guard = m_lock)
         {

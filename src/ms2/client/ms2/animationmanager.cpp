@@ -65,7 +65,7 @@ extern int DAT_1439f4840;                       // default code page (localepath
 // ---- exe functions outside this unit ----
 class Unk_GameClock;
 void FUN_14028b2d0(void* pList, const CString& str);                    // list.push_back
-Unk_AnimSvc* FUN_141b6f910();
+egmAnimation::AnimationService* FUN_141b6f910();
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 NiActorManager* FUN_1413f9b70(const egf::EntityID& id);                 // actor manager of an entity (via the service)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
@@ -182,7 +182,7 @@ CAnimationManager::CAnimationManager(GameObject* pOwner)
     : m_pOwner(pOwner)
 {
     m_fScale98 = 1.0f;
-    m_pModelCache = FUN_141b6f910();
+    m_pModelCache = reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910());
 }
 
 CAnimationManager::~CAnimationManager()
@@ -272,7 +272,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     }
     CString strAnim = FUN_1409a2470(kResolved.c_str(), 0);
     ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997070(m_pOwner, strAnim);
-    float fHeight = ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997650(strAnim);
+    float fHeight = ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->GetHeightFromGround(strAnim);
     m_pOwner->vfunc_43(fHeight);
     efd::UInt64 qwId3;
     NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId3)), kResolved);

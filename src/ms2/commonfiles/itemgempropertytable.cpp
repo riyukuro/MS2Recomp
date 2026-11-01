@@ -29,6 +29,13 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class CLogString* GetLogString();
@@ -183,19 +190,19 @@ bool CGemSwimData::vfunc_1(Unk_140165cf0* pElem)
 }
 
 // @0x1405ac8f0
-CString CGemSwimData::FUN_1405ac8f0()
+CString CGemSwimData::GetIdleAnimName()
 {
     return Unk_SocketFormat("SwimIdle_{0}", m_strKf);
 }
 
 // @0x1405ac940
-CString CGemSwimData::FUN_1405ac940()
+CString CGemSwimData::GetRunAnimName()
 {
     return Unk_SocketFormat("SwimRun_{0}", m_strKf);
 }
 
 // @0x1405ac990
-CString CGemSwimData::FUN_1405ac990()
+CString CGemSwimData::GetDashAnimName()
 {
     return Unk_SocketFormat("SwimDash_{0}", m_strKf);
 }
@@ -237,7 +244,7 @@ bool CGemCharEffectData::vfunc_1(Unk_140165cf0* pElem)
 }
 
 // @0x1405acbd0
-CString CGemCharEffectData::FUN_1405acbd0(int nPartnerGem)
+CString CGemCharEffectData::GetEffectByGender(int nPartnerGem)
 {
     if (nPartnerGem == 0)
         return m_strMale;
@@ -247,7 +254,7 @@ CString CGemCharEffectData::FUN_1405acbd0(int nPartnerGem)
 }
 
 // @0x1405acc80
-CString CGemCharEffectData::FUN_1405acc80(int nOwnerGem, int nPartnerGem)
+CString CGemCharEffectData::GetCoupleEffect(int nOwnerGem, int nPartnerGem)
 {
     if (nOwnerGem == 0 && nPartnerGem == 0)
         return m_strCoupleSameM;
@@ -312,12 +319,12 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
         return false;
     }
     const CString& strId = "id";
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = pNode->FUN_140168650(strTag))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
-        FUN_140873220(pNode, strId, reinterpret_cast<unsigned&>(nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), strId, reinterpret_cast<unsigned&>(nId));
         if (nId == 0)
             continue;
         MS2Ptr<T> spData(new T);

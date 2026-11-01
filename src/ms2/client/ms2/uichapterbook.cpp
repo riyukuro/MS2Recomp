@@ -112,7 +112,7 @@ void UIChapterBook::OnLoadComplete()
                     if (spItem.IsNull())
                         continue;
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", spItem->FUN_14053fdd0());
+                    objReward.FUN_1407cba60("icon", spItem->GetIconPath());
                     objReward.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
                     objReward.FUN_1409c0d20("count", reward.m_item.m_count);
                     obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);

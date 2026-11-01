@@ -39,6 +39,18 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
@@ -47,13 +59,11 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const&);   // log, const char* argument instance
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);                 // string attribute
 unsigned char FUN_1401d1320(CCacheData*);
 int FUN_1417b90f0(CString strName);                                      // state name -> state type
 
 // The avatar's character info (gender) and the effect lookup key, both unrecovered.
 class Unk_StateActorInfo;
-Unk_StateActorInfo* FUN_140974230(GameObject* pObject);
 int FUN_141658e60(Unk_StateActorInfo* pInfo);                            // gender
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -111,7 +121,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
     for (EffectList::iterator it = list.begin(); it != list.end(); ++it)
     {
         Unk_StateActorInfo* pInfo;
-        if (it->m_nGender != 2 && (pInfo = FUN_140974230(pObject)) != 0)
+        if (it->m_nGender != 2 && (pInfo = reinterpret_cast<Unk_StateActorInfo*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject)))) != 0)
         {
             if (FUN_141658e60(pInfo) != it->m_nGender)
                 continue;
@@ -159,25 +169,25 @@ bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
     TiXmlDocument doc;
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("StateEffect"); pNode != 0; pNode = pNode->NextSiblingElement())
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("StateEffect")); pNode != 0; pNode = pNode->NextSiblingElement())
     {
-        const char* pszType = FUN_14086f4b0(pNode, "stateType");
+        const char* pszType = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("stateType");
         int nStateType = FUN_1417b90f0(pszType);
         if (nStateType != 0)
         {
             StateEffectData data;
-            const char* pszEffect = FUN_14086f4b0(pNode, "effect");
+            const char* pszEffect = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("effect");
             if (pszEffect != 0)
             {
                 data.m_nStateType = nStateType;
                 data.m_strEffect = pszEffect;
-                Unk_140165cf0* pInfo = pNode->FUN_140165cf0("Info");
+                Unk_140165cf0* pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("Info"));
                 if (pInfo != 0)
                 {
                     XmlGetAttr((class TiXmlElement*)(pInfo), "emotionSkillID", *(unsigned int*)&static_cast<int&>(data.m_nEmotionSkillId));

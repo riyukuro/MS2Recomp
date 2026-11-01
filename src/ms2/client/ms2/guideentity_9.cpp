@@ -24,6 +24,14 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -644,13 +652,13 @@ int CGuideEntity::AreActionsDone()
 // @0x1413a33c0
 bool CGuideEntity::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
-    FUN_140873220(pElem, "saveId", m_nSaveId);
-    FUN_140873220(pElem, "saveStep", m_nSaveStep);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "saveId", m_nSaveId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "saveStep", m_nSaveStep);
     XmlGetAttr((class TiXmlElement*)(pElem), "isForce", m_nForce);
     XmlGetAttr((class TiXmlElement*)(pElem), "isNoSave", m_nNoSave);
     if (!FUN_1413a4b50())
-        FUN_140873420(pElem, "desc", m_strDesc);
+        XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
     for (Unk_140165cf0* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = pChild->NextSiblingElement())
     {
         CStringA strName(pChild->Value());
@@ -735,7 +743,7 @@ void CGuideEntity::CollectTriggerValues(std::map<int, int>& mapValues)
 // @0x1413a3960
 void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
 {
-    for (Unk_140165cf0* pCond = pElem->FUN_140165cf0("condition"); pCond != 0; pCond = pCond->FUN_140168650("condition"))
+    for (Unk_140165cf0* pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
         Unk_GcCondRef ref = FUN_1413a52c0(pCond);
         (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
@@ -747,7 +755,7 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
 // @0x1413a3a30
 void CGuideEntity::LoadActions(Unk_140165cf0* pElem, Unk_GeActList& list)
 {
-    for (Unk_140165cf0* pAct = pElem->FUN_140165cf0("action"); pAct != 0; pAct = pAct->FUN_140168650("action"))
+    for (Unk_140165cf0* pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
     {
         Unk_GeActRef ref = FUN_141382b90(pAct);
         if (FUN_1413a47b0(ref))

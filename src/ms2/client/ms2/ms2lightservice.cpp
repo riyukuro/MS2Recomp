@@ -44,12 +44,12 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/client/ms2/entityworldmanager.h"   // C3: EntityWorldManager::FUN_1411cf440 (was free stand-ins)
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"   // C3: PostProcessingService::FUN_1416a3a90
 
 using namespace egf;
 
 // ---- out-of-unit callees ----
-egf::EntityManager* FUN_1409670f0();                                    // the world's entity manager
-egf::Entity* FUN_1411cf440(egf::EntityManager* mgr, const egf::EntityID* id);   // entity lookup by id
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_140ae1c10();                                                    // the current graphics quality level
 class Unk_QualityTable;
@@ -58,26 +58,14 @@ class Unk_QualityTable;
 class CEffectService;
 
 // The graphics options: whether the "dim lights" option is on, and the post processing step that applies it.
-class Unk_LightVideoOptions
-{
-public:
-    bool FUN_14125e0b0();
-};
-class Unk_LightOptions
-{
-public:
-    Unk_LightVideoOptions* FUN_1409a8ac0();
-};
-class Unk_LightRenderStep
-{
-public:
-    bool FUN_1409a8f00();
-};
-class Unk_LightPostProcess
-{
-public:
-    Unk_LightRenderStep* FUN_1416a3a90(int nStep);
-};
+class Unk_LightVideoOptions;
+class Unk_LightRenderStep;
+// C3: views of the targets' own stand-ins (0x1409a8ac0, 0x14125e0b0, 0x1409a8f00).
+class Unk_AeGraphicOption;
+class Unk_AeGameOption { public: Unk_AeGraphicOption* FUN_1409a8ac0(); };
+struct Unk_GraphicState;
+bool FUN_14125e0b0(const Unk_GraphicState* p);
+class Unk_AeFeatureState { public: bool FUN_1409a8f00() const; };
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -336,7 +324,7 @@ void MS2LightService::UpdateRelightingMode()
 
     for (efd::map<egf::EntityID, LightData*>::iterator it = m_entityLightMap.begin(); it != m_entityLightMap.end(); ++it)
     {
-        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), &it->first);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(it->first);
         if (!pEntity)
             continue;
         const egf::FlatModel* pModel = pEntity->GetModel();
@@ -358,7 +346,7 @@ void MS2LightService::UpdateLightShadows()
 {
     for (efd::map<egf::EntityID, LightData*>::iterator it = m_entityLightMap.begin(); it != m_entityLightMap.end(); ++it)
     {
-        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), &it->first);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(it->first);
         UpdateLightShadow(pEntity);
     }
 }
@@ -433,11 +421,11 @@ void MS2LightService::HandleEntityEnterWorld(const egf::EntityChangeMessage* pMe
     else
         fDimmer = it->second;
 
-    Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0();
-    bool bDimmed = pVideo->FUN_14125e0b0();
-    Unk_LightRenderStep* pStep = ((class Unk_LightPostProcess*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(3);
+    Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0());
+    bool bDimmed = FUN_14125e0b0(reinterpret_cast<const Unk_GraphicState*>(pVideo));
+    Unk_LightRenderStep* pStep = reinterpret_cast<Unk_LightRenderStep*>(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(3));
     if (pStep)
-        bDimmed = bDimmed & pStep->FUN_1409a8f00();
+        bDimmed = bDimmed & reinterpret_cast<Unk_AeFeatureState*>(pStep)->FUN_1409a8f00();
     else
         bDimmed = false;
     if (!bDimmed)
@@ -503,7 +491,7 @@ bool MS2LightService::CreateQueuedLights()
 {
     for (std::list<egf::EntityID>::iterator itQueued = s_queuedLights.begin(); itQueued != s_queuedLights.end(); ++itQueued)
     {
-        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), &*itQueued);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*itQueued);
         if (!pEntity)
             continue;
 

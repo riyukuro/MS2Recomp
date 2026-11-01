@@ -19,6 +19,8 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 // ---- external surfaces (names invented; every callee is bound by its exe address) ---------------------------------
 class UIStoreDialog : public UIDialog {public:
@@ -48,7 +50,6 @@ struct Unk_AuConfig                                              // the account 
 };
 MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_GuildConstInt* p);
 int FUN_1408b6200(int nType);
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
@@ -66,7 +67,8 @@ void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
 void FUN_140d73bc0(int nId, int nA, IMessageListener* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strExtra);
-CStringW FUN_1408116a0(int nId, const int& rArg);
+CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_1409e97f0(int nId, const int& rArg);
 CStringW FUN_140763e10(int nValue);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
@@ -88,7 +90,7 @@ int CStore::Add(CItem* pItem)
 {
     if (Unk_LockGuard guard = m_lock) {
     } else {
-        if (m_items.Lookup(pItem->FUN_140526a50())) {
+        if (m_items.Lookup(pItem->GetItemUid())) {
             return 0x11;
         }
         int nSlot = pItem->FUN_140526b50();
@@ -108,7 +110,7 @@ int CStore::Add(CItem* pItem)
             pItem->FUN_140526b70(nSlot);
         }
         pItem->FUN_140526a30(1);
-        m_items.SetAt(pItem->FUN_140526a50(), pItem);
+        m_items.SetAt(pItem->GetItemUid(), pItem);
         m_slots[nSlot].AssignRaw(pItem);
     }
     return 0;
@@ -168,7 +170,7 @@ MS2Ptr<CItem> CStore::FindTypeCount(int nType, unsigned nCount)
             for (POSITION pos = m_items.GetHeadPosition(); pos; m_items.GetNext(pos)) {
                 MS2Ptr<CItem> pItem(m_items.GetValueAt(pos));
                 if (((CItem*)pItem)->FUN_1405276c0() == nType) {
-                    if ((unsigned)((CItem*)pItem)->FUN_140526c50() >= nCount) {
+                    if ((unsigned)((CItem*)pItem)->GetCount() >= nCount) {
                         return pItem;
                     }
                 }
@@ -196,7 +198,7 @@ int CStore::CountType(int nType)
             MS2Ptr<CItem> pItem(m_slots[i]);
             if (pItem.get() != 0) {
                 if (((CItem*)pItem)->FUN_1405276c0() == nType) {
-                    nTotal += ((CItem*)pItem)->FUN_140526c50();
+                    nTotal += ((CItem*)pItem)->GetCount();
                 }
             }
         }
@@ -215,8 +217,8 @@ int CStore::FreeTypeCount(int nType)
             MS2Ptr<CItem> pItem(m_slots[i]);
             if (pItem.get() ? true : false) {
                 if (((CItem*)pItem)->FUN_1405276c0() == nType) {
-                    nFree += 0u > ((CItem*)pItem)->FUN_1405281e0() - ((CItem*)pItem)->FUN_140526c50()
-                        ? 0 : ((CItem*)pItem)->FUN_1405281e0() - ((CItem*)pItem)->FUN_140526c50();
+                    nFree += 0u > ((CItem*)pItem)->GetSlotMax() - ((CItem*)pItem)->GetCount()
+                        ? 0 : ((CItem*)pItem)->GetSlotMax() - ((CItem*)pItem)->GetCount();
                 }
             }
         }
@@ -259,12 +261,12 @@ int CStore::Swap(int nA, int nB)
     } else {
         MS2Ptr<CItem> pFirst = Slot(nA);
         if (pFirst.get() != 0) {
-            Remove(((CItem*)pFirst)->FUN_140526a50());
+            Remove(((CItem*)pFirst)->GetItemUid());
             ((CItem*)pFirst)->FUN_140526b70(nB);
         }
         MS2Ptr<CItem> pSecond = Slot(nB);
         if (pSecond.get() != 0) {
-            Remove(((CItem*)pSecond)->FUN_140526a50());
+            Remove(((CItem*)pSecond)->GetItemUid());
             ((CItem*)pSecond)->FUN_140526b70(nA);
         }
         if (pFirst.get() != 0) {
@@ -339,7 +341,7 @@ int CStore::EmptySlot()
 int CStore::AvailableSlot(MS2Ptr<CItem> pItem, int nCount)
 {
     if (pItem.get() ? true : false) {
-        if (((CItem*)pItem)->FUN_1405281e0() > 1) {
+        if (((CItem*)pItem)->GetSlotMax() > 1) {
             int nFree = FreeTypeCount(((CItem*)pItem)->FUN_1405276c0());
             if (nFree >= nCount) {
                 return 0;
@@ -413,7 +415,7 @@ int CStore::CanMerge()
             continue;
         }
         nMax = pData->property.slotMax;
-        if ((unsigned)((CItem*)pItem)->FUN_140526c50() < nMax) {
+        if ((unsigned)((CItem*)pItem)->GetCount() < nMax) {
             int nOther;
             if (FUN_140361ab0(&seen, ((CItem*)pItem)->FUN_1405276c0(), &nOther)) {
                 return 1;
@@ -485,7 +487,7 @@ int CStore::CurrentCapacity()
     if (m_id != 0) {
         return Capacity();
     }
-    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_44a8) + 0x24;
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_44a8)->Get() + 0x24;
 }
 
 // @0x140de2a00
@@ -505,19 +507,19 @@ void CStore::ResetId(__int64 nId, int nType)
 // @0x140de2a80
 __int64 CStore::Value4558()
 {
-    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4558);
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4558)->Get();
 }
 
 // @0x140de2ab0
 __int64 CStore::Value45b0()
 {
-    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_45b0);
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_45b0)->Get();
 }
 
 // @0x140de2ae0
 __int64 CStore::Value4500()
 {
-    return *FUN_1402056b0(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4500);
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4500)->Get();
 }
 
 // @0x140de2b10
@@ -593,12 +595,12 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
         return;
     }
     if (((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840()))->FUN_14053cd10()) {
-        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)FUN_140c8dac0()))) == ((CItem*)pItem)->FUN_140526a50()) {
+        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)FUN_140c8dac0()))) == ((CItem*)pItem)->GetItemUid()) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;
         }
     }
-    if (((CItem*)pItem)->FUN_140525640() != 0) {
+    if (((CItem*)pItem)->IsPetItem() != 0) {
         if (((class CPetManager*)FUN_140535320())->GetSummonUid() == nId) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_summon_pet"), 1, 1);
             return;
@@ -617,7 +619,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     FUN_1401fbaf0(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     }
 }
 
@@ -644,7 +646,7 @@ void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CI
     packet.WriteInt32(nCount);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     }
 }
 
@@ -856,8 +858,8 @@ void CStore::OnList(CInPacket* pPacket)
         int nAmount = pPacket->ReadInt32();
         MS2Ptr<CItem> pItem(new CItem());
         if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
-            ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);
-            ((CItem*)pItem)->FUN_140526a70(nUid);
+            ((CItem*)pItem)->SetObjectId(DAT_143ab2864);
+            ((CItem*)pItem)->SetItemUid(nUid);
             ((CItem*)pItem)->FUN_140526b70((int)nSlot);
             ((CItem*)pItem)->FUN_140524eb0(*pPacket);
             Add(pItem.get());
@@ -918,7 +920,7 @@ void CStore::OnError(CInPacket* pPacket)
         FUN_141275260(0xff, 1, 1);
         break;
     default:
-        FUN_1412751f0(FUN_1408116a0(0x2af, nError), 1, 1);
+        FUN_1412751f0(BlockFormat<int>(0x2af, nError), 1, 1);
         break;
     }
 }
@@ -932,8 +934,8 @@ void CStore::ReadItem(CInPacket* pPacket)
     int nAmount = pPacket->ReadInt32();
     MS2Ptr<CItem> pItem(new CItem());
     if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
-        ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);
-        ((CItem*)pItem)->FUN_140526a70(nUid);
+        ((CItem*)pItem)->SetObjectId(DAT_143ab2864);
+        ((CItem*)pItem)->SetItemUid(nUid);
         ((CItem*)pItem)->FUN_140526b70((int)nSlot);
         ((CItem*)pItem)->FUN_140524eb0(*pPacket);
         Add(pItem.get());
@@ -945,7 +947,7 @@ void CStore::ReadItem(CInPacket* pPacket)
 Unk_SSGDlg4e47* FUN_140de48d0(int nId)
 {
     if (reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get()) {
             return static_cast<Unk_SSGDlg4e47*>(dynamic_cast<UIStoreDialog*>(p.operator->()));
         }

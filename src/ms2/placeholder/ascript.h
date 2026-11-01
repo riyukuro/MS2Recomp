@@ -96,7 +96,7 @@ public:
     AScript(const Scaleform::GFx::Value& v, int nMovieId);                                   // 0x1422ba780 (ASCommonDepth)
     AScript(int nMovieId);                                                                   // 0x1422ba6e0 creates a fresh AS object (asequipicon.cpp)
     AScript(Scaleform::GFx::Value& v, int nMovieId);                                         // 0x1422ba7f0 same body as the const& form (asequipicon.cpp)
-    Scaleform::GFx::Value FUN_1422baa20(const char* szMember);                               // child member by name
+    Scaleform::GFx::Value GetMember(const char* szMember);                               // child member by name
     bool FUN_1422baad0(const char* szMember, CStringW& strOut);                             // read a string member (merat market products; false if missing)
     bool FUN_1422ba9a0();                                                                    // value is undefined
     Scaleform::GFx::Value& FUN_1422bb870();                                                  // m_value
@@ -228,7 +228,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, AScript a2);                  // 0x140c0df40 (inline COMDAT, defined in uidungeoncategory.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, __int64 a1, __int64 a2);              // 0x140cb6990 (UIPvPGuildTeamDialog setHpBar)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, __int64 a3, __int64 a4);   // 0x14133c8c0 (inline COMDAT, defined in uipvpguildteamdialog.cpp; a1/a2 by value: the callee destroys them)
-    bool FUN_1422ba9f0(const char* szMember);                                               // the AS object has the member (uipvpguildteamdialog)
+    bool HasMember(const char* szMember);                                               // the AS object has the member (uipvpguildteamdialog)
     Scaleform::GFx::Value FUN_14190b490(const char* szMethod, unsigned int a1, unsigned int a2, float a3);   // 0x14190b490 (Invoke; inline COMDAT, defined in uicutscenecinematic.cpp: setStageSize)
     Scaleform::GFx::Value FUN_14190b570(const char* szMethod, bool a1, CStringW a2, CStringW a3);   // 0x14190b570 (Invoke; inline COMDAT, defined in uicutscenecinematic.cpp; a2/a3 by value: the callee destroys them)
     Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2);         // 0x14129cce0 (Invoke(int, string), defined in unit_14129ba60.cpp; a2 by value)
@@ -236,7 +236,7 @@ public:
     Scaleform::GFx::Value FUN_140bd2cb0(const char* szMethod, const ASArray& a1);           // 0x140bd2cb0 (UIQuestGuideDialog buildAll)
     Scaleform::GFx::Value FUN_140ed11b0(const char* szMethod, unsigned int a1);               // 0x140ed11b0 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; Value = UInt)
     Scaleform::GFx::Value FUN_140ed0fd0(const char* szMethod, int a1, bool a2);             // 0x140ed0fd0 (UIQuestGuideDialog setTracingEntity)
-    Scaleform::GFx::Value FUN_1422bb3c0();                                                   // 0x1422bb3c0 call the AS function this object wraps
+    Scaleform::GFx::Value InvokeSelf();                                                   // 0x1422bb3c0 call the AS function this object wraps
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& a1, const char* a2);  // 0x141aafc10 (inline COMDAT, defined in uiquesteventlistener.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, bool a2, Scaleform::GFx::Value a3);   // 0x140f1fec0 (inline COMDAT, defined in uiblackmarketpagemeso.cpp; a3 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1);                           // 0x14127bfb0 (inline COMDAT, defined in gfxmoviebackground.cpp)
@@ -289,7 +289,7 @@ public:
     Scaleform::GFx::Value FUN_141312a70(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, CStringW a5);   // 0x141312a70 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildSellerItemList"; a1/a2/a5 by value)
     Scaleform::GFx::Value FUN_1413128f0(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, const wchar_t* a5);   // 0x1413128f0 (same, a5 a literal)
     Scaleform::GFx::Value FUN_1413130e0(const char* szMethod, Scaleform::GFx::Value a1, CStringW a2, int a3);   // 0x1413130e0 (inline COMDAT of uimeratmarketdialog.cpp: "changeState"; a1/a2 by value)
-    MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
+    MS2Ptr<class ASDropdownMenu> GetDropdownMenu(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
 
     Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, bool a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)
 
@@ -346,7 +346,7 @@ public:
 
     // AScript's own unit (gfxui/ascript.cpp). The typed readers return false if the member is missing.
     virtual ~AScript();                                                                      // 0x1422ba860 (m_value.SetNull(); ??_G 0x1409bb9a0)
-    CString FUN_1422ba8c0();                                                                 // the "name" member as text
+    CString GetName();                                                                 // the "name" member as text
     CString FUN_1422ba950();                                                                 // the class name "AScript"
     bool FUN_1422bad80(const char* szMember, unsigned int* pOut);                            // UInt member
     bool FUN_1422bae10(const char* szMember, int* pOut);                                     // Int member
@@ -355,12 +355,12 @@ public:
     bool FUN_1422bafe0(const char* szMember, bool* pOut);                                    // Boolean member
     bool FUN_1422bb070(const char* szMember, __int64* pOut);                                 // Int / Number / numeric String member
     bool FUN_1422bb170(const char* szMember, unsigned __int64* pOut);                        // UInt / Number / numeric String member
-    CString FUN_1422bb440();                                                                 // toString()
-    CString FUN_1422bb4d0();                                                                 // toLocaleString()
-    int FUN_1422bb560(Scaleform::GFx::Value v);                                              // IsPrototypeOf(v) (v by value: destroyed here)
-    int FUN_1422bb610(const CString& strName);                                               // hasOwnProperty(strName)
-    int FUN_1422bb6b0(const CString& strName);                                               // PropertyIsEnumerable(strName)
-    void FUN_1422bb750(const CString& strName, int bEnum);                                   // setPropertyIsEnumerable(strName, bEnum)
+    CString ToString();                                                                 // toString()
+    CString ToLocaleString();                                                                 // toLocaleString()
+    int IsPrototypeOf(Scaleform::GFx::Value v);                                              // IsPrototypeOf(v) (v by value: destroyed here)
+    int HasOwnProperty(const CString& strName);                                               // hasOwnProperty(strName)
+    int PropertyIsEnumerable(const CString& strName);                                               // PropertyIsEnumerable(strName)
+    void SetPropertyIsEnumerable(const CString& strName, int bEnum);                                   // setPropertyIsEnumerable(strName, bEnum)
     bool FUN_1422bb7e0(const AScript& obj);                                                  // calls the method named DAT_143b0ae38 with obj if the object has it
     Scaleform::GFx::Value FUN_1422bb9f0(ASArgList& args);                                    // InvokeSelf back end (the static undefined value on failure)
 

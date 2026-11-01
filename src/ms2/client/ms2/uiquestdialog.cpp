@@ -100,6 +100,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/fieldmetatable.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strChapterClose("QuestChapter_Close");
 static CString s_strChapterOpen("QuestChapter_Open");
@@ -236,7 +237,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 CStringW GetStringCommon(int nStringId);                          // common string by id
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);      // common string by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14062b4f0(CStringW strKey, const int* p);
 CStringW FUN_1409e8970(CStringW strKey, const int& a, const int& b);
@@ -285,7 +285,6 @@ class Unk_QdCheck : public Unk_QdCtl
 public:
     bool FUN_1422bfca0();                               // visible
     unsigned char FUN_1422ce0e0();                      // checked
-    void FUN_1422ce090(int bChecked);
 };
 class ASDialog : public ASDisplayObject
 {
@@ -741,7 +740,7 @@ void UIQuestDialog::RefreshList()
                 CStringW strRegion = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x12, nKey);
                 if (strRegion.GetLength() != 0)
                 {
-                    unsigned nCode = TSingleton<QuestDataTable>::GetInstance()->FUN_14074e240((*spIds.operator->())[0]);
+                    unsigned nCode = TSingleton<QuestDataTable>::GetInstance()->GetChapterContinentCode((*spIds.operator->())[0]);
                     ASObj node(2);
                     node.FUN_1407cbb20("code", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1a, nCode));
                     node.FUN_1407cbb20("field", strRegion);
@@ -866,9 +865,9 @@ void UIQuestDialog::SelectListIndex(int nIndex)
 {
     if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
     {
-        spList->FUN_1422dcca0(nIndex);
+        spList->SetSelectedIndex(nIndex);
         spList->vfunc_24(true);
-        spList->FUN_1422dd110();
+        spList->ScrollToSelected();
     }
 }
 
@@ -887,7 +886,7 @@ void UIQuestDialog::ScrollToQuest(int nQuestId)
 // @0x141a9c290
 int UIQuestDialog::HasAvailable(int nQuestId)
 {
-    if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuestId) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuestId) != 0)
         return 1;
     if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
         return 1;
@@ -895,7 +894,7 @@ int UIQuestDialog::HasAvailable(int nQuestId)
     if (!spData)
         return 0;
     CAtlArray<unsigned> chapterQuests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(spData->m_28, chapterQuests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(spData->m_28, chapterQuests);
     for (size_t i = 0; i < chapterQuests.GetCount(); i++)
     {
         if (((class CQuestManager*)FUN_140764020())->vfunc_1(chapterQuests[i], 0) != 0)
@@ -981,7 +980,7 @@ int UIQuestDialog::GetQuestListIndex()
 {
     if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
     {
-        int nIndex = spList->FUN_1422dccd0();
+        int nIndex = spList->GetSelectedIndex();
         return nIndex == -1 ? 0 : nIndex;
     }
     return 0;
@@ -1158,7 +1157,7 @@ CStringW UIQuestDialog::LevelRange(int nChapter)
     int nMin = 0x7fffffff;
     int nMax = 0;
     CAtlArray<unsigned> quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, quests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, quests);
     if (quests.GetCount() == 0)
         return L"";
     for (size_t i = 0; i < quests.GetCount(); i++)
@@ -1196,12 +1195,12 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
     case 8:     // falls through to case 9, and the default line below overwrites both (as in the exe)
     {
         CStringW strKey(L"s_quest_field_quest");
-        strTitle = FUN_140656190(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
+        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
     }
     case 9:
     {
         CStringW strKey(L"s_quest_alliance_quest");
-        strTitle = FUN_140656190(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
+        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
     }
     default:
         spText.operator->();
@@ -1311,7 +1310,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     ASArray children(2);
     CAtlArray<unsigned> chapterQuests;
     CAtlArray<Unk_PayloadPtr<CQuest> > quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, chapterQuests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, chapterQuests);
     for (size_t i = 0; i < chapterQuests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spItem = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(chapterQuests[i]);
@@ -1473,7 +1472,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
     if (spData == (CQuestData*)0)
         return 0;
     CAtlArray<unsigned> chapterQuests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(spData->m_28, chapterQuests);
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(spData->m_28, chapterQuests);
     int bBefore = 1;
     int nAdded = 0;
     int nOwnId = FUN_14074b030(spData.operator->());
@@ -1493,7 +1492,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
             continue;
         if (FUN_14074b070(spData.operator->()) == 1)
         {
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745630(FUN_14074b030(spData.operator->())) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestActive(FUN_14074b030(spData.operator->())) != 0)
                 continue;
         }
         else if (FUN_14074b070(spData.operator->()) == 2 || FUN_14074b070(spData.operator->()) == 3)
@@ -1503,7 +1502,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
         }
         else
         {
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745630(FUN_14074b030(spData.operator->())) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestActive(FUN_14074b030(spData.operator->())) != 0)
                 continue;
             if (((class CQuestManager*)FUN_140764020())->FUN_140745590(FUN_14074b030(spData.operator->())) != 0)
                 continue;
@@ -1569,7 +1568,7 @@ int FUN_1416e8060(int nChapter);                                // chapter hidde
 void UIQuestDialog::GetChapterIDs(CAtlArray<int>& rOut)
 {
     CAtlArray<int> chapters;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cf20(chapters);
+    TSingleton<QuestDataTable>::GetInstance()->GetChapterIds(chapters);
     int bSubTabOne = IsSubTabOne();
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
@@ -1655,8 +1654,8 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
         }
         if (kept.GetCount() > 0)
         {
-            int nSort = TSingleton<QuestDataTable>::GetInstance()->FUN_14074e1c0(nChapter);
-            int nName = TSingleton<QuestDataTable>::GetInstance()->FUN_14074e240(nChapter);
+            int nSort = TSingleton<QuestDataTable>::GetInstance()->GetChapterRegionCode(nChapter);
+            int nName = TSingleton<QuestDataTable>::GetInstance()->GetChapterContinentCode(nChapter);
             CStringW strGroup = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x19, nName);
             TPtrValue<ChapterQuests> spGroup(0);
             if (!rOut.Lookup(strGroup, spGroup))
@@ -1698,12 +1697,12 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
         return;
     CAtlMap<int, int> seenQuests(17, 0.75f, 0.25f, 2.25f, 10);
     CAtlMap<int, unsigned> seenChapters(17, 0.75f, 0.25f, 2.25f, 10);
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cf20(chapters);
+    TSingleton<QuestDataTable>::GetInstance()->GetChapterIds(chapters);
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
         int nChapter = chapters[i];
         CAtlArray<unsigned> chapterQuests;
-        TSingleton<QuestDataTable>::GetInstance()->FUN_14074cfd0(nChapter, chapterQuests);
+        TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, chapterQuests);
         for (size_t j = 0; j < chapterQuests.GetCount(); j++)
         {
             MS2Ptr<CQuestData> spData = FUN_14074bc40(chapterQuests[j]);
@@ -1727,7 +1726,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
                 seenChapters.SetAt(nChapter, 1);
                 break;
             }
-            else if (((class CQuestManager*)FUN_140764020())->FUN_140745630(chapterQuests[j]) != 0)
+            else if (((class CQuestManager*)FUN_140764020())->IsQuestActive(chapterQuests[j]) != 0)
             {
                 int bFound = 0;
                 for (size_t k = 0; k < spData->m_require.m_followingQuests.GetCount(); k++)
@@ -1789,7 +1788,7 @@ void UIQuestDialog::FocusQuestSubTab(int nQuestId)
     int nState = 0;
     if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
         nState = 2;
-    else if (((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuestId) != 0)
+    else if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuestId) != 0)
         nState = 1;
     else
         nState = 0;
@@ -1899,12 +1898,12 @@ void UIQuestDialog::ChangeTab(int nTab)
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_properLevel"))
     {
         if (nTab != 4)
-            spCheck->FUN_1422ce090(m_filterA[nTab]);
+            reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(m_filterA[nTab]);
     }
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
         if (nTab != 4)
-            spCheck->FUN_1422ce090(m_filterB[nTab]);
+            reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(m_filterB[nTab]);
     }
 }
 

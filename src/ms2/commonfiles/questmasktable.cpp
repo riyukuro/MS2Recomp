@@ -67,7 +67,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // reads an int attribute through a temp (tinyxmlhelper.h)
-void FUN_14015f050(const CStringA& str, ATL::CAtlArray<CStringA>* pOut, const char* pszSep);    // split
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140177de0(const CStringA& str, ATL::CAtlArray<int>* pOut, const char* pszSep);          // split into numbers
 // A quest range as a local: Unk_Z16i with its out-of-line zeroing constructor (0x14027dcb0).
 struct Unk_QmRange { int a, b, c, d; Unk_QmRange(); };
@@ -165,8 +165,8 @@ int FUN_140764310(const CStringA& strStarts, const CStringA& strEnds, QuestMask*
 {
     ATL::CAtlArray<CStringA> aStarts;
     ATL::CAtlArray<CStringA> aEnds;
-    FUN_14015f050(strStarts, &aStarts, "|");
-    FUN_14015f050(strEnds, &aEnds, "|");
+    Unk_SplitA(const_cast<CStringA&>(strStarts), (ATL::CAtlArray<CStringA>*)(&aStarts), "|");
+    Unk_SplitA(const_cast<CStringA&>(strEnds), (ATL::CAtlArray<CStringA>*)(&aEnds), "|");
     if (aStarts.GetCount() != aEnds.GetCount())
         return 0;
     for (size_t i = 0; i < aStarts.GetCount(); ++i)
@@ -866,7 +866,7 @@ void FUN_1407622b0(int nQuestId, Unk_QuestRewardCalc& calc)
         calc.m_bonus = 0;
         if (FUN_14074b050(spData.operator->()) == 6)
         {
-            float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 3);
+            float fFactor = TSingleton<CGuildXmlData>::GetInstance()->GetQuestRewardFactor(calc.m_guildNpcLevel, 3);
             if (fFactor >= 1.0)
                 calc.m_bonus = fFactor - 1.0f;
         }
@@ -913,7 +913,7 @@ void FUN_140762500(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 1);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->GetQuestRewardFactor(calc.m_guildNpcLevel, 1);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -930,7 +930,7 @@ void FUN_1407627a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 2);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->GetQuestRewardFactor(calc.m_guildNpcLevel, 2);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -947,7 +947,7 @@ void FUN_1407628a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 0);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->GetQuestRewardFactor(calc.m_guildNpcLevel, 0);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }
@@ -964,7 +964,7 @@ void FUN_1407629a0(int nQuestId, Unk_QuestRewardCalc& calc)
     calc.m_bonus = 0;
     if (FUN_14074b050(spData.operator->()) == 6)
     {
-        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7360(calc.m_guildNpcLevel, 4);
+        float fFactor = TSingleton<CGuildXmlData>::GetInstance()->GetQuestRewardFactor(calc.m_guildNpcLevel, 4);
         if (fFactor >= 1.0)
             calc.m_bonus = fFactor - 1.0f;
     }

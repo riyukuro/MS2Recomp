@@ -22,6 +22,9 @@
 #include "ms2/client/ms2/windowservice.h"
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- exe data ----
 extern char DAT_143afafe0;      // NiFloatsExtraData::ms_RTTI
@@ -97,7 +100,6 @@ public:
 namespace egf { class Entity; }
 struct Unk_MakeupPlayer : public GameObject { };
 struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
-void* FUN_1416561a0(Unk_MakeupPlayer* pPlayer);                 // the player's customize state
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
@@ -106,12 +108,11 @@ public:
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene root
 
 float FUN_140768090();                                          // random float in [0, 1]
-float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 
 struct Unk_MakeupCursor : public CWindowService { };   // cursor position in pixels
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
-struct Unk_MakeupConfigFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_MakeupConfigFloat { char m_pad[0x58]; };
 struct Unk_MakeupConfig
 {
     char m_pad_0000[0x2de8];
@@ -183,8 +184,8 @@ int CMakeupController::vfunc_3()
     m_bUseButton2 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547150();
     m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
     m_spScale = new (efd::MemHint(efd::MemHint::NONE)) CScaleModifier;
-    m_fWheelStep = ((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2de8.FUN_1402bac70();
-    m_fDragScale = ((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2e40.FUN_1402bac70();
+    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2de8)->Read();
+    m_fDragScale = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2e40)->Read();
     FindFaceMesh();
     LoadFromProxy();
     m_spPicker->SetPrevMesh(m_spFaceMesh.FUN_141412c90());
@@ -405,7 +406,7 @@ void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
     if (pExtra != 0)
     {
         const Unk_CustomizeRange* pRange = vfunc_23();
-        m_afValue[m_nCurIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
+        m_afValue[m_nCurIndex] = efd::Clamp(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow;
         float fScale = fNow = vfunc_21();
         ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(3, fScale);
@@ -497,7 +498,7 @@ void CMakeupController::SetPreviewApply(bool bOn)
 {
     Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        ((class CEquipment*)(void*)(FUN_1416561a0(pPlayer)))->FUN_1411ea2e0(bOn);
+        ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411ea2e0(bOn);
 }
 
 // @0x141477780

@@ -27,6 +27,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -47,7 +49,6 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_ObjectCreateInput : public AScript
 {
 public:
-    CStringW FUN_1422e0b00();                           // the text
 };
 
 // The exe inlines MS2Ptr<T>'s dtor / conversion / arrow for these two unit-local controls; the generic bodies of
@@ -83,7 +84,7 @@ template <> MS2Ptr<Unk_ObjectCreateInput>::operator Unk_ObjectCreateInput*() con
 template <> Unk_ObjectCreateInput* MS2Ptr<Unk_ObjectCreateInput>::operator->() const { return m_p; }
 
 // The key input state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The world manager (singleton): the local player and the interact objects of the field.
@@ -197,7 +198,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                         row.FUN_1409c4a30("ypos", kPoint.y);
                         row.FUN_1409c4a30("zpos", kPoint.z);
                         row.FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
-                        list->FUN_1422dd230(row);
+                        list->AddItem(row);
                     }
                 }
                 list->vfunc_24(true);
@@ -223,7 +224,7 @@ void UIObjectCreateDialog::FUN_14131ff70()
 {
     CStringW strSearch;
     if (MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0("m_search"))
-        strSearch = input->FUN_1422e0b00();
+        strSearch = reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
     if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_objects"))
     {
         list->FUN_1422dd1d0();
@@ -242,7 +243,7 @@ void UIObjectCreateDialog::FUN_14131ff70()
             ASObj row(2);
             row.FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
             row.FUN_1409c0d20("code", data->m_nId);
-            list->FUN_1422dd230(row);
+            list->AddItem(row);
         }
         list->vfunc_24(true);
     }

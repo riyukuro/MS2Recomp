@@ -14,6 +14,7 @@
 #endif
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateinteractdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include <io.h>
 #include <string>
@@ -49,7 +50,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Vector3 DAT_143b01a60;                    // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_SiPos
@@ -103,7 +104,8 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);
 
-class Unk_SiBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_SiBuffMgr { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SiPointSlots
 {
@@ -150,12 +152,6 @@ struct Unk_SiXform
 MS2_CHECK_SIZE(Unk_SiXform, 0x34);
 void* FUN_140a332d0(Unk_SiXform* p);
 void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
-class Unk_SiFxMgr
-{
-public:
-    int FUN_1411a49c0(NoticeMessage* pRequest);
-    void FUN_1411a6060(int nHandle);
-};
 
 // The quest manager: does the quest state satisfy a mask.
 class Unk_SiQuestEval
@@ -361,7 +357,7 @@ void StateInteraction::vfunc_5(int n)
     if (FUN_1417b8560() != 0 && m_n10 == 0x8a)
     {
         if (m_nEffect != 0)
-            reinterpret_cast<Unk_SiFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
@@ -413,7 +409,7 @@ void StateInteraction::vfunc_8(double fTime)
         }
     }
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
@@ -528,7 +524,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 kRequest.m_strName = SiRowEffect(spRow.get());
                 kRequest.m_nObject = 0;
                 kRequest.m_p18 = &kXform;
-                m_nEffect = reinterpret_cast<Unk_SiFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kRequest);
+                m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
             }
         }
     }
@@ -672,7 +668,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
         }
     }
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
@@ -770,7 +766,7 @@ void StateAutoInteraction::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }

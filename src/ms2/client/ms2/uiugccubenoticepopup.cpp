@@ -5,6 +5,7 @@
 // MS2-PIN: ??_GUIUGCCubeNoticePopup@@UEAAPEAXI@Z 0x140fb5260
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiugccubenoticepopup.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 
 #include "uiugccubenoticepopup.h"
 
@@ -34,7 +35,7 @@ MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEnt
 
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
-extern const Vector3 DAT_143b01a60;                          // the zero point
+#define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
 class Unk_UnpCamera { public: bool FUN_140af0700(const Vector3* pWorld, Vector3* pScreen); };
@@ -171,7 +172,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
             {
                 vfunc_8(1);
                 ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-                spEntity->FUN_1422c00f0(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->FUN_1422c13b0()) - 15.0f);
+                spEntity->FUN_1422c00f0(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
             }
         }
         else

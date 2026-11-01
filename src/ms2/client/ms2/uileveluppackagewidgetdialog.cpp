@@ -426,7 +426,7 @@ int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
         return 0;
     unsigned short nLevel = Unk_EwActorLevel(pSelf);
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(quests, 1);
+    TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(quests, 1);
     ATL::CRBMap<unsigned short, MS2Ptr<CQuestData> > byLevel(10);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];

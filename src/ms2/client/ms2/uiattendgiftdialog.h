@@ -46,9 +46,9 @@ public:
     // @0x141030400
     virtual int vfunc_48() { return 0x4eb8; }
     bool FUN_14102c7a0(int);
-    void FUN_14102c8e0(Unk_14102fe10<Unk_140ce3510>);
-    void FUN_14102c9e0(Unk_14102fe10<Unk_140ce3510>);
-    bool FUN_14102cb60();
+    void AddEvent(Unk_14102fe10<Unk_140ce3510>);
+    void RemoveEvent(Unk_14102fe10<Unk_140ce3510>);
+    bool HasActiveEvents();
     Unk_14102fe10<Unk_140ce3510> FUN_14102cbb0(int);
     int FUN_14102ccd0();
     void FUN_14102cdc0(const Scaleform::GFx::FunctionHandler::Params&);
@@ -56,7 +56,7 @@ public:
     void FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_14102d4b0(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_14102d4e0(int,const CMsgBoxData&);
-    void FUN_14102d5c0(int);
+    void SetEventId(int);
     void FUN_14102d610(GameEventVariable*);
     void FUN_14102d650(GameEventVariable*);
     void FUN_14102d690();
@@ -64,8 +64,8 @@ public:
     void FUN_14102da40();
     void FUN_14102e490();
     void FUN_14102e6a0();
-    void FUN_14102e940();
-    void FUN_14102ea30();
+    void RebuildActiveEvents();
+    void UpdateSelectedEvent();
     void FUN_14102ebb0(CInPacket&);
     void FUN_14102ec60(CInPacket&);
     void FUN_14102ec90(CInPacket&);

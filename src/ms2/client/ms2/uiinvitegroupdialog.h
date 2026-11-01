@@ -33,11 +33,11 @@ public:
     void FUN_14199fdf0(int nGroupId, const CStringW& strName);  // a member was kicked
     void FUN_14199fe30(int nGroupId, const CStringW& strName);  // a member went offline
     void FUN_14199fe70(unsigned nCount);                        // the selected count changed: the limit check
-    void FUN_1419a0160(unsigned nCount);                        // the "m_userCount" text
+    void SetUserCount(unsigned nCount);                        // the "m_userCount" text
     void FUN_1419a0240();                                       // rebuild the user list
     void FUN_1419a06d0(EntryList& entries);                     // add the friends
     void FUN_1419a07d0(EntryList& entries);                     // add the guild members
-    void FUN_1419a08f0(EntryList& entries);                     // add the club members
+    void AddBuddyEntries(EntryList& entries);                     // add the club members
     int FUN_1419a0a10(__int64 nCharacterId, EntryList& entries);   // already in the chat or listed
     int FUN_1419a0b20();                                        // the input has the focus and nothing blocks it
 

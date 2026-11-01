@@ -20,14 +20,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 // ---- unit-local stand-ins for classes whose units are not recovered yet ----
 
 // A check box AS entity of the option dialog.
-class Unk_GoCheck : public ASDisplayObject
+class Unk_GoCheck : public ASButton
 {
 public:
-    void FUN_1422ce090(int bChecked);
 };
 
 // The shadow quality combo box AS entity.
@@ -223,10 +223,10 @@ void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
 {
     if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer != bShimmer) {
         reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer = bShimmer ? true : false;
-        if (((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa850(6) != bShimmer)
+        if (((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsClickActive(6) != bShimmer)
             ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(6, bShimmer != 0);
         if (bShimmer == 0) {
-            PostProcessEffect* pStep = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(0xc);
+            PostProcessEffect* pStep = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(0xc);
             if (FUN_1412642d0(pStep) != 0)
                 ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(0xc, true);
             bool bFlag = false;

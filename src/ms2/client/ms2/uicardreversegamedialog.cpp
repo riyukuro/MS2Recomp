@@ -55,7 +55,6 @@ void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CSt
 void FUN_141415600(const CString& strKey);                         // unbind
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS object been released
 class Unk_CRSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -119,7 +118,7 @@ CString UICardReverseGameDialog::GetTypeName()
 // @0x140f26af0
 void UICardReverseGameDialog::OnCardTweenComplete()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     int nType = 3;
     CStringW strText = FUN_140811740(0xc40, m_1f4, nType);

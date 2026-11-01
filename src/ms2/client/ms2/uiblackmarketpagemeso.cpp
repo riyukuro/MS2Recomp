@@ -100,7 +100,7 @@ void BlackMarketPageMesoSearch::OnInit()
     if (m_30->FUN_140bbe640("m_prevPage", m_spPrevPage))
         m_spPrevPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::FUN_140f19eb0), (void*)-1);
     if (m_30->FUN_140bbe640("m_nextPage", m_spNextPage))
-        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::FUN_140f19eb0), 1);
+        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::FUN_140f19eb0), (void*)1);
     if (m_spSearchBegin && m_spSearchEnd)
     {
         ASDataProvider list(2);
@@ -114,12 +114,12 @@ void BlackMarketPageMesoSearch::OnInit()
             row.FUN_1409c1180("meso", nUnit);
             list.FUN_1422bc050(row.FUN_1422bb890());
         }
-        m_spSearchBegin->FUN_1422df720(list.FUN_1422bb870());
-        m_spSearchBegin->FUN_1422df690(0);
+        m_spSearchBegin->SetDataProvider(list.FUN_1422bb870());
+        m_spSearchBegin->SetSelectedIndex(0);
         m_spSearchBegin->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::FUN_140f19b80), (ASDropdownMenu*)m_spSearchBegin);
         m_spSearchBegin->vfunc_24(true);
-        m_spSearchEnd->FUN_1422df720(list.FUN_1422bb870());
-        m_spSearchEnd->FUN_1422df690(list.FUN_1422bc5d0() - 1);
+        m_spSearchEnd->SetDataProvider(list.FUN_1422bb870());
+        m_spSearchEnd->SetSelectedIndex(list.GetLength() - 1);
         m_spSearchEnd->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::FUN_140f19b80), (ASDropdownMenu*)m_spSearchEnd);
         m_spSearchEnd->vfunc_24(true);
     }
@@ -166,7 +166,7 @@ int BlackMarketPageMesoSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
         if (!CMesoMarketMan::GetInstance()->FUN_140d6ea50(nId))
             return 1;
-        MS2Ptr<CMesoMarketProductCli> spProduct = CMesoMarketMan::GetInstance()->FUN_140d6e890(nId);
+        MS2Ptr<CMesoMarketProductCli> spProduct = CMesoMarketMan::GetInstance()->FindMarketProduct(nId);
         if (spProduct == 0)
             return 1;
         {
@@ -235,13 +235,13 @@ void BlackMarketPageMesoSearch::FUN_140f19b80(const Scaleform::GFx::FunctionHand
         return;
     if (params.pUserData == (ASDropdownMenu*)m_spSearchBegin)
     {
-        if (m_spSearchBegin->FUN_1422df6c0() > m_spSearchEnd->FUN_1422df6c0())
-            m_spSearchEnd->FUN_1422df690(m_spSearchBegin->FUN_1422df6c0());
+        if (m_spSearchBegin->GetSelectedIndex() > m_spSearchEnd->GetSelectedIndex())
+            m_spSearchEnd->SetSelectedIndex(m_spSearchBegin->GetSelectedIndex());
     }
     else if (params.pUserData == (ASDropdownMenu*)m_spSearchEnd)
     {
-        if (m_spSearchEnd->FUN_1422df6c0() < m_spSearchBegin->FUN_1422df6c0())
-            m_spSearchBegin->FUN_1422df690(m_spSearchEnd->FUN_1422df6c0());
+        if (m_spSearchEnd->GetSelectedIndex() < m_spSearchBegin->GetSelectedIndex())
+            m_spSearchBegin->SetSelectedIndex(m_spSearchEnd->GetSelectedIndex());
     }
 }
 MS2_REPLACE_METHOD(0x140F19B80, BlackMarketPageMesoSearch, FUN_140f19b80, 369, 0x2DEEC7B3);
@@ -317,7 +317,7 @@ void BlackMarketPageMesoSearch::FUN_140f1a230()
     CMesoMarketMan::GetInstance()->FUN_140d6e6d0(list);
     m_itemList->vfunc_25(list.FUN_1422bb870());
     m_itemList->vfunc_24(true);
-    m_20->Invoke("updateNoticeSymbol", m_itemList->FUN_1422dd150(), m_bSearched, m_30->FUN_1422bb870());
+    m_20->Invoke("updateNoticeSymbol", m_itemList->GetItemCount(), m_bSearched, m_30->FUN_1422bb870());
     m_nPage = 0;
     FUN_140f1ac40(0);
 }
@@ -351,7 +351,7 @@ void BlackMarketPageMesoSearch::FUN_140f1a690()
 {
     if (m_30 == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     CStringW strBase = FUN_1412757d0(*FUN_1401d3200()->MesoMarketBasePrice.Get());
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_explainText", FUN_14028dfa0(CStringW(L"s_mesoMarket_search_explain"), limits.m_n20, limits.m_n28));
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_marketPrice", FUN_14028dfa0(CStringW(L"s_mesoMarket_market_price"), strBase, limits.m_nBase));
@@ -363,7 +363,7 @@ void BlackMarketPageMesoSearch::FUN_140f1a8f0()
 {
     if (m_30 == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     int nCount = CMesoMarketMan::GetInstance()->GetBuy();
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_buyCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_buy_count"), nCount, limits.m_n20));
 }
@@ -374,7 +374,7 @@ void BlackMarketPageMesoSearch::FUN_140f1aa20()
 {
     if (m_30 == 0 || m_itemList == 0 || m_spPrevPage == 0 || m_spNextPage == 0)
         return;
-    m_itemList->FUN_1422cf4f0(m_nPage * m_itemList->FUN_1422dd030());
+    m_itemList->FUN_1422cf4f0(m_nPage * m_itemList->GetRowCount());
     m_spPrevPage->FUN_1422c1fe0(0 < m_nPage);
     m_spNextPage->FUN_1422c1fe0(m_nPage < m_nLastPage);
     FUN_140cfee80((*m_30).FUN_1422bb890(), "m_page", FUN_140719630(m_nPage + 1));
@@ -386,7 +386,7 @@ void BlackMarketPageMesoSearch::FUN_140f1ac40(int nDelta)
 {
     if (m_itemList == 0)
         return;
-    int nCount = m_itemList->FUN_1422dd150();
+    int nCount = m_itemList->GetItemCount();
     if (nCount == 0)
     {
         m_nPage = 0;
@@ -394,7 +394,7 @@ void BlackMarketPageMesoSearch::FUN_140f1ac40(int nDelta)
     }
     else
     {
-        m_nLastPage = (nCount - 1) / (int)m_itemList->FUN_1422dd030();
+        m_nLastPage = (nCount - 1) / (int)m_itemList->GetRowCount();
         m_nPage = FUN_140f1ffe0(m_nPage + nDelta, 0, m_nLastPage);
         FUN_140f1aa20();
     }
@@ -441,7 +441,7 @@ void BlackMarketPageMesoRegister::OnInit()
     if (m_30->FUN_140bbe640("m_prevPage", m_spPrevPage))
         m_spPrevPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1ca80), (void*)-1);
     if (m_30->FUN_140bbe640("m_nextPage", m_spNextPage))
-        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1ca80), 1);
+        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1ca80), (void*)1);
     if (m_spMesoDropdown)
     {
         ASDataProvider list(2);
@@ -455,8 +455,8 @@ void BlackMarketPageMesoRegister::OnInit()
             row.FUN_1409c1180("meso", nUnit);
             list.FUN_1422bc050(row.FUN_1422bb890());
         }
-        m_spMesoDropdown->FUN_1422df720(list.FUN_1422bb870());
-        m_spMesoDropdown->FUN_1422df690(0);
+        m_spMesoDropdown->SetDataProvider(list.FUN_1422bb870());
+        m_spMesoDropdown->SetSelectedIndex(0);
         m_spMesoDropdown->vfunc_24(true);
     }
     PacketHandlerManager::GetInstance()->RegisterHandler(0x99, Delegate<void(CInPacket&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c300));
@@ -501,11 +501,11 @@ int BlackMarketPageMesoRegister::vfunc_4(const char* szMethod, const Scaleform::
         if (!data.FUN_1422b9620(pArgs, nArgs))
             return 1;
         unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
-        MS2Ptr<CMesoMarketProductCli> spProduct = CMesoMarketMan::GetInstance()->FUN_140d6e7e0(nId);
+        MS2Ptr<CMesoMarketProductCli> spProduct = CMesoMarketMan::GetInstance()->FindOwnProduct(nId);
         if (spProduct == 0)
             return 1;
         CStringW strKey = L"s_mesoMarket_ask_stopsale";
-        if (spProduct->FUN_140d6d900())
+        if (spProduct->IsExpired())
             strKey = L"s_mesoMarket_ask_stopsale_expire";
         CStringW strMsg = FUN_14028dfa0(strKey, FUN_1409404f0(spProduct->m_n20));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::SendMesoMarketMode6), strMsg);
@@ -519,7 +519,7 @@ MS2_REPLACE_METHOD(0x140F1BFA0, BlackMarketPageMesoRegister, vfunc_4, 803, 0x88F
 // @0x140f1c2d0
 void BlackMarketPageMesoRegister::vfunc_oa0_11(void* a1)
 {
-    FUN_140f1d4e0();
+    UpdateCurrentMeso();
 }
 MS2_REPLACE_METHOD_VIA(0x140F1C2D0, BlackMarketPageMesoRegister, UIStatusEventListener, vfunc_oa0_11, 36, 0x2E9E092F);
 
@@ -569,7 +569,7 @@ void BlackMarketPageMesoRegister::FUN_140f1c3b0(const Scaleform::GFx::FunctionHa
     }
     if (!CMesoMarketMan::GetInstance()->FUN_140d6e960(nMeso, FUN_140f1de00()))
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     CStringW strTitle = FUN_14028dfa0(CStringW(L"s_mesoMarket_register_terms_title"), limits.m_n1C);
     float fRateB = limits.FUN_140d6e210();
     float fRateA = limits.FUN_140d6e1f0();
@@ -596,8 +596,8 @@ void BlackMarketPageMesoRegister::FUN_140f1c930(const Scaleform::GFx::FunctionHa
 {
     if (m_spBuyMerat == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
-    __int64 nValue = FUN_140718320(FUN_14083cf10(m_spBuyMerat->FUN_1422e0b00()));
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
+    __int64 nValue = FUN_140718320(FUN_14083cf10(m_spBuyMerat->GetText()));
     if (nValue > limits.m_nMax)
         m_spBuyMerat->FUN_1422e0ab0(FUN_140763e10(limits.m_nMax));
     FUN_140f1d5b0();
@@ -677,7 +677,7 @@ MS2_REPLACE_METHOD(0x140F1CC00, BlackMarketPageMesoRegister, FUN_140f1cc00, 863,
 void BlackMarketPageMesoRegister::FUN_140f1cf70()
 {
     if (m_spMesoDropdown)
-        m_spMesoDropdown->FUN_1422df690(0);
+        m_spMesoDropdown->SetSelectedIndex(0);
     if (m_spBuyMerat)
         m_spBuyMerat->FUN_1422e0ab0(L"0");
 }
@@ -687,7 +687,7 @@ MS2_REPLACE_METHOD(0x140F1CF70, BlackMarketPageMesoRegister, FUN_140f1cf70, 159,
 void BlackMarketPageMesoRegister::FUN_140f1d020()
 {
     FUN_140f1d1c0();
-    FUN_140f1d4e0();
+    UpdateCurrentMeso();
     FUN_140f1d5b0();
     FUN_140f1d730();
     FUN_140f1dab0();
@@ -718,29 +718,29 @@ void BlackMarketPageMesoRegister::FUN_140f1d1c0()
     CMesoMarketMan::GetInstance()->FUN_140d6e5b0(list);
     m_itemList->vfunc_25(list.FUN_1422bb870());
     m_itemList->vfunc_24(true);
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
-    FUN_140cfee80(m_30->FUN_1422bb870(), "m_listCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_register_count"), list.FUN_1422bc5d0(), limits.m_n18));
-    m_20->Invoke("updateNoticeSymbol", m_itemList->FUN_1422dd150(), false, m_30->FUN_1422bb870());
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
+    FUN_140cfee80(m_30->FUN_1422bb870(), "m_listCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_register_count"), list.GetLength(), limits.m_n18));
+    m_20->Invoke("updateNoticeSymbol", m_itemList->GetItemCount(), false, m_30->FUN_1422bb870());
     m_nPage = 0;
     FUN_140f1dfa0(0);
 }
 MS2_REPLACE_METHOD(0x140F1D1C0, BlackMarketPageMesoRegister, FUN_140f1d1c0, 780, 0xC9DACC43);
 
 // @0x140f1d4e0
-void BlackMarketPageMesoRegister::FUN_140f1d4e0()
+void BlackMarketPageMesoRegister::UpdateCurrentMeso()
 {
     if (m_30 == 0)
         return;
     FUN_140cfee80(m_30->FUN_1422bb870(), "m_currentMeso", FUN_1409404f0(DAT_143ab2898));
 }
-MS2_REPLACE_METHOD(0x140F1D4E0, BlackMarketPageMesoRegister, FUN_140f1d4e0, 189, 0x4A022BA8);
+MS2_REPLACE_METHOD(0x140F1D4E0, BlackMarketPageMesoRegister, UpdateCurrentMeso, 189, 0x4A022BA8);
 
 // @0x140f1d5b0
 void BlackMarketPageMesoRegister::FUN_140f1d5b0()
 {
     if (m_30 == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     __int64 nTotal = FUN_140f1dec0();
     FUN_140cfee80(m_30->FUN_1422bb870(), "m_totalPrice", FUN_1409404f0(nTotal));
     __int64 nFee = (__int64)((float)nTotal * limits.m_fRateA);
@@ -754,7 +754,7 @@ void BlackMarketPageMesoRegister::FUN_140f1d730()
 {
     if (m_30 == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     int nDays = limits.m_n24;
     float fRateA = limits.m_fRateA * 100.0f;
     float fRateB = limits.m_fRateB * 100.0f;
@@ -771,7 +771,7 @@ void BlackMarketPageMesoRegister::FUN_140f1dab0()
 {
     if (m_30 == 0)
         return;
-    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
+    Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     int nCount = CMesoMarketMan::GetInstance()->GetOwn();
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_registerCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_register_count_per_day"), nCount, limits.m_n1C));
 }
@@ -782,7 +782,7 @@ void BlackMarketPageMesoRegister::FUN_140f1dbe0()
 {
     if (m_30 == 0 || m_itemList == 0 || m_spPrevPage == 0 || m_spNextPage == 0)
         return;
-    m_itemList->FUN_1422cf4f0(m_nPage * m_itemList->FUN_1422dd030());
+    m_itemList->FUN_1422cf4f0(m_nPage * m_itemList->GetRowCount());
     m_spPrevPage->FUN_1422c1fe0(0 < m_nPage);
     m_spNextPage->FUN_1422c1fe0(m_nPage < m_nLastPage);
     FUN_140cfee80((*m_30).FUN_1422bb890(), "m_page", FUN_140719630(m_nPage + 1));
@@ -794,7 +794,7 @@ __int64 BlackMarketPageMesoRegister::FUN_140f1de00()
 {
     if (m_spBuyMerat == 0)
         return 0;
-    return FUN_140718320(FUN_14083cf10(m_spBuyMerat->FUN_1422e0b00()));
+    return FUN_140718320(FUN_14083cf10(m_spBuyMerat->GetText()));
 }
 MS2_REPLACE_METHOD(0x140F1DE00, BlackMarketPageMesoRegister, FUN_140f1de00, 175, 0xE96C0C54);
 
@@ -817,7 +817,7 @@ void BlackMarketPageMesoRegister::FUN_140f1dfa0(int nDelta)
 {
     if (m_itemList == 0)
         return;
-    int nCount = m_itemList->FUN_1422dd150();
+    int nCount = m_itemList->GetItemCount();
     if (nCount == 0)
     {
         m_nPage = 0;
@@ -825,7 +825,7 @@ void BlackMarketPageMesoRegister::FUN_140f1dfa0(int nDelta)
     }
     else
     {
-        m_nLastPage = (nCount - 1) / (int)m_itemList->FUN_1422dd030();
+        m_nLastPage = (nCount - 1) / (int)m_itemList->GetRowCount();
         m_nPage = FUN_140f1ffe0(m_nPage + nDelta, 0, m_nLastPage);
         FUN_140f1dbe0();
     }
@@ -846,13 +846,13 @@ inline void ASDataProvider::FUN_140f1fd70(unsigned nIndex, const CString& strMem
 // @0x140f1fe00
 inline void ASDropdownMenu::FUN_140f1fe00(const CString& strMember, __int64* pOut)
 {
-    int nIndex = FUN_1422df6c0();
+    int nIndex = GetSelectedIndex();
     if (nIndex < 0)
         return;
-    MS2Ptr<ASDataProvider> spList = FUN_1422df770();
+    MS2Ptr<ASDataProvider> spList = GetDataProvider();
     if (spList == 0)
         return;
-    if ((unsigned)nIndex >= spList->FUN_1422bc5d0())
+    if ((unsigned)nIndex >= spList->GetLength())
         return;
     spList->FUN_140f1fd70(nIndex, strMember, pOut);
 }

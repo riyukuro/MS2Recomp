@@ -65,8 +65,8 @@ class CDynamicBanWordManager : public TSingleton<CDynamicBanWordManager> {
 public:
     typedef Unk_BanPtr<CBannedWordFilter> Ptr;
     CDynamicBanWordManager(); virtual ~CDynamicBanWordManager() = default;
-    void FUN_140349fb0(const Ptr&); Ptr FUN_14034a020(); void FUN_14034a0b0(const Ptr&); Ptr FUN_14034a120();
-    __int64 FUN_14034a1b0(); int FUN_14034a230(const CStringW&,CStringW&); void FUN_14034a2c0(Unk_BanReader&);
+    void SetCurrent(const Ptr&); Ptr GetCurrent(); void SetNext(const Ptr&); Ptr GetNext();
+    __int64 GetCurrentVersion(); int FUN_14034a230(const CStringW&,CStringW&); void FUN_14034a2c0(Unk_BanReader&);
     Unk_BanLock lock; Ptr current,next;
 };
 MS2_CHECK_SIZE(CDynamicBanWordManager,0x58);

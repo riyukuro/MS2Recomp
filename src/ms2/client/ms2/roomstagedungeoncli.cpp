@@ -19,6 +19,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // Out-of-unit helpers.
 class Unk_McPackets
@@ -43,13 +44,13 @@ RoomStageDungeonCli::RoomStageDungeonCli(unsigned nRoomId, int nStage)
     : m_nStage(nStage)
 {
     m_spRoom = DungeonRoomTable::GetInstance()->GetRoom(nRoomId);
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
 }
 
 // @0x140c9cda0
 RoomStageDungeonCli::~RoomStageDungeonCli()
 {
-    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
 }
 
 // @0x140c9ce60

@@ -23,11 +23,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file> of the data files
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int Parse_14021abf0(const CStringA& value);                 // the side popup ui type of a name (commonenum.cpp)
 
 // ---- CSidePopupCondition ---------------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ CSidePopupCondition::CSidePopupCondition()
 // @0x140e8d860
 void CSidePopupCondition::vfunc_2(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "key", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "key", m_nId);
 }
 MS2_REPLACE_METHOD(0x140E8D860, CSidePopupCondition, vfunc_2, 48, 0xC403BAA5);
 
@@ -223,7 +224,7 @@ void CSidePopupTalkTable::Init()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "popup", "id", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "popup", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pElem = nodes[i];
@@ -244,7 +245,7 @@ void CSidePopupTalkTable::Init()
             FUN_1408733e0(pElem, "voice", spData->m_spParam->m_strSound);
             FUN_1408733e0(pElem, "sound", spData->m_spParam->m_strScript);
             spData->m_spCond = spCond;
-            FUN_140873220(pElem, "map", spData->m_nMapId);
+            XmlGetAttr((class TiXmlElement*)(pElem), "map", spData->m_nMapId);
             PopupMap::key_type key = std::make_pair(spCond->m_eKind, spCond->m_nId);
             m_popups[key] = spData;
         }

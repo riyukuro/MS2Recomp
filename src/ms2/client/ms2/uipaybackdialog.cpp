@@ -135,7 +135,7 @@ void UIPaybackDialog::OnLoadComplete()
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (!FUN_1409c1740()->FUN_140a8be20(0))
+    if (!FUN_1409c1740()->IsAvailable(0))
     {
         vfunc_67();
     }
@@ -157,7 +157,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     {
         if (FUN_14071d7d0()->IsResetWindow())
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f93);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f93);
             FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
             return 1;
         }
@@ -194,7 +194,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             if (spSlot.get()->FUN_1409c3860(spItem.get(), pPlayer, 0x1c03f) == 0)
                 return 0;
             MS2Ptr<ASMeratMarketBuyBillData> spBill(new ASMeratMarketBuyBillData());
-            spBill->FUN_1409ab940(spSlot->FUN_1422bb870());
+            spBill->SetIconData(spSlot->FUN_1422bb870());
             FUN_1409ac360(spBill.operator->(), spProduct, 0, nCurrency);
             spBill->FUN_1407cb9c0("serialID", spProduct->m_premium.m_nId);
             MS2Ptr<ASBillData> spRow(spBill);
@@ -231,7 +231,7 @@ void UIPaybackDialog::FUN_140e6f820(int nOldLevel, unsigned nOldMerat)
 // @0x140e6f890
 int UIPaybackDialog::FUN_140e6f890()
 {
-    return FUN_1409c1740()->FUN_140a8be20(0);
+    return FUN_1409c1740()->IsAvailable(0);
 }
 
 // @0x140e6f8c0

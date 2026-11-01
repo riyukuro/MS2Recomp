@@ -26,7 +26,6 @@ public:
     void FUN_140f4ce70(int nItemId, float fX, float fY);            // same, remembering the position for OnLoadComplete
     void FUN_140f4d110();                                       // fill the lists (setData)
     void FUN_140f4dac0();                                       // release the bound items
-    MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

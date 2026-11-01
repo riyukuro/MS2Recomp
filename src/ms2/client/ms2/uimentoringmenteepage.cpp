@@ -16,6 +16,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -145,7 +146,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onOpenInviteMenteePage") == 0)
     {
-        if (((class Unk_MentorFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x42) != 0)
+        if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x42)) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 1;

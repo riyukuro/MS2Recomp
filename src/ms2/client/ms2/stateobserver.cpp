@@ -109,7 +109,6 @@ public:
     MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);    // the proxy of a player by name
     MS2Ptr<Unk_FieldRef> FUN_141bd30a0();                               // the current map
     PCBase* FUN_141bd0cc0();                                            // the local player
-    PCBase* FUN_141bd1530(__int64 nId);                                 // an actor by id
     Unk_ObsProxyMap* FUN_141bc9fb0();                                   // the proxy table
 };
 
@@ -226,7 +225,7 @@ UIDamageEffect* FUN_140ac55a0(int nUiId)
 {
     if (reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spRef = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spRef = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spRef.get() != 0)
             return dynamic_cast<UIDamageEffect*>((UIObject*)spRef);
     }
@@ -330,7 +329,7 @@ void StateObserver::vfunc_3(double fTime)
 void StateObserver::vfunc_8(double fTime)
 {
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x39, true, 0))
-        FUN_140ac43e0();
+        ObserveNext();
 }
 
 // @0x140ac4040
@@ -352,7 +351,7 @@ bool StateObserver::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x140ac4170
-CStringW StateObserver::FUN_140ac4170()
+CStringW StateObserver::GetTargetName()
 {
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
@@ -364,7 +363,7 @@ CStringW StateObserver::FUN_140ac4170()
 }
 
 // @0x140ac4270
-void StateObserver::FUN_140ac4270()
+void StateObserver::ObservePrevious()
 {
     std::vector<__int64> ids;
     FUN_140ac4fe0(ids);
@@ -379,7 +378,7 @@ void StateObserver::FUN_140ac4270()
 }
 
 // @0x140ac43e0
-void StateObserver::FUN_140ac43e0()
+void StateObserver::ObserveNext()
 {
     std::vector<__int64> ids;
     FUN_140ac4fe0(ids);
@@ -394,7 +393,7 @@ void StateObserver::FUN_140ac43e0()
 }
 
 // @0x140ac4550
-void StateObserver::FUN_140ac4550()
+void StateObserver::ObserveOther()
 {
     std::set<unsigned __int64> excluded;
     excluded.insert(reinterpret_cast<const unsigned __int64&>(m_spObserve->m_nTarget));
@@ -457,23 +456,23 @@ void StateObserver::FUN_140ac48e0()
     MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
     if (spProxy.IsNull())
     {
-        FUN_140ac4550();
+        ObserveOther();
         return;
     }
     if (spProxy->FUN_1416c2040() == 0)
     {
-        FUN_140ac4550();
+        ObserveOther();
         return;
     }
     if (spProxy->m_cc == 0x3f)
     {
-        FUN_140ac4550();
+        ObserveOther();
         return;
     }
     vTarget = spProxy->FUN_1416c2270();
     do
     {
-        PCBase* pTarget = pWorld->FUN_141bd1530(m_spObserve->m_nTarget);
+        PCBase* pTarget = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd1530(m_spObserve->m_nTarget));
         if (pTarget == 0)
             break;
         vTarget = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
@@ -498,7 +497,7 @@ void StateObserver::FUN_140ac4c00()
 {
     if (m_nPending == 0)
         return;
-    PCBase* pObject = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance())->FUN_141bd1530(m_nPending);
+    PCBase* pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPending));
     if (pObject == 0)
         return;
     const int nCameraId = 100;
@@ -547,7 +546,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
         return;
     if (FUN_14025cd60(strVictim, strKiller))
     {
-        FUN_140ac4550();
+        ObserveOther();
         return;
     }
     MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
@@ -557,7 +556,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
     if (spKiller.get() != 0)
         FUN_140ac4c90((__int64)spKiller->FUN_1416c22f0());
     else
-        FUN_140ac4550();
+        ObserveOther();
 }
 
 // @0x140ac5c80

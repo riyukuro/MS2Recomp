@@ -43,6 +43,17 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Out-of-unit callees.
 JobTable* FUN_1401d7a50();                              // the JobTable singleton
@@ -50,7 +61,7 @@ CStringTable* GetStringTable();                          // the string table sin
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton, init flag and max level map (symbols-manual.tsv)
 JobTable* TSingleton<JobTable>::s_instance;
@@ -70,17 +81,17 @@ JobSkillData::JobSkillData()
 // @0x140643720
 bool JobSkillData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "skillID", m_skillID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillID", m_skillID);
     XmlValue(pElem, "uiPosition", m_uiPosition);
-    FUN_1408730a0(pElem, "uiHighlight", m_uiHighlight);
-    FUN_140873220(pElem, "quickSlotPriority", m_quickSlotPriority);
-    FUN_1408731e0(pElem, "jobLevel", m_jobLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "uiHighlight", reinterpret_cast<bool&>(m_uiHighlight));
+    XmlGetAttr((class TiXmlElement*)(pElem), "quickSlotPriority", m_quickSlotPriority);
+    XmlGetAttr((class TiXmlElement*)(pElem), "jobLevel", reinterpret_cast<int&>(m_jobLevel));
     XmlTokenList(pElem, "subSkillIDs", m_subSkillIDs);
-    FUN_1408730a0(pElem, "isLearn", m_isLearn);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isLearn", reinterpret_cast<bool&>(m_isLearn));
     XmlTokenList(pElem, "requireLevel", m_requireLevel);
     XmlTokenList(pElem, "requireSkillIDs", m_requireSkillIDs);
     XmlTokenList(pElem, "requireSkillLevels", m_requireSkillLevels);
-    FUN_140873220(pElem, "requireQuestID", m_requireQuestID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireQuestID", m_requireQuestID);
     return true;
 }
 
@@ -119,17 +130,17 @@ JobData::JobData()
 void JobData::Load(Unk_140165cf0* pElem)
 {
     XmlValue(pElem, "jobGroupID", m_jobGroupID);
-    FUN_140873220(pElem, "characterBGM", m_characterBGM);
-    FUN_1408731e0(pElem, "defaultWeaponSlot", m_defaultWeaponSlot);
-    FUN_140873220(pElem, "startField", m_startField);
-    FUN_1408733e0(pElem, "characterVoice", m_characterVoice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "characterBGM", m_characterBGM);
+    XmlGetAttr((class TiXmlElement*)(pElem), "defaultWeaponSlot", reinterpret_cast<int&>(m_defaultWeaponSlot));
+    XmlGetAttr((class TiXmlElement*)(pElem), "startField", m_startField);
+    XmlGetAttr((class TiXmlElement*)(pElem), "characterVoice", m_characterVoice);
     XmlTokenList(pElem, "startItems", m_startItems);
     XmlValue(pElem, "subJob1", m_subJob1);
     XmlValue(pElem, "subJob2", m_subJob2);
-    Unk_140165cf0* pSkills = pElem->FUN_140165cf0("skills");
+    Unk_140165cf0* pSkills = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skills"));
     if (pSkills != 0)
     {
-    for (Unk_140165cf0* pSkill : pSkills->FUN_140165cf0("v"))
+    for (Unk_140165cf0* pSkill : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkills))->FirstChild("v")))
     {
         JobSkillDataPtr spSkill(new JobSkillData);
         if (spSkill->Load(pSkill))
@@ -139,7 +150,7 @@ void JobData::Load(Unk_140165cf0* pElem)
                 m_subSkills.insert(std::make_pair(nSubId, spSkill));
         }
         unsigned short nMaxLevel = 0;
-        FUN_1408731a0(pSkill, "maxLevel", nMaxLevel);
+        XmlGetAttr((class TiXmlElement*)(pSkill), "maxLevel", reinterpret_cast<unsigned short&>(nMaxLevel));
         s_skillMaxLevel.SetAt(spSkill->m_skillID, nMaxLevel);
     }
     }
@@ -294,7 +305,7 @@ int JobTable::Load()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "job", "jobGroupID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "job", "jobGroupID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];

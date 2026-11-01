@@ -45,6 +45,14 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- dynamic initializers of the header statics of this TU ------------------------------------------------------------
 // The same header statics (a name table, the "skill" / "stun" labels, a condition object) are instantiated twice; the
@@ -88,7 +96,7 @@ CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 
 // The ui text service (singleton): the text of a "$s_..." key.
 class Unk_NpText { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_NpText* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_NpText (calls cast back)
 CStringTable* GetStringTable();
 CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
 
@@ -112,9 +120,7 @@ int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& n);                      
 
 // Text helpers and formatters instantiated by other units.
 CStringW FUN_1406c6bd0(const wchar_t* szFormat, const unsigned __int64& n);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_1416e4df0(int n);
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 CStringW GetStringCommon(int nKey);
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
@@ -274,7 +280,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
     }
     MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_npcList");
     if (spList.IsNull() == 0) {
-        spList->FUN_1422dcca0(-1);
+        spList->SetSelectedIndex(-1);
         spList->FUN_1422dd1d0();
         for (POSITION pos = found.GetStartPosition(); pos != 0; ) {
             unsigned int nId = found.GetKeyAt(pos);
@@ -283,7 +289,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
             ASObj row(2);
             row.FUN_1407cbb20("label", strName);
             row.FUN_1409c0d20("id", nId);
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
         spList->vfunc_24(1);
     }
@@ -300,9 +306,9 @@ int UINpcPreviewDialog::LoadNpcName()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key"))) {
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
         FUN_1403b4750()->FUN_1416fb380(strName);
         strName.Replace(L"\\n", L"\n");
@@ -325,19 +331,19 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
         spList->vfunc_24(1);
         return 0;
     }
-    MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_name");
+    MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name");
     if (spName.IsNull() == 0)
         spName->FUN_1422c4cd0(FUN_1401aa6a0(nNpcId));
-    MS2Ptr<ASTextField> spKind = FUN_140bb4cf0("m_kind");
+    MS2Ptr<ASTextField> spKind = GetChild<ASTextField>("m_kind");
     if (spKind.IsNull() == 0)
         spKind->FUN_1422c4cd0(GetStringTable()->FUN_141811980(10, nNpcId));
-    MS2Ptr<ASTextField> spIllust = FUN_140bb4cf0("m_illust");
+    MS2Ptr<ASTextField> spIllust = GetChild<ASTextField>("m_illust");
     if (FUN_141a711b0()) {
         Unk_NpRow rowLoc;
         rowLoc.m_kind = 1;
-        rowLoc.m_text = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_location"));
+        rowLoc.m_text = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_location"));
         m_rows.Add(rowLoc);
-        std::vector<unsigned>* pQuests = FUN_1407476c0()->FUN_14074e0f0(nNpcId);
+        std::vector<unsigned>* pQuests = FUN_1407476c0()->GetQuestIdsByNpc(nNpcId);
         if (pQuests != 0) {
             for (unsigned* pId = FUN_1416e1dd0(pQuests); pId != FUN_1416e1e70(pQuests); ++pId) {
                 MS2Ptr<CQuestData> spQuest = FUN_14074bc40(*pId);
@@ -347,10 +353,10 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 rowQuest.m_kind = 2;
                 rowQuest.m_a = *pId;
                 rowQuest.m_b = spQuest->m_2e8 == nNpcId;
-                CStringW strQuest = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_quest"));
-                CStringW strStart = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_start"));
-                CStringW strComplate = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_complate"));
-                rowQuest.m_text = FUN_140656190(strQuest, rowQuest.m_b != 0 ? strStart : strComplate, FUN_1416e4df0(*pId));
+                CStringW strQuest = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_quest"));
+                CStringW strStart = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_start"));
+                CStringW strComplate = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_complate"));
+                rowQuest.m_text = StringFormat<CStringW, CStringW>(strQuest, rowQuest.m_b != 0 ? strStart : strComplate, FUN_1416e4df0(*pId));
                 m_rows.Add(rowQuest);
             }
         }
@@ -360,10 +366,10 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 Unk_NpRow rowCine;
                 rowCine.m_kind = 4;
                 rowCine.m_c = (int)i;
-                CStringW strCine = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk"));
-                CStringW strSelect = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_select_talk"));
-                CStringW strJob = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_job_talk"));
-                rowCine.m_text = FUN_1401e8510(strCine, i == 0 ? strSelect : strJob);
+                CStringW strCine = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk"));
+                CStringW strSelect = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_select_talk"));
+                CStringW strJob = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_job_talk"));
+                rowCine.m_text = StringFormat<CStringW>(strCine, i == 0 ? strSelect : strJob);
                 m_rows.Add(rowCine);
             }
         }
@@ -375,7 +381,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     Unk_NpRow rowTalk;
                     rowTalk.m_kind = 3;
                     rowTalk.m_c = spTalk->m_id;
-                    CStringW strTalk = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk2"));
+                    CStringW strTalk = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk2"));
                     rowTalk.m_text = FUN_1406c6bd0(strTalk, i);
                     m_rows.Add(rowTalk);
                 }
@@ -389,7 +395,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     Unk_NpRow rowMono;
                     rowMono.m_kind = 5;
                     rowMono.m_c = spTalk->m_id;
-                    CStringW strMono = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_monologue"));
+                    CStringW strMono = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_monologue"));
                     rowMono.m_text = FUN_1406c6bd0(strMono, i);
                     m_rows.Add(rowMono);
                 }
@@ -419,7 +425,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
 {
     if (nRow < 0 || nRow >= (int)m_rows.GetCount())
         return 0;
-    MS2Ptr<ASTextField> spOut = FUN_140bb4cf0("m_output");
+    MS2Ptr<ASTextField> spOut = GetChild<ASTextField>("m_output");
     if (spOut.IsNull())
         return 0;
     spOut->FUN_1422c4cd0(CStringW(L""));

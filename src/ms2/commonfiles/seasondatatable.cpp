@@ -96,6 +96,17 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 #ifdef __clang__
 CStringA FUN_140298360(const char*, const CStringA&);
 CStringA FUN_14038f6d0(const CStringA&, const char*);
@@ -510,17 +521,17 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
     }
     TPtrValue<Seasons> spSeasons;
     spSeasons = Unk_GrNewTag(0);
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Season"); pNode != 0; pNode = pNode->FUN_140168650("Season")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Season")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Season"))) {
         MS2Ptr<CSeasonData> spData(new CSeasonData);
         spData->m_type = type;
-        FUN_1408731e0(pNode, "seasonID", spData->m_nSeasonID);
-        FUN_140873420(pNode, "seasonName", spData->m_strSeasonName);
+        XmlGetAttr((class TiXmlElement*)(pNode), "seasonID", reinterpret_cast<int&>(spData->m_nSeasonID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "seasonName", spData->m_strSeasonName);
         XmlGetAttr((class TiXmlElement*)(pNode), "eventStart", *(class CMsTime*)(&spData->m_start));
         XmlGetAttr((class TiXmlElement*)(pNode), "eventEnd", *(class CMsTime*)(&spData->m_end));
         for (int i = 0; i < 7; ++i) {
             int nGrade = i + 1;
             CStringA strKey = FUN_1402bb1c0("grade{0}", nGrade);
-            FUN_1408731e0(pNode, strKey, spData->m_grades[i]);
+            XmlGetAttr((class TiXmlElement*)(pNode), strKey, reinterpret_cast<int&>(spData->m_grades[i]));
         }
         spSeasons->SetAt(spData->m_nSeasonID, spData);
     }
@@ -614,14 +625,14 @@ int CSeasonDataTable::ReadNames()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("season"); pNode != 0; pNode = pNode->FUN_140168650("season")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("season"))) {
         CStringA strKind;
-        FUN_1408733e0(pNode, "type", strKind);
+        XmlGetAttr((class TiXmlElement*)(pNode), "type", strKind);
         int nSeason;
-        FUN_1408731e0(pNode, "id", nSeason);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nSeason));
         CStringW strText;
         int nContents = FUN_140197350(pNode, "contentsid", 0);
-        FUN_140873420(pNode, "name", strText);
+        XmlGetAttr((class TiXmlElement*)(pNode), "name", strText);
         SeasonRankType type = GetType(strKind);
         MS2Ptr<CSeasonData> spData = Find(type, nSeason);
         if (spData.get() != 0) {
@@ -699,26 +710,26 @@ int CSeasonDataTable::ReadRewards()
         return 0;
     }
     ATL::CAtlList<MS2Ptr<CSeasonRewardData> > entries(10);
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("SeasonReward"); pNode != 0; pNode = pNode->FUN_140168650("SeasonReward")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("SeasonReward")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("SeasonReward"))) {
         MS2Ptr<CSeasonRewardData> spData(new CSeasonRewardData);
-        FUN_1408731e0(pNode, "rewardID", spData->m_nRewardID);
-        FUN_1408731e0(pNode, "rankType", spData->m_nRankType);
-        FUN_1408731e0(pNode, "rewardType", spData->m_nRewardType);
-        FUN_1408731e0(pNode, "value", spData->m_nValue);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardID", reinterpret_cast<int&>(spData->m_nRewardID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "rankType", reinterpret_cast<int&>(spData->m_nRankType));
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardType", reinterpret_cast<int&>(spData->m_nRewardType));
+        XmlGetAttr((class TiXmlElement*)(pNode), "value", reinterpret_cast<int&>(spData->m_nValue));
         XmlGetAttr((class TiXmlElement*)(pNode), "startdate", *(class CMsTime*)(&spData->m_startDate));
-        FUN_140873420(pNode, "systemMailSender", spData->m_strMailSender);
-        FUN_140873420(pNode, "systemMailSubject", spData->m_strMailSubject);
-        FUN_140873420(pNode, "systemMailContent", spData->m_strMailContent);
-        FUN_1408732e0(pNode, "rewardMeso", spData->m_nRewardMeso);
+        XmlGetAttr((class TiXmlElement*)(pNode), "systemMailSender", spData->m_strMailSender);
+        XmlGetAttr((class TiXmlElement*)(pNode), "systemMailSubject", spData->m_strMailSubject);
+        XmlGetAttr((class TiXmlElement*)(pNode), "systemMailContent", spData->m_strMailContent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "rewardMeso", reinterpret_cast<__int64&>(spData->m_nRewardMeso));
         for (int i = 0; i < 5; ++i) {
             CStringA strKey = FUN_1402bb1c0("rewardItemID{0}", i + 1);
-            FUN_140873220(pNode, strKey, spData->m_nItemID[i]);
+            XmlGetAttr((class TiXmlElement*)(pNode), strKey, spData->m_nItemID[i]);
             strKey = FUN_1402bb1c0("rewardItemRank{0}", i + 1);
-            FUN_1408731e0(pNode, strKey, spData->m_nItemRank[i]);
+            XmlGetAttr((class TiXmlElement*)(pNode), strKey, reinterpret_cast<int&>(spData->m_nItemRank[i]));
             strKey = FUN_1402bb1c0("rewardItemCount{0}", i + 1);
-            FUN_1408731e0(pNode, strKey, spData->m_nItemCount[i]);
+            XmlGetAttr((class TiXmlElement*)(pNode), strKey, reinterpret_cast<int&>(spData->m_nItemCount[i]));
             strKey = FUN_1402bb1c0("rewardItemDuration{0}", i + 1);
-            FUN_1408731e0(pNode, strKey, spData->m_nItemDuration[i]);
+            XmlGetAttr((class TiXmlElement*)(pNode), strKey, reinterpret_cast<int&>(spData->m_nItemDuration[i]));
         }
         entries.AddTail(spData);
     }

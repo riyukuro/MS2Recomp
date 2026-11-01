@@ -21,6 +21,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // ---- unit-local views of exe types ----
 
@@ -35,7 +36,6 @@ public:
 class Unk_SumText : public ASDisplayObject
 {
 public:
-    CStringW FUN_1422e0b00();                                   // the text
     void FUN_1422e0ab0(const CStringW& str);                    // set the text
     void FUN_1422e1500(int n1, int n2);                         // set the selection
     void FUN_1422e0e00(int n);                                  // max chars / mode
@@ -43,14 +43,9 @@ public:
 };
 
 // Keyboard state (FUN_14025e7c0).
-class Unk_SumKeys : public CInputKeyHandler
-{
-public:
-    bool FUN_14116d9c0(int nKey, int a, int b);                 // key pressed this frame
-};
+class Unk_SumKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wide
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_14151f200();
@@ -121,7 +116,7 @@ int UIHomeSummonDialog::vfunc_13()
     }
     else if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0)
     {
-        CStringW strText = m_190->FUN_1422e0b00();
+        CStringW strText = reinterpret_cast<ASTextInput*>(m_190.operator->())->GetText();
         if (!strText.IsEmpty())
             Summon();
     }
@@ -139,11 +134,11 @@ MS2_REPLACE_METHOD(0x141299BB0, UIHomeSummonDialog, OnConfirmClick, 29, 0x39B856
 // @0x141299be0
 void UIHomeSummonDialog::Summon()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     if (m_190 == 0)
         return;
-    CStringW strText = m_190->FUN_1422e0b00();
+    CStringW strText = reinterpret_cast<ASTextInput*>(m_190.operator->())->GetText();
     if (strText.IsEmpty())
         return;
     if (strText.GetLength() < 2)

@@ -96,8 +96,8 @@ public:
 
     void FUN_14140f5b0(CItem* pItem);                   // refresh the slot of the item
     int FUN_14140f620(CStringW strSearch);              // the first slot whose item name contains strSearch
-    ASDataProvider FUN_14140f7a0();                     // the slot names
-    int FUN_14140f990(CItem* pItem);                    // the item is in the bag's tab
+    ASDataProvider GetSlotNames();                     // the slot names
+    int IsItemInTab(CItem* pItem);                    // the item is in the bag's tab
 
 public:
     MS2_LAYOUT_FRIEND;

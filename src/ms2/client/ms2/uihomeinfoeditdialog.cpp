@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -32,7 +33,6 @@ public:
     Unk_HmInput(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e4570
     void FUN_1422e0d60(int nMaxChars);
     void FUN_1422e0ab0(const CStringW& strText);
-    CStringW FUN_1422e0b00();
 private:
     char m_pad_40[0x88 - sizeof(ASDisplayObject)];
 };
@@ -89,7 +89,7 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 // @0x140c26ea0
 template <> MS2Ptr<Unk_HmInput> AScript::FUN_140accef0<Unk_HmInput>(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_ASCreate<Unk_HmInput>(m_nMovieId, v);
     return MS2Ptr<Unk_HmInput>(0);
@@ -208,9 +208,9 @@ void UIHomeInfoEditDialog::OnConfirm()
             if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
             {
                 CStringW strMessage;
-                CStringW strName = spName->FUN_1422e0b00();
+                CStringW strName = reinterpret_cast<ASTextInput*>(spName.operator->())->GetText();
                 strName.Trim(L",");
-                if (pChecker->FUN_1402252f0(strName, strMessage) == 0)
+                if (pChecker->CheckHomeName(strName, strMessage) == 0)
                 {
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                     packet.WriteUInt8(0x15);
@@ -230,7 +230,7 @@ void UIHomeInfoEditDialog::OnConfirm()
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.WriteUInt8(0x1d);
-            packet.WriteUnicodeString(spNotice.operator->()->FUN_1422e0b00());
+            packet.WriteUnicodeString(reinterpret_cast<ASTextInput*>(spNotice.operator->())->GetText());
             FUN_140710590(packet);
         }
     }

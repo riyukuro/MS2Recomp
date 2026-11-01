@@ -281,28 +281,28 @@ MS2Ptr<CGemBase> CGemTransparency::vfunc_4()
 {
     MS2Ptr<CGemTransparency> spGem(new CGemTransparency(*this));
     for (size_t i = 0; i < 10; i++)
-        spGem->FUN_1405a4100((int)i, FUN_1405a4140((int)i));
+        spGem->SetSlotHidden((int)i, IsSlotHidden((int)i));
     return spGem;
 }
 MS2_REPLACE_METHOD(0x1405A4000, CGemTransparency, vfunc_4, 238, 0x34197057);
 
 // @0x1405a4100
-void CGemTransparency::FUN_1405a4100(int nSlot, int nHidden)
+void CGemTransparency::SetSlotHidden(int nSlot, int nHidden)
 {
     if (nSlot < 0 || nSlot >= 10)
         return;
     m_aHidden[nSlot] = nHidden;
 }
-MS2_REPLACE_METHOD(0x1405A4100, CGemTransparency, FUN_1405a4100, 49, 0xC7DCD65A);
+MS2_REPLACE_METHOD(0x1405A4100, CGemTransparency, SetSlotHidden, 49, 0xC7DCD65A);
 
 // @0x1405a4140
-int CGemTransparency::FUN_1405a4140(int nSlot)
+int CGemTransparency::IsSlotHidden(int nSlot)
 {
     if (nSlot < 0 || nSlot >= 10)
         return 0;
     return m_aHidden[nSlot];
 }
-MS2_REPLACE_METHOD(0x1405A4140, CGemTransparency, FUN_1405a4140, 42, 0x9B1E9B35);
+MS2_REPLACE_METHOD(0x1405A4140, CGemTransparency, IsSlotHidden, 42, 0x9B1E9B35);
 
 // @0x1405a4170
 int CGemTransparency::vfunc_5(PC* pPC, MS2Ptr<CItem> spItem)
@@ -326,15 +326,15 @@ int CGemTransparency::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
         MS2Ptr<CItem> spNew(new CItem);
         if (spNew->FUN_140523c40(nItemId, 1, 0))
         {
-            spNew->FUN_140526a70(FUN_14028d0e0());
+            spNew->SetItemUid(FUN_14028d0e0());
             spNew->FUN_140526c10(FUN_1405a46d0(nSlot));
-            ((class CItem*)(class CItem*)(spNew.operator->()))->FUN_140526b30(pPC->FUN_14123c580());
+            ((class CItem*)(class CItem*)(spNew.operator->()))->SetObjectId(pPC->FUN_14123c580());
             {
                 MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spNew.operator->()))->FUN_140527840()));
                 if (spData.get() != 0)
                     ((Unk_GemItemDataFlags*)(void*)spData.operator->())->m_bGemItem = true;
             }
-            if (FUN_1405a4140(nSlot) != 0)
+            if (IsSlotHidden(nSlot) != 0)
                 pPC->vfunc_127(spNew.get(), 0);
             else
                 pPC->vfunc_128(spNew.get(), 0);
@@ -813,7 +813,7 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     if (spData == 0)
         return 0;
     Unk_EffectQuery query;
-    query.m_strName = spData->FUN_1405acbd0(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
+    query.m_strName = spData->GetEffectByGender(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
     query.m_nObject = 0;
     query.SetActor(pPC->FUN_14123c580());
     unsigned int nHandle = FUN_1403ed280()->FUN_1411a49c0(&query);
@@ -838,7 +838,7 @@ int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
         FUN_1403ed280()->FUN_1411a6060(nHandle);
     }
     m_listEffects.RemoveAll();
-    ((class PC*)(class PC*)(pPC))->FUN_141663870();
+    ((class PC*)(class PC*)(pPC))->ClearCouple();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A6080, CGemCharEffect, vfunc_7, 350, 0x55D80C92);
@@ -915,7 +915,7 @@ CString CGemPetSkin::vfunc_10()
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.IsNull())
         return "";
-    return spItem->FUN_14053fdd0();
+    return spItem->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x1405A6C10, CGemPetSkin, vfunc_10, 306, 0x1CD343BD);
 
@@ -937,7 +937,7 @@ CItemGem::~CItemGem()
 }
 
 // @0x1405a7020
-bool CItemGem::FUN_1405a7020(int nType, int nGemId)
+bool CItemGem::CreateGem(int nType, int nGemId)
 {
     switch (nType)
     {
@@ -980,7 +980,7 @@ bool CItemGem::FUN_1405a7020(int nType, int nGemId)
     }
     return m_spGem.get() != 0;
 }
-MS2_REPLACE_METHOD(0x1405A7020, CItemGem, FUN_1405a7020, 1574, 0xB9EBE0C2);
+MS2_REPLACE_METHOD(0x1405A7020, CItemGem, CreateGem, 1574, 0xB9EBE0C2);
 
 // @0x1405a7680
 int CItemGem::vfunc_1()
@@ -1022,7 +1022,7 @@ void CItemGem::vfunc_4(CInputStream& stream)
     {
         int nType = stream.ReadUInt8();
         int nGemId = stream.ReadInt32();
-        if (FUN_1405a7020(nType, nGemId))
+        if (CreateGem(nType, nGemId))
             m_spGem->vfunc_3(stream);
     }
 }

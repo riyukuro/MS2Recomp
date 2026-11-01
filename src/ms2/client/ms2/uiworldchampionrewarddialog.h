@@ -27,7 +27,7 @@ public:
     void FUN_140feb2c0(CInPacket&);
     void FUN_140feb440(CInPacket&);
     void SendWorldChampionMode8();
-    void FUN_140feb630();
+    void UpdatePageFromStep();
     void FUN_140feb6b0();
     void FUN_140feb870();
     void FUN_140febc40();

@@ -56,6 +56,7 @@
 #include <NiPhysXProp.h>
 #include <NiPhysXActorDesc.h>
 #include <NiPhysXD6JointDesc.h>
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 #pragma pop_macro("max")
 #pragma pop_macro("min")
 
@@ -83,7 +84,6 @@ egmAnimation::AnimationService* FUN_141b6f910();
 // Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0). Layout as in entityvibrator.cpp.
 void* FUN_1403ed2d0();
 void* FUN_1403ed280();
-void* FUN_1409ffd30(void* p);
 int FUN_14123c580(void* p);
 void* FUN_141200850(CEquipModel* p);
 
@@ -125,14 +125,15 @@ public:
 void* FUN_1409f7cb0(void* p);   void* FUN_14098d8d0(void* tbl, void* key);   void* FUN_14098d0f0(void* sp);
 int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_140a0b300(void* o, bool b);
-class Unk_AeSceneIter   // the scene graph walk (applyeffect.cpp)
+class Unk_NodeQueue   // the scene graph walk (applyeffect.cpp)
 {
 public:
-    Unk_AeSceneIter(NiAVObject* pRoot);                     // 0x14098cb80
-    ~Unk_AeSceneIter();                                     // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
+    ~Unk_NodeQueue();                                     // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
+typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void FUN_1402bd040(float* p);
 void FUN_1411dde50(void* owner, void* self);
@@ -318,7 +319,7 @@ CKfmModel::CKfmModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
 // @0x14143d680
 CKfmModel::~CKfmModel()
 {
-    FUN_1414409f0();
+    DestroyEntity();
     m_pPhysics = 0;
 }
 
@@ -335,7 +336,7 @@ int CKfmModel::vfunc_4(CString strPath)
         if (m_spEntity.operator->()->GetPropertyValue<efd::AssetID>(0x12383cea, kCur) == 0 && kCur.operator==(kNew) != 0)
             return 1;
     }
-    FUN_1414408e0();
+    CreateEntity();
     m_str38 = strPath;
     m_unk_f0.operator=((NiAVObject*)0);
     m_nState = 0;
@@ -347,7 +348,7 @@ int CKfmModel::vfunc_4(CString strPath)
         return 1;
     FUN_141440a70();
     if (FUN_1411cf2d0(reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()), m_spEntity.operator egf::Entity*(), 0) != 0)
-        ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dde50(this);
+        ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->AddModel(this);
     return 1;
 }
 
@@ -356,7 +357,7 @@ void CKfmModel::vfunc_5()
 {
     MS2Ptr<CEquipModel> spKeep(this);    // keeps the model alive through the teardown
     CEquipModel::vfunc_5();
-    FUN_1414409f0();
+    DestroyEntity();
     m_pPhysics = 0;
 }
 
@@ -655,7 +656,7 @@ void CKfmModel::vfunc_17()
     Unk_SetIt it;
     for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
         NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
-        Unk_AeSceneIter kIter((NiAVObject*)sp.operator NiAVObject*());
+        Unk_AeSceneIter kIter((NiAVObject*)((NiAVObject*)sp.operator NiAVObject*()));
         NiAVObject* pObject;
         while ((pObject = kIter.FUN_14098e0d0(true)) != 0) {
             void* pMesh = NiObject::DynamicCast(&NiMesh::ms_RTTI, pObject);
@@ -663,7 +664,7 @@ void CKfmModel::vfunc_17()
                 ((NiAVObject*)pMesh)->SetAppCulled(bHide);
         }
     }
-    Unk_AeSceneIter kIter((NiAVObject*)vfunc_14());
+    Unk_AeSceneIter kIter((NiAVObject*)((NiAVObject*)vfunc_14()));
     NiAVObject* pObject;
     while ((pObject = kIter.FUN_14098e0d0(true)) != 0) {
         void* pMesh = NiObject::DynamicCast(&NiMesh::ms_RTTI, pObject);
@@ -831,7 +832,7 @@ egf::EntityID CKfmModel::FUN_14143ff70()
 }
 
 // @0x14143fff0
-efd::AssetID CKfmModel::FUN_14143fff0()
+efd::AssetID CKfmModel::GetAssetId()
 {
     efd::AssetID kCur;
     if (m_spEntity.operator->()->GetPropertyValue<efd::AssetID>(0x12383cea, kCur) == 0)
@@ -924,7 +925,7 @@ void CKfmModel::TextKeyEvent(NiActorManager*, NiActorManager::SequenceID, const 
 {
     CString strKey(kTextKey.operator const char*());
     if (strKey.Find("effect_", 0) == 0) {
-        void* pActor = FUN_1409ffd30(FUN_141200850(this));
+        void* pActor = efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(FUN_141200850(this)));
         NoticeMessage kReq;
         kReq.m_strName = strKey.Right(strKey.GetLength() - 7);
         kReq.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pActor));
@@ -939,9 +940,9 @@ void CKfmModel::TextKeyEvent(NiActorManager*, NiActorManager::SequenceID, const 
 void CKfmModel::EndOfSequence(NiActorManager*, NiActorManager::SequenceID, NiControllerSequence*, float) {}
 
 // @0x1414408e0
-void CKfmModel::FUN_1414408e0()
+void CKfmModel::CreateEntity()
 {
-    FUN_1414409f0();
+    DestroyEntity();
     unsigned __int64 nScratch;
     void* pDummy = &nScratch;
     m_spEntity.operator=(
@@ -950,12 +951,12 @@ void CKfmModel::FUN_1414408e0()
 }
 
 // @0x1414409f0
-void CKfmModel::FUN_1414409f0()
+void CKfmModel::DestroyEntity()
 {
     if (m_spEntity.operator==((egf::Entity*)0))
         return;
     TSingleton<CItemService>::GetInstance()->FUN_14141a000(this);
-    CMainSystem::FUN_1414737d0(m_spEntity.operator egf::Entity*());
+    CMainSystem::DestroyEntity(m_spEntity.operator egf::Entity*());
     m_spEntity.operator=((egf::Entity*)0);
 }
 

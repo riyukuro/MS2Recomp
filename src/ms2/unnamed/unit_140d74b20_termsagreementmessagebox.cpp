@@ -29,8 +29,8 @@ public:
     void FUN_141a027c0(Unk_MsgBoxCallback cb);
     void FUN_141a01800(int n);
     void SetTitle(const CStringW& str);
-    void FUN_141a024e0(CStringW str, bool b);
-    void FUN_141a02560(CStringW str, bool b);
+    void SetCheckbox0(CStringW str, bool b);
+    void SetCheckbox1(CStringW str, bool b);
     void SetAgreement(bool b);
 
     char m_pad[0x2a0];
@@ -68,7 +68,7 @@ public:
 
 CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nId);
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
 CStringW& FUN_140159a00(ATL::CAtlArray<CStringW>& arr, size_t i);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 
@@ -87,10 +87,10 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
     }
     box->FUN_141a01800(1);
     box->SetTitle(strA);
-    box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
+    box->SetCheckbox0(GetStringCommon(0x9d0), 1);
     CStringW coupon = FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
     FUN_1403b4750()->FUN_1416fb300(coupon);
-    box->FUN_141a02560(CStringW(coupon), 1);
+    box->SetCheckbox1(CStringW(coupon), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);
     FUN_140d73c60(box);

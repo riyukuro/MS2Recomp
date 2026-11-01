@@ -21,15 +21,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-extern bool FUN_1403b3c40(const CStringW&, const wchar_t*);          // function name equals
 
 extern int DAT_143ab0248;
 
@@ -88,32 +89,32 @@ void ItemGachaBoxTable::Load()
         return;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "randomBox", "randomBoxID", &nodes);
+    FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "randomBox", "randomBoxID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
         GachaBoxDataPtr spBox(MS2SvrNewTag(0));
-        FUN_140873220(pNode, "randomBoxID", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxID));
-        FUN_140873220(pNode, "randomBoxGroup", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxGroup));
-        FUN_140873220(pNode, "randomBoxSeasonKR", reinterpret_cast<unsigned&>(spBox->m_nSeason[0]));
-        FUN_140873220(pNode, "randomBoxSeasonJP", reinterpret_cast<unsigned&>(spBox->m_nSeason[1]));
-        FUN_140873220(pNode, "randomBoxSeasonNA", reinterpret_cast<unsigned&>(spBox->m_nSeason[2]));
-        FUN_140873220(pNode, "randomBoxSeasonCN", reinterpret_cast<unsigned&>(spBox->m_nSeason[3]));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxID", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxGroup", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxGroup));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxSeasonKR", reinterpret_cast<unsigned&>(spBox->m_nSeason[0]));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxSeasonJP", reinterpret_cast<unsigned&>(spBox->m_nSeason[1]));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxSeasonNA", reinterpret_cast<unsigned&>(spBox->m_nSeason[2]));
+        XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxSeasonCN", reinterpret_cast<unsigned&>(spBox->m_nSeason[3]));
         XmlGetAttr((class TiXmlElement*)(pNode), "saleEndDate", spBox->m_saleEndDate);
-        FUN_140873220(pNode, "ui", reinterpret_cast<unsigned&>(spBox->m_nUi));
-        FUN_140873220(pNode, "individualDropBoxID", reinterpret_cast<unsigned&>(spBox->m_nIndividualDropBoxID));
-        FUN_140873220(pNode, "shopID", reinterpret_cast<unsigned&>(spBox->m_nShopID));
-        FUN_140873220(pNode, "coinItemID", reinterpret_cast<unsigned&>(spBox->m_nCoinItemID));
-        FUN_140873220(pNode, "coinItemAmount", reinterpret_cast<unsigned&>(spBox->m_nCoinItemAmount));
-        FUN_1408730a0(pNode, "seasonNumberOnIcon", spBox->m_bSeasonNumberOnIcon);
-        FUN_140873220(pNode, "paymentIconTag", reinterpret_cast<unsigned&>(spBox->m_nPaymentIconTag));
+        XmlGetAttr((class TiXmlElement*)(pNode), "ui", reinterpret_cast<unsigned&>(spBox->m_nUi));
+        XmlGetAttr((class TiXmlElement*)(pNode), "individualDropBoxID", reinterpret_cast<unsigned&>(spBox->m_nIndividualDropBoxID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "shopID", reinterpret_cast<unsigned&>(spBox->m_nShopID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "coinItemID", reinterpret_cast<unsigned&>(spBox->m_nCoinItemID));
+        XmlGetAttr((class TiXmlElement*)(pNode), "coinItemAmount", reinterpret_cast<unsigned&>(spBox->m_nCoinItemAmount));
+        XmlGetAttr((class TiXmlElement*)(pNode), "seasonNumberOnIcon", spBox->m_bSeasonNumberOnIcon);
+        XmlGetAttr((class TiXmlElement*)(pNode), "paymentIconTag", reinterpret_cast<unsigned&>(spBox->m_nPaymentIconTag));
         int nKey = spBox->m_nRandomBoxID;
         m_map[nKey] = spBox;
     }
 }
 
 // @0x14059e340
-GachaBoxDataPtr ItemGachaBoxTable::FUN_14059e340(int nRandomBoxID)
+GachaBoxDataPtr ItemGachaBoxTable::GetBox(int nRandomBoxID)
 {
     int nKey = nRandomBoxID;
     std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);
@@ -133,7 +134,7 @@ int ItemGachaBoxTable::GetIndividualDropBoxID(int nRandomBoxID)
 }
 
 // @0x14059e490
-int ItemGachaBoxTable::FUN_14059e490(int nShopID)
+int ItemGachaBoxTable::GetUiByShopId(int nShopID)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -145,7 +146,7 @@ int ItemGachaBoxTable::FUN_14059e490(int nShopID)
 }
 
 // @0x14059e550
-int ItemGachaBoxTable::FUN_14059e550(int nShopID)
+int ItemGachaBoxTable::GetCoinItemIdByShopId(int nShopID)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -174,7 +175,7 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
     MS2Ptr<CItemData> item = FUN_14053f870(nItemID);
     if (item == 0)
         return 0;
-    int nBoxId = item->FUN_14053dec0();
+    int nBoxId = item->GetOpenGachaBoxParam0();
     if (nBoxId != 0)
     {
         int nCoin = GetCoinItemID(nBoxId);
@@ -182,12 +183,12 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
     }
     std::vector<ItemDropResult> drops;
     ItemDropContext ctx;
-    if (FUN_1403b3c40(item->function.name, L"OpenItemBox"))
+    if (operator==(item->function.name, L"OpenItemBox"))
     {
         int nId = item->function.arg0;
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nId, ctx, drops, true);
     }
-    else if (FUN_1403b3c40(item->function.name, L"OpenItemBoxWithKey"))
+    else if (operator==(item->function.name, L"OpenItemBoxWithKey"))
     {
         int nId = item->function.parameter.FUN_1408d1fd0(5, 0);
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nId, ctx, drops, true);
@@ -213,7 +214,7 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
         item = FUN_14053f870(nItemID);
         if (item == 0)
             return 0;
-        nBoxId = item->FUN_14053dec0();
+        nBoxId = item->GetOpenGachaBoxParam0();
         if (nBoxId != 0)
         {
             int nCoin = GetCoinItemID(nBoxId);
@@ -224,7 +225,7 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
 }
 
 // @0x14059ebb0
-int ItemGachaBoxTable::FUN_14059ebb0(int nCoinItemID)
+int ItemGachaBoxTable::GetRandomBoxIdByCoinItem(int nCoinItemID)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -236,14 +237,14 @@ int ItemGachaBoxTable::FUN_14059ebb0(int nCoinItemID)
 }
 
 // @0x14059ec70
-void ItemGachaBoxTable::FUN_14059ec70(std::vector<GachaBoxDataPtr>& out)
+void ItemGachaBoxTable::GetAllBoxes(std::vector<GachaBoxDataPtr>& out)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
         out.push_back(kv.second);
 }
 
 // @0x14059ed00
-int ItemGachaBoxTable::FUN_14059ed00(int nId)
+int ItemGachaBoxTable::GetSeasonByCoinOrBoxItemId(int nId)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -263,7 +264,7 @@ int ItemGachaBoxTable::FUN_14059ed00(int nId)
 }
 
 // @0x14059ee00
-int ItemGachaBoxTable::FUN_14059ee00(int nShopID)
+int ItemGachaBoxTable::GetPaymentIconTagByShopId(int nShopID)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -275,7 +276,7 @@ int ItemGachaBoxTable::FUN_14059ee00(int nShopID)
 }
 
 // @0x14059eec0
-bool ItemGachaBoxTable::FUN_14059eec0(int nCoinItemID)
+bool ItemGachaBoxTable::IsCoinItem(int nCoinItemID)
 {
     for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
@@ -287,7 +288,7 @@ bool ItemGachaBoxTable::FUN_14059eec0(int nCoinItemID)
 }
 
 // @0x14059ef70
-bool ItemGachaBoxTable::FUN_14059ef70(int nRandomBoxID)
+bool ItemGachaBoxTable::IsSeasonNumberOnIcon(int nRandomBoxID)
 {
     int nKey = nRandomBoxID;
     std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);

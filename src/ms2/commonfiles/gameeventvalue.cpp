@@ -547,7 +547,7 @@ void CGameEventValueMasteryReward::Load(unsigned long eventId, int type, const C
 {
     Unk_1401b4ec0 lock(m_lock, 1);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)

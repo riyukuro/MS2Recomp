@@ -17,13 +17,13 @@
 #include "ms2/ms2format.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64* FUN_1402c05b0(void* pConstBlock);              // the <constants> record
-unsigned* FUN_1402056b0(void* pField);                  // a config field
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
@@ -99,7 +99,7 @@ CMesoMarketProductCli::CMesoMarketProductCli()
 }
 
 // @0x140d6d900
-bool CMesoMarketProductCli::FUN_140d6d900()
+bool CMesoMarketProductCli::IsExpired()
 {
     CMsTime now(GetServerTime());
     return now >= m_40;
@@ -109,7 +109,7 @@ bool CMesoMarketProductCli::FUN_140d6d900()
 void CMesoMarketProductCli::FUN_140d6d940(ASObj& row)
 {
     FUN_140d6db30(row);
-    if (FUN_140d6d900())
+    if (IsExpired())
     {
         row.FUN_1409c0e60("subText", L"$s_mesoMarket_own_product_expired");
         row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sell_expired");
@@ -147,7 +147,7 @@ void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
     row.FUN_1407cbb20("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
-                                                FUN_140d6e230(*FUN_1402056b0((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6140))));
+                                                FUN_140d6e230(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6140)->Get()))));
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
     {
         row.FUN_1407cbb20("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
@@ -285,7 +285,7 @@ void CMesoMarketMan::FUN_140d6e6d0(ASArray& rows)
 }
 
 // @0x140d6e7e0
-MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e7e0(unsigned __int64 qwId)
+MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FindOwnProduct(unsigned __int64 qwId)
 {
     MS2Ptr<CMesoMarketProductCli> sp;
     if (m_mapOwn.Lookup(qwId, sp))
@@ -294,7 +294,7 @@ MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e7e0(unsigned __int64 qwI
 }
 
 // @0x140d6e890
-MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e890(unsigned __int64 qwId)
+MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FindMarketProduct(unsigned __int64 qwId)
 {
     MS2Ptr<CMesoMarketProductCli> sp;
     if (m_mapMarket.Lookup(qwId, sp))
@@ -303,7 +303,7 @@ MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e890(unsigned __int64 qwI
 }
 
 // @0x140d6e940
-Unk_MesoLimits& CMesoMarketMan::FUN_140d6e940()
+Unk_MesoLimits& CMesoMarketMan::GetLimits()
 {
     return m_limits;
 }
@@ -313,24 +313,24 @@ bool CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
 {
     if (nMeso > DAT_143ab2898)
     {
-        FUN_140d6f130(5);
+        ShowResultMessage(5);
         return false;
     }
     if (m_mapOwn.GetCount() >= (unsigned)m_limits.m_n18)
     {
-        FUN_140d6f130(8);
+        ShowResultMessage(8);
         return false;
     }
     if (m_nOwn >= m_limits.m_n1C)
     {
-        FUN_140d6f130(0xd);
+        ShowResultMessage(0xd);
         return false;
     }
-    __int64 nLow = FUN_140d6ff60();
-    __int64 nHigh = FUN_140d6ffe0();
+    __int64 nLow = GetMinPrice();
+    __int64 nHigh = GetMaxPrice();
     if (nPrice < nLow || nPrice > nHigh)
     {
-        FUN_140d6f130(0x10);
+        ShowResultMessage(0x10);
         return false;
     }
     return true;
@@ -342,17 +342,17 @@ bool CMesoMarketMan::FUN_140d6ea50(unsigned __int64 qwId)
     MS2Ptr<CMesoMarketProductCli> sp;
     if (!m_mapMarket.Lookup(qwId, sp))
     {
-        FUN_140d6f130(9);
+        ShowResultMessage(9);
         return false;
     }
     if (sp->m_b50)
     {
-        FUN_140d6f130(0xb);
+        ShowResultMessage(0xb);
         return false;
     }
     if (m_nBuy >= m_limits.m_n20)
     {
-        FUN_140d6f130(0xe);
+        ShowResultMessage(0xe);
         return false;
     }
     return true;
@@ -374,7 +374,7 @@ int CMesoMarketMan::GetBuy()
 void CMesoMarketMan::FUN_140d6eb90(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
-    FUN_140d6f130(nCode);
+    ShowResultMessage(nCode);
 }
 
 // @0x140d6ebe0
@@ -402,7 +402,7 @@ void CMesoMarketMan::FUN_140d6ecf0(CInPacket& packet)
 {
     MS2Ptr<CMesoMarketProductCli> sp(new CMesoMarketProductCli);
     sp->Read(packet);
-    FUN_140d6f0b0(sp);
+    AddOwnProduct(sp);
     m_nOwn = packet.ReadInt32();
 }
 
@@ -413,7 +413,7 @@ void CMesoMarketMan::FUN_140d6ee00(CInPacket& packet)
     __int64 qwId = packet.ReadInt64();
     Unk_1401b4ec0 lock(m_lock, 1);
     m_mapOwn.RemoveKey(qwId);
-    FUN_140d6f130(nCode);
+    ShowResultMessage(nCode);
 }
 
 // @0x140d6eec0
@@ -437,20 +437,20 @@ void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
     {
     case 0:
     case 0x11:
-        FUN_140d70060(qwId);
+        RemoveMarketProduct(qwId);
     }
-    FUN_140d6f130(nCode);
+    ShowResultMessage(nCode);
 }
 
 // @0x140d6f0b0
-void CMesoMarketMan::FUN_140d6f0b0(MS2Ptr<CMesoMarketProductCli> sp)
+void CMesoMarketMan::AddOwnProduct(MS2Ptr<CMesoMarketProductCli> sp)
 {
     Unk_1401b4ec0 lock(m_lock, 1);
     m_mapOwn.SetAt(sp->m_n18, sp);
 }
 
 // @0x140d6f130
-void CMesoMarketMan::FUN_140d6f130(int nCode)
+void CMesoMarketMan::ShowResultMessage(int nCode)
 {
     if (nCode == 0)
         return;
@@ -501,7 +501,7 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
     case 0x10:
     {
         FUN_140d74390(FUN_140d70320(CStringW(L"s_mesoMarket_error_invalidBuyMerat"), m_limits.m_fRateB * 100.0f,
-                                    FUN_140d6ff60(), FUN_140d6ffe0()),
+                                    GetMinPrice(), GetMaxPrice()),
                       0, FUN_140b240b0());
         break;
     }
@@ -531,7 +531,7 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
 }
 
 // @0x140d6ff60
-__int64 CMesoMarketMan::FUN_140d6ff60()
+__int64 CMesoMarketMan::GetMinPrice()
 {
     double dFactor = 1.0001 - m_limits.m_fRateB;
     __int64 nValue = (__int64)((double)m_limits.m_nBase * dFactor);
@@ -539,7 +539,7 @@ __int64 CMesoMarketMan::FUN_140d6ff60()
 }
 
 // @0x140d6ffe0
-__int64 CMesoMarketMan::FUN_140d6ffe0()
+__int64 CMesoMarketMan::GetMaxPrice()
 {
     double dFactor = 1.0001 + m_limits.m_fRateB;
     __int64 nValue = (__int64)((double)m_limits.m_nBase * dFactor);
@@ -547,7 +547,7 @@ __int64 CMesoMarketMan::FUN_140d6ffe0()
 }
 
 // @0x140d70060
-void CMesoMarketMan::FUN_140d70060(__int64 qwId)
+void CMesoMarketMan::RemoveMarketProduct(__int64 qwId)
 {
     m_mapMarket.RemoveKey(qwId);
     for (unsigned i = 0; i < m_arrMarket.GetCount(); i++)

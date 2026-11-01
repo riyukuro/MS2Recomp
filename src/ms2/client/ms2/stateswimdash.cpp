@@ -27,7 +27,8 @@
 
 class Unk_PCBaseBody;
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
-void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();                                     // 0x141b6f910 the animation service
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -46,10 +47,11 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's buff set: the movement direction and the buff tests.
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SwimBuff
 {
 public:
-    efd::Point3 FUN_141683900();
     bool FUN_141683100(int nKey);
     bool FUN_141682fe0(int nKey);
 };
@@ -57,7 +59,7 @@ public:
 // The input / skill tables of the dash check.
 CInputKeyHandler* FUN_14025e7c0();
 class Unk_SwimSkillTbl { public: int FUN_14142c0c0(int nSkill); };
-Unk_SwimSkillTbl* FUN_1409331f0();
+class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_SwimSkillTbl (calls cast back)
 
 // The owner's vtable up to slot 68: slots 22 and 68 take their point by value (the exe passes a pointer to a copy).
 class Unk_SdOwnerSlots
@@ -141,8 +143,8 @@ void StateSwimDash::vfunc_8(double fTime)
     if (m_pOwner->FUN_141675ed0() != 0)
     {
         Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
-        efd::Point3 kDir = pBuff->FUN_141683900();
-        reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+        Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+        reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
         if (pBuff->FUN_141683100(0x30d41))
         {
             pPC->FUN_1415248d0(1, 0);
@@ -170,7 +172,7 @@ void StateSwimDash::vfunc_8(double fTime)
 void StateSwimDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nSeq = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     efd::utf8string strAnim;
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
@@ -205,7 +207,7 @@ int StateSwimDash::vfunc_36()
         return 1;
     if (m_spData.get() != 0)
     {
-        return FUN_1409331f0()->FUN_14142c0c0(m_spData->m_nSkill);
+        return reinterpret_cast<Unk_SwimSkillTbl*>(FUN_1409331f0())->FUN_14142c0c0(m_spData->m_nSkill);
     }
     return 0;
 }

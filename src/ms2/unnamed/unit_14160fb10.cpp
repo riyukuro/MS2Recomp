@@ -8,6 +8,8 @@
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/equipmodel.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // return types of the getters this unit calls
 class Unk_ResourceMgr;
@@ -115,7 +117,7 @@ public:
 void* FUN_1403ed280();class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    class NiNode* FUN_1411a6b10();
+    class NiNode* GetLeastLoadedRoot();
 };
 void* FUN_140967000(void* list);   void* FUN_140a01110(void* list, void* pos);
 void* FUN_1409658c0(void* elem);   void FUN_1409671f0(void* list, void** pos);
@@ -130,7 +132,6 @@ public:
     float FUN_140968990();
 };
 void* FUN_140a0a480(void* out, const void* a, const void* b, const void* c);   // basis -> matrix
-float FUN_140a17940(float v, float lo, float hi);
 void* FUN_14086d260();class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -146,7 +147,7 @@ public:
 };
 void* FUN_14123c410(void* owner);   void* FUN_141b6efc0(void* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
 void* FUN_14099eef0(void* owner);
-void* FUN_1416561a0(void* p);   void FUN_1411e1b80(void* src, void* list);
+void FUN_1411e1b80(void* src, void* list);
    void FUN_140885680(void* list, void** pos);
 void* FUN_1405a8ed0(void* elem);class CEquipItem   // C3: member view for the former free stand-ins
 {
@@ -280,7 +281,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         if (DAT_1439f81f4 < 0.001f) {
             fade = DAT_1439f81f8;
         } else {
-            fade = one - FUN_140a17940(dt / DAT_1439f81f4, 0.0f, 1.0f) * (one - DAT_1439f81f8);
+            fade = one - efd::Clamp(dt / DAT_1439f81f4, 0.0f, 1.0f) * (one - DAT_1439f81f8);
         }
         float scale = fade;
         xf.scale = scale;
@@ -306,7 +307,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         if (o != 0) {
             void* pos2;
             Unk_ShList2 list(10);
-            FUN_1411e1b80(FUN_1416561a0(o), &list);
+            FUN_1411e1b80(reinterpret_cast<void*>(reinterpret_cast<PC*>(o)->FUN_1416561a0()), &list);
             for (pos2 = ((void*)((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetHeadPosition()); pos2 != 0; FUN_140885680(&list, &pos2)) {
                 void* elem = ((void*)&((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetAt((struct __POSITION*)(pos2)));
                 if (((class CEquipItem*)(void*)(FUN_1405a8ed0(elem)))->FUN_1411dc0d0() != 0) {
@@ -489,7 +490,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     root->vfunc_36(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh()), 0);
     FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
     self->m_bDirty = true;
-    Unk_ShadowNode* scene = (Unk_ShadowNode*)((void*)((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6b10());
+    Unk_ShadowNode* scene = (Unk_ShadowNode*)((void*)((class CEffectService*)(void*)(FUN_1403ed280()))->GetLeastLoadedRoot());
     scene->vfunc_36(FUN_1409475d0(&self->m_node), 1);
     ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->UpdateEffects();
     ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->UpdateProperties();

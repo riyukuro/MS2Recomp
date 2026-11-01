@@ -21,12 +21,22 @@
 #include "hook/ms2hook.h"
 
 #include <map>
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_CommonLog
 {
 public:
-    void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg);
 };
 class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -54,7 +64,7 @@ int FUN_14037cb70(Unk_140165cf0* pElem, const char* pszName, int* pnType)
         return 2;
     }
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     *pnType = FUN_14037c8c0(str);
@@ -91,26 +101,26 @@ int CFieldMissionTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        reinterpret_cast<Unk_CommonLog*>(GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pRound = pRoot->FUN_140165cf0("round"); pRound != 0; pRound = pRound->FUN_140168650("round"))
+    for (Unk_140165cf0* pRound = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("round")); pRound != 0; pRound = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRound))->NextSibling("round")))
     {
         RewardPtr spReward(new CFieldMissionReward);
         int nRound = 0;
-        FUN_1408731e0(pRound, "mission", nRound);
+        XmlGetAttr((class TiXmlElement*)(pRound), "mission", reinterpret_cast<int&>(nRound));
         FUN_14037cb70(pRound, "type", &spReward->m_nType);
         if (spReward->m_nType == 1)
         {
             CStringW strValue;
-            FUN_140873420(pRound, "value", strValue);
+            XmlGetAttr((class TiXmlElement*)(pRound), "value", strValue);
             spReward->m_item.vfunc_1(CStringW(strValue));
         }
         else
         {
-            FUN_1408731e0(pRound, "value", spReward->m_nValue);
+            XmlGetAttr((class TiXmlElement*)(pRound), "value", reinterpret_cast<int&>(spReward->m_nValue));
             int nSubJob = 0;
-            FUN_1408731e0(pRound, "subJobLevel", nSubJob);
+            XmlGetAttr((class TiXmlElement*)(pRound), "subJobLevel", reinterpret_cast<int&>(nSubJob));
             if (nSubJob == 0)
                 spReward->m_nSubJob = Unk_SubJobLevel_1;
             else if (nSubJob == 1)

@@ -21,10 +21,11 @@ class Unk_140165cf0;
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // Game log (commonfiles singleton 0x140166440).
+class CLogString;
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_GameLog
 {
 public:
-    void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
@@ -109,7 +110,7 @@ bool CVibrateEffectParam::vfunc_2()
         return false;
     if (m_fDuration <= m_fDampingTime)
     {
-        ((class Unk_GameLog*)GetLogString())->FUN_14015eb90(1, 0x13,
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13,
             L"Damping 시작 시간이 이펙트 종료 시간보다 큽니다[VibrateEffect - DampingStartTime] [{0}]", m_str20);
         return false;
     }
@@ -164,7 +165,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
             if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
-                FUN_140a58540()->FUN_140d8b3e0(pEffect->m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
+                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
         }
         return pEffect;
     }
@@ -188,7 +189,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < m_fDuration)
-            FUN_140a58540()->FUN_140d8b3e0(m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
+            FUN_140a58540()->StartRumbleFor(m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
     }
     return true;
 }

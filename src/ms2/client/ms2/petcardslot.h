@@ -75,7 +75,7 @@ public:
     virtual int vfunc_0(void* p);                       // ITooltip 0x140b778b0 build the tooltip into p
 
     unsigned __int64 GetItemUid();                   // the item uid
-    int FUN_140b77be0();                                // the item is sealed (or missing)
+    int IsUnavailable();                                // the item is sealed (or missing)
 
 public:
     MS2_LAYOUT_FRIEND;

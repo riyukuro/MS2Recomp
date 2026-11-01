@@ -179,7 +179,7 @@ CItemOptionTable::~CItemOptionTable()
 }
 
 // @0x1405f4720
-bool CItemOptionTable::FUN_1405f4720()
+bool CItemOptionTable::Init()
 {
     FUN_1405f78f0();
     LoadItemOptionVariation();
@@ -196,7 +196,7 @@ bool CItemOptionTable::FUN_1405f4720()
 
 // @0x1405f47a0
 // The remake cost of an item (the stone by slot, meso and the second stone, scaled by item level, remake count and rank).
-void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
+void CItemOptionTable::CalcRemakeIngredients(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
                                      const CItemRemakeOptionIngredient& kIngredient)
 {
     float fEpsilon = std::numeric_limits<float>::epsilon();
@@ -271,7 +271,7 @@ void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigne
 
 // @0x1405f4bb0
 // The remake cost of a pet / non-equip option (by remake count and rank).
-void CItemOptionTable::FUN_1405f4bb0(int nLevel, int nRank, const CItemRemakeOptionIngredient& kIngredient)
+void CItemOptionTable::CalcPetRemakeCost(int nLevel, int nRank, const CItemRemakeOptionIngredient& kIngredient)
 {
     double dEpsilon = 1e-05;
     MS2SvrPtr<CIngredientContainer> spContainer = kIngredient.m_spContainer;
@@ -288,7 +288,7 @@ void CItemOptionTable::FUN_1405f4bb0(int nLevel, int nRank, const CItemRemakeOpt
         nMeso *= 3;
         nSecond *= 5;
     }
-    nMeso = ((class CGameRule*)FUN_1401c0d90())->FUN_14047f720(nMeso);
+    nMeso = ((class CGameRule*)FUN_1401c0d90())->ApplyPetCrystalSale(nMeso);
     spContainer->FUN_14026bd10(0x5d, nStone);
     spContainer->FUN_14026bd10(0x60, nMeso);
     spContainer->FUN_14026bd10(0x5c, nSecond);
@@ -296,7 +296,7 @@ void CItemOptionTable::FUN_1405f4bb0(int nLevel, int nRank, const CItemRemakeOpt
 
 // @0x1405f4d30
 // A random rank for an item of an option group and level (the item's fixed rank when it has one).
-int CItemOptionTable::FUN_1405f4d30(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const
+int CItemOptionTable::GetRandomRank(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const
 {
     CheckInit();
     int nFixed = FUN_14053feb0(nItemId);
@@ -343,18 +343,18 @@ MS2Ptr<CItemOption> CItemOptionTable::FUN_1405f4ff0(MS2Ptr<CItemData> spItem, in
 {
     if (spItem == 0)
         return MS2Ptr<CItemOption>(0);
-    MS2Ptr<CItemOption> spOption(new CItemOption(spItem->FUN_14053c510()));
+    MS2Ptr<CItemOption> spOption(new CItemOption(spItem->GetItemId()));
     unsigned nConstantId = spItem->FUN_14053efd0();
     if (nConstantId != 0)
     {
-        MS2Ptr<ItemOptionConstant> spConstant = FUN_1405f5ee0(nConstantId, nRank);
+        MS2Ptr<ItemOptionConstant> spConstant = FindConstantOption(nConstantId, nRank);
         if (spConstant.get() != 0)
             spConstant->FUN_1405d2e70(spOption, nRank);
     }
     int nRandomId = spItem->FUN_14053eff0(nRank);
     if (nRandomId != 0)
     {
-        MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(nRandomId);
+        MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
         if (spRandom.get() != 0)
             spRandom->FUN_1405d3f70(spOption, nRank, pRandom);
     }
@@ -372,7 +372,7 @@ MS2Ptr<CItemOption> CItemOptionTable::FUN_1405f5290(MS2Ptr<Unk_ItemOptionPreset>
     unsigned nConstantId = spItem->FUN_14053efd0();
     if (nConstantId != 0)
     {
-        MS2Ptr<ItemOptionConstant> spConstant = FUN_1405f5ee0(nConstantId, spPreset->m_nRank);
+        MS2Ptr<ItemOptionConstant> spConstant = FindConstantOption(nConstantId, spPreset->m_nRank);
         if (spConstant.get() != 0)
             spConstant->FUN_1405d2e70(spOption, spPreset->m_nRank);
     }
@@ -381,7 +381,7 @@ MS2Ptr<CItemOption> CItemOptionTable::FUN_1405f5290(MS2Ptr<Unk_ItemOptionPreset>
         int nRandomId = spItem->FUN_14053eff0(spPreset->m_nRank);
         if (nRandomId != 0)
         {
-            MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(nRandomId);
+            MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
             if (spRandom.get() != 0)
                 spRandom->FUN_1405d4270(spPreset, spOption, spPreset->m_nRank, pRandom);
         }
@@ -391,18 +391,18 @@ MS2Ptr<CItemOption> CItemOptionTable::FUN_1405f5290(MS2Ptr<Unk_ItemOptionPreset>
 
 // @0x1405f5620
 // Rerolls the random rows of an option (the constant rows are rebuilt first).
-bool CItemOptionTable::FUN_1405f5620(MS2Ptr<CItemOption> spOption, int nItemId, int nRank)
+bool CItemOptionTable::RerollRandomOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return false;
     CheckInit();
     Unk_Random random(time(0));
-    spOption->FUN_1405cb190(0);
-    if (!FUN_1405f5870(spOption, nItemId, nRank))
+    spOption->ClearGroup(0);
+    if (!ApplyConstantOptions(spOption, nItemId, nRank))
         return false;
     int nRandomId = spItem->FUN_14053eff0(nRank);
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(nRandomId);
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
     if (spRandom == 0)
         return false;
     return spRandom->FUN_1405d6020(spOption, nRank, &random);
@@ -410,13 +410,13 @@ bool CItemOptionTable::FUN_1405f5620(MS2Ptr<CItemOption> spOption, int nItemId, 
 
 // @0x1405f5870
 // Rebuilds the constant rows of an option.
-bool CItemOptionTable::FUN_1405f5870(MS2Ptr<CItemOption> spOption, int nItemId, int nRank)
+bool CItemOptionTable::ApplyConstantOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return false;
     unsigned nConstantId = spItem->FUN_14053efd0();
-    MS2Ptr<ItemOptionConstant> spConstant = FUN_1405f5ee0(nConstantId, nRank);
+    MS2Ptr<ItemOptionConstant> spConstant = FindConstantOption(nConstantId, nRank);
     if (spConstant.get() != 0)
         spConstant->FUN_1405d2e70(spOption, nRank);
     return true;
@@ -434,7 +434,7 @@ bool CItemOptionTable::FUN_1405f59b0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
     int nRandomId = spItem->FUN_14053eff0(spTarget->m_nRank);
     if (nRandomId == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(nRandomId);
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
     if (spRandom == 0)
         return false;
     return spRandom->FUN_1405d4bb0(spTarget, pRandom);
@@ -452,14 +452,14 @@ bool CItemOptionTable::FUN_1405f5ba0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
     int nRandomId = spItem->FUN_14053eff0(spTarget->m_nRank);
     if (nRandomId == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(nRandomId);
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
     if (spRandom == 0)
         return false;
     return spRandom->FUN_1405d55e0(spTarget, pRandom);
 }
 
 // @0x1405f5d90
-bool CItemOptionTable::FUN_1405f5d90(int nItemId)
+bool CItemOptionTable::HasConstantOption(int nItemId)
 {
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -479,7 +479,7 @@ int CItemOptionTable::FUN_1405f5e90(int nCode, int nRank, CString strTag, CStrin
 }
 
 // @0x1405f5ee0
-MS2Ptr<ItemOptionConstant> CItemOptionTable::FUN_1405f5ee0(unsigned nId, int nGrade) const
+MS2Ptr<ItemOptionConstant> CItemOptionTable::FindConstantOption(unsigned nId, int nGrade) const
 {
     CheckInit();
     int nBest = 0;
@@ -498,7 +498,7 @@ MS2Ptr<ItemOptionConstant> CItemOptionTable::FUN_1405f5ee0(unsigned nId, int nGr
 }
 
 // @0x1405f6010
-MS2Ptr<ItemOptionRandom> CItemOptionTable::FUN_1405f6010(int nId) const
+MS2Ptr<ItemOptionRandom> CItemOptionTable::GetRandom(int nId) const
 {
     CheckInit();
     MS2Ptr<ItemOptionRandom> spResult;
@@ -519,7 +519,7 @@ int CItemOptionTable::FUN_1405f6100(unsigned nStatId)
 }
 
 // @0x1405f6190
-int CItemOptionTable::FUN_1405f6190(unsigned nStatId, Unk_Random* pRandom)
+int CItemOptionTable::RollVariation(unsigned nStatId, Unk_Random* pRandom)
 {
     CheckInit();
     auto it = m_variations.find(nStatId);
@@ -549,7 +549,7 @@ int CItemOptionTable::FUN_1405f62c0(unsigned nStatId)
 }
 
 // @0x1405f6350
-int CItemOptionTable::FUN_1405f6350(unsigned nStatId)
+int CItemOptionTable::GetVariationHighStat(unsigned nStatId)
 {
     CheckInit();
     auto it = m_variations.find(nStatId);
@@ -559,7 +559,7 @@ int CItemOptionTable::FUN_1405f6350(unsigned nStatId)
 }
 
 // @0x1405f63e0
-std::pair<int, int> CItemOptionTable::FUN_1405f63e0(unsigned nStatId)
+std::pair<int, int> CItemOptionTable::GetVariationRange(unsigned nStatId)
 {
     std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
@@ -572,38 +572,38 @@ std::pair<int, int> CItemOptionTable::FUN_1405f63e0(unsigned nStatId)
 }
 
 // @0x1405f64e0
-std::pair<int, int> CItemOptionTable::FUN_1405f64e0(int nItemId, int nRank, int nStat)
+std::pair<int, int> CItemOptionTable::GetRandomOptionRange(int nItemId, int nRank, int nStat)
 {
     std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return kResult;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return kResult;
-    kResult = FUN_1405f63e0(spRandom->FUN_1405d7680(nStat));
+    kResult = GetVariationRange(spRandom->GetStatIdByStat(nStat));
     return kResult;
 }
 
 // @0x1405f6650
-std::pair<int, int> CItemOptionTable::FUN_1405f6650(int nItemId, int nRank, unsigned nSpecial)
+std::pair<int, int> CItemOptionTable::GetRandomSpecialOptionRange(int nItemId, int nRank, unsigned nSpecial)
 {
     std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return kResult;
-    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return kResult;
-    kResult = FUN_1405f63e0(spRandom->FUN_1405d7710(nSpecial));
+    kResult = GetVariationRange(spRandom->GetStatIdBySpecial(nSpecial));
     return kResult;
 }
 
 // @0x1405f67e0
 // The stat value is in the top band of its variation row (the item must be level 50+).
-bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnused, int nValue)
+bool CItemOptionTable::IsHighRollValue(MS2Ptr<CItem> spItem, int nStat, int nUnused, int nValue)
 {
     CheckInit();
     if (spItem->FUN_1405282d0() < 50)
@@ -611,14 +611,14 @@ bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnuse
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
-    int nId = spRandom->FUN_1405d7680(nStat);
-    int nHigh = FUN_1405f6350(nId);
+    int nId = spRandom->GetStatIdByStat(nStat);
+    int nHigh = GetVariationHighStat(nId);
     if (nHigh == 0)
         return false;
-    std::pair<int, int> kRange = FUN_1405f63e0(nId);
+    std::pair<int, int> kRange = GetVariationRange(nId);
     if (kRange.first == kRange.second)
         return true;
     if (kRange.first >= nValue)
@@ -628,7 +628,7 @@ bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnuse
 
 // @0x1405f6a90
 // The special stat value is in the top band of its variation row (the item must be level 50+).
-bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, int nUnused, int nValue)
+bool CItemOptionTable::IsHighRollSpecialValue(MS2Ptr<CItem> spItem, unsigned nSpecial, int nUnused, int nValue)
 {
     CheckInit();
     if (spItem->FUN_1405282d0() < 50)
@@ -636,14 +636,14 @@ bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, in
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
-    int nId = spRandom->FUN_1405d7710(nSpecial);
-    int nHigh = FUN_1405f6350(nId);
+    int nId = spRandom->GetStatIdBySpecial(nSpecial);
+    int nHigh = GetVariationHighStat(nId);
     if (nHigh == 0)
         return false;
-    std::pair<int, int> kRange = FUN_1405f63e0(nId);
+    std::pair<int, int> kRange = GetVariationRange(nId);
     if (kRange.first == kRange.second)
         return true;
     if (kRange.first >= nValue)
@@ -652,19 +652,19 @@ bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, in
 }
 
 // @0x1405f6d40
-int CItemOptionTable::FUN_1405f6d40(MS2Ptr<CItemData> spItem, int nRank, unsigned nSpecial)
+int CItemOptionTable::GetSpecialOptionMaxValue(MS2Ptr<CItemData> spItem, int nRank, unsigned nSpecial)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return 0;
-    int nValue = FUN_1405f62c0(spRandom->FUN_1405d7710(nSpecial));
+    int nValue = FUN_1405f62c0(spRandom->GetStatIdBySpecial(nSpecial));
     return nValue;
 }
 
 // @0x1405f6e40
-Unk_OptionNameListPtr CItemOptionTable::FUN_1405f6e40(const CString& strName)
+Unk_OptionNameListPtr CItemOptionTable::FindOptionNameList(const CString& strName)
 {
     CheckInit();
     Unk_OptionNameListPtr spList(0);
@@ -673,7 +673,7 @@ Unk_OptionNameListPtr CItemOptionTable::FUN_1405f6e40(const CString& strName)
 }
 
 // @0x1405f6ed0
-int CItemOptionTable::FUN_1405f6ed0(Unk_SocketSpecialStat nKey) const
+int CItemOptionTable::GetDisplayOrder(Unk_SocketSpecialStat nKey) const
 {
     auto it = m_f8.find(nKey);
     if (it == m_f8.end())
@@ -682,13 +682,13 @@ int CItemOptionTable::FUN_1405f6ed0(Unk_SocketSpecialStat nKey) const
 }
 
 // @0x1405f6f50
-void CItemOptionTable::FUN_1405f6f50(MS2Ptr<CItemData> spItem, int nRank, unsigned nTrials,
+void CItemOptionTable::SimulateRandomOptions(MS2Ptr<CItemData> spItem, int nRank, unsigned nTrials,
                                      const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CItemOption> spOption(new CItemOption(spItem->FUN_14053c510()));
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<CItemOption> spOption(new CItemOption(spItem->GetItemId()));
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(spItem->FUN_14053eff0(nRank));
     if (spRandom.get() != 0)
         spRandom->FUN_1405d6560(spOption, nRank, nTrials, vLocked, pOut);
 }
@@ -702,7 +702,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
 {
     if (spItem == 0)
         return;
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_1405f6010(spItem->FUN_14053eff0(nRank));
+    MS2Ptr<ItemOptionRandom> spRandom = GetRandom(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return;
     vLogs.reserve(vLogs.size() + nTrials * 2);
@@ -714,12 +714,12 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
     Concurrency::parallel_for_each(std::begin(vTrials), std::end(vTrials),
         [&spItem, &spRandom, &nRank, &vLocked, &nPickCount, &lock, &vLogs, &nIndex, &mapCounts, &nTotal](unsigned char)
         {
-            MS2Ptr<CItemOption> spOption(new CItemOption(spItem->FUN_14053c510()));
+            MS2Ptr<CItemOption> spOption(new CItemOption(spItem->GetItemId()));
             Unk_ProbabilityLog vLocal;
             Unk_Random random(FUN_140767ff0());
             spRandom->FUN_1405d48d0(spOption, nRank, &random, vLocked, nPickCount, &vLocal);
-            Unk_EnchantMap& kStats = spOption->FUN_1405cb8a0(2);
-            Unk_SocketSpecialMap& kSpecials = spOption->FUN_1405cb8d0(2);
+            Unk_EnchantMap& kStats = spOption->GetStatMap(2);
+            Unk_SocketSpecialMap& kSpecials = spOption->GetSpecialMap(2);
             Unk_1401b4ec0 guard(lock, 1);
             vLogs.insert(vLogs.end(), vLocal.begin(), vLocal.end());
             if (nIndex == 0)
@@ -781,7 +781,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
         });
     if (nPickCount == 0)
     {
-        MS2Ptr<CItemOption> spOption(new CItemOption(spItem->FUN_14053c510()));
+        MS2Ptr<CItemOption> spOption(new CItemOption(spItem->GetItemId()));
         Unk_Random random(FUN_140767ff0());
         spRandom->FUN_1405d48d0(spOption, nRank, &random, vLocked, 0, NULL);
         nPickCount = spRandom->FUN_1405d5fe0(nRank);

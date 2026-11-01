@@ -429,7 +429,6 @@ CString FUN_14038f6d0(const CString& str, const char* psz);
 // The node smart pointers at +0xbe8 / +0xc38 / +0xc40.
 // The entity manager (0x1409670f0) and its lookup / property getter.
 class Unk_PCBaseEntMgr;
-void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);
 int FUN_1408a13d0(NiPoint3 kPos);                                   // the cube cell index of a position (ugcmapdata_1.cpp)
 void FUN_1409fabf0(void* pNodePtr, void* pNode);
 
@@ -446,7 +445,10 @@ public:
 class NoticeMessage   // C3: member view (real class not in this TU)
 {
 public:
+    NoticeMessage();
+    ~NoticeMessage();
     void SetActor(int);
+    void* m_storage[14];
 };
 class Unk_PCBaseFxQuery
 {
@@ -687,7 +689,10 @@ public:
 MS2_CHECK_OFFSET(CCylinderCollision, m_fHeight, 0xc0);
 MS2_CHECK_SIZE(CCylinderCollision, 0xc8);
 // The position the actor is heading to (the tracker at +0x6d8, FUN_14166d240).
-class Unk_PCBaseMoveTarget { public: efd::Point3 FUN_141683900(); };
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCBaseMoveTarget { public: };
 class Unk_PCBaseOptions;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -777,7 +782,7 @@ public:
 template <class T> T* PCBaseDialog(int nId)
 {
     if (reinterpret_cast<Unk_PCBaseUIMgr*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = ((CUIService*)(Unk_PCBaseUIMgr*)(reinterpret_cast<Unk_PCBaseUIMgr*>(TSingleton<CUIService>::GetInstance())))->FUN_141adcea0((eUIClassID)(nId));
+        MS2Ptr<UIObject> p = ((CUIService*)(Unk_PCBaseUIMgr*)(reinterpret_cast<Unk_PCBaseUIMgr*>(TSingleton<CUIService>::GetInstance())))->FindObject((eUIClassID)(nId));
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -812,7 +817,8 @@ class Unk_PCBaseAnimSvc
 public:
     efd::utf8string FUN_140b7cc50(const egf::EntityID& kId);         // current animation name
 };
-Unk_PCBaseAnimSvc* FUN_141b6f910();
+namespace egmAnimation { class AnimationService; }
+egmAnimation::AnimationService* FUN_141b6f910();
 
 // Free helpers of other units.
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
@@ -850,15 +856,16 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 void FUN_141b70cb0(class NiAVObject*, float, struct Unk_Colc const&, float);   // C3: was FUN_141b70cb0
 // Depth-first walker over a scene graph (0x38; util.cpp).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);                              // 0x14098cb80
-    ~Unk_SceneWalker();                                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);                              // 0x14098cb80
+    ~Unk_NodeQueue();                                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
+typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 extern NiFixedString DAT_143ae5470[9][30];
 float FUN_14059d930(float f);                                       // fabs
@@ -875,11 +882,9 @@ struct Unk_PgtConfig
     CString m_str2b8;                                               // the ride-off effect name
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-PC* FUN_140974230(PCBase* pActor);                                  // efd::DynamicCast<PC>
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene node of an entity
 void FUN_140b86230(const NiPoint3& kDir, NiMatrix3& kRot);          // facing angles -> rotation
 extern NiFixedString DAT_143ae5ce0[50];                             // "Hold_PointNN" dummy names (unit_1416bc380)
-PCBase* FUN_1409ffd30(GameObject* pObj);                            // efd::DynamicCast<PCBase> (class id 0x06200013)
 bool FUN_14028d470(float fA, float fB);                             // float equality
 float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
@@ -1026,7 +1031,7 @@ MS2_REPLACE_METHOD(0x14166bb10, PCBase, vfunc_19, 68, 0x8E98DEA5);
 int PCBase::vfunc_10()
 {
     GameObject::vfunc_10();
-    FUN_14166d8b0(vfunc_20().z);
+    SetTargetYaw(vfunc_20().z);
     FUN_141671960(m_unk_180.m_z);
     m_unk_150 = new Unk_PCBaseBody();
     m_unk_150->FUN_14123f5b0(this, m_unk_80, static_cast<const efd::Point3&>(vfunc_18()), m_unk_620.y, m_unk_620.x);
@@ -1106,7 +1111,7 @@ MS2_REPLACE_METHOD(0x14166bdd0, PCBase, vfunc_32, 233, 0x2951F41F);
 void PCBase::AnimActivated(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
     NiControllerSequence* pkSeq, float fEventTime)
 {
-    m_spStateMgr->FUN_1417dbef0(pkManager, eSequenceID, pkSeq, fEventTime);
+    m_spStateMgr->OnAnimActivated(pkManager, eSequenceID, pkSeq, fEventTime);
     if (m_unk_d20 != eSequenceID)
         FUN_141679e90();
 }
@@ -1126,21 +1131,21 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
     }
     else if (strncmp(FUN_142087e50(kTextKey), "effect_", 7) == 0) {
         CString strName(&FUN_142087e50(kTextKey)[7]);
-        Unk_PCBaseFxQuery kQuery;
-        kQuery.m_strName = strName;
-        kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-        kQuery.m_bEmotion = FUN_14166c930() == 0x35;
-        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+        NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = strName;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = FUN_14166c930() == 0x35;
+        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
     else if (strncmp(FUN_142087e50(kTextKey), "ani_eff_", 8) == 0) {
         CString strName(&FUN_142087e50(kTextKey)[8]);
-        Unk_PCBaseFxQuery kQuery;
-        kQuery.m_strName = strName;
-        kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-        kQuery.m_bEmotion = FUN_14166c930() == 0x35;
-        unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+        NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = strName;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = FUN_14166c930() == 0x35;
+        unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
         if (nHandle != 0) {
             m_unk_d20 = eSequenceID;
             m_vecD28.push_back(nHandle);
@@ -1155,14 +1160,14 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
             FUN_14166ef10(strEmotion, true, 0, bEmotion);
         }
     }
-    m_spStateMgr->FUN_1417dbf50(pkManager, eSequenceID, kTextKey, pkMatchObject, pkSeq, fEventTime);
+    m_spStateMgr->OnTextKeyEvent(pkManager, eSequenceID, kTextKey, pkMatchObject, pkSeq, fEventTime);
 }
 
 // @0x14166c550
 void PCBase::EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
     NiControllerSequence* pkSeq, float fEventTime)
 {
-    m_spStateMgr->FUN_1417dbfc0(pkManager, eSequenceID, pkSeq, fEventTime);
+    m_spStateMgr->OnEndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
 }
 
 // @0x14166c5b0
@@ -1269,14 +1274,14 @@ bool PCBase::vfunc_62()
 }
 
 // @0x14166ca20
-void PCBase::FUN_14166ca20(unsigned int nReason)
+void PCBase::AddHideReason(unsigned int nReason)
 {
     if (FUN_14166cb00(nReason) == true)
         return;
     m_unk_c08.FUN_140d75120(nReason, true);
     ApplyHideReasons();
 }
-MS2_REPLACE_METHOD(0x14166ca20, PCBase, FUN_14166ca20, 78, 0x7DD9BEF0);
+MS2_REPLACE_METHOD(0x14166ca20, PCBase, AddHideReason, 78, 0x7DD9BEF0);
 
 // @0x14166ca80
 void PCBase::RemoveHideReason(unsigned int nReason)
@@ -1495,7 +1500,7 @@ void PCBase::FUN_14166d430(efd::Point3 kDir, int bTurn, int bResetTilt)
     kRot.ToEulerAnglesXYZ(fX, fY, fZ);
     efd::Point3 kAngles(0, 0, fZ * 180.0f / 3.1415927f);
     FUN_140291b70(&kAngles.z);
-    FUN_14166d8b0(kAngles.z);
+    SetTargetYaw(kAngles.z);
     if (bResetTilt)
         vfunc_22(efd::Point3::ZERO);
     if (bTurn)
@@ -1512,17 +1517,17 @@ void PCBase::FUN_14166d630(float fTime)
     FUN_140291b70(&m_f934);
     if (kRot.z < m_f934) {
         if (m_f934 - kRot.z > 180.0f)
-            kRot.z -= FUN_14166dab0() * fTime;
+            kRot.z -= GetTurnSpeed() * fTime;
         else
-            kRot.z += FUN_14166dab0() * fTime;
+            kRot.z += GetTurnSpeed() * fTime;
         if (kRot.z > m_f934)
             kRot.z = m_f934;
     }
     else if (kRot.z > m_f934) {
         if (kRot.z - m_f934 > 180.0f)
-            kRot.z += FUN_14166dab0() * fTime;
+            kRot.z += GetTurnSpeed() * fTime;
         else
-            kRot.z -= FUN_14166dab0() * fTime;
+            kRot.z -= GetTurnSpeed() * fTime;
         if (kRot.z < m_f934)
             kRot.z = m_f934;
     }
@@ -1539,13 +1544,13 @@ void PCBase::FUN_14166d820()
         efd::Point3 kA;
         efd::Point3 kB;
         vfunc_67(&kA, &kB);
-        FUN_14166d8b0(FUN_14166dad0(kLook, kB));
+        SetTargetYaw(FUN_14166dad0(kLook, kB));
     }
 }
 MS2_REPLACE_METHOD(0x14166d820, PCBase, FUN_14166d820, 135, 0xF230AF85);
 
 // @0x14166d8b0
-void PCBase::FUN_14166d8b0(float fAngle)
+void PCBase::SetTargetYaw(float fAngle)
 {
     m_f934 = fAngle;
 }
@@ -1556,7 +1561,7 @@ void PCBase::FUN_14166d8e0(efd::Point3 kTilt)
     vfunc_22(kTilt);
     FUN_14166d820();
     NiPoint3 kRot = vfunc_20();
-    kRot.z = FUN_14166da40();
+    kRot.z = GetTargetYaw();
     FUN_14166d970(kRot);
 }
 MS2_REPLACE_METHOD(0x14166d8e0, PCBase, FUN_14166d8e0, 132, 0x81D98B51);
@@ -1564,7 +1569,7 @@ MS2_REPLACE_METHOD(0x14166d8e0, PCBase, FUN_14166d8e0, 132, 0x81D98B51);
 // @0x14166d970
 void PCBase::FUN_14166d970(const efd::Point3& kRot)
 {
-    FUN_14166d8b0(kRot.z);
+    SetTargetYaw(kRot.z);
     vfunc_21(kRot);
 }
 MS2_REPLACE_METHOD(0x14166d970, PCBase, FUN_14166d970, 87, 0x4BF2CA41);
@@ -1577,13 +1582,13 @@ void PCBase::FUN_14166d9d0(const NiPoint3& kPos)
 MS2_REPLACE_METHOD(0x14166d9d0, PCBase, FUN_14166d9d0, 43, 0x3F019449);
 
 // @0x14166da10
-void PCBase::FUN_14166da10(float fSpeed)
+void PCBase::SetTurnSpeed(float fSpeed)
 {
     m_unk_190.m_x = fSpeed;
 }
 
 // @0x14166da40
-float PCBase::FUN_14166da40()
+float PCBase::GetTargetYaw()
 {
     return m_f934;
 }
@@ -1595,7 +1600,7 @@ float PCBase::FUN_14166da60()
 }
 
 // @0x14166dab0
-float PCBase::FUN_14166dab0()
+float PCBase::GetTurnSpeed()
 {
     return m_unk_190.m_x;
 }
@@ -1630,7 +1635,7 @@ MS2_REPLACE_METHOD(0x14166dbf0, PCBase, FUN_14166dbf0, 83, 0xADE5A5FD);
 // @0x14166dc50
 CString PCBase::FUN_14166dc50()
 {
-    return CString(FUN_141b6f910()->FUN_140b7cc50(FUN_14123c460()).c_str());
+    return CString(reinterpret_cast<Unk_PCBaseAnimSvc*>(FUN_141b6f910())->FUN_140b7cc50(FUN_14123c460()).c_str());
 }
 MS2_REPLACE_METHOD(0x14166dc50, PCBase, FUN_14166dc50, 190, 0x36C8CC31);
 
@@ -1733,11 +1738,11 @@ void PCBase::vfunc_73(MS2Ptr<Unk_PCBaseFxSet> spSet, int bFx)
         return;
     if (m_unk_a50 != 0 && bFx != 0) {
         for (unsigned int i = 0; i < spSet->m_arrEffects.GetCount(); i++) {
-            Unk_PCBaseFxQuery kQuery;
-            kQuery.m_strName = spSet->m_arrEffects[i];
-            kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-            ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-            unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+            NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+            ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = spSet->m_arrEffects[i];
+            ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+            ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+            unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
             m_arrA30.Add(nHandle);
         }
     }
@@ -1914,7 +1919,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
     MS2Ptr<Unk_RideeFieldObj> spField;
     if (pEntity != 0) {
         kEntId = *((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(pEntity))->GetEntityID());
-        FUN_1409618c0(pEntity, 0xfd95ca52, kEntPos);
+        reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntPos));
         m_unk_af4 = FUN_1408a13d0(kEntPos);
         spField = reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())->FUN_141bc4f10(pEntity);
         if (spField.get() != 0 && spField->FUN_140ae0150() != efd::Point3::ZERO)
@@ -1978,7 +1983,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
     }
     GameObject::vfunc_19(kBodyPos);
     bool bMoved = kBodyPos != kOldPos;
-    if (reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed3a0() != 0) {
+    if (reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->IsLocalTargetMode() != 0) {
         if (((GameObject*)((Unk_CameraManager*)(Unk_PCBaseCameraMgr*)(reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60()) == this && reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed3e0())
             FUN_14166d630((float)dTime);
     } else {
@@ -2067,11 +2072,11 @@ float PCBase::FUN_141670520()
 MS2_REPLACE_METHOD(0x141670520, PCBase, FUN_141670520, 19, 0x9EAB230D);
 
 // @0x141670990
-__int64 PCBase::FUN_141670990(int nKind, int nStat)
+__int64 PCBase::GetStat(int nKind, int nStat)
 {
     return m_unk_1c0[nKind][nStat];
 }
-MS2_REPLACE_METHOD(0x141670990, PCBase, FUN_141670990, 49, 0xFF3D117E);
+MS2_REPLACE_METHOD(0x141670990, PCBase, GetStat, 49, 0xFF3D117E);
 
 // @0x1416709d0
 __int64 PCBase::FUN_1416709d0(int nStat)
@@ -2464,7 +2469,7 @@ float PCBase::vfunc_89()
 MS2_REPLACE_METHOD(0x141670450, PCBase, vfunc_89, 169, 0x56B885A2);
 
 // @0x141670540
-void PCBase::FUN_141670540(int nKind, int nStat, __int64 nValue)
+void PCBase::SetStat(int nKind, int nStat, __int64 nValue)
 {
     if (nKind == 1)
         FUN_1416705c0(nStat, nValue);
@@ -2473,7 +2478,7 @@ void PCBase::FUN_141670540(int nKind, int nStat, __int64 nValue)
     else if (nKind == 0)
         FUN_1416708a0(nStat, nValue);
 }
-MS2_REPLACE_METHOD(0x141670540, PCBase, FUN_141670540, 110, 0xF9DEC14D);
+MS2_REPLACE_METHOD(0x141670540, PCBase, SetStat, 110, 0xF9DEC14D);
 
 // @0x1416705c0
 void PCBase::FUN_1416705c0(int nStat, __int64 nValue)
@@ -2534,7 +2539,7 @@ void PCBase::vfunc_90(void* p)
                     nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
                     nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
-                FUN_141670540(i, nType, nValue);
+                SetStat(i, nType, nValue);
             }
         }
     }
@@ -2547,7 +2552,7 @@ void PCBase::vfunc_90(void* p)
                     nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
                     nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
-                FUN_141670540(i, nType, nValue);
+                SetStat(i, nType, nValue);
             }
         }
     }
@@ -2636,14 +2641,14 @@ float PCBase::vfunc_97()
 MS2_REPLACE_METHOD(0x141671720, PCBase, vfunc_97, 412, 0xA3371C75);
 
 // @0x1416719c0
-BOOL PCBase::FUN_1416719c0()
+BOOL PCBase::IsDashModel()
 {
     CString strModel = FUN_14166dc50();
     if (strModel.Find("Dash", 0) != -1)
         return TRUE;
     return FALSE;
 }
-MS2_REPLACE_METHOD(0x1416719c0, PCBase, FUN_1416719c0, 103, 0xCE9ED2D7);
+MS2_REPLACE_METHOD(0x1416719c0, PCBase, IsDashModel, 103, 0xCE9ED2D7);
 
 // @0x141671a30
 int PCBase::FUN_141671a30()
@@ -2685,8 +2690,8 @@ void PCBase::vfunc_100(MS2Ptr<CSkillRecord> spSkill, int n)
         return;
     }
     Unk_PCBaseMoveTarget* pMove = static_cast<Unk_PCBaseMoveTarget*>(FUN_14166d240());
-    efd::Point3 kPos = pMove->FUN_141683900();
-    float fAngle = FUN_14166da40();
+    Vector3 kPos = reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683900();
+    float fAngle = GetTargetYaw();
     efd::Point3 kTarget;
     efd::Point3 kDir;
     int bAim = 1;
@@ -2698,7 +2703,7 @@ void PCBase::vfunc_100(MS2Ptr<CSkillRecord> spSkill, int n)
         else if (((class CFeatureManager*)(class Unk_PCBaseOptions*)(((class Unk_PCBaseOptions*)FUN_140166410())))->FUN_14036d570(0xca) && nMode == 2)
             bKeep = 1;
         State* pState = m_spStateMgr->GetState();
-        if (bKeep && ((class StateSkill*)(class State*)(pState))->FUN_1417e9330() == spSkill->FUN_141759960() && spSkill->m_sp30->m_b34) {
+        if (bKeep && ((class StateSkill*)(class State*)(pState))->GetSkillId() == spSkill->FUN_141759960() && spSkill->m_sp30->m_b34) {
             MS2Ptr<CSkillRecord> spCur = static_cast<Unk_PCBaseSkillState*>(pState)->GetRecord();
             if (spCur.get()) {
                 bAim = 0;
@@ -2708,11 +2713,11 @@ void PCBase::vfunc_100(MS2Ptr<CSkillRecord> spSkill, int n)
         }
     }
     if (bAim)
-        vfunc_105(kPos, &kTarget, &kDir, 1);
+        vfunc_105(reinterpret_cast<const efd::Point3&>(kPos), &kTarget, &kDir, 1);
     if (reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 10)
         kDir = reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290();
     if (n == 0)
-        FUN_14166d8b0(fAngle);
+        SetTargetYaw(fAngle);
     if (m_unk_c00 != 10 && m_unk_c00 != 9 && spSkill->m_sp30->m_n74 != 0)
         vfunc_101(spSkill, n, &kDir);
     spSkill->m_k5c = kTarget;
@@ -2770,7 +2775,7 @@ void PCBase::vfunc_101(MS2Ptr<CSkillRecord> spSkill, int n, void* pRot)
     GameObject* pTarget = 0;
     int nPick = spSkill->m_sp30->m_n78;
     float fAngle = spSkill->m_sp30->m_f160;
-    efd::Point3 kAim = GameObject::FUN_14123cc80(*static_cast<NiPoint3*>(pRot));
+    efd::Point3 kAim = GameObject::RotationToDirection(*static_cast<NiPoint3*>(pRot));
     switch (nPick) {
     case 0:
     case 3:
@@ -2799,7 +2804,7 @@ void PCBase::vfunc_101(MS2Ptr<CSkillRecord> spSkill, int n, void* pRot)
     efd::Point3 kAngles(0.0f, 0.0f, fZ * 180.0f / 3.1415927f);
     FUN_140291bc0((struct Unk_CommonVec3*)(&kAngles));
     if (n)
-        FUN_14166d8b0(kAngles.z);
+        SetTargetYaw(kAngles.z);
     *static_cast<efd::Point3*>(pRot) = kAngles;
     if (spSkill->m_sp30->m_n16c) {
         spSkill->m_f74 = FUN_140966f00(pObj->vfunc_30(this), vfunc_18());
@@ -3053,7 +3058,7 @@ int PCBase::FUN_141673ef0()
     if (m_spStateMgr.get() != 0) {
         if (m_spStateMgr->GetCur() == 0x10) {
             State* pState = m_spStateMgr->GetState();
-            return ((class StateSkill*)(class State*)(pState))->FUN_1417e9330();
+            return ((class StateSkill*)(class State*)(pState))->GetSkillId();
         }
     }
     return 0;
@@ -3433,29 +3438,29 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
     FUN_1416766b0(spItem);
     for (int nKind = 0; nKind < 3; nKind++) {
         for (int nStat = 0; nStat < 0x23; nStat++)
-            m_spB10->FUN_141670540(nKind, nStat, FUN_141670990(nKind, nStat));
+            m_spB10->SetStat(nKind, nStat, GetStat(nKind, nStat));
     }
     ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bbb1e0(m_spB10, 0, 1);
     if (GetClassID() == 0x6200004)
         ((CameraMgr*)(Unk_PCBaseCameraMgr*)(reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140aeaf40((Unk_CameraTargetEntity*)(PCBase*)(m_spB10), 0);
     if (vfunc_25() == 0) {
-        Unk_PCBaseFxQuery kQuery;
-        kQuery.m_strName = ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_str2b0;
-        kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+        NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_str2b0;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
     int nHide = m_spB10->GetData()->m_n5c;
     if (nHide != 0)
-        FUN_14166ca20(2);
+        AddHideReason(2);
     if (FUN_14166cb00(1))
-        m_spB10->FUN_14166ca20(1);
+        m_spB10->AddHideReason(1);
     {
         MS2Ptr<Unk_PCBaseComp_a78> spNameTag = vfunc_82();
         if (spNameTag.get())
             spNameTag->FUN_140f48d80();
     }
-    PC* pPC = FUN_140974230(this);
+    PC* pPC = efd::DynamicCast<PC, PCBase>(this);
     if (pPC)
         pPC->FUN_1416642c0(spAction->m_b28);
 }
@@ -3497,7 +3502,7 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     }
     vfunc_19(static_cast<const efd::Point3&>(kPos));
     vfunc_21(static_cast<const efd::Point3&>(kDir));
-    FUN_14166d8b0(kDir.z);
+    SetTargetYaw(kDir.z);
     NiAVObject* pNode = FUN_141b6ef70(FUN_14123c460());
     if (pNode != 0) {
         NiMatrix3 kRot;
@@ -3532,18 +3537,18 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
         vfunc_59(5, new StateFallData(kRideePos), 0, 0);
     }
     if (vfunc_25() == 0) {
-        Unk_PCBaseFxQuery kQuery;
-        kQuery.m_strName = ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_str2b8;
-        kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+        NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_str2b8;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
     if (!strEffect.IsEmpty()) {
-        Unk_PCBaseFxQuery kQuery;
-        kQuery.m_strName = strEffect;
-        kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+        NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = strEffect;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+        ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+        ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
     FUN_141676700();
     MS2Ptr<Unk_PCBaseComp_a78> spNameTag = vfunc_82();
@@ -3576,7 +3581,7 @@ void PCBase::FUN_141678290(egf::EntityID kId, NiPoint3 kPos)
 MS2_REPLACE_METHOD(0x141678290, PCBase, FUN_141678290, 72, 0xE8669FA0);
 
 // @0x141678680
-unsigned int PCBase::FUN_141678680()
+unsigned int PCBase::GetSkillUseDisableMask()
 {
     unsigned int nMask = ((AdditionalCliList*)(Unk_PCBaseBuffsEx*)(static_cast<Unk_PCBaseBuffsEx*>(&m_unk_748)))->FUN_140970bf0();
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -3584,7 +3589,7 @@ unsigned int PCBase::FUN_141678680()
         nMask |= spField->m_nSkillUseDisableMask;
     return nMask;
 }
-MS2_REPLACE_METHOD(0x141678680, PCBase, FUN_141678680, 130, 0x482C383A);
+MS2_REPLACE_METHOD(0x141678680, PCBase, GetSkillUseDisableMask, 130, 0x482C383A);
 
 // @0x1416787a0
 int PCBase::FUN_1416787a0()
@@ -3632,7 +3637,7 @@ MS2_REPLACE_METHOD(0x141679170, PCBase, FUN_141679170, 167, 0x25DB4066);
 // @0x14166de90
 bool PCBase::FUN_14166de90(int nKey, unsigned int nSeq)
 {
-    Unk_PCBaseAnimSvc* pSvc = FUN_141b6f910();
+    Unk_PCBaseAnimSvc* pSvc = reinterpret_cast<Unk_PCBaseAnimSvc*>(FUN_141b6f910());
     if (pSvc == 0)
         return false;
     std::map<CString, std::vector<unsigned int> >& kByName = m_mapCF0[nKey];
@@ -3655,7 +3660,7 @@ MS2_REPLACE_METHOD(0x14166de90, PCBase, FUN_14166de90, 511, 0xCC0FDC50);
 // @0x141679270
 unsigned int PCBase::FUN_141679270(const char* szName)
 {
-    Unk_PCBaseAnimSvc* pSvc = FUN_141b6f910();
+    Unk_PCBaseAnimSvc* pSvc = reinterpret_cast<Unk_PCBaseAnimSvc*>(FUN_141b6f910());
     if (pSvc == 0)
         return NiActorManager::INVALID_SEQUENCE_ID;
     CString strPrefix = vfunc_60();
@@ -3782,7 +3787,7 @@ void PCBase::FUN_14166ebf0(PCBase* pOther)
         egf::Entity* pEntity = ((class EntityWorldManager*)(class Unk_PCBaseEntMgr*)(reinterpret_cast<Unk_PCBaseEntMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(m_unk_ae0);
         if (pEntity == 0)
             return;
-        FUN_1409618c0(pEntity, 0xfd95ca52, kPos);
+        reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
         FUN_141678290(kId, kPos);
     }
 }
@@ -3829,12 +3834,12 @@ void PCBase::FUN_14166ef10(const CString& str, int nA, int nB, bool bC)
         }
         if (m_unk_a50 != 0 && nA != 0) {
             for (unsigned int i = 0; i < spSet->m_arrEffects.GetCount(); i++) {
-                Unk_PCBaseFxQuery kQuery;
-                kQuery.m_strName = spSet->m_arrEffects[i];
-                kQuery.m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
-                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-                kQuery.m_bEmotion = bC;
-                unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+                NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = spSet->m_arrEffects[i];
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = ((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
+                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = bC;
+                unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
                 m_arrA30.Add(nHandle);
             }
         }
@@ -3879,7 +3884,7 @@ GameObject* PCBase::FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arr
             continue;
         {
             int nDead = 0;
-            PCBase* pPC = FUN_1409ffd30(pTarget);
+            PCBase* pPC = efd::DynamicCast<PCBase, GameObject>(pTarget);
             if (pPC != 0)
                 nDead = pPC->FUN_14166ce30();
             if (nDead != 0)
@@ -3942,7 +3947,7 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
         {
             float fDist = FUN_140966f00(kPos, vfunc_18());
             int nDead = 0;
-            PCBase* pPC = FUN_1409ffd30(pTarget);
+            PCBase* pPC = efd::DynamicCast<PCBase, GameObject>(pTarget);
             if (pPC != 0)
                 nDead = pPC->FUN_14166ce30();
             if (nDead != 0)
@@ -3990,7 +3995,7 @@ void PCBase::FUN_141679fa0()
 {
     if (((COptimizer*)(Unk_PCBaseGfxOption*)(((class Unk_PCBaseGfxOption*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
         if (!m_spC38) {
-            NiActorManager* pActor = ((egmAnimation::AnimationService*)(Unk_PCBaseAnimSvc*)(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
+            NiActorManager* pActor = ((egmAnimation::AnimationService*)(Unk_PCBaseAnimSvc*)(reinterpret_cast<Unk_PCBaseAnimSvc*>(FUN_141b6f910())))->GetActorManager(FUN_14123c460());
             NiAVObject* pRoot;
             if (pActor != 0 && (pRoot = pActor->GetNIFRoot()) != 0)
                 m_spC38 = pRoot->GetObjectByName("FA_Skin");
@@ -4012,7 +4017,7 @@ void PCBase::FUN_141679fa0()
             }
         }
     } else {
-        NiActorManager* pActor = ((egmAnimation::AnimationService*)(Unk_PCBaseAnimSvc*)(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
+        NiActorManager* pActor = ((egmAnimation::AnimationService*)(Unk_PCBaseAnimSvc*)(reinterpret_cast<Unk_PCBaseAnimSvc*>(FUN_141b6f910())))->GetActorManager(FUN_14123c460());
         NiAVObject* pRoot;
         if (pActor != 0 && (pRoot = pActor->GetNIFRoot()) != 0) {
             if (NiAVObject* pSkin = pRoot->GetObjectByName("FA_Skin")) {
@@ -4061,11 +4066,11 @@ void PCBase::FUN_141671c20(MS2Ptr<CDamageRecord> spRecord)
         for (unsigned int i = 0; i < spRecord->m_arrDamage.GetCount(); i++) {
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
-                Unk_PCBaseFxQuery kQuery;
-                kQuery.m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
-                kQuery.m_nPlayer = 0;
-                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-                ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+                NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
+                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+                ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
             }
         }
     }
@@ -4109,11 +4114,11 @@ void PCBase::FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord)
         for (unsigned int i = 0; i < spRecord->m_arrDamage.GetCount(); i++) {
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
-                Unk_PCBaseFxQuery kQuery;
-                kQuery.m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
-                kQuery.m_nPlayer = 0;
-                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(kQuery))->SetActor(FUN_14123c580());
-                ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&kQuery));
+                NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
+                ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
+                ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
             }
         }
     }
@@ -4224,7 +4229,7 @@ void PCBase::FUN_1416788d0()
     else {
         Unk_InventorySkillRequest kReq(0x1312d0b, 1);
         kReq.origin = vfunc_18();
-        kReq.fValue = FUN_14166da40();
+        kReq.fValue = GetTargetYaw();
         MS2Ptr<CSkillRecord> spSkill(new CSkillRecord);
         if (spSkill->Init(kReq))
             vfunc_102(spSkill);
@@ -4323,7 +4328,7 @@ void PCBase::vfunc_106(const efd::Point3& kMove, double dTime, int nFlags)
         NiPoint3 kRot = vfunc_20();
         kRot.z = -((fHeading * 180.0f) / 3.1415927f);
         vfunc_21(static_cast<efd::Point3&>(kRot));
-        FUN_14166d8b0(kRot.z);
+        SetTargetYaw(kRot.z);
     }
 }
 MS2_REPLACE_METHOD(0x141674750, PCBase, vfunc_106, 577, 0x913C575A);
@@ -4354,7 +4359,7 @@ bool PCBase::FUN_141674ef0(const CEffectDummy& kDummy)
         pParent->AttachChild(pNode, true);
     }
     else
-        pNode->FUN_1411a3cb0(kDummy);
+        pNode->ApplyDummy(kDummy);
     pNode->SetRotationTarget(pRoot);
     pNode->Update((float)((class CMainSystem*)(class Unk_PCBaseClock*)(reinterpret_cast<Unk_PCBaseClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     return true;
@@ -4419,7 +4424,7 @@ void PCBase::FUN_141678ad0(CString strName, bool bOutline, float fScale, float f
     if (bOutline)
     {
         NiColor kColor(1.0f, 0.95f, 0.5058f);
-        Unk_SceneWalker kWalker(m_spC40);
+        Unk_SceneWalker kWalker((NiAVObject*)(m_spC40));
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0)
         {

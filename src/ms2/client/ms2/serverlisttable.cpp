@@ -10,13 +10,24 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_140165cf0;
+class TiXmlElement   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Attribute(char const*) const;
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers.
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
-const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 CString FUN_14028d1f0(const char*);
 CStringW GetStringCommonByKey(const CStringW& s);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -46,11 +57,11 @@ void CServerListTable::Load()
     int bLoaded = ((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "serverList.xml"), 0, true, false);
     if (bLoaded != 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("server"); pNode != 0;
-                 pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("server")))
+            for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("server")); pNode != 0;
+                 pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("server"))))
             {
                 InfoPtr info(new ServerInfo);
                 if (info)
@@ -58,8 +69,8 @@ void CServerListTable::Load()
                     XmlGetAttr((class TiXmlElement*)(pNode), "id", info->m_nId);
                     CStringW strName = FUN_1401bf530(pNode, "name", L"");
                     info->m_strName = GetStringCommonByKey(strName);
-                    info->m_strIcon = FUN_14015f710(pNode, "icon", "");
-                    info->m_strDisIcon = FUN_14028d1f0(FUN_14086f4b0(pNode, "dis_icon"));
+                    info->m_strIcon = Unk_ReadString((class Unk_XmlNode*)(pNode), "icon", "");
+                    info->m_strDisIcon = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("dis_icon"));
                     m_map.SetAt(info->m_nId, info);
                 }
             }

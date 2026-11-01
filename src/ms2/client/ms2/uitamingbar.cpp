@@ -13,6 +13,7 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/cpet.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_TamingClip : public ASMovieClip
@@ -27,7 +28,7 @@ public:
     void FUN_1422baea0(const char* szMember, float* pOut);                                       // read a member
     void FUN_1422c00f0(float x, float y);
 };
-struct Unk_TamingCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_TamingCfgFloat { char m_pad[0x58]; };
 struct Unk_TamingCfgInt64 { __int64 FUN_140ba77c0(); char m_pad[8]; };
 struct Unk_TamingCfg
 {
@@ -60,7 +61,6 @@ public:
     static class WorldService* GetInstance();
 };
 bool FUN_140930110(int nActorId);
-unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_TamingUIMgr { public: };
 void FUN_1422bcdd0(Scaleform::GFx::Value*, __int64);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
@@ -73,7 +73,7 @@ UITamingBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 1;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_2c8.FUN_1402bac70();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_TamingCfg*)FUN_1401d3200())->m_2c8)->Read();
     m_a8 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_8468.FUN_140ba77c0();
     FUN_140e97e00();
 }
@@ -273,7 +273,7 @@ void UITamingBar::FUN_140e98040(unsigned int nCount)
         for (unsigned int i = 0; i < nCount; i++)
         {
             Scaleform::GFx::Value v = pClip->Invoke("createCache", m_70);
-            if (FUN_1409b0390(&v) == 0)
+            if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, 0);
                 if (p)
@@ -301,7 +301,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_TamingEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
-                if (FUN_1409b0390(&v) == 0)
+                if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
                     if (p)
@@ -345,7 +345,7 @@ UITamingBar* FUN_140e98660(int nUiId)
 {
     if (reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UITamingBar*>((UIObject*)p);
     }

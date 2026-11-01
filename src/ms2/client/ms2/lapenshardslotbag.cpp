@@ -37,14 +37,12 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext (was free FUN_1422c8* stand-ins)
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-// Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+// Registry of named bags/slots (GFx bind data): Unk_NotifyContext's statics (notifyhandler.h).
 LapenshardSlot* FUN_140a6fef0(DragSlot* p);                 // the slot as a LapenshardSlot (lapenshardslot.cpp)
 
 LapenshardSlotBag* FUN_140a70b70(NotifyContext::BindData* p);
@@ -68,8 +66,8 @@ void FUN_140a702f0(const CString& strName, const ATL::CAtlArray<MS2Ptr<CItem> >&
     LapenshardSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlotBag(strName, items, nKind);
     if (pBag)
     {
-        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_140a70a30());
-        FUN_1422c8f10(strName, pBag);
+        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
@@ -79,19 +77,19 @@ LapenshardSlotBag* FUN_140a703d0(const CString& strName)
     LapenshardSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlotBag(strName);
     if (!pBag)
         return 0;
-    static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_140a70a30());
-    FUN_1422c8f10(strName, pBag);
+    static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
+    Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     return pBag;
 }
 
 // @0x140a704a0
 void FUN_140a704a0(const CString& strName)
 {
-    LapenshardSlotBag* pBag = FUN_140a70b70(FUN_1422c8e90(strName));
+    LapenshardSlotBag* pBag = FUN_140a70b70(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -132,13 +130,13 @@ DragSlot* LapenshardSlotBag::vfunc_16(int nIndex)
     CString strName = vfunc_15(nIndex);
     if (m_bEquipMode != 0)
     {
-        return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(0), FUN_140a70b20(nIndex), m_nKind);
+        return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(0), GetEquipSlot(nIndex), m_nKind);
     }
     return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(m_items[nIndex]), 0, m_nKind);
 }
 
 // @0x140a70a30
-int LapenshardSlotBag::FUN_140a70a30()
+int LapenshardSlotBag::GetSlotCount()
 {
     if (m_bEquipMode != 0)
         return (int)m_equipSlots.GetCount();
@@ -162,7 +160,7 @@ void LapenshardSlotBag::vfunc_14(int nIndex)
 }
 
 // @0x140a70b20
-int LapenshardSlotBag::FUN_140a70b20(int nIndex)
+int LapenshardSlotBag::GetEquipSlot(int nIndex)
 {
     Unk_LapenEquipSlot slot = kLapenEquipSlotNone;
     if (m_equipSlots.Lookup(nIndex, slot))

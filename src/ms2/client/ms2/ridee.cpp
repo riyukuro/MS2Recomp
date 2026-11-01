@@ -44,6 +44,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 
 // ---- unit-local placeholders ----
 
@@ -200,7 +201,6 @@ class Unk_RideeWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(Unk_Entity* pEntity);
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
     NiPoint3 FUN_141bd37e0();                                       // water line
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName);
 };
@@ -296,7 +296,6 @@ class Unk_RideePC : public PCBase
 {
 };
 class Unk_RideeStats;
-Unk_RideePC* FUN_140974230(PCBase* pActor);
 int FUN_141658e60(Unk_RideePC* pc);                                 // level
 Unk_RideeStats* FUN_1416561a0(Unk_RideePC* pc);
 float FUN_1411e1110(Unk_RideeStats* pStats, int nStat);
@@ -323,7 +322,6 @@ public:
 class Unk_RideeEntity
 {
 public:
-    void FUN_1409618c0(unsigned int uiPropId, NiPoint3& out);       // point property
     void FUN_1408a20a0(unsigned int uiPropId, bool* pOut);          // bool property
     void FUN_140ae1160(unsigned int uiPropId, unsigned short* pOut); // short property
     
@@ -341,7 +339,8 @@ public:
     void* FUN_1410b8ab0(NiPoint3 kPos);                             // the cube at a position
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 ecr::SceneGraphService* FUN_1410a68f0(Unk_EntityAppFramework* pFramework);
 
@@ -451,7 +450,7 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
         return 0;
 
     int nLevel = 1;
-    if (Unk_RideePC* pc = FUN_140974230(pRider))
+    if (Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(pRider)))
         nLevel = FUN_141658e60(pc);
     const CString& strAnim = spData->FUN_140784880(nLevel);
     const CString& strModel = spData->FUN_140784920(nLevel);
@@ -613,7 +612,7 @@ void Ridee::vfunc_21(efd::Point3 kDir)
     if (m_pRider)
     {
         float fZ = 0;
-        if (m_pRider->FUN_1416749a0()->FUN_140970eb0(fZ))
+        if (m_pRider->FUN_1416749a0()->TryGetFixedZRotation(fZ))
             kDir.z = fZ;
     }
     PCBase::vfunc_21(kDir);
@@ -978,7 +977,7 @@ void Ridee::FUN_141706650(bool bForce)
     spNew->m_vel3c = m_pos98;
     spNew->m_pos20 = vfunc_18();
     spNew->m_dir2c = vfunc_20();
-    spNew->m_f58 = FUN_14166da40();
+    spNew->m_f58 = GetTargetYaw();
     spNew->m_pos48 = m_posBF4;
     spNew->m_n54 = reinterpret_cast<Unk_RideeCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30();
     spNew->m_nAC = ((CMainSystem*)(Unk_RideeClock*)(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390();
@@ -996,7 +995,7 @@ void Ridee::FUN_141706650(bool bForce)
             if (((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4e70(strName).get())
             {
                 NiPoint3 kObjPos;
-                pEntity->FUN_1409618c0(0xfd95ca52, kObjPos);
+                reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kObjPos));
                 spNew->m_str88 = strName;
                 spNew->m_pos78 = vfunc_18() - kObjPos;
             }
@@ -1009,7 +1008,7 @@ void Ridee::FUN_141706650(bool bForce)
                 if (bRideable && (nKind == 9 || nKind == 8))
                 {
                     NiPoint3 kPropPos;
-                    pEntity->FUN_1409618c0(0xfd95ca52, kPropPos);
+                    reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
                     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
                     if (spService->FUN_1410b8ab0(kPropPos) && vfunc_99(0) == 0)
                     {
@@ -1052,7 +1051,7 @@ float Ridee::FUN_1417070a0()
     float fSpeed = m_spData->m_f80;
     if (!m_pRider)
         return fSpeed;
-    Unk_RideePC* pc = FUN_140974230(m_pRider);
+    Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(m_pRider));
     if (!pc)
         return fSpeed;
     if (FUN_14028d470(m_spData->m_f7c, m_spData->m_f80))
@@ -1067,7 +1066,7 @@ float Ridee::FUN_1417071d0()
     float fSpeed = m_unk_180.m_z;
     if (!m_pRider)
         return fSpeed;
-    Unk_RideePC* pc = FUN_140974230(m_pRider);
+    Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(m_pRider));
     if (!pc)
         return fSpeed;
     return FUN_1411f0e30(fSpeed, 1.0f + FUN_1411e1110(FUN_1416561a0(pc), 0xae));
@@ -1128,12 +1127,12 @@ int Ridee::FUN_1417075e0()
 {
     if (!m_pRider)
         return 0;
-    Unk_RideePC* pc = FUN_140974230(m_pRider);
+    Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(m_pRider));
     if (!pc)
         return 0;
     if (GetData()->m_nType == 1 || GetData()->m_nType == 2)
         return 1;
-    if (pc->FUN_1416749a0()->FUN_1409701d0(3))
+    if (pc->FUN_1416749a0()->HasEnabledWithEventBuffType(3))
         return 1;
     return 0;
 }

@@ -65,7 +65,7 @@ template<class T> MS2Ptr<T> Unk_DmCreate(int nMovieId, const Scaleform::GFx::Val
 // @0x140be23c0
 template<class T> MS2Ptr<T> AScript::FUN_140be23c0(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_DmCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -74,7 +74,7 @@ template<class T> MS2Ptr<T> AScript::FUN_140be23c0(const CString& strName)
 // @0x140bc7280
 template<class T> MS2Ptr<T> AScript::FUN_140bc7280(const CString& strName)
 {
-    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return Unk_DmCreate<T>(m_nMovieId, v);
     return MS2Ptr<T>(0);
@@ -99,14 +99,12 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                  // has the AS object been released
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
 CStringW FUN_1416e5350(int nQuestId, int nIndex);                           // the description text of a quest
 __int64 FUN_140761ba0(int nQuestId, int nReward);                           // the experience reward
 CStringW FUN_140763e10(int nValue);                                         // the text of a mission point
 CStringW FUN_1409404f0(__int64 n);                                          // number with thousands separators
-bool FUN_140841300(const CStringW& str, const char* psz);                   // equal ignoring case
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);                      // localized text with one number
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CString FUN_14021a8b0(int n);                                               // int to text
@@ -236,21 +234,21 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nId);
     if (!spData)
         return;
-    if (FUN_140841300(strType, "point") != 0)
+    if (operator==(strType, "point") != 0)
     {
         ASTooltip tip(2);
-        if (tip.FUN_1409e26b0(FUN_140763e10(spData->m_complete.m_missionPoint)))
+        if (tip.ApplyTextTooltip(FUN_140763e10(spData->m_complete.m_missionPoint)))
         {
-            tip.FUN_1409c6dc0(1);
+            tip.SetTooltipAlign(1);
             *pRetVal = tip.FUN_1422bb870();
         }
     }
     else
     {
         ASTooltip tip(2);
-        if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nId, 1))))
+        if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nId, 1))))
         {
-            tip.FUN_1409c6dc0(1);
+            tip.SetTooltipAlign(1);
             *pRetVal = tip.FUN_1422bb870();
         }
     }
@@ -369,7 +367,7 @@ void UIDailyMissionDialog::FUN_140c001d0()
                 continue;
             ASObj row(2);
             FUN_140c01040(row, spQuest.get());
-            spList->FUN_1422dd230(row);
+            spList->AddItem(row);
         }
         spList->vfunc_24(true);
     }
@@ -384,7 +382,7 @@ void UIDailyMissionDialog::FUN_140c00500()
     if (MS2Ptr<Unk_DmGuideBar> spBar = FUN_140c02990("m_guideBar"))
         spBar->Invoke("removeAll");
     ATL::CAtlArray<MS2Ptr<CQuestData>> datas;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(datas, 5);
+    TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(datas, 5);
     for (size_t i = 0; i < datas.GetCount(); i++)
     {
         MS2Ptr<CQuestData> spData = datas[i];
@@ -401,7 +399,7 @@ void UIDailyMissionDialog::FUN_140c00500()
     int nCur = FUN_140c01f50();
     int nMax = FUN_140c020d0();
     FUN_1409ee290(&m_30)->Invoke("setPC", nCur);
-    if (MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint"))
+    if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))
     {
         {
             CString strFrame(spPoint == 0 ? "off" : "on");
@@ -430,9 +428,9 @@ void UIDailyMissionDialog::FUN_140c009b0()
             ASObj row(2);
             row.FUN_1407cbb20("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
             row.FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
-            spTab.operator->()->FUN_1422e3460(row);
+            spTab.operator->()->AddItem(row);
         }
-        spTab.operator->()->FUN_1422e31e0(0);
+        spTab.operator->()->SetSelectedIndex(0);
         spTab.operator->()->vfunc_24(true);
     }
     FUN_140c00cd0();
@@ -467,7 +465,7 @@ void UIDailyMissionDialog::FUN_140c00cd0()
         satisfied.FUN_1422bbc60(FUN_140c01d30(nGroup));
     }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
-    if (MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint"))
+    if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))
     {
         {
             CString strFrame(spPoint == 0 ? "off" : "on");
@@ -695,7 +693,7 @@ int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 // @0x140c02870
 MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASButtonBar>(0);
     return FUN_1409ee290(&m_30)->FUN_140be23c0<ASButtonBar>(strName);
 }
@@ -703,7 +701,7 @@ MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 // @0x140c02900
 MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASScrollingList>(0);
     return FUN_1409ee290(&m_30)->FUN_140bc7280<ASScrollingList>(strName);
 }
@@ -711,7 +709,7 @@ MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strNa
 // @0x140c02990
 MS2Ptr<Unk_DmGuideBar> UIDailyMissionDialog::FUN_140c02990(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<Unk_DmGuideBar>(0);
     return FUN_1409ee290(&m_30)->FUN_140accfb0<Unk_DmGuideBar>(strName);
 }

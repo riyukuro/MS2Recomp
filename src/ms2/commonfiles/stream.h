@@ -110,13 +110,13 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     static bool TestCompression();
     void FUN_140204670(int);
     void FUN_140715230(int);
-    void FUN_140720e90(unsigned);
+    void SetOffset(unsigned);
     void FUN_140518490();
     unsigned GetLength() const;
     unsigned char* FUN_140204eb0();
     const unsigned char* FUN_14067c4c0() const;
     CByteBuffer& FUN_140714de0();
-    void FUN_140720c30(CByteBuffer&);
+    void AppendRemainingTo(CByteBuffer&);
     unsigned char& operator[](size_t index) { STREAM_ASSERT(669,index < m_uLength);return m_aByteBuff[index]; }
     const unsigned char& operator[](size_t index) const { STREAM_ASSERT(670,index < m_uLength);return m_aByteBuff[index]; }
 private:

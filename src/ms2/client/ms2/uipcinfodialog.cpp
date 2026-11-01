@@ -177,7 +177,7 @@ public:
 class AdditionalCliList   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_1409708a0();
+    __int64 GetTotalShieldValue();
 };
 NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour value as NiColor
 
@@ -210,7 +210,6 @@ struct Unk_PciRange
 struct Unk_PciStatBlock { __int64 m_a[0x23]; };
 
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 void FUN_14151f200();
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
@@ -397,8 +396,8 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             spInfo->m_mapEquip0.SetAt(nSlot, spItem);
         if (pAvatarPC != 0)
         {
-            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
-            spCopy->FUN_140526b30(pAvatar->vfunc_25());
+            MS2Ptr<CItem> spCopy = spItem->Clone();
+            spCopy->SetObjectId(pAvatar->vfunc_25());
             pAvatarPC->vfunc_127(spCopy.get(), 0);
         }
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
@@ -472,7 +471,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             continue;
         if (pAvatarPC != 0)
         {
-            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+            MS2Ptr<CItem> spCopy = spItem->Clone();
             ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->FUN_14165f460())->FUN_141270bf0(spCopy);
         }
     }
@@ -494,7 +493,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             if (pAvatarPC != 0)
             {
                 MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);
-                spCopy->FUN_140526b30(pAvatar->vfunc_25());
+                spCopy->SetObjectId(pAvatar->vfunc_25());
                 pAvatarPC->vfunc_127(spCopy.get(), 0);
             }
         }
@@ -529,7 +528,7 @@ MS2_REPLACE_METHOD(0x14132D530, UIPCInfoDialog, vfunc_67, 193, 0x21224E7D);
 void UIPCInfoDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_1413375c0();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x14132D600, UIPCInfoDialog, vfunc_26, 34, 0xC51D4F67);
 
@@ -549,7 +548,7 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
         if ((PCInfo*)m_spInfo)
             return;
         CPCDataPack pack;
-        pack.FUN_14071f710(*(CInPacket*)pPacket);
+        pack.Read(*(CInPacket*)pPacket);
         FUN_14132c330(&pack);
         if (vfunc_55() == 1)
         {
@@ -670,7 +669,7 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0)
         {
             ATL::CAtlArray<CStringW> aTokens;
-            if (FUN_14028cb70(strTag, aTokens, L",", 2) == 1 && FUN_1403b3c40(aTokens[0], L"changeTodayMemo"))
+            if (FUN_14028cb70(strTag, aTokens, L",", 2) == 1 && operator==(aTokens[0], L"changeTodayMemo"))
             {
                 CStringW strMemo(aTokens[1]);
                 if (CBanTextChecker* pFilter = CommonString::GetInstance()->GetChecker())
@@ -790,9 +789,9 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     int nStat = FUN_140bd09c0(params.pUserData);
     CStringW strKey = StringFormat(L"s_char_info_stat_point_tooltip_{0}", FUN_14082efb0(nStat));
     ASTooltip tooltip((void*)pPC, 1, 2);
-    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tooltip.FUN_1409c6dc0(4);
-    tooltip.FUN_1409c6cb0(GetStringCommonByKey(strKey));
+    tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tooltip.SetTooltipAlign(4);
+    tooltip.SetText(GetStringCommonByKey(strKey));
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
@@ -824,9 +823,9 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
                             pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
 show:
     ASTooltip tooltip((void*)pPC, 1, 2);
-    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-    tooltip.FUN_1409c6dc0(4);
-    tooltip.FUN_1409c6cb0(strText);
+    tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+    tooltip.SetTooltipAlign(4);
+    tooltip.SetText(strText);
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
@@ -862,9 +861,9 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
             break;
         }
         ASTooltip tooltip((void*)pPC, 1, 2);
-        tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-        tooltip.FUN_1409c6dc0(4);
-        tooltip.FUN_1409c6cb0(strText);
+        tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+        tooltip.SetTooltipAlign(4);
+        tooltip.SetText(strText);
         Scaleform::GFx::Value* pRetVal = params.pRetVal;
         FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
@@ -951,11 +950,11 @@ void UIPCInfoDialog::vfunc_86()
         {
             FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
-            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-            tooltip.FUN_1409c6cb0(L"$s_tooltip_myinfo_stat_attackScore");
-            tooltip.FUN_1409c6e00(300);
-            tooltip.FUN_1409c6e30(5000);
-            tooltip.FUN_1409c6dc0(4);
+            tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+            tooltip.SetText(L"$s_tooltip_myinfo_stat_attackScore");
+            tooltip.SetOnDelay(300);
+            tooltip.SetOffDelay(5000);
+            tooltip.SetTooltipAlign(4);
             spAttack->FUN_1422c7cd0(tooltip.FUN_1422bb890());
         }
     }
@@ -970,11 +969,11 @@ void UIPCInfoDialog::vfunc_86()
         {
             FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
-            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-            tooltip.FUN_1409c6cb0(L"$s_tooltip_myinfo_stat_defenseScore");
-            tooltip.FUN_1409c6e00(300);
-            tooltip.FUN_1409c6e30(5000);
-            tooltip.FUN_1409c6dc0(4);
+            tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
+            tooltip.SetText(L"$s_tooltip_myinfo_stat_defenseScore");
+            tooltip.SetOnDelay(300);
+            tooltip.SetOffDelay(5000);
+            tooltip.SetTooltipAlign(4);
             spDefense->FUN_1422c7cd0(tooltip.FUN_1422bb890());
         }
     }
@@ -1109,7 +1108,7 @@ void UIPCInfoDialog::vfunc_87()
                 unsigned int nColor = 0xffffff;
                 if (nRemaining > 0)
                     nColor = 0xffa200;
-                spText->FUN_1422c50e0(nColor);
+                spText->SetTextColor(nColor);
             }
             else
             {
@@ -1773,7 +1772,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     __int64 nShield = 0;
     Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC != 0)
-        nShield = ((class AdditionalCliList*)(void*)(((void*)((class PCBase*)(class PC*)(pPC))->FUN_1416749a0())))->FUN_1409708a0();
+        nShield = ((class AdditionalCliList*)(void*)(((void*)((class PCBase*)(class PC*)(pPC))->FUN_1416749a0())))->GetTotalShieldValue();
     CStringW strName = GetStringCommonByKey(L"s_pc_info_name_shield");
     CStringW strDetail;
     strDetail.Format(L"-");
@@ -1860,7 +1859,7 @@ void UIPCInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
 void UIPCInfoDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_1413375c0();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x141337380, UIPCInfoDialog, vfunc_16, 34, 0x68EB2B1C);
 
@@ -1869,7 +1868,7 @@ bool UIPCInfoDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17())
         return false;
-    FUN_141337560();
+    LoadRenderTarget();
     return true;
 }
 MS2_REPLACE_METHOD(0x1413373B0, UIPCInfoDialog, vfunc_17, 47, 0x6EB3451D);
@@ -1879,7 +1878,7 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
 {
     if (pAvatar == 0)
         return 0;
-    FUN_141337560();
+    LoadRenderTarget();
     ASObj data(2);
     AvatarPC* pAvatarPC = FUN_140a535c0(((UIAvatarBase*)pAvatar)->vfunc_24());
     if (pAvatarPC != 0)
@@ -1895,22 +1894,22 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
 MS2_REPLACE_METHOD_VIA(0x1413373F0, UIPCInfoDialog, IUIAvatarEventListener, vfunc_o178_1, 350, 0xB47FD197);
 
 // @0x141337560
-void UIPCInfoDialog::FUN_141337560()
+void UIPCInfoDialog::LoadRenderTarget()
 {
     if (!m_30)
         return;
     m_30->Invoke("loadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x141337560, UIPCInfoDialog, FUN_141337560, 87, 0x2B26D966);
+MS2_REPLACE_METHOD(0x141337560, UIPCInfoDialog, LoadRenderTarget, 87, 0x2B26D966);
 
 // @0x1413375c0
-void UIPCInfoDialog::FUN_1413375c0()
+void UIPCInfoDialog::UnloadRenderTarget()
 {
     if (!m_30)
         return;
     m_30->Invoke("unloadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x1413375C0, UIPCInfoDialog, FUN_1413375c0, 87, 0x31A67606);
+MS2_REPLACE_METHOD(0x1413375C0, UIPCInfoDialog, UnloadRenderTarget, 87, 0x31A67606);
 
 // @0x141337620
 Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel, int bPercent)

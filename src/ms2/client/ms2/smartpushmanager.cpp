@@ -46,7 +46,6 @@ class Unk_SpUIMgr
 public:
     Unk_SpUIRef FUN_141adcea0(int nUiId);                       // find a UI by type id
 };
-UIObject* FUN_1403ed9e0(Unk_SpUIRef& rRef);
 
 CSmartPush* FUN_1401f7f50(CStringW strClass);                   // class factory: new object by registered name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -66,7 +65,7 @@ static UISmartPush* FindStripUI(int nUiId)
     {
         Unk_SpUIRef ref = reinterpret_cast<Unk_SpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISmartPush*>(FUN_1403ed9e0(ref));
+            return dynamic_cast<UISmartPush*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
     }
     return 0;
 }

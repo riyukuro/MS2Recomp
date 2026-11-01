@@ -17,6 +17,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // Game TinyXML element: FirstChildElement.
 class Unk_140165cf0
@@ -28,7 +33,7 @@ public:
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers.
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
@@ -70,7 +75,7 @@ static int FUN_140a0c900(Unk_140165cf0* pNode, const char* pszName, int& nOut)
         return 2;
     }
     CString str;
-    int r = FUN_1408733e0(pNode, pszName, str);
+    int r = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (r != 0)
         return r;
     nOut = FUN_140a0c890(str);
@@ -97,7 +102,7 @@ void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (strAlpha.CompareNoCase("ADD") == 0)
             m_nAlphaMode = 2;
     }
-    Unk_140165cf0* pBeam = pNode->FUN_140165cf0("beamInfo");
+    Unk_140165cf0* pBeam = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("beamInfo"));
     if (pBeam == 0)
         return;
     int nType = 0;

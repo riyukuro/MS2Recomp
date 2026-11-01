@@ -34,6 +34,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -198,7 +207,7 @@ void CMaid::Write(COutputStream* pStream)
 MS2_REPLACE_METHOD(0x14067D540, CMaid, Write, 486, 0x80E1C333);
 
 // @0x14067d730
-void CMaid::FUN_14067d730(CInPacket* pPacket)
+void CMaid::ReadFromPacket(CInPacket* pPacket)
 {
     m_n18 = pPacket->ReadInt64();
     m_nId = pPacket->ReadInt64();
@@ -218,7 +227,7 @@ void CMaid::FUN_14067d730(CInPacket* pPacket)
         m_list.Add((int)pPacket->ReadInt64());
     m_profile.Read(pPacket);
 }
-MS2_REPLACE_METHOD(0x14067D730, CMaid, FUN_14067d730, 867, 0x307ABCDA);
+MS2_REPLACE_METHOD(0x14067D730, CMaid, ReadFromPacket, 867, 0x307ABCDA);
 
 // @0x14067daa0
 int CMaid::GetRemainDays()
@@ -273,7 +282,7 @@ int CMaid::IsTime40Over(int nSeconds)
 MS2_REPLACE_METHOD(0x14067DC50, CMaid, IsTime40Over, 71, 0xB40A8361);
 
 // @0x14067dca0
-int CMaid::FUN_14067dca0()
+int CMaid::IsAffinityLevelAtMax()
 {
     int nMaxLevel = CMaidExpTable::GetInstance()->GetMaxLevel();
     int nLimit = (std::min)(*FUN_1401d3200()->MaidAffinityMax.Get(), nMaxLevel);
@@ -281,7 +290,7 @@ int CMaid::FUN_14067dca0()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14067DCA0, CMaid, FUN_14067dca0, 92, 0x3EEABB11);
+MS2_REPLACE_METHOD(0x14067DCA0, CMaid, IsAffinityLevelAtMax, 92, 0x3EEABB11);
 
 // @0x14067dd10
 int CMaid::GetMoodGrade()
@@ -359,12 +368,12 @@ int CMaidExpTable::Load()
         return 0;
     }
     int nMaxLevel = 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Exp"); pNode != 0; pNode = pNode->FUN_140168650("Exp"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Exp")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Exp")))
     {
         int nLevel = 0;
         int nExp = 0;
-        FUN_1408731e0(pNode, "Level", nLevel);
-        FUN_1408731e0(pNode, "Exp", nExp);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Level", reinterpret_cast<int&>(nLevel));
+        XmlGetAttr((class TiXmlElement*)(pNode), "Exp", reinterpret_cast<int&>(nExp));
         m_exps.SetAt(nLevel, nExp);
         if (nMaxLevel <= nLevel)
             nMaxLevel = nLevel;
@@ -420,12 +429,12 @@ int CMaidInfoTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Property"); pNode != 0; pNode = pNode->FUN_140168650("Property"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Property")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Property")))
     {
         TPtrValue<MaidInfo> spInfo(Unk_GrNewTag(0));
-        FUN_1408731e0(pNode, "MaidID", spInfo->maidId);
-        FUN_1408731e0(pNode, "RecipeGroupID", spInfo->recipeGroupId);
-        FUN_140873220(pNode, "NPCID", spInfo->npcId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "MaidID", reinterpret_cast<int&>(spInfo->maidId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "RecipeGroupID", reinterpret_cast<int&>(spInfo->recipeGroupId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "NPCID", spInfo->npcId);
         CPriceTable::GetInstance()->GetSalary(spInfo->maidId, &spInfo->salaryType, &spInfo->salary);
         m_infos.SetAt(spInfo->maidId, spInfo);
     }
@@ -470,25 +479,25 @@ int CMaidDescTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Desc"); pNode != 0; pNode = pNode->FUN_140168650("Desc"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Desc")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Desc")))
     {
         TPtrValue<MaidDesc> spDesc(Unk_GrNewTag(0));
-        FUN_1408731e0(pNode, "MaidID", spDesc->maidId);
-        FUN_140873420(pNode, "Specialty", spDesc->specialty);
-        FUN_140873420(pNode, "Title", spDesc->title);
-        FUN_140873420(pNode, "Name", spDesc->name);
-        FUN_140873420(pNode, "BirthDay", spDesc->birthDay);
-        FUN_140873420(pNode, "Constellation", spDesc->constellation);
-        FUN_140873420(pNode, "Height", spDesc->height);
-        FUN_140873420(pNode, "Weight", spDesc->weight);
-        FUN_140873420(pNode, "SpecialDetail", spDesc->specialDetail);
-        FUN_140873420(pNode, "Like", spDesc->like);
-        FUN_140873420(pNode, "Hate", spDesc->hate);
-        FUN_140873420(pNode, "Hobby", spDesc->hobby);
-        FUN_140873420(pNode, "OwnerName", spDesc->ownerName);
-        FUN_140873420(pNode, "BelongTo", spDesc->belongTo);
-        FUN_140873420(pNode, "SpecialTitle", spDesc->specialTitle);
-        FUN_140873420(pNode, "Background", spDesc->background);
+        XmlGetAttr((class TiXmlElement*)(pNode), "MaidID", reinterpret_cast<int&>(spDesc->maidId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "Specialty", spDesc->specialty);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Title", spDesc->title);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Name", spDesc->name);
+        XmlGetAttr((class TiXmlElement*)(pNode), "BirthDay", spDesc->birthDay);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Constellation", spDesc->constellation);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Height", spDesc->height);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Weight", spDesc->weight);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SpecialDetail", spDesc->specialDetail);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Like", spDesc->like);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Hate", spDesc->hate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Hobby", spDesc->hobby);
+        XmlGetAttr((class TiXmlElement*)(pNode), "OwnerName", spDesc->ownerName);
+        XmlGetAttr((class TiXmlElement*)(pNode), "BelongTo", spDesc->belongTo);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SpecialTitle", spDesc->specialTitle);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Background", spDesc->background);
         spDesc->background.Replace(L"\\n", L"\n");
         CReservedWordTable::GetInstance()->FUN_1416fb380(spDesc->background);
         m_descs.SetAt(spDesc->maidId, spDesc);
@@ -534,23 +543,23 @@ int CMaidManufactureMsgTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Message"); pNode != 0; pNode = pNode->FUN_140168650("Message"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Message")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Message")))
     {
         TPtrValue<MaidManufactureMsg> spMsg(Unk_GrNewTag(0));
-        FUN_1408731e0(pNode, "MaidID", spMsg->maidId);
-        FUN_140873420(pNode, "SelectItem", spMsg->selectItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "MaidID", reinterpret_cast<int&>(spMsg->maidId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "SelectItem", spMsg->selectItem);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->selectItem);
-        FUN_140873420(pNode, "CraftRequest", spMsg->craftRequest);
+        XmlGetAttr((class TiXmlElement*)(pNode), "CraftRequest", spMsg->craftRequest);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->craftRequest);
-        FUN_140873420(pNode, "CraftCancel", spMsg->craftCancel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "CraftCancel", spMsg->craftCancel);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->craftCancel);
-        FUN_140873420(pNode, "RecieveItem", spMsg->receiveItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "RecieveItem", spMsg->receiveItem);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->receiveItem);
-        FUN_140873420(pNode, "RecieveJackpot", spMsg->receiveJackpot);
+        XmlGetAttr((class TiXmlElement*)(pNode), "RecieveJackpot", spMsg->receiveJackpot);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->receiveJackpot);
-        FUN_140873420(pNode, "NotEnoughIgd", spMsg->notEnoughIgd);
+        XmlGetAttr((class TiXmlElement*)(pNode), "NotEnoughIgd", spMsg->notEnoughIgd);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->notEnoughIgd);
-        FUN_140873420(pNode, "Expired", spMsg->expired);
+        XmlGetAttr((class TiXmlElement*)(pNode), "Expired", spMsg->expired);
         CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->expired);
         m_msgs.SetAt(spMsg->maidId, spMsg);
     }

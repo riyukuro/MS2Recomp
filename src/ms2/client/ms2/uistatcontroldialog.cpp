@@ -357,5 +357,5 @@ void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat,
     strLabel.Format(L"[ %s ] [ %s ]", (const wchar_t*)FUN_14082f000(nStat), (const wchar_t*)strValue);
     row.FUN_1407cbb20("label", CStringW(strLabel));
     row.FUN_1409c0d20("statIdx", nStat);
-    list->FUN_1422dd230(row);
+    list->AddItem(row);
 }

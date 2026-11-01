@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x141906490-0x141906f30 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicubeugchead.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point3.h>
 #include "uicubeugchead.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asgameentity.h"
@@ -13,7 +14,7 @@
 #include "ms2/client/ms2/camera.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Vector3 DAT_143b01a60;                               // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
@@ -124,7 +125,7 @@ void UICubeUGCHead::vfunc_52()
             vfunc_8(1);
         else
             vfunc_8(0);
-        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->FUN_1422bfe00(100.0f);
+        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
         reinterpret_cast<Unk_UgcMovie*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
