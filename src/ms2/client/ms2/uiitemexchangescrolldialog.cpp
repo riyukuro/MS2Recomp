@@ -34,6 +34,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/creservedwordtable.h"   // C3: TSingleton<> needs the class
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe objects ----
 
@@ -116,13 +117,10 @@ void FUN_140b6c890(const CString& strName);                         // drop the 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 int FUN_140ad0d60(int a, int b, int nMax);                          // clamp
-CStringW FUN_1409e8970(CStringW strKey, const int& nHave, const int& nNeed);   // "have/need" text
-CStringW FUN_14042cb90(CStringW strKey, const float& v);
 CStringW FUN_140938ae0(CStringW strKey, const int* pValue);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pValue);
 CStringW FUN_1409404f0(__int64 nMeso);                              // meso text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& strText, int a, int b);          // show a notice
 void FUN_140710590(COutPacket& packet);                             // send
 void FUN_140202470(unsigned char* pRecord, COutputStream& out);     // encode an ExchangeRequest
@@ -287,9 +285,9 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
         int nNeed = nMul * nBase;
         CStringW strCount;
         if (nHave >= nNeed)
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         strText = strCount;
         slot.FUN_1407cb9c0("itemRequireCount", nBase);
         slot.FUN_1407cb9c0("itemCurrentCount", nHave);
@@ -365,9 +363,9 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
         int nNeed = nMul * nBase;
         CStringW strCount;
         if (nHave >= nNeed)
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         strText = strCount;
         param.m_nIconType = 0x405;
         slot.FUN_1407cb9c0("itemRequireCount", nBase);
@@ -481,7 +479,7 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
     if (nSale != 0)
     {
         float fRate = (float)nSale / 100.0f;
-        strSale = FUN_14042cb90(CStringW(L"s_itemslot_exchange_money_sale_desc"), fRate);
+        strSale = FUN_14028dfa0<float>(CStringW(L"s_itemslot_exchange_money_sale_desc"), fRate);
     }
     obj.FUN_1407cbb20("event", CStringW(strSale));
     m_30->Invoke("setData", obj);
@@ -575,9 +573,9 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
         int nNeed = nMake * nBase;
         CStringW strCount;
         if (nHave >= nNeed)
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         FUN_140cff1b0(spReq->FUN_1422bb870(), CString("m_name"), CStringW(strCount));
         ASObj data(spReq->FUN_1422baa20("data"), 2);
         if (!data.FUN_1422ba9a0())
@@ -673,7 +671,7 @@ void UIItemExchangeScrollDialog::FUN_140f54120(ASObj& obj, CExchangeItemInfo* pI
     obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nCount)));
     FUN_140f514c0(&pInfo->m_requireEquip, CString("recipe"), obj, 0xc, nCount, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(0));
-    CStringW strNotify = FUN_1405c2690(CStringW(L"s_itemslot_exchange_upgrade_notify"),
+    CStringW strNotify = FUN_14028dfa0<CStringW>(CStringW(L"s_itemslot_exchange_upgrade_notify"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
     ((class CReservedWordTable*)(void*)(((void*)TSingleton<CReservedWordTable>::GetInstance())))->FUN_1416fb300(strNotify);
     obj.FUN_1407cbb20("warning", FUN_14062b4f0(CStringW(L"s_itemslot_exchange_upgrade_warning"), &pInfo->m_nMaxGrade));
@@ -740,11 +738,11 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
         int nNeed = nBase * nMake;
         CStringW strCount;
         if (nHave >= nNeed)
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
         {
             bEnough = false;
-            strCount = FUN_1409e8970(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
+            strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         }
         FUN_140cff1b0(item.FUN_1422bb870(), CString("m_name"), CStringW(strCount));
     }

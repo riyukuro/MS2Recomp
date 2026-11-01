@@ -18,7 +18,6 @@ class Unk_TsWorld;
 class Unk_TsActor;                                              // the local player
    // Invoke(name)
 
-Unk_TsActor* FUN_141bd0cc0(Unk_TsWorld* pWorld);
 int FUN_141654700(Unk_TsActor* pActor);                         // job
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_141615b70(const wchar_t* szFormat, const int& nArg);
@@ -50,7 +49,7 @@ CString UITutorialSkipDialog::GetTypeName()
 void UITutorialSkipDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_TsActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance()));
+    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return;
     FUN_141923680(1);
@@ -65,7 +64,7 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    Unk_TsActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance()));
+    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return 1;
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)

@@ -49,6 +49,7 @@
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -212,7 +213,6 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
-CStringW FUN_140938ae0(CStringW strKey, const unsigned int& n);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
@@ -304,7 +304,7 @@ void UIAdventureLevelDialog::vfunc_67()
 void UIAdventureLevelDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     FUN_140ba3330();
@@ -341,7 +341,7 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 void UIAdventureLevelDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     unsigned int nId = pArgs->FUN_1422b8b10();
@@ -438,7 +438,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     float fExp = (float)DAT_143ab2958;
@@ -451,7 +451,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_abilityList");
@@ -494,7 +494,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_missionList");
@@ -510,7 +510,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         ASObj obj(2);
         obj.FUN_1409c0d20("id", it->first);
         FUN_140ba45c0(obj, it->first);
-        obj.FUN_1407cbb20("missionName", FUN_140938ae0(CStringW(L"s_adventure_level_mission_NameKey"), pMission->m_0));
+        obj.FUN_1407cbb20("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), pMission->m_0));
         obj.FUN_1407cbbe0("received", it->second.m_1c);
         obj.FUN_1407cbbe0("completed", it->second.m_18 >= pMission->m_0);
         spList->FUN_1422dd230(obj);
@@ -523,7 +523,7 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
 {
     if (m_30.IsNull())
         return 0;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return 0;
     CString strState("active");
@@ -535,7 +535,7 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
     obj.FUN_1407cba60("state", strState);
     unsigned int nOne = 1;
     obj.FUN_1409c0d20("level", (std::max)(nLevel, nOne));
-    obj.FUN_1407cbb20("levelStr", FUN_140938ae0(CStringW(L"s_adventure_level_level"), nLevel));
+    obj.FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
     return 1;
 }
 
@@ -547,7 +547,7 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
         return 0;
     if (pReward->m_0 != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
@@ -571,7 +571,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
         return 0;
     if (pReward->m_0 != 2)
         return 0;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
@@ -600,7 +600,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
         return 0;
     if (pMission->m_4 != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);

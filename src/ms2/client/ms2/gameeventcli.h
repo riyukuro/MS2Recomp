@@ -92,9 +92,9 @@ public:
     bool FUN_140ce3510();
     bool FUN_140ce35c0();
     unsigned FUN_140ce3660();
-    unsigned FUN_140ce3690();
+    unsigned GetAttendedDays();
     MS2Ptr<ItemGift> FUN_140ce3710(unsigned nDay);
-    int FUN_140ce36d0();
+    int GetUsablePoints();
     CStringW FUN_140ce37a0();
     CStringA GetDesc();
     int FUN_140ce38a0();
@@ -122,13 +122,13 @@ public:
     GameEventCashAttendCli();
     bool FUN_140ce3d90();
     bool FUN_140ce3da0();
-    unsigned FUN_140ce3e40();
-    unsigned FUN_140ce3e90();
-    int FUN_140ce3ed0();
-    CStringW FUN_140ce3f10();
+    unsigned GetDayCount();
+    unsigned GetAttendedDays();
+    int GetUsablePoints();
+    CStringW GetEventName();
     CStringW GetDesc();
-    AttendGiftDataGroupPtr FUN_140ce3fc0(unsigned nDay);
-    CMsTime FUN_140ce4050();
+    AttendGiftDataGroupPtr GetDayGroup(unsigned nDay);
+    CMsTime GetBeginTime();
     CMsTime FUN_140ce4090();
     virtual CStringW GetTypeName();
     virtual void OnStart();
@@ -151,7 +151,7 @@ class GameEventItemBuffCli : public GameEventItemBuff
 {
 public:
     GameEventItemBuffCli();
-    void FUN_140ce4580(NotifyObject* pNotify);   // the return-user buff notice
+    void ShowReturnUserBuffNotice(NotifyObject* pNotify);   // the return-user buff notice
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
@@ -211,7 +211,7 @@ class GameEventSnowmanCli : public GameEventSnowman
 {
 public:
     GameEventSnowmanCli();
-    void FUN_140ce56a0(NotifyObject* pNotify);   // the game started
+    void OnGameStarted(NotifyObject* pNotify);   // the game started
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();

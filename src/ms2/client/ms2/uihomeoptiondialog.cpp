@@ -203,7 +203,7 @@ MS2_REPLACE_METHOD(0x140FA9570, UIHomeOptionDialog, OnMessage, 549, 0xC6230034);
 void UIHomeOptionDialog::FUN_140fa97a0()
 {
     ASObj obj(2);
-    MyPC* pPC = reinterpret_cast<Unk_HoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->FUN_141523c50());
@@ -236,7 +236,7 @@ void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPass
 {
     if (static_cast<Unk_HomeOpenType>(nOpenType) != Unk_HomeOpenType::Kind1)
         strPassword = L"";
-    MyPC* pPC = reinterpret_cast<Unk_HoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
         FUN_141530720(pPC, nOpenType, CStringW(strPassword), 1);
 }

@@ -181,7 +181,6 @@ class Unk_SkillPreviewSkillManager
 public:
     Unk_SkillPreviewSkillPtr FUN_1407ee1d0(int);
 };
-WorldService* FUN_1403ed2d0();
 
 // @0x140e93690
 UISkillPreviewDialog::UISkillPreviewDialog() : m_skill(0), m_level(0) {}
@@ -318,7 +317,7 @@ MS2_REPLACE_METHOD(0x140E93E70, UISkillPreviewDialog, FUN_140e93e70, 368, 0xA3D6
 void UISkillPreviewDialog::FUN_140e93ff0()
 {
     if (m_avatar.get()) return;
-    WorldService* player = FUN_1403ed2d0();
+    WorldService* player = WorldService::GetInstance();
     if (!player) { MS2_ASSERT_AT(188, 0); return; }
     void* actor = player->FUN_141bd0cc0();
     if (!actor) { MS2_ASSERT_AT(195, 0); return; }

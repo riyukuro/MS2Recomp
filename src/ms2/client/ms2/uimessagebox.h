@@ -33,11 +33,11 @@ public:
 
     int FUN_1419f7ff0(MS2Ptr<CMsgBoxData> spData);                  // show now (replacing the current box)
     void FUN_1419f8120();                                           // close the current box
-    void FUN_1419f8170(int nResult);                                // close all
-    void FUN_1419f81f0(MS2Ptr<CMsgBoxData> spData);                 // show when idle
+    void CloseAll(int nResult);                                // close all
+    void ShowIfIdle(MS2Ptr<CMsgBoxData> spData);                 // show when idle
     int FUN_1419f8270();                                            // no box shown
     void FUN_1419f82b0(const CStringW& strText);                    // error text
-    void FUN_1419f8370(const CStringW& strText);                    // message text
+    void UpdateMessage(const CStringW& strText);                    // message text
     MS2Ptr<CMsgBoxData> FUN_1419f8470();                            // the current box
     int FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData);                  // same box (tag or callback) as the current one
     void FUN_1419f88e0(int bBlock);

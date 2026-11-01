@@ -14,6 +14,12 @@
 #include <time.h>
 #include <string>
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // Unrecovered helpers.
 CString FUN_141275640();                                                // the user data directory
@@ -114,7 +120,7 @@ void BlindManager::Load()
     if (GetFileSystem()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&document)->FUN_140165cf0("ms2");
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("blind"); pNode != 0; pNode = pNode->FUN_140168650("blind"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("blind")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
     {
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));

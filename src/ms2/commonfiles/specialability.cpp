@@ -37,11 +37,15 @@
 class Unk_140165cf0;     // game TinyXML element
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pParent, const char* pszName);      // the first child element
-Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);        // the next sibling with the name
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 
@@ -172,21 +176,21 @@ int LoadSpecialAbilityStringTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->NextSibling("key")))
     {
         CStringA strOption;
         int nId;
         int nValueType;
         int nCommonId;
         int nValueId;
-        FUN_1408731e0(pElem, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pElem), "id", nId);
         FUN_1408733e0(pElem, "option", strOption);
-        FUN_1408731e0(pElem, "valueType", nValueType);
-        FUN_1408731e0(pElem, "commonStringID", nCommonId);
-        FUN_1408731e0(pElem, "valueStringID", nValueId);
+        XmlGetAttr((class TiXmlElement*)(pElem), "valueType", nValueType);
+        XmlGetAttr((class TiXmlElement*)(pElem), "commonStringID", nCommonId);
+        XmlGetAttr((class TiXmlElement*)(pElem), "valueStringID", nValueId);
         DAT_143ab1a40[nId] = SpecialAbilityInfo(strOption, mapNames[nValueId], mapNames[nCommonId], nValueType);
     }
     mapNames.clear();
@@ -200,15 +204,15 @@ int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->NextSibling("key")))
     {
         CStringW strName;
         CStringW strUnused;
         int nId;
-        FUN_1408731e0(pElem, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pElem), "id", nId);
         FUN_140873420(pElem, "name", strName);
         mapNames[nId] = strName;
     }

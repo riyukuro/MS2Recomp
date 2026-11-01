@@ -116,7 +116,7 @@ void FUN_141842290(CStringW& str);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 int FUN_14053feb0(int nItemId);
 void FUN_141275260(int nStringId, int nA, int nB);
-void FUN_141276180(const CString& strName, const CString& strArg);
+int FUN_141276180(const CString& strName, const CString& strArg);
 void FUN_140d2cca0(unsigned nId, unsigned nRank);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* szDelim);
 void FUN_140710590(COutPacket& packet);

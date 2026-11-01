@@ -64,7 +64,7 @@ CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
 bool FUN_1418ff110(int nType, __int64 nValue, bool bFlag);
 void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt);
 int FUN_1406a6140();
@@ -773,7 +773,7 @@ void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spP
     }
     MS2Ptr<TMarketBillDataParam> spShow(spParam);
     ((UIMarketBillDialog*)pDialog)->FUN_140ea7770(spShow);
-    ((Unk_McUi*)reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance()))->FUN_141adc530(0x4f17);
+    (((CUIService*)(reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4f17)));
 }
 
 // ---- purchase condition checks ----
@@ -977,7 +977,7 @@ int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct)
 // ---- sort drop downs, UGC checks and the bill dialog start ----
 CStringW FUN_140c160b0(CStringW strFormat, const __int64& nValue);
 void FUN_140d73ff0(CStringW strText);
-void FUN_140d73bc0(int nId, int a, int b, CStringW strTag);
+void FUN_140d73bc0(int nId, int a, void* pListener, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);
 void SendRequestCubeMode66(void* pBlueprint);
 // The owner key of the local player (account id, kind, character id); the exe builds it field by field.
@@ -1215,7 +1215,7 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
     spParam->SetGift(bUgc);
     MS2Ptr<TMarketBillDataParam> spShow(spParam);
     ((UIMarketBillDialog*)pDialog)->FUN_140ea7770(spShow);
-    ((Unk_McUi*)reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance()))->FUN_141adc530(0x4f17);
+    (((CUIService*)(reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4f17)));
 }
 
 // ---- user report, category lookups, texts ----

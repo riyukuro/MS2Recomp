@@ -10,14 +10,14 @@
 
 
 // Statics of a header that several TUs include (the first group here belongs to one of them, the second to the next).
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
 static UICommon::CMyPCKeyInputController s_keyInput1;
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};

@@ -39,6 +39,13 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Sort names of the item lists (header statics of this unit).
 #ifndef MS2_HOOK_DLL
@@ -202,7 +209,7 @@ int CItemLapenshardTable::Load()
     const CString& strPart = "EquipPart";
     const CString& strMeso = "meso";
     const int nIngredients = 4;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0; pNode = pNode->FUN_140168650(strKey))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strKey)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -243,7 +250,7 @@ int CItemLapenshardTable::Load()
             CString strCountAttr = FUN_1401d2b10(strCount, strNumber);
             CStringA strValue;
             unsigned nAmount = 0;
-            if (FUN_1408733e0(pNode, strIngredientAttr, strValue) == 0)
+            if (XmlGetAttr((class TiXmlElement*)(pNode), strIngredientAttr, strValue) == 0)
             {
                 if (XmlGetAttr((class TiXmlElement*)(pNode), strCountAttr, nAmount) == 0)
                 {
@@ -264,7 +271,7 @@ int CItemLapenshardTable::Load()
             }
         }
         CStringA strParts;
-        FUN_1408733e0(pNode, strPart, strParts);
+        XmlGetAttr((class TiXmlElement*)(pNode), strPart, strParts);
         strParts.Trim();
         if (!strParts.IsEmpty())
         {

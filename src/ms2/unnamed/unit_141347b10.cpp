@@ -58,6 +58,7 @@
 #include "ms2/commonfiles/shopcategorytable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uishopdialog.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
@@ -78,8 +79,7 @@ Unk_SbShopDialog* FUN_140534780(int nUIType);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 CStringW GetStringCommon(int nId);                                 // string table lookup
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
-CStringW FUN_14062b4f0(CStringW strKey, const int& n);          // formatted string table text
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
@@ -651,7 +651,7 @@ void FUN_14134a320(ASObj& obj, const int& nTag, const __int64& nSalePrice, const
         int nPercent = (int)((nPrice - nSalePrice) * 100 / nPrice);
         if (nPercent > 0)
         {
-            CStringW strText = FUN_14062b4f0(CStringW(L"s_common_saletag_sale"), nPercent);
+            CStringW strText = FUN_14028dfa0<int>(CStringW(L"s_common_saletag_sale"), nPercent);
             obj.FUN_1407cbb20("saleTagText", strText);
         }
     }

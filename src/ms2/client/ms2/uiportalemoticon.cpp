@@ -22,7 +22,6 @@ template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                        // has the AS object been released
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
 class Unk_PeCamera { public: bool FUN_140af0700(const Vector3* pWorld, Vector3* pScreen); };
@@ -30,8 +29,12 @@ Unk_PeCamera* FUN_1409478c0();
 
 // The ui scale service: scale of a layer.
 class Unk_PeScale;
-Unk_PeScale* FUN_14025e7a0();
-float FUN_1422afec0(Unk_PeScale* pScale, int nLayer);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 
 // ASGameEntity's slots beyond ASDisplayObject's 0-5 (only slot 24, +0xc0, is used here).
 class Unk_PeEntity : public ASGameEntity
@@ -130,7 +133,7 @@ void UIPortalEmoticon::vfunc_3()
 // @0x140f9bd70
 void UIPortalEmoticon::vfunc_52()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (spEntity.get() != 0)
@@ -147,7 +150,7 @@ void UIPortalEmoticon::vfunc_52()
 void UIPortalEmoticon::vfunc_15()
 {
     UIObject::vfunc_15();
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (m_bPending != 0)
         vfunc_52();
@@ -167,7 +170,7 @@ void UIPortalEmoticon::FUN_140f9bf70()
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (spEntity.get() != 0)
             {
-                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_PeScale*)(((class Unk_PeScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
                 spEntity->FUN_1422c00f0(ptScreen.x, ptScreen.y);
             }
         }

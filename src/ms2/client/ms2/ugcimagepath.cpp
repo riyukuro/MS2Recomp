@@ -30,9 +30,7 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wid
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
 CString FUN_14028d990(const CString& strUrl);
 void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& parts, const char* pszSep);   // split
-void FUN_140165270(ATL::CAtlArray<CString>& arr, const CString& str);
-void FUN_140165320(ATL::CAtlArray<CStringW>* pArr, const CStringW& str);
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // The placeholder images of the config singleton (DAT_143aac5c0).
 class Unk_SingletonObj
@@ -63,7 +61,7 @@ public:
 
 // The client feature flags.
 class Unk_SettingsHolder;
-Unk_SettingsHolder* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 unsigned char FUN_14036d570(Unk_SettingsHolder* pHolder, int nFlag);
 
 CString FUN_141026d10(CString strPath);
@@ -304,7 +302,7 @@ CString FUN_141027d30(int nKind)
         strDir = ".\\Custom\\Download\\MeratMarket\\Banner";
         break;
     case 0xcf:
-        if (FUN_14036d570(FUN_140166410(), 0x108) != 0)
+        if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0x108) != 0)
             strDir = ".\\Custom\\Download\\MeratMarket\\Special";
         else
             strDir = ".\\Custom\\Download\\MeratMarket\\Limited";
@@ -436,7 +434,7 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
-            FUN_14052d220()->FUN_141884e30(DAT_143ab2830, 0, nId, strName, strUrl);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141884e30(DAT_143ab2830, 0, nId, strName, strUrl);
             strResult = (bNoDownload != 0) ? CString(FUN_1401d31f0()->m_strNoProfile) : FUN_141028a90(strName, 0);
         }
         else
@@ -467,7 +465,7 @@ CString FUN_1410291d0(__int64 nId, const CString& strName)
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
-            FUN_14052d220()->FUN_141884fd0(DAT_143ab2830, 0, nId, strName);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141884fd0(DAT_143ab2830, 0, nId, strName);
             strResult = FUN_1401d31f0()->m_strNoProfile;
         }
         else
@@ -497,7 +495,7 @@ CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const C
         CString strFile = FUN_1410280d0(6, strName);
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
-            FUN_14052d220()->FUN_141885090(nGuildId, strName, strUrl);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141885090(nGuildId, strName, strUrl);
             if (strDefault.GetLength() > 0)
                 strFile = strDefault;
             else
@@ -533,7 +531,7 @@ CString FUN_1410299f0(unsigned __int64 nGuildId, const CString& strName, int nIn
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
             if (bDownload)
-                FUN_14052d220()->FUN_1418851e0(nGuildId, strName, nIndex, strUrl);
+                ((class CUgcManager*)FUN_14052d220())->FUN_1418851e0(nGuildId, strName, nIndex, strUrl);
             strFile = FUN_1401d31f0()->m_strNoGuild;
         }
         else
@@ -556,8 +554,8 @@ CString FUN_141029ca0(const CString& strUrl)
     CString strFile = FUN_1410280d0(0xca, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
-        if (FUN_14052d220() != 0)
-            FUN_14052d220()->FUN_141885340(strUrl);
+        if (((class CUgcManager*)FUN_14052d220()) != 0)
+            ((class CUgcManager*)FUN_14052d220())->FUN_141885340(strUrl);
     }
     else
     {
@@ -591,12 +589,12 @@ CString FUN_14102a0b0(int nKind, const CString& strKey, const CString& strUrl, C
     CString strFile = FUN_1410280d0(nKind, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
-        if (FUN_14052d220() != 0)
+        if (((class CUgcManager*)FUN_14052d220()) != 0)
         {
             MS2Ptr<CUgcShopBannerProxy> spProxy(new CUgcShopBannerProxy);
             spProxy->m_strKey = strKey;
             spProxy->m_strEntity = strEntity;
-            FUN_14052d220()->FUN_141885570(spProxy, nKind, strUrl);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141885570(spProxy, nKind, strUrl);
         }
     }
     else
@@ -684,7 +682,7 @@ int FUN_14102ab20(const CString& strPath, ATL::CAtlArray<CString>& out)
     int nResult = FUN_14102ac40(strWide, parts);
     out.RemoveAll();
     for (unsigned i = 0; i < parts.GetCount(); i++)
-        FUN_140165270(out, FUN_1401d4330(parts[i], 0));
+        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->Add(FUN_1401d4330(parts[i], 0));
     return nResult;
 }
 
@@ -701,19 +699,19 @@ int FUN_14102ac40(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts)
     _wsplitpath_s(strPath, szDrive, 3, szDir, 0x100, szName, 0x100, szExt, 0x100);
     {
         CStringW strDrive(szDrive);
-        FUN_140165320(&parts, strDrive);
+        ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(void*)(&parts))->Add(strDrive);
     }
     {
         CStringW strDir(szDir);
-        FUN_140165320(&parts, strDir);
+        ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(void*)(&parts))->Add(strDir);
     }
     {
         CStringW strName(szName);
-        FUN_140165320(&parts, strName);
+        ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(void*)(&parts))->Add(strName);
     }
     {
         CStringW strExt(szExt);
-        FUN_140165320(&parts, strExt);
+        ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)(void*)(&parts))->Add(strExt);
     }
     return 0;
 }

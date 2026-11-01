@@ -18,11 +18,9 @@
 
 // Unrecovered helpers (same ones the other xml table units use).
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const*);
-bool FUN_140184310(const CString& str, const char* psz);                  // str == psz
 
 // The game's TinyXML element / declaration (constructed through new, which null-checks the allocation as the exe does);
 // its writers in free-function form (`this` first): InsertEndChild,
@@ -36,9 +34,9 @@ public:
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);
-void FUN_140873bc0(void* pElem, const char* pszName, bool bValue);
-void FUN_140873e30(void* pElem, const char* pszName, float fValue);
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
+void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140874ad0(void* pElem, const char* pszName, const Unk_DummyVec3& kValue);
 bool FUN_1408710c0(void* pDoc, const char* pszPath);
 
@@ -59,12 +57,12 @@ int CPCEffectDummy::Load()
 int CPCEffectDummy::LoadFile(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", &pszPath);
+        FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", &pszPath);
         return 0;
     }
     Unk_140165cf0* pGroup = pRoot->FUN_140165cf0("effectdummy");
@@ -90,7 +88,7 @@ int CPCEffectDummy::Find(const char* pszName, CEffectDummy& kOut)
     {
         for (std::vector<CEffectDummy>::iterator itRow = it->second.begin(); itRow != it->second.end(); ++itRow)
         {
-            if (FUN_140184310(itRow->GetName(), pszName))
+            if ((itRow->GetName() == pszName))
             {
                 kOut = *itRow;
                 return 1;
@@ -140,17 +138,17 @@ int CPCEffectDummy::Save(const char* pszPath)
             pDummy = new TiXmlElement("dummy");
             ((void*)((class TiXmlNode*)(void*)(pGroup))->LinkEndChild((class TiXmlNode*)(pDummy)));
             FUN_140874050(pDummy, "name", itRow->GetName());
-            FUN_140873ca0(pDummy, "gender", it->first);
+            XmlSetAttr((class TiXmlElement*)(pDummy), "gender", it->first);
             void* pAttach = new TiXmlElement("attachInfo");
             ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pAttach)));
             void* pTransform = new TiXmlElement("transform");
             ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pTransform)));
             FUN_140874050(pAttach, "parentNode", itRow->GetParentNode());
-            FUN_140873bc0(pAttach, "applyWorldTransform", itRow->m_bApplyWorldTransform);
-            FUN_140873bc0(pAttach, "applyLocalScale", itRow->m_bApplyLocalScale);
+            XmlSetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", itRow->m_bApplyWorldTransform);
+            XmlSetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", itRow->m_bApplyLocalScale);
             FUN_140874ad0(pTransform, "translate", itRow->GetTranslate());
             FUN_140874ad0(pTransform, "rotation", itRow->m_vRotation);
-            FUN_140873e30(pTransform, "scale", itRow->m_fScale);
+            XmlSetAttr((class TiXmlElement*)(pTransform), "scale", itRow->m_fScale);
         }
     }
     return FUN_1408710c0(&doc, pszPath);

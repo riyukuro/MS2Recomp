@@ -127,6 +127,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 __int64 FUN_141656ad0(PCBase* pPlayer);                                 // the character id
@@ -743,7 +744,7 @@ MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E
 // @0x141b2d870
 void UITriggerEditorDialog::FUN_141b2d870()
 {
-    PCBase* pPlayer = ((class Unk_TeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_30 == 0)
@@ -904,7 +905,7 @@ MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, FUN_141b2dd80, 5046, 0xB0
 // @0x141b2f140
 void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
 {
-    PCBase* pPlayer = ((class Unk_TeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_30 == 0)

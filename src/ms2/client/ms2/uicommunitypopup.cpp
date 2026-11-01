@@ -47,11 +47,11 @@ public: virtual void vfunc_2(int,int,int);
 CMainSystem* FUN_14086d260();
 __int64 GetServerTime();
 class UIWebBrowserPopup : public UIWebBrowserBase { };
-class Unk_PopupUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_PopupUIManager { public: };
 // @0x140beafe0
 UIWebBrowserPopup* FUN_140beafe0(int id) {
     if (reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> obj = reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
         if (obj.get())
             return dynamic_cast<UIWebBrowserPopup*>((UIObject*)obj);
     }

@@ -73,6 +73,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- statics of the unit's headers (dynamic initializers 0x1400e18a0..) ----
 
@@ -118,8 +119,6 @@ InvenSlot* FUN_140a50b50(DragSlot* p);                          // the inventory
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text (the callee destroys the key)
-CStringW FUN_140938ae0(CStringW strKey, const unsigned& nArg);  // localized text with one number
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // localized text with one number
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);    // "{0}" formatting of a narrow key
 bool FUN_140811640(int nKind);                                  // the first use is paid with red merat
 int FUN_1413499b0(int nTab);                                    // open the shop on a tab
@@ -277,7 +276,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoFishing>();
                         if (!spPush || !spPush->m_data)
                             return 1;
-                        CStringW strText = FUN_140938ae0(CStringW(L"s_msg_autofishing_extend_showcurrentduration_desc"),
+                        CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_autofishing_extend_showcurrentduration_desc"),
                             *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
                         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
                         if (spBox.get())
@@ -329,7 +328,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
                     if (!spPush || !spPush->m_data)
                         return 1;
-                    CStringW strText = FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_showcurrentduration_desc"),
+                    CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_auto_play_instrument_extend_showcurrentduration_desc"),
                         *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
                     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
                     if (spBox.get())
@@ -374,12 +373,12 @@ void UISystemShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (m_nMode == 4)
     {
         int nCount = CFishingManager::GetInstance()->GetAutoCount();
-        strTip = FUN_14062b4f0(CStringW(L"s_system_shop_autofishing_icon_tooltip"), nCount);
+        strTip = FUN_14028dfa0<int>(CStringW(L"s_system_shop_autofishing_icon_tooltip"), nCount);
     }
     else if (m_nMode == 5)
     {
         unsigned nCount = CInstrumentManager::GetInstance()->GetVolume();
-        strTip = FUN_140938ae0(CStringW(L"s_system_shop_play_instrument_icon_tooltip"), nCount);
+        strTip = FUN_14028dfa0<unsigned int>(CStringW(L"s_system_shop_play_instrument_icon_tooltip"), nCount);
     }
     if (strTip.IsEmpty())
         return;

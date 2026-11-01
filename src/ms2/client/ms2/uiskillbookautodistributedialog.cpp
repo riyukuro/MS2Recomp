@@ -94,6 +94,9 @@
 #include "ms2/client/ms2/skilltieroptionmanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
+#include "ms2/client/ms2/uiservice.h"  // C3: was a local member view
+#include "ms2/placeholder/cquestmanagercommon.h"  // C3: was a local member view
 
 // ---- header statics (dynamic initializers 0x1400dc6d0..0x1400dc9e0; the same pair as uiarcademaindialog.cpp) ----
 #ifndef MS2_HOOK_DLL
@@ -113,11 +116,6 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 // The local player and the world (FUN_1403ed2d0 -> FUN_141bd0cc0).
 class Unk_SkillField;
 class Unk_SkillWorld { public: MyPC* FUN_141bd0cc0(); MS2Ptr<Unk_SkillField> FUN_141bd30a0(); };
-class WorldService   // C3: member view for the former free stand-ins
-{
-public:
-    static class WorldService* GetInstance();
-};
 
 // The three "m_distribute{N}" buttons.
 class Unk_140acd6e0 : public ASDisplayObject
@@ -155,7 +153,6 @@ public:
 
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);                // equals
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);        // format one argument
 CString FUN_14052ea30(const char* szFormat, const int* pn);                 // format one int
 void FUN_140d73aa0(CStringW text, int type, void* pListener, CStringW tag); // open a message box that reports to pListener
 class UISkillBookTreeDialog* FUN_1409eb120(int);   // C3: was FUN_1409eb120
@@ -218,7 +215,7 @@ int UISkillBookAutoDistributeDialog::vfunc_28(const char* szMethod, const Scalef
             m_nSelected = data.FUN_1422b8a10() - 1;
             if (m_names.GetCount() > m_nSelected)
             {
-                CStringW strText = FUN_1405c2690(L"s_msg_skillbook_auto_distribute_msgbox", GetStringCommonByKey(m_names[m_nSelected]));
+                CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_skillbook_auto_distribute_msgbox", GetStringCommonByKey(m_names[m_nSelected]));
                 FUN_140d73aa0(strText, 1, static_cast<IMessageListener*>(this), L"onDistribute");
             }
         }
@@ -264,7 +261,7 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
 {
     if (m_30.IsNull())
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nShown = 0;
@@ -425,15 +422,9 @@ CStringW BlockFormat(int nId);                                              // c
 CStringW FUN_140a228f0(int nId, const wchar_t* sz, const CStringW& str);   // format a text
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);                // notice
 void FUN_1412751b0(const CStringW& strText, int nType);                     // toast
-void FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
+int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
 void FUN_140a36d00(CString& strPrefix);                                     // clear the slot list of the movie
 void FUN_140a36c30(CString& strPrefix, std::vector<JobSkillPtr>& skills);   // fill it
-class CUIService   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141add1f0();
-};
-void* FUN_1403ed2b0();                                                      // the UI manager (Unk_SkillUIManager)
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class Unk_LsHud   // C3: member view for the former free stand-ins
 {
@@ -441,8 +432,8 @@ public:
     int GetPage();
 };
 void FUN_14092fac0(int nSkillId, int nA, int nB, int nPage);                // register a shortcut
-void FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // create a message box
+int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
 unsigned short FUN_1406438e0(JobSkillData* pData, unsigned short nLevel);
 
@@ -486,12 +477,12 @@ class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_SkillCoupon : public CPtred {};
 class Unk_SkillInventory { public: MS2Ptr<Unk_SkillCoupon> FUN_140a5e040(int nItemId); };
 extern Unk_SkillInventory DAT_143ab2a90;
-class Unk_SkillUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); void FUN_141adc750(int nClass); };
+class Unk_SkillUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId);  };
 template <class T> T* Unk_SkillDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (((void*)TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> sp = static_cast<Unk_SkillUIManager*>(FUN_1403ed2b0())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> sp = static_cast<Unk_SkillUIManager*>(((void*)TSingleton<CUIService>::GetInstance()))->FUN_141adcea0(nId);
         if (sp.get())
             return dynamic_cast<T*>((UIObject*)sp);
     }
@@ -502,11 +493,6 @@ CStringW FUN_1418fe870(int nType, int* pnValue, int nFlag);                 // m
 __int64 FUN_140718370(const CStringW& str);                                 // the uid in the text
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);  // pOut = v
 char* FUN_141523ba0(MyPC* pPlayer);                                         // the quest data of a PC
-class CQuestManagerCommon   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140745590(int);
-};
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pnOut);   // job code attribute
@@ -575,7 +561,7 @@ int UISkillBookTreeDialog::vfunc_65()
 // @0x140ec5340
 void UISkillBookTreeDialog::vfunc_67()
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->RequestReset();
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
@@ -650,7 +636,7 @@ void UISkillBookTreeDialog::SelectTab(__int64 nTabId)
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(nTabId);
     if (spTab == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     MS2Ptr<CSkillPointSimulator> spSim(0);
@@ -671,7 +657,7 @@ int UISkillBookTreeDialog::HasPendingChanges()
 {
     if (m_spSimulator == 0)
         return 0;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (IsCurrentTab(m_nShownTabId))
@@ -682,7 +668,7 @@ int UISkillBookTreeDialog::HasPendingChanges()
 // @0x140ecd4b0
 int UISkillBookTreeDialog::CanApply()
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (pPlayer->vfunc_65() != 0)
@@ -734,7 +720,7 @@ void UISkillBookTreeDialog::RefreshJob()
 {
     if (m_30 == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nJob = pPlayer->FUN_141654700();
@@ -809,7 +795,7 @@ void UISkillBookTreeDialog::RefreshSlots(int bKeep)
 {
     if (m_30 == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_spSimulator == 0)
@@ -848,7 +834,7 @@ void UISkillBookTreeDialog::RefreshSlots(int bKeep)
 // @0x140ece8b0
 __int64 UISkillBookTreeDialog::AddTab(const CStringW& strName, int bFree)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CSkillBookTreeTabConfig> spTab(new CSkillBookTreeTabConfig);
@@ -878,7 +864,7 @@ void UISkillBookTreeDialog::LoadTab(MS2Ptr<CSkillBookTreeTabConfig> spTab)
 {
     if (spTab == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     std::vector<JobSkillPtr> skills;
@@ -902,7 +888,7 @@ void UISkillBookTreeDialog::LoadTab(MS2Ptr<CSkillBookTreeTabConfig> spTab)
 // @0x140ecef10
 void UISkillBookTreeDialog::RefreshTabs(__int64 nTabId)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(nTabId);
@@ -1096,7 +1082,7 @@ bool UISkillBookTreeDialog::OnApplyTabConfirm(int nResult, const CMsgBoxData& bo
         m_nTabId = spTab->m_nId;
         RequestTree(0, 1, 0);
         RequestJob(0, 1, 0);
-        FUN_1412751f0(FUN_1405c2690(L"s_skillbook_tree_config_apply_tab", spTab->m_strName), 1, 1);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_skillbook_tree_config_apply_tab", spTab->m_strName), 1, 1);
     }
     FUN_14151f200();
     return true;
@@ -1176,7 +1162,7 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
             bEnough = 1;
         if (!bHasCoupon && !bEnough)
         {
-            ((class CUIService*)(void*)(FUN_1403ed2b0()))->FUN_141add1f0();
+            ((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
             return true;
         }
         COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
@@ -1242,7 +1228,7 @@ void UISkillBookTreeDialog::PromptChangeTab()
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
     if (spTab == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(L"s_skillbook_tree_config_change_tab", spTab->m_strName), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028dfa0<CStringW>(L"s_skillbook_tree_config_change_tab", spTab->m_strName), 0, L"");
     spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnApplyTabConfirm));
     FUN_140d73c60(spBox);
 }
@@ -1254,7 +1240,7 @@ void UISkillBookTreeDialog::RequestJob(int bConfirm, int bAll, int nRank)
         return;
     if (CanApply() == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     unsigned nBadSkill = 0;
@@ -1314,7 +1300,7 @@ void UISkillBookTreeDialog::PromptReset()
     MS2Ptr<CMsgBoxData> spBox(0);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xca))
     {
-        MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         int nLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
@@ -1343,7 +1329,7 @@ void UISkillBookTreeDialog::PromptReset()
 // @0x140ec8280
 void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_spSimulator == 0)
@@ -1392,7 +1378,7 @@ void UISkillBookTreeDialog::ApplyAutoDistribute()
         return;
     if (CheckApply(true) == 1)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     TPtrValue<AutoDistributeArray> spList(0);
@@ -1441,7 +1427,7 @@ void UISkillBookTreeDialog::SkillPointDown(int nSkillId)
     unsigned nBadSkill = 0;
     if (m_spSimulator->LevelDown(nSkillId, &nBadSkill) == 0)
     {
-        FUN_1412751f0(FUN_1405c2690(L"s_msg_skillbook_require_learn_skill", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nBadSkill)), 1, 1);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_msg_skillbook_require_learn_skill", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nBadSkill)), 1, 1);
     }
     else
     {
@@ -1465,7 +1451,7 @@ void UISkillBookTreeDialog::RequireSkillEffect(int nSkillId, int bFlag)
         return;
     if (m_spSimulator->CanLevelUp(nSkillId) != 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     JobDataPtr spJob = ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->GetJobData();
@@ -1497,7 +1483,7 @@ void UISkillBookTreeDialog::RequireSkillEffect(int nSkillId, int bFlag)
 // @0x140ec8720
 void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     unsigned nBase = JobSystem::GetLevelSkillPoint(pPlayer->vfunc_78(), m_nJobLevel);
@@ -1537,7 +1523,7 @@ void UISkillBookTreeDialog::RefreshRemainPoint()
         return;
     if (m_spSimulator == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nRemain = m_spSimulator->GetRemainPoints(m_nJobLevel);
@@ -1675,7 +1661,7 @@ void UISkillBookTreeDialog::RefreshJobSkills(int nJobCode)
 // @0x140ecd7e0
 bool UISkillBookTreeDialog::IsChangedSkill(MS2Ptr<JobSkill> spSkill)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     JobSkillPtr spCurrent = ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->FindSkill(spSkill->GetID());
@@ -1691,7 +1677,7 @@ bool UISkillBookTreeDialog::IsChangedSkill(MS2Ptr<JobSkill> spSkill)
 // @0x140ece040
 bool UISkillBookTreeDialog::IsLearnable(MS2Ptr<JobSkill> spSkill)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (spSkill == 0)
@@ -1709,7 +1695,7 @@ bool UISkillBookTreeDialog::IsLearnable(MS2Ptr<JobSkill> spSkill)
 // @0x140ece160
 bool UISkillBookTreeDialog::IsDisabled(MS2Ptr<JobSkill> spSkill)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (spSkill == 0)
@@ -1727,7 +1713,7 @@ bool UISkillBookTreeDialog::IsDisabled(MS2Ptr<JobSkill> spSkill)
 // @0x140ecdd90
 unsigned short UISkillBookTreeDialog::GetLevelValue(MS2Ptr<JobSkill> spSkill)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (spSkill == 0)
@@ -1749,7 +1735,7 @@ unsigned short UISkillBookTreeDialog::GetLevelValue(MS2Ptr<JobSkill> spSkill)
 // @0x140ecd960
 CStringW UISkillBookTreeDialog::GetLevelText(MS2Ptr<JobSkill> spSkill)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return static_cast<const wchar_t*>(NULL);
     unsigned short nLevel = GetLevelValue(spSkill);
@@ -1778,7 +1764,7 @@ CStringW UISkillBookTreeDialog::GetLevelText(MS2Ptr<JobSkill> spSkill)
 // @0x140ece300
 int UISkillBookTreeDialog::FillSkill(MS2Ptr<JobSkill> spSkill, ASObj& info)
 {
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (spSkill == 0)
@@ -1819,7 +1805,7 @@ void UISkillBookTreeDialog::RefreshAll()
         return;
     if (m_spSimulator == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     m_30->Invoke("resetSkillTree");
@@ -1849,7 +1835,7 @@ void UISkillBookTreeDialog::RefreshTree()
         return;
     if (m_spSimulator == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     CSkillPointSimulator::SkillMap& skills = m_spSimulator->GetEditSkills();
@@ -1887,7 +1873,7 @@ bool UISkillBookTreeDialog::CanLevelUp(int nSkillId, unsigned short nLevel, int 
 {
     if (bCheck == 0)
         return false;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     MS2Ptr<SkillData> spData = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
@@ -1903,7 +1889,7 @@ bool UISkillBookTreeDialog::CanLearn(int nSkillId, unsigned short nLevel, int bC
 {
     if (nLevel > 1)
         return false;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->vfunc_2(nSkillId))
@@ -1916,7 +1902,7 @@ bool UISkillBookTreeDialog::CanReachLevel(int nSkillId, unsigned short nLevel, i
 {
     if (bCheck == 0)
         return false;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     JobDataPtr spJob = ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->GetJobData();
@@ -2020,7 +2006,7 @@ void UISkillBookTreeDialog::OnLoadComplete()
     FUN_1419260d0("m_webGuideButton", 0);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xca))
     {
-        MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
             m_nJobLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
     }
@@ -2122,7 +2108,7 @@ void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
         return;
     if (m_spSimulator == 0)
         return;
-    MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (_stricmp("getTooltipFromSkillID", strMethod) == 0)
@@ -2196,7 +2182,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             return 0;
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xca))
         {
-            MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 0;
             MS2Ptr<CMsgBoxData> spBox(0);
@@ -2347,7 +2333,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nJob = dataJob.FUN_1422b8a10() + 1;
             if (nJob == m_nJobLevel)
                 return 1;
-            MyPC* pPlayer = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 0;
             int nMax = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
@@ -2364,7 +2350,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp(szMethod, "onLapenshardBtn") == 0)
     {
-        static_cast<Unk_SkillUIManager*>(FUN_1403ed2b0())->FUN_141adc750(0x4f6d);
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4f6d));
     }
     return 0;
 }

@@ -160,6 +160,13 @@ unsigned* FUN_1401844d0(ATL::CAtlArray<unsigned>& arr, size_t nIndex);          
 unsigned FUN_140767ff0();                                                             // random number
 
 #include <typeinfo>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -219,7 +226,7 @@ int FUN_14035baa0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     }
     int nRet;
     CStringA str;
-    nRet = FUN_1408733e0(pElem, pszName, str);
+    nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     *pOut = FUN_14035b710(str);
@@ -236,7 +243,7 @@ int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOu
     }
     int nRet;
     CStringA str;
-    nRet = FUN_1408733e0(pElem, pszName, str);
+    nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     *pOut = FUN_14021a480(str);
@@ -253,7 +260,7 @@ int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* p
     }
     int nRet;
     CStringA str;
-    nRet = FUN_1408733e0(pElem, pszName, str);
+    nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     *pOut = FUN_14021a330(str);
@@ -398,7 +405,7 @@ int CFamePickMethod::Read(Unk_140165cf0* pElem)
     FUN_14035ba10(pElem, "repeatType", &m_nRepeatType);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnAccept", m_nReloadOnAccept);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnComplete", m_nReloadOnComplete);
-    for (Unk_140165cf0* pNode = pElem->FUN_140165cf0("alliance"); pNode != 0; pNode = pNode->FUN_140168650("alliance"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("alliance")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("alliance")))
     {
         AlliancePtr spAlliance(new CFamePickAlliance);
         if (spAlliance->Read(pNode) != 0)
@@ -431,7 +438,7 @@ int CFameDef::Read(Unk_140165cf0* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
     XmlGetAttr((class TiXmlElement*)(pElem), "officerNpcKind", m_nOfficerNpcKind);
-    FUN_1408733e0(pElem, "symbol", m_strSymbol);
+    XmlGetAttr((class TiXmlElement*)(pElem), "symbol", m_strSymbol);
     XmlGetAttr((class TiXmlElement*)(pElem), "isExped", m_nIsExped);
     FUN_1401d3700(m_strSymbol);
     FUN_14035bb60(pElem, "season", &m_nSeason);
@@ -454,7 +461,7 @@ int CFameSeasonDef::Read(Unk_140165cf0* pElem)
     FUN_14035bb60(pElem, "name", &m_nSeason);
     XmlGetAttr((class TiXmlElement*)(pElem), "requireQuest", m_nRequireQuest);
     XmlGetAttr((class TiXmlElement*)(pElem), "requireLv", m_nRequireLv);
-    FUN_1408733e0(pElem, "limitNpcScriptTag", m_strLimitNpcScriptTag);
+    XmlGetAttr((class TiXmlElement*)(pElem), "limitNpcScriptTag", m_strLimitNpcScriptTag);
     return 1;
 }
 
@@ -501,7 +508,7 @@ int CFameTable::LoadFame()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -528,7 +535,7 @@ int CFameTable::LoadFameLog()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -553,7 +560,7 @@ int CFameTable::LoadFameLimit()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -584,7 +591,7 @@ int CFameTable::LoadPickMethod()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pEnv->FUN_140165cf0("method"); pNode != 0; pNode = pNode->FUN_140168650("method"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEnv))->FirstChild("method")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("method")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -613,7 +620,7 @@ int CFameTable::LoadFameDef()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pSeason = pRoot->FUN_140165cf0("season"); pSeason != 0; pSeason = pSeason->FUN_140168650("season"))
+    for (Unk_140165cf0* pSeason = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pSeason != 0; pSeason = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSeason))->NextSibling("season")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSeason)))
             continue;
@@ -621,7 +628,7 @@ int CFameTable::LoadFameDef()
         if (spSeason->Read(pSeason) == 0)
             continue;
         m_mapSeason.SetAt(spSeason->m_nSeason, spSeason);
-        for (Unk_140165cf0* pNode = pSeason->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSeason))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
         {
             DefPtr spDef(new CFameDef);
             if (spDef->Read(pNode) == 0)

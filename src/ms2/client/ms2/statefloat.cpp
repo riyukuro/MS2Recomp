@@ -24,7 +24,7 @@ public:
 };
 
 float FUN_1410a7600(PCBase* p);                                           // 0x1410a7600 vertical velocity (PCBase +0xbf0)
-void FUN_1410a77e0(PCBase* p, float f);                                   // 0x1410a77e0 store the vertical velocity
+void FUN_1410a77e0(class CGuideObject*, float);   // C3: was FUN_1410a77e0
 bool FUN_14028d470(float a, float b);                                     // 0x14028d470 approx equal
 float FUN_14029d430(float fX, float fY);                                  // 0x14029d430 fmodf
 float FUN_14029d220(float fValue);                                        // 0x14029d220 fabsf
@@ -147,7 +147,7 @@ Vector3 StateFloat::FUN_1417c85d0(Vector3 kMove, double fTime)
         float fDelta = (float)((double)fVel * fTime);
         kMove.z = kMove.z + FUN_140805fc0(fDelta, fMin);
     }
-    FUN_1410a77e0(m_pOwner, fVel);
+    FUN_1410a77e0((class CGuideObject*)(m_pOwner), fVel);
     return kMove;
 }
 MS2_REPLACE_METHOD(0x1417C85D0, StateFloat, FUN_1417c85d0, 734, 0x741C31B6);

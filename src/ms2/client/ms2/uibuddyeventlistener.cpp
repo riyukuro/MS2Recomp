@@ -172,7 +172,6 @@ public:
 void FUN_140ac5dd0(void* pMap, void** pos);                     // GetNext
 
 // The UI manager and the dialog finder.
-class Unk_BdUIManager { public: void FUN_141adc530(int nUiId); };
 class UICommunityQueryDialog* FUN_140ae5a30(int);   // C3: was FUN_140ae5a30
 
 // The popup menu on a character (UI id 0x4e39) and its parameter block (as in uipartysearchdialog.cpp).
@@ -217,7 +216,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);
 void FUN_141275260(int nId, int a, int b);
 void FUN_140961010(int nId, int a, int b, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);
-void FUN_141276180(const CString& strSound, const CString& strExtra);
+int FUN_141276180(const CString& strSound, const CString& strExtra);
 int FUN_141276c80(const CStringW& str, bool bCheckSelf, CStringW& strOut);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 void FUN_14151f200();
@@ -245,14 +244,7 @@ void FUN_1422dc3b0(UICommunityDialog* pDialog, int nBigList);   // the list mode
 CString FUN_141028a90(CString str, int n);                      // an image path
 
 // The UI message posted to the query dialog (ASData + type, 0x50 bytes).
-class Unk_BdUIMsg : public UIMsg
-{
-public:
-    Unk_BdUIMsg();                                              // 0x1422e4490
-    ~Unk_BdUIMsg();                                             // 0x140c30570
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_BdUIMsg;
 
 #ifndef MS2_HOOK_DLL
 extern template class MS2Ptr<CBanTextChecker>;
@@ -1734,7 +1726,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 return 1;
             if (vfunc_55() != 0)
             {
-                reinterpret_cast<Unk_BdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
+                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(vfunc_48())));
                 return 1;
             }
         }

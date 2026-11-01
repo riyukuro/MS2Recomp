@@ -13,9 +13,9 @@
 #include "hook/ms2hook.h"
 #include <algorithm>
 
-int FUN_140869420();                                                    // server time (seconds, low 32 bits)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140768010(int nRange, int nBase);                               // random number in [nBase, nBase + nRange)
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const int* pValue);   // index of the value, -1 if absent
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410); C3: was FUN_140408410
 
 // @0x140743430
 CPvPInfo::CPvPInfo()
@@ -117,7 +117,7 @@ void CPvPInfo::FUN_140743840(int nDelta)
     m_nWin += nDelta;
     m_nWin = (std::max)(m_nWin, 0);
     if (m_nStartTime == 0)
-        m_nStartTime = FUN_140869420();
+        m_nStartTime = GetTickCountMs2();
 }
 
 // @0x1407438b0
@@ -274,7 +274,7 @@ int CQuestCommon::FUN_1407443e0(int field)
         DungeonRoomPtr spRoom = DungeonRoomTable::GetInstance()->GetRoom((unsigned)nRoomId);
         if (spRoom.operator==(0))
             return 0;
-        if (FUN_140408410(&spRoom->m_fieldIDs, &field) != -1)
+        if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spRoom->m_fieldIDs), field) != -1)
             return 0;
     }
     if (nKind == 1)

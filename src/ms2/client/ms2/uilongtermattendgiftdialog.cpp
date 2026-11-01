@@ -42,6 +42,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -223,7 +224,6 @@ void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned int& n);
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_14086bd40(CMsTime a, CMsTime b);
 const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
@@ -231,7 +231,6 @@ CString FUN_14016a600(const wchar_t*, int);             // narrow copy of a wide
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 int FUN_1402bacf0(ATL::CAtlArray<int>&, const unsigned int&);
 void FUN_140710590(COutPacket&);
-bool FUN_140184310(const CString&, const char*);
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -346,7 +345,7 @@ int UILongTermAttendGiftDialog::vfunc_13()
 void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(result, method, args);
-    if (FUN_140184310(method, "getTooltipItem")) {
+    if ((method == "getTooltipItem")) {
         int id = args->FUN_1422b8b10();
         int rank = args->FUN_1422b8b10();
         void* owner = reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -361,9 +360,9 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
             if (tooltip.FUN_1409e0d40(item))
                 *result = tooltip.FUN_1422bb870();
         }
-    } else if (FUN_140184310(method, "getTooltip")) {
+    } else if ((method == "getTooltip")) {
         CString name = args->FUN_1422b8d30();
-        if (FUN_140184310(name, "m_infoIcon")) {
+        if ((name == "m_infoIcon")) {
             CStringW text = GetStringCommonByKey(L"s_longtermattendgift_dialog_desc");
             ASTooltip tooltip(1, 2);
             tooltip.FUN_1409c6dc0(1);
@@ -486,7 +485,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
     CStringW strPoint = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nAttendPoint);
     CStringW strDays = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nCatchUp);
     ASObj info(2);
-    info.FUN_1407cbb20("title", FUN_1408f71a0(m_178->m_title, FUN_14083bab0(m_178->m_start, L"."), FUN_14083bab0(m_178->m_end, L".")));
+    info.FUN_1407cbb20("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_start, L"."), FUN_14083bab0(m_178->m_end, L".")));
     info.FUN_1407cbb20("curAttendancePoint", strPoint);
     info.FUN_1407cbb20("possibleAttendanceDays", strDays);
     info.FUN_1407cbbe0("enableAttendance", nPossible < m_178->m_days);

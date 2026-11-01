@@ -30,6 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -55,12 +56,9 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 class ASDialog : public ASDisplayObject {};
 
 // The ugc home state of the player (the cube map information service).
-class Unk_UhpHome
+class Unk_UhpHome : public CubeMapInformationService
 {
 public:
-    bool FUN_1410c35c0();                                       // the reward was already taken
-    int FUN_1410c3470();                                        // the area step
-    int FUN_1410c34b0();                                        // the height step
     bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);   // installed objects of a kind
     __int64 FUN_1410d4fa0();                                    // the housing points
     __int64 FUN_1410d50c0();                                    // the housing point maximum
@@ -94,9 +92,7 @@ int FUN_141659690(Unk_UhpPc* pPc);
 class Unk_UhpUIService
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // the dialog object
     int FUN_141adc940(int nId);                                 // the dialog is closed
-    void FUN_141adc5d0(int nId);                                // open (toggle)
     void FUN_141adc530(int nId);                                // close
 };
 
@@ -141,7 +137,7 @@ template <class T> T* GetUIDialog(int nId)
 {
     if (reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -233,9 +229,9 @@ int UIUGCHousingPointDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             UIMasteryDialog* pDialog = GetUIDialog<UIMasteryDialog>(0x4f1e);
             if (pDialog != 0)
                 reinterpret_cast<UIMasteryDialog*>(pDialog)->SetMainTab(2, 8);
-            reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f1e);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f1e)));
         } else {
-            reinterpret_cast<Unk_UhpUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f1e);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f1e);
         }
         return 1;
     }
@@ -405,3 +401,4 @@ bool UIUGCHousingPointDialog::CanReceiveReward()
     return false;
 }
 MS2_REPLACE_METHOD(0x140FAF0C0, UIUGCHousingPointDialog, CanReceiveReward, 107, 0xB307293C);
+// MS2-PIN: ??__Es_handle@@YAXXZ 0x1400e1ee0 ; the cube map information service header brings a look-alike initializer

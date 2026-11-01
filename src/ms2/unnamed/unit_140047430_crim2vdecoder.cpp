@@ -14,12 +14,12 @@ unsigned long long FUN_140053000(const unsigned char* pHeader);                 
 struct Unk_M2vCtx;
 void FUN_1400544e0(Unk_M2vCtx* pCtx);
 void FUN_1400540d0(Unk_M2vCtx* pCtx);
-void FUN_14005af20();
+void M2VERR_Init();
 void FUN_1400544b0();
-void FUN_14005aea0();
+void M2VVLC_Init();
 void thunk_FUN_140054080();                             // 0x140054200, a jmp to FUN_140054080 (sfr_cri_06a)
-void FUN_140059290();
-void FUN_140059090();
+void M2VAPRD_Init();
+void M2VAMC_Init();
 void FUN_14005af30(int nA, unsigned int uError);
 void FUN_14005af70();
 void FUN_14005afd0();
@@ -301,12 +301,12 @@ int FUN_140047750(Unk_M2vCtx* pCtx)
 void FUN_140047770(int nUnits, unsigned char* pMem, unsigned long long uSize)
 {
     DAT_143ba9d68 = "\nCRI M2V/PCx64 Ver.2.076 Build:Jan 13 2012 18:29:31\n";
-    FUN_14005af20();
+    M2VERR_Init();
     FUN_1400544b0();
-    FUN_14005aea0();
+    M2VVLC_Init();
     thunk_FUN_140054080();
-    FUN_140059290();
-    FUN_140059090();
+    M2VAPRD_Init();
+    M2VAMC_Init();
     FUN_140047510(nUnits, pMem, uSize);
     FUN_1400474d0();
 }

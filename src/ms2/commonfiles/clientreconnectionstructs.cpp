@@ -12,7 +12,11 @@
 #include "hook/ms2hook.h"
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 
-void FUN_141267410(CGameSocket* pSocket, COutPacket& packet);     // CGameSocket::Send (client\ms2\gamesocket.cpp)
+class CGameSocket   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141267410(class COutPacket&);
+};
 
 // Logger singleton: Log*(account, character, category, format, args...) forwards to CLogString::FUN_140653550 / 690.
 class Unk_CrsLog : public CLogString {
@@ -71,11 +75,11 @@ void COutPacketBuffer::FUN_140208960(CGameSocket* pSocket, COutPacket& packet)
         for (POSITION pos = m_pending.GetHeadPosition(); pos != NULL; m_pending.GetNext(pos)) {
             COutPacketPtr& pending = m_pending.GetAt(pos);
             FUN_140209510(*pending, false);
-            FUN_141267410(pSocket, *pending);
+            ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*pending);
         }
         m_pending.RemoveAll();
         if (packet.FUN_14020bc40() == 0) FUN_140209510(packet, false);
-        FUN_141267410(pSocket, packet);
+        ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(packet);
     }
 }
 // @0x140208ab0
@@ -87,7 +91,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
         unsigned newSequence = lastSequence;
         COutPacket ack(static_cast<int>(SendOp::ReconnectUnk), 0);
         ack.WriteInt32(lastSequence);
-        FUN_141267410(pSocket, ack);
+        ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(ack);
         for (POSITION pos = m_captured.GetHeadPosition(); pos != NULL; m_captured.GetNext(pos)) {
             COutPacketPtr& captured = m_captured.GetAt(pos);
             if (captured->FUN_14020ba00() <= lastSequence) continue;
@@ -95,11 +99,11 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
             static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}. type={1} seqOld={2}, seqNew={3}", L"COutPacketBuffer::RetransmitClientPackets",
                                  captured->FUN_14020ba20(), captured->FUN_14020ba00(), newSequence);
             captured->FUN_14020c070(newSequence);
-            FUN_141267410(pSocket, *captured);
+            ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*captured);
         }
         COutPacket done(static_cast<int>(SendOp::FinalizeReconnect), 0);
         done.WriteInt32(m_sequence);
-        FUN_141267410(pSocket, done);
+        ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(done);
         m_resending = 0;
     }
 }

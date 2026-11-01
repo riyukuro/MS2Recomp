@@ -109,12 +109,11 @@
 
 // ---- unit-local views of exe objects ----
 
-unsigned int FUN_140869420();                                       // the tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141277f50();                                                // the UI layer id
 bool FUN_141276180(CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
 CReservedWordTable* FUN_1403b4750();
 UISwfEntity* FUN_14096e340(int nId);
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the AS object been released
 class Unk_StEntity : public ASGameEntity { };   // y                                // the UI of a class id
 
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);   // show a formatted notice
@@ -157,7 +156,7 @@ void UISystemText::OnLoadComplete()
     {
         if (m_70 == 0xc)
         {
-            unsigned int nNow = FUN_140869420();
+            unsigned int nNow = GetTickCountMs2();
             if (nNow < m_80)
                 FUN_141b16270(m_78, m_70, m_80 - nNow);
         }
@@ -174,11 +173,11 @@ void UISystemText::OnLoadComplete()
 // @0x141b15b50
 void UISystemText::vfunc_15()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (m_88.empty())
         return;
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     std::map<int, unsigned int>::iterator it = m_88.begin();
     std::map<int, unsigned int>::iterator itEnd = m_88.end();
     while (it != itEnd)
@@ -271,7 +270,7 @@ void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption
 // @0x141b16270
 void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDuration)
 {
-    unsigned int nNow = FUN_140869420();
+    unsigned int nNow = GetTickCountMs2();
     int nExpire = nDuration + nNow;
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())

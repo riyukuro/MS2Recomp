@@ -24,11 +24,9 @@ int FUN_1406516b0();                                                      // cur
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
 CString FUN_14038f6d0(const CString& str, const char* psz);               // str + psz
 CString FUN_1401d2b10(const CString& a, const CString& b);                // a + b
-bool FUN_140184310(const CString& str, const char* psz);                  // str == psz
 CString FUN_14016a5c0(const char* psz, int nFlags);                       // path conversion
-void* FUN_14086e000(void* pParent, const void* pChild);                   // InsertEndChild
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);   // SetAttribute(name, string)
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);         // SetAttribute(name, int)
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 bool FUN_1408710c0(void* pDoc, const char* pszPath);                      // SaveFile
 
 // Unit-local views of the game's TinyXML (bare global names, not efd::).
@@ -74,6 +72,8 @@ public:
     virtual bool Accept(class TiXmlVisitor*) const = 0;
 private:
     void* m_base[9];
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);   // C3: was free FUN_14086e000
 };
 class TiXmlDeclaration : public TiXmlNode
 {
@@ -156,8 +156,8 @@ int CSoundDataTable::Load()
 int CSoundDataTable::Save()
 {
     TiXmlDocument doc;
-    FUN_14086e000(&doc, &static_cast<const TiXmlDeclaration&>(TiXmlDeclaration("1.0", "utf-8", "")));
-    FUN_14086e000(&doc, &static_cast<const Unk_TiXmlElement&>(Unk_TiXmlElement("ms2")));
+    ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&static_cast<const TiXmlDeclaration&>(TiXmlDeclaration("1.0", "utf-8", "")))));
+    ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&static_cast<const Unk_TiXmlElement&>(Unk_TiXmlElement("ms2")))));
 
     {
         Unk_TiXmlElement eventSound("eventSound");
@@ -166,10 +166,10 @@ int CSoundDataTable::Save()
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
             FUN_140874050(&sound, "id", pEntry->strName);
-            FUN_140873ca0(&sound, "lengthms", pEntry->nLengthMs);
-            FUN_14086e000(&eventSound, &sound);
+            XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
+            ((void*)((class TiXmlNode*)(void*)(&eventSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
-        FUN_14086e000(DocRootElement(&doc), &eventSound);
+        ((void*)((class TiXmlNode*)(void*)(DocRootElement(&doc)))->InsertEndChild(*(class TiXmlNode const*)(&eventSound)));
     }
 
     {
@@ -179,10 +179,10 @@ int CSoundDataTable::Save()
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
             FUN_140874050(&sound, "id", pEntry->strName);
-            FUN_140873ca0(&sound, "lengthms", pEntry->nLengthMs);
-            FUN_14086e000(&programmerSound, &sound);
+            XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
+            ((void*)((class TiXmlNode*)(void*)(&programmerSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
-        FUN_14086e000(DocRootElement(&doc), &programmerSound);
+        ((void*)((class TiXmlNode*)(void*)(DocRootElement(&doc)))->InsertEndChild(*(class TiXmlNode const*)(&programmerSound)));
     }
 
     {
@@ -192,10 +192,10 @@ int CSoundDataTable::Save()
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
             FUN_140874050(&sound, "id", pEntry->strName);
-            FUN_140873ca0(&sound, "lengthms", pEntry->nLengthMs);
-            FUN_14086e000(&triggerVoiceSound, &sound);
+            XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
+            ((void*)((class TiXmlNode*)(void*)(&triggerVoiceSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
-        FUN_14086e000(DocRootElement(&doc), &triggerVoiceSound);
+        ((void*)((class TiXmlNode*)(void*)(DocRootElement(&doc)))->InsertEndChild(*(class TiXmlNode const*)(&triggerVoiceSound)));
     }
 
     CString strPath = FUN_14016a5c0(GetPath(), 0);
@@ -234,7 +234,7 @@ CSoundDataEntry* CSoundDataTable::FindEventSound(const CString& strDir, const CS
 // @0x140818570
 CSoundDataEntry* CSoundDataTable::FindProgrammerSound(CString strName)
 {
-    bool bTagged = FUN_140184310(strName.Left(1), "$") && strName.Right(1) == "$";
+    bool bTagged = (strName.Left(1) == "$") && strName.Right(1) == "$";
     if (bTagged)
         strName.Remove('$');
     if (m_programmerSounds.find(strName) == m_programmerSounds.end())
@@ -245,7 +245,7 @@ CSoundDataEntry* CSoundDataTable::FindProgrammerSound(CString strName)
 // @0x140818740
 CSoundDataEntry* CSoundDataTable::FindTriggerVoiceSound(CString strName)
 {
-    bool bTagged = FUN_140184310(strName.Left(1), "$") && strName.Right(1) == "$";
+    bool bTagged = (strName.Left(1) == "$") && strName.Right(1) == "$";
     if (bTagged)
         strName.Remove('$');
     if (m_triggerVoiceSounds.find(strName) == m_triggerVoiceSounds.end())

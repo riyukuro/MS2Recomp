@@ -201,7 +201,7 @@ bool CImageHttpClient::CanSend()
         return false;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xf7))
         return false;
-    if (m_timer.FUN_140268870(3000) == 0)
+    if (m_timer.Check(3000) == 0)
         return false;
     return true;
 }
@@ -399,8 +399,8 @@ short CByteBuffer::GetType()
 }
 
 // @0x140517b00
-Unk_ImageTimer::Unk_ImageTimer()
-    : m_nTick(0)
+Unk_IntervalTimer::Unk_IntervalTimer()
+    : m_nInterval(0)
     , m_nLast(0)
 {
 }

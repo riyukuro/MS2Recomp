@@ -356,6 +356,22 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/stanceleveldata.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Unrecovered helpers.
 CLogString* GetLogString();                                                // the log singleton
@@ -446,7 +462,7 @@ template <> inline int XmlValueByName(Unk_140165cf0* pElem, const char* pszName,
         return 2;
     }
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     eOut = FUN_140219400(str);
@@ -461,7 +477,7 @@ template <> inline int XmlValueByName(Unk_140165cf0* pElem, const char* pszName,
         return 2;
     }
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     eOut = FUN_140218c20(str);
@@ -476,7 +492,7 @@ template <> inline int XmlValueByName(Unk_140165cf0* pElem, const char* pszName,
         return 2;
     }
     CString str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
     eOut = FUN_14081dd80(str);
@@ -573,44 +589,44 @@ MS2_REPLACE_METHOD(0x140170010, AdditionalActionAdditional, IsDifferent, 317, 0x
 // @0x140170160
 int AdditionalActionAdditional::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "randomCast", m_nRandomCast);
-    XmlSplit(FUN_14015f710(pElem, "level", ""), m_arrLevel, ",");
-    XmlSplit(FUN_14015f710(pElem, "skillID", ""), m_arrSkillID, ",");
-    XmlSplit(FUN_14015f710(pElem, "linkSkillID", ""), m_arrLinkSkillID, ",");
-    FUN_1408731e0(pElem, "skillTarget", m_nSkillTarget);
-    FUN_1408731e0(pElem, "skillOwner", m_nSkillOwner);
+    XmlGetAttr((class TiXmlElement*)(pElem), "randomCast", reinterpret_cast<int&>(m_nRandomCast));
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "level", ""), m_arrLevel, ",");
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "skillID", ""), m_arrSkillID, ",");
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "linkSkillID", ""), m_arrLinkSkillID, ",");
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillTarget", reinterpret_cast<int&>(m_nSkillTarget));
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillOwner", reinterpret_cast<int&>(m_nSkillOwner));
     if (m_nSkillOwner == 0)
         m_nSkillOwner = 1;
-    FUN_1408730a0(pElem, "activeByIntervalTick", m_bActiveByIntervalTick);
-    FUN_140873360(pElem, "probability", m_fProbability);
-    FUN_1408730a0(pElem, "isAllowDead", m_bIsAllowDead);
+    XmlGetAttr((class TiXmlElement*)(pElem), "activeByIntervalTick", reinterpret_cast<bool&>(m_bActiveByIntervalTick));
+    XmlGetAttr((class TiXmlElement*)(pElem), "probability", reinterpret_cast<float&>(m_fProbability));
+    XmlGetAttr((class TiXmlElement*)(pElem), "isAllowDead", reinterpret_cast<bool&>(m_bIsAllowDead));
     XmlValue(pElem, "ownerEvent", m_eOwnerEvent);
-    FUN_1408730a0(pElem, "ownerEventIgnore", m_bOwnerEventIgnore);
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerEventIgnore", reinterpret_cast<bool&>(m_bOwnerEventIgnore));
     XmlTokenList(pElem, "ownerEventSkillID", m_vOwnerEventSkillID);
     XmlTokenList(pElem, "ownerEventNoSkillID", m_vOwnerEventNoSkillID);
     XmlTokenList(pElem, "ownerEventAdditionalID", m_vOwnerEventAdditionalID);
-    FUN_140873220(pElem, "ownerAdditionalID", m_nOwnerAdditionalID);
-    FUN_1408731a0(pElem, "ownerAdditionalLevel", m_nOwnerAdditionalLevel);
-    FUN_140873220(pElem, "ownerAdditionalCount", m_nOwnerAdditionalCount);
-    FUN_1408730a0(pElem, "ownerAdditionalMine", m_bOwnerAdditionalMine);
-    FUN_140873220(pElem, "ownerNoAdditionalID", m_nOwnerNoAdditionalID);
-    FUN_140873360(pElem, "ownerHpLess", m_fOwnerHpLess);
-    FUN_140873360(pElem, "ownerHpOver", m_fOwnerHpOver);
-    FUN_140873360(pElem, "ownerSpLess", m_fOwnerSpLess);
-    FUN_1408731e0(pElem, "ownerRange", m_nOwnerRange);
-    FUN_1408731e0(pElem, "ownerRangeCountLess", m_nOwnerRangeCountLess);
-    FUN_1408731e0(pElem, "ownerRangeCountOver", m_nOwnerRangeCountOver);
-    FUN_140873220(pElem, "casterAdditionalID", m_nCasterAdditionalID);
-    FUN_140873220(pElem, "casterAdditionalCount", m_nCasterAdditionalCount);
-    FUN_140873220(pElem, "casterNoAdditionalID", m_nCasterNoAdditionalID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerAdditionalID", reinterpret_cast<unsigned int&>(m_nOwnerAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerAdditionalLevel", reinterpret_cast<unsigned short&>(m_nOwnerAdditionalLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerAdditionalCount", reinterpret_cast<unsigned int&>(m_nOwnerAdditionalCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerAdditionalMine", reinterpret_cast<bool&>(m_bOwnerAdditionalMine));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerNoAdditionalID", reinterpret_cast<unsigned int&>(m_nOwnerNoAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerHpLess", reinterpret_cast<float&>(m_fOwnerHpLess));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerHpOver", reinterpret_cast<float&>(m_fOwnerHpOver));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerSpLess", reinterpret_cast<float&>(m_fOwnerSpLess));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerRange", reinterpret_cast<int&>(m_nOwnerRange));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerRangeCountLess", reinterpret_cast<int&>(m_nOwnerRangeCountLess));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ownerRangeCountOver", reinterpret_cast<int&>(m_nOwnerRangeCountOver));
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterAdditionalID", reinterpret_cast<unsigned int&>(m_nCasterAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterAdditionalCount", reinterpret_cast<unsigned int&>(m_nCasterAdditionalCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterNoAdditionalID", reinterpret_cast<unsigned int&>(m_nCasterNoAdditionalID));
     XmlValue(pElem, "casterEvent", m_eCasterEvent);
-    FUN_140873220(pElem, "targetAdditionalID", m_nTargetAdditionalID);
-    FUN_140873220(pElem, "targetAdditionalCount", m_nTargetAdditionalCount);
-    FUN_1408730a0(pElem, "targetAdditionalMine", m_bTargetAdditionalMine);
-    FUN_140873220(pElem, "targetNoAdditionalID", m_nTargetNoAdditionalID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetAdditionalID", reinterpret_cast<unsigned int&>(m_nTargetAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetAdditionalCount", reinterpret_cast<unsigned int&>(m_nTargetAdditionalCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetAdditionalMine", reinterpret_cast<bool&>(m_bTargetAdditionalMine));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetNoAdditionalID", reinterpret_cast<unsigned int&>(m_nTargetNoAdditionalID));
     XmlTokenList(pElem, "targetNpcIDs", m_setTargetNpcIDs);
-    FUN_140873360(pElem, "targetHpLess", m_fTargetHpLess);
-    FUN_1408730a0(pElem, "targetNpcOnly", m_bTargetNpcOnly);
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetHpLess", reinterpret_cast<float&>(m_fTargetHpLess));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetNpcOnly", reinterpret_cast<bool&>(m_bTargetNpcOnly));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140170160, AdditionalActionAdditional, Load, 1737, 0x1F367F53);
@@ -654,16 +670,16 @@ MS2_REPLACE_METHOD(0x1401708f0, AdditionalActionSkill, IsDifferent, 274, 0x19AB4
 // @0x140170a10
 int AdditionalActionSkill::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "skillID", m_nSkillID);
-    FUN_1408731a0(pElem, "level", m_nLevel);
-    FUN_140873220(pElem, "linkSkillID", m_nLinkSkillID);
-    FUN_1408732a0(pElem, "delay", m_nDelay);
-    FUN_1408732a0(pElem, "removeDelay", m_nRemoveDelay);
-    FUN_1408732a0(pElem, "interval", m_nInterval);
-    FUN_1408731e0(pElem, "immediateActive", m_nImmediateActive);
-    FUN_1408731e0(pElem, "fireCount", m_nFireCount);
-    FUN_1408731e0(pElem, "useDirection", m_nUseDirection);
-    FUN_1408731e0(pElem, "chainDistance", m_nChainDistance);
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillID", reinterpret_cast<unsigned int&>(m_nSkillID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "level", reinterpret_cast<unsigned short&>(m_nLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "linkSkillID", reinterpret_cast<unsigned int&>(m_nLinkSkillID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "delay", reinterpret_cast<unsigned long&>(m_nDelay));
+    XmlGetAttr((class TiXmlElement*)(pElem), "removeDelay", reinterpret_cast<unsigned long&>(m_nRemoveDelay));
+    XmlGetAttr((class TiXmlElement*)(pElem), "interval", reinterpret_cast<unsigned long&>(m_nInterval));
+    XmlGetAttr((class TiXmlElement*)(pElem), "immediateActive", reinterpret_cast<int&>(m_nImmediateActive));
+    XmlGetAttr((class TiXmlElement*)(pElem), "fireCount", reinterpret_cast<int&>(m_nFireCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "useDirection", reinterpret_cast<int&>(m_nUseDirection));
+    XmlGetAttr((class TiXmlElement*)(pElem), "chainDistance", reinterpret_cast<int&>(m_nChainDistance));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140170a10, AdditionalActionSkill, Load, 314, 0xB4BD6795);
@@ -691,12 +707,12 @@ MS2_REPLACE_METHOD(0x140170c20, AdditionalData, GetID, 14, 0x72E52537);
 // @0x140170c60
 bool AdditionalData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nID));
     XmlValue(pElem, "mainType", m_eMainType);
-    FUN_1408730a0(pElem, "isDebuff", m_bIsDebuff);
-    FUN_140873220(pElem, "category", m_nCategory);
+    XmlGetAttr((class TiXmlElement*)(pElem), "isDebuff", reinterpret_cast<bool&>(m_bIsDebuff));
+    XmlGetAttr((class TiXmlElement*)(pElem), "category", reinterpret_cast<unsigned int&>(m_nCategory));
     XmlValue(pElem, "skillGroupType", m_eSkillGroupType);
-    for (Unk_140165cf0* pLevel : pElem->FUN_140165cf0("level"))
+    for (Unk_140165cf0* pLevel : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("level")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pLevel)))
             continue;
@@ -1029,96 +1045,96 @@ MS2_REPLACE_METHOD(0x140171900, AdditionalLevelData, IsDifferent, 4383, 0x065C4B
 // @0x140172a30
 bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408731a0(pElem, "level", m_nLevel);
-    FUN_140873420(pElem, "stringParam", m_strStringParam);
-    Unk_140165cf0* pBasic = pElem->FUN_140165cf0("Basic");
+    XmlGetAttr((class TiXmlElement*)(pElem), "level", reinterpret_cast<unsigned short&>(m_nLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "stringParam", m_strStringParam);
+    Unk_140165cf0* pBasic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Basic"));
     if (pBasic)
     {
-        FUN_1408731e0(pBasic, "group", m_nGroup);
-        FUN_140873220(pBasic, "eventBuffType", m_nEventBuffType);
-        FUN_1408730a0(pBasic, "useInGameTime", m_bUseInGameTime);
-        FUN_1408732a0(pBasic, "durationTick", m_nDurationTick);
-        FUN_1408732a0(pBasic, "intervalTick", m_nIntervalTick);
-        FUN_1408732a0(pBasic, "delayTick", m_nDelayTick);
-        FUN_1408731e0(pBasic, "keepCondition", m_nKeepCondition);
-        FUN_1408731e0(pBasic, "resetCondition", m_nResetCondition);
-        FUN_140873220(pBasic, "maxBuffCount", m_nMaxBuffCount);
-        FUN_1408731e0(pBasic, "dotCondition", m_nDotCondition);
-        FUN_1408731e0(pBasic, "invokeEvent", m_nInvokeEvent);
-        FUN_1408730a0(pBasic, "deadKeepEffect", m_bDeadKeepEffect);
-        FUN_1408730a0(pBasic, "logoutClearEffect", m_bLogoutClearEffect);
-        FUN_1408730a0(pBasic, "leaveFieldClearEffect", m_bLeaveFieldClearEffect);
-        FUN_1408730a0(pBasic, "pvpOnOff", m_bPvpOnOff);
-        FUN_1408730a0(pBasic, "casterKeepEffect", m_bCasterKeepEffect);
-        FUN_1408730a0(pBasic, "casterIndividualEffect", m_bCasterIndividualEffect);
-        FUN_140873360(pBasic, "coolDownTime", m_fCoolDownTime);
-        FUN_140873360(pBasic, "clearDistanceFromCaster", m_fClearDistanceFromCaster);
-        FUN_1408730a0(pBasic, "clearEffectFromPVPZone", m_bClearEffectFromPVPZone);
-        FUN_1408730a0(pBasic, "doNotClearEffectFromEnterPVPZone", m_bDoNotClearEffectFromEnterPVPZone);
-        FUN_1408730a0(pBasic, "clearCooldownFromPVPZone", m_bClearCooldownFromPVPZone);
-        FUN_1408731e0(pBasic, "forceApplyTarget", m_nForceApplyTarget);
-        FUN_1408730a0(pBasic, "ignoreReduceTimeCondition", m_bIgnoreReduceTimeCondition);
-        FUN_140873220(pBasic, "skillSetID", m_nSkillSetID);
-        FUN_140873220(pBasic, "costumeSetID", m_nCostumeSetID);
-        FUN_140873220(pBasic, "statSetID", m_nStatSetID);
-        FUN_1408730a0(pBasic, "disableRevivalHere", m_bDisableRevivalHere);
-        FUN_140873220(pBasic, "attackPossibleEffectID", m_nAttackPossibleEffectID);
-        FUN_140873220(pBasic, "attackPossibleIndividualEffectID", m_nAttackPossibleIndividualEffectID);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "group", reinterpret_cast<int&>(m_nGroup));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "eventBuffType", reinterpret_cast<unsigned int&>(m_nEventBuffType));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "useInGameTime", reinterpret_cast<bool&>(m_bUseInGameTime));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "durationTick", reinterpret_cast<unsigned long&>(m_nDurationTick));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "intervalTick", reinterpret_cast<unsigned long&>(m_nIntervalTick));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "delayTick", reinterpret_cast<unsigned long&>(m_nDelayTick));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "keepCondition", reinterpret_cast<int&>(m_nKeepCondition));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "resetCondition", reinterpret_cast<int&>(m_nResetCondition));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "maxBuffCount", reinterpret_cast<unsigned int&>(m_nMaxBuffCount));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "dotCondition", reinterpret_cast<int&>(m_nDotCondition));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "invokeEvent", reinterpret_cast<int&>(m_nInvokeEvent));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "deadKeepEffect", reinterpret_cast<bool&>(m_bDeadKeepEffect));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "logoutClearEffect", reinterpret_cast<bool&>(m_bLogoutClearEffect));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "leaveFieldClearEffect", reinterpret_cast<bool&>(m_bLeaveFieldClearEffect));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "pvpOnOff", reinterpret_cast<bool&>(m_bPvpOnOff));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "casterKeepEffect", reinterpret_cast<bool&>(m_bCasterKeepEffect));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "casterIndividualEffect", reinterpret_cast<bool&>(m_bCasterIndividualEffect));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "coolDownTime", reinterpret_cast<float&>(m_fCoolDownTime));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "clearDistanceFromCaster", reinterpret_cast<float&>(m_fClearDistanceFromCaster));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "clearEffectFromPVPZone", reinterpret_cast<bool&>(m_bClearEffectFromPVPZone));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "doNotClearEffectFromEnterPVPZone", reinterpret_cast<bool&>(m_bDoNotClearEffectFromEnterPVPZone));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "clearCooldownFromPVPZone", reinterpret_cast<bool&>(m_bClearCooldownFromPVPZone));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "forceApplyTarget", reinterpret_cast<int&>(m_nForceApplyTarget));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "ignoreReduceTimeCondition", reinterpret_cast<bool&>(m_bIgnoreReduceTimeCondition));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "skillSetID", reinterpret_cast<unsigned int&>(m_nSkillSetID));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "costumeSetID", reinterpret_cast<unsigned int&>(m_nCostumeSetID));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "statSetID", reinterpret_cast<unsigned int&>(m_nStatSetID));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "disableRevivalHere", reinterpret_cast<bool&>(m_bDisableRevivalHere));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "attackPossibleEffectID", reinterpret_cast<unsigned int&>(m_nAttackPossibleEffectID));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "attackPossibleIndividualEffectID", reinterpret_cast<unsigned int&>(m_nAttackPossibleIndividualEffectID));
         XmlTokenList(pBasic, "attackPossibleSkillIDs", m_setAttackPossibleSkillIDs);
         XmlTokenList(pBasic, "attackPossibleDotEffectIDs", m_setAttackPossibleDotEffectIDs);
-        FUN_140873220(pBasic, "groupIDs", m_nGroupIDs);
-        FUN_1408730a0(pBasic, "immediateActiveRequireSkill", m_bImmediateActiveRequireSkill);
-        FUN_140873220(pBasic, "itemSlotDisable", m_nItemSlotDisable);
-        FUN_1408731e0(pBasic, "tailEffect", m_nTailEffect);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "groupIDs", reinterpret_cast<unsigned int&>(m_nGroupIDs));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "immediateActiveRequireSkill", reinterpret_cast<bool&>(m_bImmediateActiveRequireSkill));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "itemSlotDisable", reinterpret_cast<unsigned int&>(m_nItemSlotDisable));
+        XmlGetAttr((class TiXmlElement*)(pBasic), "tailEffect", reinterpret_cast<int&>(m_nTailEffect));
     }
-    Unk_140165cf0* pCondition = pElem->FUN_140165cf0("Condition");
+    Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Condition"));
     if (pCondition)
         LoadCondition(pCondition);
-    Unk_140165cf0* pMotion = pElem->FUN_140165cf0("Motion");
+    Unk_140165cf0* pMotion = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Motion"));
     if (pMotion)
     {
-        FUN_1408733e0(pMotion, "startEffect", m_motion.m_strStartEffect);
-        FUN_1408733e0(pMotion, "keepEffect", m_motion.m_strKeepEffect);
-        FUN_1408733e0(pMotion, "stopEffect", m_motion.m_strStopEffect);
-        FUN_1408733e0(pMotion, "invokeEffect", m_motion.m_strInvokeEffect);
-        FUN_1408730a0(pMotion, "IgnoreOptimalHideStartEffect", m_motion.m_bIgnoreOptimalHideStartEffect);
-        FUN_1408731e0(pMotion, "hide", m_motion.m_nHide);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "startEffect", m_motion.m_strStartEffect);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "keepEffect", m_motion.m_strKeepEffect);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "stopEffect", m_motion.m_strStopEffect);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "invokeEffect", m_motion.m_strInvokeEffect);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "IgnoreOptimalHideStartEffect", reinterpret_cast<bool&>(m_motion.m_bIgnoreOptimalHideStartEffect));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "hide", reinterpret_cast<int&>(m_motion.m_nHide));
         XmlTokenList(pMotion, "clearCondition", m_motion.m_vClearCondition);
-        FUN_140873360(pMotion, "alphaBlending", m_motion.m_fAlphaBlending);
-        FUN_140873220(pMotion, "stun", m_motion.m_nStun);
-        FUN_1408733e0(pMotion, "stunAnimation", m_motion.m_strStunAnimation);
-        FUN_1408731e0(pMotion, "confusionMove", m_motion.m_nConfusionMove);
-        FUN_1408731e0(pMotion, "soundPitch", m_motion.m_nSoundPitch);
-        FUN_1408731e0(pMotion, "abnormalImmuneBreak", m_motion.m_nAbnormalImmuneBreak);
-        FUN_1408731e0(pMotion, "revival", m_motion.m_nRevival);
-        FUN_140873360(pMotion, "scale", m_motion.m_fScale);
-        FUN_140873220(pMotion, "ignoreCollisionGroups", m_motion.m_nIgnoreCollisionGroups);
-        FUN_1408731e0(pMotion, "noFly", m_motion.m_nNoFly);
-        FUN_140873220(pMotion, "superArmor", m_motion.m_nSuperArmor);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "alphaBlending", reinterpret_cast<float&>(m_motion.m_fAlphaBlending));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "stun", reinterpret_cast<unsigned int&>(m_motion.m_nStun));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "stunAnimation", m_motion.m_strStunAnimation);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "confusionMove", reinterpret_cast<int&>(m_motion.m_nConfusionMove));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "soundPitch", reinterpret_cast<int&>(m_motion.m_nSoundPitch));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "abnormalImmuneBreak", reinterpret_cast<int&>(m_motion.m_nAbnormalImmuneBreak));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "revival", reinterpret_cast<int&>(m_motion.m_nRevival));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "scale", reinterpret_cast<float&>(m_motion.m_fScale));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "ignoreCollisionGroups", reinterpret_cast<unsigned int&>(m_motion.m_nIgnoreCollisionGroups));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "noFly", reinterpret_cast<int&>(m_motion.m_nNoFly));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "superArmor", reinterpret_cast<unsigned int&>(m_motion.m_nSuperArmor));
         XmlValue(pMotion, "superArmorApplyFieldType", m_motion.m_eSuperArmorApplyFieldType);
-        FUN_140873220(pMotion, "skillUseDisable", m_motion.m_nSkillUseDisable);
-        FUN_140873360(pMotion, "fixedZRotation", m_motion.m_fFixedZRotation);
+        XmlGetAttr((class TiXmlElement*)(pMotion), "skillUseDisable", reinterpret_cast<unsigned int&>(m_motion.m_nSkillUseDisable));
+        XmlGetAttr((class TiXmlElement*)(pMotion), "fixedZRotation", reinterpret_cast<float&>(m_motion.m_fFixedZRotation));
         XmlTokenList(pMotion, "skillUseDisableIDs", m_motion.m_setSkillUseDisableIDs);
         LoadOverlapKeepEffect(pMotion);
     }
-    Unk_140165cf0* pCancel = pElem->FUN_140165cf0("CancelEffect");
+    Unk_140165cf0* pCancel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("CancelEffect"));
     if (pCancel)
     {
-        FUN_1408730a0(pCancel, "cancelCheckSameCaster", m_bCancelCheckSameCaster);
-        FUN_1408730a0(pCancel, "cancelPassiveEffect", m_bCancelPassiveEffect);
+        XmlGetAttr((class TiXmlElement*)(pCancel), "cancelCheckSameCaster", reinterpret_cast<bool&>(m_bCancelCheckSameCaster));
+        XmlGetAttr((class TiXmlElement*)(pCancel), "cancelPassiveEffect", reinterpret_cast<bool&>(m_bCancelPassiveEffect));
         XmlTokenList(pCancel, "cancelEffectCodes", m_arrCancelEffectCodes);
         XmlTokenList(pCancel, "cancelBuffCategories", m_arrCancelBuffCategories);
     }
-    Unk_140165cf0* pImmune = pElem->FUN_140165cf0("ImmuneEffect");
+    Unk_140165cf0* pImmune = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ImmuneEffect"));
     if (pImmune)
     {
         XmlTokenList(pImmune, "immuneEffectCodes", m_arrImmuneEffectCodes);
         XmlTokenList(pImmune, "immuneBuffCategories", m_arrImmuneBuffCategories);
     }
-    Unk_140165cf0* pReset = pElem->FUN_140165cf0("ResetSkillCoolDownTime");
+    Unk_140165cf0* pReset = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ResetSkillCoolDownTime"));
     if (pReset)
         XmlTokenList(pReset, "skillCodes", m_arrResetSkillCodes);
-    Unk_140165cf0* pDuration = pElem->FUN_140165cf0("ModifyEffectDuration");
+    Unk_140165cf0* pDuration = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ModifyEffectDuration"));
     if (pDuration)
     {
         ATL::CAtlArray<unsigned> arrCodes;
@@ -1163,7 +1179,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
             }
         }
     }
-    Unk_140165cf0* pCooldown = pElem->FUN_140165cf0("ModifySkillCooldown");
+    Unk_140165cf0* pCooldown = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ModifySkillCooldown"));
     if (pCooldown)
     {
         ATL::CAtlArray<unsigned> arrSkillIDs;
@@ -1178,7 +1194,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
         for (unsigned i = 0; i < arrSkillIDs.GetCount(); i++)
             m_mapModifySkillCooldown.SetAt(arrSkillIDs[i], arrValues[i]);
     }
-    Unk_140165cf0* pOverlap = pElem->FUN_140165cf0("ModifyOverlapCount");
+    Unk_140165cf0* pOverlap = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ModifyOverlapCount"));
     if (pOverlap)
     {
         ATL::CAtlArray<unsigned> arrCodes;
@@ -1193,26 +1209,26 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
         for (unsigned i = 0; i < arrCodes.GetCount(); i++)
             m_mapModifyOverlapCount.SetAt(arrCodes[i], arrOffsets[i]);
     }
-    Unk_140165cf0* pStatus = pElem->FUN_140165cf0("Status");
+    Unk_140165cf0* pStatus = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Status"));
     if (pStatus)
     {
-        FUN_140873360(pStatus, "itemRecoveryHPRate", m_status.m_fItemRecoveryHPRate);
-        FUN_140873360(pStatus, "healRecoveryHPRate", m_status.m_fHealRecoveryHPRate);
-        FUN_140873360(pStatus, "resWapR", m_status.m_fResWapR);
-        FUN_140873360(pStatus, "resBapR", m_status.m_fResBapR);
-        FUN_140873360(pStatus, "resCadR", m_status.m_fResCadR);
-        FUN_140873360(pStatus, "resAtpR", m_status.m_fResAtpR);
-        FUN_140873360(pStatus, "resEvpR", m_status.m_fResEvpR);
-        FUN_140873360(pStatus, "resPenR", m_status.m_fResPenR);
-        FUN_1408732e0(pStatus, "deathResistanceHP", m_status.m_nDeathResistanceHP);
+        XmlGetAttr((class TiXmlElement*)(pStatus), "itemRecoveryHPRate", reinterpret_cast<float&>(m_status.m_fItemRecoveryHPRate));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "healRecoveryHPRate", reinterpret_cast<float&>(m_status.m_fHealRecoveryHPRate));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resWapR", reinterpret_cast<float&>(m_status.m_fResWapR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resBapR", reinterpret_cast<float&>(m_status.m_fResBapR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resCadR", reinterpret_cast<float&>(m_status.m_fResCadR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resAtpR", reinterpret_cast<float&>(m_status.m_fResAtpR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resEvpR", reinterpret_cast<float&>(m_status.m_fResEvpR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "resPenR", reinterpret_cast<float&>(m_status.m_fResPenR));
+        XmlGetAttr((class TiXmlElement*)(pStatus), "deathResistanceHP", reinterpret_cast<__int64&>(m_status.m_nDeathResistanceHP));
         XmlValue(pStatus, "compulsionEventTypes", m_status.m_eCompulsionEventTypes);
-        FUN_140873360(pStatus, "compulsionEventRate", m_status.m_fCompulsionEventRate);
+        XmlGetAttr((class TiXmlElement*)(pStatus), "compulsionEventRate", reinterpret_cast<float&>(m_status.m_fCompulsionEventRate));
         XmlTokenList(pStatus, "compulsionEventSkillCodes", m_status.m_arrCompulsionEventSkillCodes);
     }
-    Unk_140165cf0* pSA = pElem->FUN_140165cf0("SpecialAbility");
+    Unk_140165cf0* pSA = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("SpecialAbility"));
     if (pSA)
     {
-        for (Unk_140165cf0* pValue : pSA->FUN_140165cf0("v"))
+        for (Unk_140165cf0* pValue : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSA))->FirstChild("v")))
         {
             SAType eType = SAType_None;
             XmlValueByName(pValue, "type", eType);
@@ -1228,146 +1244,146 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
                 continue;
             }
             int nValue = 0;
-            FUN_1408731e0(pValue, "value", nValue);
+            XmlGetAttr((class TiXmlElement*)(pValue), "value", reinterpret_cast<int&>(nValue));
             if (nValue != 0)
                 m_status.m_mapSA[eType] = nValue;
         }
     }
-    Unk_140165cf0* pOffensive = pElem->FUN_140165cf0("Offensive");
+    Unk_140165cf0* pOffensive = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Offensive"));
     if (pOffensive)
-        FUN_1408731e0(pOffensive, "hitImmuneBreak", m_nHitImmuneBreak);
-    Unk_140165cf0* pDefensive = pElem->FUN_140165cf0("Defensive");
+        XmlGetAttr((class TiXmlElement*)(pOffensive), "hitImmuneBreak", reinterpret_cast<int&>(m_nHitImmuneBreak));
+    Unk_140165cf0* pDefensive = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Defensive"));
     if (pDefensive)
-        FUN_1408731e0(pDefensive, "invincible", m_nInvincible);
-    Unk_140165cf0* pRecovery = pElem->FUN_140165cf0("Recovery");
+        XmlGetAttr((class TiXmlElement*)(pDefensive), "invincible", reinterpret_cast<int&>(m_nInvincible));
+    Unk_140165cf0* pRecovery = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Recovery"));
     if (pRecovery)
     {
-        FUN_1408730a0(pRecovery, "showUIText", m_recovery.m_bShowUIText);
-        FUN_140873360(pRecovery, "RecoveryRate", m_recovery.m_fRecoveryRate);
-        FUN_1408732e0(pRecovery, "hpValue", m_recovery.m_nHpValue);
-        FUN_140873360(pRecovery, "hpRate", m_recovery.m_fHpRate);
-        FUN_1408732e0(pRecovery, "spValue", m_recovery.m_nSpValue);
-        FUN_140873360(pRecovery, "spRate", m_recovery.m_fSpRate);
-        FUN_1408732e0(pRecovery, "epValue", m_recovery.m_nEpValue);
-        FUN_140873360(pRecovery, "epRate", m_recovery.m_fEpRate);
-        FUN_1408730a0(pRecovery, "disableCriticalRecovery", m_recovery.m_bDisableCriticalRecovery);
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "showUIText", reinterpret_cast<bool&>(m_recovery.m_bShowUIText));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "RecoveryRate", reinterpret_cast<float&>(m_recovery.m_fRecoveryRate));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "hpValue", reinterpret_cast<__int64&>(m_recovery.m_nHpValue));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "hpRate", reinterpret_cast<float&>(m_recovery.m_fHpRate));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "spValue", reinterpret_cast<__int64&>(m_recovery.m_nSpValue));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "spRate", reinterpret_cast<float&>(m_recovery.m_fSpRate));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "epValue", reinterpret_cast<__int64&>(m_recovery.m_nEpValue));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "epRate", reinterpret_cast<float&>(m_recovery.m_fEpRate));
+        XmlGetAttr((class TiXmlElement*)(pRecovery), "disableCriticalRecovery", reinterpret_cast<bool&>(m_recovery.m_bDisableCriticalRecovery));
     }
-    Unk_140165cf0* pExp = pElem->FUN_140165cf0("Exp");
+    Unk_140165cf0* pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Exp"));
     if (pExp)
-        FUN_1408731e0(pExp, "value", m_nExpValue);
-    Unk_140165cf0* pDotDamage = pElem->FUN_140165cf0("DotDamage");
+        XmlGetAttr((class TiXmlElement*)(pExp), "value", reinterpret_cast<int&>(m_nExpValue));
+    Unk_140165cf0* pDotDamage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("DotDamage"));
     if (pDotDamage)
     {
         XmlValue(pDotDamage, "type", m_dotDamage.m_eType);
-        FUN_1408730a0(pDotDamage, "useGrade", m_dotDamage.m_bUseGrade);
-        FUN_1408731e0(pDotDamage, "value", m_dotDamage.m_nValue);
-        FUN_140873360(pDotDamage, "rate", m_dotDamage.m_fRate);
-        FUN_1408731e0(pDotDamage, "spValue", m_dotDamage.m_nSpValue);
-        FUN_1408731e0(pDotDamage, "epValue", m_dotDamage.m_nEpValue);
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "useGrade", reinterpret_cast<bool&>(m_dotDamage.m_bUseGrade));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "value", reinterpret_cast<int&>(m_dotDamage.m_nValue));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "rate", reinterpret_cast<float&>(m_dotDamage.m_fRate));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "spValue", reinterpret_cast<int&>(m_dotDamage.m_nSpValue));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "epValue", reinterpret_cast<int&>(m_dotDamage.m_nEpValue));
         XmlValue(pDotDamage, "element", m_dotDamage.m_eElement);
-        FUN_140873360(pDotDamage, "damageByTargetMaxHP", m_dotDamage.m_fDamageByTargetMaxHP);
-        FUN_140873360(pDotDamage, "casterRecoveryHpByDamage", m_dotDamage.m_fCasterRecoveryHpByDamage);
-        FUN_1408731e0(pDotDamage, "soundMaterial", m_dotDamage.m_nSoundMaterial);
-        FUN_1408730a0(pDotDamage, "isConstDotDamageValue", m_dotDamage.m_bIsConstDotDamageValue);
-        FUN_1408730a0(pDotDamage, "notKill", m_dotDamage.m_bNotKill);
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "damageByTargetMaxHP", reinterpret_cast<float&>(m_dotDamage.m_fDamageByTargetMaxHP));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "casterRecoveryHpByDamage", reinterpret_cast<float&>(m_dotDamage.m_fCasterRecoveryHpByDamage));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "soundMaterial", reinterpret_cast<int&>(m_dotDamage.m_nSoundMaterial));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "isConstDotDamageValue", reinterpret_cast<bool&>(m_dotDamage.m_bIsConstDotDamageValue));
+        XmlGetAttr((class TiXmlElement*)(pDotDamage), "notKill", reinterpret_cast<bool&>(m_dotDamage.m_bNotKill));
     }
-    Unk_140165cf0* pDotBuff = pElem->FUN_140165cf0("DotBuff");
+    Unk_140165cf0* pDotBuff = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("DotBuff"));
     if (pDotBuff)
     {
-        FUN_1408731e0(pDotBuff, "target", m_dotBuff.m_nTarget);
-        FUN_140873220(pDotBuff, "buffID", m_dotBuff.m_nBuffID);
-        FUN_1408731a0(pDotBuff, "buffLevel", m_dotBuff.m_nBuffLevel);
+        XmlGetAttr((class TiXmlElement*)(pDotBuff), "target", reinterpret_cast<int&>(m_dotBuff.m_nTarget));
+        XmlGetAttr((class TiXmlElement*)(pDotBuff), "buffID", reinterpret_cast<unsigned int&>(m_dotBuff.m_nBuffID));
+        XmlGetAttr((class TiXmlElement*)(pDotBuff), "buffLevel", reinterpret_cast<unsigned short&>(m_dotBuff.m_nBuffLevel));
     }
-    Unk_140165cf0* pConsume = pElem->FUN_140165cf0("Consume");
+    Unk_140165cf0* pConsume = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Consume"));
     if (pConsume)
     {
-        FUN_140873360(pConsume, "hpRate", m_consume.m_fHpRate);
-        FUN_140873360(pConsume, "spRate", m_consume.m_fSpRate);
-        FUN_140873360(pConsume, "spConsumeChangeHpRate", m_consume.m_fSpConsumeChangeHpRate);
+        XmlGetAttr((class TiXmlElement*)(pConsume), "hpRate", reinterpret_cast<float&>(m_consume.m_fHpRate));
+        XmlGetAttr((class TiXmlElement*)(pConsume), "spRate", reinterpret_cast<float&>(m_consume.m_fSpRate));
+        XmlGetAttr((class TiXmlElement*)(pConsume), "spConsumeChangeHpRate", reinterpret_cast<float&>(m_consume.m_fSpConsumeChangeHpRate));
     }
-    Unk_140165cf0* pReflect = pElem->FUN_140165cf0("Reflect");
+    Unk_140165cf0* pReflect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Reflect"));
     if (pReflect)
     {
-        FUN_140873360(pReflect, "reflectionRate", m_reflect.m_fReflectionRate);
-        FUN_140873220(pReflect, "reflectionAdditionalEffectId", m_reflect.m_nReflectionAdditionalEffectId);
-        FUN_1408731a0(pReflect, "reflectionAdditionalEffectLevel", m_reflect.m_nReflectionAdditionalEffectLevel);
-        FUN_1408731e0(pReflect, "reflectionCount", m_reflect.m_nReflectionCount);
-        FUN_140873360(pReflect, "physicalReflectionRate", m_reflect.m_fReflectionRates[1]);
-        FUN_1408731e0(pReflect, "physicalReflectionRateLimit", m_reflect.m_nReflectionRateLimits[1]);
-        FUN_140873360(pReflect, "magicalReflectionRate", m_reflect.m_fReflectionRates[2]);
-        FUN_1408731e0(pReflect, "magicalReflectionRateLimit", m_reflect.m_nReflectionRateLimits[2]);
-        FUN_140873360(pReflect, "reflectionDamageReduceRate", m_reflect.m_fReflectionDamageReduceRate);
+        XmlGetAttr((class TiXmlElement*)(pReflect), "reflectionRate", reinterpret_cast<float&>(m_reflect.m_fReflectionRate));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "reflectionAdditionalEffectId", reinterpret_cast<unsigned int&>(m_reflect.m_nReflectionAdditionalEffectId));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "reflectionAdditionalEffectLevel", reinterpret_cast<unsigned short&>(m_reflect.m_nReflectionAdditionalEffectLevel));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "reflectionCount", reinterpret_cast<int&>(m_reflect.m_nReflectionCount));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "physicalReflectionRate", reinterpret_cast<float&>(m_reflect.m_fReflectionRates[1]));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "physicalReflectionRateLimit", reinterpret_cast<int&>(m_reflect.m_nReflectionRateLimits[1]));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "magicalReflectionRate", reinterpret_cast<float&>(m_reflect.m_fReflectionRates[2]));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "magicalReflectionRateLimit", reinterpret_cast<int&>(m_reflect.m_nReflectionRateLimits[2]));
+        XmlGetAttr((class TiXmlElement*)(pReflect), "reflectionDamageReduceRate", reinterpret_cast<float&>(m_reflect.m_fReflectionDamageReduceRate));
     }
-    Unk_140165cf0* pUI = pElem->FUN_140165cf0("UI");
+    Unk_140165cf0* pUI = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("UI"));
     if (pUI)
     {
         XmlValue(pUI, "iconOnOff", m_ui.m_eIconOnOff);
-        FUN_1408730a0(pUI, "iconBalloonOnOff", m_ui.m_bIconBalloonOnOff);
-        FUN_1408730a0(pUI, "isHideCooltime", m_ui.m_bIsHideCooltime);
-        FUN_1408731e0(pUI, "priority", m_ui.m_nPriority);
-        FUN_1408730a0(pUI, "infinitySP", m_ui.m_bInfinitySP);
-        FUN_1408730a0(pUI, "visibleItemOption", m_ui.m_bVisibleItemOption);
-        m_ui.m_strIcon = FUN_14015f710(pUI, "icon", "");
+        XmlGetAttr((class TiXmlElement*)(pUI), "iconBalloonOnOff", reinterpret_cast<bool&>(m_ui.m_bIconBalloonOnOff));
+        XmlGetAttr((class TiXmlElement*)(pUI), "isHideCooltime", reinterpret_cast<bool&>(m_ui.m_bIsHideCooltime));
+        XmlGetAttr((class TiXmlElement*)(pUI), "priority", reinterpret_cast<int&>(m_ui.m_nPriority));
+        XmlGetAttr((class TiXmlElement*)(pUI), "infinitySP", reinterpret_cast<bool&>(m_ui.m_bInfinitySP));
+        XmlGetAttr((class TiXmlElement*)(pUI), "visibleItemOption", reinterpret_cast<bool&>(m_ui.m_bVisibleItemOption));
+        m_ui.m_strIcon = Unk_ReadString((class Unk_XmlNode*)(pUI), "icon", "");
     }
-    Unk_140165cf0* pShield = pElem->FUN_140165cf0("Shield");
+    Unk_140165cf0* pShield = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Shield"));
     if (pShield)
     {
-        FUN_1408732e0(pShield, "hpValue", m_shield.m_nHpValue);
-        FUN_140873360(pShield, "hpByTargetMaxHP", m_shield.m_fHpByTargetMaxHP);
+        XmlGetAttr((class TiXmlElement*)(pShield), "hpValue", reinterpret_cast<__int64&>(m_shield.m_nHpValue));
+        XmlGetAttr((class TiXmlElement*)(pShield), "hpByTargetMaxHP", reinterpret_cast<float&>(m_shield.m_fHpByTargetMaxHP));
         XmlValue(pShield, "uiType", m_shield.m_eUIType);
-        FUN_140873220(pShield, "uiTypeValue", m_shield.m_nUITypeValue);
+        XmlGetAttr((class TiXmlElement*)(pShield), "uiTypeValue", reinterpret_cast<unsigned int&>(m_shield.m_nUITypeValue));
     }
-    Unk_140165cf0* pInvoke = pElem->FUN_140165cf0("InvokeEffect");
+    Unk_140165cf0* pInvoke = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("InvokeEffect"));
     if (pInvoke)
     {
-        FUN_140873220(pInvoke, "skillID", m_invokeEffect.m_nSkillID);
-        FUN_140873220(pInvoke, "skillGroupID", m_invokeEffect.m_nSkillGroupID);
-        FUN_140873220(pInvoke, "effectID", m_invokeEffect.m_nEffectID);
-        FUN_140873220(pInvoke, "effectGroupID", m_invokeEffect.m_nEffectGroupID);
+        XmlGetAttr((class TiXmlElement*)(pInvoke), "skillID", reinterpret_cast<unsigned int&>(m_invokeEffect.m_nSkillID));
+        XmlGetAttr((class TiXmlElement*)(pInvoke), "skillGroupID", reinterpret_cast<unsigned int&>(m_invokeEffect.m_nSkillGroupID));
+        XmlGetAttr((class TiXmlElement*)(pInvoke), "effectID", reinterpret_cast<unsigned int&>(m_invokeEffect.m_nEffectID));
+        XmlGetAttr((class TiXmlElement*)(pInvoke), "effectGroupID", reinterpret_cast<unsigned int&>(m_invokeEffect.m_nEffectGroupID));
         XmlTokenList(pInvoke, "types", m_invokeEffect.m_vTypes);
         XmlTokenList(pInvoke, "values", m_invokeEffect.m_vValues);
         XmlTokenList(pInvoke, "rates", m_invokeEffect.m_vRates);
     }
-    Unk_140165cf0* pSpecial = pElem->FUN_140165cf0("SpecialEffect");
+    Unk_140165cf0* pSpecial = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("SpecialEffect"));
     if (pSpecial)
     {
         XmlValue(pSpecial, "type", m_specialEffect.m_eType);
-        FUN_140873360(pSpecial, "probability", m_specialEffect.m_fProbability);
-        FUN_140873420(pSpecial, "values", m_specialEffect.m_strValues);
-        FUN_140873420(pSpecial, "activateMsg", m_specialEffect.m_strActivateMsg);
+        XmlGetAttr((class TiXmlElement*)(pSpecial), "probability", reinterpret_cast<float&>(m_specialEffect.m_fProbability));
+        XmlGetAttr((class TiXmlElement*)(pSpecial), "values", m_specialEffect.m_strValues);
+        XmlGetAttr((class TiXmlElement*)(pSpecial), "activateMsg", m_specialEffect.m_strActivateMsg);
         m_specialEffect.Parse();
     }
-    Unk_140165cf0* pRidee = pElem->FUN_140165cf0("Ridee");
+    Unk_140165cf0* pRidee = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Ridee"));
     if (pRidee)
-        FUN_140873220(pRidee, "rideeID", m_nRideeID);
-    Unk_140165cf0* pSpread = pElem->FUN_140165cf0("Spread");
+        XmlGetAttr((class TiXmlElement*)(pRidee), "rideeID", reinterpret_cast<unsigned int&>(m_nRideeID));
+    Unk_140165cf0* pSpread = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Spread"));
     if (pSpread)
     {
         XmlValue(pSpread, "type", m_spread.m_eType);
-        FUN_140873220(pSpread, "count", m_spread.m_nCount);
+        XmlGetAttr((class TiXmlElement*)(pSpread), "count", reinterpret_cast<unsigned int&>(m_spread.m_nCount));
         if (m_spread.m_nCount != 0)
             m_spread.m_rangeProperty.LoadElement(pSpread, "rangeProperty");
     }
-    for (Unk_140165cf0* pAdditional = pElem->FUN_140165cf0("Additional"); pAdditional;
-         pAdditional = pAdditional->FUN_140168650("Additional"))
+    for (Unk_140165cf0* pAdditional = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Additional")); pAdditional;
+         pAdditional = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAdditional))->NextSibling("Additional")))
     {
         MS2Ptr<AdditionalActionAdditional> pAction(new AdditionalActionAdditional);
         if (!pAction->Load(pAdditional))
             return false;
         m_vAdditional.push_back(pAction);
     }
-    for (Unk_140165cf0* pSkill = pElem->FUN_140165cf0("Skill"); pSkill; pSkill = pSkill->FUN_140168650("Skill"))
+    for (Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Skill")); pSkill; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("Skill")))
     {
         MS2Ptr<AdditionalActionSkill> pAction(new AdditionalActionSkill);
         if (!pAction->Load(pSkill))
             return false;
         m_vSkill.push_back(pAction);
     }
-    Unk_140165cf0* pRemove = pElem->FUN_140165cf0("RemoveRechargingCount");
+    Unk_140165cf0* pRemove = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("RemoveRechargingCount"));
     if (pRemove)
     {
-        FUN_140873220(pRemove, "skillID", m_nRemoveRechargingSkillID);
-        FUN_140873220(pRemove, "count", m_nRemoveRechargingCount);
+        XmlGetAttr((class TiXmlElement*)(pRemove), "skillID", reinterpret_cast<unsigned int&>(m_nRemoveRechargingSkillID));
+        XmlGetAttr((class TiXmlElement*)(pRemove), "count", reinterpret_cast<unsigned int&>(m_nRemoveRechargingCount));
     }
     return true;
 }
@@ -1483,42 +1499,42 @@ MS2_REPLACE_METHOD(0x140175300, AdditionalLevelData, IsVisibleItemOption, 18, 0x
 // @0x140175320
 void AdditionalLevelData::LoadOverlapKeepEffect(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pOverlap = pElem->FUN_140165cf0("OverlapKeepEffectProperty");
+    Unk_140165cf0* pOverlap = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("OverlapKeepEffectProperty"));
     if (pOverlap)
     {
-        Unk_140165cf0* pStart = pOverlap->FUN_140165cf0("start");
+        Unk_140165cf0* pStart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOverlap))->FirstChild("start"));
         if (pStart)
         {
-            for (Unk_140165cf0* p = pStart->FUN_140165cf0("overlap"); p; p = p->FUN_140168650("overlap"))
+            for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStart))->FirstChild("overlap")); p; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("overlap")))
             {
                 unsigned nCount = 1;
                 CString strEffect("");
-                FUN_140873220(p, "count", nCount);
-                FUN_1408733e0(p, "effect", strEffect);
+                XmlGetAttr((class TiXmlElement*)(p), "count", reinterpret_cast<unsigned int&>(nCount));
+                XmlGetAttr((class TiXmlElement*)(p), "effect", strEffect);
                 m_motion.m_overlapKeepEffect.m_mapStart.insert(std::make_pair(nCount, strEffect));
             }
         }
-        Unk_140165cf0* pKeep = pOverlap->FUN_140165cf0("keep");
+        Unk_140165cf0* pKeep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOverlap))->FirstChild("keep"));
         if (pKeep)
         {
-            for (Unk_140165cf0* p = pKeep->FUN_140165cf0("overlap"); p; p = p->FUN_140168650("overlap"))
+            for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKeep))->FirstChild("overlap")); p; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("overlap")))
             {
                 unsigned nCount = 1;
                 CString strEffect("");
-                FUN_140873220(p, "count", nCount);
-                FUN_1408733e0(p, "effect", strEffect);
+                XmlGetAttr((class TiXmlElement*)(p), "count", reinterpret_cast<unsigned int&>(nCount));
+                XmlGetAttr((class TiXmlElement*)(p), "effect", strEffect);
                 m_motion.m_overlapKeepEffect.m_mapKeep.insert(std::make_pair(nCount, strEffect));
             }
         }
-        Unk_140165cf0* pEnd = pOverlap->FUN_140165cf0("end");
+        Unk_140165cf0* pEnd = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOverlap))->FirstChild("end"));
         if (pEnd)
         {
-            for (Unk_140165cf0* p = pEnd->FUN_140165cf0("overlap"); p; p = p->FUN_140168650("overlap"))
+            for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEnd))->FirstChild("overlap")); p; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("overlap")))
             {
                 unsigned nCount = 1;
                 CString strEffect("");
-                FUN_140873220(p, "count", nCount);
-                FUN_1408733e0(p, "effect", strEffect);
+                XmlGetAttr((class TiXmlElement*)(p), "count", reinterpret_cast<unsigned int&>(nCount));
+                XmlGetAttr((class TiXmlElement*)(p), "effect", strEffect);
                 m_motion.m_overlapKeepEffect.m_mapEnd.insert(std::make_pair(nCount, strEffect));
             }
         }
@@ -1562,27 +1578,27 @@ MS2_REPLACE_METHOD(0x140175790, AdditionalLevelData, HasSA, 90, 0x98781FA0);
 // @0x1401757f0
 void AdditionalLevelData::LoadCondition(Unk_140165cf0* pElem)
 {
-    FUN_1408730a0(pElem, "allowDeadState", m_bAllowDeadState);
-    FUN_1408730a0(pElem, "onlyShadowWorld", m_bOnlyShadowWorld);
-    FUN_1408730a0(pElem, "allowBattleRidingState", m_bAllowBattleRidingState);
-    FUN_1408730a0(pElem, "onlyBattleRidingState", m_bOnlyBattleRidingState);
-    FUN_140873360(pElem, "requireDurationWithoutMove", m_fRequireDurationWithoutMove);
-    FUN_1408731e0(pElem, "applyPvPZoneType", m_nApplyPvPZoneType);
-    FUN_140873220(pElem, "jobCode", m_nJobCode);
-    FUN_140873220(pElem, "mapCategory", m_nMapCategory);
-    FUN_1408731e0(pElem, "mapContinent", m_nMapContinent);
+    XmlGetAttr((class TiXmlElement*)(pElem), "allowDeadState", reinterpret_cast<bool&>(m_bAllowDeadState));
+    XmlGetAttr((class TiXmlElement*)(pElem), "onlyShadowWorld", reinterpret_cast<bool&>(m_bOnlyShadowWorld));
+    XmlGetAttr((class TiXmlElement*)(pElem), "allowBattleRidingState", reinterpret_cast<bool&>(m_bAllowBattleRidingState));
+    XmlGetAttr((class TiXmlElement*)(pElem), "onlyBattleRidingState", reinterpret_cast<bool&>(m_bOnlyBattleRidingState));
+    XmlGetAttr((class TiXmlElement*)(pElem), "requireDurationWithoutMove", reinterpret_cast<float&>(m_fRequireDurationWithoutMove));
+    XmlGetAttr((class TiXmlElement*)(pElem), "applyPvPZoneType", reinterpret_cast<int&>(m_nApplyPvPZoneType));
+    XmlGetAttr((class TiXmlElement*)(pElem), "jobCode", reinterpret_cast<unsigned int&>(m_nJobCode));
+    XmlGetAttr((class TiXmlElement*)(pElem), "mapCategory", reinterpret_cast<unsigned int&>(m_nMapCategory));
+    XmlGetAttr((class TiXmlElement*)(pElem), "mapContinent", reinterpret_cast<int&>(m_nMapContinent));
     XmlValueByName(pElem, "dungeonGroupType", m_eDungeonGroupType);
     XmlTokenList(pElem, "fieldIDs", m_setFieldIDs);
     XmlTokenList(pElem, "usedSkillIDs", m_setUsedSkillIDs);
-    FUN_1408731e0(pElem, "equipHandL", m_nEquipHandL);
-    FUN_1408731e0(pElem, "equipHandR", m_nEquipHandR);
-    FUN_140873220(pElem, "hasBuffID", m_nHasBuffID);
-    FUN_1408731a0(pElem, "hasBuffLevel", m_nHasBuffLevel);
-    FUN_140873220(pElem, "hasBuffCount", m_nHasBuffCount);
-    FUN_1408730a0(pElem, "checkActivateBuff", m_bCheckActivateBuff);
+    XmlGetAttr((class TiXmlElement*)(pElem), "equipHandL", reinterpret_cast<int&>(m_nEquipHandL));
+    XmlGetAttr((class TiXmlElement*)(pElem), "equipHandR", reinterpret_cast<int&>(m_nEquipHandR));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffID", reinterpret_cast<unsigned int&>(m_nHasBuffID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffLevel", reinterpret_cast<unsigned short&>(m_nHasBuffLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffCount", reinterpret_cast<unsigned int&>(m_nHasBuffCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "checkActivateBuff", reinterpret_cast<bool&>(m_bCheckActivateBuff));
     XmlValue(pElem, "eventCondition", m_eEventCondition);
-    FUN_1408731e0(pElem, "ignoreOwnerEvent", m_nIgnoreOwnerEvent);
-    FUN_140873220(pElem, "hasNotBuffID", m_nHasNotBuffID);
+    XmlGetAttr((class TiXmlElement*)(pElem), "ignoreOwnerEvent", reinterpret_cast<int&>(m_nIgnoreOwnerEvent));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasNotBuffID", reinterpret_cast<unsigned int&>(m_nHasNotBuffID));
     m_overlapCondition.Load(pElem);
     ATL::CAtlArray<CString> arrStates;
     XmlTokenList(pElem, "requireStates", arrStates);
@@ -1600,15 +1616,15 @@ void AdditionalLevelData::LoadCondition(Unk_140165cf0* pElem)
         m_arrRequireMasteryTypes.Add(eType);
     }
     XmlTokenList(pElem, "requireMasteryValues", m_arrRequireMasteryValues);
-    FUN_140873220(pElem, "casterAdditionalID", m_nCasterAdditionalID);
-    FUN_140873220(pElem, "casterAdditionalCount", m_nCasterAdditionalCount);
-    FUN_140873360(pElem, "casterHpRate", m_fCasterHpRate);
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterAdditionalID", reinterpret_cast<unsigned int&>(m_nCasterAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterAdditionalCount", reinterpret_cast<unsigned int&>(m_nCasterAdditionalCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "casterHpRate", reinterpret_cast<float&>(m_fCasterHpRate));
     XmlValueByName(pElem, "casterHpOp", m_eCasterHpOp);
-    FUN_140873220(pElem, "targetAdditionalID", m_nTargetAdditionalID);
-    Unk_140165cf0* pOwner = pElem->FUN_140165cf0("owner");
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetAdditionalID", reinterpret_cast<unsigned int&>(m_nTargetAdditionalID));
+    Unk_140165cf0* pOwner = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("owner"));
     if (pOwner)
     {
-        for (Unk_140165cf0* p = pOwner->FUN_140165cf0("compareStat"); p; p = p->FUN_140168650("compareStat"))
+        for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOwner))->FirstChild("compareStat")); p; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("compareStat")))
         {
             Unk_CompareStat stat;
             if (stat.FUN_1407e5e70(p) == 0)

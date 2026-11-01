@@ -181,7 +181,6 @@ class Unk_CameraUIService
 {
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
-    void FUN_141adc5d0(int nId);
     void FUN_141adc530(int nId);
 };
 // The npc control dialog (id 0x4e81).
@@ -235,7 +234,6 @@ ecr::RenderService* FUN_1413f9890();                                    // the r
 ecr::CameraService* FUN_1413f9910();                                    // the camera service
 class Unk_SceneApp;
 class Unk_UIManager;
-Unk_UIManager* FUN_1408e57f0();
 void FUN_1422ba250(Unk_UIManager* pUI);
 class Unk_140ad4b90;
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
@@ -375,6 +373,7 @@ static CLockCriticalSection s_testValueLock;
 static ATL::CRBMap<CString, CString> s_testValues(10);
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/camera_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 CameraMgr* TSingleton<CameraMgr>::s_instance;
 
@@ -879,7 +878,7 @@ void CameraMgr::FUN_140aea4c0(float fTime)
             ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x6200018) &&
         m_1ac && GetTickCountMs2() - m_1d0 > 1000)
     {
-        FUN_1422ba250(FUN_1408e57f0());
+        FUN_1422ba250(((Unk_UIManager*)CUserMail::FUN_1408e57f0()));
         m_1ac = 0;
     }
     if (m_108)
@@ -1109,7 +1108,7 @@ void CameraMgr::FUN_140aeb1a0()
             UINpcControlDialog* pDialog = Unk_CameraDialog<UINpcControlDialog>(0x4e81);
             if (pDialog)
             {
-                reinterpret_cast<Unk_CameraUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e81);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e81);
                 pDialog->SetNpcId(pNpc->FUN_14123c580());
                 reinterpret_cast<Unk_CameraUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e81);
                 COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
@@ -1285,7 +1284,7 @@ MS2_REPLACE_METHOD(0x140AECE50, CameraMgr, FUN_140aece50, 587, 0x127E1FEB);
 // @0x140aefa70
 void CameraMgr::FUN_140aefa70()
 {
-    if (((class GFxSceneService*)(class Unk_UIManager*)(FUN_1408e57f0()))->GetSceneId() == 0x620000c && FUN_140af7e30() == 2 && m_spMode.get())
+    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000c && FUN_140af7e30() == 2 && m_spMode.get())
     {
         m_240 = !m_240;
         m_spMode->vfunc_33();
@@ -1484,7 +1483,7 @@ MS2_REPLACE_METHOD(0x140AF0170, CameraMgr, FUN_140af0170, 88, 0x7E78B2A1);
 // @0x140af01d0
 int CameraMgr::FUN_140af01d0()
 {
-    if (((class GFxSceneService*)(class Unk_UIManager*)(FUN_1408e57f0()))->GetSceneId() != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::FUN_1408e57f0())))->GetSceneId() != 0x620000c)
         return 0;
     return m_240;
 }
@@ -1753,22 +1752,22 @@ void CameraMgr::FUN_140af1de0()
 MS2_REPLACE_METHOD(0x140AF1DE0, CameraMgr, FUN_140af1de0, 384, 0xD74FB37A);
 
 // @0x140aeb540
-void CameraMgr::FUN_140aeb540(const egf::EntityID& id, const Unk_CameraSetting& setting)
+void CameraMgr::SaveSetting(const egf::EntityID& id, const Unk_CameraSetting& setting)
 {
     // non-const id: the exe's pair ctor is pair(U1&&, U2&&) with std::forward<EntityID&> 0x140af5a50
     m_savedSettings.insert(std::make_pair(const_cast<egf::EntityID&>(id), setting));
 }
-MS2_REPLACE_METHOD(0x140AEB540, CameraMgr, FUN_140aeb540, 72, 0x5A5304A2);
+MS2_REPLACE_METHOD(0x140AEB540, CameraMgr, SaveSetting, 72, 0x5A5304A2);
 
 // @0x140aeb590
-bool CameraMgr::FUN_140aeb590(Unk_CameraSetting& setting)
+bool CameraMgr::GetSavedSetting(Unk_CameraSetting& setting)
 {
     if (m_savedSettings.empty())
         return false;
     setting = m_savedSettings.begin()->second;
     return true;
 }
-MS2_REPLACE_METHOD(0x140AEB590, CameraMgr, FUN_140aeb590, 100, 0x16344786);
+MS2_REPLACE_METHOD(0x140AEB590, CameraMgr, GetSavedSetting, 100, 0x16344786);
 
 // @0x140aeb950
 // MS2-FUNCTIONAL: std::map<int,int>::operator[] binds to an ambiguous exe COMDAT (0x1403e8960 vs 0x140447ef0).

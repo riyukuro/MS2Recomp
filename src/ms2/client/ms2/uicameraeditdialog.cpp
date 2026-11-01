@@ -1165,7 +1165,7 @@ UIMessageBox* FUN_14151f890();
 void FUN_14151f200();
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_140d73aa0(CStringW strText, int n1, int n2, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int n1, void* pListener, CStringW strTag);
 extern template class MS2Ptr<CMsgBoxData>;
 
 // The UI message (0x50 bytes; the dtor is the one of the function cube's copy).
@@ -2083,7 +2083,7 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
     Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
     if (pPart == 0)
         return;
-    unsigned nFlags = ((class Customize*)(class Customize*)(m_spCustomize))->FUN_140cd1b20();
+    unsigned nFlags = ((class Customize*)(class Customize*)(m_spCustomize))->GetEditFlags();
     if (0 < (int)nFlags)
     {
         ASObj kData(2);

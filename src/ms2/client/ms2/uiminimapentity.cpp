@@ -85,6 +85,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -197,7 +198,6 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CString FUN_14192ebf0(int nKind);                                   // the minimap icon of an npc function
-CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_140a22c00(int nStrId, const CStringW& strArg1, const unsigned short& nArg2);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // a string table text by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -582,7 +582,7 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
     } else if (m_type == 4) {
         MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
-            strText = FUN_14052bd00(0x70f, pPC->FUN_1415281c0());
+            strText = FormatStringId<CStringW>(0x70f, pPC->FUN_1415281c0());
     } else if (m_type == 6) {
         strText = m_text;
     } else {
@@ -824,7 +824,7 @@ void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStri
     } else {
         CStringW strName = spPortal->FUN_14169cae0();
         if (!strName.IsEmpty())
-            strText = FUN_14052bd00(0x73d, strName);
+            strText = FormatStringId<CStringW>(0x73d, strName);
     }
 }
 MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 444, 0x1694A5EB);
@@ -841,7 +841,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
     int nHome = 0;
     const int& nField = spPortal->FUN_14169d280();
     if (pPC->FUN_141527f80(&nHome) && nHome == nField)
-        strLabel = FUN_14052bd00(0x70f, pPC->FUN_1415281c0());
+        strLabel = FormatStringId<CStringW>(0x70f, pPC->FUN_1415281c0());
     UIMinimapDialog* pDialog = FUN_141386800();
     if (pDialog) {
         CStringW strBuddies;

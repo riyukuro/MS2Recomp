@@ -94,19 +94,6 @@ class Unk_QuestDebugLocalizer { public: CStringW FUN_1422b0570(const CString&); 
 Unk_QuestDebugLocalizer* FUN_14025e7a0();
 class Unk_QuestDebugAccess { public: bool FUN_14116d9c0(int, int, int); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class ASData : public CPtred
-{
-public:
-    ASData();
-    virtual ~ASData();
-    int FUN_1422b8b10();
-    int FUN_1422b9620(const Scaleform::GFx::Value*, unsigned int);
-    int FUN_1422b8a10();
-    CStringW FUN_1422b8f40();
-private:
-    void* p18; void* p20; void* p28; void* p30; void* p38; void* p40;
-};
-MS2_CHECK_SIZE(ASData, 0x48);
 bool FUN_140184310(const CString&, const char*);
 class Unk_QuestDebugHandle
 {

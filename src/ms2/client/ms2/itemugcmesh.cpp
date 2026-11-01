@@ -1048,14 +1048,14 @@ void FUN_141425610()
 
 // ---- item lookup ----
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 // @0x141425750 - an item by uid: from the inventory, else the one the player wears (*pbEquipped = true)
 MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
 {
     if (pbEquipped != 0)
         *pbEquipped = false;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem.get() != 0)
         return spItem;
     Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -1074,7 +1074,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
 // @0x1414258e0 - the inventory has the item
 bool FUN_1414258e0(__int64 nUid)
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     return spItem.get() != 0;
 }
 

@@ -28,6 +28,20 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // ---- helpers of other units ----
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -81,8 +95,8 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // @0x14051c920
 void CInteractObjectData::ExpInfo::Load(Unk_140165cf0* pElem, const char* pszType, const char* pszRate)
 {
-    FUN_140873360(pElem, pszRate, m_fRate);
-    CString strType = FUN_14015f710(pElem, pszType, CString(""));
+    XmlGetAttr((class TiXmlElement*)(pElem), pszRate, reinterpret_cast<float&>(m_fRate));
+    CString strType = Unk_ReadString((class Unk_XmlNode*)(pElem), pszType, CString(""));
     if (strType == "telescope")
         m_eType = Unk_InteractExpType_Telescope;
     else if (strType == "rareChestFirst")
@@ -119,45 +133,45 @@ CInteractObjectData::~CInteractObjectData()
 // MS2-FUNCTIONAL: 9 KB loader; EH-state/temp-CString layout not byte-reproduced (precedent reactordata.cpp), behaviour follows the decompile branch by branch
 bool CInteractObjectData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
     XmlValue(pElem, "type", m_eType);
-    FUN_1408731e0(pElem, "collection", m_nCollection);
-    FUN_140873220(pElem, "reactCount", m_nReactCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "collection", reinterpret_cast<int&>(m_nCollection));
+    XmlGetAttr((class TiXmlElement*)(pElem), "reactCount", reinterpret_cast<unsigned int&>(m_nReactCount));
     if (m_eType == Unk_InteractObjectType_None)
         return false;
 
-    if (Unk_140165cf0* pMesh = pElem->FUN_140165cf0("mesh"))
+    if (Unk_140165cf0* pMesh = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("mesh")))
     {
-        FUN_1408731e0(pMesh, "normalCollision", m_mesh.m_nNormalCollision);
-        FUN_1408731e0(pMesh, "reactableCollision", m_mesh.m_nReactableCollision);
-        FUN_1408733e0(pMesh, "reactObjectAni", m_mesh.m_strReactObjectAni);
-        CString strShape = FUN_14015f710(pMesh, "shapeDimension", CString(""));
+        XmlGetAttr((class TiXmlElement*)(pMesh), "normalCollision", reinterpret_cast<int&>(m_mesh.m_nNormalCollision));
+        XmlGetAttr((class TiXmlElement*)(pMesh), "reactableCollision", reinterpret_cast<int&>(m_mesh.m_nReactableCollision));
+        XmlGetAttr((class TiXmlElement*)(pMesh), "reactObjectAni", m_mesh.m_strReactObjectAni);
+        CString strShape = Unk_ReadString((class Unk_XmlNode*)(pMesh), "shapeDimension", CString(""));
         FUN_14028c2d0(strShape, &m_mesh.m_shapeDimension);
     }
-    if (Unk_140165cf0* pUi = pElem->FUN_140165cf0("ui"))
+    if (Unk_140165cf0* pUi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ui")))
     {
-        m_ui.m_strSwf = FUN_14015f710(pUi, "swf", CString(""));
-        m_ui.m_strValue = FUN_14015f710(pUi, "value", CString(""));
+        m_ui.m_strSwf = Unk_ReadString((class Unk_XmlNode*)(pUi), "swf", CString(""));
+        m_ui.m_strValue = Unk_ReadString((class Unk_XmlNode*)(pUi), "value", CString(""));
     }
-    if (Unk_140165cf0* pGathering = pElem->FUN_140165cf0("gathering"))
-        FUN_1408731e0(pGathering, "receipeID", m_gathering.m_nReceipeId);
-    if (Unk_140165cf0* pValidate = pElem->FUN_140165cf0("validate"))
+    if (Unk_140165cf0* pGathering = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gathering")))
+        XmlGetAttr((class TiXmlElement*)(pGathering), "receipeID", reinterpret_cast<int&>(m_gathering.m_nReceipeId));
+    if (Unk_140165cf0* pValidate = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("validate")))
     {
         m_validate.m_nFieldId = FUN_140197350(pValidate, "fieldID", 0);
         m_validate.m_fInteractionDistance = FUN_1401973d0(pValidate, "interactionDistance", 0);
     }
-    if (Unk_140165cf0* pQuest = pElem->FUN_140165cf0("quest"))
+    if (Unk_140165cf0* pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("quest")))
     {
-        CString strQuests = FUN_14015f710(pQuest, "maskQuestID", CString(""));
-        CString strStates = FUN_14015f710(pQuest, "maskQuestState", CString(""));
+        CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pQuest), "maskQuestID", CString(""));
+        CString strStates = Unk_ReadString((class Unk_XmlNode*)(pQuest), "maskQuestState", CString(""));
         FUN_140764310(strQuests, strStates, &m_maskUse);
     }
-    if (Unk_140165cf0* pItem = pElem->FUN_140165cf0("item"))
+    if (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("item")))
     {
-        FUN_140873220(pItem, "code", m_item.m_nCode);
+        XmlGetAttr((class TiXmlElement*)(pItem), "code", reinterpret_cast<unsigned int&>(m_item.m_nCode));
         Unk_ReadRank((class Unk_XmlNode*)(pItem), "rank", &m_item.m_nRank);
-        FUN_140873220(pItem, "consume", m_item.m_nConsume);
-        FUN_1408731e0(pItem, "checkCount", m_item.m_nCheckCount);
+        XmlGetAttr((class TiXmlElement*)(pItem), "consume", reinterpret_cast<unsigned int&>(m_item.m_nConsume));
+        XmlGetAttr((class TiXmlElement*)(pItem), "checkCount", reinterpret_cast<int&>(m_item.m_nCheckCount));
         MS2Ptr<CItemData> spItem = FUN_14053f870(m_item.m_nCode);
         if (spItem)
         {
@@ -168,10 +182,10 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             }
         }
     }
-    if (Unk_140165cf0* pCondition = pElem->FUN_140165cf0("conditionAdditionalEffect"))
+    if (Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("conditionAdditionalEffect")))
     {
         CString strId;
-        FUN_1408733e0(pCondition, "id", strId);
+        XmlGetAttr((class TiXmlElement*)(pCondition), "id", strId);
         if (!strId.IsEmpty() && strId != "0")
         {
             std::vector<unsigned> aId;
@@ -192,44 +206,44 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             }
         }
     }
-    if (Unk_140165cf0* pTime = pElem->FUN_140165cf0("time"))
+    if (Unk_140165cf0* pTime = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("time")))
     {
-        FUN_1408732a0(pTime, "resetTime", m_nResetTime);
-        FUN_1408732a0(pTime, "reactTime", m_nReactTime);
-        FUN_1408732a0(pTime, "hideTime", m_nHideTime);
+        XmlGetAttr((class TiXmlElement*)(pTime), "resetTime", reinterpret_cast<unsigned long&>(m_nResetTime));
+        XmlGetAttr((class TiXmlElement*)(pTime), "reactTime", reinterpret_cast<unsigned long&>(m_nReactTime));
+        XmlGetAttr((class TiXmlElement*)(pTime), "hideTime", reinterpret_cast<unsigned long&>(m_nHideTime));
     }
-    if (Unk_140165cf0* pUser = pElem->FUN_140165cf0("user"))
+    if (Unk_140165cf0* pUser = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("user")))
     {
         XmlTokenList(pUser, "reactAni", m_user.m_aReactAni);
-        FUN_1408733e0(pUser, "successAni", m_user.m_strSuccessAni);
-        FUN_1408733e0(pUser, "failAni", m_user.m_strFailAni);
+        XmlGetAttr((class TiXmlElement*)(pUser), "successAni", m_user.m_strSuccessAni);
+        XmlGetAttr((class TiXmlElement*)(pUser), "failAni", m_user.m_strFailAni);
     }
-    if (Unk_140165cf0* pReward = pElem->FUN_140165cf0("reward"))
+    if (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("reward")))
     {
-        FUN_1408732e0(pReward, "exp", m_reward.m_nExp);
+        XmlGetAttr((class TiXmlElement*)(pReward), "exp", reinterpret_cast<__int64&>(m_reward.m_nExp));
         m_reward.m_firstExp.Load(pReward, "firstExpType", "firstRelativeExpRate");
         m_reward.m_exp.Load(pReward, "expType", "relativeExpRate");
     }
-    if (Unk_140165cf0* pDrop = pElem->FUN_140165cf0("drop"))
+    if (Unk_140165cf0* pDrop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("drop")))
     {
         XmlTokenList(pDrop, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
         XmlTokenList(pDrop, "individualDropBoxId", m_drop.m_aIndividualDropBoxId);
-        CString strLevel = FUN_14015f710(pDrop, "objectLevel", CString(""));
+        CString strLevel = Unk_ReadString((class Unk_XmlNode*)(pDrop), "objectLevel", CString(""));
         if (strLevel.CompareNoCase("mapLevel") == 0)
             m_drop.m_nObjectLevel = -1;
         else
             m_drop.m_nObjectLevel = atoi(strLevel);
-        FUN_1408731e0(pDrop, "objectDropRank", m_drop.m_nObjectDropRank);
-        FUN_1408731e0(pDrop, "dropHeight", m_drop.m_nDropHeight);
-        FUN_1408731e0(pDrop, "dropDistance", m_drop.m_nDropDistance);
+        XmlGetAttr((class TiXmlElement*)(pDrop), "objectDropRank", reinterpret_cast<int&>(m_drop.m_nObjectDropRank));
+        XmlGetAttr((class TiXmlElement*)(pDrop), "dropHeight", reinterpret_cast<int&>(m_drop.m_nDropHeight));
+        XmlGetAttr((class TiXmlElement*)(pDrop), "dropDistance", reinterpret_cast<int&>(m_drop.m_nDropDistance));
     }
-    if (Unk_140165cf0* pSpawn = pElem->FUN_140165cf0("spawn"))
+    if (Unk_140165cf0* pSpawn = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("spawn")))
     {
-        CString strCode = FUN_14015f710(pSpawn, "code", CString(""));
-        CString strCount = FUN_14015f710(pSpawn, "count", CString(""));
-        CString strRadius = FUN_14015f710(pSpawn, "radius", CString(""));
-        CString strProp = FUN_14015f710(pSpawn, "prop", CString(""));
-        CString strLifeTime = FUN_14015f710(pSpawn, "lifeTime", CString(""));
+        CString strCode = Unk_ReadString((class Unk_XmlNode*)(pSpawn), "code", CString(""));
+        CString strCount = Unk_ReadString((class Unk_XmlNode*)(pSpawn), "count", CString(""));
+        CString strRadius = Unk_ReadString((class Unk_XmlNode*)(pSpawn), "radius", CString(""));
+        CString strProp = Unk_ReadString((class Unk_XmlNode*)(pSpawn), "prop", CString(""));
+        CString strLifeTime = Unk_ReadString((class Unk_XmlNode*)(pSpawn), "lifeTime", CString(""));
         ATL::CAtlArray<int> aCode;
         ATL::CAtlArray<int> aCount;
         ATL::CAtlArray<int> aRadius;
@@ -259,23 +273,23 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             m_aSpawn.Add(spawn);
         }
     }
-    if (Unk_140165cf0* pSkill = pElem->FUN_140165cf0("skill"))
+    if (Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill")))
     {
-        FUN_140873220(pSkill, "code", m_skill.m_nCode);
-        FUN_1408731a0(pSkill, "level", m_skill.m_nLevel);
-        FUN_1408731e0(pSkill, "friendly", m_skill.m_nFriendly);
-        FUN_1408731e0(pSkill, "count", m_skill.m_nCount);
-        FUN_1408732a0(pSkill, "interval", m_skill.m_nInterval);
-        FUN_140873220(pSkill, "prop", m_skill.m_nProp);
+        XmlGetAttr((class TiXmlElement*)(pSkill), "code", reinterpret_cast<unsigned int&>(m_skill.m_nCode));
+        XmlGetAttr((class TiXmlElement*)(pSkill), "level", reinterpret_cast<unsigned short&>(m_skill.m_nLevel));
+        XmlGetAttr((class TiXmlElement*)(pSkill), "friendly", reinterpret_cast<int&>(m_skill.m_nFriendly));
+        XmlGetAttr((class TiXmlElement*)(pSkill), "count", reinterpret_cast<int&>(m_skill.m_nCount));
+        XmlGetAttr((class TiXmlElement*)(pSkill), "interval", reinterpret_cast<unsigned long&>(m_skill.m_nInterval));
+        XmlGetAttr((class TiXmlElement*)(pSkill), "prop", reinterpret_cast<unsigned int&>(m_skill.m_nProp));
     }
-    if (Unk_140165cf0* pAdditional = pElem->FUN_140165cf0("additionalEffect"))
+    if (Unk_140165cf0* pAdditional = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect")))
     {
-        if (Unk_140165cf0* pModify = pAdditional->FUN_140165cf0("modify"))
+        if (Unk_140165cf0* pModify = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAdditional))->FirstChild("modify")))
         {
-            FUN_140873220(pModify, "code", m_modify.m_nCode);
-            FUN_1408731e0(pModify, "modifyTime", m_modify.m_nModifyTime);
+            XmlGetAttr((class TiXmlElement*)(pModify), "code", reinterpret_cast<unsigned int&>(m_modify.m_nCode));
+            XmlGetAttr((class TiXmlElement*)(pModify), "modifyTime", reinterpret_cast<int&>(m_modify.m_nModifyTime));
         }
-        if (Unk_140165cf0* pInvoke = pAdditional->FUN_140165cf0("invoke"))
+        if (Unk_140165cf0* pInvoke = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAdditional))->FirstChild("invoke")))
         {
             CString strCode;
             CString strLevel;
@@ -283,9 +297,9 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             ATL::CAtlArray<int> aCode;
             ATL::CAtlArray<int> aLevel;
             ATL::CAtlArray<int> aProp;
-            FUN_1408733e0(pInvoke, "code", strCode);
-            FUN_1408733e0(pInvoke, "level", strLevel);
-            FUN_1408733e0(pInvoke, "prop", strProp);
+            XmlGetAttr((class TiXmlElement*)(pInvoke), "code", strCode);
+            XmlGetAttr((class TiXmlElement*)(pInvoke), "level", strLevel);
+            XmlGetAttr((class TiXmlElement*)(pInvoke), "prop", strProp);
             XmlSplit(strCode, aCode, "[], ");
             XmlSplit(strLevel, aLevel, "[], ");
             XmlSplit(strProp, aProp, "[], ");
@@ -310,68 +324,68 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             }
         }
     }
-    if (Unk_140165cf0* pEffect = pElem->FUN_140165cf0("effect"))
+    if (Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effect")))
     {
-        m_effect.m_strNormal = FUN_14015f710(pEffect, "normal", CString(""));
-        m_effect.m_strReactable = FUN_14015f710(pEffect, "reactable", CString(""));
-        m_effect.m_strSuccess = FUN_14015f710(pEffect, "success", CString(""));
-        m_effect.m_strInteraction = FUN_14015f710(pEffect, "interaction", CString(""));
-        if (Unk_140165cf0* pMask = pEffect->FUN_140165cf0("maskNormal"))
+        m_effect.m_strNormal = Unk_ReadString((class Unk_XmlNode*)(pEffect), "normal", CString(""));
+        m_effect.m_strReactable = Unk_ReadString((class Unk_XmlNode*)(pEffect), "reactable", CString(""));
+        m_effect.m_strSuccess = Unk_ReadString((class Unk_XmlNode*)(pEffect), "success", CString(""));
+        m_effect.m_strInteraction = Unk_ReadString((class Unk_XmlNode*)(pEffect), "interaction", CString(""));
+        if (Unk_140165cf0* pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->FirstChild("maskNormal")))
         {
-            CString strQuests = FUN_14015f710(pMask, "maskQuestID", CString(""));
-            CString strStates = FUN_14015f710(pMask, "maskQuestState", CString(""));
+            CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
+            CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
             FUN_140764310(strQuests, strStates, &m_effect.m_maskNormal);
         }
-        if (Unk_140165cf0* pMask = pEffect->FUN_140165cf0("maskReactable"))
+        if (Unk_140165cf0* pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->FirstChild("maskReactable")))
         {
-            CString strQuests = FUN_14015f710(pMask, "maskQuestID", CString(""));
-            CString strStates = FUN_14015f710(pMask, "maskQuestState", CString(""));
+            CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
+            CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
             FUN_140764310(strQuests, strStates, &m_effect.m_maskReactable);
         }
-        if (Unk_140165cf0* pMask = pEffect->FUN_140165cf0("maskInteraction"))
+        if (Unk_140165cf0* pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->FirstChild("maskInteraction")))
         {
-            CString strQuests = FUN_14015f710(pMask, "maskQuestID", CString(""));
-            CString strStates = FUN_14015f710(pMask, "maskQuestState", CString(""));
+            CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
+            CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
             FUN_140764310(strQuests, strStates, &m_effect.m_maskInteraction);
         }
     }
-    if (Unk_140165cf0* pRoom = pElem->FUN_140165cf0("room"))
+    if (Unk_140165cf0* pRoom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("room")))
     {
-        FUN_1408731e0(pRoom, "privateRoomID", m_room.m_nPrivateRoomId);
-        FUN_1408732a0(pRoom, "portalLifeTime", m_room.m_nPortalLifeTime);
-        FUN_1408731e0(pRoom, "partyPortal", m_room.m_nPartyPortal);
-        FUN_140873220(pRoom, "bossNpcID", m_room.m_nBossNpcId);
-        FUN_1408731e0(pRoom, "hideBossName", m_room.m_nHideBossName);
+        XmlGetAttr((class TiXmlElement*)(pRoom), "privateRoomID", reinterpret_cast<int&>(m_room.m_nPrivateRoomId));
+        XmlGetAttr((class TiXmlElement*)(pRoom), "portalLifeTime", reinterpret_cast<unsigned long&>(m_room.m_nPortalLifeTime));
+        XmlGetAttr((class TiXmlElement*)(pRoom), "partyPortal", reinterpret_cast<int&>(m_room.m_nPartyPortal));
+        XmlGetAttr((class TiXmlElement*)(pRoom), "bossNpcID", reinterpret_cast<unsigned int&>(m_room.m_nBossNpcId));
+        XmlGetAttr((class TiXmlElement*)(pRoom), "hideBossName", reinterpret_cast<int&>(m_room.m_nHideBossName));
     }
-    if (Unk_140165cf0* pHome = pElem->FUN_140165cf0("homePrivilege"))
-        FUN_1408731e0(pHome, "check", m_homePrivilege.m_nCheck);
-    if (Unk_140165cf0* pWeb = pElem->FUN_140165cf0("webOpen"))
+    if (Unk_140165cf0* pHome = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("homePrivilege")))
+        XmlGetAttr((class TiXmlElement*)(pHome), "check", reinterpret_cast<int&>(m_homePrivilege.m_nCheck));
+    if (Unk_140165cf0* pWeb = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("webOpen")))
     {
-        FUN_1408731e0(pWeb, "type", m_webOpen.m_nType);
-        m_webOpen.m_strUrl = FUN_14015f710(pWeb, "url", CString(""));
+        XmlGetAttr((class TiXmlElement*)(pWeb), "type", reinterpret_cast<int&>(m_webOpen.m_nType));
+        m_webOpen.m_strUrl = Unk_ReadString((class Unk_XmlNode*)(pWeb), "url", CString(""));
     }
-    if (Unk_140165cf0* pUrl = pElem->FUN_140165cf0("displayURL"))
+    if (Unk_140165cf0* pUrl = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("displayURL")))
     {
-        m_displayUrl.m_strIndirectUrl = FUN_14015f710(pUrl, "indirectURL", CString(""));
+        m_displayUrl.m_strIndirectUrl = Unk_ReadString((class Unk_XmlNode*)(pUrl), "indirectURL", CString(""));
         m_displayUrl.m_nType = FUN_140197350(pUrl, "type", 0);
     }
-    if (Unk_140165cf0* pDisplay = pElem->FUN_140165cf0("display"))
+    if (Unk_140165cf0* pDisplay = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("display")))
     {
-        m_display.m_strMinimapIcon = FUN_14015f710(pDisplay, "minimapIcon", CString(""));
+        m_display.m_strMinimapIcon = Unk_ReadString((class Unk_XmlNode*)(pDisplay), "minimapIcon", CString(""));
         m_display.m_nNotice = FUN_140197350(pDisplay, "notice", 0);
     }
-    if (Unk_140165cf0* pArena = pElem->FUN_140165cf0("arena"))
+    if (Unk_140165cf0* pArena = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("arena")))
         m_arena.m_nCanInteractTeamId = FUN_140197350(pArena, "canInteractTeamId", 0);
-    if (Unk_140165cf0* pPortal = pElem->FUN_140165cf0("portal"))
+    if (Unk_140165cf0* pPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("portal")))
         m_portal.m_nTargetPortalId = FUN_140197350(pPortal, "targetPortalId", 0);
-    if (Unk_140165cf0* pGuild = pElem->FUN_140165cf0("guild"))
+    if (Unk_140165cf0* pGuild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("guild")))
         m_guild.m_nHousePosterId = FUN_140197350(pGuild, "housePosterId", 0);
-    if (Unk_140165cf0* pWeapon = pElem->FUN_140165cf0("weapon"))
+    if (Unk_140165cf0* pWeapon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("weapon")))
         m_weapon.m_nWeaponItemId = FUN_140197390(pWeapon, "weaponItemId", 0);
-    if (Unk_140165cf0* pMastery = pElem->FUN_140165cf0("mastery"))
+    if (Unk_140165cf0* pMastery = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("mastery")))
     {
         XmlValue(pMastery, "type", m_mastery.m_eType);
-        FUN_1408731e0(pMastery, "value", m_mastery.m_nValue);
+        XmlGetAttr((class TiXmlElement*)(pMastery), "value", reinterpret_cast<int&>(m_mastery.m_nValue));
     }
     return true;
 }
@@ -403,8 +417,8 @@ void CInteractObjectData::LoadAll()
             Unk_InteractLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "InteractObject.xml");
             return;
         }
-        for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("interact"); pNode != 0;
-             pNode = pNode->FUN_140168650("interact"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("interact")); pNode != 0;
+             pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("interact")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;

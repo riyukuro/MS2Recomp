@@ -75,7 +75,6 @@ class Unk_MdUiMgr
 {
 public:
     Unk_MdUiRef FUN_141adcea0(int nUiId);                   // find a dialog by id
-    int FUN_141adc890(int nUiId);                           // is it open
     void FUN_141adc530(int nUiId);                          // open it
 };
 UIObject* FUN_1403e8a70(Unk_MdUiRef* pRef);                 // the held object, 0 = none
@@ -600,10 +599,10 @@ int UIManufactureStatus::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 if (pList != 0)
                 {
                     pList->FUN_1412db660(nBook, fX, fY);
-                    if (reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecb) != 0)
+                    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ecb))) != 0)
                         pList->FUN_1412db6c0();
                     else
-                        reinterpret_cast<Unk_MdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ecb);
+                        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ecb)));
                 }
             }
         }
@@ -911,7 +910,6 @@ void FUN_141215500();
 void FUN_1406a27b0(CMeratMarketPremium* p);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_141b6e500(const CString& strDir, const char* szExt, const CString& strDefault);   // pick a file
-bool FUN_140184310(const CString& str, const char* sz);     // the text is sz
 int FUN_1408738d0(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);
 
 // @0x1412dd900
@@ -1241,9 +1239,9 @@ int FUN_1412dfe70(const CString& strMode, AScript* pTarget)
 {
     CString strPath = FUN_141b6e500("./Data/Xml/Table/Server", "xml", "");
     int nMode = 5;
-    if (FUN_140184310(strMode, "m_meratHome"))
+    if ((strMode == "m_meratHome"))
         nMode = 0;
-    else if (FUN_140184310(strMode, "m_designersHome"))
+    else if ((strMode == "m_designersHome"))
         nMode = 3;
     if (nMode == 5)
         return 0;

@@ -301,7 +301,7 @@ class Unk_MentorSchedule : public CGameEventValueMentoring { public: void FUN_14
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 
 CStringW FUN_140c70b70(CStringW strFormat, const int& nStartYear, const int& nStartMonth, const int& nStartDay, const int& nEndYear, const int& nEndMonth, const int& nEndDay, const CStringW& strName);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 // The register role byte (ctor 0x140c731c0 always stores 8).
@@ -341,7 +341,7 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onRegister") == 0)
     {
-        Unk_MentorActorV* pActor = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0) return 1;
         CMsTime tStart(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetBeginTime());
         CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
@@ -486,7 +486,6 @@ public:
 };
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-bool FUN_140184310(const CString& strText, const char* szCompare);
 bool FUN_140841300(const CStringW& strText, const char* szCompare);
 int FUN_140718170(const CString& str);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -545,7 +544,7 @@ void UIMentoringMissionPage::vfunc_2()
 void UIMentoringMissionPage::vfunc_3(Scaleform::GFx::Value* pOut, const CString& strMethod, ASData* pArgs)
 {
     UIMentoringPage::vfunc_3(pOut, strMethod, pArgs);
-    if (FUN_140184310(strMethod, "getTabTooltip"))
+    if ((strMethod == "getTabTooltip"))
     {
         int nDay = FUN_140718170(pArgs->FUN_1422b8d30());
         CMsTime now(GetServerTime());
@@ -574,7 +573,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
         Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
-            Unk_MentorActorV* pActor = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0) return;
             ASTooltip tip(2);
             if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nQuest, 1))))
@@ -590,7 +589,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
         Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
-            Unk_MentorActorV* pActor = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0) return;
             ASTooltip tip(2);
             if (tip.FUN_1409e26b0(FUN_140763e10(FUN_140761e40(nQuest, 1))))
@@ -681,7 +680,7 @@ void UIMentoringMissionPage::FUN_140c74170(ASObj& obj, Unk_MentorInstance* pInst
     if (pInst == 0) return;
     Unk_MentorQuestPtr spQuest = (&pInst->m_progress)->vfunc_0();
     if (spQuest.IsNull()) return;
-    Unk_MentorActorV* pUser = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MentorActorV* pUser = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pUser == 0) return;
     CString strIcon = (&pInst->m_progress)->vfunc_0()->m_strIcon;
     CStringW strDesc = FUN_1416e5350(((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580(), 0);

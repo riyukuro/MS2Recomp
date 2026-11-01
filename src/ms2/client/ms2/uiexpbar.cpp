@@ -40,14 +40,12 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-class Unk_ExpUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_ExpCfgHolder { public: Unk_ExpCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 int FUN_1412755a0();
-bool FUN_140184310(const CString& str, const char* psz);            // str == psz
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);   // string-table text with two arguments
 CStringW FUN_14052bd00(int nId, const CStringW& a);                 // string-table text with one argument
@@ -231,7 +229,7 @@ void UIExpBar::OnLoadComplete()
 // @0x141932730
 void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    if (FUN_140184310(strMethod, "getExp"))
+    if ((strMethod == "getExp"))
     {
         CStringW strText;
         strText = FUN_140632a60(0x769, FUN_1409404f0(FUN_1419322a0()), FUN_1409404f0(FUN_1419322e0()));
@@ -265,7 +263,7 @@ int UIExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
         return 1;
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
-        reinterpret_cast<Unk_ExpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4efa);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4efa)));
         return 1;
     }
     return 0;

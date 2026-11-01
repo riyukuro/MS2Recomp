@@ -56,7 +56,6 @@ public:
 };
 
 WorldService* FUN_1403ed2d0();
-bool FUN_140184310(const CString&, const char*);
 
 // Time value (ctor 0x1406c47a0); the declared copy ctor forces by-pointer passing.
 class Unk_Time
@@ -210,7 +209,7 @@ MS2_REPLACE_METHOD(0x140E94870, UISnowmanEventDialog, OnLoadComplete, 803, 0xED9
 void UISnowmanEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(result, method, args);
-    if (FUN_140184310(method, "getTooltipItem")) {
+    if ((method == "getTooltipItem")) {
         int id = args->FUN_1422b8b10();
         int rank = args->FUN_1422b8b10();
         void* owner = FUN_1403ed2d0()->FUN_141bd0cc0();

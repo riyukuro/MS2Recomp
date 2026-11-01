@@ -45,12 +45,16 @@ MS2_CHECK_SIZE(Unk_PbScript, 0x10);
 
 // The npc talk manager (singleton accessor 0x140967100).
 class Unk_PbTalkMgr { public: void FUN_141b213f0(Unk_PbScript script, int nNpc, int n4, int n0); };
-Unk_PbTalkMgr* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);
-int FUN_14074bc90(unsigned nQuestId);                   // quest kind: 0 epic, 2 event, else world
+int FUN_14074bc90(int);   // C3: was FUN_14074bc90
 unsigned short FUN_14074bd10(int nQuestId);             // quest level
 CStringW FUN_1416e5900(unsigned nQuestId, int n);       // quest title
 CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);    // formatted string table entry
@@ -119,7 +123,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
     if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_list")) {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<unsigned> quests;
-        FUN_140764020()->FUN_1416d0920(quests);
+        ((class CQuestManager*)FUN_140764020())->FUN_1416d0920(quests);
         qsort(quests.GetData(), quests.GetCount(), 4, FUN_140e7fc90);
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             unsigned nQuest = quests[i];
@@ -141,7 +145,7 @@ void UIQuestPostBoxDialog::FUN_140e7f920(int nQuest)
     if (data.IsNull()) return;
     Unk_PbScript script(FUN_14074b030(data.operator->()), 100);
     if (script.FUN_14085a420()) return;
-    FUN_140967100()->FUN_141b213f0(script, data->m_2e8, 4, 0);
+    ((class Unk_PbTalkMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(script, data->m_2e8, 4, 0);
 }
 MS2_REPLACE_METHOD(0x140E7F920, UIQuestPostBoxDialog, FUN_140e7f920, 282, 0x7DFA22B7);
 

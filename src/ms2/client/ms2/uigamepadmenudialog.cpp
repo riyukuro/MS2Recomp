@@ -173,7 +173,6 @@ class Unk_GpStr { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_GpStr* FUN_14025e7a0();
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
 CFeatureManager* FUN_140166410();
-class Unk_GpUi { public: void FUN_141adc750(int nUiId); };
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116dd30(int nKey, int a, int b); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
@@ -263,7 +262,7 @@ int UIGamePadMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (spMenu->m_tail.FUN_14098d930() == false)
                 spMenu->m_tail.FUN_14098d150();
             else if (spMenu->m_nUiId != 0)
-                reinterpret_cast<Unk_GpUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(spMenu->m_nUiId);
+                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(spMenu->m_nUiId)));
             vfunc_67();
             return 1;
         }

@@ -95,6 +95,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #ifdef __clang__
 CStringA FUN_140298360(const char*, const CStringA&);
 CStringA FUN_14038f6d0(const CStringA&, const char*);
@@ -104,13 +105,11 @@ CStringA FUN_14038f6d0(const CStringA&, const char*);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime* pOut);   // time attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);    // int attribute with default
 CString FUN_140651390();                                                        // the language suffix of a text table
 CString FUN_14071ae20(const CString& strFile);                                  // path of a string table file
-bool FUN_1406c5200();
 __int64 GetServerTime();                                                       // the server time
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);                       // string table format
 CStringA FUN_140536a50(const char* pszFormat, const CStringA& str);
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
 
@@ -476,7 +475,7 @@ CStringW CSeasonDataTable::GetDisplayName(MS2Ptr<CSeasonData> spData)
     CStringW strResult(L"");
     if ((spData.get() ? true : false) && spData->m_nSeasonID > 0) {
         if (spData->m_strDisplayName.IsEmpty())
-            strResult = FUN_14062b4f0(CStringW(L"s_gameranking_tab_season"), spData->m_nSeasonID);
+            strResult = FUN_14028dfa0<int>(CStringW(L"s_gameranking_tab_season"), spData->m_nSeasonID);
         else
             strResult = spData->m_strDisplayName;
     }
@@ -516,8 +515,8 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
         spData->m_type = type;
         FUN_1408731e0(pNode, "seasonID", spData->m_nSeasonID);
         FUN_140873420(pNode, "seasonName", spData->m_strSeasonName);
-        FUN_140873600(pNode, "eventStart", &spData->m_start);
-        FUN_140873600(pNode, "eventEnd", &spData->m_end);
+        XmlGetAttr((class TiXmlElement*)(pNode), "eventStart", *(class CMsTime*)(&spData->m_start));
+        XmlGetAttr((class TiXmlElement*)(pNode), "eventEnd", *(class CMsTime*)(&spData->m_end));
         for (int i = 0; i < 7; ++i) {
             int nGrade = i + 1;
             CStringA strKey = FUN_1402bb1c0("grade{0}", nGrade);
@@ -532,7 +531,7 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
 // @0x140792b90
 void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
 {
-    if (!FUN_1406c5200())
+    if (!CMsTime::IsTimeZoneSet())
         return;
     CMsTime now(GetServerTime());
     int nState = 0;
@@ -706,7 +705,7 @@ int CSeasonDataTable::ReadRewards()
         FUN_1408731e0(pNode, "rankType", spData->m_nRankType);
         FUN_1408731e0(pNode, "rewardType", spData->m_nRewardType);
         FUN_1408731e0(pNode, "value", spData->m_nValue);
-        FUN_140873600(pNode, "startdate", &spData->m_startDate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "startdate", *(class CMsTime*)(&spData->m_startDate));
         FUN_140873420(pNode, "systemMailSender", spData->m_strMailSender);
         FUN_140873420(pNode, "systemMailSubject", spData->m_strMailSubject);
         FUN_140873420(pNode, "systemMailContent", spData->m_strMailContent);

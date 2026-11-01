@@ -51,9 +51,8 @@ class Unk_UgcImageData : public AScript
 {
 };
 
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 UIItemBlueprintCreateDialog* FUN_1418a6920();                   // the create dialog of a blueprint item, if open
-bool FUN_140a467d0(const MS2Ptr<AScript>* pScript);             // the movie root is not loaded
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
 int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
@@ -62,8 +61,6 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 CStringW FUN_140719a00(__int64 nMoney);                         // a money amount as text
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
-bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 extern __int64 DAT_143ab2898;                                   // the money
@@ -113,7 +110,7 @@ void UIUGCImageUploadDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
-    FUN_14052d220()->FUN_141880ec0(vfunc_48());
+    ((class CUgcManager*)FUN_14052d220())->FUN_141880ec0(vfunc_48());
     m_188 = Unk_UgcOpenType_None;
 }
 
@@ -137,7 +134,7 @@ void UIUGCImageUploadDialog::OnLoadInit()
 void UIUGCImageUploadDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
     {
         vfunc_67();
@@ -175,12 +172,12 @@ int UIUGCImageUploadDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (FUN_1403b3c40(strTag, L"noexist") == 0)
             {
                 if (FUN_140d74e80(strTag) != 0)
-                    FUN_14052d220()->FUN_141882020();
+                    ((class CUgcManager*)FUN_14052d220())->FUN_141882020();
             }
             else
             {
                 FUN_141b3a600();
-                MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
                 if (spUpload.get() != 0)
                 {
                     if (spUpload->m_spViewer.get() != 0)
@@ -258,7 +255,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
                 return 1;
             }
-            FUN_14052d220()->FUN_141882a70(nIndex, 1);
+            ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 1);
         }
         return 1;
     }
@@ -270,10 +267,10 @@ void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
 {
     CString strType = pArgs->FUN_1422b8d30();
     Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
-    if (FUN_1409b0390(&arg) || FUN_1409b0350(&arg))
+    if (FUN_1409b0390(&arg) || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
-    if (FUN_140184310(strType, "image"))
+    if ((strType == "image"))
     {
 #ifdef __clang__
         AScript data(root.FUN_1422baa20("data"), 2);
@@ -329,7 +326,7 @@ void UIUGCImageUploadDialog::FUN_141b3a690(int nResult)
     }
     else
     {
-        CStringW strText = FUN_14052d220()->FUN_14187f210(nResult);
+        CStringW strText = ((class CUgcManager*)FUN_14052d220())->FUN_14187f210(nResult);
         if (!strText.IsEmpty())
             FUN_1412751f0(strText, 1, 1);
     }
@@ -339,7 +336,7 @@ void UIUGCImageUploadDialog::FUN_141b3a690(int nResult)
 // @0x141b3a780
 bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return false;
     if (spUpload->m_nKind != *pnKind)
@@ -373,19 +370,19 @@ bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
 // @0x141b3ab90
 void UIUGCImageUploadDialog::FUN_141b3ab90()
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    FUN_14052d220()->FUN_141889ce0(m_188);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889ce0(m_188);
     ASArray arr(2);
-    FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
-    int nCount = FUN_14052d220()->FUN_14188a480();
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, 0, &arr);
+    int nCount = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
 }
 
 // @0x141b3ac80
 void UIUGCImageUploadDialog::OnOpenFolder()
 {
-    FUN_14052d220()->FUN_1418829b0(m_188);
+    ((class CUgcManager*)FUN_14052d220())->FUN_1418829b0(m_188);
 }
 
 // @0x141b3acb0
@@ -396,12 +393,12 @@ int UIUGCImageUploadDialog::FUN_141b3acb0(int nIndex)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_14052d220()->FUN_141881a40(nIndex) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141881a40(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
     }
-    if (FUN_14052d220()->FUN_141881800(m_188, nIndex) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141881800(m_188, nIndex) == 0)
     {
         FUN_141275260(0x2e1, 1, 1);
         return 0;
@@ -426,7 +423,7 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
             return 0;
         }
     }
-    int nExist = FUN_14052d220()->FUN_141881890(nIndex);
+    int nExist = ((class CUgcManager*)FUN_14052d220())->FUN_141881890(nIndex);
     if (nExist == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
@@ -459,7 +456,7 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
 // @0x141b3b020
 int UIUGCImageUploadDialog::OnNewTemplate()
 {
-    if (FUN_14052d220()->FUN_141880fc0() == 0)
+    if (((class CUgcManager*)FUN_14052d220())->FUN_141880fc0() == 0)
         return 0;
     FUN_141b3ab90();
     return 1;
@@ -468,7 +465,7 @@ int UIUGCImageUploadDialog::OnNewTemplate()
 // @0x141b3b060
 int UIUGCImageUploadDialog::OnAddImage()
 {
-    int nResult = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    int nResult = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)
         return 0;
     FUN_141b3a600();
@@ -480,11 +477,11 @@ int UIUGCImageUploadDialog::FUN_141b3b0e0(int nIndex)
 {
     if (nIndex == -1)
         return 0;
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return 0;
     int nPos = nIndex << 2;
     ASArray arr(2);
-    FUN_14052d220()->FUN_141889e20(0x10, nPos, &arr);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, nPos, &arr);
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nPos, arr);
     return 1;
 }
@@ -492,7 +489,7 @@ int UIUGCImageUploadDialog::FUN_141b3b0e0(int nIndex)
 // @0x141b3b1d0
 void UIUGCImageUploadDialog::FUN_141b3b1d0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return;
     if (spUpload->m_spFile == 0)
@@ -518,7 +515,7 @@ __int64 UIUGCImageUploadDialog::FUN_141b3b390()
 {
     if (m_188 != 3)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spUpload == 0)
         return 0;
     IUgcViewer* pViewer = spUpload->m_spViewer.get();
@@ -542,7 +539,7 @@ void UIUGCImageUploadDialog::FUN_141b3b4e0(int nIndex)
     }
     else
     {
-        MS2Ptr<CUploadFile> spFile = FUN_14052d220()->FUN_14188a4b0(nIndex);
+        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->FUN_14188a4b0(nIndex);
         if (spFile == 0)
             return;
         if (m_30.get() != 0)

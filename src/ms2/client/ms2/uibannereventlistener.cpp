@@ -164,7 +164,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x10, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x17, 0);
@@ -225,7 +225,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
 {
     if (box.FUN_141a04a80().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x5f, 0);
@@ -258,7 +258,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x81, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x88, 0);
@@ -319,7 +319,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
 {
     if (box.FUN_141a04a80().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0xd0, 0);

@@ -159,7 +159,7 @@ extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;                  // the meso
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_14141f970(const CString&);
 void FUN_141415600(const CString&);
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
@@ -169,14 +169,13 @@ CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140763e10(int);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-void FUN_140d73aa0(CStringW, int, int, CStringW);
+void FUN_140d73aa0(CStringW, int, void*, CStringW);
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140d00c80(const Scaleform::GFx::Value&, CString, int);
-bool FUN_140184310(const CString&, const char*);
 int FUN_140bd09c0(void*);
 
 // @0x140e9a970
@@ -313,7 +312,7 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
 void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(out, method, args);
-    if (FUN_140184310(method, "getTooltip")) {
+    if ((method == "getTooltip")) {
         if (m_simple == true)
             return;
         CString which = args->FUN_1422b8d30();
@@ -325,14 +324,14 @@ void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         unsigned boxItem = FUN_1405575b0(FUN_140281980(), boxId);
         CStringW keyName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_boxItemId);
         CStringW boxName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, boxItem);
-        if (FUN_140184310(which, "m_singleOpenButton")) {
+        if ((which == "m_singleOpenButton")) {
             CStringW text = FUN_14028dfa0(CStringW(L"s_lullu_key_single_open_tooltip"), keyName, boxName);
             ASTooltip tip(1, 2);
             tip.FUN_1409c6dc0(5);
             if (tip.FUN_1409e26b0(text))
                 *out = tip.FUN_1422bb870();
             return;
-        } else if (FUN_140184310(which, "m_multiOpenButton")) {
+        } else if ((which == "m_multiOpenButton")) {
             CStringW text = FUN_14028dfa0(CStringW(L"s_lullu_key_multi_open_tooltip"), keyName, boxName);
             ASTooltip tip(1, 2);
             tip.FUN_1409c6dc0(5);
@@ -385,7 +384,7 @@ void UIItemLulluBoxDialog::FUN_140e9c150(const Scaleform::GFx::FunctionHandler::
 // @0x140e9c1e0
 void UIItemLulluBoxDialog::FUN_140e9c1e0(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    reinterpret_cast<Unk_LulluBoxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e8d);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e8d)));
 }
 
 // @0x140e9c210
@@ -401,7 +400,7 @@ void UIItemLulluBoxDialog::SetBoxItemId(int id) { m_boxItemId = id; }
 bool UIItemLulluBoxDialog::FUN_140e9c260(int result, const CMsgBoxData&)
 {
     if (result == 0)
-        reinterpret_cast<Unk_LulluBoxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ec1);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ec1)));
     return true;
 }
 
@@ -527,7 +526,7 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
 {
     if (m_30 == 0)
         return false;
-    Unk_LulluBoxSelf* self = reinterpret_cast<Unk_LulluBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_LulluBoxSelf* self = ((Unk_LulluBoxSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (self == 0)
         return false;
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);

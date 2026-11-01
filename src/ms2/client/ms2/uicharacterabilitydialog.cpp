@@ -112,7 +112,7 @@ class Unk_CaSkillTable { public: Unk_CaSkillRef FUN_140aafef0(int nSkillId, unsi
 int FUN_1401e0800(unsigned short nLevel);
 int FUN_1401e0790(unsigned short, int);   // C3: was FUN_1401e0790
 
-class Unk_CaUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_CaUIManager { public: };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -199,7 +199,7 @@ UICharacterAbilityDialog* FUN_140f2c530(int nId)
 {
     if (reinterpret_cast<Unk_CaUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CaUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICharacterAbilityDialog*>((UIObject*)p);
     }

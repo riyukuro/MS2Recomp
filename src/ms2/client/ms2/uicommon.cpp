@@ -152,6 +152,9 @@ extern CStringW DAT_143af1bc8;
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/client/ms2/serverlisttable.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;               // @0x140111980
 
@@ -192,13 +195,10 @@ Unk_UcMsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(Unk_UcMsgBoxPtr box);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW BlockFormat(int nStrId);                                   // string table text
-CStringW FUN_14052bd00(int nStrId, const CStringW& a1);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStrId);
 CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned int& n0);
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_1409e9890(CStringW strKey, const unsigned& a0, const unsigned& a1);
 CStringW FUN_1412e7c20(int nStrId, const CStringW& a0, const int& a1);   // FormatStringId<CStringW, int>
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a0);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a0, const CStringW& a1);
@@ -210,8 +210,6 @@ void FUN_14135ec00(void* pBrowser, const CString& strUrl, bool b);
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 
 // The wide-string formatter with a leading string id (0x14028dee0), instantiated here for <CStringW, CString>.
-CStringW FormatStringId(int id, const fmt::ArgList& args);
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
 // The cube / housing service (singleton behind 0x1409670e0; also the object behind the COM-style reference to 0x143b059e8).
 // Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
@@ -639,7 +637,7 @@ MS2_REPLACE(0x1418fd740, FUN_1418fd740, 1739, 0xCB108862);
 // Open the confirmation box (string 0x879 with a1) with two ids and a number and call back with nCallback.
 void FUN_1418fde20(__int64 nId0, __int64 nId1, int nValue, const CStringW& strArg, Unk_UcMsgCallback cb)
 {
-    Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, FUN_14052bd00(0x879, strArg), 0, CStringW(L""));
+    Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0x879, strArg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<__int64>(nId0);
@@ -677,7 +675,6 @@ class Unk_UcUiMgr : public CUIService
 {
 public:
     void FUN_141adc690(int nUiId);
-    void FUN_141adc5d0(int nUiId);
 };
 
 // @0x1418fdfd0
@@ -942,7 +939,6 @@ CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId)
 MS2_REPLACE(0x1418fe870, FUN_1418fe870, 830, 0x0E450D78);
 
 // The payment text with an icon: key, amount, icon and its vertical offset (0x141081c60).
-CStringW FUN_141081c60(CStringW strKey, const CStringW& strAmount, const CStringW& strIcon, const int& nVSpace);   // FUN_14028dfa0<CStringW, CStringW, int> (format by value)
 
 // @0x1418fec90
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg)
@@ -952,7 +948,7 @@ CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg)
     int nVSpace = 0;
     CStringW strIcon = FUN_1418fe870(nCurrency, &nVSpace, 0);
     if (!strIcon.IsEmpty())
-        return FUN_141081c60(CStringW(L"s_common_payment"), FUN_1409404f0(nAmount), strIcon, nVSpace);
+        return FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_common_payment"), FUN_1409404f0(nAmount), strIcon, nVSpace);
     return CStringW(L"");
 }
 MS2_REPLACE(0x1418fec90, FUN_1418fec90, 421, 0xC875A71E);
@@ -993,9 +989,9 @@ CStringW FUN_1418fef90(int nCurrency, __int64 nAmount)
     switch (nCurrency)
     {
     case 3:
-        return FUN_1405c2690(CStringW(L"s_common_merat_large"), FUN_1409404f0(nAmount));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_common_merat_large"), FUN_1409404f0(nAmount));
     case 9:
-        return FUN_1405c2690(CStringW(L"s_common_redmerat_large"), FUN_1409404f0(nAmount));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_common_redmerat_large"), FUN_1409404f0(nAmount));
     }
     return CStringW(L"");
 }
@@ -1322,7 +1318,6 @@ MS2_CHECK_OFFSET(Unk_UcCfg, m_d358, 0xd358);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // ---- UI and device singletons ----
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1427,7 +1422,7 @@ bool FUN_141900a90(UIDialog* pDlg)
 {
     int nLayer = 0x19;
     int nAlign = 4;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
     {
         nLayer = 0xc;
     }
@@ -1497,7 +1492,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
         if (pDlg->vfunc_55() == 0)
         {
             if (((class UICartoonDialog*)(class UIDialog*)(pDlg))->GetBookId() == nWanted)
-                reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e87);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e87);
         }
     }
     return true;
@@ -1991,9 +1986,9 @@ CStringW FUN_1419021b0(unsigned nCur, unsigned nMax)
 {
     CStringW str;
     if (nCur < nMax)
-        str = FUN_1409e9890(L"s_common_cur_max_ingredient_lack", nCur, nMax);
+        str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient_lack", nCur, nMax);
     else
-        str = FUN_1409e9890(L"s_common_cur_max_ingredient", nCur, nMax);
+        str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient", nCur, nMax);
     return str;
 }
 MS2_REPLACE(0x1419021b0, FUN_1419021b0, 348, 0x6034DBCC);
@@ -2003,11 +1998,11 @@ CStringW FUN_141902320(unsigned nCur, unsigned nMax)
 {
     CStringW str;
     if (nCur < nMax)
-        str = FUN_1409e9890(L"s_common_cur_max_ingredient_lack", nCur, nMax);
+        str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient_lack", nCur, nMax);
     else if (nCur == nMax)
-        str = FUN_1409e9890(L"s_common_cur_max_ingredient", nCur, nMax);
+        str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient", nCur, nMax);
     else
-        str = FUN_1409e9890(L"s_common_cur_max_ingredient_overflow", nCur, nMax);
+        str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient_overflow", nCur, nMax);
     return str;
 }
 MS2_REPLACE(0x141902320, FUN_141902320, 512, 0x649BF932);
@@ -2026,12 +2021,11 @@ public:
     virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63();
     virtual void vfunc_64();                                        // MS2: slot 64
 };
-void* FUN_1408e57f0();
 
 // @0x141902530
 bool FUN_141902530(int nButton, const CMsgBoxData& box)
 {
-    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e50());
+    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
     if (pScene != 0)
         pScene->vfunc_64();
     return true;

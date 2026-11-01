@@ -24,10 +24,13 @@
 
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-void* FUN_1403ed280();                                     // effect manager
-void* FUN_1403ed2d0();                                     // player manager
-int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
-unsigned FUN_140869420();                                  // millisecond clock
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    static class WorldService* GetInstance();
+};
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14028d260(float fSeconds);                         // seconds -> milliseconds
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -52,7 +55,7 @@ StateTransform::~StateTransform()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -64,9 +67,9 @@ void StateTransform::vfunc_4(StateData* pData)
     const char* pszEffect = "CH/Common/Eff_FittingDoll.xml";
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
-    query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
+    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
     query.SetActor(m_pOwner->FUN_14123c580());
-    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+    m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
@@ -87,7 +90,7 @@ void StateTransform::EndOfSequence(NiActorManager* pkManager, unsigned int eSequ
     NiControllerSequence* pkSeq, float fEventTime)
 {
     State::EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
-    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+    reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     m_nEffect = 0;
     m_pOwner->vfunc_59(1, 0, 0, 0);
 }
@@ -112,7 +115,7 @@ StateTransformDoll::~StateTransformDoll()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -121,27 +124,27 @@ StateTransformDoll::~StateTransformDoll()
 void StateTransformDoll::vfunc_4(StateData* pData)
 {
     const char* pszEffect = "CH/Common/Eff_FittingDoll.xml";
-    int nNow = FUN_140869420();
+    int nNow = GetTickCountMs2();
     m_nEndTime = nNow + FUN_14028d260(1.0f);
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
-    query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
+    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
     query.SetActor(m_pOwner->FUN_14123c580());
-    m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+    m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
 // @0x1417fe930
 void StateTransformDoll::vfunc_5(int n)
 {
-    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+    reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
     m_nEffect = 0;
 }
 
 // @0x1417fe970
 void StateTransformDoll::vfunc_3(double fTime)
 {
-    if (FUN_140869420() >= m_nEndTime)
+    if (GetTickCountMs2() >= m_nEndTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 

@@ -52,10 +52,10 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_1406363a0(Unk_140165cf0*, const char*, Unk_CcJob&);
-void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 unsigned char FUN_1401d1320(CCacheData*);                                 // the file changed since it was loaded
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -112,14 +112,14 @@ int CSkillCompactControlTable::Load()
         Unk_CcJob nCode = Unk_CcJob_None;
         FUN_1406363a0(pJob, "code", nCode);
         __int64 nBaseSP = 50;
-        FUN_1408732e0(pJob, "baseSP", nBaseSP);
+        XmlGetAttr((class TiXmlElement*)(pJob), "baseSP", nBaseSP);
         for (Unk_140165cf0* pSkill = pJob->FUN_140165cf0("skill"); pSkill != 0; pSkill = pSkill->FUN_140168650("skill"))
         {
-            if (!FUN_14028f710(pSkill))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pSkill)))
                 continue;
             Unk_CcSkillPtr spSkill(new CCompactControlSkill);
-            FUN_140873220(pSkill, "id", spSkill->m_nSkillId);
-            FUN_140873220(pSkill, "repeatCount", spSkill->m_nRepeatCount);
+            XmlGetAttr((class TiXmlElement*)(pSkill), "id", spSkill->m_nSkillId);
+            XmlGetAttr((class TiXmlElement*)(pSkill), "repeatCount", spSkill->m_nRepeatCount);
             spList->AddTail(spSkill);
             if (Unk_LockGuard guard = s_lock) { __assume(0); } else
             {

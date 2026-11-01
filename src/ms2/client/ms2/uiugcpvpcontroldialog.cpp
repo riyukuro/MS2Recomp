@@ -14,7 +14,6 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees ----
-int FUN_1409c1750(const Scaleform::GFx::Value& v);                      // Value -> bool
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // set an int
 
 // The dialog's AS view: setData takes six flags.
@@ -101,12 +100,12 @@ int UIUGCPVPControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("OnStart", szMethod) == 0) {
         if (nArgs >= 5) {
-            int b0 = FUN_1409c1750(pArgs[0]);
-            int b1 = FUN_1409c1750(pArgs[1]);
-            int b2 = FUN_1409c1750(pArgs[2]);
-            int b3 = FUN_1409c1750(pArgs[3]);
-            int b4 = FUN_1409c1750(pArgs[4]);
-            int b5 = FUN_1409c1750(pArgs[5]);
+            int b0 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[0]))->GetInt();
+            int b1 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[1]))->GetInt();
+            int b2 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[2]))->GetInt();
+            int b3 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[3]))->GetInt();
+            int b4 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[4]))->GetInt();
+            int b5 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(pArgs[5]))->GetInt();
             COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
             packet.WriteUInt8(0xe);
             packet.WriteUInt8(1);

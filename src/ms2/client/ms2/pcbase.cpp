@@ -1037,7 +1037,7 @@ int PCBase::vfunc_10()
     FUN_141679760();
     vfunc_120(FUN_141676370());
     FUN_1416795e0();
-    FUN_14166cb30();
+    ApplyHideReasons();
     m_unk_c0c = 0;
     return 1;
 }
@@ -1244,11 +1244,11 @@ int PCBase::FUN_14166c960()
 }
 
 // @0x14166c980
-int PCBase::FUN_14166c980()
+int PCBase::GetPrevState()
 {
     return m_spStateMgr->GetPrev();
 }
-MS2_REPLACE_METHOD(0x14166c980, PCBase, FUN_14166c980, 41, 0x7E67C403);
+MS2_REPLACE_METHOD(0x14166c980, PCBase, GetPrevState, 41, 0x7E67C403);
 
 // @0x14166c9b0
 CString PCBase::vfunc_60()
@@ -1274,19 +1274,19 @@ void PCBase::FUN_14166ca20(unsigned int nReason)
     if (FUN_14166cb00(nReason) == true)
         return;
     m_unk_c08.FUN_140d75120(nReason, true);
-    FUN_14166cb30();
+    ApplyHideReasons();
 }
 MS2_REPLACE_METHOD(0x14166ca20, PCBase, FUN_14166ca20, 78, 0x7DD9BEF0);
 
 // @0x14166ca80
-void PCBase::FUN_14166ca80(unsigned int nReason)
+void PCBase::RemoveHideReason(unsigned int nReason)
 {
     if (!FUN_14166cb00(nReason))
         return;
     m_unk_c08.Reset(nReason);
-    FUN_14166cb30();
+    ApplyHideReasons();
 }
-MS2_REPLACE_METHOD(0x14166ca80, PCBase, FUN_14166ca80, 74, 0x9A398081);
+MS2_REPLACE_METHOD(0x14166ca80, PCBase, RemoveHideReason, 74, 0x9A398081);
 
 // @0x14166cad0
 bool PCBase::FUN_14166cad0()
@@ -1302,7 +1302,7 @@ bool PCBase::FUN_14166cb00(unsigned int nReason)
 MS2_REPLACE_METHOD(0x14166cb00, PCBase, FUN_14166cb00, 41, 0x8EEE3358);
 
 // @0x14166cb30
-void PCBase::FUN_14166cb30()
+void PCBase::ApplyHideReasons()
 {
     if (FUN_14166cad0()) {
         vfunc_23(1);
@@ -1318,7 +1318,7 @@ void PCBase::FUN_14166cb30()
         FUN_14123cb20(true);
     }
 }
-MS2_REPLACE_METHOD(0x14166cb30, PCBase, FUN_14166cb30, 260, 0x3EF2F43D);
+MS2_REPLACE_METHOD(0x14166cb30, PCBase, ApplyHideReasons, 260, 0x3EF2F43D);
 
 // @0x14166cc40
 void PCBase::FUN_14166cc40(int nValue)
@@ -3519,7 +3519,7 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     }
     int nHide = m_spB10->GetData()->m_n5c;
     if (nHide != 0)
-        FUN_14166ca80(2);
+        RemoveHideReason(2);
     m_spB10 = 0;
     FUN_141676320(MS2Ptr<RideOnAction>(0));
     FUN_1416766b0(MS2Ptr<Unk_PCBaseComp_b18>(0));
@@ -4355,7 +4355,7 @@ bool PCBase::FUN_141674ef0(const CEffectDummy& kDummy)
     }
     else
         pNode->FUN_1411a3cb0(kDummy);
-    pNode->FUN_1411a3fd0(pRoot);
+    pNode->SetRotationTarget(pRoot);
     pNode->Update((float)((class CMainSystem*)(class Unk_PCBaseClock*)(reinterpret_cast<Unk_PCBaseClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     return true;
 }

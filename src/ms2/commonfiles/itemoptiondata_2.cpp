@@ -186,6 +186,17 @@
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
@@ -1364,9 +1375,9 @@ ItemOptionValueRandom::ItemOptionValueRandom()
 bool ItemOptionValueRandom::FUN_1405d2590(Unk_140165cf0* pElem)
 {
     CString strName;
-    FUN_1408733e0(pElem, "name", strName);
-    FUN_140873220(pElem, "weight", m_nWeight);
-    FUN_140873220(pElem, "statID", m_nStatId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "name", strName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "weight", reinterpret_cast<unsigned int&>(m_nWeight));
+    XmlGetAttr((class TiXmlElement*)(pElem), "statID", reinterpret_cast<unsigned int&>(m_nStatId));
     if (strName.IsEmpty())
         return false;
     int nStat = FindStatByName(strName);
@@ -1480,7 +1491,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
 {
     Unk_ReadRank((class Unk_XmlNode*)(pElem), "grade", &m_nGrade);
     int nCreateType = 0;
-    FUN_140873220(pElem, "createType", nCreateType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "createType", reinterpret_cast<unsigned int&>(nCreateType));
     if (nCreateType == 3)
     {
         FUN_1405d3490(pElem);
@@ -1491,7 +1502,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
     for (auto& pChild : arrChildren)
     {
         CString strName;
-        FUN_1408733e0(pChild, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pChild), "name", strName);
         if (strName.IsEmpty())
             continue;
         int nStat = FindStatByName(strName);
@@ -1499,7 +1510,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nStat));
             int nValue = 0;
-            FUN_1408731e0(pChild, "value", nValue);
+            XmlGetAttr((class TiXmlElement*)(pChild), "value", reinterpret_cast<int&>(nValue));
             spValue->SetValue(nValue);
             if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
@@ -1510,7 +1521,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
             int nValue = 0;
-            FUN_1408731e0(pChild, "value", nValue);
+            XmlGetAttr((class TiXmlElement*)(pChild), "value", reinterpret_cast<int&>(nValue));
             spValue->SetValue(nValue);
             if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
@@ -1584,14 +1595,14 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
     for (auto& pChild : arrChildren)
     {
         CString strName;
-        FUN_1408733e0(pChild, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pChild), "name", strName);
         int nStat = FindStatByName(strName);
         if (nStat != -1)
         {
             MS2Ptr<ItemOptionValueRef> spValue(new ItemOptionValueRef(nStat));
-            FUN_140873220(pChild, "luaIndex", spValue->m_nLuaIndex);
+            XmlGetAttr((class TiXmlElement*)(pChild), "luaIndex", reinterpret_cast<unsigned int&>(spValue->m_nLuaIndex));
             int nValue = 0;
-            FUN_1408731e0(pChild, "value", nValue);
+            XmlGetAttr((class TiXmlElement*)(pChild), "value", reinterpret_cast<int&>(nValue));
             spValue->SetValue(nValue);
             m_vValues.push_back(spValue.get());
             continue;
@@ -1601,7 +1612,7 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
             int nValue = 0;
-            FUN_1408731e0(pChild, "value", nValue);
+            XmlGetAttr((class TiXmlElement*)(pChild), "value", reinterpret_cast<int&>(nValue));
             spValue->SetValue(nValue);
             if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
@@ -1618,16 +1629,16 @@ ItemOptionVariationData::ItemOptionVariationData()
 // @0x1405d3870
 void ItemOptionVariationData::FUN_1405d3870(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
-    FUN_140873220(pElem, "probVer", m_nProbVer);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "probVer", reinterpret_cast<unsigned int&>(m_nProbVer));
     XmlValueByName(pElem, "name", m_eName);
-    FUN_1408731e0(pElem, "highStat", m_nHighStat);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("v"))
+    XmlGetAttr((class TiXmlElement*)(pElem), "highStat", reinterpret_cast<int&>(m_nHighStat));
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         int stat = 0;
         unsigned weight = 1;
-        FUN_1408731e0(pChild, "stat", stat);
-        FUN_140873220(pChild, "weight", weight);
+        XmlGetAttr((class TiXmlElement*)(pChild), "stat", reinterpret_cast<int&>(stat));
+        XmlGetAttr((class TiXmlElement*)(pChild), "weight", reinterpret_cast<unsigned int&>(weight));
         MS2_ASSERT_AT(0x642, stat && weight);
         m_vStats.push_back(std::make_pair(stat, weight));
         m_picker.Register(weight, stat);
@@ -1722,14 +1733,14 @@ int ItemOptionRandom::GetLevelGroupId()
 // @0x1405d3d00
 bool ItemOptionRandom::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "code", m_nCode);
+    XmlGetAttr((class TiXmlElement*)(pElem), "code", reinterpret_cast<unsigned int&>(m_nCode));
     if (m_nCode == 0)
         return false;
-    FUN_140873220(pElem, "probVer", m_nProbVer);
+    XmlGetAttr((class TiXmlElement*)(pElem), "probVer", reinterpret_cast<unsigned int&>(m_nProbVer));
     XmlValue(pElem, "statGroup", m_eStatGroup);
-    FUN_1408731e0(pElem, "levelGroupID", m_nLevelGroupId);
-    FUN_140873220(pElem, "pickCount", m_nPickCount);
-    FUN_1408730a0(pElem, "isRarePickOne", m_bRarePickOne);
+    XmlGetAttr((class TiXmlElement*)(pElem), "levelGroupID", reinterpret_cast<int&>(m_nLevelGroupId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pickCount", reinterpret_cast<unsigned int&>(m_nPickCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "isRarePickOne", reinterpret_cast<bool&>(m_bRarePickOne));
     std::vector<Unk_140165cf0*> arrChildren;
     FUN_14028f5d0(pElem, "v", arrChildren);
     for (auto& pChild : arrChildren)
@@ -2059,7 +2070,7 @@ void ItemOptionRandom::FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, un
             std::vector<ItemOptionValueRandom*> vValues;
             if (FUN_1405d7bf0(vValues, nCount, &random, FALSE, spContext, vLocked, NULL))
             {
-                Unk_CriticalSectionLock guard(lock, 1);
+                Unk_1401b4ec0 guard(lock, 1);
                 for (ItemOptionValueRandom* pValue : vValues)
                     mapCounts[pValue->FUN_1405d26c0()]++;
             }

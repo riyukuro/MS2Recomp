@@ -44,13 +44,13 @@
 
 // ---- statics of the unit's header (init order: sort names, a pointer, the key controller, skill, stun, a pointer) ----
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 
 // ---- unit-local views of exe types ----
 

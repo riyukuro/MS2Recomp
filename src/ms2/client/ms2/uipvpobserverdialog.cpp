@@ -117,7 +117,7 @@ void UIPvPObserverDialog::vfunc_67()
         }
     }
     UIDialog::vfunc_67();
-    Unk_PoMe* pPC = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PoMe* pPC = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     pPC->FUN_14152a960();
@@ -176,7 +176,7 @@ void UIPvPObserverDialog::vfunc_79(void* pData)
 // @0x141a916d0
 int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    Unk_PoMe* pMe = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -262,7 +262,7 @@ void UIPvPObserverDialog::FUN_141a91a30(const Unk_PvPObsInfo& info)
 // @0x141a91b40
 void UIPvPObserverDialog::FUN_141a91b40()
 {
-    Unk_PoMe* pMe = reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     if (FUN_140a467d0(&m_30))

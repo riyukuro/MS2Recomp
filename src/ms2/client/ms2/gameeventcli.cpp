@@ -478,14 +478,14 @@ bool GameEventAttendGiftCli::FUN_140ce35c0()
 unsigned GameEventAttendGiftCli::FUN_140ce3660() { return (unsigned)m_gifts.GetCount(); }
 
 // @0x140ce3690
-unsigned GameEventAttendGiftCli::FUN_140ce3690()
+unsigned GameEventAttendGiftCli::GetAttendedDays()
 {
     int nDefault = 0;
     return DAT_143ab2fc0.FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce36d0
-int GameEventAttendGiftCli::FUN_140ce36d0()
+int GameEventAttendGiftCli::GetUsablePoints()
 {
     int nDefault = 0;
     return DAT_143ab2fc0.FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
@@ -503,7 +503,7 @@ MS2Ptr<ItemGift> GameEventAttendGiftCli::FUN_140ce3710(unsigned nDay)
 CStringW GameEventAttendGiftCli::FUN_140ce37a0()
 {
     int nCount;
-    if (!m_b125 && (nCount = FUN_140ce36d0(), 0 < nCount))
+    if (!m_b125 && (nCount = GetUsablePoints(), 0 < nCount))
         return FUN_140275590(L"{0}({1})", m_strName, nCount);
     return m_strName;
 }
@@ -628,7 +628,7 @@ bool GameEventCashAttendCli::FUN_140ce3da0()
 }
 
 // @0x140ce3e40
-unsigned GameEventCashAttendCli::FUN_140ce3e40()
+unsigned GameEventCashAttendCli::GetDayCount()
 {
     if (m_entry == 0)
         return 0;
@@ -636,21 +636,21 @@ unsigned GameEventCashAttendCli::FUN_140ce3e40()
 }
 
 // @0x140ce3e90
-unsigned GameEventCashAttendCli::FUN_140ce3e90()
+unsigned GameEventCashAttendCli::GetAttendedDays()
 {
     int nDefault = 0;
     return DAT_143ab2fc0.FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce3ed0
-int GameEventCashAttendCli::FUN_140ce3ed0()
+int GameEventCashAttendCli::GetUsablePoints()
 {
     int nDefault = 0;
     return DAT_143ab2fc0.FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce3f10
-CStringW GameEventCashAttendCli::FUN_140ce3f10()
+CStringW GameEventCashAttendCli::GetEventName()
 {
     return GetStringTable()->FUN_141811980(1, m_i4);
 }
@@ -659,15 +659,15 @@ CStringW GameEventCashAttendCli::FUN_140ce3f10()
 CStringW GameEventCashAttendCli::GetDesc() { return m_strDesc; }
 
 // @0x140ce3fc0
-AttendGiftDataGroupPtr GameEventCashAttendCli::FUN_140ce3fc0(unsigned nDay)
+AttendGiftDataGroupPtr GameEventCashAttendCli::GetDayGroup(unsigned nDay)
 {
-    if (nDay >= FUN_140ce3e40())
+    if (nDay >= GetDayCount())
         return AttendGiftDataGroupPtr(0);
     return reinterpret_cast<AttendGiftData*>(m_entry.operator->())->GetGroup(nDay);
 }
 
 // @0x140ce4050
-CMsTime GameEventCashAttendCli::FUN_140ce4050() { return m_28; }
+CMsTime GameEventCashAttendCli::GetBeginTime() { return m_28; }
 
 // @0x140ce4090
 CMsTime GameEventCashAttendCli::FUN_140ce4090() { return m_38; }
@@ -716,18 +716,18 @@ CStringW GameEventItemBuffCli::GetTypeName() { return CStringW(L"GameEventItemBu
 void GameEventItemBuffCli::OnStart()
 {
     NotifySystem::GetInstance()->RegisterNotify(L"NotifyGameStart",
-        Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::FUN_140ce4580));
+        Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::ShowReturnUserBuffNotice));
 }
 
 // @0x140ce44d0
 void GameEventItemBuffCli::vfunc_6()
 {
     NotifySystem::GetInstance()->UnregisterNotify(L"NotifyGameStart",
-        Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::FUN_140ce4580));
+        Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::ShowReturnUserBuffNotice));
 }
 
 // @0x140ce4580
-void GameEventItemBuffCli::FUN_140ce4580(NotifyObject*)
+void GameEventItemBuffCli::ShowReturnUserBuffNotice(NotifyObject*)
 {
     if (m_d0 == 0x140) {
         bool bDefault = false;
@@ -950,7 +950,7 @@ void GameEventSnowmanCli::OnStart()
                 pDlg->FUN_141924680();
             else
                 NotifySystem::GetInstance()->RegisterNotify(L"NotifyGameStart",
-                    Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::FUN_140ce56a0));
+                    Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::OnGameStarted));
         }
     }
 }
@@ -965,11 +965,11 @@ void GameEventSnowmanCli::vfunc_6()
             pDlg->vfunc_67();
     }
     NotifySystem::GetInstance()->UnregisterNotify(L"NotifyGameStart",
-        Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::FUN_140ce56a0));
+        Delegate<void(NotifyObject*)>(this, &GameEventSnowmanCli::OnGameStarted));
 }
 
 // @0x140ce56a0
-void GameEventSnowmanCli::FUN_140ce56a0(NotifyObject*)
+void GameEventSnowmanCli::OnGameStarted(NotifyObject*)
 {
     UISnowmanEventDialog* pDlg = FindCliDialog<UISnowmanEventDialog>(0x4f5d);
     if (pDlg)
@@ -1134,7 +1134,7 @@ GameEvent* FUN_140ce6120() { return new GameEventBurningLevelupCli; }
 // @0x140ce6180
 CStringW GameEventBurningLevelupCli::GetTypeName() { return CStringW(L"GameEventBurningLevelupCli"); }
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW GetStringCommonByKey(const CStringW& str);
 

@@ -118,13 +118,12 @@ private:
 };
 #define Unk_InvArgs(msg) (*reinterpret_cast<ASData*>(&(msg)))      // the message args (no call at /Od)
 
-void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
+void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_140719530(unsigned __int64 n);                      // number to string
-CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class UIMessengerBrowser* m_48; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
@@ -132,7 +131,7 @@ struct Unk_PickXY { float x, y; };                              // dialog offset
 extern Unk_PickXY DAT_143b02320;                                // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
 
-class Unk_InvUiMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_InvUiMgr { public: };
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
@@ -223,7 +222,7 @@ Unk_PopupMenu* FUN_140c30140(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spObj.get() != 0)
             return reinterpret_cast<Unk_PopupMenu*>(dynamic_cast<UIPopUpMenu*>(spObj.operator->()));
     }
@@ -235,7 +234,7 @@ UIDialog* FUN_140c300a0(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIDialog*>(spObj.operator->());
     }
@@ -423,7 +422,7 @@ void UIInviteMentoringDialog::FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<C
         Unk_MentorPtr<CMentor> spMentor = arrMentors[i];
         if (spMentor == 0)
             continue;
-        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
+        CStringW strInfo = FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
         row.FUN_1407cbbe0("isOnline", spMentor->online);
         row.FUN_1407cbb20("charName", CStringW(spMentor->name));
@@ -456,7 +455,7 @@ void UIInviteMentoringDialog::FUN_140c2f490()
         Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
         if (spMentor == 0)
             continue;
-        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
+        CStringW strInfo = FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
         row.FUN_1407cbbe0("isOnline", spMentor->online);
         row.FUN_1407cbb20("charName", CStringW(spMentor->name));

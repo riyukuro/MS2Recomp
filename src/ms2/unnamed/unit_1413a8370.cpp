@@ -25,6 +25,9 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // return types of the getters this unit calls
 class Unk_SoundSink;
@@ -229,11 +232,11 @@ void CGuideConditionEquipItem::vfunc_2(Unk_140165cf0* pElem)
     m_nItemID = 0;
     m_nItemRangeBegin = 0;
     m_nItemRangeLast = 0;
-    FUN_140873220(pElem, "slotType", m_nSlotType);
-    FUN_1408733e0(pElem, "slotName", m_strSlotName);
-    FUN_140873220(pElem, "itemID", m_nItemID);
-    FUN_140873220(pElem, "itemRangeBeginID", m_nItemRangeBegin);
-    FUN_140873220(pElem, "itemRangeLastID", m_nItemRangeLast);
+    XmlGetAttr((class TiXmlElement*)(pElem), "slotType", reinterpret_cast<unsigned int&>(m_nSlotType));
+    XmlGetAttr((class TiXmlElement*)(pElem), "slotName", m_strSlotName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemID", reinterpret_cast<unsigned int&>(m_nItemID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemRangeBeginID", reinterpret_cast<unsigned int&>(m_nItemRangeBegin));
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemRangeLastID", reinterpret_cast<unsigned int&>(m_nItemRangeLast));
 }
 MS2_REPLACE_METHOD(0x1413A89B0, CGuideConditionEquipItem, vfunc_2, 227, 0xCCAFD1BD);
 
@@ -317,7 +320,7 @@ void CGuideConditionDesignItem::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     m_nItemType = 0;
     m_n18 = 6;
-    FUN_1408731e0(pElem, "itemType", m_nItemType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemType", reinterpret_cast<int&>(m_nItemType));
 }
 MS2_REPLACE_METHOD(0x1413A9070, CGuideConditionDesignItem, vfunc_2, 87, 0xE90182AD);
 
@@ -381,9 +384,9 @@ void CGuideConditionExistItem::vfunc_2(Unk_140165cf0* pElem)
     m_nItemId = 0;
     m_nItemType = 0;
     m_nIconType = 0;
-    FUN_1408731e0(pElem, "itemId", m_nItemId);
-    FUN_1408731e0(pElem, "itemType", m_nItemType);
-    FUN_1408731e0(pElem, "iconType", m_nIconType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemId", reinterpret_cast<int&>(m_nItemId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemType", reinterpret_cast<int&>(m_nItemType));
+    XmlGetAttr((class TiXmlElement*)(pElem), "iconType", reinterpret_cast<int&>(m_nIconType));
 }
 MS2_REPLACE_METHOD(0x1413A93D0, CGuideConditionExistItem, vfunc_2, 157, 0x5F8A74AD);
 
@@ -432,9 +435,9 @@ void CGuideConditionCountItem::vfunc_2(Unk_140165cf0* pElem)
     m_nItemType = 0;
     m_nMin = -1;
     m_nMax = -1;
-    FUN_1408731e0(pElem, "itemType", m_nItemType);
-    FUN_1408731e0(pElem, "minValue", m_nMin);
-    FUN_1408731e0(pElem, "maxValue", m_nMax);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemType", reinterpret_cast<int&>(m_nItemType));
+    XmlGetAttr((class TiXmlElement*)(pElem), "minValue", reinterpret_cast<int&>(m_nMin));
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxValue", reinterpret_cast<int&>(m_nMax));
 }
 MS2_REPLACE_METHOD(0x1413A96C0, CGuideConditionCountItem, vfunc_2, 169, 0x72FECE38);
 

@@ -43,11 +43,10 @@
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
-void* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const&);   // log, const char* argument instance
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_140873220(void*, const char*, int&);                           // integer attribute
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);                 // string attribute
 unsigned char FUN_1401d1320(CCacheData*);
 int FUN_1417b90f0(CString strName);                                      // state name -> state type
@@ -56,9 +55,12 @@ int FUN_1417b90f0(CString strName);                                      // stat
 class Unk_StateActorInfo;
 Unk_StateActorInfo* FUN_140974230(GameObject* pObject);
 int FUN_141658e60(Unk_StateActorInfo* pInfo);                            // gender
-void* FUN_1403ed2d0();                                                   // player manager
-void* FUN_1403ed280();                                                   // effect manager
-int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    static class WorldService* GetInstance();
+};
 
 // State name table (the strings the stateType attribute is matched against) and two single names.
 static CString s_strStateNames[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
@@ -123,9 +125,9 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         }
         Unk_EffectQuery query;
         query.m_strName = it->m_strEffect;
-        query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), pObject);
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
         query.SetActor(reinterpret_cast<GameObject*>(pObject)->FUN_14123c580());
-        int nEffectId = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+        int nEffectId = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
         if (nEffectId != 0)
             pOut->FUN_140a3fce0(nEffectId);
     }
@@ -155,12 +157,12 @@ MS2_REPLACE_METHOD(0x140C9FC30, StateEffectMgr, IsPlayerObject, 85, 0xEDD991A6);
 bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
+        FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("StateEffect"); pNode != 0; pNode = pNode->NextSiblingElement())
@@ -178,10 +180,10 @@ bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
                 Unk_140165cf0* pInfo = pNode->FUN_140165cf0("Info");
                 if (pInfo != 0)
                 {
-                    FUN_140873220(pInfo, "emotionSkillID", data.m_nEmotionSkillId);
-                    FUN_140873220(pInfo, "setID", data.m_nSetId);
-                    FUN_140873220(pInfo, "skillID", data.m_nSkillId);
-                    FUN_140873220(pInfo, "gender", data.m_nGender);
+                    XmlGetAttr((class TiXmlElement*)(pInfo), "emotionSkillID", *(unsigned int*)&static_cast<int&>(data.m_nEmotionSkillId));
+                    XmlGetAttr((class TiXmlElement*)(pInfo), "setID", *(unsigned int*)&static_cast<int&>(data.m_nSetId));
+                    XmlGetAttr((class TiXmlElement*)(pInfo), "skillID", *(unsigned int*)&static_cast<int&>(data.m_nSkillId));
+                    XmlGetAttr((class TiXmlElement*)(pInfo), "gender", *(unsigned int*)&static_cast<int&>(data.m_nGender));
                     (*pMap)[nStateType].push_back(data);
                 }
             }

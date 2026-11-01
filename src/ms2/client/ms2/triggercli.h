@@ -28,9 +28,6 @@ public:
 // Argument of the smart pointer's creating constructor (0x1401b7b90 builds it; same shape as Unk_PktNewTag).
 struct Unk_TrgNewTag { explicit Unk_TrgNewTag(int); };
 
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
 CPtred* FUN_1401ba820(CPtred*);
 
 // Intrusive smart pointer to the value of a TPtredDummy<T> (the real name is probably TPtr<T>; same shape as Unk_PktPtr
@@ -51,12 +48,12 @@ private:
     static TPtredDummy<T>* Allocate(void*) { return new TPtredDummy<T>(); }
     static T* Value(TPtredDummy<T>* p) { return p == NULL ? NULL : &p->value; }
     static TPtredDummy<T>* Owner(T* p) { return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value)); }
-    static void Ref(CPtred* p) { FUN_14015b020(p); }
+    static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
     void AddRefImpl(void*) const { Ref(Owner(m_p)); }
     void ReleaseImpl(void*) {
         CPtred* owner = Owner(m_p);
-        if (FUN_140159bc0(owner) == 0) { Ref(owner); FUN_140159ba0(owner); }
+        if (CPtred::ReleasePtred(owner) == 0) { Ref(owner); CPtred::DeletePtred(owner); }
     }
     void* m_00;
     T* m_p;

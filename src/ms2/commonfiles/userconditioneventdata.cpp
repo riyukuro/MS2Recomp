@@ -28,12 +28,11 @@ typedef ATL::CRBMap<int, CUserConditionEventData::Ptr> Unk_UceMap;
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
    // the item exists
-CItemOptionTable* FUN_140166430();
-int FUN_14029ea20(CConditionCommonData* pData, Unk_140165cf0* pNode, CStringW strTag, unsigned nId);   // reads a <condition>
+class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
 extern int DAT_1439ed00c;
 unsigned char FUN_1401d1320(CCacheData* p);                     // file changed since load
-int FUN_14015f500(Unk_140165cf0*, const char*, int*);           // itemRank
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 
 #ifndef MS2_HOOK_DLL
 bool CUserConditionEventData::s_bInit;
@@ -110,7 +109,7 @@ void CUserConditionEventData::Load()
         Unk_140165cf0* pCondition = pNode->FUN_140165cf0("condition");
         if (pCondition != 0)
         {
-            if (FUN_14029ea20(spData->m_spCondition.get(), pCondition, L"UserConditionEvent", spData->m_nId) == 0)
+            if (((class CConditionCommonData*)(class CConditionCommonData*)(spData->m_spCondition.get()))->Load((class Unk_ConditionXml*)(pCondition), L"UserConditionEvent", spData->m_nId) == 0)
                 continue;
         }
         Unk_140165cf0* pNotify = pNode->FUN_140165cf0("notify");
@@ -125,9 +124,9 @@ void CUserConditionEventData::Load()
                 Unk_UceAttachment attach;
                 FUN_1408731e0(pAttach, "job", attach.m_nJob);
                 FUN_140873220(pAttach, "itemID", attach.m_nItemId);
-                FUN_14015f500(pAttach, "itemRank", &attach.m_nItemRank);
+                Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
                 FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
-                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
+                if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_notify.m_attachments.Add(attach);
             }
         }
@@ -143,9 +142,9 @@ void CUserConditionEventData::Load()
                 Unk_UceAttachment attach;
                 FUN_1408731e0(pAttach, "job", attach.m_nJob);
                 FUN_140873220(pAttach, "itemID", attach.m_nItemId);
-                FUN_14015f500(pAttach, "itemRank", &attach.m_nItemRank);
+                Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
                 FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
-                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
+                if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_mail.m_attachments.Add(attach);
             }
         }

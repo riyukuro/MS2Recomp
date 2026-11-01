@@ -82,6 +82,7 @@
 #include <ecr/CoreRuntimeMessages.h>
 #include "ms2/placeholder/physxpropmessage.h"
 #include <egmAnimation/ActorMessages.h>
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // Engine statics the exe folded to immediates; defined here (selectany) so the engine headers' macros link.
 __declspec(selectany) const efd::UInt8 efd::ILogger::kLVL0 = 4;
@@ -568,18 +569,17 @@ public:
 class CBattleRecordManager   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140a03fe0(int);
+    void StopGroup(int);
 };
 // @0x141bca1e0
 void WorldService::FUN_141bca1e0()
 {
     m_2b8 = 1;
     ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ClearStates();
-    ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a03fe0(0);
+    ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->StopGroup(0);
 }
 MS2_REPLACE_METHOD(0x141BCA1E0, WorldService, FUN_141bca1e0, 57, 0xE9DED017);
 
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -598,7 +598,7 @@ void WorldService::FUN_141bca240()
 {
     if (!FUN_141bd0cc0())
         return;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001b)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001b)
         return;
     if (m_2b8)
     {
@@ -1748,7 +1748,7 @@ public:
 class CDropItem   // C3: member view (real class not in this TU)
 {
 public:
-    int FUN_14118fea0();
+    int IsMeso();
     int FUN_141190320(GameObject*, int, int);
     int FUN_141190370(GameObject*, int, int);
     int GetDropKind();
@@ -3427,7 +3427,6 @@ struct Unk_WsA_UrnId : public Unk_WsA_Blob56
 // MS2-PIN: ??1Unk_WsA_UrnId@@QEAA@XZ 0x1411d6860
 void FUN_141293c30_A();
 void FUN_141bfaf70();
-void* FUN_1408e57f0();
 // @0x141bbc1d0
 int WorldService::FUN_141bbc1d0(const char* urn, int arg2)
 {
@@ -3470,7 +3469,7 @@ int WorldService::FUN_141bbc1d0(const char* urn, int arg2)
         m_258.Empty();
         FUN_141293c30_A();
         FUN_141bfaf70();
-        ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba150();
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba150();
     }
     else
         return 0;
@@ -3922,7 +3921,6 @@ struct Unk_WsA_Color4
 const void* FUN_141c002e0(const void* assetID);          // asset id -> name object
 void FUN_1403a1280(void* logger, int level, int cat, const wchar_t* fmt, const char** a0);
 void FUN_141bdd240(void* logger, int level, int cat, const wchar_t* fmt, const char** a0, const int* a1);
-bool FUN_140184310(const CString& s, const char* t);     // s == t
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
@@ -3983,7 +3981,7 @@ void WorldService::FUN_141bc0a70(const egf::EntityLoadResult* pMsg, efd::Categor
     }
     else if (MS2_WS_LOADMSG->m_result == 7)
     {
-        if (FUN_140184310(m_920, ((efd::utf8string*)(void const*)(FUN_141c002e0(MS2_WS_LOADMSG->m_assetID)))->c_str()))
+        if ((m_920 == ((efd::utf8string*)(void const*)(FUN_141c002e0(MS2_WS_LOADMSG->m_assetID)))->c_str()))
         {
             const char* blockName = ((efd::utf8string*)(void const*)(FUN_141c002e0(MS2_WS_LOADMSG->m_assetID)))->c_str();
             FUN_1403a1280(((void*)GetLogString()), 0xc, 0x13, L"HandleWorldLoadedMessage BlockName={0} is destroyed", &blockName);
@@ -6130,7 +6128,6 @@ void WorldService::FUN_141bcf800(CString name)
 MS2_REPLACE_METHOD(0x141BCF800, WorldService, FUN_141bcf800, 201, 0x4068CD82);
 
 bool FUN_141bbc1d0(WorldService* self, const char* name, int flag);
-void* FUN_1408e57f0();
 // @0x141bcf8d0
 void WorldService::FUN_141bcf8d0()
 {
@@ -6139,7 +6136,7 @@ void WorldService::FUN_141bcf8d0()
         static_cast<IWorldServiceCallback*>(*it)->vfunc_4(m_288);
     if (!m_258.IsEmpty())
         ::FUN_141bbc1d0(this, m_258, 0);
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba210();
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba210();
 }
 MS2_REPLACE_METHOD(0x141BCF8D0, WorldService, FUN_141bcf8d0, 228, 0xB2E3FC98);
 
@@ -6796,7 +6793,7 @@ void WorldService::FUN_141bd1ed0(std::list<Unk_WsC_GameObj*>* outA, std::list<Un
             continue;
         if (skipOwned != 0 && FUN_141bd1290(((CDropItem*)(Unk_WsC_GameObj*)(mob))->GetOwnerObjId()) != 0)
             continue;
-        if (((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_14118fea0())
+        if (((CDropItem*)(Unk_WsC_GameObj*)(mob))->IsMeso())
         {
             if (!((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_141190370((GameObject*)(Unk_WsC_GameObj*)(static_cast<Unk_WsC_GameObj*>(FUN_141bd0cc0())), 1, 0))
                 continue;
@@ -6821,7 +6818,7 @@ void WorldService::FUN_141bd2030(std::list<Unk_WsC_GameObj*>* out)
         for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
         {
             Unk_WsC_GameObj* mob = FUN_1417411e0_B(FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)));
-            if (mob != 0 && ((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_14118fea0())
+            if (mob != 0 && ((CDropItem*)(Unk_WsC_GameObj*)(mob))->IsMeso())
             {
                 int noOwner = FUN_141bd1290(((CDropItem*)(Unk_WsC_GameObj*)(mob))->GetOwnerObjId()) == 0;
                 int canAttack = ((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_141190370((GameObject*)(Unk_WsC_GameObj*)(static_cast<Unk_WsC_GameObj*>(FUN_141bd0cc0())), 1, 0);
@@ -7058,7 +7055,6 @@ MS2_REPLACE_METHOD(0x141BD2FF0, WorldService, FUN_141bd2ff0, 68, 0xD8903B74);
 // singletons reached through id cells (the accessors return the global instance)
 void* FUN_1409f7c90();
 void* FUN_1409a8b00();
-void* FUN_1408e57f0();
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -7400,7 +7396,7 @@ void WorldService::FUN_141bcda90()
     if (svc)
         ((class HardwareInstancingService*)(class Unk_WsC_SvcRef*)(svc.operator->()))->FUN_1413d5660();
     FUN_1403ed2d0_C()->FUN_141bbbd70();
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba1d0();
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba1d0();
     ((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aa950();
     ((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->FUN_141adb810();
     ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177b900();
@@ -8540,7 +8536,7 @@ void WorldService::FUN_141bd6c40(void* npcPtr, Vector3* center, FieldPropertySig
             unsigned char changed = flag;
             if (((class PCBase*)(void*)(npc))->FUN_14166cb00(7) == 1 || ((class PCBase*)(void*)(npc))->FUN_141679070() != 1)
             {
-                ((class PCBase*)(void*)(npc))->FUN_14166ca80(7);
+                ((class PCBase*)(void*)(npc))->RemoveHideReason(7);
                 if (state == 1)
                 {
                     float one = 1.0f;
@@ -8572,7 +8568,7 @@ void WorldService::FUN_141bd6c40(void* npcPtr, Vector3* center, FieldPropertySig
         else
         {
             if (((class PCBase*)(void*)(npc))->FUN_14166cb00(7))
-                ((class PCBase*)(void*)(npc))->FUN_14166ca80(7);
+                ((class PCBase*)(void*)(npc))->RemoveHideReason(7);
         }
         break;
     }
@@ -8789,7 +8785,7 @@ void WorldService::FUN_141bd7390()
         if (differs == true)
             ((class PCBase*)(void*)(holder.operator->()))->FUN_14166ca20(6);
         else
-            ((class PCBase*)(void*)(holder.operator->()))->FUN_14166ca80(6);
+            ((class PCBase*)(void*)(holder.operator->()))->RemoveHideReason(6);
     }
 }
 MS2_REPLACE_METHOD(0x141BD7390, WorldService, FUN_141bd7390, 2134, 0x997E1AAC);
@@ -10891,7 +10887,6 @@ void* FUN_14052d220();
 void FUN_1411cf980(void* self, int v, Unk_WsH_AssetId* id);
 void* FUN_141293c30();
 void FUN_141bfb600();
-void* FUN_1408e57f0();
 void* FUN_14086d260();
 class AlphaShellComposite   // C3: member view for the former free stand-ins
 {
@@ -11068,8 +11063,8 @@ int WorldService::FUN_141bbc580(int resetFlag, int mapId)
         FUN_141293c30();
         FUN_141bfb600();
     }
-    if (FUN_1408e57f0())
-        ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba190();
+    if (((void*)CUserMail::FUN_1408e57f0()))
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba190();
     if (resetFlag == 0)
     {
         m_284 = 0;

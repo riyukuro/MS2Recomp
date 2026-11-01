@@ -24,8 +24,8 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);     // TinyXML float attribute
-void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5458;                                             // radial blur distance constant name
 
 // @0x1416ec120
@@ -38,8 +38,8 @@ RadialBlurEffectParam::RadialBlurEffectParam()
 void RadialBlurEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
-    FUN_140873360(pNode, "distMin", m_fDistMin);
-    FUN_140873360(pNode, "distMax", m_fDistMax);
+    XmlGetAttr((class TiXmlElement*)(pNode), "distMin", m_fDistMin);
+    XmlGetAttr((class TiXmlElement*)(pNode), "distMax", m_fDistMax);
 }
 MS2_REPLACE_METHOD(0x1416ec180, RadialBlurEffectParam, vfunc_1, 92, 0xDA0ADB01);
 
@@ -78,7 +78,7 @@ void RadialBlurEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fDist = (m_fDistMax - m_fDistMin) * fT + m_fDistMin;
-    FUN_1409a5770(DAT_143ae5458, &fDist, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5458), &fDist, 1);
 }
 MS2_REPLACE_METHOD(0x1416ec300, RadialBlurEffect, vfunc_7, 138, 0x255E4307);
 

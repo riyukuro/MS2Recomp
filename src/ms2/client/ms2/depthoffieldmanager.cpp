@@ -32,9 +32,9 @@ public:
 };
 void FUN_1416a3920(void* p, int n, unsigned char v);
 void FUN_1416aa6a0(void* p, int n, unsigned char v);
-void FUN_1409a5770(void* obj, void* value, int n);
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_140c900e0(void* name, void* data, int n);
-void* FUN_140c8f690(void* p);
+void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
 unsigned char FUN_1411782b0(void* p);
 void* FUN_1411782c0(void* p, int n);
 struct Unk_DOFW { void* FUN_1411782f0(); void* m_0; };
@@ -97,7 +97,7 @@ void FUN_1411780e0(void* a, float x, float y)
 {
     Unk_DOFVecB v(x, y);
     FUN_1411781e0(&DAT_143ae53b0, &v, 1);
-    FUN_1409a5770(&DAT_143ae53b8, &x, 1);
+    FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae53b8), (float const*)(&x), 1);
 }
 MS2_REPLACE(0x1411780E0, FUN_1411780e0, 94, 0xC811E5B5);
 
@@ -141,7 +141,7 @@ unsigned char FUN_1411782b0(void* p)
 // @0x1411782c0
 void* FUN_1411782c0(void* p, int n)
 {
-    return FUN_140c8f690((char*)p + 0xb8 + (__int64)n * 8);
+    return FUN_140c8f690(*(class Unk_PPRes const*)((char*)p + 0xb8 + (__int64)n * 8));
 }
 
 // @0x1411782f0

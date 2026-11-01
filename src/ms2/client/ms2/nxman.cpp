@@ -70,7 +70,6 @@ CStringA FUN_14016a5c0(const char* psz, int n = 0);
 CStringA FUN_140188f50(const char* psz, int n = 0);
 CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
 void FUN_14015f050(const CString& rString, CAtlArray<CString>& rArray, const char* pszSep);
-bool FUN_140184310(const CString& rString, const char* psz);
 CStringW FUN_140560c00(const wchar_t* pszFmt, const int& rArg);
 CStringW FUN_14136e2e0(const wchar_t* pszFmt, const wchar_t* const& rArg);
 CString  FUN_140540050(const char* pszFmt, const CString& rArg);

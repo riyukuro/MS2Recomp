@@ -40,8 +40,8 @@
 // Unrecovered helpers (externs bound by VA).
 // ---------------------------------------------------------------------------------------------------------------
 class Unk_ConditionXml;
-int FUN_1408732e0(Unk_ConditionXml* pNode, const char* pszName, __int64& rValue);          // int64 attribute
-int FUN_1408731e0(Unk_ConditionXml* pNode, const char* pszName, int& rValue);              // int attribute
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_ConditionXml* pNode, const char* pszName, CString& rValue);          // string attribute
 CString FUN_14015f710(Unk_ConditionXml* pNode, const char* pszName, CString strDefault);   // string with default
 CLogString* GetLogString();                                                                // the log singleton
@@ -230,7 +230,6 @@ __int64 ParseInt64(const CString& str)
     return _atoi64(str);
 }
 
-size_t FUN_140280400(ATL::CAtlArray<__int64>* pArray, __int64 nValue);
 
 // @0x1402a5040
 static void ParseInt64ListImpl(CString& str, ATL::CAtlArray<__int64>& rOut, const char* pszSep)
@@ -240,7 +239,7 @@ static void ParseInt64ListImpl(CString& str, ATL::CAtlArray<__int64>& rOut, cons
     while (!strToken.IsEmpty())
     {
         // MS2-FUNCTIONAL: CAtlArray<__int64>::Add is called through its exe address (symbols.tsv binds the name to the 16-byte-element Add)
-        FUN_140280400(&rOut, ParseInt64(strToken));
+        ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(void*)(&rOut))->Add(ParseInt64(strToken));
         strToken = str.Tokenize(pszSep, iStart);
     }
 }
@@ -329,11 +328,11 @@ int CConditionCommonData::Load(Unk_ConditionXml* pNode, CStringW strTag, unsigne
         return 0;
     CString strCode;
     CString strTarget;
-    FUN_1408732e0(pNode, "value", m_nGoal);
+    XmlGetAttr((class TiXmlElement*)(pNode), "value", m_nGoal);
     FUN_1408733e0(pNode, "code", strCode);
     FUN_1408733e0(pNode, "target", strTarget);
-    FUN_1408731e0(pNode, "partyCount", m_nPartyCount);
-    FUN_1408731e0(pNode, "guildPartyCount", m_nGuildPartyCount);
+    XmlGetAttr((class TiXmlElement*)(pNode), "partyCount", m_nPartyCount);
+    XmlGetAttr((class TiXmlElement*)(pNode), "guildPartyCount", m_nGuildPartyCount);
     if (!strCode.IsEmpty() && strCode != "0")
         m_code.Parse(CString(strCode));
     if (!strTarget.IsEmpty() && strTarget != "0")

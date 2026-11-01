@@ -31,6 +31,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/itemenchanttransformtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -138,7 +139,6 @@ MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);
 void FUN_141415600(const CString& strSlot);                         // unbind a slot
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, bool* pHighSa);   // the item's option text
@@ -354,7 +354,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     ASObj obj(2);
     obj.FUN_1407cbb20(s_strItemName, m_selected->FUN_140528160());
     obj.FUN_1407cba60("binding", m_strSelectBag);
-    CStringW strFee = FUN_1405c2690(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nFee));
+    CStringW strFee = FUN_14028dfa0<CStringW>(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nFee));
     obj.FUN_1407cbb20("transformFee", strFee);
     m_outputs.RemoveAll();
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)

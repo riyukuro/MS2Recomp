@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -112,7 +113,6 @@ public:
     int FUN_14123c580();
 };
 CStringW FUN_1401aa6a0(int nId);
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
 CStringW FUN_140719dc0(const wchar_t* szFmt, const short& nValue);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
@@ -224,7 +224,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
     }
     Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
     if (pNpc != 0) {
-        CStringW strName = FUN_1408f71a0(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
+        CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, ((class CNpcData*)(struct Unk_NdNpcRow*)(pNpc->FUN_141093270().operator->()))->GetRace()));
         FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
         FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", FUN_140719dc0(L"{0}", pNpc->vfunc_78()));

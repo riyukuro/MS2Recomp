@@ -74,17 +74,17 @@ public:
 
 // A map name with its world map entry.
 class Unk_RwMapTable { public: };
-Unk_RwMapTable* FUN_140cb17d0();
+class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 class WorldMapManager   // C3: member view for the former free stand-ins
 {
 public:
     int HasFieldSearchInfo(unsigned int);
 };
 
-class Unk_RwUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_RwUIManager { public: };
 UIRouletteDialog* FUN_1416ffcb0(int nId);
 class CScriptTable;
-CScriptTable* FUN_141371b30();
+void* FUN_141371b30();   // C3: was FUN_141371b30
 
 // The view / dictionary (maview) switches.
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);             // the common npc row
@@ -96,7 +96,7 @@ CStringW FUN_140763e10(int nMoney);                         // a money text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1408116a0(int nStringId, const int& nArg);
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
-Unk_RwConfig* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(int* pValue);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
@@ -312,7 +312,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             }
             nPassed = spMaid->GetOverDays();
             __int64 nBase = (std::max)(spMaid->m_nExpireTime, GetServerTime());
-            __int64 nExtend = nBase + *FUN_1402056b0(&FUN_1401d3200()->m_nValue) * 24 * 60 * 60;
+            __int64 nExtend = nBase + *FUN_1402056b0(&((struct Unk_RwConfig*)FUN_1401d3200())->m_nValue) * 24 * 60 * 60;
             CMsTime kEnd(spMaid->m_nExpireTime);
             CMsTime kExtendTime(nExtend);
             strEnd = FUN_1409e90c0(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());
@@ -393,7 +393,7 @@ MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, FUN_1416fbf60, 115, 0x395CBD
 CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColor)
 {
     CStringW strRet;
-    if (((class WorldMapManager*)(class Unk_RwMapTable*)(FUN_140cb17d0()))->HasFieldSearchInfo(nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)FUN_140cb17d0())))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);
@@ -520,7 +520,7 @@ void CReservedWordTable::FUN_1416fc710(CStringW& str, int nCount)
 // @0x1416fc9c0
 static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
     {
         strOut = L"";
@@ -532,7 +532,7 @@ static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fca60
 static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
     {
         strOut = L"";
@@ -544,7 +544,7 @@ static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcb10
 static void Rw_MyPCLevel(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
     {
         strOut = L"";
@@ -644,7 +644,7 @@ static void Rw_Key(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd360
 static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
     {
         strOut = L"";
@@ -740,7 +740,7 @@ static void Rw_Script(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     unsigned __int64 nId = FUN_140718370(strArg);
     if (nId == 0)
         return;
-    strOut = FUN_141371b30()->GetScript(nId);
+    strOut = ((class CScriptTable*)FUN_141371b30())->GetScript(nId);
 }
 
 // @0x1416fdc80
@@ -803,7 +803,7 @@ static void Rw_RoulettePrev(CStringW& strOut, CStringW strArg, CStringW& strWhol
 // @0x1416fdfd0
 static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
     {
         strOut = L"";
@@ -865,7 +865,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
     int nGender = 0;
     if (pPc == 0)
     {
-        PC* pLocal = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pLocal == 0)
         {
             strToken = L"";
@@ -899,7 +899,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
 // @0x1416fe660
 static void Rw_GenderId(CStringW& strToken, int nGender)
 {
-    PC* pLocal = reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == 0)
         strToken = L"";
     else
@@ -1026,7 +1026,7 @@ static void Rw_MapBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     unsigned int nMapId = _wtoi(strArg);
     if (nMapId == 0)
         return;
-    if (((class WorldMapManager*)(class Unk_RwMapTable*)(FUN_140cb17d0()))->HasFieldSearchInfo(nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)FUN_140cb17d0())))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);
@@ -1148,7 +1148,7 @@ UIRouletteDialog* FUN_1416ffcb0(int nId)
 {
     if (reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> spDialog = reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spDialog.get())
             return dynamic_cast<UIRouletteDialog*>((UIObject*)spDialog);
     }

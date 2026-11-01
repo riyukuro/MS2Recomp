@@ -49,6 +49,8 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
 class CEffectService;
@@ -383,7 +385,6 @@ extern __int64 DAT_143ab2828;
 CStringW FUN_140b8f7a0(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_140719a00(__int64);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 __int64 FUN_140718320(const CStringW&);
 void FUN_1405569f0(void*, int);
 
@@ -458,14 +459,14 @@ MS2_REPLACE(0x1412757d0, FUN_1412757d0, 138, 0x632A0D97);
 // @0x141275860
 CStringW FUN_141275860(__int64 n)
 {
-    return FUN_1405c2690(CStringW(L"s_number_string_meso"), FUN_1412757d0(n));
+    return FUN_14028dfa0<CStringW>(CStringW(L"s_number_string_meso"), FUN_1412757d0(n));
 }
 MS2_REPLACE(0x141275860, FUN_141275860, 146, 0xE1F2ADA4);
 
 // @0x141275900
 CStringW FUN_141275900(const CStringW& str)
 {
-    return FUN_1405c2690(CStringW(L"s_number_string_meso"), FUN_141275790(str));
+    return FUN_14028dfa0<CStringW>(CStringW(L"s_number_string_meso"), FUN_141275790(str));
 }
 MS2_REPLACE(0x141275900, FUN_141275900, 146, 0xEBEE6EE7);
 
@@ -718,7 +719,6 @@ public:
     int GetSceneId();
     int GetSubSceneId();
 };
-void* FUN_1408e57f0();
 bool FUN_14028d470(float, float);
 
 float FUN_141276490(float fWidth, float fHeight);
@@ -726,9 +726,9 @@ float FUN_141276490(float fWidth, float fHeight);
 // @0x141276490
 float FUN_141276490(float fWidth, float fHeight)
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200018)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200018)
         return 1.0f;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
         fHeight = 1.0f;
     const Unk_ScaleMap::CPair* pPair = s_scaleCache.Lookup(Unk_ScreenKey(fWidth, fHeight));
     if (pPair != 0)

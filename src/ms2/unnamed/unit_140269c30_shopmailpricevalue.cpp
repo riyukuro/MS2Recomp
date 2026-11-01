@@ -12,7 +12,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-bool FUN_140184310(const CString& str, const char* psz);   // str == psz
 
 // @0x140269c30
 void Unk_CommonPrice::Write(COutputStream* pOut)
@@ -45,30 +44,30 @@ bool Unk_CommonPrice::LoadXml(Unk_140165cf0* pNode)
     CStringA strType;
     FUN_1408733e0(pNode, "type", strType);
     FUN_1408732e0(pNode, "amount", m_amount);
-    if (FUN_140184310(strType, "meso"))
+    if ((strType == "meso"))
     {
         m_type = 0;
         return true;
     }
-    else if (FUN_140184310(strType, "merat_f") || FUN_140184310(strType, "merat"))
+    else if ((strType == "merat_f") || (strType == "merat"))
     {
         m_type = 2;
         m_subType = 1;
         return true;
     }
-    else if (FUN_140184310(strType, "merat_c"))
+    else if ((strType == "merat_c"))
     {
         m_type = 2;
         m_subType = 0;
         return true;
     }
-    else if (FUN_140184310(strType, "merat_m"))
+    else if ((strType == "merat_m"))
     {
         m_type = 2;
         m_subType = 2;
         return true;
     }
-    else if (FUN_140184310(strType, "merat_e"))
+    else if ((strType == "merat_e"))
     {
         m_type = 2;
         m_subType = 3;

@@ -33,8 +33,8 @@
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // banktable.cpp: slot name attribute
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                             // the item data of an id
@@ -87,7 +87,7 @@ void CItemDefaultData::Load()
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key")) {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         int nJobCode = 0;
         FUN_140873890(pKey, "jobCode", nJobCode);
@@ -103,16 +103,16 @@ void CItemDefaultData::Load()
             Unk_ItemDefaultKind eSlot = (Unk_ItemDefaultKind)0;
             ReadSlotAttr(pSlot, "name", (int*)&eSlot);
             for (Unk_140165cf0* pItem = pSlot->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item")) {
-                if (!FUN_14028f710(pItem))
+                if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                     continue;
                 bool bVisible = false;
-                FUN_1408736d0(pItem, "visible", bVisible);
+                XmlQuery((class TiXmlElement*)(pItem), "visible", bVisible);
                 bool bBase = false;
-                FUN_1408736d0(pItem, "base", bBase);
+                XmlQuery((class TiXmlElement*)(pItem), "base", bBase);
                 int nSaleTag = 0;
                 FUN_1408731e0(pItem, "saleTag", nSaleTag);
                 bool bSelect = false;
-                FUN_1408736d0(pItem, "select", bSelect);
+                XmlQuery((class TiXmlElement*)(pItem), "select", bSelect);
                 if (!bVisible && !bBase)
                     continue;
                 int nItemId = FUN_140197390(pItem, "id", 0);

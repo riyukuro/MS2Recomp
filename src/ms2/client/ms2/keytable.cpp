@@ -196,7 +196,6 @@ public:
 int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
 int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event item command
        // the camera manager: its mode
-CameraMgr* FUN_1409478c0();
 extern Unk_KtInventory DAT_143ab2a90;                       // the player's inventory
 void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
@@ -939,7 +938,7 @@ void CKeyTable::FUN_14142bb10()
         return;
     if (pPlayer->FUN_1416595d0())
         return;
-    int nCameraMode = FUN_1409478c0()->FUN_140af7e30();
+    int nCameraMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30();
     switch (nCameraMode)
     {
     case 6:

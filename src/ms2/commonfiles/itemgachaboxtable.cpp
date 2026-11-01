@@ -27,7 +27,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-void FUN_140873600(Unk_140165cf0*, const char*, CMsTime&);          // date attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern bool FUN_1403b3c40(const CStringW&, const wchar_t*);          // function name equals
 
@@ -99,7 +99,7 @@ void ItemGachaBoxTable::Load()
         FUN_140873220(pNode, "randomBoxSeasonJP", reinterpret_cast<unsigned&>(spBox->m_nSeason[1]));
         FUN_140873220(pNode, "randomBoxSeasonNA", reinterpret_cast<unsigned&>(spBox->m_nSeason[2]));
         FUN_140873220(pNode, "randomBoxSeasonCN", reinterpret_cast<unsigned&>(spBox->m_nSeason[3]));
-        FUN_140873600(pNode, "saleEndDate", spBox->m_saleEndDate);
+        XmlGetAttr((class TiXmlElement*)(pNode), "saleEndDate", spBox->m_saleEndDate);
         FUN_140873220(pNode, "ui", reinterpret_cast<unsigned&>(spBox->m_nUi));
         FUN_140873220(pNode, "individualDropBoxID", reinterpret_cast<unsigned&>(spBox->m_nIndividualDropBoxID));
         FUN_140873220(pNode, "shopID", reinterpret_cast<unsigned&>(spBox->m_nShopID));

@@ -35,6 +35,7 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/bonerotateinterpolator.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -130,7 +131,6 @@ class Unk_SiWorld { public: int FUN_141bd1a10(GameObject* pObject); };
 
 // Scene / mode queries of the bore timer.
 class Unk_SiScene;
-Unk_SiScene* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -664,13 +664,13 @@ void StateIdle::FUN_1417cef60()
         return;
     if (m_pOwner->vfunc_65() != 0)
         m_timerBore.FUN_1408687f0();
-    bool bBusy = ((class GFxSceneService*)(class Unk_SiScene*)(FUN_1408e57f0()))->FUN_1422b9ea0() == 1;
+    bool bBusy = ((class GFxSceneService*)(class Unk_SiScene*)(((Unk_SiScene*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() == 1;
     if (!bBusy)
         bBusy = ((class GFxManager*)(class Unk_SiMode*)(((class Unk_SiMode*)FUN_14025e7a0())))->FUN_1422ae940() == 1;
     if (m_n10 == 1 && m_pOwner->vfunc_65() == 0 && !bBusy)
     {
         Unk_PCD88* pTarget = AsPC(pPC)->FUN_14165c2d0().get();
-        if (pTarget != 0 && pTarget->FUN_140a35780() == 0 && m_timerBore.FUN_140868c00() != 0)
+        if (pTarget != 0 && pTarget->IsLooking() == 0 && m_timerBore.FUN_140868c00() != 0)
         {
             int nBore = reinterpret_cast<Unk_SiActor*>(m_pOwner)->FUN_141679120(0x27);
             vfunc_2(nBore + 2);

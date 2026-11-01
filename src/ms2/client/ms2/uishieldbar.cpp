@@ -73,7 +73,7 @@ struct Unk_ShieldCfgData { char m_pad[0xb]; bool m_b; char m_c; bool m_d; };
 class Unk_ShieldCfgHolder { public: Unk_ShieldCfgData* FUN_140b123b0(); };
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-class Unk_ShieldUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_ShieldUIMgr { public: };
 
 // @0x140e855f0
 UIShieldBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -304,7 +304,7 @@ UIShieldBar* FUN_140e86a50(int nUiId)
 {
     if (reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIShieldBar*>((UIObject*)p);
     }

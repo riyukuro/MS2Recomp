@@ -64,7 +64,6 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-class Unk_WdUIManager { public: void FUN_141adc750(int nId); };
 class CUgcManager;
 
 extern __int64 DAT_143ab2828;                                   // the own character id
@@ -80,9 +79,6 @@ bool FUN_140930b40();
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 int GetDayNumberDifference(__int64 nThen, __int64 nNow);        // days between two times
 __int64 GetServerTime();                                        // the current time
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table text, two args
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);    // string table text, one arg
-CStringW FUN_14062b4f0(CStringW strKey, const int& n);
 CString FUN_1410291d0(__int64 nCharacterId, const CString& strKey);   // a UGC profile path
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -176,9 +172,9 @@ void UIWeddingDialog::OnLoadComplete()
             bDivorce = pProxy->IsPartner(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()) == 0;
     }
     ASObj data(2);
-    data.FUN_1407cbb20("coupleName", FUN_1408f71a0(CStringW(L"s_wedding_dialog_couple_name"), pPC->vfunc_77(), pPartner->m_strName));
-    data.FUN_1407cbb20("anniversary", FUN_1405c2690(CStringW(L"s_wedding_dialog_anniversary"), FUN_140b8e850(CMsTime(WdProxyTime(pProxy, 0x30)))));
-    data.FUN_1407cbb20("counter", FUN_14062b4f0(CStringW(L"s_wedding_dialog_counter"), GetDayNumberDifference(WdProxyTime(pProxy, 0x30), GetServerTime())));
+    data.FUN_1407cbb20("coupleName", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_dialog_couple_name"), pPC->vfunc_77(), pPartner->m_strName));
+    data.FUN_1407cbb20("anniversary", FUN_14028dfa0<CStringW>(CStringW(L"s_wedding_dialog_anniversary"), FUN_140b8e850(CMsTime(WdProxyTime(pProxy, 0x30)))));
+    data.FUN_1407cbb20("counter", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_counter"), GetDayNumberDifference(WdProxyTime(pProxy, 0x30), GetServerTime())));
     data.FUN_1407cba60("profile", FUN_140fc88d0());
     data.FUN_1407cbbe0("divorce", bDivorce);
     ASObj affinity(2);
@@ -247,7 +243,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onInfo") == 0)
     {
-        reinterpret_cast<Unk_WdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f95);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f95)));
         return 1;
     }
     else if (_stricmp(szMethod, "onChangeTab") == 0)
@@ -299,7 +295,7 @@ bool UIWeddingDialog::SendWedding(int nResult, const CMsgBoxData& box)
     if (nResult)
     {
         CStringW strDate = FUN_140b8e850(pProxy->GetDivorceTime());
-        CStringW strMessage = FUN_1408f71a0(L"s_wedding_divorce_warn", strDate, pPartner->m_strName);
+        CStringW strMessage = FUN_14028dfa0<CStringW, CStringW>(L"s_wedding_divorce_warn", strDate, pPartner->m_strName);
         FUN_140d74390(strMessage, 0, FUN_140b240b0());
         return true;
     }
@@ -346,7 +342,7 @@ void UIWeddingDialog::OnDivorce()
     Unk_WeddingPartner* pPartner = pProxy->GetSelf(DAT_143ab2828);
     if (pProxy->IsPartner(DAT_143ab2828) == true)
         return;
-    CStringW strMessage = FUN_1405c2690(L"s_wedding_divorce_confirm", pPartner->m_strName);
+    CStringW strMessage = FUN_14028dfa0<CStringW>(L"s_wedding_divorce_confirm", pPartner->m_strName);
     FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingDialog::SendWedding), strMessage);
 }
 MS2_REPLACE_METHOD(0x140fc8240, UIWeddingDialog, OnDivorce, 381, 0x2704CE65);
@@ -393,7 +389,7 @@ void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
     data.FUN_1409c1180("maxExp", nRange);
     data.FUN_1409c1180("current", nCurrent);
     data.FUN_1407cbb20("exp", FUN_14028dfa0(CStringW(L"s_wedding_dialog_wedding_exp"), nCurrent, nRange));
-    data.FUN_1407cbb20("grade", FUN_14062b4f0(CStringW(L"s_wedding_dialog_wedding_grade"), nGrade));
+    data.FUN_1407cbb20("grade", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), nGrade));
 }
 MS2_REPLACE_METHOD(0x140fc86c0, UIWeddingDialog, FUN_140fc86c0, 522, 0xD56FAB4F);
 

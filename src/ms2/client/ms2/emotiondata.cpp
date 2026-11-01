@@ -15,6 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 #pragma comment(lib, "shlwapi.lib")
 
@@ -262,7 +263,7 @@ CEmotionTable::~CEmotionTable()
 // @0x1411bde10
 MS2Ptr<CEmotionGroup> CEmotionTable::GetGroup(unsigned int nId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (DAT_1439ed00c == 0 || IsIdCacheChanged(nId) == true)
         ReadEmotionGroup(nId);
     MS2Ptr<CEmotionGroup> spGroup;

@@ -73,7 +73,6 @@ Unk_SwfMgr* FUN_140b632f0();
 __int64 FUN_141b71960(const char* sz);
 unsigned __int64 FUN_140718350(const CString& str);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
-bool FUN_140184310(const CString& str, const char* sz);
 class Unk_Hotbar { public: int FUN_140d40670(); };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 int FUN_140d40670(Unk_Hotbar* p);
@@ -154,7 +153,7 @@ int UIBlackMarketDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    Unk_LocalPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer && pPlayer->FUN_14166ce30() != 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -168,7 +167,7 @@ int UIBlackMarketDialog::vfunc_73()
 void UIBlackMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    Unk_LocalPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer && pPlayer->FUN_14166ce30() != 0 && m_68 == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -297,7 +296,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     if (strMethod.CompareNoCase("getRegisterItemTooltip") == 0)
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tip(reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x80, 2);
+        ASTooltip tip(((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
@@ -327,13 +326,13 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         {
             MS2Ptr<CItem> spItem(0);
             CString strArg = pArgs->FUN_1422b8d30();
-            if (FUN_140184310(strArg, "ItemGUID"))
+            if ((strArg == "ItemGUID"))
             {
                 __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
                 FUN_140d40120(((class Unk_Hotbar*)FUN_1409bb9e0()), spItem, 0);
             }
-            else if (FUN_140184310(strArg, "MarketSN"))
+            else if ((strArg == "MarketSN"))
             {
                 unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
                 MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
@@ -350,14 +349,14 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     else if (strMethod.CompareNoCase("OnSlotShiftClick") == 0)
     {
         CString strArg = pArgs->FUN_1422b8d30();
-        if (FUN_140184310(strArg, "ItemGUID"))
+        if ((strArg == "ItemGUID"))
         {
             __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
             if (spItem.get())
                 FUN_140d2cfc0(spItem);
         }
-        else if (FUN_140184310(strArg, "MarketSN"))
+        else if ((strArg == "MarketSN"))
         {
             unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
             MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);

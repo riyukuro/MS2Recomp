@@ -49,9 +49,17 @@ MS2_CHECK_SIZE(Unk_GsSetting, 0x2c);
 
 // ---- out-of-unit callees ----
 extern int DAT_1439f9284;                                       // the slot of the gem being set (-1 = none)
-void* FUN_1403ed2d0();                                          // the local player
-void* FUN_141bd0cc0(void* pPlayer);                             // its actor
-Unk_GsEquip* FUN_14165f460(void* pActor);                       // the equipment
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_MyPCEquip* FUN_14165f460();
+};
 CGemBase* FUN_140ddcc50(MS2Ptr<CGemBase>& sp);                  // MS2Ptr::operator->
 void FUN_1405a8650(MS2Ptr<CGemBase>& sp);                       // MS2Ptr release
 void FUN_1401fd2e0(Unk_GsSetting& setting, COutPacket& packet); // write the setting
@@ -90,14 +98,14 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
 {
     if (DAT_1439f9284 == -1)
         return 0;
-    void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pActor == 0)
         return 0;
 #ifdef __clang__
-    MS2Ptr<CGemBase> spGem = FUN_14165f460(pActor)->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
+    MS2Ptr<CGemBase> spGem = ((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
     return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(spGem));
 #else
-    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(FUN_14165f460(pActor)->FUN_141270740(1)));
+    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1)));
 #endif
 }
 

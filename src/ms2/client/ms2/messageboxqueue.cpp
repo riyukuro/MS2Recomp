@@ -16,6 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adcea0
 // Scoped lock (ctor 0x1401b4ec0, dtor 0x1401b5120).
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
 
@@ -23,7 +24,6 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 class Unk_MsgQueueUIMgr
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 Unk_MsgQueueUIMgr* FUN_1403ed2b0();
 
@@ -93,7 +93,7 @@ void FUN_14151f460(int nResult)
     if (pBox != 0)
     {
         if (pBox->FUN_1419f8270() == 0)
-            pBox->FUN_1419f8170(nResult);
+            pBox->CloseAll(nResult);
     }
 }
 
@@ -110,7 +110,7 @@ void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
         FUN_14151fb60(strTag, spData);
         return;
     }
-    pBox->FUN_1419f81f0(spData);
+    pBox->ShowIfIdle(spData);
 }
 
 // No box is shown.
@@ -235,7 +235,7 @@ UIMessageBox* FUN_14151fcb0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adcea0((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIMessageBox*>((UIObject*)p);
     }

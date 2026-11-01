@@ -16,6 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -39,18 +40,25 @@ int FUN_140bd09c0(void* pButton);                                       // which
 
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);   // set a text clip's text
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);        // the string table text with an argument
 void FUN_1412751f0(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
 void FUN_141276180(const CString& strName, const CString& strArg);      // play a system sound
-unsigned int FUN_140869420();                                           // the client clock
-int FUN_140768010(unsigned nRange, unsigned nBase);                     // random in base..base+range-1
-void* FUN_1403ed2d0();                                                  // the session
-void* FUN_141bd0cc0(void* pSession);                                    // the local player
-char* FUN_1401d3200();                                                  // the constants table
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+int FUN_140768010(int, int);   // C3: was FUN_140768010
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned short* FUN_1401d7c10(void* pEntry);                            // a constant entry
 void* FUN_140aa6d30();                                                  // the scene manager
-int FUN_1417e2610(void* pManager);                                      // the current scene id
+class CStateService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_1417e2610();
+};
 int FUN_1418dd0d0();                                                    // the screen margin
 AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 
@@ -129,19 +137,19 @@ void UIGlobalPortalDialog::vfunc_72()
 {
     if (m_nRetryTime == 0)
         return;
-    if (FUN_140869420() < m_nRetryTime)
+    if (GetTickCountMs2() < m_nRetryTime)
         return;
-    PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    unsigned short nLimit = *FUN_1401d7c10(FUN_1401d3200() + 0xe150);
+    unsigned short nLimit = *FUN_1401d7c10(((char*)FUN_1401d3200()) + 0xe150);
     if (nLimit != 0 && (unsigned short)pPlayer->vfunc_78() < nLimit)
     {
         m_nRetryTime = 0;
         return;
     }
     m_nRetryTime = 0;
-    if (FUN_1417e2610(FUN_140aa6d30()) != 0x620000c)
+    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() != 0x620000c)
         return;
     if (FUN_141924630() == 0)
         FUN_141924680();
@@ -166,7 +174,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             if (!m_strCaption1.IsEmpty())
             {
                 m_enterButton1->vfunc_3(1);
-                m_enterButton1->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption1)));
+                m_enterButton1->FUN_1422cdfb0(FUN_14028dfa0<CStringW>(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption1)));
             }
             else
                 m_enterButton1->vfunc_3(0);
@@ -176,7 +184,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             if (!m_strCaption2.IsEmpty())
             {
                 m_enterButton2->vfunc_3(1);
-                m_enterButton2->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption2)));
+                m_enterButton2->FUN_1422cdfb0(FUN_14028dfa0<CStringW>(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption2)));
             }
             else
                 m_enterButton2->vfunc_3(0);
@@ -186,7 +194,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             if (!m_strCaption3.IsEmpty())
             {
                 m_enterButton3->vfunc_3(1);
-                m_enterButton3->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption3)));
+                m_enterButton3->FUN_1422cdfb0(FUN_14028dfa0<CStringW>(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption3)));
             }
             else
                 m_enterButton3->vfunc_3(0);
@@ -253,7 +261,7 @@ void UIGlobalPortalDialog::FUN_1412c32a0(CInPacket& packet)
         return;
     m_nShownEventId = 0;
     m_nShownParam = 0;
-    m_nRetryTime = FUN_140869420() + FUN_140768010(10000, 0);
+    m_nRetryTime = GetTickCountMs2() + FUN_140768010(10000, 0);
 }
 
 // @0x1412c3640

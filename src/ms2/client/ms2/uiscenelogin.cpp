@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/filepreload_1.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -36,15 +37,7 @@ class UIIntroMovie : public UIVideoContents
 };
 
 // The UI message (an ActionScript call: ASData + type, 0x50 bytes), same view as uiobjectstoredialog.cpp.
-class Unk_OsUIMsg : public UIMsg
-{
-public:
-    Unk_OsUIMsg();                                          // 0x1422e4490
-    ~Unk_OsUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_OsUIMsg;
 
 // The file preloader singleton (CFilePreload, filepreload_1.h): only the progress callback at +0x20 and the "done" test.
 class Unk_LgPreload
@@ -75,9 +68,7 @@ class Unk_LgUIMgr                                       // the UI service (FUN_1
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);          // looks a UI up by id
     void FUN_141adbe00(float f, int n);
-    void FUN_141adc530(int nUiId);                      // show
     void FUN_141adc5d0(int nUiId);                      // hide
-    int FUN_141adc890(int nUiId);                       // is shown
 };
 class Unk_LgWorld;                                      // FUN_1403ed2d0
 class Unk_LgHost;                                       // FUN_14025e7a0
@@ -199,7 +190,7 @@ void UISceneLogin::vfunc_49(int n)
     else
         m_nProgress = 0x4000;
     FUN_1403ed2b0()->FUN_141adc5d0(0x4e22);
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4eef) != 0)
+    if (((CUIService*)FUN_1403ed2b0())->FUN_141adc890((eUIClassID)(0x4eef)) != 0)
         FUN_1403ed2b0()->FUN_141adc5d0(0x4eef);
     UISceneEntity::vfunc_49(n);
 }
@@ -335,7 +326,7 @@ void UISceneLogin::vfunc_64()
 void UISceneLogin::FUN_141acf420()
 {
     if (FUN_141acfb40())
-        FUN_1403ed2b0()->FUN_141adc530(0x4eef);
+        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eef)));
     else
         FUN_141acfa70();
 }
@@ -436,8 +427,8 @@ void UISceneLogin::FUN_141acf890()
 void UISceneLogin::FUN_141acfa00()
 {
     if (FUN_141acfb40())
-        FUN_1403ed2b0()->FUN_141adc530(0x4eef);
-    FUN_1403ed2b0()->FUN_141adc530(0x4e22);
+        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eef)));
+    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e22)));
 }
 
 // @0x141acfa70

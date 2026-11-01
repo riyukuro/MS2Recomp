@@ -20,6 +20,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -181,7 +182,7 @@ bool CPetDataTable::LoadProperties()
         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     FUN_1401d1160(CString(strPath));
     m_pets.RemoveAll();
     m_petsByKfm.RemoveAll();
@@ -238,7 +239,7 @@ bool CPetDataTable::LoadCollectGroups()
 // @0x1407290f0
 CPetDataTable::PetPtr CPetDataTable::Find(unsigned int nPetId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     PetPtr spPet;
@@ -249,7 +250,7 @@ CPetDataTable::PetPtr CPetDataTable::Find(unsigned int nPetId)
 // @0x1407291c0
 CPetDataTable::PetPtr CPetDataTable::Find(CString strKfm)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     PetPtr spPet;
@@ -260,7 +261,7 @@ CPetDataTable::PetPtr CPetDataTable::Find(CString strKfm)
 // @0x1407292a0
 int CPetDataTable::Contains(CString strKfm)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     return m_petsByKfm.Lookup(strKfm) != 0;

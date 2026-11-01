@@ -301,7 +301,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
         GameObject* pOwner = pTarget->FUN_140a533b0();
         if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200044))
         {
-            Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             pTarget->m_spObject = FUN_141b6ef70(pPlayer->FUN_14123c460());
         }
         break;
@@ -484,7 +484,7 @@ ATL::CAtlList<CEffectParamPtr>& CEffectData::FUN_14119f540()
 }
 
 // @0x14119f560
-void CEffectData::FUN_14119f560(CEffectParam* pParam)
+void CEffectData::AddParam(CEffectParam* pParam)
 {
     CEffectParamPtr spParam(pParam);
     m_params.AddTail(spParam);
@@ -497,7 +497,7 @@ bool CEffectData::FUN_14119f5c0()
 }
 
 // @0x14119f5f0
-bool CEffectData::FUN_14119f5f0()
+bool CEffectData::HasIgnoreOptimizeParam()
 {
     for (POSITION pos = m_params.GetHeadPosition(); pos != 0; m_params.GetNext(pos))
     {
@@ -507,7 +507,7 @@ bool CEffectData::FUN_14119f5f0()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x14119f5f0, CEffectData, FUN_14119f5f0, 132, 0xF758D01F);
+MS2_REPLACE_METHOD(0x14119f5f0, CEffectData, HasIgnoreOptimizeParam, 132, 0xF758D01F);
 
 // @0x14119f680
 bool CEffectData::FUN_14119f680()
@@ -618,7 +618,7 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
             FUN_14015eb90(((void*)GetLogString()), 1, 0x133, L"Effect Fail CreateParam:{0}", strFile);
             return CEffectDataPtr(0);
         }
-        spData->FUN_14119f560(spParam.get());
+        spData->AddParam(spParam.get());
     }
     return spData->FUN_14119f5c0() ? CEffectDataPtr(0) : spData;
 }
@@ -898,11 +898,11 @@ void EffectNode::CopyMembers(EffectNode* pkDest, NiCloningProcess& kCloning)
         return;
     LightUnaffectedNode::CopyMembers(pkDest, kCloning);
     if (m_spMovement.get())
-        pkDest->FUN_1411a3db0(m_spMovement->Clone());
+        pkDest->SetMovement(m_spMovement->Clone());
     pkDest->m_unk_17c = m_unk_17c;
     pkDest->m_bApplyLocalScale = m_bApplyLocalScale;
     pkDest->m_bApplyWorldTransform = m_bApplyWorldTransform;
-    pkDest->FUN_1411a3fd0(m_pTarget);
+    pkDest->SetRotationTarget(m_pTarget);
     pkDest->FUN_1411a4040(m_kTranslate);
     pkDest->FUN_1411a4000(m_kRotate);
     pkDest->SetOnGround(m_bOnGround);
@@ -998,8 +998,8 @@ void EffectNode::FUN_1411a3cb0(const CEffectDummy& kDummy)
 MS2_REPLACE_METHOD(0x1411a3cb0, EffectNode, FUN_1411a3cb0, 244, 0x5441C62C);
 
 // @0x1411a3db0
-void EffectNode::FUN_1411a3db0(INodeMovement* pMovement) { m_spMovement.AssignRaw(pMovement); }
-MS2_REPLACE_METHOD(0x1411a3db0, EffectNode, FUN_1411a3db0, 43, 0x3153449B);
+void EffectNode::SetMovement(INodeMovement* pMovement) { m_spMovement.AssignRaw(pMovement); }
+MS2_REPLACE_METHOD(0x1411a3db0, EffectNode, SetMovement, 43, 0x3153449B);
 
 // @0x1411a3fa0
 void EffectNode::SetOnGround(int bOnGround) { m_bOnGround = bOnGround; }
@@ -1009,12 +1009,12 @@ MS2_REPLACE_METHOD(0x1411a3fa0, EffectNode, SetOnGround, 25, 0xA75DD37E);
 const NiRTTI* EffectNode::GetRTTI() const { return &ms_RTTI; }
 
 // @0x1411a3fd0
-void EffectNode::FUN_1411a3fd0(NiAVObject* pTarget)
+void EffectNode::SetRotationTarget(NiAVObject* pTarget)
 {
     if (pTarget != this)
         m_pTarget = pTarget;
 }
-MS2_REPLACE_METHOD(0x1411a3fd0, EffectNode, FUN_1411a3fd0, 40, 0xF6CFED15);
+MS2_REPLACE_METHOD(0x1411a3fd0, EffectNode, SetRotationTarget, 40, 0xF6CFED15);
 
 // @0x1411a4000
 void EffectNode::FUN_1411a4000(const NiMatrix3& kRot)
@@ -1488,7 +1488,7 @@ unsigned CEffectService::FUN_1411a5a60(const CString& strName, const CString& st
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0) {
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
@@ -1513,7 +1513,7 @@ unsigned CEffectService::FUN_1411a5d80(const CString& strName)
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0) {
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
@@ -1539,7 +1539,7 @@ void CEffectService::FUN_1411a6060(unsigned nId)
 {
     if (nId == 0)
         return;
-    FUN_1411a66d0(nId);
+    RemovePendingEffects(nId);
     Unk_EsGroupMap::iterator it = m_mapGroups.find(nId);
     if (it == m_mapGroups.end())
         return;
@@ -1552,7 +1552,7 @@ void CEffectService::FUN_1411a6060(unsigned nId)
 MS2_REPLACE_METHOD(0x1411a6060, CEffectService, FUN_1411a6060, 247, 0x8944F06E);
 
 // @0x1411a66d0
-void CEffectService::FUN_1411a66d0(unsigned nId)
+void CEffectService::RemovePendingEffects(unsigned nId)
 {
     std::list<MS2Ptr<PendingEffect> >::iterator it = m_listPending.begin();
     while (it != m_listPending.end()) {
@@ -1563,7 +1563,7 @@ void CEffectService::FUN_1411a66d0(unsigned nId)
             it++;
     }
 }
-MS2_REPLACE_METHOD(0x1411a66d0, CEffectService, FUN_1411a66d0, 224, 0xC6448A04);
+MS2_REPLACE_METHOD(0x1411a66d0, CEffectService, RemovePendingEffects, 224, 0xC6448A04);
 
 // @0x1411a67c0
 void CEffectService::FUN_1411a67c0() { m_listPending.clear(); }
@@ -1572,7 +1572,7 @@ MS2_REPLACE_METHOD(0x1411a67c0, CEffectService, FUN_1411a67c0, 31, 0x55C7EEBD);
 // @0x1411a67f0
 void CEffectService::FUN_1411a67f0(unsigned nId, float f)
 {
-    FUN_1411a66d0(nId);
+    RemovePendingEffects(nId);
     Unk_EsGroupMap::iterator it = m_mapGroups.find(nId);
     if (it == m_mapGroups.end())
         return;
@@ -1602,7 +1602,7 @@ MS2_REPLACE_METHOD(0x1411a68f0, CEffectService, FUN_1411a68f0, 234, 0x3612B374);
 void CEffectService::FUN_1411a69e0(unsigned nId)
 {
     if (nId != 0) {
-        FUN_1411a66d0(nId);
+        RemovePendingEffects(nId);
         int bDone = 1;
         Unk_EsGroupMap::iterator it = m_mapGroups.find(nId);
         if (it == m_mapGroups.end())

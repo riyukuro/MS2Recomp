@@ -114,14 +114,13 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTran
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 CStringW GetStringCommon(int nStringId);                    // a string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
-void FUN_141276180(const CString& strA, const CString& strB);
+int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                     // the item slot behind a drag source
 void FUN_140710590(COutPacket& packet);                   // send the packet
@@ -150,6 +149,7 @@ static CStringW s_strDestroyStoreItem = L"destroy_store_item";
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/gfxui/notifyhandler.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 static CString s_strSystemNoticeErrorWarningBag = "system_notice_error_warningBag";
 
@@ -431,7 +431,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_141275260(0x88a, 1, 1);
         return 0;
     }
-    Unk_SsPlayer* pPlayer = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_SsPlayer* pPlayer = ((Unk_SsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
@@ -489,7 +489,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (strMsg.IsEmpty() == true && nPrice != 0 && nPrice != DAT_143ab2828)
     {
         if (FUN_140334210(DAT_143ab2a30.FUN_1404c0270(nPrice), DAT_143ab2a30.FUN_140341f40()))
-            strMsg = FUN_1405c2690(CStringW(L"s_item_err_cannot_drop_if_moveDisable"), spItem->FUN_14052a4f0());
+            strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_cannot_drop_if_moveDisable"), spItem->FUN_14052a4f0());
     }
     if (!strMsg.IsEmpty())
     {
@@ -514,7 +514,7 @@ int StoreSlot::vfunc_0(void* p)
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
     if (spItem.IsNull())
         return 0;
-    ASTooltip tip(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x80, 2);
+    ASTooltip tip(((Unk_SsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
     if (tip.FUN_1409e0d40(spItem.get()))
     {
         tip.FUN_1409c69b0(GetStringCommon(0x754));
@@ -533,7 +533,7 @@ int StoreSlot::vfunc_8(void* p)
     if (spItem.IsNull())
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(spItem.get(), reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x1c01f))
+    if (slot.FUN_1409c3860(spItem.get(), ((Unk_SsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x1c01f))
     {
         slot.FUN_1407cbbe0(s_strUpdateIconSearchOn, FUN_14180aea0());
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();

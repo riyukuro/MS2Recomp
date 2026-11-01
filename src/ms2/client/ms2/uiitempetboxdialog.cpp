@@ -200,7 +200,7 @@ private:
     unsigned char m_18[0xb0];
 };
 MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_14141f970(const CString&);
 void FUN_14141f770(CString&, unsigned int, const ATL::CAtlArray<MS2Ptr<CItem> >&, MS2Ptr<CItem>(*)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int, int);
 MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >&, int);
@@ -480,7 +480,7 @@ void UIItemPetBoxDialog::SetBoxItemId(int id) { m_boxItemId = id; }
 bool UIItemPetBoxDialog::FUN_140e4fc50(int result, const CMsgBoxData&)
 {
     if (result == 0)
-        reinterpret_cast<Unk_PetBoxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ec1);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ec1)));
     return true;
 }
 
@@ -500,7 +500,7 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
 {
     if (m_30 == 0)
         return false;
-    Unk_PetBoxSelf* self = reinterpret_cast<Unk_PetBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetBoxSelf* self = ((Unk_PetBoxSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (self == 0)
         return false;
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);

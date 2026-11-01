@@ -37,7 +37,6 @@ int FUN_1406516d0(int nLanguage);                                       // the d
 __int64 FUN_140718320(const CStringW& str);                             // the number of a digit string
 CStringW FUN_1409404f0(__int64 nValue);                                 // a number with separators
 CStringW FUN_14083cb20(const CStringW& strNumber);                      // digits grouped with commas
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);   // FUN_14028dfa0<CStringW x3>
 
 CStringW FUN_140b8ee70(int nDayOfWeek);
 CStringW FUN_140b8f000(const CMsTime& time);
@@ -255,7 +254,7 @@ CStringW FUN_140b8f7a0(const CStringW& strNumber)
     }
     CStringW strKey(L"s_number_string_");
     strKey += StringFormat(L"{0:04b}", nMask);
-    return FUN_1409eaa20(strKey, groups[0], groups[1], groups[2]);
+    return FUN_14028dfa0<CStringW, CStringW, CStringW>(strKey, groups[0], groups[1], groups[2]);
 }
 MS2_REPLACE(0x140B8F7A0, FUN_140b8f7a0, 1041, 0xFF75188D);
 

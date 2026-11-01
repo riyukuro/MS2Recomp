@@ -250,7 +250,7 @@ int UIMasteryObjectMark::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x140e5a600
 void UIMasteryObjectMark::FUN_140e5a600()
 {
-    PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPC)
         return;
     POSITION pos = m_nodes.GetStartPosition();
@@ -309,7 +309,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
 // @0x140e5ac30
 void UIMasteryObjectMark::FUN_140e5ac30()
 {
-    PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPC)
         return;
     if (FUN_1410c35c0(((class Unk_CameraHousing*)Unk_AkoHouseSvc::GetInstance())) != 0)
@@ -459,7 +459,7 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
             strType = L"farming";
             break;
         }
-        PCBase* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
         {
             int nLevel = ((class PC*)(class PCBase*)(pPC))->FUN_141662750(spReceipe->m_nType);

@@ -89,15 +89,7 @@ public:
 };
 
 // The "openWindowPos" UI message.
-class Unk_LdUIMsg : public UIMsg
-{
-public:
-    Unk_LdUIMsg();                                          // 0x1422e4490
-    ~Unk_LdUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_LdUIMsg;
 
 // The message box machinery (unit_140d73aa0.cpp) and the string tables.
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);

@@ -137,9 +137,7 @@ int FUN_1422b9ea0(void*);
 class Unk_CbUIMgr : public CUIService
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int);
     void FUN_141adc530(int nUiId);
-    void FUN_141adc750(int nUiId);
 };
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 
@@ -439,7 +437,7 @@ UIChatBalloon* FUN_1418fc4e0(int nUiId)
 {
     if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIChatBalloon*>((UIObject*)p);
     }
@@ -565,7 +563,7 @@ int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4)
     }
     else if (_stricmp("OnGameOption", szEvent) == 0)
     {
-        reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef3);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef3)));
         return 1;
     }
     return 0;
@@ -644,7 +642,7 @@ int FUN_1418fcb70()
         }
         if (FUN_141275080() == 0)
             return 0;
-        reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e21);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e21)));
     }
     return 1;
 }

@@ -95,7 +95,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     FUN_140b632f0()->FUN_1422d4780(this, 2);
     FUN_140a94350()->vfunc_10(11);
     if (m_4c != 0) {
-        if (reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0()) {
+        if (((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
             Play();
             return 1;
         } else {
@@ -119,7 +119,7 @@ int UICutSceneMovie::vfunc_53()
         m_30->Invoke("hide");
     SetSoundFade(false);
     FUN_14151f200();
-    Unk_141529a50* p = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141529a50* p = ((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (p) {
         FUN_141901390(1, vfunc_48());
         if (m_bIntroStory)
@@ -343,7 +343,7 @@ void UICutSceneMovie::vfunc_11()
         return;
     if (!FUN_1419102c0())
         return;
-    Unk_141529a50* p = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141529a50* p = ((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (p) {
         FUN_141901390(0, vfunc_48());
         if (m_bPlayPending) {

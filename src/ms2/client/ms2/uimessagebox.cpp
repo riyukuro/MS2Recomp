@@ -190,7 +190,7 @@ void FUN_141901390(int bBlock, int nUiId);
 void FUN_1419013c0(int bBlock, int nUiId);
 int FUN_14151f8b0();
 int FUN_14151f9c0();
-void FUN_141276180(const CString& strEvent, const CString& strArg);   // play a UI sound
+int FUN_141276180(const CString& strEvent, const CString& strArg);   // play a UI sound
 void FUN_1418fe1c0(const CString& strUrl);                            // open a web page
 
 // The message box queue (uimessageboxdata.cpp's callers).
@@ -232,22 +232,18 @@ extern bool DAT_143ab2942;
 class UISceneEntity { public: virtual ~UISceneEntity(); };
 class UISceneLogin : public UISceneEntity { public: void FUN_141acf470(); };
 class Unk_MessageBoxScene { public: int FUN_1422b9dc0(); int FUN_1422b9e00(); UISceneEntity* FUN_1422b9e80(); };
-Unk_MessageBoxScene* FUN_1408e57f0();
 CStateService* FUN_140aa6d30();
 
 class Unk_MessageBoxUI
 {
 public:
-    void FUN_141adc5d0(int nId);                                // close
-    void FUN_141adc750(int nId);                                // open
     int FUN_141adc940(int nId);
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 template <class T> inline T* Unk_MessageBoxDialog(int nId)
 {
     if (reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>(p.operator->());
     }
@@ -406,6 +402,7 @@ extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/uipetsystemdialog.h"
 #include "ms2/client/ms2/uiitempettrainingdialog.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 class TabContentsPetCompose : public PetSystemTabContents { public: void FUN_140cb48a0(int bUsePoint); };
 class TabContentsPetRemakeOption : public PetSystemTabContents { public: void FUN_140b95280(int bUsePoint); };
 class Unk_MessageBoxPetDialog : public UIPetSystemDialog { };
@@ -493,7 +490,7 @@ int UIMessageBox::vfunc_13()
     if (FUN_1419f8270())
         return 0;
     if (m_data.IsNull() || m_30.IsNull())
-        FUN_1419f8170(0);
+        CloseAll(0);
     CString method = "";
     if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d890(m_data->FUN_141a030b0()))
     {
@@ -643,7 +640,7 @@ void UIMessageBox::FUN_1419f8120()
 MS2_REPLACE_METHOD(0x1419F8120, UIMessageBox, FUN_1419f8120, 65, 0x31213ACE);
 
 // @0x1419f8170
-void UIMessageBox::FUN_1419f8170(int nResult)
+void UIMessageBox::CloseAll(int nResult)
 {
     if (m_30.get())
     {
@@ -652,17 +649,17 @@ void UIMessageBox::FUN_1419f8170(int nResult)
     }
     FUN_1419f88e0(1);
 }
-MS2_REPLACE_METHOD(0x1419F8170, UIMessageBox, FUN_1419f8170, 119, 0x4834C06E);
+MS2_REPLACE_METHOD(0x1419F8170, UIMessageBox, CloseAll, 119, 0x4834C06E);
 
 // @0x1419f81f0
-void UIMessageBox::FUN_1419f81f0(MS2Ptr<CMsgBoxData> spData)
+void UIMessageBox::ShowIfIdle(MS2Ptr<CMsgBoxData> spData)
 {
     if (FUN_1419f8270())
         return;
     FUN_1419f9250(false);
     FUN_1419f8ec0(spData);
 }
-MS2_REPLACE_METHOD(0x1419F81F0, UIMessageBox, FUN_1419f81f0, 122, 0x4CDA3CBB);
+MS2_REPLACE_METHOD(0x1419F81F0, UIMessageBox, ShowIfIdle, 122, 0x4CDA3CBB);
 
 // @0x1419f8270
 int UIMessageBox::FUN_1419f8270()
@@ -680,7 +677,7 @@ void UIMessageBox::FUN_1419f82b0(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1419F82B0, UIMessageBox, FUN_1419f82b0, 171, 0x7D43612C);
 
 // @0x1419f8370
-void UIMessageBox::FUN_1419f8370(const CStringW& strText)
+void UIMessageBox::UpdateMessage(const CStringW& strText)
 {
     if (m_30.get())
     {
@@ -689,7 +686,7 @@ void UIMessageBox::FUN_1419f8370(const CStringW& strText)
         m_30->Invoke("onProcessFunction", "updateMsg", strText);
     }
 }
-MS2_REPLACE_METHOD(0x1419F8370, UIMessageBox, FUN_1419f8370, 240, 0x1109672B);
+MS2_REPLACE_METHOD(0x1419F8370, UIMessageBox, UpdateMessage, 240, 0x1109672B);
 
 // @0x1419f8470
 MS2Ptr<CMsgBoxData> UIMessageBox::FUN_1419f8470()
@@ -1261,16 +1258,16 @@ MS2_REPLACE_METHOD(0x1419FA910, UIMessageBox, FUN_1419fa910, 2716, 0x7FE1CD7E);
 // @0x1419fb3c0
 int UIMessageBox::FUN_1419fb3c0()
 {
-    if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x620000d)
+    if (((Unk_MessageBoxScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x620000d)
     {
         ((class Unk_MessageBoxSocket*)FUN_140714f90())->FUN_1415388a0();
         FUN_1416a0e70();
         PostQuitMessage(0);
         return 0;
     }
-    if (FUN_140aa6d30()->FUN_1417e25a0(0x6200009) == 0 && FUN_1408e57f0()->FUN_1422b9dc0() == 0x6200009)
+    if (FUN_140aa6d30()->FUN_1417e25a0(0x6200009) == 0 && ((Unk_MessageBoxScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x6200009)
     {
-        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(FUN_1408e57f0()->FUN_1422b9e80());
+        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((Unk_MessageBoxScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e80());
         if (pLogin)
             pLogin->FUN_141acf470();
     }
@@ -1298,7 +1295,7 @@ int UIMessageBox::FUN_1419fb500(int nButton)
 {
     if (nButton == 0)
     {
-        if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x6200009)
+        if (((Unk_MessageBoxScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x6200009)
         {
             if (DAT_143ab2858 != 0)
             {
@@ -1323,7 +1320,7 @@ int UIMessageBox::FUN_1419fb630(int nButton)
 {
     if (nButton == 0)
     {
-        reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e69);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e69)));
     }
     else if (nButton == 2)
     {
@@ -1341,7 +1338,7 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     }
     Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
     if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *FUN_1402056b0(&FUN_1401d3200()->m_guideId))
-        reinterpret_cast<Unk_MessageBoxUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e87);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e87);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FB630, UIMessageBox, FUN_1419fb630, 363, 0x8A536F36);
@@ -1351,7 +1348,7 @@ int UIMessageBox::FUN_1419fb7b0(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1409,7 +1406,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1442,7 +1439,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
         return 0;
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1;
     bool bOk = FUN_1407183f0(tokens[1]);
@@ -1471,7 +1468,7 @@ MS2_REPLACE_METHOD(0x1419FBD40, UIMessageBox, FUN_1419fbd40, 1004, 0x279431D3);
 // @0x1419fc140
 int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
 {
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1;
     ATL::CAtlArray<CStringW> tokens;
@@ -1508,7 +1505,7 @@ int UIMessageBox::FUN_1419fc550(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1726,7 +1723,7 @@ int UIMessageBox::FUN_1419fd130(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1746,7 +1743,7 @@ int UIMessageBox::FUN_1419fd260(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1777,7 +1774,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1808,7 +1805,7 @@ int UIMessageBox::FUN_1419fd6e0(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1835,7 +1832,7 @@ int UIMessageBox::FUN_1419fd830(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1866,7 +1863,7 @@ int UIMessageBox::FUN_1419fda70(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1893,7 +1890,7 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -2262,7 +2259,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         CItem* pItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (!pItem)
             return 0;
-        Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (!pPlayer)
             return 0;
         ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> > portals;
@@ -2282,7 +2279,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
         }
-        if (FUN_1408e57f0()->FUN_1422b9e00() != 0x620001d)
+        if (((Unk_MessageBoxScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() != 0x620001d)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
@@ -2314,7 +2311,7 @@ int UIMessageBox::FUN_1419ff7d0(int nButton)
 {
     if (nButton != 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
     {
         (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x8a9), 0));
@@ -2343,7 +2340,7 @@ int UIMessageBox::FUN_1419ff870(int nButton)
         FUN_140710590(packet);
         return 1;
     }
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (((class PCBase*)(class PC*)(pPlayer))->FUN_1416764d0())
     {
         MS2Ptr<RideOffActionCoupleEmotion> spAction(new RideOffActionCoupleEmotion(0));
@@ -2363,7 +2360,7 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
         return 1;
     CStringW strName = m_data->FUN_141a02fd0(0, CStringW());
     int bAccept = nButton == 0;
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
     if (!pPlayer || !pTarget)
     {
@@ -2413,7 +2410,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
     unsigned int nRound = m_data->FUN_141a02e90(0, 0);
     __int64 nId = 0;
     m_data->FUN_140b19130(1, nId);
-    Unk_MessageBoxPC* pPlayer = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd1530(nId);
     if (!pPlayer || !pTarget)
     {

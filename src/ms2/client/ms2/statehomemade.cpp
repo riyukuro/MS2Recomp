@@ -105,11 +105,10 @@ struct Unk_HmUseInfo
     int m_nCount;                                        // +0x08
     int m_nPad0c;
 };
-void FUN_1401fc610(Unk_HmUseInfo* pInfo, COutPacket* pPacket);   // serialize
+void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
 // The cursor manager scales a duration (shared with the interact objects).
 class Unk_HmCursorMgr { public: int FUN_1404240e0(int n); };
-void* FUN_140302b00();
 
 // The gathering table service: how the cube's kind may be gathered.
 class Unk_HmGatherMgr { public: int FUN_14066bc40(int nId); };
@@ -291,7 +290,7 @@ MS2_REPLACE_METHOD(0x140CA4DE0, StateHomemade, vfunc_25, 17, 0xFFB1988B);
 int StateHomemade::FUN_140ca4e00()
 {
     unsigned nDuration = static_cast<Client::Constants*>(FUN_1401d3200())->HarvestDuration.Read();
-    return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->MasteryReduce()))->FUN_1404240e0(nDuration);
+    return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(((void*)TSingleton<CGameEventValueManager>::GetInstance()))->MasteryReduce()))->FUN_1404240e0(nDuration);
 }
 MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, FUN_140ca4e00, 62, 0xFE21669A);
 
@@ -360,7 +359,7 @@ void StateHomemade::SendFunctionCubeMode4()
         Unk_HmUseInfo kInfo;
         kInfo.m_strId = m_aCubes[i]->FUN_141226bd0();
         kInfo.m_nCount = 1;
-        FUN_1401fc610(&kInfo, &kPacket);
+        FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
     FUN_140710590(kPacket);
 }
@@ -384,7 +383,7 @@ void StateHomemade::SendFunctionCubeMode5()
         Unk_HmUseInfo kInfo;
         kInfo.m_strId = aUsable[i]->FUN_141226bd0();
         kInfo.m_nCount = 1;
-        FUN_1401fc610(&kInfo, &kPacket);
+        FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
     FUN_140710590(kPacket);
 }

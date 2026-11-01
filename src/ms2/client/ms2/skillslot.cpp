@@ -196,7 +196,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nPage, in
 bool FUN_140930d70();                                     // the quick slots are synced to the server
 void FUN_141275260(int nNotice, int a, int b);            // a system notice by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
-void FUN_141276180(const CString& strSound, const CString& strArg);   // play a ui sound
+int FUN_141276180(const CString& strSound, const CString& strArg);   // play a ui sound
 CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text
 CStringW GetStringCommon(int nStringId);                    // string table text by id
 bool FUN_140614800(const Scaleform::GFx::Value& fn);
@@ -265,7 +265,7 @@ bool FUN_14028d780(unsigned char n);
 bool FUN_140534e50(const MS2Ptr<CItem>& sp);
 int FUN_14053feb0(int nItemId);
 void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
-void FUN_140d73bc0(int nNoticeId, int a, int b, CStringW str);
+void FUN_140d73bc0(int nNoticeId, int a, void* pListener, CStringW str);
 int FUN_140526810(CItem* pItem, unsigned short nLevel);
 
 // AScript as the function object: invoke with an ASArgList.
@@ -467,7 +467,7 @@ int SkillSlot::vfunc_13()
     }
     else
     {
-        PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
         if (pPc != 0)
         {
             if (spItem->FUN_140526810((unsigned short)pPc->vfunc_78()) == 0)
@@ -484,7 +484,7 @@ int SkillSlot::vfunc_13()
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spSkill.IsNull())
             return 0;
-        PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
         if (pPc == 0)
             return 0;
         if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet() == 0)
@@ -638,7 +638,7 @@ int SkillSlot::vfunc_18(void* p)
                     {
                         nItemId = 0;
                         nItemUid = 0;
-                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
                         if (pPc != 0)
                         {
                             if (static_cast<MyPC*>(static_cast<PC*>(pPc))->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
@@ -678,7 +678,7 @@ int SkillSlot::vfunc_18(void* p)
                             break;
                         if (((class Unk_SsItemTable*)FUN_1409c4b30())->FUN_1405b5890(spItem->FUN_1405276c0()) != 1)
                             break;
-                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
                         if (pPc == 0)
                             break;
                         if (static_cast<MyPC*>(static_cast<PC*>(pPc))->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
@@ -777,7 +777,7 @@ int SkillSlot::vfunc_0(void* p)
     if (FUN_140534e50(spItem) && m_nItemId != 0)
     {
         int nRarity = FUN_14053feb0(m_nItemId);
-        ASTooltip tip(static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()), 0x40, 2);
+        ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())), 0x40, 2);
         if (tip.FUN_1409e1770(m_nItemId, nRarity) != 0)
         {
             if (IsFixed() == 0)
@@ -790,9 +790,9 @@ int SkillSlot::vfunc_0(void* p)
     {
         if ((spItem.get() ? true : false) && spItem->FUN_140527840()->FUN_14053e460())
         {
-            if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() != 0)
+            if (((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
             {
-                ASTooltip tip(static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()), 0x40, 2);
+                ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())), 0x40, 2);
                 if (tip.FUN_1409e0d40(spItem.get()) != 0)
                 {
                     if (IsFixed() == 0)
@@ -823,7 +823,7 @@ int SkillSlot::vfunc_0(void* p)
                 }
                 else
                 {
-                    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+                    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
                     if (pPc != 0)
                     {
                         unsigned short nLevel = 1;
@@ -851,7 +851,7 @@ int SkillSlot::vfunc_8(void* p)
 {
     float fTotal = FUN_141760a30();
     float fRemain = FUN_141760b90();
-    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc != 0 && m_nSkillId != 0)
     {
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(m_nSkillId);
@@ -1203,7 +1203,7 @@ int SkillSlot::FUN_1417603f0()
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill.get() != 0 && spSkill->GetRechargeMaxCount() > 0)
     {
-        PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
         if (pPc == 0)
             return 0;
         return static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get());
@@ -1306,7 +1306,7 @@ __int64 SkillSlot::FUN_141760a10()
 // @0x141760a30
 float SkillSlot::FUN_141760a30()
 {
-    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
     int nSkillId = FUN_141761d90();
@@ -1327,7 +1327,7 @@ float SkillSlot::FUN_141760a30()
 // @0x141760b90
 float SkillSlot::FUN_141760b90()
 {
-    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
     int nSkillId = FUN_141761d90();
@@ -1339,7 +1339,7 @@ float SkillSlot::FUN_141760b90()
 // @0x141760c00
 int SkillSlot::FUN_141760c00()
 {
-    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 1;
     if (m_nItemId != 0)
@@ -1439,7 +1439,7 @@ int SkillSlot::FUN_141760c00()
 // @0x141761530
 int SkillSlot::FUN_141761530(MS2Ptr<SkillData>* pOut)
 {
-    Unk_SsPc* pPc = static_cast<Unk_SsPc*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
     if (m_nSkillId == 0)
@@ -1505,7 +1505,7 @@ int SkillSlot::FUN_1417619d0()
 // @0x141761a10
 int SkillSlot::FUN_141761a10()
 {
-    PC* pPc = static_cast<PC*>(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
     MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet();

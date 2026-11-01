@@ -31,10 +31,10 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const unsigned& nArg);
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
-int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 bool FUN_140768040(unsigned nChance);                                   // the percent roll
-CExpTable* FUN_1404a1bb0();
+void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 
 // @0x1407790a0
 bool Unk_DcLevelRange::FUN_1407790a0() const
@@ -112,7 +112,7 @@ RewardContentsItemTable::RewardContentsItemTable()
 // @0x140770810
 bool RewardContentsItemTable::Load(void* pNode)
 {
-    if (!FUN_14028f710(static_cast<Unk_140165cf0*>(pNode)))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
         return false;
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "itemTableID", m_nItemTableId);
     if (m_nItemTableId == 0)
@@ -154,13 +154,13 @@ RewardContents::RewardContents()
 // @0x140770af0
 bool RewardContents::Load(void* pNode)
 {
-    if (!FUN_14028f710(static_cast<Unk_140165cf0*>(pNode)))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
         return false;
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "rewardID", m_nRewardId);
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "mesoTableID", m_nMesoTableId);
-    FUN_1408733a0(static_cast<Unk_140165cf0*>(pNode), "mesoFactor", &m_dMesoFactor);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "mesoFactor", *(double*)(&m_dMesoFactor));
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "expTableID", m_nExpTableId);
-    FUN_1408733a0(static_cast<Unk_140165cf0*>(pNode), "expFactor", &m_dExpFactor);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "expFactor", *(double*)(&m_dExpFactor));
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "itemTableID", m_nItemTableId);
     FUN_140873220(static_cast<Unk_140165cf0*>(pNode), "adventureExpTableID", m_nAdventureExpTableId);
     if (m_nRewardId == 0)
@@ -209,7 +209,7 @@ bool RewardContentsTable::GetReward(unsigned nRewardId, unsigned short nLevel, R
     MS2Ptr<RewardContents> spReward(it->second);
     if (spReward == static_cast<RewardContents*>(0))
         return false;
-    rResult.m_nExp = FUN_1404a1bb0()->GetScaledValue(nLevel, spReward->m_nExpTableId, spReward->m_dExpFactor);
+    rResult.m_nExp = ((class CExpTable*)FUN_1404a1bb0())->GetScaledValue(nLevel, spReward->m_nExpTableId, spReward->m_dExpFactor);
     rResult.m_nAdventureExp = (__int64)TSingleton<CAdventureLevelTable>::GetInstance()->FindUnused2(spReward->m_nAdventureExpTableId);
     rResult.m_nMeso = GetMeso(spReward->m_nMesoTableId, spReward->m_dMesoFactor, nLevel);
     GetItems(spReward->m_nItemTableId, nLevel, rResult.m_items);
@@ -244,7 +244,7 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
         }
         for (Unk_140165cf0* pChild = pNode->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
         {
-            if (!FUN_14028f710(pChild))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
                 continue;
             unsigned short nLevel = 0;
             __int64 nMeso = 0;

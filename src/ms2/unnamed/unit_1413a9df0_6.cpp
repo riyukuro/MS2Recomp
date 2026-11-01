@@ -41,6 +41,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // ---- enum formatter customization ---------------------------------------------------------------------------------------------
 // fmt's ostream formatting of a custom argument with the MS2 enum shortcut in front (see itembreakmanager.cpp, 0x140534820):
@@ -201,7 +202,7 @@ int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
 int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
 {
     CStringA str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult == 0)
     {
         ATL::CAtlArray<int> arr;
@@ -262,7 +263,7 @@ int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut)
         return 2;
     }
     CStringA str;
-    int nResult = FUN_1408733e0(pElem, pszName, str);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
     nOut = FUN_14138a170(str);

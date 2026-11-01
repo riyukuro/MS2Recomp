@@ -24,6 +24,7 @@
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -45,7 +46,6 @@ public:
     void FUN_140e2dfc0(int, int);
 };
 void* FUN_1403ed2b0();                                          // the UI service
-void FUN_141adc530(void* pUI, int nUiId);                       // open a UI by id
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 void FUN_14135ec00(void* pDialog, const CString& strUrl, bool bFlag);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -133,7 +133,7 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             if (pRanking != 0)
             {
                 ((class UIGameRankingDialog*)(void*)(pRanking))->FUN_140e2dfc0(3, 0);
-                FUN_141adc530(FUN_1403ed2b0(), 0x4f24);
+                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f24)));
             }
         }
         else if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3b) == true)

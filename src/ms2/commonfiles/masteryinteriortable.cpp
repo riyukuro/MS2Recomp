@@ -34,9 +34,9 @@ Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 CStringA FUN_14015f710(Unk_140165cf0*, const char*, CStringA strDefault);
 void FUN_140177e10(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);         // split into unsigneds
 void FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>& rOut);                // list attribute
@@ -48,8 +48,8 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 static CStringA s_sortNamesA[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 static CStringA s_sortNamesB[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // zero-initialised pointer holder (0x1401cd100)
-static Unk_1401cd100 s_pointer(NULL);                                         // 0x143ab02a0
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) zero-initialised pointer holder (0x1401cd100)
+static Unk_BuddyHandle s_pointer(NULL);                                         // 0x143ab02a0
 
 // @0x140661c00
 CMasteryInteriorTable::CMasteryInteriorTable()
@@ -123,8 +123,8 @@ bool CMasteryInteriorTable::LoadMastery()
     for (Unk_140165cf0* pRow = pMastery->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
     {
         MS2Ptr<MasteryInteriorInfo> spInfo(new MasteryInteriorInfo);
-        FUN_140873220(pRow, "value", spInfo->m_nValue);
-        FUN_1408731e0(pRow, "grade", spInfo->m_nGrade);
+        XmlGetAttr((class TiXmlElement*)(pRow), "value", spInfo->m_nValue);
+        XmlGetAttr((class TiXmlElement*)(pRow), "grade", spInfo->m_nGrade);
         ATL::CAtlArray<unsigned> ids;
         ATL::CAtlArray<int> ranks;
         ATL::CAtlArray<int> counts;
@@ -166,8 +166,8 @@ bool CMasteryInteriorTable::LoadHeight()
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
     {
         MS2Ptr<ExtendHeightInfo> spInfo(new ExtendHeightInfo);
-        FUN_1408731e0(pRow, "height", spInfo->m_nHeight);
-        FUN_1408732e0(pRow, "price", spInfo->m_nPrice);
+        XmlGetAttr((class TiXmlElement*)(pRow), "height", spInfo->m_nHeight);
+        XmlGetAttr((class TiXmlElement*)(pRow), "price", spInfo->m_nPrice);
         if (spInfo->m_nHeight >= m_nMaxHeight)
             m_nMaxHeight = spInfo->m_nHeight;
         m_mapHeight.SetAt(spInfo->m_nHeight, spInfo);
@@ -191,8 +191,8 @@ bool CMasteryInteriorTable::LoadArea()
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
     {
         MS2Ptr<ExtendAreaInfo> spInfo(new ExtendAreaInfo);
-        FUN_1408731e0(pRow, "area", spInfo->m_nArea);
-        FUN_1408732e0(pRow, "price", spInfo->m_nPrice);
+        XmlGetAttr((class TiXmlElement*)(pRow), "area", spInfo->m_nArea);
+        XmlGetAttr((class TiXmlElement*)(pRow), "price", spInfo->m_nPrice);
         CStringA strValue = FUN_14015f710(pRow, "value", CStringA(""));
         ATL::CAtlArray<unsigned> sizes;
         FUN_140177e10(strValue, sizes, ",");
@@ -229,8 +229,8 @@ bool CMasteryInteriorTable::LoadRewards()
     for (Unk_140165cf0* pRow = pRoot->FUN_140165cf0("v"); pRow != 0; pRow = pRow->FUN_140168650("v"))
     {
         MS2Ptr<InteriorPointReward> spInfo(new InteriorPointReward);
-        FUN_1408732e0(pRow, "housingPoint", spInfo->m_nPoint);
-        FUN_140873220(pRow, "individualDropBoxId", spInfo->m_nDropBox);
+        XmlGetAttr((class TiXmlElement*)(pRow), "housingPoint", spInfo->m_nPoint);
+        XmlGetAttr((class TiXmlElement*)(pRow), "individualDropBoxId", spInfo->m_nDropBox);
         spInfo->m_strIcon = FUN_14015f710(pRow, "icon", CStringA(""));
         spInfo->m_strKey = FUN_14015f710(pRow, "stringKey", CStringA(""));
         m_mapReward.SetAt(spInfo->m_nPoint, spInfo);

@@ -73,6 +73,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/commonstringtable.h"
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim, int nMax);
 
@@ -169,7 +172,6 @@ CString FUN_14016a600(const wchar_t* pwsz, int n);              // wide -> narro
 CommonString * FUN_14025e7d0(void);  // C3: the definition's signature
 int FUN_14029dd60(const char* pszText, const char* pszFormat, ...);                // sscanf
 void FUN_1401d3700(CString& strPath);
-bool FUN_140184310(const CString& strText, const char* pszPrefix);
 std::wstring FUN_140291f90(const std::wstring& strToken, int nWhich);
 
 bool FUN_140299100(const CAtlArray<CString>& arr);              // IsEmpty
@@ -971,9 +973,9 @@ void FUN_14028e7c0(CString& strPath)
 {
     FUN_1401d3700(strPath);
     CString strHead = strPath.Left(4);
-    if (FUN_140184310(strHead, "data"))
+    if ((strHead == "data"))
         strPath = FUN_140298360("./", strPath);
-    else if (FUN_140184310(strHead, "/data"))
+    else if ((strHead == "/data"))
         strPath = FUN_140298360(".", strPath);
     strPath.Replace('\\', '/');
 }
@@ -1039,7 +1041,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 // @0x14028f710
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
-    CString strLocale = FUN_14015f710(pElem, "locale", CString(""));
+    CString strLocale = Unk_ReadString((class Unk_XmlNode*)(pElem), "locale", CString(""));
     bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
     if (bMatch)
         return false;
@@ -1061,8 +1063,8 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
     {
         CStringW strFeature;
         CString strLocale;
-        FUN_140873420(pElem, "feature", strFeature);
-        FUN_1408733e0(pElem, "locale", strLocale);
+        XmlGetAttr((class TiXmlElement*)(pElem), "feature", strFeature);
+        XmlGetAttr((class TiXmlElement*)(pElem), "locale", strLocale);
         bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d8e0();
         if (bLocale)
             continue;
@@ -1248,6 +1250,7 @@ void FUN_14028f580(CStringW& strText)
 
 #include <string>
 #include "ms2/placeholder/clockcriticalsection.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // Item tab name table: per inventory tab the names it is known by (English keys, then localized names).
 class CItemTabNameTable
@@ -1277,7 +1280,7 @@ CItemTabNameTable::CItemTabNameTable()
 // @0x1402906b0
 void CItemTabNameTable::Init()
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     m_arrNames[0].push_back("game");
     m_arrNames[1].push_back("skin");
     m_arrNames[2].push_back("summon");
@@ -1393,7 +1396,7 @@ bool FUN_140291340(int nTab, std::string& strOut)
 bool FUN_140292820(const std::string& strLeft, const char* pszRight);   // string equals
 __int64 NextWeekdayStart(int nKind, __int64 nTime);
 const std::string& FUN_14018ef70(const std::string& str);
-void* FUN_1401d3200();                                                  // game config singleton
+class Unk_SingletonObj1* FUN_1401d3200();                                // game config singleton (C3 canonical return type; was void*)
 void FUN_1402b7560(void* pEntry, const char* pszMessage);
 
 // Config option entries: set flag at +8, value after the header.
@@ -1757,7 +1760,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
             continue;
         ++nIndex;
         CStringW strKey;
-        FUN_140873420(pElem, pszKeyAttr, strKey);
+        XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
             Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
@@ -1795,7 +1798,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
             continue;
         ++nIndex;
         CStringW strKey;
-        FUN_140873420(pSub, pszKeyAttr, strKey);
+        XmlGetAttr((class TiXmlElement*)(pSub), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
             Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
@@ -2141,8 +2144,8 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         ++nIndex;
         CStringW strKey1;
         CStringW strKey2;
-        FUN_140873420(pElem, pszKeyAttr1, strKey1);
-        FUN_140873420(pElem, pszKeyAttr2, strKey2);
+        XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr1, strKey1);
+        XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr2, strKey2);
 #ifdef __clang__
         CStringW strKey(strKey1); // clang would import MFC CopyChars for operator+
         strKey.Append(L"_");

@@ -55,7 +55,6 @@ void FUN_140399100(CStringA strExt, CStringA strDir, ATL::CAtlArray<CStringA, AT
 void FUN_14015f050(CStringA& str, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrOut, const char* pszDelim);
 void FUN_14028c2d0(CStringA str, Unk_CommonVec3* pOut);
 __int64 FUN_14028d260(float f);
-bool FUN_140184310(const CStringA& str, const char* psz) throw();   // strcmp only: no unwind state for the caller's string
 CStringA FUN_140188f50(const char* psz, int nCodePage);
 // The exe's CAtlArray<CStringA>::operator[] COMDAT copy used by the int/float property readers (same body as 0x140164930).
 CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, size_t i);
@@ -183,7 +182,7 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const c
 {
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
-        if (FUN_140184310(strName, pszProp)) {
+        if ((strName == pszProp)) {
             for (Unk_140165cf0* pSet = pProp->FUN_140165cf0("set"); pSet != 0; pSet = pSet->FUN_140168650("set")) {
                 TPtr<CNpcSpawnData> spData(new CNpcSpawnData);
                 CStringA strIndex = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("index"), 0);
@@ -223,7 +222,7 @@ int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"), 0);
             FUN_14028c2d0(strValue, pOut);
             return 1;
@@ -246,11 +245,11 @@ int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"));
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"));
-            if (FUN_140184310(strValue, "False"))
+            if ((strValue == "False"))
                 *pOut = 0;
-            else if (FUN_140184310(strValue, "True"))
+            else if ((strValue == "True"))
                 *pOut = 1;
             else
                 *pOut = atoi(strValue);
@@ -261,9 +260,9 @@ int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, 
     Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
     if (pValues != 0 && pValues->GetCount() > 0) {
         CStringA strValue = (*pValues)[0];
-        if (FUN_140184310(strValue, "False"))
+        if ((strValue == "False"))
             *pOut = 0;
-        else if (FUN_140184310(strValue, "True"))
+        else if ((strValue == "True"))
             *pOut = 1;
         else
             *pOut = atoi(strValue);
@@ -279,7 +278,7 @@ int Unk_ModelMgr::FUN_140a2b550(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"), 0);
             *pOut = atoi(strValue);
             return 1;
@@ -302,7 +301,7 @@ int Unk_ModelMgr::FUN_140a2b790(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"), 0);
             *pOut = (float)atof(strValue);
             return 1;
@@ -325,9 +324,9 @@ int Unk_ModelMgr::FUN_140a2b9d0(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"), 0);
-            if (FUN_140184310(strValue, "True"))
+            if ((strValue == "True"))
                 *pOut = true;
             else
                 *pOut = false;
@@ -338,7 +337,7 @@ int Unk_ModelMgr::FUN_140a2b9d0(Unk_140165cf0* pElem, const CStringA& strModel, 
     Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
     if (pValues != 0 && pValues->GetCount() > 0) {
         CStringA strValue = FUN_1401c0cc0(pValues, 0);
-        if (FUN_140184310(strValue, "True"))
+        if ((strValue == "True"))
             *pOut = true;
         else
             *pOut = false;
@@ -354,7 +353,7 @@ int Unk_ModelMgr::FUN_140a2bc30(Unk_140165cf0* pElem, const CStringA& strModel, 
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;
-        if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
+        if ((strName == pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             *pOut = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pSet))->Attribute("value"), 0);
             return 1;
         }

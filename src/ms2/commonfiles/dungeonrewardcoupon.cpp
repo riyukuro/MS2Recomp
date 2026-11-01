@@ -19,7 +19,7 @@ public:
     Unk_140165cf0* FUN_14086e8d0(const char* pszName);     // first child element
     Unk_140165cf0* FUN_14086e7e0(const char* pszName);     // next sibling element
 };
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
@@ -82,7 +82,7 @@ void DungeonRewardCoupon::Load(Unk_140165cf0* pElem)
     FUN_140873220(pElem, "baseItemID", m_baseItemID);
     FUN_140873220(pElem, "maxExtraCount", m_maxExtraCount);
     ReadValueList(pElem, "baseRate", m_baseRate);
-    FUN_1408730a0(pElem, "canBuyInMeratMarket", m_canBuyInMeratMarket);
+    XmlGetAttr((class TiXmlElement*)(pElem), "canBuyInMeratMarket", m_canBuyInMeratMarket);
 }
 MS2_REPLACE_METHOD(0x14031C5B0, DungeonRewardCoupon, Load, 193, 0x0D5BDF8D);
 

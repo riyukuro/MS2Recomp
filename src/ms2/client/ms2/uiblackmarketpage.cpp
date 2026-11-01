@@ -113,7 +113,7 @@ int FUN_1406198a0(int nScale, float f);                             // round(f *
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // system notice text
 void FUN_141275260(int nStringId, int nA, int nB);                  // system notice of a string id
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bLock);              // lock the dialog input while a request runs
-void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTitle);   // message box
+void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTitle);   // message box
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTitle);   // message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                      // show a message box
 bool FUN_140633a90(MS2Ptr<CItem> spItem);                           // the item has a trade count limit
@@ -161,8 +161,8 @@ CStringW FUN_141b71910(__int64 n);                                  // a uid as 
 CStringW FUN_14183e930(const CStringW& str, unsigned int nColor);   // colored text
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
 void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl);   // item system message
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
-void FUN_140d73bc0(int nStringId, int nA, int nB, CStringW strTitle);   // message box of a string id
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTitle);   // message box of a string id
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nA, Delegate<bool(int, const CMsgBoxData&)> cb);   // OK box
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nType, const CStringW& strTitle, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d74e50(int n);                                          // close the message boxes of a kind

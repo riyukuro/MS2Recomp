@@ -58,13 +58,13 @@ public:
     CClubClientManager();                                           // 0x140b14b70
     virtual ~CClubClientManager();                                  // 0x140b14bf0
 
-    void FUN_140b14c50();                                           // forget all clubs and invitations
+    void ClearClubs();                                           // forget all clubs and invitations
     int FUN_140b14cd0();                                            // 1 when the clubs plus the invitations exceed the limit
-    MS2Ptr<CClubCli> FUN_140b14d80(__int64 nClubId);                // a joined club by id
+    MS2Ptr<CClubCli> GetClub(__int64 nClubId);                // a joined club by id
     Unk_SocketPtr<Unk_ClubCliMap> FUN_140b14e40();                  // the clubs that are fully joined (state 2)
-    __int64 FUN_140b14fc0(CStringW strName);                        // a joined club's id by name, 0 if none
-    CStringW FUN_140b15150(__int64 nClubId);                        // a club's name
-    int FUN_140b15210(__int64 nClubId);                             // the club is known
+    __int64 GetClubIdByName(CStringW strName);                        // a joined club's id by name, 0 if none
+    CStringW GetClubName(__int64 nClubId);                        // a club's name
+    int HasClub(__int64 nClubId);                             // the club is known
     int FUN_140b15290(__int64 nClubId);                             // same, other caller
     int FUN_140b15310();                                            // 1 when a fully joined club exists
     void FUN_140b15440(MS2Ptr<CClubCli> spClub);                    // add a club

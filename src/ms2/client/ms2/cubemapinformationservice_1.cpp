@@ -35,21 +35,17 @@
 #endif
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"  // C3: was a local member view
+#include "ms2/client/ms2/entityvibrator.h"  // C3: was a local member view
 
 class CubeMapInformationService;
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 CubeMapInformationService* FUN_1401cd070(const void*);
-class CubeMapInformationService   // C3: member view for the former free stand-ins
-{
-public:
-    class Cube* FUN_1410b8a60(struct Unk_Int3);
-};
 void* FUN_1403ed280();
-void FUN_1411a7db0(void*);
-class CEntityVibrator   // C3: member view for the former free stand-ins
+class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1411cd550();
+    void FUN_1411a7db0();
 };
 Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
 
@@ -62,15 +58,15 @@ template<> inline MS2Ptr<Unk_WsB_Vibrator>::~MS2Ptr() { Release(); }
 template<> inline Unk_WsB_Vibrator* MS2Ptr<Unk_WsB_Vibrator>::get()const { return m_p; }
 template<> inline Unk_WsB_Vibrator* MS2Ptr<Unk_WsB_Vibrator>::operator->()const { return m_p; }
 template<> inline void MS2Ptr<Unk_WsB_Vibrator>::Reference(Unk_WsB_Vibrator* p) {
-    reinterpret_cast<Unk_PayloadRef*>(p)->FUN_14015b020();
+    CPtred::AddRefPtred(reinterpret_cast<CPtred*>(p));
 }
 template<> inline void MS2Ptr<Unk_WsB_Vibrator>::Release() {
     if(m_p) { ReleaseImpl(0); m_p=0; }
 }
 template<> inline void MS2Ptr<Unk_WsB_Vibrator>::ReleaseImpl(void*) {
-    if(reinterpret_cast<Unk_PayloadRef*>(m_p)->FUN_140159bc0()==0) {
+    if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(m_p))==0) {
         Reference(m_p);
-        reinterpret_cast<Unk_PayloadRef*>(m_p)->FUN_140159ba0();
+        CPtred::DeletePtred(reinterpret_cast<CPtred*>(m_p));
     }
 }
 // @0x1410b27c0
@@ -82,7 +78,7 @@ void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {
     int oldHeight=INT_MIN;
     m_heights.find(key,oldHeight);
     if(oldHeight<z) m_heights[key]=z;
-    FUN_1411a7db0(FUN_1403ed280());
+    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7db0();
 }
 MS2_REPLACE_METHOD(0x1410b2510, Unk_CubeHeightIndex, FUN_1410b2510, 123, 0xd1ba07bc);
 // MS2-FUNCTIONAL: ID argument register transfer differs; calls and control flow verified.
@@ -108,7 +104,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
         }
     }
     m_heights[key]=height;
-    FUN_1411a7db0(FUN_1403ed280());
+    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7db0();
 }
 MS2_REPLACE_METHOD(0x1410b25a0, Unk_CubeHeightIndex, FUN_1410b25a0, 440, 0xff7f5236);
 // @0x1410b2760

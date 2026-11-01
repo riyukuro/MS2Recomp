@@ -19,6 +19,9 @@ template<> MS2Ptr<Unk_PCBaseComp_a78>::~MS2Ptr();          // 0x1405a89b0
 template<> Unk_PCBaseComp_a78* MS2Ptr<Unk_PCBaseComp_a78>::get() const;     // 0x1405a8ec0
 template<> Unk_PCBaseComp_a78* MS2Ptr<Unk_PCBaseComp_a78>::operator->() const;  // 0x1405a8f50
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
+#include "ms2/client/ms2/uimanufacturedialog.h"  // C3: was a local member view
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 
 class UIMaidDialog : public UIObject {public:
     void FUN_1412d9680();   // C3: was free FUN_1412d9680
@@ -30,24 +33,13 @@ public:
 void* FUN_14025e7c0();                                  // the client's text-hook object
 unsigned char FUN_14116d720(void* pHook);
 void FUN_140710590(COutPacket& packet);                 // send
-class CUIService;
-template<> CUIService* TSingleton<CUIService>::GetInstance();
-int FUN_141adc890(void* pService, int nUiId);           // is the dialog open
 struct Unk_MaidUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };   // the dialog's UI object
-class WorldService   // C3: member view for the former free stand-ins
+class CManufactureManager   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1320(int);
-    static class WorldService* GetInstance();
+    static class UIManufactureDialog* GetManufactureDialog(int);
+    static class UIManufactureStatus* GetManufactureStatus(int);
 };
-void* FUN_140d51900(int nUiId);
-class UIManufactureDialog   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1412e34c0();
-    void FUN_1412e3990(int);
-};
-void* FUN_140d519a0(int nUiId);
 void FUN_1412dc3c0(class UIManufactureStatus*);   // C3: was FUN_1412dc3c0
 
 // @0x14127e190
@@ -145,15 +137,15 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
             }
         }
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4e9d) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e9d))) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
                 ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->FUN_1412d9680();
         }
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
-            void* pDlg = FUN_140d51900(0x4ec0);
+            void* pDlg = ((void*)CManufactureManager::GetManufactureDialog(0x4ec0));
             if (pDlg != 0)
             {
                 ((class UIManufactureDialog*)(void*)(pDlg))->FUN_1412e34c0();
@@ -171,7 +163,7 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 4)
     {
         int nActorId = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4e9d) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e9d))) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
@@ -187,9 +179,9 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     }
     if (cMode == 1 || cMode == 2 || cMode == 3)
     {
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec9) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec9))) != 0)
         {
-            void* pDlg = FUN_140d519a0(0x4ec9);
+            void* pDlg = ((void*)CManufactureManager::GetManufactureStatus(0x4ec9));
             if (pDlg != 0)
                 FUN_1412dc3c0((class UIManufactureStatus*)(pDlg));
         }

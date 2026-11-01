@@ -85,16 +85,16 @@ public:
 
     CItemSocket();                                  // 0x140620320
     virtual ~CItemSocket();                         // 0x140620400
-    MS2Ptr<CItemSocket> FUN_140620490();            // 0x140620490 copy
-    void FUN_1406205e0(COutputStream& kOut);        // 0x1406205e0 write
-    void FUN_140620700(CInputStream& kIn);          // 0x140620700 read
+    MS2Ptr<CItemSocket> Clone();            // 0x140620490 copy
+    void WriteToStream(COutputStream& kOut);        // 0x1406205e0 write
+    void ReadFromStream(CInputStream& kIn);          // 0x140620700 read
     void FUN_140620840(unsigned nMaxSlot, unsigned nCount);   // 0x140620840 reset to empty sockets
-    int FUN_140620940();                            // 0x140620940 the filled socket count
+    int GetFilledSlotCount();                            // 0x140620940 the filled socket count
     unsigned FUN_140620a20();                       // 0x140620a20 the open socket count
     unsigned GetMaxSlot();                       // 0x140620a50 the max socket count
-    int FUN_140620a70();                            // 0x140620a70 the sockets left to open
-    int FUN_140620ac0(unsigned nIndex);             // 0x140620ac0 the gemstone id in a socket
-    MS2Ptr<TSocketGemStoneInfo> FUN_140620b70(unsigned nIndex);   // 0x140620b70
+    int GetLockedSlotCount();                            // 0x140620a70 the sockets left to open
+    int GetGemId(unsigned nIndex);             // 0x140620ac0 the gemstone id in a socket
+    MS2Ptr<TSocketGemStoneInfo> GetGemInfo(unsigned nIndex);   // 0x140620b70
     Unk_SocketGemArray& FUN_140620c20();            // 0x140620c20
     MS2Ptr<TSocketGemStoneInfo> FUN_140620c40();    // 0x140620c40 the first bound gemstone
     bool FUN_140620de0() const;                     // 0x140620de0

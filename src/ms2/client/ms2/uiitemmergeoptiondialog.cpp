@@ -209,6 +209,7 @@ class Unk_MergeWorld { public: Unk_MergeSelf* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -475,7 +476,7 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     else if (_stricmp("getTooltipByGUID", strMethod) == 0)
     {
         unsigned __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tooltip(((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tooltip(((Unk_MergeSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
         if (tooltip.FUN_1409e0d40(FindMergeItem(nUid).get()))
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
@@ -483,7 +484,7 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     {
         int nId = pArgs->FUN_1422b8b10();
         int nRank = pArgs->FUN_1422b8b10();
-        ASTooltip tooltip(((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tooltip(((Unk_MergeSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
         if (tooltip.FUN_1409e1770(nId, nRank))
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
@@ -624,7 +625,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
         if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->fusion.fusionable != 0)
             guids.Add(reinterpret_cast<void*>(spItem->FUN_140526a50()));
     }
-    Unk_MergeSelf* pSelf = ((class Unk_MergeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MergeSelf* pSelf = ((Unk_MergeSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pSelf != 0)
     {
         Unk_MergeEquipList equipment(10);

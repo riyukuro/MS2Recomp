@@ -26,6 +26,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -40,7 +41,6 @@ unsigned __int64 FUN_140718370(const CStringW& str);                // string to
 __int64 GetServerTime();                                            // the current time
 bool FUN_140900f30(__int64 nTime);                                  // the time is at night
 CStringW FUN_141b71910(unsigned __int64 n);                         // the number as text
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);      // localized, formatted
 CStringTable* GetStringTable();
 
 // @0x140fd8df0
@@ -145,7 +145,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
         MS2Ptr<Unk_WhHall> pHall = pPackage->FUN_140907110(ticket.m_nHallId);
         if (pHall == 0)
             continue;
-        CStringW strName = FUN_1408f71a0(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
+        CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
         row.FUN_1407cbb20("name", strName);
         row.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, pHall->FUN_140906e40(FUN_140900f30(ticket.m_nTime))));

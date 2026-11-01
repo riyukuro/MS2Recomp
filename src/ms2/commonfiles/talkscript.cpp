@@ -75,6 +75,10 @@
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 typedef Unk_ScriptPtr<CTalkScript> TalkPtr;
 typedef ATL::CAtlArray<TalkPtr> TalkArray;
@@ -638,7 +642,7 @@ void FUN_140857f20(CStringA path)
     for (Unk_ScriptXmlNode* quest = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(root))->FirstChild("quest")); quest != 0; quest = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(quest))->NextSibling("quest")))
     {
         int questId = 0;
-        FUN_140873220(quest, "id", questId);
+        XmlGetAttr((class TiXmlElement*)(quest), "id", reinterpret_cast<unsigned int&>(questId));
         if (questId == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\uAC12\uC774 0 \uC785\uB2C8\uB2E4.[<ms2> {0}]", path);
@@ -664,7 +668,7 @@ void FUN_140857f20(CStringA path)
             TalkPtr script(new CTalkScript());
             script->m_questId = questId;
             XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
-            FUN_140873420(node, "tag", script->m_tag);
+            XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
             FUN_1406363a0(node, "jobCondition", &script->m_jobCondition);
             FUN_140859160(node, script);
             talks->SetAt(script->m_id, script);
@@ -676,7 +680,7 @@ void FUN_140857f20(CStringA path)
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 void FUN_140858440(CStringA path)
 {
-    Unk_CriticalSectionLock lock(s_lock, 1);
+    Unk_1401b4ec0 lock(s_lock, 1);
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
         return;
@@ -692,7 +696,7 @@ void FUN_140858440(CStringA path)
     for (Unk_ScriptXmlNode* npc = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(root))->FirstChild("npc")); npc != 0; npc = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(npc))->NextSibling("npc")))
     {
         int npcId = 0;
-        FUN_140873220(npc, "id", npcId);
+        XmlGetAttr((class TiXmlElement*)(npc), "id", reinterpret_cast<unsigned int&>(npcId));
         std::set<unsigned> usedIds;
         {
             TalkArrayPtr talks(Unk_GrNewTag(0));
@@ -704,9 +708,9 @@ void FUN_140858440(CStringA path)
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
                 XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
-                FUN_140873420(node, "tag", script->m_tag);
+                XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
                 {
-                    CStringA gotoIds = FUN_14015f710(node, "gotoConditionTalkID", "");
+                    CStringA gotoIds = Unk_ReadString((class Unk_XmlNode*)(node), "gotoConditionTalkID", "");
                     if (gotoIds.GetLength() != 0)
                         FUN_140177de0(gotoIds, script->m_gotoConditionTalkIds, ",");
                 }
@@ -728,7 +732,7 @@ void FUN_140858440(CStringA path)
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
                 XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
-                FUN_140873420(node, "tag", script->m_tag);
+                XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
                 FUN_140859320(node, script);
                 monologues->Add(script);
                 usedIds.insert(script->m_id);
@@ -749,7 +753,7 @@ void FUN_140858440(CStringA path)
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
                 XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
-                FUN_140873420(node, "tag", script->m_tag);
+                XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
                 FUN_140859160(node, script);
                 usedIds.insert(script->m_id);
                 if (k == 0)

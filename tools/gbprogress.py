@@ -64,6 +64,15 @@ LIB_RECIPE = "/obj/lib-"                         # obj path part of the library 
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
+# MS2_ENGINE_ROWKEY=1 (default off): an obj's match-cache key holds the rows of the symbol tables that name its own
+# symbols (plus the short and CPtred names, as mergekey.rows_stamp for game units) instead of a stamp of the whole
+# tables, so a symbols merge re-matches only the objs whose rows changed and the others keep their post-pass caches
+# (xok, relok, blk, sub, chainbad). The one table input that is not looked up by an obj name, the named_vas set of the
+# callee pass, is recorded per obj as it is probed (res[key]["nvp"]: [va, member]) and re-checked against the current
+# tables. Merge-46 objs, tables of merge 46 -> 15 rows later (10-31): 32 of 1829 objs re-match, results identical to a
+# full stock run. Pair with bytematch MS2_BM_LAZY_DEBUG=1: engine work 690 s -> 124 s on a loaded box.
+ROWKEY = os.environ.get("MS2_ENGINE_ROWKEY") == "1"
+ROWKEY_TABLES = ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv")
 
 
 def _safe(name):
@@ -189,13 +198,12 @@ def _is_text(va):
                + sec.Misc_VirtualSize for sec in exe.pe.sections)
 
 
-def _init():
-    bm.CHAIN = False            # pairing compares the first chunk (see CHAIN); a forked worker inherits the parent's
-    exe = bm.Exe(bm.EXE)
+def _load_tables():
+    """(names, dnames, aliases) of the symbol tables"""
     names, dnames, aliases = {}, {}, {}
     # symbols-engine-manual first (gb15): an engine function whose mangled name the game also defines (the game's own
     # TinyXML has a global ?TiXmlFOpen too) is pinned to the engine copy by a row there; no other row overlaps.
-    for f in ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv"):
+    for f in ROWKEY_TABLES:
         p = os.path.join(ROOT, "progress", f)
         if not os.path.exists(p):
             continue
@@ -209,6 +217,17 @@ def _init():
                 names.setdefault(c[0], int(c[1], 16))
             elif ln[0] != "#" and len(c) > 2 and c[0].startswith("??_7"):
                 dnames.setdefault(c[0], int(c[1], 16))
+    return names, dnames, aliases
+
+
+def _named_vas(names, aliases):
+    return set(names.values()) | {v for a in aliases.values() for v, _ in a}
+
+
+def _init():
+    bm.CHAIN = False            # pairing compares the first chunk (see CHAIN); a forked worker inherits the parent's
+    exe = bm.Exe(bm.EXE)
+    names, dnames, aliases = _load_tables()
     bm.SYMBOLS.clear()
     bm.SYMBOLS.update(names)      # relocation targets resolve through the same tables
     bylen = collections.defaultdict(list)
@@ -227,7 +246,61 @@ def _init():
                 leaf.add(rva)
     game = game_ranges()
     G.update(exe=exe, names=names, dnames=dnames, aliases=aliases, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
-             named_vas=set(names.values()) | {v for a in aliases.values() for v, _ in a})
+             named_vas=_named_vas(names, aliases))
+
+
+def _is_named(va):
+    """va in the named_vas set (recorded for the ROWKEY cache check)"""
+    hit = va in G["named_vas"]
+    if G.get("nvp") is not None:
+        G["nvp"][va] = hit
+    return hit
+
+
+class _RowKey:
+    """MS2_ENGINE_ROWKEY: per-obj digests of the symbol-table rows a match can read (see ROWKEY)"""
+
+    CPTRED = (b"?ReleasePtred@CPtred@@SAHPEAV1@@Z", b"?AddRefPtred@CPtred@@SAXPEAV1@@Z",
+              b"?DeletePtred@CPtred@@SAXPEAV1@@Z")
+
+    def __init__(self):
+        rows, short = collections.defaultdict(list), []
+        for i, f in enumerate(ROWKEY_TABLES):
+            p = os.path.join(ROOT, "progress", f)
+            if not os.path.exists(p):
+                continue
+            with open(p, "rb") as fh:
+                for ln in fh:
+                    if ln[:1] == b"#" or not ln.strip():
+                        continue
+                    n = ln.split(b"\t", 1)[0].rstrip(b"\r\n")
+                    (short if len(n) <= 8 else rows[n]).append(b"%d:" % i + ln)
+        self.rows = rows
+        self.short = hashlib.sha1(b"".join(short)).hexdigest()[:16]     # in the symbol records, not the string table
+        names, _, aliases = _load_tables()
+        self.named_vas = _named_vas(names, aliases)
+        self.has_alias = bool(aliases)
+
+    def stamp(self, path):
+        with open(path, "rb") as f:
+            d = f.read(56)
+            if d[:4] == b"\0\0\xff\xff":
+                symoff, nsyms = struct.unpack_from("<II", d, 48)
+                recsz = 20
+            else:
+                symoff, nsyms = struct.unpack_from("<II", d, 8)
+                recsz = 18
+            f.seek(symoff + nsyms * recsz + 4)
+            names = set(f.read().split(b"\0")) | set(self.CPTRED)
+        h = hashlib.sha1()
+        for n in sorted(n for n in names if n in self.rows):
+            h.update(b"".join(self.rows[n]))
+        return [h.hexdigest()[:16], self.short, self.has_alias]
+
+    def fresh(self, c):
+        """the probes of the cached match answer the same against the current tables"""
+        nvp = c.get("nvp")
+        return nvp is not None and all((va in self.named_vas) == hit for va, hit in nvp)
 
 
 def owned_game_units():
@@ -390,7 +463,7 @@ def match_obj(path):
                 continue
             tried.add((n, va))
             if _match(obj, n, va):          # exact only: the caller itself may be a byte-identical look-alike of
-                if n in copies and (va in G["named_vas"] or va in {v for _, v, ok, _ in out if ok}):
+                if n in copies and (_is_named(va) or va in {v for _, v, ok, _ in out if ok}):
                     weak[n] = (n, va, True, "callee")   # another type, so its reloc targets are only a hint: a VA
                     nxt.append(n)       # the tables or another name of this obj hold leaves a name with several
                     continue            # copies to assign_copies
@@ -480,7 +553,11 @@ def _vft_slots(obj, si, va):
 def _match_job(job):
     path, win = job
     G["win"] = win
-    return path, match_obj(path)
+    if not ROWKEY:
+        return path, match_obj(path)
+    G["nvp"] = {}
+    r = match_obj(path)
+    return path, (r, sorted(G.pop("nvp").items()))
 
 
 def _greedy(todo, xok, match=None):
@@ -1778,6 +1855,8 @@ def _run(cache, j, filters, log):
     groups = json.load(open(gpath)) if os.path.exists(gpath) else {}
     jobs = []
     windows = load_windows()
+    rowkey = _RowKey() if ROWKEY else None
+    import mergekey
     for u in units:
         o = obj_path(cache, u)
         if u["name"] in failed or not os.path.exists(o):
@@ -1791,16 +1870,19 @@ def _run(cache, j, filters, log):
             key.append(json.dumps(win))
         # also keyed by the symbol tables the match read (and the matcher/exe maps): a callee check that failed against
         # an old symbols row must re-run once the row is fixed, in worker caches as well as tools/merge.sh's
-        import mergekey
-        key.append(mergekey.engine_stamp())
+        if rowkey:
+            key += ["rowkey1", mergekey.engine_stamp(tables=False)] + rowkey.stamp(o)
+        else:
+            key.append(mergekey.engine_stamp())
         c = res.get(u["recipe"] + ":" + u["name"])
-        if not c or c.get("key") != key:
+        if not c or c.get("key") != key or (rowkey and not rowkey.fresh(c)):
             jobs.append((u, o, key, win))
     if jobs:
         log(f"engine: matching {len(jobs)} obj(s) ...")
         byobj = {o: (u, key) for u, o, key, _ in jobs}
         with Pool(max(1, j), initializer=_init) as p:
-            for o, (rows, cands, own) in p.imap_unordered(_match_job, [(o, w) for _, o, _, w in jobs], chunksize=2):
+            for o, r in p.imap_unordered(_match_job, [(o, w) for _, o, _, w in jobs], chunksize=2):
+                (rows, cands, own), nvp = r if ROWKEY else (r, None)
                 u, key = byobj[o]
                 gc = []
                 for n, hits in cands:                  # copy groups are shared by many objs: stored once
@@ -1809,6 +1891,8 @@ def _run(cache, j, filters, log):
                     gc.append([n, gid])
                 res[u["recipe"] + ":" + u["name"]] = {"key": key, "unit": u["unit"], "recipe": u["recipe"],
                                                        "pairs": [list(r) for r in rows], "cands": gc, "own": own}
+                if ROWKEY:
+                    res[u["recipe"] + ":" + u["name"]]["nvp"] = [list(x) for x in nvp]
     live = {u["recipe"] + ":" + u["name"] for u in gbtree.load_units(tree)}
     res = {k: v for k, v in res.items() if k in live}
     if not NO_CALLEE:

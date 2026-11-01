@@ -12,7 +12,6 @@
 // ---- out-of-unit callees ----
 class Unk_BuildKeyTable { public: CStringW FUN_14142d760(int nId, int n); };
 Unk_BuildKeyTable* FUN_1409331f0();                                     // the key table
-bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);                     // has the AS object been released
 
 // the slot list of ASGameEntity is not recovered: only slot 25 is called here
 class Unk_BuildBtnEntity : public ASGameEntity
@@ -72,7 +71,7 @@ void UIBuildBtnGuide::vfunc_8(int nVisible)
 // @0x1418dcde0
 void UIBuildBtnGuide::FUN_1418dcde0(int nGuide)
 {
-    if (FUN_141986d30() == 0 || FUN_140a467d0(m_30))
+    if (FUN_141986d30() == 0 || ((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_30))->IsNull())
         return;
     // The exe reads the key but looks the text up with 0, not with it.
     int nKey = vfunc_9();

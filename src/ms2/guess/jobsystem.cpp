@@ -29,6 +29,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // Out-of-unit callees.
 class Unk_JobSkillTable { public: MS2Ptr<SkillData> FUN_1407ee1d0(int nSkillId); };
@@ -151,7 +152,7 @@ void JobSystem::SetJob(int nJobGroup, int nJobCode, unsigned short nLevel)
     if (!TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup))
         return;
     int nRank = TSingleton<JobTable>::GetInstance()->GetJobRank(nJobCode);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     InitSkills(nJobGroup, nRank);
     RecalcPoints();
 }
@@ -159,7 +160,7 @@ void JobSystem::SetJob(int nJobGroup, int nJobCode, unsigned short nLevel)
 // @0x1406382e0
 bool JobSystem::ChangeJob(int nJobGroup, int nRank, unsigned short nLevel)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (!TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup))
         return false;
     ATL::CAtlMap<unsigned, unsigned short> learned;
@@ -193,7 +194,7 @@ bool JobSystem::ChangeJob(int nJobGroup, int nRank, unsigned short nLevel)
 MS2Ptr<SkillLevelData> JobSystem::vfunc_1(unsigned nSkillId)
 {
     unsigned short nBonus = vfunc_5(nSkillId);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     JobSkillPtr spSkill = FindSkill(nSkillId);
     if (spSkill.get() != 0)
     {
@@ -213,7 +214,7 @@ MS2Ptr<SkillLevelData> JobSystem::vfunc_1(unsigned nSkillId)
 // @0x140638980
 bool JobSystem::vfunc_2(unsigned nSkillId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     JobSkillPtr spSkill = FindSkill(nSkillId);
     if (spSkill.get() != 0)
         return spSkill->m_bLearned;
@@ -225,7 +226,7 @@ void JobSystem::vfunc_3(int nJobGroup, unsigned nSkillId, unsigned short nLevel)
 {
     if (GetJobGroupID() != nJobGroup)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (!FindSkill(nSkillId))
     {
         JobSkillPtr spSkill(new JobSkill(nSkillId));
@@ -254,7 +255,7 @@ unsigned short JobSystem::vfunc_5(unsigned nSkillId)
 // @0x140638cb0
 void JobSystem::vfunc_6(COutputStream& os)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     os.WriteInt32(m_nRank);
     if (GetJobData().get())
     {
@@ -273,7 +274,7 @@ void JobSystem::vfunc_6(COutputStream& os)
 // @0x140638f10
 void JobSystem::vfunc_7(CByteBuffer& buf)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nRank = buf.ReadInt32();
     int nJobGroup = buf.ReadInt32();
     m_spJob = TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup);
@@ -340,7 +341,7 @@ int JobSystem::GetRank()
 // @0x1406394d0
 JobSkillPtr JobSystem::FindSkill(unsigned nSkillId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     SkillMap::iterator it = m_skills.find(nSkillId);
     if (it != m_skills.end())
         return it->second;
@@ -350,7 +351,7 @@ JobSkillPtr JobSystem::FindSkill(unsigned nSkillId)
 // @0x1406395c0
 void JobSystem::GetSkills(std::vector<JobSkillPtr>& vOut, int bLearnedOnly, bool bNoSubSkills)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (auto& kv : m_skills)
     {
         JobSkillPtr spSkill = kv.second;
@@ -365,7 +366,7 @@ void JobSystem::GetSkills(std::vector<JobSkillPtr>& vOut, int bLearnedOnly, bool
 // @0x140639710
 void JobSystem::SetSkill(unsigned nSkillId, unsigned short nLevel, bool bLearned)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     JobSkillPtr spSkill = FindSkill(nSkillId);
     if (spSkill.get() != 0)
     {
@@ -381,7 +382,7 @@ void JobSystem::SetSkill(unsigned nSkillId, unsigned short nLevel, bool bLearned
 // @0x140639840
 void JobSystem::ClearChanged()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (auto& kv : m_skills)
     {
         JobSkillPtr spSkill = kv.second;
@@ -403,7 +404,7 @@ void JobSystem::RecalcPoints()
     GetSkills(skills, 1, false);
     if (skills.empty())
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nTotalPoint = 0;
     m_usedPoints.clear();
     for (auto& spSkill : skills)
@@ -426,7 +427,7 @@ int JobSystem::GetTotalPoint()
 // @0x140639b40
 int JobSystem::GetUsedPoint(int nJobLevel)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_usedPoints[nJobLevel];
 }
 
@@ -439,7 +440,7 @@ JobDataPtr JobSystem::GetJobData()
 // @0x140639c00
 void JobSystem::InitSkills(int nJobGroup, int nRank)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_spJob = TSingleton<JobTable>::GetInstance()->GetJobData(nJobGroup);
     m_nRank = nRank;
     m_skills.clear();
@@ -452,7 +453,7 @@ void JobSystem::InitSkills(int nJobGroup, int nRank)
 // @0x140639d90
 void JobSystem::UpdateLearnable(unsigned short nLevel)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (auto& kv : m_skills)
     {
         JobSkillPtr spSkill = kv.second;

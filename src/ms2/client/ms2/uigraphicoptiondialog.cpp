@@ -77,9 +77,13 @@ public:
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
 };
 
-PostProcessingService* FUN_1409a8b20();             // the post-processing service
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 unsigned char FUN_1412642d0(void* pStep);
-void FUN_1409a5850(void* pDst, const void* pSrc, int nSize);
+bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
 extern bool DAT_143ae53c0;                          // "any shimmer object this frame" flag
 CStringW GetStringCommon(int nStringId);
 
@@ -219,14 +223,14 @@ void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
 {
     if (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer != bShimmer) {
         reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bShimmer = bShimmer ? true : false;
-        if (FUN_1409a8b20()->FUN_1416aa850(6) != bShimmer)
-            FUN_1409a8b20()->FUN_1416aa450(6, bShimmer != 0);
+        if (((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa850(6) != bShimmer)
+            ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(6, bShimmer != 0);
         if (bShimmer == 0) {
-            PostProcessEffect* pStep = FUN_1409a8b20()->FUN_1416a3a90(0xc);
+            PostProcessEffect* pStep = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(0xc);
             if (FUN_1412642d0(pStep) != 0)
-                FUN_1409a8b20()->FUN_1416a37a0(0xc, true);
+                ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(0xc, true);
             bool bFlag = false;
-            FUN_1409a5850(&DAT_143ae53c0, &bFlag, 1);
+            FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
         }
     }
 }

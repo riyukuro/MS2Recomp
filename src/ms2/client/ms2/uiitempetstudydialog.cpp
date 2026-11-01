@@ -60,6 +60,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe objects ----
 
@@ -93,7 +94,6 @@ public:
 };
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_141b71910(__int64 nValue);
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
 CString FUN_140540050(const char* szFormat, const CString& strArg);
@@ -174,7 +174,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         {
             if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635120() == 0)
             {
-                CStringW strMessage = FUN_1405c2690(CStringW(L"s_msg_transfer_bind_pet_study"), pPC->vfunc_77());
+                CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_transfer_bind_pet_study"), pPC->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strStudyBindPet));
                 if (box.get() != 0)
                 {

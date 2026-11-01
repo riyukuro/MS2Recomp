@@ -28,7 +28,7 @@ private:
 class CBattleRecord : public CPtred {
 public:
     CBattleRecord(__int64); virtual ~CBattleRecord();
-    __int64 FUN_140a03120(); __int64 FUN_140a03140(int); void FUN_140a03160(int,__int64); void FUN_140a031a0();
+    __int64 FUN_140a03120(); __int64 FUN_140a03140(int); void AddAmount(int,__int64); void Reset();
     __int64 id; __int64 counts[8];
 };
 MS2_CHECK_SIZE(CBattleRecord,0x60);
@@ -48,8 +48,8 @@ class CBattleRecordGroup : public CPtred {
 public:
     typedef Unk_BattlePtr<CBattleRecord> Ptr;
     CBattleRecordGroup(int); virtual ~CBattleRecordGroup();
-    void FUN_140a03300(); void FUN_140a03350(); void FUN_140a03380(); void FUN_140a03460(); int FUN_140a03530(); unsigned FUN_140a03600();
-    void FUN_140a03620(__int64); void FUN_140a036d0(__int64); int FUN_140a03700(__int64); Ptr FUN_140a03750(__int64);
+    void Clear(); void StartIfInactive(); void Start(); void Stop(); int FUN_140a03530(); unsigned FUN_140a03600();
+    void AddRecord(__int64); void RemoveRecord(__int64); int HasRecord(__int64); Ptr GetRecord(__int64);
     void FUN_140a037d0(Ptr,int,__int64); void FUN_140a03870(__int64,int,__int64);
     void FUN_140a03920(); void FUN_140a03b30(const CString&); void FUN_140a03c30(); void FUN_140a03c80(__int64,int,__int64);
     int active; unsigned start;
@@ -65,8 +65,8 @@ class CBattleRecordManager : public TSingleton<CBattleRecordManager> {
 public:
     typedef Unk_BattlePtr<CBattleRecordGroup> Ptr;
     CBattleRecordManager(); virtual ~CBattleRecordManager();
-    void FUN_140a03f60(int); void FUN_140a03fa0(int); void FUN_140a03fe0(int); int FUN_140a04020(int); unsigned FUN_140a04060(int);
-    Ptr FUN_140a040a0(int); void FUN_140a04100(int,__int64); void FUN_140a04150(int,__int64); int FUN_140a041a0(int,__int64);
+    void StartGroupIfInactive(int); void StartGroup(int); void StopGroup(int); int IsGroupActive(int); unsigned FUN_140a04060(int);
+    Ptr GetGroup(int); void AddRecord(int,__int64); void RemoveRecord(int,__int64); int HasRecord(int,__int64);
     CBattleRecordGroup::Ptr FUN_140a041f0(int,__int64);
     CStringW FUN_140a04260(int,__int64,int); CStringW FUN_140a04830(int,__int64,int); CStringW FUN_140a04b00(int);
     static CStringW FUN_140a04bc0(int);

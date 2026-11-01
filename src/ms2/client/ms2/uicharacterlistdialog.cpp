@@ -97,6 +97,8 @@ static CStringW s_strChangeInvalidCharName(L"changeInvalidCharName");
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // @0x1401115d0
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -237,7 +239,6 @@ CStringW GetStringCommon(int nId);
 CStringW FUN_1409e97f0(int nId, const int& nArg);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int nFlag);            // lock the movie input
 CString FUN_141028a90(CString str, int nFlag);
-CStringW FUN_14052bd00(int nStringId, const CStringW& str);         // the string table text with an argument
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
 void FUN_140cfefe0(Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
@@ -265,7 +266,7 @@ public:
     int FUN_1417e25a0(int);
 };
 CSceneStateMulti* FUN_140f30370();
-class Unk_ClUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); void FUN_141adc530(int nId); int FUN_141adc890(int nId); void FUN_141adc5d0(int nId); };
+class Unk_ClUIMgr { public: void FUN_141adc530(int nId); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_1406516b0();                                    // the language id
 class Unk_ClNet                                         // the network service (slots 0..22)
@@ -363,7 +364,6 @@ CStringW FUN_14083bdc0(const Unk_ClTime& time, bool bSeconds, CStringW strSep1, 
 CStringW FUN_14083bab0(const Unk_ClTime& time, CStringW strSep);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pTarget, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
 
@@ -667,10 +667,10 @@ void UICharacterListDialog::vfunc_79(void* p)
                 }
                     break;
                 case 2:
-                    FUN_140d73aa0(FUN_14052bd00(0x2a, strText), 0, 0, L"");
+                    FUN_140d73aa0(FormatStringId<CStringW>(0x2a, strText), 0, 0, L"");
                     break;
                 case 6:
-                    FUN_140d73aa0(FUN_14052bd00(0x29, strText), 0, 0, L"");
+                    FUN_140d73aa0(FormatStringId<CStringW>(0x29, strText), 0, 0, L"");
                     break;
                 default:
                     FUN_140d73aa0(FUN_14028dee0(0x2c, strText, reinterpret_cast<const Unk_ClCharError&>(nCode)), 0, 0, L"");
@@ -707,7 +707,7 @@ void UICharacterListDialog::vfunc_15()
                 unsigned int nLeft = spInfo->m_spCharacter->FUN_1418e9f30();
                 if (nLeft > 0)
                 {
-                    CStringW strText = FUN_14052bd00(3, FUN_141b708a0(nLeft, 0));
+                    CStringW strText = FormatStringId<CStringW>(3, FUN_141b708a0(nLeft, 0));
                     FUN_140cfefe0(spMovie->FUN_1422bb870(), "m_delete", "m_label", strText);
                 }
                 else
@@ -750,7 +750,7 @@ void UICharacterListDialog::OnLoadComplete()
             pScene->FUN_14174f470();
     }
     if (FUN_1418ed650())
-        reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f2a);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f2a)));
     FUN_1418f0400();
     if (FUN_1406516b0() == 3)
         AttachHealthGame();
@@ -792,7 +792,7 @@ int UICharacterListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     CStringW strAnswer(arrTag[1]);
                     if (!strAnswer.IsEmpty())
                     {
-                        PC* pPC = reinterpret_cast<PC*>(reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+                        PC* pPC = reinterpret_cast<PC*>(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
                         if (pPC != 0)
                         {
                             bool bSame = strAnswer.CompareNoCase(pPC->vfunc_77()) == 0;
@@ -846,8 +846,8 @@ int UICharacterListDialog::vfunc_13()
 void UICharacterListDialog::vfunc_67()
 {
     TSingleton<UIUGCEventDispatcher>::GetInstance()/*C3:TSingleton<UIUGCEventDispatcher>::GetInstance*/->FUN_141b38c70(this);
-    if (reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4f2a) != 0)
-        reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f2a);
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f2a))) != 0)
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f2a);
     UIDialog::vfunc_67();
     m_1dc = 0;
     m_1d8 = 0;
@@ -1034,7 +1034,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
             else if (nError == 10)
             {
                 CStringW strText = L"";
-                strText = FUN_1405c2690(L"s_char_err_next_delete_char_date", FUN_14083bdc0(FUN_1406c47a0(nDeleteTime), true, L"/", L":"));
+                strText = FUN_14028dfa0<CStringW>(L"s_char_err_next_delete_char_date", FUN_14083bdc0(FUN_1406c47a0(nDeleteTime), true, L"/", L":"));
                 FUN_140d73aa0(CStringW(strText), 0, 0, L"");
             }
             else
@@ -1086,7 +1086,7 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
     if (spPreview.get() != 0)
     {
         FUN_1418ee5c0(spPreview->FUN_1418e9d70(), FindFreePreviewSlot());
-        reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef2);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
         DAT_143ab2828 = spPreview->FUN_1418e9cb0();
         FUN_141b70290();
         reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_141242990();
@@ -1126,9 +1126,9 @@ void UICharacterListDialog::FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned 
 // @0x1418ee700
 void UICharacterListDialog::HidePopups()
 {
-    reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ef2);
-    reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ef3);
-    reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e6a);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef2);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef3);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e6a);
     m_30->Invoke("popdown");
     FUN_1412761e0(m_30, 0);
 }
@@ -1448,7 +1448,7 @@ void UICharacterListDialog::CharacterRemoved(unsigned __int64 nId, int nIndex)
     if (m_1a8.empty())
     {
         FUN_1418ee370();
-        reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ef2);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef2);
     }
     CString strFile;
     strFile.Format("%s%s", (const char*)FUN_14016a5c0(((struct Unk_ClPaths*)FUN_1401d31f0())->m_s60, 0), (const char*)FUN_1412756c0(DAT_143ab2820, nId));
@@ -1500,7 +1500,7 @@ void UICharacterListDialog::OnCreatePC()
         FUN_140d73aa0(FUN_1408116a0(9, DAT_1439f4a84), 0, 0, CStringW(L""));
         return;
     }
-    reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eea);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4eea)));
 }
 
 // @0x1418f13d0
@@ -1573,7 +1573,7 @@ void UICharacterListDialog::SendCharacterManagementMode2()
 {
     if (m_1d8 != 0)
         return;
-    MyPC* pPC = reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     Unk_ClReqSelect req;
@@ -1624,7 +1624,7 @@ void UICharacterListDialog::ShowPopup()
 {
     if (m_30.get() != 0)
     {
-        reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef2);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
         m_30->Invoke("popup");
         FUN_1412761e0(m_30, 1);
     }
@@ -1740,14 +1740,14 @@ void UICharacterListDialog::FUN_1418f1f10()
     if (m_1e0 != 0)
     {
         m_1e0 = 0;
-        MyPC* pPC = reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
             ((class PCBase*)(class MyPC*)(pPC))->FUN_14166cc40(0xd);
     }
     else if (m_1e4 != 0)
     {
         m_1e4 = 0;
-        MyPC* pPC = reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
             ((class PCBase*)(class MyPC*)(pPC))->FUN_14166cc40(0xe);
     }
@@ -1853,21 +1853,21 @@ void UICharacterListDialog::FUN_1418f2820(void* pPacket)
 CStringW UICharacterListDialog::FUN_1418f2960(int nError, unsigned __int64 nId)
 {
     if (nError == 0xb || nError == 0x17)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_characterpending"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_characterpending"), FUN_1418f05b0(nId));
     else if (nError == 0xc)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_select_character"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_select_character"), FUN_1418f05b0(nId));
     else if (nError == 0x16)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_blcakmarket"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_blcakmarket"), FUN_1418f05b0(nId));
     else if (nError == 0x18)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_guild"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_guild"), FUN_1418f05b0(nId));
     else if (nError == 0x19)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_ugcmarket"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_ugcmarket"), FUN_1418f05b0(nId));
     else if (nError == 0x1a)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_wedding"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_wedding"), FUN_1418f05b0(nId));
     else if (nError == 0x1b)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_mail"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_mail"), FUN_1418f05b0(nId));
     else if (nError == 0x1c)
-        return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_mesomarket"), FUN_1418f05b0(nId));
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_db_mesomarket"), FUN_1418f05b0(nId));
     else if (nError == 0x15)
         return GetStringCommonByKey(L"s_delete_account_result_check_fail_err_db_norow");
     else if (nError == 0x1d)
@@ -2274,7 +2274,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnDeletePC", szMethod) == 0)
     {
-        MyPC* pPC = reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
         {
             CStringW strMsg(L"");
@@ -2285,7 +2285,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 strMsg = FUN_14028dee0(5, nLimit, strTime, pPC->vfunc_77());
             }
             else
-                strMsg = FUN_14052bd00(4, pPC->vfunc_77());
+                strMsg = FormatStringId<CStringW>(4, pPC->vfunc_77());
             if (!strMsg.IsEmpty())
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xe, strMsg, static_cast<IMessageListener*>(this), L"deletePC");
@@ -2382,7 +2382,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 CharPtr spCharacter = FindCharacter(nId);
                 if (spCharacter.get() != 0)
                 {
-                    CStringW strMsg = FUN_14052bd00(8, spCharacter->FUN_1418e9cd0());
+                    CStringW strMsg = FormatStringId<CStringW>(8, spCharacter->FUN_1418e9cd0());
                     unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
                     CStringW strTag = FUN_1406c6bd0(L"revivalChar,{0}", &nCharId);
                     FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
@@ -2399,7 +2399,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 CharPtr spCharacter = FindCharacter(nId);
                 if (spCharacter.get() != 0)
                 {
-                    CStringW strMsg = FUN_14052bd00(6, spCharacter->FUN_1418e9cd0());
+                    CStringW strMsg = FormatStringId<CStringW>(6, spCharacter->FUN_1418e9cd0());
                     unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
                     CStringW strTag = FUN_1406c6bd0(L"finalDelete,{0}", &nCharId);
                     FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
@@ -2510,7 +2510,7 @@ UIRegionListDialog* FUN_1418f6130(int nId)
 {
     if (reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        if (MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId))
+        if (MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId))
             return dynamic_cast<UIRegionListDialog*>(spObject.get());
     }
     return 0;

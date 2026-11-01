@@ -50,7 +50,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
-    bool FUN_140aeb590(struct Unk_CameraSetting&);
+    bool GetSavedSetting(struct Unk_CameraSetting&);
     void FUN_140aed720(struct Unk_CameraSetting const&);
     void FUN_140aed750(int, int);
 };
@@ -59,11 +59,11 @@ void FUN_14174c520(CSceneStateLogin*, CInPacket&);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLogin);
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 // @0x14174c000
@@ -139,7 +139,7 @@ void CSceneStateLogin::vfunc_1(int)
     if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aeb590(*(struct Unk_CameraSetting*)(&tmp)))
+        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
         {
             ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
             ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);

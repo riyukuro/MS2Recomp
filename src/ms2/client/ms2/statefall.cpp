@@ -44,7 +44,7 @@ public:
     char m_pad[0x48e8];
     Unk_FallScale m_scale;
 };
-Unk_FallConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's buff set: the knock-back direction.
 class Unk_FallBuff { public: Vector3 FUN_141683290(); };
@@ -147,7 +147,7 @@ void StateFall::vfunc_3(double fTime)
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();
-        efd::Point3 kVel = kDir * (fSpeed * *FUN_1401d3200()->m_scale.FUN_140298f40());
+        efd::Point3 kVel = kDir * (fSpeed * *((class Unk_FallConsts*)FUN_1401d3200())->m_scale.FUN_140298f40());
         reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     }
     efd::Point3 kMove = efd::Point3::ZERO;

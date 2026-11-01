@@ -140,7 +140,7 @@ public:
 class Unk_1409331e0;
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138d7e0(Unk_1409331e0* p, int a1, int a2);
-void FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
+int FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
 class Unk_140166440 { public: void FUN_14015eb90(int a1, int a2, const wchar_t* szFormat, const CString& a3); };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141383a70(CString strName);

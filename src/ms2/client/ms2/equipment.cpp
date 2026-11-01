@@ -183,11 +183,7 @@ int FUN_14028d260(float fSeconds);                  // seconds -> ms
 int FUN_141421690(CItem* pItem);                    // the item kind
 bool FUN_14028d470(float a, float b);               // a == b (epsilon)
 CString Name_14021c050(int nSlot);                  // the slot name
-void FUN_141653f00(PC* pPC);                        // refresh the PC's look
-void FUN_1411a6060(CEffectService* pService, unsigned nEffect);   // remove an effect
 std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pModel);      // the model's root nodes
-NiNode* FUN_140a0b000(NiAVObject* pObj);            // the parent node
-void FUN_140a0b300(NiAVObject* pObj, bool bCulled); // app culled
 egf::Entity* FUN_14123c410(GameObject* pObject);    // the object's entity
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);    // the entity's scene graph
 NiAVObject* FUN_141b6ef70(egf::EntityID id);        // the scene node of an entity
@@ -283,7 +279,6 @@ public:
     unsigned char m_bits[1];
 };
 MS2_CHECK_SIZE(Unk_SetEffectBits, 1);
-void FUN_141656710(PC* pPC);                            // refresh the local player's stats
 eSetItemLayer::T FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
 int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
 extern int DAT_143ae2b50;                               // the mesh optimizer is on
@@ -604,7 +599,7 @@ CEquipment::~CEquipment()
 }
 
 // @0x1411e0810
-void CEquipment::FUN_1411e0810()
+void CEquipment::ClearAll()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
@@ -617,10 +612,10 @@ void CEquipment::FUN_1411e0810()
     }
     FUN_1411ef970();
 }
-MS2_REPLACE_METHOD(0x1411E0810, CEquipment, FUN_1411e0810, 383, 0x19ED6C0E);
+MS2_REPLACE_METHOD(0x1411E0810, CEquipment, ClearAll, 383, 0x19ED6C0E);
 
 // @0x1411e09a0
-int CEquipment::FUN_1411e09a0()
+int CEquipment::AreAllItemsLoaded()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
@@ -636,29 +631,29 @@ int CEquipment::FUN_1411e09a0()
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1411E09A0, CEquipment, FUN_1411e09a0, 394, 0xEE20E395);
+MS2_REPLACE_METHOD(0x1411E09A0, CEquipment, AreAllItemsLoaded, 394, 0xEE20E395);
 
 // @0x1411e0b30
-int CEquipment::FUN_1411e0b30()
+int CEquipment::RefreshModelIfLoaded()
 {
-    if (FUN_1411e09a0() != 0) {
+    if (AreAllItemsLoaded() != 0) {
         m_pPC->vfunc_32(true);
         m_pPC->FUN_1416749a0()->FUN_140971150();
     }
     FUN_1411e6e70();
     return 1;
 }
-MS2_REPLACE_METHOD(0x1411E0B30, CEquipment, FUN_1411e0b30, 94, 0xE7498C31);
+MS2_REPLACE_METHOD(0x1411E0B30, CEquipment, RefreshModelIfLoaded, 94, 0xE7498C31);
 
 // @0x1411e0ba0
-int CEquipment::FUN_1411e0ba0()
+int CEquipment::RefreshModel()
 {
     m_pPC->vfunc_32(true);
     m_pPC->FUN_1416749a0()->FUN_140971150();
     FUN_1411e6e70();
     return 1;
 }
-MS2_REPLACE_METHOD(0x1411E0BA0, CEquipment, FUN_1411e0ba0, 80, 0xB616FBC2);
+MS2_REPLACE_METHOD(0x1411E0BA0, CEquipment, RefreshModel, 80, 0xB616FBC2);
 
 // @0x1411e0c00
 int CEquipment::FUN_1411e0c00()
@@ -670,7 +665,7 @@ MS2_REPLACE_METHOD(0x1411E0C00, CEquipment, FUN_1411e0c00, 8, 0x7F371472);
 // @0x1411e0c10
 void CEquipment::FUN_1411e0c10()
 {
-    FUN_1411e0b30();
+    RefreshModelIfLoaded();
 }
 MS2_REPLACE_METHOD(0x1411E0C10, CEquipment, FUN_1411e0c10, 24, 0xB748DA86);
 
@@ -1299,7 +1294,7 @@ void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
             FUN_1411ec190(spItem, 1);
         }
         m_pPC->FUN_141659000(1);
-        FUN_141653f00(m_pPC);
+        ((class PC*)(class PC*)(m_pPC))->FUN_141653f00();
     }
 }
 MS2_REPLACE_METHOD(0x1411E4150, CEquipment, FUN_1411e4150, 1364, 0x8FA3D284);
@@ -1714,7 +1709,7 @@ void CEquipment::FUN_1411efa00(int nIndex)
     if (spInfo == 0)
         return;
     if (spInfo->m_nEffect != 0)
-        FUN_1411a6060(CEffectService::GetInstance(), spInfo->m_nEffect);
+        ((class CEffectService*)(class CEffectService*)(CEffectService::GetInstance()))->FUN_1411a6060(spInfo->m_nEffect);
     m_setEffects[nIndex] = 0;
 }
 MS2_REPLACE_METHOD(0x1411EFA00, CEquipment, FUN_1411efa00, 232, 0x5106F4B8);
@@ -1932,9 +1927,9 @@ void CEquipment::FUN_1411e9190(int bShow)
             if (spReplace == 0)
                 continue;
             if (spReplace->m_spMesh)
-                FUN_140a0b300(spReplace->m_spMesh.operator->(), bShow != 0);
+                ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spMesh.operator->()))->SetAppCulled(bShow != 0);
             if (spReplace->m_spNode)
-                FUN_140a0b300(spReplace->m_spNode.operator->(), bShow != 0);
+                ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spNode.operator->()))->SetAppCulled(bShow != 0);
         }
     }
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1972,7 +1967,7 @@ int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 #endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
-                FUN_140a0b000(spReplace->m_spMesh.operator->()) == NULL)
+                ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spMesh.operator->()))->GetParent() == NULL)
                 spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
         }
     }
@@ -1994,7 +1989,7 @@ int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
 #endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
-                FUN_140a0b000(spReplace->m_spMesh.operator->()) != NULL)
+                ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spMesh.operator->()))->GetParent() != NULL)
                 spReplace->m_spNode->DetachChild(spReplace->m_spMesh);
         }
     }
@@ -2115,7 +2110,7 @@ void CEquipment::FUN_1411ebde0()
 {
     if (m_updateTimer.Check(500) == 0)
         return;
-    if (m_bSetDirty && FUN_1411e09a0() != 0)
+    if (m_bSetDirty && AreAllItemsLoaded() != 0)
         FUN_1411ee930();
     if (m_5c || ((bool)m_spLayerInfo.get() && m_spLayerInfo->FUN_1411df910() == 1)) {
         m_5c = true;
@@ -2291,7 +2286,7 @@ void CEquipment::FUN_1411eeda0()
         FUN_140a0b2a0(m_meshes68[i]);
     m_meshes68.RemoveAll();
     for (size_t i = 0; i < m_meshes88.GetCount(); i++)
-        FUN_140a0b300(m_meshes88[i].operator->(), false);
+        ((class NiAVObject*)(class NiAVObject*)(m_meshes88[i].operator->()))->SetAppCulled(false);
 }
 MS2_REPLACE_METHOD(0x1411EEDA0, CEquipment, FUN_1411eeda0, 429, 0x6BA0B7ED);
 
@@ -2473,7 +2468,7 @@ void CEquipment::FUN_1411eef60()
         FUN_141567330(m_meshes68[i], true);
     }
     for (size_t i = 0; i < m_meshes88.GetCount(); i++)
-        FUN_140a0b300(m_meshes88[i].operator->(), true);
+        ((class NiAVObject*)(class NiAVObject*)(m_meshes88[i].operator->()))->SetAppCulled(true);
     pNode->UpdateEffects();
     m_5e = false;
     Unk_EquipLog1(CLogString::GetInstance(), 0xc, 0x13, L"[MeshOptimizer] Merge mesh complete: {0}", m_pPC->vfunc_77());
@@ -2562,7 +2557,7 @@ int CEquipment::FUN_1411e99a0(int nSlot, const CString& strName, int nType, int 
                 efd::SmartPointer<NiMesh> spMesh = NiDynamicCast(NiMesh, pRoot->GetObjectByName((const char*)strMesh));
                 if (spMesh == NULL)
                     continue;
-                efd::SmartPointer<NiNode> spParent = FUN_140a0b000(spMesh.operator->());
+                efd::SmartPointer<NiNode> spParent = ((class NiAVObject*)(class NiAVObject*)(spMesh.operator->()))->GetParent();
                 if (spParent)
                     spParent->DetachChild(spMesh);
                 MS2Ptr<ReplaceObject> spNew(new ReplaceObject(spParent, spMesh));
@@ -2928,7 +2923,7 @@ void CEquipment::FUN_1411e5c10()
                     spRoot->SetLocalTransform(kTransform);
                     spRoot->UpdateWorldData();
                 }
-            } else if (FUN_140a0b000(spRoot) != NULL) {
+            } else if (((class NiAVObject*)(class NiAVObject*)(spRoot))->GetParent() != NULL) {
                 NiPick::Results& kResults = kPick.GetResults();
                 NiPoint3 kNearest = kResults.GetAt(0)->GetIntersection();
                 for (unsigned j = 1; j < kResults.GetSize(); j++) {
@@ -3095,10 +3090,10 @@ void CEquipment::FUN_1411e76c0(double fTime)
     m_5c = false;
     if (m_48 != 0) {
         m_48 = 0;
-        FUN_1411e0b30();
+        RefreshModelIfLoaded();
     }
     if (bStats != 0)
-        FUN_141656710(FUN_1411e0ee0());
+        ((class PC*)(class PC*)(FUN_1411e0ee0()))->FUN_141656710();
     if (bGems != 0)
         static_cast<Unk_MyPCEquip*>(m_pPC->FUN_14165f460())->FUN_1412704d0();
     if (bExpired != 0) {

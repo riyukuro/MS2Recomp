@@ -126,7 +126,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onRegister") == 0)
     {
-        Unk_MentorActorV* pActor = reinterpret_cast<Unk_MentorWorldV*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0) return 1;
         CMsTime tStart(FUN_140302b00()->FUN_14041d160()->GetBeginTime());
         CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->GetEndTime());

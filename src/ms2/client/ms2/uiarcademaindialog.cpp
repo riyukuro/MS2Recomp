@@ -94,6 +94,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/seasondatatable.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -154,7 +155,7 @@ bool FUN_1418fe060();                                                       // t
 void FUN_141275260(int nNotice, int nA, int nB);                            // error notice
 extern int DAT_143ab2870;                                                   // the current field id
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
 void FUN_1407105c0(COutPacket& packet, int nA, int nB);                     // send with a throttle
 
@@ -409,7 +410,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
         MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
         if (spGame == (CArcadeMainData*)0)
             return;
-        MyPC* pPlayer = reinterpret_cast<Unk_ArcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         bool bMovable = FUN_1418fe060();
@@ -544,7 +545,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     MS2SvrPtr<CArcadeMainData> spGame = ((class CArcadeDataTable*)FUN_140e37aa0())->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
-    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_ArcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == (MyPC*)0)
         return false;
     if (spPC->FUN_14166ce30() == 1)
@@ -619,14 +620,14 @@ void UIArcadeMainDialog::FUN_140ef7ea0()
 // @0x140ef7fc0
 void UIArcadeMainDialog::FUN_140ef7fc0(CStringW strResponse)
 {
-    Unk_CriticalSectionLock lock(m_resultLock, 1);
+    Unk_1401b4ec0 lock(m_resultLock, 1);
     m_strResponse = strResponse;
 }
 
 // @0x140ef8040
 void UIArcadeMainDialog::FUN_140ef8040(int nArcadeId, RankingList list)
 {
-    Unk_CriticalSectionLock lock(m_resultLock, 1);
+    Unk_1401b4ec0 lock(m_resultLock, 1);
     m_results.push_back(std::pair<int, RankingList>(nArcadeId, list));
 }
 

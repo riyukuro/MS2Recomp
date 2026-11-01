@@ -40,6 +40,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // The header statics of the original TU (the same set as the other pages of the family).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -65,7 +66,7 @@ extern int DAT_143ab2914;
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
 void FUN_1412752d0(const CStringW& key, int type);
-void FUN_141276180(const CString& sound, const CString& arg);
+int FUN_141276180(const CString& sound, const CString& arg);
 void FUN_141415600(const CString& name);
 void FUN_14141f970(const CString& name);
 void FUN_141415450(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
@@ -87,7 +88,6 @@ void FUN_1422ce240(Unk_SocketPageButton*, const Delegate<void(const Scaleform::G
 struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
 struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
 CStringW GetStringCommonByKey(const CStringW& key);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_1409404f0(__int64 v);
 CStringW FUN_1406564a0(const wchar_t* pszFormat, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140627390(unsigned id);
@@ -336,7 +336,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     FUN_141276180(s_strSelectSound, "");
-    socket->FUN_140620a70();
+    socket->GetLockedSlotCount();
     m_source = item;
     FUN_140f6d340(m_sourceName, m_source);
     ASObj data(2);
@@ -539,7 +539,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     FUN_141415450(m_targetName, MS2Ptr<CItem>(m_target), 0, slotFlags, slotSize);
     data.FUN_1407cba60("ingredientEquipSlotId", m_targetName);
     if (fee != 0)
-        data.FUN_1407cbb20("transferFee", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+        data.FUN_1407cbb20("transferFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
 }
 
 // @0x140c52f10
@@ -558,7 +558,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
     CStringW rowStat = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_stat");
     for (unsigned i = 0; i < open; ++i) {
         CStringW text;
-        MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
+        MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
         if (info == 0 || info->FUN_14061fab0()) {
             if (emptyText.IsEmpty())
                 emptyText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_empty");
@@ -571,7 +571,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
         }
         rows.FUN_1422bbfe0(text);
     }
-    unsigned left = socket->FUN_140620a70();
+    unsigned left = socket->GetLockedSlotCount();
     if (left > 0) {
         CStringW lockText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_lock");
         for (unsigned i = 0; i < left; ++i)

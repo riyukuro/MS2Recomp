@@ -58,7 +58,6 @@ struct Unk_SpawnXform
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
 class Unk_SpawnEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
 void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
-void FUN_1420849a0(Unk_SpawnRot* p);                                       // efd::Matrix3::MakeIdentity
 struct Unk_SpawnNiPoint3 : public Vector3
 {
     Unk_SpawnNiPoint3(const NiPoint3& pt);                          // 0x14027dcf0
@@ -100,7 +99,7 @@ void StateSpawn::vfunc_5(int n)
     PCBase* pMount = FUN_1417b83a0();
     if (pMount != 0)
         nMountId = reinterpret_cast<CPet*>(pMount)->FUN_140b10150();
-    m_pOwner->FUN_14166ca80(10);
+    m_pOwner->RemoveHideReason(10);
     m_pOwner->FUN_14123cb20(true);
     m_fElapsed = 0;
     m_fDuration = 0;
@@ -116,7 +115,7 @@ void StateSpawn::vfunc_3(double fTime)
 
     if (FUN_14028d470(m_fElapsed, 0))
     {
-        m_pOwner->FUN_14166ca80(10);
+        m_pOwner->RemoveHideReason(10);
         if (m_spSpawn.get() != 0)
         {
             if (!m_spSpawn->m_str.IsEmpty())
@@ -130,7 +129,7 @@ void StateSpawn::vfunc_3(double fTime)
         {
             Unk_SpawnXform xf;
             FUN_140a332d0(&xf);
-            FUN_1420849a0(&xf.m_rotate);
+            ((efd::Matrix3*)(struct Unk_SpawnRot*)(&xf.m_rotate))->MakeIdentity();
             xf.m_fScale = 1.0f;
             Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());
             FUN_14097faa0(xf.m_translate, &niPt);

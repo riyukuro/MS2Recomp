@@ -13,6 +13,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"  // C3: was a local member view
+#include "ms2/client/ms2/uigameoptiondialog.h"  // C3: was a local member view
+#include "ms2/client/ms2/uimainplayerinfo.h"  // C3: was a local member view
+#include "ms2/client/ms2/gameoptioninputdefault.h"  // C3: was a local member view
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -45,31 +49,10 @@ public:
     char m_pad[0x30];
     char m_mouse[1];                                                    // +0x30
 };
-Unk_KsInputState* FUN_1409a8b10();
 void* FUN_140c58ac0(Unk_KsInputState* p);
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was FUN_14125bd20
-class CGameOption   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141243540();
-};
 class UIGameOptionDialog* FUN_140a02e60(int);   // C3: was FUN_140a02e60
-class UIGameOptionDialog   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1419438b0();
-};
 class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
-class UIMainPlayerInfo   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1419f19c0();
-};
-class CGameOptionInputDefault   // C3: member view for the former free stand-ins
-{
-public:
-    static void FUN_1412533f0();
-};
 
 // @0x140c581a0
 UIKeySettingSelectDialog::UIKeySettingSelectDialog()
@@ -124,14 +107,14 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
     if (nButton == 2)
     {
         FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(FUN_1409a8b10())), true);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), true);
     }
     else
     {
         FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(FUN_1409a8b10())), false);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), false);
     }
-    ((class CGameOption*)(class Unk_KsInputState*)(FUN_1409a8b10()))->FUN_141243540();
+    ((class CGameOption*)(class Unk_KsInputState*)(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance())))->FUN_141243540();
     void* pDlg = ((void*)FUN_140a02e60(0x4ef3));
     if (pDlg != 0)
         ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();

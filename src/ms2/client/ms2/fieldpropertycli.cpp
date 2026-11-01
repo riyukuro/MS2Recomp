@@ -31,6 +31,7 @@
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // clang-cl: assert.h hides it under NDEBUG
 #endif
 #include <atlbase.h>
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 
 // ---- unit-local stand-ins for helpers of other units (opaque) ----
 struct Unk_Handle {                 // 16 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
@@ -78,7 +79,7 @@ public:
 public:
     void FUN_14166ca20(unsigned int);   // C3: was free FUN_14166ca20
 public:
-    void FUN_14166ca80(unsigned int);   // C3: was free FUN_14166ca80
+    void RemoveHideReason(unsigned int);   // C3: was free RemoveHideReason
 public:
     void FUN_14166cce0(unsigned int);   // C3: was free FUN_14166cce0
 public:
@@ -90,8 +91,6 @@ public:
     void FUN_1411a7e80(int);
 };
 void FUN_140aeb900(void* o, unsigned char b);
-void FUN_141adc530(void* o, int n);
-void FUN_141adc5d0(void* o, int n);
 struct Unk_FpWorld {                // the world service (FUN_1403ed2d0)
     Unk_Handle FUN_141bd0420(unsigned hash);    // the entities of a model
 };
@@ -163,13 +162,13 @@ void FieldPropertyHideMyPCCli::vfunc_5()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    ((class PCBase*)(void*)(p))->FUN_14166ca80(1);
+    ((class PCBase*)(void*)(p))->RemoveHideReason(1);
     void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
     if (q)
-        ((class PCBase*)(void*)(q))->FUN_14166ca80(1);
+        ((class PCBase*)(void*)(q))->RemoveHideReason(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
     if (r)
-        ((class PCBase*)(void*)(p))->FUN_14166ca80(1);            // sic: the exe passes p again
+        ((class PCBase*)(void*)(p))->RemoveHideReason(1);            // sic: the exe passes p again
 }
 
 // @0x140b27820
@@ -244,9 +243,9 @@ void FieldPropertyEnableLocalCameraCli::vfunc_4() { FUN_140aeb900(FUN_1409478c0(
 void FieldPropertyEnableLocalCameraCli::vfunc_5() { FUN_140aeb900(FUN_1409478c0(), 1); }
 
 // @0x140b27d00
-void FieldPropertyPhotoStudioCli::vfunc_4() { FUN_141adc530(FUN_1403ed2b0(), 0x4f8f); }
+void FieldPropertyPhotoStudioCli::vfunc_4() { (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f8f))); }
 // @0x140b27d30
-void FieldPropertyPhotoStudioCli::vfunc_5() { FUN_141adc5d0(FUN_1403ed2b0(), 0x4f8f); }
+void FieldPropertyPhotoStudioCli::vfunc_5() { reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f8f); }
 
 // ---- Entity property helpers (egf::Entity; the change-tracking map lives at entity+0xd0) ----
 void* FUN_1409481f0(void* map, void* it);

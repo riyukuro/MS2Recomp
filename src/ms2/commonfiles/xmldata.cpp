@@ -44,9 +44,13 @@ private:
 MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
 
 // The TinyXML members and the string converters this file calls but does not own.
-const char* FUN_140872a60(const Unk_TiXmlAttribute* pAttribute);        // the attribute name
-const char* FUN_140872c20(const Unk_TiXmlAttribute* pAttribute);        // the attribute value
-Unk_TiXmlAttribute* FUN_14086ed60(Unk_TiXmlAttribute* pAttribute);      // the next attribute
+class TiXmlAttribute   // C3: member view for the former free stand-ins
+{
+public:
+    char const* Name() const;
+    class TiXmlAttribute const* Next() const;
+    char const* Value() const;
+};
 void* FUN_1408782b0(Unk_TiXmlElement* pElement, const char* pszXml, void* pData, int nEncoding);
 
 CStringA FUN_14016a600(const wchar_t* psz, int nLength);                // narrows a wide string
@@ -114,9 +118,9 @@ void CXmlData::FUN_14092c400(const CStringW& strValues)
     Unk_TiXmlAttribute* pAttribute = xmlElement.FirstAttribute();
     while (pAttribute != 0)
     {
-        reinterpret_cast<Values*>(m_unknown18)->SetAt(FUN_14016a730(FUN_140872a60(pAttribute), 0),
-                                                      FUN_14016a730(FUN_140872c20(pAttribute), 0));
-        pAttribute = FUN_14086ed60(pAttribute);
+        reinterpret_cast<Values*>(m_unknown18)->SetAt(FUN_14016a730(((class TiXmlAttribute*)(class Unk_TiXmlAttribute const*)(pAttribute))->Name(), 0),
+                                                      FUN_14016a730(((class TiXmlAttribute*)(class Unk_TiXmlAttribute const*)(pAttribute))->Value(), 0));
+        pAttribute = ((class Unk_TiXmlAttribute*)((class TiXmlAttribute*)(class Unk_TiXmlAttribute*)(pAttribute))->Next());
     }
 }
 

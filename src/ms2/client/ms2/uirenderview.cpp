@@ -22,13 +22,15 @@
 // ---- out-of-unit callees (bound to the exe by name) ----
 ecr::SceneGraphService* FUN_1413f98b0();                        // the scene graph service
 ecr::RenderService* FUN_1413fb7a0();                            // the render service
-void* FUN_140980440(NiRenderedTexture* pTexture);               // the texture's buffer data
-void* FUN_140980360(void* pData);                               // the D3D texture of a buffer data
+class NiDX9TextureData   // C3: member view for the former free stand-ins
+{
+public:
+    struct IDirect3DBaseTexture9* GetD3DTexture() const;
+};
 void FUN_14272b7f0(void* pImage, void* pD3DTexture);            // sets the D3D texture of a swf image
-NiDX92DBufferData* FUN_1414dbd20(void* pRTTI, Ni2DBuffer::RendererData* pData);   // NiDynamicCast (NULL safe)
 extern char DAT_143d6eed8;                                      // NiDX92DBufferData::ms_RTTI
 extern NiFixedString DAT_143ae52f8;                             // the global shader constant name
-void FUN_141568d80(NiNode* pRoot);                              // prepares the effect root
+void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
 void FUN_141d18b90(NiNode* pRoot, const NiFixedString& kName);  // sets the node name
 bool FUN_141ab8060(NiRenderClick* pClick, void* pView);
 bool FUN_141ab80b0(NiRenderClick* pClick, void* pView);
@@ -110,13 +112,13 @@ int FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* 
     NiRenderedTexture* pTexture = pView->FUN_141ab73f0();
     if (pTexture != 0)
     {
-        void* pData = FUN_140980440(pTexture);
+        void* pData = ((void*)((class NiTexture*)(class NiRenderedTexture*)(pTexture))->GetRendererData());
         if (pData != 0)
         {
             void* pImage = spTarget->vfunc_24(pArg);
             if (pImage != 0)
             {
-                FUN_14272b7f0(pImage, FUN_140980360(pData));
+                FUN_14272b7f0(pImage, ((void*)((class NiDX9TextureData*)(void*)(pData))->GetD3DTexture()));
                 return 1;
             }
         }
@@ -245,7 +247,7 @@ bool UIRenderView::FUN_141ab7870(CStringW strPath, int nFormat)
         Ni2DBuffer* pBuffer = pGroup->GetBuffer(0);
         if (pBuffer != 0)
         {
-            NiDX92DBufferData* pData = FUN_1414dbd20(&DAT_143d6eed8, pBuffer->GetRendererData());
+            NiDX92DBufferData* pData = NiDX92DBufferData::DynamicCast((class NiRTTI const*)(&DAT_143d6eed8), (class NiDX92DBufferData const*)(pBuffer->GetRendererData()));
             if (pData != 0)
             {
                 HRESULT hr = E_FAIL;
@@ -305,7 +307,7 @@ int UIRenderView::vfunc_16()
         m_spEffectRoot->SetName(kRootName);
     }
     m_spClick->vfunc_12(m_spEffectRoot);
-    FUN_141568d80(m_spEffectRoot);
+    FUN_141568d80((class NiAVObject*)(m_spEffectRoot));
     ecr::SceneGraphService* pSceneGraph = FUN_1413f98b0();
     if (pSceneGraph != 0)
     {

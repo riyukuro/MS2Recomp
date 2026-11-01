@@ -215,7 +215,7 @@ void UIChaosDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_tick.FUN_140268840();
-    CBattleRecordManager::GetInstance()->FUN_140a03f60(m_nGroup);
+    CBattleRecordManager::GetInstance()->StartGroupIfInactive(m_nGroup);
     OnTextToggle();
     FUN_140e05950();
 }
@@ -226,7 +226,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
         reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_bFlag = 0;
-        CBattleRecordManager::GetInstance()->FUN_140a03fe0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StopGroup(m_nGroup);
         vfunc_67();
         return 1;
     }
@@ -234,7 +234,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("onReset", szMethod) == 0)
     {
-        CBattleRecordManager::GetInstance()->FUN_140a03fa0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StartGroup(m_nGroup);
         return 1;
     }
     else if (_stricmp("onNotice", szMethod) == 0)

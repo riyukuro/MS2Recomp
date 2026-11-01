@@ -379,7 +379,6 @@ class Unk_InvUIService : public CUIService
 {
 public:
     void FUN_141adc530(int nUiId);                                  // open
-    void FUN_141adc750(int nUiId);                                  // toggle
 };
 extern bool DAT_143af62d0;                                          // the UI development mode ("initData")
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -900,17 +899,17 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("onClickItemBreak", szMethod) == 0)
     {
-        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e8d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e8d)));
         return 1;
     }
     if (_stricmp("onClickItemLock", szMethod) == 0)
     {
-        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f08);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f08)));
         return 1;
     }
     if (_stricmp("onClickItemSocketAndGem", szMethod) == 0)
     {
-        reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0a);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f0a)));
         return 1;
     }
     if (_stricmp("onClickItemEnchant", szMethod) == 0)
@@ -1300,7 +1299,7 @@ MS2_REPLACE_METHOD(0x14199A910, UIInventoryDialog, OnClickOpenBank, 390, 0);
 // @0x14199aaa0
 void UIInventoryDialog::OnClickItemEnchant()
 {
-    reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e91);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e91)));
 }
 MS2_REPLACE_METHOD(0x14199AAA0, UIInventoryDialog, OnClickItemEnchant, 32, 0);
 
@@ -2293,15 +2292,7 @@ public:
    // the rarity names
 class Unk_IbAnalytics;
 // The UI message to the inventory ("openWindowPos", the ui id).
-class Unk_IbUIMsg : public UIMsg
-{
-public:
-    Unk_IbUIMsg();                                                  // 0x1422e4490
-    ~Unk_IbUIMsg();                                                 // 0x140c30570
-    void FUN_1422b82b0(const char* szMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_IbUIMsg;
 // "m_bundleTypeDropdown" / "m_bundleRankDropdown": slot 24 (+0xc0) redraws.
 class Unk_IbDropdown : public ASDropdownMenu
 {

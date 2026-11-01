@@ -29,7 +29,6 @@ public:
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 BookSlotBag* FUN_140a37100(NotifyContext::BindData* p);
 
@@ -114,7 +113,7 @@ void FUN_140a36d00(const CString& strName)
     BookSlotBag* pBag = FUN_140a37100(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }

@@ -144,7 +144,7 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);                                      // 0x140ac2270 the casting bar dialog
 CStringW GetStringCommon(int nId);                                           // 0x14028de60 the string-table text of an id
-void FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
+int FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
 class Unk_SmBuffMgr { public: Vector3 FUN_141683290(); };

@@ -32,6 +32,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 typedef UICharacterCreateSelectDialog::TJobData Unk_CsJobData;
 
@@ -268,13 +277,13 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     Unk_140165cf0* pDisplayAny = 0;
     Unk_140165cf0* pData = 0;
     Unk_140165cf0* pSelected = 0;
-    for (Unk_140165cf0* pGroup = pRoot->FUN_140165cf0("group"); pGroup != 0; pGroup = pGroup->FUN_140168650("group"))
+    for (Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pGroup != 0; pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
     {
         CString strType("");
         FUN_140873ad0(pGroup, "name", strType);
         if (strType.CompareNoCase("data") == 0)
         {
-            pData = pGroup->FUN_140165cf0("list");
+            pData = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("list"));
         }
         else
         {
@@ -296,10 +305,10 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     if (pDisplay != 0)
     {
         CStringW strBest;
-        for (Unk_140165cf0* pRow = pDisplay->FUN_140165cf0("list"); pRow != 0; pRow = pRow->FUN_140168650("list"))
+        for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDisplay))->FirstChild("list")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
         {
             CStringW strFeature;
-            FUN_140873420(pRow, "feature", strFeature);
+            XmlGetAttr((class TiXmlElement*)(pRow), "feature", strFeature);
             if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d4b0(strFeature))
                 continue;
             CStringW strMax = ((class CFeatureManager*)FUN_140166410())->FUN_14036de20(strBest, strFeature);
@@ -312,12 +321,12 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     }
     if (pData != 0)
     {
-        for (Unk_140165cf0* pRow = pData; pRow != 0; pRow = pRow->FUN_140168650("list"))
+        for (Unk_140165cf0* pRow = pData; pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pRow)))
                 continue;
             int nJobCode = 0;
-            FUN_1408731e0(pRow, "jobCode", nJobCode);
+            XmlGetAttr((class TiXmlElement*)(pRow), "jobCode", reinterpret_cast<int&>(nJobCode));
             if (nJobCode == 0)
                 continue;
             JobPtr spJob(new TJobData);
@@ -328,7 +337,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
                 6, JobTable::GetInstance()->GetSubJob1(nJobCode));
             FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
             int nDescKey = 0;
-            FUN_1408731e0(pRow, "descKey", nDescKey);
+            XmlGetAttr((class TiXmlElement*)(pRow), "descKey", reinterpret_cast<int&>(nDescKey));
             if (nDescKey != 0)
                 spJob.operator->()->m_strDesc = GetStringTable()->FUN_141811980(0x1c, nDescKey);
             mapJobs.SetAt(nJobCode, spJob);
@@ -341,9 +350,9 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
         ATL::CAtlArray<int> arrDisable;
         XmlTokenList(pSelected, "disableJobCode", arrDisable);
         int nSelectJob;
-        FUN_1408731e0(pSelected, "selectJobCode", nSelectJob);
+        XmlGetAttr((class TiXmlElement*)(pSelected), "selectJobCode", reinterpret_cast<int&>(nSelectJob));
         CStringA strRandom;
-        FUN_1408733e0(pSelected, "randomselectJobCode", strRandom);
+        XmlGetAttr((class TiXmlElement*)(pSelected), "randomselectJobCode", strRandom);
         XmlSplit(strRandom, m_randomJobs, ",");
         ATL::CAtlArray<int> arrEvent;
         XmlTokenList(pSelected, "eventJobCode", arrEvent);

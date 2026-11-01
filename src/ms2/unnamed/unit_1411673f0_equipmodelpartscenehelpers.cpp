@@ -158,7 +158,7 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 {
     if (this == 0)
         return;
-    Unk_EmPlayer* pPlayer = reinterpret_cast<Unk_EmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     CAtlArray<NiAVObject*> aRoots;
@@ -202,7 +202,7 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 // The mesh named strName of the local player's equipment slot of that name (from the equip item's parts, else the actor's model).
 NiAVObject* FUN_141167cf0(const CString& strName)
 {
-    Unk_EmPlayer* pPlayer = reinterpret_cast<Unk_EmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     {

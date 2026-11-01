@@ -126,7 +126,6 @@ Unk_DeadNpc* FUN_14096e110(PCBase* pActor);              // as an npc (0 for a p
 void FUN_140ef4330();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_1410943b0(PCBase* pActor, int n);
-bool FUN_140184310(const CString& str, const char* psz);   // str == psz
 CString FUN_1409a2360(const char* psz, int n);             // text conversion
 
 // ---- StateDead ----
@@ -313,13 +312,13 @@ void StateDeadNPC::vfunc_6()
             if (nHit != 0)
             {
                 Unk_DeadString kAnim;
-                if (FUN_140184310(m_strAnim, "Dead_A") || FUN_140184310(m_strAnim, "Dead_Idle_A"))
+                if ((m_strAnim == "Dead_A") || (m_strAnim == "Dead_Idle_A"))
                 {
                     kAnim = "Dead_Damg_A";
                 }
                 else
                 {
-                    if (FUN_140184310(m_strAnim, "Dead_B"))
+                    if ((m_strAnim == "Dead_B"))
                         kAnim = "Dead_Damg_B";
                     else
                         return;
@@ -344,7 +343,7 @@ void StateDeadNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         {
             if (pNpc->FUN_141094e20() <= 0)
                 return;
-            MyPC* pMyPC = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pMyPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pMyPC != 0)
                 pMyPC->FUN_1415294f0(m_pOwner->FUN_14123c580(), pNpc->FUN_141094e20());
         }

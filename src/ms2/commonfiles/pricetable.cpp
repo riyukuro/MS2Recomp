@@ -18,10 +18,10 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-int FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
-void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 
 // @0x140738a30
 Unk_PriceHousing::Unk_PriceHousing()
@@ -116,13 +116,13 @@ int CPriceTable::LoadHousing(const CString& strFile)
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
         unsigned nId = 0;
-        FUN_140873220(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         bool bBuy = false;
-        FUN_1408730a0(pNode, "ugcHousingBuy", bBuy);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ugcHousingBuy", bBuy);
         __int64 nPrice = 0;
-        FUN_1408732e0(pNode, "ugcHousingDefaultPrice", nPrice);
+        XmlGetAttr((class TiXmlElement*)(pNode), "ugcHousingDefaultPrice", nPrice);
         int nMoneyType = 1;
-        FUN_140873220(pNode, "ugcHousingMoneyType", reinterpret_cast<unsigned&>(nMoneyType));
+        XmlGetAttr((class TiXmlElement*)(pNode), "ugcHousingMoneyType", reinterpret_cast<unsigned&>(nMoneyType));
         Unk_PriceHousing housing;
         housing.m_bBuy = bBuy;
         housing.m_nDefaultPrice = nPrice;
@@ -149,10 +149,10 @@ int CPriceTable::LoadSalary(const CString& strFile)
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         Unk_PriceSalary salary;
-        FUN_1408731e0(pNode, "SalaryType", salary.m_nType);
-        FUN_1408731e0(pNode, "SalaryAmount", salary.m_nAmount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SalaryType", salary.m_nType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "SalaryAmount", salary.m_nAmount);
         m_salaries.SetAt(nId, salary);
     }
     return 1;

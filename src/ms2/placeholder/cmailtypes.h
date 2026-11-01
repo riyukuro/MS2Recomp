@@ -153,7 +153,7 @@ public:
     void FUN_140690540(CStringW a, CStringW b);
     CStringW FUN_1406905b0() const;
     CStringW FUN_140690600() const;
-    void FUN_140690650(int slot, Unk_MailAttachPtr attach);
+    void SetAttachment(int slot, Unk_MailAttachPtr attach);
     void FUN_1406906c0(int slot, __int64 time);               // per-attachment receive time
     Unk_MailAttachPtr FUN_140690790(int slot) const;
     int FUN_140690840() const;                                 // attachments already received

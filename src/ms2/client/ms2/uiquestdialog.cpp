@@ -230,7 +230,7 @@ int FUN_14074b790(int nQuestId);
 CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 void FUN_140534050(void* pBox, int nValue);                     // the message box argument
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // common string by id
@@ -250,7 +250,7 @@ CStringW FUN_1416e57d0(int nQuestId, int nCondition);
 CString FUN_14016a5c0(const char* psz, int n);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
-void FUN_141276180(const CString& strSound, const CString& strExtra);
+int FUN_141276180(const CString& strSound, const CString& strExtra);
 void FUN_141275260(int nStringId, int a, int b);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
@@ -418,7 +418,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             {
                 int nQuestId = dataReg.FUN_1422b8b10();
                 int bRegist = dataReg.FUN_1422b8a90();
-                Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+                Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pPlayer == 0)
                     return 0;
                 Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
@@ -617,7 +617,7 @@ void UIQuestDialog::vfunc_o178_1(void* pQuest)
 // @0x141a9ab10
 void UIQuestDialog::vfunc_o178_2(void* pQuest)
 {
-    Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nChapter = static_cast<CQuest*>(pQuest)->GetData()->m_28;
@@ -687,7 +687,7 @@ void UIQuestDialog::RefreshTab()
 // @0x141a9ae90
 void UIQuestDialog::RefreshEpisodes()
 {
-    Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
@@ -857,7 +857,7 @@ void UIQuestDialog::FocusQuest(int nQuestId)
     else
     {
         m_188 = nQuestId;
-        reinterpret_cast<Unk_QdUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e3e);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e3e)));
     }
 }
 
@@ -1295,7 +1295,7 @@ void UIQuestDialog::ClearFlags()
 // @0x141a9ea80
 int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
 {
-    Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (FUN_1416e8060(nChapter) != 0)
@@ -1386,7 +1386,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (!spData)
         return;
-    Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     __int64 nExp = FUN_140761ba0(nQuestId, 1);
@@ -1693,7 +1693,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
         if (spFocus.get() != 0)
             nFocusChapter = spFocus->m_28;
     }
-    Unk_QdActor* pPlayer = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     CAtlMap<int, int> seenQuests(17, 0.75f, 0.25f, 2.25f, 10);

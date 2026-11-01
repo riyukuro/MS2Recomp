@@ -17,7 +17,7 @@
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // @0x140721000
 PetGroupInfo::PetGroupInfo()
@@ -33,7 +33,7 @@ PetGroupInfo::~PetGroupInfo()
 // @0x140721070
 bool PetGroupInfo::Load(Unk_140165cf0* pNode)
 {
-    if (!FUN_14028f710(pNode))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
         return false;
     FUN_1408731e0(pNode, "groupId", m_nGroupId);
     return true;

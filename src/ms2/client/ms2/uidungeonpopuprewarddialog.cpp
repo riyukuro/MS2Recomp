@@ -25,7 +25,7 @@ public:
     void FUN_140da5180(int opcode, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int opcode, Delegate<void(CInPacket&)> handler);
 };
-Unk_DungeonPopupPacketManager* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 // Reward helper is CPtred-derived (ctor starts with the 0x18-byte reference-counted base).
 class UIDungeonSearchUnitedReward : public CPtred
 {
@@ -69,7 +69,7 @@ MS2_REPLACE_METHOD(0x140C0ED60, UIDungeonPopupRewardDialog, GetTypeName, 61, 0x3
 void UIDungeonPopupRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bccd50()->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    ((class Unk_DungeonPopupPacketManager*)FUN_140bccd50())->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     m_reward = new UIDungeonSearchUnitedReward;
@@ -86,7 +86,7 @@ MS2_REPLACE_METHOD(0x140C0EDB0, UIDungeonPopupRewardDialog, OnLoadComplete, 873,
 void UIDungeonPopupRewardDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140bccd50()->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    ((class Unk_DungeonPopupPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
     m_reward = 0;
 }
 MS2_REPLACE_METHOD(0x140C0F140, UIDungeonPopupRewardDialog, vfunc_26, 189, 0xCE47389B);

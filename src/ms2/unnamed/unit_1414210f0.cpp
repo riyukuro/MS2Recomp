@@ -38,7 +38,7 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar)
 {
     if (pAvatar == 0)
     {
-        pAvatar = reinterpret_cast<Unk_AvPlayers*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pAvatar = ((AvatarPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pAvatar == 0)
             return MS2Ptr<CEquipItem>(0);
     }

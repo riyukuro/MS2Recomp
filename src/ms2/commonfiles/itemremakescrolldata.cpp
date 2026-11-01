@@ -60,6 +60,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -88,7 +98,6 @@ CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a sta
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);    // the text of a special stat option
 CStringW GetStringCommon(int nStringId);                      // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                // a string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);    // a formatted string table text
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name coloured by rank
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
@@ -157,28 +166,28 @@ int CItemRemakeScrollTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("remakeScroll"); pNode != 0;
-         pNode = pNode->FUN_140168650("remakeScroll"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("remakeScroll")); pNode != 0;
+         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("remakeScroll")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
-        FUN_1408731e0(pNode, "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         if (nId == 0)
             continue;
         CItemRemakeScrollDataPtr spData(new CItemRemakeScrollData);
         if (spData == 0)
             continue;
-        FUN_1408731a0(pNode, "minLv", spData->m_nLevelMin);
-        FUN_1408731a0(pNode, "maxLv", spData->m_nLevelMax);
+        XmlGetAttr((class TiXmlElement*)(pNode), "minLv", reinterpret_cast<unsigned short&>(spData->m_nLevelMin));
+        XmlGetAttr((class TiXmlElement*)(pNode), "maxLv", reinterpret_cast<unsigned short&>(spData->m_nLevelMax));
         XmlTokenList(pNode, "rank", spData->m_arrRanks);
         XmlTokenList(pNode, "slot", spData->m_arrSlots);
-        FUN_1408731e0(pNode, "onlyPet", spData->m_nPetKind);
+        XmlGetAttr((class TiXmlElement*)(pNode), "onlyPet", reinterpret_cast<int&>(spData->m_nPetKind));
         XmlTokenList(pNode, "item", spData->m_arrItemTypes);
         XmlValue(pNode, "representOpValue", spData->m_nLockOption);
         XmlValue(pNode, "addOpKind", spData->m_nOptionKind);
         XmlValue(pNode, "addOpValue", spData->m_nOptionValue);
-        Unk_CriticalSectionLock lock(m_lock, 1);
+        Unk_1401b4ec0 lock(m_lock, 1);
         m_map.SetAt(nId, spData);
     }
     SetInit(true);
@@ -189,7 +198,7 @@ int CItemRemakeScrollTable::Load()
 int CItemRemakeScrollTable::Reload()
 {
     int nRet = 0;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_map.RemoveAll();
     nRet = Load();
     return nRet;
@@ -200,7 +209,7 @@ CItemRemakeScrollDataPtr CItemRemakeScrollTable::GetData(int nId)
 {
     CheckInit();
     CItemRemakeScrollDataPtr spData(0);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_map.Lookup(nId, spData);
     return spData;
 }
@@ -697,7 +706,7 @@ Unk_RemakeStat::Unk_RemakeStat(unsigned nMode, MS2Ptr<CItem> item, bool bFinal)
 CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount)
 {
     CStringW strNames = FUN_140617ef0(stat, pCount);
-    return FUN_1405c2690(strKey, strNames);
+    return FUN_14028dfa0<CStringW>(strKey, strNames);
 }
 
 // The option text of an item: one row per option (best values marked; with bFinal the stat range too).

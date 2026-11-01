@@ -50,7 +50,11 @@ public:
     Unk_GbReward* FUN_141082d60();
     void FUN_141b20db0(int nSelect);                             // next page / select
 };
-Unk_GbTalk* FUN_140967100();
+class Unk_AkoCutscene   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AkoCutscene* GetInstance();
+};
 
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
@@ -146,7 +150,7 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "OnResult") == 0) {
-        FUN_140967100()->FUN_141b20db0(0);
+        ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
         return 1;
     }
     else if (_stricmp(szMethod, "OnHideComplete") == 0) {
@@ -161,7 +165,7 @@ int UIGambleDialog::FUN_141935710()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        Unk_GbReward* pReward = FUN_140967100()->FUN_141082d60();
+        Unk_GbReward* pReward = ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082d60();
         if (pReward->m_items.FUN_140720ca0() <= 0)
             return 0;
         pDlg->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());

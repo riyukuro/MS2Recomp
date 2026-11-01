@@ -496,12 +496,41 @@ def done_units():
     return out
 
 
-def queue_state(name, states):
-    """queue.tsv state of an MS2-UNIT name (queue rows may name a unit `?\\file.cpp` while the source says `dir\\file.cpp`)"""
+def queue_name(name, states, unit_names=(), family=True):
+    """the queue.tsv row name of an MS2-UNIT name, or None. Queue rows may name a unit by its exe grouping while the
+    source says otherwise: `?\\file.cpp` vs `dir\\file.cpp` (either way round; the other side only when its basename is
+    unique in the queue and no unit already owns that row), and a Scaleform family row `sfr_gfx_07` for the units
+    sfr_gfx_07a, sfr_gfx_07h ... that have no row of their own. `states` is any dict/set keyed by queue name."""
     if name in states:
-        return states[name]
-    base, _, suf = name.replace("/", "\\").rpartition("\\")
-    return states.get("?\\" + suf)
+        return name
+    m = re.match(r"(sfr_[a-z0-9]+_\d+)[a-z]+$", name)
+    if m and family:
+        return m.group(1) if m.group(1) in states else None
+    if m:
+        return None
+    suf = name.replace("/", "\\").rpartition("\\")[2]
+    if "?\\" + suf in states and "?\\" + suf not in unit_names:
+        return "?\\" + suf
+    if name.startswith("?\\"):
+        if "_qbase" not in _QCACHE or _QCACHE["_qbase"][0] is not states:
+            by = {}
+            for k in states:
+                by.setdefault(k.replace("/", "\\").rpartition("\\")[2].lower(), []).append(k)
+            _QCACHE["_qbase"] = (states, by)
+        c = _QCACHE["_qbase"][1].get(suf.lower(), [])
+        if len(c) == 1 and c[0] not in unit_names:
+            return c[0]
+    return None
+
+
+_QCACHE = {}
+
+
+def queue_state(name, states, unit_names=()):
+    """queue.tsv state of an MS2-UNIT name (see queue_name). Not through sfr_ family rows: a done family must not turn
+    the interface check of its units soft (progress.py gate) while their parts are still being worked on."""
+    q = queue_name(name, states, unit_names, family=False)
+    return states[q] if q else None
 
 
 def main():

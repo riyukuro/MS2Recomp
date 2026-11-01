@@ -41,6 +41,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CReactor);
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/reactor_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // The object holds two copies of the header's static data (the second without the extra handle).
@@ -101,7 +102,6 @@ const char* FUN_1408ac310(efd::utf8string* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_1408a8900(efd::utf8string* p);
 CString FUN_1409a2360(const char* psz, int n);
-bool FUN_140184310(const CString& str, const char* psz);        // string equals
 CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
 void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
 CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<int>
@@ -118,7 +118,6 @@ public:
     int FUN_141675ed0();
     int FUN_1416769d0();
 };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -631,7 +630,7 @@ int FUN_140b7a5e0(PCBase* pPc)
         return 1;
     if (((class PCBase*)(class PCBase*)(pPc))->FUN_141675ed0() != 0)
         return 1;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
         return 1;
     return 0;
 }

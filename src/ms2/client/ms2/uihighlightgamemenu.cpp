@@ -33,6 +33,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/citemdata.h"  // C3: was a local member view
+#include "ms2/commonfiles/itemsocket.h"  // C3: was a local member view
+#include "ms2/placeholder/uibottomcenteralignmanager.h"  // C3: was a local member view
+#include "ms2/commonfiles/itemenchantlimittable.h"  // C3: was a local member view
+#include "ms2/placeholder/mstime.h"  // C3: was a local member view
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::ToggleDialog
 
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
@@ -218,7 +224,6 @@ char FUN_14098d930(void* pTail);
 void FUN_14098d150(void* pTail);
 P FUN_1403ed2b0();
 int FUN_141adc940(P pUi, int nId);
-void FUN_141adc750(P pUi, int nId);
 UIDialog* FUN_1405344f0(int nId);
 class UIInventoryDialog   // C3: member view for the former free stand-ins
 {
@@ -248,17 +253,6 @@ void FUN_1401bf970(void* pRec, P pItemInfo);
 void FUN_1401b50d0(void* pRec);
 char FUN_1402ffd90(void* pRec);
 P FUN_1401b52a0(void* pRec);
-class CItemData   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_14053c620();
-    bool FUN_14053d840();
-};
-class CItemSocket   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_140621340();
-};
 
 // the player
 int FUN_141654730(P);                                      // job code
@@ -276,11 +270,6 @@ class Unk_PetClientSettings   // C3: member view for the former free stand-ins
 {
 public:
     struct Unk_PetOptFlags* FUN_140b123b0();
-};
-class UIBottomCenterAlignManager   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_140bc1730();
 };
 unsigned FUN_140caa1a0(P);
 
@@ -306,7 +295,6 @@ char FUN_140534e50(Unk_HlH*);
 P FUN_14034ef20(void*);
 int FUN_141654700(P);
 void FUN_14152e2f0(P, Unk_HlH*, P);                     // spItem by value: rcx-built copy (0x1402034d0), the callee releases it
-P FUN_1409eece0();
 char FUN_1409edd90(void*, int);
 unsigned __int64 FUN_1408e57c0(P);
 void FUN_1408e4be0(void*, P);
@@ -335,22 +323,12 @@ class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
 P FUN_1405b2650(void*);
 char FUN_1405b2610(void*, void*);                         // MS2Ptr == (null ptr argument)
 void FUN_1405b1a60(P, void*, int);
-class CItemEnchantLimitTable   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_14058df90(class CItem*);
-};
 char FUN_140545da0(void*, int);
 int FUN_140408410(void*, int*);
 P FUN_14034f780();
 char FUN_14034eee0(void*, const wchar_t*);
 char FUN_14034eeb0(void*);
 void FUN_14034e360(P, void*, int);
-class CMsTime   // C3: member view for the former free stand-ins
-{
-public:
-    __int64 Get() const;
-};
 unsigned __int64 FUN_140186270(void*);
 int* FUN_140184510(void*, unsigned __int64);
 
@@ -647,7 +625,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (!spMenu->m_onClick.IsNull())
                 spMenu->m_onClick();
             else if (spMenu->m_nUiId != 0)
-                FUN_141adc750(FUN_1403ed2b0(), spMenu->m_nUiId);
+                (((CUIService*)(FUN_1403ed2b0()))->ToggleDialog((eUIClassID)(spMenu->m_nUiId)));
             return 1;
         }
     }
@@ -976,7 +954,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
             continue;
         }
         P pId = FUN_14052cd70(&it);
-        if (((class CItemEnchantLimitTable*)(void*)(FUN_1409eece0()))->FUN_14058df90((class CItem*)(pId)) == 0)
+        if (((class CItemEnchantLimitTable*)(void*)(((void*)TSingleton<CItemEnchantLimitTable>::GetInstance())))->FUN_14058df90((class CItem*)(pId)) == 0)
         {
             HL_END_IT();
             continue;

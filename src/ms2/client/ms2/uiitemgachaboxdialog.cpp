@@ -55,6 +55,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/commonfiles/itemdroptable.h"
 #include <algorithm>
 #include <vector>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 static CString s_sndClick = "System_Gotcha_Click_01";
 static CString s_sndNormal = "System_Gotcha_Normal_01";
 static CString s_sndRolling = "System_Gotcha_Rolling_01";
@@ -67,7 +68,7 @@ class Unk_GachaData : public CItemData
 class Unk_GachaItem : public CItem { };
 class Unk_GachaSelf : public PC { };
 class Unk_GachaWorld { public: Unk_GachaSelf* FUN_141bd0cc0(); };
-class Unk_GachaUIMgr { public: void FUN_141adc530(int); MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_GachaUIMgr { public: void FUN_141adc530(int); };
 class Unk_GachaFx { public: void FUN_1411a6060(int); int FUN_1411a5a60(const CString&, const CString&); };
 CFeatureManager* FUN_140166410();
 class UIWebBrowser : public UIWebBrowserBase { };
@@ -133,14 +134,13 @@ private:
 };
 MS2_CHECK_SIZE(Unk_GachaText, 0x88);
 extern Unk_Inventory g_143ab2a90;
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_14141f970(const CString&);
 void FUN_141415600(const CString&);
 void FUN_14141f860(const CString&, int, ATL::CAtlArray<MS2Ptr<CItem> >*, MS2Ptr<ItemSlotBag::CreateParam>);
 MS2Ptr<CItem> FUN_141420330(void*, int);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141b70f90(const CMsTime&, const CStringW&, CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
@@ -287,7 +287,7 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 // @0x140c40ad0
 void UIItemGachaBoxDialog::FUN_140c40ad0()
 {
-    Unk_GachaSelf* self = reinterpret_cast<Unk_GachaWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GachaSelf* self = ((Unk_GachaSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (self == 0)
         return;
     GachaBoxDataPtr gacha = FUN_140c43110();
@@ -406,14 +406,14 @@ int UIItemGachaBoxDialog::FUN_140c41700()
 void UIItemGachaBoxDialog::FUN_140c41900(int error)
 {
     if (error == 1) {
-        CStringW text = FUN_1405c2690(L"s_itemgacha_dialog_not_enough_item_shop_link", m_title);
+        CStringW text = FUN_14028dfa0<CStringW>(L"s_itemgacha_dialog_not_enough_item_shop_link", m_title);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(text, 1);
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemGachaBoxDialog::FUN_140c42fd0));
             FUN_140d73c60(box);
         }
     } else if (error == 2) {
-        FUN_1412751f0(FUN_1405c2690(L"s_itemgacha_dialog_not_enough_capsulemachine", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_machineId)), 1, 1);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_itemgacha_dialog_not_enough_capsulemachine", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_machineId)), 1, 1);
     } else if (error == 3) {
         FUN_1412751f0(GetStringCommonByKey(L"s_itemgacha_dialog_err_unknown"), 1, 1);
     }
@@ -516,7 +516,7 @@ void UIItemGachaBoxDialog::FUN_140c42ee0(CString state)
 bool UIItemGachaBoxDialog::FUN_140c42fd0(int result, const CMsgBoxData&)
 {
     if (result == 0)
-        reinterpret_cast<Unk_GachaUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ec1);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ec1)));
     return true;
 }
 
@@ -577,7 +577,7 @@ MS2Ptr<Unk_GachaText> Unk_GachaClip::FUN_140c436d0(const CString& strName)
 UIWebBrowser* FUN_140c43790(int nUiId)
 {
     if (reinterpret_cast<Unk_GachaUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_GachaUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get() != 0)
             return dynamic_cast<UIWebBrowser*>(p.operator->());
     }

@@ -103,7 +103,6 @@ CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 bool FUN_1401647e0(const CString& a, const CString& b);     // differs
 
 // The key of a command group: str == psz.
-bool FUN_140184310(const CString& str, const char* psz);
 
 // The main window.
 class Unk_CtlScreen;
@@ -436,7 +435,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();
-    if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "STAT")) {
+    if ((strGroup == "ALL") || (strGroup == "STAT")) {
         ASObj itemHpPercent(2);
         itemHpPercent.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_hp_percent_apply"));
         itemHpPercent.FUN_141a65c70("commandId", 1);
@@ -450,7 +449,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
         itemDamage.FUN_141a65c70("commandId", 10);
         spList->FUN_1422dd230(itemDamage);
     }
-    if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "AI")) {
+    if ((strGroup == "ALL") || (strGroup == "AI")) {
         {
             ASObj itemAiOn(2);
             itemAiOn.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_ai_on"));
@@ -488,7 +487,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
             spList->FUN_1422dd230(itemFile);
         }
     }
-    if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "ADDITIONAL")) {
+    if ((strGroup == "ALL") || (strGroup == "ADDITIONAL")) {
         ASObj itemAdd(2);
         itemAdd.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_add_additional"));
         itemAdd.FUN_141a65c70("commandId", 0xc);
@@ -502,7 +501,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
         itemCurrent.FUN_141a65c70("commandId", 0xe);
         spList->FUN_1422dd230(itemCurrent);
     }
-    if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "SKILL")) {
+    if ((strGroup == "ALL") || (strGroup == "SKILL")) {
         std::map<int, Unk_CtlSkill>::iterator it = m_skills.begin();
         std::map<int, Unk_CtlSkill>::const_iterator itEnd = m_skills.end();
         for (; it != itEnd; ++it) {
@@ -517,7 +516,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
             spList->FUN_1422dd230(itemSkill);
         }
     }
-    if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "ETC")) {
+    if ((strGroup == "ALL") || (strGroup == "ETC")) {
         ASObj itemAssist(2);
         itemAssist.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_assist"));
         itemAssist.FUN_141a65c70("commandId", 8);

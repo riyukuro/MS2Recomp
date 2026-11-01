@@ -48,9 +48,6 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault)
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 
-// The string tables (unit_1401a9d70 region): reinterpret_cast<Unk_AddressStrings*>(TSingleton<CStringTable>::GetInstance()) is their singleton.
-class Unk_AddressStrings { public: CStringW FUN_141811980(int nTable, int nId, int nFlag); };
-
 // A row of the lookup table that FUN_1408a0d30 fills (0xc0 bytes).
 struct Unk_AddressRow
 {
@@ -190,7 +187,7 @@ void CAddressTable::SetInit(bool b)
 // @0x140979570
 CStringW CAddressTable::GetText(int nId)
 {
-    CStringW strText = reinterpret_cast<Unk_AddressStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(3, nId, 0);
+    CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nId);
     return strText;
 }
 

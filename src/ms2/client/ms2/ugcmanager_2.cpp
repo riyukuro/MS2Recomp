@@ -79,6 +79,7 @@ static CString s_strTabIndex = "tabIndex";
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
@@ -172,7 +173,6 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     static class WorldService* GetInstance();
 };
-void* FUN_1408e57f0();                                      // the current field
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -218,7 +218,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_UgcUIManager
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 class UIWeddingDialog : public UIDialog
 {
@@ -264,15 +263,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* psz); // a plain log line
 
 // An ActionScript call.
-class Unk_UgcUIMsg : public UIMsg
-{
-public:
-    Unk_UgcUIMsg();                                         // 0x1422e4490
-    ~Unk_UgcUIMsg();                                        // 0x140c30570
-    void FUN_1422b82b0(const char* psz);
-    void FUN_1422b7fd0(bool b);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_UgcUIMsg;
 
 // The unit's log call (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class T> inline void Unk_UgcLog(CLogString* log, int level, int category, const wchar_t* format,
@@ -287,7 +278,7 @@ template <class T> T* Unk_UgcGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_UgcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UgcUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -809,7 +800,7 @@ void CUgcDownloadProfile::ProcessResult()
             else
             {
                 Unk_UgcPlayer* pMyPC = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
-                if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() != 0x620000d)
+                if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() != 0x620000d)
                 {
                     if (pMyPC == NULL)
                         return;

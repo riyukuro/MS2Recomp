@@ -16,6 +16,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
 
 // Game TinyXML element: FirstChildElement.
 class Unk_140165cf0
@@ -25,12 +26,7 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
@@ -72,14 +68,14 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
                 bUpdateRotation = true;
             }
         }
-        FUN_1408730a0(pAttach, "applyNodeTransform", m_bApplyNodeTransform);
+        XmlGetAttr((class TiXmlElement*)(pAttach), "applyNodeTransform", m_bApplyNodeTransform);
         FUN_1408733e0(pAttach, "parentNode", m_strParentNode);
     }
     Unk_140165cf0* pUpdate = pNode->FUN_140165cf0("update");
     if (pUpdate)
     {
-        FUN_1408730a0(pUpdate, "translate", bUpdateTranslate);
-        FUN_1408730a0(pUpdate, "rotation", bUpdateRotation);
+        XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bUpdateTranslate);
+        XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bUpdateRotation);
     }
     if (bUpdateTranslate)
         m_update.FUN_140314670(0, true);

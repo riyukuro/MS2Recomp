@@ -367,7 +367,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     spBill->m_48 = (int)spHall->m_nMerat;
     UIBillDialog* pBillDlg = FUN_140f0a350(0x4e7b);
     pBillDlg->FUN_1418cda20(spBill);
-    reinterpret_cast<Unk_WrUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7b);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e7b)));
 }
 // (not hooked: the inline UIBillDialog::TData ctor stores a DLL-local vftable)
 

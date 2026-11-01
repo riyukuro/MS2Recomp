@@ -17,15 +17,13 @@
 #include "hook/ms2hook.h"
 
 #include <algorithm>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class Unk_ItemEquipData : public CItemData { };                 // CItem::FUN_140527840's record (item.cpp)
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // localized text
-CStringW FUN_1405c2690(CStringW strFmt, const CStringW& strArg);
-CStringW FUN_1408f71a0(CStringW strFmt, const CStringW& strA, const CStringW& strB);
-CStringW FUN_1409eaa20(CStringW strFmt, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);   // date and time text
 CStringW FUN_14083bab0(CMsTime t, CStringW strSep);             // date text
@@ -332,12 +330,12 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                 {
                     CStringW strEndText = FUN_14083bdc0(tmEnd, true, CStringW(L"/"), CStringW(L":"));
                     CStringW strStartText = FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":"));
-                    strError = FUN_1408f71a0(CStringW(L"s_err_cannot_buy_period"), strStartText, strEndText);
+                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period"), strStartText, strEndText);
                 }
                 else
                 {
                     CStringW strStartText = FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":"));
-                    strError = FUN_1405c2690(CStringW(L"s_err_cannot_buy_period_from_start"), strStartText);
+                    strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_from_start"), strStartText);
                 }
                 return false;
             }
@@ -352,15 +350,15 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
             {
                 if (tmStart > CMsTime(0) && tmEnd > CMsTime(0))
                 {
-                    strDate = FUN_1408f71a0(CStringW(L"s_err_cannot_buy_period_fmt_date"), FUN_14083bab0(tmStart, CStringW(L"/")), FUN_14083bab0(tmEnd, CStringW(L"/")));
+                    strDate = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date"), FUN_14083bab0(tmStart, CStringW(L"/")), FUN_14083bab0(tmEnd, CStringW(L"/")));
                 }
                 else if (!(tmStart > CMsTime(0)))
                 {
-                    strDate = FUN_1405c2690(CStringW(L"s_err_cannot_buy_period_fmt_date_to_end"), FUN_14083bab0(tmEnd, CStringW(L"/")));
+                    strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_to_end"), FUN_14083bab0(tmEnd, CStringW(L"/")));
                 }
                 else
                 {
-                    strDate = FUN_1405c2690(CStringW(L"s_err_cannot_buy_period_fmt_date_from_start"), FUN_14083bab0(tmStart, CStringW(L"/")));
+                    strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_from_start"), FUN_14083bab0(tmStart, CStringW(L"/")));
                 }
             }
             CStringW strDays;
@@ -375,9 +373,9 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
             if (m_c8->m_aPartTimes.IsEmpty())
             {
                 if (strDate.IsEmpty())
-                    strError = FUN_1405c2690(CStringW(L"s_err_cannot_buy_period_day"), strDays);
+                    strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_day"), strDays);
                 else
-                    strError = FUN_1408f71a0(CStringW(L"s_err_cannot_buy_period_day_and_date"), strDays, strDate);
+                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_date"), strDays, strDate);
             }
             else
             {
@@ -398,9 +396,9 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                         strParts.Append(FUN_1401e8510(L", {0}", strOne));
                 }
                 if (strDate.IsEmpty())
-                    strError = FUN_1408f71a0(CStringW(L"s_err_cannot_buy_period_day_and_parttime"), strDays, strParts);
+                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime"), strDays, strParts);
                 else
-                    strError = FUN_1409eaa20(CStringW(L"s_err_cannot_buy_period_day_and_parttime_and_date"), strDays, strParts, strDate);
+                    strError = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime_and_date"), strDays, strParts, strDate);
             }
             return false;
         }

@@ -118,6 +118,7 @@ extern __int64 DAT_143ab2898;                                       // wallet: m
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
 class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
@@ -192,7 +193,6 @@ class Unk_HiUiMgr
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141adc530(int nId);                                    // show
-    void FUN_141adc750(int nId);                                    // toggle
 };
 
 class UISystemMenuDialog : public UIObject
@@ -227,7 +227,6 @@ CString FUN_14016a600(const wchar_t* psz, int n);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140811740(int nId, const int& a, const int& b);
-CStringW FUN_14062b4f0(CStringW strFormat, const int& n);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
@@ -302,7 +301,7 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnVisitorsBook", szMethod) == 0)
     {
-        reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ed9);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4ed9)));
         return 1;
     }
     else if (_stricmp("OnHomeLeave", szMethod) == 0)
@@ -545,12 +544,12 @@ void UIHomeInfoDialog::FUN_1412c6b50()
         if (MS2Ptr<ASTextField> spArea = spPanel->FUN_1409b4620("m_extensionArea"))
         {
             int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
-            spArea->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_area", nArea));
+            spArea->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_home_info_title_area", nArea));
         }
         if (MS2Ptr<ASTextField> spHeight = spPanel->FUN_1409b4620("m_extensionHeight"))
         {
             int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
-            spHeight->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_height", nHeight));
+            spHeight->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_home_info_title_height", nHeight));
         }
     }
 }
@@ -661,7 +660,7 @@ void UIHomeInfoDialog::OnTogglePanel()
 // @0x1412c76e0
 void UIHomeInfoDialog::OnNoticeModify()
 {
-    reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f79);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f79)));
 }
 
 // @0x1412c7710

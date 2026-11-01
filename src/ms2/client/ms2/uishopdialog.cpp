@@ -138,6 +138,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <algorithm>
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- unit-local placeholders (names invented) -------------------------------------------------------------------
 
@@ -149,15 +150,7 @@ public:
 };
 
 // The "openWindowPos" UI message sent to the inventory (ASData + type, 0x50 bytes).
-class Unk_ShopUIMsg : public UIMsg
-{
-public:
-    Unk_ShopUIMsg();                                        // 0x1422e4490
-    ~Unk_ShopUIMsg();                                       // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_ShopUIMsg;
 
 // The token money change notice (RTTI .?AVNotifyChangedTokenMoney@@; scenestategame.cpp creates it).
 class NotifyChangedTokenMoney : public NotifyObject
@@ -183,7 +176,6 @@ class Unk_ShopUIManager
 public:
     void FUN_141adc530(int nUiId);                          // show
     void FUN_141adc5d0(int nUiId);                          // hide
-    int FUN_141adc890(int nUiId);                           // is shown
 };
 
 // The world service: the local player.
@@ -254,7 +246,6 @@ void FUN_14134a120(int nKind, int nItemId, int nAmount);    // the not-enough-cu
 int FUN_141276180(const CString& strSound, const CString& strArg);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name in its rank colour
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strArg, const int& nCount);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409e97f0(int nId, const int& nArg);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_140a228f0(int nId, const int& nArg, const CStringW& strArg);
@@ -334,7 +325,6 @@ public:
     int IsBeforeStartGrade(unsigned int, int);
 };
 CStringW FUN_14093b9c0(int nId, int nGrade);                        // the achievement name
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);            // a common string formatted with one argument
 int FUN_140931290();                                                // the general fame grade
 int FUN_140931250(int nAlliance);                                   // the fame grade of an alliance
 CStringW FUN_140762de0(int nAlliance);                              // the alliance name
@@ -892,10 +882,10 @@ void UIShopDialog::OnLoadComplete()
             }
             else if (m_nShopType == 4) {
                 int nCoin = FUN_14052d230()->FUN_14059e550(m_nShopId);
-                strTitle = FUN_1405c2690(CStringW(L"s_title_gacha_shop"), FUN_141425950(nCoin));
+                strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_title_gacha_shop"), FUN_141425950(nCoin));
             }
             else if (m_nNpcId != 0) {
-                strTitle = FUN_14052bd00(0x45e, FUN_1401aa6a0(m_nNpcId));
+                strTitle = FormatStringId<CStringW>(0x45e, FUN_1401aa6a0(m_nNpcId));
             }
         }
         if (bDebug)
@@ -1182,7 +1172,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
                 UIMaidRecipeListDialog* pList = FUN_1412dd5a0(0x4ecb);
                 if (pList != 0) {
                     pList->FUN_1412db660(spData->FUN_14053dd30(), fX, fY);
-                    if (reinterpret_cast<Unk_ShopUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecb) == 0)
+                    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ecb))) == 0)
                         reinterpret_cast<Unk_ShopUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ecb);
                     else
                         pList->FUN_1412db6c0();
@@ -1352,7 +1342,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 ASTooltip tipLhs((void*)pMyPC, nLhs, 2);
                 ASTooltip tipRhs((void*)pMyPC, nRhs, 2);
                 if (!strRequire.IsEmpty())
-                    tipRhs.FUN_1409dbc30(FUN_1405c2690(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
+                    tipRhs.FUN_1409dbc30(FUN_14028dfa0<CStringW>(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
                 FUN_141349210(spItem, pRetVal, true, &tipLhs, &tipRhs);
                 tipRhs.FUN_1409db7b0(spItem);
             }
@@ -1368,7 +1358,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 if (!FUN_140ebfb90((class CDBPremiumProduct*)(((MS2Ptr<CMeratMarketPremiumProduct>*)(void*)(&spPremium))->get()), false))
                     strRequire = FUN_14093bd40(spPremium->m_nf8, spPremium->m_nfc, CStringW(L""));
                 if (!strRequire.IsEmpty())
-                    tipRhs.FUN_1409dbc30(FUN_1405c2690(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
+                    tipRhs.FUN_1409dbc30(FUN_14028dfa0<CStringW>(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
                 MS2Ptr<CItem> spItem = FUN_141b05180(spMerat);
                 FUN_141349210(spItem, pRetVal, true, &tipLhs, &tipRhs);
                 tipRhs.FUN_1409db7b0(spItem);
@@ -1656,7 +1646,7 @@ void UIShopDialog::ReadShopInfo(CInPacket& packet)
     if (!m_188)
         m_bCheckEnableItems = m_290;
     m_18b = m_bResetEnable;
-    if (!reinterpret_cast<Unk_ShopUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ece) && bOpenInventory && !m_188)
+    if (!(((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ece))) && bOpenInventory && !m_188)
         reinterpret_cast<Unk_ShopUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ece);
     m_188 = 1;
     m_1a0 = GetServerTime();
@@ -1893,7 +1883,7 @@ void UIShopDialog::ReadPurchaseResult(CInPacket& packet)
         if (nCount > 1)
             strText = FUN_140bfa7f0(CStringW(L"s_msg_take_item_count_to_guild_storage"), strName, nCount);
         else
-            strText = FUN_1405c2690(CStringW(L"s_msg_take_item_to_guild_storage"), strName);
+            strText = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_take_item_to_guild_storage"), strName);
         FUN_1412751b0(strText, 0x14);
     }
     Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_BUY] : itemID = {0}, nCount = {1}, totalPrice = {2}", nItemId, nCount, nPrice);
@@ -2952,7 +2942,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         if (!FUN_141b047f0(spProduct.operator->(), false)) {
             int nTrophy = spProduct->FUN_140db6fb0();
             if (0 < nTrophy)
-                data.FUN_1407cbb20("requireGuildTrophy", FUN_14052bd00(0x309, FUN_140763e10(spProduct->FUN_140db6fb0())));
+                data.FUN_1407cbb20("requireGuildTrophy", FormatStringId<CStringW>(0x309, FUN_140763e10(spProduct->FUN_140db6fb0())));
         }
         if (!FUN_141b04a10(spProduct.operator->(), false)) {
             int nAchieve = spProduct->m_64;
@@ -3632,7 +3622,7 @@ bool FUN_141b04a10(CNpcShopProductCli* pProduct, bool bNotify)
         return true;
     if (bNotify)
     {
-        CStringW strMsg = FUN_14052bd00(0x5c, FUN_14093b9c0(nId, nGrade));
+        CStringW strMsg = FormatStringId<CStringW>(0x5c, FUN_14093b9c0(nId, nGrade));
         FUN_1412751f0(strMsg, 1, 1);
     }
     return false;
@@ -3680,7 +3670,7 @@ bool FUN_141b04c30(CNpcShopProductCli* pProduct, bool bNotify)
     CStringW strRank = GetStringTable()->FUN_141811980(0x2d, nRank);
     if (nLevel < nRank) {
         if (bNotify) {
-            CStringW strMsg = FUN_14052bd00(0x5d, strRank);
+            CStringW strMsg = FormatStringId<CStringW>(0x5d, strRank);
             FUN_1412751f0(strMsg, 1, 1);
         }
         return false;

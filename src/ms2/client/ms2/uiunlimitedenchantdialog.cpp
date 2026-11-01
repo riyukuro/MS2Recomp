@@ -79,6 +79,7 @@ class Unk_UeWorld { public: MyPC* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -333,7 +334,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
 // @0x140fb6ed0
 void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
 {
-    MyPC* pPC = ((class Unk_UeWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     {

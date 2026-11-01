@@ -44,8 +44,7 @@ public:
 };
 
             // the local player
-WorldService* FUN_1403ed2d0();
-class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
+class Unk_SsUIManager { public: };
 
 void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
@@ -226,7 +225,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
         MS2Ptr<ASCheckBox> check = m_checks[nRow];
         if (row == NULL || check == NULL)
             return;
-        void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         unsigned nRoom = params.pArgs[0].GetUInt();
@@ -342,7 +341,7 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
 UIDungeonControlCenter* FUN_140c125c0(int nUIType)
 {
     if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonControlCenter*>((UIObject*)p);
     }

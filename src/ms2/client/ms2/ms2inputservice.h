@@ -44,12 +44,12 @@ public:
     bool FUN_140d8ac50(int nKey, int bAllowGroup);      // key is held (group-aware)
     bool FUN_140d8ad60(int nKey);                       // key was pressed this frame (group-aware, tracks the held modifier)
     bool FUN_140d8af70(int nKey);                       // key was released this frame (group-aware)
-    bool FUN_140d8b010(int nButton);                    // mouse button is held
-    bool FUN_140d8b070(int nButton);                    // mouse button was pressed
-    bool FUN_140d8b0d0(int nButton);                    // mouse button was released
+    bool IsMouseButtonDown(int nButton);                    // mouse button is held
+    bool WasMouseButtonPressed(int nButton);                    // mouse button was pressed
+    bool WasMouseButtonReleased(int nButton);                    // mouse button was released
     bool FUN_140d8b130(int* pnX, int* pnY, int* pnZ);   // mouse movement deltas
     bool FUN_140d8b200(int nKey);                       // inject a press
-    bool FUN_140d8b250(int nKey);                       // inject a release
+    bool InjectKeyRelease(int nKey);                       // inject a release
     static int FUN_140d8b290(int nKey);                 // keyboard code of a key id (0 if not a keyboard key)
     static int FUN_140d8b2c0(int nKey);                 // mouse button of a key id (-1 if not a mouse button)
     static int FUN_140d8b300(int nKey);                      // gamepad button of a key id (-1 if none)

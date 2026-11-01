@@ -63,9 +63,6 @@
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
 
 // ---- exe functions outside this unit ----
-void FUN_140996bc0(Unk_AnimTable* pTable, void* p);
-void FUN_1409975a0(Unk_AnimTable* pTable, void* p);
-void FUN_140997070(Unk_AnimTable* pTable, GameObject* pOwner, CString str);
 class Unk_GameClock;
 void FUN_14028b2d0(void* pList, const CString& str);                    // list.push_back
 Unk_AnimSvc* FUN_141b6f910();
@@ -274,7 +271,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
         }
     }
     CString strAnim = FUN_1409a2470(kResolved.c_str(), 0);
-    FUN_140997070(&m_table, m_pOwner, strAnim);
+    ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997070(m_pOwner, strAnim);
     float fHeight = ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997650(strAnim);
     m_pOwner->vfunc_43(fHeight);
     efd::UInt64 qwId3;
@@ -336,12 +333,12 @@ void CAnimationManager::FUN_14099e710(float fOffset)
 
 void CAnimationManager::FUN_14099e7a0(void* p)
 {
-    FUN_140996bc0(&m_table, p);
+    ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140996bc0((class GameObject*)(p));
 }
 
 void CAnimationManager::FUN_14099e7d0(void* p)
 {
-    FUN_1409975a0(&m_table, p);
+    ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_1409975a0((class GameObject*)(p));
 }
 
 void CAnimationManager::FUN_14099e800(void* pList)

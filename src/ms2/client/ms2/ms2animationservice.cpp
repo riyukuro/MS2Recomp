@@ -94,8 +94,8 @@ static CString s_strSkill2 = "skill";
 // @0x1400f8940
 static CString s_strStun2 = "stun";
 // @0x1400f8970
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+static Unk_BuddyHandle s_pointer(NULL);
 
 static int s_nReloading;                        // 0x143ae07d0: a KF reload is pending; cleared when the preload lookup ends
 

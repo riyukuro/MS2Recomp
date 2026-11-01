@@ -542,3 +542,5 @@ _vswprintf_c_l	1402e1150	func
 ?_Erase@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@Z	141136f50	func
 # efd std::string append(const char*) (sft 2026-10-31): symbols.tsv binds it to 0x14155fcd0 (CRBTree<Unk_NifTexKey>::RBDelete, merge 9 b266e9641); the 55-byte append is 0x14114d9b0 (unit_141148d70); EE_MS2_STR_APPEND_CSTR_CALL callers (917b8ef3e)
 ?append@?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@QEAAAEAV12@QEBD@Z	14114d9b0	func
+# NiDataStream::LoadBinary (p5j 2026-10-31): functional in merge 46 by name/search pairing; merge 47's engine recompile (utf8string.inl, 1279 TUs) left 0x141e0d400 unpaired (stub) with ?LoadBinary@NiDataStream@@ still defined in the obj; no table row named it
+?LoadBinary@NiDataStream@@UEAAXAEAVNiStream@@@Z	141e0d400	func

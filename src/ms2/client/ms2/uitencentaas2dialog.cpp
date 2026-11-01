@@ -49,7 +49,7 @@ public:
     Unk_AasConstInt m_nWidth;                                               // +0xdbc0
     Unk_AasConstInt m_nHeight;                                              // +0xdc18
 };
-Unk_AasConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1402056b0(Unk_AasConstInt* p);
 
 CWebBrowserService* FUN_140cc18a0();
@@ -61,7 +61,7 @@ public:
 };
 
 void FUN_141901470(int n, int nTypeId);
-bool FUN_141900a90(UIObject* pObject);
+bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
 CString FUN_14016a600(const wchar_t* psz, int n);                           // wide -> narrow string
 void FUN_140d03450(Unk_AasImagePtr* p);                                     // p = NULL (releases)
 void FUN_140d03320(Unk_AasImage* p);                                        // add a reference
@@ -208,8 +208,8 @@ void UITencentAas2Dialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0)
     {
-        m_nDialogWidth = *FUN_1402056b0(&FUN_1401d3200()->m_nWidth) + 0x1c;
-        m_nDialogHeight = *FUN_1402056b0(&FUN_1401d3200()->m_nHeight) + 0x44;
+        m_nDialogWidth = *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth) + 0x1c;
+        m_nDialogHeight = *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight) + 0x44;
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
@@ -235,7 +235,7 @@ void UITencentAas2Dialog::vfunc_85()
 {
     m_spImage.AssignRaw(new Unk_AasImage(2));
     FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
-        FUN_1422db6e0(), *FUN_1402056b0(&FUN_1401d3200()->m_nWidth), *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)), 2)));
+        FUN_1422db6e0(), *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth), *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(m_spImage->FUN_1422bb890());
@@ -273,7 +273,7 @@ bool UITencentAas2Dialog::vfunc_90(POINT* pPos)
         return false;
     pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
     pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
-    if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *FUN_1402056b0(&FUN_1401d3200()->m_nWidth)) && pPos->y <= *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)))
+    if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)) && pPos->y <= *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)))
     {
         return false;
     }
@@ -293,7 +293,7 @@ MS2_REPLACE_METHOD(0x140E99500, UITencentAas2Dialog, vfunc_43, 100, 0xA8EB34E7);
 // @0x140e99570
 int UITencentAas2Dialog::vfunc_65()
 {
-    if (!FUN_141900a90(this))
+    if (!FUN_141900a90((class UIDialog*)(this)))
         return 0;
     return UIDialog::vfunc_65();
 }
@@ -302,7 +302,7 @@ MS2_REPLACE_METHOD(0x140E99570, UITencentAas2Dialog, vfunc_65, 45, 0xDB9A9168);
 // @0x140e995b0
 void UITencentAas2Dialog::vfunc_87(SIZE* pSize)
 {
-    pSize->cx = *FUN_1402056b0(&FUN_1401d3200()->m_nWidth);
-    pSize->cy = *FUN_1402056b0(&FUN_1401d3200()->m_nHeight);
+    pSize->cx = *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth);
+    pSize->cy = *FUN_1402056b0(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight);
 }
 MS2_REPLACE_METHOD(0x140E995B0, UITencentAas2Dialog, vfunc_87, 76, 0xE5340123);

@@ -42,15 +42,16 @@
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- statics (dynamic initializers 0x14011dd60..0x14011de30) ----
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 #ifndef MS2_HOOK_DLL
 static CString s_strStun = "stun";                                                      // @0x14011dd60
-static Unk_1401cd100 s_pointer(NULL);                                                   // @0x14011dd90
+static Unk_BuddyHandle s_pointer(NULL);                                                   // @0x14011dd90
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);                       // @0x14011ddb0
 static UICommon::CMyPCKeyInputController s_keyInputController;                          // @0x14011de00
 #endif
@@ -141,7 +142,6 @@ CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 CStringW FUN_140cd7d20();                                               // the dungeon name
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
@@ -468,7 +468,7 @@ void UISystemMenuDialog::FUN_141b14560(int nPage)
 {
     UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
     pDialog->FUN_141b15670(nPage);
-    reinterpret_cast<Unk_SmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef3);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef3)));
     vfunc_67();
 }
 
@@ -541,9 +541,9 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
         {
             Unk_SmDgRef spRoom = reinterpret_cast<Unk_SmDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoom);
             if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_140 > 0)
-                return FUN_1405c2690(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
+                return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
         }
-        return FUN_1405c2690(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());
     }
     case 7:
         return FUN_14052bd00(0xab7, FUN_140cd7d20());
@@ -553,9 +553,9 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
     case 9:
         return FUN_14052bd00(0xab9, FUN_140cd7d20());
     case 0xd:
-        return FUN_1405c2690(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
     default:
-        return FUN_1405c2690(FUN_1401ceea0(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(FUN_1401ceea0(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
     }
 }
 

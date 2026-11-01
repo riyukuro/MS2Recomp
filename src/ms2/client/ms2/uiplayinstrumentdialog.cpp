@@ -248,6 +248,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -322,12 +323,10 @@ public:
     bool FUN_140d07960(__int64 nScoreUid);                                  // play the score
     bool FUN_140d07f00(__int64 nScoreUid);                                  // play the ensemble score
 };
-Unk_PiMgr* FUN_140c8dac0();
+struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory DAT_143ab2a90;
-class Unk_ItemEquipData { public: bool FUN_14053cd10(); };
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                               // the AS object is released
 
 // The UI service (open dialog bookkeeping).
 class Unk_PiUiSvc : public CUIService
@@ -335,8 +334,6 @@ class Unk_PiUiSvc : public CUIService
 public:
     int FUN_141adc940(int nUiType);                                         // the dialog is closed
     void FUN_141adc530(int nUiType);                                        // open it
-    int FUN_141adc890(int nUiType);                                         // the dialog is open
-    void FUN_141adc5d0(int nUiType);                                        // close it
 };
 
 class Unk_PiPane
@@ -353,20 +350,27 @@ public:
     virtual int vfunc_55();                                                 // the guide pane query
 };
 Unk_PiPane* FUN_1405344f0(int nUiType);
-void FUN_141999d40(Unk_PiPane* pPane, int nMode);
+class UIInventoryDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_141999d40(int);
+};
 
 MS2InputService* FUN_140a58540();
 class Unk_PiKeyNames { public: CStringW FUN_14142d220(int nKey); CStringW FUN_14142d580(int nKey); };
 Unk_PiKeyNames* FUN_1409331f0();
-CInstrumentDataTable* FUN_14052d1d0();                                      // the instrument table singleton
+class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
 
 class Unk_PiPartyMgr {};
-bool FUN_14162ab60(Unk_PiPartyMgr* p);                                      // the party is ready
 class Unk_PiExpTable {};
-Unk_PiExpTable* FUN_1409670c0();
-int FUN_14066b310(Unk_PiExpTable* p, int nKind, int nLevel);                // the experience needed for a level
+class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
+class CMasteryTable   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int Value(int, int);
+};
 
-unsigned FUN_140869420();                                                   // the client clock (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141b706a0(int nMs, int& nMin, int& nSec, int& nCenti);            // split a time
 __int64 FUN_141b71960(const char* sz);                                      // text -> uid
 CStringW FUN_141b71910(__int64 nUid);                                       // uid -> text
@@ -374,13 +378,12 @@ CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // f
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140298ea0(CStringW strKey);                             // notice text
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& n1, const int& n2);   // StringFormat<int, int>: both by reference
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);     // string table format
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a0, const CStringW& a1);
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);       // message box
 void FUN_14151f200();
-void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pnValue);
-void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, bool bFlag);
+int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
+void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 namespace NotifyContext { class BindData; }
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);     // the bind data of a name
@@ -470,7 +473,7 @@ void UIPlayInstrumentDialog::OnLoadComplete()
         m_spTab->vfunc_24(true);
         m_30->Invoke("onSelectTab", m_nTab);
     }
-    CInstrumentDataTable::InstrumentPtr spData = FUN_14052d1d0()->GetInstrument(m_nInstrument);
+    CInstrumentDataTable::InstrumentPtr spData = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetInstrument(m_nInstrument);
     if (spData == 0)
         return;
     CStringW strText = FUN_140656190(L"{0} {1}", static_cast<Unk_PiInstrData*>(spData.get())->GetCategoryName(), static_cast<Unk_PiInstrData*>(spData.get())->GetName());
@@ -482,10 +485,10 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     FUN_14100f1f0();
     if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e2d))
     {
-        reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e2d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e2d)));
         Unk_PiPane* pPane = FUN_1405344f0(0x4e2d);
         if (pPane != 0 && pPane->vfunc_55() == 0)
-            FUN_141999d40(pPane, 7);
+            ((class UIInventoryDialog*)(class Unk_PiPane*)(pPane))->FUN_141999d40(7);
     }
 }
 
@@ -512,17 +515,17 @@ void UIPlayInstrumentDialog::vfunc_26()
 // @0x14100ad90
 void UIPlayInstrumentDialog::vfunc_67()
 {
-    Unk_PiPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         pPlayer->vfunc_59(1, 0, 0, 0);
     m_nAutoPlay = 0;
-    if (!FUN_140c8dac0()->IsRemote())
+    if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
     {
-        if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4f07))
-            reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f07);
-        if (FUN_140c8dac0()->FUN_140d0b0c0() > 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
+        if (((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d0b0c0() > 0)
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
-        FUN_140c8dac0()->SetVolume(0);
+        ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
     }
 }
 
@@ -530,7 +533,7 @@ void UIPlayInstrumentDialog::vfunc_67()
 int UIPlayInstrumentDialog::vfunc_54(void* pCfg)
 {
     UIDialog::vfunc_54(pCfg);
-    FUN_1408741a0(pCfg, "Histroy", "lastRadioIndex", &m_nTab);
+    XmlGetChildAttr((class TiXmlElement*)(pCfg), "Histroy", "lastRadioIndex", *(int*)(&m_nTab));
     return 1;
 }
 
@@ -540,7 +543,7 @@ int UIPlayInstrumentDialog::vfunc_53(void* pCfg)
     if (m_spTab.get())
         m_nTab = m_spTab->FUN_1422e3210();
     UIDialog::vfunc_53(pCfg);
-    FUN_140874440(pCfg, "Histroy", "lastRadioIndex", m_nTab, true);
+    XmlSetChildAttr((class TiXmlElement*)(pCfg), "Histroy", "lastRadioIndex", m_nTab, true);
     return 1;
 }
 
@@ -550,7 +553,7 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     if (strMethod.CompareNoCase("getItemTooltip") == 0)
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tip(reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tip(((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
@@ -563,7 +566,7 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 // @0x14100b0f0
 int UIPlayInstrumentDialog::vfunc_71()
 {
-    if (FUN_140c8dac0()->IsPerforming())
+    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsPerforming())
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_ask_close_while_playing_score"), 1, static_cast<IMessageListener*>(this), L"askClose");
         return 1;
@@ -574,15 +577,15 @@ int UIPlayInstrumentDialog::vfunc_71()
 // @0x14100b1e0
 void UIPlayInstrumentDialog::vfunc_72()
 {
-    if (m_nEndTick != 0 && m_nEndTick < FUN_140869420())
+    if (m_nEndTick != 0 && m_nEndTick < GetTickCountMs2())
     {
-        FUN_140c8dac0()->StopPerform();
+        ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
         m_nStartTick = 0;
         m_nEndTick = 0;
     }
     FUN_14100da10();
     FUN_14100d920();
-    if (!FUN_140c8dac0()->IsEnsemble())
+    if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsEnsemble())
         return;
     if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return;
@@ -592,7 +595,7 @@ void UIPlayInstrumentDialog::vfunc_72()
         {
             int nNote = m_nOctave * 12 + 12 + it->second.first;
             m_pressed[it->first] = nNote;
-            FUN_140c8dac0()->FUN_140d073b0(nNote);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d073b0(nNote);
             MS2Ptr<Unk_140acd6e0> spButton(it->second.second);
             spButton->Invoke("onForcePress");
         }
@@ -618,7 +621,7 @@ void UIPlayInstrumentDialog::vfunc_72()
         if (FUN_140a58540()->FUN_140d8af70(itDown->first))
         {
             unsigned long& nNote = itDown->second;
-            FUN_140c8dac0()->NoteOff(nNote);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
             KeyButtonMap::iterator itBtn = m_keyButtons.find(itDown->first);
             if (itBtn != m_keyButtons.end())
             {
@@ -634,14 +637,14 @@ void UIPlayInstrumentDialog::vfunc_72()
     }
     size_t nAfter = m_pressed.size();
     if (nBefore != 0 && nAfter == 0)
-        m_nIdleTick = FUN_140869420();
+        m_nIdleTick = GetTickCountMs2();
     if (m_pressed.size() == 0 && m_nIdleTick != 0)
     {
-        if (m_nIdleTick + 5000 < FUN_140869420())
+        if (m_nIdleTick + 5000 < GetTickCountMs2())
         {
             m_nIdleTick = 0;
-            FUN_140c8dac0()->SetEnsemble(false);
-            FUN_140c8dac0()->SetEnsemble(true);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(false);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(true);
         }
     }
 }
@@ -680,21 +683,21 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     {
         m_bStop = 1;
         if (m_nMode == 3)
-            FUN_140c8dac0()->StopPerform();
+            ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
         else if (m_nMode == 2)
         {
             if (m_nKind == 0)
-                FUN_140c8dac0()->StopPerform();
+                ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
             else if (m_nKind == 1)
-                FUN_140c8dac0()->FUN_140d085a0();
+                ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d085a0();
         }
-        if (!FUN_140c8dac0()->IsRemote())
+        if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
         {
-            if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4f07))
-                reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f07);
-            if (FUN_140c8dac0()->FUN_140d0b0c0() > 0)
+            if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
+            if (((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d0b0c0() > 0)
                 FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
-            FUN_140c8dac0()->SetVolume(0);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
         }
         m_nAutoPlay = 0;
         return 1;
@@ -724,7 +727,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nKey = data.FUN_1422b8a10();
             int nNote = m_nOctave * 12 + 11 + nKey;
-            FUN_140c8dac0()->FUN_140d073b0(nNote);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d073b0(nNote);
             return 1;
         }
     }
@@ -735,7 +738,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nKey = data.FUN_1422b8a10();
             int nNote = m_nOctave * 12 + 11 + nKey;
-            FUN_140c8dac0()->NoteOff(nNote);
+            ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
             return 1;
         }
     }
@@ -804,13 +807,13 @@ void UIPlayInstrumentDialog::FUN_14100c200(int nPage)
 {
     if (nPage == 0)
     {
-        FUN_140c8dac0()->SetEnsemble(true);
-        FUN_140c8dac0()->StopPerform();
+        ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(true);
+        ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
         FUN_14100e9a0(0);
     }
     else if (nPage == 1)
     {
-        FUN_140c8dac0()->SetEnsemble(false);
+        ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(false);
         for (int i = 0; i < 3; i++)
             FUN_14100ca90(i, MS2Ptr<CItem>(0));
         FUN_14100e9a0(1);
@@ -820,7 +823,7 @@ void UIPlayInstrumentDialog::FUN_14100c200(int nPage)
 // @0x14100c2c0
 void UIPlayInstrumentDialog::FUN_14100c2c0()
 {
-    Unk_PiPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (!m_spScorePage)
@@ -846,8 +849,8 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
         }
         else
         {
-            int nStart = FUN_14066b310(FUN_1409670c0(), 2, nLevel);
-            int nEnd = FUN_14066b310(FUN_1409670c0(), 2, nLevel + 1);
+            int nStart = ((class CMasteryTable*)(class Unk_PiExpTable*)(((class Unk_PiExpTable*)FUN_1409670c0())))->Value(2, nLevel);
+            int nEnd = ((class CMasteryTable*)(class Unk_PiExpTable*)(((class Unk_PiExpTable*)FUN_1409670c0())))->Value(2, nLevel + 1);
             int nNeed = nEnd - nStart;
             int nHave = nExp - nStart;
             fProgress = (float)nHave / (float)nNeed;
@@ -925,7 +928,7 @@ void UIPlayInstrumentDialog::FUN_14100c910(MS2Ptr<CItem> spItem)
 // @0x14100ca90
 void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (!FUN_14100c8f0())
         return;
@@ -937,7 +940,7 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
     {
         if (spItem->FUN_140527340() < 1)
             return;
-        if (!spItem->FUN_140527840()->FUN_14053cd10())
+        if (!((CItemData*)spItem->FUN_140527840())->FUN_14053cd10())
             return;
         if (spItem->FUN_140525730())
             return;
@@ -948,7 +951,7 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
     if (m_spScores[nIndex].get() != 0)
     {
         ASSlot slot(2);
-        if (slot.FUN_1409c3860(spItem.get(), reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0(), 0x415))
+        if (slot.FUN_1409c3860(spItem.get(), ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x415))
         {
             CStringW strTitle = m_spScores[nIndex]->FUN_1405296c0();
             CStringW strWriter = m_spScores[nIndex]->FUN_140529890();
@@ -956,13 +959,13 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
             int nDuration = (int)((float)m_spScores[nIndex]->FUN_1405299a0() / 1000.0f);
             CStringW strWriterText(L"");
             if (strWriter.GetLength() > 0)
-                strWriterText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
+                strWriterText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
             int nMin, nSec, nCenti;
             FUN_141b706a0(nDuration * 1000, nMin, nSec, nCenti);
             CStringW strTime = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
-            slot.FUN_1407cbb20("title", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
+            slot.FUN_1407cbb20("title", FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
             slot.FUN_1407cbb20("writer", CStringW(strWriterText));
-            slot.FUN_1407cbb20("recommendInstrument", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
+            slot.FUN_1407cbb20("recommendInstrument", FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
             slot.FUN_1407cbb20("playTime", CStringW(strTime));
             slot.FUN_1407cbb20("itemGUID", FUN_141b71910(m_spScores[nIndex]->FUN_140526a50()));
             m_30->Invoke("OnSetScore", nIndex + 1, slot.FUN_1422bb870());
@@ -987,9 +990,9 @@ void UIPlayInstrumentDialog::FUN_14100d260(int nStart, int nEnd)
         {
             CStringW strText;
             if (m_nKind == 0)
-                strText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             else
-                strText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             m_spFold->FUN_1422c4cd0(strText);
         }
     }
@@ -1053,13 +1056,13 @@ void UIPlayInstrumentDialog::FUN_14100d920()
         return;
     if (m_nKind == 1)
         return;
-    if (FUN_140c8dac0()->IsPerforming())
+    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsPerforming())
         return;
-    if (FUN_140c8dac0()->IsEnsemble())
+    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsEnsemble())
         return;
-    if (FUN_140c8dac0()->IsRemote())
+    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
         return;
-    if (FUN_140c8dac0()->CanPlayEnsemble() == 0)
+    if (((class Unk_PiMgr*)FUN_140c8dac0())->CanPlayEnsemble() == 0)
         return;
     m_nAutoPlay = OnPlayNote();
 }
@@ -1084,8 +1087,8 @@ void UIPlayInstrumentDialog::FUN_14100da10()
         if (spTime == 0)
             return;
         int nElapsed = 0;
-        if (FUN_140869420() > m_nStartTick)
-            nElapsed = FUN_140869420() - m_nStartTick;
+        if (GetTickCountMs2() > m_nStartTick)
+            nElapsed = GetTickCountMs2() - m_nStartTick;
         int nTotal = m_nEndTick - m_nStartTick;
         CStringW strCur;
         CStringW strTotal;
@@ -1101,9 +1104,9 @@ void UIPlayInstrumentDialog::FUN_14100da10()
         {
             CStringW strScore;
             if (m_nKind == 0)
-                strScore = FUN_1405c2690(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             else
-                strScore = FUN_1405c2690(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             CStringW strFold = FUN_140656190(L"{0} {1}", strText, strScore);
             m_spFold->FUN_1422c4cd0(strFold);
         }
@@ -1215,10 +1218,10 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
             spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_solo"));
         else if (m_nKind == 1)
         {
-            Unk_PiPlayer* pPlayer = reinterpret_cast<Unk_WorldSvc*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return;
-            if (FUN_14162ab60(reinterpret_cast<Unk_PiPartyMgr*>(TSingleton<CPartyManager>::GetInstance())))
+            if (((class CPartyManager*)(class Unk_PiPartyMgr*)(reinterpret_cast<Unk_PiPartyMgr*>(TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab60())
                 spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_ensemble"));
             else
                 spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_ready_ensemble"));
@@ -1273,11 +1276,11 @@ unsigned char UIPlayInstrumentDialog::FUN_14100f2e0()
     unsigned char nResult = 0;
     if (m_nKind == 0)
     {
-        nResult = FUN_140c8dac0()->FUN_140d07960(m_spScores[m_nCurrent]->FUN_140526a50());
+        nResult = ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d07960(m_spScores[m_nCurrent]->FUN_140526a50());
     }
     else
     {
-        nResult = FUN_140c8dac0()->FUN_140d07f00(m_spScores[m_nCurrent]->FUN_140526a50());
+        nResult = ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d07f00(m_spScores[m_nCurrent]->FUN_140526a50());
     }
     if (nResult != 0)
         FUN_14100e9a0(2);

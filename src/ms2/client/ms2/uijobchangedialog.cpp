@@ -36,6 +36,12 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // ---- unit-local views of unrecovered callees -------------------------------------------------------------------------
 
@@ -82,7 +88,6 @@ extern unsigned DAT_143af62d8;                                  // client area h
 // The tooltip of a skill (a member of ASTooltip in the exe).
 int FUN_1409e1b80(ASTooltip* pTip, int nSkillId, int n);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
-WorldService* FUN_1403ed2d0();
 
 static bool s_bValid;                                           // 0x143af3588 the tables were read
 
@@ -163,7 +168,7 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     {
         if (nIndex >= spPreview->m_skills.GetCount())
             return;
-        ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
         {
             tip.FUN_1409c69b0(L"");
@@ -219,7 +224,7 @@ void UIJobChangeDialog::LoadJobPreview()
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
     if (root == 0)
         return;
-    for (Unk_140165cf0* node = root->FUN_140165cf0("job"); node != 0;
+    for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
          node = (Unk_140165cf0*)((Unk_140168650*)node)->FUN_140168650("job"))
     {
         int nJob = 0;
@@ -228,7 +233,7 @@ void UIJobChangeDialog::LoadJobPreview()
         XmlGetAttr((class TiXmlElement*)(node), "difficulty", nDifficulty);
         MS2Ptr<JobPreview> sp(new JobPreview());
         sp->m_nDifficulty = nDifficulty;
-        for (Unk_140165cf0* skill = node->FUN_140165cf0("skill"); skill != 0;
+        for (Unk_140165cf0* skill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("skill")); skill != 0;
              skill = (Unk_140165cf0*)((Unk_140168650*)skill)->FUN_140168650("skill"))
         {
             int nSkill = 0;
@@ -252,7 +257,7 @@ void UIJobChangeDialog::LoadJobDescription()
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
     if (root == 0)
         return;
-    for (Unk_140165cf0* node = root->FUN_140165cf0("job"); node != 0;
+    for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
          node = (Unk_140165cf0*)((Unk_140168650*)node)->FUN_140168650("job"))
     {
         int nJob = 0;

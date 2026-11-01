@@ -16,6 +16,7 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
 
 // Game TinyXML element: FirstChildElement.
 class Unk_140165cf0
@@ -25,13 +26,8 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers.
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
@@ -89,8 +85,8 @@ void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
     FUN_1401788f0(pNode, "texturePath", m_arrTexturePath);
     if (m_arrTexturePath.IsEmpty())
         return;
-    FUN_140873360(pNode, "width", m_fWidth);
-    FUN_1408731e0(pNode, "quality", m_nQuality);
+    XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
+    XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
     CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {

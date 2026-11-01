@@ -41,7 +41,6 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 CNifLoadingService* FUN_140a0afd0();
-bool FUN_140184310(const CString& str, const char* psz);                // str == psz
 CString FUN_141421740(const CString& strPath, int* pnFlag);            // the variant letter of a model path
 CString FUN_1414218c0(const CString& strPath, const CString& strSuffix);   // model path with another variant letter
 CString FUN_141425220(const CString& strPath, int bDiffuse);
@@ -277,7 +276,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
                         if (data->FUN_14053cfd0())
                         {
                             CString strVariant = FUN_141421740(pPart->name0, 0);
-                            if (FUN_140184310(strVariant, "A"))
+                            if ((strVariant == "A"))
                             {
                                 const CString& strC = FUN_1414218c0(pPart->name0, "C");
                                 const CString& strD = FUN_1414218c0(pPart->name0, "D");

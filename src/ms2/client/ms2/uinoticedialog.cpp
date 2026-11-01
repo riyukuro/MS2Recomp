@@ -66,7 +66,6 @@ public:
     void FUN_141b794e0(CString* pPage, const char* pszUrl);                 // remember the url in the dialog's page
 };
 CFeatureManager* FUN_140166410();
-class Unk_NdUIMgr { public: void FUN_141adc750(int nUiType); };             // open a dialog by its UI type
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 bool FUN_140e04c20(const MS2Ptr<ASDialog>* p, int n);                       // p == NULL
@@ -282,7 +281,7 @@ void UINoticeDialog::FUN_141009770(const Scaleform::GFx::FunctionHandler::Params
 // @0x1410097a0
 void UINoticeDialog::FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_NdUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e6a);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e6a)));
 }
 
 // @0x1410097d0

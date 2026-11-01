@@ -39,7 +39,7 @@ public:
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue);   // 0x140a31f80
     virtual bool AlwaysUpdate() const;                          // 0x140a32e50
 
-    void FUN_140a32e90(bool bActive, unsigned int uiBlendMs);   // switch between animation (false) and look-at (true)
+    void SetActive(bool bActive, unsigned int uiBlendMs);   // switch between animation (false) and look-at (true)
     void SetKEye(efd::Point3 kPos);                       // m_kEye
     void SetKBone(efd::Point3 kPos);                       // m_kBone
     void SetKEuler(efd::Point3 kPos);                       // m_kEuler
@@ -88,14 +88,14 @@ public:
 
     void FUN_140a34b80(GameObject* pOwner, CString strBone);    // bind the owner and the bone name, forget all actions
     void FUN_140a34be0(Unk_BrMode nMode, GameObject* pTarget, int nParam);   // start the action of nMode
-    void FUN_140a34d00(const efd::Point3& kPos, int nStart, int nEnd, int nDuration);    // look at a point
-    void FUN_140a34de0(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration);    // look at an entity
+    void LookAtPosition(const efd::Point3& kPos, int nStart, int nEnd, int nDuration);    // look at a point
+    void LookAtEntity(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration);    // look at an entity
     void FUN_140a34f00();                                       // stop looking, return to the animation
     void FUN_140a35060();                                       // per-frame: switch the interpolator at the end of a look
     void FUN_140a35500(double dTime);                           // per-frame: pick/advance actions
-    int FUN_140a35780();                                        // a look is running
+    int IsLooking();                                        // a look is running
     Unk_BrMode GetCurrent();                                 // current action mode
-    void FUN_140a357e0(float fValue);                           // interpolator pitch bias
+    void SetYawBias(float fValue);                           // interpolator pitch bias
     void FUN_140a35820(float fValue);                           // interpolator yaw bias
     void FUN_140a35860(bool bValue);                            // interpolator smooth flag
     bool FUN_140a358a0();                                       // interpolator smooth flag (false without one)

@@ -22,7 +22,7 @@ class Unk_WpConsts { public:
     Unk_WpInt m_89f8;
     Unk_WpInt m_8a50;
 };
-Unk_WpConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_WpConsts*)
 int* FUN_1402056b0(Unk_WpInt* p);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
@@ -46,10 +46,10 @@ void UIWebBrowserPopup::OnLoadInit()
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
     {
-        m_nMinWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8948);
-        m_nMinHeight = *FUN_1402056b0(&FUN_1401d3200()->m_89f8);
-        m_nMaxWidth = *FUN_1402056b0(&FUN_1401d3200()->m_89a0);
-        m_nMaxHeight = *FUN_1402056b0(&FUN_1401d3200()->m_8a50);
+        m_nMinWidth = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_8948);
+        m_nMinHeight = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_89f8);
+        m_nMaxWidth = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_89a0);
+        m_nMaxHeight = *FUN_1402056b0(&((Unk_WpConsts*)FUN_1401d3200())->m_8a50);
         m_nWidth = m_nMaxWidth;
         m_nHeight = m_nMaxHeight;
     }

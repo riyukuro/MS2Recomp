@@ -50,6 +50,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
 class Unk_BmPriceMgr;
@@ -142,7 +143,6 @@ int FUN_140b118f0(int nItemId, PCBase* pPC);
 unsigned FUN_140b119c0(int nItemId, PCBase* pPC);
 
 void* FUN_140a58500(Unk_PetClientSettings* p);
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -692,7 +692,7 @@ int CPet::FUN_140b11180()
 // @0x140b11320
 void CPet::FUN_140b11320(float fTime)
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9ea0() != 0)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0)
         return;
     MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
     if (spBalloon.IsNull())

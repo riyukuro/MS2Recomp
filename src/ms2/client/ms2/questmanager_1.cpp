@@ -18,6 +18,7 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // This object's header statics omit the sort-name array in header_statics_a.h.
 class Unk_QuestHeaderMap
@@ -43,9 +44,8 @@ __int64 GetServerTime();
 bool FUN_140930b70();
 bool FUN_1409312f0();
 extern int DAT_143ab2880;
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 
 class WorldService   // C3: static member view for the former free stand-ins
@@ -458,7 +458,7 @@ MS2_REPLACE_METHOD(0x1416C7BD0, CQuest, Complete, 98, 0x87AAF937);
 // @0x1416c7c40
 void CQuest::ShowExpired()
 {
-    FUN_1412751f0(FUN_1405c2690(L"s_quest_expired_auto_giveup", FUN_1416e4df0(FUN_140bfc580())), 1, 1);
+    FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_expired_auto_giveup", FUN_1416e4df0(FUN_140bfc580())), 1, 1);
 }
 MS2_REPLACE_METHOD(0x1416C7C40, CQuest, ShowExpired, 176, 0xBA04D5B7);
 

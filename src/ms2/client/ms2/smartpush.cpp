@@ -141,10 +141,10 @@ int FUN_14053feb0(int nItemId);                                         // defau
 bool FUN_140811640(int nKind);                                          // the first use is paid with red merat
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // new message box data
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                         // show it
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);   // notice box
-void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);   // notice box of a system string
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // notice box
+void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // notice box of a system string
 void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat / center notice
 
 

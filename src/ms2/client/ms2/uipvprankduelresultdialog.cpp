@@ -77,7 +77,7 @@ CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount
  // the profile key of the player
 CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
@@ -204,7 +204,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         return;
     CString strUnused1;
     CString strUnused2;
-    MyPC* pMe = reinterpret_cast<Unk_PrdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     bool bLeftWins = pResult->m_nCharIdL == pResult->m_nWinnerId;

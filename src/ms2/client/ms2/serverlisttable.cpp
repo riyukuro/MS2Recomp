@@ -19,10 +19,9 @@ CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 CString FUN_14028d1f0(const char*);
 CStringW GetStringCommonByKey(const CStringW& s);
-void FUN_1408731e0(void*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -44,7 +43,7 @@ CServerListTable::~CServerListTable()
 void CServerListTable::Load()
 {
     TiXmlDocument doc;
-    int bLoaded = FUN_140166420()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "serverList.xml"), 0, true, false);
+    int bLoaded = ((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "serverList.xml"), 0, true, false);
     if (bLoaded != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -56,7 +55,7 @@ void CServerListTable::Load()
                 InfoPtr info(new ServerInfo);
                 if (info)
                 {
-                    FUN_1408731e0(pNode, "id", info->m_nId);
+                    XmlGetAttr((class TiXmlElement*)(pNode), "id", info->m_nId);
                     CStringW strName = FUN_1401bf530(pNode, "name", L"");
                     info->m_strName = GetStringCommonByKey(strName);
                     info->m_strIcon = FUN_14015f710(pNode, "icon", "");

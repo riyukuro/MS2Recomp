@@ -21,6 +21,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // the header statics emitted into this TU (.text$di): sort-type names, "skill", "stun", condition object
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -42,19 +44,15 @@ public:
     Unk_MMPlayer* FUN_141bd1290(int nId);                   // a player by id
 };
 class Unk_MMScene { public: int FUN_1422b9e00(); };
-Unk_MMScene* FUN_1408e57f0();
 
 class Unk_MMUIService
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
-    int FUN_141adc890(int nId);                             // the dialog is open
     void FUN_141adc5d0(int nId);                            // close the dialog
 };
 
 class MyPC;
 CStringW GetStringCommonByKey(const CStringW& str);                // the text of a string id
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArgument);
 void FUN_1412751b0(const CStringW& strText, int nType);     // a notice
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // a notice (error)
 
@@ -80,7 +78,7 @@ template <class T> T* Unk_MMDialog(int nId)
 {
     if (reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -203,7 +201,7 @@ void CMentoringManager::FUN_140b71500()
 // @0x140b71580
 unsigned CMentoringManager::FUN_140b71580()
 {
-    Unk_MMPlayer* pPlayer = reinterpret_cast<Unk_MMWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MMPlayer* pPlayer = ((Unk_MMPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     return pPlayer->FUN_14165ffe0();
@@ -408,7 +406,7 @@ void CMentoringManager::OnPairMode(CInPacket& packet)
 // @0x140b71f70
 void CMentoringManager::OnMenteeRegistered(CInPacket& packet)
 {
-    if (reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4f4b) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
         reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentee"), 0x10);
 }
@@ -419,7 +417,7 @@ void CMentoringManager::OnInviteMentee(CInPacket& packet)
     FUN_140b736c0(packet, -1);
     Unk_MMNamePacket5 data;
     data.FUN_14069a5a0(MMReader(packet));
-    FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_invite_invite_mentee"), data.name), 0x10);
+    FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_invite_mentee"), data.name), 0x10);
 }
 
 // @0x140b720f0
@@ -443,7 +441,7 @@ void CMentoringManager::OnMentorApproved(CInPacket& packet)
     }
     m_mentors.RemoveAll();
     if (!strName.IsEmpty())
-        FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_invite_approve_mentor"), strName), 0x10);
+        FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_approve_mentor"), strName), 0x10);
     reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
 }
 
@@ -462,7 +460,7 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
         {
             m_mentors.RemoveAt(i, 1);
             if (spMentor->name.GetLength() > 0)
-                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_invite_decline_mentor"), spMentor->name), 0x10);
+                FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_decline_mentor"), spMentor->name), 0x10);
             break;
         }
     }
@@ -475,7 +473,7 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
 // @0x140b72540
 void CMentoringManager::OnMentorRegistered(CInPacket& packet)
 {
-    if (reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4f4b) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
         reinterpret_cast<Unk_MMUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentor"), 0x10);
 }
@@ -524,7 +522,7 @@ void CMentoringManager::OnMentorRequest(CInPacket& packet)
     Unk_MentorPtr<UIInviteMentoringDialog> spDialog(FUN_140b6f4c0(0x4f4c));
     if (spDialog.get() != 0)
         spDialog->FUN_140c2f070(m_mentors);
-    FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_notify_mentor_request"), data.name), 0x10);
+    FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_notify_mentor_request"), data.name), 0x10);
 }
 
 // @0x140b72d80
@@ -580,7 +578,7 @@ bool FUN_140b73bc0(MyPC* pMyPC)
 {
     if (pMyPC == 0)
         return false;
-    if (FUN_1408e57f0()->FUN_1422b9e00() == 0x620001f)
+    if (((Unk_MMScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() == 0x620001f)
         return false;
     if (((Unk_MMPlayer*)pMyPC)->FUN_1416595d0() == 1)
         return false;

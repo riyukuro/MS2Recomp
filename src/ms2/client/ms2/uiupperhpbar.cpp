@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/wcformat.h"
 // The recovered initializer run contains two copies of the header's static data.
 namespace Unk_UpperHeaderStatics {
 static CString sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -47,7 +48,6 @@ CString FUN_140b62550(int);
 class Unk_UpperEvt {public:Unk_UpperEvt(const Unk_UpperEvt&);private:void* m_0;};
 class Unk_UpperPlayer {public:void* FUN_141bd1320(int);void* FUN_141bd1180(int);void* FUN_141bd0fa0(Unk_UpperEvt);};
 class Unk_UpperActor;class Unk_UpperBuff {public:Unk_UpperActor* FUN_14096d280();int FUN_14096d260();char* FUN_14096d810();};
-class Unk_UpperMgr {public:int FUN_141adc890(int);};
 Unk_UpperPtr<Unk_UpperClip> FUN_140acca70(int,const Scaleform::GFx::Value&);
 class ASEffectManager   // C3: member view for the former free stand-ins
 {
@@ -75,7 +75,7 @@ class Unk_UpperActor {public:
  __int64 FUN_141670a60(int);int FUN_14166ce30();__int64 FUN_141670a00(int);__int64 FUN_141670a30(int);
  __int64 FUN_141095270();int FUN_141092fa0();int FUN_141093030();};
 CStringW FUN_140ba7890(const wchar_t*,const __int64&);
-CStringW FUN_1401aa6a0(int);CStringW FUN_1405c2690(CStringW,const CStringW&);
+CStringW FUN_1401aa6a0(int);
 class Unk_UpperSub {public:Unk_UpperPtr<Unk_UpperBuff> FUN_140972690();};class Unk_UpperTargetUI : public UIHeadUpDisplay {public:void FUN_140c5f8f0(Unk_UpperPtr<Unk_UpperBuff>);Unk_UpperPtr<Unk_UpperBuff> FUN_140c5f990();void FUN_140c5faf0();};
 Unk_UpperTargetUI* FUN_140974280(int);
 Unk_UpperActor* FUN_1409ffd30(void*);class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
@@ -106,12 +106,12 @@ void FUN_141b4a150(Unk_UpperActor* actor,bool flag,int* stage,__int64* cur,__int
    __int64 over=total-unit;
    *cur=over%unit;
    *hpText=FUN_140ba7890(L"{0}",over);
-   *shieldText=FUN_1405c2690(L"s_upper_hp_bar_accum_damage",FUN_1401aa6a0(npc->FUN_141092fa0()));
+   *shieldText=FUN_14028dfa0<CStringW>(L"s_upper_hp_bar_accum_damage",FUN_1401aa6a0(npc->FUN_141092fa0()));
   }else{
    __int64 rest=unit-total;
    *cur=rest;
    *hpText=FUN_140ba7890(L"{0}",*cur);
-   *shieldText=FUN_1405c2690(L"s_upper_hp_bar_accum_damage_shield",FUN_1401aa6a0(npc->FUN_141092fa0()));
+   *shieldText=FUN_14028dfa0<CStringW>(L"s_upper_hp_bar_accum_damage_shield",FUN_1401aa6a0(npc->FUN_141092fa0()));
   }
   *max=*cur;
  }
@@ -319,7 +319,7 @@ MS2_REPLACE_METHOD_VIA(0x141B4C3E0, UIUpperHpBar, UIEntityEventListener, vfunc_o
 // @0x141b4c510
 void UIUpperHpBar::FUN_141b4c510(Unk_UpperActor* actor,int kind){
  if(m_30==0)return;
- if(reinterpret_cast<Unk_UpperMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e96)!=0||reinterpret_cast<Unk_UpperMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ec4)!=0)return;
+ if((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e96)))!=0||(((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec4)))!=0)return;
  UpperHpBarEntity& e=FUN_141b4d170(actor);
  if(!FUN_141b4d630(e,kind,((class GameObject*)(void*)(actor))->FUN_14123c580()))return;
  if(!FUN_141b4d320(e))return;

@@ -149,7 +149,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
             pkObject->AttachProperty(pkTexturing);
         }
 
-        NiRenderedTexture* pkTexture = FUN_1409a8b20()->FUN_1416a23f0(1);
+        NiRenderedTexture* pkTexture = FUN_1409a8b20()->GetRenderedTexture(1);
         NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(pkTexture, 0,
             NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST);
         pkTexturing->SetShaderMap(0, pkMap);
@@ -205,7 +205,7 @@ void FUN_141773e30(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Ca
 // @0x141773ed0
 void FUN_141773ed0(Unk_PPSecondView* pkSoftParticles)
 {
-    NiRenderedTexture* pkTexture = FUN_1409a8b20()->FUN_1416a23f0(1);
+    NiRenderedTexture* pkTexture = FUN_1409a8b20()->GetRenderedTexture(1);
 
     NiTPointerList<NiAVObjectPtr>& kScenes = pkSoftParticles->m_spView->GetScenes();
     NiTListIterator kPos = kScenes.GetHeadPos();

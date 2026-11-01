@@ -178,6 +178,9 @@ static CString s_stun("stun");
 
 #include <atlcoll.h>
 #include <vector>
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unrecovered neighbours ------------------------------------------------------------------------------------------
 CStringW GetStringCommon(int nStringId);                      // the client string table
@@ -303,10 +306,8 @@ class Unk_AkoUIMgr
 {
 public:
     Unk_AkoUIRef FUN_141adcea0(int nUiId);                  // the ui by id
-    void FUN_141adc750(int nUiId);                          // toggle the ui by id
     int FUN_141adc940(int nUiId);                           // is open
     int FUN_141adc890(int nUiId);                           // is shown
-    void FUN_141adc5d0(int nUiId);                          // hide
     void FUN_141adc530(int nUiId);                          // close
 };
 UIObject* FUN_1403ed9e0(Unk_AkoUIRef&);
@@ -419,7 +420,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_WsC_GameObj, m_bTalkable, 0xe50);
 // The client string tables.
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted client string
 // The cutscene service: UITalkManager, viewed through the calls made here. Its singleton slot (0x143ab3900) is the one
 // TSingleton<UITalkManager>::s_instance every UITalkManager user shares (a TSingleton<Unk_AkoCutscene> of its own would
 // be a second copy).
@@ -432,7 +432,6 @@ public:
     int FUN_141b21220();                                    // a cutscene is playing
     int FUN_141b211d0();                                    // npc talk is enabled
 };
-GFxSceneService* FUN_1408e57f0();
 int FUN_141276980();                                        // npc talk is allowed
 
 // The world service's portal / current field lookups with their true return types (worldservice.h spells them with
@@ -470,7 +469,6 @@ public:
 };
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // a formatted string by key
 CStringW GetStringCommonByKey(const CStringW& strKey);             // a string by key
 // Micro-game banner (BannerAction).
 bool FUN_140b7f400(MyPC* pPlayer);                          // the player can join a micro game
@@ -546,7 +544,7 @@ int FUN_1408a03c0(Unk_Int3 pt);                             // the packed key of
 // @0x140960c30 an action caption: the string with the argument, cut at '-' when the argument is empty
 CStringW FUN_140960c30(int nStringId, CStringW strArg)
 {
-    CStringW strText = FUN_14052bd00(nStringId, strArg);
+    CStringW strText = FormatStringId<CStringW>(nStringId, strArg);
     if (strArg.GetLength() == 0)
     {
         int nPos = strText.Find(L'-');
@@ -923,7 +921,7 @@ void TaxiStationAction::vfunc_2()
     if (!pPlayer)
         return;
     if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e42))
-        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e42);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e42)));
     if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
         pDialog->FUN_141b5af80(1);
     ((class Unk_AkoGuide*)FUN_1409331e0())->FUN_14138bf00(0x11, 0, 0);
@@ -962,7 +960,7 @@ PortalAction::~PortalAction()
 void PortalAction::vfunc_3()
 {
     if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ebd))
-        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ebd);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ebd);
 }
 MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
 // @0x140955280
@@ -1125,7 +1123,7 @@ CStringW PortalAction::vfunc_6()
                 strName += strError;
             }
         }
-        strText = FUN_14052bd00(0x633, strName);
+        strText = FormatStringId<CStringW>(0x633, strName);
     }
     return strText;
 }
@@ -1226,7 +1224,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
     if ((spField.get() ? true : false) && spField->m_nRequireQuest != 0
         && ((class Unk_AkoQuestGlobal*)FUN_140764020())->m_state.FUN_140745590(spField->m_nRequireQuest) == 0)
     {
-        FUN_1412751f0(FUN_1405c2690(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
         return;
     }
     if (m_spPortal->m_bConfirm)
@@ -1344,7 +1342,7 @@ void BuyCubeAction::vfunc_2()
     int nError = spHouse->FUN_1410c8580(m_n18);
     if (nError == 0)
     {
-        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e76);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
         if (UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76))
             pDialog->FUN_141ab4000(m_n18, WorldService::GetInstance()->FUN_141bd3060());
     }
@@ -1528,7 +1526,7 @@ void TalkAction::vfunc_2()
         return;
     if (Unk_AkoCutscene::GetInstance()->FUN_141b21220() != 0)
         return;
-    if (FUN_1408e57f0()->GetSubSceneId() == 0x6200031)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
         return;
     if (FUN_141276980() == 0)
         return;
@@ -1543,7 +1541,7 @@ CStringW TalkAction::vfunc_6()
     CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, m_n18);
     if (strText.GetLength() == 0)
         strText = GetStringCommon(0x62d);
-    CStringW strName = FUN_14052bd00(0x649, m_strName);
+    CStringW strName = FormatStringId<CStringW>(0x649, m_strName);
     if (strName.GetLength() != 0)
         strText.Append(strName);
     return strText;
@@ -1657,7 +1655,7 @@ void InteractAction::vfunc_2()
     if (pObject->FUN_1413fe220() == 0)
     {
         if (spData->m_aReqItem.m_aItem.size() == 1)
-            FUN_1412751f0(FUN_1405c2690(L"s_interact_err_additional_effect",
+            FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_interact_err_additional_effect",
                 TSingleton<CStringTable>::GetInstance()->FUN_141812290(
                     FUN_140966f40(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     FUN_140966f80(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
@@ -2274,7 +2272,7 @@ void FittingDollAction::vfunc_2()
     if (pDoll)
     {
         DAT_143af25f0 = pDoll->FUN_141656a80();
-        reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e77);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e77)));
     }
 }
 MS2_REPLACE_METHOD(0x14095B940, FittingDollAction, vfunc_2, 249, 0xB3E2B065);
@@ -3161,10 +3159,10 @@ CStringW QuestUserFindAction::vfunc_6()
     CStringW strKey = L"s_action_questUserFind";
     CStringW strQuestKey;
     strQuestKey.Format(L"%s_%d", (const wchar_t*)strKey, m_n20);
-    CStringW strText = FUN_1405c2690(strQuestKey, strName);
+    CStringW strText = FUN_14028dfa0<CStringW>(strQuestKey, strName);
     if (!strText.IsEmpty())
         return strText;
-    return FUN_1405c2690(strKey, strName);
+    return FUN_14028dfa0<CStringW>(strKey, strName);
 }
 MS2_REPLACE_METHOD(0x140960040, QuestUserFindAction, vfunc_6, 518, 0x47546616);
 // @0x140960020

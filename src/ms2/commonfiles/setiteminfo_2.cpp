@@ -26,6 +26,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                  // the item data of an id
 
@@ -42,7 +43,7 @@ CSetItemManager::CSetItemManager()
 // @0x1407af5b0
 void CSetItemManager::Clear()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_uids->clear();
     m_counts->clear();
     m_proxies->clear();
@@ -62,7 +63,7 @@ void CSetItemManager::AddItemCount(int nItemId, __int64 nUid, eSetItemLayer::T n
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
     SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
         LayerKey key(sets[i]->FUN_1407ad550(), nLayer);
@@ -98,7 +99,7 @@ void CSetItemManager::RemoveItem(int nItemId, __int64 nUid, eSetItemLayer::T nLa
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
     SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
         int nCount = 0;
@@ -133,7 +134,7 @@ void CSetItemManager::AddItem(int nItemId, __int64 nUid, eSetItemLayer::T nLayer
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
     SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
         TPtrValue<UidList> spUids(0);
@@ -184,7 +185,7 @@ void CSetItemManager::RemoveItemByUid(int nItemId, __int64 nUid, eSetItemLayer::
         return;
     std::vector<MS2Ptr<SetItemInfo> > sets;
     SetItemTable::GetInstance()->GetSetItemInfos(spItem->FUN_14053c560(), sets);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
         int nSetId = sets[i]->FUN_1407ad550();
@@ -222,7 +223,7 @@ void CSetItemManager::RemoveItemByUid(int nItemId, __int64 nUid, eSetItemLayer::
 // @0x1407b06e0
 void CSetItemManager::SetM100(int nValue)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_n100 = nValue;
     Refresh();
 }
@@ -230,7 +231,7 @@ void CSetItemManager::SetM100(int nValue)
 // @0x1407b0750
 void CSetItemManager::Refresh()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_options.RemoveAll();
     m_specials.clear();
     m_effects.RemoveAll();
@@ -285,7 +286,7 @@ void CSetItemManager::Refresh()
 // @0x1407b0b90
 void CSetItemManager::GetList(UidList& out)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     out.RemoveAll();
     out.AddTailList(&m_effects);
 }
@@ -294,7 +295,7 @@ void CSetItemManager::GetList(UidList& out)
 Unk_EnchantPtr<BaseOption> CSetItemManager::GetOption(int nStat)
 {
     Unk_EnchantPtr<BaseOption> spOption;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_options.Lookup(nStat, spOption);
     return spOption;
 }
@@ -303,14 +304,14 @@ MS2_REPLACE_METHOD(0x1407B0C00, CSetItemManager, GetOption, 160, 0x1BBE78DF);
 // @0x1407b0cb0
 int CSetItemManager::GetSpecialAbility(SAType nType)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_specials[nType];
 }
 
 // @0x1407b0d20
 int CSetItemManager::HasOptions()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_options.IsEmpty() == 0 ? 1 : 0;
 }
 MS2_REPLACE_METHOD(0x1407B0D20, CSetItemManager, HasOptions, 106, 0x07E01EC5);
@@ -318,7 +319,7 @@ MS2_REPLACE_METHOD(0x1407B0D20, CSetItemManager, HasOptions, 106, 0x07E01EC5);
 // @0x1407b0d90
 int CSetItemManager::HasSpecialAbilities()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_specials.empty() == 0 ? 1 : 0;
 }
 MS2_REPLACE_METHOD(0x1407B0D90, CSetItemManager, HasSpecialAbilities, 108, 0x68EEE267);
@@ -326,7 +327,7 @@ MS2_REPLACE_METHOD(0x1407B0D90, CSetItemManager, HasSpecialAbilities, 108, 0x68E
 // @0x1407b0e10
 float CSetItemManager::GetM104()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_f104;
 }
 MS2_REPLACE_METHOD(0x1407B0E10, CSetItemManager, GetM104, 77, 0x78234F7A);
@@ -334,7 +335,7 @@ MS2_REPLACE_METHOD(0x1407B0E10, CSetItemManager, GetM104, 77, 0x78234F7A);
 // @0x1407b0e70
 unsigned CSetItemManager::GetSetCount(const LayerKey& key)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     unsigned nCount = 0;
     std::map<LayerKey, int>::iterator it = m_counts->find(key);
     if (it != m_counts->end())
@@ -347,7 +348,7 @@ MS2_REPLACE_METHOD(0x1407B0E70, CSetItemManager, GetSetCount, 189, 0x7662DAE1);
 int CSetItemManager::GetLayer1Count(unsigned nSetId)
 {
     LayerKey key(nSetId, (eSetItemLayer::T)1);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nCount = 0;
     std::map<LayerKey, int>::iterator it = m_counts->find(key);
     if (it != m_counts->end())

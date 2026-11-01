@@ -212,7 +212,7 @@ int EquipSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    void* pPlayer = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    void* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_14120ce90(m_nKind);
@@ -236,7 +236,7 @@ int EquipSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_EqPlayer* pPlayer = reinterpret_cast<Unk_EqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EqPlayer* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();

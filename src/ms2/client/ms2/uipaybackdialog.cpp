@@ -34,6 +34,7 @@
 static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal",
                                           "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 static CStringA s_strJobCode = "jobCode";
 static CStringA s_strSortValue = "sortValue";
 static CStringA s_strTabIndex = "tabIndex";
@@ -67,7 +68,6 @@ class Unk_PbUiMgr
 {
 public:
     void FUN_141adc530(int nId);                                    // open a dialog
-    void FUN_141adc5d0(int nId);                                    // close a dialog (if open)
 };
 Unk_PbUiMgr* FUN_1403ed2b0();
 
@@ -157,7 +157,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     {
         if (FUN_14071d7d0()->IsResetWindow())
         {
-            FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f93);
             FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
             return 1;
         }

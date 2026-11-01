@@ -63,7 +63,7 @@ class UISwfEntity;          // uiswfentity.h (+0xad8, unregistered by the dtor)
 class Unk_PCBaseBody;       // +0x150 physics/controller body (0xf8; ctor 0x14123f2d0, dtor 0x14123f460), pcbase.cpp
 
 // +0xc08: an 11-bit set (commonfiles\bitset.inl instance, the same as unit_140d73aa0's Unk_BitSet11): the reasons the
-// actor is hidden (FUN_14166ca20 / FUN_14166ca80 / FUN_14166cb30).
+// actor is hidden (FUN_14166ca20 / RemoveHideReason / ApplyHideReasons).
 // +0x648: CColorBoostManager (0x48; FUN_14109be00 adds a CColorBoostData).
 class CColorBoostData;
 class Unk_PCBaseColorBoostMgr
@@ -376,12 +376,12 @@ public:
     int FUN_141679070();
     void FUN_141679090(int n);
     int FUN_14166c960();                                    // 0x14166c960 queued state (m_unk_c48)
-    int FUN_14166c980();                                    // 0x14166c980 previous state id
+    int GetPrevState();                                    // 0x14166c980 previous state id
     void FUN_14166ca20(unsigned int nReason);               // 0x14166ca20 hide for a reason
-    void FUN_14166ca80(unsigned int nReason);               // 0x14166ca80 clear a hide reason
+    void RemoveHideReason(unsigned int nReason);               // 0x14166ca80 clear a hide reason
     bool FUN_14166cad0();                                   // 0x14166cad0 hidden for any reason
     bool FUN_14166cb00(unsigned int nReason);               // 0x14166cb00
-    void FUN_14166cb30();                                   // 0x14166cb30 apply the hide reasons
+    void ApplyHideReasons();                                   // 0x14166cb30 apply the hide reasons
     void FUN_14166cc40(int nValue);                         // 0x14166cc40
     void FUN_14166cce0(unsigned int nFlags);                // 0x14166cce0 m_unk_158 |= (rider and mount)
     void FUN_14166cd70(unsigned int nFlags);                // 0x14166cd70 m_unk_158 &= ~

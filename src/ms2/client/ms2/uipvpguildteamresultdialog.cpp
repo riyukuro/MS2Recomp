@@ -23,6 +23,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/guildmanager.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- header statics (dynamic initializers 0x1400efc20..) ----
 static CString s_strMassiveFail = "massive_fail";
@@ -75,7 +76,6 @@ MS2_CHECK_SIZE(Unk_PgtrItemPtr, 0x10);
 Unk_PgtrItemPtr FUN_14053f870(int nItemId);
 
 CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-insensitive equal
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
 CStringW FUN_1408116a0(int nId, const int& nArg);
@@ -235,11 +235,11 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
     __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
     Unk_PgtrGuild* pOwn = FUN_1413420e0(nOwnGuild, true);
     if (FUN_1403b3c40(pOwn->m_strResult, L"win"))
-        m_strReward = FUN_1405c2690(L"s_PvpGuildResult_vsGame_result_lose", pOwn->m_strName);
+        m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_lose", pOwn->m_strName);
     if (FUN_1403b3c40(pOwn->m_strResult, L"lose"))
-        m_strReward = FUN_1405c2690(L"s_PvpGuildResult_vsGame_result_win", pOwn->m_strName);
+        m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_win", pOwn->m_strName);
     if (FUN_1403b3c40(pOwn->m_strResult, L"draw"))
-        m_strReward = FUN_1405c2690(L"s_PvpGuildResult_vsGame_result_draw", pOwn->m_strName);
+        m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_draw", pOwn->m_strName);
     if (FUN_141924630())
         FUN_1413418a0();
     else

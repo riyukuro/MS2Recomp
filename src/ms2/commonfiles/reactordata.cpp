@@ -50,7 +50,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_140197350(Unk_140165cf0*, const char*, int nDefault);           // int attribute with default
@@ -60,12 +60,10 @@ CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // str
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);
 int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>& rOut);   // list attribute
 void FUN_140178270(const CStringA& str, std::vector<int>& rOut, const char* pszSep);   // split into ints
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 int FUN_140768010(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
-void FUN_14034f0c0(ATL::CAtlArray<ItemEntity>&, const ItemEntity&);      // CAtlArray<ItemEntity>::Add
-size_t FUN_1401662c0(ATL::CAtlArray<CStringA>&);                         // GetCount
 CStringA& FUN_140164930(ATL::CAtlArray<CStringA>&, size_t nIndex);       // operator[]
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -78,7 +76,7 @@ ReactorStateData::ConditionPtr FUN_14076a1e0(Unk_140165cf0* pNode)
     if (pNode == 0)
         return ReactorStateData::ConditionPtr(0);
     int nCode = 0;
-    if (FUN_1408731e0(pNode, "code", nCode) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), "code", nCode) != 0)
         return ReactorStateData::ConditionPtr(0);
     MS2Ptr<ReactorConditionItem> item(new ReactorConditionItem);
     item->m_nCode = nCode;
@@ -128,7 +126,7 @@ static int ReadStateType(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 // MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool ReactorStateData::Load(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     ReadStateType(pNode, "type", &m_nType);
     m_nNextTimeSec = FUN_140197350(pNode, "nextTimeSec", 0);
     m_nExpireTimeSec = FUN_140197350(pNode, "expireTimeSec", 0);
@@ -162,7 +160,7 @@ ReactorData::~ReactorData()
 // @0x14076ab40
 bool ReactorData::Load(Unk_140165cf0* pNode)
 {
-    FUN_1408731e0(pNode, "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     FUN_1401788f0(pNode, "createAnimation", m_createAnims);
     FUN_1401788f0(pNode, "reactAnimation", m_reactAnims);
     m_nReactTimeMSec = FUN_140197350(pNode, "reactTimeMSec", 15000);
@@ -205,7 +203,7 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
         {
             ItemEntity item;
             item.vfunc_2(pItem);
-            FUN_14034f0c0(m_rewards, item);
+            ((ATL::CAtlArray<ItemEntity, ATL::CElementTraits<ItemEntity>>*)&static_cast<class ATL::CAtlArray<struct ItemEntity, class ATL::CElementTraits<struct ItemEntity>>&>(m_rewards))->Add(item);
         }
     } while (0);
     return true;
@@ -214,18 +212,18 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
 // @0x14076b060
 CStringA ReactorData::GetCreateAnimation()
 {
-    if (FUN_1401662c0(m_createAnims) == 0)
+    if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010(FUN_1401662c0(m_createAnims), 0);
+    int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount(), 0);
     return FUN_140164930(m_createAnims, nIndex);
 }
 
 // @0x14076b110
 CStringA ReactorData::GetReactAnimation()
 {
-    if (FUN_1401662c0(m_reactAnims) == 0)
+    if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010(FUN_1401662c0(m_reactAnims), 0);
+    int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount(), 0);
     return FUN_140164930(m_reactAnims, nIndex);
 }
 
@@ -264,7 +262,7 @@ bool CReactorDataTable::LoadReactors()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactor"); pNode != 0; pNode = pNode->FUN_140168650("reactor"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         DataPtr data(new ReactorData);
         if (!data->Load(pNode))

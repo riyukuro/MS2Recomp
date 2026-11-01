@@ -58,10 +58,14 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);   // register
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);   // unregister
 };
-Unk_WbPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 void* FUN_1409eed90();                                          // the singleton of the own character
-void FUN_141b86750(void* pCharacter, unsigned __int64 nWeddingHallSN);    // attend that wedding
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendInvitation(unsigned __int64);
+};
 unsigned __int64 FUN_140718370(const CStringW& text);                // text -> number
 bool FUN_140164830(const CStringW& a, const CStringW& b);       // names are equal
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
@@ -140,14 +144,14 @@ int UIWeddingBillboardDialog::vfunc_65()
 void UIWeddingBillboardDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bccd50()->FUN_140da51e0(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class Unk_WbPackets*)FUN_140bccd50())->FUN_140da51e0(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
 }
 
 // @0x140fc2e70
 void UIWeddingBillboardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bccd50()->FUN_140da5180(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class Unk_WbPackets*)FUN_140bccd50())->FUN_140da5180(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
     COutPacket packet(static_cast<int>(SendOp::WeddingBillboard), 0);
     packet.Encode1(4);
     packet.Encode4(0);
@@ -165,7 +169,7 @@ int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             unsigned __int64 nSN = FUN_140718370(data.FUN_1422b8f40());
-            FUN_141b86750(FUN_1409eed90(), nSN);
+            ((class WeddingManager*)(void*)(FUN_1409eed90()))->SendInvitation(nSN);
         }
     }
     else if (_stricmp(szMethod, "onPrev") == 0)

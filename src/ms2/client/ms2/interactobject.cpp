@@ -253,7 +253,7 @@ public:
 class Unk_IoMapRules { public: unsigned char FUN_1407d05e0(unsigned nMapId, int nBanType); };
 class Unk_IoGameCtx { public: Unk_IoMapRules* FUN_1403f3230(); };
 void FUN_141275260(int, int, int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_IoCfg { public: int FUN_1402c4c90(int n); };
 struct Unk_IoCfgHolder { char m_pad_00[8]; Unk_IoCfg m_cfg; };
@@ -346,7 +346,7 @@ public:
 };
 unsigned char* FUN_140a58500(Unk_IoPostFx* p);
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-void* FUN_1408e57f0();
+class CUserMail { public: static __int64 FUN_1408e57f0(); };   // C3: the scene-service global (usermail.h clashes on FUN_141276180)
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -358,7 +358,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
    // member (this=rcx, hidden return=rdx)
 CKeyTable* FUN_1409331f0();
-class Unk_IoUiMgr { public: void FUN_141adc530(int n); int FUN_141adc940(int n); void FUN_141adc5d0(int n); };
+class Unk_IoUiMgr { public: void FUN_141adc530(int n); int FUN_141adc940(int n); };
 UISwfEntityManager* FUN_140b632f0();
 DWORD GetTickCountMs2();
 
@@ -1070,7 +1070,7 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
     {
         m_bActive = 1;
         FUN_141276180(s_strUseTelescope, "");
-        ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x6200041);
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200041);
         CStringW strDesc;
         UICutSceneCinematic* pHelp = ((class UICutSceneCinematic*)FUN_14136f290(0x4e52));
         if (pHelp != 0)
@@ -1112,7 +1112,7 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
 void CInteractTelescopeObject::OnCutSceneSkip(NotifyObject*)
 {
     ((class CTriggerService*)FUN_140ad4b90())->FUN_141863460(0.0f);
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
     Unk_IoCutRef ref = reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (ref.FUN_1409657a0() != 0)
     {
@@ -1150,7 +1150,7 @@ void CInteractUIObject::vfunc_2(Unk_InteractMsg* pMsg)
     {
         if (m_spRow->m_ui.m_strValue.GetLength() != 0)
             pDialog->FUN_1419265e0(m_spRow->m_ui.m_strValue);
-        reinterpret_cast<Unk_IoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(pDialog->vfunc_48());
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(pDialog->vfunc_48())));
         m_nDialogId = pDialog->vfunc_48();
     }
 }
@@ -1169,12 +1169,12 @@ void CInteractUIObject::vfunc_11()
     Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
     {
-        reinterpret_cast<Unk_IoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(m_nDialogId);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)m_nDialogId);
         return;
     }
     float fRange = GetRow()->m_validate.m_fInteractionDistance;
     if (pPlayer->FUN_1416767d0().FUN_140965c40(GetPos()).FUN_140967ac0() > fRange)
-        reinterpret_cast<Unk_IoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(m_nDialogId);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)m_nDialogId);
 }
 
 // ================================================================================================================

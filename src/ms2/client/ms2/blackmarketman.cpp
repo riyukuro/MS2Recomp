@@ -23,7 +23,7 @@ static CString s_strBlackMarketSell = "BlackMarket_Sell";
 
 // ---- out-of-unit callees ----
 // UI service: handle to a registered UI object.
-class Unk_BmUIService { public: int FUN_141adc890(int nClass); void FUN_141adc530(int nClass); MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_BmUIService { public:  void FUN_141adc530(int nClass); };
 
 // The table of text strings and the message helpers.
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
@@ -50,9 +50,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Black market dialog entry points taking a product (the dialog header types them with the page's own entry class).
-void FUN_1418d0e40(UIBlackMarketDialog* pDlg, MS2Ptr<CBlackMarketProduct> spProduct);
-void FUN_1418d0f00(UIBlackMarketDialog* pDlg, MS2Ptr<CBlackMarketProduct> spProduct, int n);
-void FUN_1418d1080(UIBlackMarketDialog* pDlg, MS2Ptr<CBlackMarketProduct> spProduct, int n);
 
 // The common string of a table id, formatted ("{0} {1}").
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
@@ -92,7 +89,7 @@ UIBlackMarketDialog* FUN_140a22f10(int nClass)
 {
     if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIBlackMarketDialog*>(spObj.operator->());
     }
@@ -144,8 +141,8 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
     }
     else if (cSub == 9)
     {
-        if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e97) == 0)
-            reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e97);
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e97))) == 0)
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e97)));
     }
     else if (cSub == 8)
         FUN_140a21be0(packet);
@@ -336,7 +333,7 @@ void CBlackMarketMan::FUN_140a21340(CInPacket& packet)
     {
         UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
         if (pDlg != 0)
-            FUN_1418d0e40(pDlg, sp);
+            ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d0e40(sp);
     }
 }
 
@@ -352,7 +349,7 @@ void CBlackMarketMan::FUN_140a21460(CInPacket& packet)
         {
             UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
             if (pDlg != 0)
-                FUN_1418d0f00(pDlg, sp, bFlag);
+                ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d0f00(sp, bFlag);
             FUN_140a20e00(qwId);
         }
     }
@@ -406,7 +403,7 @@ void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
         int nOld = m_listSearch.GetCount();
         POSITION posTail = m_listSearch.GetTailPosition();
         pDlg->FUN_1418d1330(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
-        FUN_1418d1080(pDlg, sp, nBought);
+        ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d1080(sp, nBought);
     }
 }
 

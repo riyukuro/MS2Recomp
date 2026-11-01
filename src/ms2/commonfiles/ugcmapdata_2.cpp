@@ -169,6 +169,7 @@
 #include "ms2/ms2recover.h"
 #include <atlcoll.h>
 #include <string>
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 
 class Unk_140163940 {
 public:
@@ -257,16 +258,16 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         CString extensionText(FUN_14086f4b0(node,"extensionPriceItemCode"));
         long extensionItemCode=atol(extensionText);
         int houseNumber=0; XmlGetAttr((class TiXmlElement*)(node), "houseNumber", *(int*)(&houseNumber));
-        CString previewIcon=FUN_14015f710(node,"previewIcon",CString(""));
+        CString previewIcon=Unk_ReadString((class Unk_XmlNode*)(node), "previewIcon", CString(""));
         int blockCode=0; XmlGetAttr((class TiXmlElement*)(node), "blockCode", *(int*)(&blockCode));
         std::vector<unsigned> npcs;
-        CString npcText=FUN_14015f710(node,"privilegeNPC",CString(""));
+        CString npcText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegeNPC", CString(""));
         FUN_1401782a0(npcText,npcs,",");
         std::vector<int> portals;
-        CString portalText=FUN_14015f710(node,"privilegePortal",CString(""));
+        CString portalText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegePortal", CString(""));
         FUN_140178270(portalText,portals,",");
         std::vector<int> interact;
-        CString interactText=FUN_14015f710(node,"privilegeInteract",CString(""));
+        CString interactText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegeInteract", CString(""));
         FUN_140178270(interactText,interact,",");
         int maidCount=0; XmlGetAttr((class TiXmlElement*)(node), "maidCount", *(int*)(&maidCount));
         int triggerCount=0; XmlGetAttr((class TiXmlElement*)(node), "triggerCount", *(int*)(&triggerCount));
@@ -275,7 +276,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         bool hideEmoticon=false; XmlQuery((class TiXmlElement*)(node), "hideEmoticon", *(bool*)(&hideEmoticon));
         unsigned trophyId=0; XmlGetAttr((class TiXmlElement*)(node), "trophyID", *(unsigned int*)(&trophyId));
         bool adminOnly=false; XmlQuery((class TiXmlElement*)(node), "adminOnly", *(bool*)(&adminOnly));
-        CString indoorSizeType=FUN_14015f710(node,"indoorSizeType",CString(""));
+        CString indoorSizeType=Unk_ReadString((class Unk_XmlNode*)(node), "indoorSizeType", CString(""));
         int useCouponEvent=0; XmlGetBool((class TiXmlElement*)(node), "useCouponEvent", *(int*)(&useCouponEvent));
         if(value->groups.find(no)==value->groups.end()) value->groups[no]=static_cast<const Unk_UGCGroup&>(Unk_UGCGroup());
         Unk_UGCGroup& group=value->groups[no];

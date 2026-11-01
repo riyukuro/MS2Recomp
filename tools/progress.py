@@ -1205,6 +1205,22 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     return res
 
 
+def unit_queue_rows(path, units):
+    """{unit rel: its queue.tsv row fields} (missing file: {}). The row is found through interface_check.queue_name,
+    so `?\\x.cpp` rows, `dir\\x.cpp` rows of `?\\x.cpp` units and sfr_ family rows count."""
+    import interface_check as ifc
+    rows = {}
+    try:
+        for l in open(path, encoding="utf-8"):
+            if l.strip() and not l.startswith("#"):
+                q = l.rstrip("\n").split("\t")
+                rows[q[0]] = q
+    except OSError:
+        return {}
+    names = {u.name for u in units}
+    return {u.rel: rows[q] for u in units for q in [ifc.queue_name(u.name, rows, names)] if q}
+
+
 def excluded_reason(u, urows, queue_stubbed):
     """why a unit is "stubbed (excluded)" from the headline totals, or None: an MS2-NO-EXE stand-in, a queue row
     marked `stubbed: NM not needed`, or a unit whose address (as tools/fullexe/plan.py places it: its lowest
@@ -1235,7 +1251,14 @@ LOOKALIKE_HOW = ("auto-order", "auto-leaf", "auto-guess")
 def unit_score(u, res, starts):
     """(stubs, -exact, -vftables ok) of a process_unit result over the unit's ranges: lower is better."""
     byva = {}
+    # MS2_GATE_PASS_GUESS_STUB=1: an auto-guess pair (byte-identical copy, owner chosen by name order, never exact) is
+    # scored as a stub. Otherwise a first pass that guesses every look-alike (0 stubs) beats a gate pass that pairs
+    # them exactly but leaves one stub, and the merge keeps the guesses: merge 47 cubemapinformationservice_tail2
+    # 541 -> 375 exact (gate 540/31/1) after a header-only recompile
+    guess_stub = bool(os.environ.get("MS2_GATE_PASS_GUESS_STUB"))
     for p in res["pairs"].values():
+        if guess_stub and p["how"] == "auto-guess":
+            continue
         byva[p["va"]] = byva.get(p["va"], False) or p["ok"]
     stubs = exact = 0
     for lo, hi in u.ranges:
@@ -1254,6 +1277,11 @@ def needs_gate_pass(u, res, starts):
     if unit_score(u, res, starts)[0]:
         return True
     if any(p["how"] in LOOKALIKE_HOW for p in res["pairs"].values()):
+        return True
+    # MS2_GATE_PASS_GUESS_STUB=1: failed pairs too. A callee the symbols-manual table has no row for passes the
+    # lenient check, so a same-shape wrong name can take the VA with no stub left behind (merge 47 uiguideeventarrow:
+    # static GuideAS took ~UIGuideEventArrow's 0x1419609a0, ~CPtred unbound; its two tag callers failed, 127 -> 125)
+    if os.environ.get("MS2_GATE_PASS_GUESS_STUB") and any(not p["ok"] for p in res["pairs"].values()):
         return True
     return any(n.startswith("ambiguous") for n in res["notes"])
 
@@ -1419,6 +1447,10 @@ def main():
             if not c or not c.get("res"):
                 continue
             stamp = mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)    # only the committed rows this unit can read
+            if os.environ.get("MS2_GATE_PASS_GUESS_STUB"):
+                if c.get("res2") and c.get("key2") == [c["key"], stamp]:
+                    c["key2"] = [c["key"], stamp + "g"]             # gate pairing already kept: nothing to re-score
+                stamp += "g"
             if c.get("key2") == [c["key"], stamp]:
                 continue
             c.pop("res2", None)
@@ -1427,6 +1459,8 @@ def main():
                 gate_todo.append(u)
             else:
                 c["key2"] = [c["key"], stamp]
+        def stamp2(u):
+            return mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV) + ("g" if os.environ.get("MS2_GATE_PASS_GUESS_STUB") else "")
         if gate_todo:
             print(f"gate pass: re-matching {len(gate_todo)} unit(s) against the committed symbols.tsv ...", flush=True)
             load_table(bm.SYMBOLS_TSV)
@@ -1439,7 +1473,7 @@ def main():
                     kept += 1
                     if s2 < s1:
                         print(f"gate pass: {u.rel}: stubs {s1[0]} -> {s2[0]}, exact {-s1[1]} -> {-s2[1]}")
-                c["key2"] = [c["key"], mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)]
+                c["key2"] = [c["key"], stamp2(u)]
             load_table(manual_tsv)
             print(f"gate pass: {kept} of {len(gate_todo)} unit(s) keep their gate pairing", flush=True)
     # drop cache entries of units that no longer exist
@@ -1460,13 +1494,10 @@ def main():
         r = c["res"]
         return all(p["ok"] for p in r["pairs"].values()) and all(v["ok"] for v in r["vft"].values())
 
-    done_rels = set()
-    try:
-        _done = {l.split("\t")[0] for l in open(os.path.join(OUT, "queue.tsv"))
-                 if l.strip() and not l.startswith("#") and l.split("\t")[4] in ("done", "done-functional")}
-        done_rels = {u.rel for u in all_units if u.name in _done}
-    except (OSError, IndexError):
-        pass
+    # queue rows may name a unit differently from its MS2-UNIT line (`?\x.cpp` vs `client\ms2\x.cpp`, family row
+    # `sfr_gfx_07` for sfr_gfx_07h): interface_check.queue_name resolves them (merge 46 lost uiwritemusicdialog's rows)
+    done_rels = {r for r, q in unit_queue_rows(os.path.join(OUT, "queue.tsv"), all_units).items()
+                 if q[4:5] and q[4] in ("done", "done-functional")}
     seen = {}                       # name -> {va: [unit rel, ...]}
     # a filtered run keeps the cached rows of the units it did not select; a unit whose source/header changed since its obj
     # was built has a stale harvest (its old obj may bind a name that the current source no longer references), so it
@@ -1487,13 +1518,8 @@ def main():
     # a unit that is not done yet (WIP commit, often before tools/tplpin.py --apply) harvests nothing for the names it
     # paired only by look-alike order (auto-order/auto-leaf: no caller evidence): such rows are arbitrary and later
     # fail the unit's own report-mode --check with rotated conflicts (w465)
-    queue_done = set()
-    try:
-        _qd = {l.split("\t")[0] for l in open(os.path.join(ROOT, "progress", "queue.tsv"))
-               if l.strip() and not l.startswith("#") and l.split("\t")[4] in ("done", "done-functional")}
-        queue_done = {u.rel for u in all_units if u.name in _qd}
-    except (OSError, IndexError):
-        pass
+    queue_done = {r for r, q in unit_queue_rows(os.path.join(ROOT, "progress", "queue.tsv"), all_units).items()
+                  if q[4:5] and q[4] in ("done", "done-functional")}
     for rel, c in sorted(cache.items()):
         if c.get("res") and not (merge_mode and rel in stale_units):
             weak = set() if rel in queue_done or not merge_mode else \
@@ -1629,12 +1655,8 @@ def main():
     tot = dict(n=0, m=0, f=0, b=0, bm=0, bf=0)
     tot_x = dict(n=0, m=0, f=0, b=0, bm=0, bf=0)          # stubbed (excluded) units: not in the headline totals
     excluded, excluded_vas = [], set()
-    queue_stubbed = set()
-    try:
-        queue_stubbed = {l.split("\t")[0] for l in open(os.path.join(ROOT, "progress", "queue.tsv"))
-                         if not l.startswith("#") and NM_QUEUE_NOTE in l}
-    except OSError:
-        pass
+    _uq = unit_queue_rows(os.path.join(ROOT, "progress", "queue.tsv"), all_units)
+    queue_stubbed = {u.name for u in all_units if NM_QUEUE_NOTE in "\t".join(_uq.get(u.rel, ()))}
     names_to_demangle = []
     for rel, c in cache.items():
         if c.get("res"):

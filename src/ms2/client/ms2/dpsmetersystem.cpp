@@ -657,7 +657,7 @@ unsigned CDPSMeterSystem::ThreadProc()
                     continue;
             }
             CStringW strName;
-            PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pMe != 0)
             {
                 strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
@@ -848,7 +848,7 @@ int CDPSMeterSystem::StartRecord(unsigned nTime)
 {
     if (IsRecording() != 0)
         return 0;
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     m_bCombat = pMe->vfunc_65();
@@ -1092,7 +1092,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
@@ -1132,7 +1132,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
@@ -1174,7 +1174,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
         return;
     do
     {
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
@@ -1428,7 +1428,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.Empty();
         CStringW& strCsv = spRecord->m_strCsv;
         strCsv.Empty();
-        PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (bCsv != 0 && pMe != 0)
         {
             strCsv.Format(L"필드, 캐릭터명, 클래스, 레벨, HP, SP, EP, STR, DEX, INT, LUK, 이동속도, 물리 공격력, 마법 공격력, 무기 공격력");
@@ -1617,7 +1617,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
     s_str.Empty();
     do
     {
-        PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pMe == 0)
             break;
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
@@ -1662,7 +1662,7 @@ MS2_REPLACE_METHOD(0x141181540, CDPSMeterSystem, FUN_141181540, 1175, 0x80BAE760
 // @0x1411819e0
 __int64 CDPSMeterSystem::GetAverageWeaponAttack()
 {
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     __int64 nMin = 0;
@@ -1692,7 +1692,7 @@ MS2_REPLACE_METHOD(0x1411819E0, CDPSMeterSystem, GetAverageWeaponAttack, 834, 0x
 CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
 {
     CStringW str;
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return str;
     float fBase = (float)pMe->FUN_1416709d0(nStat);
@@ -1721,7 +1721,7 @@ MS2_REPLACE_METHOD(0x141181D30, CDPSMeterSystem, GetStatText, 624, 0xCDC470FC);
 CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
 {
     CStringW str;
-    PCBase* pMe = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return str;
     float fBase = 0.0f;

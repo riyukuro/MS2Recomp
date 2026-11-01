@@ -88,6 +88,7 @@
 #include "ms2/placeholder/gameeventmanagercli.h"
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/client/ms2/worldservice.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
 class GameEventManagerCli;
@@ -130,10 +131,7 @@ void FUN_1412752d0(const CStringW& strText, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140938ae0(CStringW strKey, const int& nArg);
-CStringW FUN_1409e8970(CStringW strKey, const int& nA, const int& nB);
-CStringW FUN_1409e8ca0(CStringW strKey, const int& n1, const int& n2, const int& n3, const int& n4, const int& n5);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
 bool FUN_1407183f0(const CStringW& str);
@@ -234,14 +232,12 @@ int FUN_1405267d0(CItem* pItem, int nGender);                     // CItem membe
 void FUN_1418fe1c0(const CStringA& strUrl);                 // open the url in the external browser
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equals
 CStringW BlockFormat(int nStringId);                        // a string table text (the item string table)
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 int FUN_1401e0800(unsigned short nLevel);                   // the ability reset is open at that level
 
 // The box / potion handlers.
 int FUN_141658e60(PC* pPlayer);                             // the gender
 int FUN_141276180(const CString& strChannel, const CString& strArg);   // the notice log
-CStringW FUN_1409e8820(CStringW strKey, const unsigned short& nArg);
 CMyCharacter* FUN_140931510();
 int SecondsToMs(int nSeconds);                              // seconds to ms
 extern int DAT_143ab2914;                                   // the GM level
@@ -252,7 +248,6 @@ bool FUN_140930b10();                                       // the player has a 
 bool FUN_140930b70();                                       // the player is idle
 extern int DAT_143ab287c;                                   // the wedding progress state
 class Unk_IuScene;
-Unk_IuScene* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -442,7 +437,7 @@ void RegisterItemUseFuncs()
 // @0x140d1b610
 bool CanUseItem(MS2Ptr<CItem> spItem)
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (pPlayer->FUN_141523bc0()->FUN_141765fe0(spItem->FUN_140527840()->FUN_14053dc20(), 0) != 0.0f)
@@ -504,7 +499,7 @@ int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
 {
     if (!CanUseItem(spItem))
         return 0;
-    MyPC* pPlayer = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (spItem->FUN_140527840() == 0)
@@ -519,7 +514,7 @@ int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
         return 0;
     if (bConfirmed == 0 && spItem->FUN_140527930()->FUN_140635100() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
     {
-        CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_when_use", pPlayer->vfunc_77());
+        CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_use", pPlayer->vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseBindFuncItem);
         if (spBox.get())
         {
@@ -569,7 +564,7 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 {
     std::vector<ItemDropResult> drops;
     ItemDropContext context;
-    MyPC* pPlayer = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         context.m_gender = pPlayer->FUN_141658e60();
@@ -652,7 +647,7 @@ void OpenItemBox(CItem* pItem, int nCount)
         if (nCount > 1)
         {
             int nHave = g_143ab2a90.FUN_140a5f180(pItem->FUN_1405276c0(), 0);
-            strMsg = FUN_1409e8970(L"s_msg_item_open_item_box_multi", nHave, nCount);
+            strMsg = FUN_14028dfa0<int, int>(L"s_msg_item_open_item_box_multi", nHave, nCount);
         }
         else
         {
@@ -1020,7 +1015,7 @@ int BlueprintImport(MS2Ptr<CItem> spItem, PC* pPlayer)
         UIUGCCubeBillDialog* pDialog = GetItemUseDialog<UIUGCCubeBillDialog>(0x4f29);
         if (pDialog != 0)
         {
-            CStringW strMsg = FUN_1405c2690(L"s_msg_item_open_blueprint", spItem->FUN_140527b10());
+            CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_item_open_blueprint", spItem->FUN_140527b10());
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
             if (spBox.get() != 0)
             {
@@ -1040,7 +1035,7 @@ int BlueprintImport(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d1fba0
 int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_item_use_description", spItem->FUN_140527b10());
+    CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_chat_emoticon_item_use_description", spItem->FUN_140527b10());
     MS2Ptr<CItemData> spData(spItem->FUN_140527840());
     if (!spData)
         return 0;
@@ -1052,7 +1047,7 @@ int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
         CStringA strFormat = "%04d-%02d-%02d-%02d-%02d-%02d";
         if (FUN_14028e280(end, strFormat, strDate) == 0)
             return 0;
-        strMsg += FUN_1409e8ca0(L"s_msg_chat_emoticon_item_use_description_enddate", end.GetYear(), end.GetMonth(), end.GetDay(), end.GetHour(), end.GetMinute());
+        strMsg += FUN_14028dfa0<int, int, int, int, int>(L"s_msg_chat_emoticon_item_use_description_enddate", end.GetYear(), end.GetMonth(), end.GetDay(), end.GetHour(), end.GetMinute());
     }
     else if (pXml->FUN_14092c5f0(L"durationSec"))
     {
@@ -1060,7 +1055,7 @@ int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
         __int64 nDuration = pXml->FUN_1409e86e0(L"durationSec", nDefault);
         ATL::CTimeSpan span(nDuration);
         CStringW strSpan = FormatTimeSpan(span, true, true, true, true);
-        strMsg += FUN_1405c2690(L"s_msg_chat_emoticon_item_use_description_duration", strSpan);
+        strMsg += FUN_14028dfa0<CStringW>(L"s_msg_chat_emoticon_item_use_description_duration", strSpan);
     }
     strMsg += FUN_140298ea0(L"s_msg_chat_emoticon_item_use_description_warning");
     {
@@ -1481,7 +1476,7 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     int nMax = *TSingleton<Client::Constants>::GetInstance()->GuildNameLengthMax.Get();
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14062b4f0(L"s_guild_ui_change_name", nMax), 0, s_strChangeGuildName);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028dfa0<int>(L"s_guild_ui_change_name", nMax), 0, s_strChangeGuildName);
         if (spBox.get() != 0)
         {
             CStringW strEmpty(L"");
@@ -1594,7 +1589,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if ((int)nLevel <= (int)(unsigned short)pPlayer->vfunc_78())
     {
-        FUN_140d73aa0(FUN_1409e8820(L"s_err_cannot_already_target_level_potion", nLevel), 0, 0, L"");
+        FUN_140d73aa0(FUN_14028dfa0<unsigned short>(L"s_err_cannot_already_target_level_potion", nLevel), 0, 0, L"");
         return 0;
     }
     if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0)
@@ -1652,7 +1647,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pPlayer)) != 0)
     {
-        CStringW strMsg = FUN_1405c2690(L"s_msg_item_open_item_box_with_key", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId));
+        CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_item_open_item_box_with_key", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
         if (spBox.get() != 0)
         {
@@ -1687,7 +1682,7 @@ int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     int nHave = g_143ab2a90.FUN_140a5f180(spItem->FUN_1405276c0(), 0);
     if (nCount > nHave)
     {
-        FUN_140d73aa0(FUN_1409e8970(L"s_msg_item_open_item_box_multi_no_having_count", nHave, nCount), 0, 0, L"");
+        FUN_140d73aa0(FUN_14028dfa0<int, int>(L"s_msg_item_open_item_box_multi_no_having_count", nHave, nCount), 0, 0, L"");
         return 1;
     }
     OpenItemBox(spItem.get(), nCount);
@@ -1761,7 +1756,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     }
     CStringW strTitle = GetStringCommonByKey(L"s_quest_start_title");
-    CStringW strMsg = FUN_1405c2690(L"s_quest_start_msg", FUN_1416e4df0(nQuestId));
+    CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_quest_start_msg", FUN_1416e4df0(nQuestId));
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(2, strMsg, 0, s_strUseFunctionItem);
         if (spBox.get() != 0)
@@ -1851,7 +1846,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1 || ((class GFxSceneService*)(class Unk_IuScene*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1 || ((class GFxSceneService*)(class Unk_IuScene*)(((Unk_IuScene*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
         return 0;

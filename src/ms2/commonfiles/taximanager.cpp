@@ -88,13 +88,14 @@ public:
 };
 MS2_CHECK_SIZE(_CTaxiPathInfo, 0x38);
 
-// The fare table (singleton of 0x1401c0db0).
-struct Unk_TaxiFare
+// The fare table (singleton of 0x1401c0db0). C3: member view of CLua (luautil.h); was Unk_TaxiFare.
+class CLua
 {
-    int FUN_1406764e0(int nHops, short sOption);
-    int FUN_1406766a0(short sOption);
+public:
+    int CalcTaxiCharge(int nHops, unsigned short sOption);    // 0x1406764e0
+    int CalcAirTaxiCharge(unsigned short sOption);           // 0x1406766a0
 };
-Unk_TaxiFare* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 typedef Unk_TaxiPtr<_CTaxiPathInfo> Unk_TaxiNodePtr;
 typedef std::pair<unsigned int, unsigned int> Unk_TaxiKey;
@@ -138,7 +139,7 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
     Unk_TaxiKey kKey = FUN_14085fcb0(nFrom, nTo);
     std::map<Unk_TaxiKey, int>::const_iterator itCached = m_mapRouteLength.find(kKey);
     if (itCached != m_mapRouteLength.end())
-        return FUN_1401c0db0()->FUN_1406764e0(itCached->second, sOption);
+        return ((class CLua*)FUN_1401c0db0())->CalcTaxiCharge(itCached->second, sOption);
 
     int nBest = -1;
     std::queue<Unk_TaxiNodePtr> aOpen;
@@ -180,13 +181,13 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
         }
     }
     m_mapRouteLength.insert(std::make_pair(kKey, nBest));
-    return FUN_1401c0db0()->FUN_1406764e0(nBest, sOption);
+    return ((class CLua*)FUN_1401c0db0())->CalcTaxiCharge(nBest, sOption);
 }
 MS2_REPLACE_METHOD(0x14085f780, CTaxiManager, FUN_14085f780, 1268, 0x27ADECB6);
 
 // @0x14085fc80
 long long CTaxiManager::FUN_14085fc80(short sOption)
 {
-    return FUN_1401c0db0()->FUN_1406766a0(sOption);
+    return ((class CLua*)FUN_1401c0db0())->CalcAirTaxiCharge(sOption);
 }
 MS2_REPLACE_METHOD(0x14085fc80, CTaxiManager, FUN_14085fc80, 39, 0x03353DB4);

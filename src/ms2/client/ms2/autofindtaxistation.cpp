@@ -111,6 +111,7 @@ extern Unk_TaxiTimer* DAT_143ab47a0;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -213,7 +214,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
     {
         m_nActive = 1;
         FUN_140ca7230(FUN_1409f24b0(), 1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
-        Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (player != 0)
             ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cce0(0x100);
     }
@@ -226,7 +227,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
         return;
     {
         Unk_TaxiEntRef ent;
-        Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
         {
             if (FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
@@ -323,7 +324,7 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 {
     if (m_nActive == 0)
         return;
-    Unk_TaxiPlayer* player = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player != 0)
         ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
     m_nActive = 0;

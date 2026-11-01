@@ -33,6 +33,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -218,7 +219,7 @@ MS2_REPLACE_METHOD(0x1413A81D0, CGuideConditionDead, vfunc_2, 46, 0xBB3AB92C);
 // @0x1413a8210
 int CGuideConditionDead::vfunc_3()
 {
-    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return FUN_1413a55a0(pPC->FUN_14166ce30());
@@ -250,7 +251,7 @@ MS2_REPLACE_METHOD(0x1413A82D0, CGuideConditionConstructMode, GetTypeName, 61, 0
 // @0x1413a8320
 int CGuideConditionConstructMode::vfunc_3()
 {
-    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return FUN_1413a55a0(pPC->FUN_141659610());

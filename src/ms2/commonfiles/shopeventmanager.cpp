@@ -29,6 +29,7 @@
 #include "ms2/placeholder/cshutdownevent.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // The scoped lock of a CLockCriticalSection (the 0x140203610 copy of the ctor, dtor 0x1401b5120).
 struct Unk_ShopEventLock
@@ -219,7 +220,7 @@ CShutdownEventDropBox::CShutdownEventDropBox()
 // @0x1407d0150
 bool CShutdownEventDropBox::FUN_1407d0150(unsigned long nBoxId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_ids[nBoxId]++;
     return true;
 }
@@ -227,7 +228,7 @@ bool CShutdownEventDropBox::FUN_1407d0150(unsigned long nBoxId)
 // @0x1407d01d0
 void CShutdownEventDropBox::FUN_1407d01d0(unsigned long nBoxId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_ids.find(nBoxId) == m_ids.end())
         return;
     int nCount = m_ids[nBoxId];
@@ -242,7 +243,7 @@ bool CShutdownEventDropBox::IsShutdown(unsigned long nBoxId)
 {
     if (m_ids.empty())
         return false;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_ids.find(nBoxId) != m_ids.end())
         return true;
     return false;
@@ -257,7 +258,7 @@ CShutdownEventInteractObject::CShutdownEventInteractObject()
 bool CShutdownEventInteractObject::FUN_1407d0420(unsigned nFieldId, int nObjectId)
 {
     std::pair<unsigned, int> key(nFieldId, nObjectId);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_objects[key]++;
     return true;
 }
@@ -266,7 +267,7 @@ bool CShutdownEventInteractObject::FUN_1407d0420(unsigned nFieldId, int nObjectI
 void CShutdownEventInteractObject::FUN_1407d04c0(unsigned nFieldId, int nObjectId)
 {
     std::pair<unsigned, int> key(nFieldId, nObjectId);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_objects.find(key) == m_objects.end())
         return;
     int nCount = m_objects[key];
@@ -282,7 +283,7 @@ bool CShutdownEventInteractObject::FUN_1407d05e0(unsigned nFieldId, int nObjectI
     if (m_objects.empty())
         return false;
     std::pair<unsigned, int> key(nFieldId, nObjectId);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_objects.find(key) != m_objects.end())
         return true;
     return false;
@@ -296,7 +297,7 @@ CShutdownEventQuest::CShutdownEventQuest()
 // @0x1407d07a0
 int CShutdownEventQuest::FUN_1407d07a0(int nQuestId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_quests.SetAt(nQuestId, 1);
     return 1;
 }
@@ -304,14 +305,14 @@ int CShutdownEventQuest::FUN_1407d07a0(int nQuestId)
 // @0x1407d0810
 void CShutdownEventQuest::FUN_1407d0810(int nQuestId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_quests.RemoveKey(nQuestId);
 }
 
 // @0x1407d0870
 int CShutdownEventQuest::FUN_1407d0870(Unk_ShutdownQuestKey eKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_keys.SetAt(eKey, 1);
     return 1;
 }
@@ -319,14 +320,14 @@ int CShutdownEventQuest::FUN_1407d0870(Unk_ShutdownQuestKey eKey)
 // @0x1407d08f0
 void CShutdownEventQuest::FUN_1407d08f0(Unk_ShutdownQuestKey eKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_keys.RemoveKey(eKey);
 }
 
 // @0x1407d0950
 int CShutdownEventQuest::FUN_1407d0950(int nQuestId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nCount = 0;
     if (m_quests.Lookup(nQuestId, nCount) && nCount != 0)
         return 1;
@@ -341,7 +342,7 @@ CShutdownEventItemTransfer::CShutdownEventItemTransfer()
 // @0x1407d0a80
 int CShutdownEventItemTransfer::FUN_1407d0a80(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_items.SetAt(nKey, 1);
     return 1;
 }
@@ -349,14 +350,14 @@ int CShutdownEventItemTransfer::FUN_1407d0a80(int nKey)
 // @0x1407d0af0
 void CShutdownEventItemTransfer::FUN_1407d0af0(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_items.RemoveKey(nKey);
 }
 
 // @0x1407d0b50
 int CShutdownEventItemTransfer::FUN_1407d0b50(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nValue = 0;
     m_items.Lookup(nKey, nValue);
     return nValue;
@@ -370,7 +371,7 @@ CShutdownEventFunctionItem::CShutdownEventFunctionItem()
 // @0x1407d0c30
 bool CShutdownEventFunctionItem::FUN_1407d0c30(unsigned long nItemId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_items[nItemId]++;
     return true;
 }
@@ -378,7 +379,7 @@ bool CShutdownEventFunctionItem::FUN_1407d0c30(unsigned long nItemId)
 // @0x1407d0cb0
 void CShutdownEventFunctionItem::FUN_1407d0cb0(unsigned long nItemId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_items.find(nItemId) == m_items.end())
         return;
     int nCount = m_items[nItemId];
@@ -393,7 +394,7 @@ bool CShutdownEventFunctionItem::FUN_1407d0dc0(unsigned long nItemId)
 {
     if (m_items.empty())
         return false;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_items.find(nItemId) != m_items.end())
         return true;
     return false;
@@ -407,7 +408,7 @@ CShutdownEventCoupleEmotion::CShutdownEventCoupleEmotion()
 // @0x1407d0f30
 int CShutdownEventCoupleEmotion::FUN_1407d0f30(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_emotions.SetAt(nKey, 1);
     return 1;
 }
@@ -415,14 +416,14 @@ int CShutdownEventCoupleEmotion::FUN_1407d0f30(int nKey)
 // @0x1407d0fa0
 void CShutdownEventCoupleEmotion::FUN_1407d0fa0(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_emotions.RemoveKey(nKey);
 }
 
 // @0x1407d1000
 int CShutdownEventCoupleEmotion::FUN_1407d1000(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nValue = 0;
     m_emotions.Lookup(nKey, nValue);
     return nValue;

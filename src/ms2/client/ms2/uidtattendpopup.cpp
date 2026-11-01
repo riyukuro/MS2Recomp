@@ -31,8 +31,8 @@ NotifySystem* FUN_140939a10();
 class Unk_DTInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 struct Unk_DTInputPrefix {void* p0;Unk_DTInput stream;};
 struct Unk_DTNoticePrefix {void* p0;void* p8;void* p10;int kind;};
-class Unk_DTUIManager {public:MS2Ptr<UIObject> FUN_141adcea0(int);};
-template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())){MS2Ptr<UIObject> p=reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);if(p.get())return dynamic_cast<T*>((UIObject*)p);}return 0;}
+class Unk_DTUIManager {public: };
+template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())){MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);if(p.get())return dynamic_cast<T*>((UIObject*)p);}return 0;}
 template<> inline bool MS2Ptr<Unk_DTReward>::operator==(Unk_DTReward* p)const{return m_p==p;}
 // @0x140c032b0
 UIDTAttendPopup::UIDTAttendPopup(){

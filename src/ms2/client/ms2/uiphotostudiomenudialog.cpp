@@ -34,7 +34,6 @@ class Unk_PsUiMgr
 {
 public:
     void FUN_141adc530(int nId);   // show
-    void FUN_141adc5d0(int nId);   // hide
 };
 CameraMgr* FUN_1409478c0();
 CStringW FUN_141850100_2(int a, int b);   // the exe call site leaves the third argument (r9) unset
@@ -120,12 +119,12 @@ void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
     if (m_bFreeCamera)
     {
         FUN_1409478c0()->FUN_140947980(6);
-        reinterpret_cast<Unk_PsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3e);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else
     {
         FUN_1409478c0()->FUN_140947980(2);
-        reinterpret_cast<Unk_PsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f3e);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3e);
     }
 }
 

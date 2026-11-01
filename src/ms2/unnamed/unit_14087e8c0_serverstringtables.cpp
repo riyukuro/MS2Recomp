@@ -27,7 +27,7 @@ CLogString* GetLogString();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 void FUN_14054c030(void*, int, int, const wchar_t*, const CStringA&, const CStringA&);   // logger with two arguments
 CStringA FUN_14071ae20(const CStringA& strFile);                        // the full path of a table file
-bool FUN_14028f710(Unk_140165cf0*);                                     // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
@@ -65,7 +65,7 @@ bool CServerStringGroup::Load()
     CCacheData::FUN_1401d1160(CStringA(strPath));
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pKey))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         CStringW strId = FUN_1401bf530(pKey, "id", CStringW(L""));
         CStringW strName = FUN_1401bf530(pKey, "name", CStringW(L""));

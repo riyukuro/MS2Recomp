@@ -80,7 +80,6 @@ public:
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -88,7 +87,6 @@ public:
 };
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // str == psz
 CString FUN_140651390();                                        // the language directory
 void FUN_14151f200();
@@ -330,7 +328,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strName = pArgs->FUN_1422b8d30();
-    if (FUN_140184310(strName, "m_hdr"))
+    if ((strName == "m_hdr"))
     {
         ASObj obj(2);
         obj.FUN_1409c0dc0("tooltip", "export_common_tooltip_tooltipImageOption");
@@ -340,7 +338,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strHdr);
         FUN_1409b4bc0(pRetVal, obj.FUN_1422bb870());
     }
-    else if (FUN_140184310(strName, "m_shimmer"))
+    else if ((strName == "m_shimmer"))
     {
         ASObj obj(2);
         obj.FUN_1409c0dc0("tooltip", "export_common_tooltip_tooltipImageOption");
@@ -357,7 +355,7 @@ void UIGameOptionDialog::FUN_141943480()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
-    int nMapClass = ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId();
+    int nMapClass = ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId();
     m_bSimple = nMapClass == 0x620000d || nMapClass == 0x6200009 || nMapClass == 0x6200085
         || ((class CGuideManager*)(class Unk_GoBuffs*)(((class Unk_GoBuffs*)FUN_1409331e0())))->IsRestricted(1) != 0;
     if (m_bSimple)

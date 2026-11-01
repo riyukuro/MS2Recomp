@@ -9,6 +9,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -17,7 +18,6 @@ class Unk_ScpSceneCtl;                      // the UI scene controller (FUN_1403
 class Unk_ScpSceneMgr;                      // the UI scene manager (FUN_1408e57f0)
 
 Unk_ScpSceneCtl* FUN_1403ed2b0();
-Unk_ScpSceneMgr* FUN_1408e57f0();
 class CUIService   // C3: member view for the former free stand-ins
 {
 public:
@@ -80,7 +80,7 @@ void UISceneGameCinematicPlay::vfunc_49(int n)
 // @0x140e84ea0
 void UISceneGameCinematicPlay::vfunc_54()
 {
-    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(((Unk_ScpSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140e84ed0

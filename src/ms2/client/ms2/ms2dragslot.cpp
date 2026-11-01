@@ -13,16 +13,15 @@
 // Item preview window (?\itempreview.cpp): singleton getter 0x1409bb9e0 (asitemslot.cpp COMDAT).
 class Unk_ItemPreview : public ItemPreviewMgr
 {
-public:
-    void FUN_140d40120(MS2Ptr<CItem> spItem, int n);    // show spItem
+    // C3: FUN_140d40120 (show spItem) is ItemPreviewMgr's own member
 };
 Unk_ItemPreview* FUN_1409bb9e0();
 
 // Key/permission state (commonstringtable.cpp singleton 0x14025e7c0, test 0x14116dcb0).
-class Unk_KeyState
+class CInputKeyHandler   // C3: member view; was Unk_KeyState
 {
 public:
-    bool FUN_14116dcb0(int nKey, int a, int b);
+    bool FUN_14116dcb0(int nKey, bool a, int b);
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -62,7 +61,7 @@ int MS2DragSlot::vfunc_19()
 {
     if (!IsEnabled())
         return 0;
-    if (((class Unk_KeyState*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, 0, 0))
         return 1;
     return 0;
 }

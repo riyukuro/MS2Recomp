@@ -29,6 +29,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/pvpmanager.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe types ----
 
@@ -60,6 +61,7 @@ class Unk_PtWorld { public: Unk_PtPlayer* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 __int64 FUN_141656a80(Unk_PtPlayer* pPlayer);                   // the character id
@@ -118,8 +120,7 @@ public:
 Unk_PtSound* FUN_140a94350();
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& n);   // formatted message
-void FUN_141276180(const CString& strSound, const CString& strArg);               // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg);               // play a UI sound
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 void FUN_141415600(const CString& strBindID);                   // release the item bound to the name
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
@@ -184,7 +185,7 @@ void UIPvPTeamResultDialog::FUN_1413452c0()
 // @0x141345310
 void UIPvPTeamResultDialog::FUN_141345310()
 {
-    Unk_PtPlayer* pPlayer = ((class Unk_PtWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PtPlayer* pPlayer = ((Unk_PtPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     bool bNoTeam = pPlayer->FUN_140967420() == NULL;
@@ -272,12 +273,12 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
         {
             FUN_141276180(s_strBattleFieldWin, "");
             FUN_140a94350()->vfunc_10(9);
-            strReward = FUN_140bfa7f0(L"s_team_pvp_winner_reward_one_type", strName, m_nCount);
+            strReward = FUN_14028dfa0<CStringW, int>(L"s_team_pvp_winner_reward_one_type", strName, m_nCount);
         }
         else
         {
             FUN_141276180(s_strMassiveFail, "");
-            strReward = FUN_140bfa7f0(L"s_team_pvp_loser_reward_one_type", strName, m_nCount);
+            strReward = FUN_14028dfa0<CStringW, int>(L"s_team_pvp_loser_reward_one_type", strName, m_nCount);
         }
         static_cast<Unk_PtScript*>(m_30.operator->())->FUN_141346430("showLastResult", true, strIcon, L"", strReward, m_nWinTeam);
     }
@@ -289,7 +290,7 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
 {
     if (pMember == 0)
         return false;
-    Unk_PtPlayer* pPlayer = ((class Unk_PtWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PtPlayer* pPlayer = ((Unk_PtPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     obj.FUN_1407cb9c0("index", nIndex);

@@ -45,6 +45,7 @@ static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
@@ -123,7 +124,7 @@ class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_MbBlockRef* pRef);
 void FUN_140a2ff20(Unk_MbBlockRef* pRef, int nKind, __int64 n);
 
-class Unk_MbUiMgr { public: void FUN_141adc5d0(int uiId); };
+class Unk_MbUiMgr { public: };
 class Unk_MbKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -151,7 +152,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 std::pair<int, __int64> FUN_140931680(int& nKey, __int64& nValue);   // folded copy of std::make_pair<int&, __int64&>
 int FUN_1406a6140();                                            // the pay type of the blueprint rows
 void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);
@@ -636,8 +636,8 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
         {
             strNameText.Append(strLf);
             strAmountText.Append(strLf);
-            strNameText.Append(FUN_1405c2690(L"s_bill_givename_total", strGiveNames));
-            strAmountText.Append(FUN_1405c2690(L"s_bill_givepoint_total", strGiveAmounts));
+            strNameText.Append(FUN_14028dfa0<CStringW>(L"s_bill_givename_total", strGiveNames));
+            strAmountText.Append(FUN_14028dfa0<CStringW>(L"s_bill_givepoint_total", strGiveAmounts));
         }
     }
     spFeeText->FUN_1422c4f00(strNameText);
@@ -663,7 +663,7 @@ float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<AS
         __int64 nValue = mapPay.GetValueAt(pos);
         if (!strNames.IsEmpty())
             strNames.Append(strLf);
-        strNames.Append(FUN_1405c2690(L"s_meratmarket_random_payback", FUN_1418fe6c0(nPayType, 0)));
+        strNames.Append(FUN_14028dfa0<CStringW>(L"s_meratmarket_random_payback", FUN_1418fe6c0(nPayType, 0)));
         if (!strAmounts.IsEmpty())
             strAmounts.Append(strLf);
         strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
@@ -901,7 +901,7 @@ void UIMarketBillDialog::FUN_140ea9fc0()
         return;
     if (!m_spParam->m_dgCancel.IsNull())
         m_spParam->m_dgCancel(m_spParam);
-    reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
 }
 
 // "onClickBuy".
@@ -917,7 +917,7 @@ void UIMarketBillDialog::FUN_140eaa0b0(const char* szMethod)
             m_spParam->m_dgBuy(m_spParam, m_mapPrice);
     }
     if (bClose)
-        reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
 }
 
 // "onClickGiftOk".
@@ -958,7 +958,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
             m_spParam->m_dgGift(m_spParam, m_mapPrice, strName, strMessage);
     }
     if (bClose)
-        reinterpret_cast<Unk_MbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
 }
 
 // "onUpdateTotalPrice": a bill row changed its numbers.
@@ -1120,9 +1120,9 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
     CStringW strText;
     int nBlueprint = 0x16;
     if (FUN_140ea9c30(nBlueprint) && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec))
-        strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm_blueprint", strName);
+        strText = FUN_14028dfa0<CStringW>(L"s_meratmarket_gift_ask_confirm_blueprint", strName);
     else if (m_spParam->m_nDialogId == 0x4ec1)
-        strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm", strName);
+        strText = FUN_14028dfa0<CStringW>(L"s_meratmarket_gift_ask_confirm", strName);
     if (!strText.IsEmpty())
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);

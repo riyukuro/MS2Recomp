@@ -42,14 +42,12 @@ class Unk_1403ed2b0
 {
 public:
     void FUN_141adc530(int nId);                                    // show the UI nId
-    void FUN_141adc5d0(int nId);                                    // hide the UI nId
     int FUN_141adc940(int nId);                                     // nonzero: the UI nId is hidden
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                        // the UI of type nId (NULL if not created)
 };
 
 // The key input state (singleton).
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); };
-Unk_14025e7c0* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The UI of type nId as a T (inline header template; one COMDAT per T: 0x141988290 UISwfEntity, 0x1419881f0
 // UIHeadUpDisplay).
@@ -57,7 +55,7 @@ template <class T>
 inline T* FUN_GetUI(int nId)
 {
     if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>(p.operator->());
     }
@@ -139,7 +137,7 @@ int UIHideSettingDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
@@ -182,10 +180,10 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         if (pEntity) {
                             if (bChecked) {
                                 FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
-                                reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(nId);
+                                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nId);
                             } else {
                                 FUN_140b632f0()->FUN_1422d0cd0(MS2Ptr<UISwfEntity>(pEntity));
-                                reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(nId);
+                                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(nId)));
                             }
                         }
                     } else {

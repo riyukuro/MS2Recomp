@@ -72,8 +72,6 @@
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140353fc0(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const int& rArg);
 void* FUN_1403ed2b0();                                              // the UI manager
-void FUN_141adc530(void* pUi, int nId);                             // show
-void FUN_141adc5d0(void* pUi, int nId);                             // hide
 void FUN_141add040(void* pUi, int nId);
 void FUN_141add0b0(void* pUi, int nId);
 class Unk_TrigCmdMgr { public: void FUN_14138bf00(int nKind, int nId, int nArg); };
@@ -200,6 +198,7 @@ void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 // ---- service plumbing ----
 efd::MessageService* FUN_1411d1530(efd::ServiceManager* pManager);
 #include <egf/EntityManager.h>
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc { public: efd::Category FUN_141235eb0(); };
 Unk_TrigAnimSvc* FUN_141b6f910();
@@ -538,7 +537,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e95)));
             Unk_TrigHintUI* pUi = ((class Unk_TrigHintUI*)FindTimerDialog(0x4e95));
             if (pUi != 0)
             {
@@ -551,7 +550,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         }
         else
         {
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e95);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e95);
         }
     }
     else if (nKind == 2)
@@ -572,7 +571,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             else
             {
                 pUi->FUN_141a91940(kBlock);
-                FUN_141adc530(FUN_1403ed2b0(), 0x4e96);
+                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
     }
@@ -594,7 +593,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             else
             {
                 pUi->FUN_141a91a30(kBlock);
-                FUN_141adc530(FUN_1403ed2b0(), 0x4e96);
+                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
     }
@@ -606,13 +605,13 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            FUN_141adc530(FUN_1403ed2b0(), 0x4e99);
-            FUN_141adc530(FUN_1403ed2b0(), 0x4e9a);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e99)));
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e9a)));
         }
         else
         {
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e99);
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e9a);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e99);
+            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e9a);
         }
     }
     else if (nKind == 4)
@@ -623,8 +622,8 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
-            FUN_141adc530(FUN_1403ed2b0(), 0x4ed3);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e95)));
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ed3)));
         }
     }
 }
@@ -742,7 +741,7 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
     }
     else
     {
-        FUN_141adc5d0(FUN_1403ed2b0(), 0x4f62);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f62);
         FUN_141add040(FUN_1403ed2b0(), 0x4e3d);
     }
 }

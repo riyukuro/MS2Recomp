@@ -546,7 +546,6 @@ float FUN_141b48480(int nSet, int nIndex);                              // the d
 CStringW FUN_1418fec00(int nFormat, __int64 nTime, int nZone);              // a time text
 CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);   // FormatStringId<CStringW, CStringW>
 CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur);                         // uimeratmarketcommon.cpp: the charge text
-bool FUN_140184310(const CString& str, const char* psz);                    // str == psz
 CStringW FUN_141277b90(const CStringW& str);
 CStringW FUN_140ec25e0(__int64 nTime);                                      // UIMeratMarketCommon: the date text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
@@ -595,7 +594,6 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pValue, ASData& data, MS2Ptr<TMarketBi
 void FUN_1409abfa0(ATL::CAtlArray<int>& ids, ATL::CAtlArray<MS2Ptr<ASBillData> >& bills);   // the ids of the bill rows
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 bool FUN_14036d570(void* pFeatures, int nFeature);                          // a feature is on
-void FUN_141adc5d0(void* pUIMgr, int nUiId);                                // hide a dialog
 void FUN_141adc530(void* pUI, int nId);
 bool FUN_1406a5040(int nType);                                              // the search type is a shop tab
 bool FUN_1406a5930();                                                       // the star shop is on
@@ -1219,7 +1217,7 @@ void UIMeratMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
                 spProduct = 0;
         }
     } else if (m_250 == 4) {
-        if (FUN_140184310(strName, "m_bgCalculate")) {
+        if ((strName == "m_bgCalculate")) {
             __int64 nCharge = pMan->FUN_140d5a1b0();
             CStringW strTime = FUN_1418fec00(3, nCharge, 0);
             CStringW strText = FUN_140632a60(0x9df, strTime, FUN_140ebd9d0(true, nCharge));
@@ -1306,7 +1304,7 @@ void UIMeratMarketDialog::vfunc_67()
     m_630.Empty();
     int nUiId = vfunc_48();
     ((class Unk_MeratMarketMan*)FUN_140939a00())->FUN_140d5a200(nUiId);
-    FUN_141adc5d0(TSingleton<CUIService>::GetInstance(), 0x4ec5);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec5);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged",
@@ -3468,7 +3466,7 @@ int UIMeratMarketDialog::OnCommandMyShop(const char* szName, const Scaleform::GF
                 return 1;
             }
         }
-        FUN_141adc530(TSingleton<CUIService>::GetInstance(), 0x4ec5);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ec5)));
         return 1;
     }
     return 0;
@@ -5318,7 +5316,7 @@ void UIMeratMarketDialog::RunQuery()
     {
         m_250 = m_query.m_44;
         if (nBusy != 0)
-            FUN_141adc530(TSingleton<CUIService>::GetInstance(), 0x4ec1);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ec1)));
         return;
     }
     ASObj data(2);

@@ -206,7 +206,7 @@ const int& FUN_1404eb7e0(const int& a, const int& b);           // std::max<int>
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 __int64 GetServerTime();                                        // the server time
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
-void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW strTag);     // pop the notice
+void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);       // str == psz
@@ -582,7 +582,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
         }
         else
         {
-            if (pCheck->FUN_140225550(strValue, strBad) != 0)
+            if (pCheck->CheckMaidName(strValue, strBad) != 0)
             {
                 FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
                 return 0;

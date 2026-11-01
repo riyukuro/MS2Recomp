@@ -59,6 +59,16 @@ template <> inline void MS2Ptr<PreminmMarketSaleEventContext>::ReleaseImpl(void*
 }
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/luautil.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -1155,13 +1165,13 @@ MS2_REPLACE_METHOD(0x1406A1240, CMeratMarketPremiumProduct, ReadBrief, 88, 0x2F2
 // @0x1406a12a0
 BOOL CMeratMarketPremiumProduct::LoadXml(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "sn", m_nId);
-    FUN_140873220(pElem, "id", m_nItemId);
-    FUN_1408731e0(pElem, "grade", m_nGrade);
-    FUN_1408731e0(pElem, "saleTag", m_nSaleTag);
+    XmlGetAttr((class TiXmlElement*)(pElem), "sn", reinterpret_cast<int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nItemId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "grade", reinterpret_cast<int&>(m_nGrade));
+    XmlGetAttr((class TiXmlElement*)(pElem), "saleTag", reinterpret_cast<int&>(m_nSaleTag));
     {
         CStringA strStart;
-        FUN_1408733e0(pElem, "startDate", strStart);
+        XmlGetAttr((class TiXmlElement*)(pElem), "startDate", strStart);
         if (strStart.Trim().IsEmpty())
         {
             m_startDate = CMsTime(2010, 1, 1, 0, 0, 0);
@@ -1176,7 +1186,7 @@ BOOL CMeratMarketPremiumProduct::LoadXml(Unk_140165cf0* pElem)
     }
     {
         CStringA strEnd;
-        FUN_1408733e0(pElem, "endDate", strEnd);
+        XmlGetAttr((class TiXmlElement*)(pElem), "endDate", strEnd);
         if (strEnd.Trim().IsEmpty())
         {
             m_endDate = CMsTime(2100, 1, 1, 0, 0, 0);
@@ -1189,16 +1199,16 @@ BOOL CMeratMarketPremiumProduct::LoadXml(Unk_140165cf0* pElem)
                 m_endDate = t;
         }
     }
-    FUN_1408731e0(pElem, "chartOrder", m_nChartOrder);
+    XmlGetAttr((class TiXmlElement*)(pElem), "chartOrder", reinterpret_cast<int&>(m_nChartOrder));
     bool bVisible = false;
-    FUN_1408730a0(pElem, "visible", bVisible);
+    XmlGetAttr((class TiXmlElement*)(pElem), "visible", reinterpret_cast<bool&>(bVisible));
     m_bVisible = bVisible ? 1 : 0;
     int nBuyLimit = 0;
-    FUN_1408731e0(pElem, "buyLimit", nBuyLimit);
+    XmlGetAttr((class TiXmlElement*)(pElem), "buyLimit", reinterpret_cast<int&>(nBuyLimit));
     if (nBuyLimit < 0 || 2 < nBuyLimit)
         return FALSE;
     m_nBuyLimit = nBuyLimit;
-    FUN_1408731e0(pElem, "buyLimitMax", m_nBuyLimitMax);
+    XmlGetAttr((class TiXmlElement*)(pElem), "buyLimitMax", reinterpret_cast<int&>(m_nBuyLimitMax));
     return TRUE;
 }
 MS2_REPLACE_METHOD(0x1406A12A0, CMeratMarketPremiumProduct, LoadXml, 892, 0x6BF24D93);
@@ -1582,14 +1592,14 @@ int CMeratMarketPremium::LoadXml(const CStringA& strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("item"); pElem; pElem = pElem->FUN_140168650("item"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
     {
         MS2Ptr<CMeratMarketPremiumProduct> spProduct(new CMeratMarketPremiumProduct);
         if (spProduct.get())
         {
             spProduct->LoadXml(pElem);
             CStringA strCategory;
-            FUN_1408733e0(pElem, "category", strCategory);
+            XmlGetAttr((class TiXmlElement*)(pElem), "category", strCategory);
             unsigned nItemId = spProduct->m_nItemId;
             {
                 MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -1622,14 +1632,14 @@ int CMeratMarketPremium::LoadUgcXml(const CStringA& strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("item"); pElem; pElem = pElem->FUN_140168650("item"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
     {
         MS2Ptr<CUgcPremiumProduct> spProduct(new CUgcPremiumProduct);
         if (spProduct.get())
         {
-            FUN_140873220(pElem, "id", spProduct->m_nId);
-            FUN_1408731e0(pElem, "sn", spProduct->m_nSn);
-            FUN_140873220(pElem, "price", spProduct->m_nPrice);
+            XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(spProduct->m_nId));
+            XmlGetAttr((class TiXmlElement*)(pElem), "sn", reinterpret_cast<int&>(spProduct->m_nSn));
+            XmlGetAttr((class TiXmlElement*)(pElem), "price", reinterpret_cast<unsigned int&>(spProduct->m_nPrice));
             unsigned nId = spProduct->m_nId;
             if (spProduct->m_nPrice > 0)
                 m_ugcMap.SetAt(nId, spProduct);
@@ -2247,10 +2257,10 @@ int FUN_1406a4b50(TiXmlDocument* pDoc, CAtlList<int>* pList)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(pDoc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("item"); pItem != NULL; pItem = pItem->FUN_140168650("item"))
+    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
     {
         CStringA strSn;
-        FUN_1408733e0(pItem, "sn", strSn);
+        XmlGetAttr((class TiXmlElement*)(pItem), "sn", strSn);
         pList->AddTail(FUN_140718170(strSn));
     }
     return 1;

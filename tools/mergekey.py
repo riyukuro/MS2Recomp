@@ -47,16 +47,19 @@ def game_stamp():
     return _memo["game"]
 
 
-def engine_stamp():
+def engine_stamp(tables=True):
     """what an engine TU's match result depends on besides its obj: the symbol tables gbprogress._init reads, as of now
-    (progress.py has already written the merge's symbols.tsv when the engine stage runs)"""
-    if "engine" not in _memo:
+    (progress.py has already written the merge's symbols.tsv when the engine stage runs). tables=False: without the
+    tables (gbprogress MS2_ENGINE_ROWKEY keys each obj by its own rows instead)"""
+    m = "engine" if tables else "engine-code"
+    if m not in _memo:
         files, es = _common()
         files += [os.path.join(ROOT, "tools", n) for n in ("gbprogress.py", "gbtree.py")]
-        files += [os.path.join(ROOT, "progress", n) for n in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv",
-                                                          "symbols-engine-manual.tsv")]
-        _memo["engine"] = _hash(files, es)
-    return _memo["engine"]
+        if tables:
+            files += [os.path.join(ROOT, "progress", n) for n in ("symbols-manual.tsv", "symbols.tsv",
+                                                              "symbols-engine.tsv", "symbols-engine-manual.tsv")]
+        _memo[m] = _hash(files, es)
+    return _memo[m]
 
 
 _tables = {}

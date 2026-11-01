@@ -226,19 +226,15 @@ void FUN_140b77e50(CString* pBag);                                      // relea
 void FUN_140b77cf0(CString* pBag, ATL::CAtlArray<TabContentsPetCompose::IdCount>& items);
 
 // UI helpers.
-void FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
 void FUN_1412752d0(const CStringW& strMsg, int nType);                  // chat/system notice
 void FUN_141275260(int nMsgId, int a1, int a2);
 
 // String helpers.
-CStringW FUN_140938ae0(CStringW fmt, const unsigned& a);
 CStringW FUN_14062b4f0(CStringW fmt, const int* pn);
-CStringW FUN_1409e8820(CStringW fmt, const unsigned short& n);
-CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_1408116a0(int nStringId, const int& n);
-CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
@@ -445,9 +441,9 @@ void PetComposePetEnchant::vfunc_3()
         {
             __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nPetClass, pet->FUN_140526bd0(), FUN_1405282d0(pet));
             CStringW strLevel;
-            strLevel.Format(L"%s", (LPCWSTR)FUN_1409e8820(CStringW(L"s_word_petlevel"), nPetClass));
+            strLevel.Format(L"%s", (LPCWSTR)FUN_14028dfa0<unsigned short>(CStringW(L"s_word_petlevel"), nPetClass));
             CStringW strCount;
-            strCount.Format(L"%s", (LPCWSTR)FUN_1408f71a0(CStringW(L"s_common_cur_max_ingredient"), FUN_1409404f0(nExp), FUN_1409404f0(nNeed)));
+            strCount.Format(L"%s", (LPCWSTR)FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_common_cur_max_ingredient"), FUN_1409404f0(nExp), FUN_1409404f0(nNeed)));
             CStringW strText;
             strText.Format(L"%s (%s)", (LPCWSTR)strLevel, (LPCWSTR)strCount);
             bar->Invoke("setText", CStringW(strText));
@@ -514,7 +510,7 @@ void PetComposePetEnchant::vfunc_5(int nTab)
 // @0x140cb2fb0
 void PetComposePetEnchant::FUN_140cb2fb0()
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (m_pOwner == NULL)
@@ -581,7 +577,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
     ASObj obj(2);
     unsigned nSale = (unsigned)((float)(((class CGameRule*)FUN_1401c0d90())->FUN_14047f520() / 100) + 0.5f);
     if (nSale > 0)
-        obj.FUN_1407cbb20("sale", FUN_140938ae0(CStringW(L"s_pet_compose_cost_sale"), nSale));
+        obj.FUN_1407cbb20("sale", FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_compose_cost_sale"), nSale));
     obj.FUN_1407cbb20(s_meso, FUN_14052bd00(0x986, FUN_1409404f0(nTotal)));
     ench->FUN_140acd1f0("selectPetIngredient", AScript(obj));
     FUN_141276180("pet_Button_Click", "");
@@ -590,7 +586,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
 // @0x140cb3a30
 void PetComposePetEnchant::FUN_140cb3a30()
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (m_pOwner == NULL)
@@ -785,7 +781,7 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
         return;
     if (m_selected.IsEmpty())
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x37) != 0)
@@ -798,7 +794,7 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
         {
             if (((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635100() != 0 && ((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635120() == 0)
             {
-                CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_compose", player->vfunc_77());
+                CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_pet_compose", player->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_composeBindPet);
                 if (box.get() != 0)
                 {
@@ -838,7 +834,7 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
 // @0x140cb4ed0
 void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(GetUidPet());
@@ -886,7 +882,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
 // @0x140cb5300
 void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(GetUidPet());

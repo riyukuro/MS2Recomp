@@ -23,7 +23,6 @@
 
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-bool FUN_140184310(const CString& str, const char* psz);   // 0x140184310 the model name equals the text
 bool FUN_1401c0090(const CString& a, const CString& b);    // 0x1401c0090 the model name equals the text
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -99,7 +98,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Cap_A");
+            bool bSame = (strModel == "Equip_Change_Cap_A");
             pPC->FUN_14166dd20("Equip_Change_Cap_A", 1.0f, bSame, false);
         }
         break;
@@ -109,7 +108,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Body_A");
+            bool bSame = (strModel == "Equip_Change_Body_A");
             pPC->FUN_14166dd20("Equip_Change_Body_A", 1.0f, bSame, false);
         }
         break;
@@ -119,7 +118,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Head_A");
+            bool bSame = (strModel == "Equip_Change_Head_A");
             pPC->FUN_14166dd20("Equip_Change_Head_A", 1.0f, bSame, false);
         }
         break;
@@ -155,7 +154,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Glove_A");
+            bool bSame = (strModel == "Equip_Change_Glove_A");
             pPC->FUN_14166dd20("Equip_Change_Glove_A", 1.0f, bSame, false);
         }
         break;
@@ -165,7 +164,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Mantle_A");
+            bool bSame = (strModel == "Equip_Change_Mantle_A");
             pPC->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, bSame, false);
         }
         break;
@@ -175,7 +174,7 @@ void StateWaitingSelect::vfunc_2(int n)
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
             pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Shoes_A");
+            bool bSame = (strModel == "Equip_Change_Shoes_A");
             pPC->FUN_14166dd20("Equip_Change_Shoes_A", 1.0f, bSame, false);
         }
         break;

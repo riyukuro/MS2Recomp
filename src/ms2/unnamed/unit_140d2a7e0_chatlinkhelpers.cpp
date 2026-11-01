@@ -114,7 +114,6 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strA);
 CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 void FUN_14028cf00(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const CStringW& strOpen, const CStringW& strClose);
 void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszDelimiters);
 int FUN_1407181a0(const CStringW& str);
@@ -267,9 +266,9 @@ bool FUN_140d2ab10(CStringW& strLine)
                 int nCount = FUN_1407181a0(fields[2]);
                 CStringW strCount = FUN_140763e10(nCount);
                 if (FUN_14053f8c0((unsigned)nUid))
-                    strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_meso"), strName, FUN_141425950(nItemId), strCount);
+                    strLine = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_msg_item_open_item_announce_to_world_meso"), strName, FUN_141425950(nItemId), strCount);
                 else if (FUN_14053f940((unsigned)nUid))
-                    strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_merat"), strName, FUN_141425950(nItemId), strCount);
+                    strLine = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_msg_item_open_item_announce_to_world_merat"), strName, FUN_141425950(nItemId), strCount);
             }
         }
         else
@@ -321,12 +320,12 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
             return CStringW(L"");
         CStringW& strName = fields[0];
         int nItemId = FUN_140718200(fields[1]);
-        return FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
+        return FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_msg_item_open_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
     }
     else if (nKind == 4)
         return FUN_140632a60(0xc42, strArgs, strLink);
     else if (nKind == 5)
-        return FUN_1409eaa20(CStringW(L"s_item_merge_chat_maxoption"), strArgs, strLink, FUN_140d2bff0(spItem));
+        return FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_item_merge_chat_maxoption"), strArgs, strLink, FUN_140d2bff0(spItem));
     else if (nKind == 6)
     {
         ATL::CAtlArray<CStringW> fields;
@@ -335,7 +334,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
             return CStringW(L"");
         CStringW& strName = fields[0];
         int nItemId = FUN_140718200(fields[1]);
-        return FUN_1409eaa20(CStringW(L"s_msg_item_identified_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
+        return FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_msg_item_identified_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
     }
     return CStringW(L"");
 }

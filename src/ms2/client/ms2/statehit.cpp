@@ -24,13 +24,10 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-void* FUN_14086d260();                                                  // 0x14086d260 the game clock
 bool FUN_14028d470(float a, float b);                                   // 0x14028d470 approx equal
 CString FUN_1409a2360(const char* psz, int n);                          // 0x1409a2360 CString from text
-bool FUN_14096ad40(const efd::utf8string& str);                         // 0x14096ad40 the string is empty
-void FUN_140de91f0(efd::utf8string* pStr);                              // 0x140de91f0 the animation is missing
 float FUN_14099eb30(const egf::EntityID& kId, CString strName);         // 0x14099eb30 the animation length in seconds
-Unk_FallAnimSvc* FUN_1410a68d0();                                       // 0x1410a68d0 the animation service
+class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
 
 // The physics body of the actor: the fly-away lift.
 
@@ -82,7 +79,7 @@ void StateHit::vfunc_4(StateData* pData)
         m_fA4 = pHit->m_f24;
         m_fA8 = pHit->m_f20;
         double dDuration = m_fA4;
-        m_fA0 = (float)(dDuration + reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280());
+        m_fA0 = (float)(dDuration + reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
         m_fB0 = pHit->m_f28;
         m_nB4 = pHit->m_n2c;
         m_fAc = m_pOwner->vfunc_18().z;
@@ -116,7 +113,7 @@ void StateHit::vfunc_4(StateData* pData)
     }
     else
     {
-        FUN_140de91f0(&m_strAnim);
+        ((efd::utf8string*)(void*)(&m_strAnim))->clear();
     }
     m_bC8 = false;
 }
@@ -128,7 +125,7 @@ void StateHit::vfunc_3(double fTime)
     m_pOwner->vfunc_68(&kDir, fTime, 0, 0, 0);
     if (0.0f < m_fEndTime)
     {
-        if (reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280() >= m_fEndTime)
+        if (reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280() >= m_fEndTime)
         {
             if (m_nB4 != 0)
                 m_pOwner->FUN_14166dd20("Damg_C", 1.0f, false, false);
@@ -155,7 +152,7 @@ void StateHit::vfunc_5(int n)
 void StateHit::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (FUN_14096ad40(m_strAnim))
+    if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(m_strAnim))->empty())
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
@@ -165,7 +162,7 @@ void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID
 {
     if (eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
     {
-        Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
+        Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)FUN_1410a68d0());
         int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
         int nFly = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Jump_FlyDamg_A");
         if ((FUN_14028d470(m_fA4, 0) && FUN_14028d470(m_f9c, 0)) || (int)eSequenceID == nDamg)
@@ -220,7 +217,7 @@ int StateHit::vfunc_36()
 // @0x1417cb160
 int StateHit::FUN_1417cb160()
 {
-    float fNow = (float)reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280();
+    float fNow = (float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280();
     if (fNow < m_fA0 && !FUN_14028d470(m_fB0, 0))
         return 0;
     return 1;
@@ -277,7 +274,7 @@ void StateHitNPC::vfunc_4(StateData* pData)
         m_f58 = pHit->m_f28;
         m_n5c = pHit->m_n2c;
         m_f50 = pHit->m_f24;
-        m_f4c = m_f50 + (float)reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280();
+        m_f4c = m_f50 + (float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280();
         m_f54 = m_pOwner->vfunc_18().z;
         m_n40 = pHit->m_n30;
     }
@@ -290,7 +287,7 @@ void StateHitNPC::vfunc_3(double fTime)
     FUN_1417cb7b0();
     if (0.0f < m_fEndTime)
     {
-        if (reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280() >= m_fEndTime)
+        if (reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280() >= m_fEndTime)
         {
             if (m_n5c == 0)
             {
@@ -311,7 +308,7 @@ void StateHitNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenc
 {
     if (eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
     {
-        Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
+        Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)FUN_1410a68d0());
         int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
         if ((FUN_14028d470(m_f4c, 0) && FUN_14028d470(m_f44, 0)) || (int)eSequenceID == nDamg)
             m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -336,7 +333,7 @@ void StateHitNPC::FUN_1417cb730()
 // @0x1417cb7b0
 void StateHitNPC::FUN_1417cb7b0()
 {
-    float fNow = (float)reinterpret_cast<CMainSystem*>(FUN_14086d260())->FUN_141473280();
+    float fNow = (float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280();
     float fZ = m_f54;
     if (fNow < m_f4c)
     {

@@ -11,7 +11,7 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
 CString FUN_14016a5c0(const char* psz, int n);
@@ -62,7 +62,7 @@ bool CommonEffectDummy::LoadFile(const char* path)
     TiXmlDocument doc;
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, path, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
         FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", &path);

@@ -17,11 +17,13 @@ extern int DAT_143ae0fc0;                                           // debug swi
 int FUN_141277f40();                                                // next UI layer
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_UIScale;
-Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
-float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
-void FUN_1422bfe00(ASDisplayObject* pObj, float fAlpha);            // set the alpha
-void FUN_1422c00f0(ASGameEntity* pEntity, float x, float y);        // set the position
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invokers on the tooltip's movie clip (instances of the AScript::Invoke templates).
 class Unk_TooltipMovie
@@ -162,7 +164,7 @@ void UIDebugTooltip::vfunc_52()
             vfunc_8(0);
         else
             vfunc_8(1);
-        FUN_1422bfe00(pClip.operator->(), 100.0f);
+        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->FUN_1422bfe00(100.0f);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_1412cc450("setData", m_88, m_98);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e0a8c0("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
@@ -212,8 +214,8 @@ void UIDebugTooltip::FUN_14191b140()
                 vfunc_8(0);
             else
                 vfunc_8(1);
-            FUN_140ad0c10(&screen, FUN_1422afec0(FUN_14025e7a0(), m_28));
-            FUN_1422c00f0(pEntity.operator->(), screen.x, screen.y);
+            FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->FUN_1422c00f0(screen.x, screen.y);
         }
     }
     else

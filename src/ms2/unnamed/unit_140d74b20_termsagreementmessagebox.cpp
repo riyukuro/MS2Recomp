@@ -13,6 +13,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local placeholders (the same views as in unit_140d73aa0) ----
 
@@ -67,7 +68,6 @@ public:
 
 CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nId);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
 CStringW& FUN_140159a00(ATL::CAtlArray<CStringW>& arr, size_t i);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
@@ -88,7 +88,7 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
     box->FUN_141a01800(1);
     box->SetTitle(strA);
     box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
-    CStringW coupon = FUN_1405c2690(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
+    CStringW coupon = FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
     FUN_1403b4750()->FUN_1416fb300(coupon);
     box->FUN_141a02560(CStringW(coupon), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());

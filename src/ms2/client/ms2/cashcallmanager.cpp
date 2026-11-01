@@ -31,7 +31,6 @@ public:
     MyPC* FUN_141bd0cc0();                                      // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
-class Unk_CcUi { public: int FUN_141adc890(int nClass); };    // a dialog of this class is open
 void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice by id
 
 // the ids of the cash call items the player may use
@@ -77,7 +76,7 @@ CCashCallManager::~CCashCallManager()
 // @0x140b030b0
 int CCashCallManager::FUN_140b030b0(int nCallType)
 {
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -167,7 +166,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
 // @0x140b03590
 int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 {
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -215,12 +214,12 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 // @0x140b03980
 int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 {
-    if (reinterpret_cast<Unk_CcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e97) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e97))) != 0)
     {
         FUN_140d73bc0(0x9c, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -263,12 +262,12 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 // @0x140b03d70
 int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 {
-    if (reinterpret_cast<Unk_CcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e47) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e47))) != 0)
     {
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -307,7 +306,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 // @0x140b040a0
 int CCashCallManager::FUN_140b040a0(int nCount)
 {
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -356,7 +355,7 @@ int CCashCallManager::FUN_140b040a0(int nCount)
 // @0x140b04430
 int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
 {
-    MyPC* pPC = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (FUN_140b040a0(nCount) == 0)

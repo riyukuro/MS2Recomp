@@ -35,7 +35,6 @@ public:
     static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
     static void FUN_1422c8f70(CString const&);
 };
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 PetCardSlotBag* FUN_140b78150(NotifyContext::BindData* p);
 PetConsumeSlotBag* FUN_140b781a0(NotifyContext::BindData* p);
@@ -133,7 +132,7 @@ void FUN_140b77500(const CString& strName)
     PetCardSlotBag* pBag = FUN_140b78150(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
@@ -269,7 +268,7 @@ void FUN_140b77e50(const CString& strName)
     PetConsumeSlotBag* pBag = FUN_140b781a0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }

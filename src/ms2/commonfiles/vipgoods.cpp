@@ -21,6 +21,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
@@ -186,27 +191,27 @@ int CVIPTable::LoadGoods()
         if (pNode == 0)
             continue;
         int nDisable = 0;
-        FUN_1408731e0(pNode, "disable", nDisable);
+        XmlGetAttr((class TiXmlElement*)(pNode), "disable", reinterpret_cast<int&>(nDisable));
         if (nDisable == 1)
             continue;
         CVIPGoodsPtr spGoods(new CVIPGoods);
-        FUN_140873220(pNode, "id", spGoods->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(spGoods->m_nId));
         XmlGetAttr((class TiXmlElement*)(pNode), "salesStartDate", spGoods->m_salesStartDate);
         XmlGetAttr((class TiXmlElement*)(pNode), "salesEndDate", spGoods->m_salesEndDate);
-        FUN_140873220(pNode, "displayOrder", reinterpret_cast<unsigned&>(spGoods->m_nDisplayOrder));
-        FUN_1408732e0(pNode, "vipPeriod", spGoods->m_nVipPeriod);
+        XmlGetAttr((class TiXmlElement*)(pNode), "displayOrder", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(spGoods->m_nDisplayOrder)));
+        XmlGetAttr((class TiXmlElement*)(pNode), "vipPeriod", reinterpret_cast<__int64&>(spGoods->m_nVipPeriod));
         spGoods->m_nVipPeriod *= 3600;
-        FUN_1408732e0(pNode, "price", spGoods->m_nPrice);
-        FUN_1408732e0(pNode, "salePrice", spGoods->m_nSalePrice);
+        XmlGetAttr((class TiXmlElement*)(pNode), "price", reinterpret_cast<__int64&>(spGoods->m_nPrice));
+        XmlGetAttr((class TiXmlElement*)(pNode), "salePrice", reinterpret_cast<__int64&>(spGoods->m_nSalePrice));
         FUN_1406e8ac0(pNode, "saleTag", &spGoods->m_nSaleTag);
         XmlValue(pNode, "priceType", spGoods->m_nPriceType);
-        FUN_140873220(pNode, "buyLimit", reinterpret_cast<unsigned&>(spGoods->m_nBuyLimit));
+        XmlGetAttr((class TiXmlElement*)(pNode), "buyLimit", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(spGoods->m_nBuyLimit)));
         FUN_1406e8a30(pNode, "buyLimitResetType", &spGoods->m_nBuyLimitResetType);
         CString strIds;
-        FUN_1408733e0(pNode, "bonusItemID", strIds);
+        XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemID", strIds);
         FUN_140177e10(strIds, &spGoods->m_bonusItemIds, ",");
         CString strRanks;
-        FUN_1408733e0(pNode, "bonusItemRank", strRanks);
+        XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemRank", strRanks);
         ATL::CAtlArray<int> ranks;
         FUN_140177de0(strRanks, ranks, ",");
         for (unsigned n = 0; n < ranks.GetCount(); n++)
@@ -220,7 +225,7 @@ int CVIPTable::LoadGoods()
             return 0;
         }
         CString strCounts;
-        FUN_1408733e0(pNode, "bonusItemCount", strCounts);
+        XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemCount", strCounts);
         FUN_140177e10(strCounts, &spGoods->m_bonusItemCounts, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemCounts.GetCount())
         {
@@ -228,7 +233,7 @@ int CVIPTable::LoadGoods()
             return 0;
         }
         CString strPeriods;
-        FUN_1408733e0(pNode, "bonusItemPeriod", strPeriods);
+        XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemPeriod", strPeriods);
         FUN_1402a5010(strPeriods, &spGoods->m_bonusItemPeriods, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemPeriods.GetCount())
         {
@@ -265,11 +270,11 @@ int CVIPTable::LoadBenefitItems()
         if (pNode == 0)
             continue;
         CVIPBenefitItemPtr spItem(new CVIPBenefitItem);
-        FUN_140873220(pNode, "id", spItem->m_nId);
-        FUN_140873220(pNode, "itemID", spItem->m_nItemId);
-        FUN_140873220(pNode, "itemCount", spItem->m_nItemCount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(spItem->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "itemID", reinterpret_cast<unsigned int&>(spItem->m_nItemId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "itemCount", reinterpret_cast<unsigned int&>(spItem->m_nItemCount));
         Unk_ReadRank((class Unk_XmlNode*)(pNode), "itemRank", &spItem->m_nItemRank);
-        FUN_1408732e0(pNode, "itemPeriod", spItem->m_nItemPeriod);
+        XmlGetAttr((class TiXmlElement*)(pNode), "itemPeriod", reinterpret_cast<__int64&>(spItem->m_nItemPeriod));
         m_benefitItems.SetAt(spItem->m_nId, spItem);
     }
     return 1;
@@ -299,8 +304,8 @@ int CVIPTable::LoadBenefitEffects()
         if (pNode == 0)
             continue;
         CVIPBenefitEffectPtr spEffect(new CVIPBenefitEffect);
-        FUN_140873220(pNode, "effectID", spEffect->m_nEffectId);
-        FUN_1408731a0(pNode, "effectLevel", spEffect->m_nEffectLevel);
+        XmlGetAttr((class TiXmlElement*)(pNode), "effectID", reinterpret_cast<unsigned int&>(spEffect->m_nEffectId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "effectLevel", reinterpret_cast<unsigned short&>(spEffect->m_nEffectLevel));
         m_benefitEffects.Add(spEffect);
     }
     return 1;

@@ -38,7 +38,7 @@ CStringW FUN_140719a00(long long n);                                    // integ
 CStringW FUN_1405dbf60(const wchar_t* pszFormat, const double& d);      // one double argument
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 #include "ms2/commonfiles/commonutil.h"
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);               // localized string with an argument
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 extern int DAT_143ab0240;                                               // client language
 extern int DAT_143ab0248;                                               // client country
@@ -310,7 +310,7 @@ CStringW FUN_14083cf50(int nValue, bool bLocalized)
         CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);
         double d = FUN_1407184e0(strNumber);
         CStringW strFixed = FUN_1405dbf60(L"{0:.2f}", d);
-        return bLocalized ? FUN_1405c2690(L"s_common_percent", strFixed) : CStringW(strFixed);
+        return bLocalized ? FUN_14028dfa0<CStringW>(L"s_common_percent", strFixed) : CStringW(strFixed);
     }
     CStringW strFormat = bLocalized ? GetStringCommonByKey(L"s_common_percent") : CStringW(L"{0}");
     return FUN_1401ceea0(strFormat, nInt);

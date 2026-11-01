@@ -78,6 +78,7 @@
 #include "ms2/placeholder/gamedictionarymanager.h"
 
 #include <stdlib.h>
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // The sort names of the item lists (header statics; the 8 name table first, as in the exe's initializer order).
 static CStringA s_sortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -1091,7 +1092,7 @@ CNpcDataTable::CNpcDataTable()
 MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int nMinDifficulty, int nMaxDifficulty)
 {
     {
-        Unk_CriticalSectionLock lock(m_lock, 1);
+        Unk_1401b4ec0 lock(m_lock, 1);
         for (unsigned i = 0; i < m_aResult.GetCount(); i++)
         {
             MS2Ptr<CRegionSpawnResult> pResult = m_aResult[i];
@@ -1113,7 +1114,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
         {
             Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > pIds;
             {
-                Unk_CriticalSectionLock lock(m_lock, 1);
+                Unk_1401b4ec0 lock(m_lock, 1);
                 m_mapTag[nGroup].Lookup(aTags[j], pIds);
             }
             if (pIds.get() != 0)
@@ -1177,7 +1178,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
     for (unsigned i = 0; i < pResult->m_aProb.GetCount(); i++)
         pResult->m_aProb[i]->m_fRate = pResult->m_aProb[i]->m_fWeight / nTotal;
     {
-        Unk_CriticalSectionLock lock(m_lock, 1);
+        Unk_1401b4ec0 lock(m_lock, 1);
         m_aResult.Add(pResult);
     }
     return pResult;
@@ -1186,7 +1187,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
 // @0x1406ce1d0
 Unk_BmPtr<CNpcRegionSpawnData> CNpcDataTable::GetRegionSpawnData(int nNpcId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Unk_BmPtr<CNpcRegionSpawnData> pData(nullptr);
     m_mapSpawn.Lookup(nNpcId, pData);
     return pData;
@@ -1198,7 +1199,7 @@ void CNpcDataTable::IndexRegionSpawn(Unk_BmPtr<CNpcRegionSpawnData> pData)
 {
     if (pData == 0)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (int nGroup = 0; nGroup < 2; nGroup++)
     {
         for (unsigned int i = 0; i < pData->m_aTags[nGroup].GetCount(); i++)
@@ -1272,7 +1273,7 @@ void CNpcDataTable::LoadRegionSpawn()
         FUN_1408731e0(pNode, "rareDegree", pData->m_nRareDegree);
         FUN_1408731e0(pNode, "difficulty", pData->m_nDifficulty);
         {
-            Unk_CriticalSectionLock lock(m_lock, 1);
+            Unk_1401b4ec0 lock(m_lock, 1);
             m_mapSpawn.SetAt(pData->m_nNpcId, pData);
         }
         IndexRegionSpawn(pData);
@@ -1291,7 +1292,7 @@ MS2_REPLACE_METHOD(0x1406CED30, CNpcDataTable, GetIdFromPath, 112, 0x47CCD196);
 // @0x1406cedb0
 bool CNpcDataTable::NeedsLoad(int nNpcId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned, MS2Ptr<CCacheData> >::iterator it = m_mapCache.find(reinterpret_cast<const unsigned&>(nNpcId));
     if (it == m_mapCache.end())
         return false;

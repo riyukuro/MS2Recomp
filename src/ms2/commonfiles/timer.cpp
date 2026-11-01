@@ -16,7 +16,7 @@
 
 // Out-of-unit callees.
 efd::ServiceManager* FUN_1413f9850();                                       // the game's service manager
-int FUN_140873600(Unk_140165cf0* pNode, const char* pszName, CMsTime& out);  // TinyXML time attribute
+int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 
 // @0x1408690a0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
@@ -191,8 +191,8 @@ TimeRange::TimeRange(const CMsTime& start, const CMsTime& end)
 // @0x140868d60
 void TimeRange::FUN_140868d60(Unk_140165cf0* pNode)
 {
-    FUN_140873600(pNode, "startTime", m_start);
-    FUN_140873600(pNode, "endTime", m_end);
+    XmlGetAttr((class TiXmlElement*)(pNode), "startTime", m_start);
+    XmlGetAttr((class TiXmlElement*)(pNode), "endTime", m_end);
 }
 
 // @0x140868db0

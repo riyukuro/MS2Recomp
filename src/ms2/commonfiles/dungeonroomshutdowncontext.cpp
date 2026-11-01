@@ -20,12 +20,16 @@
 
 // Out-of-unit helpers.
 int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // enum attribute by name
-Unk_140165cf0* FUN_14086e860(TiXmlDocument* pDoc);                                         // first child element
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class TiXmlElement const* FirstChildElement() const;
+};
 
 // @0x140345b40
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc)
 {
-    return FUN_14086e860(pDoc);
+    return ((class Unk_140165cf0*)((class TiXmlNode*)(class TiXmlDocument*)(pDoc))->FirstChildElement());
 }
 
 // @0x140343e50

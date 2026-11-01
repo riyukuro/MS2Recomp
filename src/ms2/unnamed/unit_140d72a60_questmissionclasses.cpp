@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
 class CFieldMissionTable;
@@ -80,7 +81,6 @@ UIRewardNotify* FUN_140938cd0(int uiType);
 CStringW FUN_14062b4f0(CStringW, const int*);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140c160b0(CStringW, const __int64*);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
@@ -218,7 +218,7 @@ void CEventMission::Complete(CInPacket& packet)
         if (n == -1) return;
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify != 0) {
-            CStringW text = FUN_1405c2690(L"s_stampevent_quest_complete", FUN_1416e4df0(FUN_140bfc580()));
+            CStringW text = FUN_14028dfa0<CStringW>(L"s_stampevent_quest_complete", FUN_1416e4df0(FUN_140bfc580()));
             notify->FUN_141ac1730(text, n != 0, ref.Get()->m_tag);
         }
     }

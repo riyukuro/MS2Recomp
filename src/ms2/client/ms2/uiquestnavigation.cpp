@@ -225,7 +225,7 @@ void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
 // @0x140e78c40
 Vector3 PcHudNavigationEntity::vfunc_7()
 {
-    MyPC* pPC = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPC)
         return DAT_143b01a60;
     return reinterpret_cast<Unk_QnPosView*>(pPC)->vfunc_18();

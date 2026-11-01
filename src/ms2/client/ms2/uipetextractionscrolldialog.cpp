@@ -78,7 +78,6 @@ MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item data of 
 CPetDataTable* FUN_14052d210();                             // TSingleton<CPetDataTable>::GetInstance
 CItemSocketTable* FUN_14052d200();                          // TSingleton<CItemSocketTable>::GetInstance
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table text with one argument
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);    // "{0}" formatter
 void FUN_1412751f0(const CStringW& text, int nA, int nB);   // notice
@@ -90,6 +89,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIPetExtractionScrollDialog::SlotBag);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // @0x140e70aa0
 UIPetExtractionScrollDialog::Slot::Slot(const CString& strName, int nIndex, MS2Ptr<CItem> spItem)
@@ -262,7 +262,7 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
         if (pSkin == 0)
             break;
         pSkin->vfunc_3(*static_cast<CInPacket*>(pPacket));
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_petextraction_success"), spResult->FUN_140527b10()), 1, 0);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_petextraction_success"), spResult->FUN_140527b10()), 1, 0);
         break;
     }
     case 2:

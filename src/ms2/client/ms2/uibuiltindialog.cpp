@@ -13,7 +13,7 @@ extern int DAT_1439f8cc8;
 extern int DAT_1439f8ccc;
 extern int DAT_1439f8cd0;
 extern int DAT_1439f8cd4;
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // @0x1418dcf70
 UIBuiltInDialog::UIBuiltInDialog()
@@ -64,7 +64,7 @@ int FUN_1418dd100()
 // @0x1418dd110
 int FUN_1418dd110()
 {
-    if (!FUN_140166410()->FUN_14036d570(0xbd))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
         return 0;
     return DAT_1439f8cd0 - 2;
 }

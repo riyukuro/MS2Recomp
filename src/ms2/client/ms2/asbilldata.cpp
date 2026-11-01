@@ -266,7 +266,7 @@ MS2_REPLACE_METHOD(0x1409ABEF0, ASBillData, vfunc_4, 14, 0x7A15C443);
 int ASBillData::vfunc_5()
 {
     int nIndex = -1;
-    FUN_1422bae10("index", nIndex);
+    AScript::FUN_1422bae10("index", &nIndex);
     return nIndex;
 }
 MS2_REPLACE_METHOD(0x1409ABF10, ASBillData, vfunc_5, 48, 0x488E5FE8);

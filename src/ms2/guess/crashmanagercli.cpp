@@ -20,6 +20,7 @@
 #include "ms2/placeholder/iclientplatform.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // return types of the getters this unit calls
 class Unk_AltStringMgr;
@@ -47,10 +48,14 @@ extern LPTOP_LEVEL_EXCEPTION_FILTER g_pfnPrevExceptionFilter;   // 0x143ab6728
 
 class Unk_ImgTagSource;
 Unk_AltStringMgr* FUN_14025e7a0();
-unsigned FUN_1422af8a0(Unk_ImgTagSource* pSource, int nKind);
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_1422af8a0(int);
+};
 CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
-IClientPlatform* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 void FUN_141b6db40(int nCode);
 CFeatureManager* FUN_140166410();
 void FUN_140a43b20();
@@ -79,21 +84,21 @@ void CrashManagerCli::FUN_140a435a0()
 // @0x140a43750
 void CrashManagerCli::FUN_140a43750(DWORD nId, CString strText)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_map.SetAt(nId, strText);
 }
 
 // @0x140a437d0
 void CrashManagerCli::FUN_140a437d0(DWORD nId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_map.RemoveKey(nId);
 }
 
 // @0x140a43830
 void CrashManagerCli::FUN_140a43830()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
         CString strLine = Unk_SocketFormat("{0} {1}", m_map.GetKeyAt(pos), m_map.GetValueAt(pos));
@@ -104,7 +109,7 @@ void CrashManagerCli::FUN_140a43830()
 // @0x140a43920
 BOOL CrashManagerCli::FUN_140a43920(DWORD nId, CString& strText)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_map.Lookup(nId, strText) != 0;
 }
 
@@ -117,13 +122,13 @@ void FUN_140a439b0(void*)
 // @0x140a439d0
 void FUN_140a439d0()
 {
-    FUN_140d86260()->vfunc_23(10, "Crash");
+    ((class IClientPlatform*)FUN_140d86260())->vfunc_23(10, "Crash");
     DWORD dwThread = GetCurrentThreadId();
     if (g_dwCrashMainThreadId == dwThread)
     {
         if (TSingleton<CrashManagerCli>::GetInstance() != 0)
         {
-            unsigned nImgTag = FUN_1422af8a0(reinterpret_cast<Unk_ImgTagSource*>(FUN_14025e7a0()), 2);
+            unsigned nImgTag = ((class GFxManager*)(class Unk_ImgTagSource*)(reinterpret_cast<Unk_ImgTagSource*>(FUN_14025e7a0())))->FUN_1422af8a0(2);
             TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("MyPreErrHandler ImgTag:%x", nImgTag);
             std::list<TFunctor<void, EmptyParam> >& callbacks = TSingleton<CrashManagerCli>::GetInstance()->FUN_140a44800();
             for (std::list<TFunctor<void, EmptyParam> >::iterator it = callbacks.begin(); it != callbacks.end(); ++it)

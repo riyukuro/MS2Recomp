@@ -22,7 +22,6 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int FUN_1408733e0(void*, const char*, CString&);
 void FUN_14015f050(CString&, ATL::CAtlArray<CString>&, const char* delimiter);
-void FUN_1402c2890(ATL::CAtlArray<CString>&);                       // RemoveAll
 void FUN_140165270(ATL::CAtlArray<CString>&, CString&);              // Add
 unsigned __int64 FUN_1401662c0(ATL::CAtlArray<CString>&);            // GetCount
 void* FUN_140164930(ATL::CAtlArray<CString>&, unsigned __int64);     // GetAt
@@ -31,7 +30,7 @@ CString FUN_140298360(const char*, const CString&);
 CString FUN_140188f50(const char*, int);
 bool FUN_1401c0090(const CString&, const CString&) noexcept;
 class Unk_14025e7c0 { };
-void * FUN_14025e7c0(void);  // C3: the definition's signature
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 unsigned char FUN_14116d720(Unk_14025e7c0*);
 
 extern int DAT_1439f4840;
@@ -123,7 +122,7 @@ void CLocaleLanguageData::FUN_14064edf0(ATL::CAtlArray<int, ATL::CDefaultElement
 // @0x14064eec0
 void CLocaleLanguageData::FUN_14064eec0(ATL::CAtlArray<CString>& out)
 {
-    FUN_1402c2890(out);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->RemoveAll();
     for (unsigned __int64 i = 0; i < FUN_1401662c0(m_languages); ++i)
     {
         CString s = FUN_1406504c0(*(CString*)FUN_140164930(m_languages, i));
@@ -135,9 +134,9 @@ void CLocaleLanguageData::FUN_14064eec0(ATL::CAtlArray<CString>& out)
 void CLocaleLanguageData::FUN_14064ef60()
 {
     m_strLocale.Empty();
-    FUN_1402c2890(m_languages);
-    FUN_1402c2890(m_regions);
-    FUN_1402c2890(m_voices);
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_languages))->RemoveAll();
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_regions))->RemoveAll();
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_voices))->RemoveAll();
 }
 
 // @0x14064efc0
@@ -156,7 +155,7 @@ CLocaleLanguage::~CLocaleLanguage()
 LocaleLanguageDataPtr CLocaleLanguage::FUN_14064f070(unsigned int nLocale)
 {
     unsigned int nSel = 0;
-    nSel = FUN_14116d720((Unk_14025e7c0 *)(FUN_14025e7c0()));
+    nSel = FUN_14116d720((Unk_14025e7c0 *)(((class Unk_14025e7c0*)FUN_14025e7c0())));
     if (nLocale != 0)
         nSel = nLocale;
     int nIdx = -1;

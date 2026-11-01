@@ -78,6 +78,18 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/stanceleveldata.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
@@ -214,7 +226,7 @@ int Unk_CompareStat::FUN_1407e5e70(Unk_140165cf0* pElem)
     for (unsigned i = 0; i < 35; i++)
     {
         CString strName = FUN_14082efb0(i);
-        if (FUN_140873360(pElem, strName, m_f0) == 0)
+        if (XmlGetAttr((class TiXmlElement*)(pElem), strName, reinterpret_cast<float&>(m_f0)) == 0)
             m_n4 = FindStatByName(strName);
     }
     XmlEnumName<SkillCompareSign, ParseCompareSign>(pElem, "func", (SkillCompareSign&)m_n8);
@@ -263,10 +275,10 @@ bool Unk_SkillOverlapCondition::FUN_1407e5fe0(const Unk_SkillOverlapCondition& o
 // @0x1407e6080
 int Unk_SkillOverlapCondition::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "targetCheckRange", m_nTargetCheckRange);
-    FUN_140873220(pElem, "targetCheckMinRange", m_nTargetCheckMinRange);
-    FUN_140873220(pElem, "targetInRangeCount", m_nTargetInRangeCount);
-    FUN_140873220(pElem, "targetFriendly", m_nTargetFriendly);
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetCheckRange", reinterpret_cast<unsigned int&>(m_nTargetCheckRange));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetCheckMinRange", reinterpret_cast<unsigned int&>(m_nTargetCheckMinRange));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetInRangeCount", reinterpret_cast<unsigned int&>(m_nTargetInRangeCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetFriendly", reinterpret_cast<unsigned int&>(m_nTargetFriendly));
     XmlEnumName<SkillCompareSign, ParseCompareSign>(pElem, "targetCountSign", (SkillCompareSign&)m_nTargetCountSign);
     if (m_nTargetCheckRange != 0 && m_nTargetCountSign != 0)
         m_b0 = true;
@@ -307,11 +319,11 @@ MS2_REPLACE_METHOD(0x1407e61c0, SkillHasBuffCondition, operator!=, 129, 0x7A6D57
 // @0x1407e6250
 int SkillHasBuffCondition::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "hasBuffID", m_nHasBuffID);
-    FUN_1408730a0(pElem, "hasBuffOwner", m_bHasBuffOwner);
-    FUN_140873220(pElem, "hasBuffCount", m_nHasBuffCount);
-    FUN_140873220(pElem, "hasNotBuffID", m_nHasNotBuffID);
-    FUN_1408730a0(pElem, "hasNotBuffOwner", m_bHasNotBuffOwner);
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffID", reinterpret_cast<unsigned int&>(m_nHasBuffID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffOwner", reinterpret_cast<bool&>(m_bHasBuffOwner));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasBuffCount", reinterpret_cast<unsigned int&>(m_nHasBuffCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasNotBuffID", reinterpret_cast<unsigned int&>(m_nHasNotBuffID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hasNotBuffOwner", reinterpret_cast<bool&>(m_bHasNotBuffOwner));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1407e6250, SkillHasBuffCondition, Load, 165, 0xC7E39D3E);
@@ -376,17 +388,17 @@ bool SkillBeginCondition::IsDefault()
 // @0x1407e6610
 int SkillBeginCondition::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pBegin = pElem->FUN_140165cf0("beginCondition");
+    Unk_140165cf0* pBegin = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("beginCondition"));
     if (pBegin != 0)
     {
-        FUN_140873360(pBegin, "probability", m_fProbability);
+        XmlGetAttr((class TiXmlElement*)(pBegin), "probability", reinterpret_cast<float&>(m_fProbability));
         XmlGetBool((class TiXmlElement*)(pBegin), "useTargetCountFactor", *(int*)(&m_nUseTargetCountFactor));
         XmlGetBool((class TiXmlElement*)(pBegin), "allowBattleRidingState", *(int*)(&m_nAllowBattleRidingState));
         XmlGetBool((class TiXmlElement*)(pBegin), "onlyBattleRidingState", *(int*)(&m_nOnlyBattleRidingState));
-        Unk_140165cf0* pCaster = pBegin->FUN_140165cf0("caster");
+        Unk_140165cf0* pCaster = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBegin))->FirstChild("caster"));
         if (pCaster != 0 && m_caster.Load(pCaster) == 0)
             return 0;
-        Unk_140165cf0* pTarget = pBegin->FUN_140165cf0("target");
+        Unk_140165cf0* pTarget = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBegin))->FirstChild("target"));
         if (pTarget != 0 && m_target.Load(pTarget) == 0)
             return 0;
     }
@@ -510,41 +522,41 @@ bool SkillCondition::IsDefault()
 // @0x1407e6f20
 int SkillCondition::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pCondition = pElem->FUN_140165cf0("condition");
+    Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition"));
     if (pCondition != 0)
     {
-        FUN_140873360(pCondition, "invokeEffectFactor", m_fInvokeEffectFactor);
-        FUN_140873360(pCondition, "defaultRechargingCooldownTime", m_fDefaultRechargingCooldownTime);
+        XmlGetAttr((class TiXmlElement*)(pCondition), "invokeEffectFactor", reinterpret_cast<float&>(m_fInvokeEffectFactor));
+        XmlGetAttr((class TiXmlElement*)(pCondition), "defaultRechargingCooldownTime", reinterpret_cast<float&>(m_fDefaultRechargingCooldownTime));
         XmlGetBool((class TiXmlElement*)(pCondition), "useCoolDownShowUI", *(int*)(&m_nUseCoolDownShowUI));
         XmlGetBool((class TiXmlElement*)(pCondition), "onlyShadowWorld", *(int*)(&m_nOnlyShadowWorld));
         XmlGetBool((class TiXmlElement*)(pCondition), "onlyFlyableMap", *(int*)(&m_nOnlyFlyableMap));
         XmlGetBool((class TiXmlElement*)(pCondition), "allowBattleRidingState", *(int*)(&m_nAllowBattleRidingState));
         XmlGetBool((class TiXmlElement*)(pCondition), "onlyBattleRidingState", *(int*)(&m_nOnlyBattleRidingState));
-        FUN_1408731e0(pCondition, "sp", m_nSp);
-        for (Unk_140165cf0* p = pCondition->FUN_140165cf0("requireEffect"); p != 0; p = p->FUN_140168650("requireEffect"))
+        XmlGetAttr((class TiXmlElement*)(pCondition), "sp", reinterpret_cast<int&>(m_nSp));
+        for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCondition))->FirstChild("requireEffect")); p != 0; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("requireEffect")))
         {
             unsigned nCode = 0;
-            FUN_140873220(p, "code", nCode);
+            XmlGetAttr((class TiXmlElement*)(p), "code", reinterpret_cast<unsigned int&>(nCode));
             m_arrRequireEffect.Add(nCode);
         }
-        for (Unk_140165cf0* p = pCondition->FUN_140165cf0("requireMapCodes"); p != 0; p = p->FUN_140168650("requireMapCodes"))
+        for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCondition))->FirstChild("requireMapCodes")); p != 0; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("requireMapCodes")))
         {
             unsigned nCode = 0;
-            FUN_140873220(p, "code", nCode);
+            XmlGetAttr((class TiXmlElement*)(p), "code", reinterpret_cast<unsigned int&>(nCode));
             m_arrRequireMapCodes.Add(nCode);
         }
-        for (Unk_140165cf0* p = pCondition->FUN_140165cf0("hasNotAdditionalEffectGroup"); p != 0;
-             p = p->FUN_140168650("hasNotAdditionalEffectGroup"))
+        for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCondition))->FirstChild("hasNotAdditionalEffectGroup")); p != 0;
+             p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("hasNotAdditionalEffectGroup")))
         {
             int nId = 0;
-            FUN_1408731e0(p, "id", nId);
+            XmlGetAttr((class TiXmlElement*)(p), "id", reinterpret_cast<int&>(nId));
             m_arrHasNotAdditionalEffectGroup.Add(nId);
         }
-        for (Unk_140165cf0* p = pCondition->FUN_140165cf0("weapon"); p != 0; p = p->FUN_140168650("weapon"))
+        for (Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCondition))->FirstChild("weapon")); p != 0; p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(p))->NextSibling("weapon")))
         {
             Unk_SkillWeapon weapon;
-            FUN_1408731e0(p, "lh", weapon.m_nLeftHand);
-            FUN_1408731e0(p, "rh", weapon.m_nRightHand);
+            XmlGetAttr((class TiXmlElement*)(p), "lh", reinterpret_cast<int&>(weapon.m_nLeftHand));
+            XmlGetAttr((class TiXmlElement*)(p), "rh", reinterpret_cast<int&>(weapon.m_nRightHand));
             m_arrWeapon.Add(weapon);
         }
     }
@@ -802,15 +814,15 @@ MS2_REPLACE_METHOD(0x1407e90a0, SkillData, FUN_1407e90a0, 123, 0xC3C91360);
 // @0x1407e9130
 void SkillData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
-    FUN_140873220(pElem, "originID", m_nOriginId);
-    Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "originID", reinterpret_cast<unsigned int&>(m_nOriginId));
+    Unk_140165cf0* pBasic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("basic"));
     if (pBasic == 0)
         return;
     XmlValue(pBasic, "mainType", m_eMainType);
-    FUN_1408731e0(pBasic, "param1", m_nParam1);
-    FUN_1408733e0(pBasic, "paramStr", m_strParamStr);
-    Unk_140165cf0* pUi = pBasic->FUN_140165cf0("ui");
+    XmlGetAttr((class TiXmlElement*)(pBasic), "param1", reinterpret_cast<int&>(m_nParam1));
+    XmlGetAttr((class TiXmlElement*)(pBasic), "paramStr", m_strParamStr);
+    Unk_140165cf0* pUi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBasic))->FirstChild("ui"));
     if (pUi != 0)
     {
         FUN_140873ad0(pUi, "icon", m_strIcon);
@@ -822,43 +834,43 @@ void SkillData::Load(Unk_140165cf0* pElem)
         FUN_140873b30(pUi, "paramCastingBar", strParam);
         m_spParamCastingBar->FUN_14092c400(strParam);
     }
-    Unk_140165cf0* pKinds = pBasic->FUN_140165cf0("kinds");
+    Unk_140165cf0* pKinds = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBasic))->FirstChild("kinds"));
     if (pKinds != 0)
     {
         XmlValue(pKinds, "rangeType", m_eRangeType);
         XmlValue(pKinds, "groupType", m_eGroupType);
-        FUN_140873220(pKinds, "jump", m_nJump);
-        FUN_1408730a0(pKinds, "continue", m_bContinue);
+        XmlGetAttr((class TiXmlElement*)(pKinds), "jump", reinterpret_cast<unsigned int&>(m_nJump));
+        XmlGetAttr((class TiXmlElement*)(pKinds), "continue", reinterpret_cast<bool&>(m_bContinue));
         XmlValue(pKinds, "element", m_eElement);
-        FUN_1408731e0(pKinds, "offsetNameTag", m_nOffsetNameTag);
+        XmlGetAttr((class TiXmlElement*)(pKinds), "offsetNameTag", reinterpret_cast<int&>(m_nOffsetNameTag));
         XmlValue(pKinds, "immediateActive", m_eImmediateActive);
-        FUN_1408730a0(pKinds, "unrideOnUse", m_bUnrideOnUse);
-        FUN_1408730a0(pKinds, "releaseObjectWeapon", m_bReleaseObjectWeapon);
-        FUN_1408730a0(pKinds, "disableWater", m_bDisableWater);
+        XmlGetAttr((class TiXmlElement*)(pKinds), "unrideOnUse", reinterpret_cast<bool&>(m_bUnrideOnUse));
+        XmlGetAttr((class TiXmlElement*)(pKinds), "releaseObjectWeapon", reinterpret_cast<bool&>(m_bReleaseObjectWeapon));
+        XmlGetAttr((class TiXmlElement*)(pKinds), "disableWater", reinterpret_cast<bool&>(m_bDisableWater));
         XmlQuery((class TiXmlElement*)(pKinds), "holdAttack", m_bHoldAttack);
-        FUN_140873220(pKinds, "groupIDs", m_nGroupIDs);
+        XmlGetAttr((class TiXmlElement*)(pKinds), "groupIDs", reinterpret_cast<unsigned int&>(m_nGroupIDs));
     }
-    Unk_140165cf0* pState = pBasic->FUN_140165cf0("stateAttr");
+    Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBasic))->FirstChild("stateAttr"));
     if (pState != 0)
     {
-        FUN_1408730a0(pState, "battle", m_bBattle);
-        FUN_1408731e0(pState, "superArmor", m_nSuperArmor);
+        XmlGetAttr((class TiXmlElement*)(pState), "battle", reinterpret_cast<bool&>(m_bBattle));
+        XmlGetAttr((class TiXmlElement*)(pState), "superArmor", reinterpret_cast<int&>(m_nSuperArmor));
         XmlValue(pState, "superArmorApplyFieldType", m_eSuperArmorApplyFieldType);
-        FUN_1408731e0(pState, "autoTargeting", m_nAutoTargeting);
-        FUN_140873220(pState, "autoTargetingType", m_nAutoTargetingType);
-        FUN_1408731e0(pState, "moveType", m_nMoveType);
-        FUN_1408730a0(pState, "notKeepEffect", m_bNotKeepEffect);
-        FUN_1408730a0(pState, "keyIsDown", m_bKeyIsDown);
-        FUN_1408730a0(pState, "useDefaultSkill", m_bUseDefaultSkill);
-        FUN_140873220(pState, "useDefaultSkillID", m_nUseDefaultSkillID);
-        FUN_1408730a0(pState, "useInGameTime", m_bUseInGameTime);
-        FUN_140873220(pState, "cooldownGroupID", m_nCooldownGroupID);
-        FUN_1408730a0(pState, "clearCooldownFromPVPZone", m_bClearCooldownFromPVPZone);
-        FUN_1408730a0(pState, "ignoreReduceCooldown", m_bIgnoreReduceCooldown);
-        FUN_140873220(pState, "rechargeMaxCount", m_nRechargeMaxCount);
-        FUN_1408730a0(pState, "rechargeShareOrigin", m_bRechargeShareOrigin);
-        FUN_1408730a0(pState, "movingInMovekey", m_bMovingInMovekey);
-        FUN_140873220(pState, "splashMaxCount", m_nSplashMaxCount);
+        XmlGetAttr((class TiXmlElement*)(pState), "autoTargeting", reinterpret_cast<int&>(m_nAutoTargeting));
+        XmlGetAttr((class TiXmlElement*)(pState), "autoTargetingType", reinterpret_cast<unsigned int&>(m_nAutoTargetingType));
+        XmlGetAttr((class TiXmlElement*)(pState), "moveType", reinterpret_cast<int&>(m_nMoveType));
+        XmlGetAttr((class TiXmlElement*)(pState), "notKeepEffect", reinterpret_cast<bool&>(m_bNotKeepEffect));
+        XmlGetAttr((class TiXmlElement*)(pState), "keyIsDown", reinterpret_cast<bool&>(m_bKeyIsDown));
+        XmlGetAttr((class TiXmlElement*)(pState), "useDefaultSkill", reinterpret_cast<bool&>(m_bUseDefaultSkill));
+        XmlGetAttr((class TiXmlElement*)(pState), "useDefaultSkillID", reinterpret_cast<unsigned int&>(m_nUseDefaultSkillID));
+        XmlGetAttr((class TiXmlElement*)(pState), "useInGameTime", reinterpret_cast<bool&>(m_bUseInGameTime));
+        XmlGetAttr((class TiXmlElement*)(pState), "cooldownGroupID", reinterpret_cast<unsigned int&>(m_nCooldownGroupID));
+        XmlGetAttr((class TiXmlElement*)(pState), "clearCooldownFromPVPZone", reinterpret_cast<bool&>(m_bClearCooldownFromPVPZone));
+        XmlGetAttr((class TiXmlElement*)(pState), "ignoreReduceCooldown", reinterpret_cast<bool&>(m_bIgnoreReduceCooldown));
+        XmlGetAttr((class TiXmlElement*)(pState), "rechargeMaxCount", reinterpret_cast<unsigned int&>(m_nRechargeMaxCount));
+        XmlGetAttr((class TiXmlElement*)(pState), "rechargeShareOrigin", reinterpret_cast<bool&>(m_bRechargeShareOrigin));
+        XmlGetAttr((class TiXmlElement*)(pState), "movingInMovekey", reinterpret_cast<bool&>(m_bMovingInMovekey));
+        XmlGetAttr((class TiXmlElement*)(pState), "splashMaxCount", reinterpret_cast<unsigned int&>(m_nSplashMaxCount));
     }
     m_blockA4.Load(pBasic);
     m_blockB0.Load(pBasic);
@@ -1223,7 +1235,7 @@ MS2Ptr<SkillData> SkillDataTable::GetSkillData(unsigned nSkillId)
 {
     if (nSkillId == 0)
         return 0;
-    Unk_CriticalSectionLock lock(m_cs, 1);
+    Unk_1401b4ec0 lock(m_cs, 1);
     std::unordered_map<unsigned, MS2Ptr<SkillData> >::iterator it = m_skills.find(nSkillId);
     if (it != m_skills.end())
         return it->second;
@@ -1244,7 +1256,7 @@ MS2_REPLACE_METHOD(0x1407ee2f0, SkillDataTable, GetSkillLevelData, 180, 0x950E1B
 // @0x1407ee3b0
 std::set<unsigned>* SkillDataTable::GetGroupSkills(unsigned nGroupId)
 {
-    Unk_CriticalSectionLock lock(m_cs, 1);
+    Unk_1401b4ec0 lock(m_cs, 1);
     std::unordered_map<unsigned, std::set<unsigned> >::iterator it = m_groups.find(nGroupId);
     if (it != m_groups.end())
         return &it->second;
@@ -1271,7 +1283,7 @@ void SkillDataTable::LoadSkillFile(CString strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pSkill : pRoot->FUN_140165cf0("skill"))
+    for (Unk_140165cf0* pSkill : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("skill")))
     {
         MS2Ptr<SkillData> spSkill(new SkillData);
         spSkill->Load(pSkill);
@@ -1283,7 +1295,7 @@ MS2_REPLACE_METHOD(0x1407ee530, SkillDataTable, LoadSkillFile, 498, 0x56830CB3);
 // @0x1407ee730
 void SkillDataTable::AddSkill(MS2Ptr<SkillData> spSkill)
 {
-    Unk_CriticalSectionLock lock(m_cs, 1);
+    Unk_1401b4ec0 lock(m_cs, 1);
     unsigned nSkillId = spSkill->GetId();
     std::unordered_map<unsigned, MS2Ptr<SkillData> >::iterator it = m_skills.find(nSkillId);
     if (it != m_skills.end())
@@ -1308,7 +1320,7 @@ void SkillDataTable::AddSkill(MS2Ptr<SkillData> spSkill)
 // @0x1407ee9f0
 void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 {
-    Unk_CriticalSectionLock lock(m_cs, 1);
+    Unk_1401b4ec0 lock(m_cs, 1);
     std::vector<MS2Ptr<SkillAttackData> > vAttacks = spSkill->GetAttacks();
     for (MS2Ptr<SkillAttackData> spAttack : vAttacks)
     {
@@ -1380,7 +1392,7 @@ void SkillDataTable::LoadGlideData()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pGlide : pRoot->FUN_140165cf0("glide"))
+    for (Unk_140165cf0* pGlide : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("glide")))
     {
         MS2Ptr<SkillGlideData> spGlide(new SkillGlideData);
         spGlide->Load(pGlide);

@@ -293,7 +293,7 @@ void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
         return;
     if (m_1a8 != 0)
         return;
-    reinterpret_cast<Unk_DmUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f53);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f53)));
     m_1a8 = 1;
 }
 

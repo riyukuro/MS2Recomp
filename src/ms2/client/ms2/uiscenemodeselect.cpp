@@ -11,6 +11,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -22,10 +23,8 @@ class UIIntroMovie : public UIVideoContents
 class Unk_SmUIMgr                                       // the UI service (FUN_1403ed2b0)
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);          // looks a UI up by id
     void FUN_141adbe00(float f, int n);
     void FUN_141adc530(int nUiId);
-    void FUN_141adc5d0(int nUiId);
 };
 class Unk_SmWorld;                                      // FUN_1403ed2d0
 class Unk_SmHost;                                       // FUN_14025e7a0
@@ -96,7 +95,7 @@ void UISceneModeSelect::vfunc_48(int n)
 // @0x140e85150
 void UISceneModeSelect::vfunc_49(int n)
 {
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4e22);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e22);
     UISceneEntity::vfunc_49(n);
 }
 
@@ -104,7 +103,7 @@ void UISceneModeSelect::vfunc_49(int n)
 void UISceneModeSelect::vfunc_55()
 {
     UISceneEntity::vfunc_55();
-    FUN_1403ed2b0()->FUN_141adc530(0x4f6e);
+    ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4f6e));
 }
 
 // @0x140e851c0
@@ -171,7 +170,7 @@ UIIntroMovie* FUN_140e85420(int nUiId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adcea0((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIIntroMovie*>((UIObject*)spUI);
     }

@@ -107,14 +107,6 @@ class Unk_DTMovie : public ASMovieClip
 {
 };
 
-class ASData : public CPtred
-{
-public:
-    int FUN_1422b8b10();
-private:
-    void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30; void* m_pad_38; void* m_pad_40;
-};
-MS2_CHECK_SIZE(ASData, 0x48);
 
 // An AS object created on the C++ side (AScript with type 2) with the typed setters (COMDATs, one per value type).
 class ASObj : public AScript

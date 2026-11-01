@@ -674,7 +674,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d4b40(egf::Entity* pEntity, i
     Unk_MeshInstancingConfig kConfig(pEntity, 0, 0);
     kConfig.activeCount = 1;
     kConfig.unknown48.z = nCellZ;
-    MeshInstancing* pExisting = FUN_1413d6770(kConfig);
+    MeshInstancing* pExisting = FindInstancingByConfig(kConfig);
     if (pExisting != NULL)
         return NULL;
     efd::AssetID kAsset;
@@ -968,11 +968,11 @@ void HardwareInstancingService::SetEnabled(bool bEnabled)
 MS2_REPLACE_METHOD(0x1413D6630, HardwareInstancingService, SetEnabled, 23, 0xF15E3A79);
 
 // @0x1413d6650
-int HardwareInstancingService::FUN_1413d6650()
+int HardwareInstancingService::HasInstancings()
 {
     return !m_maps[m_nMap].m_listInstancings.empty();
 }
-MS2_REPLACE_METHOD(0x1413D6650, HardwareInstancingService, FUN_1413d6650, 84, 0xF5DADACA);
+MS2_REPLACE_METHOD(0x1413D6650, HardwareInstancingService, HasInstancings, 84, 0xF5DADACA);
 
 // @0x1413d66b0
 MeshInstancing* HardwareInstancingService::FUN_1413d66b0(egf::Entity* pEntity)
@@ -989,7 +989,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d66b0(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x1413D66B0, HardwareInstancingService, FUN_1413d66b0, 181, 0xDE018891);
 
 // @0x1413d6770
-MeshInstancing* HardwareInstancingService::FUN_1413d6770(const Unk_MeshInstancingConfig& rConfig)
+MeshInstancing* HardwareInstancingService::FindInstancingByConfig(const Unk_MeshInstancingConfig& rConfig)
 {
     for (std::list<MeshInstancing*>::iterator it = m_maps[m_nMap].m_listInstancings.begin();
          it != m_maps[m_nMap].m_listInstancings.end(); ++it)
@@ -999,17 +999,17 @@ MeshInstancing* HardwareInstancingService::FUN_1413d6770(const Unk_MeshInstancin
     }
     return NULL;
 }
-MS2_REPLACE_METHOD(0x1413D6770, HardwareInstancingService, FUN_1413d6770, 189, 0xBC8717CD);
+MS2_REPLACE_METHOD(0x1413D6770, HardwareInstancingService, FindInstancingByConfig, 189, 0xBC8717CD);
 
 // @0x1413d6840
-NiNode* HardwareInstancingService::FUN_1413d6840(egf::Entity* pEntity)
+NiNode* HardwareInstancingService::GetInstancedNode(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
         return pInstancing->FUN_14147d200(pEntity);
     return NULL;
 }
-MS2_REPLACE_METHOD(0x1413D6840, HardwareInstancingService, FUN_1413d6840, 66, 0xD611F6F6);
+MS2_REPLACE_METHOD(0x1413D6840, HardwareInstancingService, GetInstancedNode, 66, 0xD611F6F6);
 
 // @0x1413d6890
 int HardwareInstancingService::FUN_1413d6890(egf::Entity* pEntity)
@@ -1439,7 +1439,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d80f0(egf::Entity* pEntity)
     if (kAsset == DAT_143a0acf8)
         return NULL;
     Unk_MeshInstancingConfig kConfig(pEntity, m_maps[m_nMap].m_nCellSize, 0);
-    MeshInstancing* pInstancing = FUN_1413d6770(kConfig);
+    MeshInstancing* pInstancing = FindInstancingByConfig(kConfig);
     if (pInstancing == NULL)
     {
         pInstancing = new EntityInstancing(kConfig);

@@ -376,7 +376,7 @@ void CubeMapInformationService::FUN_1410b76d0()
     f218 = FUN_1408ad3f0(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd3060());
 }
 // @0x1410b7a20
-Vector3 CubeMapInformationService::FUN_1410b7a20(Vector3 pt, Vector3* pOut)
+Vector3 CubeMapInformationService::GetCellPosition(Vector3 pt, Vector3* pOut)
 {
     Unk_Int3 cell = FUN_1408a1430(pt);
     pOut->x = (float)cell.x * 150.0f;
@@ -385,7 +385,7 @@ Vector3 CubeMapInformationService::FUN_1410b7a20(Vector3 pt, Vector3* pOut)
     return *pOut;
 }
 // @0x1410b7ad0
-Vector3 CubeMapInformationService::FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap)
+Vector3 CubeMapInformationService::GetCellInFrontOfActor(PCBase* pActor, float fDist, Vector3* pOut, int bSnap)
 {
     return FUN_1410b7ba0(reinterpret_cast<Unk_CMISActor*>(pActor)->FUN_1416767d0(), reinterpret_cast<Unk_CMISActor*>(pActor)->FUN_141676880(), fDist, pOut, bSnap);
 }
@@ -1865,7 +1865,7 @@ bool CubeMapInformationService::FUN_1410c3cd0(int nKey)
         if (nState == 2) {
             if (FUN_1410c3180() == DAT_143ab2820)
                 return false;
-            Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pRoster == 0)
                 return true;
             if (pRoster->FUN_141527920(FUN_1410c3180()) != 0)
@@ -1931,7 +1931,7 @@ bool CubeMapInformationService::FUN_1410c80d0(int nGroup)
 // MS2-FUNCTIONAL: unwind-state locals of the exe's result temporaries differ
 int CubeMapInformationService::FUN_1410c8580(int nGroup)
 {
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (((MyPC*)(Unk_CMISRoster*)(pRoster))->FUN_141527e00() == 0) {
         Unk_CMISPartyRef spParty(pRoster->FUN_141523c50());
         if (spParty.FUN_140fa9d30() != 0) {
@@ -2232,7 +2232,7 @@ int CubeMapInformationService::FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock
     int nHeight = FUN_1410d23f0(nGroup, nBlock);
     if (nHeight == 0)
         return 1;
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster == 0)
         return 0;
     if (pRoster->FUN_141530290() == 0)
@@ -2263,9 +2263,9 @@ void CubeMapInformationService::FUN_1410c3fc0(PCBase* pActor, float* pOutLo, flo
         return;
     }
     Vector3 ptFront;
-    FUN_1410b7ad0(pActor, 0, &ptFront, 0);
+    GetCellInFrontOfActor(pActor, 0, &ptFront, 0);
     Vector3 ptCell;
-    FUN_1410b7a20(ptFront, &ptCell);
+    GetCellPosition(ptFront, &ptCell);
     int nFound = 0;
     for (unsigned __int64 nFloor = 1; nFloor <= (unsigned __int64)(__int64)f1dc; ++nFloor) {
         int nKey = (int)nFloor;
@@ -2382,9 +2382,9 @@ int CubeMapInformationService::FUN_1410c88b0(PCBase* pActor)
     if (f218 == 0)
         return 0;
     Vector3 ptFront;
-    FUN_1410b7ad0(pActor, 0, &ptFront, 0);
+    GetCellInFrontOfActor(pActor, 0, &ptFront, 0);
     Vector3 ptCell;
-    FUN_1410b7a20(ptFront, &ptCell);
+    GetCellPosition(ptFront, &ptCell);
     for (unsigned __int64 nFloor = 1; nFloor <= (unsigned __int64)(__int64)f1dc; ++nFloor) {
         int nKey = (int)nFloor;
         std::map<int, Unk_UGCFloor>::iterator itEnd = f218->floors.end();
@@ -2399,7 +2399,7 @@ __int64 FUN_141656ad0(Unk_CMISRoster*);
 // @0x1410ca900
 int CubeMapInformationService::FUN_1410ca900(int nGroup)
 {
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster == 0)
         return 0;
     Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, f1b0);
@@ -2484,7 +2484,7 @@ void CubeMapInformationService::FUN_1410ce1e0(int nNotify, const int* pCount)
     if (nInfo == 0)
         return;
     if (nNotify != 0) {
-        Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pRoster == 0)
             return;
         UIHomeInfoDialog* pDlg = FUN_140bbea00(0x4ed8);
@@ -2510,7 +2510,7 @@ void CubeMapInformationService::FUN_1410ce020(MS2Ptr<Cube> spCube)
         if (FUN_1408b56c0(spItem) == 0 && FUN_1408b58c0(spItem) == 0)
             return;
     }
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster != 0) {
         __int64 nMe = FUN_141656ad0(pRoster);
         Cube* pCube = spCube.operator->();
@@ -2543,7 +2543,7 @@ CStringW CubeMapInformationService::FUN_1410c7ce0(int nA, int nB)
 int CubeMapInformationService::FUN_1410c8670(int nGroup, int* pnFlag)
 {
     int nResult = 0;
-    Unk_CMISRoster* pPC = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pPC = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0) {
         nResult = 0;
     } else {
@@ -2641,7 +2641,7 @@ void CubeMapInformationService::FUN_1410c44b0(int nGroup, int nBlock, int bFlag)
             if (FUN_141126c90(FUN_141157200(&ff8, &itFind, &nGroup), FUN_141151970(&ff8, &itEnd)) == 0) {
                 if (bFlag != 0)
                     FUN_1410c2a90(nGroup);
-                Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+                Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pRoster != 0) {
                     __int64 nMe = FUN_141656ad0(pRoster);
                     if (nMe == spOwner->ownerID)
@@ -3315,7 +3315,7 @@ public:
 // @0x1410cb1b0
 Unk_CMISEntityRef CubeMapInformationService::FUN_1410cb1b0()
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     float fBest = FLT_MAX;
     Unk_1401cd100 best(0);
     if (pPawn != 0) {
@@ -3610,7 +3610,7 @@ float FUN_140966ea0(Vector3 ptA, Vector3 ptB);                              // d
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410c93c0()
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     UIHouseMark* pMark;
     if (pPawn != 0 && (pMark = reinterpret_cast<UIHouseMark*>(FUN_1410dc020())) != 0) {
         if (!f158.FUN_1408b70b0(0)) {
@@ -3667,13 +3667,13 @@ float FUN_140a17940(float fVal, float fMin, float fMax);                        
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 int CubeMapInformationService::FUN_1410c7110(int* pCell)
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPawn == 0)
         return 0;
     Vector3 kForward, kRight;
     FUN_140a01250(pPawn->vfunc_20(), &kForward, &kRight);
     Vector3 ptHit;
-    FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
+    GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
     Unk_Int3 cell = FUN_1408a1430(ptHit);
     if (!FUN_1410b7f90(cell))
         return 0;
@@ -3702,7 +3702,7 @@ int CubeMapInformationService::FUN_1410c7110(int* pCell)
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 bool CubeMapInformationService::FUN_1410c7500(CString* pOut)
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPawn != 0) {
         Unk_CMISNpcList list;
         reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bc58d0(&list);
@@ -3711,7 +3711,7 @@ bool CubeMapInformationService::FUN_1410c7500(CString* pOut)
         Vector3 kForward, kRight;
         FUN_140a01250(pPawn->vfunc_20(), &kForward, &kRight);
         Vector3 ptHit;
-        FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
+        GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
         Unk_Int3 cellHit = FUN_1408a1430(ptHit);
         Unk_CMISNpcIter itEnd, itCur, itTmp;
         itEnd = *FUN_14096adc0(&list, &itTmp);
@@ -3752,7 +3752,7 @@ void* FUN_141129bb0(struct Unk_TreeIter*);   // C3: was FUN_141129bb0
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410c8a90()
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPawn == 0)
         return;
     __int64 nPc = pPawn->FUN_141656ad0();
@@ -4088,7 +4088,7 @@ void FUN_141126790(Unk_CMISTree<284>*, Unk_CMISTree<284>*);                     
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410c8e40()
 {
-    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPawn == 0)
         return;
     Vector3 ptPawn = pPawn->FUN_1416767d0();
@@ -4147,9 +4147,9 @@ char* FUN_141127ad0(void*, void*);   // C3: was FUN_141127ad0
 void CubeMapInformationService::FUN_1410bb170(Unk_CMISPawn* pPawn, int nDx, int nDy, int nDz, Unk_CMISNearMap* pMap)
 {
     Vector3 ptA;
-    FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
+    GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
     Vector3 ptB;
-    FUN_1410b7a20(ptA, &ptB);
+    GetCellPosition(ptA, &ptB);
     Cube* pBase = FUN_1410b8ab0(ptB);
     if (pBase == 0) {
         ptB.z = ptB.z + 150.0f;
@@ -4811,12 +4811,12 @@ void CubeMapInformationService::GenerateAreaPhysX(int n)
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 int CubeMapInformationService::FUN_1410c6b90(unsigned nMask, int* pOutGroup, int nMode, Unk_CMISEntityRef* pOutEnt)
 {
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster == 0)
         return 0;
     Vector3 ptA = DAT_143b01a60, ptB = DAT_143b01a60;
-    FUN_1410b7ad0(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptA, 1);
-    FUN_1410b7ad0(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptB, 0);
+    GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptA, 1);
+    GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptB, 0);
     Unk_Int3 cellA = FUN_1408a1430(ptA);
     Unk_Int3 cellB = FUN_1408a1430(ptB);
     Unk_CMISIter<264> it, itEnd;
@@ -5083,7 +5083,7 @@ void CubeMapInformationService::FUN_1410c3670()
     GenerateAreaPhysX(0);
     GenerateAreaPhysX(2);
     if (FUN_1410c3180() == DAT_143ab2820 || FUN_140930c90(FUN_1410c3180()) || FUN_140930d20(FUN_1410c3180())) {
-        Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pRoster != 0 && FUN_1416595d0(pRoster) != 0 && ((class Unk_PCCubeCraft*)(void*)(pRoster->FUN_141530290()))->GetMode() != 2) {
             FUN_1410cd440();
             FUN_1410cc160(0);
@@ -5162,7 +5162,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
     ((std::_Tree<std::_Tset_traits<egf::EntityID, std::less<egf::EntityID>, efd::CustomAllocator<egf::EntityID>, 0>>*)(void*)(&f30))->clear();
     if (((void*)((MS2Ptr<CFieldDataCli>*)(void*)(&f208))->get()) != 0) {
         if (FUN_140885340(&f208)->FUN_140375100() == 0 && f218 != 0 && !f218->floors.empty() && t168.FUN_140868c00() != 0) {
-            Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pRoster != 0) {
                 int nMyFloor = FUN_1410c88b0(reinterpret_cast<PCBase*>(pRoster));
                 Unk_CMISObjMap* pObjects = ((class Unk_CMISObjMap*)((class WorldService*)(class Unk_CMISWorld*)(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
@@ -5224,7 +5224,7 @@ void CubeMapInformationService::FUN_1410c9710()
         return;
     if (FUN_140885340(&f208)->FUN_140375100() != 0)
         return;
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster == 0)
         return;
     int nFloor = FUN_1410c88b0(reinterpret_cast<PCBase*>(pRoster));
@@ -5309,7 +5309,7 @@ void FUN_141129a20(Unk_CMISIter<275>*);                                         
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410ca170()
 {
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(pRoster);
     if (pRoster == 0 || FUN_141659610(pPawn) != 0)
         return;
@@ -5367,10 +5367,10 @@ void CubeMapInformationService::FUN_1410ca170()
                 if (pNear != 0) {
                     Vector3 ptA;
                     FUN_1402bd040(&ptA);
-                    FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
+                    GetCellInFrontOfActor(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
                     Vector3 ptB;
                     FUN_1402bd040(&ptB);
-                    FUN_1410b7a20(ptA, &ptB);
+                    GetCellPosition(ptA, &ptB);
                     Unk_Int3 cell = FUN_1408a1430(ptB);
                     float fDx = fabsf((float)(pNear->position.x - cell.x));
                     float fDy = fabsf((float)(pNear->position.y - cell.y));
@@ -6025,7 +6025,7 @@ void CubeMapInformationService::FUN_1410cc160(int nKind)
         }
         return;
     }
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_CMISXformVec vecXform;
     Unk_CMISIter<262> itGroup, itGroupEnd;
     for (FUN_14114df30(&fd8, &itGroup); FUN_1411275c0(&itGroup, FUN_141151c70(&fd8, &itGroupEnd)); FUN_141129bb0((struct Unk_TreeIter*)(&itGroup))) {
@@ -6204,7 +6204,7 @@ char* FUN_141127f50(void*, struct Unk_Key*);   // C3: was FUN_141127f50
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410cd440()
 {
-    Unk_CMISRoster* pRoster = reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     FUN_14114f5e0(&f298);
     Unk_CMISIter<262> itGroup, itGroupEnd;
     for (FUN_14114df30(&fd8, &itGroup); FUN_1411275c0(&itGroup, FUN_141151c70(&fd8, &itGroupEnd)); FUN_141129bb0((struct Unk_TreeIter*)(&itGroup))) {

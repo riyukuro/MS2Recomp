@@ -110,6 +110,14 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/luautil.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -409,7 +417,7 @@ unsigned int LoadItemNames()
         Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
         if (pRoot == 0)
             return 0;
-        for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("key"); pItem != 0; pItem = pItem->FUN_140168650("key"))
+        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("key")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
@@ -971,7 +979,7 @@ void FUN_1401bf440(CBlackMarketTable::TabList& rList, Unk_BmTabIndex* pIndex)
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault)
 {
     CStringW strValue;
-    if (FUN_140873420(pElem, pszName, strValue) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, strValue) != 0)
     {
         return strDefault;
     }
@@ -1061,7 +1069,7 @@ void CBlackMarketTable::Load()
         Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
         if (pRoot != 0)
         {
-            for (Unk_140165cf0* pCat = pRoot->FUN_140165cf0("category"); pCat != 0; pCat = pCat->FUN_140168650("category"))
+            for (Unk_140165cf0* pCat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCat != 0; pCat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCat))->NextSibling("category")))
             {
                 TabListPtr tabs((Unk_BmNewTag(0)));
                 if (tabs.get() != 0)
@@ -1070,14 +1078,14 @@ void CBlackMarketTable::Load()
                     m_tabs = tabs;
                 }
             }
-            for (Unk_140165cf0* pTable = pRoot->FUN_140165cf0("stat_table"); pTable != 0; pTable = pTable->FUN_140168650("stat_table"))
+            for (Unk_140165cf0* pTable = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("stat_table")); pTable != 0; pTable = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTable))->NextSibling("stat_table")))
             {
                 unsigned int nId = 0;
                 XmlGetAttr((class TiXmlElement*)(pTable), "id", nId);
                 StatArrayPtr stats((Unk_BmNewTag(0)));
                 if (stats.get() != 0)
                 {
-                    for (Unk_140165cf0* pStat = pTable->FUN_140165cf0("stat"); pStat != 0; pStat = pStat->FUN_140168650("stat"))
+                    for (Unk_140165cf0* pStat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTable))->FirstChild("stat")); pStat != 0; pStat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStat))->NextSibling("stat")))
                     {
                         StatPtr stat(new StatInfo());
                         if (stat.get() != 0)
@@ -1107,7 +1115,7 @@ void CBlackMarketTable::Load()
                 }
                 m_statTables.SetAt(nId, stats);
             }
-            for (Unk_140165cf0* pOption = pRoot->FUN_140165cf0("option"); pOption != 0; pOption = pOption->FUN_140168650("option"))
+            for (Unk_140165cf0* pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pOption != 0; pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->NextSibling("option")))
             {
                 unsigned int nId = 0;
                 XmlGetAttr((class TiXmlElement*)(pOption), "id", nId);
@@ -1172,7 +1180,7 @@ CBlackMarketTable::TabPtr CBlackMarketTable::GetTab(unsigned int nId)
 // @0x1401c4670
 void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories)
 {
-    for (Unk_140165cf0* pTab = pElem->FUN_140165cf0("tab"); pTab != 0; pTab = pTab->FUN_140168650("tab"))
+    for (Unk_140165cf0* pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
     {
         int nName = 0;
         XmlGetAttr((class TiXmlElement*)(pTab), "name", nName);
@@ -1187,7 +1195,7 @@ void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pB
                 CStringW strFeature = FUN_1401bf530(pTab, "feature", CStringW(L""));
                 if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d4b0(strFeature))
                     continue;
-                tab->m_strCategory = FUN_14015f710(pTab, "category", CString(""));
+                tab->m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pTab), "category", CString(""));
                 XmlGetAttr((class TiXmlElement*)(pTab), "priority", tab->m_nPriority);
                 XmlGetAttr((class TiXmlElement*)(pTab), "id", tab->m_nId);
                 XmlGetAttr((class TiXmlElement*)(pTab), "option_id", tab->m_nOptionId);

@@ -268,7 +268,7 @@ MS2_REPLACE_METHOD(0x140A39360, CChatEmoticonCli, FUN_140a39360, 943, 0xC5A9D741
 
 // 5: one id moved to the end of the owned list.
 // @0x140a39720
-void CChatEmoticonCli::FUN_140a39720(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonMovedToEnd(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
@@ -277,11 +277,11 @@ void CChatEmoticonCli::FUN_140a39720(CInPacket& packet)
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
 }
-MS2_REPLACE_METHOD(0x140A39720, CChatEmoticonCli, FUN_140a39720, 129, 0x890960FB);
+MS2_REPLACE_METHOD(0x140A39720, CChatEmoticonCli, OnEmoticonMovedToEnd, 129, 0x890960FB);
 
 // 6: one id removed from the owned list.
 // @0x140a397b0
-void CChatEmoticonCli::FUN_140a397b0(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonRemoved(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
@@ -289,7 +289,7 @@ void CChatEmoticonCli::FUN_140a397b0(CInPacket& packet)
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
 }
-MS2_REPLACE_METHOD(0x140A397B0, CChatEmoticonCli, FUN_140a397b0, 107, 0x3D9C8144);
+MS2_REPLACE_METHOD(0x140A397B0, CChatEmoticonCli, OnEmoticonRemoved, 107, 0x3D9C8144);
 
 // 3: a pack opened in the messenger browser.
 // @0x140a39830
@@ -484,8 +484,8 @@ void CChatEmoticonCli::FUN_140a3a700(CInPacket& packet)
     case 2: FUN_140a39360(packet); break;
     case 3: FUN_140a39830(packet); break;
     case 4: FUN_140a39940(packet); break;
-    case 5: FUN_140a39720(packet); break;
-    case 6: FUN_140a397b0(packet); break;
+    case 5: OnEmoticonMovedToEnd(packet); break;
+    case 6: OnEmoticonRemoved(packet); break;
     case 7: FUN_140a39a20(packet); break;
     }
 }

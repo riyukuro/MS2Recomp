@@ -30,6 +30,7 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_nextKey = "cinematic_nextkey";          // @0x1400e5330
 static CString s_getItem = "cinematic_getItem";          // @0x1400e5360
@@ -161,10 +162,7 @@ class UIJobChangeDialog : public UIObject { public: public:
 class Unk_CinUiManager
 {
 public:
-    void FUN_141adc5d0(int nId);                                // open
-    void FUN_141adc750(int nId);
     int FUN_141adc9e0(int nId);                                 // is open
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // lookup
 };
 int FUN_14151f6e0();
 void FUN_14151f200();
@@ -177,7 +175,6 @@ class Unk_CinPriceTable { public: int FUN_140675730(short nJob, int nLevel, int 
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 extern __int64 DAT_143ab2898;
 class Unk_CinBgm { public: void FUN_1422b9fd0(int nId); };
-Unk_CinBgm* FUN_1408e57f0();
 
 class Unk_CinSvc : public CubeMapInformationService { public: void vfunc_1(); };
 class Unk_CinSvcPtr
@@ -225,7 +222,7 @@ CStringW FUN_1416e4df0(int nQuestId);
 int FUN_1416e6100(int nQuestId, int);
 void FUN_141275260(int, int, int);
 void FUN_1410819f0(const CString& key);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket&);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 void FUN_1401fdad0(unsigned char*, class COutputStream&);   // C3: was FUN_1401fdad0
@@ -404,7 +401,7 @@ void CCinematicComponent::vfunc_4(MS2Ptr<CCinematicContent> spContent) { m_spCon
 // @0x14107cf90
 void CCinematicComponent::vfunc_5(ASObj& obj)
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         CStringW name(m_spContent->m_name);
         int nNpcId = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
@@ -684,7 +681,7 @@ bool CQuestAcceptCinematicComponent::FUN_14107ec40(int nButton, const CMsgBoxDat
 // @0x14107ecc0
 void CQuestAcceptCinematicComponent::FUN_14107ecc0(int nQuestId, bool bRedirect)
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
         pkt.Encode1(2);
@@ -772,7 +769,7 @@ int CQuestCompleteCinematicComponent::vfunc_3() { return 7; }
 void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
@@ -958,7 +955,7 @@ struct Unk_CinNpcId
 void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
@@ -1055,7 +1052,7 @@ void FUN_1410819f0(const CString& key)
 UIJobChangeDialog* FUN_141081ff0(int nId)
 {
     if (reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIJobChangeDialog*>(spObj.operator->());
     }
@@ -1069,14 +1066,14 @@ CChangeJobComponent::CChangeJobComponent(UITalkCinematic* pOwner) : CDistractorC
 CChangeJobComponent::~CChangeJobComponent()
 {
     FUN_14151f460(1);
-    reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7c);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e7c);
 }
 // @0x141080680
 int CChangeJobComponent::vfunc_2(int nMsg)
 {
     if (nMsg == 1) {
         ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
-        reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7c);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e7c);
     } else if (nMsg == 0x493e2) {
         int nResult = 0;
         UIJobChangeDialog* pDlg = FUN_141081ff0(0x4e7c);
@@ -1104,7 +1101,7 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_1401fdad0((unsigned char*)(&npc.m_n), *(class COutputStream*)&static_cast<class COutPacket&>(pkt));
                 FUN_140710590(pkt);
                 ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
-                reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7c);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e7c);
             }
         }
     }
@@ -1127,7 +1124,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     Unk_CinSvcPtr spSvc(((class Unk_CinSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
@@ -1179,7 +1176,7 @@ int CPaneltyResolveCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
@@ -1220,7 +1217,7 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
@@ -1259,11 +1256,11 @@ int CTakeBoatCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
+        ((Unk_CinBgm*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
         ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
         COutPacket pkt(static_cast<int>(SendOp::TakeBoat), 0);
         pkt.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
@@ -1290,14 +1287,14 @@ int CSellUGCMapCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
         if (((class MyPC*)(pc))->FUN_141527e00() != 0)
             FUN_141275260(0x6bf, 1, 1);
         else
-            reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e82);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e82)));
         ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
     }
     return 1;

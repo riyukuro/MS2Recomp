@@ -7,6 +7,13 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7FittingDollSlot@@6BBindData@NotifyContext@@@ 0x142ec3330 ; hand: primary vftable
+// MS2-PIN: ??__E?ms_ClassInfo@FittingDollSlot@@2VClassInfo@efd@@B@@YAXXZ 0x1400e9420 ; initpin: a header's look-alike initializer must not make these ambiguous
+// MS2-PIN: ??__Es_strDestroyDollItem@@YAXXZ 0x1400e9440
+// MS2-PIN: ??__Es_strSortTypeNames@@YAXXZ 0x1400e9470
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400e9530
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400e9560
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400e9590
+// MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x1400e95b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\fittingdollslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "fittingdollslot.h"
@@ -24,6 +31,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
@@ -38,7 +46,12 @@ public:
     PC* FUN_141bd1290(int nId);                             // the actor with the object id
     PC* FUN_141bd1530(__int64 nEntityId);                   // the actor of an entity id
 };
-Unk_FdWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    static class WorldService* GetInstance();
+};
 
 // The sound service (FUN_1403ed280).
 class Unk_FdSound
@@ -60,11 +73,10 @@ public:
 MS2_CHECK_OFFSET(Unk_FdCube, m_n54, 0x54);
 
 // The cube service (efd service 0x06100017): the cube of an entity and the owner of a cube column.
-class Unk_FdCubeSvc
+class Unk_FdCubeSvc : public CubeMapInformationService
 {
 public:
     Unk_FdCube* FUN_1410b8c90(egf::EntityID kId);
-    __int64 FUN_1410c8030(int x, int y);                    // the owner of the cube column
 };
 struct Unk_FdFramework { void* m_pad; };
 extern Unk_FdFramework DAT_143b059e8;
@@ -73,14 +85,15 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 // The feature switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-FittingDollPC* FUN_140884db0(PCBase* pObject);               // the object as a fitting doll (class 0x6200046) or 0
+class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
 void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot behind a drag source
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
     __int64 GetItemUid();
+public:
+    int FUN_141405a60(class CItem*, int);   // C3: was free FUN_141405a60
 };
-void FUN_141405a60(void* pItemSlot, CItem* pItem, int nSlot);   // put the item into the slot
 int FUN_141275a10(CItem* pItem);                            // the item's lock kind
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                   // item link / popup for the item
 CStringW GetStringCommon(int nStringId);                      // a string table text
@@ -145,7 +158,7 @@ int FittingDollSlot::vfunc_18(void* p)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
-            FUN_141405a60(pItemSlot, spItem.get(), m_nSlot);
+            ((class InvenSlot*)(void*)(pItemSlot))->FUN_141405a60(spItem.get(), m_nSlot);
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
@@ -184,7 +197,7 @@ int FittingDollSlot::vfunc_0(void* p)
     if (pItem == 0)
         return 0;
     int nFlags = 0x100;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == pPlayer)
+    if (((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pPlayer)
         nFlags = 0x200;
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(pItem) != 0)
@@ -207,7 +220,7 @@ int FittingDollSlot::vfunc_8(void* p)
     FittingDollPC* pDoll = FUN_14121dd50();
     if (pDoll == 0)
         return 0;
-    PCBase* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == 0)
         return 0;
     CItem* pItem = vfunc_25().get();
@@ -281,14 +294,14 @@ MS2_REPLACE_METHOD(0x14121dc90, FittingDollSlot, vfunc_9, 177, 0x60A25617);
 // @0x14121dd50
 FittingDollPC* FittingDollSlot::FUN_14121dd50()
 {
-    return FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(m_nDollId));
+    return ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1530(m_nDollId))));
 }
 MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, FUN_14121dd50, 47, 0x50AAF435);
 
 // @0x14121dd90
 PC* FittingDollSlot::FUN_14121dd90()
 {
-    return FUN_1403ed2d0()->FUN_141bd1290(m_nPcId);
+    return ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nPcId);
 }
 MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, FUN_14121dd90, 38, 0xA1936EAD);
 
@@ -296,7 +309,7 @@ MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, FUN_14121dd90, 38, 0xA1936EAD);
 // Destroy the doll item of the slot: a confirm box when the item has a reason to keep (or the packet at once).
 int FittingDollSlot::FUN_14121ddc0()
 {
-    PCBase* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == 0)
         return 0;
     FittingDollPC* pDoll = FUN_14121dd50();

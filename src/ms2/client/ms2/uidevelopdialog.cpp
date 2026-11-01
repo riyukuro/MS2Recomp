@@ -474,7 +474,7 @@ void UIDevelopDialog::FUN_141293360(float fSpeed)
 // @0x141293390
 void UIDevelopDialog::FUN_141293390(float fScale)
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         ((class GameObject*)(void*)(pPlayer))->FUN_14123c330(fScale);

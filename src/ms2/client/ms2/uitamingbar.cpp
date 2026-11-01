@@ -61,7 +61,7 @@ public:
 };
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-class Unk_TamingUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_TamingUIMgr { public: };
 void FUN_1422bcdd0(Scaleform::GFx::Value*, __int64);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
 
@@ -345,7 +345,7 @@ UITamingBar* FUN_140e98660(int nUiId)
 {
     if (reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UITamingBar*>((UIObject*)p);
     }

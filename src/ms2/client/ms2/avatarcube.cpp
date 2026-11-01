@@ -26,6 +26,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cugcmanager.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
 
 // ---- unit-local views of exe objects ----
 
@@ -52,7 +53,7 @@ public:
     // Requests the cube download; spItem by value (callee-destroyed).
     void FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id);
 };
-Unk_UgcCubeMgr* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_1410280d0(int nKind, CString strName);
 
 // The avatar-attend manager (singleton behind FUN_1403ed2d0): the avatar object registered under an id.
@@ -60,11 +61,6 @@ class Unk_AttendAvatarMgr
 {
 public:
     void* FUN_141bd1180(unsigned int nId);
-};
-class WorldService   // C3: member view for the former free stand-ins
-{
-public:
-    static class WorldService* GetInstance();
 };
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(AvatarCube);
@@ -131,14 +127,14 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
             CString strFile = FUN_1410280d0(2, spItem->FUN_1405278d0()->m_strName);
             if (_access(strFile, 0))
             {
-                FUN_14052d220()->FUN_141883df0(spItem, FUN_14123c460());
+                ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
             }
             else
             {
                 CUgcItemCube kCube(spItem.get(), FUN_14123c460());
-                if (FUN_14052d220()->FUN_141886cc0(&kCube, CString(strFile), spItem->FUN_1405283d0()) == 0)
+                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141886cc0(&kCube, CString(strFile), spItem->FUN_1405283d0()) == 0)
                 {
-                    FUN_14052d220()->FUN_141883df0(spItem, FUN_14123c460());
+                    ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
                 }
             }
         }

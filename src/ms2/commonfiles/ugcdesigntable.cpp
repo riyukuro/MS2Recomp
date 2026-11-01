@@ -54,18 +54,18 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);      // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);      // NextSiblingElement
 };
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable <list> element
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& value);
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& value);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& value);
-int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64& value);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& value);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
 int FUN_1406e8ac0(Unk_140165cf0* pElem, const char* pszName, int& value);   // "saleTag"
    // the feature/locale singleton
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
-Unk_1401d3200* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 __int64 FUN_1406a6d50(const void* pUgcConfig);              // the default market max price
 
 // Defined below (0x14089fef0): the s_bInit setter the loader calls.
@@ -86,20 +86,20 @@ bool CUGCDesignData::Parse(Unk_140165cf0* pElem, __int64 nDefaultMarketMaxPrice)
     if (pElem == 0)
         return false;
     int nItemGrade = 0;
-    FUN_1408731e0(pElem, "itemGrade", nItemGrade);
+    XmlGetAttr((class TiXmlElement*)(pElem), "itemGrade", nItemGrade);
     m_nItemGrade = nItemGrade;
-    FUN_1408730a0(pElem, "visible", m_bVisible);
+    XmlGetAttr((class TiXmlElement*)(pElem), "visible", m_bVisible);
     int nPriceType = 0;
-    FUN_1408731e0(pElem, "priceType", nPriceType);
+    XmlGetAttr((class TiXmlElement*)(pElem), "priceType", nPriceType);
     m_nPriceType = FUN_14088da20(nPriceType);
-    FUN_1408732e0(pElem, "price", m_nPrice);
-    FUN_1408732e0(pElem, "salePrice", m_nSalePrice);
-    FUN_1408732e0(pElem, "marketMinPrice", m_nMarketMinPrice);
-    FUN_1408732e0(pElem, "marketMaxPrice", m_nMarketMaxPrice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "price", m_nPrice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "salePrice", m_nSalePrice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "marketMinPrice", m_nMarketMinPrice);
+    XmlGetAttr((class TiXmlElement*)(pElem), "marketMaxPrice", m_nMarketMaxPrice);
     if (m_nMarketMaxPrice == 0)
         m_nMarketMaxPrice = nDefaultMarketMaxPrice;
-    FUN_1408731e0(pElem, "dpOrder", m_nDpOrder);
-    FUN_1408731e0(pElem, "category", m_nCategory);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dpOrder", m_nDpOrder);
+    XmlGetAttr((class TiXmlElement*)(pElem), "category", m_nCategory);
     FUN_1406e8ac0(pElem, "saleTag", m_nSaleTag);
     return true;
 }
@@ -136,18 +136,18 @@ bool CUGCDesignTable::Reload()
         if (pRoot == 0)
             return false;
         __int64 nDefaultMarketMaxPrice =
-            FUN_1406a6d50(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x4660);
+            FUN_1406a6d50(reinterpret_cast<const char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660);
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0;
              pNode = pNode->FUN_140168650("list"))
         {
-            if (!FUN_14028f710(pNode))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             CStringW strLocale;
             FUN_140873420(pNode, "locale", strLocale);
             if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d750(strLocale))
                 continue;
             int nItemID = 0;
-            FUN_140873220(pNode, "itemID", nItemID);
+            XmlGetAttr((class TiXmlElement*)(pNode), "itemID", *(unsigned int*)&static_cast<int&>(nItemID));
             if (nItemID == 0)
                 continue;
             CUGCDesignDataPtr spData(new CUGCDesignData);

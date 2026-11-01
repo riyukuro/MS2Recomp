@@ -249,7 +249,7 @@
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1411e0810();
+    void ClearAll();
 };
 void FUN_141993180(int nObjectId);                                  // drop the actor's +0xfd8 record
 void FUN_141b6f220(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f220
@@ -927,12 +927,17 @@ void PC::vfunc_12()
         spComp->vfunc_2();
 }
 
-// MS2-FUNCTIONAL: behaviour-checked (same call sequence); frame differs - the exe takes b as a by-value 12-byte point it copies for the base call, and keeps the reaction flags as int locals (ours are bool)
+struct PCHitPoint { float x, y, z; };
+// GameObject::vfunc_33 (0x14123cf10) with its parameters typed: the exe forwards the 12-byte hit point by value
+struct GameObjectHitView : GameObject {
+    void FUN_14123cf10(CDamageRecord* pRecord, PCHitPoint pt);
+};
+
 // @0x141652080
 void PC::vfunc_33(void* a, void* b)
 {
-    CDamageRecord* pRecord = static_cast<CDamageRecord*>(a);
-    GameObject::vfunc_33(a, b);
+#define pRecord static_cast<CDamageRecord*>(a)
+    static_cast<GameObjectHitView*>(static_cast<GameObject*>(this))->FUN_14123cf10(pRecord, *static_cast<PCHitPoint*>(b));
     vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
     SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
@@ -941,9 +946,9 @@ void PC::vfunc_33(void* a, void* b)
     int nCasterRel = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd19d0(pRecord->m_nCasterId);
     if (nCasterRel == 1)
         CAutoFindTaxiStation::GetInstance()->FUN_1409f1a00();
-    bool bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
+    int bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
     int nMapId = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd3060();
-    bool bPush = false;
+    int bPush = false;
     if (FUN_14166c930() == 0x2b)
     {
         if (pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0 && pRecord->FUN_14175a8b0()->m_eGrabTargetType != 1)
@@ -958,26 +963,23 @@ void PC::vfunc_33(void* a, void* b)
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
             if (pHit->FUN_1417cb2a0() && pRecord->FUN_14175a8b0()->m_damage.m_nPushPriorityHitImmune != 0)
             {
-                int nPriority = pHit->FUN_1417cb2f0();
-                if (pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority <= nPriority)
+                if (pHit->FUN_1417cb2f0() >= pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority)
                     bReact = false;
             }
         }
-        bool bNoGuard = false;
         if (bReact)
-            bNoGuard = FUN_1416538d0(pRecord) == 0;
-        bReact = false;
-        if (bNoGuard)
+            bReact = FUN_1416538d0(pRecord) == 0;
+        if (bReact)
             bReact = !FUN_141660120();
     }
     if (pRecord->FUN_14175ac30() < 0 || bPush)
     {
         State* pState = FUN_14166ccb0();
-        bool bHit = false;
+        int bHit = false;
         if (bReact)
         {
-            int nPush = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId);
-            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || nPush != 0)
+            bool bPushHit = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0;
+            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || bPushHit)
             {
                 MS2Ptr<StateHitData> spData(new StateHitData);
                 spData->m_f18 = pRecord->FUN_14175a8b0()->m_damage.m_fHitSpeedRate;
@@ -1000,22 +1002,19 @@ void PC::vfunc_33(void* a, void* b)
             pState = FUN_14166ccb0();
         }
         pState->vfunc_6();
-        FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
-        Common::Constants::Value<float>* pVolume;
-        if (nCasterRel == 1 || nCasterRel == 2)
-            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
-        else
-            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+        float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
+        FUN_141673f70(fX, fY, fZ);
+        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
-        NiPoint3 kPos = vfunc_18();
-        int nMaterial = pRecord->FUN_14175ad50();
-        ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
+        efd::Point3 kPos = vfunc_18();
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, static_cast<const NiPoint3&>(kPos), fVolume);
     }
     FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
     if (FUN_14166ce30())
         FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
     CDPSMeterSystem::GetInstance()->OnDamage(MS2Ptr<CDamageRecord>(pRecord));
     vfunc_113(pRecord);
+#undef pRecord
 }
 
 // @0x1416529f0
@@ -1060,11 +1059,10 @@ void PC::vfunc_34(void* p)
     vfunc_113(static_cast<CDotDamageRecord*>(p));
 }
 
-// MS2-FUNCTIONAL: behaviour-checked (same call sequence); frame differs - the exe keeps the reaction flags as int locals (ours are bool), saves rsi/rdi for a block copy and has no copy of p
 // @0x141652e20
 void PC::vfunc_35(void* p)
 {
-    CSplashDamageRecord* pRecord = static_cast<CSplashDamageRecord*>(p);
+#define pRecord static_cast<CSplashDamageRecord*>(p)
     GameObject::vfunc_35(p);
     vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
     SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
@@ -1072,9 +1070,9 @@ void PC::vfunc_35(void* p)
         ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_14096fb20(1);
     int nOwnerRel = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd19d0(pRecord->m_nOwnerId);
     int nCasterRel = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd19d0(pRecord->m_nCasterId);
-    bool bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
+    int bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
     int nMapId = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd3060();
-    bool bPush = false;
+    int bPush = false;
     if (FUN_14166c930() == 0x2b)
     {
         if (pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0 && pRecord->FUN_14175a8b0()->m_eGrabTargetType != 1)
@@ -1089,26 +1087,23 @@ void PC::vfunc_35(void* p)
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
             if (pHit->FUN_1417cb2a0() && pRecord->FUN_14175a8b0()->m_damage.m_nPushPriorityHitImmune != 0)
             {
-                int nPriority = pHit->FUN_1417cb2f0();
-                if (pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority <= nPriority)
+                if (pHit->FUN_1417cb2f0() >= pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority)
                     bReact = false;
             }
         }
-        bool bNoGuard = false;
         if (bReact)
-            bNoGuard = FUN_1416538d0(pRecord) == 0;
-        bReact = false;
-        if (bNoGuard)
+            bReact = FUN_1416538d0(pRecord) == 0;
+        if (bReact)
             bReact = !FUN_141660120();
     }
     if (pRecord->FUN_14175ac30() < 0 || bPush)
     {
         State* pState = FUN_14166ccb0();
-        bool bHit = false;
+        int bHit = false;
         if (bReact)
         {
-            int nPush = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId);
-            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || nPush != 0)
+            bool bPushHit = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0;
+            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || bPushHit)
             {
                 MS2Ptr<StateHitData> spData(new StateHitData);
                 spData->m_f18 = pRecord->FUN_14175a8b0()->m_damage.m_fHitSpeedRate;
@@ -1131,22 +1126,18 @@ void PC::vfunc_35(void* p)
             pState = FUN_14166ccb0();
         }
         pState->vfunc_6();
-        FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
-        Common::Constants::Value<float>* pVolume;
-        if (nCasterRel == 1 || nCasterRel == 2)
-            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
-        else
-            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+        float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
+        FUN_141673f70(fX, fY, fZ);
+        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
-        NiPoint3 kPos = vfunc_18();
-        int nMaterial = pRecord->FUN_14175ad50();
-        ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
+        ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
     FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(pRecord));
     if (FUN_14166ce30())
         FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
     CDPSMeterSystem::GetInstance()->OnSplashDamage(MS2Ptr<CSplashDamageRecord>(pRecord));
     vfunc_113(pRecord);
+#undef pRecord
 }
 
 // @0x141651bb0
@@ -1170,7 +1161,7 @@ void PC::vfunc_14()
 void PC::vfunc_15()
 {
     PCBase::vfunc_15();
-    ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->FUN_1411e0810();
+    ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->ClearAll();
 }
 MS2_REPLACE_METHOD(0x141651D00, PC, vfunc_15, 43, 0x5A36F6F9);
 

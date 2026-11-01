@@ -215,7 +215,7 @@ bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 void FUN_14151f200();
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, IMessageListener* pListener, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -553,7 +553,7 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
         FUN_14132c330(&pack);
         if (vfunc_55() == 1)
         {
-            reinterpret_cast<Unk_PciUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(vfunc_48())));
         }
         else if (FUN_1422dc430() == 1)
         {

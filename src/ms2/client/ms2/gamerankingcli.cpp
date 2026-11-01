@@ -53,7 +53,7 @@ private:
     DWORD m_dwThread;
     CStringA m_kTag;
 };
-class Unk_GrUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_GrUIManager { public: };
                 // the guild id
 class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; CGuildInfo m_8; };
 CStringW FUN_140811740(int nId, const int& n0, const int& n1);              // a string table text with two numbers
@@ -833,7 +833,7 @@ MS2_REPLACE_METHOD(0x140b2c9d0, CGameRankingCli, RemoveParam, 100, 0xB2407F34);
 UIGameRankingDialog* FUN_140b2d030(int nClass)
 {
     if (reinterpret_cast<Unk_GrUIManager*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_GrUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIGameRankingDialog*>(spObj.operator->());
     }

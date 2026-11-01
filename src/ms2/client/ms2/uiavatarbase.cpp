@@ -44,6 +44,8 @@ static CString s_strBuyTypeNames[8] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/header_statics_a.h"                  // 0x14010fee0, 0x14010ffa0, 0x14010ffd0, 0x140110000
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
+#include "ms2/client/ms2/equipment.h"  // C3: was a local member view
 static CString s_strCap = "Cap";                                // 0x140110050
 
 // ---- unit-local types ---------------------------------------------------------------------------------------------
@@ -97,16 +99,9 @@ public:
     PCBase* FUN_141bd1290(int nId);                                     // 0x141bd1290 the PC of an id
     PCBase* FUN_141bd0cc0();                                            // 0x141bd0cc0 the local player
 };
-Unk_UabWorld* FUN_1403ed2d0();
 
 // The game clock (singleton FUN_14086d260).
 class Unk_UabClock;
-Unk_UabClock* FUN_14086d260();
-class CMainSystem   // C3: member view for the former free stand-ins
-{
-public:
-    double FUN_141473280();
-};
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
 const Vector3& FUN_140e69200(NiAVObject* pNode);                // local translation
@@ -161,7 +156,7 @@ UIAvatarBase::~UIAvatarBase()
     m_spView = 0;
     m_pListener = 0;
     if (m_nObjectId > 0)
-        FUN_1403ed2d0()->FUN_141bbbcf0(m_nObjectId, 0);
+        ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbbcf0(m_nObjectId, 0);
     m_nObjectId = 0;
 }
 
@@ -266,7 +261,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
         }
         ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(kNewPos));
         if (bUpdate)
-            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }
 
@@ -349,7 +344,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
         FUN_1418c1dd0(pNode, &kRot, *pPivot, *pPos);
         if (bUpdate)
-            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }
 
@@ -455,7 +450,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
     ((class NiAVObject*)(class NiAVObject*)(pNode))->SetRotate(*(class NiMatrix3 const*)(&kRot));
     if (bUpdate)
-        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
 }
 
 // @0x1418b9140
@@ -471,7 +466,7 @@ void UIAvatarBase::vfunc_9(float x, float y, float z, int bUpdate)
         return;
     FUN_1410a7800(pNode, x, y, z);
     if (bUpdate)
-        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(FUN_14086d260()))->FUN_141473280(), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
 }
 
 // @0x1418b9200
@@ -501,7 +496,7 @@ MS2_REPLACE_METHOD(0x1418B92A0, UIAvatarBase, vfunc_23, 33, 0xFA59B52F);
 GameObject* UIAvatarBase::vfunc_24()
 {
     if (m_nObjectId > 0)
-        return FUN_1403ed2d0()->FUN_141bd1180(m_nObjectId);
+        return ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1180(m_nObjectId);
     return 0;
 }
 MS2_REPLACE_METHOD(0x1418B92D0, UIAvatarBase, vfunc_24, 50, 0xB89C59A3);
@@ -930,7 +925,6 @@ MS2_CHECK_OFFSET(Unk_UabConfig, m_nRotateMax, 0xc710);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_1418bffd0(Unk_UabCfgInt* pValue);                             // the int value as a float
 
-int FUN_141658e60(PCBase* pPc);                                         // the state of a PC
 MS2Ptr<CItemData> FUN_1403bb3b0(const MS2Ptr<CItemData>& sp);
 
 // The ingredient table row of a skin colour (FUN_140281980 / avatarpc.cpp).
@@ -1049,7 +1043,7 @@ GameObject* UIAvatarPC::vfunc_23()
     {
         unsigned nRideeId = pAvatar->FUN_1409f6450();
         if (nRideeId > 0)
-            return FUN_1403ed2d0()->FUN_141bd1180(nRideeId);
+            return ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1180(nRideeId);
     }
     return UIAvatarBase::vfunc_24();
 }
@@ -1241,11 +1235,6 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     return !spNew->FUN_1418bfcc0();
 }
 
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411ea620(class CMsTime const&, class CMsTime const&);
-};
 __int64 GetServerTime();                                                // the server time
 
 // @0x1418bbc20
@@ -1422,9 +1411,9 @@ void UIAvatarPC::FUN_1418bc630()
 // @0x1418bc740
 int UIAvatarPC::FUN_1418bc740()
 {
-    PCBase* pPc = FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
+    PCBase* pPc = ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
     if (pPc != 0)
-        return FUN_141658e60(pPc);
+        return ((class PC*)(class PCBase*)(pPc))->FUN_141658e60();
     return 3;
 }
 
@@ -1793,7 +1782,7 @@ void UIAvatarCube::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarCube* pCube = FUN_1409f2670(m_pItemData);
     if (pCube)
     {
-        if (FUN_1403ed2d0()->FUN_141bbb1e0(pCube, 0, 1))
+        if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pCube, 0, 1))
         {
             m_nObjectId = pCube->FUN_14123c580();
             pCube->SetListener(this);
@@ -1913,7 +1902,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
         AvatarRidee* pRidee = FUN_1409f92d0(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
         if (pRidee)
         {
-            if (FUN_1403ed2d0()->FUN_141bbb1e0(pRidee, 0, 1))
+            if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pRidee, 0, 1))
             {
                 m_nObjectId = pRidee->FUN_14123c580();
                 pRidee->SetListener(this);
@@ -1927,7 +1916,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
             AvatarRidee* pRidee = FUN_1409f9430(m_spRow);
             if (pRidee)
             {
-                if (FUN_1403ed2d0()->FUN_141bbb1e0(pRidee, 0, 1))
+                if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pRidee, 0, 1))
                 {
                     m_nObjectId = pRidee->FUN_14123c580();
                     pRidee->SetListener(this);
@@ -2066,7 +2055,7 @@ void UIAvatarPet::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarPet* pPet = FUN_1409f8510(m_pItemData);
     if (pPet)
     {
-        if (FUN_1403ed2d0()->FUN_141bbb1e0(pPet, 0, 1))
+        if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pPet, 0, 1))
         {
             m_nObjectId = pPet->FUN_14123c580();
             pPet->SetListener(this);
@@ -2206,7 +2195,7 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
             kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
         }
     }
-    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pPlayer = ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer)
     {
         ASObj kObj(2);

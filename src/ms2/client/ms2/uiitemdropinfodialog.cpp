@@ -22,7 +22,6 @@ static CString s_itemCount("itemCount");
 #include "ms2/commonfiles/itemdroptable.h"
 
 // Unit-local declarations; Unk names and member names are invented.
-class ASData : public CPtred { public: int FUN_1422b8b10(); };
 class Unk_ItemData;
 class Unk_ItemPtrSetter { public: void FUN_1401bffe0(CItem*); };
 class CItem {

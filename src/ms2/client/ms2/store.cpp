@@ -27,7 +27,6 @@ class UIStoreDialog : public UIDialog {public:
 class Unk_SSGDlg4e47 : public UIStoreDialog {};                  // GetDialog<T> result type of FUN_140de48d0
 struct Unk_StoreUIMgr : public CUIService
 {
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141adc530(int nId);
 };
 struct Unk_StoreEvents                                           // the item event hub (FUN_140a6a840), slots 8..12
@@ -697,7 +696,7 @@ void CStore::OnBegin(CInPacket* pPacket)
         return;
     }
     if (nId == 0) {
-        reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e47);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e47)));
     }
     int nCount = (unsigned short)pPacket->ReadInt16();
     SetReceived(nCount);
@@ -871,7 +870,7 @@ void CStore::OnList(CInPacket* pPacket)
 void CStore::OnReset(CInPacket*)
 {
     Reset();
-    reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e47);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e47)));
 }
 
 // @0x140de4360
@@ -946,7 +945,7 @@ void CStore::ReadItem(CInPacket* pPacket)
 Unk_SSGDlg4e47* FUN_140de48d0(int nId)
 {
     if (reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StoreUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get()) {
             return static_cast<Unk_SSGDlg4e47*>(dynamic_cast<UIStoreDialog*>(p.operator->()));
         }

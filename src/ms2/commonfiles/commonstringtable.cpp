@@ -88,6 +88,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 // The exe binds a temporary to a non-const reference (MSVC extension); clang-cl needs the cast.
 #define AS_LVALUE(T, expr) const_cast<T&>(static_cast<const T&>(expr))
@@ -786,7 +792,7 @@ int CBanTextChecker::FUN_140225470(const CStringW& str, CStringW& message)
 }
 
 // @0x140225550
-int CBanTextChecker::FUN_140225550(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMaidName(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMax), true, false, true, false, true);
@@ -804,7 +810,7 @@ int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 }
 
 // @0x140225720
-int CBanTextChecker::FUN_140225720(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckGuildName(const CStringW& str, CStringW& message)
 {
     int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMin);
     int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMax);
@@ -1058,7 +1064,7 @@ int CBanTextChecker::LoadWords(CString strPath, TextFilterUnit* pTrie)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
         if (strName.IsEmpty())
@@ -1097,7 +1103,7 @@ int CBanTextChecker::LoadIdSet(CString strPath, std::set<CStringW>* pSet)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
         if (strName.IsEmpty())
@@ -5043,7 +5049,7 @@ int CommonString::LoadCommon()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -5072,7 +5078,7 @@ bool CommonString::LoadDebug()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         CStringW strId = FUN_1401bf530(pNode, "id", CStringW(L""));
         CStringW strValue = FUN_1401bf530(pNode, "value", CStringW(L""));
@@ -5108,7 +5114,7 @@ void CommonString::Reload()
 void CommonString::LoadStrings(Unk_140165cf0* pRoot)
 {
     TextMap& map = m_maps[0];
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -5174,9 +5180,9 @@ MS2_REPLACE_METHOD(0x140225210, CBanTextChecker, FUN_140225210, 216, 0xE33FE7DC)
 MS2_REPLACE_METHOD(0x1402252F0, CBanTextChecker, FUN_1402252f0, 176, 0x88FCA6B1);
 MS2_REPLACE_METHOD(0x1402253B0, CBanTextChecker, FUN_1402253b0, 173, 0x09FEAF57);
 MS2_REPLACE_METHOD(0x140225470, CBanTextChecker, FUN_140225470, 216, 0xE1731069);
-MS2_REPLACE_METHOD(0x140225550, CBanTextChecker, FUN_140225550, 216, 0x29173518);
+MS2_REPLACE_METHOD(0x140225550, CBanTextChecker, CheckMaidName, 216, 0x29173518);
 MS2_REPLACE_METHOD(0x140225630, CBanTextChecker, FUN_140225630, 224, 0x4D5BA48F);
-MS2_REPLACE_METHOD(0x140225720, CBanTextChecker, FUN_140225720, 224, 0x2840BD6F);
+MS2_REPLACE_METHOD(0x140225720, CBanTextChecker, CheckGuildName, 224, 0x2840BD6F);
 MS2_REPLACE_METHOD(0x140225810, CBanTextChecker, FUN_140225810, 211, 0x36F09730);
 MS2_REPLACE_METHOD(0x1402258F0, CBanTextChecker, FUN_1402258f0, 176, 0x8AC2EC42);
 MS2_REPLACE_METHOD(0x1402259B0, CBanTextChecker, FUN_1402259b0, 176, 0xC7A7B0EF);

@@ -10,9 +10,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-void FUN_140892c70(CUgcItemLook* p);
-void FUN_140893070(CUgcItemLook* p, COutputStream* pStream);
-void FUN_140893250(CUgcItemLook* p, CInputStream* pStream);
 
 // ---- RideOnAction ----------------------------------------------------------------------------------------------------------
 // @0x14077dd10
@@ -74,7 +71,7 @@ RideOnActionUseItem::RideOnActionUseItem()
     : m_n30(0), m_n38(0)
 {
     m_nType = 1;
-    FUN_140892c70(&m_look);
+    ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Clear();
 }
 // @0x14077e190
 RideOnActionUseItem::~RideOnActionUseItem()
@@ -86,7 +83,7 @@ void RideOnActionUseItem::vfunc_1(COutputStream* pStream)
     RideOnAction::vfunc_1(pStream);
     pStream->WriteInt32(m_n30);
     pStream->WriteInt64(m_n38);
-    FUN_140893070(&m_look, pStream);
+    ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Write(*(class COutputStream*)(pStream));
 }
 MS2_REPLACE_METHOD(0x14077E1D0, RideOnActionUseItem, vfunc_1, 105, 0xA6540C5B);
 // @0x14077e240
@@ -95,8 +92,8 @@ void RideOnActionUseItem::vfunc_2(CInputStream* pStream)
     RideOnAction::vfunc_2(pStream);
     m_n30 = pStream->ReadInt32();
     m_n38 = pStream->ReadInt64();
-    FUN_140892c70(&m_look);
-    FUN_140893250(&m_look, pStream);
+    ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Clear();
+    ((class CUgcItemLook*)(class CUgcItemLook*)(&m_look))->Read(*(class CInputStream*)(pStream));
 }
 MS2_REPLACE_METHOD(0x14077E240, RideOnActionUseItem, vfunc_2, 122, 0x9916437F);
 // @0x14077e2c0

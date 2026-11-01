@@ -53,6 +53,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -487,7 +488,7 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
 {
     if (pItem == 0)
         return 0xc;
-    PCBase* pPlayer = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0xb;
     if (pPlayer->FUN_14166ce30() != 0)

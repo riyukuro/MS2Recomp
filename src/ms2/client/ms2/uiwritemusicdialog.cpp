@@ -242,7 +242,6 @@ class Unk_WmUiSvc
 {
 public:
     void FUN_141adc530(int nUiType);                                        // open it
-    void FUN_141adc5d0(int nUiType);                                        // close it
     Unk_WmUIRef FUN_141adcea0(int nUiType);                                 // the dialog
 };
 
@@ -481,7 +480,7 @@ void UIWriteMusicDialog::vfunc_67()
     if (pCartoon != 0 && pCartoon->vfunc_55() == 0)
     {
         if (pCartoon->GetBookId() == *TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get())
-            reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e87);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e87);
     }
     m_nPage = 0;
     m_notes.clear();
@@ -817,7 +816,7 @@ void UIWriteMusicDialog::FUN_140ff0260(unsigned __int64 nItemUid, const CString&
     m_nMode = 2;
     m_strText = strMml;
     if (vfunc_55() != 0)
-        reinterpret_cast<Unk_WmUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eed);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4eed)));
     else
         FUN_140ff41a0();
 }

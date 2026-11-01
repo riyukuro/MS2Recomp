@@ -14,7 +14,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-void FUN_141035970(UICashShopDialog* pDialog, int nArg);
+class UICashShopDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void SetUnlockState(int);
+};
 void* FUN_140aadf80();                                              // the screen
 void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the screen rect
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);
@@ -111,7 +115,7 @@ void CCashUnlockDialog::OnClose()
     {
         Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
-            FUN_141035970(ref.FUN_140b051d0(), 0);
+            ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->SetUnlockState(0);
     }
     FUN_14098a5d0(this);
 }

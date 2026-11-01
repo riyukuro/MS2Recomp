@@ -39,6 +39,7 @@
 #include "ms2/client/ms2/gamerankingcli.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/serverlisttable.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 
 // ---- statics (the exe runs them in this order: "gameexit", the sort-name table, "skill", "stun", the key input) ----
 // The shared header_statics_a.h would also construct the condition after "stun"; this unit's .text$di has none.
@@ -128,14 +129,13 @@ class Unk_SlWindow { public: HWND FUN_14209c720(); };
 class Unk_SlApp { public: };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 void FUN_141bca1e0(void* pObj);
-void FUN_141adc5d0(void* pObj, int nId);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_140da4fe0(void* pObj, MS2Ptr<NotifyObject> spNotify);
 int FUN_1406c34c0();                                            // the Nexon platform is active
 int FUN_14092f640();
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_1408116a0(int nId, const int& n);                  // formatted notice text
-void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);
 extern CStringW DAT_143af62c0;
 extern CString DAT_143ab29d8;
 extern CString DAT_143ab2a28;
@@ -754,7 +754,7 @@ bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
 // @0x141ad3310
 void UIServerListDialog::OnSceneLogin()
 {
-    FUN_141adc5d0(((void*)TSingleton<CUIService>::GetInstance()), 0x4ef3);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef3);
     m_30->Invoke("popdown");
 }
 

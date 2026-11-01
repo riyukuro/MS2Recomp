@@ -29,7 +29,7 @@ public:
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);  // split to uints
 bool FUN_14028d470(float a, float b);                                                   // nearly equal
@@ -69,8 +69,8 @@ void CFogEffectParam::vfunc_1(Unk_140165cf0* pNode)
         FUN_140177e10(strColor, arrColor, ",");
         m_dwColor = arrColor.GetCount() < 3 ? 0xffffffff
                                              : MS2_D3DCOLOR_XRGB(arrColor[0], arrColor[1], arrColor[2]);
-        FUN_140873360(pFog, "near", m_fNear);
-        FUN_140873360(pFog, "far", m_fFar);
+        XmlGetAttr((class TiXmlElement*)(pFog), "near", m_fNear);
+        XmlGetAttr((class TiXmlElement*)(pFog), "far", m_fFar);
     }
 }
 MS2_REPLACE_METHOD(0x141220910, CFogEffectParam, vfunc_1, 383, 0xBA161230);

@@ -216,7 +216,7 @@ bool CInputKeyHandler::FUN_14116daa0(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8b010(nKey);
+    return FUN_140a58540()->IsMouseButtonDown(nKey);
 }
 MS2_REPLACE_METHOD(0x14116DAA0, CInputKeyHandler, FUN_14116daa0, 91, 0x73C0F6D9);
 
@@ -227,7 +227,7 @@ bool CInputKeyHandler::FUN_14116db10(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8b070(nKey);
+    return FUN_140a58540()->WasMouseButtonPressed(nKey);
 }
 MS2_REPLACE_METHOD(0x14116DB10, CInputKeyHandler, FUN_14116db10, 91, 0x03E62CD8);
 
@@ -238,7 +238,7 @@ bool CInputKeyHandler::FUN_14116db80(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8b0d0(nKey);
+    return FUN_140a58540()->WasMouseButtonReleased(nKey);
 }
 MS2_REPLACE_METHOD(0x14116DB80, CInputKeyHandler, FUN_14116db80, 91, 0x69171645);
 
@@ -319,7 +319,7 @@ MS2_REPLACE_METHOD(0x14116DE30, CInputKeyHandler, FUN_14116de30, 50, 0xF94EB644)
 // @0x14116de70
 bool CInputKeyHandler::FUN_14116de70(int nKey)
 {
-    FUN_140a58540()->FUN_140d8b250(nKey);
+    FUN_140a58540()->InjectKeyRelease(nKey);
     return true;
 }
 MS2_REPLACE_METHOD(0x14116DE70, CInputKeyHandler, FUN_14116de70, 37, 0x37431F25);

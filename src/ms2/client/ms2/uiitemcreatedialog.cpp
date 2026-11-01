@@ -1203,7 +1203,7 @@ void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& 
     ASObj row = FUN_1422df140(nIndex);
     if (row.FUN_1422ba9a0())
         return;
-    row.FUN_1422bae10(strName, nOut);
+    row.AScript::FUN_1422bae10(strName, &nOut);
 }
 
 // @0x1419b9990

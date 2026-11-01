@@ -135,6 +135,9 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 class NotifyChangeActiveMyCodiTab : public NotifyObject
 {
 public:
@@ -308,8 +311,6 @@ class Unk_BSUIMgr
 {
 public:
     void FUN_141adc530(int nId);                // open
-    int FUN_141adc890(int nId);                 // is open
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 
 // The app platform (slot 43: post a window event).
@@ -393,7 +394,6 @@ public:
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_BSSound;
-Unk_BSSound* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -408,13 +408,9 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 CStringW FUN_1409404f0(__int64 n);                  // a crossed-out price
 CStringW FUN_1409eb450(int n);
@@ -454,7 +450,6 @@ bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nM
 bool FUN_140f09810(ASObj& obj, bool bEnabled);
 // ---- more stand-ins ----
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& a1, const int& a2);
-CStringW FUN_141081c60(CStringW strKey, const CStringW& a, const CStringW& b, const int& n);
 CStringW FUN_140292a70(const wchar_t* szFormat, const int& n0);
 CStringW FUN_1418fe870(int nKind, int* pnZero, int nItemId);                 // the item icon url
 void FUN_140961010(int nStringId, int nA, int nB, const CStringW& strArg);
@@ -1613,10 +1608,10 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
             if (nCoupon == 0)
                 strMsg = GetStringCommonByKey(CStringW(L"s_beauty_msg_complete_apply_special_hair"));
             else if (bMail)
-                strMsg = FUN_1405c2690(CStringW(L"s_beauty_msg_complete_apply_return_coupon_to_mail"),
+                strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_msg_complete_apply_return_coupon_to_mail"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCoupon));
             else
-                strMsg = FUN_1405c2690(CStringW(L"s_beauty_msg_complete_apply_return_coupon"),
+                strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_msg_complete_apply_return_coupon"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCoupon));
             FUN_1412751f0(strMsg, 3, 1);
         }
@@ -1768,7 +1763,7 @@ void UIBeautyShopDialog::FUN_1418c9780(NotifyObject* pNotify)
             spPcBang->vfunc_4(nSale == 0);
         }
         UIBillDialog* pBill;
-        if (reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e7b) && (pBill = FUN_140f0a350(0x4e7b)) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e7b))) && (pBill = FUN_140f0a350(0x4e7b)) != 0)
             pBill->FUN_1418cda70(nFee);
     }
 }
@@ -1850,7 +1845,7 @@ int UIBeautyShopDialog::FUN_1418c9cd0()
     Unk_BSField* pField = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
-    ((class GFxSceneService*)(class Unk_BSSound*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_BSSound*)(((Unk_BSSound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
     return 1;
 }
 
@@ -2073,7 +2068,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
         ASObj cur(2);
         {
             FUN_140f324f0(cur, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCur->FUN_140527840())), 0);
-            CStringW strCur = FUN_1405c2690(CStringW(L"s_beauty_fmt_style_select_cur_hair"),
+            CStringW strCur = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_fmt_style_select_cur_hair"),
                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCur->FUN_1405276c0()));
             if ((unsigned)m_1d0.m_28 > 0)
             {
@@ -2085,7 +2080,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
                     CStringW strIcon = FUN_1418fe870(2, &nZero, nCouponId);
                     CStringW strImg = FUN_140275590(L"<img src='{0}' vspace='{1}'>", strIcon, nZero);
                     int nOne = 1;
-                    CStringW strCoupon = FUN_141081c60(CStringW(L"s_beauty_fmt_return_coupon"), strImg,
+                    CStringW strCoupon = FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_beauty_fmt_return_coupon"), strImg,
                                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCouponId), nOne);
                     if (!strCoupon.IsEmpty())
                     {
@@ -2099,7 +2094,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
         ASObj nw(2);
         {
             FUN_140f324f0(nw, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spNew->FUN_140527840())), 0);
-            CStringW strNew = FUN_1405c2690(CStringW(L"s_beauty_fmt_style_select_new_hair"),
+            CStringW strNew = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_fmt_style_select_new_hair"),
                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spNew->FUN_1405276c0()));
             nw.FUN_1407cbb20("itemname", CStringW(strNew));
         }
@@ -2165,7 +2160,7 @@ CStringW UIBeautyShopDialog::FUN_1418cb920(int nShopKind, int nMode)
     if (m_1d0.m_20 != 0)
     {
         CStringW strCoupon = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1d0.m_20);
-        return FUN_1405c2690(CStringW(L"s_bill_coupon_beauty_coupon"), strCoupon);
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_bill_coupon_beauty_coupon"), strCoupon);
     }
     switch (nShopKind)
     {
@@ -2289,7 +2284,7 @@ static UIBeautyShopStyleDialog* FUN_1418ce0c0(int nId)
 {
     if (reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIBeautyShopStyleDialog*>((UIObject*)p);
     }
@@ -2301,7 +2296,7 @@ static UIItemColoringDialog* FUN_1418ce160(int nId)
 {
     if (reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIItemColoringDialog*>((UIObject*)p);
     }
@@ -2358,14 +2353,7 @@ public:
 };
 
 // The UI message the bill answers its owner with.
-class Unk_BSUIMsg : public UIMsg
-{
-public:
-    Unk_BSUIMsg();                                              // 0x1422e4490
-    ~Unk_BSUIMsg();                                             // 0x140c30570
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_BSUIMsg;
 
 // @0x1418cd0c0
 UIBillDialog::UIBillDialog()
@@ -2543,8 +2531,8 @@ void UIBillDialog::FUN_1418cda70(int nPrice)
     if (m_188->m_34 == 4)
     {
         FUN_140eabc00(strLabel, strSum, (unsigned)nPrice);
-        CStringW strHead = FUN_14052bd00(0x998, strLabel);
-        CStringW strPrice = FUN_14052bd00(0x98f, FUN_1409eb450(nPrice));
+        CStringW strHead = FormatStringId<CStringW>(0x998, strLabel);
+        CStringW strPrice = FormatStringId<CStringW>(0x98f, FUN_1409eb450(nPrice));
         CStringW strTail = FUN_140632a60(0x999, strSum, strPrice);
         strSum = strTail;
         strLabel = strHead;

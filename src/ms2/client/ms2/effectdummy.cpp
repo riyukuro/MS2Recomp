@@ -18,9 +18,9 @@ public:
     Unk_140165cf0* NextSiblingElement();                    // NextSiblingElement
 };
 void FUN_1408733e0(Unk_140165cf0* pNode, const char* pszAttr, CString& strOut);
-void FUN_1408730a0(Unk_140165cf0* pNode, const char* pszAttr, bool& bOut);
-void FUN_1408746f0(Unk_140165cf0* pNode, const char* pszAttr, Unk_DummyVec3& vOut);
-void FUN_140873360(Unk_140165cf0* pNode, const char* pszAttr, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 bool FUN_1401c0090(const CString& a, const CString& b);     // CString equality
 
 // @0x140a50d40
@@ -80,15 +80,15 @@ void CEffectDummy::Parse(Unk_140165cf0* pNode)
     if (pAttach)
     {
         FUN_1408733e0(pAttach, "parentNode", m_strParentNode);
-        FUN_1408730a0(pAttach, "applyWorldTransform", m_bApplyWorldTransform);
-        FUN_1408730a0(pAttach, "applyLocalScale", m_bApplyLocalScale);
+        XmlGetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", m_bApplyWorldTransform);
+        XmlGetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", m_bApplyLocalScale);
     }
     Unk_140165cf0* pXf = pNode->FUN_140165cf0("transform");
     if (pXf)
     {
-        FUN_1408746f0(pXf, "translate", m_vTranslate);
-        FUN_1408746f0(pXf, "rotation", m_vRotation);
-        FUN_140873360(pXf, "scale", m_fScale);
+        XmlGetAttr((class TiXmlElement*)(pXf), "translate", *(class NiPoint3*)&static_cast<struct Unk_DummyVec3&>(m_vTranslate));
+        XmlGetAttr((class TiXmlElement*)(pXf), "rotation", *(class NiPoint3*)&static_cast<struct Unk_DummyVec3&>(m_vRotation));
+        XmlGetAttr((class TiXmlElement*)(pXf), "scale", m_fScale);
     }
 }
 MS2_REPLACE_METHOD(0x140A511B0, CEffectDummy, Parse, 295, 0x2481F264);

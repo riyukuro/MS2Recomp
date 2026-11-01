@@ -79,7 +79,6 @@ class Unk_PsdUIManager
 {
 public:
     void FUN_141adc530(int nUiId);                                      // open
-    void FUN_141adc5d0(int nUiId);                                      // close
 };
 
 // The popup menu on a character (UI id 0x4e39) and its parameter block.
@@ -409,7 +408,7 @@ void UIPartySearchDialog::vfunc_26()
     UIDialog::vfunc_26();
     m_17c = 0;
     FUN_140f8ded0();
-    reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4edb);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4edb);
 }
 
 // @0x140f8c9c0
@@ -869,7 +868,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
     else if (TSingleton<CPartyManager>::GetInstance()->FUN_14162af00() >= 10)
         FUN_140d73aa0(FUN_1408116a0(0xb3b, 10), 0, 0, L"");
     else
-        reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4edb);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4edb)));
 }
 
 // @0x140f8ec40
@@ -886,7 +885,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
     if (FUN_140695080((class CMatchPartyRecruit const*)(&TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0())) != 0)
         FUN_140d73bc0(0xb3f, 0, 0, L"");
     else
-        reinterpret_cast<Unk_PsdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4edb);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4edb)));
 }
 
 // @0x140f8ed40

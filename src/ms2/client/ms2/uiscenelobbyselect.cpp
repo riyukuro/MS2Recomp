@@ -38,6 +38,8 @@ static CString s_stun5 = "stun";
 #include "ms2/client/ms2/homeblockmanager.h"
 #include "ms2/client/ms2/uicharacterlistdialog.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -53,8 +55,6 @@ public:
     void FUN_141adad20(int nSceneId);
     void FUN_141adbb40();
     void FUN_141adba40();
-    void FUN_141adc530(int nUiId);
-    void FUN_141adc5d0(int nUiId);
     int FUN_141adc940(int nUiId);
 };
 class Unk_LsWorld { public: void* FUN_141bd0cc0(); };
@@ -150,21 +150,14 @@ public:
     virtual void vfunc_62();
 };
 class Unk_LsBgScript { public: Scaleform::GFx::Value FUN_140e262c0(const char* a, const char* b); };
-class Unk_LsUIMsg : public UIMsg
-{
-public:
-    Unk_LsUIMsg();                                          // 0x1422e4490
-    ~Unk_LsUIMsg();
-    void FUN_1422b82b0(const char* pszMethod);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_LsUIMsg;
 
 Unk_LsUIMgr* FUN_1403ed2b0();
 Unk_LsWorld* FUN_1403ed2d0();
-Unk_LsLogin* FUN_14025e7c0();
-Unk_LsPlayerState* FUN_1409331f0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 Unk_LsCamera* FUN_1409478c0();
-Unk_LsWindow* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 CBuddyManager* FUN_14097a780();
 CBlockManager* FUN_140a6a830();
 HomeBlockManager* FUN_1414a5830();
@@ -173,12 +166,15 @@ Unk_LsTutorial* FUN_140b624b0(int nUiId);
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 int FUN_141acdeb0();
-Unk_LsServerDlg* FUN_140c300a0(int nUiId);
-Unk_LsServerDlg* FUN_14136f520(int nUiId);                 // byte-identical look-alike of FUN_140c300a0; vfunc_64 calls this copy
-Unk_LsDevice* FUN_140d86260();
-Unk_LsSceneId* FUN_1408e57f0();
-int FUN_1422b9de0(Unk_LsSceneId* p);
-int FUN_140e85580(Unk_LsPlayerState* p);
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+void* FUN_14136f520(int);   // C3: was FUN_14136f520
+void* FUN_140d86260();   // C3: was FUN_140d86260
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetPrevSubSceneId();
+};
+int FUN_140e85580(class Unk_SmPlayerState*);   // C3: was FUN_140e85580
 int FUN_141bcfbd0(Unk_LsWorld* pWorld);
 CStringW TakeScreenshotJpg(int a, int b);
 void FUN_140930150(int n);
@@ -256,15 +252,15 @@ int UISceneLobby::vfunc_13()
         TakeScreenshotJpg(1, 0);
         return 1;
     }
-    if (FUN_14025e7c0()->FUN_14116dd30(0x927c1, 0, 0)) {
+    if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x927c1, 0, 0)) {
         FUN_140930150(0x32);
-        FUN_14025e7c0()->SetDebugMode(FUN_14025e7c0()->IsDebugMode() == 0);
+        ((class Unk_LsLogin*)FUN_14025e7c0())->SetDebugMode(((class Unk_LsLogin*)FUN_14025e7c0())->IsDebugMode() == 0);
     } else {
-        if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0)) {
-            if (FUN_14025e7c0()->FUN_14116d9c0(0x16, 1, 0)) {
-                if (FUN_14025e7c0()->FUN_14116d950(0x38, 1, 0)) {
-                    if (FUN_140aadf80() != 0) {
-                        FUN_141b91b20(FUN_140aadf80()->FUN_141b712e0() == 1);
+        if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0)) {
+            if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x16, 1, 0)) {
+                if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x38, 1, 0)) {
+                    if (((class Unk_LsWindow*)FUN_140aadf80()) != 0) {
+                        FUN_141b91b20(((class Unk_LsWindow*)FUN_140aadf80())->FUN_141b712e0() == 1);
                     }
                     return 1;
                 }
@@ -303,8 +299,8 @@ MS2_REPLACE_METHOD(0x141ACDE60, UISceneLobby, vfunc_28, 67, 0x774DFD16);
 // @0x141acdeb0
 int FUN_141acdeb0()
 {
-    if (FUN_140e85580(FUN_1409331f0()) == 0) return FUN_14025e7c0()->FUN_14116d9c0(0x75, 0, 0);
-    return FUN_14025e7c0()->FUN_14116dd30(0x493ef, 0, 0);
+    if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LsPlayerState*)FUN_1409331f0()))) == 0) return ((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x75, 0, 0);
+    return ((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493ef, 0, 0);
 }
 MS2_REPLACE(0x141ACDEB0, FUN_141acdeb0, 82, 0xD9098B92);
 
@@ -333,8 +329,8 @@ void UISceneLobbyCreate::OnLoadComplete()
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
         if (FUN_1403ed2b0()->FUN_141adc940(0x4e26) != 0) {
-            FUN_1403ed2b0()->FUN_141adc530(0x4e26);
-            FUN_1403ed2b0()->FUN_141adc530(0x4ef2);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
         }
     }
 }
@@ -352,8 +348,8 @@ MS2_REPLACE_METHOD(0x141ACE0B0, UISceneLobbyCreate, vfunc_48, 42, 0x00235EB3);
 void UISceneLobbyCreate::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4e26);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef2);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e26);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef2);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
         Unk_LsCamArg arg;
@@ -371,8 +367,8 @@ void UISceneLobbyCreate::vfunc_12()
 {
     UISwfEntity::vfunc_12();
     if (FUN_1403ed2b0()->FUN_141adc940(0x4e26) != 0) {
-        FUN_1403ed2b0()->FUN_141adc530(0x4e26);
-        FUN_1403ed2b0()->FUN_141adc530(0x4ef2);
+        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
+        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
     }
 }
 MS2_REPLACE_METHOD(0x141ACE1B0, UISceneLobbyCreate, vfunc_12, 82, 0xF8577C97);
@@ -405,10 +401,10 @@ MS2_REPLACE_METHOD(0x141ACE340, UISceneLobbySelect, vfunc_48, 32, 0x8AFA6F73);
 // @0x141ace370
 void UISceneLobbySelect::vfunc_49(int n)
 {
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef1);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef2);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef3);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4eea);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef1);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef2);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef3);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4eea);
     FUN_14151f460(1);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
@@ -428,7 +424,7 @@ void UISceneLobbySelect::vfunc_58()
 {
     UISceneEntity::vfunc_58();
     if (m_a8 != 0) m_a8->FUN_1418f1fd0();
-    FUN_140d86260()->vfunc_62();
+    ((class Unk_LsDevice*)FUN_140d86260())->vfunc_62();
 }
 MS2_REPLACE_METHOD(0x141ACE470, UISceneLobbySelect, vfunc_58, 85, 0x7872DA7D);
 
@@ -449,11 +445,11 @@ void UISceneLobbySelect::OnLoadInit()
     if (m_a8 == 0) {
         MS2_ASSERT_AT(71, 0);
     } else {
-        if (FUN_1422b9de0(FUN_1408e57f0()) == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
-            FUN_1403ed2b0()->FUN_141adc530(0x4ef1);
-            FUN_1403ed2b0()->FUN_141adc530(0x4eea);
+        if (((class GFxSceneService*)(class Unk_LsSceneId*)(((Unk_LsSceneId*)CUserMail::FUN_1408e57f0())))->GetPrevSubSceneId() == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef1)));
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eea)));
         } else {
-            FUN_1403ed2b0()->FUN_141adc530(0x4ef1);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef1)));
         }
     }
 }
@@ -521,8 +517,8 @@ void UISceneLobbyServer::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     if (n == 0) FUN_141ace9e0();
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef0);
-    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef3);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef0);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4ef3);
     FUN_14151f460(1);
     FUN_1422e7950();
 }
@@ -532,7 +528,7 @@ MS2_REPLACE_METHOD(0x141ACE840, UISceneLobbyServer, vfunc_49, 105, 0xF2D63327);
 void UISceneLobbyServer::OnLoadInit()
 {
     UISceneEntity::OnLoadInit();
-    if (FUN_141bcfbd0(FUN_1403ed2d0()) != 0) FUN_1403ed2b0()->FUN_141adc530(0x4ef0);
+    if (FUN_141bcfbd0(FUN_1403ed2d0()) != 0) (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef0)));
 }
 MS2_REPLACE_METHOD(0x141ACE8B0, UISceneLobbyServer, OnLoadInit, 59, 0x9081FF50);
 
@@ -548,14 +544,14 @@ MS2_REPLACE_METHOD(0x141ACE900, UISceneLobbyServer, vfunc_60, 101, 0x9A873225);
 // @0x141ace970
 void UISceneLobbyServer::vfunc_55()
 {
-    FUN_1403ed2b0()->FUN_141adc530(0x4ef0);
+    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef0)));
 }
 MS2_REPLACE_METHOD(0x141ACE970, UISceneLobbyServer, vfunc_55, 32, 0x8489FABA);
 
 // @0x141ace9a0
 void UISceneLobbyServer::vfunc_64()
 {
-    Unk_LsServerDlg* pDlg = FUN_14136f520(0x4ef0);
+    Unk_LsServerDlg* pDlg = ((class Unk_LsServerDlg*)FUN_14136f520(0x4ef0));
     if (pDlg != 0) pDlg->FUN_141ad2ef0();
 }
 MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
@@ -563,7 +559,7 @@ MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
 // @0x141ace9e0
 void UISceneLobbyServer::FUN_141ace9e0()
 {
-    Unk_LsServerDlg* pDlg = FUN_140c300a0(0x4ef0);
+    Unk_LsServerDlg* pDlg = ((class Unk_LsServerDlg*)FUN_140c300a0(0x4ef0));
     if (pDlg != 0) {
         Unk_LsUIMsg msg;
         msg.FUN_1422b82b0("OnReset");

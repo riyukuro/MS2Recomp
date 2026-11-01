@@ -60,10 +60,8 @@ CReservedWordTable* FUN_1403b4750();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 class Unk_XmlFiles : public CFileSystem { };
-Unk_XmlFiles* FUN_140166420();
 CString FUN_14071ae20(const CString& strFile);                          // path below the Table folder
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // widens a narrow string
-bool FUN_140184310(const CString& str, const char* psz);                // string == literal
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);   // wide attribute
 extern StringManager* DAT_143ab1c98;                                    // the manager singleton
 
@@ -161,7 +159,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
         CString strPath = FUN_14071ae20(m_path18);
         if (strPath.IsEmpty())
             break;
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             break;
         pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     } while (0);
@@ -230,7 +228,7 @@ void FUN_1410268a0(CString strHost, CString strRegion)
 {
     DAT_143accfc0 = strHost;
     strRegion.MakeLower();
-    if (FUN_140184310(strRegion, "cn"))
+    if ((strRegion == "cn"))
         DAT_1439f6efc = 0;
 }
 

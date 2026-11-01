@@ -952,7 +952,7 @@ class Unk_GoRenderCfg : public CGraphicOptionTable
 public:
     int FUN_141376510(int nLevel);                              // the hdr flag of a quality level
 };
-class Unk_GoUiMgr { public: void FUN_141adc5d0(int nUiId); void FUN_141adc530(int nUiId); };
+class Unk_GoUiMgr { public: void FUN_141adc530(int nUiId); };
 
 // The graphic state blocks' methods (client\ms2\gameoptionstruct.cpp).
 struct Unk_GraphicState* FUN_14125d890(struct Unk_GraphicState*);   // C3: was FUN_14125d890
@@ -1329,9 +1329,9 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
         bNotify = 1;
     }
     if (m_state.m_bShowFrameRate)
-        reinterpret_cast<Unk_GoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e7d)));
     else
-        reinterpret_cast<Unk_GoUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e7d);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e7d);
     if (bNotify != 0)
         FUN_140d73bc0(0x84e, 0, 0, CStringW(L""));
 }

@@ -44,6 +44,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <map>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local declarations (unrecovered callees; names describe their use) ----
 
@@ -119,8 +120,6 @@ class Unk_DcUIMgr
 public:
     void FUN_141adc530(int nUiId);
     void FUN_141adc690(int nUiId);
-    void FUN_141adc750(int nUiId);                              // toggle
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
 class Unk_DcBookmarkDlg : public UIDungeonRoomDialog
 {
@@ -233,9 +232,7 @@ void FUN_140178770(void* pCfg, const char* szName, std::vector<unsigned int>& ou
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
 CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
-CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strName);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
@@ -418,7 +415,7 @@ void UIDungeonControlCenter::OnLoadComplete()
     FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
     FUN_140bccd50()->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
     FUN_1419260d0("m_webGuideButton", 0);
-    Unk_DcPlayer* pPlayer = reinterpret_cast<Unk_DcPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         m_nSubTab = UIDungeonCategoryTable::GetInstance()->FUN_140c09030(0, pPlayer->vfunc_78());
     FUN_140c0bab0();
@@ -519,7 +516,7 @@ MS2_REPLACE_METHOD(0x140C0BA70, UIDungeonControlCenter, FUN_140c0ba70, 43, 0x24B
 // @0x140c0bab0
 void UIDungeonControlCenter::FUN_140c0bab0()
 {
-    Unk_DcPlayer* pPlayer = reinterpret_cast<Unk_DcPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     ASObj obj(2);
@@ -569,7 +566,7 @@ void UIDungeonControlCenter::FUN_140c0bab0()
             }
         }
         obj.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
-        obj.FUN_1407cbb20("exp", FUN_1405c2690(L"s_number_string_exp", FUN_1409404f0(nExp)));
+        obj.FUN_1407cbb20("exp", FUN_14028dfa0<CStringW>(L"s_number_string_exp", FUN_1409404f0(nExp)));
     }
     if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonRewardComponent"))
         pComponent->Invoke("setData", obj);
@@ -648,7 +645,7 @@ MS2_REPLACE_METHOD(0x140C0C8E0, UIDungeonControlCenter, FUN_140c0c8e0, 400, 0xBA
 UIDungeonSearchSettingDialog* FUN_140c0dea0(int nUiId)
 {
     if (reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIDungeonSearchSettingDialog*>((UIObject*)spUI);
     }
@@ -675,7 +672,7 @@ void UIDungeonControlCenter::OnSetting()
 // @0x140c0cc00
 void UIDungeonControlCenter::OnPartySearch()
 {
-    reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4eda);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4eda)));
 }
 MS2_REPLACE_METHOD(0x140C0CC00, UIDungeonControlCenter, OnPartySearch, 32, 0x23FD8E49);
 
@@ -717,7 +714,7 @@ void UIDungeonControlCenter::OnBookmark()
     if (pDialog != 0) {
         reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
         pDialog->FUN_1412b9110();
-        reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ebd);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
 }
 MS2_REPLACE_METHOD(0x140C0CD20, UIDungeonControlCenter, OnBookmark, 83, 0xF817E2BE);
@@ -725,7 +722,7 @@ MS2_REPLACE_METHOD(0x140C0CD20, UIDungeonControlCenter, OnBookmark, 83, 0xF817E2
 // @0x140c0cd80
 void UIDungeonControlCenter::OnPopupDetail()
 {
-    reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f85);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f85)));
 }
 MS2_REPLACE_METHOD(0x140C0CD80, UIDungeonControlCenter, OnPopupDetail, 32, 0xE11816BE);
 
@@ -736,7 +733,7 @@ void UIDungeonControlCenter::FUN_140c0cdb0(int nId)
     if (pDialog != 0) {
         reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
         pDialog->FUN_1412b8ff0(nId);
-        reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ebd);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
 }
 MS2_REPLACE_METHOD(0x140C0CDB0, UIDungeonControlCenter, FUN_140c0cdb0, 91, 0xA9F2625E);
@@ -794,7 +791,7 @@ int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange
         ASObj obj(2);
         obj.FUN_1409c0d20("id", pRoom->m_nId);
         obj.FUN_1407cba60("banner", pRoom->m_strBanner);
-        obj.FUN_1407cbb20("title", FUN_14052b9d0(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
+        obj.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
         out.FUN_1422bbf00(obj);
     }
@@ -820,7 +817,7 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
         ASObj item(2);
         item.FUN_1409c0d20("id", pRoom->m_nId);
         item.FUN_1407cba60("banner", pRoom->m_strBanner);
-        item.FUN_1407cbb20("title", FUN_14052b9d0(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
+        item.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                   TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
         list.FUN_1422bbf00(item);
     }
@@ -854,7 +851,7 @@ MS2_REPLACE_METHOD(0x140C0D620, UIDungeonControlCenter, FUN_140c0d620, 473, 0x77
 void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
 {
     out.clear();
-    Unk_DcPlayer* pPlayer = reinterpret_cast<Unk_DcPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     unsigned short nLevel = 0;
@@ -893,7 +890,7 @@ MS2_REPLACE_METHOD(0x140C0D800, UIDungeonControlCenter, FUN_140c0d800, 677, 0xFD
 void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
 {
     out.clear();
-    Unk_DcPlayer* pPlayer = reinterpret_cast<Unk_DcPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     unsigned short nLevel = 0;

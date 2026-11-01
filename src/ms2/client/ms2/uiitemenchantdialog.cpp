@@ -257,10 +257,7 @@ CStringW FUN_14052bd00(int id, const CStringW& arg);
 CStringW FUN_1409404f0(__int64 v);
 CStringW FUN_140938ae0(CStringW key, const int& v);
 CStringW FUN_140298ea0(CStringW key);
-CStringW FUN_1409eaa20(CStringW key, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_14062b4f0(CStringW key, const int* v);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
-CStringW FUN_140bfa7f0(CStringW key, const CStringW& name, const int& v);
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW GetStringCommon(int id);
 bool FUN_1403b3c40(const CStringW& s, const wchar_t* w);
@@ -277,7 +274,7 @@ class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoCutscene* GetInstance();
 };
-void FUN_141276180(const CString& a, const CString& b);
+int FUN_141276180(const CString& a, const CString& b);
 void FUN_14151f460(int v);
 int FUN_141902660(MS2Ptr<CItem> item);
 unsigned FUN_141924630();
@@ -374,7 +371,7 @@ MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid)
     MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(uid);
     if (item.get() != 0)
         return item;
-    Unk_EnPC* pc = static_cast<Unk_EnPC*>(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_EnPC* pc = static_cast<Unk_EnPC*>(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pc == 0)
         return 0;
     MS2Ptr<Unk_BackUpItem> equip = pc->FUN_141655c30(uid);
@@ -650,7 +647,7 @@ void UIItemEnchantDialog::FUN_1419bfd70()
 // @0x1419bff60
 void UIItemEnchantDialog::FUN_1419bff60()
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     CString bagName = Unk_SocketFormat("{0}.equip", GetTypeName());
@@ -710,7 +707,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode19(ASData*)
 // @0x1419c0440
 void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     unsigned __int64 uid = FUN_140718350(pData->FUN_1422b8d30());
@@ -721,7 +718,7 @@ void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
         return;
     if (m_expMode == 2) {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x87) && FUN_1419c89b0(uid) != 0 && FUN_1419c8b80(uid) == 0) {
-            CStringW text = FUN_1405c2690(CStringW(L"s_itemenchant_binding_character"), pc->vfunc_77());
+            CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_binding_character"), pc->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(text), 0, CStringW(L""));
             if (box.get() != 0) {
                 box->Append<__int64>(uid);
@@ -914,7 +911,7 @@ void UIItemEnchantDialog::FUN_1419c16c0(unsigned __int64 uid, int flag)
 // @0x1419c19d0
 void UIItemEnchantDialog::FUN_1419c19d0()
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         if (static_cast<Unk_EnPC*>(pc)->FUN_14166c930() == 0x16) {
             StateTalk* st = static_cast<StateTalk*>(pc->FUN_14166ccb0());
@@ -926,7 +923,7 @@ void UIItemEnchantDialog::FUN_1419c19d0()
 // @0x1419c1a40
 void UIItemEnchantDialog::FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out)
 {
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
@@ -1011,7 +1008,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     FUN_1419c6420();
     if (m_enchantAni == 0)
         return;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
     int mode = (unsigned short)pkt.ReadInt16();
@@ -1231,7 +1228,7 @@ void UIItemEnchantDialog::FUN_1419c4050()
         if (FUN_1419beef0(m_item->FUN_140526a50())) {
             g_143ab2a90.FUN_140a5d530(m_item.get());
         } else {
-            MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
                 MS2Ptr<Unk_BackUpItem> backup = ((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0())->FUN_1411e1580(m_item->FUN_140526a50());
                 if (backup.get() != 0) {
@@ -1324,7 +1321,7 @@ bool UIItemEnchantDialog::FUN_1419c4a50(int result, const CMsgBoxData& box)
     if (!data)
         return true;
     int count = FUN_1419c8830(data->FUN_14053c510());
-    CStringW text = FUN_140bfa7f0(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
+    CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
     if (MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""))) {
         msg->Append<__int64>(uid);
         msg->Append<int>(1);
@@ -1356,7 +1353,7 @@ bool UIItemEnchantDialog::FUN_1419c4e00(int result, const CMsgBoxData& box)
                 CStringW rankA = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->FUN_141813150(rank), FUN_1405569f0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), rank));
                 CStringW rankB = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->FUN_141813150(need), FUN_1405569f0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), need));
                 CStringW name = FUN_1419c7e20(prot.get());
-                CStringW text = FUN_1409eaa20(CStringW(L"s_itemenchant_protector_rank_warn"), rankA, rankB, name);
+                CStringW text = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_itemenchant_protector_rank_warn"), rankA, rankB, name);
                 MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
                 if (msg.get() != 0) {
                     msg->FUN_141a01800(1);
@@ -1367,7 +1364,7 @@ bool UIItemEnchantDialog::FUN_1419c4e00(int result, const CMsgBoxData& box)
                 }
             } else {
                 int count = FUN_1419c8830(m_208);
-                CStringW text = FUN_140bfa7f0(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
+                CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
                 MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
                 if (msg.get() != 0) {
                     msg->Append<__int64>(uid);
@@ -1409,7 +1406,7 @@ bool UIItemEnchantDialog::FUN_1419c5890(int result, const CMsgBoxData& box)
         MS2Ptr<CItem> sup = g_143ab2a90.FUN_140a5d680(m_220);
         if (sup == 0)
             return true;
-        CStringW text = FUN_1405c2690(CStringW(L"s_itemenchant_super_protector_use_warn"), FUN_1419c7e20(sup.get()));
+        CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_super_protector_use_warn"), FUN_1419c7e20(sup.get()));
         MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
         if (msg.get() != 0) {
             msg->Append<__int64>(uid);
@@ -1677,7 +1674,7 @@ void UIItemEnchantDialog::FUN_1419c6cd0(ASObj& dest, CIngredientContainer* conta
     }
     dest.FUN_1409eb1d0("ingredient", list);
     if (0 < fee)
-        dest.FUN_1407cbb20("enchantFee", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+        dest.FUN_1407cbb20("enchantFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
 }
 
 // @0x1419c7140
@@ -1960,7 +1957,7 @@ int UIItemEnchantDialog::FUN_1419c8b80(unsigned __int64 uid)
     Unk_EnOwner* owner = item->FUN_140527930()->FUN_140635160();
     if (owner == 0)
         return 0;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     return ((class PCBase*)(class PCBase*)(pc))->FUN_141656a80() == owner->FUN_14052d1c0();
@@ -2015,7 +2012,7 @@ void UIItemEnchantDialog::FUN_1419c90b0(unsigned int itemId, int count, __int64 
 // @0x1419c9260
 int UIItemEnchantDialog::FUN_1419c9260(CItem* base, CItem* other)
 {
-    Unk_EnPC* pc = (Unk_EnPC*)reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_EnPC* pc = (Unk_EnPC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
     if (pc->FUN_141662eb0(other) == 0)

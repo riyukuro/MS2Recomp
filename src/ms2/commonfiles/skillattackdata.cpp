@@ -7,6 +7,18 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/commonfiles/skillattackdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers.
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -98,25 +110,25 @@ MS2_REPLACE_METHOD(0x1407DEF80, SkillArrow, operator!=, 515, 0xBEC66076);
 // @0x1407df190
 int SkillArrow::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pArrow = pElem->FUN_140165cf0("arrow");
+    Unk_140165cf0* pArrow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("arrow"));
     if (pArrow == 0)
         return 1;
-    FUN_1408731e0(pArrow, "overlap", m_nOverlap);
-    FUN_1408731e0(pArrow, "explosion", m_nExplosion);
-    FUN_1408731e0(pArrow, "rayPhysxTest", m_nRayPhysxTest);
+    XmlGetAttr((class TiXmlElement*)(pArrow), "overlap", reinterpret_cast<int&>(m_nOverlap));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "explosion", reinterpret_cast<int&>(m_nExplosion));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "rayPhysxTest", reinterpret_cast<int&>(m_nRayPhysxTest));
     XmlValue(pArrow, "nonTarget", m_eNonTarget);
-    FUN_1408731e0(pArrow, "bounceType", m_nBounceType);
-    FUN_1408731e0(pArrow, "bounceCount", m_nBounceCount);
-    FUN_140873360(pArrow, "bounceRadius", m_fBounceRadius);
-    FUN_1408731e0(pArrow, "bounceOverlap", m_nBounceOverlap);
-    FUN_140194470(&m_collision, FUN_14028f060(FUN_14015f710(pArrow, "collision", CString(""))));
-    FUN_140194470(&m_collisionAdd, FUN_14028f060(FUN_14015f710(pArrow, "collisionAdd", CString(""))));
-    m_strEffect = FUN_14015f710(pArrow, "effect", CString(""));
-    m_strEffectRemain = FUN_14015f710(pArrow, "effectRemain", CString(""));
-    m_strEffectDestroy = FUN_14015f710(pArrow, "effectDestroy", CString(""));
-    m_strTargetKeepEffect = FUN_14015f710(pArrow, "targetKeepEffect", CString(""));
-    m_strEffectInvoke = FUN_14015f710(pArrow, "effectInvoke", CString(""));
-    FUN_1408731e0(pArrow, "rayType", m_nRayType);
+    XmlGetAttr((class TiXmlElement*)(pArrow), "bounceType", reinterpret_cast<int&>(m_nBounceType));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "bounceCount", reinterpret_cast<int&>(m_nBounceCount));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "bounceRadius", reinterpret_cast<float&>(m_fBounceRadius));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "bounceOverlap", reinterpret_cast<int&>(m_nBounceOverlap));
+    FUN_140194470(&m_collision, FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collision", CString(""))));
+    FUN_140194470(&m_collisionAdd, FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collisionAdd", CString(""))));
+    m_strEffect = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effect", CString(""));
+    m_strEffectRemain = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effectRemain", CString(""));
+    m_strEffectDestroy = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effectDestroy", CString(""));
+    m_strTargetKeepEffect = Unk_ReadString((class Unk_XmlNode*)(pArrow), "targetKeepEffect", CString(""));
+    m_strEffectInvoke = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effectInvoke", CString(""));
+    XmlGetAttr((class TiXmlElement*)(pArrow), "rayType", reinterpret_cast<int&>(m_nRayType));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1407DF190, SkillArrow, Load, 1351, 0x56FCF58F);
@@ -250,44 +262,44 @@ MS2_REPLACE_METHOD(0x1407DFDF0, SkillDamage, operator!=, 968, 0xB3EF0FD2);
 // @0x1407e01c0
 int SkillDamage::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pDamage = pElem->FUN_140165cf0("damage");
+    Unk_140165cf0* pDamage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("damage"));
     if (pDamage == 0)
         return 1;
-    FUN_1408731e0(pDamage, "count", m_nCount);
-    FUN_1408731e0(pDamage, "hand", m_nHand);
-    FUN_140873360(pDamage, "rate", m_fRate);
-    FUN_140873360(pDamage, "hitSpeedRate", m_fHitSpeedRate);
-    FUN_140873360(pDamage, "hitPauseTime", m_fHitPauseTime);
-    FUN_140873360(pDamage, "damagedVibrateRatio", m_fDamagedVibrateRatio);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "count", reinterpret_cast<int&>(m_nCount));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "hand", reinterpret_cast<int&>(m_nHand));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "rate", reinterpret_cast<float&>(m_fRate));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "hitSpeedRate", reinterpret_cast<float&>(m_fHitSpeedRate));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "hitPauseTime", reinterpret_cast<float&>(m_fHitPauseTime));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "damagedVibrateRatio", reinterpret_cast<float&>(m_fDamagedVibrateRatio));
     XmlGetAttr((class TiXmlElement*)(pDamage), "value", *(__int64*)(&m_nValue));
-    m_strEffectRemain = FUN_14015f710(pDamage, "effectRemain", CString(""));
-    m_strEffectHit = FUN_14015f710(pDamage, "effectHit", CString(""));
-    FUN_1408730a0(pDamage, "IgnoreOptimalHideDamageHitEffect", m_bIgnoreOptimalHideDamageHitEffect);
-    FUN_1408730a0(pDamage, "IgnoreOptimalHideDamageRemainEffect", m_bIgnoreOptimalHideDamageRemainEffect);
-    FUN_140873360(pDamage, "damageByTargetMaxHP", m_fDamageByTargetMaxHP);
-    FUN_1408731e0(pDamage, "isConstDamageValue", m_nIsConstDamageValue);
+    m_strEffectRemain = Unk_ReadString((class Unk_XmlNode*)(pDamage), "effectRemain", CString(""));
+    m_strEffectHit = Unk_ReadString((class Unk_XmlNode*)(pDamage), "effectHit", CString(""));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "IgnoreOptimalHideDamageHitEffect", reinterpret_cast<bool&>(m_bIgnoreOptimalHideDamageHitEffect));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "IgnoreOptimalHideDamageRemainEffect", reinterpret_cast<bool&>(m_bIgnoreOptimalHideDamageRemainEffect));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "damageByTargetMaxHP", reinterpret_cast<float&>(m_fDamageByTargetMaxHP));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "isConstDamageValue", reinterpret_cast<int&>(m_nIsConstDamageValue));
     XmlGetAttr((class TiXmlElement*)(pDamage), "constDamageByTargetHP", *(__int64*)(&m_nConstDamageByTargetHP));
     XmlGetAttr((class TiXmlElement*)(pDamage), "constDamageByTargetSP", *(__int64*)(&m_nConstDamageByTargetSP));
     XmlValue(pDamage, "push", m_ePush);
-    FUN_140873360(pDamage, "pushdistance", m_fPushDistance);
-    FUN_140873360(pDamage, "pushduration", m_fPushDuration);
-    FUN_140873360(pDamage, "pushprob", m_fPushProb);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushdistance", reinterpret_cast<float&>(m_fPushDistance));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushduration", reinterpret_cast<float&>(m_fPushDuration));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushprob", reinterpret_cast<float&>(m_fPushProb));
     XmlValue(pDamage, "pushEaseType", m_ePushEaseType);
     if (m_ePushEaseType < 0 || m_ePushEaseType > 2)
         m_ePushEaseType = (SkillPushEaseType)0;
     XmlValue(pDamage, "pushApplyField", m_ePushApplyField);
-    FUN_140873360(pDamage, "pushUpDistance", m_fPushUpDistance);
-    FUN_1408731e0(pDamage, "pushDown", m_nPushDown);
-    FUN_1408731e0(pDamage, "pushFall", m_nPushFall);
-    FUN_1408731e0(pDamage, "pushPriority", m_nPushPriority);
-    FUN_1408731e0(pDamage, "pushPriorityHitImmune", m_nPushPriorityHitImmune);
-    FUN_1408733e0(pDamage, "pushAnimation", m_strPushAnimation);
-    FUN_1408731e0(pDamage, "attackMaterial", m_nAttackMaterial);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushUpDistance", reinterpret_cast<float&>(m_fPushUpDistance));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushDown", reinterpret_cast<int&>(m_nPushDown));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushFall", reinterpret_cast<int&>(m_nPushFall));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushPriority", reinterpret_cast<int&>(m_nPushPriority));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushPriorityHitImmune", reinterpret_cast<int&>(m_nPushPriorityHitImmune));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "pushAnimation", m_strPushAnimation);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "attackMaterial", reinterpret_cast<int&>(m_nAttackMaterial));
     XmlValue(pDamage, "stateHitIgnore", m_eStateHitIgnore);
     XmlValue(pDamage, "stateHitOnly", m_eStateHitOnly);
-    FUN_1408731e0(pDamage, "superArmorBreak", m_nSuperArmorBreak);
-    FUN_1408731e0(pDamage, "invokeEffectDisable", m_nInvokeEffectDisable);
-    FUN_1408731e0(pDamage, "damageEventDisable", m_nDamageEventDisable);
+    XmlGetAttr((class TiXmlElement*)(pDamage), "superArmorBreak", reinterpret_cast<int&>(m_nSuperArmorBreak));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "invokeEffectDisable", reinterpret_cast<int&>(m_nInvokeEffectDisable));
+    XmlGetAttr((class TiXmlElement*)(pDamage), "damageEventDisable", reinterpret_cast<int&>(m_nDamageEventDisable));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1407E01C0, SkillDamage, Load, 1363, 0x702F5867);
@@ -422,12 +434,12 @@ MS2_REPLACE_METHOD(0x1407E1060, SkillPause, operator!=, 86, 0x1A6E711F);
 // @0x1407e10c0
 int SkillPause::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pPause = pElem->FUN_140165cf0("pause");
+    Unk_140165cf0* pPause = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("pause"));
     if (pPause)
     {
-        FUN_140873360(pPause, "pauseDuration", m_fDuration);
-        FUN_140873360(pPause, "pauseShakeDuration", m_fShakeDuration);
-        FUN_140873360(pPause, "pauseAmp", m_fAmp);
+        XmlGetAttr((class TiXmlElement*)(pPause), "pauseDuration", reinterpret_cast<float&>(m_fDuration));
+        XmlGetAttr((class TiXmlElement*)(pPause), "pauseShakeDuration", reinterpret_cast<float&>(m_fShakeDuration));
+        XmlGetAttr((class TiXmlElement*)(pPause), "pauseAmp", reinterpret_cast<float&>(m_fAmp));
     }
     return 1;
 }
@@ -464,9 +476,9 @@ MS2_REPLACE_METHOD(0x1407E11E0, SkillChain, operator!=, 50, 0x3E310983);
 // @0x1407e1220
 int SkillChain::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pChain = pElem->FUN_140165cf0("chain");
+    Unk_140165cf0* pChain = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("chain"));
     if (pChain)
-        m_strEffect = FUN_14015f710(pChain, "effect", CString(""));
+        m_strEffect = Unk_ReadString((class Unk_XmlNode*)(pChain), "effect", CString(""));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1407E1220, SkillChain, Load, 169, 0x701C0A59);
@@ -572,19 +584,19 @@ MS2_REPLACE_METHOD(0x1407E1A30, SkillAttackData, GetArrowEffect, 17, 0x05460BBA)
 // @0x1407e1a50
 int SkillAttackData::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "point", m_strPoint);
-    FUN_140873220(pElem, "pointGroupID", m_nPointGroupID);
-    FUN_1408731e0(pElem, "targetCount", m_nTargetCount);
-    FUN_1408731e0(pElem, "magicPathID", m_nMagicPathID);
-    FUN_1408731e0(pElem, "cubeMagicPathID", m_nCubeMagicPathID);
-    FUN_1408731e0(pElem, "direction", m_nDirection);
+    XmlGetAttr((class TiXmlElement*)(pElem), "point", m_strPoint);
+    XmlGetAttr((class TiXmlElement*)(pElem), "pointGroupID", reinterpret_cast<unsigned int&>(m_nPointGroupID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "targetCount", reinterpret_cast<int&>(m_nTargetCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "magicPathID", reinterpret_cast<int&>(m_nMagicPathID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "cubeMagicPathID", reinterpret_cast<int&>(m_nCubeMagicPathID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "direction", reinterpret_cast<int&>(m_nDirection));
     XmlValue(pElem, "attacktype", m_eAttackType);
     XmlValue(pElem, "attackMethodType", m_eAttackMethodType);
-    FUN_1408731e0(pElem, "hitImmuneBreak", m_nHitImmuneBreak);
-    FUN_1408731e0(pElem, "brokenOffence", m_nBrokenOffence);
-    FUN_140873360(pElem, "brokenForce", m_fBrokenForce);
+    XmlGetAttr((class TiXmlElement*)(pElem), "hitImmuneBreak", reinterpret_cast<int&>(m_nHitImmuneBreak));
+    XmlGetAttr((class TiXmlElement*)(pElem), "brokenOffence", reinterpret_cast<int&>(m_nBrokenOffence));
+    XmlGetAttr((class TiXmlElement*)(pElem), "brokenForce", reinterpret_cast<float&>(m_fBrokenForce));
     XmlValue(pElem, "unrideOnHit", m_eUnrideOnHit);
-    FUN_1408731e0(pElem, "releaseObjectWeaponOnHit", m_nReleaseObjectWeaponOnHit);
+    XmlGetAttr((class TiXmlElement*)(pElem), "releaseObjectWeaponOnHit", reinterpret_cast<int&>(m_nReleaseObjectWeaponOnHit));
     ATL::CAtlArray<unsigned> arrCompulsion;
     XmlTokenList(pElem, "compulsionType", arrCompulsion);
     for (unsigned i = 0; i < arrCompulsion.GetCount(); i++)
@@ -604,14 +616,14 @@ int SkillAttackData::Load(Unk_140165cf0* pElem)
         return 0;
     if (!m_damage.Load(pElem))
         return 0;
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("actionAdditional"))
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
     {
         MS2Ptr<SkillActionAdditional> spAction(new SkillActionAdditional);
         if (!spAction->Load(pChild))
             return 0;
         m_vAdditional.push_back(spAction);
     }
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("actionSkill"))
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionSkill")))
     {
         MS2Ptr<SkillActionSkill> spAction(new SkillActionSkill);
         if (!spAction->Load(pChild))

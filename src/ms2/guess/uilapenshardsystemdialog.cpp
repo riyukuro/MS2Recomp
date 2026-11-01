@@ -340,7 +340,7 @@ void LapenshardSystemTabContents::vfunc_10(void* a1, bool b)
 // @0x140c608f0
 MyPC* LapenshardSystemTabContents::vfunc_11()
 {
-    return reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    return ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
 }
 
 // ---- LapenshardItemSlotBagPanel ----
@@ -464,7 +464,7 @@ void LapenshardEquipSlotPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     m_strBag = "LapenshardEquipSlotBag";
@@ -621,7 +621,7 @@ void UILapenshardEquipTab::vfunc_3(MS2Ptr<ASUIComponent> ui)
 // @0x140c5e140
 int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (_stricmp("OnUnmountEquipSlot", szMethod) == 0)
@@ -1014,7 +1014,7 @@ void UILapenshardShieldBar::vfunc_15()
         FUN_140c5fbd0();
     if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
     {
-        MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         if (m_bImpending == 0)
@@ -1168,7 +1168,7 @@ public:
 };
 
 void FUN_140710590(COutPacket& packet);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_14151f200();
 
@@ -1564,7 +1564,7 @@ void LapenshardUpgradeSlotPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     m_body = m_ui->FUN_140accfb0<ASUIComponent>("m_body");
@@ -1764,7 +1764,7 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
             continue;
         p->vfunc_8(szMethod, pArgs, nArgs);
     }
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (_stricmp("OnAction", szMethod) == 0)
@@ -2073,14 +2073,14 @@ private:
     void* m_pad_00;
     void* m_p;
 };
-void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);
+void FUN_140d73aa0(CStringW strMsg, int nType, void* pListener, CStringW strTag);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 
 // @0x140c62520
 int FUN_140c62520()
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (pPlayer->vfunc_65() != 0)
@@ -2126,7 +2126,7 @@ int UILapenshardSystemDialog::vfunc_73()
 {
     if (UIDialog::vfunc_73() == 0)
         return 0;
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (reinterpret_cast<Unk_LsRules*>(((class Unk_LsRules*)FUN_14025e7b0()))->m_flags.FUN_1402c4c90(0x5b) != 0)
@@ -2331,7 +2331,7 @@ class Unk_ItemOwnerRef { public: int FUN_140635190(); };                // the b
 void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid)
 {
     pOut->RemoveAll();
-    MyPC* pPlayer = reinterpret_cast<Unk_LsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     ItemArray items;

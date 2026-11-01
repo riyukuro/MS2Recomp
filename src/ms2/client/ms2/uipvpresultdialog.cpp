@@ -196,7 +196,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
 // @0x1413440a0
 void UIPvPResultDialog::FUN_1413440a0()
 {
-    Unk_PrActor* pPC = (Unk_PrActor*)reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PrActor* pPC = (Unk_PrActor*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     bool bInPvP = pPC && (pPC->FUN_140967420().FUN_140965810() ? true : false);
     if (bInPvP)
     {
@@ -210,7 +210,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
 {
     if (pEntry == 0)
         return false;
-    MyPC* pPC = reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
     PCBase* pOther = reinterpret_cast<Unk_PrWorld*>(WorldService::GetInstance())->FUN_141bd1530(pEntry->m_nCharId);

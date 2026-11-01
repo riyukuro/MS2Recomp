@@ -208,6 +208,7 @@ static CString s_chartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Cr
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 class Unk_ItemEquipData : public CItemData { };   // CItem::FUN_140527840's record (item.cpp)
 struct Unk_EquipItemData : public CItemData {};    // CEquipItem::FUN_1411dc7f0's record (as customize.cpp)
 #ifndef MS2_HOOK_DLL   // s_warningBag: the exe's object at 0x143ab78e8, which other units reach as DAT_143ab78e8 (the hook DLL binds it)
@@ -329,7 +330,7 @@ void FUN_1402b7560(Unk_InventoryArraySetting*, const char*);
 void FUN_140d73bc0(int, int, void*, CStringW);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_140710590(COutPacket&);
    // CItemData member (this=rcx, hidden return=rdx)
@@ -367,7 +368,6 @@ void FUN_141a01600(CMsgBoxData*, __int64);
 void FUN_141a01ee0(CMsgBoxData*, Unk_Inventory::ItemPtr, const CStringW&, int, int, int, int, int);
 void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 class Unk_InventoryBinding { public: int FUN_140635100(); int FUN_140635120(); };
 int FUN_141420a70(class CItem*, class AvatarPC*);   // C3: was FUN_141420a70
 bool FUN_1406344b0(Unk_Inventory::ItemPtr, const __int64*, ItemUtilTransfer::TOutBindingParam*);
@@ -1265,7 +1265,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     if (FUN_140a63950(item, selected, mode) == 0) return 0;
     if (skipBinding == 0) {
         if (((Unk_InventoryBinding*)item->FUN_140527930())->FUN_140635100() != 0 && ((Unk_InventoryBinding*)item->FUN_140527930())->FUN_140635120() == 0) {
-            CStringW prompt = FUN_1405c2690(L"s_msg_transfer_bind_when_equip", player->vfunc_77());
+            CStringW prompt = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", player->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(17, prompt, nullptr, s_useBindEquipItem);
             if (box.get() != nullptr) {
                 FUN_140534050(box.operator->(), slot);
@@ -1568,7 +1568,7 @@ int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
     if (data == nullptr) return 11;
     if (data->FUN_14053ce20() && player->FUN_141658f30() == 0) return 6;
     if (data->FUN_14053c940(player->FUN_141658e60()) == 0) return 2;
-    if (data->FUN_14053c8e0(player->FUN_141654700()) == 0) return 3;
+    if (data->IsJobAllowed(player->FUN_141654700()) == 0) return 3;
     if (data->FUN_14053c9a0((unsigned short)player->vfunc_78()) == 0) return 1;
     if (data->FUN_14053d1f0() && player->FUN_141662de0() == 0) return 7;
     if (data->FUN_14053d210() && !TSingleton<WeddingManager>::GetInstance()->IsInProgress()) return 7;

@@ -149,30 +149,34 @@
 // ---- unit-local placeholders ----
 
 // The Scaleform movie manager (global at FUN_14025e7a0).
+class GFxManager   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_1422adc90(GFxMovie*);
+    int FUN_1422addb0();
+    int FUN_1422ade10(GFxMovie*);
+    int FUN_1422adf30();
+    void FUN_1422ae960(int);
+    void FUN_1422aeaa0(int);
+    void FUN_1422aebe0(int, bool);
+    int FUN_1422aeed0(int);
+    void FUN_1422aef20(int, int);
+    int FUN_1422af2d0(int);
+    void FUN_1422afb00();
+    float FUN_1422afec0(int);
+    int FUN_1422aff10(float);
+    void FUN_1422b0060(float);
+    GFxMovie* FUN_1422b01a0(int);
+    void FUN_1422b24f0();
+    bool FUN_1422b2760();
+    bool FUN_1422b27c0();
+    void FUN_1422b27e0(bool);
+    int IsArchive();
+};
 class Unk_UisMovieMgr
 {
 public:
     CStringW FUN_1422b0570(const CString& strKey);                  // $-prefixed key lookup
-    void FUN_1422adc90(void* pMovie);                               // add a background movie
-    void FUN_1422addb0();
-    int FUN_1422ade10(GFxMovie* pMovie);                            // load and add the damage text movie (id 1)
-    void FUN_1422adf30();
-    GFxMovie* FUN_1422b01a0(int n);                                 // GFxMovie of a layer
-    int FUN_1422af2d0(int n);
-    void FUN_1422ae960(int n);
-    int FUN_1422aeed0(int n);
-    int FUN_1422aff10(float f);
-    void FUN_1422afec0(int n);
-    void FUN_1422aebe0(int nSlot, bool bOn);
-    void FUN_1422aeaa0(int nMode);
-    void FUN_1422b0060(float f);
-    void FUN_1422aef20(int n, int b);
-    bool FUN_1422b2760();
-    void FUN_1422b27e0(bool b);
-    bool FUN_1422b27c0();
-    void FUN_1422afb00();
-    void FUN_1422b24f0();
-    int FUN_1422af090();
 };
 Unk_UisMovieMgr* FUN_14025e7a0();
 
@@ -181,7 +185,6 @@ class PCBase;
 class Unk_UisWorld : public WorldService                                                  // world service
 {
 public:
-    PCBase* FUN_141bd0cc0();                                        // the player character
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field data
 };
      // background movie name override
@@ -314,7 +317,6 @@ public:
     virtual int vfunc_63();
 };
 class Unk_UisSceneMgr;
-Unk_UisSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -537,7 +539,7 @@ void CUIService::FUN_141ad9650()
         if (!strBg.IsEmpty())
         {
             GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-            FUN_14025e7a0()->FUN_1422adc90(pBg);
+            ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
             return;
         }
     }
@@ -549,7 +551,7 @@ void CUIService::FUN_141ad9650()
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-        FUN_14025e7a0()->FUN_1422adc90(pBg);
+        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9650, CUIService, FUN_141ad9650, 805, 0x6765F254);
@@ -561,7 +563,7 @@ void CUIService::FUN_141ad9980(char nStage)
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        FUN_14025e7a0()->FUN_1422adc90(pBg);
+        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9980, CUIService, FUN_141ad9980, 214, 0x88859AF5);
@@ -572,7 +574,7 @@ void CUIService::FUN_141ad9a60(CStringA strBg)
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        FUN_14025e7a0()->FUN_1422adc90(pBg);
+        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adc90((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9a60, CUIService, FUN_141ad9a60, 190, 0xFA75380C);
@@ -580,7 +582,7 @@ MS2_REPLACE_METHOD(0x141ad9a60, CUIService, FUN_141ad9a60, 190, 0xFA75380C);
 // @0x141ad9b30
 void CUIService::FUN_141ad9b30()
 {
-    FUN_14025e7a0()->FUN_1422addb0();
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422addb0();
 }
 MS2_REPLACE_METHOD(0x141ad9b30, CUIService, FUN_141ad9b30, 27, 0x0C5983B1);
 
@@ -588,13 +590,13 @@ MS2_REPLACE_METHOD(0x141ad9b30, CUIService, FUN_141ad9b30, 27, 0x0C5983B1);
 bool CUIService::FUN_141ad9b60()
 {
     GFxMovieDamage* pDamage = new (efd::MemHint(efd::MemHint::NONE)) GFxMovieDamage;
-    return FUN_14025e7a0()->FUN_1422ade10(pDamage) == 1;
+    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422ade10(pDamage) == 1;
 }
 
 // @0x141ad9c10
 void CUIService::FUN_141ad9c10()
 {
-    FUN_14025e7a0()->FUN_1422adf30();
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422adf30();
 }
 MS2_REPLACE_METHOD(0x141ad9c10, CUIService, FUN_141ad9c10, 27, 0xD41E04A3);
 
@@ -633,7 +635,7 @@ MS2_REPLACE_METHOD(0x141ad93b0, CUIService, FUN_141ad93b0, 655, 0x104E5C39);
 // @0x141ad9c40
 void CUIService::FUN_141ad9c40(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(FUN_14025e7a0()->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61900(FUN_140719190(spGem->GetGemId()));
 }
@@ -642,7 +644,7 @@ MS2_REPLACE_METHOD(0x141ad9c40, CUIService, FUN_141ad9c40, 174, 0x2F761BAF);
 // @0x141ad9d00
 void CUIService::FUN_141ad9d00(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(FUN_14025e7a0()->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61b80(FUN_140719190(spGem->GetGemId()));
 }
@@ -651,7 +653,7 @@ MS2_REPLACE_METHOD(0x141ad9d00, CUIService, FUN_141ad9d00, 174, 0x5D6CDB34);
 // @0x141ad9dc0
 void CUIService::FUN_141ad9dc0()
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(FUN_14025e7a0()->FUN_1422b01a0(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b01a0(1));
     if (pDamage != 0)
         pDamage->FUN_140b61ce0();
 }
@@ -750,7 +752,7 @@ void CUIService::FUN_141ad9e50(int nScene)
         FUN_141adbd60(0);
         if (FUN_1412755a0() != 0)
             return;
-        PCBase* pPlayer = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (!pPlayer)
             return;
         AddOpenId(m_listOpen, 0x4e29);
@@ -1083,7 +1085,7 @@ void CUIService::FUN_141adbbb0()
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
         {
             bool bOn = ((class Unk_C2UiMgr*)(void*)(((void*)FUN_140b632f0())))->FUN_1410af770();
-            PCBase* pPlayer = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPlayer)
             {
                 if (Unk_UisSlot23* p = static_cast<Unk_UisSlot23*>(((void*)((class PC*)(class PCBase*)(pPlayer))->FUN_1416625b0())))
@@ -1103,6 +1105,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()
@@ -1169,7 +1172,7 @@ MS2_REPLACE_METHOD(0x141ada610, CUIService, FUN_141ada610, 215, 0x260C5DC3);
 // @0x141adbd10
 unsigned CUIService::FUN_141adbd10()
 {
-    return (FUN_14025e7a0()->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
+    return (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
 }
 MS2_REPLACE_METHOD(0x141adbd10, CUIService, FUN_141adbd10, 72, 0x31DAF086);
 
@@ -1200,21 +1203,21 @@ int CUIService::FUN_141adbe00(float fValue, int bRaw)
     float f = fValue;
     if (bRaw == 0)
         f = FUN_141276490((float)DAT_143af62d4, fValue);
-    return FUN_14025e7a0()->FUN_1422aff10(f);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aff10(f);
 }
 MS2_REPLACE_METHOD(0x141adbe00, CUIService, FUN_141adbe00, 91, 0x1AE4A279);
 
 // @0x141adbe70
 void CUIService::FUN_141adbe70()
 {
-    FUN_14025e7a0()->FUN_1422afec0(2);
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422afec0(2);
 }
 MS2_REPLACE_METHOD(0x141adbe70, CUIService, FUN_141adbe70, 32, 0x1FDD01DB);
 
 // @0x141adbca0
 void CUIService::FUN_141adbca0(int n)
 {
-    FUN_14025e7a0()->FUN_1422ae960(n);
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422ae960(n);
 }
 MS2_REPLACE_METHOD(0x141adbca0, CUIService, FUN_141adbca0, 35, 0x3F0A8ADB);
 
@@ -1291,9 +1294,9 @@ MS2_REPLACE_METHOD(0x141adcb40, CUIService, FUN_141adcb40, 17, 0x10229582);
 // @0x141adb810
 void CUIService::FUN_141adb810()
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
     {
-        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50());
+        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
         if (pScene != 0)
         {
             if (pScene->vfunc_62() == 0)
@@ -1308,7 +1311,7 @@ MS2_REPLACE_METHOD(0x141adb810, CUIService, FUN_141adb810, 105, 0x5CD42794);
 // @0x141adb880
 void CUIService::FUN_141adb880()
 {
-    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50());
+    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
     if (pScene != 0)
     {
         if (pScene->vfunc_63() == 0)
@@ -1372,7 +1375,7 @@ int CUIService::FUN_141adbb00()
 {
     if (((class CWebBrowserService*)(class Unk_UisBrowserMgr*)(reinterpret_cast<Unk_UisBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())))->FUN_141b78650() != 0)
         return 1;
-    return FUN_14025e7a0()->FUN_1422af2d0(2);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422af2d0(2);
 }
 MS2_REPLACE_METHOD(0x141adbb00, CUIService, FUN_141adbb00, 56, 0xACD21E96);
 
@@ -1490,7 +1493,7 @@ MS2_REPLACE_METHOD(0x141add9b0, CUIService, FUN_141add9b0, 99, 0x19D19D27);
 // @0x141aec350
 int CUIService::FUN_141aec350()
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9ea0() != 0)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0)
         return 0;
     MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField)
@@ -1685,7 +1688,7 @@ MS2_REPLACE_METHOD(0x141adc9e0, CUIService, FUN_141adc9e0, 123, 0xB9DBFA3E);
 // @0x141adca70
 void CUIService::FUN_141adca70()
 {
-    PCBase* pPC = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     Unk_UisMovie* pMovie = FUN_1422bb8b0(2);
@@ -1788,7 +1791,7 @@ MS2_REPLACE_METHOD(0x141aec080, CUIService, FUN_141aec080, 159, 0x38E07131);
 // @0x141add1b0
 void CUIService::FUN_141add1b0(int nSlot, bool bOn)
 {
-    FUN_14025e7a0()->FUN_1422aebe0(nSlot, bOn);
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aebe0(nSlot, bOn);
 }
 MS2_REPLACE_METHOD(0x141add1b0, CUIService, FUN_141add1b0, 46, 0x400D367F);
 
@@ -2726,7 +2729,7 @@ void CUIService::FUN_141adf580()
 // @0x141aec8c0
 void CUIService::FUN_141aec8c0(int nMode)
 {
-    FUN_14025e7a0()->FUN_1422aeaa0(nMode);
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aeaa0(nMode);
 }
 MS2_REPLACE_METHOD(0x141aec8c0, CUIService, FUN_141aec8c0, 35, 0x66E851B8);
 
@@ -2833,8 +2836,8 @@ float FUN_141276460();
 // @0x141adda20
 unsigned long long FUN_141adda20()
 {
-    int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
-    if (FUN_14025e7a0()->FUN_1422af090() == 0
+    int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
+    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->IsArchive() == 0
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x1d, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(0x38, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ad60(0x13))
@@ -2855,13 +2858,13 @@ unsigned long long FUN_141adda20()
 // @0x141aecc30
 void CUIService::FUN_141aecc30()
 {
-    if (FUN_14025e7a0()->FUN_1422b27c0() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27c0() != 0)
         return;
-    FUN_14025e7a0()->FUN_1422afb00();
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422afb00();
     if (CUIService* pService = TSingleton<CUIService>::GetInstance())
     {
         pService->FUN_141aecd70();
-        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
         pService->FUN_141adad20(nScene);
         pService->FUN_141ada610(nScene);
         pService->FUN_141adb2a0(nScene);
@@ -2873,7 +2876,7 @@ void CUIService::FUN_141aecc30()
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4d10();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d2250();
-    FUN_14025e7a0()->FUN_1422b24f0();
+    ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b24f0();
     TSingleton<CUIService>::GetInstance()->FUN_141ad9c10();
 }
 
@@ -2889,7 +2892,7 @@ bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
         NiRenderTargetGroup* pGroup = FUN_140994450()->GetDefaultRenderTargetGroup();
         DAT_143af62d4 = pGroup->GetWidth(0);
         DAT_143af62d8 = pGroup->GetHeight(0);
-        FUN_14025e7a0()->FUN_1422b0060(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
+        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b0060(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
     }
     return true;
 }
@@ -2958,11 +2961,11 @@ void CUIService::FUN_141aec760(float fDelta)
         if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
         {
             int bHit = pMovie->vfunc_37(x, y, 3, 0);
-            FUN_14025e7a0()->FUN_1422aef20(2, bHit);
+            ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(2, bHit);
             if (bHit)
             {
-                FUN_14025e7a0()->FUN_1422aef20(FUN_141277f40(), 0);
-                FUN_14025e7a0()->FUN_1422aef20(FUN_141277f50(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(FUN_141277f40(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422aef20(FUN_141277f50(), 0);
             }
         }
     }
@@ -2986,7 +2989,7 @@ void CUIService::FUN_141aec8f0(bool bOn, NiAVObject* pRoot)
 // @0x141aec9c0
 void CUIService::FUN_141aec9c0()
 {
-    if (FUN_14025e7a0()->FUN_1422b27c0() != 0 && FUN_14025e7a0()->FUN_1422b2760() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27c0() != 0 && ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b2760() != 0)
     {
         CUIService* pService = TSingleton<CUIService>::GetInstance();
         if (pService == 0)
@@ -2995,11 +2998,11 @@ void CUIService::FUN_141aec9c0()
         pService->FUN_141ad9b60();
         if (pService->FUN_141adbe00(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue, 0) != 0)
             static_cast<Unk_UisSlot6*>(((void*)FUN_140b632f0()))->vfunc_6();
-        if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetScene()))
+        if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetScene()))
             ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
-        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9e50()))
+        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50()))
             ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
-        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId();
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
         pService->FUN_141ada6f0(nScene);
         pService->FUN_141ad9e50(nScene);
         pService->FUN_141adafd0(nScene);
@@ -3008,7 +3011,7 @@ void CUIService::FUN_141aec9c0()
         if (spHousing)
             ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(spHousing.FUN_1401cd1a0()))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
-        FUN_14025e7a0()->FUN_1422b27e0(0);
+        ((GFxManager*)(Unk_UisMovieMgr*)(FUN_14025e7a0()))->FUN_1422b27e0(0);
     }
 }
 

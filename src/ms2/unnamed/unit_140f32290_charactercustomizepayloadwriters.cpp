@@ -199,7 +199,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
     Unk_BSPartHandle part = spCustomize->FUN_140cd1a30();
     if (part == 0)
         return;
-    *pnFlags = ((class Customize*)(class Customize*)(spCustomize.get()))->FUN_140cd1b20();
+    *pnFlags = ((class Customize*)(class Customize*)(spCustomize.get()))->GetEditFlags();
     if ((int)*pnFlags <= 0)
         return;
     if ((*pnFlags & 1) != 0 || (*pnFlags & 2) != 0)

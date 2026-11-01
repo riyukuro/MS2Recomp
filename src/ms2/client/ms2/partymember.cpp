@@ -9,7 +9,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-void FUN_140268300(Unk_PartyCounters* pCounters, const Unk_PartyCounters* pOther);
+class Unk_LockedIntMap   // C3: member view for the former free stand-ins
+{
+public:
+    void Assign(class Unk_LockedIntMap*);
+};
 __int64 FUN_141637b90(CPartyMember* pMember);
 int FUN_141637c40(CPartyMember* pMember);
 int FUN_141637cf0(CPartyMember* pMember);
@@ -81,7 +85,7 @@ MS2_REPLACE_METHOD(0x141637B30, CPartyMember, FUN_141637b30, 25, 0x0BE2A528);
 // @0x141637b50
 void CPartyMember::FUN_141637b50(const Unk_PartyCounters* pCounters)
 {
-    FUN_140268300(&counters, pCounters);
+    ((class Unk_LockedIntMap*)(struct Unk_PartyCounters*)(&counters))->Assign((class Unk_LockedIntMap*)(pCounters));
 }
 MS2_REPLACE_METHOD(0x141637B50, CPartyMember, FUN_141637b50, 43, 0x0B77F2C1);
 

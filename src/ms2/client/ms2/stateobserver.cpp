@@ -57,9 +57,9 @@
 
 // ---- unit statics (.text$di): three statics ahead of the shared header statics ----
 
-struct Unk_Handle1401cd100 { Unk_Handle1401cd100(int n); void* m_p; };      // 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (0x1401cd100)
 static CString s_strStun0 = "stun";
-static Unk_Handle1401cd100 s_hNull0(0);
+static Unk_BuddyHandle s_hNull0(NULL);
 static Unk_1402a9d70 s_condition0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
@@ -122,7 +122,6 @@ public:
 class Unk_ObsUIMgr
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
     void FUN_141add120(int nUiId, int bShow);
 };
 UIMainPlayerInfo* FUN_140931900(int nUiId);
@@ -227,7 +226,7 @@ UIDamageEffect* FUN_140ac55a0(int nUiId)
 {
     if (reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spRef = reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spRef = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spRef.get() != 0)
             return dynamic_cast<UIDamageEffect*>((UIObject*)spRef);
     }

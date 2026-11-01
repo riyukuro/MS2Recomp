@@ -114,6 +114,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -557,7 +558,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         int nRank = FUN_14053feb0(nId);
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nId, nRank, 0)) {
-            ASTooltip tip(((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 8, 2);
+            ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 8, 2);
             if (tip.FUN_1409e0d40(spItem.get())) {
                 tip.FUN_1409c6dc0(7);
                 *pRetVal = tip.FUN_1422bb870();
@@ -570,7 +571,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             if (pEntry) {
                 MS2Ptr<CItem> spItem(new CItem);
                 if (spItem->FUN_140523c40(pEntry->m_itemId, pEntry->vfunc_o18_1(), 0)) {
-                    ASTooltip tip(((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 0x800, 2);
+                    ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x800, 2);
                     if (tip.FUN_1409e0d40(spItem.get())) {
                         tip.FUN_1409c6dc0(7);
                         *pRetVal = tip.FUN_1422bb870();
@@ -825,7 +826,7 @@ void UIMasteryDialog::FUN_140eb05b0(int nType, bool bKeep)
 // @0x140eb0610
 void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     int nOld = FUN_140eb8630(nType);
@@ -868,7 +869,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 // @0x140eb0bf0
 void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
@@ -883,7 +884,7 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
 // @0x140eb0da0
 void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     unsigned int nMastery = FUN_141662750(pPc, nType);
@@ -951,7 +952,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
 {
     if (FUN_140ba28d0(&m_30, 0))
         return;
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     if (bKeep) {
@@ -1037,7 +1038,7 @@ void UIMasteryDialog::FUN_140eb2460()
 // @0x140eb24a0
 void UIMasteryDialog::FUN_140eb24a0()
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
@@ -1089,7 +1090,7 @@ void UIMasteryDialog::FUN_140eb24a0()
 // @0x140eb2d10
 void UIMasteryDialog::FUN_140eb2d10()
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     if (m_30.IsNull())
@@ -1123,7 +1124,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     if (m_30.IsNull())
         return;
     FUN_140eb0540();
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     MS2Ptr<Unk_MHouseRec> spHouse = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408865b0(nId);
@@ -1223,7 +1224,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
         return;
     FUN_140eb0540();
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     MS2Ptr<Unk_MScrollRec> spRec = reinterpret_cast<Unk_MScrollTable*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e3e0(nId);
@@ -1591,7 +1592,7 @@ void UIMasteryDialog::FUN_140eb6660(void* pArg)
 // @0x140eb6870
 int UIMasteryDialog::FUN_140eb6870()
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return 0;
     MS2Ptr<Unk_MJobRec> spJob = reinterpret_cast<Unk_MJobTable*>(TSingleton<JobTable>::GetInstance())->FUN_140644880(FUN_141654700(pPc));
@@ -1603,7 +1604,7 @@ int UIMasteryDialog::FUN_140eb6870()
 // @0x140eb6920
 void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     unsigned int nNeed = FUN_1409670c0()->FUN_14066b310(nType, nIndex);
@@ -1736,7 +1737,7 @@ int UIMasteryDialog::FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEnt
         nCount = ((class Unk_MFormula*)FUN_1401c0db0())->FUN_140677c60(pEntry->m_count, nNeedMastery, FUN_140eb7bb0(nType));
     else
         nCount = pEntry->m_count;
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return nCount;
     float fStat = 0;
@@ -1771,7 +1772,7 @@ unsigned int UIMasteryDialog::FUN_140eb7b40(int nType, int nNeedMastery, unsigne
 // @0x140eb7bb0
 unsigned int UIMasteryDialog::FUN_140eb7bb0(int nType)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return 0;
     return FUN_141662750(pPc, nType);
@@ -1836,7 +1837,7 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<Unk_MRec> spRec)
 {
     if (spRec == 0)
         return 0;
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return 0;
     int nValue = FUN_1409670c0()->Factor(spRec->m_nId, FUN_141662750(pPc, spRec->m_nType));
@@ -1891,7 +1892,7 @@ int UIMasteryDialog::FUN_140eb8410()
 // @0x140eb8550
 int UIMasteryDialog::FUN_140eb8550(MS2Ptr<Unk_MRec> spRec)
 {
-    MyPC* pPc = ((class Unk_MWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return 0;
     if (spRec->m_nNeedLevel != 0)

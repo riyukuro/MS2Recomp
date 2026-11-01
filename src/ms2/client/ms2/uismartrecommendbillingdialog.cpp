@@ -75,7 +75,6 @@ class Unk_SrUIMgr
 public:
     Unk_SrUIRef FUN_141adcea0(int nUiId);                       // the ui by id
     int FUN_141adc940(int nUiId);                               // is open
-    void FUN_141adc5d0(int nUiId);                              // hide
     void FUN_141adc530(int nUiId);                              // close
 };
 
@@ -100,7 +99,7 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 UIRewardNotify* FUN_140938cd0(int uiType);                      // GetDialog<UIRewardNotify>
 CStringW FUN_1409404f0(__int64 nMeso);                          // the meso price text
 CString FUN_140513200(const char* szFormat, const unsigned& n);
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a1, int a2, int a3);   // preview the item
 void FUN_141415600(const CString& strKey);                      // drop the preview
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -172,7 +171,7 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
             if (pNotify != 0)
                 pNotify->FUN_141abf6e0(m_item->m_nItemId, m_item->m_nRarity);
             if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9e) == 0)
-                reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e9e);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e9e);
             UIDialog::vfunc_67();
         }
     }
@@ -357,8 +356,8 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
         if (pBilling != 0)
             pBilling->SetItem(m_item);
         if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e9f) == 0)
-            reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e9f);
-        reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e9f);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e9f);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9f)));
         if (m_item.get() != 0)
         {
             CString strValue = FUN_140513200("{0}", m_item->m_nId);

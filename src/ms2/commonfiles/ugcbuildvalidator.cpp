@@ -483,7 +483,7 @@ int CUGCBuildValidatorCli::vfunc_1(int nMode, unsigned* pErr)
 {
     if (CUGCBuildValidator::vfunc_1(nMode, pErr) == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
     {
         *pErr = 0x33;
@@ -499,7 +499,7 @@ int CUGCBuildValidatorCli::vfunc_2(unsigned* pErr)
     *pErr = 4;
     if (m_pItem == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -517,7 +517,7 @@ int CUGCBuildValidatorCli::vfunc_3(unsigned* pErr)
     *pErr = 0x5b;
     if (m_pItem == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -548,7 +548,7 @@ int CUGCBuildValidatorCli::vfunc_4(unsigned* pErr)
     *pErr = 6;
     if (!m_itemData != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -567,7 +567,7 @@ MS2_REPLACE_METHOD(0x140881a40, CUGCBuildValidatorCli, vfunc_4, 354, 0x47396F7C)
 int CUGCBuildValidatorCli::vfunc_5(unsigned* pErr)
 {
     *pErr = 5;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -641,7 +641,7 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
     *pErr = 0x2d;
     if (m_pItem == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
@@ -722,7 +722,7 @@ int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
     MS2Ptr<Cube> spCube(vfunc_34());
     if (!spCube != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
@@ -750,7 +750,7 @@ int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
     if (!spCube != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
@@ -778,7 +778,7 @@ int CUGCBuildValidatorCli::vfunc_12(unsigned* pErr)
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_pCubeService->FUN_1410bab50(m_point, m_nDirection)));
     if (!spCube != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
@@ -804,7 +804,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
         return 0;
     }
     m_pCube = vfunc_34();
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -991,7 +991,7 @@ int CUGCBuildValidatorCli::vfunc_20(unsigned* pErr)
             *pErr = 3;
             return 0;
         }
-        PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
         if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -1051,7 +1051,7 @@ int CUGCBuildValidatorCli::vfunc_23(unsigned* pErr)
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
     if (!spCube != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != FUN_141656ad0(pPC))
@@ -1101,7 +1101,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
         return 0;
     if (m_pItem == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -1150,7 +1150,7 @@ int CUGCBuildValidatorCli::vfunc_26(unsigned* pErr)
     Cube* pCube = m_pCubeService->FUN_1410b8a60(m_pCubeService->FUN_1410bab50(m_point, m_nDirection));
     if (pCube == 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (DAT_143ae0fb4 != 0)
@@ -1247,7 +1247,7 @@ MS2_REPLACE_METHOD(0x140884b70, CUGCBuildValidatorCli, vfunc_33, 94, 0x896B62FD)
 // @0x140884be0
 Cube* CUGCBuildValidatorCli::vfunc_34()
 {
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)
@@ -1273,7 +1273,7 @@ int CUGCBuildValidatorCli::vfunc_35()
 {
     if (!m_itemData != 0)
         return 0;
-    PCBase* pPC = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pPC))->FUN_141530290()) == 0)

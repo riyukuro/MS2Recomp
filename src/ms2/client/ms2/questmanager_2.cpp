@@ -123,6 +123,9 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/commonfiles/questmasktable.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // These instances belong to earlier objects, not the look-alike destructors
 // for other quest pointer types in this object's COMDAT tail.
@@ -177,7 +180,6 @@ public:
     int GetMaxRound();
 };
 int FUN_140408410(const ATL::CAtlArray<unsigned>*, const int&);
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -201,7 +203,6 @@ bool FUN_1409312f0();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138d7e0(void*, int, int);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1410943b0(class PCBase*, int);   // C3: was FUN_1410943b0
@@ -240,7 +241,6 @@ class CMyCharacter   // C3: member view for the former free stand-ins
 public:
     unsigned int FUN_140d9f880(unsigned long);
 };
-void* FUN_140c70240();
 class CMentoringManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -337,7 +337,6 @@ class Unk_QmNpcTable { public:  };
 class Unk_QmQuestFilter { public: int FUN_141261b90(unsigned questId); };
 class Unk_QmOptions { public: Unk_QmQuestFilter* FUN_140c9b8b0(); };
 CStringW FUN_140763550(unsigned questId, int state);     // one tooltip line of a quest
-CStringW FUN_14052bd00(int stringId, const CStringW& arg);
 PCBase* FUN_140aac420(Unk_WsV118* user);              // the user's object (CComPtrBase::operator T*)
 // CRBTree<unsigned, Unk_WsV118> members belong to other objects (0x140c20a10, 0x14112e170, 0x14112e2b0).
 template<> POSITION ATL::CRBTree<unsigned, Unk_WsV118, ATL::CElementTraits<unsigned>, ATL::CElementTraits<Unk_WsV118>>::GetHeadPosition() const throw();
@@ -660,7 +659,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9d10, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9da0
 int CQuestManager::vfunc_o10_18()
 {
-    return ((class CMentoringManager*)(void*)(FUN_140c70240()))->FUN_140b71580();
+    return ((class CMentoringManager*)(void*)(((void*)TSingleton<CMentoringManager>::GetInstance())))->FUN_140b71580();
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9da0, CQuestManager, CQuestManagerCommon, vfunc_o10_18, 27, 0x8D6AF085);
 
@@ -804,7 +803,7 @@ void CQuestManager::FUN_1416ca440()
         }
     }
     if (m_levelDirty != 0) {
-        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001d) {
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d) {
             m_levelDirty = 0;
             FUN_1416d3510();
         }
@@ -1320,7 +1319,7 @@ void CQuestManager::FUN_1416cde50(int error)
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_error_fail_complete_by_dead"), 0, 0, CStringW(L""));
     } else if (error == 7) {
         unsigned name = FUN_1405575b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), 0xd1);
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_alliance_quest_completion_ticket_error"),
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_alliance_quest_completion_ticket_error"),
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, name)),
                       1, 1);
     }
@@ -1500,7 +1499,7 @@ void CQuestManager::FUN_1416cef90(int silent)
 {
     PCBase* player = static_cast<PCBase*>(FUN_141bd0cc0(WorldService::GetInstance()));
     if (player == 0) return;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001b) return;
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001b) return;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
         if (quest->GetState() != 1) continue;
@@ -1847,7 +1846,7 @@ int CQuestManager::FUN_1416d09d0(int mapId, int warn)
     unsigned questId = FUN_14035b590(((void*)FUN_140764010()), 1);
     if (((class CQuestManager*)FUN_140764020())->FUN_140745590(questId) == 0) {
         if (warn != 0) {
-            FUN_1412751f0(FUN_1405c2690(CStringW(L"s_sky_fortress_warn_quest"), FUN_1416e4df0(questId)), 1, 1);
+            FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_sky_fortress_warn_quest"), FUN_1416e4df0(questId)), 1, 1);
         }
         return 0;
     }
@@ -2028,7 +2027,7 @@ int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
             if (it != entries.begin()) text.Append(L"\n");
             text.Append(FUN_140763550(it->m_questId, it->m_state));
         }
-        state->m_text = FUN_14052bd00(0x73f, text);
+        state->m_text = FormatStringId<CStringW>(0x73f, text);
     }
     return state->m_state != 4;
 }
@@ -2331,7 +2330,7 @@ MS2_REPLACE_METHOD(0x1416d3250, CQuestManager, FUN_1416d3250, 469, 0x108875E9);
 // @0x1416d3430
 int CQuestManager::FUN_1416d3430()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d) return 0;
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d) return 0;
     {
         for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
             Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);

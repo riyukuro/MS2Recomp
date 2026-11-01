@@ -24,11 +24,14 @@ struct Unk_GEFactoryRegistry {
 GameEvent* FUN_14041cb50();   // ReturnUser factory (next unit)
 int FUN_140718200(CStringW* text);
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
-Unk_GEReader* FUN_14070f480(Unk_GEReader* in, int* value);
 
 struct Unk_GESub { char m_pad; };
-void FUN_140424bc0(Unk_GESub* sub, int value);
-void FUN_140424bf0(Unk_GESub* sub);
+class Unk_GameEventValue408   // C3: member view for the former free stand-ins
+{
+public:
+    void Reset();
+    void SetValue(unsigned int);
+};
 class Unk_GEManagerB {
 public:
     // @0x14041cb30
@@ -38,9 +41,13 @@ private:
     Unk_GESub m_sub;
 };
 struct Unk_GEManagerA { char m_pad[0x8e8]; int m_lobbyMap; };
-Unk_GEManagerA* FUN_1401c0d90();
-void FUN_14047b990(Unk_GEManagerA* mgr, int value);
-void FUN_14047bb20(Unk_GEManagerA* mgr, bool on, CMsTime* notice);
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14047b990(int);
+    void FUN_14047bb20(bool, class CMsTime const&);
+};
 
 GameEvent* FUN_14041c1a0();
 GameEvent* FUN_14041c400();
@@ -87,10 +94,10 @@ void GameEventLobbyMap::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041c3a0
-void GameEventLobbyMap::OnStart() { FUN_14047b990(FUN_1401c0d90(), m_mapId); }
+void GameEventLobbyMap::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047b990(m_mapId); }
 
 // @0x14041c3d0
-void GameEventLobbyMap::vfunc_6() { FUN_14047b990(FUN_1401c0d90(), 0); }
+void GameEventLobbyMap::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047b990(0); }
 
 // @0x14041c400
 GameEvent* FUN_14041c400() { return new GameEventLoginNotice; }
@@ -109,10 +116,10 @@ GameEventLoginNotice::GameEventLoginNotice()
 void GameEventLoginNotice::vfunc_2() {}
 
 // @0x14041c520
-void GameEventLoginNotice::OnStart() { FUN_14047bb20(FUN_1401c0d90(), true, &m_38); }
+void GameEventLoginNotice::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047bb20(true, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c560
-void GameEventLoginNotice::vfunc_6() { FUN_14047bb20(FUN_1401c0d90(), false, &m_38); }
+void GameEventLoginNotice::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047bb20(false, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c5a0
 GameEvent* FUN_14041c5a0() { return new GameEventCharacterCountRestricted; }
@@ -145,7 +152,7 @@ void GameEventCharacterCountRestricted::vfunc_3(Unk_GEOut* out)
 void GameEventCharacterCountRestricted::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    FUN_14070f480(&in->reader, &m_limit);
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(&in->reader))->Read6(*(unsigned int*)(&m_limit)));
 }
 
 // @0x14041c7a0
@@ -153,11 +160,11 @@ void GameEventCharacterCountRestricted::OnStart()
 {
     if (m_limit == 0)
         return;
-    FUN_140424bc0(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub(), m_limit);
+    ((class Unk_GameEventValue408*)(struct Unk_GESub*)(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()))->SetValue(m_limit);
 }
 
 // @0x14041c7f0
-void GameEventCharacterCountRestricted::vfunc_6() { FUN_140424bf0(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()); }
+void GameEventCharacterCountRestricted::vfunc_6() { ((class Unk_GameEventValue408*)(struct Unk_GESub*)(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()))->Reset(); }
 
 // @0x14041c820
 GameEvent* FUN_14041c820() { return new GameEventOnlinePatch; }

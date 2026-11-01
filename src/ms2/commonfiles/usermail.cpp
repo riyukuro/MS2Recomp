@@ -65,7 +65,7 @@ CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CS
         } else {
             attach = keep->m_attach;
         }
-        mail->FUN_140690650(i, attach);
+        mail->SetAttachment(i, attach);
     }
     return mail;
 }

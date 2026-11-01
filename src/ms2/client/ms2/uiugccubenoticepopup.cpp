@@ -22,9 +22,9 @@
 static CString s_skill("skill");
 // @0x1400e21e0
 static CString s_stun("stun");
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 // @0x1400e2210
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -33,8 +33,6 @@ template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                        // has the AS object been released
-WorldService* FUN_1403ed2d0();
 
 extern const Vector3 DAT_143b01a60;                          // the zero point
 
@@ -44,8 +42,12 @@ Unk_UnpCamera* FUN_1409478c0();
 
 // The ui scale service: scale of a layer.
 class Unk_UnpScale;
-Unk_UnpScale* FUN_14025e7a0();
-float FUN_1422afec0(Unk_UnpScale* pScale, int nLayer);
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -118,7 +120,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4cc0(const CStringW& strTitle, const CString
 // @0x140fb4d10
 void UIUGCCubeNoticePopup::vfunc_52()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (spClip.get() != 0)
@@ -132,9 +134,9 @@ void UIUGCCubeNoticePopup::vfunc_52()
 void UIUGCCubeNoticePopup::vfunc_15()
 {
     UIObject::vfunc_15();
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_bPending != 0)
@@ -156,7 +158,7 @@ int UIUGCCubeNoticePopup::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 // @0x140fb4eb0
 void UIUGCCubeNoticePopup::FUN_140fb4eb0()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     if (m_bVisible != 0)
@@ -168,7 +170,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
             if (spEntity.get() != 0)
             {
                 vfunc_8(1);
-                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
                 spEntity->FUN_1422c00f0(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->FUN_1422c13b0()) - 15.0f);
             }
         }
@@ -180,7 +182,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
 // @0x140fb5080
 void UIUGCCubeNoticePopup::FUN_140fb5080(int bShow)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     if (m_bVisible == bShow)
         return;

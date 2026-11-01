@@ -65,6 +65,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class WorldService   // C3: view (worldservice.h adds egf::kENTITY_INVALID's dynamic initializer)
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -730,7 +731,7 @@ void UIManufactureDialog::FUN_1412e48a0()
 {
     if (m_30.IsNull())
         return;
-    Unk_UmPC* pPlayer = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_UmPC* pPlayer = ((Unk_UmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);

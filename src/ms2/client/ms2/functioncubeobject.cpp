@@ -335,9 +335,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_FcUIMgr
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                        // find a window
-    int FUN_141adc890(int nId);                                     // is open
-    void FUN_141adc5d0(int nId);                                    // close
 };
 class UITriggerEditorDialog : public UIDialog
 {
@@ -356,7 +353,7 @@ template <class T> T* Unk_FcDialog(int nId)
 {
     if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -370,12 +367,6 @@ struct Unk_FcUIMsg
     ~Unk_FcUIMsg();                                                 // 0x140c30570
     void* m_apPad[10];                                              // 0x50 bytes (no char buffer: the exe frame has no GS cookie)
 };
-class ASData   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1422b82b0(char const*);
-};
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -388,6 +379,9 @@ public:
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // Physics helper (singleton): the interaction-start call.
 class CPhysXHelper;
@@ -1075,8 +1069,8 @@ void CFunctionCubeObject::FUN_141227dd0(int nSkip)
 // @0x141228060
 void CFunctionCubeObject::FUN_141228060()
 {
-    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
-        reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e6b);
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))))
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e6b);
     UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
     if (pDlg != 0)
     {
@@ -1104,7 +1098,7 @@ void CFunctionCubeObject::FUN_141228100()
 // @0x141228200
 void CFunctionCubeObject::FUN_141228200()
 {
-    UISwfEntity* pEntry = ((class UISwfEntity*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e20(0x620001f));
+    UISwfEntity* pEntry = ((class UISwfEntity*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e20(0x620001f));
     if (pEntry != 0)
     {
         Unk_FcUIMsg kMsg;
@@ -1112,7 +1106,7 @@ void CFunctionCubeObject::FUN_141228200()
         ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->FUN_1422b82b0((const char*)m_strId);
         pEntry->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
     }
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001f);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001f);
 }
 
 // @0x1412282d0
@@ -1215,7 +1209,6 @@ extern __int64 DAT_143ab2898;                                       // the playe
 __int64 GetServerTime();                                            // now
 int FUN_14086bd90(int nId);                                         // growth seconds of a table id
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14086d060(int nStringId, const __int64* pnValue);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table lookup by key
 void FUN_1412751f0(const CStringW& str, int nA, int nB);            // floating notice
@@ -1644,20 +1637,20 @@ CStringW CBreedingCubeObject::vfunc_6()
             CStringW strLine;
             strLine.Format(L"%s %s", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20()),
                            (const wchar_t*)FUN_14086d060(0x63f, &kItem.FUN_14066d9a0()->m_nPrice));
-            return FUN_14052bd00(0x634, strLine);
+            return FormatStringId<CStringW>(0x634, strLine);
         }
     }
     else if (m_nState == 2)
     {
-        return FUN_14052bd00(0x634, GetStringCommon(0x641));
+        return FormatStringId<CStringW>(0x634, GetStringCommon(0x641));
     }
     else if (m_nState == 1)
     {
         ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - GetServerTime());
         if (kSpan.GetTotalSeconds() >= 60)
-            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
+            return FormatStringId<CStringW>(0x644, FormatStringId<CStringW>(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
         else if (kSpan.GetTotalSeconds() > 0)
-            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
+            return FormatStringId<CStringW>(0x644, FormatStringId<CStringW>(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
     }
     return CStringW(L"");
 }
@@ -1781,20 +1774,20 @@ CStringW CFarmingCubeObject::vfunc_6()
             CStringW strLine;
             strLine.Format(L"%s %s", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRow->FUN_1408b4f20()),
                            (const wchar_t*)FUN_14086d060(0x640, &kItem.FUN_14066d9a0()->m_nPrice));
-            return FUN_14052bd00(0x634, strLine);
+            return FormatStringId<CStringW>(0x634, strLine);
         }
     }
     else if (m_nState == 2)
     {
-        return FUN_14052bd00(0x634, GetStringCommon(0x641));
+        return FormatStringId<CStringW>(0x634, GetStringCommon(0x641));
     }
     else if (m_nState == 1)
     {
         ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - GetServerTime());
         if (kSpan.GetTotalSeconds() >= 60)
-            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
+            return FormatStringId<CStringW>(0x645, FormatStringId<CStringW>(0x643, FormatTimeSpan(kSpan, false, false, true, false)));
         else if (kSpan.GetTotalSeconds() > 0)
-            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
+            return FormatStringId<CStringW>(0x645, FormatStringId<CStringW>(0x643, FormatTimeSpan(kSpan, false, false, false, true)));
     }
     return CStringW(L"");
 }
@@ -1844,7 +1837,6 @@ unsigned FUN_14152eb20(Unk_FcActor* p);                             // times fed
 unsigned FUN_14152eb50(Unk_FcActor* p);                             // times played today
 int FUN_140a5f780(void* pCell, int nId, int nArg);
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140e9fe10(CStringW strKey, const CStringW& strArg, const int* pnA, const int* pnB);
 extern char DAT_143ab2a90;
 void* FUN_1401c0d90();
@@ -2053,7 +2045,7 @@ int CNurturingCubeObject::FUN_14122bda0()
     {
         if (m_nE0 >= m_nE8 && m_nLevel < m_nMaxLevel)
         {
-            FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
+            FUN_14122d2a0(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
             return 0;
         }
         int nOk = FUN_140a5f780(&DAT_143ab2a90, 0x79, 0);
@@ -2073,7 +2065,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             m_bNotice = 0;
             return 1;
         }
-        FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
+        FUN_14122d2a0(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
     }
     else
     {
@@ -2131,7 +2123,7 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
                 int nEat = *FUN_1401d7c10(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat);
                 if (nEat == 0)
                 {
-                    CStringW str = FUN_1405c2690(CStringW(L"s_msg_nurturing_eat_success_nocount"), FUN_1401aa6a0(FUN_14122c410()));
+                    CStringW str = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_nurturing_eat_success_nocount"), FUN_1401aa6a0(FUN_14122c410()));
                     FUN_1412751f0(str, 1, 1);
                 }
                 else
@@ -2164,13 +2156,13 @@ void CNurturingCubeObject::FUN_14122c7b0(int nError)
     }
         break;
     case 2:
-        FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_eat_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
+        FUN_14122d2a0(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_eat_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
         break;
     case 3:
-        FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_play_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
+        FUN_14122d2a0(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_play_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
         break;
     case 4:
-        FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_invalid_play"), FUN_1401aa6a0(FUN_14122c410())));
+        FUN_14122d2a0(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_invalid_play"), FUN_1401aa6a0(FUN_14122c410())));
         break;
     }
 }
@@ -2789,7 +2781,7 @@ void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
     FUN_141230580(spObject->FUN_141226bd0(), spObject);
     m_mapCubes.SetAt(spObject->FUN_141226bd0(), spObject);
     spObject->vfunc_13();
-    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))))
     {
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
@@ -2808,13 +2800,13 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
         FUN_1414737d0(spCube->GetEnt().FUN_1408a9090());
         m_mapCubes.RemoveKey(strId);
     }
-    if (reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b))
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))))
     {
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
         {
             if (pDlg->GetCubeId() == strId)
-                reinterpret_cast<Unk_FcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e6b);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e6b);
             else
                 pDlg->FUN_141b2b930();
         }

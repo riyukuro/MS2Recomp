@@ -120,7 +120,7 @@ CString FUN_1402bb1c0(const char* szFormat, const int& n);           // StringFo
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
 CStringW GetStringCommon(int nStringId);
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names are equal
@@ -177,7 +177,7 @@ MS2_REPLACE_METHOD(0x1413398D0, UIPvPGuildTeamDialog, vfunc_65, 37, 0x4ECE15AC);
 void UIPvPGuildTeamDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     pPC->FUN_14152a960();
@@ -334,7 +334,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         int nLeft = 0;
         int nRight = 0;
         __int64 nMyCharId = 0;
-        efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (spPC.data() != 0)
             nMyCharId = ((class PCBase*)(class PCBase*)(spPC.operator->()))->FUN_141656a80();
         bool bPlaying = false;
@@ -525,7 +525,7 @@ MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FUN_14133bab0, 710, 0x4FB6
 // @0x14133bd80
 void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
 {
-    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == 0)
         return;
     m_strObserved = strName;
@@ -542,7 +542,7 @@ MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, FUN_14133bd80, 304, 0x8BA0
 // @0x14133bec0
 void UIPvPGuildTeamDialog::FUN_14133bec0()
 {
-    efd::SmartPointer<MyPC> spPC = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == 0)
         return;
     m_strObserved = "";

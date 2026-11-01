@@ -44,6 +44,7 @@ class Unk_MoveFieldPlayers { public: MyPC* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -102,7 +103,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 0;
     ASData data;
     if (_stricmp("OnMoveField", szMethod) == 0) {
-        MyPC* pPlayer = ((class Unk_MoveFieldPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0 || pPlayer->FUN_14166ce30() != 0) {
             FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
             return 1;

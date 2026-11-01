@@ -127,7 +127,7 @@ public:
     CStringW FUN_14020f1a0();                       // m_name
     // clubcli.cpp users
     __int64 FUN_14020f0c0();                        // club id
-    void FUN_14020f130(__int64 n);                  // set the club id
+    void SetClubId(__int64 n);                  // set the club id
     unsigned FUN_14020f380();                       // max members (m_48)
     unsigned FUN_14020f540();                       // state (m_state)
     void FUN_14020f4e0(int nState);                 // set the state
@@ -145,8 +145,8 @@ public:
     int FUN_140211080(CStringW strName);            // 1 when the name is the leader's
     MS2Ptr<CClubMember> FUN_140210560(CStringW strName);   // find a member by name
     MS2Ptr<CClubMember> FUN_140210f70();            // leader
-    __int64 FUN_14020f2a0();                        // creation time
-    void FUN_14020f310(__int64 n);                  // set the creation time
+    __int64 GetCreationTime();                        // creation time
+    void SetCreationTime(__int64 n);                  // set the creation time
     __int64 FUN_14020f7e0();                        // leader account id
     __int64 FUN_14020f850();                        // leader character id
     __int64 FUN_14020f950();                        // m_78

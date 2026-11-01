@@ -24,6 +24,7 @@
 #include <efd/utf8string.h>
 #include <NiNode.h>
 #include <NiTexturingProperty.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 
@@ -70,7 +71,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The command string table (singleton).
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string by key
 CStringW GetStringCommon(int nId);                                    // string by id
-CStringW FUN_1408f71a0(CStringW strFormat, const CStringW& strArg1, const CStringW& strArg2);   // format with two arguments
 bool FUN_140164830(const CStringW& a, const CStringW& b);           // a != b
 float FUN_14028d280(unsigned uMilliseconds);                        // ms -> seconds
 
@@ -312,7 +312,7 @@ void CPortal::FUN_14169bd40()
         if (strText.GetLength() > 0)
         {
             if (m_strTip.GetLength() > 0)
-                strText += FUN_1408f71a0(CStringW(L"s_msg_item_open_massive_portal_tooltip"), m_strTip,
+                strText += FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_msg_item_open_massive_portal_tooltip"), m_strTip,
                                          TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_unk_148));
             m_tooltip->FUN_14191ab10(strText);
         }

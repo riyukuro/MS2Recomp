@@ -24,17 +24,28 @@ class Unk_PortraitWorld
 public:
     GameObject* FUN_141bd3620();                                // 0x141bd3620 the local player (NULL outside a field)
 };
-Unk_PortraitWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 class Unk_PortraitClock;
-double FUN_141473280(Unk_PortraitClock* pClock);                // the current time
 void FUN_14107b010();                                           // refreshes the sun direction constants
-void FUN_14107b050(const NiPoint3& kDirection);                 // sets the sun direction constants
+void FUN_14107b050(struct Vector3 const&);   // C3: was FUN_14107b050
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene graph
 void FUN_141568d80(NiAVObject* pNode);
 class Unk_PortraitEffectMgr;
-Unk_PortraitEffectMgr* FUN_1409a8b20();
-void FUN_1416aac60(Unk_PortraitEffectMgr* pMgr, NiNode* pNode);
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
+class PostProcessingService   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1416aac60(class NiAVObject*);
+};
 extern efd::Point3 DAT_143a08cf8;                               // (0, 0, 1)
 
 static float GetCurrentTime();                                  // 0x141a90fe0 (name invented)
@@ -57,7 +68,7 @@ void UIPortrait::vfunc_2()
 {
     if (m_spCamera)
     {
-        GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd3620();
+        GameObject* pPlayer = ((class Unk_PortraitWorld*)WorldService::GetInstance())->FUN_141bd3620();
         if (pPlayer)
         {
             NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);
@@ -66,7 +77,7 @@ void UIPortrait::vfunc_2()
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
             m_spCamera->Update(GetCurrentTime(), true);
-            FUN_14107b050(m_spCamera->GetWorldDirection());
+            FUN_14107b050(*(struct Vector3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         }
     }
 }
@@ -108,7 +119,7 @@ void UIPortrait::vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& ar
                 pNode->UpdateEffects();
                 m_spClick->vfunc_12(pNode);
                 FUN_141568d80(pNode);
-                FUN_1416aac60(FUN_1409a8b20(), pNode);
+                ((class PostProcessingService*)(class Unk_PortraitEffectMgr*)(((class Unk_PortraitEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aac60((class NiAVObject*)(pNode));
             }
         }
     }
@@ -150,7 +161,7 @@ MS2_REPLACE_METHOD(0x141A90ED0, UIPortrait, vfunc_15, 261, 0xDD71E32D);
 // @0x141a90fe0
 static float GetCurrentTime()
 {
-    return (float)FUN_141473280(reinterpret_cast<Unk_PortraitClock*>(TSingleton<CMainSystem>::GetInstance()));
+    return (float)((class CMainSystem*)(class Unk_PortraitClock*)(reinterpret_cast<Unk_PortraitClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
 }
 
 // @0x141a91000

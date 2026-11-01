@@ -166,6 +166,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
@@ -173,9 +174,7 @@ bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points 
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 const Unk_NiMatrix3& FUN_1409478e0(void* pNode);                    // world rotate
-void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
-Unk_1403ed280* FUN_1403ed280();
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
@@ -188,12 +187,9 @@ extern Unk_ResourceMgr* DAT_143ab5bc8;
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
-void FUN_140980880(NiTexturingProperty* pProp, void* pTexture);     // SetBaseTexture
 void FUN_1409807b0(NiTexturingProperty* pProp, int n);
 void FUN_1409805c0(NiTexturingProperty* pProp, int n);
 void FUN_1409806e0(NiTexturingProperty* pProp, int n);
-void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
 void FUN_1415672e0(NiAVObject* pObj, int n);
@@ -314,16 +310,16 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     FUN_1409807b0(spTexture.operator->(), 0);
     FUN_1409805c0(spTexture.operator->(), 1);
     FUN_1409806e0(spTexture.operator->(), 0);
-    FUN_140980200(m_spMesh->GetMesh(), spTexture);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
     m_spTexProp = spTexture;
 
     NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
     spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
     spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-    FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spVertexColor);
 
     NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
-    FUN_140980560(spAlpha.operator->(), true);
+    ((class NiAlphaProperty*)(class NiAlphaProperty*)(spAlpha.operator->()))->SetAlphaBlending(true);
     switch (m_spParam->m_nAlphaMode)
     {
     case 0:
@@ -339,23 +335,23 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         FUN_140980af0(spAlpha.operator->(), 0);
         break;
     }
-    FUN_140980200(m_spMesh->GetMesh(), spAlpha);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spAlpha);
 
     NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
     spFog->SetFog(false);
-    FUN_140980200(m_spMesh->GetMesh(), spFog);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spFog);
 
     NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
     spWireframe->SetWireframe(false);
-    FUN_140980200(m_spMesh->GetMesh(), spWireframe);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spWireframe);
 
     NiPointer<NiStencilProperty> spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
     spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
-    FUN_140980200(m_spMesh->GetMesh(), spStencil);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spStencil);
 
     NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
     spZBuffer->SetZBufferWrite(false);
-    FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
+    ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spZBuffer);
 
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), 0);
@@ -386,10 +382,10 @@ void CBeamEffect::vfunc_4()
     }
     else
     {
-        static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
+        static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
         m_b2e = true;
     }
 }
@@ -459,8 +455,7 @@ void CBeamEffect::UpdateMesh()
     int nTextures = (int)m_spParam->m_arrTexturePath.GetCount();
     int nPick = rand() % nTextures;
     CString strName = static_cast<Unk_BmStrArray&>(m_spParam->m_arrTexturePath).FUN_1401c0cc0((size_t)nPick);
-    FUN_140980880(m_spTexProp.operator->(),
-                  FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get());
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get()));
     m_spMesh->GetMesh()->UpdateProperties();
 
     Vector3 kCamera = ((Unk_BmCameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
@@ -626,3 +621,5 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9ede0-0x142c9eee0 .text$yd
 // MS2-PIN: ?construct@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@AEBU3@@Z 0x140a0bff0 ; nam2: Vector3 -> Vector3 (was auto-paired by its old symbols.tsv name)
+// MS2-PIN: ??__Es_pointer1@@YAXXZ 0x1400c2d20 ; effectservice.h brings a look-alike initializer
+// MS2-PIN: ??__Es_pointer2@@YAXXZ 0x1400c2e60

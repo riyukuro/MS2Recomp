@@ -181,13 +181,13 @@ template<> std::vector<MS2Ptr<ItemEntity> >::size_type std::vector<MS2Ptr<ItemEn
 // gameeventcli.cpp (not recovered).
 class GameEventCashAttendCli : public GameEventCashAttend { public:
     bool FUN_140ce3d90();                       // active (always true)
-    unsigned FUN_140ce3e40();                   // number of days
-    unsigned FUN_140ce3e90();                   // days attended
-    int FUN_140ce3ed0();                        // usable points
-    CStringW FUN_140ce3f10();                   // event name
+    unsigned GetDayCount();                   // number of days
+    unsigned GetAttendedDays();                   // days attended
+    int GetUsablePoints();                        // usable points
+    CStringW GetEventName();                   // event name
     CStringW GetDesc();                   // description (tooltip)
     MS2Ptr<Unk_CadDay> FUN_140ce3fc0(unsigned nDay);
-    CMsTime FUN_140ce4050();                    // begin
+    CMsTime GetBeginTime();                    // begin
     CMsTime FUN_140ce4090();                    // end
 };
 
@@ -301,7 +301,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     m_bg2->vfunc_4(nDay%2==1);
     MS2Ptr<Unk_CadDay> spDay=spEvent->FUN_140ce3fc0(nDay);
     if(spDay==NULL) { FUN_140bc2b10(); return; }
-    bool bPassed=nDay<spEvent->FUN_140ce3e90();
+    bool bPassed=nDay<spEvent->GetAttendedDays();
     ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
     m_disabled->vfunc_4(bPassed);
     FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_140938ae0(L"s_cashAttend_day_index",nDay+1));
@@ -422,7 +422,7 @@ int UICashAttendDialog::FUN_140bc4080()
     int nTotal=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
         MS2Ptr<GameEventCashAttendCli> spEvent=it->second;
-        nTotal+=spEvent->FUN_140ce3ed0();
+        nTotal+=spEvent->GetUsablePoints();
     }
     return nTotal;
 }
@@ -489,7 +489,7 @@ void UICashAttendDialog::FUN_140bc44b0()
             continue;
         }
         m_eventButtons[i]->vfunc_3(1);
-        m_eventButtons[i]->FUN_1422cdfb0(events[i]->FUN_140ce3f10());
+        m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
         FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->FUN_140d9f530(events[i]->FUN_1402e1d00()));
         m_eventButtons[i]->FUN_1422c7b40(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
@@ -506,12 +506,12 @@ void UICashAttendDialog::FUN_140bc4980()
 {
     if(!FUN_1422dc2d0()) return;
     if(m_selected==NULL) return;
-    unsigned nAttended=m_selected->FUN_140ce3e90();
-    unsigned nDays=m_selected->FUN_140ce3e40();
+    unsigned nAttended=m_selected->GetAttendedDays();
+    unsigned nDays=m_selected->GetDayCount();
     m_progressGauge->FUN_1409b9f60(nAttended,nDays);
-    m_giftList->FUN_1422dcf40(m_selected->FUN_140ce3e40());
+    m_giftList->FUN_1422dcf40(m_selected->GetDayCount());
     CStringW strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",
-        FUN_14083bdc0(m_selected->FUN_140ce4050(),true,L"/",L":"),
+        FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
         FUN_14083bdc0(m_selected->FUN_140ce4090(),true,L"/",L":"));
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
 }

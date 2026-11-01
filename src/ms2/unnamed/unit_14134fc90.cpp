@@ -49,6 +49,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -116,7 +117,7 @@ int UIHouseDemolishDialog::vfunc_84()
 {
     if (vfunc_55() != 0)
         return 0;
-    Unk_DemolishPC* pPC = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_141659690() != 0)
@@ -226,7 +227,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         return;
     if ((*pnFlags & 1) != 0)
     {
-        Unk_DemolishPC* pPC = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
         {
             MS2Ptr<CFieldDataCli> spField = ((class Unk_DemolishWorld*)WorldService::GetInstance())->FUN_141bd30a0();

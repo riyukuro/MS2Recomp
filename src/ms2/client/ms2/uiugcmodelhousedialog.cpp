@@ -20,9 +20,17 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class Unk_UmPlayer;
-void* FUN_1403ed2d0();                                          // the game context
-Unk_UmPlayer* FUN_141bd0cc0(void* pContext);                    // the local player
-void FUN_14152a240(Unk_UmPlayer* pPlayer, int nConcept);        // apply the home concept
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    void* FUN_141bd0cc0();
+    static class WorldService* GetInstance();
+};
+class MyPC   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14152a240(int);
+};
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 
 // @0x140faf390
@@ -66,7 +74,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     ASData data;
     if (_stricmp("OnHomeConcept", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0) {
-        Unk_UmPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_UmPlayer* pPlayer = ((class Unk_UmPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
         int nConcept = data.FUN_1422b8a10();
@@ -77,7 +85,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             packet.WriteInt32(nConcept);
             FUN_140710590(packet);
         } else {
-            FUN_14152a240(pPlayer, nConcept);
+            ((class MyPC*)(class Unk_UmPlayer*)(pPlayer))->FUN_14152a240(nConcept);
         }
         CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3f);
         return 1;

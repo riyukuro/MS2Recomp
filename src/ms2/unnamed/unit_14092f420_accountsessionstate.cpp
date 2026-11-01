@@ -302,7 +302,7 @@ extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0
 extern Unk_IdList DAT_143ab3268;
 extern ATL::CAtlArray<unsigned> DAT_143ab32b8;
 
-class Unk_UiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
+class Unk_UiManager { public: };
 
 void FUN_141276180(const CString& strSound, const CString& strArg);
 
@@ -1069,7 +1069,7 @@ UIMainPlayerInfo* FUN_140931900(int nUiId)
 {
     if (reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUi = reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUi = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spUi.get() != 0)
             return dynamic_cast<UIMainPlayerInfo*>((UIObject*)spUi);
     }

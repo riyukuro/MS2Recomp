@@ -23,6 +23,7 @@
 
 // The unit's statics: the shared header statics.
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/asgameentity.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_BannerClip : public ASGameEntity
@@ -31,7 +32,6 @@ public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, bool bFlag);   // "createEntity"
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag);       // "updateEntity"
     Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1422c00f0(float x, float y);
 };
 class Unk_BannerASObj : public ASObj
 {
@@ -44,26 +44,29 @@ struct Unk_BannerCfg
     char m_pad_0000[0x320];
     Unk_BannerCfgFloat m_320;
 };
-Unk_BannerCfg* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_BannerUIScale;
-Unk_BannerUIScale* FUN_14025e7a0();                                         // ui scale service
-float FUN_1422afec0(Unk_BannerUIScale* pScale, int nLayer);                 // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 class Unk_BannerMgr;
 Unk_BannerMgr* FUN_1409478c0();                                             // singleton accessor
-int FUN_140a18070(Unk_BannerMgr*);
-class Unk_BannerActor : public PCBase
+class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166ce30();
-    float FUN_141670500();
+    int FUN_140a18070();
+};
+class Unk_BannerActor : public PCBase
+{
 };
 PCBase* FUN_140974230(PCBase*);
-NiAVObject* FUN_141675150(PCBase* pActor, const CString& strNode);          // the actor's node of that name
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 UIBanner* FUN_1409614b0(int nUiId);                                         // the ui object of that id
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // Value = b
@@ -74,7 +77,7 @@ UIBanner::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nAct
     : UIHudEntity::Entity(nLayer, clip, nActorId)
 {
     m_60 = 0;
-    m_54 = FUN_1401d3200()->m_320.FUN_1402bac70();
+    m_54 = ((struct Unk_BannerCfg*)FUN_1401d3200())->m_320.FUN_1402bac70();
 }
 
 // @0x140ba8310
@@ -107,7 +110,7 @@ void UIBanner::Entity::vfunc_4()
 void UIBanner::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (FUN_140a18070(FUN_1409478c0()) == 0)
+    if (((class CameraMgr*)(class Unk_BannerMgr*)(FUN_1409478c0()))->FUN_140a18070() == 0)
         return;
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
@@ -125,7 +128,7 @@ void UIBanner::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get() != 0)
     {
-        float fScale = FUN_1422afec0(FUN_14025e7a0(), m_18);
+        float fScale = ((class GFxManager*)(class Unk_BannerUIScale*)(((class Unk_BannerUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         FUN_140ad0c10(pPos, fScale);
         ((Unk_BannerClip*)m_38.operator->())->FUN_1422c00f0(pPos->x - 110.0f, pPos->y);
     }
@@ -181,7 +184,7 @@ void UIBanner::Entity::FUN_140ba8740(CString strNode)
     if (pActor == 0)
         return;
     m_28 = strNode;
-    m_20 = FUN_141675150(pActor, m_28);
+    m_20 = ((class PCBase*)(class PCBase*)(pActor))->FUN_141675150(m_28);
 }
 
 // @0x140ba87d0
@@ -396,7 +399,7 @@ void Unk_BannerASObj::FUN_140ba9670(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 
 // @0x140baa6b0

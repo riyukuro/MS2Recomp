@@ -22,6 +22,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- file statics (.text$di) ----
 // The ids of the loaded fonts, saved by FUN_140b622b0 (vfunc_11) and reloaded by FUN_140b621a0 (mutable: the functions
@@ -55,7 +56,6 @@ class Unk_DmgSceneManager
 public:
     int FUN_1422b9dc0();                                            // the current scene id
 };
-Unk_DmgSceneManager* FUN_1408e57f0();
 
 // The UISwfEntityManager slots the movie calls (vftable 0x143112518; see gfxmoviepostdisplay.cpp). The swf key and the AS
 // root object are taken by value (the callee destroys them).
@@ -179,7 +179,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
                 {
                     MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(FUN_140b632f0()->GetUISwfEntity(szEvent).get()));
                     if (spFont.get())
-                        m_128->FUN_1419134a0(spFont->m_strName);
+                        m_128->LoadFont(spFont->m_strName);
                     else
                         FUN_140b621a0();
                 }
@@ -260,7 +260,7 @@ void GFxMovieDamage::FUN_140b61ce0()
     }
     if (m_128 == 0)
         return;
-    m_128->FUN_1419135c0();
+    m_128->ClearAll();
     if (m_90.IsEmpty())
         return;
     // The limits are set twice (defaults 10 fonts / 600 s, then 0 / 60 s).
@@ -289,7 +289,7 @@ void GFxMovieDamage::FUN_140b61ce0()
                 if (spFont == 0)
                     continue;
                 m_90.RemoveKey(spFont->FUN_140e0dbe0());
-                m_128->FUN_141913530(spFont->m_strName);
+                m_128->UnloadFont(spFont->m_strName);
                 spFont->FUN_1422dc080();
             }
         }
@@ -334,7 +334,7 @@ bool GFxMovieDamage::FUN_140b621a0()
 // @0x140b62270
 void GFxMovieDamage::FUN_140b62270()
 {
-    if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x620000c)
+    if (((Unk_DmgSceneManager*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x620000c)
         CUIService::GetInstance()->FUN_141add040((eUIClassID)0x4e32);
 }
 

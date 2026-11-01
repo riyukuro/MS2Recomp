@@ -148,8 +148,8 @@ class Unk_TpsKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CommonString* FUN_14025e7d0();
 CStringW BlockFormat(int nStringId);
-void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
-void FUN_140d73bc0(int nStringId, int nA, void* p, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
+void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTag);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n);

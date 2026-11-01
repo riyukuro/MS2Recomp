@@ -25,7 +25,11 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
-void FUN_14086ddc0(TiXmlDocument* pDoc);                    // Clear
+class TiXmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    void Clear();
+};
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -42,7 +46,7 @@ CObjectDataTable::CObjectDataTable()
 // @0x14070c4d0
 CObjectDataTable::~CObjectDataTable()
 {
-    FUN_14086ddc0(&m_doc);
+    ((class TiXmlNode*)(class TiXmlDocument*)(&m_doc))->Clear();
 }
 
 // @0x14070c590

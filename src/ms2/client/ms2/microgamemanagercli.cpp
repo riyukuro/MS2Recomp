@@ -47,6 +47,8 @@ static CStringW s_strRpsWaiting(L"rpsGameWaiting");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -71,14 +73,13 @@ MS2_CHECK_OFFSET(Unk_McEvent, m_nStages, 0x34);
 class Unk_McEventHolder { public: MS2Ptr<Unk_McEvent> FUN_140428700(); };
 class Unk_McEventService { public: Unk_McEventHolder* FUN_1403ed140(); };
 
-class Unk_McUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_McUIMgr { public: };
 
 class CBuddyManager   // C3: member view for the former free stand-ins
 {
 public:
     unsigned int FUN_140ae51b0(__int64);
 };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -94,7 +95,6 @@ CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412752d0(const CStringW& strKey, int nType);
@@ -221,7 +221,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+            if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -488,7 +488,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+            if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -504,7 +504,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             kPacket.Encode8(nTargetId);
             FUN_140710590(kPacket);
             const CStringW& strName = pTarget->vfunc_77();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(L"s_microgame_couple_dance_request_recv", strName), 0, s_strCoupleDanceRequest);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_request_recv", strName), 0, s_strCoupleDanceRequest);
             if (spBox == 0)
             {
                 MS2_ASSERT_AT(0x202, 0);
@@ -581,7 +581,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (pState->FUN_140b894c0() != pTarget->FUN_14123c580())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
-            FUN_1412751f0(FUN_1405c2690(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
+            FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
         }
         break;
     case 0x13:
@@ -709,7 +709,7 @@ UICoupleDanceEventDialog* FUN_140b769d0(int nId)
 {
     if (reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICoupleDanceEventDialog*>((UIObject*)p);
     }

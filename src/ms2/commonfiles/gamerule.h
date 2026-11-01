@@ -180,12 +180,12 @@ public:
     void SetTransferItemBound(bool bBound) { m_transferItemBound = bBound; }
 
     void FUN_1404766e0();                                   // clears the events
-    void FUN_140476930(int nEventId, int nRate);            // adventure level bonus exp rate
-    void FUN_1404769a0(int nEventId);                       // ... removed
-    __int64 FUN_140476a10(__int64 value);
-    unsigned FUN_140476ad0();
-    void FUN_140476b40(int a, int b, BOOL c);               // GameEventSaleBeautyShop
-    void FUN_140476be0(int a, BOOL c);
+    void SetAdventureLevelBonusExpRate(int nEventId, int nRate);            // adventure level bonus exp rate
+    void RemoveAdventureLevelBonusExpRate(int nEventId);                       // ... removed
+    __int64 CalcAdventureLevelBonusExp(__int64 value);
+    unsigned GetAdventureLevelBonusExpRate();
+    void SetBeautyShopSaleEvent(int a, int b, BOOL c);               // GameEventSaleBeautyShop
+    void RemoveBeautyShopSaleEvent(int a, BOOL c);
     unsigned FUN_140476c70(int nEvent, unsigned nPrice, int nLevel);
     int FUN_140476cf0(int nEvent, int nLevel);
     void FUN_140476d50(int nEvent, int nLevel, unsigned* pRate, int* pIndex);

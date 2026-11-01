@@ -47,6 +47,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -97,7 +98,6 @@ public:
 };
 class Unk_GaOption { public: const unsigned char* FUN_140a58500(); };   // CGameOption: the gamepad block (+0 the gamepad mode)
 class Unk_GaSound { public: void FUN_1422b9fd0(int nScene); };  // the sound scene manager
-Unk_GaSound* FUN_1408e57f0();
 class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   // CKeyTable: the key name of a binding
 Unk_GaKeyTable* FUN_1409331f0();
 
@@ -1129,7 +1129,7 @@ void CGuideActionSequenceCamera::vfunc_3()
     FUN_140ad4b90()->FUN_141863340(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
     {
-        FUN_1408e57f0()->FUN_1422b9fd0(0x6200041);
+        ((Unk_GaSound*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
         CStringW strEmpty;
         if (UICutSceneCinematic* pCinematic = FUN_14136f290(0x4e52))
         {
@@ -1153,7 +1153,7 @@ void CGuideActionSequenceCamera::vfunc_4()
         FUN_140ad4b90()->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
-        FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
+        ((Unk_GaSound*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
         NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
             Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
     }

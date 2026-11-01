@@ -44,6 +44,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asmousecursor.h"
+#include "ms2/client/ms2/ridee.h"  // C3: was a local member view
 class Unk_AvModeSvc;
 namespace ecr { class RenderService; }
 
@@ -1162,11 +1163,6 @@ public:
 private:
     Unk_UtilHolder* m_p;
 };
-class Ridee   // C3: member view for the former free stand-ins
-{
-public:
-    class PCBase* GetRider();
-};
 Unk_UtilHolder* FUN_141b72360(const Unk_UtilObjRef& kRef);
 
 // @0x141b71120
@@ -1324,7 +1320,6 @@ void FUN_141b71a60(NiColor* pColor)
 // ---- scene / skin helpers ----
 class Unk_UtilWorld;
 class Unk_UtilPlayer;
-egf::Entity* FUN_14123c410(Unk_UtilPlayer* pPlayer);
 extern NiRTTI DAT_143afafe0;
 extern char DAT_143ae50f8;                                          // extra-data key of the skin tint
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
@@ -1335,7 +1330,7 @@ NiObject* FUN_141b71b00()
     Unk_UtilPlayer* pPlayer = ((class Unk_UtilPlayer*)((class WorldService*)(class Unk_UtilWorld*)(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return NULL;
-    NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(pPlayer));
+    NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(class Unk_UtilPlayer*)(pPlayer))->FUN_14123c410());
     if (pRoot != NULL) {
         NiFixedString kName("FA_Skin");
         return NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot->GetObjectByName(kName)));

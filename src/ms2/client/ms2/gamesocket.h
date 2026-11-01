@@ -105,8 +105,8 @@ public:
     void vfunc_4(CSimpleSocket*,int) override {}
     void OnClose(CSimpleSocket*,int) override;
     int FUN_141265420(CString,int,int,int);
-    void FUN_1412657e0(); void FUN_141265850(); void FUN_141265960();
-    void FUN_141265990(COutPacket&); void FUN_141265ae0(); void FUN_141266480(unsigned,unsigned);
+    void Reconnect(); void Close(); void FUN_141265960();
+    void SendPacket(COutPacket&); void FUN_141265ae0(); void FUN_141266480(unsigned,unsigned);
     void FUN_141266500(int); void FUN_141267000(int); void FUN_141267070();
     void FUN_1412672a0(const Unk_SocketOptions&); void FUN_1412672d0();void FUN_1412673c0();
     int GetSequence(); void FUN_141267410(COutPacket&); int GetDisconnect(); int FUN_1412675f0(); CString GetHost(); int GetPort();

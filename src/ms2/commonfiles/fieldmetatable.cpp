@@ -83,9 +83,9 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-int FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-int FUN_1408736d0(Unk_140165cf0*, const char*, bool&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 __int64 MakeTime(int nYear, int nMonth, int nDay, int nHour, int nMinute, int nSecond);        // server-time value
@@ -182,13 +182,13 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (Unk_140165cf0* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = pNpc->FUN_140168650("npc"))
     {
         unsigned nNpcId;
-        FUN_140873220(pNpc, "id", nNpcId);
+        XmlGetAttr((class TiXmlElement*)(pNpc), "id", nNpcId);
         if (FUN_1406cd330(nNpcId) == 0)
             continue;
         for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
         {
             unsigned nFieldId = 0;
-            FUN_140873220(pField, "id", nFieldId);
+            XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             Unk_FieldIdListPtr pFields;
             if (!m_npcFields.Lookup(nNpcId, pFields))
             {
@@ -226,9 +226,9 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (Unk_140165cf0* pTaxi = pRoot->FUN_140165cf0("taxiStation"); pTaxi != 0; pTaxi = pTaxi->FUN_140168650("taxiStation"))
     {
         unsigned nField = 0;
-        FUN_140873220(pTaxi, "field", nField);
+        XmlGetAttr((class TiXmlElement*)(pTaxi), "field", nField);
         bool bHomePrivilege = false;
-        FUN_1408736d0(pTaxi, "IsHomePrivilege", bHomePrivilege);
+        XmlQuery((class TiXmlElement*)(pTaxi), "IsHomePrivilege", bHomePrivilege);
         Unk_FieldTaxi taxi;
         taxi.m_nField = nField;
         taxi.m_nHomePrivilege = bHomePrivilege;
@@ -241,8 +241,8 @@ void CFieldMetaTable::LoadFieldMetaData()
     {
         unsigned nField = 0;
         int nIndoor = 0;
-        FUN_1408731e0(pPortal, "indoor", nIndoor);
-        FUN_140873220(pPortal, "field", nField);
+        XmlGetAttr((class TiXmlElement*)(pPortal), "indoor", nIndoor);
+        XmlGetAttr((class TiXmlElement*)(pPortal), "field", nField);
         if (FUN_1406fc870(nField) == 0)
             continue;
         Unk_FieldIdListPtr pTargets;
@@ -254,16 +254,16 @@ void CFieldMetaTable::LoadFieldMetaData()
         unsigned nTarget = 0;
         for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
         {
-            FUN_140873220(pTo, "targetField", nTarget);
+            XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nTarget);
             if (FUN_1406fc870(nTarget) == 0)
                 continue;
             pTargets.get()->AddTail(nTarget);
             int nPortalType = 0;
-            FUN_1408731e0(pTo, "portalType", nPortalType);
+            XmlGetAttr((class TiXmlElement*)(pTo), "portalType", nPortalType);
             if (nPortalType == 8)
             {
                 unsigned nPortalId;
-                FUN_140873220(pTo, "id", nPortalId);
+                XmlGetAttr((class TiXmlElement*)(pTo), "id", nPortalId);
                 Unk_FieldIdListPtr pType8(0);
                 if (!m_portalType8.Lookup(nField, pType8))
                 {
@@ -286,8 +286,8 @@ void CFieldMetaTable::LoadFieldMetaData()
         for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
         {
             int nPortalIndoor = 0;
-            FUN_1408731e0(pTo, "portalIndoor", nPortalIndoor);
-            FUN_140873220(pTo, "targetField", nIndoorTarget);
+            XmlGetAttr((class TiXmlElement*)(pTo), "portalIndoor", nPortalIndoor);
+            XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nIndoorTarget);
             if (FUN_1406fc870(nIndoorTarget) == 0)
                 continue;
             if (nPortalIndoor != 0)
@@ -302,11 +302,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (Unk_140165cf0* pObj = pRoot->FUN_140165cf0("interactObject"); pObj != 0; pObj = pObj->FUN_140168650("interactObject"))
     {
         int nObjId = 0;
-        FUN_1408731e0(pObj, "id", nObjId);
+        XmlGetAttr((class TiXmlElement*)(pObj), "id", nObjId);
         for (Unk_140165cf0* pField = pObj->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
         {
             unsigned nFieldId = 0;
-            FUN_140873220(pField, "id", nFieldId);
+            XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             Unk_FieldIdListPtr pFields(0);
             if (!m_interact.Lookup(nObjId, pFields))
             {
@@ -321,11 +321,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (Unk_140165cf0* pPet = pRoot->FUN_140165cf0("pet"); pPet != 0; pPet = pPet->FUN_140168650("pet"))
     {
         unsigned nPetId = 0;
-        FUN_140873220(pPet, "id", nPetId);
+        XmlGetAttr((class TiXmlElement*)(pPet), "id", nPetId);
         for (Unk_140165cf0* pField = pPet->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
         {
             unsigned nFieldId = 0;
-            FUN_140873220(pField, "id", nFieldId);
+            XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             Unk_FieldIdListPtr pFields(0);
             if (!m_pet.Lookup(nPetId, pFields))
             {
@@ -340,11 +340,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (Unk_140165cf0* pLift = pRoot->FUN_140165cf0("liftable"); pLift != 0; pLift = pLift->FUN_140168650("liftable"))
     {
         unsigned nLiftId = 0;
-        FUN_140873220(pLift, "id", nLiftId);
+        XmlGetAttr((class TiXmlElement*)(pLift), "id", nLiftId);
         for (Unk_140165cf0* pField = pLift->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
         {
             unsigned nFieldId = 0;
-            FUN_140873220(pField, "id", nFieldId);
+            XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             Unk_FieldIdListPtr pFields(0);
             if (!m_liftable.Lookup(nLiftId, pFields))
             {

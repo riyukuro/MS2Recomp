@@ -259,7 +259,7 @@ public:
   bool FUN_140525680();
   bool FUN_140525730();
   bool FUN_140525790();
-  int FUN_1405257f0();
+  int IsStackable();
   int FUN_1405258f0();
   int FUN_140525920();
   int FUN_140525950();
@@ -305,7 +305,7 @@ public:
   bool FUN_140528930();
   void FUN_140528b00(const CStringW&);
   CStringW* FUN_140528b40();
-  void FUN_140525590(__int64);
+  void WriteItemBody(__int64);
   CItemCustomMusicScore* FUN_140527960();
   CItemCustomMusicScore* FUN_140527990();
   CItemSocket* FUN_1405279c0();

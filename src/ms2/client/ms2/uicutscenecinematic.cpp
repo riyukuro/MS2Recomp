@@ -51,6 +51,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/soundproperty.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local views of exe objects (Unk_ names and member names are invented) ----
 
@@ -99,7 +100,6 @@ public:
 };
 Unk_140a94350* FUN_140a94350();
 class Unk_CscKeyGroups { public: void FUN_1422b9fd0(int nGroup); int FUN_1422b9e00(); };
-Unk_CscKeyGroups* FUN_1408e57f0();
 CFeatureManager* FUN_140166410();
 CInputKeyHandler* FUN_14025e7c0();
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
@@ -297,11 +297,11 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
     {
         if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())
             ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
-        FUN_1408e57f0()->FUN_1422b9fd0(0x6200041);
+        ((Unk_CscKeyGroups*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
     }
     else
     {
-        FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
+        ((Unk_CscKeyGroups*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
     }
 }
 MS2_REPLACE_METHOD(0x141908040, UICutSceneCinematic, FUN_141908040, 95, 0x0200FE35);
@@ -425,7 +425,7 @@ void UICutSceneCinematic::FUN_141908750()
     m_nTalkEnd = nTick + m_spTalk->m_nDuration;
     if (m_spTalk->m_nNpcId == 0)
     {
-        MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
             FUN_141908470(pPC->vfunc_77(), CStringW(m_spTalk->m_strText), CStringW(), 0);
     }
@@ -503,7 +503,7 @@ void UICutSceneCinematic::FUN_141908fc0()
 void UICutSceneCinematic::FUN_141909100()
 {
     SendTrigger();
-    MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC)
         FUN_140a7b810(pPC)->FUN_1409536d0();
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
@@ -596,7 +596,7 @@ MS2_REPLACE_METHOD(0x141909610, UICutSceneCinematic, FUN_141909610, 161, 0x0CC3B
 // @0x1419096c0
 bool UICutSceneCinematic::FUN_1419096c0()
 {
-    return FUN_1408e57f0()->FUN_1422b9e00() == 0x6200041;
+    return ((Unk_CscKeyGroups*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() == 0x6200041;
 }
 MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, FUN_1419096c0, 57, 0x1B8A4E6C);
 
@@ -643,7 +643,7 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     MS2Ptr<Unk_CscVoiceProp> spVoice = reinterpret_cast<Unk_CscSoundProps*>(TSingleton<SoundPropertyMgr>::GetInstance())->FUN_141793110(strSound);
     if (spVoice.get())
     {
-        MyPC* pPC = reinterpret_cast<Unk_CscWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
         {
             CString strEvent;

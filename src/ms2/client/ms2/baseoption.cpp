@@ -11,7 +11,6 @@
 #include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders ----
-void FUN_141943820(UIGameOptionDialog* pDialog, int n);
 
 // The UI manager's reference to a dialog (16 bytes, object at +8; dtor 0x1403e5630).
 class Unk_BoUIRef
@@ -148,7 +147,7 @@ void CBaseOption::FUN_140a02d90(int n)
 {
     UIGameOptionDialog* pDialog = GetOptionDialog();
     if (pDialog != 0)
-        FUN_141943820(pDialog, n);
+        ((class UIGameOptionDialog*)(class UIGameOptionDialog*)(pDialog))->FUN_141943820(n);
 }
 
 // @0x140a02dd0

@@ -18,6 +18,14 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <typeinfo>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Unrecovered helpers (same ones the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -82,7 +90,7 @@ inline int FUN_140811a50(Unk_140165cf0* pNode, const char* pszName, int* pOut)
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pNode, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRead != 0)
         return nRead;
     *pOut = Parse_140219650(str);
@@ -104,20 +112,20 @@ void CSmartPushTable::Load()
         FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("push"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("push")); pNode != 0;
          pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("push")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         DataPtr spData(new CSmartPushData);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", spData->m_nId);
-        FUN_140873420(pNode, "content", spData->m_strContent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "content", spData->m_strContent);
         FUN_140811a50(pNode, "actionType", &spData->m_nActionType);
         XmlGetAttr((class TiXmlElement*)(pNode), "actionValue", spData->m_nActionValue);
         XmlGetAttr((class TiXmlElement*)(pNode), "requireMerat", spData->m_nRequireMerat);
-        FUN_140873420(pNode, "imgPath", spData->m_strImgPath);
+        XmlGetAttr((class TiXmlElement*)(pNode), "imgPath", spData->m_strImgPath);
         CString strItem;
-        FUN_1408733e0(pNode, "requireItem", strItem);
+        XmlGetAttr((class TiXmlElement*)(pNode), "requireItem", strItem);
         if (strItem.GetLength() != 0)
         {
             Unk_StrVec parts;
@@ -151,11 +159,11 @@ void CSmartPushTable::LoadPackages()
         FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("package"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("package")); pNode != 0;
          pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("package")))
     {
         PackagePtr spPkg(new CAutoActionPricePackage);
-        FUN_140873420(pNode, "content", spPkg->m_strContent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "content", spPkg->m_strContent);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", spPkg->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "duration", spPkg->m_nDuration);
         XmlGetAttr((class TiXmlElement*)(pNode), "merat", spPkg->m_nMerat);

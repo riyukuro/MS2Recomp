@@ -33,8 +33,8 @@
 // ---- unit-local views of exe objects ----
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                              // element is enabled
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
 void FUN_1401783d0(const CString* pText, std::vector<int>* pOut, const char* pszSep);   // split into ints
 __int64 FUN_140475ff0(unsigned short nRule);                            // the rule's limit
@@ -203,10 +203,10 @@ void HideAndSeek::LoadHideAndSeek()
         return;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("field"); pNode != 0; pNode = pNode->FUN_140168650("field"))
     {
-        if (FUN_14028f710(pNode) == 0)
+        if (FUN_14028f710((struct Unk_XmlElement*)(pNode)) == 0)
             continue;
         unsigned nMapCode = 0;
-        FUN_140873220(pNode, "mapCode", nMapCode);
+        XmlGetAttr((class TiXmlElement*)(pNode), "mapCode", nMapCode);
         std::vector<int> objects;
         CString strObjects(FUN_14086f4b0(pNode, "ridingObject"));
         FUN_1401783d0(&strObjects, &objects, ",");

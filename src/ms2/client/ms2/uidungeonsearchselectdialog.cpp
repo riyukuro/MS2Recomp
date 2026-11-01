@@ -63,8 +63,7 @@ public:
 };
 
             // the local player
-WorldService* FUN_1403ed2d0();
-class Unk_SdUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
+class Unk_SdUIManager { public: };
 
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType);
 void* FUN_1409670d0();
@@ -261,7 +260,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
     MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
     if (row == NULL || check == NULL)
         return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     unsigned nRoom = params.pArgs[0].GetUInt();
@@ -337,7 +336,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28a40(const Scaleform::GFx::FunctionHa
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType)
 {
     if (reinterpret_cast<Unk_SdUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SdUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonSearchDialog*>((UIObject*)p);
     }

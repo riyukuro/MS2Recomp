@@ -97,11 +97,11 @@ public:
     void FUN_141912a80(GameObject* pTarget, int nValue, int nType);                     // show an exp / meso number now
     void FUN_141912b20(GameObject* pTarget, int nValue, int nType, const NiPoint3& kPos);
     void FUN_141913060(GameObject* pTarget, int nCount, const CString& strIcon);        // item icon number
-    void FUN_1419134a0(const CString& strFont);                                         // AS loadFont
-    void FUN_141913530(const CString& strFont);                                         // AS unloadFont
-    void FUN_1419135c0();                                                               // clear everything
+    void LoadFont(const CString& strFont);                                         // AS loadFont
+    void UnloadFont(const CString& strFont);                                         // AS unloadFont
+    void ClearAll();                                                               // clear everything
     bool FUN_1419136c0(CStringW& strOut);                                               // debug text of the containers
-    void FUN_141913990(bool bClearing);
+    void SetClearing(bool bClearing);
     void SetObserver(bool b);                                                         // m_bObserver
     void SetObservedId(__int64 n);                                                      // m_nObservedId
     void FUN_141913a20();                                                               // read the layout constants

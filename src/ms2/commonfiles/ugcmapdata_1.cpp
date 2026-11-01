@@ -340,7 +340,7 @@ MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 int FUN_1408a18d0(__int64 charID) {
     Unk_Ptr1401cd040 service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
     int style=0;
-    PCBase* player=reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player!=0) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;

@@ -135,9 +135,9 @@ public:
     int FUN_1402252f0(const CStringW& str, CStringW& message);
     int FUN_1402253b0(const CStringW& str, CStringW& message);
     int FUN_140225470(const CStringW& str, CStringW& message);
-    int FUN_140225550(const CStringW& str, CStringW& message);
+    int CheckMaidName(const CStringW& str, CStringW& message);
     int FUN_140225630(const CStringW& str, CStringW& message);
-    int FUN_140225720(const CStringW& str, CStringW& message);
+    int CheckGuildName(const CStringW& str, CStringW& message);
     int FUN_140225810(const CStringW& str, CStringW& message);
     int FUN_1402258f0(const CStringW& str, CStringW& message);
     int FUN_1402259b0(const CStringW& str, CStringW& message);

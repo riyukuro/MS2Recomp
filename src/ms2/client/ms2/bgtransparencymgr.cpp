@@ -163,7 +163,7 @@ extern Vector3 DAT_143b01a60;                           // zero point
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
 struct Unk_CmWalker
 {
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5; void* m_p6;    // 0x38 (the exe frames leave 0x38 bytes for it)
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
     Unk_CmWalker(NiObject* pRoot);                    // 0x14098cb80
     ~Unk_CmWalker();                                  // 0x14098cf00
     NiAVObject* FUN_14098e0d0(bool bDescend);

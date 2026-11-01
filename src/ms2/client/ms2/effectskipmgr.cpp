@@ -119,7 +119,6 @@ EffectSkipMgr::EffectSkipMgr() : m_nMaxCount(0), m_nBaseFrame(0), m_bSuspended(f
 {
 }
 
-// MS2-FUNCTIONAL: code and branches match; the two bool locals sit in a larger frame (0x78 vs 0x68).
 // @0x1411b86e0
 int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
 {

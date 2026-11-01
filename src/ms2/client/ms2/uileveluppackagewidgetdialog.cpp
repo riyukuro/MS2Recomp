@@ -414,7 +414,7 @@ MS2_REPLACE_METHOD(0x140C59B30, UILevelUpPackageWidgetDialog, vfunc_86, 96, 0xC9
 // @0x140c59ba0
 void UILevelUpPackageWidgetDialog::vfunc_87()
 {
-    reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4efa);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4efa)));
 }
 MS2_REPLACE_METHOD(0x140C59BA0, UILevelUpPackageWidgetDialog, vfunc_87, 32, 0x2A2706CB);
 

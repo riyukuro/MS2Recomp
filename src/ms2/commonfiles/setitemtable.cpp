@@ -36,8 +36,12 @@ void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* form
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-void* FUN_1406aeee0();
-bool FUN_1406af060(void* p);
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDisableValidate();
+};
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -136,7 +140,7 @@ int SetItemTable::LoadSets()
 // An unused pointer argument (rcx is spilled); no caller is recovered.
 int FUN_1407c5020(void* pUnused)
 {
-    return FUN_1406af060(FUN_1406aeee0());
+    return ((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate();
 }
 
 // @0x1407c5050

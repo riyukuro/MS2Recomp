@@ -93,7 +93,7 @@ public:
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_141275260(int nSound, int a, int b);
-void FUN_141276180(const CString& strKey, const CString& strArg);   // system notice
+int FUN_141276180(const CString& strKey, const CString& strArg);   // system notice
 void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center notice
 
 // The ui dialogs a pickup notifies.
@@ -141,7 +141,6 @@ public:
 GameObject* FUN_14096e160(Unk_WsC_GameObj* pObj);                   // the object behind a world pointer
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
-bool FUN_140184310(const CStringA& str, const char* psz);            // str == psz
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 extern Unk_Inventory g_143ab2a90;
 int FUN_140768010(int, int);   // C3: was FUN_140768010
@@ -311,7 +310,7 @@ int CDropItem::vfunc_10()
 {
     if (!GameObject::vfunc_10())
         return 0;
-    if (!FUN_14118fea0())
+    if (!IsMeso())
     {
         NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
         if (pRoot)
@@ -500,7 +499,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             Vector3 kTarget = reinterpret_cast<Vector3&>(kSelfNow).FUN_14097fd50(DAT_143a08d08);
             kTargetPos = reinterpret_cast<const efd::Point3&>(kTarget);
         }
-        else if (pSource && FUN_14118fea0())
+        else if (pSource && IsMeso())
         {
             Vector3 kForward, kSide;
             pSource->vfunc_67(&kForward, &kSide);
@@ -512,7 +511,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         {
             Unk_WsC_GameObj* pOwnerPc = WorldService::GetInstance()->FUN_141bd1530(FUN_1411910e0());
             Unk_GoAttachment* pAttach = pNpcObj->vfunc_26();
-            if (pAttach && FUN_140184310(static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData()->m_collision.m_strShape, "box") && pOwnerPc)
+            if (pAttach && (static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData()->m_collision.m_strShape == "box") && pOwnerPc)
             {
                 NxVec3 kCenter = pAttach->m_box.GetCenter();
                 kBase = NiPoint3(kCenter.x, kCenter.y, kCenter.z);
@@ -687,7 +686,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
         if (FUN_141b6f910()->FUN_140999440(FUN_14123c460()))
             ((class Unk_AvSeqCtl*)(class NiActorManager*)(FUN_141b6f910()->FUN_140999440(FUN_14123c460())))->FUN_1409fae00(true);
-        if (FUN_14118fea0())
+        if (IsMeso())
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
@@ -758,7 +757,7 @@ void CDropItem::FUN_14118fe60(int nValue) { m_n28c = nValue; }
 void CDropItem::FUN_14118fe80(int nValue) { m_n298 = nValue; }
 
 // @0x14118fea0
-int CDropItem::FUN_14118fea0() { return 0 < m_n64Meso; }
+int CDropItem::IsMeso() { return 0 < m_n64Meso; }
 
 // @0x14118fee0
 int CDropItem::FUN_14118fee0() { return m_spItem->FUN_140525920(); }
@@ -931,7 +930,7 @@ int CDropItem::FUN_141190640(bool bForce)
 // @0x1411906a0
 int CDropItem::FUN_1411906a0()
 {
-    if (m_spItem->FUN_1405257f0())
+    if (m_spItem->IsStackable())
     {
         ATL::CAtlList<MS2Ptr<CItem> > kHave(10);
         g_143ab2a90.FUN_140a5e8d0(m_spItem->FUN_1405276c0(), kHave, 1);
@@ -1101,7 +1100,7 @@ void CDropItem::vfunc_47(bool b) { m_bUnk138 = false; }
 // @0x1411911f0
 void CDropItem::FUN_1411911f0()
 {
-    if (!FUN_14118fea0())
+    if (!IsMeso())
     {
         NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
         if (pRoot)

@@ -63,6 +63,8 @@
 #include "ms2/client/ms2/instrumentmanager.h"
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <string.h>
 
 // ---- header statics (dynamic initializers 0x1400ea9f0..0x1400ead60) ----
@@ -1066,11 +1068,9 @@ int ReadGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char
 void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey);
 
 // The mouse-control switch of the camera.
-class Unk_GsMyPC
+class Unk_GsMyPC : public MyPC
 {
 public:
-    __int64 FUN_141658eb0();                                    // the character creation time (+0xfe8)
-    int FUN_141527e00();                                        // no house
     void FUN_141530720(unsigned char nVisit, CStringW strPassword, bool bNotify);   // set the house visit permission
 };
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row

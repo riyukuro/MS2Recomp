@@ -51,7 +51,7 @@ void FUN_14130ea00(UIMeratMarketDialog* pDlg, MS2Ptr<Unk_RcProduct> spProduct);
 UIMeratMarketDialog* FUN_140bfed50(int nId);                        // find the dialog (dynamic_cast)
 
 // The UI manager: the lookup of a dialog by its ui id.
-class Unk_RcUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
+class Unk_RcUIManager { public: };
 
 // The input keys.
 class Unk_RcKeys : public CInputKeyHandler
@@ -59,9 +59,8 @@ class Unk_RcKeys : public CInputKeyHandler
 public:
     bool FUN_14116d9c0(int nKey, int a, int b);
 };
-Unk_RcKeys* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);                       // has the AS object been released
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 int FUN_141276180(const CString& str, const CString& strArg);       // play a sound
@@ -150,9 +149,9 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 // @0x140bfe930
 int UIRandomCoupon::vfunc_13()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d840() || FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d840() || ((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
         if (m_bButtonShown)
             m_30->Invoke("playClose");
@@ -242,7 +241,7 @@ UIMeratMarketDialog* FUN_140bfed50(int nId)
 {
     if (reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ref = reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (ref.get())
             return dynamic_cast<UIMeratMarketDialog*>((UIObject*)ref);
     }

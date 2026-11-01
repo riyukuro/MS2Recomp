@@ -56,6 +56,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/jobtable.h"   // C3: TSingleton<> needs the class
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x1400cce40
 
@@ -150,7 +151,6 @@ public:
     int FUN_14166c930();
     int FUN_1416769d0();
 };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -419,7 +419,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d) {
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }

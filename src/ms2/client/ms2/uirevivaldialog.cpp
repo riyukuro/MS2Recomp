@@ -28,6 +28,7 @@
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -357,8 +358,6 @@ CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_14086d060(int nId, const __int64& n);
-CStringW FUN_140c160b0(CStringW strFmt, const __int64& n);
-CStringW FUN_1405c2690(CStringW strFmt, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1412e7c20(int nStrId, const CStringW& a0, const int& a1);
 CStringW FUN_140938ae0(CStringW strKey, const int& a1);
@@ -455,7 +454,7 @@ bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
     int nCoupon = FUN_141abc9d0();
     if (nResult == 0)
     {
-        Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPc == 0)
             return false;
         if (pPc->FUN_14166ce30() != 0)
@@ -549,7 +548,7 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 // @0x141abae20
 void UIRevivalDialog::FUN_141abae20()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     {
@@ -603,7 +602,7 @@ void UIRevivalDialog::FUN_141abae20()
 // @0x141abb420
 void UIRevivalDialog::FUN_141abb420()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
@@ -626,7 +625,7 @@ void UIRevivalDialog::FUN_141abb600()
         Unk_RevFieldRef spField = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (spField.FUN_140965240(0) != 0)
             return;
-        CStringW strMsg = FUN_1405c2690(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
+        CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMsg, static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
         if (spBox.get() != 0)
         {
@@ -661,7 +660,7 @@ void UIRevivalDialog::FUN_141abb600()
 // @0x141abbb20
 void UIRevivalDialog::FUN_141abbb20()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_RevFieldRef spField = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -703,7 +702,7 @@ void UIRevivalDialog::FUN_141abbb20()
     {
         CStringW strMsg;
         if (FUN_141abc740() != 0)
-            strMsg = FUN_140c160b0(L"s_msg_revival_merat_msg_box_cn", m_190);
+            strMsg = FUN_14028dfa0<__int64>(L"s_msg_revival_merat_msg_box_cn", m_190);
         else
             strMsg = FUN_14086d060(0x283, m_190);
         m_180 = FUN_140d73f20(strMsg, 1);
@@ -716,7 +715,7 @@ void UIRevivalDialog::FUN_141abbb20()
 // @0x141abc080
 void UIRevivalDialog::FUN_141abc080()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_RevFieldRef spField = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -747,9 +746,9 @@ void UIRevivalDialog::FUN_141abc080()
         }
         CStringW strMsg;
         if (FUN_141abc740() != 0)
-            strMsg = FUN_140c160b0(L"s_msg_revival_meso_cannot_merat_msg_box_cn", nCost);
+            strMsg = FUN_14028dfa0<__int64>(L"s_msg_revival_meso_cannot_merat_msg_box_cn", nCost);
         else
-            strMsg = FUN_140c160b0(L"s_msg_revival_meso_cannot_merat_msg_box", nCost);
+            strMsg = FUN_14028dfa0<__int64>(L"s_msg_revival_meso_cannot_merat_msg_box", nCost);
         m_180 = FUN_140d73f20(strMsg, 1);
         m_180->FUN_141a01540(L"revival_merat");
         m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
@@ -788,7 +787,7 @@ int UIRevivalDialog::FUN_141abc770()
 // @0x141abc7f0
 int UIRevivalDialog::FUN_141abc7f0()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     int nResult = 0;
@@ -908,7 +907,7 @@ void UIRevivalDialog::FUN_141abcc50()
 // @0x141abccb0
 void UIRevivalDialog::FUN_141abccb0()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(),
@@ -922,7 +921,7 @@ void UIRevivalDialog::FUN_141abccb0()
         FUN_141abae20();
         CStringW strLabel;
         if (FUN_141abc740() != 0)
-            strLabel = FUN_1405c2690(L"s_msg_revival_merat_btn_cn", FUN_1409404f0(nCost));
+            strLabel = FUN_14028dfa0<CStringW>(L"s_msg_revival_merat_btn_cn", FUN_1409404f0(nCost));
         else
             strLabel = FUN_14052bd00(0x280, FUN_1409404f0(nCost));
         static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_14129cce0("setButtonLabel", 2, strLabel);
@@ -931,7 +930,7 @@ void UIRevivalDialog::FUN_141abccb0()
         {
             CStringW strMsg;
             if (FUN_141abc740() != 0)
-                strMsg = FUN_140c160b0(L"s_msg_revival_merat_msg_box_cn", m_190);
+                strMsg = FUN_14028dfa0<__int64>(L"s_msg_revival_merat_msg_box_cn", m_190);
             else
                 strMsg = FUN_14086d060(0x283, m_190);
             m_180->SetMsg(strMsg);
@@ -943,7 +942,7 @@ void UIRevivalDialog::FUN_141abccb0()
 // @0x141abd290
 void UIRevivalDialog::FUN_141abd290()
 {
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     int nA = pPc->FUN_141528160();
@@ -1001,7 +1000,7 @@ CStringW UIRevivalDialog::FUN_141abd790()
 {
     m_1b0 = 0;
     CStringW strLabel = GetStringCommon(0x27e);
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return strLabel;
     int nRoom = DAT_143ab2884;
@@ -1036,7 +1035,7 @@ int UIRevivalDialog::FUN_141abdab0(Unk_RevFieldRef spField)
         FUN_141275260(0x282, 1, 1);
         return 0;
     }
-    Unk_RevPC* pPc = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_1416749a0()->IsDisableRevivalHere() != 0)

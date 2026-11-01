@@ -38,8 +38,8 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                               // path of a Table file
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
 void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
@@ -151,8 +151,8 @@ void CDynamicActionData::Load()
         Unk_140165cf0* pNode = *it;
         MS2Ptr<CDynamicActionData> spRow(new CDynamicActionData);
         spRow->FUN_1401d1160(CString(strPath));
-        FUN_140873220(pNode, "skillID", spRow->m_nSkillId);
-        FUN_1408731e0(pNode, "default", spRow->m_nDefault);
+        XmlGetAttr((class TiXmlElement*)(pNode), "skillID", spRow->m_nSkillId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "default", spRow->m_nDefault);
         CStringW strReserved = FUN_1401bf530(pNode, "reserved", CStringW(L""));
         ATL::CAtlArray<CStringW> parts;
         FUN_14025a680(strReserved, parts, L"|");

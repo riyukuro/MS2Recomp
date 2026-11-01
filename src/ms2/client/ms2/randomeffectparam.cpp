@@ -14,6 +14,7 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
 
 // Game TinyXML element: FirstChildElement / NextSiblingElement by name.
 class Unk_XmlNode   // C3: member view (real class not in this TU)
@@ -28,11 +29,6 @@ public:
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 void FUN_140177e10(const CString& str, ATL::CAtlArray<DWORD>& arr, const char* pszDelim);  // split to uints
 
@@ -46,7 +42,7 @@ class Unk_GameLog
 public:
     void FUN_14015eb90(int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 };
-Unk_GameLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // Game context (singleton 0x1403ed280): random seed source.
 class Unk_GameCtx
@@ -111,7 +107,7 @@ bool CRandomEffectParam::vfunc_2()
         return false;
     if (!m_arrEffects.GetCount())
     {
-        FUN_140166440()->FUN_14015eb90(1, 0x13, L"데이터가 없습니다[RandomEffect - Effect count 0] [{0}]", m_str20);
+        ((class Unk_GameLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"데이터가 없습니다[RandomEffect - Effect count 0] [{0}]", m_str20);
         return false;
     }
     return true;

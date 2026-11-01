@@ -38,7 +38,7 @@ public:
 };
 
 // UI service: handle to a registered UI object.
-class Unk_EnchantUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_EnchantUIManager { public: };
 
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
 class InvenSlot   // C3: member view for the former free stand-ins
@@ -178,7 +178,7 @@ UIEnchantScrollDialog* FUN_140cd7aa0(int nClass)
 {
     if (reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIEnchantScrollDialog*>(spObj.operator->());
     }

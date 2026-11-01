@@ -344,7 +344,7 @@ CStringW FUN_14052bd00(int nId, const CStringW& str);
 int FUN_1402912d0(CStringW strName);                                // the inventory tab of a name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
-void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag);            // notice
+void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);            // notice
 void FUN_140d73bc0(unsigned nStringId, int a, int b, CStringW strTag);          // message
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
@@ -901,7 +901,7 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
     }
     MS2Ptr<TMarketBillDataParam> spBase(spParam);
     pBillDialog->FUN_140ea7770(spBase);
-    reinterpret_cast<Unk_CashUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f17);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f17)));
     return true;
 }
 

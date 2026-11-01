@@ -569,7 +569,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
 {
     efd::Point3 kPos;
     efd::Point3 kDir;
-    PCBase* pPlayer = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0) {
         kPos = pPlayer->vfunc_18();
         kDir = pPlayer->vfunc_20();

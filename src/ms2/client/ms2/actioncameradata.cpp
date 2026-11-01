@@ -22,8 +22,7 @@ public:
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 CString FUN_140188f50(const char* psz, int n);
-bool FUN_140184310(const CString& str, const char* psz);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -79,8 +78,8 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("actionCamera");
     pInfo->m_strPath = FUN_14086f4b0(pNode, "path");
     CString strStay = FUN_140188f50(FUN_14086f4b0(pNode, "stayLocked"), 0);
-    pInfo->m_bStayLocked = FUN_140184310(strStay, "true");
-    FUN_140873360(pNode, "interpolationTime", pInfo->m_fInterpolationTime);
+    pInfo->m_bStayLocked = (strStay == "true");
+    XmlGetAttr((class TiXmlElement*)(pNode), "interpolationTime", pInfo->m_fInterpolationTime);
     return spData;
 }
 

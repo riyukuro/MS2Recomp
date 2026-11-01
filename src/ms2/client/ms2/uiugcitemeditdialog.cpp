@@ -116,6 +116,7 @@ static CString s_tabIndex2 = "tabIndex";
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/uiservice.h"
 #include <NiRect.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -139,8 +140,6 @@ void FUN_1418ffef0(int& nFlags, int nBit);                      // nFlags &= ~nB
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);     // null
 Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
-CStringW FUN_1409e8970(CStringW strFormat, const int& nA, const int& nB);   // a table string with two numbers
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);                // skinColors of the skin colour table
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item data row of an id
 CStringTable* GetStringTable();
@@ -190,7 +189,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may be used
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);       // a table string with an argument
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -203,7 +201,7 @@ int FUN_140d74f70(CStringW& strTag);                                // the "term
 // the exe binds the returned temp to the non-const CStringW& (an MSVC extension)
 inline int FUN_140d74f70(CStringW&& strTag) { return FUN_140d74f70(strTag); }
 #endif
-void FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
 Unk_NetworkCallbacks* FUN_140d86260();
 
 // ---- the ItemPreviewCommon obj ----
@@ -314,7 +312,7 @@ void UIUGCItemEditDialog::OnLoadComplete()
     obj.FUN_1407cb9c0("defaultSize", nDefaultSize);
     int nMin = *FUN_1401d3200()->UgcNameLengthMin.Get();
     int nMax = *FUN_1401d3200()->UgcNameLengthMax.Get();
-    obj.FUN_1407cbb20("ugcNameDefaultText", FUN_1409e8970(CStringW(L"s_ugc_itemedit_input_name"), nMin, nMax));
+    obj.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(CStringW(L"s_ugc_itemedit_input_name"), nMin, nMax));
     obj.FUN_1407cb9c0("ugcNameLengthMax", nMax);
     Scaleform::GFx::Value ret = m_30->Invoke("initData", FUN_1406146a0(obj.FUN_1422bb870()));
     if (!((Scaleform::GFx::Value*)(void*)(&ret))->IsNull())
@@ -590,7 +588,7 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     if (FUN_1409b0390(&arg) || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
-    if (FUN_140184310(strType, "design"))
+    if ((strType == "design"))
     {
         Scaleform::GFx::Value data = root.FUN_1422baa20("data");
         if (((Scaleform::GFx::Value*)(void*)(&data))->IsNull() || FUN_1409b0390(&data))
@@ -605,7 +603,7 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
                 FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
         }
     }
-    else if (FUN_140184310(strType, "image"))
+    else if ((strType == "image"))
     {
 #ifdef __clang__
         AScript data(root.FUN_1422baa20("data"), 2);
@@ -1815,7 +1813,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
         }
     }
     CStringW strPrice = m_spEditItem == 0
-        ? FUN_1405c2690(CStringW(L"s_ugc_item_edit_terms_price"), FUN_1418fec00(nPriceType, nPrice, 0))
+        ? FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_item_edit_terms_price"), FUN_1418fec00(nPriceType, nPrice, 0))
         : CStringW(L"");
     MS2Ptr<CMsgBoxData> spBox(0);
     if (bVoucher != 0)

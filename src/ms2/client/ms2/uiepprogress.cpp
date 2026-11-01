@@ -13,6 +13,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local views of exe objects ----
 
@@ -21,7 +22,6 @@ UIStatusEventDispatcher* FUN_140aa6d40();
 struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
 class Unk_EpCfgHolder { public: Unk_EpCfgData* FUN_141248630(); };
 class Unk_EpScene { public: int FUN_1422b9e00(); };                 // current scene id
-Unk_EpScene* FUN_1408e57f0();
 
 // The target's name-tag anchor record.
 class Unk_PopupTarget : public CPtred
@@ -114,7 +114,7 @@ int UIEpProgress::vfunc_57(int nForce)
 {
     if (UIPopupEntity::vfunc_57(nForce) != 0)
         return 1;
-    if (FUN_1408e57f0()->FUN_1422b9e00() != 0x620001d)
+    if (((Unk_EpScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() != 0x620001d)
         return 1;
     if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
         return 1;

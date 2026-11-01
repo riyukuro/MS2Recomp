@@ -360,7 +360,7 @@ NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 MS2Ptr<Unk_StateArg22> FUN_140835450(int nState);                   // new state record
 MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // hp bar
 void FUN_141275260(int nSound, int a, int b);
-void FUN_141276180(const CString& strKey, const CString& strArg);  // system notice
+int FUN_141276180(const CString& strKey, const CString& strArg);  // system notice
 
 // PCBase's node map and its m_unk_6d8 buff tracker.
 void FUN_141682f60(void* pTracker, PCBase* pOwner);

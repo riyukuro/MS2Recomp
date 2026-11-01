@@ -48,7 +48,6 @@ class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
 void* FUN_140af8310(Unk_HudSub* p);
 bool FUN_14207c4d0(void* p);
-const NiPoint3* FUN_140947900(NiAVObject* pNode);       // world translation of the node
 int FUN_141277f40();                                    // next UI layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
@@ -258,7 +257,7 @@ NiPoint3 UIHudEntity::Entity::vfunc_10()
             m_30 = pActor;
         }
         if (m_20 != 0)
-            return *FUN_140947900(m_20);
+            return *((class NiPoint3 const*)&((class NiAVObject*)(class NiAVObject*)(m_20))->GetWorldTranslate());
         return NiPoint3(static_cast<const efd::Point3&>(pActor->vfunc_18()));
     }
     return NiPoint3::ZERO;

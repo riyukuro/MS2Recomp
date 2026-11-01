@@ -23,7 +23,6 @@
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern Vector3 DAT_143b01a60;                               // the zero point
             // non-null while the local player is in the world
-WorldService* FUN_1403ed2d0();
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -159,7 +158,7 @@ void UIBootyPopup::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    void* pWorld = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pWorld = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
     if (m_78 != 0)
@@ -183,7 +182,7 @@ MS2_REPLACE_METHOD(0x141031840, UIBootyPopup, vfunc_28, 67, 0x0A02777B);
 // @0x141031890
 void UIBootyPopup::FUN_141031890()
 {
-    void* pWorld = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pWorld = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
     if (m_7c != 0)

@@ -1,20 +1,20 @@
 // DT attendance popup; supporting field and helper names are inferred.
 #pragma once
+#include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/delegate.h"
 #include <map>
 class CInPacket; class GameEventVariable; class NotifyObject;
-void FUN_14015b020(CPtred*); int FUN_140159bc0(CPtred*); void FUN_140159ba0(CPtred*);
 template<class T> class Unk_DTPtr {
 public:
  Unk_DTPtr(int):p(0){} Unk_DTPtr(const Unk_DTPtr& q):p(q.p){AddRef();}
  Unk_DTPtr(Unk_DTPtr&& q):p(q.p){q.p=0;} ~Unk_DTPtr(){Release();}
  T* get()const{return p;} T* operator->()const{return p;} bool operator==(T* q)const{return p==q;}
 private:
- void AddRef()const{if(p)ReferenceImpl((void*)0);} static void Reference(T* q){FUN_14015b020(q);}
+ void AddRef()const{if(p)ReferenceImpl((void*)0);} static void Reference(T* q){CPtred::AddRefPtred(q);}
  void ReferenceImpl(void*)const{Reference(p);} void Release(){if(p){ReleaseImpl((void*)0);p=0;}}
- void ReleaseImpl(void*){if(FUN_140159bc0(p)==0){Reference(p);FUN_140159ba0(p);}}
+ void ReleaseImpl(void*){if(CPtred::ReleasePtred(p)==0){Reference(p);CPtred::DeletePtred(p);}}
  void* m_0;T* p;
 };
 class Unk_DTItemData;

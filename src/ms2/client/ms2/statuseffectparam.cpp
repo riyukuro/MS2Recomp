@@ -30,11 +30,10 @@
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 bool FUN_14028d470(float a, float b);                               // nearly equal
-unsigned FUN_140869420();                                           // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void FUN_1409f76f0(void* pSelf, void* pNew);                        // SmartPointer<NiNode>::Reset(pNew)
 void* FUN_1409475f0(efd::SmartPointer<NiNode>* p);                  // const get
-const void* FUN_140947900(void* pNode);                             // world translate
 void FUN_140194470(void* pDst, const void* pSrc);                   // copy a point
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
@@ -75,7 +74,11 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_PostProcessSvc, m_mapKind, 0x68);
 MS2_CHECK_OFFSET(Unk_PostProcessSvc, m_mapCount, 0x78);
-Unk_PostProcessSvc* FUN_1409a8b20();
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 
 // Effect target context: the owner's scene node handle sits at +0x10.
 struct Unk_StatusTarget
@@ -130,7 +133,7 @@ bool CStatusEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CStatusEffectParam* pStatus = static_cast<const CStatusEffectParam*>(pParam);
-    m_dStartTime = (double)(unsigned)(FUN_140869420() + (int)(__int64)(pStatus->m_fStartDelay * 1000.0f));
+    m_dStartTime = (double)(unsigned)(GetTickCountMs2() + (int)(__int64)(pStatus->m_fStartDelay * 1000.0f));
     m_bSuper = false;
     m_bFlag = false;
     FUN_1409f76f0(&m_spNode, ((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&reinterpret_cast<Unk_StatusTarget*>(pTarget)->m_hNode))))));
@@ -158,7 +161,7 @@ MS2_REPLACE_METHOD(0x141801220, CStatusEffect, vfunc_3, 467, 0x8F155918);
 // @0x141801400
 bool CStatusEffect::vfunc_9()
 {
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (m_b2d)
         return false;
     if ((double)nNow > m_dStartTime + (double)(m_fDuration * 1000.0f))
@@ -179,16 +182,16 @@ MS2_REPLACE_METHOD(0x141801400, CStatusEffect, vfunc_9, 268, 0x7BD39F5E);
 void CStatusEffect::vfunc_4()
 {
     int nCount = 0;
-    Unk_NodeIntMap::const_iterator it = FUN_1409a8b20()->m_mapCount.find(m_spNode);
-    if (it != FUN_1409a8b20()->m_mapCount.end())
+    Unk_NodeIntMap::const_iterator it = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.find(m_spNode);
+    if (it != ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.end())
     {
         nCount = it->second;
-        FUN_1409a8b20()->m_mapCount.erase(m_spNode);
-        FUN_1409a8b20()->m_mapKind.erase(m_spNode);
+        ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.erase(m_spNode);
+        ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapKind.erase(m_spNode);
     }
     nCount = nCount + 1;
-    FUN_1409a8b20()->m_mapCount.insert(std::make_pair(m_spNode, nCount));
-    FUN_1409a8b20()->m_mapKind.insert(std::make_pair(m_spNode, m_nKind));
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.insert(std::make_pair(m_spNode, nCount));
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapKind.insert(std::make_pair(m_spNode, m_nKind));
     if (m_nKind == 4)
         FUN_141801900(0);
     m_b2e = true;
@@ -200,18 +203,18 @@ MS2_REPLACE_METHOD(0x141801520, CStatusEffect, vfunc_4, 492, 0x9D8ABC3C);
 void CStatusEffect::vfunc_7()
 {
     int nCount = 0;
-    Unk_NodeIntMap::const_iterator it = FUN_1409a8b20()->m_mapCount.find(m_spNode);
-    if (it != FUN_1409a8b20()->m_mapCount.end())
+    Unk_NodeIntMap::const_iterator it = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.find(m_spNode);
+    if (it != ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.end())
     {
         nCount = it->second;
-        FUN_1409a8b20()->m_mapCount.erase(m_spNode);
+        ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.erase(m_spNode);
     }
     nCount = nCount - 1;
-    FUN_1409a8b20()->m_mapCount.insert(std::make_pair(m_spNode, nCount));
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.insert(std::make_pair(m_spNode, nCount));
     if (nCount <= 0)
     {
-        FUN_1409a8b20()->m_mapCount.erase(m_spNode);
-        FUN_1409a8b20()->m_mapKind.erase(m_spNode);
+        ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.erase(m_spNode);
+        ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapKind.erase(m_spNode);
     }
     m_bFlag = false;
 }
@@ -220,7 +223,7 @@ MS2_REPLACE_METHOD(0x141801720, CStatusEffect, vfunc_7, 392, 0x6DE30B28);
 // @0x1418018b0
 int CStatusEffect::vfunc_8(void* pOut)
 {
-    FUN_140194470(pOut, FUN_140947900(FUN_1409475f0(&m_spNode)));
+    FUN_140194470(pOut, ((void const*)&((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->GetWorldTranslate()));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1418018b0, CStatusEffect, vfunc_8, 62, 0xCE06636C);

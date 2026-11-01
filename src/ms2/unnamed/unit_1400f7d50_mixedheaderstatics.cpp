@@ -10,12 +10,12 @@
 #include "ms2/client/ms2/mirrored3drenderview.h"
 #include "ms2/client/ms2/messengerdata.h"
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
 // first TU
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 #ifndef MS2_HOOK_DLL   // s_defaults: the exe's object at 0x143adda48, which other units reach as DAT_143adda48 (the hook DLL binds it)
 MessengerData::ScreenSetting DAT_143adda48;                    // {0x11, 0x32, 1} by its out-of-line constructor
 #else

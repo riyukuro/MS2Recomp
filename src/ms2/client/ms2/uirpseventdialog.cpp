@@ -22,19 +22,6 @@
 static const CStringW s_bannerClose(L"bannerClose");
 
 // Unit-local declarations of unrecovered objects; scalar pads preserve /GS behavior.
-class ASData : public CPtred {
-public:
-    ASData();
-    virtual ~ASData();
-    int FUN_1422b8b10();
-    int FUN_1422b9620(const Scaleform::GFx::Value*, unsigned int);
-    void FUN_1422b8370(size_t);
-    Scaleform::GFx::Value FUN_1422b9260();
-private:
-    void* p18; void* p20; void* p28; void* p30; void* p38; void* p40;
-};
-// 0x48, not 0x50 (UIMsg adds an int at +0x48): /Od orders frame slots by size, see RECOVERY.md §8.
-MS2_CHECK_SIZE(ASData, 0x48);
 class Unk_RpsASObj : public CPtred {
 public:
     Unk_RpsASObj(int);

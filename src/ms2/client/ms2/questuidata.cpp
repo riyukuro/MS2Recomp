@@ -68,7 +68,6 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);          // a com
 CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strText with the josa of strWord
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nLevel);   // string table format (name, level)
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the quest table row (null when none)
 int FUN_14074bc90(int nQuestId);                                        // the quest type
 int FUN_14074b050(CQuestData* pData);
@@ -101,6 +100,14 @@ static ATL::CAtlMap<int, MS2Ptr<CCacheData> > s_caches(17, 0.75f, 0.25f, 2.25f, 
 
 // @0x1400fec10 (s_strSortTypeNames), @0x1400fecd0 / @0x1400fed00 (skill / stun), @0x1400fed30 (the condition table)
 #include "ms2/placeholder/header_statics_a.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flags (symbols-manual.tsv); local copies stay false
 bool CQuestUIData::s_bInit;
@@ -187,12 +194,12 @@ void FUN_1416e4590(CString strPath)
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
     spCache->FUN_1401d1160(strPath);
-    for (Unk_140165cf0* pQuest = pRoot->FUN_140165cf0("quest"); pQuest != 0; pQuest = pQuest->FUN_140168650("quest"))
+    for (Unk_140165cf0* pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest != 0; pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pQuest)))
             continue;
         MS2Ptr<CQuestUIData> spData(new CQuestUIData);
-        spData->m_nQuestId = atoi(FUN_14015f710(pQuest, "questID", CString("")));
+        spData->m_nQuestId = atoi(Unk_ReadString((class Unk_XmlNode*)(pQuest), "questID", CString("")));
         spData->m_strName = FUN_1401bf530(pQuest, "name", CStringW(L""));
         spData->m_strSummary = FUN_1401bf530(pQuest, "name", CStringW(L""));
         spData->m_strDesc = FUN_1401bf530(pQuest, "desc", CStringW(L""));
@@ -258,7 +265,7 @@ CStringW FUN_1416e5210(int nQuestId, CStringW strKey)
     CStringW strName = FUN_1416e4df0(nQuestId);
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.get() != 0)
-        return FUN_140bfa7f0(strKey, strName, spData->m_level);
+        return FUN_14028dfa0<CStringW, int>(strKey, strName, spData->m_level);
     return strName;
 }
 
@@ -691,7 +698,7 @@ void FUN_1416e7c00(CString strPath)
         FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pChapter = pRoot->FUN_140165cf0("chapter"); pChapter != 0; pChapter = pChapter->FUN_140168650("chapter"))
+    for (Unk_140165cf0* pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("chapter")); pChapter != 0; pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChapter))->NextSibling("chapter")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChapter)))
             continue;
@@ -702,7 +709,7 @@ void FUN_1416e7c00(CString strPath)
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strDesc);
         spChapter->m_strName = strName;
-        FUN_1408731e0(pChapter, "isTutorial", spChapter->m_bTutorial);
+        XmlGetAttr((class TiXmlElement*)(pChapter), "isTutorial", reinterpret_cast<int&>(spChapter->m_bTutorial));
         s_chapters.SetAt(spChapter->m_nId, spChapter);
     }
 }

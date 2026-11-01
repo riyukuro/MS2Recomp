@@ -487,7 +487,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         if (gem == 0)
             continue;
         MS2Ptr<CItem> gemItem(0);
-        MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
+        MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
         if ((info.get() != 0 ? true : false) && !info->FUN_14061fab0())
             gemItem = FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo>(info), 0, false);
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(gemItem), false);
@@ -495,7 +495,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         FUN_140cfd6f0(strName, MS2Ptr<CGemStoneItem>(gem), i, 0x415, 0x20);
         pGems->FUN_1422bbf70(strName);
     }
-    unsigned locked = socket->FUN_140620a70();
+    unsigned locked = socket->GetLockedSlotCount();
     for (unsigned j = 0; j < locked; ++j) {
         MS2Ptr<CGemStoneItem> gem(new CGemStoneItem);
         if (gem == 0)
@@ -594,7 +594,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Pt
         return false;
     if (sourceSocket->FUN_140620a20() != targetSocket->FUN_140620a20())
         return false;
-    if (targetSocket->FUN_140620940() != 0)
+    if (targetSocket->GetFilledSlotCount() != 0)
         return false;
     return true;
 }
@@ -637,7 +637,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
             continue;
         Unk_GsCostTag tag = (Unk_GsCostTag)0;
         int amount = 0;
-        FUN_1406284f0(FUN_140626f20(socket->FUN_140620ac0(i)), static_cast<CItem*>(item)->FUN_140527840()->FUN_14053de40(),
+        FUN_1406284f0(FUN_140626f20(socket->GetGemId(i)), static_cast<CItem*>(item)->FUN_140527840()->FUN_14053de40(),
             reinterpret_cast<int*>(&tag), &amount);
         if (amount > 0)
             costs[tag] += amount;

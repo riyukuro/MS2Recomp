@@ -103,7 +103,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class Unk_UgcUiMgr { public: void FUN_141adc5d0(int nId); void FUN_141adc530(int nId); };
+class Unk_UgcUiMgr { public: void FUN_141adc530(int nId); };
 CameraMgr* FUN_1409478c0();
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
@@ -253,13 +253,13 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     if (m_bCameraMode)
     {
         FUN_1409478c0()->FUN_140947980(6);
-        reinterpret_cast<Unk_UgcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3e);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else
     {
         const Unk_UgcMode& mode = ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
         TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.m_2);
-        reinterpret_cast<Unk_UgcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f3e);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3e);
     }
     FUN_140fad2b0();
 }

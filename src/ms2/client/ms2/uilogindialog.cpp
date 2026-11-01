@@ -28,6 +28,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
 CString DAT_143af37a0;
@@ -129,7 +130,6 @@ class Unk_LoginKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The scene manager and the web page opener.
-void* FUN_1408e57f0();
 __int64 GetServerTime();                                        // the server time
 int FUN_1418fc810();
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -157,7 +157,6 @@ CString FUN_1406521f0(int nRegion);
 CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b
 CString FUN_140652030(int n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
-class Unk_LoginUiMgr { public: int FUN_141adc890(int nUiId); };
 class Unk_LoginMovie : public AScript
 {
 public:
@@ -202,9 +201,9 @@ CString UILoginDialog::GetTypeName()
 // @0x1419e1040
 void UILoginDialog::OnEndPopdown(bool bFromPopdown)
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200009)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetScene());
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene());
         if (pScene != 0 && pScene->FUN_141acfb40() && bFromPopdown)
             return;
     }
@@ -409,7 +408,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UILoginDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    if (reinterpret_cast<Unk_LoginUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4eef) != 0 || FUN_1406516b0() == 1)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4eef))) != 0 || FUN_1406516b0() == 1)
     {
         MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
         if (spObj.get() != 0)
@@ -535,9 +534,9 @@ int UILoginDialog::FUN_1419e2900()
 // @0x1419e2920
 void UILoginDialog::OnConnect()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x6200009)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetScene());
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene());
         if (pScene != 0)
         {
             int nUiId = vfunc_48();

@@ -38,7 +38,6 @@ class ASDialog : public ASDisplayObject
 };
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
-WorldService* FUN_1403ed2d0();
 
 // The inventory's bag of items by uid.
 extern Unk_Inventory DAT_143ab2a90;
@@ -90,7 +89,6 @@ public:
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 void FUN_140710590(COutPacket&);                            // send
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table text with one argument
 CStringW FUN_140938ae0(CStringW strKey, const int& nArg);          // string table text with one number
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 void FUN_1412751f0(const CStringW& text, int nA, int nB);   // notice
@@ -102,6 +100,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIItemExtractionScrollDialog::SlotBag);
 
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // @0x140e497d0
 UIItemExtractionScrollDialog::Slot::Slot(const CString& strName, int nIndex, MS2Ptr<CItem> spItem)
@@ -130,7 +129,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_14()
 // @0x140e49900
 int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
@@ -146,7 +145,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
 // @0x140e499a0 (ITooltip::vfunc_0)
 int UIItemExtractionScrollDialog::Slot::vfunc_0(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -162,7 +161,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_0(void* p)
 // @0x140e49aa0
 int UIItemExtractionScrollDialog::Slot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -269,7 +268,7 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
             pProxy->vfunc_8(*static_cast<CInPacket*>(pPacket));                      // MS2: slot 8
             pTransfer->vfunc_2(*static_cast<CInPacket*>(pPacket));
             spItem->FUN_140529280(nCount);
-            FUN_1412751f0(FUN_1405c2690(CStringW(L"s_itemextraction_success"), spResult->FUN_140527b10()), 1, 0);
+            FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_itemextraction_success"), spResult->FUN_140527b10()), 1, 0);
         }
         else if (nResult == 1)
         {

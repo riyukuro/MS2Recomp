@@ -72,6 +72,7 @@ class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world ser
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 int FUN_141472bc0();   // C3: was FUN_141472bc0
@@ -79,7 +80,6 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<int>
 CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<unsigned>
 CStringW FUN_1408116a0(int nId, const int& nArg);               // system text with one argument
@@ -87,7 +87,7 @@ CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // system chat notice
-void FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // pop a system message
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show the message box
@@ -192,10 +192,10 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     CString strType = pArgs->FUN_1422b8d30();
-    PCBase* pPlayer = ((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (FUN_140184310(strType, "giftItem"))
+    if ((strType == "giftItem"))
     {
         unsigned nGiftId = pArgs->FUN_1422b8b10();
         MS2Ptr<ItemGiftPcBang> spGift;
@@ -206,12 +206,12 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         {
             spItem->FUN_140526c70(spGift->m_count);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-            ASTooltip tip(((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0(), 4, 2);
+            ASTooltip tip(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 4, 2);
             if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
                 *pRetVal = tip.FUN_1422bb870();
         }
     }
-    else if (FUN_140184310(strType, "playGift"))
+    else if ((strType == "playGift"))
     {
         unsigned nIndex = pArgs->FUN_1422b8b10();
         if (nIndex >= m_playBonus.GetCount())
@@ -652,7 +652,7 @@ struct Unk_PcBangGiftLevelLess
 // @0x141326040
 void UIPcBangDialog::RebuildGiftOrder()
 {
-    PCBase* pPlayer = ((class Unk_PcBangWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_bGiftOrderDirty == 0)

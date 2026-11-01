@@ -23,7 +23,6 @@ CStringW GetStringCommon(int nStringId);                         // string table
 void FUN_141276180(const CString&, const CString&);
 void FUN_1412751f0(const CStringW&, int, int);                 // show a notice
 class Unk_LockUIManager;
-void FUN_141add1f0(Unk_LockUIManager*);
 
 // @0x1400e6420
 static CString s_strBuildingCount("system_notice_error_warningBuildingCount");
@@ -307,7 +306,7 @@ CStringW Unk_Service6100017::FUN_1410d5d80(int nMessage)
 void Unk_MyPCHousingSvc::FUN_1410d6590(int nMessage)
 {
     if (nMessage == 0x22) {
-        FUN_141add1f0(reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance()));
+        ((class CUIService*)(class Unk_LockUIManager*)(reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
     }
     else {
         if (nMessage == 1)

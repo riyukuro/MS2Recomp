@@ -55,6 +55,7 @@
 #include "ms2/placeholder/commandchat.h"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // MS2Ptr<ASUIComponent>: the exe shares every member except these four, which are COMDATs of this unit.
 template <> MS2Ptr<ASUIComponent>::MS2Ptr(MS2Ptr<ASUIComponent>&& o);                 // 0x140acd480
@@ -222,7 +223,7 @@ void FUN_140b77cf0(CString* pBag, ATL::CAtlArray<TabContentsPetEvolution::IdCoun
 // Item icon registry and UI helpers.
 void FUN_141415600(const CString& strBindID);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
-void FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
 void FUN_1412752d0(const CStringW& strMsg, int nType);                  // chat/system notice
 void FUN_141275260(int nMsgId, int a1, int a2);
 
@@ -230,12 +231,10 @@ void FUN_141275260(int nMsgId, int a1, int a2);
 const unsigned& FUN_1402fbd50(const unsigned& a, const unsigned& b);   // min
 CStringW GetStringCommonByKey(const CStringW& str);                            // localized string
 CStringW FUN_140298ea0(CStringW str);
-CStringW FUN_1409e9890(CStringW fmt, const unsigned& a, const unsigned& b);
 CStringW FUN_140938ae0(CStringW fmt, const int& a);
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_1408116a0(int nStringId, const int& n);
-CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -532,7 +531,7 @@ void PetEvolutionPetEnchant::vfunc_3()
     {
         nPoint += m_pOwner->FUN_140acb6f0();
         if (nPoint > nNeed)
-            bar->Invoke("setText", FUN_1409e9890(CStringW(L"s_pet_evolution_point"), nPoint, nNeed));
+            bar->Invoke("setText", FUN_14028dfa0<unsigned int, unsigned int>(CStringW(L"s_pet_evolution_point"), nPoint, nNeed));
         else
             bar->Invoke("setText", StringFormat(L"{0}/{1}", nPoint, nNeed));
         bar->Invoke("setPercentTween", (int)FUN_1402fbd50(nPoint, nNeed), (int)nNeed);
@@ -596,7 +595,7 @@ void PetEvolutionPetEnchant::vfunc_5(int nTab)
 // @0x140ac8a00
 void PetEvolutionPetEnchant::FUN_140ac8a00()
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (m_pOwner == NULL)
@@ -679,7 +678,7 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
 // @0x140ac9520
 void PetEvolutionPetEnchant::FUN_140ac9520()
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (m_pOwner == NULL)
@@ -716,7 +715,7 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
 // @0x140ac9a60
 void PetEvolutionPetEnchant::FUN_140ac9a60()
 {
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (m_pOwner == NULL)
@@ -955,7 +954,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x67) != 0)
@@ -982,7 +981,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
             {
                 if (((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635100() != 0 && ((class Unk_PetBind*)((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635120() == 0)
                 {
-                    CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
+                    CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
                     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_evolutionBindPet);
                     if (box.get() != 0)
                     {

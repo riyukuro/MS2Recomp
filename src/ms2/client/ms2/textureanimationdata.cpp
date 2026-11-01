@@ -27,6 +27,8 @@
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408737
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
@@ -79,9 +82,9 @@ Unk_TextureFrame::Unk_TextureFrame()
 // @0x141847560
 void Unk_TextureFrame::Load(Unk_140165cf0* pNode)
 {
-    FUN_1408733e0(pNode, "file", m_strFile);
-    FUN_1408733e0(pNode, "control", m_strControl);
-    FUN_1408731e0(pNode, "delay", m_nDelay);
+    XmlGetAttr((class TiXmlElement*)(pNode), "file", m_strFile);
+    XmlGetAttr((class TiXmlElement*)(pNode), "control", m_strControl);
+    XmlGetAttr((class TiXmlElement*)(pNode), "delay", reinterpret_cast<int&>(m_nDelay));
 }
 MS2_REPLACE_METHOD(0x141847560, Unk_TextureFrame, Load, 102, 0x6C83B0D1);
 
@@ -207,10 +210,10 @@ MS2_REPLACE_METHOD(0x141847C90, CTextureAnimationData, FUN_141847c90, 398, 0x5BB
 // @0x141847e30
 bool CTextureAnimationData::FUN_141847e30(Unk_140165cf0* pNode)
 {
-    FUN_1408733e0(pNode, "target", m_strTarget);
+    XmlGetAttr((class TiXmlElement*)(pNode), "target", m_strTarget);
     if (m_strTarget.IsEmpty())
         m_strTarget = FUN_142087e50(&DAT_143ae51d8);
-    for (Unk_140165cf0* pTexture = pNode->FUN_140165cf0("texture"); pTexture != 0; pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pTexture))->NextSibling("texture")))
+    for (Unk_140165cf0* pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("texture")); pTexture != 0; pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pTexture))->NextSibling("texture")))
     {
         m_arrFrames.Add(Unk_TextureFrame());
         int nLast = (int)m_arrFrames.GetCount() - 1;

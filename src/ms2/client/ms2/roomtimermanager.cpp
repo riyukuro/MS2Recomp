@@ -11,13 +11,13 @@
 // RTTI-only declaration: this unit never constructs or accesses UITimerDialog fields.
 class UITimerDialog : public UITimerBase { int m_188,m_18c; void* m_190; int m_198,m_19c; bool m_1a0; };
 MS2_CHECK_SIZE(UITimerDialog,0x1a8);
-class Unk_RoomUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_RoomUIManager { public: };
 CStringW FUN_1408116a0(int,const int&);
 CStringW GetStringCommon(int);
 void FUN_1412751f0(const CStringW&,int,int);
 template<class T> T* FindRoomUI(int id) {
     if(reinterpret_cast<Unk_RoomUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p=reinterpret_cast<Unk_RoomUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
         if(p.get()) return dynamic_cast<T*>((UIObject*)p);
     }
     return 0;

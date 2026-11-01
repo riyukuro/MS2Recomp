@@ -29,9 +29,8 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 
 // The client configuration singleton; the low-time effect name is the CString at +0x2f0 (as UITimerDialog's).
 struct Unk_TriggerTimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
-Unk_TriggerTimerCfg* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-WorldService* FUN_1403ed2d0();
 
 // @0x141b330c0
 UITriggerTimerDialog::UITriggerTimerDialog()
@@ -68,7 +67,7 @@ void UITriggerTimerDialog::vfunc_72()
     int nMin = 0;
     int nSec = 0;
     int nUnused = 0;
-    FUN_1403ed2d0()->FUN_141bc6fb0(&nMin, &nSec, &nUnused, &nFlag);
+    WorldService::GetInstance()->FUN_141bc6fb0(&nMin, &nSec, &nUnused, &nFlag);
     if (nFlag != 0 && nMin == 0 && nSec == 0)
         vfunc_67();
     else
@@ -83,7 +82,7 @@ void UITriggerTimerDialog::vfunc_72()
         if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10)
         {
             Unk_EffectTarget kTarget;
-            kTarget.m_strName = FUN_1401d31f0()->m_strEffect;
+            kTarget.m_strName = ((struct Unk_TriggerTimerCfg*)FUN_1401d31f0())->m_strEffect;
             kTarget.m_nKind = 0;
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
             m_nEffectRunning = 1;

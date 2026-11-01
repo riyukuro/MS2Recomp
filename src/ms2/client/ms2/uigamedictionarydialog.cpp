@@ -118,7 +118,7 @@ CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nStringId);                      // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
 CStringW BlockFormat(int nStringId);
-void FUN_140d73aa0(CStringW str, int a, int b, CStringW strExtra);
+void FUN_140d73aa0(CStringW str, int a, void* pListener, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
 
 // The string formatters (key by value: the callee destroys it).

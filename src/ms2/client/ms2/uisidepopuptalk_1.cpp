@@ -40,12 +40,11 @@ struct Unk_SptNpcNotice
 };
 
 int FUN_140768010(int nMax, int nMin);                      // a random number in [nMin, nMax)
-UISwfEntity* FUN_140c9b540(int nId);                        // the minimap dialog (ui class 0x4e29)
+class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 bool FUN_140184310(const CString& str, const char* sz);     // CString == const char*
 void FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
 __int64 FUN_140718320(const CStringW& str);                 // parse a number text
 unsigned __int64 FUN_140718370(const CStringW& str);        // parse an unsigned 64-bit number text
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member of an AS object
 
 // The dialog of a ui class id (or 0).
 template <class T> T* Unk_SptGetUI(int nId)
@@ -357,7 +356,7 @@ MS2_REPLACE_METHOD(0x140E88690, UISidePopupTalk, FUN_140e88690, 90, 0x43DD4ACF);
 // @0x140e886f0
 void UISidePopupTalk::FUN_140e886f0(int bVisible)
 {
-    UISwfEntity* pMinimap = FUN_140c9b540(0x4e29);
+    UISwfEntity* pMinimap = ((class UISwfEntity*)FUN_140c9b540(0x4e29));
     if (pMinimap != 0)
     {
         if (pMinimap->vfunc_9() != bVisible)
@@ -378,5 +377,5 @@ void ASObj::FUN_140e88a10(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }

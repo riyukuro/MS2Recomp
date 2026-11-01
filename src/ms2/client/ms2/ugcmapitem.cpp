@@ -17,9 +17,12 @@
 #include "hook/ms2hook.h"
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CUgcManager* FUN_14052d220();
-void FUN_140892da0(CUgcItemLook* pDest, const CUgcItemLook* pSource);
-extern bool FUN_14026d4d0(void*, int, __int64);
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
+class Unk_CommonOwner   // C3: member view for the former free stand-ins
+{
+public:
+    bool Matches(int, __int64);
+};
 
 // @0x140dfc1b0
 CUGCMapItem::CUGCMapItem()
@@ -136,7 +139,7 @@ int Unk_CubeStock::FUN_140dfc520(CUGCMapItem* pItem)
     MS2Ptr<CUgcItemLook> spLook = pItem->GetLook();
     bool bName = (spLook.get() ? true : false) && spLook->GetLocalPath().GetLength() > 0;
     if (bName)
-        FUN_14052d220()->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
+        ((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
     return 0;
 }
 
@@ -246,7 +249,7 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
         if (spItem == 0 || spItem->GetLook() == 0)
             continue;
         const MS2Ptr<CUgcItemLook>& rLook = spItem->GetLook();
-        if (!FUN_14026d4d0(pFilter, rLook->m_n34, rLook->m_n38))
+        if (!((class Unk_CommonOwner*)(void*)(pFilter))->Matches(rLook->m_n34, rLook->m_n38))
             continue;
         int nItemId = spItem->GetItemId();
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -264,7 +267,7 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
                     {
                         MS2Ptr<CUgcItemLook> spItemLook = spItem->GetLook();
                         if (spItemLook.get() != 0)
-                            FUN_140892da0(&reinterpret_cast<CItemUgc*>(spNew->FUN_1405278d0())->m_look, spItemLook.get());
+                            ((class CUgcItemLook*)(class CUgcItemLook*)(&reinterpret_cast<CItemUgc*>(spNew->FUN_1405278d0())->m_look))->CopyFrom(spItemLook.get());
                     }
                     out.Add(spNew);
                 }

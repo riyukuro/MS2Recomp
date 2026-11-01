@@ -297,7 +297,7 @@ void FUN_141414220()
 // Switches the highlight of every attached node of the local player.
 void FUN_141414250(bool bOn)
 {
-    Unk_FactoryPlayer* pPlayer = reinterpret_cast<Unk_FactoryWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FactoryPlayer* pPlayer = ((Unk_FactoryPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         efd::list<NiAVObject*> listNodes;

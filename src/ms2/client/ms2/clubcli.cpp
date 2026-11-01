@@ -121,7 +121,6 @@ Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTa
 class Unk_ClubUIManager
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
 };
 
 // The world (FUN_1403ed2d0): my player and the player lookup by name.
@@ -135,6 +134,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -609,7 +609,7 @@ CClubClientManager::~CClubClientManager()
 }
 
 // @0x140b14c50
-void CClubClientManager::FUN_140b14c50()
+void CClubClientManager::ClearClubs()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -640,7 +640,7 @@ int CClubClientManager::FUN_140b14cd0()
 }
 
 // @0x140b14d80
-MS2Ptr<CClubCli> CClubClientManager::FUN_140b14d80(__int64 nClubId)
+MS2Ptr<CClubCli> CClubClientManager::GetClub(__int64 nClubId)
 {
     MS2Ptr<CClubCli> spClub(0);
     if (Unk_LockGuard guard = m_lock)
@@ -674,7 +674,7 @@ Unk_SocketPtr<Unk_ClubCliMap> CClubClientManager::FUN_140b14e40()
 }
 
 // @0x140b14fc0
-__int64 CClubClientManager::FUN_140b14fc0(CStringW strName)
+__int64 CClubClientManager::GetClubIdByName(CStringW strName)
 {
     __int64 nClubId = 0;
     if (Unk_LockGuard guard = m_lock)
@@ -699,18 +699,18 @@ __int64 CClubClientManager::FUN_140b14fc0(CStringW strName)
 }
 
 // @0x140b15150
-CStringW CClubClientManager::FUN_140b15150(__int64 nClubId)
+CStringW CClubClientManager::GetClubName(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return CStringW(L"");
     return spClub->FUN_14020f1a0();
 }
 
 // @0x140b15210
-int CClubClientManager::FUN_140b15210(__int64 nClubId)
+int CClubClientManager::HasClub(__int64 nClubId)
 {
-    if (FUN_140b14d80(nClubId) == 0)
+    if (GetClub(nClubId) == 0)
         return 0;
     return 1;
 }
@@ -718,7 +718,7 @@ int CClubClientManager::FUN_140b15210(__int64 nClubId)
 // @0x140b15290
 int CClubClientManager::FUN_140b15290(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return 0;
     return 1;
@@ -821,7 +821,7 @@ MS2Ptr<Club::PacketInvite> CClubClientManager::FUN_140b156b0(__int64 nInviteId)
 // @0x140b15770
 MS2Ptr<CClubMember> CClubClientManager::FUN_140b15770(__int64 nClubId, __int64 nCharacterId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return MS2Ptr<CClubMember>(0);
     return spClub->FUN_140b12850(nCharacterId);
@@ -830,7 +830,7 @@ MS2Ptr<CClubMember> CClubClientManager::FUN_140b15770(__int64 nClubId, __int64 n
 // @0x140b15830
 int CClubClientManager::FUN_140b15830(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return 0;
     return spClub->FUN_140b129c0();
@@ -980,7 +980,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
 // @0x140b15f40
 void CClubClientManager::SendClubMode3(__int64 nClubId, int nCode)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     if (spClub->FUN_14020f540() != 1)
@@ -995,7 +995,7 @@ void CClubClientManager::SendClubMode3(__int64 nClubId, int nCode)
 // @0x140b16030
 bool CClubClientManager::FUN_140b16030(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return false;
     return spClub->FUN_140b14220();
@@ -1004,7 +1004,7 @@ bool CClubClientManager::FUN_140b16030(__int64 nClubId)
 // @0x140b160c0
 bool CClubClientManager::FUN_140b160c0(__int64 nClubId, CStringW strName)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return false;
     return spClub->FUN_140b14230(CStringW(strName));
@@ -1026,7 +1026,7 @@ void CClubClientManager::SendClubMode8(__int64 nInviteId, int bAccept)
 // @0x140b16270
 void CClubClientManager::FUN_140b16270(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->SendClubMode10();
@@ -1035,7 +1035,7 @@ void CClubClientManager::FUN_140b16270(__int64 nClubId)
 // @0x140b162f0
 void CClubClientManager::FUN_140b162f0(__int64 nClubId, CStringW strName)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->SendClubMode12(CStringW(strName));
@@ -1044,7 +1044,7 @@ void CClubClientManager::FUN_140b162f0(__int64 nClubId, CStringW strName)
 // @0x140b163c0
 void CClubClientManager::FUN_140b163c0(__int64 nClubId, int nBuffId, int nLevel)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b146e0(nBuffId, nLevel);
@@ -1053,7 +1053,7 @@ void CClubClientManager::FUN_140b163c0(__int64 nClubId, int nBuffId, int nLevel)
 // @0x140b16450
 void CClubClientManager::FUN_140b16450(__int64 nClubId, CStringW strName)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->SendClubMode14(CStringW(strName));
@@ -1135,7 +1135,7 @@ void CClubClientManager::FUN_140b16bc0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
     CStringW strName = packet.ReadUnicodeString();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     FUN_1412751b0(FUN_140632a60(0x347, strName, spClub->FUN_14020f1a0()), 0x14);
@@ -1191,7 +1191,7 @@ void CClubClientManager::FUN_140b17150(CInPacket& packet)
 void CClubClientManager::FUN_140b17210(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     CStringW strName = packet.ReadUnicodeString();
@@ -1213,7 +1213,7 @@ void CClubClientManager::FUN_140b17210(CInPacket& packet)
 void CClubClientManager::FUN_140b173f0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     FUN_140b15530(nClubId);
@@ -1228,7 +1228,7 @@ void CClubClientManager::FUN_140b17530(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
     CStringW strName = packet.ReadUnicodeString();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
 }
@@ -1239,7 +1239,7 @@ void CClubClientManager::FUN_140b17600(CInPacket& packet)
     __int64 nClubId = packet.ReadInt64();
     int nBuffId = packet.ReadInt32();
     int nBuffLevel = packet.ReadInt32();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
 }
@@ -1248,7 +1248,7 @@ void CClubClientManager::FUN_140b17600(CInPacket& packet)
 void CClubClientManager::FUN_140b176e0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b12ad0(packet);
@@ -1258,7 +1258,7 @@ void CClubClientManager::FUN_140b176e0(CInPacket& packet)
 void CClubClientManager::FUN_140b17780(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     CStringW strName = packet.ReadUnicodeString();
@@ -1280,7 +1280,7 @@ void CClubClientManager::FUN_140b17780(CInPacket& packet)
 void CClubClientManager::FUN_140b17a60(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b12d70(packet);
@@ -1290,7 +1290,7 @@ void CClubClientManager::FUN_140b17a60(CInPacket& packet)
 void CClubClientManager::FUN_140b17b00(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13060(packet);
@@ -1300,7 +1300,7 @@ void CClubClientManager::FUN_140b17b00(CInPacket& packet)
 void CClubClientManager::FUN_140b17ba0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13200(packet);
@@ -1310,7 +1310,7 @@ void CClubClientManager::FUN_140b17ba0(CInPacket& packet)
 void CClubClientManager::FUN_140b17c40(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b133c0(packet);
@@ -1320,7 +1320,7 @@ void CClubClientManager::FUN_140b17c40(CInPacket& packet)
 void CClubClientManager::FUN_140b17ce0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b135d0(packet);
@@ -1330,7 +1330,7 @@ void CClubClientManager::FUN_140b17ce0(CInPacket& packet)
 void CClubClientManager::FUN_140b17d80(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13a20(packet);
@@ -1340,7 +1340,7 @@ void CClubClientManager::FUN_140b17d80(CInPacket& packet)
 void CClubClientManager::FUN_140b17e20(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13b50(packet);
@@ -1350,7 +1350,7 @@ void CClubClientManager::FUN_140b17e20(CInPacket& packet)
 void CClubClientManager::FUN_140b17ec0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13c60(packet);
@@ -1360,7 +1360,7 @@ void CClubClientManager::FUN_140b17ec0(CInPacket& packet)
 void CClubClientManager::FUN_140b17f60(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13dc0(packet);
@@ -1370,7 +1370,7 @@ void CClubClientManager::FUN_140b17f60(CInPacket& packet)
 void CClubClientManager::FUN_140b18000(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b13f20(packet);
@@ -1380,7 +1380,7 @@ void CClubClientManager::FUN_140b18000(CInPacket& packet)
 void CClubClientManager::FUN_140b180a0(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b14050(packet);
@@ -1390,7 +1390,7 @@ void CClubClientManager::FUN_140b180a0(CInPacket& packet)
 void CClubClientManager::FUN_140b18140(CInPacket& packet)
 {
     __int64 nClubId = packet.ReadInt64();
-    MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
     spClub->FUN_140b14110(packet);
@@ -1553,7 +1553,7 @@ void FUN_140b18700(int nKind, int nCode)
 // @0x140b18ef0
 CStringW FUN_140b18ef0()
 {
-    PCBase* pPlayer = ((class Unk_ClubWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return CStringW(L"");
     return pPlayer->vfunc_77();
@@ -1570,7 +1570,7 @@ UIClubDialog* FUN_140b19090(int nUiId)
 {
     if (reinterpret_cast<Unk_ClubUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_ClubUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIClubDialog*>(spUI.operator->());
     }

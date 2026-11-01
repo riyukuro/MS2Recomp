@@ -69,7 +69,6 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-class Unk_VdUiMgr { public: void FUN_141adc750(int uiId); };
 class Unk_VdGameMenu { public: void FUN_141938ae0(int nType, int n); };
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
@@ -90,7 +89,7 @@ bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
 bool FUN_140841300(const CStringW& str, const char* sz);        // the string equals sz
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
-void FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
+int FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the item's lock kind
@@ -177,7 +176,7 @@ int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         return 1;
     }
     else if (_stricmp(szMethod, "onClickBuyGoods") == 0) {
-        ((class Unk_VdUiMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f1d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f1d)));
         return 1;
     }
     return 0;

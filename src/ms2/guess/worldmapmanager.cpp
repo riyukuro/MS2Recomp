@@ -163,6 +163,15 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -205,8 +214,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& rOut);
-int FUN_140873ad0(Unk_140165cf0* pNode, const char* pszName, CString& rOut);
+int XmlQuery(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_140873ad0
 int FUN_140d01040(CString& strAlign);                                       // text alignment from its name
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& out, const char* pszSep);   // split a list of ints
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -230,10 +238,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW GetStringCommon(int nKey);                                           // a common string by id
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);   // "{0}" formatting
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);               // a formatted string table text
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);
 CStringW FUN_140f02bd0(CStringW strKey, const CStringW& a1, const unsigned short& a2, const CStringW& a3);
-CStringW FUN_140b99450(CStringW strKey, const CStringW& a1, const unsigned& a2);
 CStringW FUN_140f48210(int nHour, int nMinute);                             // "hh:mm"
 CStringW FUN_140b8e910(const CMsTime& time);                                // the date text of a time
 __int64 GetServerTime();                                                    // the server time
@@ -401,7 +406,7 @@ int WorldMapManager::LoadWorldMapFiles()
         TiXmlDocument doc;
         if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             continue;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2worldmap");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2worldmap"));
         if (pRoot == 0)
         {
             FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -410,23 +415,23 @@ int WorldMapManager::LoadWorldMapFiles()
         Unk_140165cf0* pGroup = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
         if (pGroup == 0)
             continue;
-        for (Unk_140165cf0* pNode = pGroup->FUN_140165cf0("portal"); pNode != 0; pNode = pNode->FUN_140168650("portal"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("portal")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("portal")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
-            unsigned nCode = atoi(FUN_14015f710(pNode, "code", CString("")));
+            unsigned nCode = atoi(Unk_ReadString((class Unk_XmlNode*)(pNode), "code", CString("")));
             MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nCode);
             if (spField == 0)
                 continue;
             m_8.insert(nCode);
         }
-        for (Unk_140165cf0* pNode = pGroup->FUN_140165cf0("map"); pNode != 0; pNode = pNode->FUN_140168650("map"))
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("map")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("map")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             MS2Ptr<UIWorldMap::MapTile> spTile(Unk_BmNewTag(0));
             bool bDefault = false;
-            spTile->m_34 = atoi(FUN_14015f710(pNode, "code", CString("")));
+            spTile->m_34 = atoi(Unk_ReadString((class Unk_XmlNode*)(pNode), "code", CString("")));
             MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spTile->m_34);
             if (!spField)
                 continue;
@@ -441,7 +446,7 @@ int WorldMapManager::LoadWorldMapFiles()
             FUN_141b9d850(pNode, "tileType", &spTile->m_18);
             XmlGetAttr((class TiXmlElement*)(pNode), "dungeon", reinterpret_cast<unsigned&>(spTile->m_70));
             XmlGetAttr((class TiXmlElement*)(pNode), "quest", reinterpret_cast<unsigned&>(spTile->m_74));
-            FUN_1408733e0(pNode, "customContinent", spTile->m_78);
+            XmlGetAttr((class TiXmlElement*)(pNode), "customContinent", spTile->m_78);
             spTile->m_50 = 0;
             spTile->m_54 = 0;
             spTile->m_58 = 0;
@@ -559,13 +564,13 @@ int WorldMapManager::LoadFieldNameInfo()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         unsigned nId;
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
@@ -577,10 +582,10 @@ int WorldMapManager::LoadFieldNameInfo()
         if (spTile == 0)
             continue;
         CString strAlign;
-        FUN_140873ad0(pNode, "align", strAlign);
+        XmlQuery((class TiXmlElement*)(pNode), "align", strAlign);
         spTile->m_5c = FUN_140d01040(strAlign);
         CString strMovie;
-        FUN_140873ad0(pNode, "tagMovie", strMovie);
+        XmlQuery((class TiXmlElement*)(pNode), "tagMovie", strMovie);
         spTile->m_60 = strMovie;
         XmlGetAttr((class TiXmlElement*)(pNode), "alignOffsetX", spTile->m_68);
         XmlGetAttr((class TiXmlElement*)(pNode), "alignOffsetY", spTile->m_6c);
@@ -624,18 +629,18 @@ void WorldMapManager::LoadWorldMapNames(ATL::CAtlArray<CString>& names)
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("xml"); pNode != 0; pNode = pNode->FUN_140168650("xml"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("xml")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("xml")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CString strName;
-        FUN_1408733e0(pNode, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);
         names.Add(strName);
     }
 }
@@ -1058,7 +1063,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             CJobConditionTable::NpcJobDataPtr spGate = CJobConditionTable::GetInstance()->GetData(nNpcId);
             if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
             {
-                CStringW strLabel = FUN_1405c2690(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
+                CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
                 TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLabel);
                 if (FUN_14083fec0(strLabel, search) == -1)
                     continue;
@@ -1226,7 +1231,7 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
     {
         CStringW strTitle = GetStringTable()->FUN_141811980(10, npc);
         if (strTitle.GetLength() > 0)
-            strText = FUN_1408f71a0(CStringW(L"s_worldmap_search_npc_function"), strTitle, FUN_1401aa6a0(npc));
+            strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_worldmap_search_npc_function"), strTitle, FUN_1401aa6a0(npc));
         else
             strText = FUN_1401aa6a0(npc);
     }
@@ -1235,7 +1240,7 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
     {
         unsigned nOutdoor = 0;
         if (CFieldMetaTable::GetInstance()->FUN_1406fc110(field, &nOutdoor) != 0)
-            return FUN_1408f71a0(CStringW(L"s_worldmap_search_npc_indoor"), strText, GetStringTable()->FUN_141811980(3, field));
+            return FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_worldmap_search_npc_indoor"), strText, GetStringTable()->FUN_141811980(3, field));
     }
     return strText;
 }
@@ -1315,7 +1320,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                     MS2Ptr<CFieldDataCli> spTarget = CFieldDataCli::Find(spGate->m_nMoveFieldId);
                     if (spTarget)
                     {
-                        CStringW strLabel = FUN_1405c2690(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
+                        CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
                         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLabel);
                         ASObj item(2);
                         item.FUN_1407cbb20("text", strLabel);
@@ -1380,7 +1385,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         item.FUN_1407cbb20("text", GetStringTable()->FUN_141811980(3, nConnected));
         indoors.FUN_1422bbf00(item);
     }
-    CStringW strTitle = FUN_140b99450(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
+    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
     script->FUN_1409c0d20("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);
@@ -1418,7 +1423,7 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
             missions.FUN_1422bbf00(item);
         }
     }
-    CStringW strTitle = FUN_140b99450(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
+    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
     script->FUN_1409c0d20("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);

@@ -31,7 +31,7 @@ public:
     char m_pad_000[0x1d0];
     CString m_strStatIcon;                                      // +0x1d0
 };
-Unk_CbIcons* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 CStringTable* GetStringTable();
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);         // localized text with one number (pointer form)
@@ -120,7 +120,7 @@ void UIChapterBook::OnLoadComplete()
                 else if (reward.m_nType == 3)
                 {
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", FUN_1401d31f0()->FUN_140cca050(reward.m_nKind));
+                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->FUN_140cca050(reward.m_nKind));
                     CStringW strKey(L"s_chapterbook_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_achieve_reward_skill_point_sub_1";
@@ -130,7 +130,7 @@ void UIChapterBook::OnLoadComplete()
                 else if (reward.m_nType == 2)
                 {
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", FUN_1401d31f0()->m_strStatIcon);
+                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->m_strStatIcon);
                     objReward.FUN_1407cbb20("name", FUN_14062b4f0(CStringW(L"s_chapterbook_stat_point"), &reward.m_nValue));
                     obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
                 }

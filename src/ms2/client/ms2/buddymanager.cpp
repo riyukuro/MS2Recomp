@@ -78,7 +78,7 @@ CStringW GetStringCommon(int);
 CStringW BlockFormat(int);
 void FUN_140961010(int,int,int,const CStringW&);
 void FUN_1412751b0(const CStringW&,int);
-void FUN_141276180(const CString&,const CString&);
+int FUN_141276180(const CString&,const CString&);
 bool FUN_140841300(const CStringW&,const char*);
 void FUN_140d73aa0(CStringW,int,__int64,CStringW);
 #include "ms2/placeholder/uidialog.h"
@@ -253,8 +253,8 @@ MS2_REPLACE_METHOD(0x140AE5850, CBuddyManager, FUN_140ae5850, 178, 0xE4E576ED);
 void CBuddyManager::FUN_140ae5910() { if(Unk_BuddyGuard guard=lock) {} else { list.RemoveAll(); ids.RemoveAll(); accounts.RemoveAll(); } }
 MS2_REPLACE_METHOD(0x140AE5910, CBuddyManager, FUN_140ae5910, 128, 0x25C639A2);
 
-class Unk_BuddyUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_BuddyUIManager { public: };
 // @0x140ae5990
-UICommunityDialog* FUN_140ae5990(int id) { if(reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())) { MS2Ptr<UIObject> p=reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id); if(p.get()) return dynamic_cast<UICommunityDialog*>(p.operator->()); } return 0; }
+UICommunityDialog* FUN_140ae5990(int id) { if(reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())) { MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id); if(p.get()) return dynamic_cast<UICommunityDialog*>(p.operator->()); } return 0; }
 // @0x140ae5a30
-UICommunityQueryDialog* FUN_140ae5a30(int id) { if(reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())) { MS2Ptr<UIObject> p=reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id); if(p.get()) return dynamic_cast<UICommunityQueryDialog*>(p.operator->()); } return 0; }
+UICommunityQueryDialog* FUN_140ae5a30(int id) { if(reinterpret_cast<Unk_BuddyUIManager*>(TSingleton<CUIService>::GetInstance())) { MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id); if(p.get()) return dynamic_cast<UICommunityQueryDialog*>(p.operator->()); } return 0; }

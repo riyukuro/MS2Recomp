@@ -83,6 +83,8 @@ class WorldService   // C3: static member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+public:
+    void* FUN_141bd0cc0();   // C3: was free FUN_141bd0cc0
 };
 void FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -128,7 +130,6 @@ public:
     virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void SetPosition(Unk_RankVec3 pos);                     // 22
 };
-Unk_RankActor* FUN_141bd0cc0(void* pWorld);
 
 // The pointer to the actor: AddRef on copy, Release on destruction (the destructor is not declared throw()).
 template <class T> class Unk_RankComPtr
@@ -342,7 +343,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     else if (nMessage == 0x13)
     {
         bool bFlag = packet.ReadBool();
-        Unk_RankActor* pActor = FUN_141bd0cc0(((void*)WorldService::GetInstance()));
+        Unk_RankActor* pActor = ((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor == 0)
             return;
         if (bFlag)
@@ -445,7 +446,7 @@ void CPvpRankDuelComponent::RefreshLeague()
 // @0x140dbf160
 bool CPvpRankDuelComponent::RequestCancelMatch()
 {
-    Unk_RankComPtr<Unk_RankActor> spActor(FUN_141bd0cc0(((void*)WorldService::GetInstance())));
+    Unk_RankComPtr<Unk_RankActor> spActor(((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
     if (spActor == 0)
         return false;
     if (((PCBase*)(spActor).operator->())->FUN_14166ce30() == 1)

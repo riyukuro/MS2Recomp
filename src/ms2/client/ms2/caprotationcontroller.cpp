@@ -153,7 +153,7 @@ void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assi
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
 const Vector3& FUN_140947900(NiAVObject* pNode);        // world translate
 
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
 class Unk_SceneWalker
 {
 public:
@@ -161,9 +161,9 @@ public:
     ~Unk_SceneWalker();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // The loaded meshes of a part model: a std::set<NiAVObjectPtr> (equipmodel.h).
 typedef std::set<NiAVObjectPtr> Unk_MeshSet;
@@ -447,7 +447,6 @@ void CCapRotationController::vfunc_36()
 }
 
 // @0x140b01bb0
-// MS2-FUNCTIONAL: code and slots identical, but the frame is 0x118 vs the exe's 0x108 (16 unreferenced bytes); behavior equivalent
 int CCapRotationController::InitPart()
 {
     if (!m_spEquipItem)

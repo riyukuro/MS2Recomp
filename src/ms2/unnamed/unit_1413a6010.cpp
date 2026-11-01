@@ -23,7 +23,7 @@ class Unk_Restrictions;
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-UIDialog* FUN_140c300a0(unsigned nDialogID);                // the dialog of a UI id
+class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 UIDialog* FUN_141386950(const CStringA* pName);             // the dialog of a name
 void FUN_141386b50(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& arr);   // the "control" name list
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments

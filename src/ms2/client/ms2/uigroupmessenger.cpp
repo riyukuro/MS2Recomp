@@ -146,11 +146,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);
 };
 // The message carries the box's AS root.
-class Unk_GrmMsg : public UIMsg
-{
-public:
-    Scaleform::GFx::Value FUN_1422b9260();
-};
+typedef UIMsg Unk_GrmMsg;
 
 // The movie root of every dialog is an ASDialog.
 class ASDialog : public ASUIComponent
@@ -266,14 +262,14 @@ CStringW FUN_141842320(const CStringW& strText);                    // text to h
 #ifdef __clang__
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);  // operator+
 #endif
-void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void* FUN_140d86260();   // C3: was FUN_140d86260
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_14151f200();                                               // the click sound
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);           // a system chat line
-void FUN_141276180(const CString& strSound, const CString& strExtra);      // plays a sound
+int FUN_141276180(const CString& strSound, const CString& strExtra);      // plays a sound
 CString FUN_1412755f0();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 class TiXmlNode   // C3: member view for the former free stand-ins

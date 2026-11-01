@@ -495,7 +495,7 @@ void CMakeupController::vfunc_36()
 // @0x141477730
 void CMakeupController::SetPreviewApply(bool bOn)
 {
-    Unk_MakeupPlayer* pPlayer = reinterpret_cast<Unk_MakeupWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         ((class CEquipment*)(void*)(FUN_1416561a0(pPlayer)))->FUN_1411ea2e0(bOn);
 }
@@ -554,7 +554,7 @@ void CMakeupController::UpdateScaleAnimation()
 void CMakeupController::FindFaceMesh()
 {
     m_spFaceMesh.FUN_141418a00(0);
-    Unk_MakeupPlayer* pPlayer = reinterpret_cast<Unk_MakeupWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         SetPreviewApply(false);

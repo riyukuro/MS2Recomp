@@ -16,13 +16,13 @@ public:
     ~Unk_AlignInfoPtr() { Release(); }
 private:
     void AddRef() const { if (m_p) AddRefImpl(0); }
-    static void Reference(T* p) { p->FUN_14015b020(); }
+    static void Reference(T* p) { CPtred::AddRefPtred(p); }
     void AddRefImpl(void*) const { Reference(m_p); }
     void Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
     void ReleaseImpl(void*) {
-        if (m_p->FUN_140159bc0() == 0) {
+        if (CPtred::ReleasePtred(m_p) == 0) {
             Reference(m_p);
-            m_p->FUN_140159ba0();
+            CPtred::DeletePtred(m_p);
         }
     }
     void* m_unused;

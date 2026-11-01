@@ -53,7 +53,6 @@ extern int DAT_143ab0248; // platform setting owned by the configuration unit
 void FUN_14083d2b0(CStringW &);
 __int64 GetServerTime();
 unsigned char FUN_14028da10();
-CStringW FUN_1405c2690(CStringW, const CStringW &);
 #define PROXY_STREAM(p) (reinterpret_cast<CInputStream *>(reinterpret_cast<char *>(p) + 8))
 #define PROXY_BITS_ASSERT(line)                                                                              \
   (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl", line), 0))
@@ -66,6 +65,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/gameeventuservalue.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 class Unk_ProxyStaticTreeA {
 public:
   Unk_ProxyStaticTreeA();
@@ -2597,9 +2597,9 @@ CStringW Unk_UserProxyTriggerText::GetText() {
   case 1:
     return L"";
   case 2:
-    return FUN_1405c2690(L"s_user_trigger_label_action", m_0);
+    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_action", m_0);
   case 3:
-    return FUN_1405c2690(L"s_user_trigger_label_condition", m_0);
+    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_condition", m_0);
   case 4:
     return m_8;
   default:

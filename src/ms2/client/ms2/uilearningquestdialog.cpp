@@ -31,6 +31,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- out-of-unit callees (names describe uses) ----
 class TiXmlElement { public:
@@ -70,7 +71,6 @@ CString FUN_1402bb1c0(const char* pszFormat, const int& n);                 // S
 CString FUN_1401d9af0(const char* pszFormat, const __int64* pn);            // StringFormat(format, size_t)
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);
 CStringW FUN_1402a5170(const wchar_t* pszFormat, const CString& str);
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);         // format a string-table text with one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
 CStringW FUN_14083cb20(const CStringW& str);
@@ -164,7 +164,7 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp(szMethod, "onOk") == 0)
     {
-        Unk_LqActor* pActor = reinterpret_cast<Unk_LqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_LqActor* pActor = ((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0)
             return 0;
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
@@ -173,7 +173,7 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (pActor->FUN_141527e00() != 0 && spData->m_nGotoField == 62000000)
         {
             if (reinterpret_cast<Unk_LqUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f3f) != 0)
-                reinterpret_cast<Unk_LqUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f3f);
+                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3f)));
         }
         else
         {
@@ -251,7 +251,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
     CStringW strCategory = GetStringCommonByKey(FUN_1401ceea0(L"s_learning_quest_category_{0}", m_190));
     if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_name"))
     {
-        CStringW strName = FUN_1405c2690(CStringW(L"s_learning_quest_name"), strCategory);
+        CStringW strName = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_name"), strCategory);
         FUN_1403b4750()->FUN_1416fb340(strName);
         spName->FUN_1422c4cd0(strName);
     }
@@ -540,12 +540,12 @@ void UILearningQuestDialog::FUN_140ea3570(const CQuestData::CompleteReward& rRew
 {
     if (rReward.m_exp != 0)
     {
-        CStringW strExp = FUN_1405c2690(CStringW(L"s_learning_quest_exp"), FUN_14083cb20(FUN_140719630(rReward.m_exp)));
+        CStringW strExp = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_exp"), FUN_14083cb20(FUN_140719630(rReward.m_exp)));
         rOut.FUN_1407cbb20("exp", strExp);
     }
     if (rReward.m_money != 0)
     {
-        CStringW strMeso = FUN_1405c2690(CStringW(L"s_learning_quest_meso"), FUN_14083cb20(FUN_140719630(rReward.m_money)));
+        CStringW strMeso = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_meso"), FUN_14083cb20(FUN_140719630(rReward.m_money)));
         rOut.FUN_1407cbb20("meso", strMeso);
     }
     for (__int64 i = 0; (size_t)i < rReward.m_choiceRewards.GetCount(); ++i)
@@ -559,7 +559,7 @@ void UILearningQuestDialog::FUN_140ea3570(const CQuestData::CompleteReward& rRew
 // @0x140ea3910
 void UILearningQuestDialog::FUN_140ea3910()
 {
-    if (reinterpret_cast<Unk_LqWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == 0)
+    if (((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == 0)
         return;
     if (((class GFxSceneService*)(class Unk_LqSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;

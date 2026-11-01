@@ -39,6 +39,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/effectservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -174,7 +175,6 @@ public:
 };
 Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_IESound;
-Unk_IESound* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -240,7 +240,7 @@ void UIItemEditDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ((class Unk_IEItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_1419bdb50(0);
-    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
     {
         m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
@@ -357,7 +357,7 @@ void UIItemEditDialog::vfunc_24(void* p)
 {
     if (p == 0)
         return;
-    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_14166c930() != 0xe)
@@ -456,7 +456,7 @@ bool UIItemEditDialog::FUN_1419bd710()
 // @0x1419bd7a0
 bool UIItemEditDialog::FUN_1419bd7a0()
 {
-    Unk_IEPlayer* pPc = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     {
@@ -478,7 +478,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
     Unk_IEField* pField = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd3620();
     if (pField)
         pField->vfunc_149();
-    ((class GFxSceneService*)(class Unk_IESound*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
     return true;
 }
 

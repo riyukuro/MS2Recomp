@@ -49,7 +49,7 @@ public:
 UIObject* FUN_1403ed9e0(Unk_SpUIRef& rRef);
 
 CSmartPush* FUN_1401f7f50(CStringW strClass);                   // class factory: new object by registered name
-unsigned FUN_140869420();                                       // client millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // The "do not disturb" option block (+0x14: suppress every push).
 struct Unk_SpOptionData
@@ -109,7 +109,7 @@ void CSmartPushManager::FUN_140dd8440()
     UISmartPush* pUi = FindStripUI(0x4ef7);
     if (pUi == 0)
         return;
-    int nNow = FUN_140869420();
+    int nNow = GetTickCountMs2();
     if ((unsigned)(nNow - m_nLastTick) < 100)
         return;
     m_nLastTick = nNow;

@@ -144,7 +144,7 @@ CGameSocket::CGameSocket():m_packets(10),m_receiveQueue(10),m_sendQueue(10),m_lo
     m_out=new COutPacketBuffer; m_logger=new CPacketLogger; m_logger->Configure(true,true,false);
 }
 // @0x141264960
-CGameSocket::~CGameSocket() { FUN_141265850(); }
+CGameSocket::~CGameSocket() { Close(); }
 // @0x141264a70
 void CGameSocket::vfunc_1(CSimpleSocket*,int error)
 {
@@ -248,23 +248,23 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
         }
     }
     int error=WSAGetLastError(); if(showError) FUN_1412676a0(error);
-    FUN_141266500(error); FUN_141265850(); return 0;
+    FUN_141266500(error); Close(); return 0;
 }
 // @0x1412657e0
-void CGameSocket::FUN_1412657e0() { FUN_141265420(m_retryHost,m_retryPort,m_showErrors,0); }
+void CGameSocket::Reconnect() { FUN_141265420(m_retryHost,m_retryPort,m_showErrors,0); }
 // @0x141265850
-void CGameSocket::FUN_141265850()
+void CGameSocket::Close()
 {
     m_socket.FUN_141269750();
     { Unk_LockGuard guard(m_lock); if(guard!=0) {} else { m_state=Unk_SocketState::Closed; m_received=0; m_receiveBuffer=nullptr; m_packets.RemoveAll(); m_receiveQueue.RemoveAll(); } }
     { Unk_LockGuard guard(m_lock); if(guard!=0) {} else { m_sendQueue.RemoveAll(); m_sent=0; } }
 }
-MS2_REPLACE_METHOD(0x141265850, CGameSocket, FUN_141265850, 262, 0x37CE21CB);
+MS2_REPLACE_METHOD(0x141265850, CGameSocket, Close, 262, 0x37CE21CB);
 // @0x141265960
-void CGameSocket::FUN_141265960() { FUN_141265850(); FUN_1412677b0(); }
+void CGameSocket::FUN_141265960() { Close(); FUN_1412677b0(); }
 MS2_REPLACE_METHOD(0x141265960, CGameSocket, FUN_141265960, 29, 0x706FDE9B);
 // @0x141265990
-void CGameSocket::FUN_141265990(COutPacket& packet)
+void CGameSocket::SendPacket(COutPacket& packet)
 {
     bool hold; bool defer=false; hold=false;
     if(((void*)FUN_140e800e0())) { defer=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad1e0(); hold=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->FUN_140aad0a0(9)==1; }
@@ -278,7 +278,7 @@ void CGameSocket::FUN_141265990(COutPacket& packet)
         }
     } else m_out->FUN_140208960(this,packet);
 }
-MS2_REPLACE_METHOD(0x141265990, CGameSocket, FUN_141265990, 330, 0x4BA90009);
+MS2_REPLACE_METHOD(0x141265990, CGameSocket, SendPacket, 330, 0x4BA90009);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141265ae0
 void CGameSocket::FUN_141265ae0()
@@ -774,7 +774,7 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 MS2_REPLACE(0x141269970, Unk_SocketDecrement, 24, 0xE8938165);
 MS2_REPLACE(0x14126cd90, Unk_SocketThreadAddRef, 21, 0x8D4F5A8B);
 MS2_REPLACE(0x14126ce60, Unk_SocketThreadRelease, 21, 0x6E9F9D2A);
-MS2_REPLACE_METHOD(0x1412657e0, CGameSocket, FUN_1412657e0, 101, 0xA4BA1795);
+MS2_REPLACE_METHOD(0x1412657e0, CGameSocket, Reconnect, 101, 0xA4BA1795);
 MS2_REPLACE_METHOD(0x141265ae0, CGameSocket, FUN_141265ae0, 2450, 0x4E0FB171);
 MS2_REPLACE_METHOD(0x141269750, CSimpleSocket, FUN_141269750, 41, 0xCA8FD322);
 MS2_REPLACE_METHOD(0x141269780, CSocketBase, FUN_141269780, 51, 0xDDA3D594);

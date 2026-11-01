@@ -27,6 +27,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <stdlib.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -59,14 +60,13 @@ public:
 };
 class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_PnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nType); };
+class Unk_PnUIMgr { public: };
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 CKeyTable* FUN_1409331f0();
 class Unk_PnButton : public ASDisplayObject { public: void FUN_1422cdfb0(const CStringW& strText); };
 class Unk_PnRoot : public AScript {};
@@ -312,7 +312,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     {
         if (!bLast)
         {
-            CStringW strEnd = FUN_1405c2690(L"s_field_quest_talk_end", FUN_1409331f0()->FUN_14142d220(1));
+            CStringW strEnd = FUN_14028dfa0<CStringW>(L"s_field_quest_talk_end", FUN_1409331f0()->FUN_14142d220(1));
             spEnd->FUN_1422cdfb0(strEnd);
             spEnd->vfunc_3(1);
         }
@@ -329,7 +329,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
             else
                 strKey = L"s_field_quest_talk_ok";
         }
-        CStringW strNext = FUN_1405c2690(strKey, FUN_1409331f0()->FUN_14142d760(0x493e2, 0));
+        CStringW strNext = FUN_14028dfa0<CStringW>(strKey, FUN_1409331f0()->FUN_14142d760(0x493e2, 0));
         spNext->FUN_1422cdfb0(strNext);
     }
     return 1;
@@ -352,7 +352,7 @@ UIFameContentsNotify* FUN_140e77d80(int nType)
 {
     if (reinterpret_cast<Unk_PnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> ui = reinterpret_cast<Unk_PnUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nType);
+        MS2Ptr<UIObject> ui = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nType);
         if (ui.get())
             return dynamic_cast<UIFameContentsNotify*>((UIObject*)ui);
     }

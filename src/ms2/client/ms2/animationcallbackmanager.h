@@ -51,8 +51,7 @@ class CAnimationCallbackItem : public CPtred
 public:
     // @0x140998900
     CAnimationCallbackItem() : m_fHeight(0.0f) {}
-    // @0x140998b00 (??_G 0x1409990f0)
-    virtual ~CAnimationCallbackItem() {}
+    // implicit virtual dtor 0x140998b00 (??_G 0x1409990f0): the exe stores no vptr
 
     ATL::CAtlArray<CString> m_texts;                                    // +0x18 key texts to register as TEXT_KEY_EVENT
     float m_fHeight;                                                    // +0x38 "HeightFromGround_<f>" (0 = unset)

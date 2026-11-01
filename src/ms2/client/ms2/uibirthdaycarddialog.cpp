@@ -37,8 +37,8 @@ public:
     void FUN_1411a5110(CString strPath, CString strName, CString strBone, int a, void* pXform, float fScale, int b);   // play a sound
 };
 
+class WorldService { public: void* FUN_141bd0cc0(); };   // C3: member view (0x141bd0cc0, the local player)
 void* FUN_1403ed2d0();                                          // the world session (local player owner)
-Unk_BirthdayActor* FUN_141bd0cc0(void* pSession);               // the local player's actor
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 void* FUN_140967100();
 void FUN_141b1feb0(void* pTalk);
@@ -105,7 +105,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
 {
     if (m_30.get() != 0)
     {
-        Unk_BirthdayActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+        Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
         if (pActor != 0)
         {
             if (pActor->FUN_141660030() != 0)

@@ -16,10 +16,8 @@ public:
     ASObj(const Scaleform::GFx::Value& v, int nMovieId);                 // 0x1422ba780 (ASTooltip(Value))
     ASObj(Scaleform::GFx::Value& v, int nMovieId);                       // 0x1422ba7f0 (same body; the merat market products)
     virtual ~ASObj();
-    void FUN_1407cbbe0(const char* szName, bool b);                      // set a bool member
-    void FUN_1407cba60(const char* szName, CString str);                 // set a string member
-    void FUN_1407cbb20(const char* szName, CStringW str);                // set a wide string member
-    void FUN_1407cb9c0(const char* szName, int n);                       // set an int member
+    // The bool/CString/CStringW/int setters FUN_1407cbbe0/cba60/cbb20/cb9c0 and FUN_1422bb2b0 (a member as text) are
+    // AScript's own (commonfiles/shopcategorytable.cpp, gfxui/ascript.cpp): calls through an ASObj bind those names.
     void FUN_1409c10e0(const char* szName, int n);                       // set an int member (uimeratmarketdialog.cpp "saleState")
     void FUN_1409c0d20(const char* szName, unsigned int n);              // set an unsigned member
     void FUN_1409c0dc0(const char* szName, const char* szValue);         // set a string member from a char*
@@ -63,7 +61,6 @@ public:
     void FUN_140ec3230(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uimeratmarketcommon.cpp)
     void FUN_140f17290(const char* szName, int n);                       // same body, another COMDAT (inline, uiblackmarketpage.cpp: the stat group)
     void FUN_141253870(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, gameoptioninputdefault.cpp)
-    CStringW FUN_1422bb2b0(const char* szName);                          // a member as text (uiitemcreatedialog.cpp)
     void FUN_1422bae10(const char* szName, int& n);                      // read an int member (uiitemcreatedialog.cpp)
     void FUN_141b2ffc0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uitriggereditordialog.cpp)
     void FUN_141a07250(const char* szName, int n);                       // set an int member (uimessagebox's range; the trigger state positions)

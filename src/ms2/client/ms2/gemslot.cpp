@@ -122,7 +122,7 @@ int GemSlot::vfunc_18(void* p)
     {
         if (m_spPC->FUN_140dba1c0() != 0)
         {
-            Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0)
                 return 0;
             void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
@@ -197,7 +197,7 @@ int GemSlot::FUN_14126d880(CItem* pItem)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
     if (pItem == 0)
@@ -230,7 +230,7 @@ int GemSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
     bool bInvalid = FUN_140222e10(m_nGemType) == false;
@@ -267,7 +267,7 @@ int GemSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = reinterpret_cast<Unk_GmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();

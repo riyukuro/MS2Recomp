@@ -39,6 +39,7 @@
 #include <ecr/RenderSurface.h>
 #include <efd/ServiceManager.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/gfxrenderer2d.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/asdata.h"
@@ -214,7 +215,6 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     class UISceneEntity* FUN_1422b9e50();
 };
-void* FUN_1408e57f0();
 MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 
 // The camera manager: the direction the camera looks along.
@@ -433,13 +433,13 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
     else if (_stricmp("loadComplete", szEvent) == 0)
     {
         m_bLoaded = 1;
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_60(m_spScript);
     }
     else if (_stricmp("dispatchEvent", szEvent) == 0)
     {
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_61(m_spScript, pArgs, nArgs);
     }

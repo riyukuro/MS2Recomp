@@ -23,7 +23,6 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);   // string attribute
 void* FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pnValue);           // int attribute
-bool FUN_140184310(const CString& str, const char* psz);                // str == psz
 
 // @0x141375cb0
 CGraphicOptionTable::CGraphicOptionTable()
@@ -55,7 +54,7 @@ void CGraphicOptionTable::Load()
                 {
                     strKey.Format("option%d", i);
                     FUN_14086f500(pOption, strKey, &nValue);
-                    if (FUN_140184310(strName, "multisample"))
+                    if ((strName == "multisample"))
                     {
                         m_multisample[i - 1] = nValue;
                     }

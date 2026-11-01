@@ -31,8 +31,8 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
 int FUN_14021bdc0(CString& str);                                         // enum value of a slot name
@@ -47,8 +47,16 @@ public:
     int FUN_14053c5e0();                // item sub type
 };
 MS2Ptr<Unk_BankItem> FUN_14053f870(int nItemId);
-Unk_BankItemSlot* FUN_14053eba0(Unk_BankItem*);
-int FUN_14054b400(Unk_BankItemSlot*);   // slot of an item (0 when the item has none)
+class CItemData   // C3: member view for the former free stand-ins
+{
+public:
+    class ItemModelData* FUN_14053eba0();
+};
+class ItemModelData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14054b400() const;
+};
 
 CLockCriticalSection* Unk_LockIdentity(CLockCriticalSection*); // identity (base-object constructor)
 // Scoped lock helper shared with homeblockmanager / ugcmappackageinfo: locks on construction when asked, unlocks on exit.
@@ -191,7 +199,7 @@ int CBankTable::FindBankId(int nItemId)
     MS2Ptr<Unk_BankItem> item = FUN_14053f870(nItemId);
     if (item == 0)
         return -1;
-    int nSlot = FUN_14054b400(FUN_14053eba0(item.get()));
+    int nSlot = ((class ItemModelData*)(class Unk_BankItemSlot*)(((class Unk_BankItemSlot*)((class CItemData*)(class Unk_BankItem*)(item.get()))->FUN_14053eba0())))->FUN_14054b400();
     int nType = item->FUN_14053c5c0();
     int nSubType = item->FUN_14053c5e0();
     int nFound = -1;
@@ -236,10 +244,10 @@ int CBankTable::LoadItemDefine()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
         DefinePtr def(new CBankItemDefine);
-        FUN_1408731e0(pNode, "id", def->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", def->m_nId);
         ReadSlotAttr(pNode, "slot", &def->m_nSlot);
-        FUN_1408731e0(pNode, "type", def->m_nType);
-        FUN_1408731e0(pNode, "subType", def->m_nSubType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "type", def->m_nType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "subType", def->m_nSubType);
         Unk_1401b4ec0 guard(m_lock, 1);
         m_defines.AddTail(def);
         if (def->m_nId > m_nMaxId)
@@ -267,9 +275,9 @@ int CBankTable::LoadBankType()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("bankType"); pNode != 0; pNode = pNode->FUN_140168650("bankType"))
     {
         DataPtr data(new CBankData);
-        FUN_140873220(pNode, "id", reinterpret_cast<unsigned&>(data->m_nId));
-        FUN_1408731e0(pNode, "useCash", data->m_nUseCash);
-        FUN_1408731e0(pNode, "slotCount", data->m_nSlotCount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned&>(data->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "useCash", data->m_nUseCash);
+        XmlGetAttr((class TiXmlElement*)(pNode), "slotCount", data->m_nSlotCount);
         strStore = FUN_14015f710(pNode, "storeItemType", CString(""));
         data->SetSlots(CString(strStore));
         Unk_1401b4ec0 guard(m_lock, 1);

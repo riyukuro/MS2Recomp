@@ -60,7 +60,7 @@ public:
     void FUN_14118d9a0(int nState);                                         // enter a state
     void FUN_14118fe60(int nValue);                                         // 0x14118fe60 m_n28c
     void FUN_14118fe80(int nValue);                                         // 0x14118fe80 m_n298
-    int FUN_14118fea0();                                                    // +0x150 > 0 (a meso drop)
+    int IsMeso();                                                    // +0x150 > 0 (a meso drop)
     int FUN_14118fee0();                                                   // 0x14118fee0
     int FUN_14118ff10();                                                    // the item is type 0x55d4a8a
     int FUN_14118ff60();                                                    // the item is type 0x55d4a83

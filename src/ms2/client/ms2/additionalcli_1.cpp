@@ -41,7 +41,7 @@ public:
     void FUN_140e85fc0(__int64 nCur, __int64 nMax);         // 0x140e85fc0 new value pair; hide when empty
 };
 
-unsigned FUN_141472bc0();                                   // 0x141472bc0 the current tick (ms)
+int FUN_141472bc0();   // C3: was FUN_141472bc0
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // 0x141b6efc0 the scene node of an entity
@@ -120,10 +120,10 @@ void AdditionalCli::FUN_14096bd30(PCBase* pOwner, int nId, unsigned short nLevel
 void AdditionalCli::FUN_14096be10(PCBase* pOwner, const Unk_AdditionalOwner& owner, CInPacket& packet)
 {
     m_pOwner = pOwner;
-    FUN_14096c2a0(owner);
+    SetOwnerInfo(owner);
     Unk_AdditionalState state;
     state.Decode(packet);
-    FUN_14096c2e0(state);
+    ApplyState(state);
     Unk_AdditionalValue value;
     value.Decode(packet);
     FUN_14096c360(value);
@@ -142,7 +142,7 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
         return;
     }
     m_pOwner = pOwner;
-    FUN_14096c2a0(owner);
+    SetOwnerInfo(owner);
     if (nFlags & 1)
     {
         int bEnabled = m_bEnabled;
@@ -161,7 +161,7 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
         m_spLevel = spLevel;
         bool bCountChanged = m_nOverlapCount != state.m_n10;
         bool bTimeChanged = m_nEndTick != state.m_n4;
-        FUN_14096c2e0(state);
+        ApplyState(state);
         bool bMe = FUN_140930110(m_nCasterId);
         if (bMe)
         {
@@ -196,14 +196,14 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
 }
 
 // @0x14096c2a0
-void AdditionalCli::FUN_14096c2a0(const Unk_AdditionalOwner& owner)
+void AdditionalCli::SetOwnerInfo(const Unk_AdditionalOwner& owner)
 {
     m_nKey = owner.m_n4;
     m_nCasterId = owner.m_n8;
 }
 
 // @0x14096c2e0
-void AdditionalCli::FUN_14096c2e0(const Unk_AdditionalState& state)
+void AdditionalCli::ApplyState(const Unk_AdditionalState& state)
 {
     m_nStartTick = state.m_n0;
     m_nEndTick = state.m_n4;

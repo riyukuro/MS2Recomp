@@ -14,8 +14,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);     // bool attribute ("true"/"1")
-bool FUN_14028f710(Unk_140165cf0* pElem);                                     // the element is enabled (feature/locale)
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The table log (CLogString) and its fmt wrappers, instantiated in other units.
 class CLogString* GetLogString();
@@ -33,12 +33,12 @@ SetItemInfo::SetItemInfo() : m_nId(0), m_bShowEffect(false), m_bDisableTooltip(f
 bool SetItemInfo::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "id", m_nId);
-    FUN_1408736d0(pNode, "showEffectIfItsSetItemMotion", m_bShowEffect);
-    FUN_1408736d0(pNode, "isDisableTooltip", m_bDisableTooltip);
+    XmlQuery((class TiXmlElement*)(pNode), "showEffectIfItsSetItemMotion", m_bShowEffect);
+    XmlQuery((class TiXmlElement*)(pNode), "isDisableTooltip", m_bDisableTooltip);
     XmlTokenList(pNode, "itemIDs", m_items);
     for (Unk_140165cf0* pPart = pNode->FUN_140165cf0("part"); pPart != NULL; pPart = pPart->FUN_140168650("part"))
     {
-        if (!FUN_14028f710(pPart))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pPart)))
             continue;
         MS2Ptr<SetItemOptionPart> spPart(new SetItemOptionPart);
         if (!spPart->Load(pPart))

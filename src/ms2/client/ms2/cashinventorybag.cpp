@@ -109,7 +109,7 @@ public:
 };
 
 // UI service: handle to a registered UI object.
-class Unk_CashUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); void FUN_141adc5d0(int nClass); };
+class Unk_CashUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
 
 // Item data of an item id (only the item class test is used).
 class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
@@ -117,7 +117,7 @@ MS2Ptr<Unk_CashItemData> FUN_14053f870(int nItemId);
 class CItemData   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14053c6b0(int);
+    bool HasStringTag(int);
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_140298f80(void* p);
@@ -149,7 +149,7 @@ void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 CStringW GetStringCommon(int nId);                        // string table text by id
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -930,7 +930,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             MS2Ptr<Unk_CashItemData> spData = FUN_14053f870(nItemId);
             if (spData.get() != 0)
             {
-                if (((class CItemData*)(class Unk_CashItemData*)(spData.operator->()))->FUN_14053c6b0(0x13))
+                if (((class CItemData*)(class Unk_CashItemData*)(spData.operator->()))->HasStringTag(0x13))
                     FUN_1418fe1c0(FUN_140298f80((char*)((void*)FUN_1401d3200()) + 0xdaa0));
             }
         }
@@ -981,7 +981,7 @@ bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
     if (ref.FUN_140a8e270(0))
         return true;
     if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
-        reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f17);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f17);
     return true;
 }
 

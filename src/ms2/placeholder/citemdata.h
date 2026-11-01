@@ -356,13 +356,13 @@ public:
     int FUN_14053c620();    // 0x14053c620
     int FUN_14053c650();    // 0x14053c650
     int FUN_14053c670();    // 0x14053c670
-    bool FUN_14053c6b0(int nStringTag);    // 0x14053c6b0
+    bool HasStringTag(int nStringTag);    // 0x14053c6b0
     bool FUN_14053c710();    // 0x14053c710
     bool FUN_14053c7c0();    // 0x14053c7c0
     bool FUN_14053c810();    // 0x14053c810
     bool FUN_14053c870();    // 0x14053c870
     bool FUN_14053c8b0();    // 0x14053c8b0
-    int FUN_14053c8e0(int nJob);    // 0x14053c8e0
+    int IsJobAllowed(int nJob);    // 0x14053c8e0
     int FUN_14053c940(int nGender);     // 0x14053c940 wearable by the gender
     int FUN_14053c9a0(unsigned short nLevel);    // 0x14053c9a0
     int FUN_14053c9e0(int nGender, int nB);    // 0x14053c9e0

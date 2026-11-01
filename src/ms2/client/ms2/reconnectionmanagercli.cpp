@@ -32,7 +32,7 @@ public:
 };
 
 class Unk_RCApp { public: CStringW FUN_14067c400(); };
-class Unk_RCUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_RCUIManager { public: };
 // The exe's caller treats 0x1415384e0 as an int-returning function (no movzx after the call).
 class Unk_RCState;
 Unk_RCState* FUN_140aa6d30();
@@ -351,7 +351,7 @@ MS2_REPLACE_METHOD(0x140AADD70, CReconnectionManagerCli, FUN_140aadd70, 129, 0x7
 // @0x140aade00
 UIReconnectTopLayerNotify* FUN_140aade00(int id) {
     if (reinterpret_cast<Unk_RCUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_RCUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)id);
         if (p.get()) {
             return dynamic_cast<UIReconnectTopLayerNotify*>((UIObject*)p);
         }

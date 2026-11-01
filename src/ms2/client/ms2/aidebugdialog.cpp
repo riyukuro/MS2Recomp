@@ -24,6 +24,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- unit-local views of callees emitted in other units ----
 
@@ -102,7 +103,7 @@ void AiDebugDialog::SetTarget(CString strFile, int nId)
 // @0x140987f40
 void AiDebugDialog::AddLine(int nId, int nLine)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_nId != nId)
         return;
     __int64 nTime = GetServerTime();
@@ -268,7 +269,7 @@ int AiDebugDialog::LoadXml()
 // @0x140988b70
 void AiDebugDialog::AddStartMarker()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     __int64 nTime = GetServerTime();
     m_vecLines.push_back(std::make_pair(0, nTime));
 }

@@ -344,7 +344,7 @@ int ASTooltip::FUN_1409e26b0(const CStringW& strText)
 }
 MS2_REPLACE_METHOD(0x1409E26B0, ASTooltip, FUN_1409e26b0, 146, 0x067A651D);
 
-struct Unk_CommandStrings { CStringW FUN_141811980(int, int); };
+struct Unk_CommandStrings {  };
 
 // @0x1409d4350
 void ASTooltip::FUN_1409d4350(CItemData* pData)
@@ -392,7 +392,7 @@ MS2_REPLACE_METHOD(0x1409D46A0, ASTooltip, FUN_1409d46a0, 51, 0x7A950BD3);
 // @0x1409d5530
 void ASTooltip::FUN_1409d5530(unsigned nId)
 {
-    FUN_1407cbb20(s_strItemName, ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
+    FUN_1407cbb20(s_strItemName, ((CStringTable*)(Unk_CommandStrings*)(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())))->FUN_141811980(1, nId));
 }
 MS2_REPLACE_METHOD(0x1409D5530, ASTooltip, FUN_1409d5530, 93, 0xF4A248DA);
 
@@ -840,7 +840,7 @@ void ASTooltip::FUN_1409c72c0(CItem* pItem)
     MS2Ptr<CMaid> spMaid = CUserMaidManager::GetInstance()->GetMaid(pItem->FUN_140526a50());
     if (spMaid.get() != 0)
     {
-    CStringW strName = spMaid->FUN_1409eeda0().IsEmpty() ? ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, pItem->FUN_1405276c0()) : spMaid->FUN_1409eeda0();
+    CStringW strName = spMaid->FUN_1409eeda0().IsEmpty() ? ((CStringTable*)(Unk_CommandStrings*)(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())))->FUN_141811980(1, pItem->FUN_1405276c0()) : spMaid->FUN_1409eeda0();
     FUN_1409dbbc0(strName);
     MS2Ptr<CManufacture> spManufacture(0);
     if (CManufactureManager::GetInstance()->Lookup(pItem->FUN_140526a50(), spManufacture) != 0)
@@ -852,7 +852,7 @@ void ASTooltip::FUN_1409c72c0(CItem* pItem)
         {
             MS2Ptr<CMaidRecipe> spRecipe = CMaidRecipeTable::GetInstance()->Find(spManufacture->FUN_1409eedf0());
             if (spRecipe.get() != 0)
-                strProduct = ((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spRecipe->productItemId);
+                strProduct = ((CStringTable*)(Unk_CommandStrings*)(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())))->FUN_141811980(1, spRecipe->productItemId);
         }
         CStringW strRemain(L"");
         if (span.GetTotalSeconds() > 0)
@@ -1007,7 +1007,7 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
             MS2Ptr<CItemData> spData = FUN_14053f870(nPieceId);
             if (spData == 0)
                 continue;
-            const CStringW& strName = FUN_1401a9d70_p1()->FUN_141811980(1, nPieceId);
+            const CStringW& strName = ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p1()))->FUN_141811980(1, nPieceId);
             unsigned nColor = nInactiveColor;
             if (!equipped.empty())
             {
@@ -1085,7 +1085,7 @@ void ASTooltip::FUN_1409c8df0(int nItemId)
     for (std::map<unsigned int, UGCMapSetItemInfoPtr>::iterator it = spSet->m_items.begin(); it != spSet->m_items.end(); ++it)
     {
         int nPieceId = it->first;
-        const CStringW& strName = FUN_1401a9d70_p1()->FUN_141811980(1, nPieceId);
+        const CStringW& strName = ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p1()))->FUN_141811980(1, nPieceId);
         strBody.Append(StringFormat(s_wsUgcSetRow, nColor, strName));
     }
     CStringW strTitle = StringFormat(s_wsUgcSetName, FUN_1401a9d70_p1()->GetUGCMapSetItemName(spHousing->setItemID, "name"));
@@ -1604,7 +1604,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
                 unsigned nOpen = pSocket->FUN_140620a20();
                 for (unsigned i = 0; i < nOpen; i++)
                     strRows.Append(strRowEmpty);
-                unsigned nLocked = pSocket->FUN_140620a70();
+                unsigned nLocked = pSocket->GetLockedSlotCount();
                 if (nLocked > 0)
                 {
                     const CStringW& strRowLock = s_wsSocketRowLock;
@@ -1629,7 +1629,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
         unsigned nOpen = pSocket->FUN_140620a20();
         for (unsigned i = 0; i < nOpen; i++)
         {
-            MS2Ptr<TSocketGemStoneInfo> spGem = pSocket->FUN_140620b70(i);
+            MS2Ptr<TSocketGemStoneInfo> spGem = pSocket->GetGemInfo(i);
             if (spGem == 0 || spGem->m_nGemId == 0)
             {
                 if (pItem->FUN_140525640() == 0)
@@ -1688,7 +1688,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
         }
         else
         {
-            unsigned nLocked = pSocket->FUN_140620a70();
+            unsigned nLocked = pSocket->GetLockedSlotCount();
             if (nLocked > 0)
             {
                 const CStringW& strRowLock = s_wsSocketRowLock;
@@ -1868,7 +1868,7 @@ void ASTooltip::FUN_1409ce5f0(CItem* pItem)
             int nSecond = time.GetSecond();
             CStringW strText = BlockFormat(0xb7, pLook->m_str48, nYear, nMonth, nDay, nHour, nMinute, nSecond);
             FUN_1407cbb20("itemCreateTime", strText);
-            CStringW strName = FUN_1401a9d70_p3()->FUN_141811980(1, pItem->FUN_1405276c0());
+            CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p3()))->FUN_141811980(1, pItem->FUN_1405276c0());
             FUN_1407cbb20("designOrgItemName", strName);
         }
     }
@@ -2570,7 +2570,7 @@ void ASTooltip::FUN_1409d3010(CItem* pItem)
         bool bAlt = false;
         FUN_140f33250(color, spColor, spData, bAlt);
         obj.FUN_1409adbe0("color", color.FUN_1422bb870());
-        obj.FUN_1407cbb20("desc", FUN_1401a9d70_p3()->FUN_141811980(0x48, spColor->m_n2c));
+        obj.FUN_1407cbb20("desc", ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p3()))->FUN_141811980(0x48, spColor->m_n2c));
     }
     FUN_1409adbe0("customizeColorData", obj.FUN_1422bb870());
 }
@@ -2609,7 +2609,7 @@ void ASTooltip::FUN_1409d3470(CItem* pItem)
                         if (!strList.IsEmpty())
                             strList.Append(L", ");
                         CIngredientInfo* pInfo = ref.operator->();
-                        strList.Append(FUN_1401a9d70_p3()->FUN_141811980(1, pInfo->m_a));
+                        strList.Append(((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p3()))->FUN_141811980(1, pInfo->m_a));
                     }
                     str.Append(FUN_14028dfa0(L"s_msg_tooltip_gemstone_enable_upgrade_ingredients", strList));
                 }
@@ -3309,7 +3309,7 @@ void ASTooltip::FUN_1409d8300(int nItemId)
     unsigned long nSize = 1;
     CStringW strIcon(DAT_143aef3b8);
     FUN_14183eba0(nItemId, strIcon, nSize, nColor1, nColor2);
-    CStringW strPreview = FUN_14028dfa0(CStringW(L"s_html_chat_super_preview"), strIcon, nColor1, FUN_1401a9d70_p3()->FUN_141811980(1, nItemId));
+    CStringW strPreview = FUN_14028dfa0(CStringW(L"s_html_chat_super_preview"), strIcon, nColor1, ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p3()))->FUN_141811980(1, nItemId));
     ASObj obj(2);
     obj.FUN_1407cbb20("text", strPreview);
     obj.FUN_1409c4990("colorIdx", nSize);
@@ -3720,7 +3720,7 @@ CStringW ASTooltip::FUN_1409da690(CItem* pItem)
             if (nHave < nNeed)
                 strKey += L"_lack";
             CStringW strType = CMasteryTable::GetInstance()->TypeName(spReceipe->m_nType);
-            CStringW strName = CStringTable::GetInstance()->FUN_141811980(0x2f, spReceipe->m_nId);
+            CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(0x2f, spReceipe->m_nId);
             CStringW strCount = FUN_14028dfa0(strKey, nHave, nNeed);
             if (str.GetLength() != 0)
                 str += L"\n";
@@ -3897,9 +3897,9 @@ void ASTooltip::FUN_1409dbc60(int nSkillId, const CStringW& strSuffix)
 {
 #ifdef __clang__
     // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-    CStringW str = FUN_1401d0080(CStringTable::GetInstance()->FUN_141811980(4, nSkillId), strSuffix);
+    CStringW str = FUN_1401d0080(((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(4, nSkillId), strSuffix);
 #else
-    CStringW str = CStringTable::GetInstance()->FUN_141811980(4, nSkillId) + strSuffix;
+    CStringW str = ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(4, nSkillId) + strSuffix;
 #endif
     FUN_1407cbb20(s_strSkillName, str);
 }
@@ -4129,7 +4129,7 @@ void ASTooltip::FUN_1409dcf10(int nSkillId, unsigned short nLevel, int bFromDial
             if (!spJobSkill->m_bLearnt || spJobSkill->m_nLevel < levels[i])
                 nAllowed = 0;
             CStringW str = FUN_14028dfa0(CStringW(L"s_word_require_skill_level"),
-                CStringTable::GetInstance()->FUN_141811980(4, spJobSkill->FUN_140637cc0()), levels[i]);
+                ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(4, spJobSkill->FUN_140637cc0()), levels[i]);
             if (nAllowed == 0
                 && reinterpret_cast<PC*>(FUN_1409c6540())->FUN_1409eee00()->FUN_14080baf0(spJobSkill->FUN_140637cc0()) > 0)
                 str = FUN_14028dfa0(CStringW(L"s_word_require_skill_level_without_leveloption"), str);
@@ -4282,7 +4282,7 @@ void ASTooltip::FUN_1409dea00(ASArray* pRows, int nItemId)
     if (spHousing == 0)
         return;
     ASObj row(2);
-    row.FUN_1407cbb20("text", FUN_14052bd00(0x6f8, CStringTable::GetInstance()->FUN_141811980(0x32, spHousing->categoryIndex)));
+    row.FUN_1407cbb20("text", FUN_14052bd00(0x6f8, ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(0x32, spHousing->categoryIndex)));
     row.FUN_1409c0dc0("color", "aaaaaa");
     pRows->FUN_1422bc050(row.FUN_1422bb870());
 }
@@ -4514,7 +4514,7 @@ void ASTooltip::FUN_1409dfba0(MS2Ptr<CItemData> spData, ATL::CAtlList<CStringW>&
             MS2Ptr<CItemData> spItem = FUN_14053f870(drop.m_itemId);
             if (spItem == 0)
                 continue;
-            CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, drop.m_itemId);
+            CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(1, drop.m_itemId);
             const CStringW& rName = strName;
             if (names.Find(rName) != 0)
                 continue;
@@ -4548,7 +4548,7 @@ void ASTooltip::FUN_1409dfba0(MS2Ptr<CItemData> spData, ATL::CAtlList<CStringW>&
         MS2Ptr<CItemData> spItem = FUN_14053f870(drop.m_itemId);
         if (spItem == 0)
             continue;
-        CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, drop.m_itemId);
+        CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(1, drop.m_itemId);
         const CStringW& rName = strName;
         CStringW str;
         bool bExpiring = false;
@@ -4985,7 +4985,7 @@ int ASTooltip::FUN_1409e2630(int nId)
 {
     if (nId == 0)
         return 0;
-    return FUN_1409e26b0(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(9, nId));
+    return FUN_1409e26b0(((CStringTable*)(Unk_CommandStrings*)(((struct Unk_CommandStrings*)TSingleton<CStringTable>::GetInstance())))->FUN_141811980(9, nId));
 }
 namespace p5hook { MS2_REPLACE_METHOD(0x1409E2630, ASTooltip, FUN_1409e2630, 116, 0xE5467A3C); }
 
@@ -5501,7 +5501,7 @@ void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStr
             nAllowed = 1;
         if (nJobId == nJob)
             nAllowed = 1;
-        CStringW strName = FUN_1401a9d70_p5()->FUN_141811980(0x4d, nJobId);
+        CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(0x4d, nJobId);
         if (!strList.IsEmpty())
             strList.Append(StringFormat(L", {0}", strName));
         else
@@ -5522,7 +5522,7 @@ void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut)
         int nJobId = jobs[i];
         if (!FUN_1402226b0(nJobId))
             continue;
-        CStringW strName = FUN_1401a9d70_p5()->FUN_141811980(0x4d, FUN_1401d7a50_p5()->GetSubJob1(nJobId));
+        CStringW strName = ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(0x4d, FUN_1401d7a50_p5()->GetSubJob1(nJobId));
         if (!strList.IsEmpty())
             strList.Append(StringFormat(L", {0}", strName));
         else
@@ -5562,9 +5562,9 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
         {
 #ifdef __clang__
             // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-            strOut += FUN_1401d0080(strSep, FUN_1401a9d70_p5()->FUN_141811980(8, weapon.m_nRightHand));
+            strOut += FUN_1401d0080(strSep, ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(8, weapon.m_nRightHand));
 #else
-            strOut += strSep + FUN_1401a9d70_p5()->FUN_141811980(8, weapon.m_nRightHand);
+            strOut += strSep + ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(8, weapon.m_nRightHand);
 #endif
             strSep = L", ";
         }
@@ -5572,9 +5572,9 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
         {
 #ifdef __clang__
             // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-            strOut += FUN_1401d0080(strSep, FUN_1401a9d70_p5()->FUN_141811980(8, weapon.m_nLeftHand));
+            strOut += FUN_1401d0080(strSep, ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(8, weapon.m_nLeftHand));
 #else
-            strOut += strSep + FUN_1401a9d70_p5()->FUN_141811980(8, weapon.m_nLeftHand);
+            strOut += strSep + ((CStringTable*)(Unk_CommandStrings*)(FUN_1401a9d70_p5()))->FUN_141811980(8, weapon.m_nLeftHand);
 #endif
             strSep = L", ";
         }

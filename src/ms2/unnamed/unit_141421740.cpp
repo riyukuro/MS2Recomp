@@ -5,14 +5,13 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 
-bool FUN_140184310(const CString& str, const char* psz);
 
 // @0x141421740
 CString FUN_141421740(const CString& text, int* pOutIndex)
 {
     int start = 0;
     CString token = text.Tokenize(".", start);
-    if (FUN_140184310(token, "")) {
+    if ((token == "")) {
         return CString("");
     }
     int idx = token.GetLength() - 2;

@@ -46,11 +46,11 @@ public:
     int FUN_1413656a0(Unk_CommandArgs&);
     int FUN_141365720(Unk_CommandArgs&);
     int FUN_141365750(Unk_CommandArgs&);
-    int FUN_1413657a0(Unk_CommandArgs&);
-    int FUN_1413657f0(Unk_CommandArgs&);
+    int ChangeGuideEntityState(Unk_CommandArgs&);
+    int ResetGuideClearState(Unk_CommandArgs&);
     int FUN_141365820(Unk_CommandArgs&);
     int FUN_141365890(Unk_CommandArgs&);
-    int FUN_141365960(Unk_CommandArgs&);
+    int ClearAllGuides(Unk_CommandArgs&);
     int FUN_1413659d0(Unk_CommandArgs&);
     int FUN_141365b00(Unk_CommandArgs&);
     int FUN_141365bf0(Unk_CommandArgs&);
@@ -165,7 +165,7 @@ public:
     int FUN_14136da20(Unk_CommandArgs&);
     int FUN_14136dab0(Unk_CommandArgs&);
 
-    int FUN_141365560(Unk_CommandArgs&);
+    int ToggleUIDevMode(Unk_CommandArgs&);
     int FUN_1413678e0(Unk_CommandArgs&);
     ATL::CAtlMap<CStringW,Command,ATL::CStringElementTraitsI<CStringW>> commands,internalCommands;   // case-insensitive (GetNode 0x141371b80: towupper hash, _wcsicmp)
     ATL::CAtlMap<CStringW,MS2Ptr<TUserCommandInfo>,ATL::CStringElementTraitsI<CStringW>> aliases;   // case-insensitive (GetNode 0x141371c80)

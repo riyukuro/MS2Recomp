@@ -99,15 +99,17 @@ class Unk_TcUi : public CUIService
 {
 public:
     int FUN_141adc940(int nId);                                 // is open
-    int FUN_141adc890(int nId);
     int FUN_141adc7f0(int nId);
     void FUN_141adc690(int nId);
-    void FUN_141adc5d0(int nId);                                // open
     void FUN_141adc530(int nId);                                // close
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // lookup
 };
 
-class Unk_TcBgm { public: void FUN_1422b9fd0(int nGroup); UISwfEntity* FUN_1422b9e20(int nGroup); };
+class GFxSceneService   // C3: member view (real class not in this TU)
+{
+public:
+    UISceneEntity* FUN_1422b9e20(int);
+};
+class Unk_TcBgm { public: void FUN_1422b9fd0(int nGroup);  };
 Unk_TcBgm* FUN_1408e57f0();
 UISwfEntityManager* FUN_140b632f0();
 class Unk_140a94350
@@ -165,7 +167,6 @@ void FUN_14067e620(void* p);
 struct Unk_TcAff
 {
     ~Unk_TcAff() { FUN_14067e620(this); }
-    void* FUN_1409ee260() const;
     void* FUN_14067e8c0() const;
     void* m_0; void* m_8;
 };
@@ -478,7 +479,7 @@ int UITalkCinematic::FUN_141b1b440(CCinematicContent* pContent, int bLast)
                 {
                     if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0)
                     {
-                        MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+                        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                         if (pPC != 0)
                             FUN_1411a4f40(FUN_1403ed280(), CString(m_spContent->m_unk20), pPC->vfunc_18());
                     }
@@ -697,7 +698,7 @@ void UITalkCinematic::FUN_141b1c720(ASObj& rPage, int nNpcTalk)
 {
     if (nNpcTalk == 0)
         return;
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     CString strIllust;
@@ -770,7 +771,7 @@ UINpcPreviewDialog* FUN_141b1d4f0(unsigned nUiId)
 {
     if (reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spDialog = reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spDialog.get())
             return dynamic_cast<UINpcPreviewDialog*>((UIObject*)spDialog);
     }
@@ -869,11 +870,15 @@ public:
 };
 class Unk_TcWedding { public: char m_pad[0x18]; unsigned m_18; };
 void FUN_140901e60(void* p);
+class Unk_ThHallRef   // C3: member view (real class not in this TU)
+{
+public:
+    void* FUN_141847330() const;
+};
 class Unk_TcWeddingRef
 {
 public:
     ~Unk_TcWeddingRef() { FUN_140901e60(this); }
-    void* FUN_141847330();
     Unk_TcWedding* FUN_1409020f0();
     void* m_p0; void* m_p8;
 };
@@ -954,7 +959,6 @@ void FUN_14035e5b0(void* p);
 struct Unk_TcNpcRec
 {
     ~Unk_TcNpcRec() { FUN_14035e5b0(this); }
-    void* FUN_140729ad0() const;
     void* m_0; void* m_8;
 };
 Unk_TcNpcRec FUN_1406cd330(unsigned nNpcId);
@@ -1161,7 +1165,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
 void UITalkManager::FUN_141b1e8a0(CInPacket& in)
 {
     int nValue = in.ReadInt32();
-    UISwfEntity* pEntity = FUN_1408e57f0()->FUN_1422b9e20(0x620001f);
+    UISwfEntity* pEntity = ((UISwfEntity*)((GFxSceneService*)(Unk_TcBgm*)(FUN_1408e57f0()))->FUN_1422b9e20(0x620001f));
     if (pEntity != 0)
     {
         Unk_FcUIMsg kMsg;
@@ -1232,7 +1236,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     }
     else if (strDialog.CompareNoCase("CloseGambleDialog") == 0)
     {
-        reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e98);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e98);
     }
     else if (strDialog.CompareNoCase("OpenMaidDialog") == 0)
     {
@@ -1247,7 +1251,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     }
     else if (strDialog.CompareNoCase("CloseMaidDialog") == 0)
     {
-        reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e9d);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e9d);
     }
     else if (strDialog.CompareNoCase("OpenManufactureDialog") == 0)
     {
@@ -1262,7 +1266,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     }
     else if (strDialog.CompareNoCase("CloseManufactureDialog") == 0)
     {
-        reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ec0);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec0);
     }
     else if (strDialog.CompareNoCase("BeautyShopDialog") == 0)
     {
@@ -1314,7 +1318,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
         {
             unsigned nNpc = (unsigned)FUN_141b212f0();
             Unk_TcWeddingRef kRef = reinterpret_cast<Unk_TcWeddingMgr*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908c50(nNpc);
-            if (kRef.FUN_141847330() != 0)
+            if (((Unk_ThHallRef*)(Unk_TcWeddingRef*)&(kRef))->FUN_141847330() != 0)
             {
                 FUN_140fdcaa0(pDlg, strArg);
                 ((class UIWeddingHallReservationDialog*)(void*)(pDlg))->SetPackage(kRef.FUN_1409020f0()->m_18);
@@ -1342,7 +1346,7 @@ void UITalkManager::FUN_141b1f350(CInPacket& in)
         {
             spItem->FUN_140524eb0(in);
             spItem->FUN_14052b340(nAmount);
-            if (reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e98) != 0)
+            if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e98))) != 0)
                 m_reward.m_items.FUN_140720b80(spItem);
             else if (spItem->FUN_1405258f0() != 0)
                 m_reward.m_nMeso += nAmount;
@@ -1430,7 +1434,7 @@ void UITalkManager::FUN_141b1fa20(const CString& strArgs)
 // @0x141b1fa60
 bool UITalkManager::FUN_141b1fa60()
 {
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
     return true;
@@ -1457,9 +1461,9 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
     }
     {
         Unk_TcNpcRec kRec = FUN_1406cd330(nNpc);
-        if (kRec.FUN_140729ad0() != 0)
+        if (((void*)((MS2Ptr<CNpcData>*)(Unk_TcNpcRec*)&(kRec))->get()) != 0)
         {
-            UISwfEntity* pEntity = FUN_1408e57f0()->FUN_1422b9e20(0x620001f);
+            UISwfEntity* pEntity = ((UISwfEntity*)((GFxSceneService*)(Unk_TcBgm*)(FUN_1408e57f0()))->FUN_1422b9e20(0x620001f));
             if (pEntity != 0)
             {
                 Unk_FcUIMsg kMsg;
@@ -1488,7 +1492,7 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
         return;
     if (FUN_141b211d0() == 0)
         return;
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
         int nState = pPC->FUN_14166c930();
@@ -1537,7 +1541,7 @@ void UITalkManager::SendNpcTalkMode0()
 // @0x141b1ff80
 void UITalkManager::FUN_141b1ff80(unsigned nNpcId)
 {
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_TcNpc* pNpc = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd1320(nNpcId);
     if (pPC != 0 && pNpc != 0)
     {
@@ -1562,7 +1566,7 @@ void UITalkManager::FUN_141b1ff80(unsigned nNpcId)
 // @0x141b200d0
 void UITalkManager::FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript)
 {
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Unk_TcNpc* pNpc = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd1320(nNpcId);
     if (pPC != 0 && pNpc != 0)
     {
@@ -1589,7 +1593,7 @@ void UITalkManager::FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript)
 // @0x141b20210
 void UITalkManager::FUN_141b20210()
 {
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
         if (pPC->vfunc_85().get())
@@ -1666,7 +1670,7 @@ void UITalkManager::FUN_141b20790(int nNpcId, int nFriendly)
     if (pNpc == 0)
         return;
     int nKind = 9;
-    bool bAffinity = pNpc->vfunc_128() != 0 && (pNpc->FUN_141093800().FUN_1409ee260() ? true : false);
+    bool bAffinity = pNpc->vfunc_128() != 0 && (((void*)((MS2Ptr<CMaid>*)&(const Unk_TcAff&)(pNpc->FUN_141093800()))->get()) ? true : false);
     if (bAffinity)
     {
         if (((class CMaid*)(void*)(pNpc->FUN_141093800().FUN_14067e8c0()))->IsExpired())
@@ -1698,7 +1702,7 @@ void UITalkManager::FUN_141b20af0()
         return;
     if (GetTalking() != 0)
     {
-        MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         Unk_TcNpc* pNpc = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
         if (pPC == 0 || pNpc == 0)
         {
@@ -1826,7 +1830,7 @@ int UITalkManager::FUN_141b21240(int nNpcId)
 {
     if (GetTalking() == 0)
         return 0;
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (nNpcId == (int)((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580())
@@ -1964,7 +1968,7 @@ int UITalkManager::FUN_141b218b0(Unk_TcNpc* pNpc)
 {
     if (pNpc == 0)
         return 0;
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pNpc->FUN_1410937b0() == 0x23)
@@ -2006,7 +2010,7 @@ void UITalkManager::FUN_141b21a30()
     if (m_openedDialogs.FUN_140186270() != 0)
     {
         for (unsigned i = 0; i < m_openedDialogs.FUN_140186270(); i++)
-            reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(m_openedDialogs.FUN_140184510(i));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(m_openedDialogs.FUN_140184510(i))));
         m_openedDialogs.FUN_1402c2830();
     }
 }
@@ -2019,7 +2023,7 @@ void UITalkManager::FUN_141b21ae0(const CString& strDialog)
         return;
     UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
     if (pUi != 0 && pUi->GetLoaded() != 0)
-        reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(pDlg->vfunc_48());
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(pDlg->vfunc_48())));
     else
         m_openedDialogs.FUN_1401855a0(pDlg->vfunc_48());
 }
@@ -2027,7 +2031,7 @@ void UITalkManager::FUN_141b21ae0(const CString& strDialog)
 // @0x141b21b90
 MS2Ptr<CTalkScript> UITalkManager::FUN_141b21b90()
 {
-    MyPC* pPC = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return MS2Ptr<CTalkScript>(0);
     Unk_TcNpc* pNpc = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
@@ -2108,7 +2112,7 @@ UIItemTreasureMapDialog* FUN_141b22040(unsigned nUiId)
 {
     if (reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spDialog = reinterpret_cast<Unk_TcUi*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spDialog = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (spDialog.get() != 0)
             return dynamic_cast<UIItemTreasureMapDialog*>((UIObject*)spDialog);
     }

@@ -947,7 +947,7 @@ void CMagic::FUN_14145e960(unsigned nNow)
     if (!strEffect.IsEmpty()) {
         Unk_MagicEffectFile kFile = reinterpret_cast<Unk_MagicEffectFiles*>(TSingleton<EffectDataManager>::GetInstance())->FUN_14119f870(strEffect);
         if (kFile.m_p != NULL)
-            bPlayable = ((class CEffectData*)(void*)(kFile.m_p))->FUN_14119f5f0() != 0;
+            bPlayable = ((class CEffectData*)(void*)(kFile.m_p))->HasIgnoreOptimizeParam() != 0;
     }
     bool bLocalOwner = ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161ce60(m_spSkill->m_nOwnerId) == 0;
     if (bPlayable || bLocalOwner) {
@@ -2284,7 +2284,7 @@ bool CMagic::FUN_141464220()
     int nRelation = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
     if (nRelation == 1)
         return false;
-    Unk_MagicEntity* pLocal = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MagicEntity* pLocal = ((Unk_MagicEntity*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == NULL)
         return false;
     const Vector3& ptLocal = pLocal->vf18_GetPosition();

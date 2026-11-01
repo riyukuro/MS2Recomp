@@ -106,7 +106,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-unsigned FUN_140869420();                                   // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CooltimeManager::s_bInit;
@@ -156,7 +156,7 @@ bool CooltimeManager::Use(unsigned nCooltimeId)
     std::map<unsigned, unsigned>::iterator itTick = m_ticks.find(nCooltimeId);
     if (itTick == m_ticks.end())
         return true;
-    unsigned now = FUN_140869420();
+    unsigned now = GetTickCountMs2();
     std::map<unsigned, unsigned>::iterator itReady = m_ready.find(nCooltimeId);
     if (itReady != m_ready.end())
     {

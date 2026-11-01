@@ -37,6 +37,7 @@
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/client/ms2/uiservice.h"
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 
 // return types of the getters this unit calls
 class CReservedWordTable;
@@ -66,9 +67,7 @@ public:
 class Unk_OxUIMgr
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // dialog by UI type
     void FUN_141adc530(int nId);                                // open
-    void FUN_141adc5d0(int nId);                                // close (if open)
 };
 
 // The client config's blocked-action flag set.
@@ -199,7 +198,7 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
     packet.WriteUInt8(3);
     FUN_140710590(packet);
     UIOxQuizDialog::FUN_140e6e8b0(false);
-    reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f7d);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f7d);
     return true;
 }
 
@@ -483,8 +482,8 @@ void FUN_140e00250(CInPacket& packet)
 void FUN_140e003b0(CInPacket& packet)
 {
     UIOxQuizDialog::FUN_140e6e8b0(true);
-    reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f7d);
-    reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f47);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f7d)));
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f47);
     __int64 nFee = packet.ReadInt64();
     int nPromoted = packet.ReadInt32();
     unsigned nCooltime = packet.ReadInt32();
@@ -589,7 +588,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
 {
     if (nType == '\r')
     {
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f46);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f46)));
         if (nStep == 10)
         {
             UIQuizOXWelcomeDialog* pWelcome = FUN_140e01bb0(0x4f48);
@@ -598,20 +597,20 @@ void FUN_140e00d90(unsigned char nType, int nStep)
                 pWelcome->FUN_141924680();
                 FUN_140e7f110(pWelcome, true);
             }
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f44);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f44);
         }
         else if (nStep == 0xb)
         {
             FUN_140e00fd0();
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
             UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
             if (pHost != 0)
                 pHost->FUN_141924680();
         }
         else
         {
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f44);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f44);
             reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->SendKeyTableMode7();
         }
     }
@@ -620,15 +619,15 @@ void FUN_140e00d90(unsigned char nType, int nStep)
         if (nStep == 0xb)
         {
             FUN_140e00fd0();
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
             UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
             if (pHost != 0)
                 pHost->FUN_141924680();
         }
         else
         {
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f44);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f44);
             reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->SendKeyTableMode7();
         }
     }
@@ -640,7 +639,7 @@ void FUN_140e00f00(unsigned char nType, int nStep)
 {
     if (nType == '\r')
     {
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f46);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f46)));
         if (nStep == 10)
         {
             UIQuizOXWelcomeDialog* pWelcome = FUN_140e01bb0(0x4f48);
@@ -652,14 +651,14 @@ void FUN_140e00f00(unsigned char nType, int nStep)
         }
         else if (nStep == 0xb)
         {
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
-            reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f44);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f44);
         }
     }
     else if (nType == '\x0e')
     {
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f48);
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f44);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f48);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f44);
     }
 }
 
@@ -705,9 +704,9 @@ void FUN_140e010c0(CInPacket& packet)
         FUN_140e7e0b0(pHost, nCount > 1);
     }
     if (nMode == 3)
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f45);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f45)));
     else
-        reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f45);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f45);
 }
 
 // The rule notice text.
@@ -775,7 +774,7 @@ UIMassiveEvent* FUN_140e01890(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIMassiveEvent*>((UIObject*)p);
     }
@@ -787,7 +786,7 @@ UIOxQuizDialog* FUN_140e01930(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIOxQuizDialog*>((UIObject*)p);
     }
@@ -800,7 +799,7 @@ UIPrizeMoneyDialog* FUN_140e019d0(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIPrizeMoneyDialog*>((UIObject*)p);
     }
@@ -812,7 +811,7 @@ UIQuizHostDialog* FUN_140e01a70(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIQuizHostDialog*>((UIObject*)p);
     }
@@ -824,7 +823,7 @@ UIQuizOXCreateDialog* FUN_140e01b10(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIQuizOXCreateDialog*>((UIObject*)p);
     }
@@ -836,7 +835,7 @@ UIQuizOXWelcomeDialog* FUN_140e01bb0(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIQuizOXWelcomeDialog*>((UIObject*)p);
     }
@@ -879,7 +878,7 @@ bool FUN_140e01f10(Unk_140165cf0* pElem)
     if (pElem == 0)
         return true;
     bool bMinimize = false;
-    FUN_1408730a0(pElem, "minimize", bMinimize);
+    XmlGetAttr((class TiXmlElement*)(pElem), "minimize", reinterpret_cast<bool&>(bMinimize));
     return bMinimize;
 }
 

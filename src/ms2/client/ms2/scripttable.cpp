@@ -24,8 +24,8 @@ CString FUN_140651350();                                                 // the 
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_14028d3c0(CString strPath);                                  // the directory part of a path
 void FUN_1401d3700(CString& str);                                        // normalises the case
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // the element is usable
-int FUN_140873320(Unk_140165cf0* pElem, const char* pszName, unsigned __int64& nOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned __int64&);   // C3: was FUN_140873320
 
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class T, class U>
@@ -73,11 +73,11 @@ void CScriptTable::Load()
             }
             for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
             {
-                if (!FUN_14028f710(pKey))
+                if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
                     continue;
                 unsigned __int64 nId = 0;
                 CStringW strName;
-                FUN_140873320(pKey, "id", nId);
+                XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
                 FUN_140873420(pKey, "name", strName);
                 if (m_mapScripts.Lookup(nId) != 0)
                 {

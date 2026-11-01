@@ -19,12 +19,12 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The unit's init flag is an exe global; the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -137,12 +137,12 @@ int CSkillSetTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("skillSet"); pNode != 0; pNode = pNode->FUN_140168650("skillSet"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CSkillSetPtr spSet(new CSkillSet);
         FUN_140873220(pNode, "id", spSet->m_nId);
         FUN_1408731e0(pNode, "version", spSet->m_nVersion);
-        FUN_140873710(pNode, "slotLock", spSet->m_nSlotLock);
+        XmlGetBool((class TiXmlElement*)(pNode), "slotLock", spSet->m_nSlotLock);
         CString strSkillIds = FUN_14015f710(pNode, "skillIDs", CString(""));
         CString strSkillLevels = FUN_14015f710(pNode, "skillLevels", CString(""));
         CString strLearnIds = FUN_14015f710(pNode, "learnSkillIDs", CString(""));

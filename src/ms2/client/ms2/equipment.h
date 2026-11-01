@@ -88,10 +88,10 @@ public:
     CEquipment(PC* pPC);                                    // 0x1411dfe00
     ~CEquipment();                                          // 0x1411e06e0
 
-    void FUN_1411e0810();                                   // ClearAll
-    int FUN_1411e09a0();                                    // IsAllLoaded
-    int FUN_1411e0b30();                                    // RefreshModelIfLoaded
-    int FUN_1411e0ba0();                                    // RefreshModel
+    void ClearAll();                                   // ClearAll
+    int AreAllItemsLoaded();                                    // IsAllLoaded
+    int RefreshModelIfLoaded();                                    // RefreshModelIfLoaded
+    int RefreshModel();                                    // RefreshModel
     int FUN_1411e0c00();                                    // 0
     void FUN_1411e0c10();                                   // RefreshModelIfLoaded
     int FUN_1411e0c30(int nItemId);                         // HasItem

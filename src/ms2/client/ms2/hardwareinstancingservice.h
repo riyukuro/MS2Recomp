@@ -138,10 +138,10 @@ public:
     void FUN_1413d5660();
     void FUN_1413d5710();                                           // build the instancings of the current map
     void SetEnabled(bool bEnabled);
-    int FUN_1413d6650();
+    int HasInstancings();
     MeshInstancing* FUN_1413d66b0(egf::Entity* pEntity);
-    MeshInstancing* FUN_1413d6770(const Unk_MeshInstancingConfig& rConfig);
-    NiNode* FUN_1413d6840(egf::Entity* pEntity);
+    MeshInstancing* FindInstancingByConfig(const Unk_MeshInstancingConfig& rConfig);
+    NiNode* GetInstancedNode(egf::Entity* pEntity);
     int FUN_1413d6890(egf::Entity* pEntity);                       // is the entity excluded
     int FUN_1413d68d0(egf::Entity* pEntity);
     bool FUN_1413d6920();

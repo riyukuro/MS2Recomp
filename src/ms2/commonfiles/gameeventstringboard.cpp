@@ -26,9 +26,8 @@ int FUN_140718200(CStringW* text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads, packet.cpp).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
-Unk_GEReader* FUN_14070f480(Unk_GEReader* in, int* value);
 Unk_GEReader* FUN_14070f5f0(Unk_GEReader* in, CStringW* text);
-CGameRule* FUN_1401c0d90();   // TSingleton<CGameRule>::GetInstance
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The factories of this unit (they are defined further down, in exe order).
 GameEvent* FUN_14041e930();
@@ -76,7 +75,7 @@ void GameEventStringBoard::vfunc_3(Unk_GEOut* out)
 void GameEventStringBoard::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    FUN_14070f480(&in->reader, &m_nId);
+    ((class Unk_GEReader*)&((class Unk_OSInput*)(class Unk_GEReader*)(&in->reader))->Read6(*(unsigned int*)(&m_nId)));
     FUN_14070f5f0(&in->reader, &m_80);
 }
 
@@ -119,7 +118,7 @@ void GameEventStringBoardLink::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041ed30
-void GameEventStringBoardLink::OnStart() { FUN_1401c0d90()->FUN_14047dae0(m_68); }
+void GameEventStringBoardLink::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047dae0(m_68); }
 
 // @0x14041ed90
-void GameEventStringBoardLink::vfunc_6() { FUN_1401c0d90()->FUN_14047dae0(CStringW(L"")); }
+void GameEventStringBoardLink::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047dae0(CStringW(L"")); }

@@ -28,8 +28,9 @@
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // ---- Unk_WeddingPartner ----------------------------------------------------------------------------------------
 // @0x1408fe100
@@ -44,7 +45,7 @@ Unk_WeddingPartner::~Unk_WeddingPartner()
 // @0x1408fe190
 void Unk_WeddingPartner::Reset()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nCharacterId = 0;
     m_nAccountId = 0;
     m_strName.Empty();
@@ -57,7 +58,7 @@ void Unk_WeddingPartner::Assign(Unk_WeddingPartner& other)
     __int64 nAccountId = other.m_nAccountId;
     CStringW strName = other.GetName();
     bool bOnline = other.IsOnline();
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nCharacterId = nCharacterId;
     m_nAccountId = nAccountId;
     m_strName = strName;
@@ -66,7 +67,7 @@ void Unk_WeddingPartner::Assign(Unk_WeddingPartner& other)
 // @0x1408fe2d0
 void Unk_WeddingPartner::Write(COutputStream& out)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     out.WriteInt64(m_nCharacterId);
     out.WriteInt64(m_nAccountId);
     out.WriteUnicodeString(m_strName);
@@ -75,7 +76,7 @@ void Unk_WeddingPartner::Write(COutputStream& out)
 // @0x1408fe390
 void Unk_WeddingPartner::Read(CInPacket& in)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nCharacterId = in.ReadInt64();
     m_nAccountId = in.ReadInt64();
     m_strName = in.ReadUnicodeString();
@@ -84,25 +85,25 @@ void Unk_WeddingPartner::Read(CInPacket& in)
 // @0x1408fe4e0
 void Unk_WeddingPartner::SetName(const CStringW& strName)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_strName = strName;
 }
 // @0x1408fe540
 CStringW Unk_WeddingPartner::GetName()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_strName;
 }
 // @0x1408fe5c0
 void Unk_WeddingPartner::SetOnline(bool bOnline)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_bOnline = bOnline;
 }
 // @0x1408fe610
 bool Unk_WeddingPartner::IsOnline()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_bOnline;
 }
 
@@ -202,7 +203,7 @@ void WeddingProxy::Assign(WeddingProxy& other)
     SetMessageW(other.m_strMessageW0, true);
     SetMessageW(other.m_strMessageW1, true);
     SetMeso(other.GetMeso());
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_log.Assign(other.m_log);
 }
 // @0x1408feda0
@@ -219,7 +220,7 @@ void WeddingProxy::Write(COutputStream& out)
     out.WriteUnicodeString(GetMessageW(false));
     out.WriteUnicodeStringA(GetMessageA(true));
     out.WriteUnicodeStringA(GetMessageA(false));
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_log.Write(out);
 }
 // @0x1408ff040
@@ -236,7 +237,7 @@ void WeddingProxy::Read(CInPacket& in)
     SetMessageW(in.ReadUnicodeString(), false);
     SetMessageA(in.ReadUnicodeStringA(), true);
     SetMessageA(in.ReadUnicodeStringA(), false);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_log.Read(in);
 }
 // @0x1408ff3b0
@@ -264,13 +265,13 @@ bool WeddingProxy::IsGroom(__int64 nCharacterId)
 // @0x1408ff500
 __int64 WeddingProxy::GetMeso()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_nMeso;
 }
 // @0x1408ff560
 void WeddingProxy::SetMeso(__int64 nMeso)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nMeso = nMeso;
 }
 // @0x1408ff5c0
@@ -283,21 +284,21 @@ void WeddingProxy::AddMeso(unsigned int nType, __int64 nAmount)
         if (nNeg > nExp)
             nAmount = nExp * -1;
     }
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nMeso = m_nMeso + nAmount;
     m_log.Add(nType, nLogAmount, GetServerTime());
 }
 // @0x1408ff6a0
 void WeddingProxy::ClearMeso()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_nMeso = 0;
     m_log.Clear();
 }
 // @0x1408ff710
 void WeddingProxy::SetMessageW(const CStringW& str, bool bFirst)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (bFirst)
         m_strMessageW1 = str;
     else
@@ -306,7 +307,7 @@ void WeddingProxy::SetMessageW(const CStringW& str, bool bFirst)
 // @0x1408ff7a0
 void WeddingProxy::SetMessageA(const CString& str, bool bFirst)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (bFirst)
         m_strMessageA1 = str;
     else
@@ -315,14 +316,14 @@ void WeddingProxy::SetMessageA(const CString& str, bool bFirst)
 // @0x1408ff830
 CStringW WeddingProxy::GetMessageW(bool bFirst)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     CStringW* pStr = bFirst ? &m_strMessageW1 : &m_strMessageW0;
     return *pStr;
 }
 // @0x1408ff8e0
 CString WeddingProxy::GetMessageA(bool bFirst)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     CString* pStr = bFirst ? &m_strMessageA1 : &m_strMessageA0;
     return *pStr;
 }
@@ -472,21 +473,21 @@ void WeddingGuest::Read(CInPacket& in)
 // @0x140900550
 bool FUN_140900550()
 {
-    if (FUN_140166410()->FUN_14036d570(0x104) == false)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104) == false)
         return false;
     return true;
 }
 // @0x140900580
 bool FUN_140900580(bool bFlag)
 {
-    if (FUN_140166410()->FUN_14036d570(0x106) != false && bFlag == false)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x106) != false && bFlag == false)
         return false;
     return true;
 }
 // @0x1409005c0
 bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB)
 {
-    if (FUN_140166410()->FUN_14036d570(0x105) != false && nGenderA == nGenderB)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x105) != false && nGenderA == nGenderB)
         return false;
     return true;
 }

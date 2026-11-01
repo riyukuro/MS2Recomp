@@ -25,6 +25,7 @@ static ATL::CAtlMap<unsigned int, CString, ATL::CElementTraits<unsigned int>, AT
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -62,7 +63,6 @@ public:
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 PCBase* FUN_140974230(PCBase*);
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -89,7 +89,7 @@ public:
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool b);                                          // MS2: slot 24
 };
-class Unk_EmoPopupMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_EmoPopupMgr { public: };
 UIEmoticon* FUN_141930440(int nUiId);
 unsigned int FUN_14192fe00(Unk_EmoPlayer* pPlayer);
 
@@ -258,7 +258,7 @@ int UIEmoticon::Entity::vfunc_8(int n)
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0 && FUN_1419305c0() == 0 && !bKind3)
         return 1;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9ea0() != 0 || ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0 || ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
     {
         if (m_b0 != 2)
             return 1;
@@ -530,7 +530,7 @@ UIEmoticon* FUN_141930440(int nUiId)
 {
     if (reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIEmoticon*>((UIObject*)p);
     }

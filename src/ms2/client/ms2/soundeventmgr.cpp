@@ -1111,7 +1111,7 @@ void CSoundEventMgr::FUN_14177bbc0()
 }
 
 // @0x14177bda0
-void CSoundEventMgr::FUN_14177bda0()
+void CSoundEventMgr::OnLostSoundDevice()
 {
     if (m_bReady != 0)
     {
@@ -1278,7 +1278,7 @@ int CSoundEventMgr::FUN_14177c420(unsigned nParamId, float fValue, unsigned nPri
 #endif
 
 // @0x14177c710
-int CSoundEventMgr::FUN_14177c710(unsigned nParamId, float* pfValue)
+int CSoundEventMgr::GetMusicParameter(unsigned nParamId, float* pfValue)
 {
     if (m_bReady != 0)
     {
@@ -1299,7 +1299,7 @@ int CSoundEventMgr::FUN_14177c710(unsigned nParamId, float* pfValue)
 }
 
 // @0x14177c7e0
-int CSoundEventMgr::FUN_14177c7e0(bool bPaused)
+int CSoundEventMgr::SetMusicPaused(bool bPaused)
 {
     if (m_bReady != 0)
     {
@@ -1309,7 +1309,7 @@ int CSoundEventMgr::FUN_14177c7e0(bool bPaused)
 }
 
 // @0x14177c850
-void CSoundEventMgr::FUN_14177c850()
+void CSoundEventMgr::ResetMusic()
 {
     if (m_bReady)
     {
@@ -1388,7 +1388,7 @@ FMOD_RESULT F_CALLBACK FUN_14177caf0(FMOD_MUSIC_CALLBACKTYPE type, void* param1,
     switch (type)
     {
     case 0:
-        if (pMgr != 0 && pMgr->FUN_14177c710(5, &fValue) != 0)
+        if (pMgr != 0 && pMgr->GetMusicParameter(5, &fValue) != 0)
         {
             if (FUN_14028d470(fValue, 10.0f))
                 pMgr->FUN_14177c420(5, 0.0f, 0x80, 0);

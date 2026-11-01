@@ -286,6 +286,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);  // split into ids
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);           // unsigned attribute
@@ -327,14 +328,14 @@ Unk_GameEventValue8::~Unk_GameEventValue8() {}
 // @0x140422c80
 int Unk_GameEventValue8::GetValue()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_value;
 }
 MS2_REPLACE_METHOD(0x140422C80, Unk_GameEventValue8, GetValue, 64, 0xFE2916EF);
 // @0x140422cd0
 void Unk_GameEventValue8::SetValue(int value)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_value = value;
 }
 MS2_REPLACE_METHOD(0x140422CD0, Unk_GameEventValue8, SetValue, 64, 0x25295C0A);
@@ -346,14 +347,14 @@ Unk_GameEventValueSum::~Unk_GameEventValueSum() {}
 // @0x140422db0
 int Unk_GameEventValueSum::GetSum()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_sum;
 }
 MS2_REPLACE_METHOD(0x140422DB0, Unk_GameEventValueSum, GetSum, 64, 0x21F879BA);
 // @0x140422e00
 void Unk_GameEventValueSum::SetValue(unsigned eventId, int value)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (value == 0)
         m_values.erase(eventId);
     else
@@ -375,7 +376,7 @@ int Unk_GameEventValueDungeonGroup::GetFirst(Unk_DungeonGroupType type)
 {
     if (m_groups.empty())
         return 0;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_groups.find(type) == m_groups.end())
         return 0;
     return m_groups[type].first;
@@ -386,7 +387,7 @@ int Unk_GameEventValueDungeonGroup::GetSecond(Unk_DungeonGroupType type, int nDe
 {
     if (m_groups.empty())
         return INT_MAX;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_groups.find(type) == m_groups.end())
         return INT_MAX;
     int second = m_groups[type].second;
@@ -400,7 +401,7 @@ void Unk_GameEventValueDungeonGroup::Set(Unk_DungeonGroupType type, unsigned fir
 {
     if (type == 0 || type >= 15)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (first == 0) {
         m_groups.erase(type);
         return;
@@ -419,14 +420,14 @@ Unk_GameEventValue88::~Unk_GameEventValue88() {}
 // @0x140423340
 int Unk_GameEventValue88::GetValue()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_value;
 }
 MS2_REPLACE_METHOD(0x140423340, Unk_GameEventValue88, GetValue, 64, 0x948C27AB);
 // @0x140423390
 void Unk_GameEventValue88::SetValue(int value)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_value = value;
 }
 MS2_REPLACE_METHOD(0x140423390, Unk_GameEventValue88, SetValue, 64, 0x898A0505);
@@ -438,14 +439,14 @@ CGameEventValueGuildSkillSale::~CGameEventValueGuildSkillSale() {}
 // @0x140423450
 int CGameEventValueGuildSkillSale::GetRate()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_rate;
 }
 MS2_REPLACE_METHOD(0x140423450, CGameEventValueGuildSkillSale, GetRate, 64, 0x62282C8F);
 // @0x1404234a0
 void CGameEventValueGuildSkillSale::SetRate(int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rate = rate;
 }
 MS2_REPLACE_METHOD(0x1404234A0, CGameEventValueGuildSkillSale, SetRate, 64, 0xD930F5FA);
@@ -456,14 +457,14 @@ CGameEventValueGuildPersonalSkillSale::~CGameEventValueGuildPersonalSkillSale() 
 // @0x140423560
 int CGameEventValueGuildPersonalSkillSale::GetRate()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_rate;
 }
 MS2_REPLACE_METHOD(0x140423560, CGameEventValueGuildPersonalSkillSale, GetRate, 64, 0x959EEBEB);
 // @0x1404235b0
 void CGameEventValueGuildPersonalSkillSale::SetRate(int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rate = rate;
 }
 MS2_REPLACE_METHOD(0x1404235B0, CGameEventValueGuildPersonalSkillSale, SetRate, 64, 0x7C3956CC);
@@ -474,14 +475,14 @@ CGameEventValueGuildExp::~CGameEventValueGuildExp() {}
 // @0x140423670
 int CGameEventValueGuildExp::GetRate()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_rate;
 }
 MS2_REPLACE_METHOD(0x140423670, CGameEventValueGuildExp, GetRate, 64, 0x74C73A5F);
 // @0x1404236c0
 void CGameEventValueGuildExp::SetRate(int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rate = rate;
 }
 MS2_REPLACE_METHOD(0x1404236C0, CGameEventValueGuildExp, SetRate, 64, 0xF6751B2A);
@@ -492,14 +493,14 @@ CGameEventValueGuildFund::~CGameEventValueGuildFund() {}
 // @0x140423780
 int CGameEventValueGuildFund::GetRate()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_rate;
 }
 MS2_REPLACE_METHOD(0x140423780, CGameEventValueGuildFund, GetRate, 64, 0x74D5D2CB);
 // @0x1404237d0
 void CGameEventValueGuildFund::SetRate(int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rate = rate;
 }
 MS2_REPLACE_METHOD(0x1404237D0, CGameEventValueGuildFund, SetRate, 64, 0x39E8B290);
@@ -510,14 +511,14 @@ CGameEventValueGuildCoin::~CGameEventValueGuildCoin() {}
 // @0x140423890
 int CGameEventValueGuildCoin::GetRate()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_rate;
 }
 MS2_REPLACE_METHOD(0x140423890, CGameEventValueGuildCoin, GetRate, 64, 0x76E22F07);
 // @0x1404238e0
 void CGameEventValueGuildCoin::SetRate(int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rate = rate;
 }
 MS2_REPLACE_METHOD(0x1404238E0, CGameEventValueGuildCoin, SetRate, 64, 0x4BD159B2);
@@ -529,7 +530,7 @@ CGameEventValueMasteryReward::~CGameEventValueMasteryReward() {}
 // @0x1404239c0
 int CGameEventValueMasteryReward::GetRate(int type, unsigned long fieldId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nRate = 0;
     for (std::map<unsigned long, Rates>::iterator it = m_events.begin(); it != m_events.end(); ++it) {
         Rates& rates = it->second;
@@ -544,7 +545,7 @@ MS2_REPLACE_METHOD(0x1404239C0, CGameEventValueMasteryReward, GetRate, 323, 0x29
 // @0x140423b10
 void CGameEventValueMasteryReward::Load(unsigned long eventId, int type, const CStringW& strPath)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
         return;
@@ -570,7 +571,7 @@ MS2_REPLACE_METHOD(0x140423B10, CGameEventValueMasteryReward, Load, 647, 0xCBB84
 // @0x140423da0
 void CGameEventValueMasteryReward::Remove(unsigned long eventId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_events.find(eventId) == m_events.end())
         return;
     m_events.erase(eventId);
@@ -692,7 +693,7 @@ MS2Ptr<ItemBoxEventContext> CGameEventValueItemBox::Get(unsigned fieldId)
 {
     if (m_contexts.empty())
         return MS2Ptr<ItemBoxEventContext>(0);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned, MS2Ptr<ItemBoxEventContext> >::iterator it = m_contexts.find(fieldId);
     if (it == m_contexts.end())
         return MS2Ptr<ItemBoxEventContext>(0);
@@ -704,7 +705,7 @@ bool CGameEventValueItemBox::Add(MS2Ptr<ItemBoxEventContext> spContext)
 {
     if (spContext == NULL)
         return false;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_contexts.find(spContext->m_fieldID) != m_contexts.end())
         return false;
     m_contexts[spContext->m_fieldID] = spContext;
@@ -716,7 +717,7 @@ void CGameEventValueItemBox::Remove(MS2Ptr<ItemBoxEventContext> spContext)
 {
     if (spContext == NULL)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.erase(spContext->m_fieldID);
 }
 MS2_REPLACE_METHOD(0x1404247E0, CGameEventValueItemBox, Remove, 137, 0x70256C12);
@@ -797,21 +798,21 @@ CGameEventValueDungeonHelperBonus::~CGameEventValueDungeonHelperBonus() {}
 // @0x140424c80
 void CGameEventValueDungeonHelperBonus::Add(int bonus)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_bonus += bonus;
 }
 MS2_REPLACE_METHOD(0x140424C80, CGameEventValueDungeonHelperBonus, Add, 72, 0x098AA5B4);
 // @0x140424cd0
 void CGameEventValueDungeonHelperBonus::Sub(int bonus)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_bonus -= bonus;
 }
 MS2_REPLACE_METHOD(0x140424CD0, CGameEventValueDungeonHelperBonus, Sub, 74, 0x6124925F);
 // @0x140424d20
 int CGameEventValueDungeonHelperBonus::GetBonus()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_bonus;
 }
 MS2_REPLACE_METHOD(0x140424D20, CGameEventValueDungeonHelperBonus, GetBonus, 64, 0xED11AC9B);
@@ -872,7 +873,7 @@ void CGameEventValueDungeonBuff::Add(unsigned long dungeonId, MS2Ptr<DungeonBuff
 {
     if (spContext == NULL)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Counts* pCounts = NULL;
     if (spContext->m_isBeginner)
         pCounts = &m_beginnerBuffs[dungeonId];
@@ -890,7 +891,7 @@ void CGameEventValueDungeonBuff::Remove(unsigned long dungeonId, MS2Ptr<DungeonB
 {
     if (spContext == NULL)
         return;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Counts* pCounts = NULL;
     if (spContext->m_isBeginner)
         pCounts = &m_beginnerBuffs[dungeonId];
@@ -911,7 +912,7 @@ MS2_REPLACE_METHOD(0x140425150, CGameEventValueDungeonBuff, Remove, 405, 0xAC43E
 // @0x1404252f0
 void CGameEventValueDungeonBuff::GetBuffs(unsigned long dungeonId, std::set<unsigned __int64>& buffs)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Counts& counts = m_buffs[dungeonId];
     for (Counts::iterator it = counts.begin(), itEnd = counts.end(); it != itEnd; it++)
         buffs.insert(it->first);
@@ -920,7 +921,7 @@ MS2_REPLACE_METHOD(0x1404252F0, CGameEventValueDungeonBuff, GetBuffs, 199, 0x9A3
 // @0x1404253c0
 void CGameEventValueDungeonBuff::GetBeginnerBuffs(unsigned long dungeonId, std::vector<unsigned __int64>& buffs)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Counts& counts = m_beginnerBuffs[dungeonId];
     buffs.reserve(counts.size());
     for (Counts::iterator it = counts.begin(), itEnd = counts.end(); it != itEnd; it++)
@@ -1285,7 +1286,7 @@ CGameEventValueDungeonOpenPeriod::CGameEventValueDungeonOpenPeriod() {}
 // @0x140427690
 bool CGameEventValueDungeonOpenPeriod::Add(CStringW strTag, __int64 beginTime, __int64 endTime)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_periods.Lookup(strTag) != NULL)
         return false;
     m_periods.SetAt(strTag, Unk_FieldTimeSpan(beginTime, endTime));
@@ -1295,14 +1296,14 @@ MS2_REPLACE_METHOD(0x140427690, CGameEventValueDungeonOpenPeriod, Add, 223, 0x01
 // @0x140427780
 void CGameEventValueDungeonOpenPeriod::Remove(CStringW strTag)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_periods.RemoveKey(strTag);
 }
 MS2_REPLACE_METHOD(0x140427780, CGameEventValueDungeonOpenPeriod, Remove, 102, 0x524DE99C);
 // @0x1404277f0
 bool CGameEventValueDungeonOpenPeriod::IsOpen(CStringW strTag, __int64 time)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Unk_FieldTimeSpan period;
     if (m_periods.Lookup(strTag, period) && period.Contains(time))
         return true;
@@ -1312,7 +1313,7 @@ MS2_REPLACE_METHOD(0x1404277F0, CGameEventValueDungeonOpenPeriod, IsOpen, 196, 0
 // @0x1404278c0
 bool CGameEventValueDungeonOpenPeriod::GetPeriod(CStringW strTag, Unk_FieldTimeSpan& period)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_periods.Lookup(strTag, period))
         return true;
     return false;
@@ -1324,21 +1325,21 @@ Unk_GameEventValueIdSet::Unk_GameEventValueIdSet() {}
 // @0x1404279c0
 void Unk_GameEventValueIdSet::Add(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_ids.insert(id);
 }
 MS2_REPLACE_METHOD(0x1404279C0, Unk_GameEventValueIdSet, Add, 90, 0x765DF160);
 // @0x140427a20
 void Unk_GameEventValueIdSet::Remove(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_ids.erase(id);
 }
 MS2_REPLACE_METHOD(0x140427A20, Unk_GameEventValueIdSet, Remove, 85, 0x50DD0B4C);
 // @0x140427a80
 bool Unk_GameEventValueIdSet::IsActive()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return !m_ids.empty();
 }
 MS2_REPLACE_METHOD(0x140427A80, Unk_GameEventValueIdSet, IsActive, 104, 0x24B33944);
@@ -1348,7 +1349,7 @@ Unk_GameEventValueDayItem::Unk_GameEventValueDayItem() {}
 // @0x140427b60
 void Unk_GameEventValueDayItem::Add(unsigned id, Unk_DayItemContext* pContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     MS2Ptr<Unk_DayItemContext> spContext(pContext);
     m_contexts.SetAt(id, spContext);
 }
@@ -1356,14 +1357,14 @@ MS2_REPLACE_METHOD(0x140427B60, Unk_GameEventValueDayItem, Add, 121, 0x362E5040)
 // @0x140427be0
 void Unk_GameEventValueDayItem::Remove(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.RemoveKey(id);
 }
 MS2_REPLACE_METHOD(0x140427BE0, Unk_GameEventValueDayItem, Remove, 73, 0x2F736E1C);
 // @0x140427c30
 void Unk_GameEventValueDayItem::GetContexts(ATL::CAtlList<MS2Ptr<Unk_DayItemContext> >& contexts, bool bAll)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_DayItemContext* pContext = m_contexts.GetValueAt(pos);
         if (pContext->IsActive() || bAll)
@@ -1377,7 +1378,7 @@ Unk_GameEventValueFieldObjectDrop::Unk_GameEventValueFieldObjectDrop() {}
 // @0x140427d90
 void Unk_GameEventValueFieldObjectDrop::Add(unsigned id, Unk_FieldObjectDropContext* pContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     MS2Ptr<Unk_FieldObjectDropContext> spContext(pContext);
     m_contexts.SetAt(id, spContext);
 }
@@ -1385,14 +1386,14 @@ MS2_REPLACE_METHOD(0x140427D90, Unk_GameEventValueFieldObjectDrop, Add, 121, 0xA
 // @0x140427e10
 void Unk_GameEventValueFieldObjectDrop::Remove(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.RemoveKey(id);
 }
 MS2_REPLACE_METHOD(0x140427E10, Unk_GameEventValueFieldObjectDrop, Remove, 73, 0xB04BE897);
 // @0x140427e60
 void Unk_GameEventValueFieldObjectDrop::GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropContext> >& contexts)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_FieldObjectDropContext* pContext = m_contexts.GetValueAt(pos);
         contexts.AddTail(pContext);
@@ -1405,7 +1406,7 @@ Unk_GameEventValueFieldObjectDropList::Unk_GameEventValueFieldObjectDropList() {
 // @0x140427fa0
 void Unk_GameEventValueFieldObjectDropList::Add(unsigned id, Unk_FieldObjectDropListContext* pContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     MS2Ptr<Unk_FieldObjectDropListContext> spContext(pContext);
     m_contexts.SetAt(id, spContext);
 }
@@ -1413,14 +1414,14 @@ MS2_REPLACE_METHOD(0x140427FA0, Unk_GameEventValueFieldObjectDropList, Add, 121,
 // @0x140428020
 void Unk_GameEventValueFieldObjectDropList::Remove(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.RemoveKey(id);
 }
 MS2_REPLACE_METHOD(0x140428020, Unk_GameEventValueFieldObjectDropList, Remove, 73, 0xB0A511DA);
 // @0x140428070
 void Unk_GameEventValueFieldObjectDropList::GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropListContext> >& contexts)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_FieldObjectDropListContext* pContext = m_contexts.GetValueAt(pos);
         contexts.AddTail(pContext);
@@ -1437,7 +1438,7 @@ CGameEventValueBurningLevelup::~CGameEventValueBurningLevelup() {}
 // @0x140428200
 MS2Ptr<BurningLevelupContext> CGameEventValueBurningLevelup::Get(unsigned eventId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned, MS2Ptr<BurningLevelupContext> >::const_iterator it = m_contexts.find(eventId);
     if (it == m_contexts.end())
         return MS2Ptr<BurningLevelupContext>(0);
@@ -1447,7 +1448,7 @@ MS2_REPLACE_METHOD(0x140428200, CGameEventValueBurningLevelup, Get, 236, 0x4041F
 // @0x140428300
 void CGameEventValueBurningLevelup::GetAll(std::list<MS2Ptr<BurningLevelupContext> >& contexts)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_contexts.empty())
         return;
     for (std::map<unsigned, MS2Ptr<BurningLevelupContext> >::const_iterator it = m_contexts.begin();
@@ -1458,21 +1459,21 @@ MS2_REPLACE_METHOD(0x140428300, CGameEventValueBurningLevelup, GetAll, 212, 0xA5
 // @0x1404283e0
 void CGameEventValueBurningLevelup::Add(MS2Ptr<BurningLevelupContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.insert(std::make_pair(spContext->m_eventId, spContext));
 }
 MS2_REPLACE_METHOD(0x1404283E0, CGameEventValueBurningLevelup, Add, 175, 0x55727A72);
 // @0x1404284a0
 void CGameEventValueBurningLevelup::Remove(MS2Ptr<BurningLevelupContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.erase(spContext->m_eventId);
 }
 MS2_REPLACE_METHOD(0x1404284A0, CGameEventValueBurningLevelup, Remove, 106, 0x9E85B4D5);
 // @0x140428510
 MS2Ptr<BurningLevelupContext> CGameEventValueBurningLevelup::FindByTarget(int id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (std::map<unsigned, MS2Ptr<BurningLevelupContext> >::const_iterator it = m_contexts.begin();
          it != m_contexts.end(); ++it) {
         if (it->second == NULL)
@@ -1492,14 +1493,14 @@ CGameEventValueCoupleDance::~CGameEventValueCoupleDance() {}
 // @0x140428700
 MS2Ptr<CoupleDanceContext> CGameEventValueCoupleDance::Get()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_spContext;
 }
 MS2_REPLACE_METHOD(0x140428700, CGameEventValueCoupleDance, Get, 109, 0x58AFDF23);
 // @0x140428780
 void CGameEventValueCoupleDance::Set(MS2Ptr<CoupleDanceContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_spContext = spContext;
 }
 MS2_REPLACE_METHOD(0x140428780, CGameEventValueCoupleDance, Set, 97, 0x2514FCBD);
@@ -1529,14 +1530,14 @@ MS2_REPLACE_METHOD(0x1404288D0, CGameEventValueFestival, GetAll, 164, 0x2FE22AB8
 // @0x140428980
 void CGameEventValueFestival::Add(unsigned id, MS2Ptr<FestivalContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.SetAt(id, spContext);
 }
 MS2_REPLACE_METHOD(0x140428980, CGameEventValueFestival, Add, 105, 0x37E6EBE7);
 // @0x1404289f0
 void CGameEventValueFestival::Remove(unsigned id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.RemoveKey(id);
 }
 MS2_REPLACE_METHOD(0x1404289F0, CGameEventValueFestival, Remove, 73, 0x82F6E4F5);
@@ -1546,14 +1547,14 @@ CGameEventValueFieldEffect::CGameEventValueFieldEffect() : m_spContext(0) {}
 // @0x140428a90
 MS2Ptr<FieldEffectContext> CGameEventValueFieldEffect::Get()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_spContext;
 }
 MS2_REPLACE_METHOD(0x140428A90, CGameEventValueFieldEffect, Get, 109, 0xA9308182);
 // @0x140428b10
 void CGameEventValueFieldEffect::Set(MS2Ptr<FieldEffectContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_spContext = spContext;
 }
 MS2_REPLACE_METHOD(0x140428B10, CGameEventValueFieldEffect, Set, 97, 0xAF0BA767);
@@ -1563,21 +1564,21 @@ CGameEventValueExchangeScrollSale::CGameEventValueExchangeScrollSale() {}
 // @0x140428bf0
 void CGameEventValueExchangeScrollSale::Set(unsigned long itemId, int rate)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rates.SetAt(itemId, rate);
 }
 MS2_REPLACE_METHOD(0x140428BF0, CGameEventValueExchangeScrollSale, Set, 94, 0xA871C6CE);
 // @0x140428c60
 void CGameEventValueExchangeScrollSale::Remove(unsigned long itemId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_rates.RemoveKey(itemId);
 }
 MS2_REPLACE_METHOD(0x140428C60, CGameEventValueExchangeScrollSale, Remove, 73, 0x0C93742A);
 // @0x140428cb0
 int CGameEventValueExchangeScrollSale::Get(unsigned long itemId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int rate = 0;
     m_rates.Lookup(itemId, rate);
     return rate;
@@ -1589,7 +1590,7 @@ Unk_GameEventValueC50::Unk_GameEventValueC50() : m_beginTime(0), m_endTime(0), m
 // @0x140428d80
 void Unk_GameEventValueC50::Set(__int64 beginTime, __int64 endTime, int value)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_beginTime = beginTime;
     m_endTime = endTime;
     m_value = value;
@@ -1598,7 +1599,7 @@ MS2_REPLACE_METHOD(0x140428D80, Unk_GameEventValueC50, Set, 103, 0x1E406735);
 // @0x140428df0
 void Unk_GameEventValueC50::Clear()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_beginTime = 0;
     m_endTime = 0;
     m_value = 0;
@@ -1607,7 +1608,7 @@ MS2_REPLACE_METHOD(0x140428DF0, Unk_GameEventValueC50, Clear, 86, 0xDC8FEB2B);
 // @0x140428e50
 bool Unk_GameEventValueC50::Get(__int64& beginTime, __int64& endTime, int& value)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_beginTime == 0 && m_value == 0)
         return false;
     beginTime = m_beginTime;
@@ -1714,7 +1715,7 @@ CGameEventValueCollectItemGroup::~CGameEventValueCollectItemGroup() {}
 // @0x140429590
 MS2Ptr<CollectItemGroupContext> CGameEventValueCollectItemGroup::Get(unsigned eventId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned, MS2Ptr<CollectItemGroupContext> >::const_iterator it = m_contexts.find(eventId);
     if (it == m_contexts.end())
         return MS2Ptr<CollectItemGroupContext>(0);
@@ -1724,7 +1725,7 @@ MS2_REPLACE_METHOD(0x140429590, CGameEventValueCollectItemGroup, Get, 236, 0x333
 // @0x140429690
 void CGameEventValueCollectItemGroup::GetAll(std::vector<MS2Ptr<CollectItemGroupContext> >& contexts)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_contexts.empty())
         return;
     for (std::map<unsigned, MS2Ptr<CollectItemGroupContext> >::const_iterator it = m_contexts.begin();
@@ -1735,14 +1736,14 @@ MS2_REPLACE_METHOD(0x140429690, CGameEventValueCollectItemGroup, GetAll, 212, 0x
 // @0x140429770
 void CGameEventValueCollectItemGroup::Add(MS2Ptr<CollectItemGroupContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.insert(std::make_pair(spContext->m_eventId, spContext));
 }
 MS2_REPLACE_METHOD(0x140429770, CGameEventValueCollectItemGroup, Add, 175, 0xB05B38C0);
 // @0x140429830
 void CGameEventValueCollectItemGroup::Remove(MS2Ptr<CollectItemGroupContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.erase(spContext->m_eventId);
 }
 MS2_REPLACE_METHOD(0x140429830, CGameEventValueCollectItemGroup, Remove, 106, 0x14054B8D);
@@ -1754,7 +1755,7 @@ CGameEventValueArcadeOpen::~CGameEventValueArcadeOpen() {}
 // @0x140429930
 MS2Ptr<ArcadeOpenContext> CGameEventValueArcadeOpen::Get(int arcadeId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<int, MS2Ptr<ArcadeOpenContext> >::const_iterator it = m_contexts.find(arcadeId);
     if (it == m_contexts.end())
         return MS2Ptr<ArcadeOpenContext>(0);
@@ -1764,7 +1765,7 @@ MS2_REPLACE_METHOD(0x140429930, CGameEventValueArcadeOpen, Get, 236, 0x5D89F478)
 // @0x140429a30
 bool CGameEventValueArcadeOpen::Add(MS2Ptr<ArcadeOpenContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_contexts.find(spContext->m_arcadeId) != m_contexts.end())
         return false;
     m_contexts.insert(std::make_pair(spContext->m_arcadeId, spContext));
@@ -1774,7 +1775,7 @@ MS2_REPLACE_METHOD(0x140429A30, CGameEventValueArcadeOpen, Add, 324, 0xB6CA9603)
 // @0x140429b80
 void CGameEventValueArcadeOpen::Remove(MS2Ptr<ArcadeOpenContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts.erase(spContext->m_arcadeId);
 }
 MS2_REPLACE_METHOD(0x140429B80, CGameEventValueArcadeOpen, Remove, 106, 0x3BB2CE8A);
@@ -1786,14 +1787,14 @@ CGameEventValueBingo::~CGameEventValueBingo() {}
 // @0x140429c80
 MS2Ptr<BingoContext> CGameEventValueBingo::Get()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_spContext;
 }
 MS2_REPLACE_METHOD(0x140429C80, CGameEventValueBingo, Get, 109, 0x24C71C9F);
 // @0x140429d00
 void CGameEventValueBingo::Set(MS2Ptr<BingoContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (!spContext)
         return;
     m_spContext = spContext;
@@ -1802,7 +1803,7 @@ MS2_REPLACE_METHOD(0x140429D00, CGameEventValueBingo, Set, 137, 0xB7F89AE7);
 // @0x140429d90
 void CGameEventValueBingo::Clear(MS2Ptr<BingoContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_spContext == spContext.get())
         m_spContext = 0;
 }
@@ -1815,7 +1816,7 @@ CGameEventValueLimitedQuantity::~CGameEventValueLimitedQuantity() {}
 // @0x140429ed0
 MS2Ptr<LimitedQuantityContext> CGameEventValueLimitedQuantity::Get(unsigned eventId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_contexts.find(eventId) == m_contexts.end())
         return MS2Ptr<LimitedQuantityContext>(0);
     return m_contexts[eventId];
@@ -1824,7 +1825,7 @@ MS2_REPLACE_METHOD(0x140429ED0, CGameEventValueLimitedQuantity, Get, 241, 0xF079
 // @0x140429fd0
 MS2Ptr<LimitedQuantityContext> CGameEventValueLimitedQuantity::GetByKey(unsigned key)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_keys.find(key) == m_keys.end())
         return MS2Ptr<LimitedQuantityContext>(0);
     unsigned eventId = m_keys[key];
@@ -1834,7 +1835,7 @@ MS2_REPLACE_METHOD(0x140429FD0, CGameEventValueLimitedQuantity, GetByKey, 254, 0
 // @0x14042a0e0
 void CGameEventValueLimitedQuantity::Add(MS2Ptr<LimitedQuantityContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (!spContext)
         return;
     if (spContext->m_1c == 0 || spContext->m_eventId == 0)
@@ -1849,7 +1850,7 @@ MS2_REPLACE_METHOD(0x14042A0E0, CGameEventValueLimitedQuantity, Add, 377, 0xDEA5
 // @0x14042a260
 void CGameEventValueLimitedQuantity::Remove(MS2Ptr<LimitedQuantityContext> spContext)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (!spContext)
         return;
     if (spContext->m_1c == 0 || spContext->m_eventId == 0)
@@ -1865,7 +1866,7 @@ CGameEventValueEventShopNpc::CGameEventValueEventShopNpc() {}
 void CGameEventValueEventShopNpc::Add(MS2Ptr<EventShopNpcContext> pContext)
 {
     MS2_ASSERT_AT(0x863, pContext != NULL);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_contexts[pContext->Get18()] = pContext;
     std::map<unsigned long, Contexts>::iterator it = m_groups.find(pContext->Get20());
     if (it == m_groups.end()) {
@@ -1880,7 +1881,7 @@ MS2_REPLACE_METHOD(0x14042A3C0, CGameEventValueEventShopNpc, Add, 479, 0xBA05DEF
 // @0x14042a5b0
 void CGameEventValueEventShopNpc::Remove(int id)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned, MS2Ptr<EventShopNpcContext> >::iterator it = m_contexts.find(reinterpret_cast<const unsigned&>(id));
     if (it == m_contexts.end())
         return;
@@ -1903,7 +1904,7 @@ MS2_REPLACE_METHOD(0x14042A5B0, CGameEventValueEventShopNpc, Remove, 525, 0x531C
 // @0x14042a7d0
 MS2Ptr<EventShopNpcContext> CGameEventValueEventShopNpc::Find(unsigned long group, int npcId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     std::map<unsigned long, Contexts>::iterator it = m_groups.find(group);
     if (it == m_groups.end())
         return MS2Ptr<EventShopNpcContext>(0);

@@ -58,10 +58,10 @@ public:
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, int&);
-void FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short&);
-bool FUN_14028f710(Unk_140165cf0*);                                 // the element is usable
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The statics of this unit: two enum name tables around a name -> id map.
 static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -228,16 +228,16 @@ void UGCCubeCategoryTable::LoadMenus()
             {
                 for (Unk_140165cf0* pMenu = pMenus->FUN_140165cf0("menu"); pMenu != 0; pMenu = pMenu->FUN_140168650("menu"))
                 {
-                    if (!FUN_14028f710(pMenu))
+                    if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                         continue;
                     int nName = 0;
-                    FUN_140873220(pMenu, "name", nName);
+                    XmlGetAttr((class TiXmlElement*)(pMenu), "name", *(unsigned int*)&static_cast<int&>(nName));
                     int nCategory = 0;
-                    FUN_140873220(pMenu, "category", nCategory);
+                    XmlGetAttr((class TiXmlElement*)(pMenu), "category", *(unsigned int*)&static_cast<int&>(nCategory));
                     int nFilter = 0;
-                    FUN_140873220(pMenu, "filter", nFilter);
+                    XmlGetAttr((class TiXmlElement*)(pMenu), "filter", *(unsigned int*)&static_cast<int&>(nFilter));
                     int nDelegator = 1;
-                    FUN_1408731e0(pMenu, "delegator", nDelegator);
+                    XmlGetAttr((class TiXmlElement*)(pMenu), "delegator", nDelegator);
                     MenuPtr menu((Unk_CubeNewTag(0)));
                     menu->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
                     menu->m_nCategory = nCategory;
@@ -252,9 +252,9 @@ void UGCCubeCategoryTable::LoadMenus()
                 for (Unk_140165cf0* pSort = pSorts->FUN_140165cf0("sort"); pSort != 0; pSort = pSort->FUN_140168650("sort"))
                 {
                     int nName = 0;
-                    FUN_140873220(pSort, "name", nName);
+                    XmlGetAttr((class TiXmlElement*)(pSort), "name", *(unsigned int*)&static_cast<int&>(nName));
                     int nOrder = 0;
-                    FUN_140873220(pSort, "order", nOrder);
+                    XmlGetAttr((class TiXmlElement*)(pSort), "order", *(unsigned int*)&static_cast<int&>(nOrder));
                     SortPtr sort((Unk_CubeNewTag(0)));
                     sort->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
                     sort->m_nOrder = nOrder;
@@ -289,10 +289,10 @@ void UGCCubeCategoryTable::LoadInteriors()
             {
                 InteriorPtr interior((Unk_CubeNewTag(0)));
                 int nCategory = 0;
-                FUN_140873220(pList, "categoryIndex", nCategory);
-                FUN_1408731a0(pList, "requireHousingLevel", interior->m_nRequireLevel);
-                FUN_140873220(pList, "housingBonusCount", interior->m_nBonusCount);
-                FUN_140873220(pList, "housingBonusPoint", interior->m_nBonusPoint);
+                XmlGetAttr((class TiXmlElement*)(pList), "categoryIndex", *(unsigned int*)&static_cast<int&>(nCategory));
+                XmlGetAttr((class TiXmlElement*)(pList), "requireHousingLevel", interior->m_nRequireLevel);
+                XmlGetAttr((class TiXmlElement*)(pList), "housingBonusCount", *(unsigned int*)&static_cast<int&>(interior->m_nBonusCount));
+                XmlGetAttr((class TiXmlElement*)(pList), "housingBonusPoint", *(unsigned int*)&static_cast<int&>(interior->m_nBonusPoint));
                 interior->m_nCategory = (ECubeCategory)nCategory;
                 if ((unsigned)interior->m_nBonusCount > 0 && (unsigned)interior->m_nBonusPoint > 0)
                     m_bonusInteriors.SetAt(interior->m_nCategory, interior);
@@ -338,13 +338,13 @@ void UGCCubeCategoryTable::ReadTabsInto(int nCategory, Unk_140165cf0* pElem, Tab
 // @0x140887530
 UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(Unk_140165cf0* pElem)
 {
-    if (!FUN_14028f710(pElem))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
         return TabPtr(0);
     TabPtr tab((Unk_CubeNewTag(0)));
     int nName = 0;
-    FUN_140873220(pElem, "name", nName);
-    FUN_1408731e0(pElem, "delegator", tab->m_nDelegator);
-    FUN_140873220(pElem, "category", reinterpret_cast<int&>(tab->m_nCategory));
+    XmlGetAttr((class TiXmlElement*)(pElem), "name", *(unsigned int*)&static_cast<int&>(nName));
+    XmlGetAttr((class TiXmlElement*)(pElem), "delegator", tab->m_nDelegator);
+    XmlGetAttr((class TiXmlElement*)(pElem), "category", *(unsigned int*)&static_cast<int&>(reinterpret_cast<int&>(tab->m_nCategory)));
     tab->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nName);
     return tab;
 }

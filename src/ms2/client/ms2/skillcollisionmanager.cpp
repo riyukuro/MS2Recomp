@@ -106,11 +106,11 @@ class Unk_1403ed2d0;
 extern unsigned DAT_1439f862c;          // display time of a shape (ms)
 extern unsigned char DAT_143ae95e0;
 extern unsigned char DAT_143ae95e1;
-unsigned FUN_140869420();               // tick count
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_14028d0e0();                // next shape handle
 Unk_EmoPlayer* FUN_14096e110(PCBase* p);
 PCBase* FUN_140974230(PCBase* p);
-void* FUN_141468360(PCBase* p);
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 typedef CSkillCollisionManager::CollisionPtr CollisionPtr;
 
@@ -233,7 +233,7 @@ void CSkillCollisionManager::Tick()
         spShape->vfunc_1();
         if (spShape->m_n58 != 0)
         {
-            if (spShape->m_n58 + DAT_1439f862c < FUN_140869420())
+            if (spShape->m_n58 + DAT_1439f862c < GetTickCountMs2())
                 aExpired.AddTail(m_mapActive.GetKeyAt(pos));
         }
     }
@@ -364,7 +364,7 @@ void CSkillCollisionManager::Touch(__int64 nHandle)
 {
     CollisionPtr spShape(0);
     if (m_mapActive.Lookup(nHandle, spShape))
-        spShape->m_n58 = FUN_140869420();
+        spShape->m_n58 = GetTickCountMs2();
 }
 
 // @0x141755c50
@@ -382,7 +382,7 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
 {
     if (FUN_14096e110(pActor) == 0)
     {
-        if ((FUN_140974230(pActor) != 0 || FUN_141468360(pActor) != 0) && DAT_143ae95e0 == 0)
+        if ((FUN_140974230(pActor) != 0 || ((void*)FUN_141468360((struct Unk_MagicEntity*)(pActor))) != 0) && DAT_143ae95e0 == 0)
             return;
     }
     else if (DAT_143ae95e1 == 0)
@@ -401,7 +401,7 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
         Unk_NiPt3 kPos(pPos);
         Vector3 ptPos = *(Vector3*)&kPos;
         pShape->vfunc_3(ptPos, ptDir, 1.0f);
-        spShape->m_n58 = FUN_140869420();
+        spShape->m_n58 = GetTickCountMs2();
         TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);
     }
 }

@@ -65,9 +65,8 @@ public:
     void FUN_140dd8730();                                       // the strip was hidden
 };
 
-Unk_SpNet* FUN_140d86260();
+void* FUN_140d86260();   // C3: was FUN_140d86260
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1418dd0d0();
 Unk_SpMgr* FUN_140cea070();
 void* FUN_140812670(void* pHandle);
@@ -94,7 +93,7 @@ MS2_REPLACE_METHOD(0x140FA3BA0, UISmartPush, GetTypeName, 61, 0x3DDD7BA2);
 void UISmartPush::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140d86260()->vfunc_43(0xe, 0, 1000);
+    ((class Unk_SpNet*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x140FA3BF0, UISmartPush, OnLoadComplete, 67, 0x97CD5915);
 
@@ -141,7 +140,7 @@ MS2_REPLACE_METHOD(0x140FA3DF0, UISmartPush, vfunc_3, 37, 0xAEF58F5C);
 // @0x140fa3e20
 int UISmartPush::FUN_140fa3e20(CSmartPush* pPush)
 {
-    if (FUN_140a467d0(&m_30) != 0)
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
     {
         if (FUN_141986d30() == 0)
             vfunc_2();
@@ -164,7 +163,7 @@ MS2_REPLACE_METHOD(0x140FA3E20, UISmartPush, FUN_140fa3e20, 652, 0x58779CBF);
 // @0x140fa40c0
 int UISmartPush::FUN_140fa40c0(int nId)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
     m_30->Invoke("removePush", nId);
     return 1;

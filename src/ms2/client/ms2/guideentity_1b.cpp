@@ -103,6 +103,14 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -144,7 +152,6 @@ UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 class Unk_GmPane : public UISwfEntity { };
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 class Unk_GmScene { public: int FUN_1422b9dc0(); int FUN_1422b9e00(); };
-Unk_GmScene* FUN_1408e57f0();
 struct Unk_GmApp { char m_pad[0x48]; void* m_pActiveWnd; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 struct Unk_GmPlayerFlags { unsigned char m_a; unsigned char m_b; unsigned char m_nMode; };
@@ -304,12 +311,12 @@ void CGuideManager::LoadFile(const CStringA& strPath)
             m_names.Add(StringFormat(L"Guide Error: [ID:{0}] {1}", spEntity->m_nId, FUN_14016a730(e.what(), 0)));
         }
     }
-    for (Unk_140165cf0* pImport = pRoot->FUN_140165cf0("import"); pImport != 0; pImport = pImport->FUN_140168650("import"))
+    for (Unk_140165cf0* pImport = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("import")); pImport != 0; pImport = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pImport))->NextSibling("import")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pImport)))
             continue;
         CStringA strName;
-        FUN_1408733e0(pImport, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pImport), "name", strName);
         CStringA strDir("Table");
         LoadFile(FUN_14071a5b0(strDir, strName));
     }
@@ -357,7 +364,7 @@ void CGuideManager::UpdateEntities()
         return;
     if (FUN_14138fd50(0x4e7e)->FUN_1419102c0() != 0)
         return;
-    if (FUN_1408e57f0()->FUN_1422b9e00() == 0x6200031)
+    if (((Unk_GmScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() == 0x6200031)
         return;
     if (!m_names.IsEmpty() && ((struct Unk_GmApp*)FUN_141482e80())->m_pActiveWnd != 0)
     {
@@ -1083,7 +1090,7 @@ void CGuideManager::OnDungeonEnterState(NotifyObject*)
 // @0x14138ec70
 void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 {
-    if (FUN_1408e57f0()->FUN_1422b9dc0() != 0x620000c)
+    if (((Unk_GmScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() != 0x620000c)
         return;
     QueueOccurrence(static_cast<Occurrence>(5), 0);
     if (nMode != 1)

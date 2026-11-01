@@ -48,7 +48,7 @@ public:
 };
 int FUN_1412755a0();
 int FUN_14074b030(CQuestData* pQuest);                      // the quest id
-CQuestManager* FUN_140764020();
+void* FUN_140764020();   // C3: was FUN_140764020
 
 // The game's TPtr has a private allocating reset (`p = New(0)`); a specialization is a friend of every MS2Ptr<T>.
 struct Unk_QnAccess;
@@ -484,7 +484,7 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
 {
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
         return MS2Ptr<QuestNavigation::TraceContext>(0);
-    Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
+    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return MS2Ptr<QuestNavigation::TraceContext>(0);
     if (!spQuest->IsActive())

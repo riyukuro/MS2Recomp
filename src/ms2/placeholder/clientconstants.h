@@ -42,7 +42,7 @@ public:
 
 // @0x1401d3200 TSingleton<Client::Constants>::GetInstance as seen from Common::Constants code.
 namespace Common { class Constants; }
-Common::Constants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();         // returns the Common::Constants view below (Unk_SingletonObj1 = the C3 canonical name)
 // CString -> value parsers (other units).
 unsigned short FUN_140718110(const CString& s);
 unsigned int FUN_1407181d0(const CString& s);
@@ -851,4 +851,9 @@ public:
     Value<CString> TencentThirdPartyInformationSharingListWebPage; // +0xea38
 };
 }
+
+// FUN_1401d3200's return type: the Client::Constants singleton through a derived view with no members of its own, so the
+// calls bind ?FUN_1401d3200@@YAPEAVUnk_SingletonObj1@@XZ (the name most units declare) and convert to Common::Constants*
+// or Client::Constants* (both at offset 0).
+class Unk_SingletonObj1 : public Client::Constants {};
 MS2_CHECK_SIZE(Client::Constants,0xea98);

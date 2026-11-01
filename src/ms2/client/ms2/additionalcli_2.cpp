@@ -1042,7 +1042,7 @@ void AdditionalCliList::FUN_140972770()
         else
         {
             static_cast<Unk_AclEffect*>(CEffectService::GetInstance())->FUN_1411a6f00(m_pOwner->FUN_14123c460());
-            m_pOwner->FUN_14166ca80(3);
+            m_pOwner->RemoveHideReason(3);
             m_pOwner->vfunc_42(fAlpha, true);
         }
     }

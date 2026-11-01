@@ -28,7 +28,7 @@
 
 // ---- externals (bound by VA) ----------------------------------------------------------------------------------------
 #include "ms2/client/ms2/networkservice.h"
-unsigned FUN_140869420();                                       // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_14016a600(const wchar_t*, int);                     // wide -> CString
 int FUN_1401cde60(CBufferCryptManager*, unsigned char* data, int length, int connectionState, unsigned* key);   // decrypt
 void FUN_1401cddd0(CBufferCryptManager *, unsigned char *, int, int, unsigned int *);  // C3: the definition's signature
@@ -238,7 +238,7 @@ void FUN_140710590(COutPacket& packet)
 bool FUN_1407105c0(COutPacket* packet, int key, int delay)
 {
     if (packet->m_aBuffer.GetCount() < 2) return false;
-    unsigned now = FUN_140869420();
+    unsigned now = GetTickCountMs2();
     const unsigned short* typeField = (const unsigned short*)&packet->m_aBuffer[0];
     int type = *typeField;
     std::pair<int, int> id(type, key);

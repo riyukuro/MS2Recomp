@@ -35,13 +35,21 @@ void* FUN_1403ed290();                                                  // the g
 // The score table of the guild ranking seasons: the entry of a trophy count has a value at +0x18.
 struct Unk_FtSeasonEntry { char m_pad_00[0x18]; int m_nValue; };
 class Unk_FtSeasonTable;
-Unk_FtSeasonTable* FUN_140dc19b0();
-Unk_FtSeasonEntry* FUN_140769000(Unk_FtSeasonTable* pTable, int nTrophy);
+class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
+class CRankingArenaDataTable   // C3: member view for the former free stand-ins
+{
+public:
+    class RankingArenaData* GetGradeOfRating(int);
+};
 
 class Unk_FtWorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_FtUIScale;
-Unk_FtUIScale* FUN_14025e7a0();                                         // ui scale service
-float FUN_1422afec0(Unk_FtUIScale* pScale, int nLayer);                 // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 Vector3* FUN_140ad0c10(Vector3* pt, float f);           // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
@@ -139,7 +147,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             }
             else if (nImageType == 5)
             {
-                Unk_FtSeasonEntry* pEntry = FUN_140769000(FUN_140dc19b0(), nTrophy);
+                Unk_FtSeasonEntry* pEntry = ((struct Unk_FtSeasonEntry*)((class CRankingArenaDataTable*)(class Unk_FtSeasonTable*)(((class Unk_FtSeasonTable*)FUN_140dc19b0())))->GetGradeOfRating(nTrophy));
                 static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, pEntry->m_nValue);
             }
             else
@@ -186,7 +194,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())
         {
-            FUN_140ad0c10(&kScreen, FUN_1422afec0(FUN_14025e7a0(), m_28));
+            FUN_140ad0c10(&kScreen, ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
             kScreen.x -= pEntity->FUN_1422c1340() * 0.5;
             kScreen.y -= pEntity->FUN_1422c13b0() * 0.5;
             pEntity->FUN_1422c00f0(kScreen.x, kScreen.y);

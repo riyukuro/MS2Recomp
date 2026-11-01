@@ -16,14 +16,25 @@
 
 // ---- exe callees ----
 void* FUN_1409eed90();                                                      // the singleton of the own character
-Unk_WeddingTicketView* FUN_141b87160(void* pCharacter);                     // the character's current wedding hall ticket
+class WeddingManager   // C3: member view for the former free stand-ins
+{
+public:
+    class WeddingHallTicket const& GetTicket();
+};
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, unsigned char bPrivate, ASObj* pData);   // fills the page data object
-bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);                         // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);                 // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-void FUN_140fdc9f0(UIDialog* pDialog);                                      // reservation dialog: go back to the list
+class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_140fdc9f0();
+};
 void* FUN_140967100();
-void FUN_141b1feb0(void* pSingleton);
+class UITalkManager   // C3: member view for the former free stand-ins
+{
+public:
+    void SendNpcTalkMode0();
+};
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 
 // @0x140fe2150
@@ -40,7 +51,7 @@ UIWeddingHallReservationPage::~UIWeddingHallReservationPage()
 // @0x140fe2200
 bool UIWeddingHallReservationPage::vfunc_1()
 {
-    if (FUN_140a467d0(m_pDialog->FUN_1422dba00()))
+    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
     if (FUN_1409b0350(&kPage) != 0)
@@ -137,7 +148,7 @@ bool UIWeddingHallReservationPageCancel::vfunc_1()
 {
     if (!UIWeddingHallReservationPage::vfunc_1())
         return false;
-    Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
+    Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
     ASObj kData(2);
     FUN_140fdac50(pTicket->m_nHallId, pTicket->m_nSlot, pTicket->m_nTime, pTicket->m_bPrivate, &kData);
     m_pScript->Invoke("setData", kData);
@@ -153,16 +164,16 @@ void UIWeddingHallReservationPageCancel::vfunc_2()
 // @0x140fe2640
 void UIWeddingHallReservationPageCancel::vfunc_5()
 {
-    FUN_140fdc9f0(m_pDialog);
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc9f0();
     m_pDialog->vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
 }
 
 // @0x140fe2690
 void UIWeddingHallReservationPageCancel::vfunc_6()
 {
     m_pDialog->vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
+    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
 }
 
 // @0x140fe26d0

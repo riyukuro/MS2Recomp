@@ -312,23 +312,23 @@ long FUN_14003c190(long, long, long);
 void * FUN_14003c390(void *, unsigned long const *);
 void criVmpv_SetProcessorMask(void *, unsigned long);
 void FUN_14003ca00(void *, long, long const *, long const *);
-void FUN_14003cae0(void *);
+void criVmpv_Destroy(void *);
 long criVmpv_GetStatus(void const *);
 void FUN_14003cca0(void *);
 void FUN_14003d4b0(void *, void *, void *);
-void FUN_14003d720(void *);
-void FUN_14003d8f0(void *);
+void criVmpv_Start(void *);
+void criVmpv_RequestStop(void *);
 void * FUN_14003d940(void *);
 void FUN_14003d970(void *);
 unsigned long criVdecCmn_GetNumPictureData(void const *);
 unsigned long FUN_14003d9d0(void *);
-void * FUN_14003da40(void *, void *);
-void * FUN_14003dd50(void *, void *);
+void * criVmpv_GetNextFrameInfo(void *, void *);
+void * criVmpv_GetFramePointer(void *, void *);
 long FUN_14003e110(void *, void *, void **);
 void FUN_14003e180(void *, void const *);
-void * FUN_14003e2a0(void *, void *);
+void * criVmpv_GetNextAlphaFrameInfo(void *, void *);
 long FUN_14003e370(void *, void *, void *);
-void * FUN_14003e5d0(void *, void *);
+void * criVmpv_GetAlphaFramePointer(void *, void *);
 void FUN_14003e6a0(void *, unsigned __int64 const *);
 void FUN_14003e710(void *, void *);
 void FUN_14003e750(void *, long, unsigned __int64 *, unsigned __int64 *);
@@ -375,7 +375,7 @@ void * FUN_1400653b0(::cri_any, ::cri_any);
 void FUN_1400653f0(::cri_any);
 void FUN_140065410(::cri_any, ::cri_any, ::cri_any);
 void FUN_140065660(::cri_any, ::cri_any, ::cri_any);
-void * FUN_140089f60(void *, int);
+void * m2vsl_DuplicateObj(void *, int);
 void FUN_140089fa0(::cri07_decfields *);
 void FUN_140089fc0(::cri07_decfields *, int, int);
 void FUN_14008a180(__int64, unsigned __int64, int *);
@@ -427,8 +427,8 @@ namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalGetIMECandi
 namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalGetInputLanguage(::Scaleform::GFx::AS2::FnCall const &); } } }
 extern unsigned char DAT_1431bf070[];
 extern void* DAT_143b018a0;
-void FUN_14003c080();
-void FUN_14003c130();
+void criVmpv_Initialize();
+void criVmpv_Finalize();
 void FUN_1423e1b10();
 void FUN_1423e1e40();
 void FUN_1423e3c00();
@@ -23980,25 +23980,25 @@ alignas(8) Sd_143a46488 DAT_143a46488 = {
 };
 // 0x143a47bc0
 alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
-    (const void*)&FUN_14003c080,
-    (const void*)&FUN_14003c130,
+    (const void*)&criVmpv_Initialize,
+    (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
     (const void*)&FUN_14003c390,
-    (const void*)&FUN_14003cae0,
+    (const void*)&criVmpv_Destroy,
     (const void*)&FUN_14003d940,
     (const void*)&criVmpv_GetStatus,
     (const void*)&FUN_14003cca0,
     (const void*)&FUN_14003ec30,
     (const void*)&FUN_14003ebe0,
-    (const void*)&FUN_14003d720,
-    (const void*)&FUN_14003d8f0,
+    (const void*)&criVmpv_Start,
+    (const void*)&criVmpv_RequestStop,
     (const void*)&FUN_14003d970,
     (const void*)&criVdecCmn_GetNumPictureData,
     (const void*)&FUN_14003d9d0,
-    (const void*)&FUN_14003da40,
+    (const void*)&criVmpv_GetNextFrameInfo,
     {0},
     (const void*)&FUN_14003e110,
-    (const void*)&FUN_14003dd50,
+    (const void*)&criVmpv_GetFramePointer,
     (const void*)&FUN_14003e180,
     (const void*)&FUN_14003e710,
     (const void*)&FUN_14003e750,
@@ -24013,25 +24013,25 @@ alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
 };
 // 0x143a47cb0
 alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
-    (const void*)&FUN_14003c080,
-    (const void*)&FUN_14003c130,
+    (const void*)&criVmpv_Initialize,
+    (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
     (const void*)&FUN_14003c390,
-    (const void*)&FUN_14003cae0,
+    (const void*)&criVmpv_Destroy,
     (const void*)&FUN_14003d940,
     (const void*)&criVmpv_GetStatus,
     (const void*)&FUN_14003cca0,
     (const void*)&FUN_14003ec30,
     (const void*)&FUN_14003ebe0,
-    (const void*)&FUN_14003d720,
-    (const void*)&FUN_14003d8f0,
+    (const void*)&criVmpv_Start,
+    (const void*)&criVmpv_RequestStop,
     (const void*)&FUN_14003d970,
     (const void*)&criVdecCmn_GetNumPictureData,
     (const void*)&FUN_14003d9d0,
-    (const void*)&FUN_14003e2a0,
+    (const void*)&criVmpv_GetNextAlphaFrameInfo,
     (const void*)&FUN_14003e370,
     {0},
-    (const void*)&FUN_14003e5d0,
+    (const void*)&criVmpv_GetAlphaFramePointer,
     (const void*)&FUN_14003e6a0,
     (const void*)&FUN_14003e820,
     (const void*)&FUN_140041030,
@@ -24703,7 +24703,7 @@ alignas(16) unsigned char DAT_143a4a590[0x10] = {
 // 0x143a4a5a0
 alignas(16) Sd_143a4a5a0 DAT_143a4a5a0 = {
     (const void*)&FUN_14008a180,
-    (const void*)&FUN_140089f60,
+    (const void*)&m2vsl_DuplicateObj,
     (const void*)&FUN_140089fa0,
     (const void*)&FUN_140089fc0,
 };

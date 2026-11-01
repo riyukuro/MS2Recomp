@@ -38,7 +38,7 @@ public:
     void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
 };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW FUN_140938ae0(CStringW strFormat, const int& nArg);    // string table text with one argument
@@ -120,7 +120,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         {
             obj.FUN_1407cbb20("bluemerat", CStringW(strAmount));
             bool bList = false;
-            if (!FUN_140166410()->FUN_14036d710(0x61) || !bAlt)
+            if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) || !bAlt)
             {
                 std::vector<std::pair<int, __int64> > vecRows;
                 FUN_140930590(nAmount, vecRows);

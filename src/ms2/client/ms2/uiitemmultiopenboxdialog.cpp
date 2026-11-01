@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_McAttendTable                                          // the player inventory (global 0x143ab2a90)
@@ -23,7 +24,6 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
-CStringW FUN_1409e8970(CStringW strKey, const int& a, const int& b);  // formatted string-table text
 const int* FUN_1402fbd20(const int* a, const int* b);            // std::min<int>
 struct Unk_McConstVal;
 const int* FUN_1402056b0(Unk_McConstVal* slot);                  // constant value
@@ -196,7 +196,7 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
     if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count"))
     {
         int nUsed = m_190 - m_194;
-        spCount.operator->()->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));
+        spCount.operator->()->FUN_1422c4cd0(FUN_14028dfa0<int, int>(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));
     }
 }
 MS2_REPLACE_METHOD(0x140C3FCA0, UIItemMultiOpenBoxDialog, FUN_140c3fca0, 310, 0xAF05CB1C);

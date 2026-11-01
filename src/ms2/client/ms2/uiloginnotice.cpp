@@ -71,7 +71,7 @@ MS2_REPLACE_METHOD(0x140EA64E0, UILoginNotice, SendNoticeDialog, 75, 0x259671C9)
 // @0x140ea6540
 void UILoginNotice::FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_LoginNoticeManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4eea);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4eea)));
     vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140EA6540, UILoginNotice, FUN_140ea6540, 56, 0xEDADAC40);

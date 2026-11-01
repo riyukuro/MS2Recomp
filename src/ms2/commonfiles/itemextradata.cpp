@@ -30,7 +30,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 
 // ---- out-of-unit callees ----
-unsigned FUN_140869420();                                       // the tick count
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14059d150(float* p);
 void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
@@ -125,7 +125,7 @@ MS2_REPLACE_METHOD(0x140598DE0, EquipColorInfo, FUN_140598de0, 118, 0xE7C7D198);
 
 // @0x140598e60
 CItemExtraData::CItemExtraData()
-    : m_nIndex(0), m_nPick(-1), m_bMulti(false), m_nNextTick(FUN_140869420()), m_nKind(0)
+    : m_nIndex(0), m_nPick(-1), m_bMulti(false), m_nNextTick(GetTickCountMs2()), m_nKind(0)
 {
     m_spColor = Unk_SocketNew(0);
 }
@@ -418,9 +418,9 @@ bool CItemExtraData::FUN_14059a350()
 {
     if (!m_bMulti)
         return false;
-    if (m_nNextTick < FUN_140869420())
+    if (m_nNextTick < GetTickCountMs2())
     {
-        m_nNextTick = FUN_140869420() + FUN_14059a120();
+        m_nNextTick = GetTickCountMs2() + FUN_14059a120();
         int nCount = (int)m_colors.size();
         if (++m_nIndex >= nCount)
             m_nIndex = 0;

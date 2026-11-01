@@ -34,7 +34,7 @@ Unk_SingletonObj* FUN_140ac74e0();                          // 0x140ac74e0 (defi
 extern Unk_SingletonObj* DAT_143ab26c8;                     // 0x143ab26c8
 
 // MyPC / PCBase helpers (free-function form: `this` is the first argument).
-unsigned FUN_140869420();                                   // 0x140869420 client time in ms
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // ---- StateWeddingEmotionData ----
 
@@ -126,7 +126,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0 && m_spData.get()->m_b2d == 0 && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
-    m_n50 = FUN_140869420();
+    m_n50 = GetTickCountMs2();
     if (m_spData.get()->m_b18 != 0)
     {
         m_spEmotion = FUN_140ac74e0()->FUN_140903740(m_spData.get()->m_n28);
@@ -194,7 +194,7 @@ void StateWeddingEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
 {
     if (m_spData.get()->m_b2c != 0)
     {
-        if (m_n50 + m_spData.get()->m_n30 < FUN_140869420())
+        if (m_n50 + m_spData.get()->m_n30 < GetTickCountMs2())
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;

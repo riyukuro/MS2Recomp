@@ -72,6 +72,8 @@
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------
 
@@ -108,8 +110,12 @@ int FUN_14028d260(float fTime);                            // 0x14028d260 s -> m
 float FUN_14028d280(unsigned nMs);                         // 0x14028d280 ms -> s
 float FUN_141b6fe90(NiControllerSequence* pSeq, const NiFixedString& kKey, float fDivisor);   // text key time / fDivisor
 int FUN_141b6ff60(NiControllerSequence* pSeq, const NiFixedString& kKey);  // the sequence has the text key
-float FUN_140a53fa0(NiControllerSequence* pSeq);           // NiControllerSequence::m_fOffset
-float FUN_140a53f80(NiControllerSequence* pSeq);           // NiControllerSequence::m_fFrequency
+class Unk_SeqAccess   // C3: member view for the former free stand-ins
+{
+public:
+    static float FUN_140a53f80(class NiControllerSequence*);
+    static float FUN_140a53fa0(class NiControllerSequence*);
+};
 CLogString* GetLogString();                               // the game log, or 0
 
 // The animation service: the actor manager of an entity.
@@ -158,13 +164,10 @@ bool FUN_140b83ec0();                                      // the couple emotion
 bool FUN_140b83f60(int nState);                            // the state allows a couple emotion
 bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);  // the two actors are close enough
 bool FUN_140b84dc0(const NiPoint3& kPoint);                // the point is placeable
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with {0}
 void FUN_1412751f0(const CStringW& text, int nA, int nB);  // show a notice
 void FUN_141275260(int nStringId, int nA, int nB);         // show a string table notice
-void* FUN_14097a780();                                     // the buddy manager
-class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_SsUIManager { public: };
 
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);  // the string key's text formatted with one argument
 void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml);  // the cast arguments of a <castingBar> node
 
 
@@ -176,7 +179,7 @@ void FUN_1401fd510(unsigned char* payload, COutputStream& stream);  // write the
 
 class CNpc;
 CNpc* FUN_14096e110(PCBase* pActor);                       // the npc side of an actor (null for a player)
-PCBase* FUN_141468360(PCBase* pActor);                     // the player base of an actor
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 extern bool DAT_143ae95e0;                                 // debug: show the skill range of a pc
 extern bool DAT_143ae95e1;                                 // debug: show the skill range of an npc
 
@@ -693,8 +696,8 @@ void StateSkill::vfunc_8(double fTime)
                 return;
             pManager->SetTargetAnimation(m_nSequenceId, m_fSpeed, true);
             pManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
-            float fOffset = FUN_140a53fa0(m_pSequence) + FUN_141b6fe90(m_pSequence, "charging_attack", 1.0f)
-                * (1.0f / FUN_140a53f80(m_pSequence));
+            float fOffset = Unk_SeqAccess::FUN_140a53fa0(m_pSequence) + FUN_141b6fe90(m_pSequence, "charging_attack", 1.0f)
+                * (1.0f / Unk_SeqAccess::FUN_140a53f80(m_pSequence));
             m_pSequence->SetOffset(fOffset);
             m_bLoop = true;
             m_b112 = false;
@@ -750,7 +753,7 @@ void StateSkill::AnimActivated(NiActorManager* pkManager, unsigned int eSequence
     m_nSelfComboTick = FUN_14028d260(FUN_141b6fe90(m_pSequence, "selfcombo", m_fSpeed)) + m_nStartTick;
     m_nChargingComboTick = FUN_14028d260(FUN_141b6fe90(m_pSequence, "charging_combo", m_fSpeed)) + m_nStartTick;
     m_nChargingAttackTick = FUN_14028d260(FUN_141b6fe90(m_pSequence, "charging_attack", m_fSpeed)) + m_nStartTick;
-    float fOffset = FUN_140a53fa0(m_pSequence) + FUN_14028d280(m_nChargeTick) * (1.0f / FUN_140a53f80(m_pSequence));
+    float fOffset = Unk_SeqAccess::FUN_140a53fa0(m_pSequence) + FUN_14028d280(m_nChargeTick) * (1.0f / Unk_SeqAccess::FUN_140a53f80(m_pSequence));
     m_pSequence->SetOffset(fOffset);
     FUN_1417f2150();
 }
@@ -919,10 +922,10 @@ void StateSkill::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
             {
                 pkManager->SetTargetAnimation(m_nLoopSequenceId, m_fSpeed, true);
                 pkManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
-                float fOffset = FUN_140a53fa0(m_pSequence);
+                float fOffset = Unk_SeqAccess::FUN_140a53fa0(m_pSequence);
                 float fTime = FUN_14028d280(m_nChargeTick);
                 fTime = m_fLoopStart + fTime;
-                float fTarget = fOffset + fTime * (1.0f / FUN_140a53f80(m_pSequence));
+                float fTarget = fOffset + fTime * (1.0f / Unk_SeqAccess::FUN_140a53f80(m_pSequence));
                 m_pSequence->SetOffset(fTarget);
                 PCBase* pWeaponPC = FUN_1417b8370();
                 if (pWeaponPC != NULL)
@@ -1436,7 +1439,7 @@ void StateSkill::FUN_1417ec630(bool bCharge, bool bStart)
         NiControllerSequence* pSequence = pManager->GetActiveSequence(m_nLoopSequenceId, true, true);
         if (pSequence == NULL)
             return;
-        float fOffset = FUN_140a53fa0(pSequence) + m_fLoopStart * (1.0f / FUN_140a53f80(pSequence));
+        float fOffset = Unk_SeqAccess::FUN_140a53fa0(pSequence) + m_fLoopStart * (1.0f / Unk_SeqAccess::FUN_140a53f80(pSequence));
         pSequence->SetOffset(fOffset);
         FUN_1417f1a90();
         if (pPC != NULL)
@@ -1455,8 +1458,8 @@ void StateSkill::FUN_1417ec630(bool bCharge, bool bStart)
             NiControllerSequence* pSequence = pManager->GetActiveSequence(nSequenceId, true, true);
             if (pSequence == NULL)
                 return;
-            float fOffset = FUN_140a53fa0(pSequence) + FUN_141b6fe90(pSequence, "charging_attack", 1.0f)
-                * (1.0f / FUN_140a53f80(pSequence));
+            float fOffset = Unk_SeqAccess::FUN_140a53fa0(pSequence) + FUN_141b6fe90(pSequence, "charging_attack", 1.0f)
+                * (1.0f / Unk_SeqAccess::FUN_140a53f80(pSequence));
             pSequence->SetOffset(fOffset);
             m_bLoop = true;
             m_b112 = false;
@@ -1586,8 +1589,8 @@ void StateSkill::FUN_1417f11d0()
             {
                 pManager->SetTargetAnimation(m_nLoopSequenceId, m_fSpeed, true);
                 pManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
-                float fOffset = FUN_140a53fa0(m_pSequence)
-                    + (m_fLoopStart + FUN_14028d280(m_nChargeTick)) * (1.0f / FUN_140a53f80(m_pSequence));
+                float fOffset = Unk_SeqAccess::FUN_140a53fa0(m_pSequence)
+                    + (m_fLoopStart + FUN_14028d280(m_nChargeTick)) * (1.0f / Unk_SeqAccess::FUN_140a53f80(m_pSequence));
                 m_pSequence->SetOffset(fOffset);
                 NiFixedString kLoopStart("loopstart");
                 reinterpret_cast<PC*>(pMyPC)->FUN_141663be0(m_pSequence->GetName(), m_fSpeed, kLoopStart);
@@ -1849,7 +1852,7 @@ UICoupleActionDialog* FUN_1417f5780(int nId)
 {
     if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICoupleActionDialog*>((UIObject*)p);
     }
@@ -1920,9 +1923,9 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             MS2_ASSERT_AT(0x486, "pPeerPC" && 0);
             break;
         }
-        if (reinterpret_cast<CBuddyManager*>(FUN_14097a780())->FUN_140ae51b0(nPartner) != 0)
+        if (reinterpret_cast<CBuddyManager*>(((void*)TSingleton<CBuddyManager>::GetInstance()))->FUN_140ae51b0(nPartner) != 0)
         {
-            FUN_1412751f0(FUN_14052bd00(0xcef, pPeer->vfunc_77()), 1, 1);
+            FUN_1412751f0(FormatStringId<CStringW>(0xcef, pPeer->vfunc_77()), 1, 1);
             break;
         }
         if (!FUN_140b83ec0())
@@ -1953,7 +1956,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         }
         if (!FUN_140b83fa0(kMyPos, pPeer->vfunc_18()))
         {
-            FUN_1412751f0(FUN_14052bd00(0xcee, pPeer->vfunc_77()), 1, 1);
+            FUN_1412751f0(FormatStringId<CStringW>(0xcee, pPeer->vfunc_77()), 1, 1);
             break;
         }
         MS2Ptr<StateCoupleEmotionData> spData(new StateCoupleEmotionData);
@@ -2478,7 +2481,7 @@ void StateSkill::FUN_1417f27d0()
     unsigned nSkillId = spSkill->GetId();
     Unk_CastingParam kParam;
     kParam.m_nDuration = m_nCastDuration;
-    kParam.m_str28 = FUN_1405c2690(CStringW(L"s_action_skill_cating_progress"), CStringTable::GetInstance()->FUN_141811980(4, nSkillId));
+    kParam.m_str28 = FUN_14028dfa0<CStringW>(CStringW(L"s_action_skill_cating_progress"), CStringTable::GetInstance()->FUN_141811980(4, nSkillId));
     FUN_1418e0ad0(&kParam, spSkill->m_spParamCastingBar);
     pBar->FUN_1418e12b0(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &kParam);
     m_nCastEnd = 0;
@@ -2515,7 +2518,7 @@ void StateSkill::FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int n
         if (!DAT_143ae95e1)
             return;
     }
-    else if ((FUN_140974230(pOwner) != NULL || FUN_141468360(pOwner) != NULL) && !DAT_143ae95e0)
+    else if ((FUN_140974230(pOwner) != NULL || ((class PCBase*)FUN_141468360((struct Unk_MagicEntity*)(pOwner))) != NULL) && !DAT_143ae95e0)
         return;
     Unk_SsTagArray aTags;
     efd::Point3 kDir = GameObject::FUN_14123cc80(reinterpret_cast<const NiPoint3&>(spRecord->m_ptRot));

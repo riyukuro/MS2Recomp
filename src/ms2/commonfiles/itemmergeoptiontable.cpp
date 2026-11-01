@@ -81,6 +81,15 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Sort names of the item lists (header statics of this unit).
 #ifndef MS2_HOOK_DLL
@@ -284,17 +293,17 @@ CItemMergeOptionData::~CItemMergeOptionData()
 // The <slot> element: its options and, per option, the steps idx0_max..idx9_max the value range is cut into.
 bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
 {
-    FUN_140873220(pSlot, "probVer", (unsigned&)m_nProbVer);
-    FUN_1408731e0(pSlot, "part", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pSlot), "probVer", reinterpret_cast<unsigned int&>((unsigned&)m_nProbVer));
+    XmlGetAttr((class TiXmlElement*)(pSlot), "part", reinterpret_cast<int&>(m_nId));
     XmlTokenList(pSlot, "partLimit", m_aPartLimit);
-    for (Unk_140165cf0* pElem = pSlot->FUN_140165cf0("option"); pElem != 0; pElem = pElem->FUN_140168650("option"))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->FirstChild("option")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("option")))
     {
         CString strName;
         unsigned nPrev = 0;
         int nCategory = 0;
         MS2Ptr<CItemMergeOption> spOption(new CItemMergeOption);
-        FUN_1408733e0(pElem, "optionName", strName);
-        FUN_140873220(pElem, "min", nPrev);
+        XmlGetAttr((class TiXmlElement*)(pElem), "optionName", strName);
+        XmlGetAttr((class TiXmlElement*)(pElem), "min", reinterpret_cast<unsigned int&>(nPrev));
         int nNormal = FindStatByName(strName);
         if (nNormal != -1)
         {
@@ -315,7 +324,7 @@ bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             MS2Ptr<CItemMergeOptionVariation> spStep(new CItemMergeOptionVariation);
             spStep->m_nIndex = (int)i;
             unsigned nMax = 0;
-            FUN_140873220(pElem, FUN_1401d9af0("idx{0}_max", i), nMax);
+            XmlGetAttr((class TiXmlElement*)(pElem), FUN_1401d9af0("idx{0}_max", i), reinterpret_cast<unsigned int&>(nMax));
             if (nMax == 0)
                 break;
             if (nPrev >= nMax)
@@ -406,10 +415,10 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
     {
         Unk_140165cf0* pNode = nodes[i];
         int nItemType = 0;
-        FUN_1408731e0(pNode, "id", nItemType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nItemType));
         if (nItemType == 0)
             continue;
-        for (Unk_140165cf0* pSlot : pNode->FUN_140165cf0("slot"))
+        for (Unk_140165cf0* pSlot : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("slot")))
         {
             DataPtr spData(new CItemMergeOptionData);
             if (!spData->Load(pSlot))

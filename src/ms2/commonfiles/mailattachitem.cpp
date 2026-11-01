@@ -23,7 +23,6 @@ __int64 GetServerTime();                                                       /
 MS2Ptr<Unk_MailTpl> FUN_140851e50(int id);                                     // mail template by id
 CStringW FUN_14083d340(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
-CReservedWordTable* FUN_1403b4750();
 
 class Unk_ReplMap { void* m_p[3]; };
 class Unk_ReplList { void* m_p[4]; };
@@ -293,7 +292,7 @@ void CMailInfo::FUN_140690540(CStringW a, CStringW b)
 CStringW CMailInfo::FUN_1406905b0() const { return m_str48; }
 CStringW CMailInfo::FUN_140690600() const { return m_str50; }
 
-void CMailInfo::FUN_140690650(int slot, Unk_MailAttachPtr attach)
+void CMailInfo::SetAttachment(int slot, Unk_MailAttachPtr attach)
 {
     if (slot < 0 || slot >= 5)
         return;
@@ -633,7 +632,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         for (int i = 0; i < nAttach; i++)
         {
             Unk_MailAttachPtr spAttach(new CMailAttachItem(packet));
-            FUN_140690650(spAttach->FUN_14068fb10(), spAttach);
+            SetAttachment(spAttach->FUN_14068fb10(), spAttach);
         }
     }
     m_rangeB0.FUN_140693300(&static_cast<CInputStream&>(packet));
@@ -658,13 +657,13 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
                 m_str30 = spTpl->m_str38;
             m_str48 = spTpl->m_str40;
             m_str50 = spTpl->m_str48;
-            FUN_1403b4750()->FUN_1416fb340(m_str30);
-            FUN_1403b4750()->FUN_1416fb340(m_str48);
-            FUN_1403b4750()->FUN_1416fb340(m_str50);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str30);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str48);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str50);
         }
         else
         {
-            FUN_1403b4750()->FUN_1416fb300(m_str50);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb300(m_str50);
         }
     }
     if (!FUN_1406926e0(m_nKind))
@@ -683,5 +682,5 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         m_str50 = repl2.FUN_14065d9d0();
     }
     if (FUN_140692720(m_nKind))
-        FUN_1403b4750()->FUN_1416fb300(m_str50);
+        TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb300(m_str50);
 }

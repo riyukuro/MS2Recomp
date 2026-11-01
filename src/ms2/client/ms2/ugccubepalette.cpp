@@ -260,7 +260,7 @@ bool UGCCube::FUN_140def420()                                                   
 {
     if (itemData == 0)
         return true;
-    PCBase* pPC = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return true;
     if (0 < itemData->FUN_14053fdb0())
@@ -410,7 +410,7 @@ bool UGCCube::FUN_140deff30()                                                   
 {
     if (itemData == 0)
         return false;
-    PCBase* pPC = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
     if (!(FUN_141663080(pPC) > 0))

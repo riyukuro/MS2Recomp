@@ -20,8 +20,8 @@
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
-int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int& rOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 
 // Reads an attribute that is converted by name; stores the value only on success.
 // @0x1406363a0
@@ -61,7 +61,7 @@ int CJobConditionTable::LoadFile(const CString& strPath)
         return 0;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nNpcId = 0;
         FUN_1408731e0(pNode, "npcID", nNpcId);
@@ -104,7 +104,7 @@ static int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
         return 2;
     }
     int nValue = 0;
-    int nResult = FUN_140873890(pElem, pszName, nValue);
+    int nResult = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nResult != 0)
         return nResult;
     *pOut = nValue;

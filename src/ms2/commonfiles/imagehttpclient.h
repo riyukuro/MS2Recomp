@@ -7,22 +7,10 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cwinhttpclient.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/tptrvalue.h"
 
 class CByteBuffer;
-
-// 8-byte tick holder with the ctor at 0x140517b00 (many units own look-alikes) and the 3000 ms check 0x140268870.
-class Unk_ImageTimer
-{
-public:
-    Unk_ImageTimer();                       // 0x140517b00
-    int FUN_140268870(int nMilliseconds);   // elapsed check (nonzero: the interval has passed)
-
-private:
-    int m_nTick;
-    int m_nLast;
-};
-MS2_CHECK_SIZE(Unk_ImageTimer, 8);
 
 class CImageHttpClient
 {
@@ -55,7 +43,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     CRect m_rect;                           // +0x08
-    Unk_ImageTimer m_timer;                 // +0x18
+    Unk_IntervalTimer m_timer;              // +0x18 (ctor 0x140517b00 defined in imagehttpclient.cpp)
     int m_nMode;                            // +0x20
     CWinThread* m_pImageThread;             // +0x28
     CWinThread* m_pUploadThread;            // +0x30

@@ -46,7 +46,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);   // split to uints
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& arr, const char* pszDelim);              // split to strings
-void FUN_140873220(void*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 unsigned char FUN_1401d1320(CCacheData*);
@@ -137,7 +137,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
          pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("UGCMapSetItem")))
     {
         data = new CUGCMapSetItemData;
-        FUN_140873220(pNode, "group", data->m_nGroup);
+        XmlGetAttr((class TiXmlElement*)(pNode), "group", *(unsigned int*)&static_cast<int&>(data->m_nGroup));
         ATL::CAtlArray<unsigned int> arrItemId;
         CString strItemId = FUN_14015f710(pNode, "itemID", CString(""));
         FUN_140177e10(strItemId, arrItemId, ",");
@@ -149,7 +149,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"UGCMapSetItem group = {0}, itemID.size() != itemCount.size()", reinterpret_cast<const unsigned&>(data->m_nGroup));
             continue;
         }
-        FUN_140873220(pNode, "minCount", data->m_nMinCount);
+        XmlGetAttr((class TiXmlElement*)(pNode), "minCount", *(unsigned int*)&static_cast<int&>(data->m_nMinCount));
         ATL::CAtlArray<CString> arrAniIdle;
         CString strAniIdle = FUN_14015f710(pNode, "aniIdle", CString(""));
         FUN_14015f050(strAniIdle, arrAniIdle, ",");

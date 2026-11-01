@@ -88,7 +88,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
     }
     int nStep = reinterpret_cast<Unk_PushStepView*>(pActor)->FUN_1416725c0(m_kDir, fDist * 100.0f, 150.0f, fUp);
     if (nStep == 0 ||
-        static_cast<PCBase*>(pActor)->FUN_14166c980() == 0x20 || m_n34 != 0) {
+        static_cast<PCBase*>(pActor)->GetPrevState() == 0x20 || m_n34 != 0) {
         efd::Point3 kMove = m_kDir * fDist;
         int nFlags = 0;
         if (FUN_14096e110(static_cast<PCBase*>(pActor)) != 0)

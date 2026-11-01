@@ -206,6 +206,8 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "hook/ms2hook.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_140165cf0;
 // MS2-FUNCTIONAL: equivalent source; container spellings and /Od temporary placement remain under recovery.
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -369,7 +371,7 @@ bool CGuildXmlData::GuildSkill::FUN_1404d4cb0(void* node){
         XmlGetAttr((class TiXmlElement*)(node), "additionalEffectId", *(int*)(&f34));
         XmlGetAttr((class TiXmlElement*)(node), "additionalEffectLevel", *(int*)(&f38));
         XmlGetAttr((class TiXmlElement*)(node), "type", *(int*)(&f3c));
-        FUN_140873420(node,"functionName",&f40);
+        XmlGetAttr((class TiXmlElement*)(node), "functionName", f40);
     f2c=duration*60;f30=cooltime*60;return true;
 }
 MS2_REPLACE_METHOD(0x1404d4cb0, CGuildXmlData::GuildSkill, FUN_1404d4cb0, 392, 0x7BC19704);
@@ -389,7 +391,7 @@ bool CGuildXmlData::GuildEvent::FUN_1404d4f10(void* node){
     if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
     XmlGetAttr((class TiXmlElement*)(node), "id", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "mapCode", *(int*)(&f1c));
-    FUN_140873420(node,"imagePath",&f20);
+    XmlGetAttr((class TiXmlElement*)(node), "imagePath", f20);
     return true;
 }
 MS2_REPLACE_METHOD(0x1404d4f10, CGuildXmlData::GuildEvent, FUN_1404d4f10, 129, 0x9AAB0D8A);
@@ -407,8 +409,8 @@ bool CGuildXmlData::GuildHouse::FUN_1404d5070(void* node){
     XmlGetAttr((class TiXmlElement*)(node), "upgradeCost", *(int*)(&f28));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeReqGuildLevel", *(int*)(&f2c));
     XmlGetAttr((class TiXmlElement*)(node), "rethemeCost", *(int*)(&f30));
-    FUN_140873420(node,"imagePath",&f60);
-    FUN_140873420(node,"thumbnailPath",&f58);
+    XmlGetAttr((class TiXmlElement*)(node), "imagePath", f60);
+    XmlGetAttr((class TiXmlElement*)(node), "thumbnailPath", f58);
     return true;
 }
 MS2_REPLACE_METHOD(0x1404d5070, CGuildXmlData::GuildHouse, FUN_1404d5070, 364, 0x42992130);
@@ -446,7 +448,7 @@ bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
     XmlGetAttr((class TiXmlElement*)(node), "raidPoint", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "guildFund", *(__int64*)(&f20));
     CStringW path;
-    FUN_140873420(node,"rewardItems",&path);
+    XmlGetAttr((class TiXmlElement*)(node), "rewardItems", path);
     if(0<path.GetLength()){
         TiXmlDocument doc;
         if(!FUN_140397ab0(GetFileSystem(),&doc,path)){
@@ -977,7 +979,7 @@ int FUN_1404da980(void* node,const char* key,Unk_GuildContribution* result) {
         return 2;
     }
     CString text;
-    int error=FUN_1408733e0(node,key,&text);
+    int error=XmlGetAttr((class TiXmlElement*)(node), key, text);
     if (error != 0)
         return error;
     *result=FUN_14021a0a0(text);
@@ -992,7 +994,7 @@ int FUN_1404daa40(void* node,const char* key,Unk_GuildNpcKind* result) {
         return 2;
     }
     CString text;
-    int error=FUN_1408733e0(node,key,&text);
+    int error=XmlGetAttr((class TiXmlElement*)(node), key, text);
     if (error != 0)
         return error;
     *result=FUN_140219f50(text);

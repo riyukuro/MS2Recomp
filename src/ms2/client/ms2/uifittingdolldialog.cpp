@@ -65,7 +65,6 @@ class Unk_FdUiMgr
 {
 public:
     int FUN_141adc940(int nUiId);                           // the UI object is registered
-    void FUN_141adc530(int nUiId);                          // open the UI object
 };
 
 // The item / dialog event registries.
@@ -80,15 +79,7 @@ public:
 class Unk_FdDlgEvents;
 
 // The "openWindowPos" UI message.
-class Unk_LdUIMsg : public UIMsg
-{
-public:
-    Unk_LdUIMsg();                                          // 0x1422e4490
-    ~Unk_LdUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_LdUIMsg;
 
 // A button of the movie ("m_transform").
 class Unk_LdButton : public ASDisplayObject
@@ -301,7 +292,7 @@ void UIFittingDollDialog::OnLoadComplete()
     FUN_141934070();
     if (reinterpret_cast<Unk_FdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e2d) != 0)
     {
-        reinterpret_cast<Unk_FdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e2d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e2d)));
     }
     else
     {

@@ -44,6 +44,8 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/uicharacterlistdialog.h"
 #include "ms2/placeholder/cserverstring.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
+#include "ms2/client/ms2/statemanager.h"  // C3: was a local member view
 #include <efd/SmartPointer.h>
 #include <efd/Helpers.h>
 #include <efd/MemHint.h>
@@ -60,7 +62,6 @@ void* FUN_140aae430();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_141275500();
 void FUN_140930fe0(CInPacket&);
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -85,11 +86,6 @@ public:
     int FUN_141bd3060();                                    // current map id
     char m_pad[0xb8];
     Unk_LobbyActorMap m_actors;                             // +0xb8
-};
-class WorldService   // C3: member view for the former free stand-ins
-{
-public:
-    static class WorldService* GetInstance();
 };
 
 // ---- lobby dialogs and managers (names inferred) ----
@@ -120,7 +116,6 @@ extern unsigned char DAT_1430e3b20;
 
 // Reconnect (same as CSceneStateMove::OnUpdate)
 CString FUN_14016a600(const wchar_t*, int);
-CStringW FUN_14062b4f0(CStringW, const int&);
 CStringW FUN_1408116a0(int, const int&);
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
@@ -184,12 +179,6 @@ CStringW FUN_14083d340(CStringW);
 void FUN_141275400(CStringW&, int);
 void FUN_1412753b0(CStringW&, int, int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
-void* FUN_140aa6d30();
-class CStateService   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_1417e25a0(int);
-};
 int FUN_1406516b0();
 CStringW GetStringCommon(int);
 CStringW FUN_1401ceea0(const wchar_t*, const int&);
@@ -222,6 +211,8 @@ void* FUN_1401c0d90();
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/uiloadingprogress.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 __int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
 class Unk_LobbyScanner { public: void FUN_141b90e30(float* pfX, float* pfY); };   // cursor position inside the window
@@ -450,7 +441,7 @@ void CSceneStateMulti::OnUpdate(double fTime)
                 {
                     FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
                     m_nRetry = m_nRetry + 1;
-                    CStringW text = FUN_14062b4f0(CStringW(L"s_reconnect_to_server"), m_nRetry);
+                    CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
                     void* loading = ((void*)FUN_141540270(0x3ed));
                     if (loading)
                         reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
@@ -593,7 +584,7 @@ void CSceneStateMulti::FUN_14174eb30()
     FUN_14174fe40();
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001a);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001a);
 }
 
 // @0x14174eb80
@@ -601,7 +592,7 @@ void CSceneStateMulti::FUN_14174eb80(int nJobCode)
 {
     m_nJobCode = nJobCode;
     FUN_14174ff00();
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001c);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001c);
 }
 
 // @0x14174ebc0
@@ -618,7 +609,7 @@ void CSceneStateMulti::FUN_14174ebc0()
         FUN_14174fea0();
     }
     m_nMode = 1;
-    ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001b);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001b);
 }
 
 // @0x14174ec40
@@ -785,7 +776,7 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
             FUN_140714f90()->FUN_1415388a0();
-            ((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e25a0(0x6200009);
+            ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x6200009);
             FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
         }
     }
@@ -810,7 +801,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         {
             if (FUN_1403b3c40(FUN_141a02ce0(FUN_140534fe0(current)), L"waitingticketdialog"))
             {
-                pBox->FUN_1419f8370(text);
+                pBox->UpdateMessage(text);
                 return;
             }
         }

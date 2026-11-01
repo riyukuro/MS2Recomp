@@ -67,8 +67,6 @@ public:
 class Unk_WiUIManager
 {
 public:
-    void FUN_141adc750(int nId);                                // open a dialog
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
 };
 class Unk_WiMsgOwner { };
 
@@ -183,7 +181,7 @@ int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp(szMethod, "onClickPopup") == 0)
     {
-        reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f94);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f94)));
     }
     else if (_stricmp(szMethod, "onClickSend") == 0)
     {
@@ -250,7 +248,7 @@ UIWeddingGuestDialog* FUN_140fe6700(int nId)
 {
     if (reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_WiUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIWeddingGuestDialog*>((UIObject*)spObj);
     }

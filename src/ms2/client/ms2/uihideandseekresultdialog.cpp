@@ -44,7 +44,7 @@ class Unk_HsPC : public PC
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140b99450(CStringW strFormat, const CStringW& strArg, const int& nCount);
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strName);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);

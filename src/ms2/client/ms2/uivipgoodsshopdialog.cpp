@@ -547,7 +547,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         return;
     MS2Ptr<TMarketBillDataParam> spBase(spParam);
     pBillDialog->FUN_140ea7770(spBase);
-    reinterpret_cast<Unk_VgUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f17);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f17)));
 }
 
 // @0x140fbcca0

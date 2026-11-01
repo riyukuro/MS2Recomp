@@ -93,7 +93,6 @@ class Unk_UgcContractDialog : public UIRealEstateDialog
 };
 Unk_UgcContractDialog* FUN_140961690(int nId);
 
-class Unk_HouseMarkUIMgr { public: void FUN_141adc750(int nId); };  // toggle the UI nId
 
 // The client constants (0x58-byte value cells).
 struct Unk_HouseMarkCfgInt { int* FUN_1402056b0(); char m_pad[0x50]; };
@@ -135,7 +134,7 @@ __int64 FUN_141656ad0(PCBase* pPc);                                 // the chara
 int FUN_1416595d0(PCBase* pPc);
 int FUN_1406516b0();
 int FUN_141277f40();
-void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 CString FUN_1402bb1c0(const char* szFormat, const int& n);          // StringFormat<int>
 CStringW FUN_140979570(int nMapId);                                 // the map name
 CStringW FUN_1409404f0(__int64 n);                                  // a number with separators
@@ -539,7 +538,7 @@ void UIHouseMarkEntity::FUN_14198c5a0()
     Unk_UgcContractDialog* pDlg = FUN_140961690(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
         pDlg->FUN_141ab4000(m_nId, WorldService::GetInstance()->FUN_141bd3060());
-    reinterpret_cast<Unk_HouseMarkUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e76);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
 }
 MS2_REPLACE_METHOD(0x14198C5A0, UIHouseMarkEntity, FUN_14198c5a0, 103, 0x92B76A5E);
 

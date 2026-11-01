@@ -115,7 +115,6 @@ CStringW FUN_140292a70(const wchar_t*, const unsigned int&);
 CStringW FUN_14093b970(unsigned);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CString Name_14021a6b0(int);
-bool FUN_140184310(const CString& str, const char* psz);
 int FUN_141276180(const CString& str, const CString& strArg);
 int FUN_1418dd0d0();
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -265,12 +264,12 @@ int UIRewardNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             CString strType = data.FUN_1422b8d30();
-            if (FUN_140184310(strType, "achieve"))
+            if ((strType == "achieve"))
                 FUN_141276180(s_strTrophyHero, "");
         }
         return 1;
     } else if (_stricmp(szMethod, "onSkillLevelUp") == 0)
-        reinterpret_cast<Unk_RNUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f2d);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f2d)));
     return 0;
 }
 
@@ -1049,7 +1048,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (pPlayer == 0)
         return;
     CString strName = pArgs->FUN_1422b8d30();
-    if (FUN_140184310(strName, "resultItem")) {
+    if ((strName == "resultItem")) {
         int nSlot = pArgs->FUN_1422b8b10();
         int nIndex = nSlot - 1;
         MS2Ptr<CItem> item(new CItem);

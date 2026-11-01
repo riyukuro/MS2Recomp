@@ -12,8 +12,8 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_SkipActorPos { float m_x, m_y, m_z, m_w; };                 // the actor's 16 byte position
-class Unk_SkipDelta { public: float FUN_140968990() const; private: float m_x, m_y, m_z, m_a, m_b, m_c; };    // difference of two positions, FUN_140968990 = length
+class Unk_SkipActorPos { float m_x, m_y, m_z; };                      // the actor's position
+class Unk_SkipDelta { public: float FUN_140968990() const; private: float m_x, m_y, m_z; };    // difference of two positions, FUN_140968990 = length
 
 // A 12 byte point (the exe copies it from the zero point DAT_143b01a60).
 struct Unk_SkipPoint

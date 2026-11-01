@@ -101,6 +101,7 @@
 #include "ms2/client/ms2/uidungeonroomdialog.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local placeholders (unrecovered classes / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -280,8 +281,7 @@ class Unk_DsHelperDialog : public UIDungeonRoomDialog
 {
 };
 Unk_DsHelperDialog* FUN_140961550(int nUIType);
-class Unk_DsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
-void FUN_141adc750(void*, int);
+class Unk_DsUIManager { public: };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -304,7 +304,6 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValu
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);
 CStringW FUN_140cbf840(int nDungeonKind);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140298ea0(CStringW);
 void FUN_1412751b0(const CStringW& text, int flags);
 class Unk_DsMsgBox : public CPtred {};
@@ -378,9 +377,9 @@ void UIDungeonSearchPage::FUN_140e18f90()
     {
         CStringW strTitle;
         if (m_rooms.empty())
-            strTitle = FUN_1405c2690(CStringW(L"s_dungeonSearch_title_custom"), FUN_140cbf840(m_nPage));
+            strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_custom"), FUN_140cbf840(m_nPage));
         else
-            strTitle = FUN_1405c2690(CStringW(L"s_dungeonSearch_title_random"), FUN_140cbf840(m_nPage));
+            strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_random"), FUN_140cbf840(m_nPage));
         FUN_140cff1b0((*m_movie).FUN_1422bb890(), "m_title", CStringW(strTitle));
     }
     FUN_140e19770();
@@ -708,7 +707,7 @@ MS2_REPLACE_METHOD(0x140e1b9f0, UIDungeonSearchDialog, SendRoomDungeonMode14, 80
 // @0x140e1ba50
 void UIDungeonSearchDialog::FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_141adc750(reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance()), 0x4eda);
+    (((CUIService*)(reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance())))->ToggleDialog((eUIClassID)(0x4eda)));
 }
 MS2_REPLACE_METHOD(0x140e1ba50, UIDungeonSearchDialog, FUN_140e1ba50, 37, 0x93C9A0C4);
 
@@ -772,7 +771,7 @@ MS2_REPLACE_METHOD(0x140e1bd90, UIDungeonSearchDialog, FUN_140e1bd90, 159, 0xDB4
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType)
 {
     if (reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_DsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<UIDungeonSearchSelectDialog*>((UIObject*)p);
     }

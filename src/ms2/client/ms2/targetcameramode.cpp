@@ -345,7 +345,7 @@ void CTargetCameraMode::vfunc_9()
         ptMove.y = -1.0f;
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = 1.0f;
-    Unk_LocalPlayer* pPlayer = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300009))

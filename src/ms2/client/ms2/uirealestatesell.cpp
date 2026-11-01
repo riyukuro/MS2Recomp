@@ -27,6 +27,7 @@ class Unk_RsWorld { public: MyPC* FUN_141bd0cc0(); };               // the local
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -198,7 +199,7 @@ int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 // @0x141ab6230
 void UIRealEstateSell::FUN_141ab6230()
 {
-    MyPC* pPC = ((class Unk_RsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_141527e00() != 0)
@@ -265,7 +266,7 @@ void UIRealEstateSell::FUN_141ab6230()
 // @0x141ab6ad0
 int UIRealEstateSell::SendRequestCube(const CStringW& strName)
 {
-    MyPC* pPC = ((class Unk_RsWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->vfunc_77() != strName)

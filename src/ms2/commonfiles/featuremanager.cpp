@@ -59,12 +59,11 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw();     // the strings are equal (no unwind state for the caller's temp)
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);
 CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
-bool FUN_140184310(const CString& str, const char* psz) throw();   // the strings are equal (strcmp only, so no unwind state for the caller's temp)
 int Parse_140219a50(const CString& strType);                                // the server type name -> id
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>* pOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, bool bOn, const char* pszTag);
 class Unk_1406aeee0 { public: void FUN_1406af150(); };
-Unk_1406aeee0* FUN_1406aeee0();
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 
 // The enum customization of the log formatter for the feature id (the exe copy keeps a stack cookie and scratch locals).
 // MS2-FUNCTIONAL: integer conversion and formatter cursor update match the enum path.
@@ -746,7 +745,7 @@ bool CFeatureManager::FUN_14036ccb0()
         return false;
     SetInit(true);
     if (FUN_14036d570(2))
-        FUN_1406aeee0()->FUN_1406af150();
+        ((class Unk_1406aeee0*)FUN_1406aeee0())->FUN_1406af150();
     return true;
 }
 
@@ -1088,25 +1087,25 @@ Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* 
 // @0x14036e4c0
 bool CFeatureManager::FUN_14036e4c0()
 {
-    return FUN_140184310(FUN_14036d8e0(), "KR");
+    return (FUN_14036d8e0() == "KR");
 }
 
 // @0x14036e510
 bool CFeatureManager::FUN_14036e510()
 {
-    return FUN_140184310(FUN_14036d8e0(), "CN");
+    return (FUN_14036d8e0() == "CN");
 }
 
 // @0x14036e560
 bool CFeatureManager::FUN_14036e560()
 {
-    return FUN_140184310(FUN_14036d8e0(), "NA");
+    return (FUN_14036d8e0() == "NA");
 }
 
 // @0x14036e5b0
 bool CFeatureManager::FUN_14036e5b0()
 {
-    return FUN_140184310(FUN_14036d8e0(), "JP");
+    return (FUN_14036d8e0() == "JP");
 }
 
 // @0x14036e600

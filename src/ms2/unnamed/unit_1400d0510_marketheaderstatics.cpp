@@ -9,7 +9,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
 // first TU
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -26,7 +26,7 @@ static CString s_strStun2 = "stun";
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca4180-0x142ca4300 .text$yd

@@ -103,7 +103,7 @@ int FUN_140bb9640(void* p);                                     // delegate user
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);     // format one int
 CStringW GetStringCommon(int nStringId);                          // string table text
 CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
-void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);   // notice
+void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);   // notice
 unsigned int MsToMinutes(unsigned int nMilliSeconds);           // to minutes
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440

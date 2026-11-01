@@ -18,6 +18,7 @@
 #include "ms2/placeholder/cserverstring.h"
 #include <errno.h>
 #include <string.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe objects ----
 
@@ -43,7 +44,6 @@ int FUN_141276180(const CString& strSound, const CString& strArg);  // play a so
 CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
 void FUN_1412751b0(const CStringW& strText, int nKind);             // chat/system message
 CStringW GetStringCommon(int nStringId);                              // string table text by id
-CStringW FUN_14062b4f0(CStringW strKey, const int& nValue);         // string table text with one argument
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);   // set an int member of a clip
 UIEventIntroduce* FUN_140dbf520(int nUiId);                         // a UI by its type id
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
@@ -369,7 +369,7 @@ void UIMassiveEvent::FUN_1419f6bc0(CStringW strText, int nStep, int nDuration, i
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_subType", 8);
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_text", CStringW(strText));
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_stepNum", nStep);
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_strStepNum", FUN_14062b4f0(CStringW(L"s_massive_event_message_start"), nStep));
+        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_strStepNum", FUN_14028dfa0<int>(CStringW(L"s_massive_event_message_start"), nStep));
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_centerAlign", 0);
         m_30->Invoke("clearAndSetPanel");
         FUN_1419f5ae0(nDuration);

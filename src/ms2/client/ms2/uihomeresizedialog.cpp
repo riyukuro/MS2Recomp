@@ -52,7 +52,6 @@ class Unk_HrPc;
 int FUN_1418dd100();
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
 CStringW FUN_14093bad0(int nWidth, int nLength, CStringW strDefault);   // the trophy requirement text (empty: none)
-CStringW FUN_1409e8970(CStringW strKey, const int& nA, const int& nB);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnValue);   // string table text with one number
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
@@ -140,7 +139,7 @@ void UIHomeResizeDialog::OnShrinkArea()
                 FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                 return;
             }
-            CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
+            CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);
@@ -165,7 +164,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
                 FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                 return;
             }
-            CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
+            CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);

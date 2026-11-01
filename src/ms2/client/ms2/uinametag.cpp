@@ -109,7 +109,7 @@ public:
     Unk_NtCamPtr FUN_141bd30a0();
     Unk_NtSymbolRec* FUN_141bcab60(int n);
 };
-class Unk_NtUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_NtUIMgr { public: };
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 
@@ -372,7 +372,7 @@ int UINameTag::Entity::vfunc_8(int n)
     if (FUN_141a60d30() == 0)
         return 1;
     {
-        PCBase* pPlayer = reinterpret_cast<Unk_NtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 1;
     }
@@ -616,7 +616,7 @@ void UINameTag::Entity::FUN_141a5ff60()
 // @0x141a60920
 int UINameTag::Entity::FUN_141a60920()
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_NtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     PCBase* pActor = FUN_140f49330();
@@ -721,7 +721,7 @@ UINameTag* FUN_141a62100(int nUiId)
 {
     if (reinterpret_cast<Unk_NtUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_NtUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UINameTag*>((UIObject*)p);
     }

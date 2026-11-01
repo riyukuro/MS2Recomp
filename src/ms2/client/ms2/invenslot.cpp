@@ -92,6 +92,8 @@
 #include <efd/IBase.h>
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
@@ -221,8 +223,6 @@ CStringW FUN_1416e5210(int nQuestId, CStringW strFormat);
 // Strings and notices.
 CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text by key
 CStringW GetStringCommon(int nStringId);                    // string table text by id
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
@@ -520,7 +520,7 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
 {
     if (nSkillId == 0)
         return;
-    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
@@ -553,7 +553,7 @@ MS2_REPLACE(0x141404C70, FUN_141404c70, 15, 0x5CE537A7);
 // The cooldown left of a skill of the local player.
 float FUN_141404c90(int nSkillId)
 {
-    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     return pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
@@ -567,7 +567,7 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
 {
     if (nSkillId == 0)
         return false;
-    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
@@ -618,7 +618,7 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
 {
     if (nSkillId == 0)
         return false;
-    MyPC* pPc = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
@@ -843,7 +843,7 @@ MS2_REPLACE_METHOD(0x141405EB0, InvenSlot, vfunc_11, 97, 0x8C911851);
 int InvenSlot::vfunc_13()
 {
     int nResult;
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
     {
         nResult = 0;
@@ -922,7 +922,7 @@ int InvenSlot::vfunc_13()
                             else if (FUN_14140dea0(spItem.get(), pPC) != 0)
                             {
                                 int nSkillId = spItem->FUN_140527840()->FUN_14053dc20();
-                                CStringW strText = FUN_14052bd00(0x85a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
+                                CStringW strText = FormatStringId<CStringW>(0x85a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
                                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, s_strLearnEmotion);
                                 if (spBox.get() != 0)
                                 {
@@ -1161,7 +1161,7 @@ int InvenSlot::vfunc_14()
         break;
     case 16:
     {
-        MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
         if (spItem->FUN_140525640() != 0)
@@ -1374,7 +1374,7 @@ int InvenSlot::vfunc_18(void* p)
     {
         if (IS_INVENTORY_VIEW.FUN_140a65b70() == g_143ab2a90.FUN_140a617f0(pPetEquip->vfunc_25()))
         {
-            MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPC != 0)
                 pPC->SendRequestPet(pPetEquip->FUN_140cbcb00());
             return 1;
@@ -1435,7 +1435,7 @@ MS2_REPLACE_METHOD(0x141408EA0, InvenSlot, vfunc_21, 441, 0x8B133860);
 // @0x141409060
 float InvenSlot::FUN_141409060()
 {
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return pPC->FUN_141523bc0()->FUN_141765fe0(FUN_1414058f0(), 0);
@@ -1490,7 +1490,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_141275260(0x88a, 1, 1);
         return 0;
     }
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166ce30() != 0)
@@ -1550,26 +1550,26 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                     else
                     {
                         int nItemId = spItem->FUN_1405276c0();
-                        strError = FUN_14052bd00(0xd8, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+                        strError = FormatStringId<CStringW>(0xd8, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                     }
                 }
                 else
                 {
                     CStringW strOwner = spGem->FUN_1406201d0();
                     if (!strOwner.IsEmpty())
-                        strError = FUN_1405c2690(CStringW(L"s_item_err_cannot_drop_if_binding_in_socket"), strOwner);
+                        strError = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_cannot_drop_if_binding_in_socket"), strOwner);
                 }
             }
             else
             {
                 CStringW strOwner;
                 spItem->FUN_140527930()->FUN_140635350(pPC, &strOwner);
-                strError = FUN_14052bd00(0xd9, strOwner);
+                strError = FormatStringId<CStringW>(0xd9, strOwner);
             }
         }
         else
         {
-            strError = FUN_1405c2690(CStringW(L"s_item_err_questitem_destroy"), FUN_14140c2b0(spItem));
+            strError = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_questitem_destroy"), FUN_14140c2b0(spItem));
         }
         if (strError.GetLength() != 0)
         {
@@ -1618,7 +1618,7 @@ int InvenSlot::vfunc_0(void* p)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (!spItem)
         return 0;
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     int nMode = FUN_14140d3e0(spItem, 1);
@@ -1697,7 +1697,7 @@ int InvenSlot::vfunc_8(void* p)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (!spItem)
         return 0;
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     ASSlot slot(2);
@@ -1738,7 +1738,7 @@ CStringW InvenSlot::vfunc_22()
             if (!strKey.IsEmpty())
             {
                 strText += L"\n";
-                strText += FUN_1405c2690(CStringW(L"s_msg_rclick_puton_equip_to_skintab_with_key"), strKey);
+                strText += FUN_14028dfa0<CStringW>(CStringW(L"s_msg_rclick_puton_equip_to_skintab_with_key"), strKey);
             }
             return strText;
         }
@@ -1878,7 +1878,7 @@ MS2_REPLACE_METHOD(0x14140BE60, InvenSlot, FUN_14140be60, 447, 0xAE0AD242);
 // @0x14140c030
 CItem* InvenSlot::FUN_14140c030(MS2Ptr<CItem> spItem)
 {
-    MyPC* pPC = reinterpret_cast<Unk_IsWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return pPC->FUN_14152e2f0(spItem).get();
@@ -1957,13 +1957,13 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
     if (nCount < 2)
     {
         nType = 0x11;
-        strText = FUN_1405c2690(CStringW(L"s_msg_quest_item_drop"), FUN_14140c2b0(spItem));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_quest_item_drop"), FUN_14140c2b0(spItem));
     }
     else
     {
         nType = 0xd;
         strText = nQuest == 0 ? FUN_140298ea0(CStringW(L"s_msg_item_drop"))
-                              : FUN_1405c2690(CStringW(L"s_msg_quest_item_drop_stack"), FUN_14140c2b0(spItem));
+                              : FUN_14028dfa0<CStringW>(CStringW(L"s_msg_quest_item_drop_stack"), FUN_14140c2b0(spItem));
     }
     MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(nUid);
     if (!spCur)
@@ -1999,13 +1999,13 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
     if (nMax < 2)
     {
         nType = 0x11;
-        strText = FUN_1405c2690(CStringW(L"s_msg_quest_item_sell"), FUN_14140c2b0(spItem));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_quest_item_sell"), FUN_14140c2b0(spItem));
     }
     else
     {
         nType = 0x12;
         strText = nQuest == 0 ? GetStringCommonByKey(CStringW(L"s_msg_item_sell"))
-                              : FUN_1405c2690(CStringW(L"s_msg_quest_item_sell_stack"), FUN_14140c2b0(spItem));
+                              : FUN_14028dfa0<CStringW>(CStringW(L"s_msg_quest_item_sell_stack"), FUN_14140c2b0(spItem));
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strSell);
     if (spBox.get() != 0)

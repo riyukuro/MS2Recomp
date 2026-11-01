@@ -52,7 +52,7 @@ public:
 };
 class Unk_RmOption { public:  };
 
-Unk_RmApp* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was FUN_140aadf80
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);            // 0x14098a440 CDialogEx::DoDataExchange
 Unk_RmRenderService* FUN_1413f9890();
 
@@ -180,7 +180,7 @@ int RecodeMgr::FUN_140c9be00()
             memset(&info, 0, sizeof(info));
             info.cbSize = sizeof(info);
             info.fMask = 0;
-            info.hwnd = FUN_140aadf80()->FUN_14209c720();
+            info.hwnd = ((class Unk_RmApp*)FUN_140aadf80())->FUN_14209c720();
             info.lpVerb = "Open";
             info.lpFile = strExe;
             info.lpDirectory = 0;

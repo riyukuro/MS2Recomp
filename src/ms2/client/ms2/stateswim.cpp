@@ -27,14 +27,18 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
-void* FUN_1403ed280();                                     // effect manager
-void* FUN_1403ed2d0();                                     // player manager
-int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    static class WorldService* GetInstance();
+};
 class Unk_PCBaseBody;
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
@@ -54,11 +58,11 @@ public:
 #undef MS2_SW_SLOTS
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
-class Unk_SwimHitReport { public: void FUN_140cfaf30(); };   // the actor body's controller hit report
+class Unk_SwimHitReport : public GameObjectControllerHitReport { };   // the actor body's controller hit report
 
 class Unk_SwimApp;
-bool FUN_1415337c0(int nLast, int nNow, int nMillis);      // 0x1415337c0 enough time passed since the last request
-Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
+bool FUN_1415337c0(unsigned int, unsigned int, int);   // C3: was FUN_1415337c0
+struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
 class Unk_SwimBuff
@@ -104,7 +108,7 @@ void StateSwim::vfunc_4(StateData* pData)
             m_n10 = 0x85;
             if (m_pOwner->GetClassID() == 0x6200045)
             {
-                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee)
                     m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
                 else
@@ -155,7 +159,7 @@ void StateSwim::vfunc_3(double fTime)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
                 m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
             else
@@ -303,7 +307,7 @@ void StateSwim::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 // @0x1417fb370
 int StateSwim::FUN_1417fb370()
 {
-    efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+    efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
     if (!spRidee)
         return 0;
     return spRidee->FUN_1417075e0();
@@ -314,7 +318,7 @@ void StateSwim::FUN_1417fb400()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -328,9 +332,9 @@ void StateSwim::FUN_1417fb440()
     {
         Unk_EffectQuery query;
         query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x31);
-        query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
         query.SetActor(pPC->FUN_14123c580());
-        m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+        m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }
 }
 

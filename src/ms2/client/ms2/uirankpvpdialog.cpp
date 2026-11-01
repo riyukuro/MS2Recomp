@@ -482,7 +482,7 @@ void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Param
         if (pDialog)
         {
             pDialog->FUN_140e2dfc0(4, 0);
-            reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f24);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f24)));
         }
     }
     else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3b) == 1)
@@ -517,7 +517,7 @@ bool UIRankPvPDialog::FUN_140f95750()
         FUN_140d73aa0(GetStringCommon(0x428), 0, 0, CStringW(L""));
         return false;
     }
-    PCBase* pPlayer = reinterpret_cast<Unk_RankWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (pPlayer->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)

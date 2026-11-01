@@ -51,17 +51,25 @@ CLogString* GetLogString();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);                           // undecorated class name
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
-int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);
-int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 int FUN_1405451c0(const CString& str);                                   // text -> number
 CString FUN_1405451e0(unsigned n);                                       // number -> text
 Unk_LaunchOptions* FUN_1406aeee0();
-bool FUN_1406af060(void* p);
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDisableValidate();
+};
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-extern unsigned FUN_14054b400(ItemModelData*);
+class ItemModelData   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14054b400() const;
+};
 unsigned char FUN_1401d1320(CCacheData*);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
@@ -170,16 +178,16 @@ int CostumeSetTable::LoadXml()
     }
     for (Unk_140165cf0* pSet = pRoot->FUN_140165cf0("costumeSet"); pSet != 0; pSet = pSet->FUN_140168650("costumeSet"))
     {
-        if (!FUN_14028f710(pSet))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
             continue;
         unsigned nSetId = 0;
-        FUN_140873220(pSet, "id", nSetId);
+        XmlGetAttr((class TiXmlElement*)(pSet), "id", nSetId);
         for (Unk_140165cf0* pNode = pSet->FUN_140165cf0("set"); pNode != 0; pNode = pNode->FUN_140168650("set"))
         {
             CostumeSetPtr spSet(new CostumeSet);
             spSet->m_nSetId = nSetId;
             int nGender = 0;
-            FUN_1408731e0(pNode, "gender", nGender);
+            XmlGetAttr((class TiXmlElement*)(pNode), "gender", nGender);
             if (nGender < 0 && 2 < nGender)
                 continue;
             CString strSlots;
@@ -204,10 +212,10 @@ int CostumeSetTable::LoadXml()
                 CString strNumber = FUN_1405451e0(nKey);
                 CString strAttr = Unk_SocketFormat("slot_{0}", strNumber);
                 unsigned nItemId = 0;
-                FUN_140873220(pNode, strAttr, nItemId);
+                XmlGetAttr((class TiXmlElement*)(pNode), strAttr, nItemId);
                 if (nItemId == 0)
                     continue;
-                if (!FUN_1406af060(FUN_1406aeee0()))
+                if (!((class Unk_LaunchOptions*)(void*)(FUN_1406aeee0()))->IsDisableValidate())
                 {
                     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
                     if (item == 0)
@@ -215,7 +223,7 @@ int CostumeSetTable::LoadXml()
                         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
-                    if (FUN_14054b400(item->FUN_14053eba0()) != nKey)
+                    if (((class ItemModelData*)(class ItemModelData*)(item->FUN_14053eba0()))->FUN_14054b400() != nKey)
                     {
                         FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;

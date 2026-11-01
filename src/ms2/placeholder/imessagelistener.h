@@ -9,19 +9,8 @@
 
 class UISwfEntity;
 
-// The real class (base ASData, ctors) is in gfxui/uimsg.h; this view is used when that header was not included first.
-#ifndef MS2_UIMSG_DEFINED
-#define MS2_UIMSG_VIEW_DEFINED
-class UIMsg
-{
-public:
-    int FUN_1422e4520();                // nonzero: handled/cancelled? (UICutSceneMovie::OnMessage returns 0)
-    bool FUN_1422b8a90();               // the next argument as bool; the second result (the bill dialog's "use coupon" check box)
-    int FUN_1422b8a10();                // result code; 0 = OK/yes button (switched on)
-    CStringW FUN_1422b8f40();           // message box tag ("askClose") passed to UIMessageBox
-    CString FUN_1422b8d30();            // the AS method name ("OnExit"; uibeautyshopstyledialog.cpp)
-};
-#endif
+// UIMsg is the real class (base ASData, ctors) from gfxui/uimsg.h; its argument getters are ASData members.
+#include "ms2/gfxui/uimsg.h"
 
 class IMessageListener
 {

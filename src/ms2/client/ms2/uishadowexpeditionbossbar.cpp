@@ -53,7 +53,7 @@ public:
 Unk_140bccd50* FUN_140bccd50();
 
 // The ui service: dialog lookup by id.
-class Unk_UiService { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_UiService { public: };
 
 // A string translator (singleton chain 0x140a87680 -> 0x140a87690).
 class Unk_140a87690 : public CServerStringGroup { };
@@ -62,7 +62,6 @@ class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
 // The movie root as a display object container (m_90 of UIDialog): children are added/removed by value.
 class ASDialog : public ASDisplayObjectContainer {};
 
-int FUN_141924630(UIDialog* pDlg);                                  // the dialog is open
 int FUN_140f1ffe0(const int& n, int nMin, int nMax);                // clamp
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);      // formats one number argument
 CStringW FUN_14052bd00(int nId, const CStringW& str);               // localized text of an id and a string
@@ -132,7 +131,7 @@ MS2_REPLACE_METHOD(0x140F9C520, FieldGameScoreBoardCli, FUN_140f9c520, 129, 0xDF
 void FieldGameScoreBoardCli::FUN_140f9c5b0(CInPacket& packet)
 {
     if (m_pDlg != 0) {
-        if (FUN_141924630(m_pDlg) != 0) {
+        if (((class UIDialog*)(class UIDialog*)(m_pDlg))->FUN_141924630() != 0) {
             m_pDlg->vfunc_67();
             m_pDlg = 0;
         }
@@ -145,7 +144,7 @@ MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 89, 0x402
 UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIDarkStreamScoreDialog*>((UIObject*)p);
     }
@@ -156,7 +155,7 @@ UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 UIShadowExpeditionBossBar* FUN_140f9d940(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIShadowExpeditionBossBar*>((UIObject*)p);
     }
@@ -199,7 +198,7 @@ void FieldGameScoreBoardCli::FUN_140f9c610(CStringW strTitle, int nCur, int nMax
     }
     if (m_pDlg == 0)
         return;
-    if (FUN_141924630(m_pDlg) == 0)
+    if (((class UIDialog*)(class UIDialog*)(m_pDlg))->FUN_141924630() == 0)
         m_pDlg->FUN_141924680();
     else
         m_pDlg->vfunc_85();

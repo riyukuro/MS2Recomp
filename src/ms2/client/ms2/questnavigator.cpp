@@ -33,6 +33,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 class NotifyObject;
 // The minimap dialog (UI type 0x4e29) lives in another unit; only the cast target is needed.
@@ -65,7 +66,6 @@ class CEffectService   // C3: member view for the former free stand-ins
 public:
     class NiNode* FUN_1411a6b10();
 };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -485,7 +485,7 @@ int CQuestNavigator::HasInteractObject(unsigned nObjectId)
 // @0x140c9af60
 bool CQuestNavigator::FUN_140c9af60()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
         return false;
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)

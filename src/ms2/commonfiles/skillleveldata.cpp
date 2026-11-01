@@ -35,6 +35,21 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Header statics (header_statics_a.h) followed by the motion prototype.
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -167,17 +182,17 @@ bool Unk_SkillSensor::FUN_140801270(const Unk_SkillSensor& o)
 // @0x1408013f0
 void Unk_SkillSensor::LoadElement(Unk_140165cf0* pElem, CString strName)
 {
-    Unk_140165cf0* pSensor = pElem->FUN_140165cf0(strName);
+    Unk_140165cf0* pSensor = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild(strName));
     if (pSensor == 0)
         return;
     Load(pSensor);
-    FUN_1408732a0(pSensor, "sensorStartDelay", m_nSensorStartDelay);
-    FUN_1408732a0(pSensor, "sensorSplashStartDelay", m_nSensorSplashStartDelay);
-    FUN_1408731e0(pSensor, "sensorForceInvokeByInterval", m_nSensorForceInvokeByInterval);
-    FUN_140873220(pSensor, "targetHasBuffID", m_nTargetHasBuffID);
-    FUN_140873220(pSensor, "targetHasBuffOverlapCount", m_nTargetHasBuffOverlapCount);
-    FUN_140873220(pSensor, "targetHasNotBuffID", m_nTargetHasNotBuffID);
-    FUN_1408731e0(pSensor, "targetHasBuffOwner", m_nTargetHasBuffOwner);
+    XmlGetAttr((class TiXmlElement*)(pSensor), "sensorStartDelay", reinterpret_cast<unsigned long&>(m_nSensorStartDelay));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "sensorSplashStartDelay", reinterpret_cast<unsigned long&>(m_nSensorSplashStartDelay));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "sensorForceInvokeByInterval", reinterpret_cast<int&>(m_nSensorForceInvokeByInterval));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "targetHasBuffID", reinterpret_cast<unsigned int&>(m_nTargetHasBuffID));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "targetHasBuffOverlapCount", reinterpret_cast<unsigned int&>(m_nTargetHasBuffOverlapCount));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "targetHasNotBuffID", reinterpret_cast<unsigned int&>(m_nTargetHasNotBuffID));
+    XmlGetAttr((class TiXmlElement*)(pSensor), "targetHasBuffOwner", reinterpret_cast<int&>(m_nTargetHasBuffOwner));
 }
 
 // @0x140801540
@@ -279,21 +294,21 @@ bool SkillActionSkill::operator!=(const SkillActionSkill& o)
 // @0x140801c40
 int SkillActionSkill::Load(Unk_140165cf0* pElem)
 {
-    XmlSplit(FUN_14015f710(pElem, "level", CString("")), m_arrLevel, ",");
-    XmlSplit(FUN_14015f710(pElem, "skillID", CString("")), m_arrSkillID, ",");
-    XmlSplit(FUN_14015f710(pElem, "linkSkillID", CString("")), m_arrLinkSkillID, ",");
-    FUN_140873220(pElem, "overlapCount", m_nOverlapCount);
-    FUN_1408732a0(pElem, "delay", m_nDelay);
-    FUN_1408732a0(pElem, "removeDelay", m_nRemoveDelay);
-    FUN_1408732a0(pElem, "interval", m_nInterval);
-    FUN_1408731e0(pElem, "immediateActive", m_nImmediateActive);
-    FUN_1408731e0(pElem, "fireCount", m_nFireCount);
-    FUN_1408731e0(pElem, "nonTargetActive", m_nNonTargetActive);
-    FUN_1408731e0(pElem, "useDirection", m_nUseDirection);
-    FUN_1408731e0(pElem, "onlySensingActive", m_nOnlySensingActive);
-    FUN_1408731e0(pElem, "dependOnCasterState", m_nDependOnCasterState);
-    FUN_1408731e0(pElem, "activeByIntervalTick", m_nActiveByIntervalTick);
-    FUN_1408731e0(pElem, "independent", m_nIndependent);
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "level", CString("")), m_arrLevel, ",");
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "skillID", CString("")), m_arrSkillID, ",");
+    XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "linkSkillID", CString("")), m_arrLinkSkillID, ",");
+    XmlGetAttr((class TiXmlElement*)(pElem), "overlapCount", reinterpret_cast<unsigned int&>(m_nOverlapCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "delay", reinterpret_cast<unsigned long&>(m_nDelay));
+    XmlGetAttr((class TiXmlElement*)(pElem), "removeDelay", reinterpret_cast<unsigned long&>(m_nRemoveDelay));
+    XmlGetAttr((class TiXmlElement*)(pElem), "interval", reinterpret_cast<unsigned long&>(m_nInterval));
+    XmlGetAttr((class TiXmlElement*)(pElem), "immediateActive", reinterpret_cast<int&>(m_nImmediateActive));
+    XmlGetAttr((class TiXmlElement*)(pElem), "fireCount", reinterpret_cast<int&>(m_nFireCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "nonTargetActive", reinterpret_cast<int&>(m_nNonTargetActive));
+    XmlGetAttr((class TiXmlElement*)(pElem), "useDirection", reinterpret_cast<int&>(m_nUseDirection));
+    XmlGetAttr((class TiXmlElement*)(pElem), "onlySensingActive", reinterpret_cast<int&>(m_nOnlySensingActive));
+    XmlGetAttr((class TiXmlElement*)(pElem), "dependOnCasterState", reinterpret_cast<int&>(m_nDependOnCasterState));
+    XmlGetAttr((class TiXmlElement*)(pElem), "activeByIntervalTick", reinterpret_cast<int&>(m_nActiveByIntervalTick));
+    XmlGetAttr((class TiXmlElement*)(pElem), "independent", reinterpret_cast<int&>(m_nIndependent));
     m_nChain = FUN_140197350(pElem, "chain", m_nChain);
     m_fChainDistance = FUN_1401973d0(pElem, "chainDistance", m_fChainDistance);
     return 1;
@@ -328,13 +343,13 @@ bool SkillActionAdditional::operator!=(const SkillActionAdditional& o)
 // @0x140802210
 int SkillActionAdditional::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "additionalID", m_nAdditionalID);
-    FUN_1408731a0(pElem, "level", m_nLevel);
-    FUN_140873220(pElem, "linkSkillID", m_nLinkSkillID);
-    FUN_140873220(pElem, "overlapCount", m_nOverlapCount);
-    FUN_1408731e0(pElem, "skillTarget", m_nSkillTarget);
-    FUN_1408731e0(pElem, "skillOwner", m_nSkillOwner);
-    FUN_1408731e0(pElem, "dependOnDamageCount", m_nDependOnDamageCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "additionalID", reinterpret_cast<unsigned int&>(m_nAdditionalID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "level", reinterpret_cast<unsigned short&>(m_nLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "linkSkillID", reinterpret_cast<unsigned int&>(m_nLinkSkillID));
+    XmlGetAttr((class TiXmlElement*)(pElem), "overlapCount", reinterpret_cast<unsigned int&>(m_nOverlapCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillTarget", reinterpret_cast<int&>(m_nSkillTarget));
+    XmlGetAttr((class TiXmlElement*)(pElem), "skillOwner", reinterpret_cast<int&>(m_nSkillOwner));
+    XmlGetAttr((class TiXmlElement*)(pElem), "dependOnDamageCount", reinterpret_cast<int&>(m_nDependOnDamageCount));
     if (m_beginCondition.Load(pElem) == 0)
         return 0;
     return 1;
@@ -374,29 +389,29 @@ bool SkillGlideData::FUN_140802640(const SkillGlideData& o)
 // @0x140802830
 void SkillGlideData::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "id", m_nId);
-    FUN_140873360(pElem, "gravity", m_fGravity);
-    FUN_140873360(pElem, "heightLimit", m_fHeightLimit);
-    FUN_140873360(pElem, "horizontalAccelerate", m_fHorizontalAccelerate);
-    FUN_140873360(pElem, "horizontalVelocity", m_fHorizontalVelocity);
-    FUN_140873360(pElem, "verticalAccelerate", m_fVerticalAccelerate);
-    FUN_140873360(pElem, "verticalVelocity", m_fVerticalVelocity);
-    FUN_140873360(pElem, "verticalVibrateAmplitude", m_fVerticalVibrateAmplitude);
-    FUN_140873360(pElem, "verticalVibrateFrequency", m_fVerticalVibrateFrequency);
-    FUN_140873360(pElem, "glideVerticalAccelerateLimit", m_fGlideVerticalAccelerateLimit);
-    FUN_140873360(pElem, "glideHorizontalAccelerateLimit", m_fGlideHorizontalAccelerateLimit);
-    FUN_1408733e0(pElem, "effectRun", m_strEffectRun);
-    FUN_1408733e0(pElem, "effectIdle", m_strEffectIdle);
-    FUN_1408733e0(pElem, "aniIdle", m_strAniIdle);
-    FUN_1408733e0(pElem, "aniRun", m_strAniRun);
-    FUN_1408730a0(pElem, "onGroundDisable", m_bOnGroundDisable);
-    FUN_1408731e0(pElem, "nameTagOffset", m_nNameTagOffset);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
+    XmlGetAttr((class TiXmlElement*)(pElem), "gravity", reinterpret_cast<float&>(m_fGravity));
+    XmlGetAttr((class TiXmlElement*)(pElem), "heightLimit", reinterpret_cast<float&>(m_fHeightLimit));
+    XmlGetAttr((class TiXmlElement*)(pElem), "horizontalAccelerate", reinterpret_cast<float&>(m_fHorizontalAccelerate));
+    XmlGetAttr((class TiXmlElement*)(pElem), "horizontalVelocity", reinterpret_cast<float&>(m_fHorizontalVelocity));
+    XmlGetAttr((class TiXmlElement*)(pElem), "verticalAccelerate", reinterpret_cast<float&>(m_fVerticalAccelerate));
+    XmlGetAttr((class TiXmlElement*)(pElem), "verticalVelocity", reinterpret_cast<float&>(m_fVerticalVelocity));
+    XmlGetAttr((class TiXmlElement*)(pElem), "verticalVibrateAmplitude", reinterpret_cast<float&>(m_fVerticalVibrateAmplitude));
+    XmlGetAttr((class TiXmlElement*)(pElem), "verticalVibrateFrequency", reinterpret_cast<float&>(m_fVerticalVibrateFrequency));
+    XmlGetAttr((class TiXmlElement*)(pElem), "glideVerticalAccelerateLimit", reinterpret_cast<float&>(m_fGlideVerticalAccelerateLimit));
+    XmlGetAttr((class TiXmlElement*)(pElem), "glideHorizontalAccelerateLimit", reinterpret_cast<float&>(m_fGlideHorizontalAccelerateLimit));
+    XmlGetAttr((class TiXmlElement*)(pElem), "effectRun", m_strEffectRun);
+    XmlGetAttr((class TiXmlElement*)(pElem), "effectIdle", m_strEffectIdle);
+    XmlGetAttr((class TiXmlElement*)(pElem), "aniIdle", m_strAniIdle);
+    XmlGetAttr((class TiXmlElement*)(pElem), "aniRun", m_strAniRun);
+    XmlGetAttr((class TiXmlElement*)(pElem), "onGroundDisable", reinterpret_cast<bool&>(m_bOnGroundDisable));
+    XmlGetAttr((class TiXmlElement*)(pElem), "nameTagOffset", reinterpret_cast<int&>(m_nNameTagOffset));
 }
 
 // @0x140802a40
 int SkillGlideData::FUN_140802a40(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pGlide = pElem->FUN_140165cf0("glideProperty");
+    Unk_140165cf0* pGlide = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("glideProperty"));
     if (pGlide != 0)
         Load(pGlide);
     return 1;
@@ -438,11 +453,11 @@ bool Unk_SkillBlock170::FUN_140802d00(const Unk_SkillBlock170& o)
 // @0x140802d50
 int Unk_SkillBlock170::FUN_140802d50(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pPush = pElem->FUN_140165cf0("push");
+    Unk_140165cf0* pPush = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
     if (pPush != 0)
     {
-        FUN_140873360(pPush, "up", m_fUp);
-        FUN_140873360(pPush, "back", m_fBack);
+        XmlGetAttr((class TiXmlElement*)(pPush), "up", reinterpret_cast<float&>(m_fUp));
+        XmlGetAttr((class TiXmlElement*)(pPush), "back", reinterpret_cast<float&>(m_fBack));
     }
     return 1;
 }
@@ -479,14 +494,14 @@ bool Unk_SkillBlockA4::FUN_140802e40(const Unk_SkillBlockA4& o)
 // @0x140802ef0
 int Unk_SkillBlockA4::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pCombo = pElem->FUN_140165cf0("combo");
+    Unk_140165cf0* pCombo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("combo"));
     if (pCombo != 0)
     {
-        FUN_140873220(pCombo, "inputSkill", m_nInputSkill);
-        FUN_140873220(pCombo, "outputSkill", m_nOutputSkill);
-        FUN_1408730a0(pCombo, "comboSkill", m_bComboSkill);
-        FUN_1408730a0(pCombo, "chargingSkill", m_bChargingSkill);
-        FUN_1408730a0(pCombo, "disableChargingAttackSkipFrame", m_bDisableChargingAttackSkipFrame);
+        XmlGetAttr((class TiXmlElement*)(pCombo), "inputSkill", reinterpret_cast<unsigned int&>(m_nInputSkill));
+        XmlGetAttr((class TiXmlElement*)(pCombo), "outputSkill", reinterpret_cast<unsigned int&>(m_nOutputSkill));
+        XmlGetAttr((class TiXmlElement*)(pCombo), "comboSkill", reinterpret_cast<bool&>(m_bComboSkill));
+        XmlGetAttr((class TiXmlElement*)(pCombo), "chargingSkill", reinterpret_cast<bool&>(m_bChargingSkill));
+        XmlGetAttr((class TiXmlElement*)(pCombo), "disableChargingAttackSkipFrame", reinterpret_cast<bool&>(m_bDisableChargingAttackSkipFrame));
     }
     return 1;
 }
@@ -537,13 +552,13 @@ bool Unk_SkillBlock160::FUN_1408030c0(const Unk_SkillBlock160& o)
 // @0x140803140
 int Unk_SkillBlock160::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pTargeting = pElem->FUN_140165cf0("autoTargeting");
+    Unk_140165cf0* pTargeting = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("autoTargeting"));
     if (pTargeting != 0)
     {
-        FUN_140873360(pTargeting, "autoTargetingMaxDegree", m_fMaxDegree);
-        FUN_140873360(pTargeting, "autoTargetingMaxDistance", m_fMaxDistance);
-        FUN_140873360(pTargeting, "autoTargetingMaxHeight", m_fMaxHeight);
-        FUN_1408731e0(pTargeting, "autoTargetUseMove", m_nUseMove);
+        XmlGetAttr((class TiXmlElement*)(pTargeting), "autoTargetingMaxDegree", reinterpret_cast<float&>(m_fMaxDegree));
+        XmlGetAttr((class TiXmlElement*)(pTargeting), "autoTargetingMaxDistance", reinterpret_cast<float&>(m_fMaxDistance));
+        XmlGetAttr((class TiXmlElement*)(pTargeting), "autoTargetingMaxHeight", reinterpret_cast<float&>(m_fMaxHeight));
+        XmlGetAttr((class TiXmlElement*)(pTargeting), "autoTargetUseMove", reinterpret_cast<int&>(m_nUseMove));
     }
     return 1;
 }
@@ -586,7 +601,7 @@ bool Unk_SkillBlockB0::FUN_1408033b0(const Unk_SkillBlockB0& o)
 // @0x1408034a0
 int Unk_SkillBlockB0::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pChange = pElem->FUN_140165cf0("changeSkill");
+    Unk_140165cf0* pChange = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("changeSkill"));
     if (pChange != 0)
     {
         XmlTokenList(pChange, "changeSkillCheckEffectID", m_arrCheckEffectID);
@@ -639,14 +654,14 @@ bool Unk_SkillBlock150::FUN_1408037e0(const Unk_SkillBlock150& o)
 // @0x140803860
 int Unk_SkillBlock150::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pMagic = pElem->FUN_140165cf0("magicControl");
+    Unk_140165cf0* pMagic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("magicControl"));
     if (pMagic != 0)
     {
         XmlValue(pMagic, "enable", m_eEnable);
-        FUN_140873360(pMagic, "moveSpeed", m_fMoveSpeed);
+        XmlGetAttr((class TiXmlElement*)(pMagic), "moveSpeed", reinterpret_cast<float&>(m_fMoveSpeed));
         m_fMoveSpeed = FUN_14028d3a0(m_fMoveSpeed);
-        FUN_140873360(pMagic, "duration", m_fDuration);
-        FUN_140873360(pMagic, "maxDistance", m_fMaxDistance);
+        XmlGetAttr((class TiXmlElement*)(pMagic), "duration", reinterpret_cast<float&>(m_fDuration));
+        XmlGetAttr((class TiXmlElement*)(pMagic), "maxDistance", reinterpret_cast<float&>(m_fMaxDistance));
     }
     return 1;
 }
@@ -909,15 +924,15 @@ float SkillLevelData::FUN_140804660()
 // @0x140804690
 int SkillLevelData::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408731a0(pElem, "value", m_nLevel);
-    FUN_1408731e0(pElem, "sp", m_nSp);
-    FUN_1408731e0(pElem, "ep", m_nEp);
-    FUN_1408731e0(pElem, "meso", m_nMeso);
-    FUN_140873360(pElem, "hpRate", m_fHpRate);
-    FUN_1408732a0(pElem, "cooldown", m_nCooldown);
-    FUN_140873420(pElem, "stringParam", m_strStringParam);
+    XmlGetAttr((class TiXmlElement*)(pElem), "value", reinterpret_cast<unsigned short&>(m_nLevel));
+    XmlGetAttr((class TiXmlElement*)(pElem), "sp", reinterpret_cast<int&>(m_nSp));
+    XmlGetAttr((class TiXmlElement*)(pElem), "ep", reinterpret_cast<int&>(m_nEp));
+    XmlGetAttr((class TiXmlElement*)(pElem), "meso", reinterpret_cast<int&>(m_nMeso));
+    XmlGetAttr((class TiXmlElement*)(pElem), "hpRate", reinterpret_cast<float&>(m_fHpRate));
+    XmlGetAttr((class TiXmlElement*)(pElem), "cooldown", reinterpret_cast<unsigned long&>(m_nCooldown));
+    XmlGetAttr((class TiXmlElement*)(pElem), "stringParam", m_strStringParam);
     float fStanceDamageRate = 0;
-    FUN_140873360(pElem, "stanceDamageRate", fStanceDamageRate);
+    XmlGetAttr((class TiXmlElement*)(pElem), "stanceDamageRate", reinterpret_cast<float&>(fStanceDamageRate));
     m_nStanceDamageRate = (unsigned int)(fStanceDamageRate * 1000.0f);
     if (m_nLevel < 1)
     {
@@ -925,17 +940,17 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
         Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", nSkillId);
         return 0;
     }
-    Unk_140165cf0* pDetect = pElem->FUN_140165cf0("detectProperty");
+    Unk_140165cf0* pDetect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("detectProperty"));
     if (pDetect != 0)
         m_detect.Load(pDetect);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("actionAdditional"))
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
     {
         MS2Ptr<SkillActionAdditional> spAction(new SkillActionAdditional);
         if (!spAction->Load(pChild))
             return 0;
         m_vAdditional.push_back(spAction);
     }
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("motion"); pChild != 0; pChild = pChild->FUN_140168650("motion"))
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("motion")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("motion")))
     {
         MS2Ptr<SkillMotionData> spMotion(new SkillMotionData);
         if (!spMotion->FUN_1408080d0(pChild))
@@ -1118,7 +1133,7 @@ __int64 SkillMotionData::FUN_140808040()
 int SkillMotionData::FUN_1408080d0(Unk_140165cf0* pElem)
 {
     Load(pElem);
-    for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("attack"))
+    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("attack")))
     {
         MS2Ptr<SkillAttackData> spAttack(new SkillAttackData);
         if (!spAttack->Load(pChild))
@@ -1145,25 +1160,25 @@ int SkillMotionData::FUN_140808240(void* pParent)
 // @0x140808350
 void SkillMotionData::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "sequenceName", m_strSequenceName);
-    FUN_140873360(pElem, "sequenceSpeed", m_fSequenceSpeed);
+    XmlGetAttr((class TiXmlElement*)(pElem), "sequenceName", m_strSequenceName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "sequenceSpeed", reinterpret_cast<float&>(m_fSequenceSpeed));
     if (FUN_1406aeee0()->FUN_1406af020())
     {
-        FUN_1408733e0(pElem, "selfInputCombo", m_strSelfInputCombo);
-        FUN_1408733e0(pElem, "motionEffect", m_strMotionEffect);
-        FUN_1408733e0(pElem, "loopEffect", m_strLoopEffect);
-        FUN_1408733e0(pElem, "endEffect", m_strEndEffect);
-        FUN_1408733e0(pElem, "splashInvokeEffect", m_strSplashInvokeEffect);
-        FUN_1408733e0(pElem, "splashEndEffect", m_strSplashEndEffect);
-        FUN_1408733e0(pElem, "loopKeepEffect", m_strLoopKeepEffect);
-        FUN_1408733e0(pElem, "loopEndEffect", m_strLoopEndEffect);
-        FUN_1408733e0(pElem, "splashDurationCastEffect", m_strSplashDurationCastEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "selfInputCombo", m_strSelfInputCombo);
+        XmlGetAttr((class TiXmlElement*)(pElem), "motionEffect", m_strMotionEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "loopEffect", m_strLoopEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "endEffect", m_strEndEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "splashInvokeEffect", m_strSplashInvokeEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "splashEndEffect", m_strSplashEndEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "loopKeepEffect", m_strLoopKeepEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "loopEndEffect", m_strLoopEndEffect);
+        XmlGetAttr((class TiXmlElement*)(pElem), "splashDurationCastEffect", m_strSplashDurationCastEffect);
         XmlQuery((class TiXmlElement*)(pElem), "IgnoreOptimalHideCastEffect", m_bA0);
         XmlQuery((class TiXmlElement*)(pElem), "splashCastEffectStartDelay", m_bSplashCastEffectStartDelay);
     }
-    FUN_1408732a0(pElem, "splashLifeTick", m_nSplashLifeTick);
-    FUN_1408732a0(pElem, "splashInvokeCoolTick", m_nSplashInvokeCoolTick);
-    FUN_1408733e0(pElem, "weaponSequenceName", m_strWeaponSequenceName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "splashLifeTick", reinterpret_cast<unsigned long&>(m_nSplashLifeTick));
+    XmlGetAttr((class TiXmlElement*)(pElem), "splashInvokeCoolTick", reinterpret_cast<unsigned long&>(m_nSplashInvokeCoolTick));
+    XmlGetAttr((class TiXmlElement*)(pElem), "weaponSequenceName", m_strWeaponSequenceName);
     ATL::CAtlArray<CString> arrTags;
     XmlTokenList(pElem, "strTagEffects", arrTags);
     for (unsigned i = 0; i < arrTags.GetCount(); i++)
@@ -1173,22 +1188,22 @@ void SkillMotionData::Load(Unk_140165cf0* pElem)
         if (arrPair.GetCount() == 2)
             m_mapTagEffects.SetAt(arrPair[0], arrPair[1]);
     }
-    FUN_140873360(pElem, "keyMove", m_fAC);
+    XmlGetAttr((class TiXmlElement*)(pElem), "keyMove", reinterpret_cast<float&>(m_fAC));
     XmlValue(pElem, "movetype", m_eMoveType);
-    FUN_140873360(pElem, "moveangle", m_fMoveAngle);
-    FUN_140873360(pElem, "movedistance", m_fB8);
+    XmlGetAttr((class TiXmlElement*)(pElem), "moveangle", reinterpret_cast<float&>(m_fMoveAngle));
+    XmlGetAttr((class TiXmlElement*)(pElem), "movedistance", reinterpret_cast<float&>(m_fB8));
     XmlValue(pElem, "moveEaseType", m_eMoveEaseType);
-    FUN_140873220(pElem, "ignoreCollisionGroups", m_nIgnoreCollisionGroups);
-    FUN_1408731e0(pElem, "holdWeapon", m_nHoldWeapon);
-    FUN_1408731e0(pElem, "loopCount", m_nLoopCount);
-    FUN_140873360(pElem, "pushCylinderVelH", m_fPushCylinderVelH);
-    FUN_140873360(pElem, "pushCylinderVelV", m_fPushCylinderVelV);
-    FUN_140873360(pElem, "pushCylinderOuter", m_fPushCylinderOuter);
-    FUN_140873360(pElem, "pushCylinderInner", m_fPushCylinderInner);
-    FUN_140873360(pElem, "pushCylinderHeight", m_fPushCylinderHeight);
-    FUN_1408731e0(pElem, "faceTarget", m_nFaceTarget);
+    XmlGetAttr((class TiXmlElement*)(pElem), "ignoreCollisionGroups", reinterpret_cast<unsigned int&>(m_nIgnoreCollisionGroups));
+    XmlGetAttr((class TiXmlElement*)(pElem), "holdWeapon", reinterpret_cast<int&>(m_nHoldWeapon));
+    XmlGetAttr((class TiXmlElement*)(pElem), "loopCount", reinterpret_cast<int&>(m_nLoopCount));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pushCylinderVelH", reinterpret_cast<float&>(m_fPushCylinderVelH));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pushCylinderVelV", reinterpret_cast<float&>(m_fPushCylinderVelV));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pushCylinderOuter", reinterpret_cast<float&>(m_fPushCylinderOuter));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pushCylinderInner", reinterpret_cast<float&>(m_fPushCylinderInner));
+    XmlGetAttr((class TiXmlElement*)(pElem), "pushCylinderHeight", reinterpret_cast<float&>(m_fPushCylinderHeight));
+    XmlGetAttr((class TiXmlElement*)(pElem), "faceTarget", reinterpret_cast<int&>(m_nFaceTarget));
     XmlQuery((class TiXmlElement*)(pElem), "doesPlayIdleOnSkillEnd", m_bDoesPlayIdleOnSkillEnd);
-    FUN_1408731e0(pElem, "startNoneBlendDelay", m_nStartNoneBlendDelay);
-    FUN_140873360(pElem, "aniSkipTime", m_fAniSkipTime);
+    XmlGetAttr((class TiXmlElement*)(pElem), "startNoneBlendDelay", reinterpret_cast<int&>(m_nStartNoneBlendDelay));
+    XmlGetAttr((class TiXmlElement*)(pElem), "aniSkipTime", reinterpret_cast<float&>(m_fAniSkipTime));
 }
 

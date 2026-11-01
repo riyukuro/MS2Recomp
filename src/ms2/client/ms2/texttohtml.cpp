@@ -255,13 +255,10 @@ class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
 
 // Unrecovered string formatters whose instances live in other units.
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& a);
 CStringW FUN_140292a70(const wchar_t* pszFormat, const unsigned& a);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW TranslateEnumDungeonGroup(unsigned nId);               // the dungeon name
 unsigned FUN_141275c00(unsigned nRank);
 unsigned FUN_141275bd0(unsigned __int64 nId);
@@ -459,7 +456,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     int bMe = FUN_1418426b0(strName);
     CStringW strImg;
     if (FUN_141842770(msg))
-        strImg = FUN_1405c2690(CStringW(L"s_html_chat_img"), s_strIconReturn);
+        strImg = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_img"), s_strIconReturn);
     if (nKind == 0x10)
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color6);
@@ -628,7 +625,7 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
     int bMe = FUN_1418426b0(strName);
     CStringW strImg;
     if (FUN_141842770(msg))
-        strImg = FUN_1405c2690(CStringW(L"s_html_chat_img"), s_strIconReturn);
+        strImg = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_img"), s_strIconReturn);
     ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color6);
     ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color18);
     ULong nIconSize = 1;
@@ -680,11 +677,11 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
                        unsigned nDungeonId, int nP8, int nP9, unsigned nSize2)
 {
     CStringW strUser = StringFormat(L"'event:userSelect,{0},{1},{2}'", strName, nIdA, nIdB);
-    CStringW strHelper = FUN_1408f71a0(CStringW(L"s_html_chat_user_dungeon_helper"), strUser, strName);
+    CStringW strHelper = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_html_chat_user_dungeon_helper"), strUser, strName);
     CStringW strJoinLink = StringFormat(L"'event:joinPartyDungeonHelper,{0},{1},{2}'", nSize, strName, nRoomId);
-    CStringW strJoin = FUN_1405c2690(CStringW(L"s_html_chat_join_party"), strJoinLink);
+    CStringW strJoin = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_join_party"), strJoinLink);
     CStringW strRoomLink = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
-    CStringW strDungeon = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, TranslateEnumDungeonGroup(nDungeonId),
+    CStringW strDungeon = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, TranslateEnumDungeonGroup(nDungeonId),
                                         reinterpret_cast<Unk_ThStrTbl*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x14, nRoomId));
     CStringW strLine = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_helper"), strHelper, strDungeon, nP8, nP9, strJoin);
     return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color25, nSize2, strLine);
@@ -694,8 +691,8 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
 CStringW FUN_141841fd0(CStringW strName, unsigned nSize)
 {
     CStringW strLink = FUN_1401e8510(L"'event:inviteParty,{0}'", strName);
-    CStringW strInvite = FUN_1405c2690(CStringW(L"s_html_chat_invite_party"), strLink);
-    CStringW strMessage = FUN_1408f71a0(CStringW(L"s_html_chat_invite_party_message"), strName, strInvite);
+    CStringW strInvite = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_invite_party"), strLink);
+    CStringW strMessage = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_html_chat_invite_party_message"), strName, strInvite);
     return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color16, nSize, strMessage);
 }
 
@@ -783,7 +780,7 @@ ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor)
 // @0x1418426b0
 int FUN_1418426b0(const CStringW& strName)
 {
-    Unk_ThPc* pPc = reinterpret_cast<Unk_ThWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ThPc* pPc = ((Unk_ThPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     bool bMe = pPc != 0 && FUN_14025cd60(pPc->vfunc_77(), strName);
     if (bMe)
         return 1;

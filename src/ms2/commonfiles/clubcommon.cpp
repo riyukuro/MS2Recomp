@@ -697,7 +697,7 @@ __int64 CClub::FUN_14020f0c0()
 }
 
 // @0x14020f130
-void CClub::FUN_14020f130(__int64 n)
+void CClub::SetClubId(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -737,7 +737,7 @@ void CClub::FUN_14020f230(const CStringW& strName)
 }
 
 // @0x14020f2a0
-__int64 CClub::FUN_14020f2a0()
+__int64 CClub::GetCreationTime()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -751,7 +751,7 @@ __int64 CClub::FUN_14020f2a0()
 }
 
 // @0x14020f310
-void CClub::FUN_14020f310(__int64 n)
+void CClub::SetCreationTime(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1033,10 +1033,10 @@ void CClub::FUN_14020fd80(CInPacket& packet)
         int nBuffLevel = packet.ReadInt32();
         __int64 n90 = packet.ReadInt64();
         FUN_14020f4e0(nState);
-        FUN_14020f130(nId);
+        SetClubId(nId);
         FUN_14020f230(strName);
         FUN_14020f720(nLeaderAccount, nLeaderCharacter, strLeader, 1);
-        FUN_14020f310(nCreated);
+        SetCreationTime(nCreated);
         FUN_14020f5b0(nBuffId, nBuffLevel);
         FUN_14020f3f0(n90);
         FUN_1402101e0(packet);
@@ -1688,11 +1688,11 @@ MS2_REPLACE_METHOD(0x14020edd0, CClubMember, FUN_14020edd0, 17, 0xE3FAF62F);
 MS2_REPLACE_METHOD(0x14020edf0, CClubMember, FUN_14020edf0, 15, 0x680A76B1);
 MS2_REPLACE_METHOD(0x14020ee10, CClubMember, FUN_14020ee10, 31, 0x09CC4898);
 MS2_REPLACE_METHOD(0x14020f0c0, CClub, FUN_14020f0c0, 104, 0xDA5FFFAA);
-MS2_REPLACE_METHOD(0x14020f130, CClub, FUN_14020f130, 91, 0xC1D5427A);
+MS2_REPLACE_METHOD(0x14020f130, CClub, SetClubId, 91, 0xC1D5427A);
 MS2_REPLACE_METHOD(0x14020f1a0, CClub, FUN_14020f1a0, 137, 0x7E65C264);
 MS2_REPLACE_METHOD(0x14020f230, CClub, FUN_14020f230, 101, 0x8FDA9E25);
-MS2_REPLACE_METHOD(0x14020f2a0, CClub, FUN_14020f2a0, 104, 0x4EE10C12);
-MS2_REPLACE_METHOD(0x14020f310, CClub, FUN_14020f310, 91, 0x921AF091);
+MS2_REPLACE_METHOD(0x14020f2a0, CClub, GetCreationTime, 104, 0x4EE10C12);
+MS2_REPLACE_METHOD(0x14020f310, CClub, SetCreationTime, 91, 0x921AF091);
 MS2_REPLACE_METHOD(0x14020f380, CClub, FUN_14020f380, 101, 0x9DF0D68C);
 MS2_REPLACE_METHOD(0x14020f3f0, CClub, FUN_14020f3f0, 94, 0x9A43EB30);
 MS2_REPLACE_METHOD(0x14020f460, CClub, FUN_14020f460, 107, 0xAD41B767);

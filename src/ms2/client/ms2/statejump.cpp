@@ -69,7 +69,7 @@ public:
 
 // The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
 class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
-void FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
+int FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 struct Unk_JpString

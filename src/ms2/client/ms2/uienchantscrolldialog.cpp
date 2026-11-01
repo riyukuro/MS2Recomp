@@ -67,7 +67,7 @@ public:
 class Unk_EsAS : public AScript { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& rArg); };
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
-class Unk_EsUiMgr { public: int FUN_141adc890(int uiId); void FUN_141adc530(int uiId); };
+class Unk_EsUiMgr { public:  void FUN_141adc530(int uiId); };
 
 class Unk_EsIngTable { public: CStringW FUN_140556a40(int nId); };
 CReservedWordTable* FUN_1403b4750();
@@ -80,7 +80,6 @@ CStringW FUN_14183e9c0(CStringW strText, int nRank);                            
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_1409e9bc0(int nId, const unsigned& nA, const unsigned& nB);
 CStringW FUN_1409eadb0(int nId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
-CStringW FUN_1409e9890(CStringW strKey, const unsigned& nA, const unsigned& nB);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);                   // psz + str
@@ -89,7 +88,7 @@ void FUN_14151f200();
 unsigned __int64 FUN_140718370(const CStringW& str);
 void FUN_140710590(COutPacket& packet);
 void FUN_141275260(int nId, int a, int b);                                          // system message by string id
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strTag);
 class Unk_EsMsgBox : public CMsgBoxData
@@ -235,10 +234,10 @@ void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
         m_nRandomMax = packet.ReadInt32();
     }
     m_nFailRate /= 100;
-    if (reinterpret_cast<Unk_EsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ee0))
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ee0))))
         FUN_140f3cb10();
     else
-        reinterpret_cast<Unk_EsUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ee0);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ee0)));
 }
 
 // @0x140f3bd10
@@ -535,7 +534,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e730()
         return GetStringCommonByKey(L"s_enchant_fail_desc_restore");
         break;
     case 3:
-        return FUN_1409e9890(L"s_enchant_fail_desc_random", m_nRandomMin, m_nRandomMax);
+        return FUN_14028dfa0<unsigned int, unsigned int>(L"s_enchant_fail_desc_random", m_nRandomMin, m_nRandomMax);
         break;
     case 5:
         return GetStringCommonByKey(L"s_enchant_fail_desc_repair");

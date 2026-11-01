@@ -1,5 +1,6 @@
 // RoomTimerManager from RTTI; field and helper names inferred from packet handling.
 #pragma once
+#include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/os.h"
 #include "uitimergaugedialog.h"
 #include <map>
@@ -7,9 +8,7 @@ class Unk_RoomPacketPrefix { public: virtual void vfunc_0(); };
 // The input interface is the secondary base at +8, so virtual dispatch remains dynamic.
 class Unk_RoomPacket : public Unk_RoomPacketPrefix, public Unk_OSInput {};
 MS2_CHECK_SIZE(Unk_RoomPacket,0x10);
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
+
 template<class T> class Unk_RoomPtr {
 public:
     Unk_RoomPtr(int) : m_p(0) {}
@@ -23,10 +22,10 @@ public:
     T* operator->() const { return m_p; }
 private:
     void AddRef() const { if(m_p) ReferenceImpl((void*)0); }
-    static void Reference(T* p) { FUN_14015b020(p); }
+    static void Reference(T* p) { CPtred::AddRefPtred(p); }
     void ReferenceImpl(void*) const { Reference(m_p); }
     void Release() { if(m_p) { ReleaseImpl((void*)0); m_p=0; } }
-    void ReleaseImpl(void*) { if(FUN_140159bc0(m_p)==0) { Reference(m_p); FUN_140159ba0(m_p); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(m_p)==0) { Reference(m_p); CPtred::DeletePtred(m_p); } }
     void* m_0; T* m_p;
 };
 MS2_CHECK_SIZE(Unk_RoomPtr<UITimerBase>,0x10);

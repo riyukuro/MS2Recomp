@@ -8,7 +8,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-float FUN_140a17940(float f, float fMin, float fMax);   // clamp
+#include <efd/EEMath.h>                                 // C3: efd::Clamp was FUN_140a17940
 float FUN_1409f2310(float f);                           // sin
 
 // @0x14160c280
@@ -51,10 +51,10 @@ float CNPCRotationOverrider::FUN_14160c500()
     float fHalf = m_fDuration * 0.5f;
     float fRatio = 0.0f;
     if (fHalf > m_fElapsed) {
-        float fT = FUN_140a17940(m_fElapsed / fHalf, 0.0f, 1.0f);
+        float fT = efd::Clamp(m_fElapsed / fHalf, 0.0f, 1.0f);
         fRatio = -0.15915494f * FUN_1409f2310(3.1415927f * fT - 1.5707964f) + 0.5f * fT;
     } else {
-        float fT = FUN_140a17940(2.0f - m_fElapsed / fHalf, 0.0f, 1.0f);
+        float fT = efd::Clamp(2.0f - m_fElapsed / fHalf, 0.0f, 1.0f);
         fRatio = 1.0f - (-0.15915494f * FUN_1409f2310(3.1415927f * fT - 1.5707964f) + 0.5f * fT);
     }
     return m_fFrom + fRatio * (m_fTo - m_fFrom);

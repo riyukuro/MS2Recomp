@@ -268,7 +268,6 @@ CString FUN_1409a2360(const char* psz, int n);                          // text 
                        // language directory name (member: this=rcx, hidden return=rdx)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);           // SaveFile
-bool FUN_140184310(const CString& str, const char* psz);                // str == psz
 
 // Model manager property readers: (manager, entity element, model name, property name, out).
 void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, unsigned int* pOut);
@@ -875,7 +874,7 @@ bool FUN_1418226b0(bool bLog)
                         CString strMapAttribute;
                         FUN_140a2bc30(&mgr, pEntity, strModel, "CubeType", &strCubeType);
                         FUN_140a2bc30(&mgr, pEntity, strModel, "MapAttribute", &strMapAttribute);
-                        if (FUN_140184310(strCubeType, "Fluid")) {
+                        if ((strCubeType == "Fluid")) {
                             ATL::CAtlMap<unsigned int, CString>::CPair* pFluid = mapFluid.Lookup(nFieldId);
                             if (pFluid == NULL)
                                 mapFluid.SetAt(nFieldId, strMapAttribute);

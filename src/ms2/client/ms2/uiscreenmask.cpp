@@ -40,7 +40,11 @@ private:
     Unk_FieldData* m_p;
 };
 class Unk_1403ed2d0 { public: Unk_FieldDataPtr FUN_141bd30a0(); };   // current field's data
-Unk_1403ed2d0* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,7 +104,7 @@ void UIScreenMask::vfunc_43()
 // @0x141ad09e0
 CString UIScreenMask::FUN_141ad09e0()
 {
-    Unk_FieldDataPtr spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    Unk_FieldDataPtr spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField.FUN_1409657a0() != 0)
         return spField.FUN_140885340()->m_strName;
     return "";

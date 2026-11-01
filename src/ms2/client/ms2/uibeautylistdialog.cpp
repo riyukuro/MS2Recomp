@@ -33,7 +33,6 @@ public:
 Unk_BlGlobals* FUN_1401d3200();
 
 class Unk_BlWorld { };
-void* FUN_141bd0cc0(Unk_BlWorld* pWorld);                       // the local player
 int FUN_141bd3060(Unk_BlWorld* pWorld);                         // the current map id
 bool FUN_1418fe060();
 void FUN_140710590(COutPacket& packet);
@@ -118,7 +117,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         nType = 3;
     if (nType != 0)
     {
-        void* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance()));
+        void* pPlayer = ((void*)((WorldService*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
         int bSalon = FUN_140f006b0(FUN_141bd3060(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())));

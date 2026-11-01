@@ -281,7 +281,7 @@ CItemSocket::~CItemSocket()
 }
 
 // @0x140620490
-MS2Ptr<CItemSocket> CItemSocket::FUN_140620490()
+MS2Ptr<CItemSocket> CItemSocket::Clone()
 {
     MS2Ptr<CItemSocket> spCopy(new CItemSocket);
     spCopy->m_nMaxSlot = m_nMaxSlot;
@@ -292,7 +292,7 @@ MS2Ptr<CItemSocket> CItemSocket::FUN_140620490()
 }
 
 // @0x1406205e0
-void CItemSocket::FUN_1406205e0(COutputStream& kOut)
+void CItemSocket::WriteToStream(COutputStream& kOut)
 {
     kOut.WriteUInt8((unsigned char)m_nMaxSlot);
     unsigned nCount = (unsigned)m_aGems.GetCount();
@@ -311,7 +311,7 @@ void CItemSocket::FUN_1406205e0(COutputStream& kOut)
 }
 
 // @0x140620700
-void CItemSocket::FUN_140620700(CInputStream& kIn)
+void CItemSocket::ReadFromStream(CInputStream& kIn)
 {
     m_nMaxSlot = kIn.ReadUInt8();
     unsigned nCount = kIn.ReadUInt8();
@@ -341,7 +341,7 @@ void CItemSocket::FUN_140620840(unsigned nMaxSlot, unsigned nCount)
 }
 
 // @0x140620940
-int CItemSocket::FUN_140620940()
+int CItemSocket::GetFilledSlotCount()
 {
     int nFilled = 0;
     for (unsigned i = 0; i < m_aGems.GetCount(); i++)
@@ -367,7 +367,7 @@ unsigned CItemSocket::GetMaxSlot()
 }
 
 // @0x140620a70
-int CItemSocket::FUN_140620a70()
+int CItemSocket::GetLockedSlotCount()
 {
     unsigned nOpen = FUN_140620a20();
     unsigned nMax = GetMaxSlot();
@@ -377,7 +377,7 @@ int CItemSocket::FUN_140620a70()
 }
 
 // @0x140620ac0
-int CItemSocket::FUN_140620ac0(unsigned nIndex)
+int CItemSocket::GetGemId(unsigned nIndex)
 {
     if (nIndex >= FUN_140620a20())
         return 0;
@@ -388,7 +388,7 @@ int CItemSocket::FUN_140620ac0(unsigned nIndex)
 }
 
 // @0x140620b70
-MS2Ptr<TSocketGemStoneInfo> CItemSocket::FUN_140620b70(unsigned nIndex)
+MS2Ptr<TSocketGemStoneInfo> CItemSocket::GetGemInfo(unsigned nIndex)
 {
     if (nIndex >= FUN_140620a20())
         return 0;
@@ -507,7 +507,7 @@ bool CItemSocket::FUN_140621340()
     unsigned nOpen = FUN_140620a20();
     if (nOpen == 0)
         return false;
-    return (unsigned)FUN_140620940() < nOpen;
+    return (unsigned)GetFilledSlotCount() < nOpen;
 }
 
 // @0x1406213a0
@@ -554,7 +554,7 @@ bool CItemSocket::FUN_1406216b0(unsigned nIndex, int nGemId)
 // @0x140621790
 bool CItemSocket::FUN_140621790(unsigned nIndex, const unsigned __int64& nCharacterId, const CStringW& strName)
 {
-    MS2Ptr<TSocketGemStoneInfo> spInfo = FUN_140620b70(nIndex);
+    MS2Ptr<TSocketGemStoneInfo> spInfo = GetGemInfo(nIndex);
     if (spInfo == 0)
         return false;
     return spInfo->FUN_14061fd00(nCharacterId, strName);
@@ -578,7 +578,7 @@ MS2Ptr<TSocketGemStoneInfo> CItemSocket::FUN_140621830(unsigned nIndex)
 bool CItemSocket::FUN_1406219d0(int* pIndex)
 {
     *pIndex = -1;
-    if (FUN_140620a70() == 0 || FUN_140620a20() > GetMaxSlot())
+    if (GetLockedSlotCount() == 0 || FUN_140620a20() > GetMaxSlot())
         return false;
     *pIndex = (int)m_aGems.GetCount();
     MS2Ptr<TSocketGemStoneInfo> spInfo(new TSocketGemStoneInfo);
@@ -591,7 +591,7 @@ bool CItemSocket::FUN_140621ac0()
 {
     if (FUN_140620a20() == 0)
         return false;
-    if (FUN_140620940() != 0)
+    if (GetFilledSlotCount() != 0)
         return false;
     m_aGems.RemoveAll();
     return true;
@@ -673,7 +673,7 @@ int CItemSocket::FUN_140621e60(Unk_GemFilter pfnFilter)
     unsigned nOpen = FUN_140620a20();
     for (unsigned i = 0; i < nOpen; i++)
     {
-        MS2Ptr<TSocketGemStoneInfo> spInfo = FUN_140620b70(i);
+        MS2Ptr<TSocketGemStoneInfo> spInfo = GetGemInfo(i);
         if (spInfo == 0 || spInfo->FUN_14061fab0())
             continue;
         unsigned nGemId = spInfo->GetGemId();
@@ -915,7 +915,7 @@ void CItemSocket::FUN_140622d00()
     unsigned nOpen = FUN_140620a20();
     for (unsigned i = 0; i < nOpen; i++)
     {
-        int nGemId = FUN_140620ac0(i);
+        int nGemId = GetGemId(i);
         if (nGemId == 0)
             continue;
         MS2Ptr<CItemOption> spOption(new CItemOption(nGemId));

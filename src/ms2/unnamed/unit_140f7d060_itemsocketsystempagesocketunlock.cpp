@@ -85,7 +85,7 @@ extern __int64 DAT_143ab2898;
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
 void FUN_1412752d0(const CStringW& key, int type);
-void FUN_141276180(const CString& sound, const CString& arg);
+int FUN_141276180(const CString& sound, const CString& arg);
 void FUN_141415600(const CString& name);
 void FUN_14141f970(const CString& name);
 void FUN_141415450(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
@@ -125,7 +125,7 @@ bool FUN_140627c10(MS2Ptr<CItem> item);
 void FUN_140628390(int level, unsigned short rate, int count, CIngredientContainer* cost);
 void FUN_140710590(COutPacket&);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, char* pFlag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, int a, CStringW b);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* pListener, CStringW b);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 __int64 FUN_141a02ed0(const CMsgBoxData& box, int index, int def);
@@ -499,7 +499,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ef70(MS2Ptr<CItem> item)
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     FUN_141276180(s_strSelectSound, "");
-    if (socket->FUN_140620a70() == 0) {
+    if (socket->GetLockedSlotCount() == 0) {
         FUN_140f7f210(item);
         return;
     }
@@ -539,7 +539,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f420(MS2Ptr<CItem> item)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
         return;
-    if (socket->FUN_140620a70() == 0) {
+    if (socket->GetLockedSlotCount() == 0) {
         FUN_140f6dbe0(m_ingredientControl);
         return;
     }
@@ -579,7 +579,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
         return;
-    if (socket->FUN_140620a70() == 0) {
+    if (socket->GetLockedSlotCount() == 0) {
         FUN_140f6dbe0(m_ingredientControl);
         return;
     }
@@ -647,7 +647,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     CItemSocket* socket = m_selected->FUN_1405279c0();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
-    if (socket->FUN_140620a70() == 0) {
+    if (socket->GetLockedSlotCount() == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_socket_unlock_all", 1);
         return;
     }
@@ -723,7 +723,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
             if (socket->FUN_140620a20() != open)
                 continue;
             for (unsigned j = 0; j < open; ++j) {
-                if (itemSocket->FUN_140620ac0(j) != 0) {
+                if (itemSocket->GetGemId(j) != 0) {
                     FUN_140f7ff50(L"s_itemsocketsystem_socketunlock_msg_ask_unlock_ingredient_in_gemstone", &uid, ingredients);
                     return;
                 }
@@ -746,7 +746,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80d70()
 {
     if (m_selectedUid != 0) {
         MS2Ptr<CItem> found = FUN_141425750(m_selectedUid, 0);
-        if ((bool)found.get() && found->FUN_1405279c0() != 0 && (unsigned)found->FUN_1405279c0()->FUN_140620a70() > 0) {
+        if ((bool)found.get() && found->FUN_1405279c0() != 0 && (unsigned)found->FUN_1405279c0()->GetLockedSlotCount() > 0) {
             FUN_140f832f0();
             return;
         }
@@ -866,7 +866,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
     CStringW rowStat = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_stat");
     for (unsigned i = 0; i < open; ++i) {
         CStringW text;
-        MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
+        MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
         if (info == 0 || info->FUN_14061fab0()) {
             if (emptyText.IsEmpty())
                 emptyText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_empty");
@@ -879,7 +879,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
         }
         rows.FUN_1422bbfe0(text);
     }
-    unsigned left = socket->FUN_140620a70();
+    unsigned left = socket->GetLockedSlotCount();
     if (left > 0) {
         CStringW lockText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_lock");
         for (unsigned i = 0; i < left; ++i)

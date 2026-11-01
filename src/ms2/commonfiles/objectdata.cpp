@@ -25,7 +25,6 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_140188f50(const char* psz, int n);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);          // attribute text
-bool FUN_140184310(const CString& str, const char* psz);                      // str == psz
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -110,56 +109,56 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         XmlGetAttr((class TiXmlElement*)(pFunc), "DefaultState", spData->m_cube.m_nDefaultState);
         CString strType = FUN_140188f50(FUN_14086f4b0(pFunc, "ControlType"), 0);
         spData->m_cube.m_strControlType = strType;
-        if (FUN_140184310(strType, "Sensor"))
+        if ((strType == "Sensor"))
             spData->m_cube.m_nControlType = 2;
-        else if (FUN_140184310(strType, "Switch") || FUN_140184310(strType, "FunctionUI") || FUN_140184310(strType, "Ride") || FUN_140184310(strType, "OpenWeb"))
+        else if ((strType == "Switch") || (strType == "FunctionUI") || (strType == "Ride") || (strType == "OpenWeb"))
             spData->m_cube.m_nControlType = 3;
-        else if (FUN_140184310(strType, "SpawnNPC"))
+        else if ((strType == "SpawnNPC"))
             spData->m_cube.m_nControlType = 4;
-        else if (FUN_140184310(strType, "InstallNPC"))
+        else if ((strType == "InstallNPC"))
             spData->m_cube.m_nControlType = 0xb;
-        else if (FUN_140184310(strType, "Skill"))
+        else if ((strType == "Skill"))
             spData->m_cube.m_nControlType = 5;
-        else if (FUN_140184310(strType, "Portal"))
+        else if ((strType == "Portal"))
             spData->m_cube.m_nControlType = 6;
-        else if (FUN_140184310(strType, "Breeding"))
+        else if ((strType == "Breeding"))
             spData->m_cube.m_nControlType = 7;
-        else if (FUN_140184310(strType, "Farming"))
+        else if ((strType == "Farming"))
             spData->m_cube.m_nControlType = 8;
-        else if (FUN_140184310(strType, "PVP"))
+        else if ((strType == "PVP"))
             spData->m_cube.m_nControlType = 9;
-        else if (FUN_140184310(strType, "SpawnPoint"))
+        else if ((strType == "SpawnPoint"))
             spData->m_cube.m_nControlType = 10;
-        else if (FUN_140184310(strType, "Notice"))
+        else if ((strType == "Notice"))
             spData->m_cube.m_nControlType = 0xc;
-        else if (FUN_140184310(strType, "Nurturing"))
+        else if ((strType == "Nurturing"))
             spData->m_cube.m_nControlType = 0xd;
         else
             spData->m_cube.m_nControlType = 1;
         CString strAction = FUN_140188f50(FUN_14086f4b0(pFunc, "StateChangeAction"), 0);
-        if (FUN_140184310(strAction, "ActionKey"))
+        if ((strAction == "ActionKey"))
             spData->m_cube.m_nStateChangeAction = 1;
-        else if (FUN_140184310(strAction, "Attack"))
+        else if ((strAction == "Attack"))
             spData->m_cube.m_nStateChangeAction = 2;
         int nPermission = 0;
         XmlGetAttr((class TiXmlElement*)(pFunc), "StateChangeActionPermissionType", nPermission);
         spData->m_cube.m_nStateChangePermission = nPermission;
         CString strUi = FUN_140188f50(FUN_14086f4b0(pFunc, "UseUiFunction"), 0);
-        if (FUN_140184310(strType, "FunctionUI"))
+        if ((strType == "FunctionUI"))
         {
-            if (FUN_140184310(strUi, "TriggerTool"))
+            if ((strUi == "TriggerTool"))
                 spData->m_cube.m_nUiFunction = 1;
-            else if (FUN_140184310(strUi, "FittingDoll"))
+            else if ((strUi == "FittingDoll"))
                 spData->m_cube.m_nUiFunction = 2;
-            else if (FUN_140184310(strUi, "itemFusion"))
+            else if ((strUi == "itemFusion"))
                 spData->m_cube.m_nUiFunction = 3;
-            else if (FUN_140184310(strUi, "bank"))
+            else if ((strUi == "bank"))
                 spData->m_cube.m_nUiFunction = 4;
-            else if (FUN_140184310(strUi, "BeautyMirror"))
+            else if ((strUi == "BeautyMirror"))
                 spData->m_cube.m_nUiFunction = 5;
-            else if (FUN_140184310(strUi, "Password"))
+            else if ((strUi == "Password"))
                 spData->m_cube.m_nUiFunction = 6;
-            else if (FUN_140184310(strUi, "Summon"))
+            else if ((strUi == "Summon"))
                 spData->m_cube.m_nUiFunction = 7;
         }
         spData->m_cube.m_sequences.SetCount(6, -1);
@@ -195,17 +194,17 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         if (pCamera != 0)
         {
             CString strCamera = FUN_140188f50(FUN_14086f4b0(pCamera, "SetCamera"), 0);
-            if (FUN_140184310(strCamera, "TPSCamera"))
+            if ((strCamera == "TPSCamera"))
                 spData->m_cube.m_nCamera = 1;
-            else if (FUN_140184310(strCamera, "FPSCamera"))
+            else if ((strCamera == "FPSCamera"))
                 spData->m_cube.m_nCamera = 2;
-            else if (FUN_140184310(strCamera, "2DCamera"))
+            else if ((strCamera == "2DCamera"))
                 spData->m_cube.m_nCamera = 3;
-            else if (FUN_140184310(strCamera, "RPGCamera"))
+            else if ((strCamera == "RPGCamera"))
                 spData->m_cube.m_nCamera = 4;
-            else if (FUN_140184310(strCamera, "PVPCamera"))
+            else if ((strCamera == "PVPCamera"))
                 spData->m_cube.m_nCamera = 5;
-            else if (FUN_140184310(strCamera, "ConsoleCamera"))
+            else if ((strCamera == "ConsoleCamera"))
                 spData->m_cube.m_nCamera = 6;
         }
         Unk_140165cf0* pSpawner = pFunc->FUN_140165cf0("spawner");

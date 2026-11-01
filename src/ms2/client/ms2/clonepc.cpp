@@ -19,7 +19,6 @@
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@U?$pair@IG@std@@PEAVUnk_CloneItemRec@@U?$less@U?$pair@IG@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IG@std@@PEAVUnk_CloneItemRec@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IG@std@@PEAVUnk_CloneItemRec@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IG@std@@PEAVUnk_CloneItemRec@@@std@@@std@@@std@@@2@@Z 0x14108dd60 ; unique
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@U?$pair@IG@std@@PEAVUnk_CloneItemRec@@U?$less@U?$pair@IG@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IG@std@@PEAVUnk_CloneItemRec@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IG@std@@PEAVUnk_CloneItemRec@@@std@@@std@@@std@@@2@AEBU?$pair@IG@2@@Z 0x14108de10 ; unique
 // MS2-PINS-END tplpin
-// MS2-FUNCTIONAL: Delegate<void(CAtlList*, Unk_PCEquipSet*)>::operator() pinned below; the exe COMDAT null-checks m_pImpl (FUN_140657820), the shared delegate.h inline does not
 // MS2-PIN: ??R?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEBAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z 0x14108bae0
 // MS2-PIN: ?IsEmpty@?$CAtlList@V?$MS2Ptr@VAdditionalCli@@@@V?$CElementTraits@V?$MS2Ptr@VAdditionalCli@@@@@ATL@@@ATL@@QEBA_NXZ 0x14108c020
 // MS2-PIN: ??_7ClonePC@@6BIBase@efd@@@ 0x142ea7b80
@@ -181,6 +180,14 @@ bool FUN_1409edd90(const MS2Ptr<CEquipItem>& sp, int n);
 
 // The Delegate<void(CAtlList<MS2Ptr<CEquipItem>>*, Unk_PCEquipSet*)> COMDATs (the +0x1310 equip filter).
 typedef Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> EquipFilterDelegate;
+void FUN_140657820();   // the delegate null-call trap
+// @0x14108bae0
+template <> void EquipFilterDelegate::operator()(ATL::CAtlList<MS2Ptr<CEquipItem> >* a1, Unk_PCEquipSet* a2) const
+{
+    if (m_pImpl == 0)
+        FUN_140657820();
+    m_pImpl->Invoke(a1, a2);
+}
 // @0x14108b370
 template <> EquipFilterDelegate::~Delegate()
 {

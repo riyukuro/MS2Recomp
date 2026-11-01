@@ -46,14 +46,13 @@ class Unk_CommonLog
 public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
-Unk_CommonLog* FUN_140166440();
+class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // The packet stream readers (commonfiles\packet.cpp).
 CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
 CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
 
 // The string table text with two arguments (a key like "s_dungeonMission_ingame_misison_normal").
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 
 #ifndef MS2_HOOK_DLL   // registers into the exe's ClassObject registry at DllMain time, before the exe's CRT/locks exist
 // Registration of the mission classes by name (dynamic initializers, 0x1400c7840-0x1400c7cf0).
@@ -87,14 +86,14 @@ MS2Ptr<DungeonMissionCli> DungeonMissionCli::Create(unsigned nId)
     MS2Ptr<DungeonMissionData> pData = DungeonMissionDataTable::GetInstance()->GetMission(nId);
     if (pData == 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"DungeonMissionGroup Data Error");
+        ((class Unk_CommonLog*)GetLogString())->Log(0, 0, 0x13, L"DungeonMissionGroup Data Error");
         return MS2Ptr<DungeonMissionCli>(0);
     }
     CStringW strClass = StringFormat(L"DungeonMission{0}", pData->m_type);
     MS2Ptr<DungeonMissionCli> pCli(static_cast<DungeonMissionCli*>(FUN_1401f7f50(strClass)));
     if (pCli == 0)
     {
-        FUN_140166440()->Log(0, 0, 0x13, L"DungeonMissionCli NotFound Class");
+        ((class Unk_CommonLog*)GetLogString())->Log(0, 0, 0x13, L"DungeonMissionCli NotFound Class");
         return MS2Ptr<DungeonMissionCli>(0);
     }
     pCli->m_data = pData.get();
@@ -250,16 +249,16 @@ CStringW DungeonMissionEvent::vfunc_4()
         int nLeft = nTotal - m_count;
         CStringW strCount = StringFormat(L"({0}/{1})", nLeft, nTotal);
         if (m_count >= nTotal)
-            return FUN_1408f71a0(L"s_dungeonMission_ingame_misison_fail", GetName(), strCount);
-        return FUN_1408f71a0(L"s_dungeonMission_ingame_misison_normal", GetName(), strCount);
+            return FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonMission_ingame_misison_fail", GetName(), strCount);
+        return FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonMission_ingame_misison_normal", GetName(), strCount);
     }
     else
     {
         short nTotal = m_data->m_applyCount;
         CStringW strCount = StringFormat(L"({0}/{1})", m_count, nTotal);
         if (m_count >= nTotal)
-            return FUN_1408f71a0(L"s_dungeonMission_ingame_misison_success", GetName(), strCount);
-        return FUN_1408f71a0(L"s_dungeonMission_ingame_misison_normal", GetName(), strCount);
+            return FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonMission_ingame_misison_success", GetName(), strCount);
+        return FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonMission_ingame_misison_normal", GetName(), strCount);
     }
 }
 

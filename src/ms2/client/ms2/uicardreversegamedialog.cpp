@@ -25,6 +25,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- the unit's header statics (the page includes the statics header a second time) ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -45,7 +47,6 @@ Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a
 
 // The name table (global strings).
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
-CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_1409e97f0(int nId, const int& nArg);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
@@ -56,7 +57,6 @@ void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, in
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS object been released
 class Unk_CRSceneMgr;
-Unk_CRSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -144,14 +144,14 @@ void UICardReverseGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f26cd0
 void UICardReverseGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x6200022);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(0x6200022);
     m_1c8.RemoveAll();
@@ -220,7 +220,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     m_1a8.Add(spCard);
                 }
             }
-            CStringW strNotice = FUN_140b99450(CStringW(L"s_card_reverse_game_dialog_play_notice"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1e8), m_1ec);
+            CStringW strNotice = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_card_reverse_game_dialog_play_notice"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1e8), m_1ec);
             static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("setPlayInfoText", CStringW(strNotice));
         }
         else if (nMode == 1)

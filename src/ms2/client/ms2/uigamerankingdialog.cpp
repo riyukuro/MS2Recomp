@@ -98,6 +98,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/seasondatatable.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
@@ -186,7 +187,6 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(void*, const char*, CString&);
 int FUN_140873420(void*, const char*, CStringW&);
-bool FUN_140184310(const CString& str, const char* psz);
 void FUN_140165270(ATL::CAtlArray<CString>&, CString&);                 // Add
 size_t FUN_1401662c0(ATL::CAtlArray<CString>&);                         // GetCount
 CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // operator[]
@@ -195,10 +195,7 @@ CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // opera
 CStringW FUN_140298ea0(CStringW);                                       // localized string by key
 CStringW FUN_14062b4f0(CStringW, const int*);
 CStringW FUN_14062b4f0(CStringW, const int&);
-CStringW FUN_14062b5a0(CStringW, const int& nJob, const CStringW& strName, const int& nLevel);
-CStringW FUN_1409e8970(CStringW, const int&, const int&);
 CStringW FUN_140bfa7f0(CStringW, const CStringW&, const int*);
-CStringW FUN_1408f71a0(CStringW, const CStringW&, const CStringW&);
 CStringW FUN_140656190(const wchar_t*, const CStringW&, const CStringW&);
 CStringW FUN_1401d0160(const wchar_t*, const CStringW&);
 CStringW FUN_1409404f0(__int64);
@@ -470,7 +467,7 @@ void UIGameRankingDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     CString strName = pArgs->FUN_1422b8d30();
     int nRow = pArgs->FUN_1422b8a10();
     int nType = pArgs->FUN_1422b8a10();
-    if (FUN_140184310(strName, "m_pbname"))
+    if ((strName == "m_pbname"))
         FUN_140e355d0(pRetVal, nRow, nType);
 }
 
@@ -1135,7 +1132,7 @@ CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, Unk_RankS
     {
         int nYear = spSeason.FUN_1404f0bf0()->m_nSeason / 100;
         int nSeason = spSeason.FUN_1404f0bf0()->m_nSeason % 100;
-        strLabel = FUN_1409e8970(CStringW(L"s_gameranking_tab_ugc_season"), nYear, nSeason);
+        strLabel = FUN_14028dfa0<int, int>(CStringW(L"s_gameranking_tab_ugc_season"), nYear, nSeason);
         break;
     }
     case 0x10:
@@ -1216,7 +1213,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
     case 5:
         if (nRank != 0)
         {
-            PCBase* pPc = reinterpret_cast<Unk_RankPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPc != 0)
             {
                 CStringW strGuild(*FUN_141656be0(pPc));
@@ -1283,7 +1280,7 @@ void UIGameRankingDialog::FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory)
     }
     Unk_RankKey key;
     FUN_140e351d0(spCategory->m_nId, &key);
-    CStringW strDesc = FUN_1408f71a0(CStringW(L"s_gameranking_tab_description"), strCategory, strSub);
+    CStringW strDesc = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gameranking_tab_description"), strCategory, strSub);
     obj.FUN_1407cbb20("desc", CStringW(strDesc));
 }
 
@@ -1438,7 +1435,7 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
     {
         if (m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name.IsEmpty())
             continue;
-        strText += FUN_14062b5a0(CStringW(L"s_gameranking_party_member_job"),
+        strText += FUN_14028dfa0<int, CStringW, int>(CStringW(L"s_gameranking_party_member_job"),
                                  m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nJob,
                                  m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name,
                                  m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nLevel);

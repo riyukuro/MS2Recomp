@@ -77,6 +77,12 @@ static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/itemsocketscrolldata.h"
 #include "ms2/commonfiles/jobtable.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 static CString s_strSortNamesC[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
@@ -324,7 +330,7 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket->GetMaxSlot() == 0)
         return 3;
-    int nLeft = pSocket->FUN_140620a70();
+    int nLeft = pSocket->GetLockedSlotCount();
     if (nLeft == 0)
         return 4;
     return 0;
@@ -445,7 +451,7 @@ int FUN_140627e80(MS2Ptr<CItem> spItem)
         return 0;
     if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620a20() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620940() != 0)
+    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
         return 0;
     if (spItem->FUN_140526160() == 1)
         return 0;
@@ -466,7 +472,7 @@ int FUN_140628050(MS2Ptr<CItem> spItem)
         return 0;
     if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620a20() != 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->FUN_140620940() != 0)
+    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
         return 0;
     return 1;
 }
@@ -878,7 +884,7 @@ void FUN_140628ff0(Unk_SockItemMsg& v, COutputStream& out, bool bTransfer)
     if (v.m_bValid)
     {
         out.WriteUInt8(v.m_nByte);
-        v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
+        v.m_spItem->FUN_1405279c0()->WriteToStream(out);
         out.WriteBool(bTransfer);
         if (bTransfer)
             reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_1(out);
@@ -898,7 +904,7 @@ void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
         v.m_nByte = in.ReadUInt8();
         if (v.m_spItem->FUN_140526a50() == nUid)
         {
-            v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
+            v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
             bool bTransfer = in.ReadBool();
             if (bTransfer)
                 reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_2(in);
@@ -915,9 +921,9 @@ void FUN_140629400(Unk_SockItemPair& v, COutputStream& out, int nMode)
     if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
         return;
     out.WriteInt64(v.m_spA->FUN_140526a50());
-    v.m_spA->FUN_1405279c0()->FUN_1406205e0(out);
+    v.m_spA->FUN_1405279c0()->WriteToStream(out);
     out.WriteInt64(v.m_spB->FUN_140526a50());
-    v.m_spB->FUN_1405279c0()->FUN_1406205e0(out);
+    v.m_spB->FUN_1405279c0()->WriteToStream(out);
     out.WriteBool(nMode == 1);
     if (nMode != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_1(out);
@@ -934,11 +940,11 @@ void FUN_1406295b0(Unk_SockItemPair& v, CInPacket& in)
     __int64 nUidA = in.ReadInt64();
     if (v.m_spA->FUN_140526a50() != nUidA)
         return;
-    v.m_spA->FUN_1405279c0()->FUN_140620700(in);
+    v.m_spA->FUN_1405279c0()->ReadFromStream(in);
     __int64 nUidB = in.ReadInt64();
     if (v.m_spB->FUN_140526a50() != nUidB)
         return;
-    v.m_spB->FUN_1405279c0()->FUN_140620700(in);
+    v.m_spB->FUN_1405279c0()->ReadFromStream(in);
     int bTransfer = in.ReadBool();
     if (bTransfer != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_2(in);
@@ -1088,7 +1094,7 @@ void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
     if (v.m_bFlag)
     {
         out.WriteInt32(v.m_spItem->FUN_1405273a0());
-        v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
+        v.m_spItem->FUN_1405279c0()->WriteToStream(out);
     }
 }
 MS2_REPLACE(0x14062A100, FUN_14062a100, 291, 0x952C6E87);
@@ -1107,7 +1113,7 @@ void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
         {
             int nCount = in.ReadInt32();
             v.m_spItem->FUN_1405273f0(nCount);
-            v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
+            v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
         }
     }
 }
@@ -1147,7 +1153,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
     int nTarget = -1;
     if (nSlot == -1) {
         for (unsigned i = 0; i < nMax; i++) {
-            int nGem = ((class CItemSocket*)(void*)(pSocket))->FUN_140620ac0(i);
+            int nGem = ((class CItemSocket*)(void*)(pSocket))->GetGemId(i);
             if (nGem == 0) {
                 nTarget = i;
                 break;
@@ -1382,7 +1388,7 @@ int CItemSocketTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("itemSocket"); pNode != 0; pNode = pNode->FUN_140168650("itemSocket"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("itemSocket")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("itemSocket")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -1594,7 +1600,6 @@ public:
 };
 class Unk_JobTable { };
 int FUN_140644bb0(Unk_JobTable*, int nJob);             // the job's name id
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -2160,7 +2165,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
             {
                 int nJob = aJobs[i];
                 bool bMyJob = ((class PC*)(class Unk_Actor*)(pActor))->FUN_141654700() == nJob;
-                if (pData == 0 || pData->FUN_14053c8e0(nJob) != 0)
+                if (pData == 0 || pData->IsJobAllowed(nJob) != 0)
                 {
                     ATL::CAtlArray<unsigned> aSa;
                     FUN_14080c370(FUN_14081da20(nSaType), nJob, aSa);
@@ -2183,7 +2188,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
                         unsigned short nTier = nValue;
                         strLine.Append(FUN_14028dfa0(CStringW(L"s_item_opt_sa_skill_levelup_tier_v"), strJob, strList, nTier));
                         if (bMyJob)
-                            strLine = FUN_1405c2690(CStringW(L"s_item_opt_sa_skill_levelup_tier_v_active"), strLine);
+                            strLine = FUN_14028dfa0<CStringW>(CStringW(L"s_item_opt_sa_skill_levelup_tier_v_active"), strLine);
                         strResult.Append(strLine);
                     }
                 }

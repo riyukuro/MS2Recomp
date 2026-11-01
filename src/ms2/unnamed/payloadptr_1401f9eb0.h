@@ -1,11 +1,7 @@
 // Unit-local spelling of the unknown 16-byte intrusive-pointer template.
 #pragma once
 #include "ms2/ms2layout.h"
-struct Unk_PayloadRef {
-    void FUN_14015b020();
-    int FUN_140159bc0();
-    void FUN_140159ba0();
-};
+#include "ms2/placeholder/cptred.h"
 template<class T> class Unk_PayloadPtr {
 public:
     Unk_PayloadPtr(){p=0;}
@@ -25,9 +21,9 @@ public:
 private:
     void AddRef()const{if(p)AddRefImpl(0);}
     void AddRefImpl(void*)const{Reference(p);}
-    static void Reference(T* value){reinterpret_cast<Unk_PayloadRef*>(value)->FUN_14015b020();}
+    static void Reference(T* value){CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value));}
     void Release(){if(p){ReleaseImpl(0);p=0;}}
-    void ReleaseImpl(void*){if(reinterpret_cast<Unk_PayloadRef*>(p)->FUN_140159bc0()==0){Reference(p);reinterpret_cast<Unk_PayloadRef*>(p)->FUN_140159ba0();}}
+    void ReleaseImpl(void*){if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0){Reference(p);CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));}}
     void* unknown;T* p;
 };
 MS2_CHECK_SIZE(Unk_PayloadPtr<int>,16);

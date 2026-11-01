@@ -137,16 +137,24 @@ extern int DAT_1439f4840;                       // default code page (localepath
 extern Unk_SingletonObj* DAT_143aac5c0;
 extern Unk_SingletonObj1* DAT_143aac5c8;
 CLogString* GetLogString();
-unsigned int FUN_1408693e0();                   // tick count in milliseconds
+unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
 #ifdef __clang__
 CString FUN_1401d2b10(const CString&, const CString&);
 #endif
 Unk_SingletonObj* FUN_1401d31f0();
 Unk_SingletonObj1* FUN_1401d3200();
 void FUN_1402b7240(Unk_SingletonObj1*);
-void FUN_140673330(Unk_MailService*);
-void FUN_140cc9c00(Unk_SingletonObj*);
-Unk_MailService* FUN_1401c0db0();
+class CLua   // C3: member view for the former free stand-ins
+{
+public:
+    void Update();
+};
+class CommonResource   // C3: member view for the former free stand-ins
+{
+public:
+    void CheckReload();
+};
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 
 template<class T, class U> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format,
@@ -328,7 +336,7 @@ CDirWatcher::CDirWatcher()
 unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
 {
     kStart.FUN_1401d42d0();
-    srand(FUN_1408693e0());
+    srand(GetTickCountMs());
     CString strRoot("./data/");
     m_hDir = CreateFileA(strRoot, FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
                          FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, 0);
@@ -365,8 +373,8 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                     pInfo = 0;
             }
             FUN_1402b7240(FUN_1401d3200());
-            FUN_140673330(FUN_1401c0db0());
-            FUN_140cc9c00(FUN_1401d31f0());
+            ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)FUN_1401c0db0())))->Update();
+            ((class CommonResource*)(class Unk_SingletonObj*)(FUN_1401d31f0()))->CheckReload();
         }
         else
         {

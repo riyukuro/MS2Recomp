@@ -216,7 +216,7 @@ CString FUN_14031c9d0(unsigned);
 CStringW FUN_14062b4f0(CStringW, const int*);
 void FUN_141275260(int, int, int);
 void FUN_140961010(int, int, int, const CStringW&);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140718170(const CString&);
 
@@ -245,7 +245,7 @@ void UIDungeonClosingPhotoDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_1b4 = 0;
     if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
-        reinterpret_cast<Unk_ClosingUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef9);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef9)));
     m_1bc = 0;
 }
 
@@ -597,7 +597,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
 {
     if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
         if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend")) {
-            Unk_ClosingSelf* self = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_ClosingSelf* self = ((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             bool isSelf = self ? self->FUN_141656a80() == e->m_uid : false;
             bool buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid);
             bool show = !isSelf && !buddy;
@@ -619,7 +619,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
     if (!valid)
         return;
     Unk_ClosingEntry* e = &m_entries[idx];
-    if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()->FUN_141656a80() == e->m_uid)
+    if (((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->FUN_141656a80() == e->m_uid)
         return;
     if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid) == 1)
         return;

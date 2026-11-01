@@ -195,7 +195,7 @@
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 NiAVObject* FUN_1413fa030(egf::Entity*);
-void FUN_14098c6e0(egf::Entity*, unsigned, const bool&);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 ecr::RenderService* FUN_1413f9890();
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -225,7 +225,7 @@ int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
     NiAVObject* original = FUN_141b6efc0(entity);
     if (original != NULL) {
         bool instanced = true;
-        FUN_14098c6e0(entity, 0x2a7fd9f4, instanced);
+        FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0x2a7fd9f4, instanced);
         NiCloningProcess process;
         process.m_eCopyType = NiObjectNET::COPY_EXACT;
         process.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
@@ -399,7 +399,7 @@ void EntityInstancing::FUN_1411c68d0() {
             NiAVObject* original = FUN_1413fa030(entity);
             if (original != NULL) { entry.clone->SetLocalTransform(original->GetLocalTransform()); dirty = true; }
             bool hidden = false;
-            FUN_14098c6e0(entity, 0xa0b6b179, hidden);
+            FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0xa0b6b179, hidden);
             if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&(it->first))) renderer->RemoveRenderedEntity(entity, it->second.original);
         }
     }

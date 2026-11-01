@@ -28,7 +28,6 @@ void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned int>* pOut, con
 bool FUN_1407183f0(const CStringW& value);
 unsigned short FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).
-void FUN_1408d5c30(DTRewardEventContext* pContext, const ATL::CAtlArray<unsigned int>& fields);
 // CUserEventManager::AddDTReward: the context handle is passed as the exe's own handle type.
 void FUN_1408d7cd0(CUserEventManager* pManager, Unk_DTCtxArg<DTRewardEventContext> spContext);
 
@@ -102,7 +101,7 @@ void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& l
         FUN_140274fc0(rows[i], &fields, L",");
         if (fields.IsEmpty() || fields.GetCount() != 9)
             continue;
-        FUN_1408d5c30(m_spContext.operator->(), fields);
+        ((class Unk_EventRewardList*)(void*)(m_spContext.operator->()))->FUN_1408d5c30(fields);
     }
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(levels, parts, L",");

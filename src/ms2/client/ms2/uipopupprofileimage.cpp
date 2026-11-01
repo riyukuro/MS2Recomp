@@ -14,6 +14,7 @@
 #include "ms2/placeholder/cpopupprofileimageman.h"
 #include <errno.h>
 #include <string.h>
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::get() const;         // 0x1405a8eb0
@@ -53,7 +54,6 @@ class Unk_PopupActor : public PC
 {
 };
 class Unk_PopupSvc { public: void FUN_1416979e0(__int64 nId); };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -64,7 +64,7 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString st
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-class Unk_PopupUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_PopupUIMgr { public: };
 class Unk_PopupInfoAS : public AScript
 {
 public:
@@ -161,7 +161,7 @@ int UIPopupProfileImage::Entity::vfunc_8(int n)
     PCBase* pActor = (PCBase*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001e)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001e)
         return 1;
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0)
@@ -297,7 +297,7 @@ UIPopupProfileImage* FUN_141a90250(int nUiId)
 {
     if (reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UIPopupProfileImage*>((UIObject*)p);
     }

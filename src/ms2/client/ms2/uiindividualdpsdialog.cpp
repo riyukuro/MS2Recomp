@@ -34,8 +34,11 @@ public:
 
 class PCBase;
 class Unk_IndWorld;
-PCBase* FUN_141bd0cc0(Unk_IndWorld* pWorld);
-__int64 FUN_141656a80(PCBase* pPC);
+class PCBase   // C3: member view for the former free stand-ins
+{
+public:
+    __int64 FUN_141656a80();
+};
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 
 // The AS root object of the dialog, with the invoke the exe instantiates for it.
@@ -77,11 +80,11 @@ void UIIndividualDPSDialog::FUN_140f4ade0()
 {
     if (m_30.IsNull())
         return;
-    PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     {
-        CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, FUN_141656a80(pPC), m_nMode);
+        CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80(), m_nMode);
         static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setMeterText", strMeter);
         CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
         static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setTime", strTime);
@@ -99,12 +102,12 @@ void UIIndividualDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_tick.FUN_140268840();
-    PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     {
-        CBattleRecordManager::GetInstance()->FUN_140a03f60(m_nGroup);
-        CBattleRecordManager::GetInstance()->FUN_140a04100(m_nGroup, FUN_141656a80(pPC));
+        CBattleRecordManager::GetInstance()->StartGroupIfInactive(m_nGroup);
+        CBattleRecordManager::GetInstance()->AddRecord(m_nGroup, ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80());
         OnTextToggle();
         FUN_140f4ade0();
     }
@@ -116,7 +119,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
         reinterpret_cast<Unk_IndSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_bFlag = 0;
-        CBattleRecordManager::GetInstance()->FUN_140a03fe0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StopGroup(m_nGroup);
         vfunc_67();
         return 1;
     }
@@ -124,7 +127,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("onReset", szMethod) == 0)
     {
-        CBattleRecordManager::GetInstance()->FUN_140a03fa0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StartGroup(m_nGroup);
         return 1;
     }
     else if (_stricmp("onTextToggle", szMethod) == 0)
@@ -150,7 +153,7 @@ void UIIndividualDPSDialog::vfunc_72()
             return;
         if (!m_tick.FUN_140268870(100))
             return;
-        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance()));
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
         FUN_140f4ade0();

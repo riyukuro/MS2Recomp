@@ -83,6 +83,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
+#include "ms2/client/ms2/triggerservice.h"  // C3: was a local member view
+#include "ms2/placeholder/uitalkmanager.h"  // C3: was a local member view
 class UIMinimapDialog;
 class Unk_CachedEntity;
 class Unk_McEntityRules;
@@ -523,12 +526,6 @@ class Unk_TrigAnimSvc { public: void FUN_1409a1fc0(const void* pEntId, const efd
 Unk_TrigAnimSvc* FUN_141b6f910();
 NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
 void FUN_141851f90(void *, float);  // C3: the definition's signature
-void* FUN_14086d260();
-class CMainSystem   // C3: member view for the former free stand-ins
-{
-public:
-    double FUN_141473280();
-};
 void FUN_141545250(egf::EntityID kId, unsigned b);
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 void FUN_1409fabf0(void* pSlot, void* pObj);
@@ -700,7 +697,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     if (pRoot != 0)
     {
         FUN_141851f90(pRoot, 0.0f);
-        pRoot->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280(), true);
+        pRoot->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
     FUN_141545250(TRIG_ENT()->GetEntityID(), bFlag);
     if (bOk && !bSkipFx)
@@ -843,20 +840,8 @@ void TriggerObjectCube::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
 // ---- TriggerObjectCamera ----
 
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-class CTriggerService   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1418631c0();
-    void FUN_1418631f0(int, int);
-    void FUN_141863260();
-};
 bool FUN_14028d470(float a, float b);
 void* FUN_140967100();
-class UITalkManager   // C3: member view for the former free stand-ins
-{
-public:
-    void SendNpcTalkMode0();
-};
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // Depth-first walker over a scene graph (a queue of pending nodes; unrecovered class).

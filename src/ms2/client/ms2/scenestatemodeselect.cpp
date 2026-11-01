@@ -10,6 +10,7 @@
 #include <NiColor.h>
 #include "ms2/placeholder/cinpacket.h"
 #include <efd/Helpers.h>
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 
 void FUN_140930150(int);
 void* FUN_1403ed2d0();
@@ -17,7 +18,6 @@ void* FUN_1403ed2b0();
 void FUN_141bbae40(void*, IWorldServiceCallback*);
 void FUN_141bbae80(void*, IWorldServiceCallback*);
 void FUN_141bbbe40(void*, int, int, int);
-void FUN_141adc5d0(void*, int);
 void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern void* DAT_143ab8f48;
 void* FUN_140aae430();
@@ -26,7 +26,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
-    bool FUN_140aeb590(struct Unk_CameraSetting&);
+    bool GetSavedSetting(struct Unk_CameraSetting&);
     void FUN_140aed720(struct Unk_CameraSetting const&);
     void FUN_140aed750(int, int);
 };
@@ -34,11 +34,11 @@ struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, 
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateModeSelect);
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 
 // @0x140aadff0
 CSceneStateModeSelect::CSceneStateModeSelect()
@@ -65,7 +65,7 @@ void CSceneStateModeSelect::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
     FUN_141bbae80(FUN_1403ed2d0(), this);
-    FUN_141adc5d0(FUN_1403ed2b0(), 0x4f6e);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4f6e);
 }
 
 // @0x140aae1d0
@@ -86,7 +86,7 @@ void CSceneStateModeSelect::vfunc_1(int)
     if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aeb590(*(struct Unk_CameraSetting*)(&tmp)))
+        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
         {
             ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
             ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);

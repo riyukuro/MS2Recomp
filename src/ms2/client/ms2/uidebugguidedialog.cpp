@@ -22,6 +22,13 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDebugGuideDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14128e450 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDebugGuideDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14128e4b0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??__Es_strSortNamesA@@YAXXZ 0x1400ec6a0 ; initpin: a header's look-alike initializer must not make these ambiguous
+// MS2-PIN: ??__Es_strSkillA@@YAXXZ 0x1400ec760
+// MS2-PIN: ??__Es_strStunA@@YAXXZ 0x1400ec790
+// MS2-PIN: ??__Es_strSortNamesB@@YAXXZ 0x1400ec7c0
+// MS2-PIN: ??__Es_strSkillB@@YAXXZ 0x1400ec880
+// MS2-PIN: ??__Es_strStunB@@YAXXZ 0x1400ec8b0
+// MS2-PIN: ??__Es_pointerB@@YAXXZ 0x1400ec8e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidebugguidedialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -39,6 +46,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- header statics (the exe runs them in this order: two copies of the shared header's names, the handle, the condition) ----
 
@@ -60,8 +68,8 @@ public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);          // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);          // NextSiblingElement
 };
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rValue);
-void FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& rValue);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // The AS controls of the movie (AScript subclasses; slot 24 is the visibility the dialog calls).
 class Unk_DebugGuideCtl : public AScript
@@ -103,14 +111,12 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);
 };
-Unk_DebugGuideDTPackets* FUN_140bccd50();
-void* FUN_140166440();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_14015eb90(void* pLog, int a, int b, const wchar_t* pszFormat, const CString& strArg);
 CString FUN_140651350();
 CString FUN_1411c0aa0(const char* pszPath);
-class Unk_DebugGuideWorld { public: CStringW FUN_141bd0d30(); };
-Unk_DebugGuideWorld* FUN_1403ed2d0();
-void* FUN_140a3ab70(int nUiType);
+class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 void FUN_141a25770(void* pChat, CStringW strText, int n);
 void FUN_1412751b0(const CStringW& str, int n);
 void FUN_140710590(COutPacket* p);
@@ -137,8 +143,8 @@ Unk_DebugGuideArg::Unk_DebugGuideArg(CStringW strCmd, bool bUseArg)
 void Unk_DebugGuideArg::Read(Unk_140165cf0* pElem)
 {
     m_bUseArg = false;
-    FUN_140873420(pElem, "cmd", m_strCmd);
-    FUN_1408730a0(pElem, "useArg", m_bUseArg);
+    XmlGetAttr((class TiXmlElement*)(pElem), "cmd", m_strCmd);
+    XmlGetAttr((class TiXmlElement*)(pElem), "useArg", m_bUseArg);
 }
 
 // @0x14128c740
@@ -159,12 +165,12 @@ Unk_DebugGuideCommand::~Unk_DebugGuideCommand()
 // @0x141286520
 void Unk_DebugGuideCommand::Read(Unk_140165cf0* pElem)
 {
-    FUN_140873420(pElem, "name", m_strName);
-    FUN_140873420(pElem, "desc", m_strDesc);
+    XmlGetAttr((class TiXmlElement*)(pElem), "name", m_strName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
     CStringW strCmd;
     bool bUseArg = false;
-    FUN_140873420(pElem, "cmd", strCmd);
-    FUN_1408730a0(pElem, "useArg", bUseArg);
+    XmlGetAttr((class TiXmlElement*)(pElem), "cmd", strCmd);
+    XmlGetAttr((class TiXmlElement*)(pElem), "useArg", bUseArg);
     if (!strCmd.IsEmpty())
         m_args.push_back(Unk_DebugGuideArg(strCmd, bUseArg));
     for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("v"); pChild != 0; pChild = pChild->FUN_140168650("v"))
@@ -191,8 +197,8 @@ Unk_DebugGuideGroup::~Unk_DebugGuideGroup()
 // @0x141286780
 void Unk_DebugGuideGroup::Read(Unk_140165cf0* pElem)
 {
-    FUN_140873420(pElem, "name", m_strName);
-    FUN_140873420(pElem, "charOnlyName", m_strCharOnly);
+    XmlGetAttr((class TiXmlElement*)(pElem), "name", m_strName);
+    XmlGetAttr((class TiXmlElement*)(pElem), "charOnlyName", m_strCharOnly);
     for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("CommandSet"); pChild != 0; pChild = pChild->FUN_140168650("CommandSet"))
     {
         Unk_DebugGuideCommand cmd;
@@ -208,13 +214,13 @@ UIDebugGuideDialog::UIDebugGuideDialog()
 {
     m_40 = 1;
     FUN_1422dc3b0(1);
-    FUN_140bccd50()->FUN_140da5180(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
+    ((class Unk_DebugGuideDTPackets*)FUN_140bccd50())->FUN_140da5180(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
 }
 
 // @0x141286a10
 UIDebugGuideDialog::~UIDebugGuideDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
+    ((class Unk_DebugGuideDTPackets*)FUN_140bccd50())->FUN_140da51e0(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
 }
 
 // @0x141286ba0
@@ -358,13 +364,13 @@ void UIDebugGuideDialog::LoadXml(CString strPath)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("Group"); pElem != 0; pElem = pElem->FUN_140168650("Group"))
     {
         Unk_DebugGuideGroup group(pElem);
-        bool bSkip = !group.m_strCharOnly.IsEmpty() && FUN_1403ed2d0()->FUN_141bd0d30() != group.m_strCharOnly;
+        bool bSkip = !group.m_strCharOnly.IsEmpty() && ((class WorldService*)WorldService::GetInstance())->FUN_141bd0d30() != group.m_strCharOnly;
         if (bSkip)
             continue;
         m_groups.push_back(group);
@@ -435,7 +441,7 @@ bool UIDebugGuideDialog::PrintCommand(int nIndex)
     if (nCommand >= (int)m_groups[nGroup].m_commands.size())
         return false;
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
-    void* pChat = FUN_140a3ab70(0x4e61);
+    void* pChat = ((void*)FUN_140a3ab70(0x4e61));
     if (pChat != 0)
     {
         for (int i = 0; i < (int)rCommand.m_args.size(); i++)
@@ -482,7 +488,7 @@ bool UIDebugGuideDialog::SendCommand(int nIndex)
 // @0x141288d00
 void UIDebugGuideDialog::PrintLine(CStringW strName, CStringW strArg)
 {
-    void* pChat = FUN_140a3ab70(0x4e61);
+    void* pChat = ((void*)FUN_140a3ab70(0x4e61));
     if (pChat != 0)
     {
         if (strArg.IsEmpty())

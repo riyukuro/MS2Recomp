@@ -86,6 +86,7 @@
 #include "ms2/placeholder/cmanufacturemanager.h"
 #include "ms2/placeholder/cusermaidmanager.h"
 #include <atlcoll.h>
+#include "ms2/placeholder/wcformat.h"
 
 class PCBase;
 class UIPcBangDialog;
@@ -168,9 +169,7 @@ MS2_CHECK_SIZE(Unk_HudUIRef, 0x10);
 class Unk_HudUIMgr
 {
 public:
-    void FUN_141adc750(int nUiId);                                              // open
     int FUN_141adc890(int nUiId);                                               // is open
-    void FUN_141adc5d0(int nUiId);                                              // close
     float FUN_141adbe70();                                                      // the ui scale
     Unk_HudUIRef FUN_141adcea0(int nUiId);
 };
@@ -254,7 +253,6 @@ class Unk_HudConfig { public: unsigned char* FUN_140a58500(); Unk_HudRenderOpt* 
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
                            // controller on
 __int64 GetServerTime();                                                        // the server time
-bool FUN_140184310(const CString& str, const char* psz);                        // str == psz
 void FUN_140710590(COutPacket& packet);
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                                 // string table text
@@ -264,7 +262,6 @@ CStringW FUN_140f48210(int nHour, int nMinute);                                 
 CStringW FUN_1402761d0(const wchar_t* szFormat, const CStringW& a1, const __int64& a2);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);
 CStringW FUN_1409404f0(__int64 n);                                              // the number as text
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                         // has the AS object been released
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
@@ -472,11 +469,11 @@ MS2_REPLACE_METHOD(0x141356580, UIUpperHudDialog, vfunc_45, 54, 0x9E4ACA8C);
 void UIUpperHudDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strName = pArgs->FUN_1422b8d30();
-    if (FUN_140184310(strName, "m_tokenPocketButton"))
+    if ((strName == "m_tokenPocketButton"))
         FUN_1413586c0(pRetVal);
-    else if (FUN_140184310(strName, "m_effectHotTime"))
+    else if ((strName == "m_effectHotTime"))
         FUN_141358b20(pRetVal);
-    else if (FUN_140184310(strName, "m_marat"))
+    else if ((strName == "m_marat"))
         FUN_141358df0(pRetVal);
 }
 MS2_REPLACE_METHOD(0x1413565C0, UIUpperHudDialog, vfunc_49, 182, 0xDF2014D0);
@@ -564,13 +561,13 @@ MS2_REPLACE_METHOD(0x141356B80, UIUpperHudDialog, vfunc_46, 321, 0xF0950323);
 // @0x141356cd0
 void UIUpperHudDialog::FUN_141356cd0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ece);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4ece)));
 }
 
 // @0x141356d00
 void UIUpperHudDialog::FUN_141356d00(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ec9);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4ec9)));
 }
 
 // @0x141356d30
@@ -578,7 +575,7 @@ void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Pa
 {
     if (reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecf))
     {
-        reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ecf);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ecf);
     }
     else
     {
@@ -592,19 +589,19 @@ void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Pa
 // @0x141356dc0
 void UIUpperHudDialog::FUN_141356dc0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ee6);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4ee6)));
 }
 
 // @0x141356df0
 void UIUpperHudDialog::FUN_141356df0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0f);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f0f)));
 }
 
 // @0x141356e20
 void UIUpperHudDialog::FUN_141356e20(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f65);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f65)));
 }
 
 // @0x141356e50
@@ -634,7 +631,7 @@ void UIUpperHudDialog::FUN_141356ed0(const Scaleform::GFx::FunctionHandler::Para
 void UIUpperHudDialog::FUN_141356f90(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f) == true)
-        reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f0b);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f0b)));
     else
     {
         m_searchInput->FUN_1422c7630(1);
@@ -831,7 +828,7 @@ void UIUpperHudDialog::FUN_141358020(bool bForce)
 {
     if (m_30 == 0)
         return;
-    PCBase* pPc = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     int nHot = ((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_140477640(FUN_141658f30(pPc));
@@ -966,7 +963,7 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
     ((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_140477590(list);
     if (list.IsEmpty())
         return;
-    PCBase* pPc = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     CStringW strText;
@@ -1030,7 +1027,7 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     if (FUN_1406a5720())
     {
         CStringW strRedName = GetStringCommonByKey(L"s_common_meratname_red");
-        CStringW strRedValue = FUN_1405c2690(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()));
+        CStringW strRedValue = FUN_14028dfa0<CStringW>(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()));
         strList.Append(FUN_140656190(strLine, strRedName, strRedValue));
     }
     CStringW strText = FUN_1401e8510(strTitle, strList);
@@ -2346,7 +2343,7 @@ void UIWeaponDummyDialog::FUN_14135e880(const CString& strNode, const Unk_HudStr
 {
     if (strNode.IsEmpty())
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(pPlayer->FUN_14123c410()));
     if (pRoot != 0)
     {

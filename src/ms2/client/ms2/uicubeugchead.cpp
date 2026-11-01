@@ -18,17 +18,18 @@ extern int DAT_143ae0fc0;                                           // debug swi
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
 int FUN_140707710(int nKind);
-class Unk_UgcUiMgr { public: int FUN_141adc890(int nUIType); };
 struct Unk_UgcRes16 { Unk_UgcRes16(const Unk_UgcRes16& o) : m_a(o.m_a), m_b(o.m_b) {} __int64 m_a, m_b; };
 Unk_UgcRes16 FUN_1408a15b0(Unk_UgcCell cell, Vector3 ptOrigin);   // the world point of a cell
 Unk_UgcRes16 FUN_14027dcf0(const Unk_UgcRes16& res);
 class Unk_WorldToScreen { public: bool FUN_140af0700(const Unk_UgcRes16& world, Vector3& out); };
 class Unk_UIScale;
-Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
-float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1422afec0(int);
+};
 Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
-void FUN_1422bfe00(ASDisplayObject* pObj, float fAlpha);            // set the alpha
-void FUN_1422c00f0(ASGameEntity* pEntity, float x, float y);        // set the position
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invoker on the label's movie clip (instance of the AScript::Invoke template).
 class Unk_UgcMovie
@@ -87,7 +88,7 @@ int UICubeUGCHead::FUN_1419066c0()
 {
     if (FUN_140707660(m_8c) != 0 || FUN_140707710(m_8c) != 0)
     {
-        if (reinterpret_cast<Unk_UgcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e6b) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))) != 0)
             return 1;
     }
     if (DAT_143ae0fc0 != 0)
@@ -123,7 +124,7 @@ void UICubeUGCHead::vfunc_52()
             vfunc_8(1);
         else
             vfunc_8(0);
-        FUN_1422bfe00(pClip.operator->(), 100.0f);
+        ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->FUN_1422bfe00(100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
         reinterpret_cast<Unk_UgcMovie*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
@@ -173,8 +174,8 @@ void UICubeUGCHead::FUN_141906b60()
                 vfunc_8(1);
             else
                 vfunc_8(0);
-            FUN_140ad0c10(&screen, FUN_1422afec0(FUN_14025e7a0(), m_28));
-            FUN_1422c00f0(pEntity.operator->(), screen.x, screen.y);
+            FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->FUN_1422c00f0(screen.x, screen.y);
         }
     }
     else

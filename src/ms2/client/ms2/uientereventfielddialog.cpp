@@ -47,7 +47,11 @@ class Unk_EnterWorld
 public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
 };
-Unk_EnterWorld* FUN_1403ed2d0();
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    static class WorldService* GetInstance();
+};
 
 // The string table (TSingleton<CStringTable>::GetInstance).
 
@@ -59,8 +63,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a mess
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                    // show it
 void FUN_140710590(COutPacket& packet);                         // send the packet
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-UIObject* FUN_140c9b540(int nClass);                            // the HUD dialog of this class id
-int FUN_1422c2510(ASMovieClip* p, double* pX, double* pY);     // x position of a clip
+class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
 // @0x140f3fb10
 UIEnterEventFieldDialog::UIEnterEventFieldDialog()
@@ -151,7 +154,7 @@ void UIEnterEventFieldDialog::vfunc_43()
         }
         if (bMove)
         {
-            UIObject* pHud = FUN_140c9b540(0x4e29);
+            UIObject* pHud = ((class UIObject*)FUN_140c9b540(0x4e29));
             if (pHud != 0)
             {
                 if (pHud->FUN_1422dc430() == 0)
@@ -165,7 +168,7 @@ void UIEnterEventFieldDialog::vfunc_43()
                     {
                         double dX = 0.0;
                         double dY = 0.0;
-                        if (FUN_1422c2510(spClip.operator->(), &dX, &dY) != 0)
+                        if (((class ASMovieClip*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c2510(&dX, &dY) != 0)
                             nX = (int)((dX - (double)(int)((float)pDialog->FUN_1422c1340() * 0.5f)) + 10.0);
                     }
                     pDialog->FUN_1422bffe0(nX > 0 ? nX : 0, 0);
@@ -220,7 +223,7 @@ MS2_REPLACE_METHOD(0x140F403A0, UIEnterEventFieldDialog, OnNotifyGameStart, 38, 
 // MS2-FUNCTIONAL: branch/temporary layout differs from the exe
 void UIEnterEventFieldDialog::UpdateVisible()
 {
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_EnterWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
         return;
     int nShow = 1;

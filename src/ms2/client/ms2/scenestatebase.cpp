@@ -16,7 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-unsigned int FUN_140869420();               // tick count (ms)
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_140aadf80();                      // the application object
 HWND FUN_14209c720(void* pApp);             // its main window
 extern int g_143af7d58;                     // nonzero: keep the window hidden
@@ -37,7 +37,7 @@ CSceneStateBase::~CSceneStateBase()
 // @0x14170b8e0
 void CSceneStateBase::OnEnter(int nPrevState)
 {
-    m_nEnterTime = FUN_140869420();
+    m_nEnterTime = GetTickCountMs2();
     FUN_140aadf80();
     if (!g_143af7d58)
         ShowWindow(FUN_14209c720(FUN_140aadf80()), SW_SHOWNORMAL);

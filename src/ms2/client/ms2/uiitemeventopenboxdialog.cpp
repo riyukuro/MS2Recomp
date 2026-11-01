@@ -62,7 +62,6 @@ class Unk_140acd6e0 : public ASButton {};
 class Unk_EobSlot : public ASUIComponent { public:
     void FUN_1407cba60(const char*, CString);
 };
-WorldService* FUN_1403ed2d0();
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
     int FUN_1409617d0(int, unsigned, const int&);
 };
@@ -74,8 +73,8 @@ class Unk_EobPackets { public:                                              // t
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
     void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
 };
-Unk_EobPackets* FUN_140bccd50();
-NotifySystem* FUN_140939a10();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlags);         // notice message box
 void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
@@ -88,15 +87,15 @@ UIItemEventOpenBoxDialog::UIItemEventOpenBoxDialog()
 {
     m_178 = 0;
     m_80 = 0;
-    FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
-    FUN_140bccd50()->FUN_140da5180(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
+    ((class Unk_EobPackets*)FUN_140bccd50())->FUN_140da5180(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
 }
 
 // @0x140e477f0
 UIItemEventOpenBoxDialog::~UIItemEventOpenBoxDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
-    FUN_140939a10()->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
+    ((class Unk_EobPackets*)FUN_140bccd50())->FUN_140da51e0(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
 }
 
 // @0x140e47a50
@@ -164,11 +163,11 @@ MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, FUN_140e48020, 29, 0x3
 // @0x140e48050
 void UIItemEventOpenBoxDialog::FUN_140e48050()
 {
-    int nFieldId = FUN_1403ed2d0()->FUN_141bd3060();
+    int nFieldId = WorldService::GetInstance()->FUN_141bd3060();
     MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)nFieldId);
     if (spCtx == 0)
         return;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    if (WorldService::GetInstance()->FUN_141bd0cc0() == 0)
         return;
     if (spCtx->m_fieldID != nFieldId)
         return;
@@ -214,7 +213,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)FUN_1403ed2d0()->FUN_141bd3060());
+    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)WorldService::GetInstance()->FUN_141bd3060());
     if (spCtx == 0)
     {
         {

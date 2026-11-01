@@ -34,12 +34,12 @@ public:
     explicit Unk_Random(int nSeed);                 // 0x140768210
     ~Unk_Random() {}                                // destroys m_lock only
     unsigned int FUN_1407684c0();                   // 0x1407684c0 next integer
-    float FUN_1407680d0();                          // 0x1407680d0 next float in [0, 1)
 private:
     MS2_LAYOUT_FRIEND;
     void* m_unk00[2];                               // +0x00
     CLockCriticalSection m_lock;                    // +0x10
 };
+float FUN_1407680d0(Unk_Random* pRandom);            // 0x1407680d0 next float in [0, 1); C3: was Unk_Random::FUN_1407680d0
 MS2_CHECK_SIZE(Unk_Random, 0x40);
 MS2_CHECK_OFFSET(Unk_Random, m_lock, 0x10);
 
@@ -73,8 +73,8 @@ void CXORCrypter::Init()
     Unk_Random kKey1(0x13ba);
 
     m_pKey = new BYTE[2];
-    m_pKey[0] = (BYTE)(kKey0.FUN_1407680d0() * 255.0f);
-    m_pKey[1] = (BYTE)(kKey1.FUN_1407680d0() * 255.0f);
+    m_pKey[0] = (BYTE)(FUN_1407680d0(&kKey0) * 255.0f);
+    m_pKey[1] = (BYTE)(FUN_1407680d0(&kKey1) * 255.0f);
 }
 
 // @0x1401cd490

@@ -23,6 +23,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uigamemenudialog.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local stand-ins ----
 
@@ -54,25 +56,16 @@ struct Unk_GEManagerA
 {
     Unk_DungeonEventPtr FUN_14047a5b0(unsigned nRoomID);
 };
-Unk_GEManagerA* FUN_1401c0d90();
-
-class Unk_CommandStrings
-{
-public:
-    CStringW FUN_141811980(int nType, int nId);
-};
-Unk_CommandStrings* FUN_1401a9d70();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Free functions of the exe, bound by their FUN_<va> names.
-__int64 FUN_140869440();
+__int64 GetServerTime();
 UIGameMenuDialog* FUN_140938b90(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 CStringW FUN_140298ea0(CStringW str);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW BlockFormat(int nId);
-CStringW FUN_14062b4f0(CStringW key, const int& nArg);
 CStringW FUN_14052bd00(int nId, const CStringW& arg);
 CStringW FUN_140b8e9a0(const CMsTime& t);
 void FUN_140d73ff0(CStringW text);
@@ -86,14 +79,7 @@ extern unsigned __int64 DAT_143ab2828;
 
 // Methods of the commonfiles units (their link symbols are not in the committed table), bound by VA: this first.
 class DungeonRoomTable;
-bool FUN_14031b900(DungeonRecord* pThis);                       // DungeonRecord::IsSeasonRankRoom
-int FUN_14031b9d0(DungeonRecord* pThis, __int64 tNow);          // DungeonRecord::GetClearCount
-unsigned FUN_14031ba10(DungeonRecord* pThis);                   // DungeonRecord::GetSubRewardCount
-unsigned FUN_14031ddd0(DungeonRoom* pThis);                     // DungeonRoom::GetDungeonRoomID
-unsigned FUN_14031e110(DungeonRoom* pThis);                     // DungeonRoom::GetCouponBaseItemID
-bool FUN_14031e190(DungeonRoom* pThis);                         // DungeonRoom::CanBuyCouponInMeratMarket
-unsigned FUN_14031e2b0(DungeonRoom* pThis, unsigned nCount);    // DungeonRoom::GetExtraRewardTicketCost
-struct Unk_DrcRoomTable { DungeonRoomPtr FUN_1403206b0(unsigned nRoomId); }; // DungeonRoomTable::GetRoom
+ // DungeonRoomTable::GetRoom
 
 
 // the "the number of ... is in the order list" names (the .text$di initializer)
@@ -116,7 +102,7 @@ DungeonRecordCli::DungeonRecordCli(unsigned nRoomID)
 // @0x140b20750
 unsigned DungeonRecordCli::GetBonusRewardCountNow()
 {
-    return GetBonusRewardCount(FUN_140869440());
+    return GetBonusRewardCount(GetServerTime());
 }
 
 // @0x140b20780
@@ -131,7 +117,7 @@ int DungeonRecordCli::GetMaxCount()
 
 unsigned char FUN_140b24dc0(Unk_DungeonTimedValue<unsigned char>* p)
 {
-    return p->Get(FUN_140869440());
+    return p->Get(GetServerTime());
 }
 
 // @0x140b207f0
@@ -177,19 +163,18 @@ bool DungeonRecordCli::HasCountLeft()
 {
     if (IsExtraExhausted())
         return true;
-    if (FUN_14031ba10(this) > 0)
+    if (((class DungeonRecord*)(class DungeonRecord*)(this))->GetSubRewardCount() > 0)
     {
-        if (FUN_14031b9d0(this, FUN_140869440()) >= FUN_14031ba10(this))
+        if (((class DungeonRecord*)(class DungeonRecord*)(this))->GetClearCount(GetServerTime()) >= ((class DungeonRecord*)(class DungeonRecord*)(this))->GetSubRewardCount())
             return false;
     }
     return (unsigned)GetBonusRewardCountNow() < (unsigned)GetMaxCount();
 }
-#line 189
 
 // @0x140b20990
 bool DungeonRecordCli::IsExtraExhausted()
 {
-    Unk_DungeonEventPtr spEvent = FUN_1401c0d90()->FUN_14047a5b0(m_dungeonRoomID);
+    Unk_DungeonEventPtr spEvent = ((struct Unk_GEManagerA*)FUN_1401c0d90())->FUN_14047a5b0(m_dungeonRoomID);
     if (spEvent == 0)
         return false;
     return GetExtraCountNow() < spEvent->m_extraRewardCount;
@@ -204,7 +189,7 @@ unsigned short DungeonRecordCli::GetRaw68()
 // @0x140b20a60
 bool DungeonRecordCli::IsExpired()
 {
-    return FUN_140869440() >= m_expire;
+    return GetServerTime() >= m_expire;
 }
 
 // ---- DungeonRecordManagerCli ----
@@ -306,7 +291,7 @@ void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
         FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_1405c2690(L"s_room_dungeon_record_notify_change_expert", FUN_1401a9d70()->FUN_141811980(0x14, nValue)), 1, 1);
+        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_room_dungeon_record_notify_change_expert", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nValue)), 1, 1);
         break;
     }
 }
@@ -366,11 +351,11 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         break;
     case 4:
     {
-        DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0((unsigned)nArg);
+        DungeonRoomPtr spRoom = reinterpret_cast<DungeonRoomTable*>(DungeonRoomTable::GetInstance())->GetRoom((unsigned)nArg);
         if (spRoom == 0)
             break;
         {
-            DungeonRecordCliPtr spRecord = GetRecord(FUN_14031ddd0(spRoom.operator->()));
+            DungeonRecordCliPtr spRecord = GetRecord(((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->GetDungeonRoomID());
             if (spRecord.get())
                 FUN_140d73aa0(FUN_14052bd00(0x9a2, FUN_140b8e9a0(spRecord->GetExpire())), 0, 0, L"");
         }
@@ -413,10 +398,10 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         FUN_140d73ff0(L"s_room_dungeon_CantEnterInDungeon");
         break;
     case 0x11:
-        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, Unk_MsgBoxCallback());
+        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x12:
-        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, Unk_MsgBoxCallback());
+        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x13:
         FUN_1412752d0(L"s_room_dungeon_noRewardDayOfWeeks", 1);
@@ -540,7 +525,7 @@ bool DungeonRecordManagerCli::CanClaimHelperReward(unsigned nRoomID)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
+    DungeonRoomPtr spRoom = reinterpret_cast<DungeonRoomTable*>(DungeonRoomTable::GetInstance())->GetRoom(nRoomID);
     if (spRoom == 0)
         return false;
     if (spRoom->m_dungeonHelperRequireClearCount == 0)
@@ -558,7 +543,7 @@ bool DungeonRecordManagerCli::IsBoostActive()
 {
     if (DAT_143ab2828 != m_98)
         return false;
-    __int64 tNow = FUN_140869440();
+    __int64 tNow = GetServerTime();
     return tNow < (__int64)m_90;
 }
 
@@ -600,7 +585,7 @@ unsigned short DungeonRecordManagerCli::GetRoomScore68(unsigned nRoomID)
     {
         DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
         if (spRecord.get())
-            return spRecord->Get68(FUN_140869440());
+            return spRecord->Get68(GetServerTime());
     }
     return 0;
 }
@@ -612,9 +597,9 @@ int DungeonRecordManagerCli::GetTotalScore()
     for (POSITION pos = m_records.GetHeadPosition(); pos != 0; m_records.GetNext(pos))
     {
         DungeonRecordCliPtr spRecord = m_records.GetValueAt(pos);
-        if (!FUN_14031b900(spRecord.operator->()))
+        if (!((class DungeonRecord*)(class DungeonRecord*)(spRecord.operator->()))->IsSeasonRankRoom())
             continue;
-        int nScore = spRecord->Get68(FUN_140869440());
+        int nScore = spRecord->Get68(GetServerTime());
         if (nScore <= 0)
             continue;
         nTotal += nScore;
@@ -639,7 +624,7 @@ int DungeonRecordManagerCli::GetRankRewardCount(unsigned nRank)
     DungeonRankRewardPtr spReward;
     if (m_rewards.Lookup(nRank, spReward))
     {
-        if (FUN_140869440() < spReward->m_20)
+        if (GetServerTime() < spReward->m_20)
             return spReward->m_1c;
     }
     return 0;
@@ -648,7 +633,7 @@ int DungeonRecordManagerCli::GetRankRewardCount(unsigned nRank)
 // @0x140b229c0
 void DungeonRecordManagerCli::GetScoredRecords(std::vector<DungeonRecordCliPtr>& out)
 {
-    __int64 tNow = FUN_140869440();
+    __int64 tNow = GetServerTime();
     for (POSITION pos = m_records.GetHeadPosition(); pos != 0; m_records.GetNext(pos))
     {
         DungeonRecordCliPtr spRecord = m_records.GetValueAt(pos);
@@ -664,8 +649,8 @@ unsigned DungeonRecordManagerCli::GetExtraTicketCost(DungeonRoomPtr pRoom)
 {
     if (pRoom == 0)
         return 0;
-    int nBonus = GetRoomBonusCount(FUN_14031ddd0(pRoom.operator->()));
-    return FUN_14031e2b0(pRoom.operator->(), nBonus);
+    int nBonus = GetRoomBonusCount(((class DungeonRoom*)(class DungeonRoom*)(pRoom.operator->()))->GetDungeonRoomID());
+    return ((class DungeonRoom*)(class DungeonRoom*)(pRoom.operator->()))->GetExtraRewardTicketCost(nBonus);
 }
 
 // @0x140b22b40
@@ -693,16 +678,16 @@ void DungeonRecordManagerCli::GetSeasonRooms(std::vector<DungeonRoomPtr>& out)
 // @0x140b22cb0
 void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
 {
-    DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
+    DungeonRoomPtr spRoom = reinterpret_cast<DungeonRoomTable*>(DungeonRoomTable::GetInstance())->GetRoom(nRoomID);
     if (spRoom == 0)
         return;
-    if (!FUN_14031e190(spRoom.operator->()))
+    if (!((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->CanBuyCouponInMeratMarket())
     {
         FUN_1412751f0(BlockFormat(0x31), 1, 1);
         return;
     }
-    CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, FUN_14031e110(spRoom.operator->()));
-    CStringW strText = FUN_1405c2690(CStringW(L"s_dungeonRoom_lack_extra_ticket"), strItem);
+    CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->GetCouponBaseItemID());
+    CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonRoom_lack_extra_ticket"), strItem);
     CUIService::GetInstance()->FUN_141add520(CStringW(strText), CStringW(strItem));
 }
 

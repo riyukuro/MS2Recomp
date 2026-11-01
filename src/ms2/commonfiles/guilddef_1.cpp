@@ -1067,7 +1067,7 @@ __int64 CGuildInfo::FUN_1404ccbd0()
 }
 
 // @0x1404ccc40
-void CGuildInfo::FUN_1404ccc40(__int64 v)
+void CGuildInfo::SetGuildId(__int64 v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f38=v; }
 }
@@ -1079,7 +1079,7 @@ CStringW CGuildInfo::FUN_1404cccb0()
 }
 
 // @0x1404ccd40
-void CGuildInfo::FUN_1404ccd40(const CStringW& v)
+void CGuildInfo::SetGuildName(const CStringW& v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f40=v; }
 }
@@ -1103,7 +1103,7 @@ __int64 CGuildInfo::FUN_1404ccec0()
 }
 
 // @0x1404ccf30
-void CGuildInfo::FUN_1404ccf30(__int64 v)
+void CGuildInfo::SetCreateTime(__int64 v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f68=v; }
 }
@@ -1249,14 +1249,14 @@ void CGuildInfo::FUN_1404cdda0(CInPacket& packet)
         int v14=packet.ReadInt32(); int v15=packet.ReadInt32(); int v16=packet.ReadInt32(); int v17=packet.ReadInt32();
         f354=packet.ReadBool();
         f350=packet.ReadInt32();
-        FUN_1404ccc40(id);
-        FUN_1404ccd40(name);
+        SetGuildId(id);
+        SetGuildName(name);
         FUN_1404cce40(code);
         FUN_1404cd2b0(b1);
         FUN_1404cd140(s190);
         FUN_1404cd030(s188);
         FUN_1404cd310(l48,l50,s198,1);
-        FUN_1404ccf30(l40);
+        SetCreateTime(l40);
         FUN_1404d11b0(v6,v7,v8,v9,v10,v11,v12);
         FUN_1404d1140(b2);
         FUN_1404d3600(v13);

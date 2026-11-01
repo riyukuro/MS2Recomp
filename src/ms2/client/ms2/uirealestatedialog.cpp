@@ -245,7 +245,7 @@ void UIRealEstateDialog::OnLoadInit()
 // @0x141ab2410
 int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 1;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -350,7 +350,7 @@ void UIRealEstateDialog::vfunc_ugc_5()
 // @0x141ab3250
 int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
 {
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 1;
     if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0())
@@ -383,7 +383,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
     {
         FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
@@ -425,7 +425,7 @@ void UIRealEstateDialog::FUN_141ab3820()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->FUN_141527e00() == 0)
         FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
     if (m_30.get() != 0)
@@ -435,7 +435,7 @@ void UIRealEstateDialog::FUN_141ab3820()
 // @0x141ab38e0
 void UIRealEstateDialog::SendRequestCubeMode2()
 {
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_141527e00() != 0)
@@ -567,7 +567,7 @@ void UIRealEstateDialog::FUN_141ab4040(const __int64* pnTime)
 // @0x141ab42a0
 void UIRealEstateDialog::FUN_141ab42a0()
 {
-    MyPC* pPC = reinterpret_cast<Unk_ReWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)

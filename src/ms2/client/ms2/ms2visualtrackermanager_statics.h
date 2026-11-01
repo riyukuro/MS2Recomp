@@ -4,8 +4,8 @@
 
 #include <efd/Category.h>
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
 
 // The channel the tracker subscribes to (0x143ae0f38, dtor thunk 0x142cb33c0).
 static efd::Category s_visualTrackerCategory(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);        // @0x1400f9a20
-static Unk_Handle1401cd100 s_dat_143ae0ee8(0);                                              // @0x1400f9a50
+static Unk_BuddyHandle s_dat_143ae0ee8(NULL);                                              // @0x1400f9a50

@@ -647,7 +647,7 @@ MS2_REPLACE_METHOD(0x140526320, CItem, FUN_140526320, 100, 0x95712DC4);
 // @0x140526790
 int CItem::FUN_140526790(int nJob)
 {
-    return m_spData->FUN_14053c8e0(nJob);
+    return m_spData->IsJobAllowed(nJob);
 }
 MS2_REPLACE_METHOD(0x140526790, CItem, FUN_140526790, 49, 0xCA42CD40);
 
@@ -805,11 +805,11 @@ int CItem::vfunc_4()
 MS2_REPLACE_METHOD(0x140526DC0, CItem, vfunc_4, 81, 0x28A974E4);
 
 // @0x140525590
-void CItem::FUN_140525590(__int64 n)
+void CItem::WriteItemBody(__int64 n)
 {
     m_spProxy->vfunc_5(n);
 }
-MS2_REPLACE_METHOD(0x140525590, CItem, FUN_140525590, 64, 0xECB9E513);
+MS2_REPLACE_METHOD(0x140525590, CItem, WriteItemBody, 64, 0xECB9E513);
 
 // @0x1405255e0
 void CItem::FUN_1405255e0(CInPacket& pkt)
@@ -843,7 +843,7 @@ bool CItem::FUN_140525790()
 MS2_REPLACE_METHOD(0x140525790, CItem, FUN_140525790, 81, 0x1FD1AC30);
 
 // @0x1405257f0
-int CItem::FUN_1405257f0()
+int CItem::IsStackable()
 {
     if (FUN_140527a20() != 0)
         return 0;
@@ -853,7 +853,7 @@ int CItem::FUN_1405257f0()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1405257F0, CItem, FUN_1405257f0, 115, 0xC01347F9);
+MS2_REPLACE_METHOD(0x1405257F0, CItem, IsStackable, 115, 0xC01347F9);
 
 // @0x1405258b0
 int CItem::FUN_1405258b0()
@@ -1278,7 +1278,7 @@ MS2_REPLACE_METHOD(0x140527760, CItem, FUN_140527760, 69, 0xAC97522B);
 bool CItem::FUN_1405277e0(int n)
 {
     if (m_spData.get() != 0)
-        return m_spData->FUN_14053c6b0(n);
+        return m_spData->HasStringTag(n);
     return false;
 }
 MS2_REPLACE_METHOD(0x1405277E0, CItem, FUN_1405277e0, 77, 0x4F881743);
@@ -1429,7 +1429,7 @@ MS2_REPLACE_METHOD(0x140526060, CItem, FUN_140526060, 145, 0x57D9062C);
 // @0x140526850
 bool CItem::FUN_140526850()
 {
-    if (!(!FUN_140527840()->FUN_14053cbc0() && FUN_140526c50() != 1 && FUN_1405257f0() != 0 && !FUN_140528e20()))
+    if (!(!FUN_140527840()->FUN_14053cbc0() && FUN_140526c50() != 1 && IsStackable() != 0 && !FUN_140528e20()))
         return false;
     return true;
 }
@@ -2716,7 +2716,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
         m_d0 = in.ReadUInt8();
     }
     m_spTransfer->vfunc_2(in);
-    m_spSocket->FUN_140620700(in);
+    m_spSocket->ReadFromStream(in);
     m_spCouple->FUN_14052d090(in);
     m_spBinding->FUN_140634700(in);
     FUN_1405290b0();
@@ -2762,7 +2762,7 @@ MS2Ptr<CItem> CItem::FUN_140524250()
     if (static_cast<CItemCustomMusicScore*>(m_spMusic) != 0)
         spNew->m_spMusic = m_spMusic->FUN_1406322c0();
     if (static_cast<CItemSocket*>(m_spSocket) != 0)
-        spNew->m_spSocket = m_spSocket->FUN_140620490();
+        spNew->m_spSocket = m_spSocket->Clone();
     if (static_cast<CItemTransfer::CItemBinding*>(m_spBinding) != 0)
     {
         spNew->m_spBinding.AssignRaw(new CItemTransfer::CItemBinding);
@@ -2855,7 +2855,7 @@ void CItem::FUN_140524ad0(COutputStream& out)
         out.WriteUInt8((unsigned char)m_d0);
     }
     m_spTransfer->vfunc_1(out);
-    m_spSocket->FUN_1406205e0(out);
+    m_spSocket->WriteToStream(out);
     m_spCouple->FUN_14052d130(out);
     m_spBinding->FUN_1406346a0(out);
 }

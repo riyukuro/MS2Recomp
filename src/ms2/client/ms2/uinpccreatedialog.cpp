@@ -207,7 +207,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     ASData data;
     if (_stricmp("OnNpcCreate", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.FUN_1422b8a10();
@@ -224,7 +224,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     } else if (_stricmp("OnSummonPet", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.FUN_1422b8a10();
@@ -268,8 +268,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     FUN_140710590(pkt);
                 }
             } else {
-                if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() != 0)
-                    reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0()->FUN_1415293b0();
+                if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
+                    ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->FUN_1415293b0();
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 CString strCmd = FUN_140513200("/MoveField {0}", nField);

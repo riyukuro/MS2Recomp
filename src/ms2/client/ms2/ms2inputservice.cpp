@@ -364,7 +364,7 @@ bool MS2InputService::FUN_140d8af70(int nKey)
 MS2_REPLACE_METHOD(0x140D8AF70, MS2InputService, FUN_140d8af70, 151, 0x78EE826B);
 
 // @0x140d8b010
-bool MS2InputService::FUN_140d8b010(int nButton)
+bool MS2InputService::IsMouseButtonDown(int nButton)
 {
     if (DAT_143af7d40 == 0)
         return false;
@@ -372,10 +372,10 @@ bool MS2InputService::FUN_140d8b010(int nButton)
         return false;
     return m_spMouse->ButtonIsDown((NiInputMouse::Button)nButton);
 }
-MS2_REPLACE_METHOD(0x140D8B010, MS2InputService, FUN_140d8b010, 90, 0x3316EAD7);
+MS2_REPLACE_METHOD(0x140D8B010, MS2InputService, IsMouseButtonDown, 90, 0x3316EAD7);
 
 // @0x140d8b070
-bool MS2InputService::FUN_140d8b070(int nButton)
+bool MS2InputService::WasMouseButtonPressed(int nButton)
 {
     if (DAT_143af7d40 == 0)
         return false;
@@ -383,10 +383,10 @@ bool MS2InputService::FUN_140d8b070(int nButton)
         return false;
     return m_spMouse->ButtonWasPressed((NiInputMouse::Button)nButton);
 }
-MS2_REPLACE_METHOD(0x140D8B070, MS2InputService, FUN_140d8b070, 90, 0x455CA3A2);
+MS2_REPLACE_METHOD(0x140D8B070, MS2InputService, WasMouseButtonPressed, 90, 0x455CA3A2);
 
 // @0x140d8b0d0
-bool MS2InputService::FUN_140d8b0d0(int nButton)
+bool MS2InputService::WasMouseButtonReleased(int nButton)
 {
     if (DAT_143af7d40 == 0)
         return false;
@@ -394,7 +394,7 @@ bool MS2InputService::FUN_140d8b0d0(int nButton)
         return false;
     return m_spMouse->ButtonWasReleased((NiInputMouse::Button)nButton);
 }
-MS2_REPLACE_METHOD(0x140D8B0D0, MS2InputService, FUN_140d8b0d0, 90, 0x946DB23B);
+MS2_REPLACE_METHOD(0x140D8B0D0, MS2InputService, WasMouseButtonReleased, 90, 0x946DB23B);
 
 // @0x140d8b130
 bool MS2InputService::FUN_140d8b130(int* pnX, int* pnY, int* pnZ)
@@ -425,13 +425,13 @@ bool MS2InputService::FUN_140d8b200(int nKey)
 MS2_REPLACE_METHOD(0x140D8B200, MS2InputService, FUN_140d8b200, 70, 0xD71B8A8F);
 
 // @0x140d8b250
-bool MS2InputService::FUN_140d8b250(int nKey)
+bool MS2InputService::InjectKeyRelease(int nKey)
 {
     if (FUN_140d8b870(nKey))
         return true;
     return FUN_140d8db30(nKey);
 }
-MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, FUN_140d8b250, 57, 0x5191D965);
+MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, InjectKeyRelease, 57, 0x5191D965);
 
 // @0x140d8b290
 int MS2InputService::FUN_140d8b290(int nKey)

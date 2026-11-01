@@ -79,6 +79,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -86,7 +87,6 @@ class Unk_MiUIMgr
 {
 public:
     void FUN_141adc530(int nId);                                // open
-    void FUN_141adc750(int nId);                                // open (toggle)
 };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -258,7 +258,7 @@ int UIMyInfoDialog::vfunc_65()
 {
     if (UIPCInfoDialog::vfunc_65() == 0)
         return 0;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     m_spInfo.AssignRaw(new PCInfo());
@@ -430,7 +430,7 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("onSymbolClick", szMethod) == 0)
     {
-        reinterpret_cast<Unk_MiUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4ed5);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4ed5)));
     }
     else if (_stricmp("OnScreenshot", szMethod) == 0)
     {
@@ -445,7 +445,7 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp(szMethod, "onWedding") == 0)
     {
-        reinterpret_cast<Unk_MiUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f8c);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f8c)));
     }
     else if (_stricmp("OnAddStatPointRepeat", szMethod) == 0)
     {
@@ -719,7 +719,7 @@ void UIMyInfoDialog::OnChangeProfile()
 // @0x141a5a750
 void UIMyInfoDialog::OnChangeTodayMemo()
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
@@ -763,7 +763,7 @@ void UIMyInfoDialog::FUN_141a5a9f0(int nConfig)
     if (spItem == 0)
         return;
     DAT_1439f9284 = spItem->FUN_140526b50();
-    reinterpret_cast<Unk_MiUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e75);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e75)));
 }
 
 // @0x141a5aab0
@@ -778,7 +778,7 @@ void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bStatLists, int bBag)
 {
     if ((m_spInfo == 0))
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     m_spInfo.AssignRaw(new PCInfo());
@@ -796,7 +796,7 @@ void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x27, nLevel); // string table 0x27: the symbol's name text
@@ -810,7 +810,7 @@ void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
 void UIMyInfoDialog::vfunc_84()
 {
     UIPCInfoDialog::vfunc_84();
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc != 0)
         FUN_141a5ac90(static_cast<Unk_MiPc*>(pPc)->FUN_141661e00());
 }
@@ -826,7 +826,7 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 // @0x141a5af10
 void UIMyInfoDialog::vfunc_91(int nStat)
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -847,7 +847,7 @@ void UIMyInfoDialog::vfunc_91(int nStat)
 // @0x141a5b080
 void UIMyInfoDialog::FUN_141a5b080(int nStat)
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -884,7 +884,7 @@ void UIMyInfoDialog::vfunc_92()
         return;
     if (vfunc_93() == 0)
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     m_250 = 0;
@@ -911,7 +911,7 @@ void UIMyInfoDialog::vfunc_90(int nTab)
 // @0x141a5b470
 int UIMyInfoDialog::vfunc_93()
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     if (pPc->vfunc_65() != 0)
@@ -941,7 +941,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || m_nTab != 3)
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -1016,7 +1016,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 // @0x141a5bed0
 void UIMyInfoDialog::FUN_141a5bed0()
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -1043,7 +1043,7 @@ void UIMyInfoDialog::FUN_141a5c080()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || (m_spAvatar == 0))
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
@@ -1076,7 +1076,7 @@ void UIMyInfoDialog::FUN_141a5c2a0(NotifyObject* pNotify)
 {
     if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     AvatarPC* pAvatar = dynamic_cast<AvatarPC*>(m_spAvatar->vfunc_24());
@@ -1097,7 +1097,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
 {
     if (nNewTab != 3)
         return;
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
@@ -1142,7 +1142,7 @@ int UIMyInfoDialog::GetTab()
 // @0x141a5c7c0
 void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -1202,7 +1202,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 // @0x141a5cf30
 void UIMyInfoDialog::FUN_141a5cf30(int nStat)
 {
-    MyPC* pPc = ((class Unk_MiWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if ((unsigned)m_250 <= 0)
@@ -1305,7 +1305,7 @@ void UIMyInfoDialog::FUN_141a5d690(const Scaleform::GFx::FunctionHandler::Params
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || m_280 == 0)
         return;
-    reinterpret_cast<Unk_MiUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f76);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f76)));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc0dc0-0x142cc0e50 .text$yd

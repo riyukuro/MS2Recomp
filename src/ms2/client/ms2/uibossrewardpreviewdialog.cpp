@@ -40,7 +40,6 @@ public:
 };
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
-WorldService* FUN_1403ed2d0();
 
 // A reward entry: an id holder (a vftable object, slot 1 = the item id) and the count.
 class Unk_BrmIdHolder
@@ -83,7 +82,6 @@ extern Unk_SingletonObj* DAT_143ac48f8;
 
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CStringW FUN_1401aa6a0(int nId);                        // npc name
-CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
@@ -101,6 +99,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIBossRewardPreviewDialog::SlotBag);
 // File statics (the .text$di order: the two class infos, "iconPath", then the shared header's).
 static CString s_strIconPath = "iconPath";
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // @0x140f26120 the string table text formatted with the npc name and a literal
 CStringW FUN_140f26120(CStringW strKey, const CStringW& strName, const wchar_t (&sz)[3])
@@ -123,7 +122,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
         return 0;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x800, 2);
@@ -138,7 +137,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
 // @0x140f24fd0
 int UIBossRewardPreviewDialog::Slot::vfunc_8(void* p)
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -194,7 +193,7 @@ DragSlot* UIBossRewardPreviewDialog::SlotBag::vfunc_16(int nIndex)
 // @0x140f25400
 void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
 {
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);
@@ -290,7 +289,7 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
         else
         {
             unsigned short nLevel = spNpc->GetLevel();
-            m_spTitle->FUN_1422c4cd0(FUN_1409e9ed0(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
+            m_spTitle->FUN_1422c4cd0(FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
         }
     }
     MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);

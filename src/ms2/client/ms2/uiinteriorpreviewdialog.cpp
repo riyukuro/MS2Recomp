@@ -42,7 +42,6 @@ CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow cop
 CStringW GetStringCommon(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
 void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
-Unk_IpActor* FUN_141bd0cc0(Unk_IpWorld* pWorld);                    // the local player
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
 
@@ -84,7 +83,7 @@ void UIInteriorPreviewDialog::FUN_140f4cd90(int nItemId)
         if (m_178 != nItemId)
         {
             m_178 = nItemId;
-            reinterpret_cast<Unk_IpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ee3);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ee3)));
         }
     }
     else
@@ -138,7 +137,7 @@ void UIInteriorPreviewDialog::OnLoadComplete()
 // @0x140f4d010
 void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    Unk_IpActor* pActor = FUN_141bd0cc0(reinterpret_cast<Unk_IpWorld*>(WorldService::GetInstance()));
+    Unk_IpActor* pActor = ((class Unk_IpActor*)((class WorldService*)(class Unk_IpWorld*)(reinterpret_cast<Unk_IpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return;
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)

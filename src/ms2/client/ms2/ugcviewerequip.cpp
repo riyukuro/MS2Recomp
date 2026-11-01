@@ -561,7 +561,7 @@ void CUgcViewerBanner::vfunc_1()
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
@@ -740,7 +740,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -819,7 +819,7 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (((struct Unk_VwSummary*)((class WeddingManager*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance())))->FUN_140d295d0())->m_nState != 2)
@@ -901,7 +901,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)
@@ -989,7 +989,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)

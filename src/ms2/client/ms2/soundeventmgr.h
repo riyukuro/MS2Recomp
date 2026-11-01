@@ -227,13 +227,13 @@ public:
     void FUN_14177ba30();                                       // shut down
     void FUN_14177bb70(float fDelta);                                     // per frame
     void FUN_14177bbc0();                                       // advance the volume fades
-    void FUN_14177bda0();                                       // sound device lost
+    void OnLostSoundDevice();                                       // sound device lost
     void FUN_14177bf20();                                       // sound device restored
     int FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
     int FUN_14177c420(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
-    int FUN_14177c710(unsigned nParamId, float* pfValue);       // get a music parameter
-    int FUN_14177c7e0(bool bPaused);                            // pause the music
-    void FUN_14177c850();                                       // reset the music system
+    int GetMusicParameter(unsigned nParamId, float* pfValue);       // get a music parameter
+    int SetMusicPaused(bool bPaused);                            // pause the music
+    void ResetMusic();                                       // reset the music system
     void FUN_14177c8a0();                                       // reset the music state
     void FUN_14177c980(unsigned bMute);                         // mute the music
     float FUN_14177c9e0();                                      // the music volume

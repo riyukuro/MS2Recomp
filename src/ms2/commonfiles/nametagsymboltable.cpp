@@ -47,6 +47,10 @@
 // The statics of the common header (the sort names, "skill", "stun" and the condition map).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/filesystem.h"
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
@@ -130,14 +134,14 @@ int CNametagSymbolTable::Load()
         if (pNode == 0)
             continue;
         CNametagSymbolDataPtr spData(new CNametagSymbolData);
-        FUN_1408731a0(pNode, "id", spData->m_nId);
-        FUN_140873420(pNode, "icon", spData->m_strIcon);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned short&>(spData->m_nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "icon", spData->m_strIcon);
         XmlEnumName<NametagConditionType, FUN_1406c67a0>(pNode, "conditionType", spData->m_eCondition);
-        FUN_140873220(pNode, "code", spData->m_nCode);
-        FUN_1408731e0(pNode, "hideSymbol", spData->m_nHideSymbol);
-        FUN_140873220(pNode, "buffID", spData->m_nBuffId);
-        FUN_1408731a0(pNode, "buffLv", spData->m_nBuffLv);
-        FUN_1408731e0(pNode, "pushSymbol", spData->m_nPushSymbol);
+        XmlGetAttr((class TiXmlElement*)(pNode), "code", reinterpret_cast<unsigned int&>(spData->m_nCode));
+        XmlGetAttr((class TiXmlElement*)(pNode), "hideSymbol", reinterpret_cast<int&>(spData->m_nHideSymbol));
+        XmlGetAttr((class TiXmlElement*)(pNode), "buffID", reinterpret_cast<unsigned int&>(spData->m_nBuffId));
+        XmlGetAttr((class TiXmlElement*)(pNode), "buffLv", reinterpret_cast<unsigned short&>(spData->m_nBuffLv));
+        XmlGetAttr((class TiXmlElement*)(pNode), "pushSymbol", reinterpret_cast<int&>(spData->m_nPushSymbol));
         m_map.SetAt(spData->m_nId, spData);
         m_arrIds.Add(spData->m_nId);
     }

@@ -157,11 +157,8 @@ private:
 
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
-bool FUN_140866880(Unk_EventEntry* pEntry, __int64* pTime);          // the time falls into the event
-bool FUN_140866820(Unk_EventEntry* pEntry, const CMsTime& time);
-bool FUN_140866760(Unk_EventEntry* pEntry);
 class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); bool FUN_1404793a0(const CStringW* pTag); };
-Unk_GEManagerA* FUN_1401c0d90();
+void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // One <questCondition> pair of the quest manager query (0x1407470f0): the quests whose state is checked.
 struct Unk_E16 { int m_questA, m_questB, m_stateA, m_stateB; };
@@ -178,8 +175,8 @@ public:
 };
 int FUN_140764480(Unk_PayloadPtr<CQuest> pQuest, int nState);
 
-bool FUN_14028f650(Unk_140165cf0* pElem);                    // the element is valid
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b330(CQuestData* pData);
@@ -187,8 +184,12 @@ int FUN_14074b030(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);
 void* FUN_140302b10();                                      // the game constants singleton
-float FUN_1404c17a0(void* pThis, int nLevel, int nKind);    // exp rate
-float FUN_1404c1730(void* pThis, int nLevel, int nKind);    // meso rate
+class CGloabalFactor   // C3: member view for the former free stand-ins
+{
+public:
+    float FUN_1404c1730(unsigned int, int);
+    float FUN_1404c17a0(unsigned int, int);
+};
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);
 int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);
 int FUN_1407474d0(const ATL::CAtlArray<int>* pArr, const int* pValue);
@@ -250,13 +251,13 @@ __int64 CQuestCommon::FUN_1407448a0()
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        Unk_PayloadPtr<Unk_EventEntry> event = FUN_1401c0d90()->FUN_140479410(&data->m_schedule);
+        Unk_PayloadPtr<Unk_EventEntry> event = ((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_140479410(&data->m_schedule);
         if (event == 0)
             return 0;
         __int64 tStart = GetStartTime();
         if (tStart != 0)
         {
-            if (!FUN_140866880(event.operator->(), &tStart))
+            if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866880((__int64 const*)(&tStart)))
                 return 0;
         }
         tEvent = reinterpret_cast<TermTagContext*>(event.operator->())->FUN_140866720().Get();
@@ -332,19 +333,19 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        Unk_PayloadPtr<Unk_EventEntry> event = FUN_1401c0d90()->FUN_140479410(&data->m_schedule);
+        Unk_PayloadPtr<Unk_EventEntry> event = ((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_140479410(&data->m_schedule);
         if (event.IsNull())
             return 0;
-        if (!FUN_140866820(event.operator->(), now))
+        if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866820(now))
             return 0;
-        if (FUN_140866760(event.operator->()))
+        if (((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866760())
         {
             if (vfunc_o10_8() < reinterpret_cast<TermTagContext*>(event.operator->())->FUN_1408666e0().Get())
                 return 0;
         }
         if (tStart != 0)
         {
-            if (!FUN_140866880(event.operator->(), &tStart))
+            if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866880((__int64 const*)(&tStart)))
                 return 1;
         }
     }
@@ -874,10 +875,10 @@ bool CQuestData::QuestRewardItem::operator!=(const QuestRewardItem& o) const
 // @0x140747fc0
 bool CQuestData::QuestRewardItem::LoadXml(Unk_140165cf0* pElem)
 {
-    if (!FUN_14028f650(pElem))
+    if (!FUN_14028f650((struct Unk_XmlElement*)(pElem)))
         return false;
     FUN_140873220(pElem, "code", (unsigned&)m_itemId);
-    FUN_14015f500(pElem, "rank", &m_count);
+    Unk_ReadRank((class Unk_XmlNode*)(pElem), "rank", &m_count);
     FUN_1408731e0(pElem, "count", m_job);
     return true;
 }
@@ -1230,7 +1231,7 @@ int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
 int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
+int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 int FUN_14028e160(CString& str);
@@ -1249,7 +1250,7 @@ int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 class Unk_FeatureFlags;
-Unk_FeatureFlags* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
 
 // @0x1407495d0
@@ -1274,8 +1275,8 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         FUN_1408730a0(pBasic, "useNavi", (bool&)m_flag);
         FUN_14035bc20(pBasic, "alliance", &m_4c);
         FUN_140752570(pBasic, "rank", &m_50);
-        FUN_1408736d0(pBasic, "usePostbox", (bool&)m_33);
-        FUN_1408736d0(pBasic, "useReEntryHiddenMap", (bool&)m_34);
+        XmlQuery((class TiXmlElement*)(pBasic), "usePostbox", (bool&)m_33);
+        XmlQuery((class TiXmlElement*)(pBasic), "useReEntryHiddenMap", (bool&)m_34);
         ATL::CAtlArray<CString> arrProperty;
         XmlTokenList(pBasic, "property", arrProperty);
         for (size_t i = 0; i < arrProperty.GetCount(); i++)
@@ -1455,7 +1456,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         FUN_1408731e0(pDispatch, "portal", m_2f0.m_8);
         FUN_1408731e0(pDispatch, "script", m_2f0.m_c);
     }
-    if (FUN_14036d570(FUN_140166410(), 0x42) == 1)
+    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x42) == 1)
     {
         Unk_140165cf0* pGotoNpc = pElem->FUN_140165cf0("gotoNpc");
         if (pGotoNpc)
@@ -1562,7 +1563,7 @@ int FUN_14074b210(CQuestData* pData)
 {
     if (pData->m_schedule.GetLength() != 0)
     {
-        if (!FUN_1401c0d90()->FUN_1404793a0(&pData->m_schedule))
+        if (!((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_1404793a0(&pData->m_schedule))
             return 0;
     }
     return 1;
@@ -1683,7 +1684,7 @@ int FUN_14074b790(int nQuestId)
 // @0x14074b840
 int FUN_14074b840(int nQuestId)
 {
-    if (FUN_14036d570(FUN_140166410(), 0x6e))
+    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
     {
         MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
         if (data.IsNull())
@@ -1700,7 +1701,7 @@ int FUN_14074b840(int nQuestId)
 // @0x14074b950
 int FUN_14074b950(int nQuestId)
 {
-    if (FUN_14036d570(FUN_140166410(), 0x6e))
+    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
     {
         MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
         if (data.IsNull())
@@ -1721,7 +1722,7 @@ int FUN_14074b950(int nQuestId)
 // @0x14074bae0
 int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
 {
-    if (FUN_14036d570(FUN_140166410(), 0x6e))
+    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
     {
         MS2Ptr<CQuestData> a = FUN_14074bc40(nQuestA);
         MS2Ptr<CQuestData> b = FUN_14074bc40(nQuestB);
@@ -1789,7 +1790,7 @@ void QuestDataTable::LoadQuestData()
     }
     for (Unk_140165cf0* pNode : pRoot->FUN_140165cf0("quest"))
     {
-        if (!FUN_14028f650(pNode))
+        if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<CQuestData> spData(new CQuestData);
         if (!spData->Load(pNode))
@@ -2337,16 +2338,16 @@ void QuestDataTable::FUN_14074ee30()
         switch (FUN_14074b050(spData.operator->()))
         {
         case 0:
-            fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 5);
-            fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 0);
+            fExp = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c17a0(spData->m_level, 5);
+            fMeso = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1730(spData->m_level, 0);
             break;
         case 1:
-            fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 6);
-            fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 1);
+            fExp = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c17a0(spData->m_level, 6);
+            fMeso = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1730(spData->m_level, 1);
             break;
         case 3:
-            fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 7);
-            fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 2);
+            fExp = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c17a0(spData->m_level, 7);
+            fMeso = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1730(spData->m_level, 2);
             break;
         }
         int* pExp = &spData->m_complete.m_exp;
@@ -2363,8 +2364,12 @@ class CLogString* GetLogString();
 void FUN_1406e7140(void* pLog, int a, int b, int nFlags, const wchar_t* pszFormat, const int& arg0, const int& arg1);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
-void* FUN_1406aeee0();
-bool FUN_1406af060(void* p);
+class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions   // C3: member view for the former free stand-ins
+{
+public:
+    bool IsDisableValidate();
+};
 
 // Looks up (or creates) the quest id list under the key and appends the quest id to it.
 template <class TMap, class TKey>
@@ -2446,7 +2451,7 @@ void QuestDataTable::FUN_14074f160()
 
         FUN_1407484a0(&spData->m_complete, FUN_14074b030(spData.operator->()));
 
-        if (spData->m_2e == 0 && !FUN_1406af060(FUN_1406aeee0()))
+        if (spData->m_2e == 0 && !((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate())
         {
             size_t nRewards = spData->m_rewards.size();
             for (size_t i = 0; i < nRewards; i++)
@@ -2505,7 +2510,7 @@ MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, FUN_14074fee0, 557, 0xD7488436);
 
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-bool FUN_14028f710(Unk_140165cf0* pElem);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 // MS2-FUNCTIONAL: the exe builds the literal CString temps and the path with a different EH state layout (precedent banktable)
 // @0x140750120
@@ -2524,7 +2529,7 @@ void QuestDataTable::LoadQuestGroupTable()
     Unk_1401b4ec0 guard(m_lock, 1);
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_SocketPtr<CQuestData::GroupPickData> spPick(new CQuestData::GroupPickData);
         FUN_1408731e0(pNode, "id", spPick->m_18);

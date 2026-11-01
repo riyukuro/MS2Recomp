@@ -77,16 +77,16 @@ void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlAr
 MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
 void FUN_141415600(const CString& strBindID);                               // release the item bound to the name
 void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n2, int n3);   // bind an item to the name
-void FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
+int FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_140710590(COutPacket& packet);                                     // send
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1409404f0(__int64 nValue);                                     // money text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 extern __int64 DAT_143ab2898;                                               // the player's meso
 extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- AScript::FUN_140c57d70 ----
 
@@ -408,7 +408,7 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
-    CStringW strCost = FUN_1405c2690(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
+    CStringW strCost = FUN_14028dfa0<CStringW>(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
     if (nCost < 0)
     {
         strCost = GetStringCommonByKey(L"s_item_treasure_map_cant_appraise");

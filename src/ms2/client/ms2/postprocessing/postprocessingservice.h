@@ -80,7 +80,7 @@ public:
     bool FUN_1416a3760();
     bool FUN_1416a3780();
     bool FUN_1416a37a0(int nStep, bool bRelink);    // toggle a step's active flag; returns the new state
-    bool FUN_1416a3920(int nStep, bool bActive);    // set a step's active flag (toggles + relinks when it differs)
+    bool SetStepActive(int nStep, bool bActive);    // set a step's active flag (toggles + relinks when it differs)
     bool FUN_1416a3a00(int nStep);                  // is the step active
     PostProcessEffect* FUN_1416a3a90(int nStep);
     static egf::IBuiltinModel* FUN_1416a3b10();     // "PostProcessSetting" builtin model factory
@@ -128,7 +128,7 @@ public:
     static bool FUN_1416abce0(bool bBeforeReset, void* pvData);   // device reset callback
     bool FUN_1416abd20(bool bBeforeReset);
     void FUN_1416a0fb0(int nEvent);                 // queue an event (13 = fade-in finished)
-    NiRenderedTexture* FUN_1416a23f0(int nIndex);   // m_aspTextures[nIndex]
+    NiRenderedTexture* GetRenderedTexture(int nIndex);   // m_aspTextures[nIndex]
     void FUN_1416a7050();                           // create the MRT targets
     static void FUN_1416ac440(unsigned int uiWidth, unsigned int uiHeight);   // texel size + 9-tap blur offsets shader constants
     efd::SmartPointer<NiViewRenderClick> FUN_1416a8140();

@@ -21,7 +21,7 @@ public:
     virtual ~CPartyManager();
     void FUN_14162a310();
     void FUN_14162a340();
-    void FUN_14162a370();
+    void ClearParty();
     void FUN_14162a480();
     void OnParty(CInPacket&);
     void FUN_14162a840(TPtr<PCBase>);
@@ -36,8 +36,8 @@ public:
     int FUN_14162ab00();
     bool FUN_14162ab20();
     bool FUN_14162ab60();
-    bool FUN_14162aba0(int);
-    bool FUN_14162abe0();
+    bool IsPartyId(int);
+    bool IsMatchmaking();
     bool FUN_14162ac00(int);
     bool FUN_14162ac40();
     bool FUN_14162ac70(int);

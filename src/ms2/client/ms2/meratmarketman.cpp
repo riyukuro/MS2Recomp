@@ -108,6 +108,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/uimeratmarketdialog.h"
 #include "ms2/client/ms2/uigamemenudialog.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- header statics (the shared list of the merat market units) ----
 #ifndef MS2_HOOK_DLL
@@ -262,11 +264,12 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
 CStringW FUN_1409404f0(__int64 nValue);                         // a number with digit groups
-void FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
+int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bShowError);  // the level fits the product
 
 CStringW GetStringCommon(int nKey);                               // a common string by id
@@ -274,7 +277,6 @@ CStringW GetStringCommonByKey(const CStringW& str);                    // a stri
 CStringW BlockFormat(int nKey);                                 // a system string by id
 CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // a string by key with one argument
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str);
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
@@ -316,7 +318,6 @@ template <class T> void FUN_140d61af0(int nStringId, int nA, int nB, const T& x)
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);  // pop a system message
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag); // pop a message
 UIMessageBox* FUN_14151f890();                                  // the open message box
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -332,7 +333,6 @@ bool FUN_140ebfb90(class CDBPremiumProduct*, bool);   // C3: was FUN_140ebfb90
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);
 CStringW FUN_140ec05f0(CDBPremiumProduct* pProduct);            // the option text of a product (empty: none)
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // the text of a chosen option
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& strB);  // a string by key, 2 args
 int FUN_14069c3e0(int nCurrency);                               // the pay type of a currency
 
 // ---- CMeratMarketMan ----
@@ -1210,7 +1210,7 @@ bool CMeratMarketMan::FUN_140d57a80(unsigned int nCategory, int nTab, Unk_MeratP
             if (spList == 0 || spList->empty() == true)
                 return false;
             unsigned short nLevel = 0;
-            PCBase* pPlayer = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer != 0)
                 nLevel = (unsigned short)pPlayer->vfunc_78();
             for (std::list<MS2Ptr<CMeratMarketProduct> >::iterator itProduct = spList->begin(); itProduct != spList->end(); ++itProduct) {
@@ -1443,7 +1443,7 @@ void CMeratMarketMan::FUN_140d589f0(int bCancel)
                 }
             }
         }
-        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000c) {
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000c) {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, L"", 0, L"");
             if (spBox.get() != 0) {
                 CStringW strTitle = GetStringCommon(0x9f4);
@@ -1724,14 +1724,14 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
         return GetStringCommonByKey(L"s_meratmarket_error_buy_invalid_price_type");
     case 0xbd: {
         int nLevel = FUN_140d564b0();
-        return FUN_14062b4f0(L"s_meratmarket_error_ugc_buy_limit_achieve_account_char_level", nLevel);
+        return FUN_14028dfa0<int>(L"s_meratmarket_error_ugc_buy_limit_achieve_account_char_level", nLevel);
     }
     case 0xbe: {
         int nLevel = FUN_140d565c0();
-        return FUN_14062b4f0(L"s_meratmarket_error_ugc_buy_limit_achieve_account_ad_level", nLevel);
+        return FUN_14028dfa0<int>(L"s_meratmarket_error_ugc_buy_limit_achieve_account_ad_level", nLevel);
     }
     case 0xbf:
-        return FUN_14062b4f0(L"s_meratmarket_error_ugc_buy_limit_product_buy_count", m_n1c0);
+        return FUN_14028dfa0<int>(L"s_meratmarket_error_ugc_buy_limit_product_buy_count", m_n1c0);
     case 0xc3:
         return GetStringCommonByKey(L"s_meratmarket_error_country_limit");
     case 0xa2:
@@ -1946,7 +1946,7 @@ CStringW CMeratMarketBuy::vfunc_1()
     if (pPremium != 0 && (m_spPacket.get() ? true : false)) {
         CStringW strOption = FUN_140ebd520(pPremium, m_spPacket->m_n30);
         if (!strOption.IsEmpty())
-            return FUN_1408f71a0(CStringW(L"s_meratmarket_buy_itemname"), m_strName, strOption);
+            return FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_meratmarket_buy_itemname"), m_strName, strOption);
     }
     return m_strName;
 }

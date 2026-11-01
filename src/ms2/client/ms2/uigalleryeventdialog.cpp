@@ -128,7 +128,6 @@ extern Unk_GalleryCounters g_galleryCounters;
 class Unk_GalleryItem { public: CString FUN_14053fdd0(); };
 Unk_GalleryPtr<Unk_GalleryItem> FUN_14053f870(int);
 WorldService* FUN_1403ed2d0();
-bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -342,7 +341,7 @@ MS2_REPLACE_METHOD(0x140C16930, UIGalleryEventDialog, vfunc_13, 24, 0x9377B5EC);
 void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(out, method, args);
-    if (FUN_140184310(method, "getTooltipQuest")) {
+    if ((method == "getTooltipQuest")) {
         int quest = args->FUN_1422b8b10();
         if (!FUN_140764020()->state.FUN_140745630(quest) && !FUN_140764020()->state.FUN_140745590(quest)) return;
         CStringW text = FUN_1416e5660(quest);
@@ -351,7 +350,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
             tip.FUN_1409c6dc0(1);
             *out = tip.FUN_1422bb870();
         }
-    } else if (FUN_140184310(method, "getTooltipItem")) {
+    } else if ((method == "getTooltipItem")) {
         int id = args->FUN_1422b8b10();
         int rank = args->FUN_1422b8b10();
         do {

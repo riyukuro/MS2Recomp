@@ -37,6 +37,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- header statics (the shared list of the merat market units) ----
 #ifndef MS2_HOOK_DLL
@@ -172,7 +173,7 @@ class Unk_MrdMsgBox : public CPtred
 };
 MS2Ptr<Unk_MrdMsgBox> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<Unk_MrdMsgBox> FUN_140d748b0(int nType, const CStringW& strTitle, const CStringW& strBody, Delegate<bool(int, const CMsgBoxData&)> cb);
-void FUN_141276180(const CString& strName, const CString& strValue);
+int FUN_141276180(const CString& strName, const CString& strValue);
 void FUN_14141f970(CString& str);
 void FUN_14141f770(CString& strOut, unsigned int nSlots, const UIMeratMarketRegisterDialog::ItemArray& arrItems,
                    MS2Ptr<CItem> (*pfnGet)(const UIMeratMarketRegisterDialog::ItemArray&, int), int a, int b);
@@ -182,7 +183,7 @@ void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-class Unk_MrdUiMgr { public: void FUN_141adc5d0(int nUiId); };
+class Unk_MrdUiMgr { public: };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138bf00(void* pMgr, int a, int b, int c);
 
@@ -237,7 +238,6 @@ MS2_CHECK_SIZE(Unk_MrdPaybackList, 0x38);
 class Unk_MrdPayback { public: void FUN_1408981a0(Unk_MrdPaybackList* pList); };
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 CStringW FUN_140ebd9d0(int a, int b);
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 
 // The slot bag of the movie.
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
@@ -331,7 +331,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
             return;
         CStringW strCharge = FUN_140ebd9d0(0, 0);
         ASTooltip tip(1, 2);
-        int nOk = tip.FUN_1409e26b0(FUN_1405c2690(CStringW(L"s_meratmarket_tooltip_charge"), strCharge));
+        int nOk = tip.FUN_1409e26b0(FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_tooltip_charge"), strCharge));
         if (nOk != 0)
         {
             tip.FUN_1409c6dc0(5);
@@ -397,7 +397,7 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     else
     {
         if (FUN_14131a100(m_keyResale) == 0)
-            reinterpret_cast<Unk_MrdUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ec5);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec5);
     }
 }
 

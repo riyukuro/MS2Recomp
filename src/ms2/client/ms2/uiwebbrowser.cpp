@@ -262,7 +262,7 @@ int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 void UIWebBrowser::vfunc_84(bool bVisible)
 {
     UIWebBrowserBase::vfunc_84(bVisible);
-    Unk_WbActor* pActor = reinterpret_cast<Unk_WbWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_WbActor* pActor = ((Unk_WbActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pActor != 0)
     {
         if (bVisible)

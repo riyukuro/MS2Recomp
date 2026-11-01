@@ -70,6 +70,7 @@ class Unk_TcContext { public: Unk_TcObject* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -143,7 +144,7 @@ int CClientPlatformTencent::vfunc_35(void*) { return 3; }
 // @0x140c7d040
 int CClientPlatformTencent::vfunc_36()
 {
-    Unk_TcObject* pPlayer = ((class Unk_TcContext*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_TcObject* pPlayer = ((Unk_TcObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
         return pPlayer->FUN_1416749a0()->FUN_140971260(0x2fac971);
     } else {

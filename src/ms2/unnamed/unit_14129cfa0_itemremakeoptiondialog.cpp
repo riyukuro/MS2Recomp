@@ -149,11 +149,10 @@ void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids)
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140298ea0(CStringW key);
 CStringW FUN_14062b4f0(CStringW key, const int* v);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 bool FUN_140841300(const CStringW& s, const char* c);
 unsigned __int64 FUN_140718350(const CString& s);
 void FUN_1412751f0(const CStringW& text, int a, int b);
-void FUN_141276180(const CString& a, const CString& b);
+int FUN_141276180(const CString& a, const CString& b);
 void FUN_14151f460(int v);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
@@ -205,16 +204,15 @@ public:
 };
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
-void FUN_140d73aa0(CStringW text, int a, void* b, CStringW c);
+void FUN_140d73aa0(CStringW text, int a, void* pListener, CStringW c);
 CStringW FUN_140b99120(CStringW key, const unsigned& a, const int& b);
-CStringW FUN_14042cb90(CStringW key, const float& v);
 CStringW FUN_1419021b0(int a, int b);
 CStringW FUN_1409404f0(__int64 v);
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 float FUN_1411e1110(Unk_PCItems* items, int a);   // returns in xmm0
 extern __int64 DAT_143ab2898;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, int a, CStringW b);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* pListener, CStringW b);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 #define NOTICE(expr) { CStringW noticeText_ = (expr); MS2Ptr<CMsgBoxData> noticeBox_ = FUN_140d74390(CStringW(noticeText_), 0, FUN_140b240b0()); }
 
@@ -222,6 +220,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 int FUN_140526470(CItem* item, unsigned mode);
 
 #include "ms2/placeholder/gfxvalue.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 extern template class MS2Ptr<CMsgBoxData>;
@@ -404,7 +403,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
             uids.Add(uid);
         }
     }
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
         FUN_1411e1ce0(FUN_1416561a0(pc), &equips, 0);
@@ -531,7 +530,7 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
     }
     unsigned lockLevel = FUN_140616f10(MS2Ptr<CItem>(item));
     CStringW lockText = FUN_140619760(lockId, lockLevel);
-    CStringW ask = FUN_1405c2690(L"s_itemremake_ask_lock_item_option", lockText);
+    CStringW ask = FUN_14028dfa0<CStringW>(L"s_itemremake_ask_lock_item_option", lockText);
     MS2Ptr<CMsgBoxData> box = FUN_140d74230(
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a2a50), CStringW(ask));
     if (box.get() != 0) {
@@ -607,7 +606,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
                 bEnable = true;
             } else {
                 CStringW lockText = FUN_140619760(lockId, lockLevel);
-                NOTICE(FUN_1405c2690(L"s_itemremake_notice_disable_lock_item_option", lockText));
+                NOTICE(FUN_14028dfa0<CStringW>(L"s_itemremake_notice_disable_lock_item_option", lockText));
             }
         }
     }
@@ -802,7 +801,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
         return false;
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
         rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->FUN_140527840())), &discount, rate);
@@ -851,7 +850,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     MS2Ptr<CItemData> equipData(reinterpret_cast<CItemData*>(item->FUN_140527840()));
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
         rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
     __int64 fee = 0;
@@ -880,15 +879,15 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     CStringW saleDesc;
     if (bSale == 1) {
         float rateText = (float)discount * 0.01f;
-        saleDesc = FUN_14042cb90(CStringW(L"s_itemremake_sale_desc"), rateText);
+        saleDesc = FUN_14028dfa0<float>(CStringW(L"s_itemremake_sale_desc"), rateText);
     } else if (bSale == 2) {
         float rateText = (float)discount * 0.01f;
-        saleDesc = FUN_14042cb90(CStringW(L"s_itemremake_sa_sale_desc"), rateText);
+        saleDesc = FUN_14028dfa0<float>(CStringW(L"s_itemremake_sa_sale_desc"), rateText);
     }
     obj.FUN_1407cbb20("saleDesc", CStringW(saleDesc));
     obj.FUN_1409eb1d0("ingredient", list);
     if (0 < fee)
-        obj.FUN_1407cbb20("remakeFee", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+        obj.FUN_1407cbb20("remakeFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
 }
 
 // @0x1412a1600
@@ -904,7 +903,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
         if (FUN_1419beef0(item->FUN_140526a50()) != 0) {
             g_143ab2a90.FUN_140a5d530(item.get());
         } else {
-            MyPC* pc = reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
                 MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->FUN_140526a50());
                 if (equip.get() != 0) {
@@ -1044,7 +1043,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
         int have = g_143ab2a90.FUN_140a5f7b0(lockId, lockLevel);
         if (have <= 0) {
             CStringW lockText = FUN_140619760(lockId, lockLevel);
-            NOTICE(FUN_1405c2690(CStringW(L"s_itemremake_notice_disable_lock_item_option_when_click_remake"), lockText));
+            NOTICE(FUN_14028dfa0<CStringW>(CStringW(L"s_itemremake_notice_disable_lock_item_option_when_click_remake"), lockText));
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
@@ -1084,7 +1083,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2ac0()
 void UIItemRemakeOptionDialog::FUN_1412a2b40(unsigned nItemId)
 {
     CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-    CStringW text = FUN_1405c2690(CStringW(L"s_itemremake_error_prev_option_item_not_exist"), name);
+    CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemremake_error_prev_option_item_not_exist"), name);
     FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
     FUN_1412751b0(text, 0x14);
 }

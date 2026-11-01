@@ -17,9 +17,9 @@
 
 // ---- unit-local placeholders ----
 
-void* FUN_140166440();                                              // the logger
+class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_1403a1310(void* pLogger, int nLevel, int nId, const wchar_t* pszFormat, const char* const& a, const char* const& b);
-void FUN_1401859c0(void* pLogger, int nLevel, int nId, const wchar_t* pszText);
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 CStringW FUN_14016a730(const char* psz, int n);                     // narrow -> wide
 int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);
 void FUN_141b6fc50(const CString& strText, const CString& strCaption, int n);   // message box
@@ -82,7 +82,7 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
     if (bLogOnly)
     {
         const char* pszType = strType.c_str();
-        FUN_1403a1310(FUN_140166440(), 2, 0x13, L"{0} {1}", pszType, message);
+        FUN_1403a1310(((void*)GetLogString()), 2, 0x13, L"{0} {1}", pszType, message);
     }
     else
     {
@@ -128,6 +128,6 @@ MS2_REPLACE_METHOD(0x141688f50, CPhysXError, reportAssertViolation, 222, 0xE2694
 // @0x141689040
 void CPhysXError::print(const char* message)
 {
-    FUN_1401859c0(FUN_140166440(), 1, 0x13, FUN_14016a730(message, 0));
+    Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 1, 0x13, FUN_14016a730(message, 0));
 }
 MS2_REPLACE_METHOD(0x141689040, CPhysXError, print, 121, 0x39255ECB);

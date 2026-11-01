@@ -73,6 +73,9 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 static UICommon::CMyPCKeyInputController s_keyController;
 
@@ -86,7 +89,6 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -98,7 +100,6 @@ int FUN_14074b950(int);
 int FUN_1418fd280();
 CStringW FUN_1416e4df0(int);
 CStringW FUN_1416e7fb0(int);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -194,9 +195,9 @@ void CStoryQuest::DecodeStart(CInPacket& packet)
     }
     if (FUN_14074b840(FUN_140bfc580()) != 0)
     {
-        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
         {
-            CStringW strMsg = FUN_1405c2690(CStringW(L"s_quest_redirect_accept"), FUN_1416e4df0(FUN_140bfc580()));
+            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_accept"), FUN_1416e4df0(FUN_140bfc580()));
             FUN_1412751f0(strMsg, 3, 0);
         }
     }
@@ -219,7 +220,7 @@ void CStoryQuest::Complete(CInPacket& packet)
         Unk_StRewardOtherDialog* pDlg = ((class Unk_StRewardOtherDialog*)FUN_140e01890(0x4e4c));
         if (pDlg)
         {
-            CStringW strText = FUN_1405c2690(CStringW(L"s_quest_complete_ui_effect"), FUN_1416e7fb0(m_data->m_28));
+            CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_complete_ui_effect"), FUN_1416e7fb0(m_data->m_28));
             pDlg->FUN_1419f6a70(m_data->m_2d0.m_id, strText, 3000);
         }
     }
@@ -238,9 +239,9 @@ void CStoryQuest::Complete(CInPacket& packet)
     }
     if (FUN_14074b950(FUN_140bfc580()) != 0)
     {
-        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
         {
-            CStringW strMsg = FUN_1405c2690(CStringW(L"s_quest_redirect_complete"), FUN_1416e4df0(FUN_140bfc580()));
+            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_complete"), FUN_1416e4df0(FUN_140bfc580()));
             FUN_1412751f0(strMsg, 3, 0);
         }
     }
@@ -256,7 +257,7 @@ void CStoryQuest::FUN_140d73960()
     CQuest::FUN_140d73960();
     if (m_7c != 0)
     {
-        if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001d)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d)
         {
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
@@ -486,7 +487,6 @@ int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, std::vector<Unk_140165cf0*>&);   // commonutil.cpp
-bool FUN_140184310(const CString& str, const char* psz);            // str equals psz
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
 CStringW GetStringCommon(int nId);                                    // the text of a string id
@@ -719,7 +719,7 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
     }
     CStringW strText;
     {
-        Unk_CriticalSectionLock lock(spCache->m_lock, 1);
+        Unk_1401b4ec0 lock(spCache->m_lock, 1);
         if (spCache->FUN_141819280() != 0)
         {
             if (FUN_141813c80(CachePtr(spCache), CString(spCache->m_strParser), CString(spCache->m_strParserValue)) == 0)
@@ -755,7 +755,7 @@ CStringW CStringTable::GetItemDescription(int nItemId, CString strTag)
 {
     CheckInit();
     DescPtr spDesc;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (FUN_1401d1320(&m_itemDescStamp))
         FUN_141814750(CString("korItemDescription.xml"), m_itemDescs, m_itemDescStamp);
     if (m_itemDescs.Lookup(nItemId, spDesc))
@@ -768,7 +768,7 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
 {
     CheckInit();
     DescPtr spDesc;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (FUN_1401d1320(&m_skillDescStamp))
         FUN_141814750(CString("stringSkillDescription.xml"), m_skillDescs, m_skillDescStamp);
     if (m_skillDescs.Lookup(nSkillId, spDesc))
@@ -847,7 +847,7 @@ CStringW CStringTable::GetSetItemName(int nSetId, CString strTag)
     if (FUN_1401d1320(&m_setItemNameStamp))
         FUN_141814750(CString("SetItemName.xml"), m_setItemNames, m_setItemNameStamp);
     DescPtr spDesc;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_setItemNames.Lookup(nSetId, spDesc))
         return spDesc->FUN_141813a30(strTag);
     return CStringW(L"");
@@ -860,7 +860,7 @@ CStringW CStringTable::GetUGCMapSetItemName(int nSetId, CString strTag)
     if (FUN_1401d1320(&m_ugcSetItemNameStamp))
         FUN_141814750(CString("UGCMapSetItemName.xml"), m_ugcSetItemNames, m_ugcSetItemNameStamp);
     DescPtr spDesc;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (m_ugcSetItemNames.Lookup(nSetId, spDesc))
         return spDesc->FUN_141813a30(strTag);
     return CStringW(L"");
@@ -875,7 +875,7 @@ int CStringTable::FUN_141812c40(int nTable, const CStringW& strName)
         CheckInit();
         return -1;
     }
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (spCache->FUN_141819280() != 0)
     {
         if (FUN_141813c80(CachePtr(spCache), CString(spCache->m_strParser), CString(spCache->m_strParserValue)) == 0)
@@ -1044,9 +1044,9 @@ void CStringTable::FUN_1418139f0(Unk_140165cf0* pRoot)
 // @0x141813c80
 int CStringTable::FUN_141813c80(CachePtr spCache, CString strParser, CString strParserValue)
 {
-    if (FUN_140184310(strParser, "raceName"))
+    if ((strParser == "raceName"))
         return FUN_141813f10(CachePtr(spCache));
-    else if (FUN_140184310(strParser, "customValue"))
+    else if ((strParser == "customValue"))
         return FUN_141814310(CachePtr(spCache), CString(strParserValue));
     return FUN_141813e70(CachePtr(spCache));
 }
@@ -1060,7 +1060,7 @@ int CStringTable::FUN_141813e70(CachePtr spCache)
 // @0x141813f10
 int CStringTable::FUN_141813f10(CachePtr spCache)
 {
-    Unk_CriticalSectionLock lock(spCache->m_lock, 1);
+    Unk_1401b4ec0 lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
@@ -1096,7 +1096,7 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
 // @0x141814310
 int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
 {
-    Unk_CriticalSectionLock lock(spCache->m_lock, 1);
+    Unk_1401b4ec0 lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
@@ -1134,7 +1134,7 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
 int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCache)
 {
     CString strPath = FUN_14071ae20(strFile);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -1163,7 +1163,7 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
 int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCache, ATL::CAtlArray<CString>& rTags)
 {
     CString strPath = FUN_14071ae20(strFile);
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -1191,7 +1191,7 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
 // @0x141814cf0
 int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos; spCache->m_files.GetNext(pos))
     {
         MS2Ptr<CCacheData> spFile = spCache->m_files.GetAt(pos);
@@ -1238,7 +1238,7 @@ CStringW CStringTable::FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned sho
 {
     LevelDescPtr spLevels;
     DescPtr spDesc;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (rMap.Lookup(*pnId, spLevels))
     {
         if (!spLevels->m_levels.Lookup(*pnLevel, spDesc))
@@ -1321,7 +1321,7 @@ CStringTable::DescPtr CStringTable::FUN_1418158b0(Unk_140165cf0* pNode)
 // @0x141815a20
 void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
@@ -1338,7 +1338,7 @@ void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
 // @0x141815b30
 void CStringTable::FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))

@@ -156,7 +156,7 @@ private:
 MS2_CHECK_SIZE(Unk_ShaderVec4, 0x10);
 
 // Validated global shader constant setters (reject non-finite values, then NiShaderFactory::UpdateGlobalShaderConstant).
-bool FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_14135dba0(const NiFixedString& kName, const Unk_ShaderVec4* pv, int n);
 
 extern NiFixedString DAT_143ae5400;     // time
@@ -194,15 +194,15 @@ PostProcessSetting::~PostProcessSetting()
 // @0x1416b53c0
 void PostProcessSetting::ApplyShaderConstants(float fTime)
 {
-    FUN_1409a5770(DAT_143ae5400, &fTime, 1);
-    FUN_1409a5770(DAT_143ae5408, &m_f24, 1);
-    FUN_1409a5770(DAT_143ae5410, &m_f28, 1);
-    FUN_1409a5770(DAT_143ae5418, &m_f2c, 1);
-    FUN_1409a5770(DAT_143ae5358, &m_f38, 1);
-    FUN_1409a5770(DAT_143ae5360, &m_f3c, 1);
-    FUN_1409a5770(DAT_143ae5368, &m_f40, 1);
-    FUN_1409a5770(DAT_143ae5370, &m_f44, 1);
-    FUN_1409a5770(DAT_143ae5420, &m_f48, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5400), &fTime, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5408), &m_f24, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5410), &m_f28, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5418), &m_f2c, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5358), &m_f38, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5360), &m_f3c, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5368), &m_f40, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5370), &m_f44, 1);
+    FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5420), &m_f48, 1);
     Unk_ShaderVec4 kColor;
     kColor.Assign(m_f4c, m_f58, m_f54, m_f50);
     FUN_14135dba0(DAT_143ae5428, &kColor, 1);

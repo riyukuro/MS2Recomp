@@ -24,14 +24,13 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
-int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 ExchangeItemType FUN_14021a270(const CStringA& str);        // the "type" name -> enum
 
 // The discount service chain: the discount rate (per 10000) of an item grade.
 class Unk_140302b00 { public: };
 class Unk_1403ed190 { public: int FUN_140428cb0(int nGrade); };
-Unk_1403ed190* FUN_1403ed190(Unk_140302b00* p);
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -47,7 +46,7 @@ __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
 // @0x140595050
 __int64 CExchangeItemInfo::GetMeso() const
 {
-    int nRate = FUN_1403ed190(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance()))->FUN_140428cb0(m_nId);
+    int nRate = ((class Unk_1403ed190*)((class CGameEventValueManager*)(class Unk_140302b00*)(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetExchangeScrollSale())->FUN_140428cb0(m_nId);
     if (nRate != 0)
         return FUN_1405957d0(m_nMeso, nRate);
     return m_nMeso;
@@ -90,7 +89,7 @@ void CItemExchangeScrollTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("exchange"); pNode != 0; pNode = pNode->FUN_140168650("exchange"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         FUN_1408731e0(pNode, "id", nId);
@@ -103,21 +102,21 @@ void CItemExchangeScrollTable::Load()
         if (pReceipe != 0)
         {
             FUN_140873220(pReceipe, "id", spInfo->m_receipe.m_nId);
-            FUN_14015f500(pReceipe, "rank", &spInfo->m_receipe.m_nRank);
+            Unk_ReadRank((class Unk_XmlNode*)(pReceipe), "rank", &spInfo->m_receipe.m_nRank);
             FUN_1408731e0(pReceipe, "count", spInfo->m_receipe.m_nCount);
         }
         Unk_140165cf0* pExchange = pNode->FUN_140165cf0("exchange");
         if (pExchange != 0)
         {
             FUN_140873220(pExchange, "id", spInfo->m_exchange.m_nId);
-            FUN_14015f500(pExchange, "rank", &spInfo->m_exchange.m_nRank);
+            Unk_ReadRank((class Unk_XmlNode*)(pExchange), "rank", &spInfo->m_exchange.m_nRank);
             FUN_1408731e0(pExchange, "count", spInfo->m_exchange.m_nCount);
         }
         Unk_140165cf0* pEquip = pNode->FUN_140165cf0("requireEquip");
         if (pEquip != 0)
         {
             FUN_140873220(pEquip, "id", spInfo->m_requireEquip.m_nId);
-            FUN_14015f500(pEquip, "rank", &spInfo->m_requireEquip.m_nRank);
+            Unk_ReadRank((class Unk_XmlNode*)(pEquip), "rank", &spInfo->m_requireEquip.m_nRank);
             FUN_1408731e0(pEquip, "count", spInfo->m_requireEquip.m_nCount);
         }
         Unk_140165cf0* pRequire = pNode->FUN_140165cf0("require");

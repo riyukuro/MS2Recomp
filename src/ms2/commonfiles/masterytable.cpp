@@ -43,6 +43,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
@@ -50,13 +51,11 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int& nOut);     // enum value (mastery type)
-bool FUN_14028f710(Unk_140165cf0* pElem);                                    // element is enabled
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
-CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);      // string table format
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CLua* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
 
 // Item counts the player holds back by the production limit (id -> count; the exe global named by the zone unit).
@@ -104,7 +103,7 @@ int CMasteryReceipe::Load(Unk_140165cf0* pNode)
     {
         if (m_strHabitat.GetLength() != 0)
             m_strHabitat += L", ";
-        m_strHabitat += FUN_1403b4750()->FUN_1416fbfe0(habitats[i], CStringW(L"#909090"));
+        m_strHabitat += TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fbfe0(habitats[i], CStringW(L"#909090"));
     }
     for (size_t i = 1; i <= 5; i++)
     {
@@ -180,7 +179,7 @@ int CMasteryTable::LoadMastery()
             continue;
         for (Unk_140165cf0* pNode = pType->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
         {
-            if (!FUN_14028f710(pNode))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             MasteryPtr spMastery(new Mastery);
             FUN_140873220(pNode, "value", spMastery->m_nValue);
@@ -226,7 +225,7 @@ int CMasteryTable::LoadReceipes()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("receipe"); pNode != 0; pNode = pNode->FUN_140168650("receipe"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         FUN_140873220(pNode, "id", reinterpret_cast<unsigned&>(nId));
@@ -525,7 +524,7 @@ int CMasteryTable::HasIngredient(int nReceipeId, int nItemId)
     for (size_t i = 0; i < spReceipe->m_ingredients.FUN_14026bee0(); i++)
     {
         Unk_IngRef ref = spReceipe->m_ingredients.FUN_14026bdc0(i);
-        if (ref->m_b != 0 && spItem->FUN_14053c6b0(ref->m_b))
+        if (ref->m_b != 0 && spItem->HasStringTag(ref->m_b))
             return 1;
         if (ref->FUN_14026b500() == nItemId)
             return 1;
@@ -607,7 +606,7 @@ int CMasteryTable::LimitState(int nReceipeId)
         return 3;
     int nHeld = 0;
     g_143ab3150.Lookup(nReceipeId, nHeld);
-    double dLimit = FUN_1401c0db0()->CalcGatheringObjectgSuccessProp(nHeld, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
+    double dLimit = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgSuccessProp(nHeld, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
     if (FUN_14028d470((float)dLimit, 0.0f))
         return 3;
     if ((unsigned)nHeld < sp->m_nHighPropLimit)
@@ -653,23 +652,23 @@ CStringW CMasteryTable::SuccessDescription(int nType, int nReceipeId, int nColor
     CStringW strText;
     int nState = LimitState(nReceipeId);
     if (nState == 0)
-        strText = FUN_1405c2690(CStringW(L"s_mastery_success_prop_high"), TypeName(nType));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_high"), TypeName(nType));
     else if (nState == 1)
-        strText = FUN_1405c2690(CStringW(L"s_mastery_success_prop_normal"), TypeName(nType));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_normal"), TypeName(nType));
     else if (nState == 2)
-        strText = FUN_1405c2690(CStringW(L"s_mastery_success_prop_low"), TypeName(nType));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_low"), TypeName(nType));
     else if (nState == 3)
-        strText = FUN_1405c2690(CStringW(L"s_mastery_success_prop_zero"), TypeName(nType));
+        strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_zero"), TypeName(nType));
     if (nColored == 0)
         return strText;
     nState = LimitState(nReceipeId);
     if (nState == 0)
-        return FUN_1405c2690(CStringW(L"s_mastery_success_prop_green"), strText);
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_green"), strText);
     if (nState == 1)
-        return FUN_1405c2690(CStringW(L"s_mastery_success_prop_yellow"), strText);
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_yellow"), strText);
     if (nState < 2 || nState > 3)
         return CStringW(L"");
-    return FUN_1405c2690(CStringW(L"s_mastery_success_prop_red"), strText);
+    return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_red"), strText);
 }
 
 // @0x14066c690

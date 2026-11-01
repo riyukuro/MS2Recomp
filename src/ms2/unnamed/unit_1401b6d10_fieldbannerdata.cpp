@@ -54,10 +54,10 @@ CLogString* GetLogString();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-int FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
-int FUN_1408730a0(Unk_140165cf0*, const char*, bool&);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 __int64 GetServerTime();                                                  // current time
@@ -128,15 +128,15 @@ __int64 CFieldBannerData::GetHourly(int nHour) const
 // @0x1401b6f20
 bool CFieldBannerData::Load(Unk_140165cf0* pNode)
 {
-    FUN_140873220(pNode, "id", m_nId);
-    FUN_140873220(pNode, "field", m_nField);
-    FUN_1408731e0(pNode, "ad", m_nAd);
-    FUN_1408731e0(pNode, "size", m_nSize);
+    XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pNode), "field", m_nField);
+    XmlGetAttr((class TiXmlElement*)(pNode), "ad", m_nAd);
+    XmlGetAttr((class TiXmlElement*)(pNode), "size", m_nSize);
     FUN_1408733e0(pNode, "default", m_strDefault);
     FUN_1408733e0(pNode, "webOpenURL", m_strWebOpenURL);
-    FUN_1408730a0(pNode, "admin", m_bAdmin);
-    FUN_1408730a0(pNode, "isManage", m_bManage);
-    FUN_1408730a0(pNode, "isVisible", m_bVisible);
+    XmlGetAttr((class TiXmlElement*)(pNode), "admin", m_bAdmin);
+    XmlGetAttr((class TiXmlElement*)(pNode), "isManage", m_bManage);
+    XmlGetAttr((class TiXmlElement*)(pNode), "isVisible", m_bVisible);
     CString strPrice;
     FUN_1408733e0(pNode, "price", strPrice);
     if (ParsePrice(strPrice) == 0)
@@ -180,7 +180,7 @@ int CFieldBannerData::LoadTable()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("banner"); pNode != 0; pNode = pNode->FUN_140168650("banner"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_BannerPtr banner(new CFieldBannerData);
         if (!banner->Load(pNode))

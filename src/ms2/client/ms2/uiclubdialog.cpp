@@ -252,7 +252,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         return 1;
     } else if (_stricmp("onWithdrawal", szMethod) == 0) {
         {
-        MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
+        MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
         if (club.get() != 0) {
             if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_1401e8510(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""))) {
                 box->FUN_141a01800(2);
@@ -262,7 +262,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         }
         }
     } else if (_stricmp("onSettingBuff", szMethod) == 0) {
-        MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
+        MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
         if (club == 0)
             return 1;
         MS2Ptr<Unk_ClubBuffData> buff = FUN_140b1a4e0()->FUN_140211a40();
@@ -296,7 +296,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             float y = data.FUN_1422b8c10();
             CStringW strName = data.FUN_1422b8f40();
             {
-                MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
+                MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
                 if (club.get() != 0) {
                     MS2Ptr<CClubMember> member = club->FUN_140210560(strName);
                     if (member.get() != 0) {
@@ -421,7 +421,7 @@ void UIClubDialog::FUN_140e0bfd0()
 // @0x140e0c570
 void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140e0d900()->FUN_140b14d80(nClubId);
+    MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
     if (spClub.get() != 0) {
         MS2Ptr<Unk_ClubClip> spClip = FUN_140ba7930("m_clubData");
         if (spClip == 0)

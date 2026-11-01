@@ -288,6 +288,15 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <utility>
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_140165cf0 {
 public:
     Unk_140165cf0* FUN_140165cf0(const char*);
@@ -501,7 +510,7 @@ void LoadMapSpawnTag()
                         XmlGetAttr((class TiXmlElement*)(node), "difficultyMin", tag->difficultyMin);
                         XmlGetAttr((class TiXmlElement*)(node), "population", tag->population);
                         XmlGetAttr((class TiXmlElement*)(node), "coolTime", tag->coolTime);
-                        FUN_140873420(node,"tag",tag->tag);
+                        XmlGetAttr((class TiXmlElement*)(node), "tag", tag->tag);
                         XmlGetAttr((class TiXmlElement*)(node), "petPopulation", tag->petPopulation);
                         XmlGetAttr((class TiXmlElement*)(node), "petSpawnProbability", tag->petSpawnProbability);
                         Unk_FieldSpawnMapPtr entries;
@@ -571,7 +580,7 @@ void CFieldData::LoadFieldData()
         Unk_FieldLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
         return;
     }
-    for (Unk_140165cf0* node=root->FUN_140165cf0("fieldData");node;node=node->FUN_140168650("fieldData")) {
+    for (Unk_140165cf0* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("fieldData"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("fieldData"))) {
         unsigned id;
         XmlGetAttr((class TiXmlElement*)(node), "id", id);
         Unk_140165cf0* selected=((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(node)));
@@ -645,15 +654,15 @@ bool CFieldData::FUN_1403744a0(int id)
 // @0x140374530
 bool CFieldData::vfunc_1(Unk_140165cf0* node)
 {
-    m_strLocale=FUN_14015f710(node,"locale",CString(""));
+    m_strLocale=Unk_ReadString((class Unk_XmlNode*)(node), "locale", CString(""));
     m_strFeature=FUN_1401bf530(node,"feature",CStringW(L""));
-    Unk_140165cf0* xblock=node->FUN_140165cf0("xblock");
-    if (xblock) FUN_1408733e0(xblock,"name",m_strXBlock);
+    Unk_140165cf0* xblock=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("xblock"));
+    if (xblock) XmlGetAttr((class TiXmlElement*)(xblock), "name", m_strXBlock);
     if (m_strXBlock.IsEmpty()) {
         Unk_AdditionalLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<xblock> FieldData]");
         return false;
     }
-    Unk_140165cf0* property=node->FUN_140165cf0("property");
+    Unk_140165cf0* property=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("property"));
     if (property) {
         XmlGetAttr((class TiXmlElement*)(property), "mapCategoryCode", m_nMapCategoryCode);
         XmlGetAttr((class TiXmlElement*)(property), "revivalreturnid", m_nRevivalReturnId);
@@ -714,18 +723,18 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
             m_fCubeSkillIntervalTime=0.1f<m_fCubeSkillIntervalTime?m_fCubeSkillIntervalTime:0.1f;
         XmlQuery((class TiXmlElement*)(property), "bigDataCharacterSkillUseLog", m_bBigDataCharacterSkillUseLog);
     }
-    Unk_140165cf0* drop=node->FUN_140165cf0("drop");
+    Unk_140165cf0* drop=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("drop"));
     if (drop) {
         XmlGetAttr((class TiXmlElement*)(drop), "maplevel", m_nMapLevel);
         XmlGetAttr((class TiXmlElement*)(drop), "dropRank", m_nDropRank);
         FUN_140178770(drop,"globalDropBoxID",m_globalDropBoxIds);
     }
     if (m_nRevivalReturnId==0) m_nRevivalReturnId=m_nFieldID;
-    Unk_140165cf0* split=node->FUN_140165cf0("split");
+    Unk_140165cf0* split=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("split"));
     if (split) XmlGetAttr((class TiXmlElement*)(split), "globalSplit", m_nGlobalSplit);
-    Unk_140165cf0* camera=node->FUN_140165cf0("camera");
+    Unk_140165cf0* camera=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("camera"));
     if (camera) XmlGetAttr((class TiXmlElement*)(camera), "hangle", m_fCameraHAngle);
-    Unk_140165cf0* cash=node->FUN_140165cf0("cashCall");
+    Unk_140165cf0* cash=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("cashCall"));
     if (cash) {
         XmlGetAttr((class TiXmlElement*)(cash), "cashTaxiNotDeparture", m_nCashTaxiNotDeparture);
         XmlGetAttr((class TiXmlElement*)(cash), "cashTaxiNotDestination", m_nCashTaxiNotDestination);
@@ -734,7 +743,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         XmlGetAttr((class TiXmlElement*)(cash), "RecallOtherUserProhibit", m_nRecallOtherUserProhibit);
     }
     m_nIndoorMask=1;
-    Unk_140165cf0* indoor=node->FUN_140165cf0("indoor");
+    Unk_140165cf0* indoor=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("indoor"));
     if (indoor) {
         int type=0;
         XmlGetAttr((class TiXmlElement*)(indoor), "type", type);
@@ -888,7 +897,7 @@ template<class T> void Unk_FieldSplit(const CString& text,std::vector<T>& out,co
 int FUN_1403759c0(Unk_140165cf0* node,const char* attribute,std::vector<short>& out)
 {
     CString value;
-    int result=FUN_1408733e0(node,attribute,value);
+    int result=XmlGetAttr((class TiXmlElement*)(node), attribute, value);
     if (result==0) Unk_FieldSplit(value,out,",");
     return result;
 }

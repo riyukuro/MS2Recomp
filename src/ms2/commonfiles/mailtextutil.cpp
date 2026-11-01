@@ -24,8 +24,12 @@ bool FUN_14025cd60(const CStringW& a, const CStringW& b);                       
 CStringW FUN_1407196b0(int nItem);                                              // an item id as text
 CStringW FUN_140719a00(__int64 nMoney);                                         // a money amount as text
 int FUN_140718200(const CStringW& strNumber);                                   // text -> int
-void* FUN_140165cf0(void* pNode, const char* szName);                           // first child element
-void* FUN_140168650(void* pNode, const char* szName);                           // next sibling element
+class Unk_XmlNode   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 bool FUN_14083d7e0(const CStringW& strText, const CStringW& strPrefix);         // starts with
 CFileSystem* GetFileSystem();                                                   // the file system singleton
       // text by kind and id (1 = item name)
@@ -132,7 +136,7 @@ void MailTextParagraph::AddItem(int item, const CStringW& auxiliary) { m_childre
 bool MailTextParagraph::Load(void* root) {
     bool loaded = m_value.Load(root);
     if (!loaded) return false;
-    for (void* child = FUN_140165cf0(root, "p"); child; child = FUN_140168650(child, "p")) {
+    for (void* child = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("p")); child; child = ((void*)((class Unk_XmlNode*)(void*)(child))->NextSibling("p"))) {
         MailTextValue value; value.Load(child); m_children.Add(value);
     }
     return true;
@@ -211,8 +215,8 @@ bool MailText::LoadTitle(const CStringW& text) {
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
     if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
-    void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
-    void* title = FUN_140165cf0(root, "v"); if (!title) return false;
+    void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;
+    void* title = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("v")); if (!title) return false;
     bool loaded = m_title.Load(title);
     if (!loaded) MS2_ASSERT_AT(0x1e6, FALSE);
     return true;
@@ -223,10 +227,10 @@ bool MailText::LoadBody(const CStringW& text) {
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
     if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
-    void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
-    void* firstChild = FUN_140165cf0(root, "v");
+    void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;
+    void* firstChild = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("v"));
     if (!firstChild) return false;
-    for (void* child = firstChild; child; child = FUN_140168650(child, "v")) {
+    for (void* child = firstChild; child; child = ((void*)((class Unk_XmlNode*)(void*)(child))->NextSibling("v"))) {
         MailTextParagraph paragraph;
         bool loaded = paragraph.Load(child);
         m_paragraphs.Add(paragraph);

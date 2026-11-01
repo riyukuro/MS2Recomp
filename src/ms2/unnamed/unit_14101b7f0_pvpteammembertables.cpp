@@ -53,8 +53,6 @@ class Unk_PvpUiService                                              // the UI se
 public:
     int FUN_141adc940(int nClass);                                  // dialog closed
     void FUN_141adc530(int nClass);                                 // open a dialog
-    void FUN_141adc5d0(int nClass);                                 // hide a dialog
-    MS2Ptr<UIObject> FUN_141adcea0(int nClass);                     // object by class id
 };
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
@@ -104,13 +102,13 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     {
         int nTeam = packet.ReadInt32();
         int nCount = packet.ReadInt32();
-        reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ed3);
-        reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e95);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ed3);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e95);
         UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
         if (pResult != 0)
             pResult->FUN_141345740(nTeam, nCount);
         if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4ed2) != 0)
-            reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ed2);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ed2)));
     }
     else if (nMessage == 0x6d)
     {
@@ -160,7 +158,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         int nValue = packet.ReadInt32();
         nValue /= 10;
         if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4ed4) != 0)
-            reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ed4);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ed4)));
         UIPvPTeamFlagGagueDialog* pGauge = FUN_14101c7b0(0x4ed4);
         if (pGauge != 0)
             pGauge->FUN_141344d50(nValue);
@@ -305,7 +303,7 @@ UIPvPTeamFlagGagueDialog* FUN_14101c7b0(int nClass)
 {
     if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPTeamFlagGagueDialog*>((UIObject*)spObject);
     }
@@ -317,7 +315,7 @@ UIPvPTeamResultDialog* FUN_14101c850(int nClass)
 {
     if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPTeamResultDialog*>((UIObject*)spObject);
     }
@@ -329,7 +327,7 @@ UIPvPTeamScoreDialog* FUN_14101c8f0(int nClass)
 {
     if (reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObject = reinterpret_cast<Unk_PvpUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObject.get() != 0)
             return dynamic_cast<UIPvPTeamScoreDialog*>((UIObject*)spObject);
     }

@@ -41,7 +41,7 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- unit-local views of exe objects ----
 
 void FUN_140159b70(long hr);                                    // AtlThrowImpl
-void FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
+int FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond

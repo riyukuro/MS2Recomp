@@ -93,7 +93,7 @@ struct Unk_FcUseInfo
     int m_nCount;                                        // +0x08
     int m_nPad0c;
 };
-void FUN_1401fc610(Unk_FcUseInfo* pInfo, COutPacket* pPacket);   // serialize
+void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
 // The UI manager: a UI object by dialog id, held in a counted reference (uses FUN_141adcea0 of the UI service).
 class Unk_NuUiRef
@@ -401,7 +401,7 @@ void StateNurturing::SendFunctionCubeMode4()
         Unk_FcUseInfo kInfo;
         kInfo.m_strId = m_aCubes[i]->FUN_141226bd0();
         kInfo.m_nCount = 1;
-        FUN_1401fc610(&kInfo, &kPacket);
+        FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
     FUN_140710590(kPacket);
 }
@@ -425,7 +425,7 @@ void StateNurturing::SendFunctionCubeMode5()
         Unk_FcUseInfo kInfo;
         kInfo.m_strId = aUsable[i]->FUN_141226bd0();
         kInfo.m_nCount = 1;
-        FUN_1401fc610(&kInfo, &kPacket);
+        FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
     FUN_140710590(kPacket);
 }

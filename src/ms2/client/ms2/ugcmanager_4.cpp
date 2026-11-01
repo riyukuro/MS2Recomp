@@ -909,7 +909,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     efd::Point3 kB;
     if (reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(kB, kA) == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     NiAVObject* pUI = ((class PCBase*)(class PCBase*)(pPlayer))->FUN_141675150("Eff_UI");
@@ -957,7 +957,7 @@ void CUgcManager::FUN_141880c90(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     MS2Ptr<CUgcViewerProfile> spViewer(new CUgcViewerProfile());
@@ -1184,7 +1184,7 @@ int CUgcManager::FUN_141882020()
         return 0xd;
     if (spCtrl->m_spFile == 0)
         return 0xb;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0xc;
     int nResult = FUN_141882370();
@@ -1423,7 +1423,7 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
             int nState = TSingleton<CStateService>::GetInstance()->FUN_1417e2610();
             if (nState == 0x620000c)
             {
-                PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+                PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
                     SendUGCMode11(strPath);
@@ -1569,7 +1569,7 @@ void CUgcManager::FUN_141883860(CString strPath)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     int nKind = spCtrl->m_nKind;
@@ -2559,7 +2559,7 @@ MS2_REPLACE_METHOD(0x141888dc0, CUgcManager, IsReserveChanged, 15, 0x43A40A0D);
 // The AS rows of the 24 hours of a banner's day: reserved (by state), past, or free (selected when picked).
 void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<int, int>& selected, ASArray* pArray)
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     static int s_nCheckTime = FUN_1401d3200()->UgcBannerCheckTime.Read();
@@ -3675,7 +3675,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
     Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != pWearer)
         return;
     __int64 itemUid = proxy.m_itemUid;
@@ -3709,7 +3709,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != pWearer)
         return;
     CItem* pItem = g_143ab2a90.FUN_140a5d680(itemUid).get();

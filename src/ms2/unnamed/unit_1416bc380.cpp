@@ -185,9 +185,9 @@ static CString s_strSkill("skill");
 static CString s_strStun("stun");
 
 // Stand-in for the unrecovered class constructed by 0x1401cd100 (one pointer, null).
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 // @0x1400fe3d0
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 // @0x1400fe3f0
 static ATL::CAtlMap<unsigned int, CString> s_conditions(17, .75f, .25f, 2.25f, 10);
 

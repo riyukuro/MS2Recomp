@@ -50,6 +50,7 @@
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$SmartPointer@VActorEntry@AnimationService@egmAnimation@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VActorEntry@AnimationService@egmAnimation@@@efd@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VActorEntry@AnimationService@egmAnimation@@@efd@@@std@@@std@@@std@@@2@AEBVEntityID@egf@@@Z 0x14099b190 ; unique
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@IU?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@I@std@@@2@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@@2@AEBVutf8string@efd@@@Z 0x14099b1f0 ; prop
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VActorEntry@AnimationService@egmAnimation@@@efd@@@std@@@std@@SAPEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VActorEntry@AnimationService@egmAnimation@@@efd@@@2@AEAU32@@Z 0x14099b250 ; unique
+// MS2-PIN: ??1CAnimationCallbackItem@@UEAA@XZ 0x140998b00
 // MS2-PINS-END tplpin
 // MS2-PIN: ?get@?$MS2Ptr@VCAnimationCallbackItem@@@@QEBAPEAVCAnimationCallbackItem@@XZ 0x140998ed0 ; hand
 // MS2-PIN: ??0?$MS2Ptr@VCAnimationCallbackItem@@@@QEAA@AEBV0@@Z 0x1409986c0 ; hand

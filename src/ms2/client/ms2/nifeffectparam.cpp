@@ -720,7 +720,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         spBird->SetMinLength(m_spParam->m_fMinLength);
         spBird->FUN_141207fb0(m_spParam->m_fStep);
         spBird->SetVelocity(m_spParam->m_fVelocity);
-        ((class EffectNode*)(void*)(spRoot))->FUN_1411a3db0((class INodeMovement*)(spBird.get()));
+        ((class EffectNode*)(void*)(spRoot))->SetMovement((class INodeMovement*)(spBird.get()));
     }
 
     m_kXform.m_Translate = NiPoint3(m_spParam->m_ptTranslate.x, m_spParam->m_ptTranslate.y, m_spParam->m_ptTranslate.z);

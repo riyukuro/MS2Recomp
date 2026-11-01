@@ -12,7 +12,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-unsigned FUN_140869420();                                               // millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // UIPvPTeamFlagGagueDialog (uipvpteamflaggaguedialog.h): RTTI .?AVUIPvPTeamFlagGagueDialog@@, vftables (primary) and
 // +0x18 (IMessageListener).
@@ -65,7 +65,7 @@ void UIPvPTeamFlagGagueDialog::vfunc_72()
         return;
     if (!m_bShown)
         return;
-    if (m_nShownTick + 2000U < FUN_140869420())
+    if (m_nShownTick + 2000U < GetTickCountMs2())
         FUN_141344f20();
 }
 MS2_REPLACE_METHOD(0x141344CE0, UIPvPTeamFlagGagueDialog, vfunc_72, 101, 0xCE26E10C);
@@ -78,7 +78,7 @@ void UIPvPTeamFlagGagueDialog::FUN_141344d50(int nPercent)
         m_nPercent = nPercent;
         m_nLastPercent = nPercent;
     } else {
-        m_nShownTick = FUN_140869420();
+        m_nShownTick = GetTickCountMs2();
         if (nPercent < 1)
             nPercent = 1;
         if (nPercent > 0x65)

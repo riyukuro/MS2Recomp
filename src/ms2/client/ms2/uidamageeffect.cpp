@@ -22,7 +22,6 @@ class Unk_DmgPlayer : public PCBase
 {
 };
 class Unk_DmgWorld { };
-Unk_DmgPlayer* FUN_141bd0cc0(Unk_DmgWorld* pWorld);                 // the local player
 
 // The settings singleton: two float options at +0xc818 and +0xc870.
 class Unk_DmgFloatVar { public: float FUN_1402bac70(); };
@@ -34,14 +33,13 @@ public:
     char m_pad_c819[0xc870 - 0xc819];
     Unk_DmgFloatVar m_c870;
 };
-Unk_DmgGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_DmgCfgInfo { public: char m_pad_00[0xc]; int m_0c; };
 void* FUN_1409a8b10();
 Unk_DmgCfgInfo* FUN_140e09150(void* pCfg);
 
 int FUN_141277f40();                                                // next UI layer
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                         // has the AS object been released
 
 // The movie's root: "init" takes (float, int).
 class Unk_DmgScript : public AScript
@@ -92,7 +90,7 @@ void UIDamageEffect::vfunc_3()
 // @0x141910660
 void UIDamageEffect::FUN_141910660()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_30.operator->()->Invoke("onHide");
@@ -102,10 +100,10 @@ void UIDamageEffect::FUN_141910660()
 // @0x141910700
 void UIDamageEffect::FUN_141910700()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance()));
+    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }
@@ -113,7 +111,7 @@ void UIDamageEffect::FUN_141910700()
 // @0x1419107d0
 void UIDamageEffect::vfunc_oa0_3(int a1, int a2)
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     float fPercent = a2 == 0 ? 100.0f : ((float)(unsigned int)a1 * 100.0f) / (float)(unsigned int)a2;
     unsigned int nLow = (fPercent <= m_fLowHpPercent);
@@ -141,7 +139,7 @@ void UIDamageEffect::OnLoadComplete()
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     Unk_DmgCfgInfo* pInfo = FUN_140e09150(FUN_1409a8b10());
     static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
-    Unk_DmgPlayer* pPlayer = FUN_141bd0cc0(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance()));
+    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }
@@ -149,8 +147,8 @@ void UIDamageEffect::OnLoadComplete()
 // @0x141910ab0
 void UIDamageEffect::FUN_141910ab0()
 {
-    m_fLowHpPercent = FUN_1401d3200()->m_c818.FUN_1402bac70();
-    m_fOption80 = FUN_1401d3200()->m_c870.FUN_1402bac70();
+    m_fLowHpPercent = ((class Unk_DmgGlobals*)FUN_1401d3200())->m_c818.FUN_1402bac70();
+    m_fOption80 = ((class Unk_DmgGlobals*)FUN_1401d3200())->m_c870.FUN_1402bac70();
 }
 
 // @0x141910b10

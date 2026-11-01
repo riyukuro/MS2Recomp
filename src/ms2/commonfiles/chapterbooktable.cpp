@@ -54,8 +54,8 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_1407181a0(const CStringW& str);
@@ -278,9 +278,9 @@ CChapterBookData::CChapterBookData() : m_nId(0), m_nPrologue(0), m_nEpilogue(0)
 // @0x1401d8bc0
 int CChapterBookData::Read(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "id", m_nId);
-    FUN_140873220(pElem, "prologue", m_nPrologue);
-    FUN_140873220(pElem, "epilogue", m_nEpilogue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "prologue", m_nPrologue);
+    XmlGetAttr((class TiXmlElement*)(pElem), "epilogue", m_nEpilogue);
     for (unsigned __int64 i = 0; i < 2; i++)
     {
         unsigned __int64 nIndex = i + 1;

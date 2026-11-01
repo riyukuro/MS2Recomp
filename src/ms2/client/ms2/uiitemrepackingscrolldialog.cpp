@@ -62,6 +62,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include <sstream>
 #include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe objects ----
 
@@ -127,13 +128,11 @@ public:
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_141b71910(__int64 nValue);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
 CStringW FUN_140719dc0(const wchar_t* pszFormat, const unsigned short& nA);
 CStringW FUN_140c5ac00(const wchar_t* pszFormat, const unsigned short& nA, const unsigned short& nB);
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751b0(const CStringW& text, int nA);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -282,7 +281,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     ASObj obj(2);
     obj.FUN_1407cbb20("itemGUID", FUN_141b71910(0));
     obj.FUN_1407cba60("bindID", CString(m_strSlot));
-    obj.FUN_1407cbb20("scrollDesc", FUN_1409eaa20(CStringW(strDesc), strLevel, strRanks, strLimit));
+    obj.FUN_1407cbb20("scrollDesc", FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(strDesc), strLevel, strRanks, strLimit));
     m_30->Invoke("setData", obj);
 }
 
@@ -378,7 +377,7 @@ void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
         if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
             return;
         m_nOwner = nUid;
-        reinterpret_cast<Unk_RpIconTable*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(vfunc_48());
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(vfunc_48())));
         return;
     }
     if (m_30 == 0)
@@ -417,7 +416,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
         box->FUN_141a01700(0x475, 0, 0);
         FUN_140d73c60(box);
     }
-    FUN_1412751b0(FUN_1405c2690(CStringW(L"s_item_repacking_scroll_success_system"), static_cast<CItem*>(spItem)->FUN_140527b10()), 0x14);
+    FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_item_repacking_scroll_success_system"), static_cast<CItem*>(spItem)->FUN_140527b10()), 0x14);
 }
 
 // @0x140f625e0

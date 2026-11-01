@@ -153,7 +153,6 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/
 CString FUN_140298360(const char* a, const CString& b);                 // a + b
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
-bool FUN_140184310(const CString& str, const char* psz) throw();        // equals (the exe's callers carry no unwind state for it)
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 int FUN_141658e60(GameObject* pActor);                                  // gender of the player (0 male, 1 female)
@@ -627,7 +626,7 @@ int SoundPropertyMgr::FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventV
     {
         int nGender = FUN_141658e60(pActor);
         int nJob = reinterpret_cast<PC*>(pActor)->FUN_141654700();
-        int bCaster = reinterpret_cast<Unk_SpWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() == pActor ? 1 : 0;
+        int bCaster = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pActor ? 1 : 0;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];
         return 1;
     }
@@ -730,17 +729,17 @@ int FUN_141793500(CString strEvent)
 {
     if (strEvent.IsEmpty())
         return 0;
-    if (FUN_140184310(strEvent, "Boss_Kill"))
+    if ((strEvent == "Boss_Kill"))
         return 1;
-    else if (FUN_140184310(strEvent, "Boss_EndKill"))
+    else if ((strEvent == "Boss_EndKill"))
         return 2;
-    else if (FUN_140184310(strEvent, "otherPC_Kill"))
+    else if ((strEvent == "otherPC_Kill"))
         return 3;
-    else if (FUN_140184310(strEvent, "myPC_Resurrection"))
+    else if ((strEvent == "myPC_Resurrection"))
         return 4;
-    else if (FUN_140184310(strEvent, "myPC_Dead"))
+    else if ((strEvent == "myPC_Dead"))
         return 5;
-    else if (FUN_140184310(strEvent, "skill_action"))
+    else if ((strEvent == "skill_action"))
         return 6;
     return 0;
 }

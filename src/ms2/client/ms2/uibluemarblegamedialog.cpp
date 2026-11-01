@@ -53,7 +53,6 @@ CInputKeyHandler* FUN_14025e7c0();
 // The UI service / scene manager singletons (the scene calls of the dialog's open and close).
 class Unk_BmSceneCtl;
 class Unk_BmSceneMgr;
-Unk_BmSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -70,10 +69,11 @@ CStringTable* GetStringTable();
 extern Unk_Inventory g_143ab2a90;                                   // the player inventory
 
 #include "ms2/commonfiles/commonutil.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);              // localized text with one number
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);             // localized text with one number (pointer form)
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // localized text with one text
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
 CStringW Name_140218290(int n);                                     // number text
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
@@ -174,7 +174,7 @@ void UIBlueMarbleGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada610(0x6200022);
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f217f0
@@ -194,7 +194,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
     if (BM_PKT->FUN_14070fe80() == 0xe5) {
         int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
-            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9fd0(0x6200022);
+            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ad9e50(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada6f0(0x6200022);
             FUN_141901470(0, 0x4f15);
@@ -446,7 +446,7 @@ void UIBlueMarbleGameDialog::FUN_140f23590(int nItemId, int nRarity, int nCount)
         return;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData.get()) {
-        CStringW strMessage = FUN_1405c2690(CStringW(L"s_bluemarble_get_item"),
+        CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_bluemarble_get_item"),
                                             GetStringTable()->FUN_141811980(1, nItemId));
         m_30->Invoke("onRewardNotify", CStringW(strMessage),
                      FUN_14016a730(spData->FUN_14053fdd0(), 0), spData->FUN_14053c5a0(), nCount);

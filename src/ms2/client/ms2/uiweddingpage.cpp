@@ -48,6 +48,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -132,14 +133,12 @@ MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // string table format
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);       // string table format
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
 CStringW FUN_1416e5350(int nQuestId, int n);                    // quest title
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 bool FUN_140841300(const CStringW& str, const char* sz);        // string equals
 void FUN_1412752d0(const CStringW& strText, int n);                    // notice
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);      // pRetVal = v
@@ -320,7 +319,7 @@ bool UIWeddingPageSkill::vfunc_1()
             ASObj obj(2);
             obj.FUN_1407cb9c0("id", it->first);
             obj.FUN_140fe95a0("type", spPerk->m_nType);
-            obj.FUN_1407cbb20("level", FUN_14062b4f0(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nGrade));
+            obj.FUN_1407cbb20("level", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nGrade));
             obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nGrade);
             if (spPerk->m_nType == 0)
             {
@@ -485,7 +484,7 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     if (FUN_140841300(strName, "exp"))
     {
         ASTooltip tip(2);
-        CStringW strTip = FUN_1405c2690(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
+        CStringW strTip = FUN_14028dfa0<CStringW>(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
         if (tip.FUN_1409e26b0(strTip) != 0)
         {
             tip.FUN_1409c6dc0(1);

@@ -297,6 +297,8 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unrecovered helpers (externs bound by VA).
@@ -552,7 +554,7 @@ inline void Unk_ParseExtra(CString str, Unk_ExtraMap* pMap)
 inline int Unk_ReadFilterValue(Unk_XmlNode* pNode, const char* pszName, ATL::CAtlArray<CStringW>* pOut)
 {
     CString str;
-    int nRead = FUN_1408733e0(pNode, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRead == 0)
         Unk_SplitW(str, pOut, ",");
     return nRead;
@@ -582,7 +584,7 @@ inline int Unk_ReadRewardType(Unk_XmlNode* pNode, const char* pszName, int* pnOu
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pNode, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = CAchieveData::ParseRewardType(str);
@@ -597,7 +599,7 @@ inline int Unk_ReadRequireType(Unk_XmlNode* pNode, const char* pszName, int* pnO
         return 2;
     }
     CString str;
-    int nRead = FUN_1408733e0(pNode, pszName, str);
+    int nRead = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (nRead != 0)
         return nRead;
     *pnOut = CAchieveData::ParseRequireType(str);
@@ -607,7 +609,7 @@ inline int Unk_ReadRequireType(Unk_XmlNode* pNode, const char* pszName, int* pnO
 inline CString Unk_ReadString(Unk_XmlNode* pNode, const char* pszName, CString strDefault)
 {
     CString str;
-    if (FUN_1408733e0(pNode, pszName, str) != 0)
+    if (XmlGetAttr((class TiXmlElement*)(pNode), pszName, str) != 0)
         return strDefault;
     return str;
 }
@@ -907,11 +909,11 @@ void CAchieveData::Load(CString strPath)
         XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
         XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));
-        FUN_140873420(pNode, "feature", pData->m_strFeature);
-        FUN_1408733e0(pNode, "locale", pData->m_strLocale);
+        XmlGetAttr((class TiXmlElement*)(pNode), "feature", pData->m_strFeature);
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", pData->m_strLocale);
         XmlGetAttr((class TiXmlElement*)(pNode), "locking", pData->m_nLocking);
-        FUN_1408733e0(pNode, "contentsTag", pData->m_strContentsTag);
-        FUN_1408733e0(pNode, "categoryTag", pData->m_strCategoryTag);
+        XmlGetAttr((class TiXmlElement*)(pNode), "contentsTag", pData->m_strContentsTag);
+        XmlGetAttr((class TiXmlElement*)(pNode), "categoryTag", pData->m_strCategoryTag);
         Unk_ReadRequireType(pNode, "uiFilterType", &pData->m_nRequireType);
         Unk_ReadFilterValue(pNode, "uiFilterValue", &pData->m_aRequire);
         if (pData->m_strContentsTag.Find("Survival", 0) != -1)
@@ -950,7 +952,7 @@ void CAchieveData::Load(CString strPath)
                 else if (nSubJob == 1)
                     pGrade->m_reward.m_nSubJob = 2;
                 CString strExtra;
-                FUN_1408733e0(pReward, "extra", strExtra);
+                XmlGetAttr((class TiXmlElement*)(pReward), "extra", strExtra);
                 Unk_ParseExtra(CString(strExtra), &pGrade->m_reward.m_mapExtra);
                 if (pGrade->m_reward.m_nType == 1)
                 {
@@ -1009,11 +1011,11 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
         XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
         XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));
-        FUN_140873420(pNode, "feature", pData->m_strFeature);
-        FUN_1408733e0(pNode, "locale", pData->m_strLocale);
+        XmlGetAttr((class TiXmlElement*)(pNode), "feature", pData->m_strFeature);
+        XmlGetAttr((class TiXmlElement*)(pNode), "locale", pData->m_strLocale);
         XmlGetAttr((class TiXmlElement*)(pNode), "locking", pData->m_nLocking);
-        FUN_1408733e0(pNode, "contentsTag", pData->m_strContentsTag);
-        FUN_1408733e0(pNode, "categoryTag", pData->m_strCategoryTag);
+        XmlGetAttr((class TiXmlElement*)(pNode), "contentsTag", pData->m_strContentsTag);
+        XmlGetAttr((class TiXmlElement*)(pNode), "categoryTag", pData->m_strCategoryTag);
         Unk_ReadRequireType(pNode, "uiFilterType", &pData->m_nRequireType);
         Unk_ReadFilterValue(pNode, "uiFilterValue", &pData->m_aRequire);
         if (pData->m_strContentsTag.Find("Survival", 0) != -1)
@@ -1052,7 +1054,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
                 else if (nSubJob == 1)
                     pGrade->m_reward.m_nSubJob = 2;
                 CString strExtra;
-                FUN_1408733e0(pReward, "extra", strExtra);
+                XmlGetAttr((class TiXmlElement*)(pReward), "extra", strExtra);
                 Unk_ParseExtra(CString(strExtra), &pGrade->m_reward.m_mapExtra);
             }
             pData->m_mapGrade.SetAt(pGrade->m_nGrade, pGrade);

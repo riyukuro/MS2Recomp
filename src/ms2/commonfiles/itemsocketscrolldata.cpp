@@ -19,7 +19,7 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -137,7 +137,7 @@ int CItemSocketScrollTable::Load()
     const CString& strKey = CString("id");
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = pNode->FUN_140168650(strTag))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         FUN_1408731e0(pNode, strKey, nId);

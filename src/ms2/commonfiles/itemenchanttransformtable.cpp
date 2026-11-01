@@ -35,7 +35,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
-bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 __int64 GetServerTime();                                                // the server time
 
 // The header statics of this unit (the sort name tables every item table unit carries).
@@ -104,7 +104,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("transform"); pNode != 0; pNode = pNode->FUN_140168650("transform"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nInputRank = 0;
         FUN_140873220(pNode, "inputRank", nInputRank);

@@ -385,6 +385,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/weddingmanager.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);         // CStringW + CStringW
@@ -461,7 +462,6 @@ class Unk_MsgField : public CUIService
 {
 public:
     void FUN_141adc530(int nUiId);                                  // opens a UI
-    void FUN_141adc750(int nUiId);                                  // toggles a UI
     int FUN_141adc940(int nUiId);                                   // the UI can open
 };
 
@@ -1301,7 +1301,7 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
 // @0x141a0f7b0
 void UIMessenger::FUN_141a0f7b0()
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     FUN_141a14dc0();
@@ -1976,7 +1976,7 @@ void UIMessenger::FUN_141a146d0(int nType)
 // @0x141a14760
 void UIMessenger::FUN_141a14760()
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_subject.get() != 0)
@@ -2004,7 +2004,7 @@ void UIMessenger::FUN_141a14760()
 // @0x141a148b0
 bool UIMessenger::FUN_141a148b0(const CStringW& strText)
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> > emotions;
@@ -2043,7 +2043,7 @@ bool UIMessenger::FUN_141a148b0(const CStringW& strText)
 // @0x141a14bb0
 void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (pPlayer->vfunc_77() == strTarget)
@@ -2181,7 +2181,7 @@ void UIMessenger::vfunc_92()
             vfunc_4();
             ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 2;
             ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
-            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e62)));
         }
     }
 }
@@ -2239,7 +2239,7 @@ void UIMessenger::vfunc_96(int nMenu)
     {
         ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 1;
         ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
-        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e62);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e62)));
     }
     else if (nMenu == 1)
     {
@@ -2382,7 +2382,7 @@ void UIMessenger::FUN_141a16c50(int nRoomId)
 // @0x141a16cc0
 void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
@@ -2425,7 +2425,7 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 // @0x141a172a0
 void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
@@ -2672,7 +2672,6 @@ extern int DAT_143ab2864;                                          // the own ob
 extern unsigned long s_color25;                                    // the system notice colour
 
 CStringW FUN_1401aa6a0(int n);                                      // to string
-CStringW FUN_14052bd00(int nStringId, const CStringW& a);
 CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);
 void FUN_141275260(int nStringId, int nA, int nB);                  // a system message by id
 int FUN_141276180(const CString& strSound, const CString& strB);    // plays a system sound
@@ -2682,7 +2681,6 @@ CStringW FUN_1402758a0(const wchar_t* szFormat, const CStringW& a, const unsigne
 CStringW FUN_141842c40(const wchar_t* szFormat, const CStringW& a, const unsigned __int64& b, const unsigned __int64& c);
 CStringW FUN_1418428c0(const wchar_t* szFormat, const unsigned& a, const CStringW& b, const unsigned& c);
 CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned& a);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_141843060(CStringW strKey, const unsigned long& a, const unsigned& b, const CStringW& c);
 CStringW FUN_140cbf840(int nGroupType);                             // the dungeon group name
@@ -2911,7 +2909,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 6)
     {
-        strText = FUN_14052bd00(0x8cd, strName);
+        strText = FormatStringId<CStringW>(0x8cd, strName);
         FUN_1412751f0(strText, 1, 0);
     }
     else if (nType == 3)
@@ -2955,19 +2953,19 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 0x10)
     {
-        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
-            const CStringW& strMsg = FUN_14052bd00(0xac7, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
+            const CStringW& strMsg = FormatStringId<CStringW>(0xac7, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
             FUN_1412751f0(strMsg, 1, 1);
         }
     }
     else if (nType == 0x19)
     {
-        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
-            const CStringW& strMsg = FUN_14052bd00(0xaca, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
+            const CStringW& strMsg = FormatStringId<CStringW>(0xaca, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
             FUN_1412751f0(strMsg, 1, 1);
         }
     }
@@ -3046,7 +3044,7 @@ void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
 {
     int nValue = packet.ReadInt32();
     CStringW strValue = FUN_1401aa6a0(nValue);
-    CStringW strMessage = FUN_14052bd00(0xaf2, strValue);
+    CStringW strMessage = FormatStringId<CStringW>(0xaf2, strValue);
     FUN_141a247c0(strMessage, 0x14);
 }
 
@@ -3107,7 +3105,7 @@ void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
     CStringW strUserEvent = FUN_141842c40(L"'event:userSelect,{0},{1},{2}'", strLeader, nAccountId, nCharId);
     CStringW strUser = FUN_1408f71a0(CStringW(L"s_html_chat_user_dungeon_member"), strUserEvent, strLeader);
     CStringW strJoinEvent = FUN_1418428c0(L"'event:joinPartyDungeonMember,{0},{1},{2}'", nPartyId, strLeader, nRoomId);
-    CStringW strJoin = FUN_1405c2690(CStringW(L"s_html_chat_join_party"), strJoinEvent);
+    CStringW strJoin = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_join_party"), strJoinEvent);
     CStringW strRoomEvent = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
     CStringW strRoom = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomEvent,
                                      FUN_140cbf840(spRoom->m_groupType), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId));
@@ -3797,7 +3795,7 @@ int UIMessengerBrowser::FUN_141a26e00(const CStringW& strHtml, int nKind)
 // @0x141a26f10
 int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType)
 {
-    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
     PCBase* pSpeaker = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
@@ -4036,7 +4034,7 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     {
         FUN_141a15890();
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
-            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f58);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f58)));
         return 1;
     }
     if (_stricmp("eventShowWhisperList", szMethod) == 0)
@@ -4101,11 +4099,11 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     }
     if (_stricmp("eventEmotion", szMethod) == 0)
     {
-        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4e7a);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e7a)));
     }
     else if (_stricmp("eventChatEmoticonOpen", szMethod) == 0)
     {
-        reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f80);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f80)));
     }
     else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
     {
@@ -4262,7 +4260,7 @@ void FUN_141bca010(Unk_MsgWorld* pWorld);                           // the chat 
 // @0x141a10660
 void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget, __int64 nClubId)
 {
-    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     int nChannel = FUN_141482f00(nType);
@@ -4395,7 +4393,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x1a:
         if (!strText.IsEmpty() && nClubId != 0)
         {
-            MS2Ptr<CClubCli> spClub = FUN_140e0d900()->FUN_140b14d80(nClubId);
+            MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
             if (spClub.get() == 0)
             {
                 FUN_141275260(0x36b, 1, 1);
@@ -4445,7 +4443,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
     case 0x12:
         FUN_141a146d0(nType);
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
-            reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f58);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f58)));
         return 1;
     case 4:
         strTarget = strText.Tokenize(L" ", nPos);
@@ -4482,7 +4480,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         strMsg = strMsg.Trim();
         if (strMsg.IsEmpty())
             return 0;
-        nClubId = FUN_140e0d900()->FUN_140b14fc0(CStringW(strClub));
+        nClubId = FUN_140e0d900()->GetClubIdByName(CStringW(strClub));
         if (nClubId == 0)
         {
             FUN_1412751f0(GetStringCommon(0x50), 1, 1);
@@ -4520,7 +4518,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
     if (nType == 0x10 && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b0)
     {
-        MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pMe == 0)
             return false;
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
@@ -4589,7 +4587,7 @@ extern unsigned long s_color20;                                     // channel
 // @0x141a14dc0
 void UIMessenger::FUN_141a14dc0()
 {
-    MyPC* pMe = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     FUN_141a13e00();
@@ -4695,7 +4693,7 @@ int FUN_1407181a0(const CStringW& str);
 // @0x141a0a900
 void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    MyPC* pPlayer = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (strMethod == "getTooltip")

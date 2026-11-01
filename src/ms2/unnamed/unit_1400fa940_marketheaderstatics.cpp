@@ -9,7 +9,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
 // The TU's registrar ctor lives out of line in the exe at 0x141d16b90 ([this]=name record, [this+8]=record).
 class Unk_ScpRegistrar
@@ -39,7 +39,7 @@ static CString s_strTabIndex = "tabIndex";
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // The TU's registration record; only its address is taken here.

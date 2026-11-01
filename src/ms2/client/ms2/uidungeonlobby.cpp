@@ -16,6 +16,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -46,7 +47,6 @@ MS2_CHECK_SIZE(Unk_DungeonRoomData, 0x20);
 class Unk_14031c2a0 { public: MS2Ptr<Unk_DungeonRoomData> FUN_1403206b0(int nRoomId); };
     // string table lookup
 CStringW FUN_140e14b70(MS2Ptr<Unk_DungeonRoomData> pRoom);                          // dungeon name of a room
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);      // localized, formatted
 CStringW FUN_140938ae0(CStringW strKey, const int& n);                              // localized, formatted
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
@@ -109,7 +109,7 @@ void UIDungeonLobby::OnLoadComplete()
         if (pRoom == NULL)
             return;
         {
-            CStringW strTitle = FUN_1408f71a0(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
+            CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
                                               TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->FUN_14031ddd0()));
             m_pTitle->FUN_1422c4cd0(strTitle);
             FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_140938ae0(L"s_dungeonLobby_subTitle", m_n17c));

@@ -72,6 +72,7 @@
 // ---- statics (the .di of this unit constructs them) ----
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
 extern template class MS2Ptr<ASUIComponent>;
@@ -99,11 +100,7 @@ CPetManager* FUN_140535320();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& str);
-CStringW FUN_14062b4f0(CStringW fmt, const int& n);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
 CStringW FUN_14183e9c0(CStringW str, int n);
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 class Unk_PcNpcData : public CPtred { };
 MS2Ptr<Unk_PcNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id
 
@@ -242,7 +239,7 @@ void TabContentsPetCollect::FUN_140cac6a0()
                 continue;
             nCount = nCount + 1;
         }
-        CStringW strTotal = FUN_14062b4f0(CStringW(L"s_pet_collect_collect_total_cout"), nCount);
+        CStringW strTotal = FUN_14028dfa0<int>(CStringW(L"s_pet_collect_collect_total_cout"), nCount);
         ASObj obj(2);
         obj.FUN_1407cbb20("total", strTotal);
         m_ui->FUN_140acd1f0("setTotalCount", AScript(obj));
@@ -397,10 +394,10 @@ MS2_REPLACE_METHOD(0x140cad910, TabContentsPetCollect, vfunc_4, 131, 0xAF0C3814)
 // The pet tooltip: name and grade, kind, level limit, where the pet is caught and its bag size.
 void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
 {
-    if (FUN_140184310(*static_cast<const CString*>(pName), "getTooltip"))
+    if ((*static_cast<const CString*>(pName) == "getTooltip"))
     {
     CString strType = static_cast<ASData*>(pData)->FUN_1422b8d30();
-    if (FUN_140184310(strType, "collect_pet"))
+    if ((strType == "collect_pet"))
     {
         int nPet = static_cast<ASData*>(pData)->FUN_1422b8a10();
         MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
@@ -413,15 +410,15 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         int nShown = nGrade;
         if (nShown == 0)
             nShown = 1;
-        CStringW strTip = FUN_14183e9c0(FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_pet_name"),
+        CStringW strTip = FUN_14183e9c0(FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_pet_name"),
             GetStringTable()->FUN_141811980(0x3b, spPet->GetId())), nShown);
         if (spPet->m_nType == 1)
             strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_battle_pet");
         else if (spPet->m_nType == 0)
             strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_default_pet");
         if (0 < nGrade)
-            strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->FUN_141813150(nGrade));
-        strTip += FUN_140938ae0(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
+            strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->FUN_141813150(nGrade));
+        strTip += FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
@@ -446,7 +443,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                 strPlace += GetStringTable()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
-                strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_capture_place"), strPlace);
+                strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_capture_place"), strPlace);
         }
         {
             CStringW strPlace;
@@ -472,10 +469,10 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                 strPlace += GetStringTable()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
-                strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_event_capture_place"), strPlace);
+                strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_event_capture_place"), strPlace);
         }
         if (spPet->m_nSlotNum > 0)
-            strTip += FUN_140938ae0(CStringW(L"s_pet_collect_pet_tooltip_bag_size"), spPet->m_nSlotNum);
+            strTip += FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_collect_pet_tooltip_bag_size"), spPet->m_nSlotNum);
         ASTooltip tip(1, 2);
         tip.FUN_1409c6dc0(5);
         if (tip.FUN_1409e26b0(strTip) != 0)

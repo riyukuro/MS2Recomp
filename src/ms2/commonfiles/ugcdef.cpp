@@ -71,7 +71,7 @@ __int64 GetServerTime();
 unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a byte that Unk_1402c45d0 accepts, else throws
 
 // The UGC managers behind the item.cpp singleton FUN_14052d220 (only the "is the server a test server" query is used).
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
@@ -968,7 +968,7 @@ void CUgcRegistBanner::Read(CInPacket& packet)
     static_cast<IUgcProxy&>(m_upload).Read(packet);
     static_cast<IUgcProxy&>(m_post).Read(packet);
     m_strUrl = packet.ReadUnicodeStringA();
-    if (FUN_14052d220()->GetMode() == 1)
+    if (((class CUgcManager*)FUN_14052d220())->GetMode() == 1)
     {
         static_cast<IUgcProxy&>(m_upload).Clear();
         static_cast<IUgcProxy&>(m_post).Clear();
@@ -1575,7 +1575,7 @@ void CUgcItemLook::Read(CInputStream& stream)
     m_n50 = stream.ReadInt64();
     m_strUrl = stream.ReadUnicodeStringA();
     m_n60 = stream.ReadUInt8();
-    if (FUN_14052d220()->GetMode() == 1)
+    if (((class CUgcManager*)FUN_14052d220())->GetMode() == 1)
         m_strUrl = "";
 }
 

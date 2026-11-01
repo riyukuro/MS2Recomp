@@ -41,6 +41,8 @@
 #include "ms2/client/ms2/skillsystem.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // The sound ids of the pet: the summon effect sound and the level up sound (initialized before everything else).
 static CString s_strPetSummonSound = "02100199";
@@ -123,13 +125,12 @@ extern Unk_Inventory g_143ab2a90;                           // the player's inve
 // messages
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141275260(int, int, int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_140d73aa0(CStringW, int, int, CStringW);
 void FUN_140d73bc0(int, int, int, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 
 // The record behind DAT_143abf720 (its +0x28 is the uid of the item that cannot be taken out of the bag).
@@ -173,7 +174,7 @@ void CPetInventory::FUN_140c868d0()
                 nSlots = spRow->m_nSlots;
         }
     }
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     m_items.RemoveAll();
     m_slots.RemoveAll();
     m_slots.SetCount(nSlots, -1);
@@ -182,7 +183,7 @@ void CPetInventory::FUN_140c868d0()
 // @0x140c869e0
 int CPetInventory::FUN_140c869e0(CItem* pItem)
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     if (m_items.Lookup(pItem->FUN_140526a50()) != 0)
         return 0x11;
     int nSlot = pItem->FUN_140526b50();
@@ -209,7 +210,7 @@ int CPetInventory::FUN_140c869e0(CItem* pItem)
 void CPetInventory::FUN_140c86bb0(unsigned __int64 nUid)
 {
     ItemPtr spItem;
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     if (m_items.Lookup(nUid, spItem))
     {
         m_items.RemoveKey(nUid);
@@ -228,7 +229,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86c90(int nSlot)
     if (nSlot < 0 || nSlot >= nCount)
         return ItemPtr(0);
     {
-        Unk_CriticalSectionLock guard(m_lock, 1);
+        Unk_1401b4ec0 guard(m_lock, 1);
         spItem = m_slots[nSlot];
     }
     return spItem;
@@ -239,7 +240,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86d90(int nItemId)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return ItemPtr(0);
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
@@ -254,7 +255,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86d90(int nItemId)
 size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
 {
     {
-        Unk_CriticalSectionLock guard(m_lock, 1);
+        Unk_1401b4ec0 guard(m_lock, 1);
         for (unsigned i = 0; i < m_slots.GetCount(); ++i)
         {
             ItemPtr spItem = m_slots[i];
@@ -297,7 +298,7 @@ size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result,
 // @0x140c87250
 CPetInventory::ItemPtr CPetInventory::FUN_140c87250(unsigned __int64 nUid)
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     ItemPtr spItem;
     m_items.Lookup(nUid, spItem);
     return spItem;
@@ -310,7 +311,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return ItemPtr(0);
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
@@ -327,7 +328,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
 int CPetInventory::FUN_140c874f0()
 {
     int nUsed = 0;
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -345,7 +346,7 @@ int CPetInventory::FUN_140c875e0()
 // @0x140c87610
 int CPetInventory::FUN_140c87610()
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     unsigned nCount = (unsigned)m_slots.GetCount();
     int nHalf = nCount >> 1;
     int nLast = nCount - 1;
@@ -381,7 +382,7 @@ int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -401,7 +402,7 @@ int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
 int CPetInventory::FUN_140c87a00(int nItemId)
 {
     int nRoom = 0;
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     int nCount = (int)m_slots.GetCount();
     for (int i = 0; i < nCount; ++i)
     {
@@ -414,7 +415,7 @@ int CPetInventory::FUN_140c87a00(int nItemId)
 // @0x140c87b90
 unsigned CPetInventory::FUN_140c87b90()
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -448,7 +449,7 @@ int CPetInventory::FUN_140c87c80(ItemPtr spItem, int nNeed)
 // @0x140c87ef0
 void CPetInventory::FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result)
 {
-    Unk_CriticalSectionLock guard(m_lock, 1);
+    Unk_1401b4ec0 guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
@@ -1072,7 +1073,7 @@ void CPetManager::FUN_140c8b0c0(CInPacket& in)
     MS2Ptr<CItemData> spData = FUN_14053f870(nSkillId);
     if (spData == 0)
         return;
-    FUN_1412751b0(FUN_1405c2690(L"s_skill_consume_by_pet_trap", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nSkillId)), 0x14);
+    FUN_1412751b0(FUN_14028dfa0<CStringW>(L"s_skill_consume_by_pet_trap", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nSkillId)), 0x14);
 }
 // @0x140c8b1f0
 void CPetManager::FUN_140c8b1f0()

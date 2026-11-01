@@ -28,6 +28,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -78,7 +79,6 @@ CGameRule* FUN_1401c0d90();
 CQuestManager* FUN_140764020();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 UIQuestEventDispatcher* FUN_140bfc4b0();
-bool FUN_140184310(const CString& str, const char* sz);
 bool FUN_140841300(const CStringW& str, const char* sz);
 int FUN_140718170(const CString& str);
 __int64 GetServerTime();                                // the server time
@@ -88,7 +88,6 @@ __int64 FUN_140761ba0(unsigned nA, int nB);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1416e5350(unsigned nQuest, int n);
 void FUN_140710590(COutPacket& packet);
 #ifdef __clang__
@@ -153,7 +152,7 @@ int UITimeRunEventDialog::vfunc_13() { return UIDialog::vfunc_13(); }
 void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     UIObject::vfunc_45(pRetVal, strMethod, pArgs);
-    if (FUN_140184310(strMethod, "getTabTooltip")) {
+    if ((strMethod == "getTabTooltip")) {
         int nTab = FUN_140718170(pArgs->FUN_1422b8d30());
         MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
         if (spContext.get() != 0) {
@@ -164,11 +163,11 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
                 ATL::CTimeSpan span = start - now;
                 CStringW strRemain = FormatTimeSpan(span, true, true, true, true);
                 ASTooltip tip(2);
-                if (tip.FUN_1409e26b0(FUN_1405c2690(CStringW(L"s_timerun_remain_time_from_day"), strRemain)))
+                if (tip.FUN_1409e26b0(FUN_14028dfa0<CStringW>(CStringW(L"s_timerun_remain_time_from_day"), strRemain)))
                     *pRetVal = tip.FUN_1422bb870();
             }
         }
-    } else if (FUN_140184310(strMethod, "getTooltip")) {
+    } else if ((strMethod == "getTooltip")) {
         CStringW strKind = pArgs->FUN_1422b8f40();
         if (FUN_140841300(strKind, "guide")) {
             int nQuest = pArgs->FUN_1422b8b10();

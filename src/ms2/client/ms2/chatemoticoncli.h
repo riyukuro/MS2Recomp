@@ -36,8 +36,8 @@ public:
     void FUN_140a38fa0(CInPacket& packet);              // 0: the full state (owned ids, then the packs with expiry)
     void FUN_140a39170(CInPacket& packet);              // 1: expired packs removed
     void FUN_140a39360(CInPacket& packet);              // 2: packs added (with a chat notice)
-    void FUN_140a39720(CInPacket& packet);              // 5: one id moved to the end of the owned list
-    void FUN_140a397b0(CInPacket& packet);              // 6: one id removed from the owned list
+    void OnEmoticonMovedToEnd(CInPacket& packet);              // 5: one id moved to the end of the owned list
+    void OnEmoticonRemoved(CInPacket& packet);              // 6: one id removed from the owned list
     void FUN_140a39830(CInPacket& packet);              // 3: a pack opened in the messenger browser
     void FUN_140a39940(CInPacket& packet);              // 4: a pack opened in the group messenger browser
     void FUN_140a39a20(CInPacket& packet);              // 7: result notice of a pack operation

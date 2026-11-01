@@ -16,6 +16,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- out-of-unit callees (names describe uses) ----
 
@@ -40,7 +41,6 @@ Unk_OpWorld* FUN_1403ed2d0();
 class Unk_OpUIService { public: void FUN_141adc530(int nClass); };            // open a dialog
 Unk_OpUIService* FUN_1403ed2b0();
 UIOtherPetSystemDialog* FUN_140cbe300(int nId);                             // the dialog of a UI id
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);            // a formatted string table text
 
 template <> inline MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString& strName);
 
@@ -112,7 +112,7 @@ void UIOtherPetSystemDialog::FUN_140e6d6b0()
     if (Unk_OpOwner* pOwner = FUN_1403ed2d0()->FUN_141bd1290(m_1e0))
     {
         if (MS2Ptr<ASLabel> spTitle = GetChild<ASLabel>("m_title"))
-            spTitle->FUN_1422e4a50(FUN_1405c2690(CStringW(L"s_pet_owner"), pOwner->vfunc_77()));
+            spTitle->FUN_1422e4a50(FUN_14028dfa0<CStringW>(CStringW(L"s_pet_owner"), pOwner->vfunc_77()));
     }
 }
 

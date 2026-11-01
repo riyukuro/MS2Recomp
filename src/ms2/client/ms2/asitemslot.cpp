@@ -176,6 +176,7 @@
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/placeholder/wcformat.h"
 
 // ---- statics, in the exe's initializer order (.text$di) ----
 // The ASItemSlot TU.
@@ -289,7 +290,6 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_ItemPreview : public ItemPreviewMgr
 {
 public:
-    void FUN_140d40120(MS2Ptr<CItem> spItem, int n);            // preview the item
 };
 extern Unk_ItemPreview* DAT_143ab3fc0;
 Unk_ItemPreview* FUN_1409bb9e0();
@@ -298,7 +298,6 @@ Unk_ItemPreview* FUN_1409bb9e0();
 class Unk_AdditionalEffect : public CPtred
 {
 public:
-    CString FUN_1401756c0();                                    // copy of the icon path
 };
 class Unk_SlotSkillData;
 class Unk_SlotTables                                            // the client table set (FUN_1401958b0)
@@ -476,7 +475,7 @@ void ASItemSlot::FUN_1409baa60(const Scaleform::GFx::FunctionHandler::Params& pa
         return;
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_14052b130(m_itemId, m_rarity, 0) != 0 && FUN_1409bb9e0()->IsHudOn() != 0)
-        FUN_1409bb9e0()->FUN_140d40120(spItem, 0);
+        ((ItemPreviewMgr*)(Unk_ItemPreview*)(FUN_1409bb9e0()))->FUN_140d40120(spItem, 0);
 }
 
 // @0x1409bab90
@@ -512,7 +511,7 @@ void ASAdditionalEffectSlot::FUN_1409badd0()
     if (spEffect == 0)
         return;
     ASSlot slot(2);
-    if (slot.FUN_1409c48b0(spEffect->FUN_1401756c0()))
+    if (slot.FUN_1409c48b0(((AdditionalLevelData*)(spEffect).operator->())->GetIcon()))
         Invoke("setSlotData", slot);
 }
 
@@ -578,10 +577,14 @@ MS2_CHECK_SIZE(ASScrollPanel, 0x88);
 
 // The local player, as the slot code sees it.
 class Unk_SlotSkillBook;
+class SkillLevelData   // C3: member view (real class not in this TU)
+{
+public:
+    float FUN_140804660();
+};
 class Unk_SlotSkillLevel : public CPtred
 {
 public:
-    float FUN_140804660();                                      // the cooldown in seconds
 };
 class Unk_SlotSkillRow : public CPtred
 {
@@ -606,7 +609,6 @@ class Unk_SlotSkillCooldowns : public CSkillSystem
 class Unk_SlotPc : public MyPC
 {
 public:
-    Unk_SlotSkillCooldowns* FUN_141523bc0();
 };
 Unk_SlotPc* FUN_1409613d0(void* pPc);
 int FUN_141275a10(CItem* pItem);                                // the usable state of an item (1 locked, 2 disabled, 3 condition)                           // PCBase -> MyPC (NULL for others)
@@ -622,11 +624,15 @@ class Unk_SlotEquipSet : public CEquipment
 };
 
 // A skill entry (the skill window rows).
+class JobSkill   // C3: member view (real class not in this TU)
+{
+public:
+    unsigned int GetID();
+    int GetJobLevel();
+};
 class Unk_SlotSkillInfo : public CPtred
 {
 public:
-    int FUN_140637cc0();                                        // skill id
-    int FUN_140637e00();                                        // skill tree id
 private:
     char m_pad_18[7];
 public:
@@ -634,10 +640,14 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_SlotSkillInfo, m_bLearned, 0x1f);
 // The skill record of the skill table (FUN_1407ee1d0).
+class SkillData   // C3: member view (real class not in this TU)
+{
+public:
+    bool FUN_1407e9de0();
+};
 class Unk_SlotSkillData : public CPtred
 {
 public:
-    bool FUN_1407e9de0();                                       // passive
 private:
     void* m_pad_18[(0x48 - 0x18) / 8];
 public:
@@ -665,16 +675,24 @@ class Unk_ItemEquipData : public CItemData                      // CItem::FUN_14
 public:
     Unk_SlotModelHead* FUN_14053ec70();                         // the model head (CItemData declares it void)
 };
+class CItemExtraData   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_140599fd0(unsigned int);
+};
 class Unk_UserProxyItemData
 {
 public:
-    unsigned long FUN_140599fd0(int n);                         // the dye colour
+};
+class CItemStatus   // C3: member view (real class not in this TU)
+{
+public:
+    Unk_ItemPlusInfo* FUN_140630d90();
+    CItemEnchantInfo* GetEnchant();
 };
 class Unk_ItemEnchantData
 {
 public:
-    CItemEnchantInfo* FUN_140630d60();                          // the enchant record
-    Unk_ItemPlusInfo* FUN_140630d90();                          // the unlimited enchant record
 };
 class CItemEnchantInfo
 {
@@ -682,10 +700,14 @@ public:
     int GetLevel();                                        // enchant level
     int FUN_14058c8a0();                                        // broken
 };
+class UnlimitedEnchantInfo   // C3: member view (real class not in this TU)
+{
+public:
+    int GetLevel();
+};
 class Unk_ItemPlusInfo
 {
 public:
-    int FUN_1408bbc50();                                        // unlimited enchant level
 };
 ItemGachaBoxTable* FUN_14052d230();
 class Unk_SlotLapenTable : public CItemLapenshardTable
@@ -1069,8 +1091,8 @@ void ASSlot::FUN_1409c2af0(CItem* pItem, void* pPlayer)
         return;
     if (spRow->m_bCooldown == 0)
         return;
-    FUN_1409c2dc0(pPc->FUN_141523bc0()->FUN_141765fe0(pItem->FUN_140527840()->FUN_14053dc20(), 0));
-    FUN_1409c2e00(spLevel->FUN_140804660());
+    FUN_1409c2dc0(((Unk_SlotSkillCooldowns*)((MyPC*)(Unk_SlotPc*)(pPc))->FUN_141523bc0())->FUN_141765fe0(pItem->FUN_140527840()->FUN_14053dc20(), 0));
+    FUN_1409c2e00(((SkillLevelData*)(spLevel).operator->())->FUN_140804660());
     FUN_1409c2e40();
 }
 
@@ -1118,9 +1140,9 @@ void ASSlot::FUN_1409c2f40(CItemEnchantInfo* pEnchant)
 // @0x1409c2fe0
 void ASSlot::FUN_1409c2fe0(Unk_ItemPlusInfo* pPlus)
 {
-    if (pPlus->FUN_1408bbc50() > 0)
+    if (((UnlimitedEnchantInfo*)(Unk_ItemPlusInfo*)(pPlus))->GetLevel() > 0)
     {
-        int nLevel = pPlus->FUN_1408bbc50();
+        int nLevel = ((UnlimitedEnchantInfo*)(Unk_ItemPlusInfo*)(pPlus))->GetLevel();
         if (nLevel > 0)
             FUN_1407cb9c0("unlimited", nLevel);
     }
@@ -1309,8 +1331,8 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         FUN_1409c2950(pItem->FUN_140528840());
         if (pPlayer != NULL)
             FUN_1409c2af0(pItem, pPlayer);
-        FUN_1409c2f40(pItem->FUN_1405278a0()->FUN_140630d60());
-        FUN_1409c2fe0(pItem->FUN_1405278a0()->FUN_140630d90());
+        FUN_1409c2f40(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->GetEnchant());
+        FUN_1409c2fe0(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->FUN_140630d90());
         FUN_1409c1f40(pItem);
         FUN_1409c2050(spData->FUN_14053d990());
         FUN_1409c3040(spData);
@@ -1370,7 +1392,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     if (nFlags & 8)
     {
         if (pItem->FUN_140527840()->FUN_14053ec70()->FUN_140547190())
-            FUN_1409c2360(pItem->FUN_140527870()->FUN_140599fd0(0));
+            FUN_1409c2360(((CItemExtraData*)(Unk_UserProxyItemData*)(pItem->FUN_140527870()))->FUN_140599fd0(0));
     }
     if (nFlags & 0x10)
         FUN_1409c2200(pItem);
@@ -1428,18 +1450,18 @@ int ASSlot::FUN_1409c4360(Unk_SlotSkillInfo* pSkill, unsigned nFlags)
     Unk_SlotPc* pPc = static_cast<Unk_SlotPc*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return 0;
-    MS2Ptr<Unk_SlotSkillData> spRow = FUN_1401958b0()->FUN_1407ee1d0(pSkill->FUN_140637cc0());
+    MS2Ptr<Unk_SlotSkillData> spRow = FUN_1401958b0()->FUN_1407ee1d0(((JobSkill*)(Unk_SlotSkillInfo*)(pSkill))->GetID());
     if (spRow.IsNull())
         return 0;
     if (nFlags & 1)
     {
         FUN_1409c2750(spRow->m_strIcon);
-        FUN_1409c2a70(MS2Ptr<Unk_SlotSkillInfo>(pSkill), pPc->FUN_14152e970(pSkill->FUN_140637e00()));
+        FUN_1409c2a70(MS2Ptr<Unk_SlotSkillInfo>(pSkill), pPc->FUN_14152e970(((JobSkill*)(Unk_SlotSkillInfo*)(pSkill))->GetJobLevel()));
     }
     if (nFlags & 0x400)
     {
         FUN_1409c2710(pSkill->m_bLearned == false);
-        if (spRow->FUN_1407e9de0())
+        if (((SkillData*)(spRow).operator->())->FUN_1407e9de0())
             FUN_1409c2650();
     }
     return 1;
@@ -1553,27 +1575,35 @@ class CDBPremiumProduct;
 class CMeratMarketPremiumProduct;
 CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);                  // the star point text (uimeratmarketcommon.cpp)
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);   // the buy limit text (uimeratmarketcommon.cpp)
+class CDBPremiumProduct   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_14069fee0();
+    bool FUN_1406a0090();
+    __int64 FUN_1406a0270();
+};
+class CMeratMarketPremiumProduct   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_1406a1ee0();
+    bool FUN_1406a1f50();
+    int GetB0(int);
+    int GetCurrency();
+    CMsTime GetEndDate(int);
+    __int64 GetPriceOf(int);
+    __int64 GetSalePriceOf(int);
+    CMsTime GetStartDate(int);
+    bool IsBuyLimitReached();
+};
 class Unk_MeratPremium
 {
 public:
-    unsigned int FUN_1406a1650();                               // the currencies it is sold for (1, 2)
-    __int64 FUN_1406a1be0(int nIndex);                          // price
-    __int64 FUN_1406a1b30(int nIndex);                          // sale price
-    int FUN_14069fee0();                                        // PC bang only
-    bool FUN_1406a0a60();                                       // sold out
     bool FUN_140ebfb90(int n);                                  // the required achievement is done
-    int FUN_1406a17f0(int nIndex);                              // item count
     CStringW FUN_1406a00e0();                                   // name
-    bool FUN_1406a0090();                                       // not a random sale
     CStringW FUN_1406a02c0();                                   // the random sale expiry date
-    __int64 FUN_1406a0270();                                    // the random sale payback
     bool FUN_1406a0d20(int n);                                  // expired
     bool FUN_1406a0d60(int n);
     bool FUN_1406a0ea0(int n);                                  // preview only
-    int FUN_1406a1ee0();                                        // the extra button kind
-    bool FUN_1406a1f50();                                       // has a sale period
-    CMsTime FUN_1406a19a0(int n);                               // sale start
-    CMsTime FUN_1406a1a70(int n);                               // sale end
 
 private:
     char m_pad_00[0x18];
@@ -1663,12 +1693,16 @@ private:
 };
 
 // The UGC part of a market record (a player's listing, at record +0x268).
+class CUgcMarketProduct   // C3: member view (real class not in this TU)
+{
+public:
+    int FUN_1408961a0() const;
+    int FUN_140896310() const;
+};
 class Unk_MeratUgc
 {
 public:
-    int FUN_140896310();                                        // 0 a plain UGC item, else a blueprint
     CStringW FUN_1408960a0();                                   // the seller name
-    int FUN_1408961a0();                                        // 1 sold
 
 private:
     char m_pad_00[0x20];
@@ -1756,10 +1790,14 @@ public:
 };
 
 // The report-blind manager (blinded accounts) and the extra button helper.
+class BlindManager   // C3: member view (real class not in this TU)
+{
+public:
+    bool IsBlockedId(int, unsigned __int64);
+};
 class Unk_MeratBlindManager
 {
 public:
-    bool FUN_140a259b0(int nKind, __int64 nAccountId);
 };
 extern Unk_MeratBlindManager* DAT_143ab4148;
 class Unk_MeratButtonHelper
@@ -1779,7 +1817,6 @@ CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 CStringW FUN_1418fec00(int nCurrency, __int64 nAmount, int nArg);
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned int& nArg);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409e3050(const CStringW& strKey, int n1, int n2);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -2035,7 +2072,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
                 FUN_1407cbbe0("showPreview", FUN_1403b3c40(strFunction, L"UGCMapPackage"));
                 if (spData->property.slotMax > 1)
                 {
-                    int nCount = premium.FUN_1406a17f0(0);
+                    int nCount = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetB0(0);
                     FUN_1407cb9c0("itemCount", nCount);
                 }
             }
@@ -2047,14 +2084,14 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         FUN_1409c0e60("seller", L"");
         FUN_1409c0dc0("sellerCharSN", "");
         FUN_1407cb9c0("ugctag", 0);
-        bool bSoldOut = premium.FUN_1406a0a60();
+        bool bSoldOut = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->IsBuyLimitReached();
         FUN_1407cbbe0("soldOut", bSoldOut);
         if (!premium.FUN_140ebfb90(0))
         {
             CStringW strFormat = GetStringCommon(0x308);
             FUN_1407cbb20("requireAchieve", FUN_14093bad0(premium.m_nAchieveId, premium.m_nAchieveGrade, strFormat));
         }
-        bool bPcBang = premium.FUN_14069fee0() > 0;
+        bool bPcBang = ((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_14069fee0() > 0;
         FUN_1407cbbe0("isPcBang", bPcBang);
         CStringW strStar = FUN_140ec05f0((CMeratMarketPremiumProduct*)&premium);
         if (!strStar.IsEmpty())
@@ -2083,7 +2120,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         }
         FUN_1407cbb20("itemName", spEntry->FUN_1406a4770());
         CString strIcon;
-        if (ugc.FUN_140896310() != 0)
+        if (((CUgcMarketProduct*)(Unk_MeratUgc*)&(ugc))->FUN_140896310() != 0)
         {
             Unk_MeratUgcTemplate& tpl = ugc.m_template;
             strIcon = tpl.FUN_140894060();
@@ -2100,7 +2137,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         CStringW strSeller = ugc.FUN_1408960a0();
         FUN_1407cbb20("seller", strSeller);
         FUN_1407cba60("sellerCharSN", FUN_140719530(ugc.m_nSellerCharId));
-        bool bSoldOut = ugc.FUN_1408961a0() == 1;
+        bool bSoldOut = ((CUgcMarketProduct*)(Unk_MeratUgc*)&(ugc))->FUN_1408961a0() == 1;
         FUN_1407cbbe0("soldOut", bSoldOut);
         bool bDebug = false;
         if (pOpt != NULL)
@@ -2121,7 +2158,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         else
             FUN_1407cb9c0("saleCountTotal", ugc.m_nSaleCountTotal);
         FUN_1407cb9c0("saleCount", ugc.m_nSaleCount);
-        if (FUN_1409c1730()->FUN_140a259b0(3, spEntry->m_ugc.m_nAccountId))
+        if (((BlindManager*)(Unk_MeratBlindManager*)(FUN_1409c1730()))->IsBlockedId(3, spEntry->m_ugc.m_nAccountId))
             FUN_1407cbbe0("isBlind", true);
         if (bDebug)
         {
@@ -2154,8 +2191,8 @@ void ASMeratMarketProduct::FUN_1409bd940(MS2Ptr<Unk_MeratEquipEntry> spEntry)
     if (spEntry->FUN_1406ab1a0() != 0)
     {
         Unk_MeratPremium& premium = spEntry->m_premium;
-        nPrice = premium.FUN_1406a1be0(m_nIndex);
-        nSalePrice = premium.FUN_1406a1b30(m_nIndex);
+        nPrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetPriceOf(m_nIndex);
+        nSalePrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(m_nIndex);
         bSale = nPrice > nSalePrice;
         if (premium.m_nSaleTag == 4 && nPrice > 0 && bSale)
         {
@@ -2241,7 +2278,7 @@ bool ASMeratMarketLimitedProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, c
     FUN_1409be940(premium);
     FUN_1409bf780(premium);
     vfunc_8(premium);
-    bool bPcBang = premium.FUN_14069fee0() > 0;
+    bool bPcBang = ((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_14069fee0() > 0;
     FUN_1407cbbe0("isPcBang", bPcBang);
     return true;
 }
@@ -2258,7 +2295,7 @@ bool ASMeratMarketLimitedProduct::vfunc_2(MS2Ptr<Unk_MeratEquipEntry> spEntry)
     FUN_1409bf780(premium);
     vfunc_8(premium);
     vfunc_7(spEntry);
-    bool bPcBang = premium.FUN_14069fee0() > 0;
+    bool bPcBang = ((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_14069fee0() > 0;
     FUN_1407cbbe0("isPcBang", bPcBang);
     return true;
 }
@@ -2322,15 +2359,15 @@ void ASMeratMarketLimitedProduct::FUN_1409be940(Unk_MeratPremium& premium)
 void ASMeratMarketLimitedProduct::FUN_1409be9b0(Unk_MeratPremium& premium)
 {
     bool bFree = false;
-    unsigned int nFlags = premium.FUN_1406a1650();
+    unsigned int nFlags = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetCurrency();
     if (nFlags & 1)
     {
         int nPriceType = 1;
         __int64 nPrice = 0;
         __int64 nSalePrice = 0;
         bool bSale = false;
-        nPrice = premium.FUN_1406a1be0(0);
-        nSalePrice = premium.FUN_1406a1b30(0);
+        nPrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetPriceOf(0);
+        nSalePrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
         bSale = nPrice > nSalePrice;
         int nType = FUN_14069c3e0(nPriceType);
         CStringW strPrice = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
@@ -2347,8 +2384,8 @@ void ASMeratMarketLimitedProduct::FUN_1409be9b0(Unk_MeratPremium& premium)
         __int64 nPrice = 0;
         __int64 nSalePrice = 0;
         bool bSale = false;
-        nPrice = premium.FUN_1406a1be0(0);
-        nSalePrice = premium.FUN_1406a1b30(0);
+        nPrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetPriceOf(0);
+        nSalePrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
         bSale = nPrice > nSalePrice;
         int nType = FUN_14069c3e0(nPriceType);
         CStringW strPrice = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
@@ -2362,8 +2399,8 @@ void ASMeratMarketLimitedProduct::FUN_1409be9b0(Unk_MeratPremium& premium)
 // @0x1409bef00
 void ASMeratMarketLimitedProduct::FUN_1409bef00(Unk_MeratPremium& premium)
 {
-    unsigned int nFlags = premium.FUN_1406a1650();
-    if (premium.FUN_1406a0090())
+    unsigned int nFlags = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetCurrency();
+    if (((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a0090())
     {
         FUN_1409be9b0(premium);
     }
@@ -2375,26 +2412,26 @@ void ASMeratMarketLimitedProduct::FUN_1409bef00(Unk_MeratPremium& premium)
         {
             int nPriceType = 1;
             int nType = FUN_14069c3e0(nPriceType);
-            __int64 nSale = premium.FUN_1406a1b30(0);
+            __int64 nSale = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
             CStringW strSalePrice = FUN_1418fef90(nType, nSale);
-            __int64 nPayback = premium.FUN_1406a0270();
+            __int64 nPayback = ((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a0270();
             CStringW strPayback = FUN_1418fec90(nType, nPayback, 0);
             FUN_1409c0e60("price", L"");
             FUN_1407cbb20("salePrice", strSalePrice);
-            FUN_1407cbb20("randomPaybackPrice", FUN_1405c2690(CStringW(L"s_meratmarket_random_payback"), strPayback));
+            FUN_1407cbb20("randomPaybackPrice", FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_random_payback"), strPayback));
             FUN_1409c1040("priceType", nPriceType);
         }
         if (nFlags & 2)
         {
             int nPriceType = 2;
             int nType = FUN_14069c3e0(nPriceType);
-            __int64 nSale = premium.FUN_1406a1b30(0);
+            __int64 nSale = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
             CStringW strSalePrice = FUN_1418fef90(nType, nSale);
-            __int64 nPayback = premium.FUN_1406a0270();
+            __int64 nPayback = ((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a0270();
             CStringW strPayback = FUN_1418fec90(nType, nPayback, 0);
             FUN_1409c0e60("price2", L"");
             FUN_1407cbb20("salePrice2", strSalePrice);
-            FUN_1407cbb20("randomPaybackPrice2", FUN_1405c2690(CStringW(L"s_meratmarket_random_payback"), strPayback));
+            FUN_1407cbb20("randomPaybackPrice2", FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_random_payback"), strPayback));
             FUN_1409c1040("priceType2", nPriceType);
         }
     }
@@ -2403,8 +2440,8 @@ void ASMeratMarketLimitedProduct::FUN_1409bef00(Unk_MeratPremium& premium)
 // @0x1409bf300
 void ASMeratMarketLimitedProduct::FUN_1409bf300(Unk_MeratPremium& premium)
 {
-    unsigned int nFlags = premium.FUN_1406a1650();
-    if (premium.FUN_1406a0090())
+    unsigned int nFlags = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetCurrency();
+    if (((CDBPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a0090())
     {
         FUN_1409be9b0(premium);
     }
@@ -2416,9 +2453,9 @@ void ASMeratMarketLimitedProduct::FUN_1409bf300(Unk_MeratPremium& premium)
         {
             int nPriceType = 1;
             int nType = FUN_14069c3e0(nPriceType);
-            __int64 nPrice = premium.FUN_1406a1be0(0);
+            __int64 nPrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetPriceOf(0);
             CStringW strPrice = FUN_1409404f0(nPrice);
-            __int64 nSale = premium.FUN_1406a1b30(0);
+            __int64 nSale = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
             CStringW strSalePrice = FUN_1418fef90(nType, nSale);
             FUN_1407cbb20("price", strPrice);
             FUN_1407cbb20("salePrice", strSalePrice);
@@ -2429,9 +2466,9 @@ void ASMeratMarketLimitedProduct::FUN_1409bf300(Unk_MeratPremium& premium)
         {
             int nPriceType = 2;
             int nType = FUN_14069c3e0(nPriceType);
-            __int64 nPrice = premium.FUN_1406a1be0(0);
+            __int64 nPrice = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetPriceOf(0);
             CStringW strPrice = FUN_1409404f0(nPrice);
-            __int64 nSale = premium.FUN_1406a1b30(0);
+            __int64 nSale = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetSalePriceOf(0);
             CStringW strSalePrice = FUN_1418fef90(nType, nSale);
             FUN_1407cbb20("price2", strPrice);
             FUN_1407cbb20("salePrice2", strSalePrice);
@@ -2459,7 +2496,7 @@ void ASMeratMarketLimitedProduct::FUN_1409bf780(Unk_MeratPremium& premium)
                 strText = GetStringCommonByKey(L"s_meratmarket_limited_soldout");
             }
             else
-                strText = FUN_1405c2690(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
+                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
         }
     }
     else if (premium.m_nType == 6 && premium.m_nLimitCount > 0)
@@ -2471,11 +2508,11 @@ void ASMeratMarketLimitedProduct::FUN_1409bf780(Unk_MeratPremium& premium)
             strRemain = GetStringCommonByKey(L"s_meratmarket_limited_soldout");
         }
         else
-            strRemain = FUN_1405c2690(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
+            strRemain = FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
     }
     if (!strRemain.IsEmpty())
         FUN_1407cbb20("remain", strRemain);
-    bool bSold = premium.FUN_1406a0a60();
+    bool bSold = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->IsBuyLimitReached();
     if (premium.m_nType == 0 || premium.m_nType == 1 || premium.m_nType == 2)
         FUN_1407cbbe0("soldOut", bSold);
     else
@@ -2541,11 +2578,11 @@ bool ASMeratMarketHomeProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, cons
     FUN_1407cbbe0("isPreview", bPreview);
     if (!bPreview)
     {
-        if (premium.FUN_1406a1ee0() != 0)
+        if (((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a1ee0() != 0)
         {
             CStringW strText;
             bool bShow = false;
-            int nExtra = premium.FUN_1406a1ee0();
+            int nExtra = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a1ee0();
             switch (nExtra)
             {
             case 1:
@@ -2589,15 +2626,15 @@ void ASMeratMarketHomeProduct::vfunc_7(MS2Ptr<Unk_MeratEquipEntry> spEntry)
     CStringW strDesc;
     if (premium.m_nType == 6)
         strDesc = "";
-    else if (premium.FUN_1406a1f50() && !premium.FUN_1406a0ea0(0) && !premium.FUN_1406a19a0(0).IsNull() &&
-             !premium.FUN_1406a1a70(0).IsNull())
+    else if (((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->FUN_1406a1f50() && !premium.FUN_1406a0ea0(0) && !((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetStartDate(0).IsNull() &&
+             !((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetEndDate(0).IsNull())
     {
         CStringW strFormat = GetStringCommonByKey(L"s_meratmarket_home_desc_period");
         CStringW strStart;
         CStringW strEnd;
         const CStringW& strDateFormat = GetStringCommonByKey(L"s_meratmarket_limited_date");
-        CMsTime tStart = premium.FUN_1406a19a0(0);
-        CMsTime tEnd = premium.FUN_1406a1a70(0);
+        CMsTime tStart = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetStartDate(0);
+        CMsTime tEnd = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetEndDate(0);
         FUN_141b70f90(tStart, strDateFormat, strStart);
         FUN_141b70f90(tEnd, strDateFormat, strEnd);
         strDesc = StringFormat((const wchar_t*)strFormat, strStart, strEnd);
@@ -2659,7 +2696,7 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
         }
         if (spData->property.slotMax > 1)
         {
-            int nCount = premium.FUN_1406a17f0(0);
+            int nCount = ((CMeratMarketPremiumProduct*)(Unk_MeratPremium*)&(premium))->GetB0(0);
             FUN_1407cb9c0("itemCount", nCount);
         }
         if (spData->FUN_14053da20())

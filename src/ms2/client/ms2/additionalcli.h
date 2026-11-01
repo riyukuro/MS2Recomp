@@ -27,8 +27,8 @@ public:
     void FUN_14096bd30(PCBase* pOwner, int nId, unsigned short nLevel, int n44);   // start a local record
     void FUN_14096be10(PCBase* pOwner, const Unk_AdditionalOwner& owner, CInPacket& packet);   // full decode
     void FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_AdditionalOwner& owner, CInPacket& packet);   // DecodeModifyPacket
-    void FUN_14096c2a0(const Unk_AdditionalOwner& owner);  // key and caster
-    void FUN_14096c2e0(const Unk_AdditionalState& state);   // times, id, level, count, enabled
+    void SetOwnerInfo(const Unk_AdditionalOwner& owner);  // key and caster
+    void ApplyState(const Unk_AdditionalState& state);   // times, id, level, count, enabled
     void FUN_14096c360(const Unk_AdditionalValue& value);   // shield value
     void FUN_14096c390(const Unk_AdditionalValue& value);   // shield max
     void FUN_14096c3c0(CStringW str, int n);                // empty

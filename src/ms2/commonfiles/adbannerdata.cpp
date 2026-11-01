@@ -19,8 +19,12 @@ class COutputStream;
 COutputStream & FUN_14070f960(COutputStream &, long);  // C3: the definition's signature
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 void FUN_14070fae0(Unk_AbOut* pOut, CStringW* pStr);
-void FUN_14070f440(Unk_AbIn* pIn, int* pn);
-void FUN_14070f500(Unk_AbIn* pIn, __int64* pn);
+class Unk_OSInput   // C3: member view for the former free stand-ins
+{
+public:
+    class Unk_OSInput& Read5(long&);
+    class Unk_OSInput& Read8(unsigned __int64&);
+};
 void FUN_14070f5f0(Unk_AbIn* pIn, CStringW* pStr);
 
 // ---- the pointer to a boxed banner (CPtred header 0x18 bytes before the pointee) ----
@@ -99,15 +103,15 @@ void AdBannerData::Write(Unk_AbOut* pOut)
 void AdBannerData::Read(Unk_AbIn* pIn)
 {
     int nSlot = -1;
-    FUN_14070f440(pIn, &m_nType);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read5(*(long*)(&m_nType));
     FUN_14070f5f0(pIn, &m_strTypeName);
     FUN_14070f5f0(pIn, &m_strName);
     FUN_14070f5f0(pIn, &m_str30);
     FUN_14070f5f0(pIn, &m_str38);
     FUN_14070f5f0(pIn, &m_str40);
-    FUN_14070f440(pIn, &nSlot);
-    FUN_14070f500(pIn, &m_nBegin);
-    FUN_14070f500(pIn, &m_nEnd);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read5(*(long*)(&nSlot));
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read8(*(unsigned __int64*)(&m_nBegin));
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read8(*(unsigned __int64*)(&m_nEnd));
     m_nSlot = nSlot;
 }
 

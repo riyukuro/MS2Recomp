@@ -15,6 +15,7 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -39,6 +40,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -50,7 +52,6 @@ public:
 };
 Unk_TabInventory* FUN_1405344f0(int nId);
 
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -89,7 +90,7 @@ CGuideConditionMovement::CGuideConditionMovement()
 // @0x1413a7820
 int CGuideConditionMovement::vfunc_3()
 {
-    Unk_GcPC* pPC = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (m_vLastPos.FUN_140552690(DAT_143b01a60))
@@ -157,6 +158,6 @@ MS2_REPLACE_METHOD(0x1413A7B30, CGuideConditionGameScene, GetTypeName, 61, 0xCE0
 // @0x1413a7b80
 int CGuideConditionGameScene::vfunc_3()
 {
-    return ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001d;
+    return ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d;
 }
 MS2_REPLACE_METHOD(0x1413A7B80, CGuideConditionGameScene, vfunc_3, 56, 0xA135E761);

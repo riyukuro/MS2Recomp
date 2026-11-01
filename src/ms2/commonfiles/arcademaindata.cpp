@@ -37,7 +37,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
 class Unk_1401a9d70 : public CStringTable { };
@@ -138,7 +138,7 @@ bool CArcadeDataTable::LoadReward()
         aReward[0] = new CArcadeRewardData;
         for (Unk_140165cf0* pReward = pNode->FUN_140165cf0("reward"); pReward != 0; pReward = pReward->FUN_140168650("reward"))
         {
-            if (!FUN_14028f710(pReward))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pReward)))
                 continue;
             RewardPtr pData(new CArcadeRewardData);
             pData->m_nArcadeId = nId;

@@ -42,6 +42,7 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/ascript.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -160,6 +161,7 @@ class Unk_SmPlayers { public: Unk_SmPlayer* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
       // text of a string id
@@ -170,15 +172,13 @@ CStringW FUN_14016a730(const char* psz, int n);                             // n
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& strArg);    // text with one argument
 CStringW FUN_14062b4f0(CStringW strKey, const unsigned& nArg);              // string table text with one argument
-bool FUN_140184310(const CString& str, const char* psz) noexcept;                    // string equals
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the page
-void FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
+int FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
 void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // has the AS object been released
 class Unk_SmEvent { public: };
-Unk_SmEvent* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -355,7 +355,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         return;
     if (m_event == 0)
         return;
-    Unk_SmPlayer* pPlayer = ((class Unk_SmPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     m_strUrl = ((class CGameRule*)FUN_1401c0d90())->FUN_140478020(rec->m_nUrlTextId);
@@ -370,7 +370,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
             spSlot->FUN_1422e4840(m_strSlot);
         FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
-        if (FUN_140184310(rec->m_body.m_strAttach, "attachment"))
+        if ((rec->m_body.m_strAttach == "attachment"))
             strAttach = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_body.m_strAttach;
@@ -410,7 +410,7 @@ void UISystemMailNotifyDialog::FUN_1412a5d10(const Scaleform::GFx::FunctionHandl
 {
     if (m_event.get() != 0)
     {
-        if (FUN_140184310(static_cast<Unk_SmClip*>(m_event.operator->())->FUN_1422c2420(), "close"))
+        if ((static_cast<Unk_SmClip*>(m_event.operator->())->FUN_1422c2420() == "close"))
             FUN_1412a5570(m_178);
         else
             FUN_1412a61a0();
@@ -435,7 +435,7 @@ void UISystemMailNotifyDialog::FUN_1412a5de0(const Scaleform::GFx::FunctionHandl
 // @0x1412a5e60
 void UISystemMailNotifyDialog::FUN_1412a5e60(NotifyObject*)
 {
-    if (((class GFxSceneService*)(class Unk_SmEvent*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_SmEvent*)(((Unk_SmEvent*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
         return;
     if (FUN_1412a5ca0() != 0)
         FUN_141924680();

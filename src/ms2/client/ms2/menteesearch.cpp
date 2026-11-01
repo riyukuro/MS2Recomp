@@ -64,7 +64,7 @@ private:
     DWORD m_dwThread;
     CStringA m_kTag;
 };
-class Unk_MenteeUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_MenteeUIManager { public: };
 
 // ---- MenteeSearch::ResponseMenteeList ----
 
@@ -367,7 +367,7 @@ UIInviteMentoringDialog* FUN_140b6f4c0(int nClass)
 {
     if (reinterpret_cast<Unk_MenteeUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_MenteeUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIInviteMentoringDialog*>(spObj.operator->());
     }

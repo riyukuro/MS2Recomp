@@ -21,15 +21,14 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <string.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // a localised key formatted with one argument
 
 class Unk_CjPC : public PC { };                  // job code
 class Unk_CjWorld { public: Unk_CjPC* FUN_141bd0cc0(); };         // the local player
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 
 // FUN_140bd0bb0 is a free function, so it reaches the dialog's AS pointer (UISwfEntity::m_30 at +0x30) through this
@@ -80,11 +79,11 @@ void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
 {
     if (FUN_140ba28d0(&((Unk_CjAS*)pEffect)->m_30, 0))
         return;
-    Unk_CjPC* pPc = reinterpret_cast<Unk_CjWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CjPC* pPc = ((Unk_CjPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     int nJob = pPc->FUN_141654730();
-    CStringW strText = FUN_1405c2690(CStringW(L"s_changejob_effect_text"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
+    CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_changejob_effect_text"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     ASObj obj(2);
     obj.FUN_140bd0d90("jobCode", nJob);
     obj.FUN_1407cbb20("text", CStringW(strText));
@@ -97,7 +96,7 @@ void ASObj::FUN_140bd0d90(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
 }
 MS2_REPLACE_METHOD(0x140BD0D90, ASObj, FUN_140bd0d90, 152, 0x1CED670B);
 

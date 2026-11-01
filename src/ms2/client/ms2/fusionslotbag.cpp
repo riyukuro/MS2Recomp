@@ -50,7 +50,7 @@ public:
 };
 
 // UI service: handle to a registered UI object.
-class Unk_FusionUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
+class Unk_FusionUIManager { public: };
 
 // The ItemInfoSlot setters take Delegates over references here (the exe's signature); same entries as
 // ItemInfoSlot::SetSlotFn / SetCanFn.
@@ -69,7 +69,6 @@ UIItemMergeOptionDialog* FUN_14123a9b0(int nClass);
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(FusionSlotBag);
 
@@ -94,7 +93,7 @@ void FUN_14123a190(const CString& strName)
     FusionSlotBag* pBag = FUN_14123a960(FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
         FUN_1422c8f70(strName);
     }
 }
@@ -157,7 +156,7 @@ UIItemMergeOptionDialog* FUN_14123a9b0(int nClass)
 {
     if (reinterpret_cast<Unk_FusionUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spObj = reinterpret_cast<Unk_FusionUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nClass);
+        MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nClass);
         if (spObj.get() != 0)
             return dynamic_cast<UIItemMergeOptionDialog*>(spObj.operator->());
     }

@@ -23,7 +23,7 @@ public:
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& rOut);
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned int& rOut);
-int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 short FUN_140315da0(const short& nValue, short nMin, short nMax);      // clamp
 
 static int LoadRewardCoins(Unk_140165cf0* pParent, const char* pszName, std::vector<unsigned int>* pOut);
@@ -74,7 +74,7 @@ void MentoringDataTable::LoadConfig(Unk_140165cf0* pConfig)
         LoadRewardCoins(pAttend, "RewardCoin", &m_attendRewardCoins);
     FUN_140873220(pConfig, "maxMentorDailyRewardCoin", m_nMaxMentorDailyRewardCoin);
     FUN_140873220(pConfig, "maxMenteeDailyRewardCoin", m_nMaxMenteeDailyRewardCoin);
-    FUN_1408730a0(pConfig, "isShowIcon", m_bShowIcon);
+    XmlGetAttr((class TiXmlElement*)(pConfig), "isShowIcon", m_bShowIcon);
     Unk_140165cf0* pMentor = pConfig->FUN_140165cf0("MentorReward");
     if (pMentor != 0)
         FUN_140873220(pMentor, "coin", m_nMentorRewardCoin);

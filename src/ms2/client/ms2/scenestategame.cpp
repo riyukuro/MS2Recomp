@@ -589,7 +589,6 @@ UITalkManager* FUN_140967100();
 class Unk_SSG9331e0 : public CGuideManager { public:  };
 Unk_SSG9331e0* FUN_1409331e0();
 class Unk_SSGSoundCtl { public: void FUN_1422ba0d0(); void FUN_1422b9fd0(int nId); UISwfEntity* FUN_1422b9e20(int nId); UISwfEntity* FUN_1422b9e80(); };
-Unk_SSGSoundCtl* FUN_1408e57f0();
 class Unk_SSG931510 : public CMyCharacter { public: MS2Ptr<class Unk_SSGDungeonRecord> FUN_140d9f2c0(); MS2Ptr<class Unk_SSGChatEmoticon> FUN_140d9f8f0(); };
 void FUN_1412b9870(int nId, int nType);
 
@@ -1185,15 +1184,7 @@ struct Unk_SSGBeautyReq                                     // FUN_1407a8340 rea
 MS2_CHECK_OFFSET(Unk_SSGBeautyReq, m_nUid, 8);
 void FUN_1407a8340(struct Unk_1407a82f0&, class CInputStream&);   // C3: was FUN_1407a8340
 class UIBeautyShopDialog : public UIDialog { };
-class Unk_SSGUIMsg : public UIMsg                           // an ActionScript call (ASData)
-{
-public:
-    Unk_SSGUIMsg();                                         // 0x1422e4490
-    ~Unk_SSGUIMsg();                                        // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_SSGUIMsg;   // an ActionScript call (ASData)
 
 class StateObserverData : public StateData
 {
@@ -2437,9 +2428,9 @@ void CSceneStateGame::FUN_14170f930(CInPacket& packet)
     {
         FUN_140d73aa0(FUN_140cc20a0(nError), 0, 0, CStringW(L""));
     }
-    FUN_1408e57f0()->FUN_1422ba0d0();
+    ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422ba0d0();
     if (DAT_143ab287c == 0xd)
-        FUN_1408e57f0()->FUN_1422b9fd0(0x6200086);
+        ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200086);
 }
 MS2_REPLACE_METHOD(0x14170f930, CSceneStateGame, FUN_14170f930, 812, 0xCE56891C);
 
@@ -2511,7 +2502,7 @@ void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
     if (bPicked)
     {
         int nOwnerId = packet.ReadInt32();
-        if (((CDropItem*)(Unk_SSGDropItem*)(pDrop))->FUN_14118fea0())
+        if (((CDropItem*)(Unk_SSGDropItem*)(pDrop))->IsMeso())
         {
             __int64 nValue = packet.ReadInt64();
             pDrop->FUN_14174a5a0(nValue);
@@ -3184,14 +3175,14 @@ void CSceneStateGame::OnItemPutOn(CInPacket& packet)
     if (nKind == 2)
         spItem->FUN_14052a130(nKind);
     spItem->FUN_140524eb0(packet);
-    if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+    if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
         pPC->vfunc_127(spItem.get(), 1);
     else
         pPC->vfunc_127(spItem.get(), 0);
     MyPC* pMyPC = FUN_1409613d0(pPC);
     if (pMyPC != 0)
     {
-        if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+        if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
         {
             if (nSlot == 1 || nSlot == 3 || nSlot == 2)
             {
@@ -3233,7 +3224,7 @@ void CSceneStateGame::OnItemPutOff(CInPacket& packet)
     MS2Ptr<CItem> pItem = pPC->FUN_141655b80(nItemUid);
     if (!pItem)
         return;
-    if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+    if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
         pPC->vfunc_128(pItem.get(), 1);
     else
         pPC->vfunc_128(pItem.get(), 0);
@@ -5870,9 +5861,9 @@ void CSceneStateGame::OnUserMoveByPortal(CInPacket& packet)
         pMyPC->FUN_141528e50(kPos, kRot, nFlag);
     else
         pPC->FUN_1416629d0(kPos, kRot);
-    if (pMyPC != 0 && ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
+    if (pMyPC != 0 && ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
     {
-        UISceneGameBeautyShop* pShop = dynamic_cast<UISceneGameBeautyShop*>(((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->FUN_1422b9e50());
+        UISceneGameBeautyShop* pShop = dynamic_cast<UISceneGameBeautyShop*>(((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
         if (pShop != 0)
             pShop->FUN_141ac9270();
     }
@@ -7053,7 +7044,7 @@ MS2_REPLACE_METHOD(0x14173fe20, CSceneStateGame, FUN_14173fe20, 126, 0x98F76DA5)
 // @0x14173feb0
 void CSceneStateGame::FUN_14173feb0()
 {
-    int nScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->GetSubSceneId();
+    int nScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
     if (m_b18)
     {
         Unk_SSGUIMgr* pUI = FUN_1403ed2b0();
@@ -7064,10 +7055,10 @@ void CSceneStateGame::FUN_14173feb0()
             pUI->FUN_141adb2a0(nScene);
             pUI->FUN_141ad9b30();
         }
-        UISwfEntity* pHud = FUN_1408e57f0()->FUN_1422b9e80();
+        UISwfEntity* pHud = ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9e80();
         if (pHud != 0)
             pHud->FUN_1422dc080();
-        UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->FUN_1422b9e50();
+        UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50();
         if (pScene != 0)
             pScene->FUN_1422dc080();
         efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
@@ -7080,10 +7071,10 @@ void CSceneStateGame::FUN_14173feb0()
     else
     {
         FUN_140b632f0()->FUN_1422d4b70(false);
-        UISwfEntity* pHud = FUN_1408e57f0()->FUN_1422b9e80();
+        UISwfEntity* pHud = ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9e80();
         if (pHud != 0)
             pHud->FUN_1422dbf80(pHud->FUN_1422db790(), pHud->FUN_1422db750(), 0, 0);
-        UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(FUN_1408e57f0()))->FUN_1422b9e50();
+        UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50();
         if (pScene != 0)
             pScene->FUN_1422dbf80(pScene->FUN_1422db790(), pScene->FUN_1422db750(), 0, 0);
         Unk_SSGUIMgr* pUI = FUN_1403ed2b0();
@@ -8862,7 +8853,7 @@ void CSceneStateGame::SendBeauty(CInPacket& packet)
     UIBeautyShopDialog* pDlg = Unk_SSGGetDialog<UIBeautyShopDialog>(0x4eee);
     if (pDlg == 0 || pDlg->FUN_141924630() == 1)
         return;
-    UISwfEntity* pEntity = FUN_1408e57f0()->FUN_1422b9e20(0x620001f);
+    UISwfEntity* pEntity = ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9e20(0x620001f);
     if (pEntity != 0)
     {
         Unk_SSGUIMsg msg;
@@ -8874,7 +8865,7 @@ void CSceneStateGame::SendBeauty(CInPacket& packet)
     out.COutPacket::WriteUInt8(0x17);
     out.COutPacket::WriteInt64(req.m_nUid);
     FUN_140710590(out);
-    FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
+    ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
 }
 MS2_REPLACE_METHOD(0x14173c630, CSceneStateGame, SendBeauty, 357, 0x2D049D06);
 

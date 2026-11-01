@@ -25,6 +25,13 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- unit-local views of exe objects ----
 
@@ -157,7 +164,7 @@ int TriggerCli::LoadFile(const CString& strPath)
         ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pState = pRoot->FUN_140165cf0("state"); pState != 0; pState = pState->FUN_140168650("state"))
+    for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
         LoadState(pState);
     return 1;
 }
@@ -171,7 +178,7 @@ int TriggerCli::LoadBuffer(CFileSystem::BufferPtr spBuffer)
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pState = pRoot->FUN_140165cf0("state"); pState != 0; pState = pState->FUN_140168650("state"))
+    for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
         LoadState(pState);
     return 1;
 }
@@ -192,7 +199,7 @@ int TriggerCli::LoadEditorTable()
         ((class Unk_TrgLog*)GetLogString())->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         CStringW strCond = FUN_1401bf530(pKey, "cond", CStringW(L""));
         CStringW strAct = FUN_1401bf530(pKey, "act", CStringW(L""));
@@ -208,7 +215,7 @@ int TriggerCli::LoadEditorTable()
                 CString strAttr;
                 strAttr.Format("arg%d", i + 1);
                 CStringW strValue;
-                if (FUN_140873420(pKey, (const char*)strAttr, strValue) == 0)
+                if (XmlGetAttr((class TiXmlElement*)(pKey), (const char*)strAttr, strValue) == 0)
                     spArgs->SetAtGrow(i, strValue);
             }
             m_mapArgs.SetAt(strCond, spArgs);
@@ -223,7 +230,7 @@ int TriggerCli::LoadEditorTable()
                 CString strAttr;
                 strAttr.Format("arg%d", i + 1);
                 CStringW strValue;
-                if (FUN_140873420(pKey, (const char*)strAttr, strValue) == 0)
+                if (XmlGetAttr((class TiXmlElement*)(pKey), (const char*)strAttr, strValue) == 0)
                     spArgs->SetAtGrow(i, strValue);
             }
             m_mapArgs.SetAt(strAct, spArgs);
@@ -390,7 +397,7 @@ TriggerCli::StatePtr TriggerCli::GetState(const CStringW& strName)
 void TriggerCli::LoadState(Unk_140165cf0* pNode)
 {
     CStringW strName;
-    FUN_140873420(pNode, "name", strName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);
     StatePtr spState;
     if (m_mapStates.Lookup(strName, spState))
         return;

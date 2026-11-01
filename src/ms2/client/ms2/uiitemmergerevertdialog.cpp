@@ -41,6 +41,7 @@
 #include "ms2/placeholder/citemmergeoptiontable.h"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/client/ms2/invenslot.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- statics (.text$di): the sort-name table of the shared item header, twice (two headers of the unit pull it in) ----
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -85,7 +86,6 @@ public:
     bool FUN_140630810();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // string table text with one argument
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 void FUN_14083d2b0(CStringW& str);
 CStringW FUN_141b71910(__int64 nUid);                               // the uid as text
@@ -213,7 +213,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 // @0x140e4cda0
 void UIItemMergeRevertDialog::FUN_140e4cda0(CItem* pItem)
 {
-    FUN_1412751f0(FUN_1405c2690(CStringW(L"s_item_merge_option_revert"), pItem->FUN_140527b10()), 3, 1);
+    FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_item_merge_option_revert"), pItem->FUN_140527b10()), 3, 1);
     vfunc_67();
 }
 

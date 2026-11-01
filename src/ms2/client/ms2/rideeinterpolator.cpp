@@ -22,9 +22,8 @@ class Unk_RiObj { public: virtual void v0(); virtual void v1(); virtual void v2(
 __int64 FUN_141bd1200(Unk_RiMain* p, int nObjectId);            // find the object by id
 __int64 FUN_141020ad0(__int64 pObject);                         // the rider's body component (vfunc 5, id 0x6200013)
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                    // the scene root of an entity
-void FUN_141d2fab0(NiTransform* pXform);                        // NiTransform::MakeIdentity
 void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut);    // euler angles (degrees) to a rotation matrix
-void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3* pEuler); // rotation matrix to euler angles
+void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
 class Unk_RiApp;
 
 RideeInterpolator::RideeInterpolator()
@@ -70,7 +69,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
             return false;
         NiTransform kXform = ((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetLocalTransform();
         NiTransform kParent;
-        FUN_141d2fab0(&kParent);
+        ((class NiTransform*)(class NiTransform*)(&kParent))->MakeIdentity();
         if (((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetParent() != 0)
             kParent = ((class NiAVObject*)(class NiAVObject*)(((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetParent()))->GetWorldTransform();
         kXform = kParent * kXform;
@@ -81,7 +80,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         NiMatrix3 kSeat;
         FUN_140b86230(kSeatRot, kSeat);
         kRot = kRot * kSeat;
-        FUN_140a0b1f0(kRot, &kEuler);
+        FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)&static_cast<class NiMatrix3 const&>(kRot), (struct Vector3*)(&kEuler));
         efd::Point3 kX;
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(0, *(class efd::Point3*)(&kX));
         ((struct Vector3*)&(kX))->FUN_140968990();

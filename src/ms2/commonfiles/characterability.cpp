@@ -34,10 +34,10 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, unsigned& rOut);
-int FUN_1408731a0(Unk_140165cf0* pNode, const char* pszName, unsigned short& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);
-bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string by key
 
 // The content switch table and the player level.
@@ -46,7 +46,7 @@ class Unk_CaSwitches : public CFeatureManager
 public:
     unsigned short FUN_14036de00();
 };
-Unk_CaSwitches* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The state object that holds the ability points slot.
 struct Unk_CaSlot { int m_n; };
@@ -56,7 +56,7 @@ public:
     char m_pad[0x6c60];
     Unk_CaSlot m_slot;
 };
-Unk_CaState* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int* FUN_1401d7c10(Unk_CaSlot* pSlot);
 
 // The unit's log call (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0): two arguments.
@@ -132,15 +132,15 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
-        if (!FUN_140166410()->FUN_14036d750(strLocale))
+        if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d750(strLocale))
             continue;
         {
             MS2Ptr<CCharacterAbilityCategory> spCategory(new CCharacterAbilityCategory);
-            FUN_140873220(pNode, "id", spCategory->m_nId);
+            XmlGetAttr((class TiXmlElement*)(pNode), "id", spCategory->m_nId);
             FUN_140873420(pNode, "name", spCategory->m_strName);
             FUN_140873420(pNode, "tooltip", spCategory->m_strTooltip);
             spCategory->m_strName = GetStringCommonByKey(spCategory->m_strName);
@@ -174,19 +174,19 @@ int CCharacterAbilityTable::LoadCharacterAbility()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("ability"); pNode != 0; pNode = pNode->FUN_140168650("ability"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         FUN_140873420(pNode, "locale", strLocale);
-        if (!FUN_140166410()->FUN_14036d750(strLocale))
+        if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d750(strLocale))
             continue;
         {
             MS2Ptr<CCharacterAbility> spAbility(new CCharacterAbility);
-            FUN_140873220(pNode, "id", spAbility->m_nId);
-            FUN_140873220(pNode, "categoryID", spAbility->m_nCategoryId);
-            FUN_1408731a0(pNode, "requireLevel", spAbility->m_nRequireLevel);
-            FUN_140873220(pNode, "additionalEffectID", spAbility->m_nAdditionalEffectId);
-            FUN_1408731a0(pNode, "additionalEffectLevel", spAbility->m_nAdditionalEffectLevel);
+            XmlGetAttr((class TiXmlElement*)(pNode), "id", spAbility->m_nId);
+            XmlGetAttr((class TiXmlElement*)(pNode), "categoryID", spAbility->m_nCategoryId);
+            XmlGetAttr((class TiXmlElement*)(pNode), "requireLevel", spAbility->m_nRequireLevel);
+            XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectID", spAbility->m_nAdditionalEffectId);
+            XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectLevel", spAbility->m_nAdditionalEffectLevel);
             MS2Ptr<CCharacterAbilityCategory> spCategory(0);
             if (!m_categories.Lookup(spAbility->m_nCategoryId, spCategory))
             {
@@ -272,9 +272,9 @@ MS2Ptr<CCharacterAbility> CCharacterAbilityTable::FUN_1401e0670(int nId)
 // @0x1401e0790
 int FUN_1401e0790(unsigned short nLevel, int nPoints)
 {
-    unsigned short nPlayerLevel = FUN_140166410()->FUN_14036de00();
+    unsigned short nPlayerLevel = ((class Unk_CaSwitches*)FUN_140166410())->FUN_14036de00();
     int nTotal = nLevel - nPlayerLevel;
-    nTotal += *FUN_1401d7c10(&FUN_1401d3200()->m_slot);
+    nTotal += *FUN_1401d7c10(&((class Unk_CaState*)FUN_1401d3200())->m_slot);
     nTotal += nPoints;
     return nTotal;
 }
@@ -282,9 +282,9 @@ int FUN_1401e0790(unsigned short nLevel, int nPoints)
 // @0x1401e0800
 int FUN_1401e0800(unsigned short nLevel)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x2d))
+    if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d570(0x2d))
         return 0;
-    if (FUN_140166410()->FUN_14036de00() > nLevel)
+    if (((class Unk_CaSwitches*)FUN_140166410())->FUN_14036de00() > nLevel)
         return 0;
     return 1;
 }

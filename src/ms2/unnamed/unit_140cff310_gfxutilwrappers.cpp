@@ -160,10 +160,11 @@ public:
 };
 MS2_CHECK_SIZE(Unk_GemNode, 0x80);
 
-class Unk_Handle1401cd100
+class Unk_BuddyHandle    // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
 {
 public:
-    Unk_Handle1401cd100(int n);
+    Unk_BuddyHandle(void*);
+private:
     void* m_p;
 };
 
@@ -534,7 +535,7 @@ static CString s_strTopLeft("topLeft");
 // @0x1400d1d80
 static CString s_strTopRight("topRight");
 // @0x1400d1db0
-static Unk_Handle1401cd100 s_hGfx(0);
+static Unk_BuddyHandle s_hGfx(NULL);
 
 // @0x140d01040
 int FUN_140d01040(CString& strAlign)

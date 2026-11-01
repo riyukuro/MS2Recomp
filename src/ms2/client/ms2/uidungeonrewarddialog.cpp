@@ -35,6 +35,7 @@
 #include "ms2/client/ms2/dungeonmissioncli.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"
 #ifndef MS2_HOOK_DLL   // s_winSound: the exe's object at 0x143ac5988, which other units reach as DAT_143ac5988 (the hook DLL binds it)
 CString DAT_143ac5988="BattleField_Win";
 #else
@@ -164,7 +165,6 @@ class ASTooltip : public AScript {
 public: ASTooltip(int,int); virtual ~ASTooltip(); int FUN_1409e26b0(const CStringW&);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
 };
-bool FUN_140184310(const CString&,const char*);
 class Unk_RewardThing : public PCGemEquip { };
 struct Unk_RewardVector
 {
@@ -338,7 +338,6 @@ Unk_RewardRoomMgr* FUN_14031c2a0();
 class Unk_RewardSound { public: void FUN_141276180(const CString&); };
 extern Unk_RewardSound g_unkRewardSound; // 0x143ac5988
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1405c2690(CStringW,const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1409eb450(int);
 CStringW FUN_140811740(int,const int&,const int&);
@@ -455,8 +454,8 @@ MS2_REPLACE_METHOD(0x140E21BD0, UIDungeonRewardDialog, vfunc_72, 238, 0x43986A41
 
 // @0x140e21cd0
 void UIDungeonRewardDialog::vfunc_45(Scaleform::GFx::Value* out,const CString& method,ASData* args) {
- if(FUN_140184310(method,"getTooltip")) { CString name=args->FUN_1422b8d30();
- if(FUN_140184310(name,"m_bonusDetail")) { ASTooltip tip(1,2); if(tip.FUN_1409e26b0(m_tip)) *out=tip.FUN_1422bb870();return;} }
+ if((method == "getTooltip")) { CString name=args->FUN_1422b8d30();
+ if((name == "m_bonusDetail")) { ASTooltip tip(1,2); if(tip.FUN_1409e26b0(m_tip)) *out=tip.FUN_1422bb870();return;} }
 }
 MS2_REPLACE_METHOD(0x140E21CD0, UIDungeonRewardDialog, vfunc_45, 233, 0xE42702C8);
 
@@ -626,7 +625,7 @@ MS2_REPLACE_METHOD(0x140E250E0, UIDungeonRewardDialog, FUN_140e250e0, 129, 0x950
 
 // @0x140e25420
 void UIDungeonRewardDialog::FUN_140e25420() {
- void* actor=reinterpret_cast<Unk_RewardPlayer*>(WorldService::GetInstance())->FUN_141bd0cc0();if(!actor)return;
+ void* actor=((Unk_RewardPActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return;
  UIAvatarPC* avatar=new UIAvatarPC(actor,false);
  avatar->FUN_1418bd1d0()->FUN_1410885b0(1);
  avatar->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
@@ -693,7 +692,7 @@ void UIDungeonRewardDialog::FUN_140e22820() {
   Unk_RewardPtr<Unk_RewardClip> bonus=m_190->FUN_1409b4560("m_bonusText");
   Unk_RewardPtr<Unk_RewardClip> detail=m_190->FUN_1409b4560("m_bonusDetail");
   if(meso.get()) meso->FUN_1422c4cd0(FUN_1409404f0(m_1e8.FUN_14026ccf0()));
-  if(exp.get()) exp->FUN_1422c4cd0(FUN_1405c2690(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0())));
+  if(exp.get()) exp->FUN_1422c4cd0(FUN_14028dfa0<CStringW>(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0())));
   bool normal=false;
   if(m_type==1) normal=true;
   if(bonus.get()) bonus->vfunc_4(normal);
@@ -751,7 +750,7 @@ void UIDungeonRewardDialog::FUN_140e23690() {
   Unk_RewardPtr<Unk_RewardText> meso=m_190->FUN_140d01e20("m_mesoText");
   Unk_RewardPtr<Unk_RewardText> exp=m_190->FUN_140d01e20("m_expText");
   if(meso.get()) meso->FUN_1422c4cd0(FUN_1409404f0(m_1e8.FUN_14026ccf0()+m_228.FUN_14026ccf0()));
-  if(exp.get()) exp->FUN_1422c4cd0(FUN_1405c2690(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0()+m_228.FUN_14026cbf0())));
+  if(exp.get()) exp->FUN_1422c4cd0(FUN_14028dfa0<CStringW>(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0()+m_228.FUN_14026cbf0())));
   {
    if(Unk_RewardPtr<Unk_RewardClip> guild=m_190->FUN_1409b4560("m_rewardGuild")) {
     if((m_room.get()?true:false)&&m_room->m_1c==6) {
@@ -790,7 +789,7 @@ MS2_REPLACE_METHOD(0x140E23E10, UIDungeonRewardDialog, FUN_140e23e10, 573, 0x9C9
 
 // @0x140e25170
 void UIDungeonRewardDialog::FUN_140e25170() {
- Unk_RewardPActor* actor=reinterpret_cast<Unk_RewardPlayer*>(WorldService::GetInstance())->FUN_141bd0cc0();
+ Unk_RewardPActor* actor=((Unk_RewardPActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
  if(!actor) return;
  if(m_180==0) return;
  Unk_RewardPtr<Unk_RewardClip> info=m_180->FUN_1409b4560("m_characterInfo");
@@ -810,7 +809,7 @@ CStringW UIDungeonRewardDialog::FUN_140e25840(int kind) {
  switch(kind) {
  case 0: return L"";
  case 1:
-  if(m_room.get()) { CStringW count=FUN_140e14d70(m_room->FUN_14031ddf0()); return FUN_1405c2690(L"s_dungeon_reward_dungeon_reward_count",count); }
+  if(m_room.get()) { CStringW count=FUN_140e14d70(m_room->FUN_14031ddf0()); return FUN_14028dfa0<CStringW>(L"s_dungeon_reward_dungeon_reward_count",count); }
  case 2: return GetStringCommonByKey(L"s_dungeon_reward_bonus_event");
  case 3: return GetStringCommonByKey(L"s_dungeon_reward_mission_rank");
  case 4: return GetStringCommonByKey(L"s_dungeon_reward_dungeon_helper");

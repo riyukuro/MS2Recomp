@@ -27,7 +27,7 @@ extern "C" double (__cdecl* __imp_floor)(double);            // the exe imports 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pNode);                   // the element is enabled for this build
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
 __int64 GetServerTime();                                    // the server clock
 __int64 MakeTime(int year, int month, int day, int hour, int minute, int second);
@@ -75,7 +75,7 @@ bool PaybackTable::Load()
     m_levels.clear();
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("payback"); pNode != 0; pNode = pNode->FUN_140168650("payback"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         LevelEntry entry;
         entry.m_nLevel = FUN_140197390(pNode, "adventure_level", 0);

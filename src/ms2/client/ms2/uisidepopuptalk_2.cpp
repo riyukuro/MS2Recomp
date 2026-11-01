@@ -32,8 +32,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
-CItemData* FUN_140527840(CItem* pItem);                     // the item's data record
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);   // the common dialog AS calls
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 // A list control wrapping a movie child (the GetChild back end of this unit's instance).
 template <class T> MS2Ptr<T> Unk_SptASCreate(int nMovieId, const Scaleform::GFx::Value& v)
@@ -129,7 +128,7 @@ int UISelectSuperWorldChatDialog::vfunc_28(const char* szMethod, const Scaleform
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0))
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(0)))
         return 1;
     return 0;
 }
@@ -196,7 +195,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >&
         MS2Ptr<CItem> spItem = aItems[i];
         if (spItem == 0)
             continue;
-        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
         if (spData == 0)
             continue;
         if (spData->function.name != L"SuperWorldChat")
@@ -216,7 +215,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >&
         MS2Ptr<CItem> spItem = aItems[i];
         if (spItem == 0)
             continue;
-        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
         if (spData == 0)
             continue;
         if (spData->function.name != L"WeddingChat")

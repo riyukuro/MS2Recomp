@@ -1480,7 +1480,7 @@ void Customize::Equipment::SendAdded(MS2Ptr<CItem> spItem)
     packet.WriteUInt8(m_pListener->UseFreeTry());
     packet.WriteInt32(spItem->FUN_1405276c0());
     packet.WriteInt64(nContext);
-    spItem->FUN_140525590(reinterpret_cast<__int64>(&packet));     // writes the item's extra data (citem.h types it __int64)
+    spItem->WriteItemBody(reinterpret_cast<__int64>(&packet));     // writes the item's extra data (citem.h types it __int64)
     FUN_140710590(packet);
     ResetCapPosition(spItem);
 }
@@ -1500,7 +1500,7 @@ void Customize::Equipment::SendModified(MS2Ptr<CItem> spItem)
     packet.WriteUInt8(m_pListener->GetShopId());
     packet.WriteUInt8(m_pListener->UseFreeTry());
     packet.WriteInt64(spItem->FUN_140526a50());
-    spItem->FUN_140525590(reinterpret_cast<__int64>(&packet));
+    spItem->WriteItemBody(reinterpret_cast<__int64>(&packet));
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140CD0EA0, Customize::Equipment, SendModified, 293, 0x39533252);
@@ -1653,7 +1653,7 @@ Unk_BSPartHandle Customize::FUN_140cd1a30()
 }
 
 // @0x140cd1b20
-unsigned Customize::FUN_140cd1b20()
+unsigned Customize::GetEditFlags()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -1662,7 +1662,7 @@ unsigned Customize::FUN_140cd1b20()
         return 0;
     return spEdit->GetFlags();
 }
-MS2_REPLACE_METHOD(0x140CD1B20, Customize, FUN_140cd1b20, 163, 0xD44E6561);
+MS2_REPLACE_METHOD(0x140CD1B20, Customize, GetEditFlags, 163, 0xD44E6561);
 
 // @0x140cd1bd0
 IItemCustomizeEventListener* Customize::GetListener()

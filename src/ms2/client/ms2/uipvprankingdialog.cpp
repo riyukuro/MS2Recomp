@@ -22,6 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/pvpmanager.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 
 // ---- unit-local views of exe types ----
 
@@ -36,6 +37,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -80,7 +82,6 @@ int FUN_141654730(PCBase* pPC);                                     // the job
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void* FUN_1403ed2b0();                                              // the UI service
 int FUN_141adc940(void* pUI, int nUiId);
-void FUN_141adc530(void* pUI, int nUiId);
 void FUN_14151f200();
 
 // @0x141342f10
@@ -159,7 +160,7 @@ void UIPvPRankingDialog::FUN_1413432b0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MyPC* pPC = ((class Unk_PvPRankWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     for (int nRank = 1; nRank <= 3; nRank++) {
@@ -190,7 +191,7 @@ int UIPvPRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
         if (FUN_141adc940(FUN_1403ed2b0(), 0x4e9b) != 0)
-            FUN_141adc530(FUN_1403ed2b0(), 0x4e9b);
+            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e9b)));
         return 1;
     }
     if (_stricmp("OnClose", szMethod) == 0) {

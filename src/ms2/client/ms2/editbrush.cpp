@@ -24,13 +24,10 @@
 #include "ms2/client/ms2/postprocessing/outlinerenderstep.h"
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-CPhysXHelper* FUN_1409f7ca0();                                      // the physics helper singleton
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14109a9e0();                                                // rand()
-void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
 void FUN_1405a85c0(void* pHandle);                                  // release the handle returned by a detach
 void FUN_140adc7f0(NiMesh* pkMesh, int nType);                      // NiMesh::SetPrimitiveType
-void FUN_140adc720(NiMesh* pkMesh);
-void FUN_140adc810(NiMesh* pkMesh, bool b);                         // NiMesh::SetSelectiveUpdate-like flag
 float FUN_14028aed0(float f);                                       // floorf
 NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
@@ -288,7 +285,7 @@ void NoiseBrush::vfunc_4()
             NiTransform xf = ((class NiAVObject*)((NiAVObject*)pInstance))->GetLocalTransform();
             xf.m_Rotate.MakeZRotation(NoiseAngle(this));
             xf.m_fScale = NoiseScale(this);
-            FUN_140aacb60((NiAVObject*)pInstance, xf);
+            ((class NiAVObject*)(class NiAVObject*)((NiAVObject*)pInstance))->SetLocalTransform(xf);
         }
     }
     BrushService()->RefreshLayers();
@@ -333,7 +330,7 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
     NiMesh* pkMesh = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
     pkMesh->AttachProperty(pkVC);
     FUN_140adc7f0(pkMesh, 3);
-    FUN_140adc720(pkMesh);
+    ((class NiMesh*)(class NiMesh*)(pkMesh))->RemoveAllStreamRefs();
     pkMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, 360, 0x13,
         NiDataStream::USAGE_VERTEX, aPoints, false, true);
     NiDataStreamElementLock kColors = pkMesh->AddStreamGetLock(NiCommonSemantics::COLOR(), 0,
@@ -350,7 +347,7 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
     pkMesh->UpdateProperties();
     pkMesh->UpdateEffects();
     pkMesh->UpdateNodeBound();
-    FUN_140adc810(pkMesh, true);
+    ((class NiAVObject*)(class NiMesh*)(pkMesh))->SetSelectiveUpdate(true);
     return pkMesh;
 }
 
@@ -364,6 +361,6 @@ NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius)
                   __imp_sinf((float)nAngle * 3.1415927f / 180.0f) * (float)nDist, 100.0f);
     Unk_RayCastInfo info;
     Vector3 ptHit(0.0f, 0.0f, 0.0f);
-    FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<Vector3&>(ptCenter).FUN_14097fd50(ptOff), ptHit, &info, 200.0f, 0, 0x201);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<Vector3&>(ptCenter).FUN_14097fd50(ptOff), ptHit, &info, 200.0f, 0, 0x201);
     return reinterpret_cast<const efd::Point3&>(ptHit);
 }

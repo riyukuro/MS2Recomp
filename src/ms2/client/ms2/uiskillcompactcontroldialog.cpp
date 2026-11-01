@@ -67,6 +67,7 @@ class Unk_ScWorld { public: MyPC* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -174,7 +175,7 @@ CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const 
 CStringW GetStringCommon(int nId);
 CStringTable* GetStringTable();
 void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
-void FUN_140d73bc0(int nStringId, int nType, int n, CStringW tag);
+void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 UIMessageBox* FUN_14151f890();
@@ -235,7 +236,7 @@ int UISkillCompactControlDialog::vfunc_65()
 void UISkillCompactControlDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         pPlayer->FUN_141523bc0()->FUN_141767df0(0);
     FUN_140fa1400();
@@ -263,7 +264,7 @@ int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             FUN_140fa2180(CStringW(m_cur.m_strTab));
         }
         m_cur.Clear();
-        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
             pPlayer->FUN_141523bc0()->FUN_141767df0(0);
     }
@@ -398,7 +399,7 @@ int UISkillCompactControlDialog::vfunc_13()
                             FUN_140fa2180(CStringW(m_cur.m_strTab));
                             m_cur.Clear();
                         }
-                        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+                        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                         if (pPlayer != 0)
                             pPlayer->FUN_141523bc0()->FUN_141767df0(0);
                     }
@@ -473,7 +474,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         m_prev.m_nKey = nKey;
         m_prev.m_strTab = m_strTab;
         FUN_140fa23f0(nKey, 0);
-        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
             pPlayer->FUN_141523bc0()->FUN_141767df0(1);
     }
@@ -482,7 +483,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (m_cur.m_nState == 0)
         {
             m_cur.Clear();
-            MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+            MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer != 0)
                 pPlayer->FUN_141523bc0()->FUN_141767df0(0);
         }
@@ -560,7 +561,7 @@ int UISkillCompactControlDialog::vfunc_48()
 void UISkillCompactControlDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     CString strName = pArgs->FUN_1422b8d30();
@@ -765,7 +766,7 @@ void UISkillCompactControlDialog::SendSkillMacroMode1()
 // @0x140fa1400
 void UISkillCompactControlDialog::FUN_140fa1400()
 {
-    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         pPlayer->FUN_141523bc0()->FUN_141767d90(&m_lstConfig);
 }
@@ -780,7 +781,7 @@ static __declspec(noinline) bool Unk_CcSkillListIsNull(const Unk_CcSkillListPtr&
 // @0x140fa1460
 void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
 {
-    MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
@@ -816,7 +817,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        MyPC* pPlayer = ((class Unk_ScWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());

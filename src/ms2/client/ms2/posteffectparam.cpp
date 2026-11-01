@@ -8,15 +8,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/applyeffect.h"
+#include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-void FUN_1408730a0(void* pNode, const char* pszName, bool& bOut);
-void FUN_140873360(void* pNode, const char* pszName, float& fOut);
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
 
@@ -53,10 +49,10 @@ CPostEffectParam::CPostEffectParam(int nType)
 void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408730a0(pNode, "useFade", m_bUseFade);
-    FUN_140873360(pNode, "fadeStartDuration", m_fFadeStartDuration);
-    FUN_140873360(pNode, "fadeEndDuration", m_fFadeEndDuration);
-    FUN_140873360(pNode, "holdDuration", m_fHoldDuration);
+    XmlGetAttr((class TiXmlElement*)(pNode), "useFade", m_bUseFade);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fadeStartDuration", m_fFadeStartDuration);
+    XmlGetAttr((class TiXmlElement*)(pNode), "fadeEndDuration", m_fFadeEndDuration);
+    XmlGetAttr((class TiXmlElement*)(pNode), "holdDuration", m_fHoldDuration);
     if (const char* pszStart = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("fadeStartInterpolator"))
     {
         CString str(pszStart);

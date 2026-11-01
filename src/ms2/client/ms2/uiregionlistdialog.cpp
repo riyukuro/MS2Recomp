@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -109,7 +110,6 @@ public:
     int FUN_1422b9dc0();                                        // the current scene id
     UISceneEntity* FUN_1422b9e80();                             // the current scene
 };
-Unk_RlSceneMgr* FUN_1408e57f0();
 class Unk_RlNetwork { public: void FUN_1415382c0(); };
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
@@ -206,8 +206,8 @@ void UIRegionListDialog::FUN_140e80620()
 {
     CStringW strRegion = *FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance()));
     if (!FUN_140e80f10(strRegion)) {
-        if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x6200009) {
-            UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(FUN_1408e57f0()->FUN_1422b9e80());
+        if (((Unk_RlSceneMgr*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x6200009) {
+            UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((Unk_RlSceneMgr*)CUserMail::FUN_1408e57f0())->FUN_1422b9e80());
             if (pLogin != 0) {
                 pLogin->FUN_141acf470();
                 return;
@@ -344,8 +344,8 @@ Unk_RlPtr UIRegionListDialog::FUN_140e810d0(CStringW strRegion)
 // @0x140e811d0
 void UIRegionListDialog::FUN_140e811d0()
 {
-    if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x6200009) {
-        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(FUN_1408e57f0()->FUN_1422b9e80());
+    if (((Unk_RlSceneMgr*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x6200009) {
+        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((Unk_RlSceneMgr*)CUserMail::FUN_1408e57f0())->FUN_1422b9e80());
         if (pLogin != 0) {
             int nUiId = vfunc_48();
             FUN_141acfad0(pLogin, nUiId);

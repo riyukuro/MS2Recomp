@@ -39,11 +39,11 @@ extern unsigned char DAT_1439f8630[16];             // the xor key of the answer
 extern int DAT_1439f8640;                           // its length
 extern char DAT_142f6301c[];                        // "," the field separator of the upload answer
 
-CFeatureManager* FUN_140166410();                   // the content switches
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CLogString* GetLogString();
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 int FUN_1406516b0();                                // the server kind
-CUgcManager* FUN_14052d220();
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);    // split into strings
@@ -110,7 +110,7 @@ int CSoapClient::FUN_14176feb0()
 
     try
     {
-        spCtrl = FUN_14052d220()->FUN_141882610();
+        spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
         if (spCtrl == 0)
             throw Exception(CString("pUgcUploadCtrl"), 0xd);
         if (spCtrl->GetImage().get())
@@ -170,7 +170,7 @@ int CSoapClient::FUN_14176feb0()
         delete[] pBuffer;
     if (pBuffer2 != 0)
         delete[] pBuffer2;
-    FUN_14052d220()->FUN_141882d80(spCtrl, nError, strResult);
+    ((class CUgcManager*)FUN_14052d220())->FUN_141882d80(spCtrl, nError, strResult);
     return nError;
 }
 
@@ -178,7 +178,7 @@ int CSoapClient::FUN_14176feb0()
 MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingParam> spParam)
 {
     MS2Ptr<CGameRankingWebResult> spResult(new CGameRankingWebResult);
-    if (FUN_140166410()->FUN_14036d570(0x3f) == 0)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3f) == 0)
     {
         spResult->m_result = 1;
         return spResult;
@@ -246,7 +246,7 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
 MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchParam> spParam)
 {
     MS2Ptr<CMenteeSearchWebResult> spResult(new CMenteeSearchWebResult);
-    if (FUN_140166410()->FUN_14036d570(0x91) == 0)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x91) == 0)
     {
         spResult->m_nResult = 1;
         return spResult;

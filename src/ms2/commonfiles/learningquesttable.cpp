@@ -18,9 +18,9 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, int&);
-void FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 
@@ -39,14 +39,14 @@ void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszA
 // @0x14064ca50
 int CLearningQuestData::Read(Unk_140165cf0* pElem)
 {
-    FUN_1408731e0(pElem, "id", m_nId);
-    FUN_1408731e0(pElem, "category", m_nCategory);
+    XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
+    XmlGetAttr((class TiXmlElement*)(pElem), "category", m_nCategory);
     FUN_1408733e0(pElem, "movie", m_strMovie);
-    FUN_1408731a0(pElem, "reqLevel", m_nReqLevel);
-    FUN_140873220(pElem, "reqQuest", m_nReqQuest);
-    FUN_140873220(pElem, "reqField", m_nReqField);
-    FUN_140873220(pElem, "gotoField", m_nGotoField);
-    FUN_1408731e0(pElem, "gotoPortal", m_nGotoPortal);
+    XmlGetAttr((class TiXmlElement*)(pElem), "reqLevel", m_nReqLevel);
+    XmlGetAttr((class TiXmlElement*)(pElem), "reqQuest", *(unsigned int*)&static_cast<int&>(m_nReqQuest));
+    XmlGetAttr((class TiXmlElement*)(pElem), "reqField", *(unsigned int*)&static_cast<int&>(m_nReqField));
+    XmlGetAttr((class TiXmlElement*)(pElem), "gotoField", *(unsigned int*)&static_cast<int&>(m_nGotoField));
+    XmlGetAttr((class TiXmlElement*)(pElem), "gotoPortal", m_nGotoPortal);
     MS2Ptr<CQuestData> quest = FUN_14074bc40(m_nReqQuest);
     if (!quest)
         return 0;

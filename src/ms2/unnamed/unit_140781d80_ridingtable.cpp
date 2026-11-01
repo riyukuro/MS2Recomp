@@ -49,6 +49,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -542,15 +549,15 @@ MS2_REPLACE_METHOD(0x140782f90, RideeData::Basic, vfunc_0, 11, 0x30025ED0);
 // @0x140782fb0
 int RideeData::Basic::FUN_140782fb0(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pBasic = pRoot->FUN_140165cf0("basic");
+    Unk_140165cf0* pBasic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("basic"));
     if (pBasic == 0)
         return 0;
     XmlGetAttr((class TiXmlElement*)(pBasic), "id", *(unsigned int*)&static_cast<int&>(m_nId));
     XmlGetAttr((class TiXmlElement*)(pBasic), "pID", *(unsigned int*)&static_cast<int&>(m_nParentId));
     m_nType = FUN_140785190(FUN_140188f50(FUN_14086f4b0(pBasic, "type"), 0));
-    FUN_1408733e0(pBasic, "kfm", m_strKfm);
-    FUN_1408733e0(pBasic, "kfm2", m_strKfm2);
-    FUN_1408733e0(pBasic, "nif", m_strNif);
+    XmlGetAttr((class TiXmlElement*)(pBasic), "kfm", m_strKfm);
+    XmlGetAttr((class TiXmlElement*)(pBasic), "kfm2", m_strKfm2);
+    XmlGetAttr((class TiXmlElement*)(pBasic), "nif", m_strNif);
     XmlGetAttr((class TiXmlElement*)(pBasic), "scale", m_fScale);
     XmlGetBool((class TiXmlElement*)(pBasic), "hideRider", *(int*)(&m_nHideRider));
     FUN_140785590(pBasic, "hidePCInfo", &m_nHidePCInfo);
@@ -625,7 +632,7 @@ MS2_REPLACE_METHOD(0x1407837e0, RideeData::Collision, vfunc_0, 11, 0x30025ED0);
 // @0x140783800
 int RideeData::Collision::FUN_140783800(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("collision");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("collision"));
     if (pNode == 0)
         return 1;
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
@@ -667,7 +674,7 @@ MS2_REPLACE_METHOD(0x140783960, RideeData::Shadow, vfunc_0, 11, 0x30025ED0);
 // @0x140783980
 int RideeData::Shadow::FUN_140783980(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("shadow");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shadow"));
     if (pNode == 0)
         return 1;
     XmlGetAttr((class TiXmlElement*)(pNode), "scale", m_fScale);
@@ -708,7 +715,7 @@ MS2_REPLACE_METHOD(0x140783ae0, RideeData::FaceCamera, vfunc_0, 11, 0x30025ED0);
 // @0x140783b00
 int RideeData::FaceCamera::FUN_140783b00(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("faceCamera");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("faceCamera"));
     if (pNode == 0)
         return 1;
     {
@@ -765,7 +772,7 @@ MS2_REPLACE_METHOD(0x140783e40, RideeData::Stat, vfunc_0, 11, 0x30025ED0);
 // @0x140783e60
 int RideeData::Stat::FUN_140783e60(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("stat"));
     if (pNode == 0)
         return 1;
     for (int i = 0; i < 0x23; i++)
@@ -809,10 +816,10 @@ MS2_REPLACE_METHOD(0x140783ff0, RideeData::Passengers, vfunc_0, 11, 0x30025ED0);
 // @0x140784010
 int RideeData::Passengers::FUN_140784010(Unk_140165cf0* pRoot)
 {
-    Unk_140165cf0* pNode = pRoot->FUN_140165cf0("passengers");
+    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("passengers"));
     if (pNode == 0)
         return 1;
-    for (Unk_140165cf0* pSeat = pNode->FUN_140165cf0("passenger"); pSeat != 0; pSeat = pSeat->FUN_140168650("passenger"))
+    for (Unk_140165cf0* pSeat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("passenger")); pSeat != 0; pSeat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSeat))->NextSibling("passenger")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSeat)))
             continue;
@@ -934,7 +941,7 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return false;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("riding"); pNode != 0; pNode = pNode->FUN_140168650("riding"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("riding")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("riding")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -964,7 +971,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
     if (pRoot == 0)
         return CRideeDataPtr(0);
     CRideeDataPtr spResult(0);
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("riding"); pNode != 0; pNode = pNode->FUN_140168650("riding"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("riding")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("riding")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -1005,14 +1012,14 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
         return;
-    Unk_140165cf0* pList = pRoot->FUN_140165cf0("effectdummy");
+    Unk_140165cf0* pList = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effectdummy"));
     if (pList != 0)
     {
-        for (Unk_140165cf0* pDummy = pList->FUN_140165cf0("dummy"); pDummy != 0; pDummy = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pDummy))->NextSiblingElement())
+        for (Unk_140165cf0* pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pList))->FirstChild("dummy")); pDummy != 0; pDummy = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pDummy))->NextSiblingElement())
         {
             bool bFound = false;
             CString strName;
-            FUN_1408733e0(pDummy, "name", strName);
+            XmlGetAttr((class TiXmlElement*)(pDummy), "name", strName);
             for (unsigned __int64 i = 0; i < spData->m_effectDummies.size(); i++)
             {
                 CEffectDummy* pExisting = &spData->m_effectDummies[i];

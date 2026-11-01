@@ -46,7 +46,7 @@ public:
     double GetDeltaTime();
 };
 void FUN_14107b010();                                           // refreshes the sun direction constants
-void FUN_14107b050(const NiPoint3& kDirection);                 // sets the sun direction constants
+void FUN_14107b050(struct Vector3 const&);   // C3: was FUN_14107b050
 void FUN_1418bf270(float* pAngle);                              // wraps an angle (degrees)
 void FUN_141568a10(NiNode* pRoot);
 void FUN_1415687f0(class NiAVObject*);   // C3: was FUN_1415687f0
@@ -98,7 +98,7 @@ void UIModelView::vfunc_2()
     if (m_spCamera)
     {
         FUN_140e685d0();
-        FUN_14107b050(m_spCamera->GetWorldDirection());
+        FUN_14107b050(*(struct Vector3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         FUN_141ab7b80(0);
     }
 }

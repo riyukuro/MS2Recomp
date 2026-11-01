@@ -42,10 +42,10 @@ Unk_140166430* FUN_140166430();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, unsigned& rOut);
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& rOut);
-int FUN_14015f500(Unk_140165cf0* pNode, const char* pszName, int* pOut);        // itemRank
-int FUN_1408732e0(Unk_140165cf0* pNode, const char* pszName, __int64& rOut);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
+int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -148,18 +148,18 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recommend"); pNode != 0; pNode = pNode->FUN_140168650("recommend"))
         {
             MS2Ptr<CRecommendItem> spItem(new CRecommendItem);
-            FUN_140873220(pNode, "code", spItem->m_nCode);
-            FUN_140873220(pNode, "itemID", spItem->m_nItemId);
-            FUN_14015f500(pNode, "itemRank", &spItem->m_nItemRank);
-            FUN_1408731e0(pNode, "itemCount", spItem->m_nItemCount);
+            XmlGetAttr((class TiXmlElement*)(pNode), "code", spItem->m_nCode);
+            XmlGetAttr((class TiXmlElement*)(pNode), "itemID", spItem->m_nItemId);
+            Unk_ReadRank((class Unk_XmlNode*)(pNode), "itemRank", &spItem->m_nItemRank);
+            XmlGetAttr((class TiXmlElement*)(pNode), "itemCount", spItem->m_nItemCount);
             FUN_140873420(pNode, "itemDescription", spItem->m_strItemDescription);
             FUN_140873420(pNode, "storeDescription", spItem->m_strStoreDescription);
             FUN_140873420(pNode, "buyButtonText", spItem->m_strBuyButtonText);
-            FUN_1408731e0(pNode, "npcImageType", spItem->m_nNpcImageType);
-            FUN_1408732e0(pNode, "requireMoney", spItem->m_nRequireMoney);
-            FUN_140873220(pNode, "requireItemID", spItem->m_nRequireItemId);
-            FUN_14015f500(pNode, "requireItemRank", &spItem->m_nRequireItemRank);
-            FUN_1408731e0(pNode, "requireItemCount", spItem->m_nRequireItemCount);
+            XmlGetAttr((class TiXmlElement*)(pNode), "npcImageType", spItem->m_nNpcImageType);
+            XmlGetAttr((class TiXmlElement*)(pNode), "requireMoney", spItem->m_nRequireMoney);
+            XmlGetAttr((class TiXmlElement*)(pNode), "requireItemID", spItem->m_nRequireItemId);
+            Unk_ReadRank((class Unk_XmlNode*)(pNode), "requireItemRank", &spItem->m_nRequireItemRank);
+            XmlGetAttr((class TiXmlElement*)(pNode), "requireItemCount", spItem->m_nRequireItemCount);
             m_spData->m_items.SetAt(spItem->m_nCode, spItem);
             CString strCode;
             strCode.Format("code=%u", spItem->m_nCode);

@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // return types of the getters this unit calls
 class CUIService;
@@ -36,7 +37,6 @@ class Unk_GcWorld : public WorldService
 public:
     void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arrOut);   // portals containing pt, nearest first (AddRef'd)
 };
-Unk_GcWorld* FUN_1403ed2d0();
 
 // The local player: only the position getter (slot 18) is used here.
 class Unk_GcPC
@@ -59,10 +59,17 @@ public:
     int FUN_14142c830(int nKey, int* pOut);                 // the key's alternate, 0 = none
 };
 Unk_SoundSink* FUN_1409331f0();
-int FUN_14142c940(Unk_GcKeyBinds* pBinds, __int64 nAction, int nPriority);   // the key bound to the action, 0 = none
-void* FUN_1408e57f0();
-int FUN_1422b9e00(void* p);
-unsigned FUN_140869420();                                   // millisecond clock
+class CKeyTable   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_14142c940(__int64, int);
+};
+class GFxSceneService   // C3: member view for the former free stand-ins
+{
+public:
+    int GetSubSceneId();
+};
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arr);   // element count
 
 #ifndef MS2_HOOK_DLL
@@ -101,7 +108,7 @@ MS2_REPLACE_METHOD(0x1413A6670, CGuideConditionInput, vfunc_2, 63, 0x3E7F60A9);
 // @0x1413a66c0
 int CGuideConditionInput::vfunc_3()
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) == 0x6200031)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
         return 0;
     int nHeld = (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(m_n20, false, 0) && TSingleton<CUIService>::GetInstance()->FUN_141adbb00() == 0) ? 1 : 0;
     if (m_nTick == 0)
@@ -112,8 +119,8 @@ int CGuideConditionInput::vfunc_3()
         return FUN_1413a55a0(0);
     }
     if (m_nDeadline == 0)
-        m_nDeadline = FUN_140869420() + m_nTick;
-    return FUN_1413a5600(FUN_140869420() >= (unsigned)m_nDeadline);
+        m_nDeadline = GetTickCountMs2() + m_nTick;
+    return FUN_1413a5600(GetTickCountMs2() >= (unsigned)m_nDeadline);
 }
 MS2_REPLACE_METHOD(0x1413A66C0, CGuideConditionInput, vfunc_3, 252, 0xEEAD86B3);
 
@@ -154,7 +161,7 @@ int CGuideConditionActionInput::vfunc_3()
 {
     int nKey = 0;
     int nAltKey0, nAltKey1, nAltKey2;
-    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 0);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 0);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
@@ -163,7 +170,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
             return FUN_1413a55a0(1);
     }
-    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 1);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 1);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
@@ -172,7 +179,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
             return FUN_1413a55a0(1);
     }
-    nKey = FUN_14142c940(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 2);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 2);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
@@ -203,7 +210,7 @@ MS2_REPLACE_METHOD(0x1413A6C20, CGuideConditionReturnPortal, GetTypeName, 61, 0x
 // @0x1413a6c70
 int CGuideConditionReturnPortal::vfunc_3()
 {
-    return FUN_1403ed2d0()->FUN_141bc2f40();
+    return ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2f40();
 }
 MS2_REPLACE_METHOD(0x1413A6C70, CGuideConditionReturnPortal, vfunc_3, 27, 0xD322AAC2);
 
@@ -225,11 +232,11 @@ MS2_REPLACE_METHOD(0x1413A6D00, CGuideConditionPortalEnable, GetTypeName, 61, 0x
 // @0x1413a6d50
 int CGuideConditionPortalEnable::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<Unk_GcPortal> > arrPortals;
-    FUN_1403ed2d0()->FUN_141bc2c90(pPC->vfunc_18(), arrPortals);
+    ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(pPC->vfunc_18(), arrPortals);
     return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

@@ -51,7 +51,7 @@ class Unk_LandPhysX
 public:
     int FUN_14168a310(const efd::Point3& kFrom, efd::Point3* pHit, Unk_LandRay* pInfo, float fMaxDist, efd::Point3* pNormal, int nMask);
 };
-Unk_LandPhysX* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // The body's hit report: the entity the actor stands on.
 class Unk_LandHitReport
@@ -116,7 +116,7 @@ void StateLand::vfunc_4(StateData* pData)
     efd::Point3 kFrom = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 30.0f);
     efd::Point3 kHit = efd::Point3::ZERO;
     efd::Point3 kNormal = efd::Point3::ZERO;
-    int nHit = FUN_1409f7ca0()->FUN_14168a310(kFrom, &kHit, &kRay, 50.0f, &kNormal, 0);
+    int nHit = ((class Unk_LandPhysX*)FUN_1409f7ca0())->FUN_14168a310(kFrom, &kHit, &kRay, 50.0f, &kNormal, 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
         if (*FUN_1408b76f0(kRay.m_hitEntity) != ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfaf70())

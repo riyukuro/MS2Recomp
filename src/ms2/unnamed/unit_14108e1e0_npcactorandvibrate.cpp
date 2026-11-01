@@ -347,12 +347,12 @@ public:
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(int nNpcType); };
 Unk_EmoNpcTable* FUN_140764010();
 class Unk_FactoryApp;
-const CStringA& FUN_141adc5d0(Unk_FactoryApp* pApp, int nUiId); // close a ui
 const CStringA& FUN_141adc530(Unk_FactoryApp* pApp, int nUiId); // open a ui
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/placeholder/cgraphicoptiontable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cmainsystem.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
 class CFieldMaidManager;
@@ -375,7 +375,6 @@ class Unk_PopupTimerCfg;
 Unk_PopupTimerCfg* FUN_140a36020(void* pValue);                    // Value<MS2Tick>::Get
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 class Unk_UisSceneMgr;
-Unk_UisSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1426,8 +1425,8 @@ int CNpc::FUN_141094200()
 {
     int nUiId = FUN_141094170();
     if (nUiId == 0x4e4a) {
-        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), 0x4e4a);
-        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), 0x4e49);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e4a);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e49);
     } else if (nUiId == 0x4e47) {
         if (DAT_143ab2d80.Ready() == 0) {
             DAT_143ab2d80.RequestLoad();
@@ -1446,7 +1445,7 @@ void CNpc::FUN_1410942c0()
 {
     int nUiId = FUN_141094170();
     if (nUiId != 0)
-        FUN_141adc5d0(reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance()), nUiId);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)nUiId);
 }
 
 // In talk range of the camera (always for property tag 0x1a).
@@ -1602,7 +1601,7 @@ void CNpc::FUN_141094e60()
     if (m_nEB8 != 0 && m_unk_b4 != 0) {
         int nInQuest = reinterpret_cast<Unk_PortalQuestTable2*>(FUN_14109a710())->FUN_140764ef0(this);
         if (nInQuest != 0)
-            FUN_14166ca80(5);
+            RemoveHideReason(5);
         else
             FUN_14166ca20(5);
         vfunc_126(nInQuest != 0 && m_unk_15c == 0 ? 1 : 0, 1);
@@ -2129,7 +2128,7 @@ void CNpc::FUN_141099170(float fTime)
 // @0x141099370
 void CNpc::FUN_141099370(float fTime)
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(FUN_1408e57f0()))->FUN_1422b9ea0() == 0 && m_questState.m_state == 4) {
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() == 0 && m_questState.m_state == 4) {
         MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
         if (spBalloon.IsNull())
             return;

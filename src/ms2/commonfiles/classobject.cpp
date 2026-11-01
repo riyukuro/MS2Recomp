@@ -74,8 +74,12 @@ struct Unk_LoginMachineId { unsigned char m_data[16]; };                    // e
 MS2_CHECK_SIZE(Unk_LoginMachineId, 16);
 struct Unk_LoginBlob { unsigned char m_data[0x20]; };                       // encoded by 0x1406c3380, decoded by 0x1406c33f0
 MS2_CHECK_SIZE(Unk_LoginBlob, 0x20);
-void FUN_14067c2c0(Unk_LoginMachineId* pId, COutputStream* pOut);
-void FUN_14067c310(Unk_LoginMachineId* pId, CInputStream* pIn);
+class Unk_MachineId   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_14067c2c0(class COutputStream*) const;
+    void FUN_14067c310(class CInputStream*);
+};
 void FUN_1406c3380(Unk_LoginBlob* pBlob, COutputStream* pOut);
 void FUN_1406c33f0(Unk_LoginBlob* pBlob, Unk_PayloadReader* pIn);
 
@@ -114,7 +118,7 @@ void FUN_1401f9020(Unk_LoginA* p, COutputStream* out)
     out->WriteUnicodeStringA(p->m_s08);
     out->WriteUnicodeStringA(p->m_s10);
     out->WriteInt16((short)p->m_n18);
-    FUN_14067c2c0(&p->m_id, out);
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
     out->WriteInt32(p->m_n2c);
     out->WriteInt32(p->m_n30);
     out->WriteString(p->m_s38);
@@ -129,7 +133,7 @@ void FUN_1401f9130(Unk_LoginA* p, Unk_PayloadReader& in)
     p->m_s08 = in.ReadNarrowWrapper(Unk_NarrowLimit(0x20));
     p->m_s10 = in.ReadNarrowWrapper(Unk_NarrowLimit(0x10));
     p->m_n18 = (unsigned short)in.ReadInt16();
-    FUN_14067c310(&p->m_id, &static_cast<CInputStream&>(in));
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));
     p->m_n2c = in.ReadInt32();
     p->m_n30 = in.ReadInt32();
     p->m_s38 = in.ReadString();
@@ -150,7 +154,7 @@ void FUN_1401f9370(Unk_LoginB* p, COutputStream* out)
     out->WriteUnicodeStringA(p->m_s10);
     out->WriteInt16((short)p->m_n18);
     out->WriteInt32(p->m_n1c);
-    FUN_14067c2c0(&p->m_id, out);
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
     out->WriteInt32(p->m_n30);
     out->WriteInt32(p->m_n34);
 }
@@ -165,7 +169,7 @@ void FUN_1401f9470(Unk_LoginB* p, Unk_PayloadReader& in)
     p->m_s10 = in.ReadUnicodeStringA();
     p->m_n18 = (unsigned short)in.ReadInt16();
     p->m_n1c = in.ReadInt32();
-    FUN_14067c310(&p->m_id, &static_cast<CInputStream&>(in));
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));
     p->m_n30 = in.ReadInt32();
     p->m_n34 = in.ReadInt32();
 }
@@ -186,7 +190,7 @@ void FUN_1401f9680(Unk_LoginC* p, COutputStream* out)
     FUN_1406c3380(&p->m_blob30, out);
     out->WriteInt16((short)p->m_n50);
     out->WriteInt32(p->m_n54);
-    FUN_14067c2c0(&p->m_id, out);
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
     out->WriteInt32(p->m_n68);
     out->WriteInt32(p->m_n6c);
     out->WriteUInt8((unsigned char)p->m_n70);
@@ -204,7 +208,7 @@ void FUN_1401f97a0(Unk_LoginC* p, Unk_PayloadReader& in)
     FUN_1406c33f0(&p->m_blob30, &in);
     p->m_n50 = (unsigned short)in.ReadInt16();
     p->m_n54 = in.ReadInt32();
-    FUN_14067c310(&p->m_id, &static_cast<CInputStream&>(in));
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));
     p->m_n68 = in.ReadInt32();
     p->m_n6c = in.ReadInt32();
     p->m_n70 = in.ReadUInt8();
@@ -226,7 +230,7 @@ void FUN_1401f9960(Unk_LoginD* p, COutputStream* out)
     out->WriteString(p->m_s10);
     out->WriteInt16((short)p->m_n18);
     out->WriteInt32(p->m_n1c);
-    FUN_14067c2c0(&p->m_id, out);
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
     out->WriteInt32(p->m_n30);
     out->WriteInt32(p->m_n34);
     out->WriteString(p->m_s38);
@@ -243,7 +247,7 @@ void FUN_1401f9a90(Unk_LoginD* p, Unk_PayloadReader& in)
     p->m_s10 = in.ReadString();
     p->m_n18 = (unsigned short)in.ReadInt16();
     p->m_n1c = in.ReadInt32();
-    FUN_14067c310(&p->m_id, &static_cast<CInputStream&>(in));
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));
     p->m_n30 = in.ReadInt32();
     p->m_n34 = in.ReadInt32();
     p->m_s38 = in.ReadString();
@@ -261,7 +265,7 @@ void FUN_1401f9d20(Unk_LoginEnter* p, COutputStream* out)
     out->WriteInt64(p->m_nAccount);
     out->WriteInt32(p->m_n08);
     out->WriteInt32(p->m_n0c);
-    FUN_14067c2c0(&p->m_id, out);
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
 }
 MS2_REPLACE(0x1401F9D20, FUN_1401f9d20, 113, 0xBE86F390);
 
@@ -271,7 +275,7 @@ void FUN_1401f9da0(Unk_LoginEnter* p, Unk_PayloadReader& in)
     p->m_nAccount = in.ReadInt64();
     p->m_n08 = in.ReadInt32();
     p->m_n0c = in.ReadInt32();
-    FUN_14067c310(&p->m_id, &static_cast<CInputStream&>(in));
+    ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));
 }
 MS2_REPLACE(0x1401F9DA0, FUN_1401f9da0, 171, 0x95932D2C);
 

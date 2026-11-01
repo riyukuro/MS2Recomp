@@ -33,6 +33,7 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/maidgradejockpottable.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 
 // ---- statics of the unit's header (init order: maid sound names, then the market sort names) ----------------------------
 static CString s_strMaidCancel = "maid_Cancel";
@@ -148,11 +149,8 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
-class CUIService;
-template<> CUIService* TSingleton<CUIService>::GetInstance();
-int FUN_141adc890(void* pService, int nUiId);                   // is the dialog open
 struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the dialog's UI object
-void FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
+int FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& nValue);
 void FUN_140694050(class CManufacture&, class CByteBuffer&);   // C3: was FUN_140694050
@@ -216,7 +214,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 4)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -226,7 +224,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 6)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -236,7 +234,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 7)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -246,7 +244,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 8)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -256,7 +254,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 9)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -266,7 +264,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 10)
     {
         int nValue = pPacket->ReadInt32();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -282,7 +280,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
         int nE = pPacket->ReadInt32();
         int cF = pPacket->ReadUInt8();
         int cG = pPacket->ReadUInt8();
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec0) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
             if (pDlg != 0)
@@ -291,7 +289,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     if (cMode == 1 || cMode == 2 || cMode == 3)
     {
-        if (FUN_141adc890(TSingleton<CUIService>::GetInstance(), 0x4ec9) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec9))) != 0)
         {
             UIManufactureStatus* pDlg = GetManufactureStatus(0x4ec9);
             if (pDlg != 0)

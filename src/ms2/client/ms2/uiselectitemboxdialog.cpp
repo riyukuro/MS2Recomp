@@ -86,6 +86,7 @@ class Unk_SibPlayers { public: Unk_SibPlayer* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -95,7 +96,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412752d0(const CStringW& strMessage, int n);                  // pop a notice
-void FUN_141276180(const CString& strCommand, const CString& strArg);
+int FUN_141276180(const CString& strCommand, const CString& strArg);
 CString FUN_140b62550(unsigned nIndex);                                 // the index text
 CString FUN_14016a600(const wchar_t* psz, int n);                       // wide -> narrow
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs);               // unit_140d1ae30 @0x140d1d3f0
@@ -163,7 +164,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     }
     if (nDropBoxId == 0 || m_nSelectCount == 0)
         return;
-    Unk_SibPlayer* pPlayer = ((class Unk_SibPlayers*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_SibPlayer* pPlayer = ((Unk_SibPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     ItemDropContext params;

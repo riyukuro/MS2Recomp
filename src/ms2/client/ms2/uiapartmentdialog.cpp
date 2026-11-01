@@ -56,7 +56,6 @@ public:
 class Unk_AptUIMgr
 {
 public:
-    int FUN_141adc890(int nUiId);                               // is shown
     void FUN_141adc530(int nUiId);                              // close
 };
 
@@ -65,7 +64,6 @@ Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
 
 UIUGCEventDispatcher* FUN_140bc09f0();
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apartment group row
 CStringW FUN_140979570(int nMap);                               // the map name
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
@@ -79,7 +77,7 @@ void FUN_14151f200();
 UIMessageBox* FUN_14151f890();
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 extern int DAT_143ab288c;                                       // the portal's map id
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // @0x1418b57f0
 UIApartmentDialog::UIApartmentDialog()
@@ -147,15 +145,15 @@ void UIApartmentDialog::vfunc_26()
 // @0x1418b63d0
 int UIApartmentDialog::vfunc_13()
 {
-    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
         vfunc_67();
         return 1;
     }
-    else if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
     {
         if (m_nRoom != 0)
             FUN_1418b6990(m_nRoom);
@@ -193,9 +191,9 @@ void UIApartmentDialog::vfunc_ugc_6()
 // @0x1418b6580
 void UIApartmentDialog::FUN_1418b6580()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
@@ -226,7 +224,7 @@ void UIApartmentDialog::FUN_1418b68c0()
 // @0x1418b6990
 void UIApartmentDialog::FUN_1418b6990(int nRoom)
 {
-    Unk_AptPlayer* pPlayer = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_nMapId == 0)
@@ -288,12 +286,12 @@ void UIApartmentDialog::FUN_1418b6d40(const Scaleform::GFx::FunctionHandler::Par
 // @0x1418b6d60
 void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (reinterpret_cast<Unk_AptUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e76))
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e76))))
         return;
     Unk_AptContractDialog* pDialog = FUN_140961690(0x4e76);
     if (pDialog != 0)
         pDialog->FUN_141ab4000(m_nGroup, reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060());
-    reinterpret_cast<Unk_AptUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e76);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 
 // @0x1418b6de0

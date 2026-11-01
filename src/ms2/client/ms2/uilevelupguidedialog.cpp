@@ -43,6 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- unit-local views of exe types ----
 
@@ -107,8 +108,6 @@ int FUN_140748050(void* pItem, int nJob);                       // the reward it
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409e8820(CStringW strKey, const short& a1);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
-CStringW FUN_140ec2f00(CStringW strKey, const unsigned short& a1, const unsigned short& a2);
-CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                     // the script behind the pointer
@@ -398,7 +397,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
         if (pDialog != 0) {
             reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
             pDialog->FUN_1412b8ff0(spRow->m_code);
-            reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ebd);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
         }
     }
     else if (spRow->m_link == "WorldMapDialog") {
@@ -519,7 +518,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
     if (MS2Ptr<ASTextField> spLevel = FUN_140bb4cf0("m_contentsLevel")) {
         CStringW strTitle;
         if (m_1c8.m_nLow != m_1c8.m_nHigh)
-            strTitle = FUN_140ec2f00(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
+            strTitle = FUN_14028dfa0<unsigned short, unsigned short>(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
         else
             strTitle = FUN_1409e8820(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
         spLevel->FUN_1422c4cd0(strTitle);
@@ -683,7 +682,7 @@ void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scalef
         return;
     ASTooltip tip(1, 2);
     ((class Unk_LgBossTip*)FUN_140cb17d0())->FUN_141b99dc0(nNpc, &tip);
-    tip.FUN_1407cbb20("text", FUN_1409e9ed0(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), ((class CNpcData*)(class Unk_LgNpc*)(spNpc.get()))->GetLevel()));
+    tip.FUN_1407cbb20("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), ((class CNpcData*)(class Unk_LgNpc*)(spNpc.get()))->GetLevel()));
     tip.FUN_1409c0e60("enableLClick", L"");
     tip.FUN_1409c6d70("WorldMapTooltip_Boss");
     tip.FUN_1409c6e00(300);

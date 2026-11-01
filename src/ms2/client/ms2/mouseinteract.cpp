@@ -41,6 +41,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- RTTI-only action classes (the picker compares the player's current action against the picked object) ----
 class ActionKeyObject { public: virtual ~ActionKeyObject(); };
@@ -469,7 +470,7 @@ int CMouseInteract::vfunc_3()
 // @0x140a79030
 int CMouseInteract::vfunc_4()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     ((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->FUN_140953310();
@@ -522,7 +523,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79400
 int CMouseInteractNpc::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -549,7 +550,7 @@ void CMouseInteractNpc::vfunc_5()
 // @0x140a79580
 PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     int bTalk = 1;
@@ -617,7 +618,7 @@ int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79cd0
 int CMouseInteractPortal::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0x13)
@@ -697,7 +698,7 @@ int CMouseInteractObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a3d0
 int CMouseInteractObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -760,7 +761,7 @@ int CMouseInteractDynamicModel::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a880
 int CMouseInteractDynamicModel::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -821,19 +822,18 @@ int CMouseInteractUgcBanner::vfunc_6()
 }
 
 // ---- talk cancel ----
-class Unk_MiUiMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_MiUiMgr { public: };
 // @0x140a7b2b0
 UITalkCinematic* FUN_140a7b2b0(int nId)
 {
     if (reinterpret_cast<Unk_MiUiMgr*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MiUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UITalkCinematic*>((UIObject*)p);
     }
     return 0;
 }
 struct Unk_TalkUi { char m_pad[8]; };
-Unk_TalkUi* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -850,14 +850,14 @@ int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 // @0x140a7ac80
 int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
 {
-    if (((class GFxSceneService*)(struct Unk_TalkUi*)(FUN_1408e57f0()))->GetSubSceneId() != 0x6200031)
+    if (((class GFxSceneService*)(struct Unk_TalkUi*)(((Unk_TalkUi*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x6200031)
         return false;
     UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
     if (pUi == 0)
         return false;
     if (((class UITalkCinematic*)(class UITalkCinematic*)(pUi))->GetLoaded() == 0)
         return false;
-    PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPlayer == 0)
         return false;
     FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
@@ -901,7 +901,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7af50
 int CMouseInteractWeaponObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0xd)

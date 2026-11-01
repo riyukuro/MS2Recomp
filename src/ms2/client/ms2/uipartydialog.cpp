@@ -156,6 +156,10 @@
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: was a local member view
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: was a local member view
+#include "ms2/client/ms2/uicommunitydialog.h"  // C3: was a local member view
 
 // ---- Delegate<void()> (UIPopUpMenu's menu handlers, RTTI vftable 0x142fd4958): this TU's own COMDAT copies. The
 // TInterpolator / OnceCallbackTimer callbacks bound at 0x1401cffb0 / 0x14098d150 are TFunctor<void, EmptyParam>. ----
@@ -214,12 +218,6 @@ public:
     float FUN_141adbe70();                                              // the ui scale
     MS2Ptr<UIObject> FUN_141adcea0(int nUiId);                          // a dialog by id
 };
-Unk_PdApp* FUN_1403ed2b0();
-class CUIService   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141add1f0();
-};
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringTable* GetStringTable();                                          // TSingleton<CStringTable>::GetInstance
 void* FUN_140d86260();   // C3: was FUN_140d86260
@@ -257,7 +255,6 @@ void FUN_14151f200();                                                   // close
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
 int FUN_141637c40(CPartyMember* pMember);                               // the member state
 double FUN_1407184e0(const CStringW& str);                              // parse a number
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);     // FUN_14028dfa0<CStringW>
 CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -640,7 +637,7 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             CStringW strText = FUN_1408116a0(0xc64, nMerat);
             if (!((class IClientPlatform*)FUN_140d86260())->vfunc_40(nMerat))
             {
-                ((class CUIService*)(class Unk_PdApp*)(FUN_1403ed2b0()))->FUN_141add1f0();
+                ((class CUIService*)(class Unk_PdApp*)(((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
                 return 1;
             }
             ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, false, 1000);
@@ -1097,7 +1094,7 @@ void UIPartyDialog::FUN_141a792b0()
 void UIPartyDialog::FUN_141a794e0()
 {
     int bEnable = 0;
-    if (!FUN_140930b40() && TSingleton<CPartyManager>::GetInstance()->FUN_14162abe0())
+    if (!FUN_140930b40() && TSingleton<CPartyManager>::GetInstance()->IsMatchmaking())
         bEnable = 1;
     if ((ASButton*)m_enterDungeon != 0)
         m_enterDungeon->vfunc_3(bEnable);
@@ -1220,7 +1217,7 @@ void UIPartyDPSDialog::OnTextToggle()
 {
     if (m_30.IsNull())
         return;
-    CStringW strTitle = FUN_1405c2690(CStringW(L"s_partydps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
+    CStringW strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_partydps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
     m_30->Invoke("setTitle", strTitle);
     m_30->Invoke("setAscendingMeterValue", m_nMode == 6);
 }
@@ -1301,7 +1298,7 @@ void UIPartyDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_tick.Init();
-    CBattleRecordManager::GetInstance()->FUN_140a03f60(m_nGroup);
+    CBattleRecordManager::GetInstance()->StartGroupIfInactive(m_nGroup);
     OnTextToggle();
     FUN_141a7b540();
 }
@@ -1312,7 +1309,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        CBattleRecordManager::GetInstance()->FUN_140a03fe0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StopGroup(m_nGroup);
         vfunc_67();
         return 1;
     }
@@ -1320,7 +1317,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("onReset", szMethod) == 0)
     {
-        CBattleRecordManager::GetInstance()->FUN_140a03fa0(m_nGroup);
+        CBattleRecordManager::GetInstance()->StartGroup(m_nGroup);
         return 1;
     }
     else if (_stricmp("onNotice", szMethod) == 0)
@@ -1344,7 +1341,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         nTime = nNow - nTime;
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
-        strHistory.Append(FUN_1405c2690(CStringW(L"s_partydps_notice_history_total_time"), strTotal));
+        strHistory.Append(FUN_14028dfa0<CStringW>(CStringW(L"s_partydps_notice_history_total_time"), strTotal));
         Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;
@@ -1697,11 +1694,6 @@ CLogString* GetLogString();                                            // TSingl
 int FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
 class Unk_PmInput;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class CInputKeyHandler   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_14116d840();
-};
 UISwfEntityManager* FUN_140b632f0();                                    // UISwfEntityManager
 class Unk_PmEntityEvents;
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
@@ -1744,7 +1736,6 @@ float FUN_140bf4fd0(float f);
 bool FUN_140900550();                                                   // wedding enabled
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);     // StringFormat<CStringW>
-CStringW FUN_14052bd00(int nStringId, const CStringW& a);               // FormatStringId<CStringW>
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
 struct Unk_PmMsgBox : CMsgBoxData { void FUN_1405340b0(__int64 n); };    // Append<__int64>
 void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show a box
@@ -1753,11 +1744,6 @@ struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 void FUN_141a252a0(void* pWhisper, const CStringW& strName);            // whisper to
 void FUN_141951f70(void* pMail, const CStringW& strName);               // mail to
 class Unk_PmCommunity { public: virtual void s0(); };                   // UICommunityDialog
-class UICommunityDialog   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_1418d6960();
-};
 class UICommunityDialog* FUN_140ae5990(int);   // C3: was FUN_140ae5990
 class UICommunityQueryDialog* FUN_140ae5a30(int);   // C3: was FUN_140ae5a30
 class UICoupleActionDialog* FUN_1417f5780(int);   // C3: was FUN_1417f5780
@@ -1795,9 +1781,9 @@ template <class T> void Unk_PmLog(CLogString* log, int level, int category, cons
 // A dialog of the ui service as T (0x141a877c0).
 template <class T> T* Unk_PmGetDialog(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spDialog = ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
         if (spDialog.get() != 0)
             return dynamic_cast<T*>(static_cast<UIObject*>(spDialog));
     }
@@ -2576,8 +2562,8 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
     }
     if (m_80 == 2)
     {
-        fX = fX * FUN_1403ed2b0()->FUN_141adbe70();
-        fY = fY * FUN_1403ed2b0()->FUN_141adbe70();
+        fX = fX * ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+        fY = fY * ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
     }
     ASObj obj(2);
     Unk_PdSetData(&obj, "type", (Unk_PmMenuType)m_84);
@@ -3142,7 +3128,7 @@ void UIPopUpMenu::FUN_141a84d40()
     if (pMe == 0)
         return;
     if (FUN_141656a80(pMe) == m_a8)
-        FUN_1403ed2b0()->FUN_141adc530(0x2711);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x2711));
 }
 
 // @0x141a84da0
@@ -3169,7 +3155,7 @@ void UIPopUpMenu::SendCharacterInfo()
         {
             if (nState == 2)
                 return;
-            FUN_1403ed2b0()->FUN_141adc690(0x4ec8);
+            ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ec8);
             COutPacket packet(static_cast<int>(SendOp::CharacterInfo), 0);
             packet.Encode8(m_a8);
             FUN_140710590(packet);
@@ -3196,7 +3182,7 @@ void UIPopUpMenu::FUN_141a85010()
     if (!m_90.IsEmpty())
     {
         CStringW strTag = FUN_1401e8510(L"expelMember:{0}", m_90);
-        FUN_140d73aa0(FUN_14052bd00(0x340, m_90), 1, this, CStringW(strTag));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x340, m_90), 1, this, CStringW(strTag));
     }
 }
 
@@ -3206,7 +3192,7 @@ void UIPopUpMenu::FUN_141a85120()
     if (!m_90.IsEmpty())
     {
         CStringW strTag = FUN_1401e8510(L"changeChief:{0}", m_90);
-        FUN_140d73aa0(FUN_14052bd00(0x33f, m_90), 1, this, CStringW(strTag));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x33f, m_90), 1, this, CStringW(strTag));
     }
 }
 
@@ -3216,7 +3202,7 @@ void UIPopUpMenu::FUN_141a85230()
     if (m_a8 != 0)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e0a0),
-                                                  FUN_1405c2690(CStringW(L"s_party_vote_kick_user_confirm"), m_90));
+                                                  FUN_14028dfa0<CStringW>(CStringW(L"s_party_vote_kick_user_confirm"), m_90));
         if ((CMsgBoxData*)spBox != 0)
             static_cast<Unk_PmMsgBox*>(spBox.get())->FUN_1405340b0(m_a8);
     }
@@ -3282,9 +3268,9 @@ void UIPopUpMenu::FUN_141a85500()
 // @0x141a85680
 void UIPopUpMenu::FUN_141a85680()
 {
-    if (FUN_1403ed2b0()->FUN_141adc7f0(0x4e83) == 0)
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adc7f0(0x4e83) == 0)
         return;
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e83) == 0)
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e83) == 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
     }
@@ -3420,7 +3406,7 @@ void UIPopUpMenu::SendRequestPet()
 {
     if (m_1a8.m_08 == DAT_143ab2828)
     {
-        FUN_1403ed2b0()->FUN_141adc530(0x4f38);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f38));
     }
     else
     {
@@ -3457,8 +3443,8 @@ void UIPopUpMenu::SendRequestCube()
 void UIPopUpMenu::FUN_141a86ca0()
 {
     __int64 nCharId = m_a8;
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4f4e) != 0)
-        FUN_1403ed2b0()->FUN_141adc530(0x4f4e);
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4f4e) != 0)
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f4e));
     UICoupleActionDialog* pCouple = reinterpret_cast<UICoupleActionDialog*>(((class UIDialog*)FUN_1417f5780(0x4f4e)));
     if (pCouple != 0)
         pCouple->FUN_140bed2a0(nCharId);
@@ -3644,7 +3630,7 @@ bool FUN_141a8b910();
 // MS2-FUNCTIONAL: the exe passes the cursor (Unk_PdCursor, ctor 0x141a8e170) as a prvalue copied straight into the sort predicate; here it is a named local captured by the lambda (closure ctor call)
 void FUN_141a8a010(float x, float y)
 {
-    if (FUN_1403ed2b0() == 0)
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance()) == 0)
         return;
     if (FUN_14025e7a0() == 0)
         return;

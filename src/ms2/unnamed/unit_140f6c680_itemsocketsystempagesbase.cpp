@@ -268,7 +268,7 @@ void FUN_1411e1ce0(Unk_SocketPageInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int)
 int FUN_140222ce0(MS2Ptr<CItemData>);
 bool FUN_1406272f0(unsigned, MS2Ptr<CItemGemStoneData>);
 ItemSlotBag* FUN_140c54590(const CString&);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 bool FUN_14062a3d0(MS2Ptr<CItem>, int, MS2Ptr<CItem>, Delegate<bool(int, const CMsgBoxData&)>);
 bool SendItemSocketSystem(MS2Ptr<CItem>, const CMsgBoxData&);
 unsigned short FUN_140626f20(unsigned);
@@ -282,7 +282,7 @@ CStringW FUN_1409404f0(__int64);
 #ifdef __clang__
 CStringW FUN_1401d0160(const wchar_t*, const CStringW&);     // ATL::operator+(const wchar_t*, const CStringW&)
 #endif
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, int, CStringW);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 CStringW FUN_140719730(bool);
 typedef MS2Ptr<CGemStoneItem> (*Unk_GemStoneSlotGetFn)(void*, int);
@@ -1203,7 +1203,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
         FUN_1412752d0(L"s_itemsocketsystem_error_socket_empty", 1);
         return;
     }
-    int gemId = socket->FUN_140620ac0(slot);
+    int gemId = socket->GetGemId(slot);
     unsigned short rate = FUN_140626f20(gemId);
     int costItemId = 0;
     int costCount = 0;
@@ -1283,13 +1283,13 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71ea0(ASObj& data)
         if (record == 0)
             continue;
         MS2Ptr<CItem> gem(0);
-        MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
+        MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
         if ((info.get() ? true : false) && !info->FUN_14061fab0())
             gem = FUN_140f6d050(info, 0, false);
         record->FUN_140c4e720(selected, gem);
         m_sockets.Add(record);
     }
-    unsigned left = socket->FUN_140620a70();
+    unsigned left = socket->GetLockedSlotCount();
     for (unsigned i = 0; i < left; ++i) {
         MS2Ptr<CGemStoneItem> record(new CGemStoneItem);
         if (record == 0)
@@ -2304,7 +2304,7 @@ bool ItemSocketSystemPageGemStoneUpgrade::FUN_140f79e10(MS2Ptr<TGemStoneInEquip>
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return false;
     }
-    int id = owner->FUN_1405279c0()->FUN_140620ac0(record->m_slot);
+    int id = owner->FUN_1405279c0()->GetGemId(record->m_slot);
     if (record->m_gem == 0 || id != record->m_gem->FUN_1405276c0()) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return false;

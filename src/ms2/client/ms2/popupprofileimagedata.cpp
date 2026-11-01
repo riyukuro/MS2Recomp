@@ -35,11 +35,11 @@ public:
     Unk_PpConst m_expireA;                  // +0xc10 extra delay
     Unk_PpConst m_expireB;                  // +0xc68 extra delay (state 1)
 };
-Unk_PpConstants* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void* FUN_140a36020(Unk_PpConst* p);
-unsigned int FUN_140a35ca0(void* p);
+unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 int* FUN_1402056b0(Unk_PpConst* p);
-int FUN_140869420();                        // the current tick
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
 // The character state manager (singleton 0x1409670d0).
@@ -188,7 +188,7 @@ MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, GetTime, 14, 0xA25B27BF)
 int CPopupProfileImageData::FUN_141697200(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
-    unsigned int nExpire = FUN_141697bc0(&FUN_1401d3200()->m_expire);
+    unsigned int nExpire = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expire);
     if (nElapsed >= nExpire)
         return 1;
     return 0;
@@ -201,10 +201,10 @@ int CPopupProfileImageData::FUN_141697260(int nNow)
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nDelay = 0;
     if (reinterpret_cast<Unk_PpStateMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae20(m_nId) == 1)
-        nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireB);
+        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireB);
     else
-        nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireA);
-    nDelay += FUN_141697bc0(&FUN_1401d3200()->m_expire);
+        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireA);
+    nDelay += FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expire);
     if (nElapsed >= nDelay)
         return 1;
     return 0;
@@ -227,7 +227,7 @@ CPopupProfileImageMan::~CPopupProfileImageMan()
 // @0x141697430
 void CPopupProfileImageMan::FUN_141697430()
 {
-    int nNow = FUN_140869420();
+    int nNow = GetTickCountMs2();
     if (Unk_LockGuard guard = m_lock)
     {
     }
@@ -270,8 +270,8 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     }
     else
     {
-        int nNow = FUN_140869420();
-        if ((int)m_shown.GetCount() >= *FUN_1402056b0(&FUN_1401d3200()->m_maxCount))
+        int nNow = GetTickCountMs2();
+        if ((int)m_shown.GetCount() >= *FUN_1402056b0(&((class Unk_PpConstants*)FUN_1401d3200())->m_maxCount))
             return 0;
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
@@ -323,7 +323,7 @@ MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 465, 0xF1C
 // @0x141697bc0
 unsigned int FUN_141697bc0(Unk_PpConst* p)
 {
-    return FUN_140a35ca0(FUN_140a36020(p));
+    return FUN_140a35ca0((struct MS2Tick*)(FUN_140a36020(p)));
 }
 
 // @0x141699890

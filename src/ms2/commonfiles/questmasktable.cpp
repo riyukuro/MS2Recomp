@@ -44,6 +44,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 
 class Unk_140165cf0                         // game TinyXML element
 {
@@ -310,13 +317,13 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_QM_XML_ERR, strPath);
         return 0;
     }
-    for (Unk_140165cf0* pField = pRoot->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+    for (Unk_140165cf0* pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("field")); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
     {
         int nFieldId = 0;
         XmlGetAttr((class TiXmlElement*)(pField), "fieldID", *(unsigned int*)(&nFieldId));
@@ -329,7 +336,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
                 spField = Unk_BmNewTag(0);
                 rMap.SetAt(nFieldId, spField);
             }
-            for (Unk_140165cf0* pKey = pField->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
+            for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
             {
                 int nKey = 0;
                 XmlGetAttr((class TiXmlElement*)(pKey), "id", *(unsigned int*)(&nKey));
@@ -338,7 +345,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
                 {
                     Unk_QmMaskPtr spMask(new QuestMask);
                     XmlGetAttr((class TiXmlElement*)(pKey), "enableInMask", *(int*)(&spMask->m_nEnable));
-                    for (Unk_140165cf0* pMask = pKey->FUN_140165cf0("mask"); pMask != 0; pMask = pMask->FUN_140168650("mask"))
+                    for (Unk_140165cf0* pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->FirstChild("mask")); pMask != 0; pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMask))->NextSibling("mask")))
                     {
                         if (!FUN_14028f710((struct Unk_XmlElement*)(pMask)))
                             continue;
@@ -413,7 +420,7 @@ void Unk_Random::Seed(int nSeed)
 // @0x140768350
 void Unk_Random::SetState(unsigned s1, unsigned s2, unsigned s3)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_s1 = s1 | 0x100000;
     m_s2 = s2 | 0x1000;
     m_s3 = s3 | 0x10;
@@ -422,7 +429,7 @@ void Unk_Random::SetState(unsigned s1, unsigned s2, unsigned s3)
 // @0x1407683d0
 void Unk_Random::GetState(unsigned* s1, unsigned* s2, unsigned* s3)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     *s1 = m_s1;
     *s2 = m_s2;
     *s3 = m_s3;
@@ -431,7 +438,7 @@ void Unk_Random::GetState(unsigned* s1, unsigned* s2, unsigned* s3)
 // @0x140768450
 void Unk_Random::SetRaw(unsigned s1, unsigned s2, unsigned s3)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_s1 = s1;
     m_s2 = s2;
     m_s3 = s3;
@@ -440,7 +447,7 @@ void Unk_Random::SetRaw(unsigned s1, unsigned s2, unsigned s3)
 // @0x1407684c0
 unsigned Unk_Random::FUN_1407684c0()
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     unsigned s1 = (m_s1 & 0xfffffffe) << 12 ^ (m_s1 << 13 ^ m_s1) >> 19;
     m_s1 = s1;
     unsigned s2 = (m_s2 & 0xfffffff8) << 4 ^ (m_s2 << 2 ^ m_s2) >> 25;
@@ -833,7 +840,7 @@ Unk_QuestRewardCalc::Unk_QuestRewardCalc()
     m_guildNpcLevel = 0;
     m_value = 0;
     m_bonus = 0;
-    Unk_QmPlayer* pPlayer = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         m_level = pPlayer->vfunc_78();
     m_guildNpcLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2990(6);
@@ -1047,7 +1054,7 @@ MS2_REPLACE(0x140762fc0, FUN_140762fc0, 529, 0x18535EF7);
 // an in-progress quest whose conditions are all met counts as completable.
 void FUN_140763210(int nQuestId, int nState, CStringW& strDesc, CStringW& strFormat)
 {
-    Unk_QmPlayer* pPlayer = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);

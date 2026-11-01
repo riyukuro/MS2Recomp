@@ -28,8 +28,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
-CPriceTable* FUN_140552df0();                               // TSingleton<CPriceTable>::GetInstance
-CUgcManager* FUN_14052d220();                               // TSingleton<CUgcManager>::GetInstance
+class Unk_PriceTable* FUN_140552df0();   // C3: was FUN_140552df0
+class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
 Vector3 FUN_1408a15b0(Unk_Int3 kCell, Vector3& kOffset);   // the world position of a cube cell
@@ -505,7 +505,7 @@ void Cube::FUN_1408b4fd0(egf::Entity* pEntity)
     if (_access(strPath, 4) == 0)
         FUN_1408b51d0();
     else
-        FUN_14052d220()->FUN_1418845a0(item.get(), entity->GetEntityID());
+        ((class CUgcManager*)FUN_14052d220())->FUN_1418845a0(item.get(), entity->GetEntityID());
 }
 MS2_REPLACE_METHOD(0x1408B4FD0, Cube, FUN_1408b4fd0, 500, 0xE53038B6);
 
@@ -523,7 +523,7 @@ int Cube::FUN_1408b51d0()
     strPath = FUN_1410280d0(2, CStringA(item->look->m_strUrl));
     if (_access(strPath, 4) != 0)
         return 0;
-    FUN_14052d220()->FUN_1418873c0(this);
+    ((class CUgcManager*)FUN_14052d220())->FUN_1418873c0(this);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);
@@ -556,9 +556,9 @@ MS2_REPLACE(0x1408B53D0, FUN_1408b53d0, 167, 0x267F2C3D);
 // @0x1408b5480
 int FUN_1408b5480(unsigned nItemId)
 {
-    if (FUN_140552df0() == 0)
+    if (((class CPriceTable*)FUN_140552df0()) == 0)
         return 0;
-    return FUN_140552df0()->IsHousingBuyable(nItemId);
+    return ((class CPriceTable*)FUN_140552df0())->IsHousingBuyable(nItemId);
 }
 MS2_REPLACE(0x1408B5480, FUN_1408b5480, 44, 0x938A7F09);
 
@@ -839,9 +839,9 @@ MS2_REPLACE(0x1408B6120, FUN_1408b6120, 151, 0xD177F686);
 // @0x1408b61c0
 int FUN_1408b61c0(unsigned nItemId)
 {
-    if (FUN_140552df0() == 0)
+    if (((class CPriceTable*)FUN_140552df0()) == 0)
         return 0;
-    if (FUN_140552df0()->HasHousing(nItemId) != 0)
+    if (((class CPriceTable*)FUN_140552df0())->HasHousing(nItemId) != 0)
         return 0;
     return 1;
 }

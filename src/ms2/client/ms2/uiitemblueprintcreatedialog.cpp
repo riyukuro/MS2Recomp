@@ -31,6 +31,7 @@
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/ugcdesigntable.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -129,7 +130,7 @@ public:
     void FUN_141882020();
 };
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-class Unk_BpUIManager { public: void FUN_141adc530(int); void FUN_141adc5d0(int); MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_BpUIManager { public: void FUN_141adc530(int); MS2Ptr<UIObject> FUN_141adcea0(int); };
 class Unk_BpItemManager { public: MS2Ptr<Unk_BpItem> FUN_140a5d680(__int64); };
 extern Unk_BpItemManager g_blueprintItems;
 class Unk_BpImageDialog : public UIDialog {
@@ -168,7 +169,6 @@ public:
     void FUN_1407cbb20(const char*, CStringW);
     void FUN_1407cb9c0(const char*, int);
 };
-CStringW FUN_1409e8970(CStringW, const int&, const int&);
 CStringW FUN_1418fec00(int, __int64, int);
 class Unk_BpFee {
 public: Unk_BpCurrency FUN_14089e200();
@@ -5309,9 +5309,8 @@ public:
 MS2Ptr<Unk_BpMessage> FUN_140d73d20(int, CStringW, int, CStringW);
 void FUN_140d73c60(MS2Ptr<Unk_BpMessage>);
 MS2Ptr<Unk_BpMessage> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegate<bool(int, const CMsgBoxData&)>);
-void FUN_140d73aa0(CStringW, int, int, CStringW);
+void FUN_140d73aa0(CStringW, int, void*, CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412750f0(Unk_BpItem*, int, int, int);
 class Unk_BpFilter { public: int FUN_140225630(CStringW&, CStringW&); };
 class Unk_BpFilterManager { public: MS2Ptr<Unk_BpFilter> FUN_140229a50(); };
@@ -5376,7 +5375,7 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     Unk_BpASObj data(2);
     int minLength = ((class Unk_BpSettings*)FUN_1401d3200())->minLength.FUN_1402056b0();
     int maxLength = ((class Unk_BpSettings*)FUN_1401d3200())->maxLength.FUN_1402056b0();
-    data.FUN_1407cbb20("ugcNameDefaultText", FUN_1409e8970(L"s_ugc_itemedit_input_name", minLength, maxLength));
+    data.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(L"s_ugc_itemedit_input_name", minLength, maxLength));
     data.FUN_1407cb9c0("ugcNameLengthMax", maxLength);
     {
     MS2Ptr<Unk_BpFee> fee = reinterpret_cast<Unk_BpFeeManager*>(TSingleton<CUGCDesignTable>::GetInstance())->FUN_14089e9f0(35200000);
@@ -5431,7 +5430,7 @@ MS2_REPLACE_METHOD(0x140C36B40, UIItemBlueprintCreateDialog, FUN_140c36b40, 1174
 // @0x140c36fe0
 void UIItemBlueprintCreateDialog::FUN_140c36fe0(__int64 itemId) {
     m_itemId = itemId;
-    reinterpret_cast<Unk_BpUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f7b);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f7b)));
 }
 MS2_REPLACE_METHOD(0x140C36FE0, UIItemBlueprintCreateDialog, FUN_140c36fe0, 54, 0xE4918E1E);
 // @0x140c37020
@@ -5511,8 +5510,8 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     MS2Ptr<Unk_BpItem> item(0);
     if (static_cast<unsigned __int64>(upload->itemId) > 0) reinterpret_cast<Unk_BpItemRef*>(&item)->FUN_140692c90(g_blueprintItems.FUN_140a5d680(upload->itemId));
     CStringW price;
-    if (item == NULL) price = FUN_1405c2690(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, 0));
-    FUN_140d748b0(10, FUN_1405c2690(L"s_ugc_item_edit_terms", price),
+    if (item == NULL) price = FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, 0));
+    FUN_140d748b0(10, FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms", price),
         GetStringCommonByKey(L"s_ugc_edit_terms_text_content"),
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37d50));
 }
@@ -5552,7 +5551,7 @@ bool UIItemBlueprintCreateDialog::FUN_140c37f90(int result, const CMsgBoxData&) 
         if (m_item.get()) m_item->FUN_140529fd0("");
         m_item = 0;
         m_itemId = 0;
-        reinterpret_cast<Unk_BpUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(vfunc_48());
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)vfunc_48());
     }
     return true;
 }

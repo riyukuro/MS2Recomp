@@ -51,7 +51,7 @@ void FUN_1412751b0(const CStringW& strText, int nType);     // system message
 void FUN_1412751f0(const CStringW& strText, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
 CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
-void FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
+int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 int FUN_1407181d0(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
@@ -92,7 +92,7 @@ public:
 class Unk_1406cd330 { public: int FUN_1406ccfc0(); };       // NPC data
 MS2Ptr<Unk_1406cd330> FUN_1406cd330(int nNpcId);
 
-class Unk_1403ed2b0 { public: MS2Ptr<UIObject> FUN_141adcea0(int nUIType); };
+class Unk_1403ed2b0 { public: };
 
 CFeatureManager* FUN_140166410();
 int FUN_140651920(CString str);
@@ -103,7 +103,7 @@ template <class T>
 T* GetDialog(int nUIType)
 {
     if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())) {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUIType);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUIType);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }

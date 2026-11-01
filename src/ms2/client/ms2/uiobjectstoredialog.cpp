@@ -32,15 +32,7 @@ class UIInventoryDialog : public UIDialog { };
 UIInventoryDialog* FUN_1405344f0(int nUiId);
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
-class Unk_OsUIMsg : public UIMsg
-{
-public:
-    Unk_OsUIMsg();                                          // 0x1422e4490
-    ~Unk_OsUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_OsUIMsg;
 
 // The status-listener registry (singleton 0x140aa6d40).
 

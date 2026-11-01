@@ -14,9 +14,9 @@
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-void FUN_140873360(Unk_140165cf0*, const char*, float&);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 unsigned char FUN_1401d1320(CCacheData*);
 
 // @0x1408533a0
@@ -51,11 +51,11 @@ bool CTailEffectDataTable::Load()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("tailEffect"); pNode != 0; pNode = pNode->FUN_140168650("tailEffect"))
     {
         DataPtr data(new TailEffectData);
-        FUN_1408731e0(pNode, "id", data->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", data->m_nId);
         FUN_1408733e0(pNode, "effectPath", data->m_strEffectPath);
         FUN_1408733e0(pNode, "endEffectPath", data->m_strEndEffectPath);
-        FUN_140873360(pNode, "distance", data->m_fDistance);
-        FUN_140873360(pNode, "speed", data->m_fSpeed);
+        XmlGetAttr((class TiXmlElement*)(pNode), "distance", data->m_fDistance);
+        XmlGetAttr((class TiXmlElement*)(pNode), "speed", data->m_fSpeed);
         m_map.SetAt(data->m_nId, data);
     }
     return true;

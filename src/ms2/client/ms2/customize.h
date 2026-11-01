@@ -164,7 +164,7 @@ public:
     MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)
     __int64 FUN_140cd1980();                    // the uid of the item being dyed
     Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
-    unsigned FUN_140cd1b20();                   // what the item can customize (EditItems::GetFlags)
+    unsigned GetEditFlags();                   // what the item can customize (EditItems::GetFlags)
     IItemCustomizeEventListener* GetListener();   // the listener
     void FUN_140cd1bf0();                       // per frame
     bool FUN_140cd1c90(CItem* pItem);           // preview an item (false: not wearable)

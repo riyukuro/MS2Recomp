@@ -570,7 +570,7 @@ MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A
 void CMouseController::FUN_140ad23f0(int nX, int nY)
 {
     m_nMode = 2;
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595b0() == 1)
@@ -623,7 +623,7 @@ MS2_REPLACE_METHOD(0x140AD23F0, CMouseController, FUN_140ad23f0, 609, 0x030EFF74
 // @0x140ad2660
 void CMouseController::FUN_140ad2660(int nX, int nY)
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (pPc->FUN_1416595b0() == 1)
@@ -664,7 +664,7 @@ MS2_REPLACE_METHOD(0x140AD26D0, CMouseController, FUN_140ad26d0, 346, 0x463D5B7F
 // @0x140ad2830
 void CMouseController::FUN_140ad2830()
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bdb5e0() != 0)
@@ -725,7 +725,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
     Vector3 vDir;
     if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0520((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     Vector3 vPos = pPc->vfunc_18();
@@ -762,7 +762,7 @@ void CMouseController::FUN_140ad2d80()
             int nKind = 0;
             if (reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422aeed0(2) == 0)
             {
-                if (reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0() != 0)
+                if (((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
                     nKind = FUN_140ad2ac0((int)fX, (int)fY, &strHint);
             }
             Unk_McCursorPtr spCursor = reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b0370(6);
@@ -782,7 +782,7 @@ void CMouseController::FUN_140ad2d80()
             }
         }
     }
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc != 0)
     {
         if (m_spCurrent.get() != 0 ? true : false)
@@ -802,7 +802,7 @@ MS2_REPLACE_METHOD(0x140AD2D80, CMouseController, FUN_140ad2d80, 686, 0xB16D7996
 // @0x140ad3040
 void CMouseController::FUN_140ad3040()
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (m_nMode != 1)
@@ -846,7 +846,7 @@ MS2_REPLACE_METHOD(0x140AD3040, CMouseController, FUN_140ad3040, 524, 0xF761C44F
 // @0x140ad3260
 Vector3 CMouseController::FUN_140ad3260(Vector3 pt)
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return DAT_143b01a60;
     Unk_McMapPtr spMap = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -864,7 +864,7 @@ MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87
 // @0x140ad3400
 Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     Vector3 vFacing = pPc->FUN_14123cc20();
     Vector3 vPos = FUN_140ad3c70();
     Vector3 v = DAT_143b01a60;
@@ -957,7 +957,7 @@ MS2_REPLACE_METHOD(0x140AD3740, CMouseController, FUN_140ad3740, 794, 0xD0619D77
 // @0x140ad3a60
 Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return DAT_143b01a60;
     Vector3 vOrigin;
@@ -984,7 +984,7 @@ MS2_REPLACE_METHOD(0x140AD3A60, CMouseController, FUN_140ad3a60, 514, 0x7514812C
 // @0x140ad3c70
 Vector3 CMouseController::FUN_140ad3c70()
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return DAT_143b01a60;
     Unk_McAttachPtr spAttach(pPc->FUN_141662440(1));
@@ -997,7 +997,7 @@ MS2_REPLACE_METHOD(0x140AD3C70, CMouseController, FUN_140ad3c70, 231, 0x6697DFE8
 // @0x140ad3d60
 int CMouseController::FUN_140ad3d60()
 {
-    Unk_McPc* pPc = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     for (unsigned long long i = 0; i < 3; i++)

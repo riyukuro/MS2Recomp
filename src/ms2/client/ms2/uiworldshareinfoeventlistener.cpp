@@ -25,6 +25,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -39,27 +40,31 @@ struct Unk_WsConstants
     Unk_WsConstUInt* m_unused;                       // placeholder, the two fields below are at +0x5910 / +0x5968
 };
 
-unsigned FUN_141bd3060(Unk_WsWorld* pWorld);                                // the local player's level
-PCBase* FUN_141bd0cc0(Unk_WsWorld* pWorld);                                 // the local player
-unsigned char FUN_141658fa0(PCBase* pPC);
+class PC   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned char FUN_141658fa0();
+};
 void* FUN_1401c0d90();
 int FUN_140475e80(int nType);
-unsigned int FUN_140476ad0(void* pRule);
-unsigned char* FUN_1401d3200();                                             // the constants block
+class CGameRule   // C3: member view for the former free stand-ins
+{
+public:
+    unsigned int FUN_140476ad0();
+};
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 unsigned* FUN_1401d7c10(void* pConstant);
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg1, const CStringW& strArg2);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW GetStringCommon(int nId);
 CStringW BlockFormat(int nId);
-CStringW FUN_140c160b0(CStringW strKey, const __int64& n);
 CStringW FUN_14086d060(int nId, const __int64& n);
 void FUN_1412751b0(const CStringW& strText, int nColor);                    // add a chat message
 UIRewardNotify* FUN_140938cd0(int nId);
 bool FUN_1406a5720();
-void* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 unsigned char FUN_14036d570(void* pFeatures, int nId);
 
 // @0x14135fc40
@@ -132,7 +137,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     CStringW strB;
     CStringW strA;
     CStringW strNum = FUN_1409404f0(nAmount);
-    unsigned nLevel = FUN_141bd3060(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
+    unsigned nLevel = ((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
     switch (nType)
     {
     case 0xea62:
@@ -152,22 +157,22 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         strA = FUN_140632a60(0x2c2, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         break;
     case 0x427:
-        strA = FUN_1405c2690(L"s_msg_take_play_instrument_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_play_instrument_exp", strNum);
         break;
     case 0x423:
-        strA = FUN_1405c2690(L"s_msg_take_fishing_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_fishing_exp", strNum);
         break;
     case 0x42f:
-        strA = FUN_1405c2690(L"s_msg_take_arcade_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_arcade_exp", strNum);
         break;
     case 0x443:
-        strA = FUN_1405c2690(L"s_msg_take_normal_chest_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_normal_chest_exp", strNum);
         break;
     case 0x444:
-        strA = FUN_1405c2690(L"s_msg_take_normal_rare_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_normal_rare_exp", strNum);
         break;
     case 0x445:
-        strA = FUN_1405c2690(L"s_msg_take_normal_rare_first_exp", strNum);
+        strA = FUN_14028dfa0<CStringW>(L"s_msg_take_normal_rare_first_exp", strNum);
         break;
     case 3004:
     case 3007:
@@ -183,10 +188,10 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     FUN_1401c0d90();
     if (FUN_140475e80(nType) != 0)
     {
-        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((FUN_141658fa0(pPC) & *FUN_1401d7c10(FUN_1401d3200() + 0x5910)) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *FUN_1401d7c10(((unsigned char*)FUN_1401d3200()) + 0x5910)) != 0 && (nType == 0x15 || nType == 0xea61))
                 strA += GetStringCommon(0x2c5);
         }
     }
@@ -202,8 +207,8 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
 // @0x1413610f0
 void FUN_1413610f0(__int64 nAmount)
 {
-    CStringW strText = FUN_1405c2690(L"s_msg_take_adventure_level_exp", FUN_1409404f0(nAmount));
-    if (FUN_140476ad0(FUN_1401c0d90()) != 0)
+    CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_take_adventure_level_exp", FUN_1409404f0(nAmount));
+    if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140476ad0() != 0)
         strText += FUN_140298ea0(L"s_msg_take_event_additional");
     FUN_1412751b0(strText, 8);
 }
@@ -213,7 +218,7 @@ void FUN_141361210(__int64 nAmount)
 {
     if (nAmount == 0)
         return;
-    CStringW strText = FUN_1405c2690(L"s_msg_take_survival_level_exp", FUN_1409404f0(nAmount));
+    CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_take_survival_level_exp", FUN_1409404f0(nAmount));
     FUN_1412751b0(strText, 8);
 }
 
@@ -226,10 +231,10 @@ void FUN_1413612c0(__int64 nAmount, int nType)
     {
         CStringW strNum = FUN_1409404f0(nAmount);
         CStringW strText = FUN_14052bd00(0x2c3, strNum);
-        PCBase* pPC = FUN_141bd0cc0(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance()));
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((FUN_141658fa0(pPC) & *FUN_1401d7c10(FUN_1401d3200() + 0x5968)) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *FUN_1401d7c10(((unsigned char*)FUN_1401d3200()) + 0x5968)) != 0 && (nType == 0x15 || nType == 0xea61))
                 strText += FUN_14052bd00(0x2c5, strNum);
         }
         FUN_1412751b0(strText, 5);
@@ -252,28 +257,28 @@ void FUN_141361460(unsigned nType, __int64 nAmount, int)
         switch (nType)
         {
         case 6:
-            strText = FUN_140c160b0(L"s_msg_take_habi_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_habi_token", nAmount);
             break;
         case 5:
-            strText = FUN_140c160b0(L"s_msg_take_lu_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_lu_token", nAmount);
             break;
         case 3:
-            strText = FUN_140c160b0(L"s_msg_take_honor_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_honor_token", nAmount);
             break;
         case 4:
-            strText = FUN_140c160b0(L"s_msg_take_karma_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_karma_token", nAmount);
             break;
         case 9:
-            strText = FUN_140c160b0(L"s_msg_take_reverse_coin", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_reverse_coin", nAmount);
             break;
         case 10:
-            strText = FUN_140c160b0(L"s_msg_take_mentor_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_mentor_token", nAmount);
             break;
         case 11:
-            strText = FUN_140c160b0(L"s_msg_take_mentee_token", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_mentee_token", nAmount);
             break;
         case 12:
-            strText = FUN_140c160b0(L"s_msg_take_star_point", nAmount);
+            strText = FUN_14028dfa0<__int64>(L"s_msg_take_star_point", nAmount);
             break;
         case 13:
             strText = FUN_14086d060(0x2ce, nAmount);
@@ -298,7 +303,7 @@ void FUN_141361990(__int64 nAmount, int nUnused)
     {
         CStringW strNum = FUN_1409404f0(-nAmount);
         strText = FUN_14052bd00(0x2da, strNum);
-        if (FUN_14036d570(FUN_140166410(), 0xba) != 0)
+        if (FUN_14036d570(((void*)FUN_140166410()), 0xba) != 0)
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }
     FUN_1412751b0(strText, 6);

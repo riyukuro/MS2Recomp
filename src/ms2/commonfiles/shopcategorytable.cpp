@@ -39,9 +39,8 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 CStringTable* GetStringTable();                                           // the string table singleton
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // the element is enabled for this build
-Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pElem);                      // the next sibling root
-bool FUN_140184310(const CString& str, const char* psz);                 // string equals
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_1406a5040(int nTabId);                                          // the tab opens on its best page
 
 // View for the identical-code TPtrValue::get copy LoadCategories passes to LoadTabs.
@@ -216,7 +215,7 @@ void CShopCategoryTable::Load()
             if (pRoot == 0)
                 continue;
             LoadCategories(pRoot);
-            Unk_140165cf0* pNext = FUN_14028f8d0(pRoot);
+            Unk_140165cf0* pNext = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
             if (pNext != 0)
                 LoadCategories(pNext);
         }
@@ -235,11 +234,11 @@ void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
         FUN_140873220(pCategory, "id", nId);
         if (nId <= 0)
             continue;
-        if (!FUN_14028f710(pCategory))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pCategory)))
             continue;
         CString strTabType;
         FUN_1408733e0(pCategory, "tabType", strTabType);
-        int nTabType = FUN_140184310(strTabType, "sort") != 0;
+        int nTabType = (strTabType == "sort") != 0;
         TabListPtr spList(Unk_GrNewTag(0));
         if (spList.get() != 0)
         {
@@ -265,7 +264,7 @@ void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& 
 {
     for (Unk_140165cf0* pElem = pParent->FUN_140165cf0("tab"); pElem != 0; pElem = pElem->FUN_140168650("tab"))
     {
-        if (!FUN_14028f710(pElem))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
         int nName = 0;
         FUN_1408731e0(pElem, "name", nName);

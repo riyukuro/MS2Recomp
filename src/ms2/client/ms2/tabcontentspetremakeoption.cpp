@@ -187,7 +187,7 @@ class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 // The pet system dialog (window 0x4f38) and the pet socket page (0x2711).
 class UIPetSystemDialog : public UIDialog { public: void FUN_140e73590(int bEnable); };
-class Unk_PetUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_PetUIManager { public: };
 class Unk_PetSocketPage;
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 class UIMyInfoDialog   // C3: member view for the former free stand-ins
@@ -213,8 +213,8 @@ class Unk_ItemEnchantData : public CItemStatus {};
 void FUN_141275260(int nMsgId, int a1, int a2);
 void FUN_1412751f0(const CStringW& strText, int a1, int a2);
 void FUN_1412751b0(const CStringW& strText, int nType);
-void FUN_140d73aa0(CStringW strText, int a1, int a2, CStringW strTitle);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int a, CStringW strKey);
+void FUN_140d73aa0(CStringW strText, int a1, void* pListener, CStringW strTitle);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strKey);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -256,7 +256,7 @@ template <class T> inline T* Unk_PetGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_PetUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> obj = reinterpret_cast<Unk_PetUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (obj.get())
             return dynamic_cast<T*>(obj.operator->());
     }
@@ -648,7 +648,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     ASArray list(2);
     unsigned nDiscount = 0;
     unsigned nRate = 0;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player != 0)
         nRate = (unsigned)(__int64)(FUN_1411e1110(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0()), 0xad) * 10000.0f);
     int nSale = FUN_140616c50(MS2Ptr<CItemData>(data), &nDiscount, nRate);
@@ -967,7 +967,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
@@ -1039,7 +1039,7 @@ void TabContentsPetRemakeOption::SendChangeAttributesMode7()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
@@ -1066,7 +1066,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     if (((class Unk_PetFlags*)FUN_14025e7b0())->flags.FUN_1402c4c90(0x4d) != 0)
@@ -1228,7 +1228,7 @@ void TabContentsPetRemakeOption::FUN_140b96960(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return;
-    Unk_PetPlayer* player = reinterpret_cast<Unk_PetPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
     ItemPtr held = g_143ab2a90.FUN_140a5d680(item->FUN_140526a50());

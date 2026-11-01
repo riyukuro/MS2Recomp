@@ -99,8 +99,8 @@ static CString s_strSkill = "skill";
 // @0x1400f8e90
 static CString s_strStun = "stun";
 // @0x1400f8ec0
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
+static Unk_BuddyHandle s_pointer(NULL);
 
 // ---------------------------------------------------------------------------------------------------------------
 // AddAffectedObjectFunctor: the engine's (LightService.cpp) functor, compiled again into this unit.

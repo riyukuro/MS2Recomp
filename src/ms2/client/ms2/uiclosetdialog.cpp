@@ -193,11 +193,11 @@ struct Unk_ClEquipSlotEntry { int m_0; EquipSlotType m_eGroup; int m_8; };
 extern const Unk_ClEquipSlotEntry DAT_142d34e50[];
 inline EquipSlotType FUN_140be4750(__int64 nSlot) { return DAT_142d34e50[nSlot].m_eGroup; }   // 0x140be4750
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // show it
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);         // notice box
-void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);            // notice box by string id
+void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);         // notice box
+void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);            // notice box by string id
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                    // system notice
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);                  // formatted string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table text

@@ -24,7 +24,7 @@ public:
 class CLogString* GetLogString();
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The mapped object of key, or NULL.
 template <class K, class V> MS2Ptr<V> FindValue(std::map<K, MS2Ptr<V>>& map, K key)
@@ -63,7 +63,7 @@ BOOL DungeonMissionDataTable::ReadFromXml()
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("DungeonMission"); pElem; pElem = pElem->FUN_140168650("DungeonMission"))
     {
-        if (!FUN_14028f710(pElem))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
         MS2Ptr<DungeonMissionData> pData = DungeonMissionData::Create(pElem);
         if (pData == 0 || pData->GetId() == 0)

@@ -18,7 +18,7 @@
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // @0x14087a3e0
 CTitleTable::CTitleTable()
@@ -45,7 +45,7 @@ int CTitleTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<CTitle> spTitle(new CTitle);
         FUN_140873220(pNode, "id", spTitle->m_nId);

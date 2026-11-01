@@ -71,7 +71,7 @@ public:
     int FUN_1411a49c0(Unk_SoundParam& p);                           // 0x1411a49c0 play
     void FUN_1411a6060(int nHandle);                                // 0x1411a6060 stop
 };
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 MS2InputService* FUN_140a58540();
 class GameObject   // C3: member view for the former free stand-ins
 {

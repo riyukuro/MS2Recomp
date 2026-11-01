@@ -267,7 +267,7 @@ MS2_REPLACE_METHOD(0x140BFCC50, UICoupleDanceEventDialog, vfunc_72, 34, 0x3E6691
 // @0x140bfcc80
 void UICoupleDanceEventDialog::vfunc_67()
 {
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
         if (pPlayer->FUN_14166c930() == 0x3b)
             pPlayer->vfunc_59(1, 0, 0, 0);
@@ -293,7 +293,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
         return 1;
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer) {
         MS2_ASSERT_AT(232, 0);
         return 0;
@@ -349,7 +349,7 @@ MS2_REPLACE_METHOD(0x140BFCD30, UICoupleDanceEventDialog, vfunc_28, 1478, 0x6FA6
 // @0x140bfd300
 int UICoupleDanceEventDialog::vfunc_71()
 {
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer) {
         MS2_ASSERT_AT(310, 0);
         return 0;
@@ -479,7 +479,7 @@ void UICoupleDanceEventDialog::FUN_140bfde00()
         return;
     if (!FUN_141924630())
         return;
-    Unk_141bd0cc0* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
         return;
     MS2Ptr<Unk_PartyInfo> pParty = pPlayer->vfunc_87();

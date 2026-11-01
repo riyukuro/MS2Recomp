@@ -26,6 +26,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
@@ -42,7 +43,6 @@ extern Unk_AttendTable g_attendTable;                   // 0x143ab2fc0
 extern Unk_AttendTable g_stampTable;                    // 0x143ab3010
 
 // The world manager (singleton accessor 0x1403ed2d0).
-WorldService* FUN_1403ed2d0();
 class Unk_StampUIMgr { public: void FUN_141adc530(int nClass); };
 class Unk_StampItem { public: CString FUN_14053fdd0(); };
 NotifySystem* FUN_140939a10();
@@ -69,11 +69,9 @@ MS2_CHECK_OFFSET(Unk_StampQuest, data, 0x18);
 CGameRule* FUN_1401c0d90();
 void* FUN_140764020();   // C3: was FUN_140764020
 UIQuestEventDispatcher* FUN_140bfc4b0();
-bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1409e8970(CStringW, const int&, const int&);
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
 CString FUN_14016a600(const wchar_t*, int);
@@ -136,7 +134,7 @@ MS2_REPLACE_METHOD(0x140ED7990, UIStampEventDialog, vfunc_13, 24, 0x0BD12988);
 void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& strMethod, ASData* pArgs)
 {
     UIObject::vfunc_45(pOut, strMethod, pArgs);
-    if (FUN_140184310(strMethod, "getTooltipQuest")) {
+    if ((strMethod == "getTooltipQuest")) {
         int nQuest = pArgs->FUN_1422b8b10();
         if (!((class CQuestManager*)FUN_140764020())->FUN_140745630(nQuest) && !((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest)) return;
         CStringW strText = FUN_1416e5660(nQuest);
@@ -145,10 +143,10 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
             tip.FUN_1409c6dc0(1);
             *pOut = tip.FUN_1422bb870();
         }
-    } else if (FUN_140184310(strMethod, "getTooltipItem")) {
+    } else if ((strMethod == "getTooltipItem")) {
         int nItem = pArgs->FUN_1422b8b10();
         int nRank = pArgs->FUN_1422b8b10();
-        void* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* pActor = WorldService::GetInstance()->FUN_141bd0cc0();
         if (pActor) {
             ASTooltip tip(pActor, 32, 2);
             if (tip.FUN_1409e1770(nItem, nRank)) *pOut = tip.FUN_1422bb870();
@@ -207,11 +205,11 @@ MS2_REPLACE_METHOD(0x140ED7EA0, UIStampEventDialog, FUN_140ed7ea0, 223, 0xB0ED89
 // @0x140ed7f90
 void UIStampEventDialog::FUN_140ed7f90(NotifyObject*)
 {
-    if (FUN_1403ed2d0()->FUN_141bcb0a0()) return;
+    if (WorldService::GetInstance()->FUN_141bcb0a0()) return;
     MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
     if (spContext == 0) return;
     if (spContext->m_98 == 0) return;
-    reinterpret_cast<Unk_StampUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4f33);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f33)));
 }
 MS2_REPLACE_METHOD(0x140ED7F90, UIStampEventDialog, FUN_140ed7f90, 167, 0xF65B920C);
 
@@ -319,7 +317,7 @@ void UIStampEventDialog::FUN_140ed8c70()
     for (int i = 0; i < nTotal; ++i) {
         if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spContext->m_stamps[i]->m_id)) ++nDone;
     }
-    CStringW strText = FUN_1409e8970(CStringW(L"s_stampevent_count"), nDone, nTotal);
+    CStringW strText = FUN_14028dfa0<int, int>(CStringW(L"s_stampevent_count"), nDone, nTotal);
     if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count")) {
         spCount->FUN_1422c4cd0(strText);
     }

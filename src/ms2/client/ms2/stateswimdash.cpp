@@ -26,12 +26,14 @@
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 class Unk_PCBaseBody;
-bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
-void* FUN_1403ed280();                                     // effect manager
-void* FUN_1403ed2d0();                                     // player manager
-int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
+class WorldService   // C3: member view for the former free stand-ins
+{
+public:
+    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    static class WorldService* GetInstance();
+};
 
 // The config constants singleton: the dash speed at +0x56a8.
 class Unk_SwimScale { public: float* FUN_140298f40(); };
@@ -41,7 +43,7 @@ public:
     char m_pad[0x56a8];
     Unk_SwimScale m_scale;
 };
-Unk_SwimConsts* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's buff set: the movement direction and the buff tests.
 class Unk_SwimBuff
@@ -122,7 +124,7 @@ void StateSwimDash::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->FUN_141674b60(static_cast<const efd::Point3&>(m_pOwner->FUN_14123c360()));
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    m_pOwner->FUN_141671960(*FUN_1401d3200()->m_scale.FUN_140298f40());
+    m_pOwner->FUN_141671960(*((class Unk_SwimConsts*)FUN_1401d3200())->m_scale.FUN_140298f40());
     reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
@@ -173,13 +175,13 @@ void StateSwimDash::vfunc_9(double fTime)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
         reinterpret_cast<PC*>(pPC)->FUN_14165e2a0(strAnim, 0x32);
-    if (FUN_14096ad40(strAnim))
+    if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(strAnim))->empty())
     {
         if (!m_pOwner->FUN_14166de90(0x32, nSeq))
             strAnim = m_pOwner->vfunc_123(0x32);
     }
     bool bPlayed = false;
-    if (!FUN_14096ad40(strAnim))
+    if (!((efd::utf8string*)&static_cast<class efd::utf8string const&>(strAnim))->empty())
     {
         Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
         vfunc_10(m_pOwner->vfunc_95(), pSpeed->m_w, pSpeed->m_y, 1.0f, 0);
@@ -213,7 +215,7 @@ void StateSwimDash::FUN_1417fbe80()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a6060(m_nEffect);
+        reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -227,9 +229,9 @@ void StateSwimDash::FUN_1417fbec0()
     {
         Unk_EffectQuery query;
         query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x32);
-        query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
         query.SetActor(pPC->FUN_14123c580());
-        m_nEffect = reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
+        m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }
 }
 

@@ -34,7 +34,7 @@ public:
     CStringW m_e548;                                                    // rpg movie path
     CStringW m_e550;                                                    // royale movie path
 };
-Unk_GmGlobals* FUN_1401d3200();
+class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_GmGlobals*)
 
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
 class Unk_GmSceneMgr { public: void FUN_1417e25a0(unsigned int nEvent); };
@@ -78,8 +78,8 @@ void UIGameModeSelectDialog::OnLoadComplete()
     if (m_178.get() != 0)
         m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::FUN_140c1a510), 0);
     ASObj obj(2);
-    obj.FUN_1407cbb20("rpgMoviePath", FUN_1401d3200()->m_e548);
-    obj.FUN_1407cbb20("royaleMoviePath", FUN_1401d3200()->m_e550);
+    obj.FUN_1407cbb20("rpgMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e548);
+    obj.FUN_1407cbb20("royaleMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e550);
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }

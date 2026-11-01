@@ -67,8 +67,6 @@ UIObject* FUN_1403ed9e0(Unk_PbUIRef& rRef);
 class Unk_PbUiMgr
 {
 public:
-    void FUN_141adc5d0(int nId);                                    // close a dialog (if open)
-    void FUN_141adc750(int nId);                                    // toggle a dialog
     Unk_PbUIRef FUN_141adcea0(int nId);                             // object by class id
 };
 
@@ -81,7 +79,7 @@ struct Unk_PbConfig
     void* m_p00;
     Unk_PbFlagSet m_flags;                                          // +0x08
 };
-Unk_PbConfig* FUN_14025e7b0();
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // What the 0x12d packet starts with: the level and the merat.
 struct Unk_1407a9690
@@ -92,8 +90,8 @@ struct Unk_1407a9690
 };
 void FUN_1407a9710(Unk_1407a9690& v, CInPacket& in);
 
-CFeatureManager* FUN_140166410();                                   // the game settings (feature switches)
-PaybackManagerClient* FUN_1409c1740();                              // the payback manager
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 CStringW FUN_140298ea0(CStringW strKey);                            // string table text
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
 void FUN_141275260(int nStringId, int nA, int nB);                  // notice by string id
@@ -115,7 +113,7 @@ PaybackManagerClient::PaybackManagerClient()
 // @0x140a8afb0
 void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return;
     {
         unsigned char nKind = packet.ReadUInt8();
@@ -129,9 +127,9 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
             FUN_1407a9710(status, packet);
             m_nLevel = status.m_00;
             m_nMerat = (unsigned)status.m_08;
-            if (!FUN_1409c1740()->FUN_140a8be20(0))
+            if (!((class PaybackManagerClient*)FUN_1409c1740())->FUN_140a8be20(0))
             {
-                reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f93);
+                TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f93);
                 break;
             }
             UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
@@ -173,7 +171,7 @@ void PaybackManagerClient::FUN_140a8b290()
     if (TSingleton<PaybackTable>::GetInstance()->IsResetWindow() == 1)
         FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
     else
-        reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f93);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f93)));
 }
 
 // @0x140a8b340
@@ -185,7 +183,7 @@ unsigned PaybackManagerClient::GetMerat() const
 // @0x140a8b360
 MS2Ptr<CMeratMarketProduct> PaybackManagerClient::FUN_140a8b360() const
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return MS2Ptr<CMeratMarketProduct>(0);
     for (ProductVector::const_iterator it = m_products.begin(); it != m_products.end(); it++)
     {
@@ -279,7 +277,7 @@ CStringW PaybackManagerClient::FUN_140a8ba00()
 // @0x140a8bcc0
 bool PaybackManagerClient::FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return false;
     if (spProduct == 0)
         return false;
@@ -304,11 +302,11 @@ bool PaybackManagerClient::FUN_140a8be20(unsigned char bNotify)
 // @0x140a8be80
 bool PaybackManagerClient::FUN_140a8be80(unsigned char bNotify)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return false;
     if (!TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(CStringW(L"FinishPayback")))
         return false;
-    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x6f) != 0)
+    if (((struct Unk_PbConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x6f) != 0)
     {
         if (bNotify != 0)
             FUN_141275260(0x2f7, 1, 1);
@@ -320,7 +318,7 @@ bool PaybackManagerClient::FUN_140a8be80(unsigned char bNotify)
 // @0x140a8bf50
 bool PaybackManagerClient::FUN_140a8bf50(MS2Ptr<CMeratMarketProduct> spProduct) const
 {
-    if (!FUN_140166410()->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return false;
     if (spProduct == 0)
         return false;

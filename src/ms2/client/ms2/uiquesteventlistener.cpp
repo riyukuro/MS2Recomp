@@ -53,6 +53,7 @@
 
 #include <algorithm>
 #include <vector>
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // Out-of-line instantiations (questmanager_2.cpp pattern): the exe calls these rather than inlining them.
 template<> Unk_PayloadPtr<CQuest>::~Unk_PayloadPtr();
@@ -228,7 +229,6 @@ CStringW FUN_1409e8820(CStringW strKey, const unsigned short& a1);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 void FUN_141275260(int nId, int a2, int a3);                                // system message
 __int64 GetServerTime();
-void* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -509,7 +509,7 @@ MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
 // @0x141aaa450
 void UIQuestGuideDialog::vfunc_15()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
         return;
     if (!m_30)
         return;

@@ -1200,11 +1200,11 @@ bool MotionBlurRenderStep::FUN_1416a21c0(NiRenderClick* pkClick, void* pvData)
     MotionBlurRenderStep* pkStep = static_cast<MotionBlurRenderStep*>(pvData);
     int iTexture = reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->m_iFrame + 3;
     NiTexturingProperty::ShaderMap* pkMap0 = NiNew NiTexturingProperty::ShaderMap(
-        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a23f0(iTexture), 1,
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->GetRenderedTexture(iTexture), 1,
         NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST, 0);
     iTexture = (reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->m_iFrame + 1) % 2 + 3;
     NiTexturingProperty::ShaderMap* pkMap1 = NiNew NiTexturingProperty::ShaderMap(
-        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a23f0(iTexture), 0,
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->GetRenderedTexture(iTexture), 0,
         NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST, 0);
     ms_pkTexProp->SetShaderMap(0, pkMap0);
     ms_pkTexProp->SetShaderMap(1, pkMap1);
@@ -1212,7 +1212,7 @@ bool MotionBlurRenderStep::FUN_1416a21c0(NiRenderClick* pkClick, void* pvData)
 }
 
 // @0x1416a23f0
-NiRenderedTexture* PostProcessingService::FUN_1416a23f0(int nIndex)
+NiRenderedTexture* PostProcessingService::GetRenderedTexture(int nIndex)
 {
     return m_aspTextures[nIndex];
 }
@@ -1341,8 +1341,8 @@ static CString s_strStun = "stun";
 // @0x1400fc8c0
 const efd::Category DAT_143ae4c20(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 inline TSingleton<PostProcessingService>::TSingleton() { s_instance = static_cast<PostProcessingService*>(this); }
@@ -1446,7 +1446,7 @@ bool PostProcessingService::FUN_1416a37a0(int nStep, bool bRelink)
 MS2_REPLACE_METHOD(0x1416a37a0, PostProcessingService, FUN_1416a37a0, 364, 0x9F16B5B6);
 
 // @0x1416a3920
-bool PostProcessingService::FUN_1416a3920(int nStep, bool bActive)
+bool PostProcessingService::SetStepActive(int nStep, bool bActive)
 {
     efd::map<int, efd::SmartPointer<PostProcessEffect> >::iterator it = m_kSteps.find(nStep);
     if (it != m_kSteps.end())
@@ -1461,7 +1461,7 @@ bool PostProcessingService::FUN_1416a3920(int nStep, bool bActive)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1416a3920, PostProcessingService, FUN_1416a3920, 213, 0xF825659C);
+MS2_REPLACE_METHOD(0x1416a3920, PostProcessingService, SetStepActive, 213, 0xF825659C);
 
 // @0x1416a3a00
 bool PostProcessingService::FUN_1416a3a00(int nStep)
@@ -1710,7 +1710,7 @@ void PostProcessingService::FUN_1416a46d0()
     if ((NiViewRenderClick*)m_aspClicks[9] != 0)
     {
         bool bActive = m_aspClicks[9]->GetActive();
-        FUN_1416a3920(0x10, !bActive);
+        SetStepActive(0x10, !bActive);
         FUN_1416aa450(9, !bActive);
     }
 }
@@ -1793,7 +1793,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     FUN_1416a37a0(0xe, false);
     FUN_1416a37a0(0xf, false);
     FUN_1416a37a0(0xc, false);
-    FUN_1416a3920(0x11, true);
+    SetStepActive(0x11, true);
     FUN_1416a37a0(0x12, false);
     LinkEffects();
 
@@ -3146,7 +3146,7 @@ MS2_REPLACE_METHOD(0x1416a2ea0, ReloadablePostProcess, GetRTTI, 13, 0xB3E8A894);
 MS2_REPLACE_METHOD(0x1416a2eb0, PostProcessEffect, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416a2ec0, PostProcessEffect, vfunc_13, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416a1fe0, MotionBlurRenderStep, vfunc_15, 474, 0x0FD9F210);
-MS2_REPLACE_METHOD(0x1416a23f0, PostProcessingService, FUN_1416a23f0, 44, 0x82C749EE);
+MS2_REPLACE_METHOD(0x1416a23f0, PostProcessingService, GetRenderedTexture, 44, 0x82C749EE);
 MS2_REPLACE_METHOD(0x1416a23e0, MotionBlurRenderStep, GetRTTI, 13, 0x065B90E9);
 MS2_REPLACE_METHOD(0x1416a2420, MotionBlurRenderStep, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416a2430, MotionBlurRenderStep, vfunc_13, 8, 0x41132FCD);

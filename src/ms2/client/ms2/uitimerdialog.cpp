@@ -16,9 +16,8 @@
 
 // The client configuration singleton; the timer's low-time effect name is the CString at +0x2f0.
 struct Unk_TimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
-Unk_TimerCfg* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-bool FUN_140a467d0(const MS2Ptr<AScript>* p);  // MS2Ptr<AScript>::IsNull / operator!
 
 // @0x141b265f0
 UITimerDialog::UITimerDialog()
@@ -68,7 +67,7 @@ void UITimerDialog::vfunc_72()
     }
     if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10) {
         Unk_EffectTarget kTarget;
-        kTarget.m_strName = FUN_1401d31f0()->m_strEffect;
+        kTarget.m_strName = ((struct Unk_TimerCfg*)FUN_1401d31f0())->m_strEffect;
         kTarget.m_nKind = 0;
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
         m_nEffectRunning = 1;
@@ -109,7 +108,7 @@ MS2_REPLACE_METHOD(0x141B26AE0, UITimerDialog, vfunc_84, 64, 0xEC104942);
 // @0x141b26b30
 void UITimerDialog::vfunc_85()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     m_30->Invoke("showIncreaseEffect");
 }
@@ -118,7 +117,7 @@ MS2_REPLACE_METHOD(0x141B26B30, UITimerDialog, vfunc_85, 87, 0x169FA0D2);
 // @0x141b26b90
 void UITimerDialog::vfunc_86()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     m_30->Invoke("showDecreaseEffect");
 }

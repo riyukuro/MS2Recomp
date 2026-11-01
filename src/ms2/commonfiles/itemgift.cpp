@@ -20,8 +20,8 @@ Unk_GiftItemPtr FUN_14053f870(unsigned int);
 CStringW FUN_140292a70(const wchar_t*,const unsigned int&);
 int FUN_14053feb0(int);  // C3: the definition's signature
 enum { ItemRank_Unknown=0 };
-void FUN_140873220(void*,const char*,unsigned int&);
-void FUN_1408731e0(void*,const char*,int&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 // @0x1405b38e0
 ItemGift::ItemGift() {}
 // @0x1405b3930
@@ -44,7 +44,7 @@ MS2_REPLACE_METHOD_VIA(0x1405B3AB0, ItemGift, ItemAble, vfunc_o18_1, 92, 0x589C0
 // @0x1405b3b20
 ItemGiftPcBang::ItemGiftPcBang() : m_giftId(0) {}
 // @0x1405b3b70
-void ItemGiftPcBang::vfunc_4(void* xml) { ItemEntity::vfunc_2(xml);FUN_140873220(xml,"giftID",m_giftId); }
+void ItemGiftPcBang::vfunc_4(void* xml) { ItemEntity::vfunc_2(xml);XmlGetAttr((class TiXmlElement*)(xml), "giftID", m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3B70, ItemGiftPcBang, vfunc_4, 63, 0x2610ADE3);
 // @0x1405b3bc0
 void ItemGiftPcBang::vfunc_5(Unk_GiftOutput& out) { FUN_14026b030(out);out.FUN_14070f9a0(m_giftId); }
@@ -58,8 +58,8 @@ PlayBonusItemGift::PlayBonusItemGift() : m_systemMailId(0) {}
 void PlayBonusItemGift::vfunc_4(void* xml) {
     ItemGiftPcBang::vfunc_4(xml);
     int minutes=0;
-    FUN_1408731e0(xml,"requireMins",minutes);
-    FUN_140873220(xml,"systemMailID",m_systemMailId);
+    XmlGetAttr((class TiXmlElement*)(xml), "requireMins", minutes);
+    XmlGetAttr((class TiXmlElement*)(xml), "systemMailID", m_systemMailId);
     m_requiredTime=minutes*60*1000;
 }
 MS2_REPLACE_METHOD(0x1405B3C90, PlayBonusItemGift, vfunc_4, 112, 0x45D5D2E0);

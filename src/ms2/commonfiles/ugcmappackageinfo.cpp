@@ -18,14 +18,13 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_140873220(void*, const char*, int&);
-void FUN_140873360(void*, const char*, float&);
-void FUN_1408730a0(void*, const char*, bool&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
+int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_1408733e0(void*, const char*, CString&);
-int FUN_140873890(void*, const char*, int&);
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177de0(CString&, ATL::CAtlArray<int>&, const char* delimiter);
 Unk_Int3* FUN_1408a85a0(Unk_Int3*, int, int, int);
-void FUN_1401d1160(CCacheData*, CString);
 unsigned char FUN_1401d1320(CCacheData*);
 
 typedef ATL::CRBMap<CString, UGCMapPackageDataPtr> UGCMapPackageCache;
@@ -55,7 +54,7 @@ static int FUN_1408ba070(void* pNode, const char* pszName, int* pOut)
         return 2;
     }
     int value = 0;
-    int result = FUN_140873890(pNode, pszName, value);
+    int result = XmlQuery((class TiXmlElement*)(pNode), pszName, value);
     if (result != 0)
         return result;
     *pOut = value;
@@ -88,16 +87,16 @@ static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
 // @0x1408b98f0
 void UGCMapPackageInfo::FUN_1408b98f0(void* pXmlNode)
 {
-    FUN_140873220(pXmlNode, "itemID", m_nItemId);
-    FUN_140873220(pXmlNode, "itemCount", m_nItemCount);
+    XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemID", *(unsigned int*)&static_cast<int&>(m_nItemId));
+    XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemCount", *(unsigned int*)&static_cast<int&>(m_nItemCount));
     CString strPoint;
     FUN_1408733e0(pXmlNode, "offsetCubePoint3", strPoint);
     Unk_Int3 tmp;
     FUN_1408ba3b0(&tmp, strPoint);
     m_offsetCubePoint = tmp;
-    FUN_140873360(pXmlNode, "rotation", m_fRotation);
+    XmlGetAttr((class TiXmlElement*)(pXmlNode), "rotation", m_fRotation);
     FUN_1408ba070(pXmlNode, "wallDir", &m_nWallDir);
-    FUN_1408730a0(pXmlNode, "isNotPlace", m_bNotPlace);
+    XmlGetAttr((class TiXmlElement*)(pXmlNode), "isNotPlace", m_bNotPlace);
 }
 
 // @0x1408b9a00
@@ -160,7 +159,7 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return UGCMapPackageDataPtr(0);
     UGCMapPackageDataPtr data(new CUGCMapPackageData);
-    FUN_1401d1160(data.get(), strPath);
+    ((class CCacheData*)(class CCacheData*)(data.get()))->FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ugcmap");
     if (pRoot == 0)
     {

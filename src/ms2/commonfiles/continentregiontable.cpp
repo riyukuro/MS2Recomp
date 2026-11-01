@@ -14,7 +14,7 @@
 // Unrecovered helpers (same ones serverlisttable.cpp uses).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
-void FUN_1408731e0(void*, const char*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();
@@ -53,10 +53,10 @@ void CContinentRegionTable::Load()
          pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("continent")))
     {
         InfoPtr info(new ContinentInfo);
-        FUN_1408731e0(pNode, "id", info->m_nId);
-        FUN_1408731e0(pNode, "hideOtherWorldQuest", info->m_nHideOtherWorldQuest);
-        FUN_1408731e0(pNode, "shadowContinent", info->m_nShadowContinent);
-        FUN_1408731e0(pNode, "representWorldmapContinent", info->m_nRepresentWorldmapContinent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", info->m_nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "hideOtherWorldQuest", info->m_nHideOtherWorldQuest);
+        XmlGetAttr((class TiXmlElement*)(pNode), "shadowContinent", info->m_nShadowContinent);
+        XmlGetAttr((class TiXmlElement*)(pNode), "representWorldmapContinent", info->m_nRepresentWorldmapContinent);
         m_map.SetAt(info->m_nId, info);
     }
     SetInit(true);

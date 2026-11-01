@@ -16,6 +16,8 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2format.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
@@ -25,9 +27,6 @@ unsigned* FUN_1402056b0(void* pField);                  // a config field
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& strB);
 CStringW FUN_1412757d0(__int64 n);                      // number text
 CStringW FUN_1409404f0(__int64 n);                      // number text, grouped
 CStringW FUN_140719a80(__int64 n);                      // number text
@@ -147,12 +146,12 @@ void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
     CStringW strBase = FUN_1412757d0(nBase);
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
-    row.FUN_1407cbb20("buyMerat", FUN_1408f71a0(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
+    row.FUN_1407cbb20("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
                                                 FUN_140d6e230(*FUN_1402056b0((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6140))));
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
     {
-        row.FUN_1407cbb20("sellMesoText", FUN_1405c2690(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
-        row.FUN_1407cbb20("buyMeratPerUnit", FUN_1408f71a0(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
+        row.FUN_1407cbb20("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
+        row.FUN_1407cbb20("buyMeratPerUnit", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
     }
 }
 
@@ -412,7 +411,7 @@ void CMesoMarketMan::FUN_140d6ee00(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_mapOwn.RemoveKey(qwId);
     FUN_140d6f130(nCode);
 }
@@ -433,7 +432,7 @@ void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
     m_nBuy = packet.ReadInt32();
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     switch (nCode)
     {
     case 0:
@@ -446,7 +445,7 @@ void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
 // @0x140d6f0b0
 void CMesoMarketMan::FUN_140d6f0b0(MS2Ptr<CMesoMarketProductCli> sp)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_mapOwn.SetAt(sp->m_n18, sp);
 }
 
@@ -526,7 +525,7 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
     }
     default:
     {
-        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_mesoMarket_error_unknown"), +nCode), 0, FUN_140b240b0());
+        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_mesoMarket_error_unknown"), +nCode), 0, FUN_140b240b0());
     }
     }
 }

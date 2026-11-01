@@ -274,6 +274,7 @@ void FUN_141682f60(void* pTracker, PCBase* pOwner);         // PCBase+0x6d8 init
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
+#include "ms2/placeholder/wcformat.h"
 extern Unk_CubeStock DAT_143ab2e50;
 
 // The message box queue (messageboxqueue.cpp).
@@ -432,11 +433,8 @@ class Unk_MyPCEquip { public: MS2Ptr<Unk_MyPCEquipItem> FUN_141270740(int nSlot)
 class Unk_MyPCUIMgr : public CUIService
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
     void FUN_141ad9c40(MS2Ptr<Unk_MyPCEquipItem> spItem);
-    void FUN_141adc5d0(int nId);                            // hide
     void FUN_141adc530(int nId);                            // close
-    int FUN_141adc890(int nId);                             // the UI is open
 };
 int FUN_1418fd280();                                        // the home convenience is available
 class Unk_MyPCWidgets : public CGuideManager { public: void FUN_14138d7e0(int nKind, int n); void FUN_14138bf00(int nKind, int nId, int nArg);void FUN_14138b170();};
@@ -871,7 +869,7 @@ template <class T> T* MyPCDialog(int nId)
 {
     if (reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<T*>((UIObject*)p);
     }
@@ -1175,7 +1173,6 @@ class Unk_MyPCStorage { public: MS2Ptr<CItem> FUN_140c87250(__int64 nItemUid); }
 class Unk_MyPCStorageMgr { public: Unk_MyPCStorage* FUN_140c8b410(); };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_ItemOwnerRef : public CItemTransfer {};
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // the formatted string of a key
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 // The skill state (?\\stateskill.cpp; FUN_14166c930() == 0x10).
@@ -1232,7 +1229,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
             && spItem->FUN_140527930()->FUN_140635100() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
         {
             // using it binds the item: confirm first
-            CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_when_use", vfunc_77());
+            CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_use", vfunc_77());
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseBindItemSkill);
             if (spBox)
             {
@@ -1406,7 +1403,7 @@ int MyPC::vfunc_137()
             && ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_1403755a0() == 0)
         {
             FUN_141a8a730();
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e38);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e38)));
         }
     }
     return nResult;
@@ -1437,14 +1434,14 @@ void MyPC::vfunc_135(int a, int b, void* p)
                     m_b15d4 = 1;
             }
             reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc190();
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e85);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e85)));
             CString strEmpty("");
             reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae10a8).FUN_141276180(strEmpty);   // this = the sound name
         }
         else
         {
             m_b15d4 = 0;
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e85);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e85);
             CString strEmpty("");
             reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae14b8).FUN_141276180(strEmpty);   // this = the sound name
         }
@@ -2256,7 +2253,7 @@ MS2_REPLACE_METHOD(0x141528330, MyPC, FUN_141528330, 125, 0x95244E52);
 // @0x1415283c0
 int MyPC::FUN_1415283c0(int nArg)
 {
-    if (reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4e47) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e47))) != 0)
     {
         FUN_140d73bc0(0x662, 0, 0, CStringW(L""));
         return 0;
@@ -3365,12 +3362,12 @@ void MyPC::vfunc_120(MS2Ptr<RideOnAction> spAction)
         }
         if (FUN_1416764a0()->GetData()->m_nSeats > 1)
         {
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e2d);
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f2d);
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ec8);
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x2711);
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4f76);
-            reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ec3);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e2d);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f2d);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec8);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x2711);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f76);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ec3);
         }
     }
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0xc, 1);
@@ -3750,7 +3747,7 @@ void MyPC::FUN_14152a4a0(PCBase* pTarget)
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));
     if (pExpBar)
         pExpBar->FUN_141910660();
-    reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e8a);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e8a)));
     PCBase* pPlayer = FUN_14099eef0(pTarget);
     if (pPlayer)
     {
@@ -3774,7 +3771,7 @@ void MyPC::FUN_14152a960()
     if (pObserve)
     {
         pObserve->FUN_141a735d0(L"");
-        reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4e8a);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e8a);
     }
     UIPvPObserverDialog* pObserver = MyPCDialog<UIPvPObserverDialog>(0x4e96);
     if (pObserver)
@@ -3816,7 +3813,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         && spItem->FUN_140527930()->FUN_140635120() == 0)
     {
         // summoning binds the pet: confirm first
-        CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_summon", vfunc_77());
+        CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_pet_summon", vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strSummonBindPet);
         if (spBox)
         {
@@ -3929,7 +3926,7 @@ void MyPC::FUN_14152a640(int nTeam)
     if (!pObserve)
         return;
     if (!pObserve->FUN_141924630())
-        reinterpret_cast<Unk_MyPCUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e8a);
+        (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e8a)));
     pObserve->FUN_141a736c0(true);
     ((class Unk_MyPCad4b90*)FUN_140ad4b90())->FUN_1418631c0();
     ((class Unk_MyPCad4b90*)FUN_140ad4b90())->FUN_1418631f0(nTeam, 1);
@@ -4606,7 +4603,7 @@ MS2_REPLACE(0x141530910, MyPC::FUN_141530910, 15, 0x2F579261);
 // @0x141530930
 PCBase* MyPC::FUN_141530930()
 {
-    return ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    return ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
 }
 MS2_REPLACE(0x141530930, MyPC::FUN_141530930, 22, 0xD4B3D5CA);
 

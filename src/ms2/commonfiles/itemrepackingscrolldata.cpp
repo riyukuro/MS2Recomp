@@ -23,15 +23,14 @@
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
-int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // XmlGetBool (petType is read as a bool)
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 bool FUN_140634230(MS2Ptr<CItem> pItem);
 __int64 GetServerTime();
-CItemData* FUN_140527840(CItem* pItem);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);
 
 // The market sort-name tables the header (tinyxmlhelper enum names) gives every unit; two copies land here (0x143aaff68, 0x143aaffa0).
@@ -88,7 +87,7 @@ int CItemRePackingScrollTable::Load()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("rePackingScroll"); pNode != 0; pNode = pNode->FUN_140168650("rePackingScroll"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CItemRePackingScrollDataPtr spData(new CItemRePackingScrollData);
         if (spData == 0)
@@ -99,7 +98,7 @@ int CItemRePackingScrollTable::Load()
         XmlTokenList(pNode, "rank", spData->m_arrRank);
         XmlTokenList(pNode, "slot", spData->m_arrSlot);
         int nPetType = 0;
-        FUN_140873710(pNode, "petType", nPetType);
+        XmlGetBool((class TiXmlElement*)(pNode), "petType", nPetType);
         if (nPetType == 1)
             spData->m_nPet = 1;
         if (Unk_LockGuard guard = m_lock) {}
@@ -146,7 +145,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
     CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->FUN_1405278a0())->GetEnchant();
     if (pEnchant != 0 && !pEnchant->FUN_14058c9a0())
         return 10;
-    MS2Ptr<CItemData> pItemData(FUN_140527840(pItem));
+    MS2Ptr<CItemData> pItemData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
     if (pItemData == 0)
         return 2;
     if (!pItemData->property.rePackingScrollID.IsEmpty())

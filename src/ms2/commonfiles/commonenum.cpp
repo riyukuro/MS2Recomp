@@ -1416,8 +1416,12 @@ return 0; }
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
-void* FUN_140166410();
-bool FUN_14036d570(void*, int);
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
+class CFeatureManager   // C3: member view for the former free stand-ins
+{
+public:
+    bool FUN_14036d570(int);
+};
 // @0x140222590
 bool FUN_140222590(int value)
 {
@@ -1427,11 +1431,11 @@ bool FUN_140222590(int value)
     case 10: case 20: case 30: case 40: case 50: case 60: case 70: case 80:
         return true;
     case 90:
-        return FUN_14036d570(FUN_140166410(), 8);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(8);
     case 100:
-        return FUN_14036d570(FUN_140166410(), 0x12);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x12);
     case 110:
-        return FUN_14036d570(FUN_140166410(), 0x25);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x25);
     default:
         return false;
     }

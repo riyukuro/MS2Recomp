@@ -95,13 +95,13 @@ public:
 };
 
 // The UI manager.
-class Unk_MgUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+class Unk_MgUIMgr { public: };
 
 template <class T> T* Unk_MgGetDialog(int nId)
 {
     if (reinterpret_cast<Unk_MgUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_MgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }

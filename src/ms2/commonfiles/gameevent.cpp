@@ -754,7 +754,7 @@ MS2_REPLACE_METHOD(0x1403BC430, GameEventSaleBeautyShop, vfunc_4, 172, 0x5BC6B53
 void GameEventSaleBeautyShop::OnStart()
 {
     BOOL bOn = m_d8 ? FALSE : TRUE;
-    ((class CGameRule*)FUN_1401c0d90())->FUN_140476b40(m_d0, m_d4, bOn);
+    ((class CGameRule*)FUN_1401c0d90())->SetBeautyShopSaleEvent(m_d0, m_d4, bOn);
 }
 MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, OnStart, 95, 0x590385D4);
 
@@ -762,7 +762,7 @@ MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, OnStart, 95, 0x590385D4
 void GameEventSaleBeautyShop::vfunc_6()
 {
     BOOL bOn = m_d8 ? FALSE : TRUE;
-    ((class CGameRule*)FUN_1401c0d90())->FUN_140476be0(m_d0, bOn);
+    ((class CGameRule*)FUN_1401c0d90())->RemoveBeautyShopSaleEvent(m_d0, bOn);
 }
 MS2_REPLACE_METHOD(0x1403BC560, GameEventSaleBeautyShop, vfunc_6, 83, 0x3BB39145);
 
@@ -5838,11 +5838,11 @@ void GameEventAdventureLevelBonusExpRate::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D1890, GameEventAdventureLevelBonusExpRate, vfunc_4, 79, 0x36F47E14);
 
 // @0x1403d18f0
-void GameEventAdventureLevelBonusExpRate::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_140476930(m_id, m_d0); }
+void GameEventAdventureLevelBonusExpRate::OnStart() { ((class CGameRule*)FUN_1401c0d90())->SetAdventureLevelBonusExpRate(m_id, m_d0); }
 MS2_REPLACE_METHOD(0x1403D18F0, GameEventAdventureLevelBonusExpRate, OnStart, 47, 0x54120E91);
 
 // @0x1403d1930
-void GameEventAdventureLevelBonusExpRate::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_1404769a0(m_id); }
+void GameEventAdventureLevelBonusExpRate::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveAdventureLevelBonusExpRate(m_id); }
 MS2_REPLACE_METHOD(0x1403D1930, GameEventAdventureLevelBonusExpRate, vfunc_6, 35, 0xA8BB55AA);
 
 // ---- GameEventBurningLevelup ------------------------------------------------------------------------------------------

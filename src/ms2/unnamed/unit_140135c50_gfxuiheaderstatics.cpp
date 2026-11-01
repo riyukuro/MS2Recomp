@@ -237,7 +237,7 @@ extern const void* const g_atlTraceRefs_140135c50[]; const void* const g_atlTrac
     &ATL::atlTraceTime, &ATL::atlTraceUtil, &ATL::atlTraceWindowing,
 };
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 class Unk_1418036e0 { public: Unk_1418036e0(void*); private: void* m_p; };
 class Unk_1418036b0 { public: Unk_1418036b0(); private: void* m_p; int m_n; };
 
@@ -328,7 +328,7 @@ static std::pair<const char*, int> s_menuNames_c50[] = {
 };
 static const efd::Category s_cat_7f00004(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
 static Unk_1418036b0 s_zero;
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1418036e0 s_pointer2(NULL);
 static CString s_str_empty3("");
 // Atexit thunks of this unit's statics (gap1 yd sweep).

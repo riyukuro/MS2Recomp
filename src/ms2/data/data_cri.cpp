@@ -45,7 +45,7 @@ void FUN_140029f20(void *);
 void FUN_140029f40(void *);
 void FUN_140029f60(void *, int);
 void FUN_140029f80(cri01_sizerhost *, unsigned __int64 *, unsigned __int64 *);
-void * FUN_140029fa0(void *, unsigned __int64);
+void * FUN_140029fa0(void *, unsigned int);
 void FUN_14002a060(cri01_cbhost2 *, void *, void *);
 void FUN_14002a070(cri01_cbhost2 *, void *, void *);
 void * FUN_14002a080(char *, unsigned long);
@@ -99,7 +99,7 @@ void FUN_140059dd0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_14005a070(unsigned char const *, unsigned char *, int, int, int);
 void FUN_14005a140(unsigned char const *, unsigned char *, int, int, int);
 void FUN_14005a1b0(unsigned char const *, unsigned char *, int, int, int);
-void FUN_140062c10(cri_any, cri_any);
+void MPVDEC_DecDpicMb(cri_any, cri_any);
 void FUN_140066450(void *);
 void FUN_140066d80(unsigned __int64);
 void FUN_140066da0(unsigned __int64);
@@ -836,7 +836,7 @@ alignas(8) Sd_1431ba7c8 DAT_1431ba7c8 = {
     (const void*)&FUN_142ccb000,
     (const void*)&FUN_142ccbe90,
     (const void*)&FUN_142ccb710,
-    (const void*)&FUN_140062c10,
+    (const void*)&MPVDEC_DecDpicMb,
 };
 // 0x1431ba800
 alignas(16) unsigned char DAT_1431ba800[0x100] = {

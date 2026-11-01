@@ -33,7 +33,6 @@ void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notic
 CStringW FUN_1408116a0(int id, const int& v);                 // string table + one int
 CStringW FUN_1409e8970(CStringW key, const int& a, const int& b);
 void AddDays(CMsTime& time, long days);   // 0x14086a7e0 (commonfiles/timeutil.cpp)
-void FUN_140268750(AccountBlockInfo* info, void* stream);     // AccountBlockInfo::Read
 void FUN_140d73aa0(CStringW msg, int a, u64 cb, CStringW b);  // message box
 // The message box data (CMsgBoxData of unit_140d74b20.cpp; only handled through its MS2Ptr here).
 class Unk_BmMsgBox : public CPtred {};
@@ -98,7 +97,7 @@ void CBlockManager::OnBlockPacket(void* packet)
         for (int i = 0; i < n; ++i)
         {
             BlockPtr bp(new AccountBlockInfo);
-            FUN_140268750((AccountBlockInfo*)bp.operator->(), BM_STREAM(packet));
+            ((class AccountBlockInfo*)(class AccountBlockInfo*)((AccountBlockInfo*)bp.operator->()))->Read((class CInputStream*)(BM_STREAM(packet)));
             m_checker.get()->Set(bp);
             switch (bp->kind)
             {

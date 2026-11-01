@@ -23,14 +23,14 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CProxyObject);
 
 // The header statics follow in the exe's order (the object's initializers start inside one copy of the shared header
 // statics and end inside another: skill, stun, handle | sort names, skill, stun, handle, condition | sort names).
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
 static CString s_skill1 = "skill";                                  // @0x1400fe460
 static CString s_stun1 = "stun";                                    // @0x1400fe490
-static Unk_Handle1401cd100 s_handle1(0);                            // @0x1400fe4c0
+static Unk_BuddyHandle s_handle1(NULL);                            // @0x1400fe4c0
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400fe4e0
 static CString s_skill2 = "skill";                                  // @0x1400fe5a0
 static CString s_stun2 = "stun";                                    // @0x1400fe5d0
-static Unk_Handle1401cd100 s_handle2(0);                            // @0x1400fe600
+static Unk_BuddyHandle s_handle2(NULL);                            // @0x1400fe600
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);      // @0x1400fe620
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400fe670
 

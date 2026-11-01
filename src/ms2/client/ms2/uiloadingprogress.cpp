@@ -18,11 +18,11 @@
 #include "ms2/placeholder/cloadingdescriptiontable.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/loadingimagetable.h"
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
           // the input service: (un)lock the mouse for the loading screen
 CInputKeyHandler* FUN_14025e7c0();
-void* FUN_1408e57f0();                                              // the scene manager
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -130,7 +130,7 @@ int UILoadingProgress::FUN_1419dfe70()
     UICutSceneMovie* pCut = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
     if (pCut != 0 && ((class UICutSceneMovie*)(class UICutSceneMovie*)(pCut))->HasSceneVideo(FUN_1419e04b0()) != 0)
         return 0;
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
         return 1;
     int nMap = FUN_1419e04f0();
     int n = FUN_1419e04b0();
@@ -205,7 +205,7 @@ int UILoadingProgress::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp("OnFadeInComplete", szMethod) == 0)
     {
-        ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->FUN_1422ba110();
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba110();
         return 1;
     }
     return 0;
@@ -235,7 +235,7 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
 // @0x1419e04b0
 int UILoadingProgress::FUN_1419e04b0()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
         return 0;
     return m_70;
 }
@@ -244,7 +244,7 @@ MS2_REPLACE_METHOD(0x1419E04B0, UILoadingProgress, FUN_1419e04b0, 46, 0x6FE3E137
 // @0x1419e04f0
 int UILoadingProgress::FUN_1419e04f0()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
         return DAT_143ab2874;
     if (m_74 != 0)
     {
@@ -262,7 +262,7 @@ void UILoadingProgress::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1419e05c0
 bool UILoadingProgress::vfunc_52()
 {
-    int nScene = ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSceneId();
+    int nScene = ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId();
     if (nScene == 0x6200009 || nScene == 0x6200085)
         return false;
     return true;

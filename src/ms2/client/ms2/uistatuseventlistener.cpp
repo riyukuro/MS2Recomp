@@ -100,15 +100,7 @@ UIInventoryDialog* FUN_1405344f0(int nUiId);
 class ASDialog : public ASDisplayObject { };
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
-class Unk_OsUIMsg : public UIMsg
-{
-public:
-    Unk_OsUIMsg();                                          // 0x1422e4490
-    ~Unk_OsUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_OsUIMsg;
 
 // The bound slot bag of a bag id and the control state it keeps.
 Unk_StBagBind* FUN_1422c8e90(const CString& strBagId);
@@ -233,7 +225,7 @@ void FUN_140961010(int nStringId, int nA, int nB, const CStringW& str);
 CStringW FUN_1409e97f0(int nStringId, const int* pnArg);
 void FUN_14151f200();
 int FUN_1412772f0(__int64 n, int a);
-void FUN_141276180(const CString& strKey, const CString& strValue);
+int FUN_141276180(const CString& strKey, const CString& strValue);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 CStringW* FUN_140159a00(ATL::CAtlArray<CStringW>* p, size_t i);
 unsigned char FUN_1403b3c40(const CStringW& a, const wchar_t* b);

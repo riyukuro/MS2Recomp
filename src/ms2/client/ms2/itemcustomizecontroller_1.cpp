@@ -228,7 +228,7 @@ void CItemCustomizeController::vfunc_4()
 // @0x141411270
 int CItemCustomizeController::RefreshEquipItem()
 {
-    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         m_spEquipItem = pPlayer->FUN_141655e10(m_nSlot);
@@ -330,7 +330,7 @@ float CItemCustomizeController::GetWheelDelta()
 // @0x1414117a0
 void CItemCustomizeController::ApplyValues()
 {
-    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_spEquipItem.IsNull())
@@ -348,7 +348,7 @@ void CItemCustomizeController::ApplyValues()
 // @0x141411920
 void CItemCustomizeController::ReadValues()
 {
-    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     {
@@ -413,7 +413,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
         if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
             return;
         void* pCameraManager = ((void*)FUN_1413f9a70());
-        Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
         NiRenderer* pRenderer = NiRenderer::GetRenderer();
@@ -449,7 +449,7 @@ void CItemCustomizeController::UpdateDrag()
         vfunc_31();
         return;
     }
-    Unk_ICCPlayer* pPlayer = reinterpret_cast<Unk_ICCWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_ICCEntityLoader* pLoader = FUN_141b6f910();

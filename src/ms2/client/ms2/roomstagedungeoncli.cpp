@@ -27,7 +27,7 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-Unk_McPackets* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 CStringW FUN_140298ea0(CStringW);
 void FUN_1412751b0(const CStringW&, int);
 
@@ -43,13 +43,13 @@ RoomStageDungeonCli::RoomStageDungeonCli(unsigned nRoomId, int nStage)
     : m_nStage(nStage)
 {
     m_spRoom = DungeonRoomTable::GetInstance()->GetRoom(nRoomId);
-    FUN_140bccd50()->FUN_140da5180(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da5180(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
 }
 
 // @0x140c9cda0
 RoomStageDungeonCli::~RoomStageDungeonCli()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
+    ((class Unk_McPackets*)FUN_140bccd50())->FUN_140da51e0(0x100, Delegate<void(CInPacket&)>(this, &RoomStageDungeonCli::OnPacket));
 }
 
 // @0x140c9ce60

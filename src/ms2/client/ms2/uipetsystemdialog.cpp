@@ -39,19 +39,23 @@ static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh"
 // ---- out-of-unit callees (names describe uses) ----
 
 struct Unk_IsItemEvents;
-Unk_IsItemEvents* FUN_140a6a840();                                          // the item event hub
-void FUN_1419cae20(Unk_IsItemEvents* pHub, UIItemEventListener* pListener); // add a listener
-void FUN_1419caeb0(Unk_IsItemEvents* pHub, UIItemEventListener* pListener); // remove it
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
+{
+public:
+    void FUN_1419cae20(class UIItemEventListener*);
+    void FUN_1419caeb0(class UIItemEventListener*);
+};
 
 class Unk_PsBanFlags { public: int FUN_1402c4c90(int nFlag); };            // blocked-action flag set
 struct Unk_PsConfig { char m_0[8]; Unk_PsBanFlags m_8; };                   // global client config
-Unk_PsConfig* FUN_14025e7b0();
-CFeatureManager* FUN_140166410();                                           // the feature switches
+struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
+class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-CPetManager* FUN_140535320();
+class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 extern Unk_Inventory g_143ab2a90;                                           // the player's inventory
 
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_1412761e0(MS2Ptr<AScript> spMovie, int n);
 CStringW GetStringCommon(int nId);                                            // a common string by id
@@ -100,14 +104,14 @@ int UIPetSystemDialog::vfunc_65()
     m_198.SetAt(2, new TabInfo(0xccf, FUN_140e74ee0(vfunc_84()), "petEvolution"));
     m_198.SetAt(3, new TabInfo(0xcd1, FUN_140e74df0(vfunc_84()), "petRemakeOption"));
     m_198.SetAt(4, new TabInfo(0xcd0, FUN_140e74d00(vfunc_84()), "petCollect"));
-    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     return 0;
 }
 
 // @0x140e73c20
 void UIPetSystemDialog::vfunc_67()
 {
-    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     OnRemoveTab();
     for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
     {
@@ -165,7 +169,7 @@ int UIPetSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)) != 0)
         return 1;
     if (m_188)
     {
@@ -259,7 +263,7 @@ int UIPetSystemDialog::vfunc_84()
 // @0x140e74730
 MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 {
-    return g_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
+    return g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
 }
 
 // @0x140e74790
@@ -330,9 +334,9 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74be0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x37) != 0)
+    if (((struct Unk_PsConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x37) != 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_140166410()->FUN_14036d570(0x8d))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -342,7 +346,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74d00(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_140166410()->FUN_14036d570(0x8d))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetCollect());
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -352,7 +356,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74df0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_140166410()->FUN_14036d570(0x9a))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x9a))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetRemakeOption());
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -362,7 +366,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74ee0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_140166410()->FUN_14036d570(0xeb))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xeb))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetEvolution());
     return MS2Ptr<PetSystemTabContents>(0);
 }

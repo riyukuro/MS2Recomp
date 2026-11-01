@@ -126,8 +126,6 @@ static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
 void FUN_141276f80(const Unk_CommandChat&);
 CStringW FUN_14061ad70(const CStringW&,const wchar_t*);
 CStringW FUN_1401d0080(const CStringW&,const CStringW&);
-CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
-CStringW FUN_1405c2690(CStringW,const CStringW&);
 CString FUN_14071a5b0(const CString&,const CString&);
 CString FUN_1402bad60(const char*,const int*);   // StringFormat<int> (a second copy)
 struct Unk_CommandFiles { int FUN_1403974b0(TiXmlDocument&,const char*,int,bool,bool); };
@@ -216,7 +214,7 @@ public:
     void Reload();
 };
  void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
-void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void* FUN_1403ed2b0(); int FUN_141adc940(void*,int); void FUN_141adc5d0(void*,int); void FUN_141adc530(void*,int);
+void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void* FUN_1403ed2b0(); int FUN_141adc940(void*,int); void FUN_141adc530(void*,int);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class CNifLoadingService   // C3: member view for the former free stand-ins
 {
@@ -263,7 +261,6 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
- void FUN_141adc750(void*,int);
 void* FUN_141264060(int);class UIUpperHudDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -581,7 +578,7 @@ void FUN_1402be3c0(void*,const int*);
 class UIDamageText   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141913990(bool);
+    void SetClearing(bool);
 };
 bool FUN_1419136c0(void*,CStringW&);
 class UIMeratMarketDialog* FUN_140bd2c00();   // C3: was FUN_140bd2c00
@@ -656,6 +653,8 @@ extern bool DAT_143ae9750;
 #include "ms2/client/ms2/uiguideeventarrow.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 class UICutSceneCinematic : public UIObject {public:
     void FUN_141908040(bool);   // C3: was free FUN_141908040
 public:
@@ -758,9 +757,9 @@ CStringW CUserCommandCli::Tooltip() {
             CStringW suffix=StringFormat((LPCWSTR)format,info->suffix);
             CStringW names=TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x38,info->stringId);
             names.Replace(L"\n",L", ");
-            tooltip.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
+            tooltip.Append(FUN_14028dfa0<CStringW, CStringW>(suffix,names,info->firstAlias));
         }
-        tooltip=FUN_1405c2690(key,tooltip);
+        tooltip=FUN_14028dfa0<CStringW>(key,tooltip);
     }
     return tooltip;
 }
@@ -826,16 +825,16 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"카메라",&CUserCommandCli::FUN_141365270);
     Register(L"LocalCamera",&CUserCommandCli::FUN_141365350);
     Register(L"TargetCamera",&CUserCommandCli::FUN_141365420);
-    Register(L"UiDev",&CUserCommandCli::FUN_141365560);
+    Register(L"UiDev",&CUserCommandCli::ToggleUIDevMode);
     Register(L"SaleMarket",&CUserCommandCli::FUN_141365630);
     Register(L"Stat",&CUserCommandCli::FUN_1413656a0);
     Register(L"GuideDebug",&CUserCommandCli::FUN_141365720);
     Register(L"GuideShowState",&CUserCommandCli::FUN_141365750);
-    Register(L"GuideChangeState",&CUserCommandCli::FUN_1413657a0);
-    Register(L"GuideResetClear",&CUserCommandCli::FUN_1413657f0);
+    Register(L"GuideChangeState",&CUserCommandCli::ChangeGuideEntityState);
+    Register(L"GuideResetClear",&CUserCommandCli::ResetGuideClearState);
     Register(L"GuideTestCondition",&CUserCommandCli::FUN_141365820);
     Register(L"GuideTestFunction",&CUserCommandCli::FUN_141365890);
-    Register(L"GuideClearAll",&CUserCommandCli::FUN_141365960);
+    Register(L"GuideClearAll",&CUserCommandCli::ClearAllGuides);
     Register(L"ShowServerTime",&CUserCommandCli::FUN_1413659d0);
     Register(L"PlayVoiceSound",&CUserCommandCli::FUN_141365b00);
     Register(L"PlayBgm",&CUserCommandCli::FUN_141365bf0);
@@ -982,7 +981,7 @@ int CUserCommandCli::FUN_141365420(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141365560
-int CUserCommandCli::FUN_141365560(Unk_CommandArgs&) {
+int CUserCommandCli::ToggleUIDevMode(Unk_CommandArgs&) {
     DAT_143af62d0=!DAT_143af62d0;
     if(DAT_143af62d0==true) { CStringW text(L"UI 개발버전 on!"); FUN_1412751f0(text,1,1); }
     else { CStringW text(L"UI 개발버전 off!"); FUN_1412751f0(text,1,1); }
@@ -1005,15 +1004,15 @@ int CUserCommandCli::FUN_141365720(Unk_CommandArgs&) { FUN_14138d460(((void*)FUN
 // @0x141365750
 int CUserCommandCli::FUN_141365750(Unk_CommandArgs& args) { FUN_14138d160(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0)); return 1; }
 // @0x1413657a0
-int CUserCommandCli::FUN_1413657a0(Unk_CommandArgs& args) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ChangeEntityState(args.FUN_1408d1f60(0,0)); return 1; }
+int CUserCommandCli::ChangeGuideEntityState(Unk_CommandArgs& args) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ChangeEntityState(args.FUN_1408d1f60(0,0)); return 1; }
 // @0x1413657f0
-int CUserCommandCli::FUN_1413657f0(Unk_CommandArgs&) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ResetClearState(); return 1; }
+int CUserCommandCli::ResetGuideClearState(Unk_CommandArgs&) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ResetClearState(); return 1; }
 // @0x141365820
 int CUserCommandCli::FUN_141365820(Unk_CommandArgs& args) { FUN_14138cce0(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0),args.FUN_1408d1f60(1,0)); return 1; }
 // @0x141365890
 int CUserCommandCli::FUN_141365890(Unk_CommandArgs& args) { FUN_14138d090(((void*)FUN_1409331e0()),FUN_14016a600(args.FUN_1408d21c0(0,L""),0)); return 1; }
 // @0x141365960
-int CUserCommandCli::FUN_141365960(Unk_CommandArgs&) {
+int CUserCommandCli::ClearAllGuides(Unk_CommandArgs&) {
     ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->SetInitialState(); ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ClearEntities();
     { CStringW text(L"Success GuideClearAll"); FUN_1412751b0(text,20); } return 1;
 }
@@ -1060,8 +1059,8 @@ int CUserCommandCli::FUN_141365dd0(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
     void* dialog=FUN_14136f5c0(0x4e9e);
     if(dialog) ((class UISmartRecommendNotifyDialog*)(void*)(dialog))->FUN_14134dc50(args.FUN_1408d1f60(0,0));
-    if(!FUN_141adc940(FUN_1403ed2b0(),0x4e9e)) FUN_141adc5d0(FUN_1403ed2b0(),0x4e9e);
-    FUN_141adc530(FUN_1403ed2b0(),0x4e9e); return 1;
+    if(!FUN_141adc940(FUN_1403ed2b0(),0x4e9e)) reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc5d0((eUIClassID)0x4e9e);
+    ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e9e)); return 1;
 }
 // @0x141365e70
 int CUserCommandCli::FUN_141365e70(Unk_CommandArgs&) {
@@ -1156,7 +1155,7 @@ int CUserCommandCli::FUN_141366770(Unk_CommandArgs& args) {
 // @0x1413669a0
 int CUserCommandCli::FUN_1413669a0(Unk_CommandArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
 // @0x1413669f0
-int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; FUN_141adc750(FUN_1403ed2b0(),0x4f1b); return 1; }
+int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
 // @0x141366a40
 int CUserCommandCli::FUN_141366a40(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
@@ -1935,7 +1934,7 @@ int CUserCommandCli::FUN_14136bf50(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136bfe0(Unk_CommandArgs&) {
     Unk_DamageTest* obj=(Unk_DamageTest*)FUN_140b624b0(0x4e32);
     if(obj) {
-        bool bOld=!obj->m_2c0; ((class UIDamageText*)(void*)(obj))->FUN_141913990(bOld);
+        bool bOld=!obj->m_2c0; ((class UIDamageText*)(void*)(obj))->SetClearing(bOld);
         const wchar_t* label;
         if(obj->m_2c0==1) label=L"On"; else label=L"Off";
         CStringW state(label);
@@ -2108,9 +2107,9 @@ int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
             CStringW suffix=StringFormat(format,info->suffix);
             CStringW names=TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x38,info->stringId);
             names.Replace(L"\n",L", ");
-            text.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
+            text.Append(FUN_14028dfa0<CStringW, CStringW>(suffix,names,info->firstAlias));
         }
-        text=FUN_1405c2690(key,text);
+        text=FUN_14028dfa0<CStringW>(key,text);
     }
     FUN_1412751b0(text,20);
     return 1;
@@ -2206,7 +2205,7 @@ int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
             FUN_1412751b0(StringFormat(L"Cannot Found SalableGroup in Field {0} {1}",field,group),20);
             return 1;
         }
-        FUN_141adc750(FUN_1403ed2b0(),0x4e76);
+        ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4e76));
         void* dialog=FUN_140961690(0x4e76);
         if(dialog) ((class UIRealEstateDialog*)(void*)(dialog))->FUN_141ab4000(group, field);
         FUN_1412751b0(StringFormat(L"OpenContract {0} {1}",field,group),20);

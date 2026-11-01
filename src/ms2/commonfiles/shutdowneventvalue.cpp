@@ -34,6 +34,7 @@
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 #ifndef MS2_HOOK_DLL
 // The ctors of these classes (0x1407d00f0 ... 0x1407d1000) are shopeventmanager.cpp's, but the exe keeps their
@@ -108,14 +109,14 @@ CShutdownEventValue::CShutdownEventValue()
 // @0x1407d10e0
 void CShutdownEventValue::FUN_1407d10e0(unsigned long nId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     ++m_ids[nId];
 }
 
 // @0x1407d1160
 void CShutdownEventValue::FUN_1407d1160(unsigned long nId)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     --m_ids[nId];
     if (m_ids[nId] == 0)
         m_ids.erase(nId);
@@ -126,7 +127,7 @@ bool CShutdownEventValue::FUN_1407d1210(unsigned long nId)
 {
     if (m_ids.empty())
         return false;
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     return m_ids[nId] != 0;
 }
 
@@ -162,7 +163,7 @@ CShutdownEventItemRemakeOption::CShutdownEventItemRemakeOption()
 // @0x1407d1500
 int CShutdownEventItemRemakeOption::FUN_1407d1500(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_options.SetAt(nKey, 1);
     return 1;
 }
@@ -170,14 +171,14 @@ int CShutdownEventItemRemakeOption::FUN_1407d1500(int nKey)
 // @0x1407d1570
 void CShutdownEventItemRemakeOption::FUN_1407d1570(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_options.RemoveKey(nKey);
 }
 
 // @0x1407d15d0
 int CShutdownEventItemRemakeOption::FUN_1407d15d0(int nKey)
 {
-    Unk_CriticalSectionLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int nValue = 0;
     m_options.Lookup(nKey, nValue);
     return nValue;
@@ -191,7 +192,7 @@ CShutdownEventKeySetA::CShutdownEventKeySetA()
 // @0x1407d16a0 shut an id down
 bool FUN_1407d16a0(CShutdownEventKeySetA* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -199,7 +200,7 @@ bool FUN_1407d16a0(CShutdownEventKeySetA* pSet, unsigned nId)
 // @0x1407d1710 undo it
 void FUN_1407d1710(CShutdownEventKeySetA* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -219,7 +220,7 @@ CShutdownEventKeySetB::CShutdownEventKeySetB()
 // @0x1407d1800 shut an id down
 bool FUN_1407d1800(CShutdownEventKeySetB* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -227,7 +228,7 @@ bool FUN_1407d1800(CShutdownEventKeySetB* pSet, unsigned nId)
 // @0x1407d1870 undo it
 void FUN_1407d1870(CShutdownEventKeySetB* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -247,7 +248,7 @@ CShutdownEventKeySetC::CShutdownEventKeySetC()
 // @0x1407d1960 shut an id down
 bool FUN_1407d1960(CShutdownEventKeySetC* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -255,7 +256,7 @@ bool FUN_1407d1960(CShutdownEventKeySetC* pSet, unsigned nId)
 // @0x1407d19d0 undo it
 void FUN_1407d19d0(CShutdownEventKeySetC* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -275,7 +276,7 @@ CShutdownEventSet1300::CShutdownEventSet1300()
 // @0x1407d1ac0 shut an id down
 bool FUN_1407d1ac0(CShutdownEventSet1300* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -283,7 +284,7 @@ bool FUN_1407d1ac0(CShutdownEventSet1300* pSet, unsigned nId)
 // @0x1407d1b30 undo it
 void FUN_1407d1b30(CShutdownEventSet1300* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -305,7 +306,7 @@ CShutdownEventBillboard::CShutdownEventBillboard()
 // @0x1407d1c30 shut an id down
 bool FUN_1407d1c30(CShutdownEventBillboard* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -313,7 +314,7 @@ bool FUN_1407d1c30(CShutdownEventBillboard* pSet, unsigned nId)
 // @0x1407d1ca0 undo it
 void FUN_1407d1ca0(CShutdownEventBillboard* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -333,7 +334,7 @@ CShutdownEventUGCBanner::CShutdownEventUGCBanner()
 // @0x1407d1d90 shut an id down
 bool FUN_1407d1d90(CShutdownEventUGCBanner* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
     return true;
 }
@@ -341,7 +342,7 @@ bool FUN_1407d1d90(CShutdownEventUGCBanner* pSet, unsigned nId)
 // @0x1407d1e00 undo it
 void FUN_1407d1e00(CShutdownEventUGCBanner* pSet, unsigned nId)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
 }
 
@@ -361,7 +362,7 @@ CShutdownEventUGCUpload::CShutdownEventUGCUpload()
 // @0x1407d1ef0 the shut down UGC upload kinds of an event
 bool FUN_1407d1ef0(CShutdownEventUGCUpload* pUpload, unsigned nEventId, const Unk_ShutdownUGCUploadInfo& info)
 {
-    Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
+    Unk_1401b4ec0 lock(pUpload->m_lock, 1);
     pUpload->m_events[nEventId] = info;
     return true;
 }
@@ -369,7 +370,7 @@ bool FUN_1407d1ef0(CShutdownEventUGCUpload* pUpload, unsigned nEventId, const Un
 // @0x1407d1f70
 void FUN_1407d1f70(CShutdownEventUGCUpload* pUpload, unsigned nEventId)
 {
-    Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
+    Unk_1401b4ec0 lock(pUpload->m_lock, 1);
     if (pUpload->m_events.find(nEventId) == pUpload->m_events.end())
     {
         MS2_ASSERT_AT(0x219, FALSE);
@@ -383,7 +384,7 @@ bool FUN_1407d2050(CShutdownEventUGCUpload* pUpload, Unk_UGCUploadType eKind, in
 {
     if (pUpload->m_events.empty())
         return false;
-    Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
+    Unk_1401b4ec0 lock(pUpload->m_lock, 1);
     for (std::map<unsigned, Unk_ShutdownUGCUploadInfo>::iterator it = pUpload->m_events.begin(); it != pUpload->m_events.end(); ++it)
     {
         Unk_ShutdownUGCUploadInfo* pInfo = &it->second;
@@ -403,7 +404,7 @@ CShutdownEventUnkDualSet::CShutdownEventUnkDualSet()
 // @0x1407d2210
 bool FUN_1407d2210(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyA eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_first.insert(eKey);
     return true;
 }
@@ -411,14 +412,14 @@ bool FUN_1407d2210(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyA eKey)
 // @0x1407d2280
 void FUN_1407d2280(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyA eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_first.erase(eKey);
 }
 
 // @0x1407d22e0 the key (or the all key 0) is shut down
 bool FUN_1407d22e0(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyA eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     Unk_ShutdownDualKeyA eAll = (Unk_ShutdownDualKeyA)0;
     if (pSet->m_first.find(eAll) != pSet->m_first.end())
         return true;
@@ -430,7 +431,7 @@ bool FUN_1407d22e0(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyA eKey)
 // @0x1407d2410
 bool FUN_1407d2410(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyB eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_second.insert(eKey);
     return true;
 }
@@ -438,14 +439,14 @@ bool FUN_1407d2410(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyB eKey)
 // @0x1407d2480
 void FUN_1407d2480(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyB eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     pSet->m_second.erase(eKey);
 }
 
 // @0x1407d24e0 the key (or the all key 0) is shut down
 bool FUN_1407d24e0(CShutdownEventUnkDualSet* pSet, Unk_ShutdownDualKeyB eKey)
 {
-    Unk_CriticalSectionLock lock(pSet->m_lock, 1);
+    Unk_1401b4ec0 lock(pSet->m_lock, 1);
     Unk_ShutdownDualKeyB eAll = (Unk_ShutdownDualKeyB)0;
     if (pSet->m_second.find(eAll) != pSet->m_second.end())
         return true;

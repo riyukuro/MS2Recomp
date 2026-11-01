@@ -152,8 +152,8 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 void FUN_141275260(int,int,int);
 void FUN_141275460(int,int,int,const fmt::ArgList&);
-void FUN_140d73aa0(CStringW,int,int,CStringW);
-void FUN_141276180(const CString&,const CString&);
+void FUN_140d73aa0(CStringW,int,void*,CStringW);
+int FUN_141276180(const CString&,const CString&);
 // These are message-display wrappers over fmt; StringFormat is used for string-returning wrappers.
 template<class A,class B> inline void Unk_BreakMessage(int id,int a,int b,const A& x,const B& y) {
     const fmt::internal::ArgArray<2>::Type values={fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(x),fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(y)};
@@ -534,7 +534,7 @@ MS2_REPLACE_METHOD(0x140533340, CItemBreakManager, FUN_140533340, 248, 0x31B0FB0
 // @0x140533440
 void CItemBreakManager::FUN_140533440(ItemPtr item,int arg) {
     if(item==0) return; if(FUN_141902660(item)!=0) return;
-    if(item->FUN_1405257f0()!=0 && item->FUN_140526c50()>1) {
+    if(item->IsStackable()!=0 && item->FUN_140526c50()>1) {
         if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=item->FUN_140526c50(); CStringW text; text.Format(L"%d",count);
             box->FUN_141a01d30(1,text,count,0,0);

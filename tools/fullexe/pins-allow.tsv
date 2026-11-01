@@ -1,12 +1,14 @@
 look-alike order	client/ms2/charactermeshmerger.cpp: std::_Tree_comp_alloc: name-order family disagrees with the evidence families
 look-alike order	client/ms2/cubemapinformationservice_tail3.cpp: std::_Tree: name-order family disagrees with the evidence families
 look-alike order	client/ms2/guideentity_5.cpp: std::_Tree_comp_alloc: name-order family disagrees with the evidence families
+look-alike order	client/ms2/guideentity_5.cpp: std::_Tree_val: name-order family disagrees with the evidence families
 look-alike order	client/ms2/instrumentmanager.cpp: std::allocator: name-order family disagrees with the evidence families
 look-alike order	client/ms2/soundproperty.cpp: std::_Tree: name-order family disagrees with the evidence families
 look-alike order	client/ms2/soundproperty.cpp: std::_Tree_comp_alloc: name-order family disagrees with the evidence families
 look-alike order	client/ms2/soundproperty.cpp: std::allocator: name-order family disagrees with the evidence families
 look-alike order	client/ms2/uiitemoptioncreatedialog.cpp: std::_Func_impl_no_alloc: name-order family disagrees with the evidence families
 look-alike order	client/ms2/worldservice_6.cpp: ATL::CAtlMap: name-order family disagrees with the evidence families
+look-alike order	commonfiles/adventureleveltablehelper.cpp: std::_Tree_comp_alloc: name-order family disagrees with the evidence families
 look-alike order	commonfiles/setiteminfo_2.cpp: std::allocator: name-order family disagrees with the evidence families
 look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: MS2Ptr: name-order family disagrees with the evidence families
 look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: std::list: name-order family disagrees with the evidence families
@@ -25,6 +27,7 @@ pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?OnCash@CCashMar
 pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode3@CCashMarketMan@@QEAAXHHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140b062c0: already attributed (tag), ignored
 pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode4@CCashMarketMan@@QEAAXHHH@Z 0x140b063b0: already attributed (tag), ignored
 pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode7@CCashMarketMan@@QEAAXHHHH@Z 0x140b064c0: already attributed (tag), ignored
+pin already attributed	client/ms2/clonepc.cpp: MS2-PIN ??R?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEBAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z 0x14108bae0: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@PEAX@2@@Z 0x14114a370: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@@Z 0x14114a450: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@2@@Z 0x14114a990: already attributed (tag), ignored
@@ -518,8 +521,8 @@ pin already attributed	scaleform/as3/sfr_as3_18.cpp: MS2-PIN ?Reserve@?$ArrayDat
 pin already attributed	scaleform/as3/sfr_as3_21.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x1425683a0: already attributed (tag), ignored
 pin already attributed	scaleform/as3/sfr_as3_22.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x1425684a0: already attributed (tag), ignored
 pin already attributed	scaleform/as3/sfr_as3_22.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x142568520: already attributed (tag), ignored
-pin already attributed	scaleform/cri/sfr_cri_02c.cpp: MS2-PIN ?FUN_140033810@@YAXPEAX@Z 0x140033810: already attributed (tag), ignored
 pin already attributed	scaleform/cri/sfr_cri_02c.cpp: MS2-PIN ?FUN_140033d70@@YAJPEAXPEBUCriMovieInputChunk@@E@Z 0x140033d70: already attributed (tag), ignored
+pin already attributed	scaleform/cri/sfr_cri_02c.cpp: MS2-PIN ?executeMvPlyPrepServer@@YAXPEAX@Z 0x140033810: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_02b.cpp: MS2-PIN ?SetHinting@FontProviderWin32@GFx@Scaleform@@QEAAXPEBDW4NativeHintingRange@Font@Render@3@1II@Z 0x14259dc30: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_02b.cpp: MS2-PIN ?SetHintingAllFonts@FontProviderWin32@GFx@Scaleform@@QEAAXW4NativeHintingRange@Font@Render@3@0II@Z 0x14259dc40: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_07h.cpp: MS2-PIN ?FUN_14261f940@GFx@Scaleform@@YAXPEA_K@Z 0x14261f940: already attributed (tag), ignored

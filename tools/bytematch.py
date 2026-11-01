@@ -79,10 +79,81 @@ MD.detail = True
 # ----------------------------------------------------------------------------------------------------------------
 # COFF object reader
 
+# MS2_BM_LAZY_DEBUG=1: Obj skips the .debug$* sections when it reads the file; a .debug$* section's data and relocations
+# are read when something asks for them (progress.py's line tables). ~95% of a game obj is CodeView, and the engine stage
+# (tools/gbprogress.py) reads 1800+ objs in each pass. Same sections, symbols and data otherwise.
+LAZY_DEBUG = os.environ.get("MS2_BM_LAZY_DEBUG") == "1"
+
+
+def _read_sparse(path):
+    """the obj file as a bytearray holding everything but the .debug$* sections' data and relocations (zero there)"""
+    with open(path, "rb") as f:
+        n = os.fstat(f.fileno()).st_size
+        d = bytearray(n)
+        f.readinto(memoryview(d)[:56])
+        if d[0:4] == b"\0\0\xff\xff":
+            nsec, = struct.unpack_from("<I", d, 44)
+            symoff, = struct.unpack_from("<I", d, 48)
+            sechdr = 56
+        else:
+            nsec, = struct.unpack_from("<H", d, 2)
+            symoff, = struct.unpack_from("<I", d, 8)
+            sechdr = 20 + struct.unpack_from("<H", d, 16)[0]
+        spans = [(sechdr, sechdr + 40 * nsec), (symoff, n)]
+        f.seek(0)
+        f.readinto(memoryview(d)[:spans[0][1]])
+        for i in range(nsec):
+            o = sechdr + 40 * i
+            size, ptr, prel, _, nrel = struct.unpack_from("<IIIIH", d, o + 16)
+            ovfl = struct.unpack_from("<I", d, o + 36)[0] & 0x01000000 and nrel == 0xFFFF     # LNK_NRELOC_OVFL
+            if d[o:o + 7] == b".debug$":                       # short names only: no /N name is a .debug$ section
+                if ovfl:
+                    spans.append((prel, prel + 10))            # the record holding the count
+                continue
+            if ptr and size:
+                spans.append((ptr, ptr + size))
+            if ovfl:
+                f.seek(prel)
+                nrel, = struct.unpack("<I", f.read(4))
+            if nrel:
+                spans.append((prel, prel + 10 * nrel))
+        spans.sort()
+        merged = []
+        for a, b in spans:
+            if merged and a <= merged[-1][1] + 4096:
+                merged[-1][1] = max(merged[-1][1], b)
+            else:
+                merged.append([a, b])
+        for a, b in merged:
+            b = min(b, n)
+            f.seek(a)
+            f.readinto(memoryview(d)[a:b])
+    return d
+
+
+class _LazySection(dict):
+    """a section dict whose "data"/"relocs" are read from the obj file on first access"""
+    def __missing__(self, k):
+        if k not in ("data", "relocs") or "_lazy" not in self:
+            raise KeyError(k)
+        path, ptr, size, prel, nrel = self.pop("_lazy")
+        with open(path, "rb") as f:
+            f.seek(ptr)
+            data = f.read(size) if ptr else bytes(size)
+            f.seek(prel)
+            rd = f.read(10 * nrel)
+        self["data"] = data
+        self["relocs"] = sorted(struct.unpack_from("<IIH", rd, 10 * r) for r in range(nrel))
+        return self[k]
+
+
 class Obj:
     def __init__(self, path):
         self.path = path
-        d = self.d = open(path, "rb").read()
+        if LAZY_DEBUG:
+            d = self.d = _read_sparse(path)
+        else:
+            d = self.d = open(path, "rb").read()
         sig1, sig2 = struct.unpack_from("<HH", d, 0)
         if sig1 == 0 and sig2 == 0xFFFF:                       # ANON_OBJECT_HEADER_BIGOBJ
             nsec, = struct.unpack_from("<I", d, 44)
@@ -107,9 +178,13 @@ class Obj:
                 nrel, = struct.unpack_from("<I", d, prel)
                 prel += 10
                 nrel -= 1
+            if LAZY_DEBUG and name.startswith(".debug$"):
+                self.sections.append(_LazySection(name=name, chars=chars, size=size,
+                                                  _lazy=(path, ptr, size, prel, nrel)))
+                continue
             for r in range(nrel):
                 relocs.append(struct.unpack_from("<IIH", d, prel + 10 * r))
-            data = d[ptr:ptr + size] if ptr else bytes(size)
+            data = bytes(d[ptr:ptr + size]) if ptr else bytes(size)
             self.sections.append(dict(name=name, data=data, relocs=sorted(relocs), chars=chars, size=size))
         self.syms = {}                                         # index -> (name, value, secnum(1-based), type, sclass)
         i = 0
@@ -135,6 +210,8 @@ class Obj:
         for idx, s in self.syms.items():
             self.by_name.setdefault(s[0], idx)
         self._pdata = None
+        if LAZY_DEBUG:
+            self.d = None
 
     def _str(self, strtab, off):
         e = self.d.index(b"\0", strtab + off)

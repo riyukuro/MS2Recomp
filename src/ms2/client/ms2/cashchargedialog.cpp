@@ -20,16 +20,15 @@
 
 class UICashShopDialog : public UIObject
 {
+public:
+    void FUN_141035920(int);   // C3: was free FUN_141035920
 };
 
-class Unk_CashShopUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
-void FUN_141035920(UICashShopDialog* pDialog, int nArg);
+class Unk_CashShopUIMgr { public: };
 void* FUN_140aadf80();                                              // the screen
 void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the screen rect
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);
 void FUN_14098a5d0(CWnd* pWnd);
-void FUN_14015b020(void* pCounted);                                 // adds a reference
-void FUN_140159ba0(void* pCounted);
 
 IMPLEMENT_DYNAMIC(CCashChargeDialog, CDialogEx)
 
@@ -122,7 +121,7 @@ void CCashChargeDialog::OnClose()
     {
         Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
-            FUN_141035920(ref.FUN_140b051d0(), 0);
+            ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035920(0);
     }
     FUN_14098a5d0(this);
 }
@@ -154,7 +153,7 @@ UICashShopDialog* FUN_140b04f80(int nId)
 {
     if (reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UICashShopDialog*>((UIObject*)p);
     }
@@ -196,7 +195,7 @@ void Unk_CashShopRef::FUN_140b054b0()
 // @0x140b054e0
 void Unk_CashShopRef::FUN_140b054e0(UICashShopDialog* pDialog)
 {
-    FUN_14015b020(pDialog);
+    CPtred::AddRefPtred((class CPtred*)(pDialog));
 }
 
 // @0x140b05500
@@ -221,6 +220,6 @@ void Unk_CashShopRef::FUN_140b05570(void*)
     if (CPtred::ReleasePtred((class CPtred*)(m_pDialog)) == 0)
     {
         FUN_140b054e0(m_pDialog);
-        FUN_140159ba0(m_pDialog);
+        CPtred::DeletePtred((class CPtred*)(m_pDialog));
     }
 }

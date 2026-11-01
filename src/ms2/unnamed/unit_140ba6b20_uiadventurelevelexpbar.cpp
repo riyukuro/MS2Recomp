@@ -25,6 +25,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <string.h>
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // return types of the getters this unit calls
 class CReservedWordTable;
@@ -56,15 +57,12 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_AdvUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_AdvCfg { public: Unk_AdvCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
 int FUN_1412755a0();
 int FUN_1418dd0c0();                                                // height of the exp bar
-bool FUN_140184310(const CString& str, const char* psz);            // str == psz
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);   // string-table text with two arguments
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -251,9 +249,9 @@ void UIAdventureLevelExpBar::vfunc_43()
 // @0x140ba74a0
 void UIAdventureLevelExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    if (FUN_140184310(strMethod, "getExp"))
+    if ((strMethod == "getExp"))
     {
-        CStringW strText = FUN_1408f71a0(L"s_tooltip_adventure_exp", FUN_1409404f0(FUN_140ba6fa0()), FUN_1409404f0(FUN_140ba6fc0()));
+        CStringW strText = FUN_14028dfa0<CStringW, CStringW>(L"s_tooltip_adventure_exp", FUN_1409404f0(FUN_140ba6fa0()), FUN_1409404f0(FUN_140ba6fc0()));
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
         ASObj obj(2);
         obj.FUN_1407cbb20("text", CStringW(strText));
@@ -275,9 +273,9 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xfb))
-            reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f67);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f67)));
         else
-            reinterpret_cast<Unk_AdvUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc750(0x4f87);
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f87)));
         return 1;
     }
     return 0;

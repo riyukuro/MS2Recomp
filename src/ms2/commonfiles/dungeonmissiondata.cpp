@@ -36,7 +36,7 @@ public:
 class CLogString* GetLogString();
 
 
-int FUN_140873160(Unk_140165cf0* pElem, const char* pszName, short& nOut);
+int XmlGetAttr(class TiXmlElement*, char const*, short&);   // C3: was FUN_140873160
 
 // Clamps v into [lo, hi].
 template <class T> T Clamp(const T& v, T lo, T hi)
@@ -90,8 +90,8 @@ bool DungeonMissionData::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "id", m_id);
     FUN_140873420(pElem, "type", m_type);
-    FUN_140873160(pElem, "maxScore", m_maxScore);
-    FUN_140873160(pElem, "applyCount", m_applyCount);
+    XmlGetAttr((class TiXmlElement*)(pElem), "maxScore", m_maxScore);
+    XmlGetAttr((class TiXmlElement*)(pElem), "applyCount", m_applyCount);
     FUN_1408730a0(pElem, "isPenaltyType", m_isPenaltyType);
     if (m_id == 0)
     {

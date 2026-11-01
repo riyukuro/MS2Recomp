@@ -65,7 +65,7 @@ class CSoundEventMgr   // C3: member view for the former free stand-ins
 public:
     void FUN_14177ba30();
     void FUN_14177bb70(float);
-    void FUN_14177bda0();
+    void OnLostSoundDevice();
     void FUN_14177bf20();
     void FUN_14177dbe0(int, unsigned int);
     void FUN_14177dc80(unsigned int);
@@ -658,7 +658,7 @@ void CSoundService::FUN_1417af600()
 void FUN_1417af6e0()
 {
     if (FUN_140d13c40() != 0)
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bda0();
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->OnLostSoundDevice();
     if (FUN_1403ed280() != 0)
         ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6160();
     if (FUN_140c9cb10() != 0)

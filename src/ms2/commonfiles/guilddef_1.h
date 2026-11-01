@@ -350,10 +350,10 @@ public:
     virtual void vfunc_1(CStringW name);
     virtual void vfunc_2(__int64 value,CStringW name,int key,const CStringW& text);
     void FUN_1404cc900();
-    __int64 FUN_1404ccbd0(); void FUN_1404ccc40(__int64 v);
-    CStringW FUN_1404cccb0(); void FUN_1404ccd40(const CStringW& v);
+    __int64 FUN_1404ccbd0(); void SetGuildId(__int64 v);
+    CStringW FUN_1404cccb0(); void SetGuildName(const CStringW& v);
     CString FUN_1404ccdb0(); void FUN_1404cce40(CString v);
-    __int64 FUN_1404ccec0(); void FUN_1404ccf30(__int64 v);
+    __int64 FUN_1404ccec0(); void SetCreateTime(__int64 v);
     CStringW FUN_1404ccfa0(); void FUN_1404cd030(CStringW v);
     CStringW FUN_1404cd0b0(); void FUN_1404cd140(CStringW v);
     int FUN_1404cd1c0(); void FUN_1404cd2b0(int v);

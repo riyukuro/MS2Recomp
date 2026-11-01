@@ -12,11 +12,11 @@
 
 // The header statics: header_statics_a.h's list, then a second header's copy of it with a handle in front of the condition.
 #include "ms2/placeholder/header_statics_a.h"
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
 static CString s_aSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 
 void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer

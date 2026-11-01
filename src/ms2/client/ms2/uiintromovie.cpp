@@ -42,7 +42,6 @@ void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* form
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
-bool FUN_140184310(const CString&, const char*);
 unsigned char FUN_1401c0090(const CString&, const CString&);
 int FUN_141995eb0();
 __int64 GetServerTime();
@@ -162,12 +161,12 @@ MS2_REPLACE_METHOD(0x1419954B0, UIIntroMovie, vfunc_15, 496, 0x174AE2F8);
 // @0x1419956b0
 void UIIntroMovie::vfunc_30(const CString& a1, const CString& a2, const CString& a3)
 {
-    if (FUN_140184310(a3, "error") && FUN_1401c0090(a1, m_strPath)) {
+    if ((a3 == "error") && FUN_1401c0090(a1, m_strPath)) {
         ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
         FUN_141995e70(FUN_141995eb0());
         return;
     }
-    if (FUN_140184310(a2, "NetStream.Play.Stop")) FUN_141995e70(FUN_141995eb0());
+    if ((a2 == "NetStream.Play.Stop")) FUN_141995e70(FUN_141995eb0());
 }
 MS2_REPLACE_METHOD(0x1419956B0, UIIntroMovie, vfunc_30, 155, 0x7B34F9F1);
 

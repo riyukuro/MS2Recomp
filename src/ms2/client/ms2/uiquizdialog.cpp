@@ -23,7 +23,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 class ASDialog : public ASDisplayObject {};
 
-unsigned FUN_140869420();                                           // the client millisecond clock
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringW FUN_14083d340(CStringW str);
 CInputStream& FUN_14070f480(CInputStream& in, int& n);              // read an int
 CInputStream& FUN_14070f5f0(CInputStream& in, CStringW& str);       // read a wide string
@@ -113,7 +113,7 @@ void UIQuizDialog::vfunc_72()
     if (m_nDeadline == 0)
         return;
     m_countDown.operator->()->Tick();
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = GetTickCountMs2();
     if (nNow >= m_nDeadline)
     {
         if (m_nMode == 0)
@@ -137,7 +137,7 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
         m_strQuestion = FUN_14083d340(packet.ReadUnicodeString());
         FUN_14070f5f0(packet, strExtra);
         FUN_14070f480(packet, m_nSeconds);
-        m_nDeadline = FUN_140869420() + m_nSeconds * 1000;
+        m_nDeadline = GetTickCountMs2() + m_nSeconds * 1000;
         m_strQuestion.Replace(L"\\n", L"\n");
         if (!strExtra.IsEmpty())
             m_strQuestion += strExtra;
@@ -146,7 +146,7 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
         m_bCorrect = packet.ReadBool();
         m_strAnswer = FUN_14083d340(packet.ReadUnicodeString());
         m_nSeconds = packet.ReadInt32();
-        m_nDeadline = FUN_140869420() + m_nSeconds * 1000;
+        m_nDeadline = GetTickCountMs2() + m_nSeconds * 1000;
         m_strAnswer.Replace(L"\\n", L"\n");
         break;
     }

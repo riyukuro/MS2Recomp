@@ -18,11 +18,8 @@ class Unk_LuaState : public CLua                                                
 {
 };
 
-unsigned int FUN_140869420();                                           // the client millisecond clock
-Unk_LuaState* FUN_1401c0db0();                                          // the LUA state global (DAT_143aac4c8)
-double FUN_140675920(Unk_LuaState* pLua, int nCount);                   // lua calcKillCountBonusExpRate(count)
-unsigned int FUN_140675ab0(Unk_LuaState* pLua, int nCount);             // lua calcKillCountGrade(count)
-unsigned int FUN_140675e00(Unk_LuaState* pLua, unsigned short a1, unsigned short a2, int nDelta, int nCount);
+unsigned long GetTickCountMs2();   // C3: was FUN_140869420
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
                                                                         // lua calcKillCount(a1, a2, nDelta, nCount)
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // the CStringA -> CStringW conversion
 
@@ -44,7 +41,7 @@ CKillCount::~CKillCount()
 int CKillCount::FUN_14064c5f0(unsigned short a1, unsigned short a2)
 {
     int nShow = 0;
-    int nNow = FUN_140869420();
+    int nNow = GetTickCountMs2();
     int nOld = m_08;
     if (m_08 == 0) {
         m_08 = m_08 + 1;
@@ -67,19 +64,19 @@ int CKillCount::FUN_14064c5f0(unsigned short a1, unsigned short a2)
 // @0x14064c6e0
 double CKillCount::FUN_14064c6e0()
 {
-    return FUN_140675920(FUN_1401c0db0(), m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountBonusExpRate(m_08);
 }
 
 // @0x14064c710
 unsigned int CKillCount::FUN_14064c710()
 {
-    return FUN_140675ab0(FUN_1401c0db0(), m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountGrade(m_08);
 }
 
 // @0x14064c740
 CStringW CKillCount::FUN_14064c740()
 {
-    return FUN_14016a730(FUN_1401c0db0()->CalcKillCountMsg(m_08), 0);
+    return FUN_14016a730(((class Unk_LuaState*)FUN_1401c0db0())->CalcKillCountMsg(m_08), 0);
 }
 
 // @0x14064c7d0
@@ -104,7 +101,7 @@ int CKillCount::FUN_14064c820()
 // @0x14064c840
 int CKillCount::FUN_14064c840(int nTick)
 {
-    if (FUN_140675e00(FUN_1401c0db0(), 0, 0, nTick - m_0c, 1) > 1)
+    if (((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCount(0, 0, nTick - m_0c, 1) > 1)
         return true;
     return false;
 }
@@ -112,7 +109,7 @@ int CKillCount::FUN_14064c840(int nTick)
 // @0x14064c8a0
 unsigned int CKillCount::FUN_14064c8a0(unsigned short a1, unsigned short a2, int nDelta)
 {
-    return FUN_140675e00(FUN_1401c0db0(), a1, a2, nDelta, m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCount(a1, a2, nDelta, m_08);
 }
 
 // @0x14064c930

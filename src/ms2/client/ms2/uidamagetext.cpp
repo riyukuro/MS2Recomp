@@ -260,7 +260,7 @@ MS2_REPLACE_METHOD(0x1419114D0, UIDamageText, GetTypeName, 61, 0x693D82EF);
 // @0x141911520
 void UIDamageText::vfunc_3()
 {
-    FUN_1419135c0();
+    ClearAll();
     UIHeadUpDisplay::vfunc_3();
 }
 MS2_REPLACE_METHOD(0x141911520, UIDamageText, vfunc_3, 34, 0x74F08FAB);
@@ -531,7 +531,7 @@ void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString&
 }
 
 // @0x1419134a0
-void UIDamageText::FUN_1419134a0(const CString& strFont)
+void UIDamageText::LoadFont(const CString& strFont)
 {
     if (m_30 == 0)
         return;
@@ -539,10 +539,10 @@ void UIDamageText::FUN_1419134a0(const CString& strFont)
     v.SetString((const char*)strFont);
     m_loadFont.InvokeSelf(0, &v, 1);
 }
-MS2_REPLACE_METHOD(0x1419134A0, UIDamageText, FUN_1419134a0, 134, 0x773B987B);
+MS2_REPLACE_METHOD(0x1419134A0, UIDamageText, LoadFont, 134, 0x773B987B);
 
 // @0x141913530
-void UIDamageText::FUN_141913530(const CString& strFont)
+void UIDamageText::UnloadFont(const CString& strFont)
 {
     if (m_30 == 0)
         return;
@@ -550,10 +550,10 @@ void UIDamageText::FUN_141913530(const CString& strFont)
     v.SetString((const char*)strFont);
     m_unloadFont.InvokeSelf(0, &v, 1);
 }
-MS2_REPLACE_METHOD(0x141913530, UIDamageText, FUN_141913530, 134, 0x45A8EDE9);
+MS2_REPLACE_METHOD(0x141913530, UIDamageText, UnloadFont, 134, 0x45A8EDE9);
 
 // @0x1419135c0
-void UIDamageText::FUN_1419135c0()
+void UIDamageText::ClearAll()
 {
     m_posOwnerFollowers = 0;
     m_posNormals = 0;
@@ -566,7 +566,7 @@ void UIDamageText::FUN_1419135c0()
     if (!m_bClearing && m_30.get() != 0)
         m_30->Invoke("ClearContainer");
 }
-MS2_REPLACE_METHOD(0x1419135C0, UIDamageText, FUN_1419135c0, 241, 0xFDBBADA7);
+MS2_REPLACE_METHOD(0x1419135C0, UIDamageText, ClearAll, 241, 0xFDBBADA7);
 
 // @0x1419136c0
 bool UIDamageText::FUN_1419136c0(CStringW& strOut)
@@ -587,7 +587,7 @@ bool UIDamageText::FUN_1419136c0(CStringW& strOut)
 MS2_REPLACE_METHOD(0x1419136C0, UIDamageText, FUN_1419136c0, 709, 0x3BA9612D);
 
 // @0x141913990
-void UIDamageText::FUN_141913990(bool bClearing)
+void UIDamageText::SetClearing(bool bClearing)
 {
     m_bClearing = bClearing;
     DamageInfo::FUN_141911040(bClearing);
@@ -1614,7 +1614,7 @@ MS2_REPLACE_METHOD(0x141917A20, UIDamageText, vfunc_41, 99, 0x9A0FF887);
 // @0x141917a90
 void UIDamageText::vfunc_16()
 {
-    FUN_1419135c0();
+    ClearAll();
 }
 MS2_REPLACE_METHOD(0x141917A90, UIDamageText, vfunc_16, 24, 0x78A52482);
 

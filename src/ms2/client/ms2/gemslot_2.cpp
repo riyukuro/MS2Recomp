@@ -23,6 +23,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/itemloadinfo.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 enum Unk_GemSlot { Unk_GemSlot_0 };
 static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                                      // 0x143ad5fb0
@@ -68,7 +69,6 @@ public:
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket&);
@@ -464,7 +464,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         && FUN_140527930(spItem.operator->())->FUN_140635100() != 0
         && FUN_140527930(spItem.operator->())->FUN_140635120() == 0)
     {
-        CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
+        CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
         if (spBox)
         {

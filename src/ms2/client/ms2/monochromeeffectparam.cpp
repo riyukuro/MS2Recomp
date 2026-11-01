@@ -13,10 +13,10 @@
 #include "hook/ms2hook.h"
 
 // Post-processing service (singleton 0x1409a8b20): enable step by id.
-class Unk_PostProcessSvc
+class PostProcessingService   // C3: was the Unk_ view of 0x1416a3920's class
 {
 public:
-    void FUN_1416a3920(int nId, bool bOn);
+    bool SetStepActive(int nId, bool bOn);
 };
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -58,7 +58,7 @@ MonochromeEffect::MonochromeEffect(int nId, const CPostEffectParam* pParam)
 void MonochromeEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(7, true);
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(7, true);
 }
 MS2_REPLACE_METHOD(0x141487840, MonochromeEffect, vfunc_1, 45, 0x17925F21);
 
@@ -66,7 +66,7 @@ MS2_REPLACE_METHOD(0x141487840, MonochromeEffect, vfunc_1, 45, 0x17925F21);
 void MonochromeEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(7, false);
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(7, false);
 }
 MS2_REPLACE_METHOD(0x141487880, MonochromeEffect, vfunc_4, 45, 0x7CD6796C);
 

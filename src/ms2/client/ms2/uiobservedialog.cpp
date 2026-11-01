@@ -20,8 +20,8 @@
 
 void* FUN_14025e7c0();                                          // the option service
 bool FUN_14116d840(void* pOptions);                             // is the observer mode on
+class WorldService { public: void* FUN_141bd0cc0(); };   // C3: member view (0x141bd0cc0, the local player)
 void* FUN_1403ed2d0();                                          // the UI service
-void* FUN_141bd0cc0(void* pPlayer);                             // the player's actor
 void FUN_14152a960(void* pActor);                               // leave the observed actor
 
 // @0x141a732e0
@@ -61,7 +61,7 @@ int UIObserveDialog::vfunc_13()
 {
     if (FUN_14116d840(FUN_14025e7c0()) != false)
     {
-        void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+        void* pActor = ((void*)((WorldService*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
         if (pActor != 0)
             FUN_14152a960(pActor);
         return 1;

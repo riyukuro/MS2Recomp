@@ -44,15 +44,7 @@ public:
 UIInventoryDialog* FUN_1405344f0(int nUiId);
 
 // The UI message ("openWindowPos"): an ActionScript call (ASData + type, 0x50 bytes).
-class Unk_TdUIMsg : public UIMsg
-{
-public:
-    Unk_TdUIMsg();                                          // 0x1422e4490
-    ~Unk_TdUIMsg();                                         // 0x140c30570
-    void FUN_1422b82b0(const char* pszMethod);
-    void FUN_1422b7f70(int n);
-    void* m_pad[10];
-};
+typedef UIMsg Unk_TdUIMsg;
 
 // The status-listener registry (singleton 0x140aa6d40).
 
@@ -93,7 +85,7 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string tab
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table format
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
-void FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
+int FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
 CString FUN_14038f6d0(const CString& str, const char* sz);     // str + sz
 
 // The local player.

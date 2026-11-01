@@ -77,6 +77,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/ridee.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // The unit includes the statics six more times (without the pointer object), then the class-info and skill/stun.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -846,7 +847,7 @@ void StateNone::vfunc_5(int n)
         CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
         if (pHost != 0)
             nValue = pHost->FUN_140b10150();
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(4);
+        reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(4);
     }
 }
 
@@ -1016,7 +1017,7 @@ void StateRegen::vfunc_4(StateData* pData)
 void StateRegen::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
+    reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(9);
     CPet* pHost = reinterpret_cast<CPet*>(FUN_1417b83a0());
     if (pHost != 0)
     {
@@ -1044,7 +1045,7 @@ void StateRegen::vfunc_9(double fTime)
                 Unk_SMAnimStr kName(m_nVariantB != 0 ? "Regen_B" : "Regen_A");
                 static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), 1.0f, true, false);
             }
-            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
+            reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(9);
             NiTransform kXform;
             kXform.m_Rotate.MakeIdentity();
             kXform.m_fScale = 1.0f;
@@ -1076,7 +1077,7 @@ void StateRegen::vfunc_9(double fTime)
                 Unk_SMAnimStr kName("Regen_A");
                 static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(static_cast<const Unk_SMAnimStr&>(kName)), 1.0f, true, false);
             }
-            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ca80(9);
+            reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(9);
         }
         m_nStarted = 1;
     }
@@ -1614,7 +1615,6 @@ CFeatureManager* FUN_140166410();
 CReconnectionManagerCli* FUN_140e800e0();
 void FUN_14151f460(int n);
 class Unk_SMSceneHook { public: void FUN_1422b9ef0(int nScene); };
-Unk_SMSceneHook* FUN_1408e57f0();
 void* FUN_14086d260();
 float FUN_141473230(void* pApp);
 
@@ -1723,7 +1723,7 @@ int CStateService::FUN_1417e2830(int nScene)
         nPrev = m_spCurrent->GetClassID();
     m_spCurrent = spNext;
     m_spCurrent->OnEnter(nPrev);
-    FUN_1408e57f0()->FUN_1422b9ef0(nScene);
+    ((Unk_SMSceneHook*)CUserMail::FUN_1408e57f0())->FUN_1422b9ef0(nScene);
     return 1;
 }
 

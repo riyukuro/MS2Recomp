@@ -34,7 +34,7 @@
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
@@ -314,7 +314,7 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     const CString& strId = "id";
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = pNode->FUN_140168650(strTag))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
         FUN_140873220(pNode, strId, reinterpret_cast<unsigned&>(nId));

@@ -44,7 +44,6 @@ class Unk_HsInfo : public CPtred { public: bool FUN_14050a4d0(); };   // +0x19 d
 CTriggerService* FUN_140ad4b90();
 static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel the camera triggers show (0x142e91444)
 
-WorldService* FUN_1403ed2d0();
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
@@ -247,7 +246,7 @@ void UIWatchAGameDialog::FUN_140fc17d0()
 // @0x140fc1850
 void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
 {
-    PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_141675ed0() == 1)

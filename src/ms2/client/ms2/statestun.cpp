@@ -34,8 +34,7 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 // The actor's buffs (PCBase::FUN_1416749a0).
 class Unk_PCBaseBuffs : public AdditionalCliList
 {
-public:
-    int FUN_1409709b0();                                   // 0x1409709b0 the buffs forbid the stun animation
+    // C3: FUN_1409709b0 (the buffs forbid the stun animation) is AdditionalCliList's own member
 };
 
 // PCBase vtable view: slot 68 takes the move by value (the exe copies it to a 16-aligned temp)

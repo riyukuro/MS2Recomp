@@ -38,8 +38,9 @@ public:
     void* FUN_141bd0cc0();
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
+public:
+    int FUN_141bd3060();   // C3: was free FUN_141bd3060
 };
-int FUN_141bd3060(void* pWorld);                                    // the current map id
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
 
@@ -117,7 +118,7 @@ void CPVPManager::SendCancelRequest()
         Unk_PvpRecordPtr spRecord = FUN_1412818c0()->FUN_14051a980(Selection());
         if (spRecord == 0)
             return;
-        if (spRecord->m_nMapId == FUN_141bd3060(((void*)WorldService::GetInstance())))
+        if (spRecord->m_nMapId == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())
         {
             FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;

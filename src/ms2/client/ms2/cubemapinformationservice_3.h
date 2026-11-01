@@ -116,8 +116,8 @@ public:
 
     int FUN_1410b76a0();
     void FUN_1410b76d0();
-    Vector3 FUN_1410b7a20(Vector3 pt, Vector3* pOut);
-    Vector3 FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap);
+    Vector3 GetCellPosition(Vector3 pt, Vector3* pOut);
+    Vector3 GetCellInFrontOfActor(PCBase* pActor, float fDist, Vector3* pOut, int bSnap);
     Vector3 FUN_1410b7ba0(Vector3 ptFrom, Vector3 ptTo, float fDist, Vector3* pOut, int bSnap);
     bool FUN_1410b7d50();
     bool FUN_1410b7da0(Vector3 pt);

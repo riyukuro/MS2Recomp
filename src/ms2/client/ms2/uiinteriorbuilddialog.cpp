@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include <map>
+#include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -54,9 +55,7 @@ class Unk_ItemEquipData : public CItemData { };                         // CItem
 extern Unk_Inventory g_143ab2a90;                                       // the own inventory
 extern __int64 DAT_143ab2820;                                           // the own home owner id
                      // the current map id
-WorldService* FUN_1403ed2d0();
 void* FUN_1403ed2b0();                                                  // the ui manager
-void FUN_141adc530(void* pManager, int nUiId);                          // open a dialog
 
 // The own home record (the cube map information service's accessors).
 class Unk_IbHome : public CubeMapInformationService
@@ -107,7 +106,7 @@ void UIInteriorBuildDialog::FUN_140f4b4c0(__int64 nItemUid)
     if (vfunc_55() == 0)
         return;
     m_178 = nItemUid;
-    FUN_141adc530(FUN_1403ed2b0(), 0x4ee8);
+    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ee8)));
 }
 
 // @0x140f4b520
@@ -194,7 +193,7 @@ void UIInteriorBuildDialog::OnUseItem()
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
     if (spItem == 0)
         return;
-    if (!CFieldData::FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
+    if (!CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()))
     {
         FUN_140d73bc0(0xb8e, 0, 0, CStringW(L""));
         return;
@@ -221,7 +220,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb90, 0, 0, CStringW(L""));
         return;
     }
-    Unk_UGCMapPtr spMap = FUN_1408ad3f0(FUN_1403ed2d0()->FUN_141bd3060());
+    Unk_UGCMapPtr spMap = FUN_1408ad3f0(WorldService::GetInstance()->FUN_141bd3060());
     if (spMap == 0)
     {
         FUN_140d73bc0(0xb92, 0, 0, CStringW(L""));

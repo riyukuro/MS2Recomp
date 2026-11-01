@@ -92,7 +92,6 @@ class Unk_HpxUIMgr
 {
 public:
     void FUN_141adc530(int nId);                                // open
-    void FUN_141adc5d0(int nId);                                // close
 };
 class Unk_HpxEquipSet : public CEquipment { };
 class PC   // C3: member view for the former free stand-ins
@@ -199,7 +198,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     FUN_1419264e0("m_reset", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982880));
     FUN_1419264e0("m_mirror", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982940));
     FUN_1419264e0("m_save", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982860));
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -208,7 +207,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     m_2c0.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_2c0->FUN_140cd2530(6);
     m_2c0->FUN_140cd25c0(1);
-    reinterpret_cast<Unk_HpxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4ef2);
+    (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
     m_2d0 = FUN_140cd47b0(0x4ef2);
     m_190.MakeIdentity();
     m_1c4.MakeIdentity();
@@ -232,7 +231,7 @@ MS2_REPLACE_METHOD(0x141981450, UIHairPhysxDialog, OnLoadComplete, 1441, 0xDB01E
 void UIHairPhysxDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
     {
         pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -252,7 +251,7 @@ void UIHairPhysxDialog::vfunc_26()
         m_2c0 = 0;
     }
     m_2d0 = 0;
-    reinterpret_cast<Unk_HpxUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc5d0(0x4ef2);
+    TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4ef2);
 }
 MS2_REPLACE_METHOD(0x141981A00, UIHairPhysxDialog, vfunc_26, 473, 0x9AD1B8E0);
 
@@ -383,7 +382,7 @@ MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, FUN_1419821d0, 377, 0x16028B6
 // @0x141982350
 void UIHairPhysxDialog::FUN_141982350(int nOnly)
 {
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
     if (nOnly)
@@ -588,7 +587,7 @@ void UIHairPhysxDialog::FUN_141983010()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), &pPart, 0);
+    FUN_141695f10(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = FUN_1411de170(pPart);
     if (pKfm == 0)
         return;
@@ -675,7 +674,7 @@ void UIHairPhysxDialog::FUN_141983730()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0(), &pPart, 0);
+    FUN_141695f10(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = FUN_1411de170(pPart);
     if (pKfm == 0)
         return;
@@ -753,7 +752,7 @@ MS2_REPLACE_METHOD(0x141983C60, UIHairPhysxDialog, FUN_141983c60, 746, 0x967CAED
 // @0x141983f50
 void UIHairPhysxDialog::FUN_141983f50()
 {
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     int nSide;
     int nMode;
     if (pPc == 0)
@@ -861,7 +860,7 @@ MS2_REPLACE_METHOD(0x141984360, UIHairPhysxDialog, FUN_141984360, 1698, 0x448B5B
 // @0x141984a10
 int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
 {
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;
@@ -890,7 +889,7 @@ MS2_REPLACE_METHOD(0x141984A10, UIHairPhysxDialog, FUN_141984a10, 217, 0xD88E4BE
 // @0x141984af0
 int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight)
 {
-    PCBase* pPc = reinterpret_cast<Unk_HpxWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;

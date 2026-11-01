@@ -532,7 +532,7 @@ unsigned FUN_14053c690(unsigned nItemId)
 }
 
 // @0x14053c6b0
-bool CItemData::FUN_14053c6b0(int nStringTag)
+bool CItemData::HasStringTag(int nStringTag)
 {
     return stringTag == nStringTag;
 }
@@ -599,7 +599,7 @@ bool CItemData::FUN_14053c8b0()
 }
 
 // @0x14053c8e0
-int CItemData::FUN_14053c8e0(int nJob)
+int CItemData::IsJobAllowed(int nJob)
 {
     int nJobType = nJob;
     bool bAllowed = limit.FUN_140545c80(nJobType);

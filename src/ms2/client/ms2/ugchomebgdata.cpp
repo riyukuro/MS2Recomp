@@ -20,6 +20,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered xml loader helpers (the same ones the other table units use).
 class Unk_140165cf0
@@ -200,7 +207,7 @@ void UgcHomeOptionData::LoadBg()
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CString strPath;
-        FUN_1408733e0(pNode, "path", strPath);
+        XmlGetAttr((class TiXmlElement*)(pNode), "path", strPath);
         MS2Ptr<UgcHomeBgData> spData(new UgcHomeBgData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), strPath));
         m_mapBg.SetAt((unsigned)m_mapBg.GetCount(), spData);
     }
@@ -217,7 +224,7 @@ void UgcHomeOptionData::LoadLight()
     if (pRoot == 0)
         return;
     m_mapLight.RemoveAll();
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0; pNode = pNode->FUN_140168650("list"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
@@ -240,7 +247,7 @@ void UgcHomeOptionData::LoadCamera()
     if (pRoot == 0)
         return;
     m_mapCamera.RemoveAll();
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("list"); pNode != 0; pNode = pNode->FUN_140168650("list"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);

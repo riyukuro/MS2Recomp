@@ -143,7 +143,6 @@ class UIMessageBox { public: void FUN_1419f8120(); };
 UIMessageBox* FUN_14151f890();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, IMessageListener*, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData>);
-bool FUN_140184310(const CString&, const char*);
 class ASDialog : public ASDisplayObject {};
 int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
 class Unk_BingoMsgBox : public CMsgBoxData { public: void FUN_141a01c30(const CString&); };
@@ -227,7 +226,7 @@ void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 __int64 GetServerTime();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_14086ab70(CMsTime, CMsTime, int);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 
 // ---- the scalar / index codecs of the delegate user data (the exe keeps the index in the data pointer) ----
 // @0x140bb9630

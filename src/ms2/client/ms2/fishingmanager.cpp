@@ -736,7 +736,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 3)
     {
-        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
         {
             unsigned nMastery = pPC->FUN_141662750(1);
@@ -817,7 +817,7 @@ void CFishingManager::FUN_140cdac20()
 // @0x140cdac50
 void CFishingManager::FUN_140cdac50()
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_1409701d0(1) != 0)
@@ -854,7 +854,7 @@ MS2_REPLACE_METHOD(0x140CDADB0, CFishingManager, FUN_140cdadb0, 107, 0x5D2F9C3D)
 // @0x140cdae30
 void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (FUN_140954150() != 0)
@@ -938,7 +938,7 @@ int CFishingManager::FUN_140cdb250()
         return 0;
     if (m_nBiteEnd != 0)
         return 0;
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_14166cc80() != 0x76 && pPC->FUN_14166cc80() != 0x77)
@@ -1028,7 +1028,7 @@ void CFishingManager::FUN_140cdb450()
                 param.m_nDuration = 5000;
                 pBar->FUN_1418e13c0(this, &param);
             }
-            Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPC != 0)
             {
                 CAtlArray<CString> texts;
@@ -1050,7 +1050,7 @@ void CFishingManager::FUN_140cdb450()
     if (m_tick.Check(1000) != 0 && FUN_140954150() != 0 && FUN_140ce0cb0() != 0)
     {
         int nBuff = FUN_140cdbe80();
-        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0 && reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_140970020(nBuff, 0, 0, 1) == 0)
         {
             MS2Ptr<CItem> bait = g_143ab2a90.FUN_140a5e2e0(m_nBaitId);
@@ -1097,7 +1097,7 @@ MS2_REPLACE_METHOD(0x140CDBB90, CFishingManager, FUN_140cdbb90, 47, 0x728BBEF3);
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdbbd0(MS2Ptr<CItem> rod)
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     if (!((CItem*)rod)->FUN_140528980())
@@ -1181,7 +1181,7 @@ CStringW CFishingManager::FUN_140cdc000(unsigned nSpotId)
         int nLevel = ((class Unk_FmMasteryTable*)FUN_1409670c0())->FUN_14066af60(1, pSpot->m_nMinMastery);
         CStringW strLevel = TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nLevel);
         unsigned nMastery = 0;
-        Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0)
             nMastery = pPC->FUN_141662750(1);
         int nId = (nMastery < spot->m_nMinMastery) ? 0x719 : 0x718;
@@ -1221,7 +1221,7 @@ int CFishingManager::FUN_140cdc380(unsigned nFishId)
 // @0x140cdc520
 int CFishingManager::FUN_140cdc520()
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     Unk_PCBaseRayHit kHit;
@@ -1250,7 +1250,7 @@ int CFishingManager::FUN_140cdc520()
 // @0x140cdc810
 int CFishingManager::FUN_140cdc810()
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     int nState = pPC->FUN_14166c930();
@@ -1288,7 +1288,7 @@ int CFishingManager::FUN_140cdc810()
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 unsigned CFishingManager::FUN_140cdc950()
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     CFishingGuideObject* pGuide = efd::DynamicCast<CFishingGuideObject>(pPC->FUN_141662440(1));
@@ -1301,7 +1301,7 @@ unsigned CFishingManager::FUN_140cdc950()
 // @0x140cdc9d0
 void CFishingManager::FUN_140cdc9d0(int nState, int nGuideState)
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     if (pPC->FUN_14166cc80() != nState)
@@ -1366,7 +1366,7 @@ void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
 {
     if (rod.IsNull())
         return;
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
         pPC->vfunc_59(0x2d, new StateFishingData(rod->FUN_1405276c0()), 0, 0);
     m_bFishing = 1;
@@ -1397,7 +1397,7 @@ void CFishingManager::FUN_140cdd030()
     FUN_140cdcde0();
     if (m_nReelSound != 0)
         ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/))->FUN_1411a6060(m_nReelSound);
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->FUN_14166c930() == 0x2d)
         pPC->vfunc_59(1, 0, 0, 0);
     if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
@@ -1426,7 +1426,7 @@ void CFishingManager::FUN_140cdd1f0()
         CStringW strEnd(L"");
         pBar->FUN_1418e12f0(this, FUN_140cddc70(texts), nDuration, false, true, strEnd);
     }
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
         CAtlArray<CString> texts;
@@ -1491,7 +1491,7 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
 // MS2-FUNCTIONAL: temporaries
 int CFishingManager::FUN_140cdd7b0()
 {
-    Unk_FmPC* pPC = reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     NiPoint3 kPos = pPC->vfunc_18();

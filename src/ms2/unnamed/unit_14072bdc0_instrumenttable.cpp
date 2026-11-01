@@ -25,7 +25,7 @@ CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pNode);                                   // node is enabled for this client
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);          // formats one number argument into the message
 CString FUN_14016a5c0(const char* pszName, int nFlags);                     // undecorated class name
@@ -154,7 +154,7 @@ bool CInstrumentDataTable::LoadInstruments()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("instrument"); pNode != 0; pNode = pNode->FUN_140168650("instrument"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         InstrumentPtr spInstrument(new CInstrumentData(pNode));
         m_instruments.SetAt(spInstrument->m_nId, spInstrument);
@@ -177,7 +177,7 @@ bool CInstrumentDataTable::LoadCategories()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CategoryPtr spCategory(new CInstrumentCategoryData(pNode));
         m_categories.SetAt(spCategory->m_nId, spCategory);

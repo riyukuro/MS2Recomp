@@ -124,14 +124,13 @@ void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
-bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted table string
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int nFlag);   // a price as text
 bool FUN_1418ff110(int nPayType, __int64 nAmount, bool bFlag);    // the player can pay
-void FUN_141276180(const CString& strName, const CString& strArg);
+int FUN_141276180(const CString& strName, const CString& strArg);
 CStringW FUN_141026920(int nKind);
 CStringW FUN_141028910(int nKind);
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);
@@ -454,7 +453,7 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strType = pArgs->FUN_1422b8d30();
-    if (FUN_140184310(strType, "image"))
+    if ((strType == "image"))
     {
         Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
         AScript root((const Scaleform::GFx::Value&)arg, 2);

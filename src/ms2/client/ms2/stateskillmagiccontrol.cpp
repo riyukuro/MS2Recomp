@@ -25,11 +25,13 @@ public:
 
 NiPoint3* FUN_14123c360(PCBase* p, NiPoint3* pOut);                 // move direction (member: this=rcx, hidden return=rdx)
 NiPoint3* FUN_141674b60(PCBase* p, NiPoint3* pOut, NiPoint3* pDir); // local dir -> world dir (by-value dir = pointer to a copy)
-void FUN_140968990(NiPoint3* p);                                    // normalize
 NiPoint3* FUN_14097fc90(const NiPoint3* pIn, NiPoint3* pOut, float f);   // scale (member: this=rcx, hidden return=rdx)
 float FUN_140966ea0(NiPoint3 a, NiPoint3 b);                        // horizontal distance
-void* FUN_14166d240(PCBase* p);                                     // buff container
-NiPoint3* FUN_141683900(void* pContainer, NiPoint3* pOut);          // move direction (member: this=rcx, hidden return=rdx)
+class Unk_PCMove   // C3: member view for the former free stand-ins
+{
+public:
+    struct Vector3* FUN_141683900(struct Vector3*);
+};
 
 // @0x140ac06f0
 Unk_ControlTarget* FUN_140ac06f0(PCBase* p)
@@ -82,7 +84,7 @@ void StateSkillMagicControl::vfunc_3(double fTime)
         return;
     NiPoint3 kDir, kUnit;
     FUN_141674b60(m_pOwner, &kUnit, FUN_14123c360(m_pOwner, &kDir));
-    FUN_140968990(&kUnit);
+    ((struct Vector3*)(class NiPoint3*)(&kUnit))->FUN_140968990();
     NiPoint3 kStep, kMove;
     FUN_14097fc90(&kUnit, &kStep, pTarget->FUN_1410a6790());
     FUN_14097fc90(&kStep, &kMove, (float)fTime);
@@ -107,9 +109,9 @@ void StateSkillMagicControl::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     if (!m_pOwner->vfunc_63())
         return;
-    void* pBuffs = FUN_14166d240(m_pOwner);
+    void* pBuffs = ((class PCBase*)(class PCBase*)(m_pOwner))->FUN_14166d240();
     NiPoint3 kPos;
-    FUN_141683900(pBuffs, &kPos);
+    ((class NiPoint3*)((class Unk_PCMove*)(void*)(pBuffs))->FUN_141683900((struct Vector3*)(&kPos)));
     m_pOwner->vfunc_22(kPos);
 }
 

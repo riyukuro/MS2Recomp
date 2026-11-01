@@ -349,7 +349,7 @@ bool BoneRotateInterpolator::AlwaysUpdate() const
 }
 
 // @0x140a32e90
-void BoneRotateInterpolator::FUN_140a32e90(bool bActive, unsigned int uiBlendMs)
+void BoneRotateInterpolator::SetActive(bool bActive, unsigned int uiBlendMs)
 {
     if (m_bActive == true && bActive == false)
     {
@@ -480,7 +480,7 @@ void CBoneRotateManager::FUN_140a34be0(Unk_BrMode nMode, GameObject* pTarget, in
 }
 
 // @0x140a34d00
-void CBoneRotateManager::FUN_140a34d00(const efd::Point3& kPos, int nStart, int nEnd, int nDuration)
+void CBoneRotateManager::LookAtPosition(const efd::Point3& kPos, int nStart, int nEnd, int nDuration)
 {
     if (m_bEnabled == false)
         return;
@@ -498,7 +498,7 @@ void CBoneRotateManager::FUN_140a34d00(const efd::Point3& kPos, int nStart, int 
 }
 
 // @0x140a34de0
-void CBoneRotateManager::FUN_140a34de0(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration)
+void CBoneRotateManager::LookAtEntity(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration)
 {
     if (m_bEnabled == false)
         return;
@@ -524,7 +524,7 @@ void CBoneRotateManager::FUN_140a34f00()
     m_kTargetId = s_kNullId;
     if (m_pInterp == 0)
         return;
-    m_pInterp->FUN_140a32e90(true, m_nEnd);
+    m_pInterp->SetActive(true, m_nEnd);
     m_pInterp->SetSmooth(false);
     Unk_BrActionPtr spAction(0);
     if (m_actions.Lookup(m_nCurrent, spAction))
@@ -549,7 +549,7 @@ void CBoneRotateManager::FUN_140a35060()
     {
         if (m_tmApply.FUN_140868c00() != 0)
         {
-            m_pInterp->FUN_140a32e90(false, m_nStart);
+            m_pInterp->SetActive(false, m_nStart);
             efd::Point3 kBase = m_kLookPos;
             if (m_kTargetId != s_kNullId)
             {
@@ -639,7 +639,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
 }
 
 // @0x140a35780
-int CBoneRotateManager::FUN_140a35780()
+int CBoneRotateManager::IsLooking()
 {
     if (m_bEnabled == false)
         return 0;
@@ -653,7 +653,7 @@ Unk_BrMode CBoneRotateManager::GetCurrent()
 }
 
 // @0x140a357e0
-void CBoneRotateManager::FUN_140a357e0(float fValue)
+void CBoneRotateManager::SetYawBias(float fValue)
 {
     if (m_pInterp != 0)
         m_pInterp->SetYawBias(fValue);

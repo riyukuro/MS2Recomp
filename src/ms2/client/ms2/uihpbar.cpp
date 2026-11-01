@@ -115,7 +115,7 @@ class Unk_HpWorld;
 Unk_HpActor* FUN_140974230(PCBase* pActor);             // the actor as a player
 Unk_HpNpc* FUN_14096e110(PCBase* pActor);               // the actor as an npc
 Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
-class Unk_HpUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
+class Unk_HpUIMgr { public: };
 UIHpBar* FUN_141742c80(int nUiId);
 template <> bool MS2Ptr<ASGameEntity>::operator!() const;                   // 0x140ede6c0
 UITombStoneBar* FUN_141994a90(int nUiId);
@@ -966,7 +966,7 @@ UISlimeEventBar* FUN_1419949f0(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UISlimeEventBar*>((UIObject*)p);
     }
@@ -978,7 +978,7 @@ UITombStoneBar* FUN_141994a90(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FUN_141adcea0((eUIClassID)nUiId);
         if (p.get())
             return dynamic_cast<UITombStoneBar*>((UIObject*)p);
     }

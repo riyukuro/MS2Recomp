@@ -59,14 +59,12 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-CInputKeyHandler* FUN_14025e7c0();                                  // the input singleton
-WorldService* FUN_1403ed2d0();                                      // the world service
-unsigned FUN_141472bc0();                                           // the tick counter
-unsigned FUN_140768010(unsigned nRange, unsigned nBase);            // random number in base..base+range-1
+void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+int FUN_141472bc0();   // C3: was FUN_141472bc0
+int FUN_140768010(int, int);   // C3: was FUN_140768010
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);              // has the AS object been released
 void FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
 void FUN_140710590(COutPacket& packet);                             // send
-void FUN_1422bbd40(ASArray* pArray, unsigned n);                         // push a number
 
 // ---- statics (the .text$di part) -------------------------------------------------------------------------------------
 
@@ -213,7 +211,7 @@ void UITypingGameDialog::FUN_140ee5a20()
     for (unsigned i = 0; i < (unsigned)m_nCount; i++)
     {
         unsigned nDigit = FUN_140768010(10, 0);
-        FUN_1422bbd40(&kSequence, nDigit);
+        ((class ASArray*)(class ASArray*)(&kSequence))->FUN_1422bbd40(nDigit);
         m_answer.push_back(nDigit);
     }
     if (m_30.get() != 0)
@@ -296,14 +294,14 @@ void UITypingGameDialog::FUN_140ee5c10()
 // @0x140ee5fc0
 void UITypingGameDialog::FUN_140ee5fc0(bool bOn)
 {
-    FUN_14025e7c0()->SetModifier2(bOn);
+    ((class CInputKeyHandler*)FUN_14025e7c0())->SetModifier2(bOn);
 }
 
 // @0x140ee5ff0
 bool UITypingGameDialog::FUN_140ee5ff0(unsigned nDigit)
 {
-    if (FUN_14025e7c0()->FUN_14116d9c0(m_keys[nDigit].first, 0, 0) ||
-        FUN_14025e7c0()->FUN_14116d9c0(m_keys[nDigit].second, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(m_keys[nDigit].first, 0, 0) ||
+        ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(m_keys[nDigit].second, 0, 0))
         return true;
     return false;
 }
@@ -333,7 +331,7 @@ void UITypingGameDialog::FailGameProgress()
 // @0x140ee6190
 void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
 {
-    FUN_1403ed2d0()->FUN_141bc6f60(FUN_141472bc0(), nLimitMs, 1);
+    WorldService::GetInstance()->FUN_141bc6f60(FUN_141472bc0(), nLimitMs, 1);
     if (nLimitMs > 0)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4e95);

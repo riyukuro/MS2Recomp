@@ -60,9 +60,9 @@ public:
     virtual ~CEffectData();                                 // 0x14119f500
 
     ATL::CAtlList<CEffectParamPtr>& FUN_14119f540();        // 0x14119f540 the param list
-    void FUN_14119f560(CEffectParam* pParam);               // 0x14119f560 append
+    void AddParam(CEffectParam* pParam);               // 0x14119f560 append
     bool FUN_14119f5c0();                                   // 0x14119f5c0 no params
-    bool FUN_14119f5f0();                                   // 0x14119f5f0 some param has ignoreOptimize
+    bool HasIgnoreOptimizeParam();                                   // 0x14119f5f0 some param has ignoreOptimize
     bool FUN_14119f680();                                   // 0x14119f680 every param is ready (vfunc_3)
     void FUN_14119f710();                                   // 0x14119f710 vfunc_4 on each param that is not ready
 
@@ -125,9 +125,9 @@ public:
     void CopyMembers(EffectNode* pkDest, NiCloningProcess& kCloning);   // 0x1411a3380
 
     void FUN_1411a3cb0(const CEffectDummy& kDummy);             // transform and attach flags from a dummy
-    void FUN_1411a3db0(INodeMovement* pMovement);               // set the movement
+    void SetMovement(INodeMovement* pMovement);               // set the movement
     void SetOnGround(int bOnGround);                          // snap to the ground
-    void FUN_1411a3fd0(NiAVObject* pTarget);                    // rotation target (ignored if this)
+    void SetRotationTarget(NiAVObject* pTarget);                    // rotation target (ignored if this)
     void FUN_1411a4000(const NiMatrix3& kRot);                  // local + own rotation
     void FUN_1411a4040(const NiPoint3& kPos);                   // local + own translation
 
@@ -261,7 +261,7 @@ public:
     unsigned FUN_1411a5d80(const CString& strName);             // play a local player voice
     void FUN_1411a6160();                                       // stop the sound effects (vfunc_12 2/3)
     void FUN_1411a6060(unsigned nId);                           // stop (vfunc_5) the effects of an id
-    void FUN_1411a66d0(unsigned nId);                           // drop the pending requests of an id
+    void RemovePendingEffects(unsigned nId);                           // drop the pending requests of an id
     void FUN_1411a67c0();                                       // drop every pending request
     void FUN_1411a67f0(unsigned nId, float f);                  // vfunc_6 on the effects of an id
     void FUN_1411a68f0(unsigned nId, bool b);                   // vfunc_10 on the effects of an id

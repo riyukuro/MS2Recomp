@@ -23,7 +23,6 @@
 
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 
@@ -79,7 +78,7 @@ MS2_REPLACE_METHOD(0x140F35590, UIDarkStreamScoreDialog, vfunc_84, 52, 0x314E736
 // @0x140f355d0
 void UIDarkStreamScoreDialog::vfunc_85()
 {
-    if (FUN_140a467d0(&m_30))
+    if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     m_30.operator->()->Invoke("setScore", m_nScore, m_nScore < 0);
 }

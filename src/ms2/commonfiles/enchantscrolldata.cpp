@@ -23,6 +23,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
@@ -83,8 +91,8 @@ int CEnchantScrollData::Read(Unk_140165cf0* pElem)
     }
     CString strSlot;
     CString strRank;
-    FUN_1408733e0(pElem, "slot", strSlot);
-    FUN_1408733e0(pElem, "rank", strRank);
+    XmlGetAttr((class TiXmlElement*)(pElem), "slot", strSlot);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rank", strRank);
     FUN_140177e10(strSlot, m_slots, ",");
     FUN_140177e10(strRank, m_ranks, ",");
     return 1;
@@ -148,7 +156,7 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "recipeType", m_nRecipeType);
     XmlGetAttr((class TiXmlElement*)(pElem), "slot", m_nSlot);
     CStringW strScroll;
-    FUN_140873420(pElem, "rewardScroll", strScroll);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rewardScroll", strScroll);
     m_scroll.vfunc_1(CStringW(strScroll));
     int nItemId = m_scroll.vfunc_o18_0();
     if (nItemId == 0)
@@ -175,14 +183,14 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     {
         CString strName = StringFormat("requireItem{0}", i);
         CStringW strItem;
-        FUN_140873420(pElem, strName, strItem);
+        XmlGetAttr((class TiXmlElement*)(pElem), strName, strItem);
         m_ingredients.FUN_14026b9d0(strItem);
     }
     for (unsigned __int64 j = 1; j <= 5; j++)
     {
         CString strName = StringFormat("rewardItem{0}", j);
         CStringW strItem;
-        FUN_140873420(pElem, strName, strItem);
+        XmlGetAttr((class TiXmlElement*)(pElem), strName, strItem);
         ItemEntity item;
         item.vfunc_1(CStringW(strItem));
         if (item.m_itemId != 0)
@@ -235,7 +243,7 @@ int CEnchantScrollTable::LoadScrolls()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("scroll"); pNode != 0; pNode = pNode->FUN_140168650("scroll"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("scroll")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("scroll")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -262,7 +270,7 @@ int CEnchantScrollTable::LoadRecipes()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
