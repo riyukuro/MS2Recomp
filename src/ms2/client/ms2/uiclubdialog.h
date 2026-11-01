@@ -37,13 +37,13 @@ public:
     void RefreshData();                                           // refresh the lists, or clear them when no club is joined
     bool FUN_140e0bcd0(int nResult, const CMsgBoxData& data);       // "add member" input box result
     bool FUN_140e0bdb0(int nResult, const CMsgBoxData& data);       // withdrawal confirm result
-    bool FUN_140e0be00(int nResult, const CMsgBoxData& data);       // buff setting confirm result
+    bool OnMsgBoxBuffConfirm(int nResult, const CMsgBoxData& data);       // buff setting confirm result
     bool FUN_140e0bef0(int nResult, const CMsgBoxData& data);       // rename input box result
     void FUN_140e0bfd0();                                           // fill the category list (m_category)
     void FUN_140e0c570(__int64 nClubId);                            // fill the member list (m_items) of one club
     void FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember);   // one member row (name, job/level, location, picture)
-    void FUN_140e0d180(ASObj& row, int nBuffId, unsigned short nLevel);   // "buffIcon" of a club row
-    void FUN_140e0d230(ASObj& row, __int64 nNameChangeTime);        // "nameChange" flag of a club row
+    void SetRowBuffIcon(ASObj& row, int nBuffId, unsigned short nLevel);   // "buffIcon" of a club row
+    void SetRowNameChange(ASObj& row, __int64 nNameChangeTime);        // "nameChange" flag of a club row
 
     // Unrecovered child-binding helpers of the swf entity base (this is the original UISwfEntity subobject).
     MS2Ptr<Unk_ClubClip> FUN_140ba7930(const CString& strName);     // bind a movie clip child

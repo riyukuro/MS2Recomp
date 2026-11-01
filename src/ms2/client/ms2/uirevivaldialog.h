@@ -24,7 +24,6 @@ class Unk_RevTick
 {
 public:
     Unk_RevTick();                                                  // 0x140517b00
-    int FUN_140268870(unsigned ms);                                 // true once the interval elapsed
 private:
     unsigned __int64 m_tick;
 };

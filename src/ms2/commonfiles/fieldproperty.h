@@ -13,7 +13,8 @@ struct Unk_PktOut { virtual void s0(); virtual void WriteU8(unsigned char v); };
 struct Unk_PktStream { virtual void s0(); virtual unsigned char ReadU8(); };
 struct Unk_PktIn { void* m_pad_00; Unk_PktStream m_stream; };
 
-struct Unk_Rgb3b { unsigned char r, g, b; };   // 3 byte colour (POD; default-init by the free function FUN_1406c3700)
+struct Unk_Vec3f;
+struct Unk_Rgb3b { unsigned char r, g, b; Unk_Vec3f ToColor() const; };   // 3 byte colour (POD; default-init by the free function FUN_1406c3700)
 struct Unk_Vec3f { Unk_Vec3f(float x, float y, float z); float x, y, z; };   // ctor 0x1406c4340
 
 class FieldProperty : public CPtred {

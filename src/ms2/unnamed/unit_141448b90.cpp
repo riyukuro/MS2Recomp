@@ -16,18 +16,13 @@
 #include <ecr/SceneGraphService.h>
 #include <NiNode.h>
 #include "ms2/ms2recover.h"
+#include <NiFogProperty.h>
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };    // ctor 0x140a56db0
 
 // The scene fog block (global at 0x143afa7f0).
-struct Unk_FogState
-{
-    void FUN_1409a9b90(bool bEnable);               // 0x1409a9b90
-    void FUN_1409a9bc0(const Unk_Colc& color);      // 0x1409a9bc0
-    void FUN_1409a9b40(float fValue);               // 0x1409a9b40
-};
 class NiFogProperty* GetNiFogProperty();   // C3: was FUN_1409a8a80
 
 // The renderer's state block (MS2Renderer +0xba8).
@@ -164,8 +159,8 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
     float fR = pData->FUN_1422b8c10();
     float fG = pData->FUN_1422b8c10();
     float fB = pData->FUN_1422b8c10();
-    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
-    pFog->FUN_1409a9bc0(Unk_Colc(fR / 255.0f, fG / 255.0f, fB / 255.0f));
+    NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
+    pFog->SetFogColor(NiColor(fR / 255.0f, fG / 255.0f, fB / 255.0f));
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {
         UpdateAffectsFunctor functor;
@@ -191,8 +186,8 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
     fDensity = fRange / (fRange + (fSlider2 - fFar));
     Unk_FogRenderer* pRenderer = (Unk_FogRenderer*)((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     pRenderer->FUN_1409a8d60()->FUN_1409a9bf0(fDensity);
-    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
-    pFog->FUN_1409a9b40(fFogValue);
+    NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
+    pFog->SetDepth(fFogValue);
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {
         UpdateAffectsFunctor functor;
@@ -203,8 +198,8 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
 // @0x141449190
 void UILightDialog::FUN_141449190(bool bEnable)
 {
-    Unk_FogState* pFog = ((struct Unk_FogState*)GetNiFogProperty());
-    pFog->FUN_1409a9b90(bEnable);
+    NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
+    pFog->SetFog(bEnable);
     ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
     if (pService != 0) {
         UpdateAffectsFunctor functor;

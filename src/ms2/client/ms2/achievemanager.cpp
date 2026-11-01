@@ -109,7 +109,7 @@ void FUN_1419f0bb0(Unk_AmMainInfo* pInfo, CAchieve* pAchieve);
 class CMeratMarketMan   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_140d5b880(unsigned int, int);
+    bool PushAdProducts(unsigned int, int);
 };
 CStringW FUN_140d2d440(unsigned nId, int nGrade);               // the notice's title text
 class Unk_AmTrigCmdMgr { public: void FUN_14138bf00(int nCmd, int nArg1, int nArg2); };
@@ -601,7 +601,7 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
     int nState = pAchieve->GetState();
     int nGrade = ((nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade()) < 1)
         ? 1 : (nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade());
-    ((class CMeratMarketMan*)(class Unk_SingletonObj*)(FUN_140939a00()))->FUN_140d5b880(pAchieve->GetId(), nGrade);
+    ((class CMeratMarketMan*)(class Unk_SingletonObj*)(FUN_140939a00()))->PushAdProducts(pAchieve->GetId(), nGrade);
     if (pAchieve->GetType() == 8)
         return;
     UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);

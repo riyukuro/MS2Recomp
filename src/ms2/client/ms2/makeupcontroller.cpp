@@ -15,8 +15,13 @@
 #include <NiAVObject.h>
 #include <NiFixedString.h>
 #include <NiFloatsExtraData.h>
+#include <NiRenderObject.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/characterdecaldata.h"
+#include "ms2/placeholder/itemcustom.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/windowservice.h"
@@ -27,19 +32,9 @@
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- exe data ----
-extern char DAT_143afafe0;      // NiFloatsExtraData::ms_RTTI
-extern char DAT_143afa7d0;      // NiRenderObject::ms_RTTI (the face mesh class)
-extern char DAT_143ae50f8;      // the extra data key of the makeup values (a static NiFixedString)
+extern NiFixedString DAT_143ae50f8;      // the extra data key of the makeup values (a static NiFixedString)
 
 // ---- out-of-unit callees ----
-
-// Item data flags (item -> data struct -> flags).
-struct Unk_MakeupItemData
-{
-    unsigned char FUN_140547130();                              // customizing allowed
-    unsigned char FUN_140547150();                              // right button allowed
-    unsigned char FUN_140547170();                              // left button allowed
-};
 
 // One makeup preset: the x / y values it sets (+0x18 / +0x1c).
 struct Unk_MakeupPreset
@@ -48,35 +43,17 @@ struct Unk_MakeupPreset
     float m_fX;                                                 // +0x18
     float m_fY;                                                 // +0x1c
 };
-// A 16-byte MS2Ptr-shaped handle to a preset (pointer at +8).
-struct Unk_MakeupPresetPtr
+// the item -> <customize> block of the item model.
+struct Unk_MakeupItem : public CItemData
 {
-    Unk_MakeupPreset* FUN_1401e4e80();                          // operator->
+    ItemModelHead* FUN_14053ec70();                             // item -> item data struct
 };
-// The preset list (a vector of 16-byte handles).
-struct Unk_MakeupPresetList
-{
-    int FUN_1401e5720();                                        // number of presets
-    Unk_MakeupPresetPtr* FUN_14059ce40(__int64 nIndex);         // preset nIndex
-};
-struct Unk_MakeupPresetOwner { Unk_MakeupPresetList* FUN_1401e41c0(); };   // its preset list (+0x30)
-// The value ranges of the makeup (the same item data section as CItemMorphController).
-struct Unk_MakeupRangeList { const Unk_CustomizeRange* FUN_140544f20(size_t nIndex); };
-struct Unk_MakeupSection
-{
-    Unk_MakeupRangeList* FUN_14054b2f0(int nKind);              // value ranges
-    Unk_MakeupPresetOwner* FUN_14054b6b0();                     // presets
-};
-struct Unk_MakeupItem
-{
-    Unk_MakeupItemData* FUN_14053ec70();                        // item -> item data struct
-    Unk_MakeupSection* FUN_14053eba0();                         // item -> data section
-};
+struct Unk_EquipItemData : public Unk_MakeupItem {};
 
 class CEquipItem : public CPtred
 {
 public:
-    Unk_MakeupItem* FUN_1411dc7f0();                            // the item
+    Unk_EquipItemData* FUN_1411dc7f0();                          // the item
     MS2Ptr<CItem> GetItem();                              // the item object holding the proxy data
 };
 
@@ -103,7 +80,7 @@ struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1411ea2e0(bool);
+    void SetMeshOptimize(bool);
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene root
 
@@ -139,7 +116,7 @@ int FUN_141477dd0(MS2Ptr<CEquipItem> spItem);                                   
 
 // The NiFloatsExtraData of the face mesh. Written out in every use in the exe.
 #define MAKEUP_FACE_EXTRA() \
-    ((NiFloatsExtraData*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afafe0, (class NiObject const*)(((class NiObjectNET*)(class NiAVObject*)(m_spFaceMesh.operator->()))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50f8)))))
+    ((NiFloatsExtraData*)NiObject::DynamicCast(&NiFloatsExtraData::ms_RTTI, (class NiObject const*)(((class NiObjectNET*)(class NiAVObject*)(m_spFaceMesh.operator->()))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50f8)))))
 
 // NiImplementRTTI(CMakeupController, CItemCustomizeController). The hook DLL binds the exe's copy (symbols.tsv row),
 // so only the byte-match build defines it.
@@ -229,7 +206,7 @@ float CMakeupController::vfunc_18()
 // @0x141476740
 const Unk_CustomizeRange* CMakeupController::vfunc_23()
 {
-    return m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(0);
+    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->GetGroup(0)->FUN_140544f20(0));
 }
 
 // @0x141476790
@@ -273,7 +250,7 @@ void CMakeupController::vfunc_16()
 {
     if (m_spEquipItem.get() != 0)
     {
-        Unk_MakeupItem* pItem = m_spEquipItem->FUN_1411dc7f0();
+        Unk_EquipItemData* pItem = m_spEquipItem->FUN_1411dc7f0();
         if (pItem != 0)
         {
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
@@ -326,14 +303,14 @@ void CMakeupController::vfunc_9(int nIndex)
 {
     if (nIndex >= 0)
     {
-        Unk_MakeupPresetOwner* pOwner = m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
         if (pOwner != 0)
         {
-            Unk_MakeupPresetList* pList = pOwner->FUN_1401e41c0();
-            if (pList->FUN_1401e5720() > nIndex)
+            std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->FUN_1401e41c0();
+            if ((int)pList->size() > nIndex)
             {
-                Unk_MakeupPresetPtr* pPreset = pList->FUN_14059ce40(nIndex);
-                vfunc_44(pPreset->FUN_1401e4e80()->m_fX, pPreset->FUN_1401e4e80()->m_fY, 0);
+                const MS2Ptr<ItemCustom>* pPreset = &(*static_cast<const std::vector<MS2Ptr<ItemCustom> >*>(pList))[nIndex];
+                vfunc_44(reinterpret_cast<Unk_MakeupPreset*>(pPreset->operator->())->m_fX, reinterpret_cast<Unk_MakeupPreset*>(pPreset->operator->())->m_fY, 0);
             }
         }
         m_nPresetIndex = nIndex;
@@ -498,7 +475,7 @@ void CMakeupController::SetPreviewApply(bool bOn)
 {
     Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411ea2e0(bOn);
+        ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())))->SetMeshOptimize(bOn);
 }
 
 // @0x141477780
@@ -563,7 +540,7 @@ void CMakeupController::FindFaceMesh()
         if (pRoot != 0)
         {
             NiFixedString kName("FA_Skin");
-            m_spFaceMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afa7d0, (class NiObject const*)(pRoot->GetObjectByName(kName))));
+            m_spFaceMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot->GetObjectByName(kName))));
         }
     }
 }
@@ -597,10 +574,10 @@ int FUN_141477dd0(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem.get() != 0)
     {
-        Unk_MakeupPresetOwner* pOwner = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
         if (pOwner != 0)
         {
-            return pOwner->FUN_1401e41c0()->FUN_1401e5720();
+            return (int)pOwner->FUN_1401e41c0()->size();
         }
     }
     return 0;

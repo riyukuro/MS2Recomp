@@ -104,7 +104,7 @@ private:
     MS2Ptr<Customize> m_268;                                    // +0x268 the customize controller
     ATL::CAtlList<MS2Ptr<CItem> > m_278;                        // +0x278 the dyeable items
     ATL::CAtlList<MS2Ptr<CItem> > m_2a8;                        // +0x2a8 the basket
-    Unk_BSCamera* m_2d8;                                        // +0x2d8 the camera (UI 0x4ef2's object)
+    class UICameraEditDialog* m_2d8;                                        // +0x2d8 the camera (UI 0x4ef2's object)
 };
 MS2_CHECK_SIZE(UIItemColoringDialog, 0x2e0);
 MS2_CHECK_OFFSET(UIItemColoringDialog, m_198, 0x198);

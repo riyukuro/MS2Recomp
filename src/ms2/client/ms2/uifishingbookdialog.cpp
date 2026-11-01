@@ -6,7 +6,7 @@
 // MS2-PIN: ??1UIFishingBookDialog@@UEAA@XZ 0x140f43c90
 // MS2-PIN: ??_GUIFishingBookDialog@@UEAAPEAXI@Z 0x140f43d30
 // MS2-PIN: ??BUnk_FbListRef@@QEAAPEAVUnk_FbCtl@@XZ 0x140acd9d0
-// MS2-PIN: ??BUnk_FbTextRef@@QEAAPEAVASTextField@@XZ 0x140b9a800
+// MS2-PIN: ??B?$MS2Ptr@VASTextField@@@@QEBAPEAVASTextField@@XZ 0x140b9a800
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uifishingbookdialog.cpp"    // assumed
@@ -30,6 +30,10 @@
 #include <algorithm>
 #include <stdlib.h>
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/commonfiles/masterytable.h"
+#include "ms2/client/ms2/achievemanager.h"
+#include "ms2/commonfiles/titletable.h"
 
 // The header statics of the including TU come from header_statics_a.h; then the book's own "open" sound, and the second
 // copy of the header statics the link order puts behind it.
@@ -51,78 +55,11 @@ CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 CStringTable* GetStringTable();
 
-// The record of a fish (the fish table's row).
-class Unk_FbFishRec
-{
-public:
-    CStringW FUN_1403b1600();                                   // icon path
-    CStringW FUN_1403b1650();                                   // fish name
-    CStringW FUN_1403b16b0(int nKnown);                         // description
-
-    void* m_00; void* m_08; void* m_10;
-    int m_18;                                                   // +0x18 fish id
-    unsigned m_1c;                                              // +0x1c mastery area
-    int m_20;                                                   // +0x20 tab (0 / 1 / 2..6 / 7)
-    int m_24;                                                   // +0x24 grade
-    __int64 m_28; __int64 m_30; __int64 m_38; __int64 m_40;
-    int m_48;                                                   // +0x48 0 = a single spot
-    int m_4c;
-    int m_50;                                                   // +0x50 the parent fish
-};
-
-// The record the player holds for a fish.
-class Unk_FbItemRec
-{
-public:
-    void* m_00; void* m_08; void* m_10;
-    int m_18;                                                   // +0x18 fish id
-    int m_1c;                                                   // +0x1c total catch count
-    int m_20;                                                   // +0x20 big-size catch count
-    int m_24;                                                   // +0x24 best record
-    int m_28;
-    int m_2c;                                                   // +0x2c new mark
-};
-
-void FUN_1403b3920(void*);
-void FUN_1403b3510(void*, int);
-void FUN_1403b3b50(void*, const void*);
 void FUN_140cdf6d0(void*);
-void FUN_140cdf250(void*, int);
-void FUN_140cdf210(void*, const void*);
-void FUN_140cdf810(void*, const void*);
 void FUN_140acd710(void*);
-void FUN_1409b4ac0(void*);
 
-// A smart reference to a fish row (16 bytes; ctor / copy / dtor are exe functions).
-struct Unk_FbFishRef
-{
-    void* m_0;
-    Unk_FbFishRec* m_p;
-    Unk_FbFishRef() : m_0(0), m_p(0) {}
-    Unk_FbFishRef(int n) { FUN_1403b3510(this, n); }
-    ~Unk_FbFishRef() { FUN_1403b3920(this); }
-    Unk_FbFishRef& operator=(const Unk_FbFishRef& o) { FUN_1403b3b50(this, &o); return *this; }
-    bool FUN_140cd8bd0();                                       // the row is missing
-    Unk_FbFishRec* FUN_140cdf9b0();                             // the row, null if the id is unknown
-    Unk_FbFishRec* FUN_1403b3c80();                             // the row
-};
-
-// A smart reference to the player's record of a fish.
-struct Unk_FbItemRef
-{
-    void* m_0;
-    Unk_FbItemRec* m_p;
-    Unk_FbItemRef() : m_0(0), m_p(0) {}
-    Unk_FbItemRef(int n) { FUN_140cdf250(this, n); }
-    Unk_FbItemRef(const Unk_FbItemRef& o) { FUN_140cdf210(this, &o); }
-    ~Unk_FbItemRef() { FUN_140cdf6d0(this); }
-    Unk_FbItemRef& operator=(const Unk_FbItemRef& o) { FUN_140cdf810(this, &o); return *this; }
-    Unk_FbItemRec* FUN_140cdf9a0();                             // the record, null if none
-    Unk_FbItemRec* FUN_140cdf9d0();                             // the record
-};
-
-// The list control and the text field of the movie.
-class Unk_FbCtl : public ASMovieClip
+// The list control of the movie.
+class Unk_FbCtl : public ASCoreList
 {
 public:
     virtual void vfunc_16();
@@ -134,9 +71,6 @@ public:
     virtual void vfunc_22();
     virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-    void FUN_1422dcca0(int nIndex);                             // scroll to the entry
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& obj);                       // add an entry
 };
 struct Unk_FbListRef
 {
@@ -147,45 +81,11 @@ struct Unk_FbListRef
     operator Unk_FbCtl*();                                      // 0x140acd9d0
     Unk_FbCtl* FUN_140acd9f0();
 };
-struct Unk_FbTextRef
-{
-    void* m_0;
-    void* m_p;
-    Unk_FbTextRef() : m_0(0), m_p(0) {}
-    ~Unk_FbTextRef() { FUN_1409b4ac0(this); }
-    operator ASTextField*();                                    // 0x140b9a800
-    ASTextField* FUN_1409b4c70();
-};
-
-// The fish table, the item table and the mastery table, and the objects behind a few switches.
-class Unk_FbItemArray;
-class Unk_FbFishTable : public CFishingTable
-{
-public:
-    Unk_FbFishRef FUN_1403b2d30(int nFishId);
-    void FUN_1403b30b0(FbIdArray& rIds, int nTab, int bFlag);   // the ids of a tab
-};
-class Unk_FbMastery
-{
-public:
-    int FUN_14066b050(int nKind);                               // max grade
-    int FUN_14066b310(int nKind, int nGrade);                   // the exp where the grade starts
-    int FUN_14066af60(int nKind, int nArea);
-};
-Unk_FbMastery* FUN_1409670c0();
-class Unk_FbTitleMgr
-{
-public:
-    int FUN_1409365a0(int nId);
-};
+// The mastery table and the objects behind a few switches.
+class Unk_MData* FUN_1409670c0();
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-class Unk_FbTitleSet
-{
-public:
-    int FUN_14087a930(CString strName);
-};
 class Unk_ItemSlotTable* FUN_140933210();   // C3: was FUN_140933210
-int FUN_140931450(CString strName);
+unsigned FUN_140931450(CString strName);
 CInputKeyHandler* FUN_14025e7c0();
 const unsigned& FUN_1402cf010(const unsigned& a, const unsigned& b);
 
@@ -195,23 +95,14 @@ class Unk_FbItemArray
 public:
     Unk_FbItemArray();                                          // 0x140f43c10
     ~Unk_FbItemArray() throw();                                 // 0x140f43c50
-    Unk_FbItemRef& FUN_140f43cb0(unsigned __int64 nIndex);      // GetAt
+    MS2Ptr<CFish>& FUN_140f43cb0(unsigned __int64 nIndex);      // GetAt
     unsigned __int64 GetSize();                           // GetCount
 private:
-    Unk_FbItemRef* m_pData;
+    MS2Ptr<CFish>* m_pData;
     unsigned __int64 m_nSize;
     unsigned __int64 m_nMaxSize;
     int m_nGrowBy;
 };
-class Unk_FbItemTable
-{
-public:
-    Unk_FbItemRef FUN_140cdba00(int nFishId);
-    void FUN_140cdba90(Unk_FbItemArray& rOut);
-    int FUN_140cdc380(int nFishId);
-    int FUN_140cdc280(int nFishId);
-};
-
 // The AS invokes of the movie root the exe has one instance of per argument list.
 class Unk_FbAS
 {
@@ -219,8 +110,8 @@ public:
     Scaleform::GFx::Value FUN_140c19160(const char* szMethod, unsigned __int64 nIndex, int nValue);   // Invoke(name, index, value)
 };
 
-void FUN_140f43d70(Unk_FbItemRef* pItems, unsigned __int64 nCount);
-Unk_FbItemRef* FUN_140f43cf0(Unk_FbItemRef* p, unsigned int nFlags);
+void FUN_140f43d70(MS2Ptr<CFish>* pItems, unsigned __int64 nCount);
+MS2Ptr<CFish>* FUN_140f43cf0(MS2Ptr<CFish>* p, unsigned int nFlags);
 int FUN_140f438b0(const int* pA, const int* pB);
 
 // @0x140f41250
@@ -247,7 +138,7 @@ void UIFishingBookDialog::OnLoadComplete()
     FUN_140f42790(m_nTab);
     FUN_140f41a10();
     if (Unk_FbListRef spBag = FUN_140ba4b70("m_bag"))
-        spBag.FUN_140acd9f0()->FUN_1422dcca0(0);
+        spBag.FUN_140acd9f0()->SetSelectedIndex(0);
     FUN_141276180(s_strBookOpen, "");
 }
 
@@ -301,14 +192,14 @@ void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     CStringW strText;
     int nExp = pPC->GetMastery(1);
     int nGrade = pPC->GetMasteryGrade(1);
-    if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
+    if (nGrade == reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->MaxGrade(1))
     {
         strText = GetStringCommonByKey(L"s_fishing_mastery_tooltip_level_max");
     }
     else
     {
-        int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
-        int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
+        int nBase = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Value(1, nGrade);
+        int nNextBase = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Value(1, nGrade + 1);
         int nMax = nNextBase - nBase;
         int nCur = nExp - nBase;
         strText = FUN_1409e9bc0(0xbeb, nCur, nMax);
@@ -327,9 +218,9 @@ void UIFishingBookDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     Unk_FbItemArray items;
-    reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba90(items);
+    TSingleton<CFishingManager>::GetInstance()->GetAllFish(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CFish> >&>(items));
     for (unsigned __int64 i = 0; i < items.GetSize(); i++)
-        items.FUN_140f43cb0(i).FUN_140cdf9d0()->m_2c = 0;
+        items.FUN_140f43cb0(i)->m_bNew = 0;
 }
 
 // @0x140f419e0
@@ -346,12 +237,12 @@ void UIFishingBookDialog::FUN_140f41a10()
         return;
     int nExp = pPC->GetMastery(1);
     int nGrade = pPC->GetMasteryGrade(1);
-    int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
-    int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
+    int nBase = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Value(1, nGrade);
+    int nNextBase = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Value(1, nGrade + 1);
     int nTitle = FUN_140f42ed0();
     CStringW strTitle = (nTitle == 0) ? GetStringCommonByKey(L"s_fishing_none_title") : FUN_141b720b0(nTitle, 0);
     CStringW strGrade = FUN_140f432e0(nGrade);
-    if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
+    if (nGrade == reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->MaxGrade(1))
         strGrade += FUN_1401d0160(L" ", GetStringCommonByKey(L"s_fishing_mastery_gauge_level_max"));
     ASObj obj(2);
     obj.FUN_1409c0d20("fisherTitleID", nTitle);
@@ -369,18 +260,18 @@ void UIFishingBookDialog::FUN_140f41e90()
     if (m_30.get() != 0)
     {
         Unk_FbItemArray items;
-        reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba90(items);
+        TSingleton<CFishingManager>::GetInstance()->GetAllFish(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CFish> >&>(items));
         int aNew[4] = {0};
         for (unsigned __int64 i = 0; i < items.GetSize(); i++)
         {
-            Unk_FbItemRef item = items.FUN_140f43cb0(i);
-            if (item.FUN_140cdf9d0()->m_2c == 0)
+            MS2Ptr<CFish> item = items.FUN_140f43cb0(i);
+            if (item->m_bNew == 0)
                 continue;
-            Unk_FbItemRec* pRec = item.FUN_140cdf9d0();
-            Unk_FbFishRef fish = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(pRec->m_18);
-            if (fish.FUN_140cd8bd0() != 0)
+            CFish* pRec = item.operator->();
+            MS2Ptr<CFishData> fish = TSingleton<CFishingTable>::GetInstance()->GetFish(pRec->m_nId);
+            if (fish.IsNull() != 0)
                 continue;
-            switch (fish.FUN_1403b3c80()->m_20)
+            switch (fish->m_nHabitat)
             {
             case 0:
                 aNew[0] = 1;
@@ -407,21 +298,21 @@ void UIFishingBookDialog::FUN_140f42100(int nFishId)
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ASObj obj(2);
-    Unk_FbFishRef fish = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nFishId);
-    if (fish.FUN_140cdf9b0() != 0)
+    MS2Ptr<CFishData> fish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
+    if (fish.get() != 0)
     {
-        Unk_FbItemRef item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(nFishId);
-        Unk_FbFishRec* pRec = fish.FUN_1403b3c80();
-        int nArea = FUN_1409670c0()->FUN_14066af60(1, pRec->m_1c);
-        obj.FUN_1407cbb20("iconPath", fish.FUN_1403b3c80()->FUN_1403b1600());
-        obj.FUN_1407cbb20("fishName", fish.FUN_1403b3c80()->FUN_1403b1650());
-        obj.FUN_1407cbb20("fishingExp", fish.FUN_1403b3c80()->m_48 != 0 ? GetStringCommonByKey(L"s_fishing_all_spot") : FUN_140f432e0(nArea));
-        obj.FUN_1409adc90("fishRank", fish.FUN_1403b3c80()->m_24);
-        obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish.FUN_1403b3c80()->m_24)));
-        obj.FUN_1407cbb20("desc", fish.FUN_1403b3c80()->FUN_1403b16b0(FUN_140f43330(fish.FUN_1403b3c80()->m_18)));
-        obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish.FUN_1403b3c80()->m_18));
+        MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
+        CFishData* pRec = fish.operator->();
+        int nArea = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Grade(1, pRec->m_nMastery);
+        obj.FUN_1407cbb20("iconPath", fish->FUN_1403b1600());
+        obj.FUN_1407cbb20("fishName", fish->FUN_1403b1650());
+        obj.FUN_1407cbb20("fishingExp", fish->m_nIgnoreSpotMastery != 0 ? GetStringCommonByKey(L"s_fishing_all_spot") : FUN_140f432e0(nArea));
+        obj.FUN_1409adc90("fishRank", fish->m_nRank);
+        obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish->m_nRank)));
+        obj.FUN_1407cbb20("desc", fish->FUN_1403b16b0(FUN_140f43330(fish->m_nId)));
+        obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish->m_nId));
         obj.FUN_140f43b40("medal", FUN_140f43540(nFishId));
-        if (FUN_140f43330(fish.FUN_1403b3c80()->m_18) != 0)
+        if (FUN_140f43330(fish->m_nId) != 0)
         {
             obj.FUN_1407cbb20("totalCatchCount", FUN_1409e97f0(0xbdb, FUN_140f43610(nFishId)));
             obj.FUN_1407cbb20("bigSizeCatchCount", FUN_1409e97f0(0xbdb, FUN_140f436f0(nFishId)));
@@ -448,35 +339,35 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
         for (unsigned __int64 i = 0; i < 0x14; i++)
         {
             ASObj obj(2);
-            Unk_FbItemRef item(0);
-            Unk_FbFishRef fish(0);
+            MS2Ptr<CFish> item(0);
+            MS2Ptr<CFishData> fish(0);
             int nIndex = m_nPage * 0x14 + i;
             if (nIndex >= 0)
             {
                 if (nIndex < (int)ids.GetCount())
                 {
                     int* pId = &ids[nIndex];
-                    fish = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(*pId);
-                    item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(fish.FUN_1403b3c80()->m_18);
+                    fish = TSingleton<CFishingTable>::GetInstance()->GetFish(*pId);
+                    item = TSingleton<CFishingManager>::GetInstance()->FindFish(fish->m_nId);
                 }
             }
-            if (fish.FUN_140cdf9b0() != 0)
+            if (fish.get() != 0)
             {
-                obj.FUN_1409c0d20("id", fish.FUN_1403b3c80()->m_18);
-                obj.FUN_1407cbb20("iconPath", fish.FUN_1403b3c80()->FUN_1403b1600());
-                obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish.FUN_1403b3c80()->m_18));
-                obj.FUN_1409adc90("grade", fish.FUN_1403b3c80()->m_24);
-                obj.FUN_140f43b40("medal", FUN_140f43540(fish.FUN_1403b3c80()->m_18));
-                obj.FUN_1407cb9c0("isNew", FUN_140f43380(fish.FUN_1403b3c80()->m_18));
+                obj.FUN_1409c0d20("id", fish->m_nId);
+                obj.FUN_1407cbb20("iconPath", fish->FUN_1403b1600());
+                obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish->m_nId));
+                obj.FUN_1409adc90("grade", fish->m_nRank);
+                obj.FUN_140f43b40("medal", FUN_140f43540(fish->m_nId));
+                obj.FUN_1407cb9c0("isNew", FUN_140f43380(fish->m_nId));
             }
-            spBag.FUN_140acd9f0()->FUN_1422dd230(obj);
+            spBag.FUN_140acd9f0()->AddItem(obj);
         }
         spBag.FUN_140acd9f0()->vfunc_24(true);
     }
-    if (Unk_FbTextRef spPage = FUN_140bb4cf0("m_page"))
+    if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
     {
         int nCur = m_nPage + 1;
-        spPage.FUN_1409b4c70()->FUN_1422c4cd0(StringFormat<int>(L"{0}", nCur));
+        spPage->FUN_1422c4cd0(StringFormat<int>(L"{0}", nCur));
     }
     FUN_140f41e90();
 }
@@ -499,23 +390,23 @@ void UIFishingBookDialog::FUN_140f42d90(FbIdArray& rIds)
 {
     if (m_nTab == 0)
     {
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 0, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 0, 1);
     }
     else if (m_nTab == 1)
     {
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 1, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 1, 1);
     }
     else if (m_nTab == 2)
     {
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 2, 1);
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 3, 1);
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 4, 1);
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 5, 1);
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 6, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 2, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 3, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 4, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 5, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 6, 1);
     }
     else
     {
-        reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b30b0(rIds, 7, 1);
+        TSingleton<CFishingTable>::GetInstance()->FUN_1403b30b0(reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&rIds), 7, 1);
     }
 }
 
@@ -525,25 +416,25 @@ int UIFishingBookDialog::FUN_140f42ed0()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (FUN_140931450("fisherChampion") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607bb8) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherChampion");
-    if (FUN_140931450("fisherPro") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607bb7) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherPro");
-    if (FUN_140931450("fisherMaster") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607aea) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherMaster");
-    if (FUN_140931450("fisherExpert") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607ae9) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherExpert");
-    if (FUN_140931450("fisherIntermediate") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607ae8) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherIntermediate");
-    if (FUN_140931450("fisherBeginner") != 0 || ((class Unk_FbTitleMgr*)FUN_1406c7600())->FUN_1409365a0(0x1607ae7) != 0)
-        return ((class Unk_FbTitleSet*)FUN_140933210())->FUN_14087a930("fisherBeginner");
+    if (FUN_140931450("fisherChampion") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607bb8) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherChampion");
+    if (FUN_140931450("fisherPro") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607bb7) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherPro");
+    if (FUN_140931450("fisherMaster") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607aea) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherMaster");
+    if (FUN_140931450("fisherExpert") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607ae9) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherExpert");
+    if (FUN_140931450("fisherIntermediate") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607ae8) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherIntermediate");
+    if (FUN_140931450("fisherBeginner") != 0 || reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(0x1607ae7) != 0)
+        return reinterpret_cast<CTitleTable*>(FUN_140933210())->FindTitleId("fisherBeginner");
     return 0;
 }
 
 // @0x140f432e0
 CStringW UIFishingBookDialog::FUN_140f432e0(int nTitleId)
 {
-    return reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2240(nTitleId);
+    return TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nTitleId);
 }
 
 // @0x140f43330
@@ -551,17 +442,17 @@ int UIFishingBookDialog::FUN_140f43330(int nFishId)
 {
     if (FUN_14025e7c0()->IsDebugMode() != 0)
         return 1;
-    return reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdc380(nFishId);
+    return TSingleton<CFishingManager>::GetInstance()->FUN_140cdc380(nFishId);
 }
 
 // @0x140f43380
 int UIFishingBookDialog::FUN_140f43380(int nFishId)
 {
-    Unk_FbItemRef item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(nFishId);
-    if ((item.FUN_140cdf9a0() ? true : false) && item.FUN_140cdf9d0()->m_2c != 0)
+    MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
+    if ((item.get() ? true : false) && item->m_bNew != 0)
         return 1;
-    Unk_FbItemRef parent = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(FUN_140f434b0(nFishId));
-    if ((parent.FUN_140cdf9a0() ? true : false) && parent.FUN_140cdf9d0()->m_2c != 0)
+    MS2Ptr<CFish> parent = TSingleton<CFishingManager>::GetInstance()->FindFish(FUN_140f434b0(nFishId));
+    if ((parent.get() ? true : false) && parent->m_bNew != 0)
         return 1;
     return 0;
 }
@@ -569,21 +460,21 @@ int UIFishingBookDialog::FUN_140f43380(int nFishId)
 // @0x140f434b0
 int UIFishingBookDialog::FUN_140f434b0(int nFishId)
 {
-    Unk_FbFishRef fish = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nFishId);
-    if (fish.FUN_140cd8bd0() != 0)
+    MS2Ptr<CFishData> fish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
+    if (fish.IsNull() != 0)
         return 0;
-    return fish.FUN_1403b3c80()->m_50;
+    return fish->m_nCompanion;
 }
 
 // @0x140f43540
 int UIFishingBookDialog::FUN_140f43540(int nFishId)
 {
-    Unk_FbFishRef fish = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nFishId);
-    if (fish.FUN_140cd8bd0() != 0)
+    MS2Ptr<CFishData> fish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
+    if (fish.IsNull() != 0)
         return 0;
-    int nA = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdc280(nFishId);
-    Unk_FbFishRec* pRec = fish.FUN_1403b3c80();
-    int nB = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdc280(pRec->m_50);
+    int nA = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc280(nFishId);
+    CFishData* pRec = fish.operator->();
+    int nB = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc280(pRec->m_nCompanion);
     return (std::max)(nA, nB);
 }
 
@@ -592,14 +483,14 @@ int UIFishingBookDialog::FUN_140f43610(int nFishId)
 {
     int nTotal = 0;
     {
-        Unk_FbItemRef item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(nFishId);
-        if (item.FUN_140cdf9a0() != 0)
-            nTotal += item.FUN_140cdf9d0()->m_1c;
+        MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
+        if (item.get() != 0)
+            nTotal += item->m_n1c;
     }
     {
-        Unk_FbItemRef parent = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(FUN_140f434b0(nFishId));
-        if (parent.FUN_140cdf9a0() != 0)
-            nTotal += parent.FUN_140cdf9d0()->m_1c;
+        MS2Ptr<CFish> parent = TSingleton<CFishingManager>::GetInstance()->FindFish(FUN_140f434b0(nFishId));
+        if (parent.get() != 0)
+            nTotal += parent->m_n1c;
     }
     return nTotal;
 }
@@ -609,14 +500,14 @@ int UIFishingBookDialog::FUN_140f436f0(int nFishId)
 {
     int nTotal = 0;
     {
-        Unk_FbItemRef item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(nFishId);
-        if (item.FUN_140cdf9a0() != 0)
-            nTotal += item.FUN_140cdf9d0()->m_20;
+        MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
+        if (item.get() != 0)
+            nTotal += item->m_n20;
     }
     {
-        Unk_FbItemRef parent = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(FUN_140f434b0(nFishId));
-        if (parent.FUN_140cdf9a0() != 0)
-            nTotal += parent.FUN_140cdf9d0()->m_20;
+        MS2Ptr<CFish> parent = TSingleton<CFishingManager>::GetInstance()->FindFish(FUN_140f434b0(nFishId));
+        if (parent.get() != 0)
+            nTotal += parent->m_n20;
     }
     return nTotal;
 }
@@ -627,14 +518,14 @@ int UIFishingBookDialog::FUN_140f437d0(int nFishId)
     unsigned nBest = 0;
     unsigned nParentBest = 0;
     {
-        Unk_FbItemRef item = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(nFishId);
-        if (item.FUN_140cdf9a0() != 0)
-            nBest = item.FUN_140cdf9d0()->m_24;
+        MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
+        if (item.get() != 0)
+            nBest = item->m_nSize;
     }
     {
-        Unk_FbItemRef parent = reinterpret_cast<Unk_FbItemTable*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdba00(FUN_140f434b0(nFishId));
-        if (parent.FUN_140cdf9a0() != 0)
-            nParentBest = parent.FUN_140cdf9d0()->m_24;
+        MS2Ptr<CFish> parent = TSingleton<CFishingManager>::GetInstance()->FindFish(FUN_140f434b0(nFishId));
+        if (parent.get() != 0)
+            nParentBest = parent->m_nSize;
     }
     return FUN_1402cf010(nBest, nParentBest);
 }
@@ -647,22 +538,22 @@ int FUN_140f438b0(const int* pA, const int* pB)
 {
     const int& nA = *pA;
     const int& nB = *pB;
-    Unk_FbFishRef fishA = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nA);
-    Unk_FbFishRef fishB = reinterpret_cast<Unk_FbFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nB);
-    if (fishA.FUN_140cd8bd0() != 0 || fishB.FUN_140cd8bd0() != 0)
+    MS2Ptr<CFishData> fishA = TSingleton<CFishingTable>::GetInstance()->GetFish(nA);
+    MS2Ptr<CFishData> fishB = TSingleton<CFishingTable>::GetInstance()->GetFish(nB);
+    if (fishA.IsNull() != 0 || fishB.IsNull() != 0)
         return 1;
-    if (fishA.FUN_1403b3c80()->m_1c == fishB.FUN_1403b3c80()->m_1c)
+    if (fishA->m_nMastery == fishB->m_nMastery)
     {
-        if (fishA.FUN_1403b3c80()->m_24 == fishB.FUN_1403b3c80()->m_24)
+        if (fishA->m_nRank == fishB->m_nRank)
         {
             CStringW strA = GetStringTable()->FUN_141811980(0x1d, nA);
             CStringW strB = GetStringTable()->FUN_141811980(0x1d, nB);
             return __imp_wcscmp(strA.GetBuffer(0), strB.GetBuffer(0));
         }
         else
-            return fishA.FUN_1403b3c80()->m_24 > fishB.FUN_1403b3c80()->m_24 ? 1 : -1;
+            return fishA->m_nRank > fishB->m_nRank ? 1 : -1;
     }
-    return fishA.FUN_1403b3c80()->m_1c > fishB.FUN_1403b3c80()->m_1c ? 1 : -1;
+    return fishA->m_nMastery > fishB->m_nMastery ? 1 : -1;
 }
 
 // @0x140f43b40
@@ -691,7 +582,7 @@ Unk_FbItemArray::~Unk_FbItemArray() throw()
 }
 
 // @0x140f43cb0
-Unk_FbItemRef& Unk_FbItemArray::FUN_140f43cb0(unsigned __int64 nIndex)
+MS2Ptr<CFish>& Unk_FbItemArray::FUN_140f43cb0(unsigned __int64 nIndex)
 {
     if (nIndex >= m_nSize)
         FUN_140159b70(0x80070057);
@@ -699,7 +590,7 @@ Unk_FbItemRef& Unk_FbItemArray::FUN_140f43cb0(unsigned __int64 nIndex)
 }
 
 // @0x140f43cf0
-Unk_FbItemRef* FUN_140f43cf0(Unk_FbItemRef* p, unsigned int nFlags)
+MS2Ptr<CFish>* FUN_140f43cf0(MS2Ptr<CFish>* p, unsigned int nFlags)
 {
     FUN_140cdf6d0(p);
     if ((nFlags & 1) != 0)
@@ -708,7 +599,7 @@ Unk_FbItemRef* FUN_140f43cf0(Unk_FbItemRef* p, unsigned int nFlags)
 }
 
 // @0x140f43d70
-void FUN_140f43d70(Unk_FbItemRef* pItems, unsigned __int64 nCount)
+void FUN_140f43d70(MS2Ptr<CFish>* pItems, unsigned __int64 nCount)
 {
     for (unsigned __int64 i = 0; i < nCount; i++)
         FUN_140f43cf0(&pItems[i], 0);

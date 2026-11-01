@@ -37,6 +37,7 @@
 #include "ms2/placeholder/asbilldata.h"
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/citem.h"
@@ -62,6 +63,7 @@ static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
@@ -81,14 +83,9 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422cf4f0(int n);
 };
 template <> MS2Ptr<Unk_VgList> UISwfEntity::GetChild<Unk_VgList>(const CString&);    // 0x140ba4b70
 
-// The message box with its sound slot (the record is a CMsgBoxData).
-class Unk_VgMsgBox : public CMsgBoxData { public: void FUN_141a01c30(const CString&); };
 
 // The VIP effect of the first benefit: a 16-byte skill reference (an MS2Ptr; same layout as Unk_VipEffectRef) that
 // CVIPTable::GetFirstEffect 0x1408f70b0 returns straight into the caller's slot.
@@ -154,7 +151,7 @@ UIVIPGoodsShopDialog::UIVIPGoodsShopDialog()
     m_nGoodsCount = 0;
     m_bReady = 0;
     FUN_141924170(1);
-    m_timer.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
 }
 
 // @0x140fb9bc0
@@ -193,7 +190,7 @@ void UIVIPGoodsShopDialog::vfunc_72()
         return;
     if (m_bReady == 0)
         return;
-    if (m_timer.FUN_140268870(1000) != 0) {
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) != 0) {
         std::vector<MS2Ptr<CVIPGoods> > goods;
         FUN_140fbb940(goods);
         if (m_nGoodsCount != goods.size())
@@ -326,7 +323,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
         CStringW strMsg = StringFormat<CStringW, CStringW>(GetStringCommon(0x9f6), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, GetStringCommon(0x9f8), strMsg), 0, CStringW(L""))) {
             spBox->SetTitle(GetStringCommon(0x9f5));
-            static_cast<Unk_VgMsgBox*>(spBox.operator->())->FUN_141a01c30(s_sndCashBuy);
+            spBox->SetSound(s_sndCashBuy);
             spBox->SetSize(0x1e0, 300);
             FUN_140d73c60(spBox);
         }
@@ -346,8 +343,8 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");
-    spList->FUN_1422dd1d0();
-    spList->FUN_1422cf4f0(0);
+    reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();
+    reinterpret_cast<ASTileList*>(spList.operator->())->FUN_1422cf4f0(0);
     std::vector<MS2Ptr<CVIPGoods> > goods;
     FUN_140fbb940(goods);
     std::sort(goods.begin(), goods.end(), Unk_VgGoodsOrder());
@@ -408,7 +405,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
                 row.FUN_1407cbb20(strKey, spItem->FUN_140527b10());   // CItem member: this=rcx, hidden return=rdx
             }
         }
-        spList->FUN_1422dd230(row);
+        reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);
     }
     spList->vfunc_24(true);
     m_30->Invoke("initCurPage");

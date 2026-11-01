@@ -46,10 +46,12 @@ void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
 class Unk_140d13c70 { public: bool m_bMute; void FUN_14125fe20(); float FUN_1412602e0(); };
-class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); const bool& FUN_140a58500(); };
+class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); };
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_1414a5700 { public: CString FUN_140d44f90(int n1, int n2); };
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
-class Unk_140298f40 { public: const float& FUN_140298f40(); };
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+class Unk_140298f40 { public: };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CKeyTable* FUN_1409331f0();
@@ -259,7 +261,7 @@ void UICutSceneMovie::vfunc_15()
         return;
     if (m_bIntroStory && (m_pExit.get() ? true : false) && !m_pExit->FUN_1422bfca0()) {
         if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
-            if (pPlayer->FUN_1422e9540() >= ((class Unk_1401d3200*)FUN_1401d3200())->m_3c00.FUN_140298f40())
+            if (pPlayer->FUN_1422e9540() >= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->FUN_140298f40()))
                 ShowSkipButton();
         }
     }
@@ -364,7 +366,7 @@ void UICutSceneMovie::ShowSkipButton()
         if (m_30.get()) {
             CStringW strKey(L"$s_cutscene_skip_key");
             CStringW strText(L"$s_cutscene_skip");
-            if (reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
+            if (*reinterpret_cast<const bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
                 strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
             m_30->Invoke("setSkipKey", strKey, strText);
         }

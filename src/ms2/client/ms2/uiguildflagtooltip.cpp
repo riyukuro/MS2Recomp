@@ -126,8 +126,8 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
         CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
         if (pImage == 0)
             return;
-        CStringW strCaption = pImage->FUN_141402060();
-        int nTrophy = pImage->FUN_1414022a0();
+        CStringW strCaption = pImage->GetDisplayName();
+        int nTrophy = pImage->GetDisplayScore();
         int nRank = pImage->FUN_1414021c0();
         int nImageType = 0;
         if (pImage->GetRow())

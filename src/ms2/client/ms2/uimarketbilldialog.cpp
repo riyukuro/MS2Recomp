@@ -84,32 +84,8 @@ public:
     void FUN_1422c0f20(float fHeight);                      // set the height
 };
 
-// The AS array of the bill rows (ctor 0x1422deec0, dtor 0x1422df070).
-class Unk_MbRows : public AScript
-{
-public:
-    Unk_MbRows(int nType);
-    virtual ~Unk_MbRows();
-    bool FUN_1422bc050(Scaleform::GFx::Value v);            // push
-};
-
-// An item reference (16 bytes; released by 0x1401b50d0).
-class Unk_MbItemRef;
-void FUN_1401b50d0(Unk_MbItemRef*);
-void FUN_1401c3570(Unk_MbItemRef*);                             // AddRef
-class Unk_MbItemRef
-{
-public:
-    Unk_MbItemRef(const Unk_MbItemRef& o) : m_08(o.m_08) { FUN_1401c3570(this); }   // 0x1403bb3b0
-    ~Unk_MbItemRef() { FUN_1401b50d0(this); }
-    void* FUN_140203c60() const;                            // the item is known
-private:
-    void* m_00;
-    void* m_08;
-};
-MS2_CHECK_SIZE(Unk_MbItemRef, 0x10);
-Unk_MbItemRef FUN_14053f870(int nItemId);
-int FUN_1418ffba0(Unk_MbItemRef ref);                           // the item is locked
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
+int FUN_1418ffba0(MS2Ptr<CItemData> ref);                           // the item is locked
 
 // The purchase block notice (the state manager answers whether buying is blocked right now).
 struct Unk_MbBlockRef;
@@ -689,7 +665,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
 {
     int nMode = FUN_140eacad0();
     ASObj objData(2);
-    Unk_MbRows rows(2);
+    ASDataProvider rows(2);
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = m_spParam->m_bills;
     if (nMode == 4)
     {
@@ -719,10 +695,10 @@ void UIMarketBillDialog::FUN_140ea8df0()
             if (nPayType == 3)
             {
                 int nItemId = spBill->vfunc_1();
-                Unk_MbItemRef ref = FUN_14053f870(nItemId);
-                if (ref.FUN_140203c60() ? true : false)
+                MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+                if (ref.get() ? true : false)
                 {
-                    if ((reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->FUN_14053cd10())
+                    if ((ref.operator->())->FUN_14053cd10())
                         m_bBlueprint = true;
                 }
             }
@@ -837,8 +813,8 @@ bool UIMarketBillDialog::FUN_140ea9a70()
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
             continue;
-        Unk_MbItemRef ref = FUN_14053f870(nItemId);
-        if (ref.FUN_140203c60() && operator==((reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->function.name, L"UGCMapPackage"))
+        MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+        if (ref.get() && operator==((ref.operator->())->function.name, L"UGCMapPackage"))
             return true;
     }
     return false;
@@ -860,10 +836,10 @@ bool UIMarketBillDialog::FUN_140ea9c30(const int& nItemType)
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
             continue;
-        Unk_MbItemRef ref = FUN_14053f870(nItemId);
-        if (ref.FUN_140203c60())
+        MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+        if (ref.get())
         {
-            if ((reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->GetType() == nItemType)
+            if ((ref.operator->())->GetType() == nItemType)
                 return true;
         }
     }
@@ -886,8 +862,8 @@ bool UIMarketBillDialog::FUN_140ea9df0()
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
             continue;
-        Unk_MbItemRef ref = FUN_14053f870(nItemId);
-        if (ref.FUN_140203c60() && FUN_1418ffba0(ref))
+        MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+        if (ref.get() && FUN_1418ffba0(ref))
             return true;
     }
     return false;

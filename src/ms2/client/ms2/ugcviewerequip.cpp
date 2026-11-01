@@ -59,13 +59,12 @@ class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527
 class Unk_SgNifLoader { public: NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf); };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 CString FUN_1410280d0(int nKind, CString strName);          // the local file of a ugc content kind
-NiAVObject* FUN_141b6efc0(void* pEntity);                   // the scene root of an entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                   // the scene root of an entity
 void FUN_141890b60(egf::Entity* pEntity, const efd::utf8string& strProp, efd::utf8string& strOut);
 class Unk_VwWorld
 {
 public:
     GameObject* FUN_141bd0cc0();                            // the local player
-    GameObject* FUN_141bd1290(int nObjectId);               // a player by object id
     egf::Entity* FUN_141bd04d0(int nObjectId);              // an entity by object id
     GameObject* FUN_141bd0fa0(egf::EntityID id);            // the game object of an entity
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // an interact object by name
@@ -88,7 +87,6 @@ public:
 };
 void* FUN_1403ed290();                                      // the guild manager (+8: the own guild)
 __int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
-struct Unk_VwUIService;
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
 class WeddingManager   // C3: member view for the former free stand-ins
 {
@@ -108,7 +106,7 @@ void FUN_14132faf0(void* pDialog, const CStringW& strFile);        // show the u
 class UIPCInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14132fa90();
+    void RefreshProfileImage();
 };
 void FUN_140fc7e80(void* pDialog, const CStringW& strFile);        // (wedding profile)
 class UIWeddingDialog   // C3: member view for the former free stand-ins
@@ -205,14 +203,6 @@ public:
     virtual void vfunc_3();
     virtual void vfunc_4(int nDialog);
 };
-class Unk_CommandUIRef {
-public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
-private: void* unknown; UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-struct Unk_VwUIService { Unk_CommandUIRef FUN_141adcea0(int nId); };  // the UI lookup by class id
 void FUN_140c381b0(UIItemBlueprintCreateDialog* pDialog, MS2Ptr<CUploadFile> spFile);   // show the uploaded image
 CStringW FUN_14016a730(const char* psz, int n);             // narrow -> wide
 extern __int64 DAT_143ab2820;                               // my account id
@@ -253,7 +243,7 @@ CUgcViewerEquip::~CUgcViewerEquip()
 // @0x14189ee30
 int CUgcViewerEquip::vfunc_2()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -293,7 +283,7 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189f260
 void CUgcViewerEquip::vfunc_4()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -308,7 +298,7 @@ void CUgcViewerEquip::vfunc_4()
 // @0x14189f360
 void CUgcViewerEquip::vfunc_5()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd1290(FUN_14189f730())));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
@@ -642,7 +632,7 @@ void CUgcViewerBanner::vfunc_5()
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    NiAVObject* pRoot = FUN_141b6efc0(spEntity.data());
+    NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(spEntity.data()));
     if (pRoot != 0)
     {
         efd::utf8string strMesh;
@@ -762,7 +752,7 @@ void CUgcViewerProfile::vfunc_4()
     void* pDialog = ((void*)FUN_140938c30(0x2711));
     if (pDialog == 0)
         return;
-    ((class UIPCInfoDialog*)(void*)(pDialog))->FUN_14132fa90();
+    ((class UIPCInfoDialog*)(void*)(pDialog))->RefreshProfileImage();
 }
 
 // @0x1418a1470
@@ -1013,7 +1003,7 @@ void CUgcViewerGuildPoster::vfunc_4()
     CInteractObject* pObject = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_poster.m_strName).get();
     CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
-        ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->FUN_141402eb0(1);
+        ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->UpdatePoster(1);
 }
 
 // @0x1418a25d0
@@ -1285,13 +1275,13 @@ int CUgcViewerBlueprintImage::vfunc_8(MS2Ptr<IUgcProxy> spProxy, int nKind)
 // @0x1418a6920
 UIItemBlueprintCreateDialog* FUN_1418a6920()
 {
-    Unk_VwUIService* pService = reinterpret_cast<Unk_VwUIService*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pService = TSingleton<CUIService>::GetInstance();
     if (pService == 0)
         return 0;
-    Unk_CommandUIRef ref = pService->FUN_141adcea0(FUN_1418a7190());
-    if (((MS2Ptr<UIObject>*)&(ref))->IsNull())
+    MS2Ptr<UIObject> ref = pService->FindObject((eUIClassID)FUN_1418a7190());
+    if (ref.IsNull())
         return 0;
-    return dynamic_cast<UIItemBlueprintCreateDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+    return dynamic_cast<UIItemBlueprintCreateDialog*>(ref.operator UIObject*());
 }
 
 // ---- viewer vfunc_10 getters, base stubs --------------------------------------------------------------------------

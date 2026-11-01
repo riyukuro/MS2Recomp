@@ -33,6 +33,7 @@
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <NiAVObject.h>
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -76,13 +77,12 @@ bool FUN_14028d470(float a, float b);                               // nearly eq
 
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-const Vector3& FUN_140947900(void* pNode);                  // world translate
-void FUN_1414737d0(Unk_Entity* pEntity);                            // remove the entity from the world
 extern char DAT_143b059e8;                                          // service lookup cell
-ecr::SceneGraphService* FUN_1410a68f0(char* pCell);
+struct Unk_CcSvcCell;
+class Unk_AnimSvc;
+Unk_AnimSvc*FUN_1410a68f0(Unk_CcSvcCell*);
 
 // The effect manager singleton (0x1403ed280): the effect root.
-class Unk_1403ed280 { public: void* FUN_1411a6b10(); };
 
 // The world object behind an entity (slot 7: class id).
 class Unk_LightWorldObj
@@ -307,7 +307,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     if (pShadow != 0)
     {
-        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+        efd::SmartPointer<ecr::SceneGraphService> spService(reinterpret_cast<ecr::SceneGraphService *>(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell *>(&DAT_143b059e8))));
         egf::Entity* pOwner = spService->GetEntityFromSceneGraphNode(pShadow);
         if (pOwner != 0)
         {
@@ -341,7 +341,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     if (pShadow == 0)
     {
-        FUN_1409f76f0(&m_spParent, reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
+        FUN_1409f76f0(&m_spParent, reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot());
     }
     else
     {
@@ -422,7 +422,7 @@ void CLightEffect::vfunc_7()
     FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&m_spOuter)));
     if (m_entity.FUN_1408a9090() != 0)
     {
-        FUN_1414737d0(m_entity.FUN_1408a9090());
+        CMainSystem::DestroyEntity(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()));
         m_entity.FUN_1408b6ec0(0);
     }
 }
@@ -433,7 +433,7 @@ void CLightEffect::FUN_14144b0d0()
 {
     if ((bool)m_entity.FUN_1408a9090() && (bool)FUN_1409475d0(&m_spLightNode))
     {
-        Vector3 pt = FUN_140947900(FUN_1409475f0(&m_spLightNode));
+        Vector3 pt = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spLightNode))->GetWorldTranslate());
         m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, pt);
     }
 }

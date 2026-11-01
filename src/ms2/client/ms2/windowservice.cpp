@@ -28,6 +28,8 @@
 #include "bigdatalogsystem.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/ascript.h"
 #pragma comment(lib, "user32.lib")
 
 // Statics of the unit's header (initialized in this order in .text$di).
@@ -129,21 +131,6 @@ private:
     void* m_pad_00;
     struct Unk_Worker* m_p;
 };
-class Unk_MsgBoxPtr {                   // 16-byte handle of a message box (MS2Ptr<CMsgBoxData>)
-public:
-    ~Unk_MsgBoxPtr();                   // 0x140534d60
-private:
-    void* m_pad_00;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_MsgBoxPtr, 0x10);
-class Unk_MsgCallback {                 // Delegate<bool(int, const CMsgBoxData&)> built from a plain function (8 bytes)
-public:
-    Unk_MsgCallback(const Unk_MsgCallback&);    // declared (as Delegate's): the by-value argument goes by reference to a caller temp
-    ~Unk_MsgCallback();                 // 0x140534cb0
-private:
-    void* m_p;
-};
 class Unk_HudPtr {                      // handle returned by the UI manager lookup
 public:
     ~Unk_HudPtr();                      // 0x140a58400
@@ -179,9 +166,9 @@ void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 Unk_LoginDialog* FUN_141a003b0(int);
 void FUN_1419e21e0(Unk_LoginDialog*, CStringW);
-Unk_MsgBoxPtr FUN_140d74390(CStringW, int, Unk_MsgCallback);
-Unk_MsgCallback FUN_140b76b10(bool (*)(int));
-bool FUN_141902530(int);
+MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
+bool FUN_141902530(int, const CMsgBoxData&);
 CNetworkService* FUN_140714f90();
 CReconnectionManagerCli* FUN_140e800e0();
 void* FUN_140aadf80();
@@ -647,7 +634,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     else if (uMsg == 0x468)
     {
         if (FUN_140714f90() != 0)
-            FUN_140714f90()->FUN_1415382c0();
+            FUN_140714f90()->ConnectToConfiguredServer();
     }
     else if (uMsg == 0x469)
     {
@@ -660,7 +647,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         if (FUN_140e800e0() != 0)
             bFlag = FUN_140e800e0()->IsReconnecting();
         if (FUN_140714f90() != 0)
-            FUN_140714f90()->FUN_141538480(bFlag);
+            FUN_140714f90()->Reconnect(bFlag);
     }
     if (GetClientPlatform() != 0)
         GetClientPlatform()->vfunc_19(uMsg, (void*)wParam, (void*)lParam);

@@ -19,8 +19,8 @@
 struct Unk_KfmPonyTail
 {
     CString m_strBone;          // +0x00 bone / joint name the pony-tail joint hangs on
-    float m_fDamping;           // +0x08 (FUN_141440110)
-    float m_fX;                 // +0x0c (FUN_1414401b0)
+    float m_fDamping;           // +0x08 (SetPonyTailDamping)
+    float m_fX;                 // +0x0c (SetPonyTailOffset)
     float m_fY;                 // +0x10
     float m_fZ;                 // +0x14
 };
@@ -107,16 +107,16 @@ public:
     egf::EntityID FUN_14143ff70();                          // 0x14143ff70 id of the model entity (0 when none)
     efd::AssetID GetAssetId();                           // 0x14143fff0 asset id property of the entity
     NiActorManager* FUN_1414400d0();                        // 0x1414400d0 actor manager of the entity
-    void FUN_141440110(const CString& strBone, float f);    // 0x141440110
-    void FUN_1414401b0(const CString& strBone, float x, float y, float z);   // 0x1414401b0
-    void FUN_141440270(unsigned int nSeq);                  // 0x141440270
+    void SetPonyTailDamping(const CString& strBone, float f);    // 0x141440110
+    void SetPonyTailOffset(const CString& strBone, float x, float y, float z);   // 0x1414401b0
+    void PlaySequence(unsigned int nSeq);                  // 0x141440270
     void FUN_141440380(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
         bool b);                                            // 0x141440380 play first existing animation
     void CreateEntity();                                   // 0x1414408e0 (re)create the entity
     void DestroyEntity();                                   // 0x1414409f0 destroy the entity
-    void FUN_141440a70();                                   // 0x141440a70 copy animation names into the entity
+    void ApplyAnimNames();                                   // 0x141440a70 copy animation names into the entity
     void FUN_141440bc0();                                   // 0x141440bc0 pony-tail joint positions
-    bool FUN_141440f20();                                   // 0x141440f20 scale is 1.0
+    bool IsDefaultScale();                                   // 0x141440f20 scale is 1.0
     void FUN_141440f60();                                   // 0x141440f60 apply the node scale to the model
     void FUN_14143f3d0();                                   // 0x14143f3d0 rescale the physics joints
 

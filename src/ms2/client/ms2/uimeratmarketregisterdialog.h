@@ -38,12 +38,12 @@ public:
     void FUN_141318aa0(MS2Ptr<CMeratMarketProduct> spProduct);          // a product was listed: move its item to the end
     void FUN_141318cc0();                                               // clear the three tag inputs
     void FUN_141318ef0(int nMaxChars);                                  // limit the three tag inputs
-    void FUN_1413190c0(int nMode, Unk_MeratProductKey key);             // set mode and the product to list again
+    void SetModeAndResaleKey(int nMode, Unk_MeratProductKey key);             // set mode and the product to list again
     bool FUN_141319100(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: send the product
-    bool FUN_141319180(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: refresh the fee
+    bool OnForceUpdateFeeMsgBox(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: refresh the fee
     MS2Ptr<CItem> GetItemAt(int nIndex);                            // item of the list by index
     bool FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> spItem);         // the item can still be found
-    int FUN_1413197a0(const CUgcMarketProduct* pProduct);               // list index of the product's item, -1 if none
+    int FindItemIndex(const CUgcMarketProduct* pProduct);               // list index of the product's item, -1 if none
     void FUN_141319920(ItemArray& arrItems);                            // collect the items that can be listed
     bool FUN_141319f10(MS2Ptr<CItem> spItem);                           // the item is already listed
     bool FUN_14131a100(Unk_MeratProductKey key);                        // open the list-again form of a sold product
@@ -53,14 +53,14 @@ public:
     __int64 FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc);   // the register fee of an item
     bool FUN_14131ae60(bool bAddBase, bool bCheckStale, __int64* pFee);   // the fee, checked against the stock
     bool FUN_14131b0e0(const CStringW& strDescription, const CStringW& strName);   // validate the texts
-    CStringW FUN_14131b420(__int64 nMin, __int64 nMax);                 // "price must be between"
+    CStringW FormatPriceRangeText(__int64 nMin, __int64 nMax);                 // "price must be between"
     void FUN_14131b4e0(ASObj& obj, bool bAddBase);             // put the fee texts into obj
     void FUN_14131b7e0();                                               // forget the selected item
     void FUN_14131b810(ASData& data);                                   // "OnClickRegister"
     void FUN_14131c010(ASData& data);                                   // "OnClickReRegister"
     void FUN_14131c4e0(ASData& data);                                   // "OnGetFee" / "OnGetTotalFee"
     void FUN_14131c570(ASData& data);                                   // "OnChangeSelectedIndex"
-    void FUN_14131c9d0(ASData& data);                                   // "GetAlreadyRegistIndex"
+    void OnGetAlreadyRegistIndex(ASData& data);                                   // "GetAlreadyRegistIndex"
     int FUN_14131ca80();                                                // tag input limit
     MS2Ptr<Unk_MrdInput> FUN_140e35bd0(const CString& strName);          // text input child lookup (UIDialog member)
 

@@ -22,7 +22,7 @@ public:
         const egf::IProperty* pProperty, const efd::UInt32 tags);      // 0x1414af5e0
 
     // Applies the camera data to the local player entity (called by CCameraMode with the plain CameraService pointer).
-    void FUN_1414af480(ecr::CameraData* pCamera);                       // 0x1414af480
+    void UpdateCameraFromMgr(ecr::CameraData* pCamera);                       // 0x1414af480
 
 public:
     ATL::CRBMap<egf::EntityID, int> m_dirty;                            // +0x70, entities whose camera needs refreshing

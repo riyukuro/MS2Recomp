@@ -26,7 +26,7 @@ class Unk_ItemEquipData : public CItemData { };                 // CItem::FUN_14
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // localized text
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);   // date and time text
-CStringW FUN_14083bab0(CMsTime t, CStringW strSep);             // date text
+CStringW FUN_14083bab0(CMsTime const &, CStringW);  // C3: the definition's signature
 CStringW FUN_140b8f230(int nDay);                               // the name of a week day
 CStringW FUN_14086cc00(const wchar_t* pszFormat, const int& a, const int& b, const int& c, const int& d);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
@@ -69,7 +69,7 @@ CNpcShopProductBase::~CNpcShopProductBase()
 }
 
 // @0x140db5d20
-CStringW CNpcShopProductBase::FUN_140db5d20()
+CStringW CNpcShopProductBase::GetItemName()
 {
     CItem* pItem = GetItem().get();
     if (pItem != NULL)
@@ -137,7 +137,7 @@ CNpcShopProductCli::~CNpcShopProductCli()
 }
 
 // @0x140db61a0
-void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
+void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
 {
     if (nMode == 1)
     {
@@ -182,7 +182,7 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
             m_d8.operator->()->Read(in);
         }
         FUN_14015f050(m_b0, m_20, ",");
-        FUN_140db6e30(nBought);
+        SetBuyItemCount(nBought);
         m_40.AssignRaw(new CItem());
         m_40->FUN_140523c40(nItemId, nRarity, nCount);
         m_40->FUN_140524eb0(in);
@@ -211,14 +211,14 @@ void CNpcShopProductCli::FUN_140db6db0(int nIndex)
 }
 
 // @0x140db6e00
-void CNpcShopProductCli::FUN_140db6e00(int nBuyCount)
+void CNpcShopProductCli::SetBuyCount(int nBuyCount)
 {
     m_58 = nBuyCount;
     UpdateRemainingCount();
 }
 
 // @0x140db6e30
-void CNpcShopProductCli::FUN_140db6e30(unsigned nBuyCount)
+void CNpcShopProductCli::SetBuyItemCount(unsigned nBuyCount)
 {
     if (m_b8 > 1)
         m_58 = nBuyCount / m_b8;
@@ -234,7 +234,7 @@ int CNpcShopProductCli::GetRemainingCount()
 }
 
 // @0x140db6eb0
-int CNpcShopProductCli::FUN_140db6eb0()
+int CNpcShopProductCli::GetRemainingItemCount()
 {
     if (m_b8 > 1)
         return m_54 * m_b8;
@@ -242,13 +242,13 @@ int CNpcShopProductCli::FUN_140db6eb0()
 }
 
 // @0x140db6ef0
-int CNpcShopProductCli::FUN_140db6ef0()
+int CNpcShopProductCli::GetLimitCount()
 {
     return m_5c;
 }
 
 // @0x140db6f10
-int CNpcShopProductCli::FUN_140db6f10()
+int CNpcShopProductCli::GetLimitItemCount()
 {
     if (m_b8 > 1)
         return m_5c * m_b8;
@@ -262,7 +262,7 @@ int CNpcShopProductCli::GetBuyCount()
 }
 
 // @0x140db6f70
-int CNpcShopProductCli::FUN_140db6f70()
+int CNpcShopProductCli::GetBuyItemCount()
 {
     if (m_b8 > 1)
         return m_58 * m_b8;
@@ -447,8 +447,8 @@ int CNpcShopProductCli::FUN_140db8210()
             int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->FUN_14053c7c0();
             if (bStackable)
             {
-                bool bLimit = FUN_140db6ef0() > 0;
-                int nLeft = FUN_140db6eb0();
+                bool bLimit = GetLimitCount() > 0;
+                int nLeft = GetRemainingItemCount();
                 int nCount = (std::max)(1u, spItem->GetSlotMax());
                 unsigned nBuy = bLimit ? (std::min)(nLeft, nCount) : nCount;
                 if (m_b8 > 1)
@@ -502,7 +502,7 @@ int CNpcShopProductCli::FUN_140db8580(int nCount)
 }
 
 // @0x140db8600
-bool CNpcShopProductCli::FUN_140db8600()
+bool CNpcShopProductCli::CheckStarPointEvent()
 {
     if (m_88 == 0xd && !FUN_1406a5930())
     {
@@ -513,7 +513,7 @@ bool CNpcShopProductCli::FUN_140db8600()
 }
 
 // @0x140db86d0
-CString CNpcShopProductCli::FUN_140db86d0()
+CString CNpcShopProductCli::ToLogString()
 {
     CString str;
     str.Format("OnShop [ITEM_LIST] : nSerialID = %d, itemID = %u, price = %I64u, randomSeed = %u, nSellCount = %d, nBuyCount = %d, category=%s",
@@ -598,14 +598,14 @@ MS2_REPLACE_METHOD(0x140db5f00, CNpcShopProductBase, FUN_140db5f00, 15, 0x5731F5
 MS2_REPLACE_METHOD(0x140db5f20, CNpcShopProductBase, vfunc_1, 11, 0x30025ED0);
 MS2_REPLACE_METHOD(0x140db5f40, CNpcShopProductBase, vfunc_2, 8, 0x7F371472);
 MS2_REPLACE_METHOD(0x140db6db0, CNpcShopProductCli, FUN_140db6db0, 69, 0x70CF012D);
-MS2_REPLACE_METHOD(0x140db6e00, CNpcShopProductCli, FUN_140db6e00, 40, 0x1FEE011C);
-MS2_REPLACE_METHOD(0x140db6e30, CNpcShopProductCli, FUN_140db6e30, 81, 0xFD40C69C);
+MS2_REPLACE_METHOD(0x140db6e00, CNpcShopProductCli, SetBuyCount, 40, 0x1FEE011C);
+MS2_REPLACE_METHOD(0x140db6e30, CNpcShopProductCli, SetBuyItemCount, 81, 0xFD40C69C);
 MS2_REPLACE_METHOD(0x140db6e90, CNpcShopProductCli, GetRemainingCount, 14, 0x5A3CA153);
-MS2_REPLACE_METHOD(0x140db6eb0, CNpcShopProductCli, FUN_140db6eb0, 50, 0x18637C2F);
-MS2_REPLACE_METHOD(0x140db6ef0, CNpcShopProductCli, FUN_140db6ef0, 14, 0x8A52079B);
-MS2_REPLACE_METHOD(0x140db6f10, CNpcShopProductCli, FUN_140db6f10, 50, 0x49488A7F);
+MS2_REPLACE_METHOD(0x140db6eb0, CNpcShopProductCli, GetRemainingItemCount, 50, 0x18637C2F);
+MS2_REPLACE_METHOD(0x140db6ef0, CNpcShopProductCli, GetLimitCount, 14, 0x8A52079B);
+MS2_REPLACE_METHOD(0x140db6f10, CNpcShopProductCli, GetLimitItemCount, 50, 0x49488A7F);
 MS2_REPLACE_METHOD(0x140db6f50, CNpcShopProductCli, GetBuyCount, 14, 0x7245C177);
-MS2_REPLACE_METHOD(0x140db6f70, CNpcShopProductCli, FUN_140db6f70, 50, 0x2A2F2617);
+MS2_REPLACE_METHOD(0x140db6f70, CNpcShopProductCli, GetBuyItemCount, 50, 0x2A2F2617);
 MS2_REPLACE_METHOD(0x140db6fb0, CNpcShopProductCli, FUN_140db6fb0, 14, 0xA1BBC3FF);
 MS2_REPLACE_METHOD(0x140db6fd0, CNpcShopProductCli, FUN_140db6fd0, 17, 0xA49D819F);
 MS2_REPLACE_METHOD(0x140db7040, CNpcShopProductBase, FUN_140db7040, 15, 0x5731F599);
@@ -617,7 +617,7 @@ MS2_REPLACE_METHOD(0x140db81c0, CNpcShopProductCli, UpdateRemainingCount, 69, 0x
 MS2_REPLACE_METHOD(0x140db8210, CNpcShopProductCli, FUN_140db8210, 484, 0x72A073E5);
 MS2_REPLACE_METHOD(0x140db8400, CNpcShopProductCli, FUN_140db8400, 371, 0x3F8AEA03);
 MS2_REPLACE_METHOD(0x140db8580, CNpcShopProductCli, FUN_140db8580, 122, 0x6C68DD87);
-MS2_REPLACE_METHOD(0x140db8600, CNpcShopProductCli, FUN_140db8600, 190, 0x38C72280);
+MS2_REPLACE_METHOD(0x140db8600, CNpcShopProductCli, CheckStarPointEvent, 190, 0x38C72280);
 MS2_REPLACE_METHOD(0x140db8a00, CNpcShopMeratItemCli, vfunc_2, 186, 0xBEA2FAF8);
 MS2_REPLACE(0x140db8b90, FUN_140db8b90, 97, 0x7C708882);
 

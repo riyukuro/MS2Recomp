@@ -176,7 +176,7 @@ void CReconnectionManagerCli::BeginReconnect(unsigned code) {
     m_cli.m_attempt = 0;
     m_cli.m_maxAttempts = GetOption(7);
     m_cli.m_postParam = code;
-    m_cli.m_session = FUN_140714f90()->FUN_1415385d0();
+    m_cli.m_session = FUN_140714f90()->GetSocketSequence();
     PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x46b, (WPARAM)code, 0);
     ShowProgress(1, m_cli.m_maxAttempts);
     CStringW text(L"[DEBUG] * PreReconnect");
@@ -196,7 +196,7 @@ bool CReconnectionManagerCli::AttemptReconnect() {
     }
     ShowProgress(m_cli.m_attempt, m_cli.m_maxAttempts);
     if (m_cli.m_deadline != 0 && (unsigned)m_cli.m_deadline > now) return false;
-    int ok = FUN_140714f90()->FUN_1415383a0(CString(m_cli.m_host), m_cli.m_port, 1, 1, 1);
+    int ok = FUN_140714f90()->ConnectTo(CString(m_cli.m_host), m_cli.m_port, 1, 1, 1);
     if (ok == 0) return false;
     return true;
 }
@@ -327,7 +327,7 @@ void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
         Reset();
         if (FUN_140aa6d30() != 0) {
             if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {
-                FUN_140714f90()->FUN_1415388a0();
+                FUN_140714f90()->SendRequestQuitAndDisconnect();
                 FUN_1417e25a0(FUN_140aa6d30(), 0x6200009);
                 FUN_140d73aa0(BlockFormat<int>(0x20f, 0), 0, 0, CStringW(L""));
             }

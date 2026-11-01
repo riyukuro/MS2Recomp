@@ -18,11 +18,10 @@ class Unk_RuAux : public CPtred { };
 
 // Out-of-unit helpers.
 // The mentoring slot of the event manager (+0x448; the accessor FUN_14041d160 is in this unit).
-class Unk_RuMentoring
-{
+class CGameEventValueMentoring { public: void Reset(void); void Set(class MS2Ptr<class MentoringContext>); }; class Unk_RuMentoring : public CGameEventValueMentoring {
 public:
-    void FUN_140424da0(MS2Ptr<MentoringContext> spContext);     // start
-    void FUN_140424ea0();                                       // end
+
+
 };
 class Unk_RuManager
 {
@@ -70,14 +69,14 @@ void GameEventReturnUser::vfunc_4(Unk_GEIn* in)
 void GameEventReturnUser::OnStart()
 {
     if (0 < m_e0->m_18)
-        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->FUN_140424da0(m_e0);
+        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->Set(m_e0);
 }
 
 // @0x14041ce30
 void GameEventReturnUser::vfunc_6()
 {
     if (0 < m_e0->m_18)
-        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->FUN_140424ea0();
+        reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->Reset();
 }
 
 // @0x14041cf20

@@ -139,6 +139,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/client/ms2/equipitem.h"  // C3
 class NotifyChangeActiveMyCodiTab : public NotifyObject
 {
 public:
@@ -159,7 +160,6 @@ public:
 class Unk_140bfc2e0 : public ASDisplayObject
 {
 public:
-    void FUN_1422dcca0(int nIndex);             // select
     int FUN_1422dccd0();                        // the selected index (-1: none)
 };
 class Unk_BSStyleEntity : public ASGameEntity
@@ -256,10 +256,9 @@ Unk_BSAchieves* FUN_1406c7600();
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
 
 // The player and its equipment.
-class Unk_InventoryEquipment : public CPtred
+class Unk_InventoryEquipment : public CEquipItem
 {
 public:
-    MS2Ptr<CItem> FUN_1411dc7a0();
     void FUN_1411dcf10(const CString& strTag);
 };
 class Unk_BSPlayer : public PCBase
@@ -1889,7 +1888,7 @@ int UIBeautyShopDialog::FUN_1418c9f20()
         {
             int nEquipSlot = FUN_140f01070(FUN_1418cbbe0());
             MS2Ptr<Unk_InventoryEquipment> spEquip = pPc->FUN_141655e10(nEquipSlot);
-            m_2b8 = spEquip->FUN_1411dc7a0();
+            m_2b8 = spEquip->GetItem();
         }
         COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
         packet.WriteUInt8(7);

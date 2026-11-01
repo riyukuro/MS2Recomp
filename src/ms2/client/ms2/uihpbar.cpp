@@ -99,7 +99,6 @@ public:
     int FUN_1415278d0(__int64 nId);
 };
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
-class Unk_HpCfgHolder { public: Unk_HpCfgData* FUN_140b123b0(); };
 class Unk_HpWorld;
 Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 class Unk_HpUIMgr { public: };
@@ -349,7 +348,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         pInfo = 0;
     if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
     {
-        return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_a;
+        return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_a;
     }
     else
     {
@@ -357,10 +356,10 @@ int UIHpBar::Entity::FUN_1419923f0()
         if (pPc != 0)
         {
             if (pLocal->vfunc_122(pPc) != 0)
-                return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_e;
+                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_e;
             if (pLocal->FUN_1415278d0(pPc->FUN_141656a80()) == 0)
                 return 0;
-            return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_c;
+            return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_c;
         }
         else
         {
@@ -368,8 +367,8 @@ int UIHpBar::Entity::FUN_1419923f0()
             if (pNpc != 0)
             {
                 if (pNpc->vfunc_116() == 2)
-                    return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_c;
-                return reinterpret_cast<Unk_HpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_e;
+                    return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_c;
+                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_e;
             }
         }
     }

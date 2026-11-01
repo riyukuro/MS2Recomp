@@ -146,11 +146,11 @@ public:
     virtual int vfunc_12();                                     // 12 0x14154f9d0 effect type 1
 
     float FUN_14154b470();                                      // duration of the nif animation
-    bool FUN_14154b4a0(NiObjectNET* pkNode);                    // swap the alpha controllers for duplicates
+    bool ReplaceAlphaControllers(NiObjectNET* pkNode);                    // swap the alpha controllers for duplicates
     bool IsNotForceStop();                                       // fade out allowed (param not "notForceStop")
-    void FUN_14154b630(NiObjectNET* pkNode, float fTime);       // add a fade-out controller
-    void FUN_14154ba40(Unk_EffectTarget* pTarget);              // attach type 0
-    void FUN_14154bdd0(Unk_EffectTarget* pTarget);              // attach type 1
+    void AddFadeOutController(NiObjectNET* pkNode, float fTime);       // add a fade-out controller
+    void AttachToOwnerNode(Unk_EffectTarget* pTarget);              // attach type 0
+    void AttachToModelNode(Unk_EffectTarget* pTarget);              // attach type 1
     void FUN_14154c260(Unk_EffectTarget* pTarget);              // attach type 2
     void FUN_14154c440(Unk_EffectTarget* pTarget, int nSlot);   // attach type 3/4
     void FUN_14154c580();                                       // wrap in a SeparateNode / make relative

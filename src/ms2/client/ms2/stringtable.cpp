@@ -72,6 +72,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -684,16 +685,15 @@ BOOL CStringTable::FUN_141811960()
 class Unk_StSkillLevel : public CPtred { public: char m_pad_18[0x18]; CStringW m_strArgs; };   // +0x30 the format arguments
 MS2_CHECK_OFFSET(Unk_StSkillLevel, m_strArgs, 0x30);
 class Unk_StSkillRow : public CPtred { public: MS2Ptr<Unk_StSkillLevel> FUN_1407e90a0(unsigned short nLevel); };
-class Unk_StEffectAttr : public CPtred { public: char m_pad_18[0x10]; CStringW m_strArgs; };   // +0x28 the format arguments
-MS2_CHECK_OFFSET(Unk_StEffectAttr, m_strArgs, 0x28);
 class Unk_StSkillTable
 {
 public:
     MS2Ptr<Unk_StSkillRow> FUN_1407ee1d0(int nSkillId);
-    MS2Ptr<Unk_StEffectAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
 };
 class Unk_StSkillSystem { public: CStringW FUN_141767e60(__int64 nId); };
-class Unk_StPlayer : public PC { public: Unk_StSkillSystem* FUN_141523bc0();};
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
+class Unk_StPlayer : public PC { };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 class UIClosetDialog : public UIDialog
@@ -805,11 +805,11 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
     CStringW strText = FUN_141815160(m_levelDescs, &nBuffId, &nLevel, strTag);
     if (strTag.CompareNoCase("tooltipDescription") == 0)
     {
-        MS2Ptr<Unk_StEffectAttr> spAttr = reinterpret_cast<Unk_StSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
+        MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
         if ((bool)spAttr.get())
         {
-            if (!spAttr->m_strArgs.IsEmpty())
-                strText = FUN_141813790(strText, CStringW(spAttr->m_strArgs));
+            if (!spAttr->m_strStringParam.IsEmpty())
+                strText = FUN_141813790(strText, CStringW(spAttr->m_strStringParam));
         }
     }
     if (strTag.CompareNoCase("name") == 0)
@@ -831,7 +831,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            CStringW strName = pPlayer->FUN_141523bc0()->FUN_141767e60(nId);
+            CStringW strName = reinterpret_cast<Unk_StSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141767e60(nId);
             if (!strName.IsEmpty())
                 return StringFormat<CStringW>(FUN_141811980(5, nId), strName);
         }

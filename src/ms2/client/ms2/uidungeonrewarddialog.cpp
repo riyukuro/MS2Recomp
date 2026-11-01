@@ -37,6 +37,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/client/ms2/uirenderview.h"
 #ifndef MS2_HOOK_DLL   // s_winSound: the exe's object at 0x143ac5988, which other units reach as DAT_143ac5988 (the hook DLL binds it)
 CString DAT_143ac5988="BattleField_Win";
 #else
@@ -54,41 +55,11 @@ public: void FUN_140da5180(int,Delegate<void(CInPacket&)>); void FUN_140da51e0(i
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 void FUN_14141f970(const CString&);
-class Unk_RewardText : public AScript { public: void FUN_1422c4cd0(const CStringW&); };
-class Unk_RewardClip : public AScript {
+class Unk_RewardClip : public ASMovieClip {
 public:
- virtual void vfunc_1();
- virtual void vfunc_2();
- virtual void vfunc_3(int);
- virtual void vfunc_4(bool);
- virtual void vfunc_5();
- virtual void vfunc_6();
- virtual void vfunc_7();
- virtual void vfunc_8();
- virtual void vfunc_9();
- virtual void vfunc_10();
- virtual void vfunc_11();
- virtual void vfunc_12(int);
- virtual void vfunc_13();
- virtual void vfunc_14();
- virtual void vfunc_15(const CString&);
- Unk_RewardPtr<Unk_RewardButton> FUN_140bbe640(const CString&,Unk_RewardPtr<Unk_RewardButton>&);
- Unk_RewardPtr<Unk_RewardClip> FUN_1409b4560(const CString&);
- void FUN_1422bffe0(int,int);
- Scaleform::GFx::Value FUN_1409ba0d0(const char*,int,int);
  Scaleform::GFx::Value FUN_140e262c0(const char*,const char*);
- const Scaleform::GFx::Value& FUN_1422bb890() const;
- Unk_RewardPtr<Unk_RewardText> FUN_140d01e20(const CString&);
- Unk_RewardPtr<Unk_RewardText> FUN_1409b4620(const CString&);
- Unk_RewardPtr<Unk_RewardClip> FUN_140bc7450(const CString&);
- Scaleform::GFx::Value FUN_1422c6900(Scaleform::GFx::Value);
- void FUN_1422c0e20(int); float FUN_1422c10a0(); void FUN_1422c0420(float);
-};
-class Unk_RewardLabelClip : public Unk_RewardClip { public: Unk_RewardLabelClip(CString,int); private: void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78; };
-MS2_CHECK_SIZE(Unk_RewardLabelClip,0x80);
-class Unk_RewardButton : public Unk_RewardClip {
-public: void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,int);
- void FUN_1422cdfb0(const CStringW&);
+ MS2Ptr<ASTextField> FUN_140d01e20(const CString&);
+ MS2Ptr<ASMovieClip> FUN_140bc7450(const CString&);
 };
 class Unk_RewardEntryList;
 class Unk_RewardMission { public: void FUN_140c9ce80(Unk_RewardEntryList&); int FUN_140c9ceb0(); int FUN_140c9cf50(); unsigned int FUN_140c9cff0(); };
@@ -100,68 +71,11 @@ class Unk_RewardMissions { public: Unk_RewardMissionPtr FUN_140d9f4e0(); };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 CString FUN_140e1c880(const char*,const char*,const char*,const int&,const char*);
 
-class Unk_RewardRoom { public: void* m_0;
- void* m_8;
- void* m_10;
- int m_18; int m_1c;
- void* m_20;
- void* m_28;
- void* m_30;
- void* m_38;
- void* m_40;
- void* m_48;
- void* m_50;
- void* m_58;
- void* m_60;
- void* m_68;
- void* m_70;
- void* m_78;
- void* m_80;
- void* m_88;
- void* m_90;
- void* m_98;
- void* m_a0;
- void* m_a8;
- void* m_b0;
- void* m_b8;
- void* m_c0;
- void* m_c8;
- void* m_d0;
- void* m_d8;
- void* m_e0;
- void* m_e8;
- void* m_f0;
- void* m_f8;
- void* m_100;
- void* m_108;
- void* m_110;
- void* m_118;
- void* m_120;
- void* m_128;
- void* m_130;
- void* m_138;
- void* m_140;
- void* m_148;
- void* m_150;
- void* m_158;
- void* m_160;
- void* m_168;
- void* m_170;
- void* m_178;
- void* m_180;
- void* m_188;
- void* m_190;
- void* m_198;
- void* m_1a0;
- void* m_1a8;
- unsigned short m_1b0; bool m_leave; unsigned int FUN_14031ddf0(); };
-MS2_CHECK_OFFSET(Unk_RewardRoom,m_leave,0x1b2);
 class Unk_RewardOtherDialog : public UIDialog {
 public: bool FUN_140e26860(); void FUN_1419f6eb0(); void FUN_1419f6a70(int,CStringW,int);
 };
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
  CQuestManager* FUN_140764020();
- CPartyManager* FUN_1409670d0();
 class ASTooltip : public AScript {
 public: ASTooltip(int,int); virtual ~ASTooltip(); int ApplyTextTooltip(const CStringW&);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
@@ -226,15 +140,11 @@ public:
     virtual void vfunc_12(int);
     virtual void vfunc_13(const Unk_RewardCameraData&);
 };
-class Unk_RewardCameraPtr
+class UIAvatarBase
 {
 public:
-    ~Unk_RewardCameraPtr();
-    Unk_RewardCamera* operator->() const;
-private:
-    Unk_RewardCamera* m_p;
+    efd::SmartPointer<UIRenderView> GetView();
 };
-MS2_CHECK_SIZE(Unk_RewardCameraPtr, 8);
 class Unk_RewardAvatar
 {
 public:
@@ -273,7 +183,6 @@ public:
     int FUN_1418b9b80();
     void FUN_1418bce80(int);
     void FUN_1418bcf60(int, unsigned short);
-    Unk_RewardCameraPtr FUN_1418b9bc0();
 };
 class UIAvatarPC : public Unk_RewardAvatar
 {
@@ -334,7 +243,10 @@ private:
     void* m_180; void* m_188; void* m_190; void* m_198;
 };
 MS2_CHECK_SIZE(CItem, 0x1a0);
-class Unk_RewardRoomMgr { public: Unk_RewardPtr<Unk_RewardRoom> FUN_1403206b0(unsigned int); };
+ CPartyManager* FUN_1409670d0();
+class Unk_RewardRoomMgr;
+// @0x140e26600
+template<> inline MS2Ptr<DungeonRoom>& MS2Ptr<DungeonRoom>::operator=(int) { Release(); return *this; }
 Unk_RewardRoomMgr* FUN_14031c2a0();
 class Unk_RewardSound { };
 int FUN_141276180(const CString& strSound, const CString& strArg);   // C3: this was the sound name
@@ -365,7 +277,7 @@ public:
  virtual CStringW vfunc_77();
  Unk_ClosingJob FUN_141654730();
 };
-class Unk_RewardEntry : public DungeonMissionCli { public: unsigned short FUN_140b1e030(); unsigned short FUN_140b1e010(); };
+class Unk_RewardEntry : public DungeonMissionCli { public: };
 class Unk_RewardEntryPtr {
 public: Unk_RewardEntryPtr(const Unk_RewardEntryPtr&); ~Unk_RewardEntryPtr(); bool operator==(Unk_RewardEntry*) const; Unk_RewardEntry* operator->() const;
 private: void* m_0; Unk_RewardEntry* m_p;
@@ -393,7 +305,7 @@ Scaleform::GFx::Value Unk_RewardClip::FUN_140e262c0(const char* method,const cha
 MS2_REPLACE_METHOD(0x140E262C0, Unk_RewardClip, FUN_140e262c0, 148, 0x7E9B9EE2);
 // @0x140e20ae0
 UIDungeonRewardDialog::UIDungeonRewardDialog() {
- FUN_140e25610(); m_268="DungeonReward_gainItems"; m_2c=0x1b;
+ ResetState(); m_268="DungeonReward_gainItems"; m_2c=0x1b;
  ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::OnPacket));
 }
 // @0x140e20da0
@@ -406,31 +318,31 @@ CString UIDungeonRewardDialog::GetTypeName() { return "DungeonRewardDialog"; }
 MS2_REPLACE_METHOD(0x140E21000, UIDungeonRewardDialog, GetTypeName, 61, 0x76DD8AEE);
 
 // @0x140e21050
-void UIDungeonRewardDialog::vfunc_26() { UIDialog::vfunc_26(); m_labels.FUN_140bcfb70(); FUN_140e25610(); }
+void UIDungeonRewardDialog::vfunc_26() { UIDialog::vfunc_26(); m_labels.FUN_140bcfb70(); ResetState(); }
 MS2_REPLACE_METHOD(0x140E21050, UIDungeonRewardDialog, vfunc_26, 53, 0x294469C5);
 
 // @0x140e21090
 void UIDungeonRewardDialog::OnLoadComplete() {
  UIDialog::OnLoadComplete();
  m_180=FUN_140ba7930("m_rewardAvatar");
- Unk_RewardPtr<Unk_RewardClip> reward=FUN_140ba7930("m_rewardAni");
+ MS2Ptr<ASMovieClip> reward=FUN_140ba7930("m_rewardAni");
  m_190=reward->FUN_1409b4560("m_rewardInfo");
- Unk_RewardPtr<Unk_RewardClip> rank=FUN_140ba7930("m_rankAni");
+ MS2Ptr<ASMovieClip> rank=FUN_140ba7930("m_rankAni");
  m_1a0=rank->FUN_1409b4560("m_rankInfo");
- if(Unk_RewardPtr<Unk_RewardClip> buttons=FUN_140ba7930("m_buttonArea")) {
+ if(MS2Ptr<ASMovieClip> buttons=FUN_140ba7930("m_buttonArea")) {
  do { buttons->FUN_140bbe640("m_closeButton",m_1c0);
  if(m_1c0==0) throw new GfxExceptionSwfLoad(FUN_140e1c880("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,116,__FUNCTION__)); } while(0);
  do { buttons->FUN_140bbe640("m_partyLeaveButton",m_1d0);
  if(m_1d0==0) throw new GfxExceptionSwfLoad(FUN_140e1c880("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,117,__FUNCTION__)); } while(0);
- m_1c0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::FUN_140e22740),0);
- if((m_room.get()?true:false)&&m_room->m_leave)m_1c0->FUN_1422cdfb0(L"$s_dungeonReward_leave");
- m_1d0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::FUN_140e22780),0);
+ m_1c0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::OnCloseButton),0);
+ if((m_room.get()?true:false)&&m_room->m_isLeaveAfterCloseReward)m_1c0->FUN_1422cdfb0(L"$s_dungeonReward_leave");
+ m_1d0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::OnPartyLeaveButton),0);
  m_1d0->vfunc_4(false);
  }
  m_1b0=FUN_140ba7930("m_title");
  m_timer1.FUN_1408687f0();m_timer2.FUN_1408687f0();
  CreateAvatar();FUN_140e25170();FUN_140e22820();
- switch(m_type) {case 1:FUN_140e22d70();break;case 2:FUN_140e24e80();break;case 3:FUN_140e25050();break;case 4:FUN_140e250e0();break;}
+ switch(m_type) {case 1:FUN_140e22d70();break;case 2:UpdateMinigameStage();break;case 3:FUN_140e25050();break;case 4:FUN_140e250e0();break;}
  Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
  if(mission.get()&&mission->FUN_140c9cf50()>0) {FUN_140e24060();FUN_140e24c50(true);}else FUN_140e24c50(false);
  Unk_RewardOtherDialog* dialog=((class Unk_RewardOtherDialog*)FUN_140e01890(20044));
@@ -467,7 +379,7 @@ void UIDungeonRewardDialog::vfunc_25(void* p1,TPtr<Unk_UISwfEntity_25> p2,void* 
  Unk_RewardActor* actor=m_avatar->vfunc_24();if(!actor)return;
  m_avatar->vfunc_28(p1,p2,p3,p4);
  Unk_RewardCameraData data;data.FUN_141b48530();data.f1c=300.0f;
- data.target+=actor->vfunc_18();data.eye+=data.target;m_avatar->FUN_1418b9bc0()->vfunc_13(data);
+ data.target+=actor->vfunc_18();data.eye+=data.target;reinterpret_cast<Unk_RewardCamera*>(reinterpret_cast<UIAvatarBase*>(m_avatar.operator->())->GetView().operator->())->vfunc_13(data);
  switch(m_type) {case 1:case 4:
  if(m_win)m_avatar->FUN_1418bc790(14,85);
  else if(reinterpret_cast<Unk_RewardIntArray*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->FUN_140191110()>0) {
@@ -486,18 +398,18 @@ MS2_REPLACE_METHOD(0x140E220F0, UIDungeonRewardDialog, vfunc_17, 47, 0xFB4D1030)
 
 // @0x140e22130
 void UIDungeonRewardDialog::OnPacket(CInPacket& packet) {
- if(FUN_141924630()) vfunc_68(); FUN_140e25610();
- int type=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_1();switch(type) {case 0:FUN_140e22210(packet);break;case 1:FUN_140e225a0(packet);break;case 2:FUN_140e22650(packet);break;case 3:FUN_140e226b0(packet);break;}
+ if(FUN_141924630()) vfunc_68(); ResetState();
+ int type=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_1();switch(type) {case 0:FUN_140e22210(packet);break;case 1:OnRoundPacket(packet);break;case 2:FUN_140e22650(packet);break;case 3:FUN_140e226b0(packet);break;}
 }
 MS2_REPLACE_METHOD(0x140E22130, UIDungeonRewardDialog, OnPacket, 207, 0xFEDD4A03);
 
 // @0x140e225a0
-void UIDungeonRewardDialog::FUN_140e225a0(CInPacket& packet) {
+void UIDungeonRewardDialog::OnRoundPacket(CInPacket& packet) {
  m_type=2; m_round=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
  m_stage=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
  m_1e8.FUN_14026c900(packet); FUN_141924680();
 }
-MS2_REPLACE_METHOD(0x140E225A0, UIDungeonRewardDialog, FUN_140e225a0, 158, 0x20BABF9A);
+MS2_REPLACE_METHOD(0x140E225A0, UIDungeonRewardDialog, OnRoundPacket, 158, 0x20BABF9A);
 
 // @0x140e22650
 void UIDungeonRewardDialog::FUN_140e22650(CInPacket& packet) { m_type=3;m_1e8.FUN_14026c900(packet);FUN_140e22820();FUN_140e25050(); }
@@ -511,12 +423,12 @@ void UIDungeonRewardDialog::FUN_140e226b0(CInPacket& packet) {
 MS2_REPLACE_METHOD(0x140E226B0, UIDungeonRewardDialog, FUN_140e226b0, 129, 0xC00E4923);
 
 // @0x140e22740
-void UIDungeonRewardDialog::FUN_140e22740(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; RequestClose(); }
-MS2_REPLACE_METHOD(0x140E22740, UIDungeonRewardDialog, FUN_140e22740, 57, 0x917EAC9F);
+void UIDungeonRewardDialog::OnCloseButton(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; RequestClose(); }
+MS2_REPLACE_METHOD(0x140E22740, UIDungeonRewardDialog, OnCloseButton, 57, 0x917EAC9F);
 
 // @0x140e22780
-void UIDungeonRewardDialog::FUN_140e22780(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;FUN_1409670d0()->SendPartyMode3();SendDungeonReward(); }
-MS2_REPLACE_METHOD(0x140E22780, UIDungeonRewardDialog, FUN_140e22780, 88, 0x89DB46B2);
+void UIDungeonRewardDialog::OnPartyLeaveButton(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;FUN_1409670d0()->SendPartyMode3();SendDungeonReward(); }
+MS2_REPLACE_METHOD(0x140E22780, UIDungeonRewardDialog, OnPartyLeaveButton, 88, 0x89DB46B2);
 
 // @0x140e227e0
 int UIDungeonRewardDialog::vfunc_o178_1(void* avatar) { if(!avatar)return 0;LoadRenderTarget();return 1; }
@@ -536,59 +448,59 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  int rank=mission->FUN_140c9cff0();
  {
  CString rankName=FUN_14031c9d0(rank);
- Unk_RewardPtr<Unk_RewardClip> gauge=m_1a0->FUN_1409b4560("m_rankGauge");
+ MS2Ptr<ASMovieClip> gauge=m_1a0->FUN_1409b4560("m_rankGauge");
  if(gauge) {
   const int fullWidth=0x126;
   float ratio=(float)cur/(float)max;
   if(ratio<0.0f)ratio=0.0f;
   if(1.0f<ratio)ratio=1.0f;
   int width=(int)(294.0f*ratio);
-  Unk_RewardPtr<Unk_RewardClip> mask=gauge->FUN_1409b4560("m_mask");
+  MS2Ptr<ASMovieClip> mask=gauge->FUN_1409b4560("m_mask");
   if(mask) mask->FUN_1422c0e20(width);
-  Unk_RewardPtr<Unk_RewardClip> eff=gauge->FUN_1409b4560("m_eff");
+  MS2Ptr<ASMovieClip> eff=gauge->FUN_1409b4560("m_eff");
   if(eff) {
    float base=(float)width;
    eff->FUN_1422c0420((base+mask->FUN_1422c10a0())-10.0f);
   }
  }
- Unk_RewardPtr<Unk_RewardClip> movie=m_1a0->FUN_1409b4560("m_rankMovie");
- Unk_RewardPtr<Unk_RewardClip> rankClip=movie->FUN_1409b4560("m_rank");
- Unk_RewardPtr<Unk_RewardClip> rankEffect=movie->FUN_1409b4560("m_rankEffect");
+ MS2Ptr<ASMovieClip> movie=m_1a0->FUN_1409b4560("m_rankMovie");
+ MS2Ptr<ASMovieClip> rankClip=movie->FUN_1409b4560("m_rank");
+ MS2Ptr<ASMovieClip> rankEffect=movie->FUN_1409b4560("m_rankEffect");
  rankClip->vfunc_15(rankName);
  rankEffect->vfunc_15(rankName);
- Unk_RewardPtr<Unk_RewardClip> s1=movie->FUN_1409b4560("m_RankSEffect1");
- Unk_RewardPtr<Unk_RewardClip> s2=movie->FUN_1409b4560("m_RankSEffect2");
+ MS2Ptr<ASMovieClip> s1=movie->FUN_1409b4560("m_RankSEffect1");
+ MS2Ptr<ASMovieClip> s2=movie->FUN_1409b4560("m_RankSEffect2");
  if(s1.get()&&s2.get()) {
   bool show=rank>=4;
   s1->vfunc_4(show);
   s2->vfunc_4(show);
  }
- Unk_RewardPtr<Unk_RewardClip> sa=movie->FUN_1409b4560("m_rankSAEffect");
+ MS2Ptr<ASMovieClip> sa=movie->FUN_1409b4560("m_rankSAEffect");
  if(sa) {
   bool show=rank>=3;
   sa->vfunc_4(show);
  }
- Unk_RewardPtr<Unk_RewardClip> rec=movie->FUN_1409b4560("m_effNewRecord");
+ MS2Ptr<ASMovieClip> rec=movie->FUN_1409b4560("m_effNewRecord");
  if(rec) {
   bool show=m_294<m_298;
   rec->vfunc_4(show);
  }
- Unk_RewardPtr<Unk_RewardText> total=m_1a0->FUN_1409b4620("m_missionScoreTotal");
+ MS2Ptr<ASTextField> total=m_1a0->FUN_1409b4620("m_missionScoreTotal");
  if(total) total->FUN_1422c4cd0(StringFormat(L"{0}/{1}",cur,max));
  }
  FUN_140e25dc0(entries.FUN_140c9f760());
  for(size_t i=0;i<m_labels.FUN_140bd0940();i++) {
-  Unk_RewardPtr<Unk_RewardClip> label=m_labels.FUN_140bcc370(i);
+  MS2Ptr<ASMovieClip> label=m_labels.FUN_140bcc370(i);
   if(label==0)continue;
   if(i>=entries.FUN_140c9f760()) {label->vfunc_4(false);continue;}
-  Unk_RewardPtr<Unk_RewardText> name=label->FUN_1409b4620("m_missionName");
-  Unk_RewardPtr<Unk_RewardText> score=label->FUN_1409b4620("m_missionScore");
+  MS2Ptr<ASTextField> name=label->FUN_1409b4620("m_missionName");
+  MS2Ptr<ASTextField> score=label->FUN_1409b4620("m_missionScore");
   if(name==0||score==0)continue;
   Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
   if(entry==0)continue;
   name->FUN_1422c4cd0(entry->GetName());
-  short a=entry->FUN_140b1e030();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
-  short b=entry->FUN_140b1e010();
+  short a=entry->GetMaxScore();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
+  short b=entry->GetScore();
   score->FUN_1422c4cd0(StringFormat(L"{0}/{1}",b,a));
  }
 }
@@ -596,9 +508,9 @@ MS2_REPLACE_METHOD(0x140E24060, UIDungeonRewardDialog, FUN_140e24060, 3047, 0x98
 
 // @0x140e24c50
 void UIDungeonRewardDialog::FUN_140e24c50(bool show) {
- Unk_RewardPtr<Unk_RewardClip> avatar=FUN_140ba7930("m_rewardAvatar");
- Unk_RewardPtr<Unk_RewardClip> reward=FUN_140ba7930("m_rewardAni");
- Unk_RewardPtr<Unk_RewardClip> rank=FUN_140ba7930("m_rankAni");
+ MS2Ptr<ASMovieClip> avatar=FUN_140ba7930("m_rewardAvatar");
+ MS2Ptr<ASMovieClip> reward=FUN_140ba7930("m_rewardAni");
+ MS2Ptr<ASMovieClip> rank=FUN_140ba7930("m_rankAni");
  if(avatar==0||reward==0||rank==0)return;
  if(show) {rank->vfunc_4(true);avatar->FUN_1422bffe0(484,242);reward->FUN_1422bffe0(896,242);rank->FUN_1422bffe0(1516,242);}
  else {rank->vfunc_4(false);avatar->FUN_1422bffe0(714,242);reward->FUN_1422bffe0(1126,242);}
@@ -606,12 +518,12 @@ void UIDungeonRewardDialog::FUN_140e24c50(bool show) {
 MS2_REPLACE_METHOD(0x140E24C50, UIDungeonRewardDialog, FUN_140e24c50, 547, 0x1EAF7A1A);
 
 // @0x140e24e80
-void UIDungeonRewardDialog::FUN_140e24e80() { if(m_type!=2)return;if(m_stage==1)FUN_140e24fc0();else FUN_140e24ed0(); }
-MS2_REPLACE_METHOD(0x140E24E80, UIDungeonRewardDialog, FUN_140e24e80, 66, 0x3D1638AF);
+void UIDungeonRewardDialog::UpdateMinigameStage() { if(m_type!=2)return;if(m_stage==1)FUN_140e24fc0();else SetMinigameRound(); }
+MS2_REPLACE_METHOD(0x140E24E80, UIDungeonRewardDialog, UpdateMinigameStage, 66, 0x3D1638AF);
 
 // @0x140e24ed0
-void UIDungeonRewardDialog::FUN_140e24ed0() { if(m_190==0)return;m_190->vfunc_15("_minigame_stage"); reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_1409ba0d0("setRound",m_round,m_stage); }
-MS2_REPLACE_METHOD(0x140E24ED0, UIDungeonRewardDialog, FUN_140e24ed0, 221, 0x65C5AAE8);
+void UIDungeonRewardDialog::SetMinigameRound() { if(m_190==0)return;m_190->vfunc_15("_minigame_stage"); reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_1409ba0d0("setRound",m_round,m_stage); }
+MS2_REPLACE_METHOD(0x140E24ED0, UIDungeonRewardDialog, SetMinigameRound, 221, 0x65C5AAE8);
 
 // @0x140e24fc0
 void UIDungeonRewardDialog::FUN_140e24fc0() { if(m_190==0)return;m_190->vfunc_15("_minigame"); }
@@ -636,7 +548,7 @@ void UIDungeonRewardDialog::CreateAvatar() {
 MS2_REPLACE_METHOD(0x140E25420, UIDungeonRewardDialog, CreateAvatar, 281, 0x730F075B);
 
 // @0x140e25540
-void UIDungeonRewardDialog::LoadRenderTarget() { if(m_180.get())m_180->FUN_140e262c0("loadRenderTarget",""); }
+void UIDungeonRewardDialog::LoadRenderTarget() { if(m_180.get())reinterpret_cast<Unk_RewardClip*>(m_180.operator->())->FUN_140e262c0("loadRenderTarget",""); }
 MS2_REPLACE_METHOD(0x140E25540, UIDungeonRewardDialog, LoadRenderTarget, 94, 0x191710D4);
 
 // @0x140e255b0
@@ -644,15 +556,15 @@ void UIDungeonRewardDialog::UnloadRenderTarget() { if(m_180.get())m_180->Invoke(
 MS2_REPLACE_METHOD(0x140E255B0, UIDungeonRewardDialog, UnloadRenderTarget, 87, 0xC69DB589);
 
 // @0x140e25610
-void UIDungeonRewardDialog::FUN_140e25610() {
+void UIDungeonRewardDialog::ResetState() {
  m_avatar=0; m_1e8.Clear();m_228.Clear();m_tip.Empty();UnloadRenderTarget();
  m_180=0;m_190=0;m_1a0=0;m_1b0=0;m_1c0=0;m_1d0=0;m_type=0;m_room=0;m_party=false;
  m_278=0;m_294=0;m_298=0;m_win=true;m_round=0;m_stage=0;m_restore=false;
 }
-MS2_REPLACE_METHOD(0x140E25610, UIDungeonRewardDialog, FUN_140e25610, 376, 0x95F7B099);
+MS2_REPLACE_METHOD(0x140E25610, UIDungeonRewardDialog, ResetState, 376, 0x95F7B099);
 
 // @0x140e25790
-void UIDungeonRewardDialog::RequestClose() { if((m_room.get()?true:false)&&m_room->m_leave)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
+void UIDungeonRewardDialog::RequestClose() { if((m_room.get()?true:false)&&m_room->m_isLeaveAfterCloseReward)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
 MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, RequestClose, 155, 0xBA656490);
 
 // @0x140e25ff0
@@ -664,7 +576,7 @@ void UIDungeonRewardDialog::FUN_140e22210(CInPacket& packet) {
  m_type=1; m_tip.Empty();
  m_win=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_0();
  int roomId=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
- m_room=FUN_14031c2a0()->FUN_1403206b0(roomId);
+ m_room=((DungeonRoomTable*)FUN_14031c2a0())->GetRoom(roomId);
  m_party=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_0();
  m_278=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
  m_294=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
@@ -689,10 +601,10 @@ MS2_REPLACE_METHOD(0x140E22210, UIDungeonRewardDialog, FUN_140e22210, 896, 0x03E
 void UIDungeonRewardDialog::FUN_140e22820() {
  if(m_190==0) return;
  {
-  Unk_RewardPtr<Unk_RewardText> meso=m_190->FUN_140d01e20("m_mesoText");
-  Unk_RewardPtr<Unk_RewardText> exp=m_190->FUN_140d01e20("m_expText");
-  Unk_RewardPtr<Unk_RewardClip> bonus=m_190->FUN_1409b4560("m_bonusText");
-  Unk_RewardPtr<Unk_RewardClip> detail=m_190->FUN_1409b4560("m_bonusDetail");
+  MS2Ptr<ASTextField> meso=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140d01e20("m_mesoText");
+  MS2Ptr<ASTextField> exp=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140d01e20("m_expText");
+  MS2Ptr<ASMovieClip> bonus=m_190->FUN_1409b4560("m_bonusText");
+  MS2Ptr<ASMovieClip> detail=m_190->FUN_1409b4560("m_bonusDetail");
   if(meso.get()) meso->FUN_1422c4cd0(FUN_1409404f0(m_1e8.FUN_14026ccf0()));
   if(exp.get()) exp->FUN_1422c4cd0(FUN_14028dfa0<CStringW>(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0())));
   bool normal=false;
@@ -718,14 +630,14 @@ void UIDungeonRewardDialog::FUN_140e22d70() {
  {
   m_190->vfunc_15("_dungeon");
   {
-   if(Unk_RewardPtr<Unk_RewardClip> timeMovie=m_190->FUN_1409b4560("m_timeMovie")) {
+   if(MS2Ptr<ASMovieClip> timeMovie=m_190->FUN_1409b4560("m_timeMovie")) {
     int sec=m_278%60; int min=m_278/60;
     FUN_140cfee80((*timeMovie).FUN_1422bb890(),"textField",FUN_140811740(0x97e,min,sec));
    }
   }
   {
-   if(Unk_RewardPtr<Unk_RewardClip> guild=m_190->FUN_1409b4560("m_rewardGuild")) {
-    if((m_room.get()?true:false)&&m_room->m_1c==6) {
+   if(MS2Ptr<ASMovieClip> guild=m_190->FUN_1409b4560("m_rewardGuild")) {
+    if((m_room.get()?true:false)&&m_room->m_groupType==6) {
      guild->vfunc_3(1);
      FUN_140cfee80((*guild).FUN_1422bb890(),"m_guildFund",FUN_1409eb450(m_1e8.FUN_14026cd70(4)));
      FUN_140cfee80((*guild).FUN_1422bb890(),"m_guildExp",FUN_1409eb450(m_1e8.FUN_14026cd70(5)));
@@ -749,13 +661,13 @@ MS2_REPLACE_METHOD(0x140E22D70, UIDungeonRewardDialog, FUN_140e22d70, 2325, 0x9A
 void UIDungeonRewardDialog::FUN_140e23690() {
  if(m_190==0) return;
  {
-  Unk_RewardPtr<Unk_RewardText> meso=m_190->FUN_140d01e20("m_mesoText");
-  Unk_RewardPtr<Unk_RewardText> exp=m_190->FUN_140d01e20("m_expText");
+  MS2Ptr<ASTextField> meso=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140d01e20("m_mesoText");
+  MS2Ptr<ASTextField> exp=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140d01e20("m_expText");
   if(meso.get()) meso->FUN_1422c4cd0(FUN_1409404f0(m_1e8.FUN_14026ccf0()+m_228.FUN_14026ccf0()));
   if(exp.get()) exp->FUN_1422c4cd0(FUN_14028dfa0<CStringW>(L"s_format_exp",FUN_1409404f0(m_1e8.FUN_14026cbf0()+m_228.FUN_14026cbf0())));
   {
-   if(Unk_RewardPtr<Unk_RewardClip> guild=m_190->FUN_1409b4560("m_rewardGuild")) {
-    if((m_room.get()?true:false)&&m_room->m_1c==6) {
+   if(MS2Ptr<ASMovieClip> guild=m_190->FUN_1409b4560("m_rewardGuild")) {
+    if((m_room.get()?true:false)&&m_room->m_groupType==6) {
      guild->vfunc_3(1);
      FUN_140cfee80((*guild).FUN_1422bb890(),"m_guildFund",FUN_1409eb450(m_1e8.FUN_14026cd70(4)+m_228.FUN_14026cd70(4)));
      FUN_140cfee80((*guild).FUN_1422bb890(),"m_guildExp",FUN_1409eb450(m_1e8.FUN_14026cd70(5)+m_228.FUN_14026cd70(5)));
@@ -778,8 +690,8 @@ MS2_REPLACE_METHOD(0x140E23690, UIDungeonRewardDialog, FUN_140e23690, 1905, 0x65
 
 // @0x140e23e10
 void UIDungeonRewardDialog::FUN_140e23e10(bool both) {
- Unk_RewardPtr<Unk_RewardClip> mesoEff=m_190->FUN_140bc7450("m_mesoEffect");
- Unk_RewardPtr<Unk_RewardClip> expEff=m_190->FUN_140bc7450("m_expEffect");
+ MS2Ptr<ASMovieClip> mesoEff=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140bc7450("m_mesoEffect");
+ MS2Ptr<ASMovieClip> expEff=reinterpret_cast<Unk_RewardClip*>(m_190.operator->())->FUN_140bc7450("m_expEffect");
  bool showMeso=both&&m_228.FUN_14026ccf0()>0;
  bool showExp=both&&m_228.FUN_14026cbf0()>0;
  if(showMeso) {mesoEff->vfunc_4(true);mesoEff->vfunc_12(1);}
@@ -794,9 +706,9 @@ void UIDungeonRewardDialog::FUN_140e25170() {
  Unk_RewardPActor* actor=((Unk_RewardPActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
  if(!actor) return;
  if(m_180==0) return;
- Unk_RewardPtr<Unk_RewardClip> info=m_180->FUN_1409b4560("m_characterInfo");
+ MS2Ptr<ASMovieClip> info=m_180->FUN_1409b4560("m_characterInfo");
  if(info==0) return;
- Unk_RewardPtr<Unk_RewardClip> charInfo=info->FUN_1409b4560("m_charInfo");
+ MS2Ptr<ASMovieClip> charInfo=info->FUN_1409b4560("m_charInfo");
  if(charInfo.get()) {
   FUN_140cfee80((*charInfo).FUN_1422bb890(),"m_charName",actor->vfunc_77());
   Unk_ClosingJob job=actor->FUN_141654730();
@@ -811,7 +723,7 @@ CStringW UIDungeonRewardDialog::FUN_140e25840(int kind) {
  switch(kind) {
  case 0: return L"";
  case 1:
-  if(m_room.get()) { CStringW count=FUN_140e14d70(m_room->FUN_14031ddf0()); return FUN_14028dfa0<CStringW>(L"s_dungeon_reward_dungeon_reward_count",count); }
+  if(m_room.get()) { CStringW count=FUN_140e14d70(m_room->GetRewardRoomID()); return FUN_14028dfa0<CStringW>(L"s_dungeon_reward_dungeon_reward_count",count); }
  case 2: return GetStringCommonByKey(L"s_dungeon_reward_bonus_event");
  case 3: return GetStringCommonByKey(L"s_dungeon_reward_mission_rank");
  case 4: return GetStringCommonByKey(L"s_dungeon_reward_dungeon_helper");
@@ -847,7 +759,7 @@ void UIDungeonRewardDialog::FUN_140e25dc0(size_t count) {
  const int top=0x115; const int step=0x24;
  CString name="UIDungeonRewardDialog_MissionLabel";
  for(size_t i=m_labels.FUN_140bd0940();i<count;i++) {
-  Unk_RewardPtr<Unk_RewardClip> label(new Unk_RewardLabelClip(name,2));
+  MS2Ptr<ASMovieClip> label(new ASMovieClip(name,2));
   m_1a0->FUN_1422c6900((*label).FUN_1422bb890());
   label->FUN_1422bffe0(0,(int)i*step+top);
   m_labels.FUN_140bd0800(label);

@@ -87,12 +87,11 @@ public:
 };
 // The actor's move-key state (PCBase::FUN_14166d240).
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_LadderMove
-{
+class Unk_PCMove { public: bool FUN_141682fe0(int); bool FUN_141683100(int);  public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_LadderMove : public Unk_PCMove {
 public:
-    bool FUN_141682fe0(int nKey);
-    bool FUN_141683100(int nKey);
+
+
 };
 
 // @0x1417d79e0
@@ -179,7 +178,7 @@ void StateLadder::vfunc_4(StateData* pData)
         kRot.z = kRot.z + 180.0f;
         FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
         pPC->FUN_14166d970(kRot);
-        kBase = kBase + (-m_pOwner->FUN_14123cc20()) * fDist;
+        kBase = kBase + (-m_pOwner->GetForwardDirection()) * fDist;
         kBase.z = FUN_1417d9880(pLadder);
         NiPoint3 kPos = pPC->vfunc_18();
         efd::Point3 kMid(kBase.x, kBase.y, kPos.z);
@@ -582,7 +581,7 @@ float StateLadder::FUN_1417d9880(egf::Entity* pLadder)
 // @0x1417d99e0
 efd::Point3 StateLadder::FUN_1417d99e0()
 {
-    efd::Point3 kFace = m_pOwner->FUN_14123cc20();
+    efd::Point3 kFace = m_pOwner->GetForwardDirection();
     NiPoint3 kPos = m_pOwner->vfunc_18();
     kPos += kFace * 75.0f;
     kPos.z = kPos.z + 500.0f;

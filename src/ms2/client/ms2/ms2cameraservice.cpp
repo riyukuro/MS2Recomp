@@ -47,13 +47,13 @@ efd::SyncResult MS2CameraService::OnPreInit(efd::IDependencyRegistrar* pDependen
 MS2_REPLACE_METHOD(0x1414af410, MS2CameraService, OnPreInit, 92, 0x25AB48BB);
 
 // @0x1414af480
-void MS2CameraService::FUN_1414af480(ecr::CameraData* pCamera)
+void MS2CameraService::UpdateCameraFromMgr(ecr::CameraData* pCamera)
 {
     egf::Entity* pEntity = ((class CameraMgr*)(class Unk_GameInstance*)(reinterpret_cast<Unk_GameInstance*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140af7f70();
     if (pEntity && pCamera)
         UpdateCamera(pCamera, pEntity);
 }
-MS2_REPLACE_METHOD(0x1414af480, MS2CameraService, FUN_1414af480, 73, 0x27A5C709);
+MS2_REPLACE_METHOD(0x1414af480, MS2CameraService, UpdateCameraFromMgr, 73, 0x27A5C709);
 
 // @0x1414af4d0
 efd::AsyncResult MS2CameraService::OnTick()

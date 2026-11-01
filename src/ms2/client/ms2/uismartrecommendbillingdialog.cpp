@@ -58,22 +58,9 @@ public:
 };
 extern Unk_RecommendCache* DAT_143ad8330;
 
-// The UI by id, cast to its class.
-class Unk_SrUIRef
-{
-public:
-    ~Unk_SrUIRef();                                             // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* m_unk_00;
-    UIObject* m_p;
-};
-MS2_CHECK_SIZE(Unk_SrUIRef, 0x10);
-
 class Unk_SrUIMgr
 {
 public:
-    Unk_SrUIRef FUN_141adcea0(int nUiId);                       // the ui by id
     void FUN_141adc530(int nUiId);                              // close
 };
 
@@ -334,11 +321,11 @@ int UISmartRecommendNotifyDialog::vfunc_13()
 // @0x14134e160
 static UISmartRecommendBillingDialog* FUN_14134e160(int nUiId)
 {
-    if (reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        Unk_SrUIRef ref = reinterpret_cast<Unk_SrUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISmartRecommendBillingDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
+        if (ref.get() != 0)
+            return dynamic_cast<UISmartRecommendBillingDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

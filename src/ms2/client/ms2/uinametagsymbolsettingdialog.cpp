@@ -90,7 +90,6 @@ void FUN_1422ba6e0();
 class Unk_NtStrings : public CStringTable
 {
 public:
-    CStringW FUN_141812290(int nId, short nArg, CString strKey);    // tooltip string
 };
 void FUN_140710590(COutPacket& packet);
 
@@ -152,7 +151,7 @@ void UINameTagSymbolSettingDialog::OnLoadComplete()
             row.FUN_1407cbb20("desc", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x28, nId));
             if (info.operator->()->m_34 != 0)
             {
-                row.FUN_1407cbb20("info", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(info.operator->()->m_34,
+                row.FUN_1407cbb20("info", reinterpret_cast<CStringTable*>(reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance()))->FUN_141812290(info.operator->()->m_34,
                                                                        info.operator->()->m_38,
                                                                        CString("tooltipDescription")));
             }

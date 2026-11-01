@@ -53,7 +53,7 @@ errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const 
 }
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 : public Unk_XmlNode {};
       // the content switches
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);

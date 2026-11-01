@@ -147,7 +147,7 @@ bool CloneCube::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         if (FUN_14123c410())
         {
             if (m_spUgcMesh.get())
-                m_spUgcMesh->FUN_141426140();
+                m_spUgcMesh->Clear();
             FUN_14123bc20(strPath);
             m_bReloading = true;
             if (m_pListener)

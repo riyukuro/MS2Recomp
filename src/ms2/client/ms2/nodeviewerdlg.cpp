@@ -37,7 +37,9 @@ public:
     class Unk_CameraTargetEntity* FUN_140a38d60();
 };
 void* FUN_14123c410(void* pEntity);
-void* FUN_141b6efc0(void* pEntity);                                 // scene root of an entity
+namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
+class NiAVObject;
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                 // scene root of an entity
 void* FUN_1409475d0(Unk_NodePtr* p);
 void* FUN_1409475f0(Unk_NodePtr* p);
 void FUN_1409f76f0(Unk_NodePtr* p, void* pNode);
@@ -115,7 +117,7 @@ void CNodeViewerDlg::FUN_140c7f0f0()
     void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pRoot = (Unk_NvNode*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(FUN_14123c410(pEntity)))));
+        pRoot = (Unk_NvNode*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(pEntity))))));
         if (pRoot != 0)
         {
             Unk_NvName kName((const char*)m_strNode);
@@ -247,7 +249,7 @@ void CNodeViewerDlg::FUN_140c7f770()
     void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pNode = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(FUN_14123c410(pEntity)))));
+        pNode = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(pEntity))))));
         if (pNode != 0)
         {
             FUN_141858b50(m_pTree, pNode);

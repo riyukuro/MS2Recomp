@@ -5,6 +5,7 @@
 // (src/ms2/placeholder/uistatuseventlistener.h). Header name assumed from the unit path.
 #pragma once
 #include <afx.h>
+#include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
@@ -12,21 +13,13 @@
 #include "ms2/placeholder/delegate.h"
 
 class CMsgBoxData;
-class Unk_StInput;
-class Unk_StExpandClip;
+class ASTextInput;
 class Unk_StItemHub;
 class Unk_StBagBind;
 class Unk_StSlotBag;
-class Unk_StCandSet;
 
-// The 16-byte handle of the search input ("m_inputSearch"): an MS2Ptr whose operations live in the exe (0x140bbf710 /
-// 0x140bbfdd0 / 0x140bc0500 / 0x140bc0550).
-struct Unk_StInputRef
-{
-    Unk_StInputRef();                                           // 0x140bbf710
-    ~Unk_StInputRef();                                          // 0x140bbfdd0
-    void* m_0; void* m_8;
-};
+// The item names of a search (10 per block).
+typedef ATL::CAtlList<CStringW, ATL::CElementTraitsBase<CStringW> > UIStoreNameList;
 
 class UIStoreDialog : public UIDialog, public UIStatusEventListener, public UIItemEventListener
 {
@@ -66,7 +59,6 @@ public:
     virtual void vfunc_il13();                                  // o180 13 0x141b10980 everything changed
 
     // ---- non-virtual members, sorted by address ----
-    MS2Ptr<Unk_StExpandClip> FUN_140e6d820(const CString& strName);   // the "m_expand" clip (GetChild)
     void FUN_141b109a0();                                       // the slots were expanded: play "m_expandEff"
     int FUN_141b10af0();                                        // may be used (no talk running, not closed)
     CStringW FUN_141b10b50();                                   // the search text
@@ -82,7 +74,7 @@ public:
     void FUN_141b11520();                                       // expand the slots (or tell why not)
     void FUN_141b11590();                                       // refresh the "m_expand" text
     void FUN_141b116d0(CStringW strText);                       // scroll to / mark the item matching the text
-    void FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut);  // collect the item names containing the text
+    void FUN_141b11a10(CStringW strText, UIStoreNameList* pOut);  // collect the item names containing the text
     bool FUN_141b11ba0(int nButton, const CMsgBoxData& box);    // result callback: focus the search input
     bool FUN_141b11c90(int nButton, const CMsgBoxData& box);    // result callback: expand
 
@@ -93,7 +85,7 @@ private:
     int m_194;                                                  // +0x194 the inventory was open when this opened
     int m_198;                                                  // +0x198 pending refresh bits (2 = expand text, 4 = bag)
     CStringW m_1a0;                                             // +0x1a0 the search text
-    Unk_StInputRef m_1a8;                                       // +0x1a8 the search input
+    MS2Ptr<ASTextInput> m_1a8;                                       // +0x1a8 the search input
 };
 MS2_CHECK_SIZE(UIStoreDialog, 0x1b8);
 MS2_CHECK_OFFSET(UIStoreDialog, m_188, 0x188);

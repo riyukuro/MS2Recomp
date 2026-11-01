@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/astextinput.h"
+#include "ms2/placeholder/ascorelist.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -52,9 +53,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-    void FUN_1422dfc10();                                       // clear the items
-    void FUN_1422dfc70(ASObj& obj);                             // add an item
-    void FUN_1422df690(int n);                                  // select an item
 };
 class Unk_QoText : public ASTextInput
 {
@@ -110,7 +108,7 @@ void UIQuizOXCreateDialog::OnLoadComplete()
     if (FUN_140bc03e0(&spCombo, 0) != 0)
         return;
     {
-        FUN_140bc0530(&spCombo)->FUN_1422dfc10();
+        reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->FUN_1422dfc10();
         std::vector<int>& range = m_fees;
         std::vector<int>::const_iterator itEnd = range.end();
         for (std::vector<int>::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -118,9 +116,9 @@ void UIQuizOXCreateDialog::OnLoadComplete()
             ASObj obj(2);
             obj.FUN_1407cbb20("label", FUN_140763e10(nFee));
             obj.FUN_1407cb9c0("data", nFee);
-            FUN_140bc0530(&spCombo)->FUN_1422dfc70(obj);
+            reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->FUN_1422dfc70(obj);
         }
-        FUN_140bc0530(&spCombo)->FUN_1422df690(0);
+        reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->SetSelectedIndex(0);
         FUN_140bc0530(&spCombo)->vfunc_24(true);
         Unk_QoTextRef spText = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140e35bd0("m_textHostFee");
         if (((void*)((MS2Ptr<ASTextInput>*)(void*)(&spText))->get()) != 0) {

@@ -24,10 +24,12 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 // The input state (FUN_14025e7c0).
 CInputKeyHandler* FUN_14025e7c0();
 
-class Unk_BuffContainer
+class Unk_BuffContainer;
+// C3: the movement controller (Unk_PCMove, unit_141682f80) behind FUN_14166d240
+class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nBuffId);
+    bool FUN_141682fe0(int nKey);
 };
 
 class Unk_LocalPlayer
@@ -222,9 +224,9 @@ void CTarget2DCameraMode::vfunc_9()
     else if (FUN_14025e7c0()->FUN_14116d950(8, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
         ptMove.y = 1.0f;
     Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
+    if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
-    else if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300009))
+    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
     if (FUN_14025e7c0()->FUN_14116d9c0(0x14, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);

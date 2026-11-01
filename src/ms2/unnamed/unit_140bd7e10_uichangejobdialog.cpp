@@ -16,6 +16,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -111,7 +112,6 @@ public:
 
 // The local player: the world service hands out the actor; a few members used here.
 int FUN_141654730(PCBase* pPC);                                 // the player's job code
-int FUN_141654700(PCBase* pPC);                                 // the player's job
 class Unk_CjQuestMgr : public CQuestManager { };
 Unk_CjQuestMgr* FUN_141523ba0(PCBase* pPC);
 
@@ -224,7 +224,7 @@ int UIChangeJobDialog::FUN_140bd88e0()
     PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (CjTable()->FUN_1401d6ce0(FUN_141654700(pPC), FUN_141654730(pPC), (unsigned short)pPC->vfunc_78()) == 0)
+    if (CjTable()->FUN_1401d6ce0(reinterpret_cast<PC*>(pPC)->FUN_141654700(), FUN_141654730(pPC), (unsigned short)pPC->vfunc_78()) == 0)
         return 0;
     int nNext = CjTable()->FUN_1401d6d70(FUN_141654730(pPC));
     int nState = FUN_141523ba0(pPC)->GetQuestState(nNext);

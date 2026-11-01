@@ -32,6 +32,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/fittingdollpc.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -60,10 +61,6 @@ class ASDialog : public ASDisplayObject {};
 class Unk_UhpHome : public CubeMapInformationService
 {
 public:
-    bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);   // installed objects of a kind
-    __int64 FUN_1410d4fa0();                                    // the housing points
-    __int64 FUN_1410d50c0();                                    // the housing point maximum
-    unsigned int FUN_1410d5550(int nCategory);                  // installed interiors of a cube category
 };
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
@@ -85,9 +82,6 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-__int64 FUN_141656ad0(Unk_UhpPc* pPc);                          // the character id
-int FUN_1416595d0(Unk_UhpPc* pPc);
-int FUN_141659690(Unk_UhpPc* pPc);
 
 // The UI service: dialogs by UI type.
 class Unk_UhpUIService
@@ -170,7 +164,7 @@ int UIUGCHousingPointDialog::vfunc_il1()
     Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    if (FUN_141659690(pPc))
+    if (reinterpret_cast<PC*>(pPc)->FUN_141659690())
         return 0;
     return 1;
 }
@@ -266,8 +260,8 @@ void UIUGCHousingPointDialog::RefreshInfo()
     bool bReceive = CanReceiveReward();
     unsigned short nGrade = DAT_143ab291c;
     unsigned short nNext = nGrade + 1;
-    __int64 nPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
-    __int64 nMaxPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d50c0();
+    __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
+    __int64 nMaxPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d50c0();
     bool bMaster = ((class CMasteryInteriorTable*)FUN_140933200())->FUN_140ebb020() < nNext ? true : false;
     ASObj obj(2);
     obj.FUN_1409c48f0("interiorLevel", nGrade);
@@ -308,7 +302,7 @@ void UIUGCHousingPointDialog::RefreshList()
         CStringW strPoint;
         strPoint.Format(L"+%d", spInterior->m_nBonusPoint);
         unsigned int nMax;
-        unsigned int nCount = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5550(nCategory);
+        unsigned int nCount = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d5550(nCategory);
         nMax = spInterior->m_nBonusCount;
         CStringW strCount;
         strCount.Format(L"%d/%d", nCount, nMax);
@@ -346,9 +340,9 @@ void UIUGCHousingPointDialog::vfunc_84()
         bShrink = false;
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
-    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 1, &nNpcCount, &nNpcLimit);
-    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 2, &nPortalCount, &nPortalLimit);
-    ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(FUN_141656ad0(pPc), 4, &nInstallCount, &nInstallLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 1, &nNpcCount, &nNpcLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 2, &nPortalCount, &nPortalLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 4, &nInstallCount, &nInstallLimit);
     CStringW strPlace;
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x701, nNpcCount, nNpcLimit), L"\n"));
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x702, nPortalCount, nPortalLimit), L"\n"));
@@ -383,7 +377,7 @@ bool UIUGCHousingPointDialog::IsInMyHome()
     Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    return FUN_1416595d0(pPc) ? true : false;
+    return reinterpret_cast<PC*>(pPc)->FUN_1416595d0() ? true : false;
 }
 MS2_REPLACE_METHOD(0x140FAF060, UIUGCHousingPointDialog, IsInMyHome, 75, 0x05CE87F6);
 
@@ -394,7 +388,7 @@ bool UIUGCHousingPointDialog::CanReceiveReward()
         return false;
     if (((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
         return false;
-    __int64 nPoint = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
+    __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
     unsigned int nBox = ((class CMasteryInteriorTable*)FUN_140933200())->GetDropBox(nPoint);
     if (nBox > 0)
         return true;

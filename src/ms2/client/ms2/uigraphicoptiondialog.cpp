@@ -21,6 +21,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/ascorelist.h"
+#include <NiRenderStep.h>
 
 // ---- unit-local stand-ins for classes whose units are not recovered yet ----
 
@@ -34,8 +36,6 @@ public:
 class Unk_GoCombo : public ASDisplayObject
 {
 public:
-    void FUN_1422df690(int nIndex);                             // select an entry
-    void FUN_1422dfce0(const CStringW& strEntry);               // add an entry
 };
 
 // The graphics option block (reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()): HDR, shimmer, mirror flags and the shadow quality.
@@ -82,7 +82,6 @@ class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-unsigned char FUN_1412642d0(void* pStep);
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
 extern bool DAT_143ae53c0;                          // "any shimmer object this frame" flag
 CStringW GetStringCommon(int nStringId);
@@ -145,7 +144,7 @@ int UIGraphicOptionDialog::vfunc_5()
     if (MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670("m_mirror"))
         spMirror->FUN_1422ce090(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bMirror);
     if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow"))
-        spShadow->FUN_1422df690(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nShadow);
+        reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->SetSelectedIndex(reinterpret_cast<Unk_GoOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nShadow);
     return UIDialog::vfunc_5();
 }
 MS2_REPLACE_METHOD(0x141946d20, UIGraphicOptionDialog, vfunc_5, 718, 0x445E1ECF);
@@ -156,11 +155,11 @@ void UIGraphicOptionDialog::OnLoadInit()
     UIDialog::OnLoadInit();
     {
         if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow")) {
-            spShadow->FUN_1422dfce0(GetStringCommon(0x311));
-            spShadow->FUN_1422dfce0(GetStringCommon(0x312));
-            spShadow->FUN_1422dfce0(GetStringCommon(0x313));
-            spShadow->FUN_1422dfce0(GetStringCommon(0x314));
-            spShadow->FUN_1422dfce0(GetStringCommon(0x315));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x311));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x312));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x313));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x314));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x315));
         }
     }
     if (m_30.get() != 0) {
@@ -227,7 +226,7 @@ void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
             ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(6, bShimmer != 0);
         if (bShimmer == 0) {
             PostProcessEffect* pStep = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(0xc);
-            if (FUN_1412642d0(pStep) != 0)
+            if (reinterpret_cast<NiRenderStep*>(pStep)->GetActive() != 0)
                 ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(0xc, true);
             bool bFlag = false;
             FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);

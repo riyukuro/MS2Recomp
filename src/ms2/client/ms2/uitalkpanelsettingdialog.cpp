@@ -23,6 +23,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/asslider.h"
+#include "ms2/placeholder/unk_blocklist.h"
 
 // ---- statics (init order: the shared header's sort type names, then the file's key input controller) ----
 
@@ -31,119 +33,26 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
-// The AS controls of the movie (slot 24 of the input is the one the dialog calls).
-class Unk_TpsControl : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8();
-    virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
-    virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
-    virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool b);
-};
-// "m_tab": the tab name input.
-class Unk_TpsInput : public Unk_TpsControl
-{
-public:
-    void FUN_1422e0a60(const CString& strText);             // set the text (narrow)
-    void FUN_1422e0ab0(const CStringW& strText);            // set the text
-    void FUN_1422e1500(int nBegin, int nEnd);               // select a range
-    int FUN_1422c76c0();                                    // has focus
-};
-// "m_entire": the "all tabs share one look" check.
-class Unk_TpsCheck : public AScript
-{
-public:
-    bool FUN_1422ce0e0();
-};
-// "m_sliderTransparent" / "m_sliderFontsize": the look sliders (float values).
-class Unk_TpsSlider : public AScript
-{
-public:
-    void FUN_1422ce5f0(float f);
-    float FUN_1422ce630();
-};
-// "m_damageShow" / "m_damageHide": the damage line radios.
-class Unk_TpsRadio : public AScript
-{
-public:
-    bool FUN_1422ce0e0();
-};
-// "m_apply": the apply button.
-class Unk_TpsButton : public ASMovieClip
-{
-public:
-    void FUN_1422c7730(int bEnabled);
-};
-// The root clip's child lookups by name (one COMDAT per wrapper class).
-class Unk_TpsRoot : public ASUIComponent
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140e28bc0(const CString& strName);
-};
+// "m_sliderTransparent" / "m_sliderFontsize": the look sliders; the radios; "m_apply".
+class Unk_HudSlider : public ASSlider {};
+class Unk_SdRadio : public ASButton {};
+class Unk_140acd6e0 : public ASUIComponent {};
 
-// The chat tab manager (Unk_MdState +0x40) and the chat window (+0x48).
-class Unk_TpsTabMgr
-{
-public:
-    virtual ~Unk_TpsTabMgr();
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4();                                                 // refresh the tabs
-    MessengerData::TalkTab* FUN_141a0e050();                                // the current tab
-    void FUN_141a0e350(const CStringW& strName);                            // make a tab current
-    void FUN_141a0e9f0(const CStringW& strOldName, const CStringW& strNewName);           // rename a tab
-    void FUN_141a0e990();                                                   // save the tabs
-};
-class Unk_TpsChat : public UIMessengerBrowser
-{
-public:
-    void FUN_141a25130(int nFontSize);
-    void FUN_141a25160(int nAlpha);
-};
-struct Unk_TpsState
+// The chat state of the messenger: the tab manager (+0x40) and the chat window (+0x48).
+struct Unk_MdState
 {
     char m_pad_00[0x38];
     int m_n38;                                                              // +0x38 2 = the tab view
-    Unk_TpsTabMgr* m_p40;                                                    // +0x40
-    Unk_TpsChat* m_p48;                                                      // +0x48
+    UIMessenger* m_p40;                                                     // +0x40
+    UIMessengerBrowser* m_p48;                                              // +0x48
     void* m_p50;                                                            // +0x50
     void FUN_141482e50();
 };
-MS2_CHECK_OFFSET(Unk_TpsState, m_n38, 0x38);
-MS2_CHECK_OFFSET(Unk_TpsState, m_p48, 0x48);
+MS2_CHECK_OFFSET(Unk_MdState, m_n38, 0x38);
+MS2_CHECK_OFFSET(Unk_MdState, m_p48, 0x48);
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
-// The platform request (the "OnKeyHandler" / "OnOk" / "eventApply" answers) and its value.
-class Unk_TpsRequest
-{
-public:
-    Unk_TpsRequest(int nId);                                                 // 0x1401baa00
-    Unk_TpsRequest(const void* pSource);                                     // 0x1401baaa0
-    ~Unk_TpsRequest();                                                       // 0x1401baaf0
-    void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    void FUN_1401badc0(bool bEnabled);
-    unsigned char FUN_1401bab90(CString strName, void* pOut);
-private:
-    void* m_pad[5];
-};
-struct Unk_TpsReqValue
-{
-    Unk_TpsReqValue();                                                          // 0x1401ba840
-    ~Unk_TpsReqValue();                                                         // 0x1401ba940
-    void* m_pad_00;
-    CStringW m_strText;                                                     // +0x08
-    void* m_pad_10;
-    int m_code;                                                             // +0x18
-    int m_pad_1c;
-};
-MS2_CHECK_SIZE(Unk_TpsReqValue, 0x20);
-
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 class Unk_TpsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CommonString* FUN_14025e7d0();
@@ -153,7 +62,7 @@ void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTag);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n);
-void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, int* pOut);
+void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned int* pOut);
 
 // The "global" switch (all tabs share one screen look) and the shared look (messengerdata.cpp's statics).
 extern int s_nGlobal;
@@ -185,15 +94,15 @@ void UITalkPanelSettingDialog::vfunc_69()
 {
     if (m_bApplied == 0)
     {
-        if (((struct Unk_TpsState*)FUN_141482e80())->m_n38 == 2)
+        if (FUN_141482e80()->m_n38 == 2)
         {
-            if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
+            if (FUN_141482e80()->m_p40 != 0)
             {
-                MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
+                MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
                 if (pTab != 0)
                 {
-                    ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e350(pTab->m_strName);
-                    ((struct Unk_TpsState*)FUN_141482e80())->m_p40->vfunc_4();
+                    FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
+                    FUN_141482e80()->m_p40->vfunc_4();
                 }
             }
         }
@@ -205,9 +114,9 @@ void UITalkPanelSettingDialog::vfunc_69()
 void UITalkPanelSettingDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((struct Unk_TpsState*)FUN_141482e80())->FUN_141482e50();
-    if (((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
-        ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25210(1);
+    FUN_141482e80()->FUN_141482e50();
+    if (FUN_141482e80()->m_p48 != 0)
+        FUN_141482e80()->m_p48->FUN_141a25210(1);
     m_spRoot = 0;
 }
 
@@ -219,12 +128,12 @@ void UITalkPanelSettingDialog::OnLoadComplete()
     if (m_spRoot == 0)
         return;
     m_bApplied = 0;
-    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
+    if (FUN_141482e80()->m_p40 != 0)
     {
-        MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
+        MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
         if (pTab != 0)
         {
-            if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+            if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
             {
                 spTab->FUN_1422e0ab0(pTab->m_strName);
                 spTab->FUN_1422e1500(0, pTab->m_strName.GetLength());
@@ -233,8 +142,8 @@ void UITalkPanelSettingDialog::OnLoadComplete()
             FUN_141b24ee0(&pTab->m_panel);
         }
     }
-    if (((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
-        ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25210(0);
+    if (FUN_141482e80()->m_p48 != 0)
+        FUN_141482e80()->m_p48->FUN_141a25210(0);
 }
 
 // @0x141b22970
@@ -244,19 +153,19 @@ int UITalkPanelSettingDialog::vfunc_13()
         return 1;
     if (((class Unk_TpsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
-        if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+        if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         {
             if (spTab->FUN_1422c76c0() != 0)
             {
-                Unk_TpsRequest request(0x4e62);
-                request.FUN_1401bac80("OnKeyHandler", FUN_141b23550(), 0);
-                request.FUN_1401badc0(true);
+                Unk_BlockList request(0x4e62);
+                request.Add("OnKeyHandler", FUN_141b23550(), false);
+                request.SetEnabled(true);
                 if (GetClientPlatform()->vfunc_37(&request) == 1)
                 {
                     if (FUN_141b236c0(FUN_141b23550()) == 1)
                     {
-                        if (MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply"))
-                            spApply->FUN_1422c7730(1);
+                        if (MS2Ptr<Unk_140acd6e0> spApply = GetChild<Unk_140acd6e0>("m_apply"))
+                            spApply->SetDisplayFocus(1);
                     }
                 }
             }
@@ -273,9 +182,9 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     if (_stricmp("OnOk", szMethod) == 0)
     {
-        Unk_TpsRequest request(0x4e62);
-        request.FUN_1401bac80("OnOk", FUN_141b23550(), 0);
-        request.FUN_1401badc0(true);
+        Unk_BlockList request(0x4e62);
+        request.Add("OnOk", FUN_141b23550(), false);
+        request.SetEnabled(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
             if (FUN_141b236c0(FUN_141b23550()) == 1)
@@ -290,9 +199,9 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("eventApply", szMethod) == 0)
     {
-        Unk_TpsRequest request(0x4e62);
-        request.FUN_1401bac80("eventApply", FUN_141b23550(), 0);
-        request.FUN_1401badc0(true);
+        Unk_BlockList request(0x4e62);
+        request.Add("eventApply", FUN_141b23550(), false);
+        request.SetEnabled(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
             FUN_141b236c0(FUN_141b23550());
@@ -302,13 +211,13 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        if (m_bApplied == 0 && ((struct Unk_TpsState*)FUN_141482e80())->m_n38 == 2 && ((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0)
+        if (m_bApplied == 0 && FUN_141482e80()->m_n38 == 2 && FUN_141482e80()->m_p40 != 0)
         {
-            MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
+            MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
             if (pTab != 0)
             {
-                ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e350(pTab->m_strName);
-                ((struct Unk_TpsState*)FUN_141482e80())->m_p40->vfunc_4();
+                FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
+                FUN_141482e80()->m_p40->vfunc_4();
             }
         }
         vfunc_67();
@@ -320,30 +229,30 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 // @0x141b230f0
 void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
 {
-    Unk_TpsRequest request(pRequest);
-    Unk_TpsReqValue value;
-    if (request.FUN_1401bab90("OnKeyHandler", &value) == 1 && value.m_code == 0)
+    Unk_BlockList request(*reinterpret_cast<CInPacket*>(pRequest));
+    Unk_BlockEntry value;
+    if (request.Find("OnKeyHandler", value) == 1 && value.m_nFlags == 0)
     {
         // The key handler applies the text typed in the tab, not the request's text.
         if (FUN_141b236c0(FUN_141b23550()) == 1)
         {
-            if (MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply"))
-                spApply->FUN_1422c7730(1);
+            if (MS2Ptr<Unk_140acd6e0> spApply = GetChild<Unk_140acd6e0>("m_apply"))
+                spApply->SetDisplayFocus(1);
         }
         return;
     }
-    if (request.FUN_1401bab90("OnOk", &value) == 1 && value.m_code == 0)
+    if (request.Find("OnOk", value) == 1 && value.m_nFlags == 0)
     {
-        if (FUN_141b236c0(value.m_strText) == 1)
+        if (FUN_141b236c0(value.m_strName) == 1)
             vfunc_67();
         return;
     }
-    if (request.FUN_1401bab90("eventApply", &value) == 1 && value.m_code == 0)
+    if (request.Find("eventApply", value) == 1 && value.m_nFlags == 0)
     {
-        FUN_141b236c0(value.m_strText);
+        FUN_141b236c0(value.m_strName);
         return;
     }
-    if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+    if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         spTab->FUN_1422e0a60("");
     FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
 }
@@ -351,7 +260,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
 // @0x141b23550
 CStringW UITalkPanelSettingDialog::FUN_141b23550()
 {
-    if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+    if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         return reinterpret_cast<ASTextInput*>(spTab.operator->())->GetText();
     return L"";
 }
@@ -369,9 +278,9 @@ int UITalkPanelSettingDialog::EventInitialize()
 // @0x141b236c0
 int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 {
-    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 == 0)
+    if (FUN_141482e80()->m_p40 == 0)
         return 0;
-    MessengerData::TalkTab* pTab = ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050();
+    MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
     if (pTab == 0)
         return 0;
     if (strName.IsEmpty())
@@ -395,12 +304,12 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
             CStringW strOldName(pTab->m_strName);
             CStringW strNewName(strName);
             FUN_141b23ab0(&pTab->m_panel);
-            ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e9f0(strOldName, strNewName);
-            ((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e990();
+            FUN_141482e80()->m_p40->RenameTab(strOldName, strNewName);
+            FUN_141482e80()->m_p40->FUN_141a0e990();
             if (pTab->m_panel.FUN_141482150() != 0)
             {
-                ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
-                ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+                FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
+                FUN_141482e80()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
             }
             return 1;
         }
@@ -415,9 +324,9 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 // @0x141b23a40
 int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 {
-    if (((struct Unk_TpsState*)FUN_141482e80())->m_p40 != 0 && ((struct Unk_TpsState*)FUN_141482e80())->m_p48 != 0)
+    if (FUN_141482e80()->m_p40 != 0 && FUN_141482e80()->m_p48 != 0)
     {
-        return ((struct Unk_TpsState*)FUN_141482e80())->m_p48->FUN_141a25410(((struct Unk_TpsState*)FUN_141482e80())->m_p40->FUN_141a0e050(), strName);
+        return FUN_141482e80()->m_p48->FUN_141a25410(FUN_141482e80()->m_p40->GetCurrentTab(), strName);
     }
     return 1;
 }
@@ -425,69 +334,69 @@ int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 // @0x141b23ab0
 void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetting)
 {
-    if (MS2Ptr<Unk_TpsCheck> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140c11f50<Unk_TpsCheck>("m_entire"))
+    if (MS2Ptr<ASCheckBox> sp = m_spRoot->FUN_140c11f50<ASCheckBox>("m_entire"))
         s_nGlobal = sp->FUN_1422ce0e0();
-    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
+    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderTransparent"))
     {
         pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
         DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
     }
-    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))
+    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderFontsize"))
     {
         pSetting->m_screen.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
         DAT_143adda48.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
     }
-    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow"))
+    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageShow"))
     {
         pSetting->m_screen.m_nShowDamage = sp->FUN_1422ce0e0();
         DAT_143adda48.m_nShowDamage = sp->FUN_1422ce0e0();
     }
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_subjectAll", &pSetting->m_subject.m_nAll);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_super", &pSetting->m_subject.m_nSuper);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_world", &pSetting->m_subject.m_nWorld);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_channel", &pSetting->m_subject.m_nChannel);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_social", &pSetting->m_subject.m_nSocial);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_party", &pSetting->m_subject.m_nParty);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_guild", &pSetting->m_subject.m_nGuild);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_whisper", &pSetting->m_subject.m_nWhisper);
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
-        FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_club", &pSetting->m_subject.m_nClub);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_partyInvite", &pSetting->m_subject.m_nPartyInvite);
-    if (FUN_140166410()->FUN_14036d570(0x93) == 1)
-        FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", &pSetting->m_subject.m_nDungeonHelp);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_requireAll", &pSetting->m_require.m_nAll);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_meso", &pSetting->m_require.m_nMeso);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_merat", &pSetting->m_require.m_nMerat);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_token", &pSetting->m_require.m_nToken);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_exp", &pSetting->m_require.m_nExperience);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_item", &pSetting->m_require.m_nItem);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_auth", &pSetting->m_require.m_nAuth);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeAll", &pSetting->m_notice.m_nAll);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_user", &pSetting->m_notice.m_nUser);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_trade", &pSetting->m_notice.m_nTrade);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_community", &pSetting->m_notice.m_nCommunity);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeFriend", &pSetting->m_notice.m_nFriend);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeGuild", &pSetting->m_notice.m_nGuild);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeParty", &pSetting->m_notice.m_nParty);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeClub", &pSetting->m_notice.m_nClub);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeMentoring", &pSetting->m_notice.m_nMentoring);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeEtc", &pSetting->m_notice.m_nEtc);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_systemAll", &pSetting->m_system.m_nAll);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_event", &pSetting->m_system.m_nEvent);
-    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_notice", &pSetting->m_system.m_nNotice);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_subjectAll", (unsigned int*)&pSetting->m_subject.m_nAll);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_super", (unsigned int*)&pSetting->m_subject.m_nSuper);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_world", (unsigned int*)&pSetting->m_subject.m_nWorld);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_channel", (unsigned int*)&pSetting->m_subject.m_nChannel);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_social", (unsigned int*)&pSetting->m_subject.m_nSocial);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_party", (unsigned int*)&pSetting->m_subject.m_nParty);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_guild", (unsigned int*)&pSetting->m_subject.m_nGuild);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_whisper", (unsigned int*)&pSetting->m_subject.m_nWhisper);
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x56) == 1)
+        FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_club", (unsigned int*)&pSetting->m_subject.m_nClub);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_partyInvite", (unsigned int*)&pSetting->m_subject.m_nPartyInvite);
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x93) == 1)
+        FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", (unsigned int*)&pSetting->m_subject.m_nDungeonHelp);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_requireAll", (unsigned int*)&pSetting->m_require.m_nAll);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_meso", (unsigned int*)&pSetting->m_require.m_nMeso);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_merat", (unsigned int*)&pSetting->m_require.m_nMerat);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_token", (unsigned int*)&pSetting->m_require.m_nToken);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_exp", (unsigned int*)&pSetting->m_require.m_nExperience);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_item", (unsigned int*)&pSetting->m_require.m_nItem);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_auth", (unsigned int*)&pSetting->m_require.m_nAuth);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeAll", (unsigned int*)&pSetting->m_notice.m_nAll);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_user", (unsigned int*)&pSetting->m_notice.m_nUser);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_trade", (unsigned int*)&pSetting->m_notice.m_nTrade);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_community", (unsigned int*)&pSetting->m_notice.m_nCommunity);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeFriend", (unsigned int*)&pSetting->m_notice.m_nFriend);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeGuild", (unsigned int*)&pSetting->m_notice.m_nGuild);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeParty", (unsigned int*)&pSetting->m_notice.m_nParty);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeClub", (unsigned int*)&pSetting->m_notice.m_nClub);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeMentoring", (unsigned int*)&pSetting->m_notice.m_nMentoring);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_noticeEtc", (unsigned int*)&pSetting->m_notice.m_nEtc);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_systemAll", (unsigned int*)&pSetting->m_system.m_nAll);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_event", (unsigned int*)&pSetting->m_system.m_nEvent);
+    FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_notice", (unsigned int*)&pSetting->m_system.m_nNotice);
 }
 
 // @0x141b24ee0
 void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetting)
 {
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", s_nGlobal);
-    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
+    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderTransparent"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
-    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))
+    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderFontsize"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
-    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow"))
+    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageShow"))
         reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
-    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageHide"))
+    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageHide"))
         reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_subjectAll", pSetting->FUN_141482200()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_social", pSetting->FUN_141482200()->m_nSocial);
@@ -497,12 +406,12 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_super", pSetting->FUN_141482200()->m_nSuper);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_world", pSetting->FUN_141482200()->m_nWorld);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_channel", pSetting->FUN_141482200()->m_nChannel);
-    if (FUN_140166410()->FUN_14036d570(0x56) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x56) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_club", pSetting->FUN_141482200()->m_nClub);
     else
         FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_club", 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_partyInvite", pSetting->FUN_141482200()->m_nPartyInvite);
-    if (FUN_140166410()->FUN_14036d570(0x93) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x93) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", pSetting->FUN_141482200()->m_nDungeonHelp);
     else
         FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", 0);
@@ -526,7 +435,7 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_systemAll", pSetting->FUN_141482190()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_event", pSetting->FUN_141482190()->m_nEvent);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_notice", pSetting->FUN_141482190()->m_nNotice);
-    if (MS2Ptr<Unk_TpsButton> sp = FUN_140bb4b10("m_apply"))
+    if (MS2Ptr<Unk_140acd6e0> sp = GetChild<Unk_140acd6e0>("m_apply"))
         sp->FUN_1422c1fe0(0);
     if (m_spRoot.get() != 0)
         m_spRoot->Invoke("alignCheckBox");

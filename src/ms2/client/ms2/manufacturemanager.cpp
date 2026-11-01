@@ -36,6 +36,7 @@
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 // ---- statics of the unit's header (init order: maid sound names, then the market sort names) ----------------------------
 static CString s_strMaidCancel = "maid_Cancel";
@@ -50,8 +51,6 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 // Payload types boxed in a TPtredDummy (the smart pointer points at the value, 0x18 behind the CPtred base).
 struct Unk_MfIngredient                                         // one recipe ingredient
 {
-    unsigned __int64 FUN_140684c40();                           // item id (through its group when m_nGroup != 0)
-    int FUN_140684c80();                                        // group
     int m_nCount;                                               // +0x00
     int m_nRarity;                                              // +0x04
     unsigned m_nItemId;                                         // +0x08
@@ -128,7 +127,8 @@ public:
     unsigned FUN_140a5f180(int nItemId, int nRarity);           // owned count of the item (group 0)
     unsigned FUN_140a5f780(int nGroup, int nRarity);            // owned count of the group
 };
-class Unk_MfEquipSet { public: float FUN_1411e1110(int nStat); };
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 class Unk_MfPC { public: };
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
 class Unk_MfWordTable : public CReservedWordTable { public: void FUN_1416fb400(CStringW& str, Unk_MfNpc* pNpc);};
@@ -147,13 +147,12 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-CGameRule* FUN_1401c0d90();
+void*FUN_1401c0d90();
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
-struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the dialog's UI object
 int FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
@@ -318,17 +317,17 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 Unk_MfValuePtr<Unk_MfIngredient> spIng = spRecipe->m_aIngredients[i];
                 if (spIng.IsNull())
                     continue;
-                unsigned nItemId = spIng->FUN_140684c40();
+                unsigned nItemId = reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemId();
                 MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
                 if (spItem == 0)
                     continue;
                 int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : FUN_14053feb0(nItemId);
                 unsigned nOwned = 0;
-                if (spIng->FUN_140684c80() == 0)
+                if (reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId() == 0)
                     nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f180(nItemId, nRarity);
                 else
-                    nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(spIng->FUN_140684c80(), nRarity);
-                unsigned nNeed = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<Unk_MfEquipSet*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1110(0x3f), spIng->m_nCount);
+                    nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId(), nRarity);
+                unsigned nNeed = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIng->m_nCount);
                 if (nNeed > nOwned)
                 {
                     *pnResult = 8;
@@ -339,7 +338,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
             {
                 int nCode = 0;
                 efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
-                int nOk = spService->FUN_1410d2fb0(DAT_143ab2820, spRecipe->m_nMeso, &nCode);
+                int nOk = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d2fb0(DAT_143ab2820, spRecipe->m_nMeso, &nCode);
                 if (nOk == 0)
                 {
                     *pnResult = 8;
@@ -536,7 +535,7 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = GetStringCommon(0xc07);
         break;
     }
-    reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(strText, pNpc);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb400(strText, pNpc);
     reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
     return strText;
 }
@@ -546,7 +545,7 @@ UIManufactureDialog* CManufactureManager::GetManufactureDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((CUIService*)TSingleton<CUIService>::GetInstance())->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIManufactureDialog*>((UIObject*)spUI);
     }
@@ -558,7 +557,7 @@ UIManufactureStatus* CManufactureManager::GetManufactureStatus(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MfUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((CUIService*)TSingleton<CUIService>::GetInstance())->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIManufactureStatus*>((UIObject*)spUI);
     }

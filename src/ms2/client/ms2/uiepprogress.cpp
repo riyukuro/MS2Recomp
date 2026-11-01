@@ -14,6 +14,8 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/client/ms2/uinametag.h"
+#include "ms2/placeholder/asdisplayobject.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -21,13 +23,12 @@ UIStatusEventDispatcher* FUN_140aa6d40();
 
 struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
 class Unk_EpCfgHolder { public: Unk_EpCfgData* FUN_141248630(); };
-class Unk_EpScene { public: int FUN_1422b9e00(); };                 // current scene id
+class GFxSceneService { public: int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 
 // The target's name-tag anchor record.
 class Unk_PopupTarget : public CPtred
 {
 public:
-    int FUN_141a5e690();                                            // has an anchor
     void FUN_141a5e5d0(NiPoint3* pPos);                             // the anchor position
 };
 Unk_PopupOwner* FUN_14096e160(Unk_PopupOwner* pOwner);
@@ -36,11 +37,10 @@ Unk_PopupOwner* FUN_14096e160(Unk_PopupOwner* pOwner);
 class Unk_EpEntity : public ASGameEntity
 {
 public:
-    int FUN_1422c1340();                                            // clip width
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
 };
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
 
 // @0x141931550
 UIEpProgress::UIEpProgress(Unk_PopupOwner* pOwner) : UIPopupEntity(pOwner)
@@ -96,10 +96,10 @@ void UIEpProgress::vfunc_53(const NiPoint3& kPos)
             {
                 if (Unk_PopupTarget* pTarget = pActor->vfunc_82().get())
                 {
-                    if (pTarget->FUN_141a5e690() != 0)
+                    if (reinterpret_cast<UINameTag::Entity*>(pTarget)->FUN_141a5e690() != 0)
                     {
                         pTarget->FUN_141a5e5d0(&pt);
-                        pt.x -= static_cast<Unk_EpEntity*>(pClip.operator->())->FUN_1422c1340() * 0.5 + 10.0;
+                        pt.x -= reinterpret_cast<ASDisplayObject*>(static_cast<Unk_EpEntity*>(pClip.operator->()))->FUN_1422c1340() * 0.5 + 10.0;
                     }
                 }
             }
@@ -114,7 +114,7 @@ int UIEpProgress::vfunc_57(int nForce)
 {
     if (UIPopupEntity::vfunc_57(nForce) != 0)
         return 1;
-    if (((Unk_EpScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() != 0x620001d)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
         return 1;
     if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
         return 1;

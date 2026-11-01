@@ -46,13 +46,13 @@ class Unk_FdWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the local player
-    PCBase* FUN_141bd1200(int nId);                         // the actor with the object id
-    PCBase* FUN_141bd1290(int nId);                         // the actor with the object id (other map)
     int FUN_141bbb1e0(GameObject* pObject, int bFullInit, int nCamera);   // register a created object
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
+    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
@@ -177,17 +177,17 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
     if (nType == 1)
     {
         nObjectId = 0xf;
-        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0xf);
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0xf));
     }
     else if (nType == 0)
     {
         nObjectId = 0x10;
-        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0x10);
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0x10));
     }
     else if (nType == 2)
     {
         nObjectId = 0x11;
-        pObject = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(0x11);
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0x11));
     }
     if (pObject == 0 && nObjectId != 0)
     {
@@ -337,7 +337,7 @@ void FittingDollPC::vfunc_53(float f)
     PC::vfunc_53(f);
     if (parentName.GetLength() != 0)
     {
-        PCBase* pSource = ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1200(index);
+        PCBase* pSource = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(index));
         if (pSource != 0)
         {
             NiAVObject* pRoot = FUN_141b6efc0(pSource->FUN_14123c410());

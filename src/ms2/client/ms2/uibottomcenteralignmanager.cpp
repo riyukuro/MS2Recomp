@@ -12,15 +12,6 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 
-// Unrecovered helpers (the UI service lookup the other UI units use).
-class Unk_CommandUIRef {
-public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
-private: void* unknown; UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-class Unk_UIService { public: Unk_CommandUIRef FUN_141adcea0(int nId); };   // dialog by id
 
 // @0x140bc16c0
 UIBottomCenterAlignManager::UIBottomCenterAlignManager()
@@ -35,11 +26,11 @@ UIBottomCenterAlignManager::~UIBottomCenterAlignManager()
 // @0x140bc17d0
 UIHighlightGameMenu* FUN_140bc17d0(int nId)
 {
-    if (reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIHighlightGameMenu*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get())
+            return dynamic_cast<UIHighlightGameMenu*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -47,11 +38,11 @@ UIHighlightGameMenu* FUN_140bc17d0(int nId)
 // @0x140bc1870
 UIRecallScrollNotifyDialog* FUN_140bc1870(int nId)
 {
-    if (reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIRecallScrollNotifyDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get())
+            return dynamic_cast<UIRecallScrollNotifyDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

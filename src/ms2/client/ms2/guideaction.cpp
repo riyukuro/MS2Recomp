@@ -109,8 +109,8 @@ class CameraMgr : public TSingleton<CameraMgr>
 public:
     int FUN_140af7e30();                                    // the kind of the active camera mode (2: trigger)
 };
-class Unk_GaOption { public: const unsigned char* FUN_140a58500(); };   // CGameOption: the gamepad block (+0 the gamepad mode)
-class Unk_GaSound { public: void FUN_1422b9fd0(int nScene); };  // the sound scene manager
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
 class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   // CKeyTable: the key name of a binding
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GaKeyTable (calls cast back)
 
@@ -700,9 +700,9 @@ bool CGuideActionUITextBase::FUN_141384200()
     switch (m_controllerType)
     {
     case GuideController_Keyboard:
-        return *reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() == 0;
+        return *reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 0;
     case GuideController_GamePad:
-        return *reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() == 1;
+        return *reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 1;
     }
     return true;
 }
@@ -1142,12 +1142,12 @@ void CGuideActionSequenceCamera::vfunc_3()
     FUN_140ad4b90()->FUN_141863340(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((Unk_GaSound*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
+        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
         CStringW strEmpty;
         if (UICutSceneCinematic* pCinematic = FUN_14136f290(0x4e52))
         {
             CStringW strKey = GetStringCommon(0x666);
-            if (*reinterpret_cast<Unk_GaOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
+            if (*reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
                 strKey = reinterpret_cast<Unk_GaKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
@@ -1166,7 +1166,7 @@ void CGuideActionSequenceCamera::vfunc_4()
         FUN_140ad4b90()->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((Unk_GaSound*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
         NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
             Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
     }

@@ -111,7 +111,6 @@ public:
                        NiPoint2* pUV, float* pT, void* pSkins);
 };
 
-bool FUN_140998dc0(const void* pName, const char* psz);         // name == psz
 
 struct Unk_ICCConfigFloat
 {
@@ -617,7 +616,7 @@ void CItemCustomizeController::OnMouseButton2(int bActive, const efd::Point3& kP
 float CItemCustomizeController::GetHighlightScale(NiAVObject* pNode)
 {
     CString strUnused;
-    if (pNode && FUN_140998dc0(((void const*)&((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName()), "HR1:1"))
+    if (pNode && ((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName() == "HR1:1")
         return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2ce0)->Read();
     else
         return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2d38)->Read();

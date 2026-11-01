@@ -11,23 +11,22 @@
     class Name##Cli : public Name {                      \
     public:                                              \
         virtual ~Name##Cli();                            \
-        virtual void vfunc_4();                          \
-        virtual void vfunc_5();
+        virtual void vfunc_4();
+#define MS2_FPCLI5(Name) MS2_FPCLI(Name) virtual void vfunc_5();
 
 MS2_FPCLI(FieldPropertyGravity) };
-MS2_FPCLI(FieldPropertyMusicConcert) };
-MS2_FPCLI(FieldPropertyHideMyPC) };
-MS2_FPCLI(FieldPropertyLockMyPC) };
+MS2_FPCLI5(FieldPropertyMusicConcert) };
+MS2_FPCLI5(FieldPropertyHideMyPC) };
+MS2_FPCLI5(FieldPropertyLockMyPC) };
 MS2_FPCLI(FieldPropertyUserTagSymbol) };
-MS2_FPCLI(FieldPropertyWeather) };
-MS2_FPCLI(FieldPropertyEnableLocalCamera) };
-MS2_FPCLI(FieldPropertyPhotoStudio) };
+MS2_FPCLI5(FieldPropertyWeather) };
+MS2_FPCLI5(FieldPropertyEnableLocalCamera) };
+MS2_FPCLI5(FieldPropertyPhotoStudio) };
 
 class FieldPropertyAmbientLightCli : public FieldPropertyAmbientLight {
 public:
     virtual ~FieldPropertyAmbientLightCli();
     virtual void vfunc_4();
-    virtual void vfunc_5();
     Unk_Vec3f m_vecOld = Unk_Vec3f(0, 0, 0);            // +0x20
     bool m_bCached;                                     // +0x2c
     float m_fCached;                                    // +0x30
@@ -38,7 +37,6 @@ class FieldPropertyDirectionalLightCli : public FieldPropertyDirectionalLight {
 public:
     virtual ~FieldPropertyDirectionalLightCli();
     virtual void vfunc_4();
-    virtual void vfunc_5();
     Unk_Vec3f m_vecOld = Unk_Vec3f(0, 0, 0);            // +0x28
     bool m_bCached;                                     // +0x34
     float m_fCached;                                    // +0x38

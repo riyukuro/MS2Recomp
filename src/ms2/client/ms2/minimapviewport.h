@@ -44,7 +44,7 @@ public:
     MinimapViewport();                                                              // 0x1414856d0
 
     // Copies the map's minimap camera settings and rebuilds the view matrix; nScale > 0 overrides the zoom.
-    unsigned FUN_141485770(int nScale);                                             // 0x141485770
+    unsigned InitFromFieldMinimap(int nScale);                                             // 0x141485770
     // Builds m_afMatrix from the camera position and the three rotation axes.
     void FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& kAxisX, const Unk_GVec3& kAxisY,
                        const Unk_GVec3& kAxisZ);                                    // 0x141485a50

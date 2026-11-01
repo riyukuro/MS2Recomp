@@ -20,12 +20,12 @@ public:
     void SetName(CString strName);                        // set the name key
     int CanLift() const;                                  // can be picked up now
     int Init(Unk_Entity* pEntity, bool bFixed, int nKind);   // bind the prop entity
-    void FUN_141447410(Unk_Entity* pEntity);                    // bind and read the entity's properties
+    void BindEntity(Unk_Entity* pEntity);                    // bind and read the entity's properties
     void FUN_1414477f0(CString strA, CString strB);                   // quest-mask check, mask 0
     void FUN_141447850(CString strA, CString strB);                   // quest-mask check, mask 1
-    void FUN_1414478b0(bool bValue);                            // set +0xc0
-    bool FUN_1414478f0() const;                                 // +0xc0
-    void FUN_141447910(bool bOn);                               // lift-hint sound on/off
+    void SetLiftEnabled(bool bValue);                            // set +0xc0
+    bool IsLiftEnabled() const;                                 // +0xc0
+    void SetEffectEnabled(bool bOn);                               // lift-hint sound on/off
     void SetKind(int nKind);
     int GetKind() const;
     void FUN_141447aa0(bool bValue);
@@ -36,9 +36,9 @@ public:
     Vector3 FUN_141447c80() const;                      // +0xc4
     int FUN_141447cc0() const;                                  // +0xa8
     void FUN_141447ce0();
-    int FUN_141447d10() const;                                 // not fixed
+    int IsNotFixed() const;                                 // not fixed
     void FUN_141447d50(int nOn);
-    void FUN_141447de0();                                       // refresh availability
+    void UpdateConditions();                                       // refresh availability
     void FUN_141447ec0(bool bActive);                           // highlight on/off
     void FUN_141448050(bool bActive);
 

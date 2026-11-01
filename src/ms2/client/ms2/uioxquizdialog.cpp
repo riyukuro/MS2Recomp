@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdisplayobject.h"
 
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -20,7 +21,6 @@ class ASDialog : public ASDisplayObject {};
 
 int FUN_1418fd280();                                    // the player is in the OX quiz field
 int FUN_1418fd2f0();                                    // the OX quiz is running
-unsigned FUN_140869420();                               // the client tick (ms)
 CStringW GetStringCommon(int nId);                        // a common string by id
 void FUN_140dff2b0();                                   // the OX quiz manager: request the promote
 void FUN_140dfeeb0();                                   // the OX quiz manager: request a new quiz
@@ -94,7 +94,7 @@ void UIOxQuizDialog::FUN_140e6e640()
         return;
     if (FUN_1418fd2f0())
     {
-        float fRemain = m_17c - (float)(FUN_140869420() - m_178) / 1000.0f;
+        float fRemain = m_17c - (float)(GetTickCountMs2() - m_178) / 1000.0f;
         FUN_140e6e6c0(fRemain, m_17c);
     }
 }
@@ -105,7 +105,7 @@ void UIOxQuizDialog::FUN_140e6e6c0(float fRemain, float fTotal)
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
         pDialog->Invoke("setQuizPromoteCooltime", fRemain, fTotal, GetStringCommon(0x5ce), GetStringCommon(0x5cc),
                         GetStringCommon(0x5ca), GetStringCommon(0x5cb));
-    m_178 = FUN_140869420() - (unsigned)((fTotal - fRemain) * 1000.0f);
+    m_178 = GetTickCountMs2() - (unsigned)((fTotal - fRemain) * 1000.0f);
     m_17c = fTotal;
 }
 

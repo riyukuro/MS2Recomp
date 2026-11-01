@@ -49,7 +49,7 @@ public:
     void ClearEntries();
     void FUN_140e0f790();
     void FUN_140e0fcf0(int);
-    void FUN_140e0fd20(int);
+    void LoadEntryRenderTarget(int);
     void LoadAllRenderTargets();
     void UnloadAllRenderTargets();
     void FUN_140e10010(int&, int&, unsigned&, int, int);

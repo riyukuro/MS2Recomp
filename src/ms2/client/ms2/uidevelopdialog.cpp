@@ -495,7 +495,7 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
             int nCount = 0;
             if (pInstancing != 0)
                 nCount = pInstancing->GetVisibleInstanceCount();
-            FUN_141292ca0("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->FUN_14147d2f0()))->c_str(), 0));
+            FUN_141292ca0("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->GetSourceName()))->c_str(), 0));
             CStringW strCount = StringFormat<int>(L"{0}", nCount);
             FUN_141292ca0("m_modelCount", strCount);
         }

@@ -44,6 +44,9 @@ public:
     // Number of dynamic-update buckets (updated in the order 1, 0, 4, 5, riders, 2, animation callbacks, 3).
     enum { kBucketCount = 6 };
 
+    void FUN_1414f11d0(egf::Entity* pEntity);               // the interact highlight on
+    void FUN_1414f1240(egf::Entity* pEntity);               // and off
+
     MS2SceneGraphService(NiSPWorkflowManager* pWorkflowManager, NiTexturePalette* pTexturePalette,
         const efd::Bool toolMode);                                          // 0x1414f0d10
     virtual ~MS2SceneGraphService();                                        // 0x1414f0e40, ??_G 0x1414fc660
@@ -52,8 +55,8 @@ public:
     virtual efd::AsyncResult OnInit();                                      // 0x1414f0f20
     virtual efd::AsyncResult OnTick();                                      // 0x1414f1090
     virtual efd::AsyncResult OnShutdown();                                  // 0x1414f10e0
-    void FUN_1414f11d0(egf::Entity* pEntity);                               // 0x1414f11d0 make the entity's scene graph dynamic
-    void FUN_1414f1240(egf::Entity* pEntity);                               // 0x1414f1240 drop it from the dynamic update
+    void MarkEntityDynamic(egf::Entity* pEntity);                               // 0x1414f11d0 make the entity's scene graph dynamic
+    void RemoveEntityFromUpdate(egf::Entity* pEntity);                               // 0x1414f1240 drop it from the dynamic update
     virtual void OnAssetLoadFailure(AssetDataPtr spAssetData);              // 0x1414f1290
     virtual void UpdateDynamicEntities(bool advanceUpdateTime = true, bool performUpdate = true,
         bool performUpdateOnce = true);                                     // 0x1414f12f0
@@ -64,9 +67,9 @@ public:
     static void FUN_1414f1d00(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin, efd::UInt32 uiEnd,
         NiUpdateProcess* pkProcess);                                        // 0x1414f1d00 MultiSceneUpdater callback
     void AddAlwaysUpdated(NiAVObject* pkSceneGraph);                           // 0x1414f1e30 always update in bucket 1
-    void FUN_1414f1e70(const egf::EntityID& entityID, int iBucket);         // 0x1414f1e70 bucket override by entity
+    void SetBucketOverride(const egf::EntityID& entityID, int iBucket);         // 0x1414f1e70 bucket override by entity
     void FUN_1414f1ec0();                                                   // 0x1414f1ec0 drop all bucket overrides
-    void FUN_1414f1ef0(const egf::EntityID& entityID);                      // 0x1414f1ef0 drop one bucket override
+    void ClearBucketOverride(const egf::EntityID& entityID);                      // 0x1414f1ef0 drop one bucket override
     void FUN_1414f1f50(int iBucket);                                        // 0x1414f1f50 update one bucket
     void MS2_MarkPreloadsAsFound(AssetData* pAssetData);                    // 0x1414f2250
     AssetData* MS2_SetAssetDataFromCache(AssetDataPtr spAssetData, ecr::SceneGraphCache::SceneGraphCacheHandle cacheHandle,
@@ -78,10 +81,10 @@ public:
     virtual void RemoveSceneGraph(egf::Entity* pEntity, efd::Bool forceRemoval = false);  // 0x1414f3340
     virtual void EntityEnterWorld(SceneGraphData* pSceneGraphData);         // 0x1414f3460
     virtual void EntityExitWorld(SceneGraphData* pSceneGraphData);          // 0x1414f3580
-    efd::UInt32 FUN_1414f3660();                                            // 0x1414f3660 cached scene graph count
+    efd::UInt32 GetCacheIdentifierCount();                                            // 0x1414f3660 cached scene graph count
     static bool FUN_1414f3690(bool bBeforeReset, void* pvData);             // 0x1414f3690 device reset notification
     static bool FUN_1414f36b0(void* pvData);                                // 0x1414f36b0 lost device notification
-    void FUN_1414f3700();                                                   // 0x1414f3700 crash-log dump
+    void LogStatsToCrashManager();                                                   // 0x1414f3700 crash-log dump
 
 public:
     MS2_LAYOUT_FRIEND;

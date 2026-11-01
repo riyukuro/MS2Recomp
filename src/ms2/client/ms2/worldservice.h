@@ -455,7 +455,7 @@ public:
     CStringW FUN_141bd0d30();                           // m_2d8's name or ""
     int FUN_141bd0dd0(Vector3* pos, Vector3* dir);
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* p);
-    class Unk_WsC_GameObj* FindObjectByEntityId(const egf::EntityID& id);   // the game object of an entity
+    class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // the game object of an entity (by value: callers copy the id)
     class Unk_WsC_GameObj* FindObjectByKey(unsigned __int64 key);
     class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);
     class Unk_WsC_GameObj* FUN_141bd1180(int id);

@@ -131,12 +131,12 @@ class Unk_140d86260 { public:
     virtual void vfunc_58(int,int);
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-struct Unk_ResponseVersion {
-    Unk_ResponseVersion():zero(0),version(0),locale(0),key(0),flag(0) {}
-    void FUN_1407a4420(CInputStream&);
+struct Unk_SPDC {
+    Unk_SPDC():zero(0),version(0),locale(0),key(0),flag(0) {}
+    void FUN_1407a4420(CInputStream*);
     int zero,version,locale,key; bool flag;
 };
-MS2_CHECK_SIZE(Unk_ResponseVersion,20);
+MS2_CHECK_SIZE(Unk_SPDC,20);
 // @0x1412646a0
 CGameSocket::CGameSocket():m_packets(10),m_receiveQueue(10),m_sendQueue(10),m_logger(0)
 {
@@ -238,9 +238,9 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
             try {
             m_socket.CreateSocket(SOCK_STREAM,AF_INET,0); m_socket.SetNonBlocking(1); m_socket.FUN_14126c5a0(this);
             Unk_SocketOptions& opts=m_options;
-            if(opts.noDelay!=INT_MAX) m_socket.FUN_14126c610(opts.noDelay);
+            if(opts.noDelay!=INT_MAX) m_socket.SetNoDelay(opts.noDelay);
             if(opts.option5!=INT_MAX) m_socket.FUN_14126c5c0(opts.option5);
-            if(opts.receiveBuffer!=INT_MAX) m_socket.FUN_14126c7d0(opts.receiveBuffer);
+            if(opts.receiveBuffer!=INT_MAX) m_socket.SetRecvBufferSize(opts.receiveBuffer);
             if(opts.sendBuffer!=INT_MAX) m_socket.SetSendBufferSize(opts.sendBuffer);
             m_socket.FUN_1412694d0(0x33,0);
             m_host=host; m_port=port; m_specialConnect=special;
@@ -307,7 +307,7 @@ void CGameSocket::FUN_141265ae0()
                         int result=((class Unk_140d86260*)FUN_140d86260())->vfunc_35(*packet);
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
-                            if(op==1) { Unk_ResponseVersion response; response.FUN_1407a4420(*packet); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SetConnectionState(response.key); }
+                            if(op==1) { Unk_SPDC response; response.FUN_1407a4420(&*packet); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SetConnectionState(response.key); }
                             else if(op==7) m_sequence=packet->ReadInt32();
                             else if(op==8) { int sequence=packet->ReadInt32(); framing.sequence=packet->ReadInt32(); m_sequence=sequence; }
                             ready.AddTail(packet);
@@ -374,7 +374,7 @@ void CGameSocket::FUN_141267070()
         for(;;) {
             if(!m_sendQueue.GetHeadPosition()) break;
             CPacketBuffer* buffer=m_sendQueue.GetHead().get();
-            int n=m_socket.FUN_14126c3d0(buffer->FUN_140713530()+m_sent,buffer->GetSize()-m_sent,0);
+            int n=m_socket.Send(buffer->FUN_140713530()+m_sent,buffer->GetSize()-m_sent,0);
             if(n==0) break;
             m_sent+=n;
             if(m_sent<(unsigned)buffer->GetSize()) continue;
@@ -458,7 +458,7 @@ inline CInPacket::CInPacket(int flags):m_flags(flags),m_length(0),m_opcode(0),m_
 // @0x141268710
 inline Unk_SocketAddress::Unk_SocketAddress(const char* host,int port)
 {
-    FUN_14126ce80(port,0);
+    SetPortAndAddress(port,0);
     if(host==0 || *host==0) return;
     ATL::CA2AEX<128> name(host); sin_addr.s_addr=inet_addr(name);
     if(sin_addr.s_addr==INADDR_NONE) {
@@ -485,7 +485,7 @@ inline CSocketThread::~CSocketThread()
 // @0x1412694d0
 inline void CSimpleSocket::FUN_1412694d0(int events,CSocketThread* worker)
 {
-    FUN_141269990();
+    RemoveFromWorker();
     if(worker==0) m_worker=Unk_SocketNew(0); else m_worker=worker;
     m_worker->FUN_1412696b0();
     HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,events,done};
@@ -504,13 +504,13 @@ inline void CSocketThread::FUN_1412696b0()
     }
 }
 // @0x141269750
-inline void CSimpleSocket::Close() { FUN_141269990(); CloseSocket(); }
+inline void CSimpleSocket::Close() { RemoveFromWorker(); CloseSocket(); }
 // @0x141269780
 inline void CSocketBase::CloseSocket() { if(m_socket!=INVALID_SOCKET) { closesocket(m_socket); m_socket=INVALID_SOCKET; } }
 // @0x141269820
-inline int CSimpleSocket::FUN_141269820(const sockaddr* addr,int size) { return connect((SOCKET)*this,addr,size)!=SOCKET_ERROR || WSAGetLastError()==WSAEWOULDBLOCK ? 1 : 0; }
+inline int CSimpleSocket::Connect(const sockaddr* addr,int size) { return connect((SOCKET)*this,addr,size)!=SOCKET_ERROR || WSAGetLastError()==WSAEWOULDBLOCK ? 1 : 0; }
 // @0x141269990
-inline void CSimpleSocket::FUN_141269990()
+inline void CSimpleSocket::RemoveFromWorker()
 {
     if(m_worker.get()) {
         HANDLE done=WSACreateEvent(); void* unused=0; // the exe zeroes an unused local here
@@ -539,7 +539,7 @@ inline int CSocketThread::FUN_141269b30(HANDLE event)
         if(events.lNetworkEvents&FD_CLOSE) callback->OnClose(socket,events.iErrorCode[FD_CLOSE_BIT]);
     }
     return m_commands.IsEmpty();
-    } catch(Exception& e) { FUN_14126a000(socket,e.GetCode()); return 0; }
+    } catch(Exception& e) { HandleSocketError(socket,e.GetCode()); return 0; }
 }
 // @0x141269dc0
 inline void CSocketThread::ProcessCommands()
@@ -550,24 +550,24 @@ inline void CSocketThread::ProcessCommands()
             Unk_SocketCommand command;
             if(m_commands.IsEmpty()) return;
             else { command=m_commands.GetHead(); m_commands.RemoveHead(); }
-            if(command.events==-1) FUN_14126b250(command.socket);
-            else { HANDLE event=FUN_14126b1c0(command.socket); if(!event || WSAEventSelect(*command.socket,event,command.events)==SOCKET_ERROR) FUN_14126a000(command.socket,WSAGetLastError()); }
+            if(command.events==-1) RemoveSocket(command.socket);
+            else { HANDLE event=AddSocket(command.socket); if(!event || WSAEventSelect(*command.socket,event,command.events)==SOCKET_ERROR) HandleSocketError(command.socket,WSAGetLastError()); }
             if(command.done) WSASetEvent(command.done);
         }
     }
 }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126a000
-inline void CSocketThread::FUN_14126a000(CSimpleSocket* socket,int error)
+inline void CSocketThread::HandleSocketError(CSimpleSocket* socket,int error)
 {
     ISocketCallBack* callback=socket->FUN_14126a3c0();
     if(callback) { try { callback->OnClose(socket,error); } catch(Exception&) {} }
-    FUN_14126b250(socket); socket->CloseSocket();
+    RemoveSocket(socket); socket->CloseSocket();
 }
 // @0x14126a990
 inline HANDLE CThread::GetThread() const { return m_thread; }
 // @0x14126b1c0
-inline HANDLE CSocketThread::FUN_14126b1c0(CSimpleSocket* socket)
+inline HANDLE CSocketThread::AddSocket(CSimpleSocket* socket)
 {
     if(m_sockets.GetCount()+1>=64) return 0;
     HANDLE event=WSACreateEvent();
@@ -576,7 +576,7 @@ inline HANDLE CSocketThread::FUN_14126b1c0(CSimpleSocket* socket)
     return event;
 }
 // @0x14126b250
-inline int CSocketThread::FUN_14126b250(CSimpleSocket* socket)
+inline int CSocketThread::RemoveSocket(CSimpleSocket* socket)
 {
     const ATL::CAtlMap<HANDLE,CSimpleSocket*>::CPair* found=0;
     POSITION pos=m_sockets.GetStartPosition();
@@ -628,12 +628,12 @@ inline unsigned int CSocketThread::vfunc_1(void*,Unk_140659080& start)
         int code=e.GetCode();
         CSimpleSocket* socket=0;
         POSITION pos=m_sockets.GetStartPosition();
-        while(pos) { socket=m_sockets.GetValueAt(pos); m_sockets.GetNext(pos); FUN_14126a000(socket,code); }
+        while(pos) { socket=m_sockets.GetValueAt(pos); m_sockets.GetNext(pos); HandleSocketError(socket,code); }
     }
     Unk_SocketThreadRelease(); return 0;
 }
 // @0x14126c3d0
-inline int CSimpleSocket::FUN_14126c3d0(const char* data,int size,int outOfBand)
+inline int CSimpleSocket::Send(const char* data,int size,int outOfBand)
 {
     int n=send((SOCKET)*this,data,size,outOfBand?1:0);
     if(n==SOCKET_ERROR) { int error=WSAGetLastError(); if(error==WSAEWOULDBLOCK) return 0; else throw Exception(error); }
@@ -642,17 +642,17 @@ inline int CSimpleSocket::FUN_14126c3d0(const char* data,int size,int outOfBand)
 // @0x14126c5c0
 inline void CSocketBase::FUN_14126c5c0(int value) { int nValue=value; setsockopt((SOCKET)*this,6,5,reinterpret_cast<char*>(&nValue),4); }
 // @0x14126c610
-inline void CSocketBase::FUN_14126c610(int value) { int nValue=value; if(setsockopt((SOCKET)*this,6,1,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
+inline void CSocketBase::SetNoDelay(int value) { int nValue=value; if(setsockopt((SOCKET)*this,6,1,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c680
 inline void CSocketBase::SetNonBlocking(int value) { u_long nonblocking=value!=0; if(ioctlsocket((SOCKET)*this,FIONBIO,&nonblocking)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c7d0
-inline void CSocketBase::FUN_14126c7d0(int value) { int nValue=value; if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_RCVBUF,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
+inline void CSocketBase::SetRecvBufferSize(int value) { int nValue=value; if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_RCVBUF,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c840
 inline void CSocketBase::SetSendBufferSize(int value) { int nValue=value; if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_SNDBUF,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c8b0
 inline void CSocketBase::CreateSocket(int type,int family,int protocol) { SOCKET s=socket(family,type,protocol); m_socket=s; if(s==INVALID_SOCKET) throw Exception(WSAGetLastError()); }
 // @0x14126ca60
-inline int CSimpleSocket::vfunc_2(const char* data,int size) { return FUN_14126c3d0(data,size,0); }
+inline int CSimpleSocket::vfunc_2(const char* data,int size) { return Send(data,size,0); }
 // @0x14126ca90
 inline int CSimpleSocket::vfunc_4(const char* data,int size)
 {
@@ -671,10 +671,10 @@ inline int CSimpleSocket::vfunc_4(const char* data,int size)
     return total;
 }
 // @0x14126ce80
-inline void Unk_SocketAddress::FUN_14126ce80(int port,unsigned long address) { FUN_14126ced0(htons(port),htonl(address)); }
+inline void Unk_SocketAddress::SetPortAndAddress(int port,unsigned long address) { InitSockAddr(htons(port),htonl(address)); }
 #pragma function(memset)
 // @0x14126ced0
-inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long address) { memset(this,0,16); sin_family=AF_INET; sin_port=port; sin_addr.s_addr=address; }
+inline void Unk_SocketAddress::InitSockAddr(unsigned short port,unsigned long address) { memset(this,0,16); sin_family=AF_INET; sin_port=port; sin_addr.s_addr=address; }
 #pragma intrinsic(memset)
 
 
@@ -759,7 +759,7 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 // MS2-PIN: ?ResetNew@?$Unk_SocketPtr@VCSocketThread@@@@AEAAXXZ 0x14126cde0
 // MS2-PIN: ?Create@?$Unk_SocketRef@VCInPacket@@@@SAPEAVCInPacket@@PEAX@Z 0x14126ce10
 // MS2-PIN: ?Create@?$Unk_SocketRef@VCSocketThread@@@@SAPEAVCSocketThread@@PEAX@Z 0x14126ce40
-// MS2-PIN: ?FUN_14126ced0@Unk_SocketAddress@@QEAAXGK@Z 0x14126ced0
+// MS2-PIN: ?InitSockAddr@Unk_SocketAddress@@QEAAXGK@Z 0x14126ced0
 // MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCOutPacketBuffer@@@@AEAAXPEAX@Z 0x14126d080
 // MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCPacketLogger@@@@AEAAXPEAX@Z 0x14126d0d0
 // MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCSocketThread@@@@AEAAXPEAX@Z 0x14126d120
@@ -780,15 +780,15 @@ MS2_REPLACE_METHOD(0x1412657e0, CGameSocket, Reconnect, 101, 0xA4BA1795);
 MS2_REPLACE_METHOD(0x141265ae0, CGameSocket, FUN_141265ae0, 2450, 0x4E0FB171);
 MS2_REPLACE_METHOD(0x141269750, CSimpleSocket, Close, 41, 0xCA8FD322);
 MS2_REPLACE_METHOD(0x141269780, CSocketBase, CloseSocket, 51, 0xDDA3D594);
-MS2_REPLACE_METHOD(0x141269820, CSimpleSocket, FUN_141269820, 100, 0x6DEE46BF);
-MS2_REPLACE_METHOD(0x141269990, CSimpleSocket, FUN_141269990, 369, 0x79C79B2C);
+MS2_REPLACE_METHOD(0x141269820, CSimpleSocket, Connect, 100, 0x6DEE46BF);
+MS2_REPLACE_METHOD(0x141269990, CSimpleSocket, RemoveFromWorker, 369, 0x79C79B2C);
 MS2_REPLACE_METHOD(0x141269dc0, CSocketThread, ProcessCommands, 344, 0xF2248F24);
-MS2_REPLACE_METHOD(0x14126a000, CSocketThread, FUN_14126a000, 117, 0x3579A715);
+MS2_REPLACE_METHOD(0x14126a000, CSocketThread, HandleSocketError, 117, 0x3579A715);
 MS2_REPLACE_METHOD(0x14126a990, CThread, GetThread, 15, 0x6BC6B691);
-MS2_REPLACE_METHOD(0x14126b1c0, CSocketThread, FUN_14126b1c0, 133, 0x44A07B33);
-MS2_REPLACE_METHOD(0x14126b250, CSocketThread, FUN_14126b250, 336, 0xD719EBD3);
+MS2_REPLACE_METHOD(0x14126b1c0, CSocketThread, AddSocket, 133, 0x44A07B33);
+MS2_REPLACE_METHOD(0x14126b250, CSocketThread, RemoveSocket, 336, 0xD719EBD3);
 MS2_REPLACE_METHOD(0x14126c5c0, CSocketBase, FUN_14126c5c0, 69, 0xB3367F3B);
 MS2_REPLACE_METHOD(0x14126ca60, CSimpleSocket, vfunc_2, 47, 0xD80D9096);
-MS2_REPLACE_METHOD(0x14126ce80, Unk_SocketAddress, FUN_14126ce80, 68, 0xACD2AB79);
-MS2_REPLACE_METHOD(0x14126ced0, Unk_SocketAddress, FUN_14126ced0, 81, 0x8A65074E);
+MS2_REPLACE_METHOD(0x14126ce80, Unk_SocketAddress, SetPortAndAddress, 68, 0xACD2AB79);
+MS2_REPLACE_METHOD(0x14126ced0, Unk_SocketAddress, InitSockAddr, 81, 0x8A65074E);
 

@@ -46,6 +46,10 @@
 #include "ms2/commonfiles/maid.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/maidgradejockpottable.h"
+#include "ms2/commonfiles/luautil.h"
+#include "ms2/client/ms2/inventory.h"
+#include <algorithm>
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -65,6 +69,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class WorldService   // C3: view (worldservice.h adds egf::kENTITY_INVALID's dynamic initializer)
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1320(int id);   // C3: the real member (0x141bd1320, an object by id)
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
@@ -82,8 +87,6 @@ public:
 class Unk_UmMaid : public CPtred
 {
 public:
-    int FUN_14067dd10();                                        // the mood (0, 1, other)
-    int FUN_14067dca0();                                        // the affinity is at its maximum
     char m_pad_18[0x34 - 0x18];
     int m_34;                                                   // +0x34 the maid (npc table key)
     char m_pad_38[0x50 - 0x38];
@@ -98,17 +101,11 @@ MS2_CHECK_OFFSET(Unk_UmMaid, m_60, 0x60);
 // The maid npc (CNpc): the maid record.
 class Unk_MfNpc { public: MS2Ptr<Unk_UmMaid> FUN_141093800(); };
 
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 // The local player (only its stats).
-class Unk_UmEquipSet { public: float FUN_1411e1110(int nStat); };
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 class Unk_UmPC { public: };
 class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, the equip holder)
-
-class Unk_UmWorld
-{
-public:
-    Unk_UmPC* FUN_141bd0cc0();                                  // the local player
-    Unk_MfNpc* FUN_141bd1320(int nActorId);                     // an actor by object id
-};
 
 // The exe's 16 byte smart pointer to a boxed payload (the table rows are boxed in a TPtredDummy; the pointer points at the
 // payload, 0x18 behind the CPtred base). Same as the one of the manufacture manager.
@@ -170,15 +167,12 @@ class Unk_UmBookTable
 {
 public:
     Unk_UmBookPtr FUN_140685da0(int nBookId);
-    int FUN_140685e60(int nBookId, int nRecipeId, int* pnGrade);   // the grade a recipe needs
 };
 class Unk_MdBookTable* FUN_1412db940();   // C3: was FUN_1412db940
 
 // A recipe ingredient.
 struct Unk_UmIngredient
 {
-    int FUN_140684c40();                                        // item id
-    int FUN_140684c80();                                        // group
     int m_nCount;                                               // +0x00
     int m_nRarity;                                              // +0x04
     unsigned m_nItemId;                                         // +0x08
@@ -207,10 +201,7 @@ struct Unk_UmMfItem : public CPtred
 {
     char m_pad_18[0x3c - 0x18];
     int m_3c;                                                   // +0x3c the manufacture time (seconds)
-    int FUN_1409eedf0();                                        // the recipe id
-    __int64 FUN_140694170();                                    // the time it is ready
 };
-class Unk_UmMfBook { public: int FUN_140d51370(__int64 nKey, MS2Ptr<Unk_UmMfItem>& out); };
 
 // The string table and the client constants.
 class Unk_UmLevelInfo { public: int* FUN_1402056b0(); };        // the player's manufacture level
@@ -225,7 +216,6 @@ CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strArg, const int& nArg);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strArg0, const CStringW& strArg1);
-const int& FUN_1404eb7e0(const int& a, const int& b);           // std::max<int>
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
     // the experience of one affinity grade
 CGameRule* FUN_1401c0d90();
@@ -234,7 +224,6 @@ __int64 GetServerTime();                                        // the server ti
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
-class Unk_UmLua { public: int FUN_1406769f0(unsigned nSeconds); };
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 CFeatureManager* FUN_140166410();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -257,7 +246,6 @@ UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by U
 class Unk_MfInventory
 {
 public:
-    unsigned FUN_140a5f180(int nItemId, int nRarity);           // owned count of the item (group 0)
     unsigned FUN_140a5f780(int nGroup, int nRarity);            // owned count of the group
 };
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
@@ -295,7 +283,6 @@ class Unk_UmList : public Unk_UmCtl
 {
 public:
     void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dcca0(int n);                                  // select the row
     void FUN_1422dd230(const ASObj& row);                       // append a row
 };
 
@@ -547,14 +534,14 @@ void UIManufactureDialog::vfunc_72()
         return;
     m_nLastTick = GetTickCountMs2();
     MS2Ptr<Unk_UmMfItem> spItem(0);
-    if (reinterpret_cast<Unk_UmMfBook*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(m_nManufactureId, spItem) == 0)
+    if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spItem)) == 0)
         return;
-    CMsTime tReady(spItem->FUN_140694170());
+    CMsTime tReady(reinterpret_cast<CManufacture*>(spItem.operator->())->FUN_140694170());
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan span = tReady - tNow;
     if (tReady > tNow)
     {
-        int nLeft = ((class Unk_UmLua*)FUN_1401c0db0())->FUN_1406769f0(span.GetTotalSeconds());
+        int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
         int nCurrency = 3;
         if (FUN_140166410()->FUN_14036d710(0x102))
             nCurrency = 10;
@@ -587,7 +574,7 @@ void UIManufactureDialog::FUN_1412e34c0()
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -598,18 +585,18 @@ void UIManufactureDialog::FUN_1412e34c0()
         return;
     CStringW strName = FUN_14052bd00(0x7af, spDesc->m_10);
     CStringW strMood;
-    if (spMaid->FUN_14067dd10() == 0)
+    if (reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade() == 0)
         strMood = GetStringCommon(0x79f);
-    else if (spMaid->FUN_14067dd10() == 1)
+    else if (reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade() == 1)
         strMood = GetStringCommon(0x7a0);
     else
         strMood = GetStringCommon(0x7a1);
     CStringW strGrade = FUN_14093fa20(0x7b0, strMood, spMaid->m_54);
     int nNeed = TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_54);
     int nOne = 1;
-    int nMax = FUN_1404eb7e0(nOne, nNeed);
+    int nMax = std::max<int>(nOne, nNeed);
     CStringW strExp = FUN_14028dee0(0x7b1, spMaid->m_50, spMaid->m_60, nMax);
-    if (spMaid->FUN_14067dca0() != 0)
+    if (reinterpret_cast<CMaid*>(spMaid.operator->())->IsAffinityLevelAtMax() != 0)
         strExp = BlockFormat<int>(0x7b2, spMaid->m_50);
     m_30->FUN_1412e80d0("setTitle", CStringW(strName), CStringW(strGrade), CStringW(strExp));
 }
@@ -619,7 +606,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -677,7 +664,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
         spList->vfunc_24(true);
         if (bSelect != 0)
         {
-            spList->FUN_1422dcca0(nFirst);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(nFirst);
             m_nSelected = nFirst;
             FUN_1412e48a0();
         }
@@ -690,9 +677,9 @@ void UIManufactureDialog::FUN_1412e4240()
     if (m_30.IsNull())
         return;
     MS2Ptr<Unk_UmMfItem> spMf(0);
-    if (reinterpret_cast<Unk_UmMfBook*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(m_nManufactureId, spMf) != 0)
+    if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spMf)) != 0)
     {
-        Unk_UmValuePtr<Unk_UmRecipe> spRecipe = reinterpret_cast<Unk_UmRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spMf->FUN_1409eedf0());
+        Unk_UmValuePtr<Unk_UmRecipe> spRecipe = reinterpret_cast<Unk_UmRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_1409eedf0());
         if (spRecipe.get() != 0)
         {
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
@@ -708,10 +695,10 @@ void UIManufactureDialog::FUN_1412e4240()
                 FUN_141415450(m_strProgressKey, spItem, 0, 0x415, 0x800);
                 m_30->FUN_140c38f00("bindProgress", CString(m_strProgressKey), CStringW(strName));
             }
-            CMsTime tReady(spMf->FUN_140694170());
+            CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_140694170());
             CMsTime tNow(GetServerTime());
             ATL::CTimeSpan span = tReady - tNow;
-            int nLeft = ((class Unk_UmLua*)FUN_1401c0db0())->FUN_1406769f0(span.GetTotalSeconds());
+            int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
             int nCurrency = 3;
             if (FUN_140166410()->FUN_14036d710(0x102))
                 nCurrency = 10;
@@ -738,7 +725,7 @@ void UIManufactureDialog::FUN_1412e48a0()
     Unk_UmPC* pPlayer = ((Unk_UmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -751,17 +738,17 @@ void UIManufactureDialog::FUN_1412e48a0()
     if (spRecipe.get() != 0)
     {
         int nGrade = 0;
-        if (((class Unk_UmBookTable*)FUN_1412db940())->FUN_140685e60(spMaid->m_34, nRecipeId, &nGrade) == 0)
+        if (((class CMaidRecipeGroupTable*)FUN_1412db940())->GetRequireLevel(spMaid->m_34, nRecipeId, nGrade) == 0)
             return;
         int bAvailable = 1;
         if (nGrade > spMaid->m_54)
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(reinterpret_cast<Unk_UmEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1110(0x3e), spRecipe->m_2c);
+        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->m_2c);
         CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
-        ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[spMaid->FUN_14067dd10()]);
+        ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
         CStringW strTime = FUN_1412e1e50(span, 1, 0);
         CStringW strCost = FUN_14028dee0(0x7ac, strTime, nMeso);
         m_30->Invoke("selectItem", m_nSelected, CStringW(strName), CStringW(strGrade), CStringW(strCost), bAvailable, ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode());
@@ -784,13 +771,13 @@ void UIManufactureDialog::FUN_1412e48a0()
             Unk_UmValuePtr<Unk_UmIngredient> spIngredient = spRecipe->m_38[k];
             if (spIngredient.IsNull())
                 continue;
-            int nIngItem = spIngredient->FUN_140684c40();
-            int nGroup = spIngredient->FUN_140684c80();
+            int nIngItem = reinterpret_cast<MaidIngredient*>(spIngredient.operator->())->GetItemId();
+            int nGroup = reinterpret_cast<MaidIngredient*>(spIngredient.operator->())->GetItemStringId();
             MS2Ptr<CItemData> spData = FUN_14053f870(nIngItem);
             if (spData == 0)
                 continue;
             int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->m_nRarity : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<Unk_UmEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1110(0x3f), spIngredient->m_nCount);
+            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->m_nCount);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
@@ -801,7 +788,7 @@ void UIManufactureDialog::FUN_1412e48a0()
                 m_aIngredientKeys.Add(strKey);
                 unsigned nHave = 0;
                 if (nGroup == 0)
-                    nHave = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f180(nIngItem, 0);
+                    nHave = g_143ab2a90.FUN_140a5f180(nIngItem, 0);
                 else
                     nHave = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(nGroup, 0);
                 CStringW strBreak(L"");
@@ -850,7 +837,7 @@ void UIManufactureDialog::FUN_1412e5c90()
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -866,7 +853,7 @@ void UIManufactureDialog::FUN_1412e5c90()
 // @0x1412e5dd0
 void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -889,7 +876,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 // @0x1412e5f70
 void UIManufactureDialog::FUN_1412e5f70(int nRow)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -912,7 +899,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
 // @0x1412e6110
 void UIManufactureDialog::FUN_1412e6110(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -932,7 +919,7 @@ void UIManufactureDialog::FUN_1412e6110(int nResult)
 // @0x1412e6250
 void UIManufactureDialog::OnRecieve()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -953,12 +940,12 @@ void UIManufactureDialog::OnRecieve()
 void UIManufactureDialog::OnRecieveByMerat()
 {
     MS2Ptr<Unk_UmMfItem> spMf(0);
-    if (reinterpret_cast<Unk_UmMfBook*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(m_nManufactureId, spMf) == 0)
+    if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spMf)) == 0)
         return;
-    CMsTime tReady(spMf->FUN_140694170());
+    CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_140694170());
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan span = tReady - tNow;
-    __int64 nCost = ((class Unk_UmLua*)FUN_1401c0db0())->FUN_1406769f0(span.GetTotalSeconds());
+    __int64 nCost = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
     if (FUN_140166410()->FUN_14036d710(0x102))
     {
         if (!FUN_140d86260()->vfunc_41(nCost) && !FUN_140d86260()->vfunc_40(nCost))
@@ -975,7 +962,7 @@ void UIManufactureDialog::OnRecieveByMerat()
             return;
         }
     }
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -995,7 +982,7 @@ void UIManufactureDialog::OnRecieveByMerat()
 // @0x1412e66f0
 void UIManufactureDialog::OnRecieveJackpot()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -1015,7 +1002,7 @@ void UIManufactureDialog::OnRecieveJackpot()
 // @0x1412e6850
 void UIManufactureDialog::FUN_1412e6850(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -1035,7 +1022,7 @@ void UIManufactureDialog::FUN_1412e6850(int nResult)
 // @0x1412e69a0
 void UIManufactureDialog::FUN_1412e69a0()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -1055,7 +1042,7 @@ void UIManufactureDialog::FUN_1412e69a0()
 // @0x1412e6af0
 void UIManufactureDialog::FUN_1412e6af0(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -1077,7 +1064,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_UmWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nNpcId);
+    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
@@ -1088,7 +1075,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
     {
         spItem->FUN_140526c70(nAmount);
         Unk_TalkItemList aItems;
-        aItems.FUN_140720b80(spItem);
+        aItems.Add(spItem);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
         {

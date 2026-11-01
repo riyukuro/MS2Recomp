@@ -37,6 +37,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemenchantdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiitemenchantdialog.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -69,6 +70,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/enchantscrolldata.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/equipitem.h"  // C3
 
 // ---- the unit's header statics ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -124,12 +126,10 @@ extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 // Backup (equipped) item record.
-class Unk_BackUpItem : public CPtred
+class Unk_BackUpItem : public CEquipItem
 {
 public:
     void FUN_1411dd6d0(CItem* item);
-    void FUN_1411dd280();
-    MS2Ptr<CItem> FUN_1411dc7a0();
 };
 class Unk_PCItems
 {
@@ -142,13 +142,13 @@ public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
 void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
-float FUN_1411e1110(Unk_PCItems* items, int id);
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 
 class Unk_EnPC : public MyPC
 {
 public:
     MS2Ptr<Unk_BackUpItem> FUN_141655c30(unsigned __int64 uid);
-    int FUN_14166c930();
     int FUN_141662eb0(CItem* item);
 };
 
@@ -169,9 +169,6 @@ class Unk_EnButton : public ASDisplayObject
 {
 public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, size_t n);
-};
-class Unk_EnBag : public ASObj
-{
 };
 class ASDialog : public ASDisplayObject
 {
@@ -376,7 +373,7 @@ MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid)
         return 0;
     MS2Ptr<Unk_BackUpItem> equip = pc->FUN_141655c30(uid);
     if (equip.get() != 0)
-        return equip->FUN_1411dc7a0();
+        return equip->GetItem();
     return 0;
 }
 
@@ -640,7 +637,7 @@ void UIItemEnchantDialog::FUN_1419bfd70()
     FUN_1419c1a40(uids);
     FUN_141414e50(GetTypeName());
     FUN_141414d60(GetTypeName(), uids);
-    if (MS2Ptr<Unk_EnBag> bag = m_enchantAni->FUN_140accef0<Unk_EnBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = m_enchantAni->FUN_140accef0<ASTileList>("m_itemBag"))
         bag->FUN_1407cba60("bagId", GetTypeName());
 }
 
@@ -668,7 +665,7 @@ void UIItemEnchantDialog::FUN_1419bff60()
         uids.Add(cand->GetItemUid());
     }
     FUN_141414d60(bagName, uids);
-    if (MS2Ptr<Unk_EnBag> bag = m_enchantAni->FUN_140accef0<Unk_EnBag>("m_ingredientBag"))
+    if (MS2Ptr<ASTileList> bag = m_enchantAni->FUN_140accef0<ASTileList>("m_ingredientBag"))
         bag->FUN_1407cba60("bagId", CString(bagName));
 }
 
@@ -944,7 +941,7 @@ void UIItemEnchantDialog::FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out)
         MS2Ptr<Unk_BackUpItem> equip = list.GetAt(pos);
         if (!equip)
             continue;
-        MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+        MS2Ptr<CItem> item = equip->GetItem();
         if (!item)
             continue;
         if (item->FUN_140525c60() != 0)
@@ -1045,7 +1042,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
             m_220 = id1;
         }
         m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->FUN_140478b60() / 10000.0f;
-        m_2b4 = m_2b4 + FUN_1411e1110(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()), 0x41);
+        m_2b4 = m_2b4 + reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->GetAbilityRate((SAType)0x41);
     } else if (m_expMode == 2) {
         m_228 = 100.0f;
         m_23c = 100.0f;
@@ -1053,7 +1050,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         m_result.SetRank((unsigned short)pkt.ReadInt16());
         m_result.m_count = pkt.ReadInt32();
         m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->FUN_140478b60() / 10000.0f;
-        m_2b4 = m_2b4 + FUN_1411e1110(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()), 0x41);
+        m_2b4 = m_2b4 + reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->GetAbilityRate((SAType)0x41);
     }
     FUN_1419c81a0();
     FUN_1419bff60();

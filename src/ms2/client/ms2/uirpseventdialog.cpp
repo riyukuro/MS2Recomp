@@ -18,21 +18,17 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/actionkeyobject.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/packethandlermanager.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 
 static const CStringW s_bannerClose(L"bannerClose");
 
 // Unit-local declarations of unrecovered objects; scalar pads preserve /GS behavior.
+// Kept only for the Set<unsigned __int64> COMDAT that this unit defines; locals are real ASObj/ASArray.
 class Unk_RpsASObj : public CPtred {
 public:
-    Unk_RpsASObj(int);
-    Scaleform::GFx::Value& FUN_1422bb870();
     virtual ~Unk_RpsASObj();
-    void FUN_1407cb9c0(const char*, int);
-    void FUN_1407cbbe0(const char*, bool);
-    void FUN_1409c0d20(const char*, int);
-    void FUN_1409adc90(const char*, int);
-    void FUN_1407cba60(const char*, CString);
-    void FUN_1409adbe0(const char*, Scaleform::GFx::Value);
     template<class T> void Set(const char* name, T value) {
         ASData args;
         args.AddSize(value);
@@ -43,14 +39,7 @@ private:
     Scaleform::GFx::Value m_value;
     static void SetValue(Scaleform::GFx::Value&, const char*, const Scaleform::GFx::Value&);
 };
-class Unk_RpsASArray : public Unk_RpsASObj {
-public:
-    Unk_RpsASArray(int);
-    virtual ~Unk_RpsASArray();
-    bool FUN_1422bc050(Scaleform::GFx::Value);
-};
 MS2_CHECK_SIZE(Unk_RpsASObj, 0x40);
-MS2_CHECK_SIZE(Unk_RpsASArray, 0x40);
 class Unk_RpsInts {
 public:
     Unk_RpsInts();
@@ -114,6 +103,11 @@ void FUN_1401d9a30(const CStringW&, Unk_RpsInts&, const wchar_t*);
 MS2Ptr<CItemData> FUN_14053f870(int);
 class Unk_RpsBanner { public: int FUN_140f48d40(); };
 class Unk_RpsMode : public Unk_ActionKeyManager { };
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 class Unk_RpsAvatar {
 public:
     virtual void vfunc_0();
@@ -206,14 +200,8 @@ public:
     virtual MS2Ptr<Unk_RpsBanner> vfunc_87();
     bool FUN_140b7f400();
     Unk_RpsMode* FUN_140a7b810();
-    int FUN_14166c930();
 };
 class Unk_RpsAvatarManager { public: Unk_RpsAvatar* FUN_141bd0cc0(); };
-class Unk_RpsPacketManager {
-public:
-    void FUN_140da5180(int, Delegate<void(CInPacket&)>);
-    void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
-};
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_RpsEventManager {
 public:
@@ -232,9 +220,8 @@ MS2_CHECK_SIZE(Unk_RpsTooltip, 0x60);
 bool FUN_140184310(const CString&, const char*);
 bool FUN_140b883c0();
 void FUN_141275260(int, int, int);
-class Unk_RpsMsgBoxData { public: void FUN_141a01660(const CStringW&); void FUN_141a024a0(int); };
-MS2Ptr<Unk_RpsMsgBoxData> FUN_140d73f20(CStringW, int);
-void FUN_140d73c60(MS2Ptr<Unk_RpsMsgBoxData>);
+MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 void FUN_140d73aa0(CStringW, int, IMessageListener*, CStringW);
 CStringW BlockFormat(int);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -243,11 +230,11 @@ void FUN_14151f200();
 // @0x140e82350
 UIRpsEventDialog::UIRpsEventDialog() : m_178(false) {
     FUN_141924170(1);
-    ((class Unk_RpsPacketManager*)FUN_140bccd50())->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &UIRpsEventDialog::FUN_140e84380));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIRpsEventDialog::OnPacketRefresh));
 }
 // @0x140e82450
 UIRpsEventDialog::~UIRpsEventDialog() {
-    ((class Unk_RpsPacketManager*)FUN_140bccd50())->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &UIRpsEventDialog::FUN_140e84380));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIRpsEventDialog::OnPacketRefresh));
 }
 // @0x140e82520
 CString UIRpsEventDialog::GetTypeName() { return "RpsEventDialog"; }
@@ -255,7 +242,7 @@ MS2_REPLACE_METHOD(0x140e82520, UIRpsEventDialog, GetTypeName, 61, 0x51A22B9E);
 // @0x140e82570
 void UIRpsEventDialog::vfunc_72() {
     UIDialog::vfunc_72();
-    FUN_140e83e40();
+    RefreshBannerButton();
 }
 MS2_REPLACE_METHOD(0x140e82570, UIRpsEventDialog, vfunc_72, 34, 0x702E0955);
 // @0x140e825a0
@@ -265,7 +252,7 @@ void UIRpsEventDialog::vfunc_67() {
     ((class Unk_RpsEventManager*)FUN_140933220())->FUN_140da5490(0x709, Delegate<void(GameEventVariable*)>(this, &UIRpsEventDialog::FUN_140e84350));
     Unk_RpsAvatar* avatar = reinterpret_cast<Unk_RpsAvatarManager*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (avatar) {
-        if (avatar->FUN_14166c930() == 0x3b) avatar->vfunc_59(1, 0, 0, 0);
+        if (reinterpret_cast<PCBase*>(avatar)->FUN_14166c930() == 0x3b) avatar->vfunc_59(1, 0, 0, 0);
     }
 }
 MS2_REPLACE_METHOD(0x140e825a0, UIRpsEventDialog, vfunc_67, 408, 0x3669444F);
@@ -314,8 +301,8 @@ int UIRpsEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* 
         if (!banner->FUN_140f48d40()) return 0;
         {
         CStringW text = BlockFormat(0xd0c);
-        MS2Ptr<Unk_RpsMsgBoxData> box = FUN_140d73f20(text, 1);
-        box->FUN_141a01660(s_bannerClose);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(text, 1);
+        box->SetExtra(s_bannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
         }
@@ -388,21 +375,21 @@ void UIRpsEventDialog::FUN_140e83370(MS2Ptr<Unk_RpsEvent> event) {
     if (event == NULL) { MS2_ASSERT_AT(179, 0); return; }
     Unk_RpsInts received;
     FUN_140e83200(received);
-    Unk_RpsASObj info(2);
-    Unk_RpsASArray rewards(2);
+    ASObj info(2);
+    ASArray rewards(2);
     for (size_t i = 0; i < event->rewards.size(); ++i) {
         MS2Ptr<Unk_RpsReward> reward = event->rewards[i];
         if (reward == NULL) { MS2_ASSERT_AT(193, 0); continue; }
-        Unk_RpsASObj row(2);
-        row.Set("index", i);
+        ASObj row(2);
+        reinterpret_cast<Unk_RpsASObj&>(row).Set("index", i);
         row.FUN_1407cb9c0("cond", reward->playCount);
         row.FUN_1407cbbe0("received", Contains(received, static_cast<int>(i)));
-        Unk_RpsASArray items(2);
+        ASArray items(2);
         for (size_t j = 0; j < reward->items.size(); ++j) {
             Unk_RpsRewardItem& entry = reward->items[j];
             MS2Ptr<CItemData> item = FUN_14053f870(entry.itemId);
             if (item == NULL) { MS2_ASSERT_AT(210, 0); break; }
-            Unk_RpsASObj obj(2);
+            ASObj obj(2);
             obj.FUN_1409c0d20("itemID", entry.itemId);
             obj.FUN_1409adc90("itemRank", (&entry.rank)->vfunc_1());
             obj.FUN_1409c0d20("itemCount", entry.count);
@@ -429,13 +416,13 @@ void UIRpsEventDialog::FUN_140e83a30() {
     if (event == NULL) { MS2_ASSERT_AT(84, 0); return; }
     Unk_RpsInts received;
     FUN_140e83200(received);
-    Unk_RpsASObj info(2);
-    Unk_RpsASArray rewards(2);
+    ASObj info(2);
+    ASArray rewards(2);
     for (size_t i = 0; i < event->rewards.size(); ++i) {
         MS2Ptr<Unk_RpsReward> reward = event->rewards[i];
         if (reward == NULL) { MS2_ASSERT_AT(98, 0); continue; }
-        Unk_RpsASObj row(2);
-        row.Set("index", i);
+        ASObj row(2);
+        reinterpret_cast<Unk_RpsASObj&>(row).Set("index", i);
         row.FUN_1407cbbe0("received", Contains(received, static_cast<int>(i)));
         rewards.FUN_1422bc050(row.FUN_1422bb870());
     }
@@ -446,7 +433,7 @@ void UIRpsEventDialog::FUN_140e83a30() {
 }
 MS2_REPLACE_METHOD(0x140e83a30, UIRpsEventDialog, FUN_140e83a30, 1032, 0xFB5B37EC);
 // @0x140e83e40
-void UIRpsEventDialog::FUN_140e83e40() {
+void UIRpsEventDialog::RefreshBannerButton() {
     if (m_30 == NULL) return;
     if (!FUN_141924630()) return;
     Unk_RpsAvatar* avatar = reinterpret_cast<Unk_RpsAvatarManager*>(WorldService::GetInstance())->FUN_141bd0cc0();
@@ -458,7 +445,7 @@ void UIRpsEventDialog::FUN_140e83e40() {
     m_178 = open;
     m_30->Invoke("refreshBannerButton", m_178);
 }
-MS2_REPLACE_METHOD(0x140e83e40, UIRpsEventDialog, FUN_140e83e40, 344, 0x1DFD9EF8);
+MS2_REPLACE_METHOD(0x140e83e40, UIRpsEventDialog, RefreshBannerButton, 344, 0x1DFD9EF8);
 // @0x140e83fa0
 void UIRpsEventDialog::FUN_140e83fa0(int index) {
     MS2Ptr<Unk_RpsEvent> event = ((class Unk_1401c0d90*)FUN_1401c0d90())->FUN_14047d140();
@@ -495,10 +482,10 @@ MS2_REPLACE_METHOD(0x140e841a0, UIRpsEventDialog, FUN_140e841a0, 412, 0x05B04C1D
 void UIRpsEventDialog::FUN_140e84350(GameEventVariable*) { FUN_140e83a30(); }
 MS2_REPLACE_METHOD(0x140e84350, UIRpsEventDialog, FUN_140e84350, 29, 0xB2FF4CA7);
 // @0x140e84380
-void UIRpsEventDialog::FUN_140e84380(CInPacket&) {
+void UIRpsEventDialog::OnPacketRefresh(CInPacket&) {
     if (FUN_141924630()) FUN_140e83a30();
 }
-MS2_REPLACE_METHOD(0x140e84380, UIRpsEventDialog, FUN_140e84380, 43, 0x27F8372B);
+MS2_REPLACE_METHOD(0x140e84380, UIRpsEventDialog, OnPacketRefresh, 43, 0x27F8372B);
 // @0x140e84a60
 int UIRpsEventDialog::vfunc_48() { return 0x4f5f; }
 MS2_REPLACE_METHOD(0x140e84a60, UIRpsEventDialog, vfunc_48, 11, 0x51EC8AA1);

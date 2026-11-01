@@ -33,6 +33,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 class NotifyObject;
@@ -88,13 +89,8 @@ float FUN_140966f00(Vector3 a, Vector3 b);
 float FUN_140966f00(NiPoint3 a, Vector3 b);
 extern Vector3 DAT_143b01a60;                               // the zero point
 extern Vector3 DAT_143a08cf8;                               // the up axis
-extern const NiRTTI DAT_143afa4d8;                                  // NiNode::ms_RTTI
 
-// the loaded effect model (a smart pointer, dtor 0x1405a85c0) and the model loader
-struct Unk_QnModelRef { void* m_p; ~Unk_QnModelRef(); };
-class Unk_QnModelLoader { public: Unk_QnModelRef FUN_141551ea0(CString strPath, int a, int b, int c, int d); };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-NiObject* FUN_1409849b0(const Unk_QnModelRef& ref);
 
 // riding data (rows of the ride table)
 struct Unk_QnRideRow { char m_pad_00[0x6c]; int m_6c; };
@@ -285,7 +281,7 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
     if (m_10 == 0)
     {
         CString strPath("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif");
-        m_10 = (NiNode*)NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(FUN_1409849b0(((class Unk_QnModelLoader*)FUN_140a0afd0())->FUN_141551ea0(strPath, 0, 5, 0, 0))));
+        m_10 = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)((NiAVObject*)(((class CNifLoadingService*)FUN_140a0afd0())->Load(strPath, false, 5, 0, 0))));
         if ((NiNode*)m_10 != 0)
         {
             NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
@@ -313,7 +309,7 @@ void CQuestNavigator::SelectQuest(int nQuestId)
     if (reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 != nQuestId)
     {
         reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 = nQuestId;
-        ((CGameOption*)(Unk_QnState*)(reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())))->FUN_141243540();
+        ((CGameOption*)(Unk_QnState*)(reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
     }
 }
 

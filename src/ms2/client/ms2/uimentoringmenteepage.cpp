@@ -33,22 +33,20 @@ public:
     bool m_58;
 };
 // The mentoring state kept by the client (singleton DAT_143abb6d8).
-class Unk_MentorInfo
+class Unk_MentorInfo { public: MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n); int FUN_140b71720(); int FUN_140b71750(); };   // C3: the counts stay here, a 64-bit return costs a frame slot at each use
+class CMentoringManager   // C3: view of the real class
 {
 public:
     int FUN_140b71650();
-    MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n);
-    int FUN_140b71720();
-    int FUN_140b71750();
 };
-class Unk_MentorRewards { public: int FUN_14069c120(); };
+class MentoringDataTable { public: unsigned int GetMaxMenteeDailyRewardCoin(); };   // C3: view of the real class
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 extern Unk_MentorInfo* DAT_143abb6d8;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_MentorInviteDialog { public: void FUN_140c2f040(); };
-Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
+class UIInviteMentoringDialog { public: void FUN_140c2f040(); };   // C3: view of the real class
+UIInviteMentoringDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 CPartyManager* FUN_1409670d0();
 // The popup-menu request (0x80 bytes), built by the ctor at 0x140c302f0 and released by the dtor at 0x140c304c0.
@@ -62,7 +60,7 @@ private:
     void* m_pad_38; void* m_pad_40; void* m_pad_48; void* m_pad_50; void* m_pad_58; void* m_pad_60; void* m_pad_68;
     void* m_pad_70; void* m_pad_78;
 };
-class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
+class UIPopUpMenu { public: void FUN_141a7f090(class Unk_PopupMenuInfo const &, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> const &, unsigned __int64, void *, int, int); }; class Unk_PopupMenu : public UIPopUpMenu { };
 Unk_PopupMenu* FUN_140c30140(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
@@ -109,9 +107,9 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 // @0x140c6ea90
 void ASMentoringMenteePage::Refresh()
 {
-    if (!((class Unk_MentorRewards*)FUN_1406c7610())) return;
-    int nMentee = FUN_140c70240()->FUN_140b71650();
-    int nReward = ((class Unk_MentorRewards*)FUN_1406c7610())->FUN_14069c120();
+    if (!((class MentoringDataTable*)FUN_1406c7610())) return;
+    int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
+    int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
     m_coin->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
@@ -151,7 +149,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             FUN_141275260(0x2f7, 1, 1);
             return 1;
         }
-        Unk_MentorInviteDialog* pDlg = FUN_140b6f4c0(0x4f4c);
+        UIInviteMentoringDialog* pDlg = FUN_140b6f4c0(0x4f4c);
         if (pDlg) pDlg->FUN_140c2f040();
         return 1;
     }

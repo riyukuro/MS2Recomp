@@ -46,6 +46,12 @@ static CString s_strBuyTypeNames[8] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
 #include "ms2/client/ms2/equipment.h"  // C3: was a local member view
+#include "ms2/client/ms2/customize.h"
+#include "ms2/client/ms2/equipitem.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/itemdroptable.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
+#include "ms2/placeholder/clientconstants.h"
 static CString s_strCap = "Cap";                                // 0x140110050
 
 // ---- unit-local types ---------------------------------------------------------------------------------------------
@@ -91,15 +97,6 @@ public:
 }
 MS2_CHECK_SIZE(ItemPreviewCommon::CLimitCharRotate, 0x30);
 
-// The world manager (singleton FUN_1403ed2d0).
-class Unk_UabWorld : public WorldService
-{
-public:
-    GameObject* FUN_141bd1180(int nId);                                 // 0x141bd1180 NULL when the id is free
-    PCBase* FUN_141bd1290(int nId);                                     // 0x141bd1290 the PC of an id
-    PCBase* FUN_141bd0cc0();                                            // 0x141bd0cc0 the local player
-};
-
 // The game clock (singleton FUN_14086d260).
 class Unk_UabClock;
 
@@ -136,7 +133,7 @@ public:
     virtual Unk_UabPoint* vfunc_5(Unk_UabPoint* pOut);
 };
 UIRenderView* FUN_140e66980(int nWidth, int nHeight, GameObject* pObj, float fScale);   // creates the view of an object
-void FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);
+int FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);
 
 // ---- UIAvatarBase -------------------------------------------------------------------------------------------------
 
@@ -156,7 +153,7 @@ UIAvatarBase::~UIAvatarBase()
     m_spView = 0;
     m_pListener = 0;
     if (m_nObjectId > 0)
-        ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbbcf0(m_nObjectId, 0);
+        WorldService::GetInstance()->FUN_141bbbcf0(m_nObjectId, 0);
     m_nObjectId = 0;
 }
 
@@ -496,7 +493,7 @@ MS2_REPLACE_METHOD(0x1418B92A0, UIAvatarBase, vfunc_23, 33, 0xFA59B52F);
 GameObject* UIAvatarBase::vfunc_24()
 {
     if (m_nObjectId > 0)
-        return ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1180(m_nObjectId);
+        return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x1418B92D0, UIAvatarBase, vfunc_24, 50, 0xB89C59A3);
@@ -883,73 +880,16 @@ public:
     unsigned __int64 m_nPcId;                                           // +0x30
 };
 
-// The character customize of the preview (0x88, ctor 0x140cd1570); only the members used here are named.
-class Customize : public CPtred
-{
-public:
-    Customize(int nObjectId, int nZero, bool bFlag);                    // 0x140cd1570
-    void FUN_140cd1c90(CItem* pItem);                                   // equips an item
-    void FUN_140cd1d50(int nValue);
-    void ClearPreview();                                               // clears the items
-    void Unequip(CItem* pItem);                                   // unequips an item
-    void UnequipId(int nValue);
-    void FUN_140cd1f90(CItem* pItem);
-    void RestoreAll();                                               // resets
-    void ApplyItem(MS2Ptr<CItem> spItem, int nValue);
-    void FUN_140cd3480(int nValue, int nMode);
-private:
-    char m_unk_18[0x70];
-};
-MS2_CHECK_SIZE(Customize, 0x88);
-
-// The equipment record of an inventory slot and the player that owns the inventory.
-class Unk_UabEquip : public CPtred
-{
-public:
-    CItem* FUN_1411dc870();                                             // the equipped item
-};
-class Unk_UabPlayer : public PC
-{
-public:
-    MS2Ptr<Unk_UabEquip> FUN_141655cf0(int nSlot);                      // equipped item of a slot
-    MS2Ptr<Unk_UabEquip> FUN_141655c90(int nSlot);                      // equipped item of a slot (second table)
-};
-Unk_UabPlayer* FUN_14099eef0(GameObject* pObj);                         // the PC of an object (NULL if it is none)
-AvatarPC* FUN_140a535c0(GameObject* pObj);                              // the AvatarPC of an object (NULL if it is none)
 
 // The client constants used by the rotation limit.
-struct Unk_UabCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
-struct Unk_UabCfgInt { int* FUN_1402056b0(); char m_pad[0x58]; };
-struct Unk_UabConfig { char m_pad0[0xc6b8]; Unk_UabCfgFloat m_fRotateSpeed; Unk_UabCfgInt m_nRotateMax; };
-MS2_CHECK_OFFSET(Unk_UabConfig, m_nRotateMax, 0xc710);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-float FUN_1418bffd0(Unk_UabCfgInt* pValue);                             // the int value as a float
+float FUN_1418bffd0(Common::Constants::Value<int>* pValue);                             // the int value as a float
 
 MS2Ptr<CItemData> FUN_1403bb3b0(const MS2Ptr<CItemData>& sp);
 
-// The ingredient table row of a skin colour (FUN_140281980 / avatarpc.cpp).
-struct Unk_UabPresetRow { char m_pad_00[0x3c]; unsigned m_anColor[3]; };
-class Unk_UabPresetPtr
-{
-public:
-    ~Unk_UabPresetPtr() { FUN_14056c2d0(); }
-    void FUN_14056c2d0();                                               // release
-    Unk_UabPresetRow* FUN_14059cf00() const;                            // get
-    Unk_UabPresetRow* FUN_14056d570() const;                            // operator->
-    bool FUN_14056cf90(int n) const;                                    // operator==(NULL)
-    Unk_UabPresetRow* FUN_14056d630() const;                            // the row
-    void* m_pad_00;
-    Unk_UabPresetRow* m_p;
-};
-class Unk_UabColorSet;
-class Unk_UabIngTable { public: Unk_UabPresetPtr FUN_1405587f0(int nId, int n); Unk_UabColorSet FUN_140558ad0(int nId); };
-Unk_UabIngTable* FUN_140281980();
 int FUN_141423cf0(__int64, struct Unk_UgcExtra const&, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423cf0
 Unk_CharEquip FUN_141b6dea0(unsigned uColor);                           // colour value -> equip record
 
-// Item data -> customize range (the morph range of the first section).
-struct Unk_UabRangeList { int FUN_1405451a0(); };
-struct Unk_UabSection { Unk_UabRangeList* FUN_14054b2f0(int nKind); };
 unsigned int FUN_141420a30(unsigned int, class CItem*, class AvatarPC*);   // C3: was FUN_141420a30
 
 // Avatar state helpers.
@@ -1008,8 +948,8 @@ UIAvatarPC::~UIAvatarPC()
 void UIAvatarPC::vfunc_1(IUIAvatarEventListener* pListener)
 {
     UIAvatarBase::vfunc_1(pListener);
-    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(((struct Unk_UabConfig*)FUN_1401d3200())->m_fRotateSpeed.FUN_1402bac70(),
-                                                                   FUN_1418bffd0(&((struct Unk_UabConfig*)FUN_1401d3200())->m_nRotateMax)));
+    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(FUN_1401d3200()->UgcshopCharRotateStartDegreeY.Read(),
+                                                                   FUN_1418bffd0(&FUN_1401d3200()->UgcshopCharRotateEndDegreeY)));
 }
 
 // @0x1418baab0
@@ -1026,7 +966,7 @@ MS2_REPLACE_METHOD(0x1418BAAB0, UIAvatarPC, vfunc_2, 94, 0x5098D0EE);
 void UIAvatarPC::vfunc_21(UIRenderView* pView)
 {
     UIAvatarBase::vfunc_21(pView);
-    AvatarPC* pAvatar = FUN_140a535c0(vfunc_24());
+    AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(vfunc_24());
     if (pAvatar)
     {
         pAvatar->vfunc_147((UIModelView*)pView);   // MS2: slot 147
@@ -1043,7 +983,7 @@ GameObject* UIAvatarPC::vfunc_23()
     {
         unsigned nRideeId = pAvatar->FUN_1409f6450();
         if (nRideeId > 0)
-            return ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1180(nRideeId);
+            return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(nRideeId));
     }
     return UIAvatarBase::vfunc_24();
 }
@@ -1090,7 +1030,7 @@ int UIAvatarPC::vfunc_0(GameObject* pObj)
 void UIAvatarPC::FUN_1418baef0(int nValue)
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1d50(nValue);
+        m_spCustomize->EquipItemId(nValue);
 }
 MS2_REPLACE_METHOD(0x1418BAEF0, UIAvatarPC, FUN_1418baef0, 73, 0x234AD161);
 
@@ -1098,7 +1038,7 @@ MS2_REPLACE_METHOD(0x1418BAEF0, UIAvatarPC, FUN_1418baef0, 73, 0x234AD161);
 void UIAvatarPC::FUN_1418baf40(CItem* pItem)
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1c90(pItem);
+        m_spCustomize->EquipItem(pItem);
 }
 MS2_REPLACE_METHOD(0x1418BAF40, UIAvatarPC, FUN_1418baf40, 75, 0x86EAC9CE);
 
@@ -1107,16 +1047,16 @@ void UIAvatarPC::FUN_1418bafa0(CItem* pItem, int nEffect)
 {
     if (m_spCustomize == 0)
         return;
-    m_spCustomize->FUN_140cd1c90(pItem);
+    m_spCustomize->EquipItem(pItem);
     if (0 < nEffect)
     {
-        AvatarPC* pAvatar = FUN_140a535c0(vfunc_24());
+        AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(vfunc_24());
         if (pAvatar == 0)
             return;
-        Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nEffect, 0);
-        if (kRow.FUN_14056cf90(0))
+        MS2Ptr<ItemColorEx> kRow = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColor(nEffect, 0);
+        if (kRow == 0)
             return;
-        FUN_141423cf0(pItem->GetItemUid(), *(struct Unk_UgcExtra const*)(kRow.FUN_14056d630()), (struct Unk_UgcPlayer*)(pAvatar), 0);
+        FUN_141423cf0(pItem->GetItemUid(), *(struct Unk_UgcExtra const*)&(*kRow), (struct Unk_UgcPlayer*)(pAvatar), 0);
     }
 }
 
@@ -1127,7 +1067,6 @@ bool UIAvatarPC::FUN_1418bb0c0(CItem* pItem)
 }
 
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems, ATL::CAtlArray<MS2Ptr<CItemData> >* pOthers);   // walks the drops of a cube item set
-Unk_InventoryEquipSlot FUN_140526c30(CItem* pItem);                                        // the equip slot of an item
 int FUN_141420f10(CItemData* pData, AvatarPC* pAvatar);                 // the customize id of an item data
 __int64 FUN_14028d0e0();                                                // next item uid
 MS2_REPLACE_METHOD(0x1418BB0C0, UIAvatarPC, FUN_1418bb0c0, 37, 0xF0568DFA);
@@ -1229,7 +1168,7 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)5, MS2Ptr<CItem>(spItem));
         }
         else
-            spNew->FUN_1418bf9b0(FUN_140526c30(spItem.operator->()), MS2Ptr<CItem>(spItem));
+            spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)spItem.operator->()->FUN_140526c30(), MS2Ptr<CItem>(spItem));
     }
     static_cast<Unk_AvPackageMapView&>(m_mapPackages).FUN_1418c0f00(Unk_AvPackagePair(*pKey, spNew));
     return !spNew->FUN_1418bfcc0();
@@ -1249,7 +1188,7 @@ MS2_REPLACE_METHOD(0x1418BBC20, UIAvatarPC, FUN_1418bbc20, 73, 0xA926B992);
 void UIAvatarPC::FUN_1418bbc70(CItem* pItem)
 {
     if (m_spCustomize.get())
-        m_spCustomize->FUN_140cd1f90(pItem);
+        m_spCustomize->UnequipUid((__int64)pItem);
 }
 MS2_REPLACE_METHOD(0x1418BBC70, UIAvatarPC, FUN_1418bbc70, 75, 0x8526D769);
 
@@ -1266,15 +1205,15 @@ void UIAvatarPC::FUN_1418bbd30(int nSlot)
 {
     if (m_spCustomize == 0)
         return;
-    Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
+    PC* pPlayer = efd::DynamicCast<PC>(vfunc_24());
     if (!pPlayer)
         return;
-    MS2Ptr<Unk_UabEquip> spEquip = pPlayer->FUN_141655cf0(nSlot);
+    MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655cf0(nSlot);
     if (spEquip.get())
-        FUN_1418bbc70(spEquip->FUN_1411dc870());
-    MS2Ptr<Unk_UabEquip> spEquip2 = pPlayer->FUN_141655c90(nSlot);
+        FUN_1418bbc70((CItem*)spEquip->FUN_1411dc870());
+    MS2Ptr<CEquipItem> spEquip2 = pPlayer->FUN_141655c90(nSlot);
     if (spEquip2.get())
-        FUN_1418bbc70(spEquip2->FUN_1411dc870());
+        FUN_1418bbc70((CItem*)spEquip2->FUN_1411dc870());
 }
 
 // @0x1418bbe40
@@ -1351,7 +1290,7 @@ MS2_REPLACE_METHOD(0x1418BC280, UIAvatarPC, FUN_1418bc280, 79, 0x40AEB62A);
 // @0x1418bc2e0
 void UIAvatarPC::vfunc_4(__int64 nItemUid)
 {
-    Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
+    PC* pPlayer = efd::DynamicCast<PC>(vfunc_24());
     if (pPlayer == 0)
         return;
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
@@ -1365,13 +1304,13 @@ void UIAvatarPC::FUN_1418bc380(CItem* pItem)
 {
     if (pItem == 0)
         return;
-    Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
+    PC* pPlayer = efd::DynamicCast<PC>(vfunc_24());
     if (pPlayer == 0)
         return;
     if (m_spCustomize.get())
     {
         m_spCustomize->Unequip(pItem);
-        int nCustomizeId = FUN_141420a30(((struct Unk_UabSection*)((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->FUN_14053eba0())->FUN_14054b2f0(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
+        int nCustomizeId = FUN_141420a30(((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->FUN_14053eba0()->GetGroup(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
         if (spData.get())
             m_spCustomize->ApplyItem(MS2Ptr<CItem>(pItem), nCustomizeId);
@@ -1411,7 +1350,7 @@ void UIAvatarPC::FUN_1418bc630()
 // @0x1418bc740
 int UIAvatarPC::FUN_1418bc740()
 {
-    PCBase* pPc = ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
+    PCBase* pPc = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     if (pPc != 0)
         return ((class PC*)(class PCBase*)(pPc))->FUN_141658e60();
     return 3;
@@ -1445,7 +1384,7 @@ void UIAvatarPC::FUN_1418bc860(int nParam)
     GameObject* pObj = vfunc_24();
     if (pObj)
     {
-        AvatarPC* pAvatar = FUN_140a535c0(pObj);
+        AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(pObj);
         if (pAvatar)
             ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166cc40(nParam);
     }
@@ -1460,11 +1399,11 @@ void UIAvatarPC::FUN_1418bc8c0(int nSkin, int /*nUnused*/)
     Unk_CharEquip kColor0;
     Unk_CharEquip kColor1;
     {
-        Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nSkin, 0);
-        if (kRow.FUN_14059cf00())
+        MS2Ptr<ItemColorEx> kRow = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColor(nSkin, 0);
+        if (kRow.get())
         {
-            kColor0 = FUN_141b6dea0(kRow.FUN_14056d570()->m_anColor[0]);
-            kColor1 = FUN_141b6dea0(kRow.FUN_14056d570()->m_anColor[2]);
+            kColor0 = FUN_141b6dea0(kRow.operator->()->m_aValues[0]);
+            kColor1 = FUN_141b6dea0(kRow.operator->()->m_aValues[2]);
         }
     }
     FUN_1418bca10(kColor0, kColor1);
@@ -1641,7 +1580,7 @@ void UIAvatarPC::FUN_1418bd150(unsigned int a, unsigned int b)
 // @0x1418bd1d0
 AvatarPC* UIAvatarPC::FUN_1418bd1d0()
 {
-    return FUN_140a535c0(vfunc_24());
+    return efd::DynamicCast<AvatarPC>(vfunc_24());
 }
 MS2_REPLACE_METHOD(0x1418BD1D0, UIAvatarPC, FUN_1418bd1d0, 41, 0xF3F5DAB3);
 
@@ -1758,8 +1697,6 @@ void UIAvatarPC::FUN_1418bd860(int nPose)
 
 // ---- UIAvatarCube / UIAvatarRidee / UIAvatarPet -------------------------------------------------------------------
 
-AvatarCube* FUN_1418a49c0(GameObject* pObj);                            // efd::DynamicCast<AvatarCube>
-AvatarRidee* FUN_1418a4a10(GameObject* pObj);                           // efd::DynamicCast<AvatarRidee>
 MS2_REPLACE_METHOD(0x1418BD860, UIAvatarPC, FUN_1418bd860, 109, 0xB0325FFA);
 
 // @0x1418bd8e0
@@ -1782,7 +1719,7 @@ void UIAvatarCube::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarCube* pCube = FUN_1409f2670(m_pItemData);
     if (pCube)
     {
-        if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pCube, 0, 1))
+        if (WorldService::GetInstance()->FUN_141bbb1e0(pCube, 0, 1))
         {
             m_nObjectId = pCube->FUN_14123c580();
             pCube->SetListener(this);
@@ -1795,7 +1732,7 @@ MS2_REPLACE_METHOD(0x1418BD9A0, UIAvatarCube, vfunc_1, 161, 0x5E232546);
 void UIAvatarCube::vfunc_21(UIRenderView* pView)
 {
     UIAvatarBase::vfunc_21(pView);
-    AvatarCube* pCube = FUN_1418a49c0(vfunc_24());
+    AvatarCube* pCube = efd::DynamicCast<AvatarCube>(vfunc_24());
     if (pCube)
     {
         pCube->FUN_141084d00(static_cast<UIModelView*>(pView));
@@ -1808,7 +1745,7 @@ MS2_REPLACE_METHOD(0x1418BDA50, UIAvatarCube, vfunc_21, 124, 0xE8384573);
 void UIAvatarCube::FUN_1418bdae0(void* pUnused)
 {
     vfunc_3();
-    AvatarCube* pCube = FUN_1418a49c0(vfunc_24());
+    AvatarCube* pCube = efd::DynamicCast<AvatarCube>(vfunc_24());
     if (pCube)
         pCube->vfunc_58(MS2Ptr<CItemData>(0), MS2Ptr<CItem>(0));
 }
@@ -1826,7 +1763,7 @@ MS2_REPLACE_METHOD(0x1418BDBB0, UIAvatarCube, vfunc_22, 74, 0x7F20A675);
 void UIAvatarCube::FUN_1418bdc00(CItemData* pData)
 {
     m_pItemData = pData;
-    AvatarCube* pCube = FUN_1418a49c0(vfunc_24());
+    AvatarCube* pCube = efd::DynamicCast<AvatarCube>(vfunc_24());
     if (pCube)
         pCube->vfunc_58(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
 }
@@ -1836,7 +1773,7 @@ MS2_REPLACE_METHOD(0x1418BDC00, UIAvatarCube, FUN_1418bdc00, 209, 0x64AD802E);
 void UIAvatarCube::vfunc_3()
 {
     UIAvatarBase::vfunc_3();
-    AvatarCube* pCube = FUN_1418a49c0(vfunc_24());
+    AvatarCube* pCube = efd::DynamicCast<AvatarCube>(vfunc_24());
     if (pCube)
         pCube->FUN_141085250();
 }
@@ -1865,7 +1802,7 @@ MS2_REPLACE_METHOD(0x1418BDD30, UIAvatarCube, vfunc_28, 321, 0x8AD39274);
 // @0x1418bde80
 AvatarCube* UIAvatarCube::FUN_1418bde80()
 {
-    return FUN_1418a49c0(vfunc_24());
+    return efd::DynamicCast<AvatarCube>(vfunc_24());
 }
 MS2_REPLACE_METHOD(0x1418BDE80, UIAvatarCube, FUN_1418bde80, 41, 0xE9AF397A);
 
@@ -1902,7 +1839,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
         AvatarRidee* pRidee = FUN_1409f92d0(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
         if (pRidee)
         {
-            if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pRidee, 0, 1))
+            if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
             {
                 m_nObjectId = pRidee->FUN_14123c580();
                 pRidee->SetListener(this);
@@ -1916,7 +1853,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
             AvatarRidee* pRidee = FUN_1409f9430(m_spRow);
             if (pRidee)
             {
-                if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pRidee, 0, 1))
+                if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
                 {
                     m_nObjectId = pRidee->FUN_14123c580();
                     pRidee->SetListener(this);
@@ -1931,7 +1868,7 @@ MS2_REPLACE_METHOD(0x1418BE0B0, UIAvatarRidee, vfunc_1, 504, 0x1341BC9B);
 void UIAvatarRidee::vfunc_21(UIRenderView* pView)
 {
     UIAvatarBase::vfunc_21(pView);
-    AvatarRidee* pRidee = FUN_1418a4a10(vfunc_24());
+    AvatarRidee* pRidee = efd::DynamicCast<AvatarRidee>(vfunc_24());
     if (pRidee)
     {
         pRidee->FUN_141084d00(static_cast<UIModelView*>(pView));
@@ -1944,7 +1881,7 @@ MS2_REPLACE_METHOD(0x1418BE2B0, UIAvatarRidee, vfunc_21, 124, 0x1A084943);
 void UIAvatarRidee::FUN_1418be340(void* pUnused)
 {
     vfunc_3();
-    AvatarRidee* pRidee = FUN_1418a4a10(vfunc_24());
+    AvatarRidee* pRidee = efd::DynamicCast<AvatarRidee>(vfunc_24());
     if (pRidee)
         pRidee->vfunc_58(MS2Ptr<CItemData>(0), MS2Ptr<CItem>(0));
 }
@@ -1963,7 +1900,7 @@ void UIAvatarRidee::FUN_1418be460(CItemData* pData)
 {
     m_pItemData = pData;
     m_spRow = 0;
-    AvatarRidee* pRidee = FUN_1418a4a10(vfunc_24());
+    AvatarRidee* pRidee = efd::DynamicCast<AvatarRidee>(vfunc_24());
     if (pRidee == 0)
         vfunc_1(m_pListener);
     else
@@ -1976,7 +1913,7 @@ void UIAvatarRidee::FUN_1418be580(Unk_RideePtr spRow)
 {
     m_spRow = spRow;
     m_pItemData = 0;
-    AvatarRidee* pRidee = FUN_1418a4a10(vfunc_24());
+    AvatarRidee* pRidee = efd::DynamicCast<AvatarRidee>(vfunc_24());
     if (pRidee)
         pRidee->FUN_1409f9ea0(m_spRow);
 }
@@ -1986,7 +1923,7 @@ MS2_REPLACE_METHOD(0x1418BE580, UIAvatarRidee, FUN_1418be580, 173, 0xEC2CAD68);
 void UIAvatarRidee::vfunc_3()
 {
     UIAvatarBase::vfunc_3();
-    AvatarRidee* pRidee = FUN_1418a4a10(vfunc_24());
+    AvatarRidee* pRidee = efd::DynamicCast<AvatarRidee>(vfunc_24());
     if (pRidee)
         pRidee->FUN_141085250();
 }
@@ -2015,7 +1952,7 @@ MS2_REPLACE_METHOD(0x1418BE690, UIAvatarRidee, vfunc_28, 321, 0x92186B9C);
 // @0x1418be7e0
 AvatarRidee* UIAvatarRidee::FUN_1418be7e0()
 {
-    return FUN_1418a4a10(vfunc_24());
+    return efd::DynamicCast<AvatarRidee>(vfunc_24());
 }
 MS2_REPLACE_METHOD(0x1418BE7E0, UIAvatarRidee, FUN_1418be7e0, 41, 0xCB75113F);
 
@@ -2055,7 +1992,7 @@ void UIAvatarPet::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarPet* pPet = FUN_1409f8510(m_pItemData);
     if (pPet)
     {
-        if (((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pPet, 0, 1))
+        if (WorldService::GetInstance()->FUN_141bbb1e0(pPet, 0, 1))
         {
             m_nObjectId = pPet->FUN_14123c580();
             pPet->SetListener(this);
@@ -2143,28 +2080,14 @@ AvatarPet* UIAvatarPet::FUN_1418bee00()
 
 // ---- the skin colour list ------------------------------------------------------------------------------------------
 
-// One row of the skin colour table (+0x38 colour, +0x3c / +0x44 the two tints, read as m_anColor[0] / [2]).
-struct Unk_UabColorRow { char m_pad_00[0x38]; unsigned long m_nColor; unsigned long m_anColor[3]; };
-MS2_CHECK_OFFSET(Unk_UabColorRow, m_anColor, 0x3c);
+
+// Layout of the MS2Ptr<ItemColorEx> handle, for the exe's null test.
 class Unk_UabColorElem
 {
 public:
-    Unk_UabColorElem(Unk_UabColorRow* pRow);                    // 0x14056a550
-    ~Unk_UabColorElem();                                        // 0x14056c2d0
-    Unk_UabColorRow* FUN_14056d570() const;                     // operator->
     bool FUN_1418c14b0() const { return m_p == 0; }             // 0x1418c14b0 null test
     void* m_pad_00;
-    Unk_UabColorRow* m_p;
-};
-class Unk_UabColorList { public: size_t FUN_140570e10(); Unk_UabColorRow* FUN_140570dd0(size_t n); };
-class Unk_UabColorSet
-{
-public:
-    ~Unk_UabColorSet();                                         // 0x14056c240
-    void* FUN_14056d460() const;
-    Unk_UabColorList* FUN_14056d540() const;
-    void* m_pad_00;
-    void* m_p;
+    ItemColorEx* m_p;
 };
 
 struct Unk_UabColor3 { float x; float y; float z; };
@@ -2177,25 +2100,25 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
 {
     ASArray kColors(2);
     int nSelected = 0;
-    Unk_UabColorSet kSet = FUN_140281980()->FUN_140558ad0(nSkinTable);
-    if (kSet.FUN_14056d460() != 0)
+    Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> kSet = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColors(nSkinTable);
+    if (kSet.get() != 0)
     {
-        size_t nCount = kSet.FUN_14056d540()->FUN_140570e10();
+        size_t nCount = kSet.operator->()->GetCount();
         for (size_t i = 0; i < nCount; i++)
         {
-            Unk_UabColorElem kElem(kSet.FUN_14056d540()->FUN_140570dd0(i));
-            if (kElem.FUN_1418c14b0())
+            MS2Ptr<ItemColorEx> kElem(kSet.operator->()->GetAt(i));
+            if (reinterpret_cast<const Unk_UabColorElem*>(&kElem)->FUN_1418c14b0())
                 continue;
             ASObj kObj(2);
-            kObj.FUN_1409c4990("color0", kElem.FUN_14056d570()->m_anColor[0]);
-            kObj.FUN_1409c4990("color1", kElem.FUN_14056d570()->m_anColor[2]);
-            unsigned long nColor = kElem.FUN_14056d570()->m_nColor;
+            kObj.FUN_1409c4990("color0", kElem.operator->()->m_aValues[0]);
+            kObj.FUN_1409c4990("color1", kElem.operator->()->m_aValues[2]);
+            unsigned long nColor = kElem.operator->()->m_n38;
             kObj.FUN_1409c4990("realColor", nColor);
             kObj.FUN_1409c4990("visibleColor", nColor);
             kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
         }
     }
-    PCBase* pPlayer = ((class Unk_UabWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer)
     {
         ASObj kObj(2);
@@ -2274,24 +2197,7 @@ void FUN_1418bf3c0(float* pAngle)
 
 // ---- the cube item set drop walk ----------------------------------------------------------------------------------
 
-// ItemDropResult (0x70 bytes, polymorphic): the item id sits at +0x20. Its copy ctor / dtor are bound by symbols-manual.
-class Unk_UabDrop
-{
-public:
-    Unk_UabDrop(const Unk_UabDrop& o);                          // 0x1402fe810
-    ~Unk_UabDrop();                                             // 0x1402ffb40
-    virtual unsigned vfunc_0();
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();
-    __int64 m_08, m_10, m_18;
-    int m_nItemId;                                              // +0x20
-    int m_24;
-    __int64 m_28, m_30, m_38, m_40, m_48, m_50, m_58, m_60, m_68;
-};
-MS2_CHECK_SIZE(Unk_UabDrop, 0x70);
-MS2_CHECK_OFFSET(Unk_UabDrop, m_nItemId, 0x20);
-class Unk_UabDropTable { public: void FUN_1402ea4c0(int nGroup, std::vector<Unk_UabDrop>& kOut); };
-Unk_UabDropTable* FUN_1405a1fd0();
+ItemDropTable* FUN_1405a1fd0();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems, ATL::CAtlArray<MS2Ptr<CItemData> >* pOthers);
@@ -2318,16 +2224,16 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
     int nGroup = ((struct ItemFunction*)(void*)(&spData->function.name))->FUN_14054a460();
     if (nGroup == 0)
         return false;
-    std::vector<Unk_UabDrop> kDrops;
-    FUN_1405a1fd0()->FUN_1402ea4c0(nGroup, kDrops);
-    std::vector<Unk_UabDrop>::iterator it = kDrops.begin();
+    std::vector<ItemDropResult> kDrops;
+    FUN_1405a1fd0()->GetBoxItems(nGroup, kDrops);
+    std::vector<ItemDropResult>::iterator it = kDrops.begin();
     ATL::CAtlMap<int, MS2Ptr<CItemData> > kUnused;
     for (; it != kDrops.end(); ++it)
     {
-        Unk_UabDrop kDrop = *it;
-        if (nItemId == kDrop.m_nItemId)
+        ItemDropResult kDrop = *it;
+        if (nItemId == kDrop.m_itemId)
             continue;
-        MS2Ptr<CItemData> spItem = FUN_14053f870(kDrop.m_nItemId);
+        MS2Ptr<CItemData> spItem = FUN_14053f870(kDrop.m_itemId);
         if (!spItem)
             continue;
         if (((class CItemData*)(class CItemData*)(spItem.operator->()))->GetType() != 0x19)
@@ -2356,8 +2262,6 @@ void FUN_1418bf800(unsigned nKey, Unk_AvPackageKey* pOut)
 class Unk_MeratEquipEntry : public CPtred
 {
 public:
-    int FUN_1406ab1d0();                                        // state == 1
-    int FUN_1406ab1a0();                                        // state == 0
     char m_pad_18[0x10];
     int m_nState;                                               // +0x28
     char m_pad_2c[0x1c];
@@ -2369,9 +2273,9 @@ void FUN_1418bf850(MS2Ptr<Unk_MeratEquipEntry> spEntry, Unk_AvPackageKey* pOut)
 {
     if (spEntry == 0)
         return;
-    if (spEntry->FUN_1406ab1d0() != 0)
+    if (reinterpret_cast<CMeratMarketProduct*>(spEntry.operator->())->IsUgc() != 0)
         return;
-    if (spEntry->FUN_1406ab1a0() != 0)
+    if (reinterpret_cast<CMeratMarketProduct*>(spEntry.operator->())->IsPremium() != 0)
     {
         int nZero = 0;
         *pOut = Unk_AvPackageKey(nZero, spEntry->m_nId);
@@ -2452,9 +2356,9 @@ bool CAvatarPackageEquip::FUN_1418bfcc0()
 MS2_REPLACE_METHOD(0x1418BFCC0, CAvatarPackageEquip, FUN_1418bfcc0, 31, 0xABDCEF43);
 
 // @0x1418bffd0
-float FUN_1418bffd0(Unk_UabCfgInt* pValue)
+float FUN_1418bffd0(Common::Constants::Value<int>* pValue)
 {
-    return (float)*pValue->FUN_1402056b0();
+    return (float)*pValue->Get();
 }
 
 // @0x1418c0f00

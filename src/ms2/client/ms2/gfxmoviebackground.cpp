@@ -229,7 +229,7 @@ class MinimapViewport : public NiRefObject
 {
 public:
     MinimapViewport();                                                      // 0x1414856d0
-    unsigned FUN_141485770(int n);
+    unsigned InitFromFieldMinimap(int n);
     bool FUN_141486450(const Vector3& kPos, NiPoint3& kOut, float fScale);   // kOut is 12 bytes: the exe writes +8
 private:
     char m_pad[0x90 - sizeof(NiRefObject)];
@@ -427,7 +427,7 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
             if (m_spScript.get() != 0)
                 m_spScript->Invoke("loadBG", FUN_14127be10(), m_nCameraFlag);
             m_spViewport = NiNew MinimapViewport;
-            m_n98 = m_spViewport->FUN_141485770(0);
+            m_n98 = m_spViewport->InitFromFieldMinimap(0);
         }
     }
     else if (_stricmp("loadComplete", szEvent) == 0)
@@ -643,7 +643,7 @@ MS2Ptr<AScript> GFxMovieBackground::GetScript() { return m_spScript; }
 // @0x14127ab40
 int GFxMovieBackground::IsLoaded() { return m_bLoaded; }
 // @0x14127ab60
-int GFxMovieBackground::FUN_14127ab60(CString strLabel)
+int GFxMovieBackground::GotoAndPlay(CString strLabel)
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
     {
@@ -653,7 +653,7 @@ int GFxMovieBackground::FUN_14127ab60(CString strLabel)
     return 0;
 }
 // @0x14127ac70
-int GFxMovieBackground::FUN_14127ac70(CString strLabel)
+int GFxMovieBackground::GotoAndStop(CString strLabel)
 {
     if (m_bLoaded != 0 && (m_spScript.get() ? true : false))
     {
@@ -962,8 +962,8 @@ MS2_REPLACE_METHOD(0x14127a7e0, GFxMovieBackground, vfunc_13, 171, 0x8D5B6885);
 MS2_REPLACE_METHOD(0x14127a8a0, GFxMovieBackground, vfunc_14, 566, 0x3E1E7EBA);
 MS2_REPLACE_METHOD(0x14127aaf0, GFxMovieBackground, GetScript, 67, 0xCFE02519);
 MS2_REPLACE_METHOD(0x14127ab40, GFxMovieBackground, IsLoaded, 17, 0xEA51A84B);
-MS2_REPLACE_METHOD(0x14127ab60, GFxMovieBackground, FUN_14127ab60, 263, 0xE2541036);
-MS2_REPLACE_METHOD(0x14127ac70, GFxMovieBackground, FUN_14127ac70, 263, 0xBD3016D1);
+MS2_REPLACE_METHOD(0x14127ab60, GFxMovieBackground, GotoAndPlay, 263, 0xE2541036);
+MS2_REPLACE_METHOD(0x14127ac70, GFxMovieBackground, GotoAndStop, 263, 0xBD3016D1);
 MS2_REPLACE_METHOD(0x14127ad80, GFxMovieBackground, Play, 131, 0xE80F1320);
 MS2_REPLACE_METHOD(0x14127ae10, GFxMovieBackground, Stop, 131, 0x1B9AEB70);
 MS2_REPLACE_METHOD(0x14127aea0, GFxMovieBackground, ShowBackgroundColor, 151, 0xDE7E9855);

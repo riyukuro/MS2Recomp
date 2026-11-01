@@ -19,12 +19,6 @@ class Unk_PCD88 : public CPtred {};
 
 // The PC methods used here (their units define the real classes).
 
-// The entity manager (WorldService): finds a PC by object id.
-class Unk_EntityMgr
-{
-public:
-    PC* FUN_141bd1290(int nId);                 // 0x141bd1290
-};
 class CBoneRotateManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -105,7 +99,7 @@ void CHeadEmotionAction::vfunc_6(double f)
 {
     if (vfunc_4())
     {
-        PC* pPC = reinterpret_cast<Unk_EntityMgr*>(WorldService::GetInstance())->FUN_141bd1290(m_n18);
+        PC* pPC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_n18));
         if (pPC != 0)
             ((class CBoneRotateManager*)(class Unk_PCD88*)(pPC->FUN_14165c2d0().operator->()))->StopLooking();
     }

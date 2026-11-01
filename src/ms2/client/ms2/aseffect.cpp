@@ -28,6 +28,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/client/ms2/additionalcli.h"
 
 // The header statics of this unit: header_statics_a.h's four, then the sort-name tables of two more headers.
 static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -35,7 +36,7 @@ static CString s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 
 // ---- externals ----
 extern Scaleform::GFx::Value DAT_143b0ae18;                     // the undefined value an effect clip starts from
-void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
+Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
 void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, __int64 a, int b);   // movie->CreateObject
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
@@ -49,7 +50,7 @@ public:
     int FUN_14123c580();
 };
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1407196b0(unsigned);                               // number -> text
+CStringW FUN_1407196b0(long);                               // number -> text
 CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
 class Unk_AsBuffInfo : public AdditionalLevelData
 {
@@ -79,7 +80,7 @@ ASEffect::ASEffect(MS2Ptr<Unk_AsBuff> spBuff)
     m_e0 = 0;
     m_e4 = 0;
     m_e9 = true;
-    m_e8 = m_buff->FUN_14096d7a0();
+    m_e8 = reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->IsActive();
 }
 
 // @0x1409b2ec0
@@ -138,10 +139,10 @@ void ASEffect::Update()
             m_a0->vfunc_14(0x1e);
         return;
     }
-    float fRemain = FUN_14028d280(m_buff->FUN_14096d2e0());
+    float fRemain = FUN_14028d280(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
     if (fRemain > 0.0f)
     {
-        float fTotal = FUN_14028d280(m_buff->FUN_14096d330());
+        float fTotal = FUN_14028d280(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d330());
         int nFrame = (int)(30.0f + (120.0f * (fTotal - fRemain)) / fTotal);
         if (m_a0->FUN_1422c2300() != nFrame)
             m_a0->vfunc_14(nFrame);
@@ -175,7 +176,7 @@ void ASEffect::SetBuff(MS2Ptr<Unk_AsBuff> spBuff)
 {
     m_buff = spBuff;
     m_e9 = true;
-    m_e8 = m_buff->FUN_14096d7a0();
+    m_e8 = reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->IsActive();
 }
 
 // @0x1409b37c0
@@ -217,7 +218,7 @@ MS2_REPLACE_METHOD(0x1409B3840, ASEffect, IsOwnerAlive, 179, 0xC4BB8535);
 // @0x1409b3900
 void ASEffect::FUN_1409b3900()
 {
-    m_buff->FUN_14096d260();
+    reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetKey();
 }
 MS2_REPLACE_METHOD(0x1409B3900, ASEffect, FUN_1409b3900, 41, 0x66FBE713);
 
@@ -232,7 +233,7 @@ MS2_REPLACE_METHOD(0x1409B3930, ASEffect, GetE4, 17, 0x798679FF);
 void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, m_buff->FUN_14096d2e0());
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
     *params.pRetVal = tip.FUN_1422bb870();
 }
 
@@ -424,15 +425,15 @@ void ASEffectManager::AddEffect(MS2Ptr<Unk_AsBuff> spBuff)
     MS2Ptr<ASEffect> spEffect(new ASEffect(spBuff));
     spEffect->SetE0(m_a0);
     spEffect->SetStartTime(GetTickCountMs2());
-    spEffect->SetE4(spBuff->FUN_14096d350());
-    m_b8.SetAt(spBuff->FUN_14096d260(), spEffect);
+    spEffect->SetE4(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->FUN_14096d350());
+    m_b8.SetAt(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->GetKey(), spEffect);
 }
 
 // @0x1409b5aa0
 void ASEffectManager::UpdateEffect(MS2Ptr<Unk_AsBuff> spBuff)
 {
     MS2Ptr<ASEffect> spEffect;
-    if (m_b8.Lookup(spBuff->FUN_14096d260(), spEffect))
+    if (m_b8.Lookup(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->GetKey(), spEffect))
         spEffect->SetBuff(spBuff);
     m_a8 = true;
 }

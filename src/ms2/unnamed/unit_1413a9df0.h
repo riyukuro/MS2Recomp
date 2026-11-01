@@ -94,60 +94,27 @@ public:
 };
 
 // The map info of the player (continent code lookup).
-void FUN_1408850f0(class Unk_G9MapInfo* pInfo);
-class Unk_G9MapInfo
-{
-public:
-    ~Unk_G9MapInfo() { FUN_1408850f0(this); }           // 0x1408850f0 (another obj)
-    bool FUN_140965240(int nFlag);
-    void* FUN_140885340();
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_G9MapInfo, 0x10);
-int FUN_140375350(void* pCode);
+template <class T> class MS2Ptr;
+class CFieldDataCli;
 
 // An object reference found in the world.
-void FUN_1409649b0(class Unk_G9ObjRef* pRef);
-class Unk_G9ObjRef
-{
-public:
-    ~Unk_G9ObjRef() { FUN_1409649b0(this); }            // 0x1409649b0 (another obj)
-    void* FUN_1409657e0();
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_G9ObjRef, 0x10);
-class Unk_G9Obj { public: Vector3 FUN_1409673c0(); };
-int FUN_1413b5600(Unk_G9Obj* pObj);                     // the interact state
+class Unk_WsB_Prop;
+class CInteractObject { public: Vector3 GetPos(); };
+int Unk_GcState28(char* pObj);                           // the interact state
 
-class Unk_G9World
+class WorldService   // C3: member view
 {
 public:
-    Unk_G9Player* FUN_141bd0cc0();                      // the local player
-    Unk_G9MapInfo FUN_141bd30a0();
-    Unk_G9ObjRef FUN_141bc6510(Vector3 pos, int nId);
+    static WorldService* GetInstance();
+    void* FUN_141bd0cc0();                              // the local player
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    MS2Ptr<Unk_WsB_Prop> FUN_141bc6510(Vector3 pos, int nId);
 };
-Unk_G9World* FUN_1403ed2d0();
 
 // The guide manager and the guide entry reference.
 class Unk_G9GuideEntry { public: void* m_p0; void* m_p1; void* m_p2; int m_n18; int m_n1c; };   // m_n1c: tested by 0x1413aa8f0
 MS2_CHECK_OFFSET(Unk_G9GuideEntry, m_n1c, 0x1c);
-void FUN_141397db0(class Unk_G9GuideRef* pRef);
-class Unk_G9GuideRef
-{
-public:
-    ~Unk_G9GuideRef() { FUN_141397db0(this); }          // 0x141397db0 (another obj)
-    void* FUN_1413b4130() const;                        // the held entry (0x1413b4130)
-    Unk_G9GuideEntry* FUN_141398900();
-    void* m_p0; Unk_G9GuideEntry* m_pEntry;
-};
-MS2_CHECK_SIZE(Unk_G9GuideRef, 0x10);
-class Unk_G9GuideMgr
-{
-public:
-    Unk_G9GuideRef FUN_14138b990(int nGuideId);
-    bool FUN_14138caa0(int nGuideId);                   // cleared
-};
-Unk_G9GuideMgr* FUN_1409331e0();
+class Unk_Restrictions* FUN_1409331e0();
 
 // The home (the player's ugc house).
 class Unk_G9Home
@@ -158,28 +125,14 @@ public:
     void* FUN_1410b8ab0(const Vector3& pos);
     int FUN_1410b9950(int nIconType);
 };
-Unk_G9Home* FUN_1409670e0();
-int FUN_1408b4f20(void* pCubeObj);
+class Unk_AkoHouseSvc { public: static Unk_AkoHouseSvc* GetInstance(); };
+class Unk_SingletonObj* FUN_140939a00();                // the ugc market
+class Unk_NametagTrophy* FUN_1406c7600();               // the trophy manager
 class Unk_G9ItemRec { public: void* m_p[0x38]; int m_n1c0; int m_nValue; };                          // +0x1c4
 MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
-class Unk_G9ItemRef
-{
-public:
-    ~Unk_G9ItemRef() { FUN_1401b50d0(); }                // 0x1401b50d0 (another obj)
-    void FUN_1401b50d0();
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_G9ItemRef, 0x10);
-Unk_G9ItemRef FUN_14053f870(int nItemId);
 
-void* FUN_1406c7600();                                  // the trophy manager
-int FUN_140936740(void* pMgr, unsigned __int64 nPacked);
 class Unk_SoundSink* FUN_1409331f0();   // the key binds (C3: was void*)
-int FUN_14142dc50(void* pBinds, int nSlot);
-void* FUN_140939a00();                                  // the ugc market
-__int64 FUN_140d56470(void* pMarket);
 void* FUN_1409eed40();                                  // the manufacture book
-int FUN_140d513c0(void* pBook);
 void* FUN_1413b1c60(const CStringA& strName);           // the dialog of a name
 // A ref-counted value handle of the dialog trees (assignment 0x1413b40b0, release 0x140d03070).
 class Unk_GcNode;
@@ -234,9 +187,7 @@ public:
 void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
 void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
 int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut);
-int FUN_141a75840(void* pDialog);
 void* FUN_14136f3e0(unsigned nUIId);                    // the dialog of a ui id
-int FUN_14195b950(void* pDialog);
 CStringA FUN_141388650(const char* psz);
 
 class Unk_G9U32Arr { public: size_t FUN_140186270(); };
@@ -246,8 +197,6 @@ extern __int64 DAT_143ab2898;                           // the money
 Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem);      // builds the condition of a <condition> element
 int FUN_1413a5570(CGuideCondition* pCond);              // runs a nested condition's test
 
-int FUN_1408736d0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, Unk_GcTime& tOut);
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
 int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut);
 int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut);
@@ -258,7 +207,7 @@ bool Unk_GcVec3IsNull(const Unk_GcOptVec3* pOpt);               // 0x1413b5870 N
 bool Unk_GcVec3HasValue(const Unk_GcOptVec3* pOpt);             // 0x1413b58d0 Nullable<Point3>::HasValue (#5)
 bool Unk_GcBoolHasValue(const Unk_GcOptBool* pOpt);             // 0x1413b58e0 Nullable<bool>::HasValue (#5)
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);             // Nullable<int>::GetValue (guideentity#5)
-CStringW FUN_14083bdc0(const Unk_GcTime& t, bool bFlag, CStringW strDateSep, CStringW strTimeSep);
+CStringW FUN_14083bdc0(const CMsTime& t, bool bFlag, CStringW strDateSep, CStringW strTimeSep);
 CStringW FUN_140719730(bool b);
 unsigned __int64 FUN_140869440();                       // the server time
 void FUN_1412751b0(const CStringW& text, int a);

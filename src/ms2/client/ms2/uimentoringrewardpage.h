@@ -3,6 +3,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/delegate.h"
 #include <atlcoll.h>
 #include <vector>
@@ -86,11 +87,10 @@ MS2_CHECK_SIZE(UIMentoringDialog,0x1e8);
 MS2_CHECK_OFFSET(UIMentoringDialog,m_page,0x178);
 MS2_CHECK_OFFSET(UIMentoringDialog,m_pages,0x188);
 MS2_CHECK_OFFSET(UIMentoringDialog,m_tabs,0x1d0);
-class Unk_MentorButton:public ASDisplayObject {public:void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,int);void FUN_1422c1fe0(unsigned);};
 class Unk_MentorText:public ASDisplayObject {public:void FUN_1422c4c80(const CString&);void FUN_1422c4cd0(const CStringW&);};
 class ASMentoringRewardPage:public CPtred {
 public:ASMentoringRewardPage(UIMentoringPage*);virtual ~ASMentoringRewardPage();void OnInit();void Refresh();void OnReward(const Scaleform::GFx::FunctionHandler::Params&);
-private:MS2_LAYOUT_FRIEND;UIMentoringPage* m_owner;MS2Ptr<AScript> m_script;MS2Ptr<Unk_MentorButton> m_button;MS2Ptr<Unk_MentorText> m_coin,m_text;MS2Ptr<ASMovieClip> m_effect1,m_effect2,m_effect3;
+private:MS2_LAYOUT_FRIEND;UIMentoringPage* m_owner;MS2Ptr<AScript> m_script;MS2Ptr<ASButton> m_button;MS2Ptr<Unk_MentorText> m_coin,m_text;MS2Ptr<ASMovieClip> m_effect1,m_effect2,m_effect3;
 };
 MS2_CHECK_SIZE(ASMentoringRewardPage,0x90);
 MS2_CHECK_OFFSET(ASMentoringRewardPage,m_script,0x20);

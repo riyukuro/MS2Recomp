@@ -61,7 +61,6 @@ public:
 void FUN_141901470(int n, int nType);                               // UIObject::vfunc_47's helper (UI type 0x4f15)
 
 // The chat output.
-class Unk_BmChat { public: void FUN_1416fb300(const CStringW& strText); };
 
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -257,7 +256,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             int nResult = BM_PKT->ReadUInt8();
             if (nResult == 1) {
                 CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
-                reinterpret_cast<Unk_BmChat*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strText);
+                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);

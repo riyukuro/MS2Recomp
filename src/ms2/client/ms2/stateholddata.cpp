@@ -63,18 +63,7 @@ public:
     GameObjectControllerHitReport* FUN_141240f20();
     void FUN_141241070();                                                // start falling
 };
-class Unk_HoldWorld                                                      // the field's actors by id
-{
-public:
-    PCBase* FUN_141bd1200(int nId);
-    PCBase* FUN_141bd1290(int nId);
-};
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_HoldBuffs                                                      // the actor's buff list
-{
-public:
-    bool FUN_141683100(int nBuff);
-};
+class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_HoldConsts                                                     // the game's constants table
 {
@@ -144,7 +133,7 @@ void StateHoldData::vfunc_1(Unk_StateDataArg* p)
     StateSkillData::vfunc_1(p);
     p->m_n90 = m_nTargetId;
     p->m_str98 = m_strTargetName;
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nTargetId));
     if (pTarget != 0)
     {
         if (pTarget->FUN_1416764a0() != 0)
@@ -235,7 +224,7 @@ void StateHold::vfunc_3(double fTime)
     efd::SmartPointer<NiAVObject> spNode(0);
     int nAttached = 0;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTargetId));
     if (pTarget != 0)
         spNode = pTarget->FUN_1416757c0(m_spHold.get()->m_strTargetName);
     if (((NiAVObject*)spNode ? true : false) && pTarget != 0 && pTarget->FUN_14166ce30() == 0)
@@ -280,7 +269,7 @@ void StateHold::vfunc_3(double fTime)
 void StateHold::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
-    Unk_HoldBuffs* pBuff = ((Unk_HoldBuffs*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
+    Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kZero = efd::Point3::ZERO;
     m_pOwner->vfunc_22(efd::Point3(kZero));
     if (pBuff->FUN_141683100(0x493e1))
@@ -292,7 +281,7 @@ void StateHold::vfunc_8(double fTime)
             return;
         else
         {
-            efd::Point3 kVel = reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()));
+            efd::Point3 kVel = reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
             m_pOwner->vfunc_22(kVel);
             FUN_1417ccca0(m_nFallbackState, 0);
         }
@@ -308,7 +297,7 @@ void StateHold::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTargetId));
     if (pTarget != 0)
     {
     if (pTarget->GetClassID() == 0x6200028)
@@ -430,7 +419,7 @@ void StateHold::FUN_1417ccd50()
 {
     m_bRiding = false;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(pData->m_nTargetId));
     if (pTarget != 0)
     {
         if (pTarget->FUN_1416764a0() != 0)
@@ -448,7 +437,7 @@ void StateHold::FUN_1417cce10()
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xae))
         return;
-    Unk_HoldBuffs* pBuff = ((Unk_HoldBuffs*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
+    Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     if (!pBuff->FUN_141683100(0x49401))
         return;
     MyPC* pPC = FUN_1417b84b0();
@@ -457,7 +446,7 @@ void StateHold::FUN_1417cce10()
     if (reinterpret_cast<PC*>(pPC)->FUN_141654700() != 0x46)
         return;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTargetId));
     if (pTarget == 0)
         return;
     if (pPC->vfunc_122(pTarget) == 0)
@@ -478,7 +467,7 @@ void StateHold::FUN_1417cce10()
 // @0x1417cd060
 bool StateHold::FUN_1417cd060()
 {
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1290(m_spHold.get()->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_spHold.get()->m_nTargetId));
     if (pTarget != 0 && pTarget->FUN_1416764a0() != 0)
         return true;
     return false;
@@ -495,7 +484,7 @@ int StateHold::FUN_1417cd0d0()
 // @0x1417cd120
 int StateHold::vfunc_36()
 {
-    PCBase* pTarget = reinterpret_cast<Unk_HoldWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_spHold.get()->m_nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(m_spHold.get()->m_nTargetId));
     if (pTarget != 0 && pTarget->GetClassID() != 0x6200045)
         return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x493e2, 0, 0);
     else

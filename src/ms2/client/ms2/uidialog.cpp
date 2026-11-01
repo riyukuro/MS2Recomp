@@ -51,6 +51,9 @@
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+#include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
 // The UI type ids (vfunc_48) of the open dialogs that asked for it (m_164), most recently opened/raised first. The
@@ -84,25 +87,12 @@ public:
     virtual void vfunc_24(bool bInvalidate);                        // MS2: slot 24 (0xc0) validateNow (apply the new size)
     virtual void vfunc_25();                                        // MS2: slot 25 (0xc8) keep the dialog on screen
 
-    void FUN_1422c0f60(float* pX, float* pY);                       // get the position
-    float FUN_1422c10a0();                                          // x
-    float FUN_1422c1110();                                          // y
-    int FUN_1422c1500();                                            // screen width
-    int FUN_1422c1530();                                            // screen height
-    void FUN_1422c79e0(int nWidth, int nHeight);                    // resize
-    void FUN_1422e5dd0();                                           // end of a drag
 };
 class ASWindow : public ASDisplayObjectContainer                    // RTTI .?AVASWindow@@
 {
 public:
     void FUN_1422e61f0(int n);
     void FUN_1422e6230(int n);
-};
-// A display object seen only through its position (vfunc_66).
-class Unk_ASPosObject : public ASDisplayObject
-{
-public:
-    void FUN_1422c0f60(float* pX, float* pY);
 };
 // The button wrapper of the bound children ("m_closeButton", "m_dragBar", "m_webGuideButton").
 class Unk_140acd6e0 : public ASButton
@@ -120,15 +110,6 @@ class ASUIComponentEx : public ASUIComponent
 MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);    // new ASDialog(v, nMovieId)
 
 // ---- game singletons and helpers ----
-class Unk_140b632f0                                                 // the UI manager
-{
-public:
-    void FUN_1422d4780(UISwfEntity* p, int nLayer);                 // open
-    void FUN_1422d4840(UISwfEntity* p, int nLayer);                 // close
-    void FUN_1422d48f0(UISwfEntity* p, int nLayer);                 // bring to the top
-    void FUN_1422d4dd0(CString strKey);
-};
-Unk_140b632f0* FUN_140b632f0();
 class Unk_14140ea40                                                 // dialog open/close listener
 {
 public:
@@ -138,7 +119,6 @@ public:
 };
 class Unk_1409331e0;
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-void FUN_14138d7e0(Unk_1409331e0* p, int a1, int a2);
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
@@ -148,8 +128,7 @@ int FUN_141383a70(CString strName);
 void FUN_140d73cd0();
 void FUN_141275260(int nId, int a1, int a2);                        // system message by id
 void FUN_141a8a730();
-class Unk_14025e7a0 { public: void FUN_1422b0840(int nLayer, unsigned* pWidth, unsigned* pHeight); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_140bb9630(int n);                                         // int -> delegate user data
@@ -325,7 +304,7 @@ int UIDialog::vfunc_53(void* pCfg)
         if (pDialog) {
             float x = 0.0f;
             float y = 0.0f;
-            pDialog->FUN_1422c0f60(&x, &y);
+            pDialog->GetPosition(&x, &y);
             XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", x, 1);
             XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
             if (!m_7c) {
@@ -398,10 +377,10 @@ void UIDialog::FUN_141924190()
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     FUN_141926890();
     vfunc_77();
-    FUN_140b632f0()->FUN_1422d4840(this, m_e0);
+    FUN_140b632f0()->RemoveFromLayer(this, m_e0);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_2(vfunc_48());
     if (((class Unk_1409331e0*)FUN_1409331e0()))
-        FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
+        ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
     if (!vfunc_56() && m_8c)
         FUN_141276180(m_d0, "");
     if (m_164) {
@@ -562,7 +541,7 @@ void UIDialog::vfunc_62(int nWidth, int nHeight)
     if (pDialog) {
         int nCurHeight = pDialog->GetHeightCeil();
         int nCurWidth = pDialog->FUN_1422c1340();
-        pDialog->FUN_1422c79e0((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
+        reinterpret_cast<ASUIComponent*>(pDialog)->FUN_1422c79e0((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
         pDialog->vfunc_24(true);
     }
 }
@@ -602,11 +581,11 @@ int UIDialog::vfunc_65()
     } else {
         FUN_1422dbf00(m_2c, 0, 0);
     }
-    FUN_140b632f0()->FUN_1422d4780(this, m_e0);
+    FUN_140b632f0()->AddToLayer(this, m_e0);
     FUN_140b632f0()->FUN_1422d4dd0(m_20);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(vfunc_48());
     if (((class Unk_1409331e0*)FUN_1409331e0()))
-        FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
+        ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
     if (m_58 && !vfunc_56() && m_8c)
         FUN_141276180(m_c8, "");
     if (m_164)
@@ -621,7 +600,7 @@ void UIDialog::vfunc_66()
 {
     MS2Ptr<ASDisplayObject> spObject(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
     if (spObject.get())
-        static_cast<Unk_ASPosObject*>(spObject.operator->())->FUN_1422c0f60(&m_d8.x, &m_d8.y);
+        spObject.operator->()->GetPosition(&m_d8.x, &m_d8.y);
 }
 MS2_REPLACE_METHOD(0x141924cb0, UIDialog, vfunc_66, 179, 0x90F5B11C);
 
@@ -764,10 +743,10 @@ void UIDialog::vfunc_18()
                 FUN_141924510();
             float x = 0.0f;
             float y = 0.0f;
-            pDialog->FUN_1422c0f60(&x, &y);
+            pDialog->GetPosition(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            ((class Unk_14025e7a0*)FUN_14025e7a0())->FUN_1422b0840(m_28, &nWidth, &nHeight);
+            ((class GFxManager*)FUN_14025e7a0())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             float fX = (float)pDialog->FUN_1422c1500() * fRateX;
@@ -793,10 +772,10 @@ bool UIDialog::vfunc_17()
         if (pDialog) {
             float x = 0.0f;
             float y = 0.0f;
-            pDialog->FUN_1422c0f60(&x, &y);
+            pDialog->GetPosition(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            ((class Unk_14025e7a0*)FUN_14025e7a0())->FUN_1422b0840(m_28, &nWidth, &nHeight);
+            ((class GFxManager*)FUN_14025e7a0())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             pDialog->FUN_1422c00f0((float)pDialog->FUN_1422c1500() * fRateX, (float)pDialog->FUN_1422c1530() * fRateY);
@@ -819,7 +798,7 @@ void UIDialog::vfunc_77()
     if (m_70) {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog)
-            pDialog->FUN_1422e5dd0();
+            reinterpret_cast<ASSprite*>(pDialog)->FUN_1422e5dd0();
         m_70 = 0;
         m_74 = 1;
         vfunc_4();
@@ -918,7 +897,7 @@ int UIDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
         if (m_c0 != 2) {
             m_c0 = 2;
             if (((class Unk_1409331e0*)FUN_1409331e0()))
-                FUN_14138d7e0(((class Unk_1409331e0*)FUN_1409331e0()), 3, 0);
+                ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
             FUN_1422dc0b0();
         }
         return 1;

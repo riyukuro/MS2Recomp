@@ -19,6 +19,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/camera.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 
@@ -41,13 +42,13 @@ CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);    // psz + str
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 
 // Rows of the item table, the item's linked effect row and the skill attribute (only the fields read here).
-class Unk_BootyItem : public CPtred
+class CItemData : public CPtred
 {
 public:
     char m_pad_18[0x1e0 - 0x18];
     int m_nEffectId;                    // +0x1e0
 };
-MS2_CHECK_OFFSET(Unk_BootyItem, m_nEffectId, 0x1e0);
+MS2_CHECK_OFFSET(CItemData, m_nEffectId, 0x1e0);
 class Unk_BootyEffect : public CPtred
 {
 public:
@@ -57,21 +58,12 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_BootyEffect, m_nSkillId, 0x188);
 MS2_CHECK_OFFSET(Unk_BootyEffect, m_nSkillLevel, 0x18c);
-class Unk_BootySkillAttr : public CPtred
-{
-public:
-    char m_pad_18[0x34 - 0x18];
-    int m_nValueId;                     // +0x34
-};
-MS2_CHECK_OFFSET(Unk_BootySkillAttr, m_nValueId, 0x34);
-MS2Ptr<Unk_BootyItem> FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 MS2Ptr<Unk_BootyEffect> FUN_140704ec0(int nEffectId);
-class Unk_BootySkillTable { public: MS2Ptr<Unk_BootySkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
 // AS invoker on the popup's movie clip (instance of the AScript::Invoke template).
-class Unk_BootyMovie
-{
+class ASDialog { public: class Scaleform::GFx::Value FUN_140e78470(char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_BootyMovie : public ASDialog {
 public:
-    Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
+
 };
 
 // @0x141031430
@@ -220,7 +212,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
         {
             CStringW strName = GetStringTable()->FUN_141811980(1, m_88);
             CStringW strDesc(L"");
-            MS2Ptr<Unk_BootyItem> spItem = FUN_14053f870(m_88);
+            MS2Ptr<CItemData> spItem = FUN_14053f870(m_88);
             if (spItem.get() != 0)
             {
                 MS2Ptr<Unk_BootyEffect> spEffect = FUN_140704ec0(spItem->m_nEffectId);
@@ -229,13 +221,13 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                     int nSkillId = spEffect->m_nSkillId;
                     unsigned short nSkillLevel = spEffect->m_nSkillLevel;
                     strDesc = GetStringTable()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
-                    MS2Ptr<Unk_BootySkillAttr> spAttr = reinterpret_cast<Unk_BootySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nSkillId, nSkillLevel);
+                    MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nSkillLevel);
                     if (spAttr.get() != 0)
                     {
                         int nA = 0;
                         int nC = 0;
                         int nB = 0;
-                        FUN_141b706a0(spAttr->m_nValueId, (unsigned int*)(&nA), (unsigned int*)(&nC), (unsigned int*)(&nB));
+                        FUN_141b706a0(spAttr->m_nDurationTick, (unsigned int*)(&nA), (unsigned int*)(&nC), (unsigned int*)(&nB));
                         CStringW strLine = StringFormat<int>(GetStringCommon(0x9a8), nA);
                         strDesc += FUN_1401d0160(L"\n", strLine);
                     }

@@ -89,6 +89,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/commonfiles/contentshutdown.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -1226,7 +1228,7 @@ void CBanTextChecker::FilterReservedWords(CStringW& str)
     CheckInit();
     if (DAT_143ab2914 >= 0x32)
         return;
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3a) == 0)
+    if (reinterpret_cast<CContentShutdown*>(&FUN_14025e7b0()->m_8)->Get((CContentShutdown::Content)0x3a) == 0)
     {
         bool bHashed = ReplaceUrlsWithHashes(str);
         int nStart = 0;
@@ -1314,14 +1316,14 @@ CString FUN_14016a600(const wchar_t* pwsz, int n);                              
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14016a730(const char* psz, int n);                                 // narrow -> wide
 extern CStringW DAT_143aacc90;                                                  // the shared empty string
-class Unk_AltStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
+class Unk_AltStringMgr;   // C3: the GFxManager singleton (calls cast to the GFxManager view)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 extern Unk_AltStringMgr* DAT_143aaccf8;
 extern void* DAT_143aacd08;
 extern void* DAT_143aacd00;
 Unk_AltStringMgr* FUN_14025e7a0();
 void* FUN_14025e7c0();                                                          // the client's text-hook object
 CommonString* FUN_14025e7d0();                                                  // the CommonString singleton
-unsigned char FUN_14116d950(void* pObj, int nFlag, bool a, int b);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flags (symbols.tsv); local copies stay false -> "is not initialized" box
 CommonString* TSingleton<CommonString>::s_instance = 0;
@@ -1397,9 +1399,9 @@ CStringW CommonString::GetWideByKey(const CStringW& strKey)
         return DAT_143aacc90;
     if (FUN_14025e7c0() != 0)
     {
-        if (FUN_14116d950(FUN_14025e7c0(), 0x2a, 1, 0))
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x2a, 1, 0))
         {
-            if (FUN_14116d950(FUN_14025e7c0(), 0x1d, 1, 0))
+            if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x1d, 1, 0))
                 return strKey;
         }
     }
@@ -1411,7 +1413,7 @@ CStringW CommonString::GetWideByKey(const CStringW& strKey)
 // @0x140229940
 CStringW CommonString::FUN_140229940(const CString& strKey)
 {
-    return FUN_14025e7a0()->FUN_1422b0570(strKey);
+    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
 }
 
 // @0x140229990

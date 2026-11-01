@@ -170,7 +170,6 @@ public:
 class Unk_MaidWorld : public WorldService
 {
 public:
-    PCBase* FUN_141bd1320(int nActorId);                        // an actor by object id
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -406,7 +405,7 @@ void UIMaidDialog::FUN_1412d7aa0()
         return;
     if (m_nMaidId == 0)
         return;
-    CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
+    CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pNpc == 0)
         return;
     Unk_MaidRef spMaid = reinterpret_cast<Unk_MaidNpcView*>(pNpc)->FUN_141093800();
@@ -611,7 +610,7 @@ void UIMaidDialog::FUN_1412d9680()
         return;
     if (m_nMaidId == 0)
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
@@ -651,7 +650,7 @@ void UIMaidDialog::FUN_1412d9b90()
         return;
     if (m_nMaidId == 0)
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
@@ -707,7 +706,7 @@ CStringW UIMaidDialog::FUN_1412da590()
         return strText;
     if (m_nMaidId == 0)
         return strText;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nMaidId));
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return strText;
     Unk_MaidRef spMaid = pView->FUN_141093800();

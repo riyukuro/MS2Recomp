@@ -59,14 +59,14 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 // The option settings object (TSingleton<CGameOption>::GetInstance).
 
 // The tables the "pending" check walks (a quest-like list, FUN_1409331f0).
-class Unk_GoPending
+class CKeyTable
 {
 public:
     size_t FUN_14142cbb0();                                     // count
-    __int64 FUN_14142cbe0(unsigned int nIndex);                 // id of the row
+    __int64 GetQuickSlotAction(unsigned int nIndex);                 // id of the row
     int FUN_14142cb40(unsigned int nIndex, int n);              // the row is done
 };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GoPending (calls cast back)
+class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
 
 // The buff-like table of the simple (reduced) mode test.
 class Unk_GoBuffs;
@@ -481,7 +481,7 @@ void UIGameOptionDialog::FUN_141943ec0()
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
         sp->vfunc_10();
     }
-    TSingleton<CGameOption>::GetInstance()->FUN_1412432d0();
+    TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
     for (POSITION pos = m_mapPages.GetStartPosition(); pos != 0; m_mapPages.GetNext(pos))
     {
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
@@ -526,15 +526,15 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
     {
-        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a137)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a137)
             continue;
-        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a138)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a138)
             continue;
-        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cbe0((unsigned)i) == 0x7a139)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a139)
             continue;
-        if (reinterpret_cast<Unk_GoPending*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;

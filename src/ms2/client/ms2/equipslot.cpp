@@ -265,7 +265,7 @@ int EquipSlot::vfunc_8(void* p)
 LAB_gray_done:
         if (bPc != 0 && m_nKind == 2)
         {
-            if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411ea770() == false)
+            if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->IsLayerActive() == false)
                 slot.SetDisable(1);
         }
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();

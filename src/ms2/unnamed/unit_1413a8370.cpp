@@ -49,7 +49,7 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-int FUN_1405451c0(const CStringA& strSlotName);             // the equip slot of a slot name
+int FUN_1405451c0(CStringA&);             // the equip slot of a slot name
 
 class Unk_GcKeyBinds { };                                   // the key / skill-slot binding table
 Unk_SoundSink* FUN_1409331f0();
@@ -246,7 +246,7 @@ int CGuideConditionEquipItem::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405451c0(m_strSlotName), m_nSlotType);
+    MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405451c0(reinterpret_cast<CStringA &>(m_strSlotName)), m_nSlotType);
     if (spEquip == 0)
         return FUN_1413a55a0(0);
     if (m_nItemID != 0 && spEquip->FUN_1411dc820() != (int)m_nItemID)

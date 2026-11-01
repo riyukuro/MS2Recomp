@@ -37,7 +37,9 @@
 // The exe's memcpy_s calls memset and memcpy (no /Oi expansion); the pragma must precede the inline copy.
 #include <vcruntime_string.h>
 #pragma function(memcpy, memset)
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "tabcontentspetevolution.h"
 
@@ -93,19 +95,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_PetButton, 0x88);
 
-// The item bag control inside a section clip.
-class Unk_PetItemBag : public ASMovieClip
-{
-public:
-    Unk_PetItemBag(const Scaleform::GFx::Value& v, int nMovieId);       // 0x1422cf330
-#define PB_V(n) virtual void vfunc_##n();
-    PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
-#undef PB_V
-    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetItemBag, 0x88);
 
 // The pet part of an item (item->FUN_1405278a0()->m_pet).
 class Unk_PetData : public CPtred
@@ -298,12 +287,12 @@ template <> MS2Ptr<Unk_PetButton> AScript::FUN_140acce30<Unk_PetButton>(const CS
 }
 
 // @0x140accef0
-template <> MS2Ptr<Unk_PetItemBag> AScript::FUN_140accef0<Unk_PetItemBag>(const CString& strName)
+template <> MS2Ptr<ASTileList> AScript::FUN_140accef0<ASTileList>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
-        return Unk_ASCreate<Unk_PetItemBag>(m_nMovieId, v);
-    return MS2Ptr<Unk_PetItemBag>(0);
+        return Unk_ASCreate<ASTileList>(m_nMovieId, v);
+    return MS2Ptr<ASTileList>(0);
 }
 
 // @0x140accfb0
@@ -408,7 +397,7 @@ void PetEvolutionPetCard::vfunc_4()
     MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>("m_petCard");
     if (card == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = card->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140acaec0(ids);
@@ -456,7 +445,7 @@ void PetEvolutionPetIngredient::vfunc_4()
     MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_petIngredient");
     if (ingredient == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = ingredient->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140acaef0(items);
@@ -548,7 +537,7 @@ void PetEvolutionPetEnchant::vfunc_4()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = ench->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = ench->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140acaf20(items);

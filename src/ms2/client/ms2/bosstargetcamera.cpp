@@ -46,14 +46,10 @@ public:
 };
 
 // The game context (FUN_1403ed2d0): object lookup by id.
-class Unk_BossGameContext
-{
-public:
-    Unk_BossObject* FUN_141bd1180(int nObjectId);
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
 };
 
@@ -358,7 +354,7 @@ Vector3 CBossTargetCamera::FUN_140a38570()
         ptOther = ptRet = pTarget->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
         m_50 = m_data.m_zoomOut;
     }
-    Unk_BossObject* pObject = ((class Unk_BossGameContext*)WorldService::GetInstance())->FUN_141bd1180(m_108);
+    Unk_BossObject* pObject = reinterpret_cast<Unk_BossObject*>(WorldService::GetInstance()->FUN_141bd1180(m_108));
     if (pObject != NULL)
     {
         Unk_CameraTargetEntity* pBoss = FUN_140a38a00(pObject);

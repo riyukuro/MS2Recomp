@@ -19,7 +19,7 @@
 
 class ASData;
 class ASObj;
-class Unk_ALList;
+class ASTileList;
 
 class UIAdventureLevelDialog : public UIDialog, public UIStatusEventListener
 {
@@ -52,7 +52,7 @@ public:
     int FUN_140ba45c0(ASObj& obj, unsigned int nMissionId);                                         // mission row: item reward
     void FUN_140ba4960(unsigned int nLevel);                                                        // claim a level reward
     void FUN_140ba4a10(unsigned int nMissionId);                                                    // claim a mission reward
-    MS2Ptr<Unk_ALList> FUN_140ba4b70(const CString& strName);                                       // the list control of the movie
+    MS2Ptr<ASTileList> FUN_140ba4b70(const CString& strName);                                       // the list control of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

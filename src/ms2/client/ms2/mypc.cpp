@@ -272,6 +272,7 @@ void FUN_141682f60(void* pTracker, PCBase* pOwner);         // PCBase+0x6d8 init
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/uiswfentitymanager.h"   // C3 type identity: UISwfEntityManager
 extern Unk_CubeStock DAT_143ab2e50;
 
 // The message box queue (messageboxqueue.cpp).
@@ -409,14 +410,7 @@ public:
 };
 NotifySystem* FUN_140939a10();
 // The swf entity manager: slot 3 is called on the local character's arrival.
-class Unk_MyPCSwfMgr
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-};
+using Unk_MyPCSwfMgr = UISwfEntityManager;   // C3 type identity: Unk_MyPCSwfMgr stood in for UISwfEntityManager
 Unk_MyPCSwfMgr* FUN_140b632f0();
 CQuestManager* FUN_140764020();
 COptimizer* FUN_1409f7c90();
@@ -890,6 +884,7 @@ static CStringW s_strUseBindItemSkill = L"useBindItemSkill";                    
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x1400f9d30
@@ -1034,13 +1029,13 @@ MS2_REPLACE_METHOD(0x1415213B0, MyPC, vfunc_22, 114, 0xEAA1FF32);
 int MyPC::vfunc_10()
 {
     PC::vfunc_10();
-    FUN_14123c680(true);
+    SetKeepVisibleForBGTransparency(true);
     ((class Unk_MyPCUpdateList*)Unk_GoUpdateList::FUN_14123ee80())->SetUserFlags(*reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140af7de0());
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bca240();
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyCompleteMyPC));
     FUN_140b632f0()->vfunc_3();
     FUN_140764020()->FUN_1416cef90(1);
-    FUN_1409f7c90()->FUN_14161c8c0();
+    FUN_1409f7c90()->LogFirstMyPCLoadTime();
     return 1;
 }
 MS2_REPLACE_METHOD(0x141521430, MyPC, vfunc_10, 289, 0x6EAB6CCD);
@@ -1460,14 +1455,14 @@ void MyPC::FUN_141523c80()
     reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCellInFrontOfActor(this, 0.0f, reinterpret_cast<Vector3*>(&kPos), 1);
     efd::Point3 kCell;
     reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCellPosition(*reinterpret_cast<Vector3*>(&kPos), reinterpret_cast<Vector3*>(&kCell));
-    Cube* pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kCell));
+    Cube* pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeAtPoint(*reinterpret_cast<Vector3*>(&kCell));
     bool bValue = false;
     if (pCube != 0)
         pCube->entity->GetPropertyValue(0x9ea356ad, bValue);
     if (pCube == 0 || !bValue)
     {
         kCell.z -= 150.0f;
-        pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kCell));
+        pCube = reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeAtPoint(*reinterpret_cast<Vector3*>(&kCell));
     }
     if (pCube != 0 && pCube->entity != 0)
         reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410cab10(pCube);
@@ -1743,7 +1738,7 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
     MS2Ptr<Unk_MyPCSkillRow> spRow = reinterpret_cast<Unk_MyPCSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(kReq.skill);
     if (spRow.IsNull())
         return 0;
-    MS2Ptr<Unk_InventorySkillLevel> spLevel = spRow->FUN_1407e90a0(FUN_141528b80(kReq.skill));
+    MS2Ptr<Unk_InventorySkillLevel> spLevel = spRow->FUN_1407e90a0(GetSkillLevel(kReq.skill));
     if (spLevel.IsNull())
         return 0;
     kReq.level = ::FUN_140803df0(spLevel.operator->());
@@ -1810,7 +1805,7 @@ bool MyPC::FUN_141526730(int bAuto, unsigned* pSlot)
 {
     ATL::CAtlArray<Unk_MyPCKeyId> aSlots;
     reinterpret_cast<Unk_MyPCQuickSlots*>(FUN_1409331f0())->FUN_14142c5d0(aSlots);
-    if (FUN_140a58540()->FUN_140d8b370())
+    if (FUN_140a58540()->HasKeyHeldOrGamePad())
     {
         for (unsigned i = 0; i < aSlots.GetCount(); i++)
         {
@@ -1862,7 +1857,7 @@ bool MyPC::FUN_141526730(int bAuto, unsigned* pSlot)
                 continue;
             if (FUN_140166410()->FUN_14036d570(0xca))
             {
-                unsigned short nLevel = FUN_141528b80(nSkillId);
+                unsigned short nLevel = GetSkillLevel(nSkillId);
                 FUN_141526c80(nSkillId, nLevel);
             }
             MS2Ptr<Unk_MyPCSkillRow> spRow = reinterpret_cast<Unk_MyPCSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
@@ -2176,7 +2171,7 @@ MS2_REPLACE_METHOD(0x141527F80, MyPC, GetHomeMapId, 149, 0x84F75207);
 
 // The position of the house plot (when the house is on the current map).
 // @0x141528020
-int MyPC::FUN_141528020(efd::Point3& kPos)
+int MyPC::GetHomePosition(efd::Point3& kPos)
 {
     kPos = efd::Point3::ZERO;
     if (HasNoHome() == 0)
@@ -2188,14 +2183,14 @@ int MyPC::FUN_141528020(efd::Point3& kPos)
             if (((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060() == spHouse->m_nMapId)
             {
                 Unk_MyPCComp1618* pHouse = spHouse.operator->();
-                if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410d33a0(pHouse->m_nPlotId, reinterpret_cast<Vector3*>(&kPos)) != 0)
+                if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->TryGetHouseMarkPosition(pHouse->m_nPlotId, reinterpret_cast<Vector3*>(&kPos)) != 0)
                     return 1;
             }
         }
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141528020, MyPC, FUN_141528020, 272, 0xAE990223);
+MS2_REPLACE_METHOD(0x141528020, MyPC, GetHomePosition, 272, 0xAE990223);
 
 // @0x141528140
 int MyPC::FUN_141528140()
@@ -2213,7 +2208,7 @@ MS2_REPLACE_METHOD(0x141528160, MyPC, FUN_141528160, 84, 0x1A1055F6);
 
 // The house address.
 // @0x1415281c0
-CStringW MyPC::FUN_1415281c0()
+CStringW MyPC::GetHomeAddress()
 {
     if (HasNoHome() == 0)
     {
@@ -2224,7 +2219,7 @@ CStringW MyPC::FUN_1415281c0()
     }
     return CStringW(L"");
 }
-MS2_REPLACE_METHOD(0x1415281C0, MyPC, FUN_1415281c0, 355, 0x1EBC3119);
+MS2_REPLACE_METHOD(0x1415281C0, MyPC, GetHomeAddress, 355, 0x1EBC3119);
 
 // The house name.
 // @0x141528330
@@ -2399,7 +2394,7 @@ void MyPC::FUN_141524a80(bool bForce)
                     efd::Point3 kPropPos;
                     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
                     Unk_MyPCSvcPtr spSvc(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-                    if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8ab0(*reinterpret_cast<Vector3*>(&kPropPos)) && vfunc_99(0) == 0)
+                    if (reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeAtPoint(*reinterpret_cast<Vector3*>(&kPropPos)) && vfunc_99(0) == 0)
                     {
                         if (FUN_1409f7ca0()->FUN_14168a9b0(pEntity, vfunc_18()))
                             spNew->m_nA0 = FUN_1408a13d0(kPropPos);
@@ -2417,7 +2412,7 @@ MS2_REPLACE_METHOD(0x141524A80, MyPC, FUN_141524a80, 2543, 0x2C1C320A);
 // @0x141525480
 int MyPC::FUN_141525480(int nSkillId, bool bRemap)
 {
-    unsigned short nLevel = FUN_141528b80(nSkillId);
+    unsigned short nLevel = GetSkillLevel(nSkillId);
     FUN_141526c80(nSkillId, nLevel);
     Unk_InventorySkillRequest kReq(nSkillId, 1);
     kReq.level = nLevel;
@@ -2763,14 +2758,14 @@ void MyPC::FUN_141528c30(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141528C30, MyPC, FUN_141528c30, 78, 0xE53AF5C9);
 
 // @0x141528b80
-unsigned short MyPC::FUN_141528b80(int nSkillId)
+unsigned short MyPC::GetSkillLevel(int nSkillId)
 {
     MS2Ptr<Unk_InventorySkillLevel> spLevel = reinterpret_cast<Unk_MyPCEquipSetView&>(m_kEquipDE0).m_spSkillBook->vfunc_1(nSkillId);
     if (spLevel.get())
         return ::FUN_140803df0(spLevel.operator->());
     return 1;
 }
-MS2_REPLACE_METHOD(0x141528b80, MyPC, FUN_141528b80, 158, 0xB55D0601);
+MS2_REPLACE_METHOD(0x141528b80, MyPC, GetSkillLevel, 158, 0xB55D0601);
 
 // Warp to kPos facing kRot (the ridee too); bFlyCamera flies the orbit camera over from the old position.
 // @0x141528e50
@@ -3199,14 +3194,14 @@ void MyPC::SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStr
 MS2_REPLACE_METHOD(0x14152a0c0, MyPC, SendRequestMoveFieldMode0, 363, 0x00CCBEA9);
 
 // @0x14152a240
-void MyPC::FUN_14152a240(int nId)
+void MyPC::SendRequestHome(int nId)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestHome), 0);
     packet.Encode1(3);
     packet.Encode4(nId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152A240, MyPC, FUN_14152a240, 93, 0x60F9FF83);
+MS2_REPLACE_METHOD(0x14152A240, MyPC, SendRequestHome, 93, 0x60F9FF83);
 
 // @0x14152a2b0
 void MyPC::FUN_14152a2b0(int n)
@@ -3424,7 +3419,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
                 if (g_143ab2a90.FUN_140a62d30(spSkill->m_n28) != 0)
                     return;
                 Unk_InventorySkillRequest kReq(spSkill->m_n28, 1);
-                kReq.level = FUN_141528b80(spSkill->m_n28);
+                kReq.level = GetSkillLevel(spSkill->m_n28);
                 kReq.remap = spSkill->m_b2c;
                 kReq.unknown34 = spSkill->m_n30;
                 MS2Ptr<CSkillRecord> spRecord = FUN_141523bc0()->FUN_141764e30(kReq);
@@ -3697,7 +3692,7 @@ void MyPC::FUN_14152e0c0()
 MS2_REPLACE_METHOD(0x14152E0C0, MyPC, FUN_14152e0c0, 166, 0x0ECA53F5);
 
 // @0x14152e170
-void MyPC::FUN_14152e170(int nMode, int nArg)
+void MyPC::SendStateChange(int nMode, int nArg)
 {
     FUN_14152e0c0();
     COutPacket packet(static_cast<int>(SendOp::State), 0);
@@ -3708,7 +3703,7 @@ void MyPC::FUN_14152e170(int nMode, int nArg)
         packet.WriteVector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152E170, MyPC, FUN_14152e170, 199, 0xEDEFDAF6);
+MS2_REPLACE_METHOD(0x14152E170, MyPC, SendStateChange, 199, 0xEDEFDAF6);
 
 // @0x14152ea50
 int MyPC::FUN_14152ea50()
@@ -3842,7 +3837,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
 MS2_REPLACE_METHOD(0x14152AA90, MyPC, FUN_14152aa90, 2102, 0x48DF18E4);
 
 // @0x14152a360
-void MyPC::FUN_14152a360(PCBase* pTarget)
+void MyPC::FocusConstructionGuideCamera(PCBase* pTarget)
 {
     if (!pTarget)
     {
@@ -3863,7 +3858,7 @@ void MyPC::FUN_14152a360(PCBase* pTarget)
         reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(pTarget), 1);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(1);
 }
-MS2_REPLACE_METHOD(0x14152A360, MyPC, FUN_14152a360, 301, 0xE622FBE9);
+MS2_REPLACE_METHOD(0x14152A360, MyPC, FocusConstructionGuideCamera, 301, 0xE622FBE9);
 
 // Fly the camera to the construction guide object pTarget.
 // @0x14152a700
@@ -4034,16 +4029,16 @@ size_t MyPC::FUN_14152eb50()
 MS2_REPLACE_METHOD(0x14152EB50, MyPC, FUN_14152eb50, 33, 0xBB13FE3C);
 
 // @0x14152eb80
-void MyPC::FUN_14152eb80()
+void MyPC::ResetDailyRecords()
 {
     m_n1648 = GetServerTime();
     m_list1650.RemoveAll();
     m_list1680.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x14152EB80, MyPC, FUN_14152eb80, 69, 0x4BBC82EF);
+MS2_REPLACE_METHOD(0x14152EB80, MyPC, ResetDailyRecords, 69, 0x4BBC82EF);
 
 // @0x14152ebd0
-int MyPC::FUN_14152ebd0()
+int MyPC::IsDailyRecordStale()
 {
     if (m_n1648 == 0)
         return 1;
@@ -4053,7 +4048,7 @@ int MyPC::FUN_14152ebd0()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14152EBD0, MyPC, FUN_14152ebd0, 92, 0x8288F958);
+MS2_REPLACE_METHOD(0x14152EBD0, MyPC, IsDailyRecordStale, 92, 0x8288F958);
 
 // @0x14152ec40
 void MyPC::FUN_14152ec40(__int64 n)
@@ -4092,7 +4087,7 @@ MS2_REPLACE_METHOD(0x14152ED10, MyPC, FUN_14152ed10, 68, 0x3ACAF3BF);
 // @0x14152ed60
 void MyPC::FUN_14152ed60(const Unk_MyPCGameBegin* pData)
 {
-    FUN_14152eb80();
+    ResetDailyRecords();
     m_n1648 = pData->m_nMarkTime;
     for (POSITION pos = pData->m_listA.GetHeadPosition(); pos != 0; pData->m_listA.GetNext(pos))
         FUN_14152ec40(pData->m_listA.GetAt(pos));
@@ -4102,9 +4097,9 @@ void MyPC::FUN_14152ed60(const Unk_MyPCGameBegin* pData)
 MS2_REPLACE_METHOD(0x14152ED60, MyPC, FUN_14152ed60, 247, 0xCB824A2C);
 
 // @0x14152ee60
-void MyPC::FUN_14152ee60(CInPacket& packet)
+void MyPC::ReadDailyRecords(CInPacket& packet)
 {
-    FUN_14152eb80();
+    ResetDailyRecords();
     m_n1648 = packet.ReadInt64();
     unsigned nCountA = packet.ReadInt32();
     for (unsigned i = 0; i < nCountA; i++)
@@ -4113,7 +4108,7 @@ void MyPC::FUN_14152ee60(CInPacket& packet)
     for (unsigned i = 0; i < nCountB; i++)
         FUN_14152ec80(packet.ReadInt64());
 }
-MS2_REPLACE_METHOD(0x14152EE60, MyPC, FUN_14152ee60, 309, 0xA4DF11E6);
+MS2_REPLACE_METHOD(0x14152EE60, MyPC, ReadDailyRecords, 309, 0xA4DF11E6);
 
 // The item of the house owner on this account's plot.
 // @0x14152efa0
@@ -4237,7 +4232,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
 MS2_REPLACE_METHOD(0x14152FEB0, MyPC, FUN_14152feb0, 835, 0x46F24B2B);
 
 // @0x14152f530
-void MyPC::FUN_14152f530(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk)
+void MyPC::EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk)
 {
     MS2Ptr<Unk_MyPCLapenData> spData = ((class Unk_MyPCLapenTable*)FUN_1409c4b30())->FUN_1405b56a0(nItemId);
     if (spData == 0)
@@ -4249,10 +4244,10 @@ void MyPC::FUN_14152f530(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk)
     m_map16f8.Lookup(nItemId, nCount);
     m_map16f8.SetAt(nItemId, nCount + 1);
 }
-MS2_REPLACE_METHOD(0x14152F530, MyPC, FUN_14152f530, 232, 0xA737BD4F);
+MS2_REPLACE_METHOD(0x14152F530, MyPC, EquipLapenshard, 232, 0xA737BD4F);
 
 // @0x14152f620
-void MyPC::FUN_14152f620(Unk_MyPCLapenSlot nSlot)
+void MyPC::UnequipLapenshard(Unk_MyPCLapenSlot nSlot)
 {
     unsigned nItemId = 0;
     if (m_map16b0.Lookup(nSlot, nItemId))
@@ -4271,19 +4266,19 @@ void MyPC::FUN_14152f620(Unk_MyPCLapenSlot nSlot)
             m_bMapDirty = 1;
     }
 }
-MS2_REPLACE_METHOD(0x14152F620, MyPC, FUN_14152f620, 321, 0xA926CC13);
+MS2_REPLACE_METHOD(0x14152F620, MyPC, UnequipLapenshard, 321, 0xA926CC13);
 
 // @0x14152f770
-unsigned MyPC::FUN_14152f770(Unk_MyPCLapenSlot nSlot)
+unsigned MyPC::GetLapenshardItemId(Unk_MyPCLapenSlot nSlot)
 {
     unsigned nItemId = 0;
     m_map16b0.Lookup(nSlot, nItemId);
     return nItemId;
 }
-MS2_REPLACE_METHOD(0x14152F770, MyPC, FUN_14152f770, 59, 0x20E71A5C);
+MS2_REPLACE_METHOD(0x14152F770, MyPC, GetLapenshardItemId, 59, 0x20E71A5C);
 
 // @0x14152f7c0
-Unk_MyPCLapenSlot MyPC::FUN_14152f7c0(unsigned nItemId)
+Unk_MyPCLapenSlot MyPC::FindLapenshardSlot(unsigned nItemId)
 {
     for (POSITION pos = m_map16b0.GetStartPosition(); pos != 0; m_map16b0.GetNext(pos))
     {
@@ -4293,7 +4288,7 @@ Unk_MyPCLapenSlot MyPC::FUN_14152f7c0(unsigned nItemId)
     }
     return MYPC_LAPEN_SLOT_NONE;
 }
-MS2_REPLACE_METHOD(0x14152F7C0, MyPC, FUN_14152f7c0, 148, 0xCEF4D1B7);
+MS2_REPLACE_METHOD(0x14152F7C0, MyPC, FindLapenshardSlot, 148, 0xCEF4D1B7);
 
 // @0x14152f860
 int MyPC::FUN_14152f860(unsigned int nKey)
@@ -4326,12 +4321,12 @@ void MyPC::FUN_14152f960(ATL::CAtlArray<unsigned int>& aOut)
 MS2_REPLACE_METHOD(0x14152F960, MyPC, FUN_14152f960, 115, 0x7FE231F7);
 
 // @0x14152f9e0
-void MyPC::FUN_14152f9e0()
+void MyPC::ClearLapenshards()
 {
     m_map16b0.RemoveAll();
     m_map16f8.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x14152F9E0, MyPC, FUN_14152f9e0, 52, 0x27FFF569);
+MS2_REPLACE_METHOD(0x14152F9E0, MyPC, ClearLapenshards, 52, 0x27FFF569);
 
 // The highest grade per item group of the equipped lapenshards of kind 1.
 // @0x14152fa20
@@ -4363,7 +4358,7 @@ MS2_REPLACE_METHOD(0x14152FA20, MyPC, FUN_14152fa20, 498, 0x6E396E9C);
 // @0x14152fc20
 void MyPC::SendNametag()
 {
-    if (m_timer1788.FUN_140268870(1000) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer1788).Check(1000) != 0)
     {
         int nChannel = ((class Unk_MyPCChannelTable*)FUN_14131e120())->FUN_1406c5d60(FUN_141661e00());
         if (nChannel != FUN_141661e20())
@@ -4377,7 +4372,7 @@ void MyPC::SendNametag()
 MS2_REPLACE_METHOD(0x14152FC20, MyPC, SendNametag, 186, 0x23189891);
 
 // @0x14152fce0
-unsigned short MyPC::FUN_14152fce0(unsigned nGroup)
+unsigned short MyPC::GetLapenshardSkillLevel(unsigned nGroup)
 {
     unsigned short nGrade = 0;
     if (((struct Unk_MyPCConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x5b) != 0)
@@ -4385,11 +4380,11 @@ unsigned short MyPC::FUN_14152fce0(unsigned nGroup)
     m_map1740.Lookup(nGroup, nGrade);
     return nGrade;
 }
-MS2_REPLACE_METHOD(0x14152FCE0, MyPC, FUN_14152fce0, 91, 0x15BFF890);
+MS2_REPLACE_METHOD(0x14152FCE0, MyPC, GetLapenshardSkillLevel, 91, 0x15BFF890);
 
 // The first free slot of the item (or its first slot when all are taken).
 // @0x14152fd50
-Unk_MyPCLapenSlot MyPC::FUN_14152fd50(unsigned nItemId)
+Unk_MyPCLapenSlot MyPC::FindLapenSlotForItem(unsigned nItemId)
 {
     ATL::CAtlArray<Unk_MyPCLapenSlot> aSlots;
     ((class Unk_MyPCLapenTable*)FUN_1409c4b30())->FUN_1405b5910(nItemId, aSlots);
@@ -4400,14 +4395,14 @@ Unk_MyPCLapenSlot MyPC::FUN_14152fd50(unsigned nItemId)
     for (unsigned i = 0; i < aSlots.GetCount(); i++)
     {
         nFirst = (std::min)(nFirst, aSlots[i]);
-        if (FUN_14152f770(aSlots[i]) == 0)
+        if (GetLapenshardItemId(aSlots[i]) == 0)
             nFree = (std::min)(nFree, aSlots[i]);
     }
     if (nFree != 7)
         return nFree;
     return nFirst;
 }
-MS2_REPLACE_METHOD(0x14152FD50, MyPC, FUN_14152fd50, 335, 0xD6277F5F);
+MS2_REPLACE_METHOD(0x14152FD50, MyPC, FindLapenSlotForItem, 335, 0xD6277F5F);
 
 // @0x141530700
 void MyPC::FUN_141530700(int n)
@@ -4543,7 +4538,7 @@ bool MyPC::FUN_1415302e0(int nItemId)
 MS2_REPLACE_METHOD(0x1415302E0, MyPC, FUN_1415302e0, 1040, 0x6BAA0AD5);
 
 // @0x141530200
-void MyPC::FUN_141530200()
+void MyPC::SendCraftModeOff()
 {
     if (GetActiveCubeCraft() == 0)
         return;
@@ -4554,7 +4549,7 @@ void MyPC::FUN_141530200()
     packet.Encode1(0);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141530200, MyPC, FUN_141530200, 128, 0x3E56095B);
+MS2_REPLACE_METHOD(0x141530200, MyPC, SendCraftModeOff, 128, 0x3E56095B);
 
 // The cube craft controller while in the cube craft mode.
 // @0x141530290
@@ -4870,7 +4865,7 @@ void MyPC::FUN_1415310e0(std::list<Unk_MyPCDropItem*>& lstDrops)
         if (spBlock.FUN_1401cb3d0() != 0)
         {
             static Unk_MyPCPollTimer s_kNoticeTimer;
-            if (s_kNoticeTimer.FUN_140268870(5000) == 1)
+            if (reinterpret_cast<Unk_IntervalTimer&>(s_kNoticeTimer).Check(5000) == 1)
             {
                 CStringW strMsg = FUN_1401ca400(spBlock, 0x20);
                 FUN_1412751b0(strMsg, 0x14);

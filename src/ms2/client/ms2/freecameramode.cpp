@@ -13,7 +13,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/uiservice.h"
+#include <efd/Matrix3.h>
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+class CFieldDataCli;   // C3: the real class (fielddatacli.h), MS2Ptr<CFieldDataCli>::get
 
 // ---- unit-local placeholders ----
 
@@ -34,7 +36,6 @@ public:
     ~Unk_FreeCamOptionPtr() { FUN_140885ab0(); }    // 0x1408850f0 (another obj)
     Unk_FreeCamOption* FUN_140885340() const;       // operator->
     void FUN_140885ab0();                           // release
-    Unk_FreeCamOption* FUN_1409657a0() const;       // get
 
     void* m_pad_00;
     Unk_FreeCamOption* m_p;
@@ -145,7 +146,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
             if (pActor != 0)
             {
                 Unk_FreeCamOptionPtr spOption = ((class Unk_FreeCamContext*)WorldService::GetInstance())->FUN_141bd30a0();
-                if (spOption.FUN_1409657a0() != 0)
+                if (reinterpret_cast<Unk_FreeCamOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()) != 0)
                 {
                     TiXmlDocument doc;
                     if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
@@ -176,7 +177,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
-        kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();

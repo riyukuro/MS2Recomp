@@ -30,13 +30,10 @@
 // ---- unit-local placeholders ----
 
 // The Scaleform movie of a UI movie id (GFx movie view wrapper).
-class Unk_AsMovie : public GFxMovie
-{
-};
-class Unk_AsManager
+class GFxManager
 {
 public:
-    Unk_AsMovie* FUN_1422b01a0(int nMovieId);
+    GFxMovie* FUN_1422b01a0(int nMovieId);
 };
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 void* FUN_1422bb8b0(int nMovieId);
@@ -60,7 +57,7 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
 // @0x1409b1090
 MS2Ptr<ASCommonDepth> ASCommonDepth::Create(int nMovieId)
 {
-    Unk_AsMovie* pMovie = ((class Unk_AsManager*)FUN_14025e7a0())->FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = ((class GFxManager*)FUN_14025e7a0())->FUN_1422b01a0(nMovieId);
     if (pMovie != 0)
         return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->FUN_1422bd120(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
     return MS2Ptr<ASCommonDepth>(0);

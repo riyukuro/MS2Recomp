@@ -10,64 +10,27 @@
 #include <atlcoll.h>
 #include <efd/utf8string.h>
 #include "ms2/placeholder/effectquery.h"
+#include "ms2/placeholder/cconditioncommon.h"
+#include "ms2/placeholder/mypc.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
-// The target's transform (NiTransform: rotation, translation, scale). The ctor 0x140a332d0 is out of line, and the
-// position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
+// The target's position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
 struct Unk_LtPoint3 { float x, y, z; Unk_LtPoint3& operator=(const Unk_LtPoint3&); };
-struct Unk_LtMatrix3
-{
-    void FUN_142083d40(float fX, float fY, float fZ);               // efd::Matrix3::FromEulerAnglesXYZ (radians)
-    float m_f[9];
-};
-struct Unk_LtXform
-{
-    Unk_LtMatrix3 m_rot;                                            // +0x00
-    Unk_LtPoint3 m_pos;                                             // +0x24
-    float m_fScale;                                                 // +0x30
-};
-void FUN_140a332d0(Unk_LtXform* p);
 void FUN_14027dcf0(Unk_LtPoint3* p, const Vector3& pt);
 void FUN_14097faa0(Unk_LtPoint3* p, Unk_LtPoint3* pSrc);
 
-// Entity properties read by hash.
-class Unk_Entity
-{
-public:
-    int FUN_1408a2020(unsigned nHash, int* pValue);                 // int property
-    int FUN_1408a2060(unsigned nHash, efd::utf8string* pValue);     // string property
-};
-
 // The quest manager: its condition interface sits at +0x10, a quest's own interface at +0x18.
-struct Unk_LtIdSet
-{
-    __int64 FUN_14029e720();                                        // number of ids
-    int FUN_14029e600(__int64 nId);                                 // contains
-    void* m_pad[16];
-};
-class Unk_LtCond : public CPtred
-{
-public:
-    int m_nType;                                                    // +0x18
-    int m_pad_1c;
-    void* m_pad_20;
-    Unk_LtIdSet m_setB;                                             // +0x28
-    Unk_LtIdSet m_setA;                                             // +0xa8
-};
-struct Unk_LtCondArr
-{
-    unsigned __int64 FUN_14075ae80();                               // count
-    MS2Ptr<Unk_LtCond>& FUN_140759290(unsigned __int64 nIndex);     // element
-};
 class Unk_LtQuestData : public CPtred
 {
 public:
     void* m_pad[0x6e];
-    Unk_LtCondArr m_conds;                                          // +0x388
+    ATL::CAtlArray<MS2Ptr<CConditionCommonData> > m_conds;                                          // +0x388
 };
 class Unk_LtQuestIf
 {
@@ -96,7 +59,6 @@ public:
     Unk_LtQuestMgrIf m_if;                                          // +0x10
 };
 void* FUN_140764020();   // C3: was FUN_140764020
-void FUN_1416cb260(Unk_LtQuestMgr* pMgr, ATL::CAtlArray<int>* pOut, int a1, int a2, int a3);   // the open quest ids
 
 // The string table global (+0x348: the box marker effect name).
 class Unk_LtStrTable
@@ -108,15 +70,8 @@ public:
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The local player and its actor.
-class Unk_LtActorB
-{
-public:
-    unsigned FUN_1410ad610();
-};
 class Unk_LtActor : public PC
 {
-public:
-    Unk_LtActorB* FUN_141530290();
 };
 class Unk_LtPlayer;
 
@@ -131,7 +86,7 @@ CLiftableTarget::CLiftableTarget() : m_ent(0)
 // @0x141448230
 CLiftableTarget::~CLiftableTarget()
 {
-    FUN_141448920();
+    DestroyEffect();
     m_ent = 0;
 }
 
@@ -143,7 +98,7 @@ int CLiftableTarget::vfunc_1(Unk_EntRef ent)
         return 0;
     if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_vRot)) != 0)
         return 0;
-    if (m_ent.FUN_1408a9280()->FUN_1408a2020(0x79ec600a, &m_nId) != 0)
+    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<int>(0x79ec600a, m_nId) != 0)
         return 0;
     return 1;
 }
@@ -156,11 +111,11 @@ void CLiftableTarget::FUN_1414483e0()
         return;
     if (pActor->FUN_1416595d0() == 0)
     {
-        FUN_141448920();
+        DestroyEffect();
         return;
     }
     ATL::CAtlArray<int> ids;
-    FUN_1416cb260(((class Unk_LtQuestMgr*)FUN_140764020()), &ids, 1, 0xb, 0xffffffff);
+    reinterpret_cast<CQuestManager*>(((class Unk_LtQuestMgr*)FUN_140764020()))->FUN_1416cb260(reinterpret_cast<ATL::CAtlArray<unsigned>&>(ids), 1, 0xb, 0xffffffff);
     for (unsigned __int64 i = 0; i < ids.GetCount(); i++)
     {
         MS2Ptr<Unk_LtQuest> spQuest = (&((class Unk_LtQuestMgr*)FUN_140764020())->m_if)->vfunc_3(ids[i]);
@@ -169,34 +124,33 @@ void CLiftableTarget::FUN_1414483e0()
         if ((&spQuest->m_if)->vfunc_1() != 0)
             continue;
         MS2Ptr<Unk_LtQuestData> spData = (&spQuest->m_if)->vfunc_0();
-        for (unsigned __int64 j = 0; j < spData->m_conds.FUN_14075ae80(); j++)
+        for (unsigned __int64 j = 0; j < spData->m_conds.GetCount(); j++)
         {
-            if (spData->m_conds.FUN_140759290(j)->m_nType != 0x9c)
+            if (spData->m_conds[j]->m_nType != 0x9c)
                 continue;
-            if (spData->m_conds.FUN_140759290(j)->m_setA.FUN_14029e720() != 1)
+            if (spData->m_conds[j]->m_target.GetIdCount() != 1)
                 continue;
-            if (spData->m_conds.FUN_140759290(j)->m_setA.FUN_14029e600((__int64)m_nId) == 0)
+            if (spData->m_conds[j]->m_target.Matches((__int64)m_nId) == 0)
                 continue;
-            if (spData->m_conds.FUN_140759290(j)->m_setB.FUN_14029e600((unsigned __int64)pActor->FUN_141530290()->FUN_1410ad610()) == 0)
+            if (spData->m_conds[j]->m_code.Matches((unsigned __int64)(unsigned)reinterpret_cast<MyPC*>(pActor)->GetActiveCubeCraft()->FUN_1410ad610()) == 0)
                 continue;
-            FUN_141448750();
+            CreateEffect();
             return;
         }
     }
-    FUN_141448920();
+    DestroyEffect();
 }
 
 // @0x141448750
-void CLiftableTarget::FUN_141448750()
+void CLiftableTarget::CreateEffect()
 {
     if (m_nFx != 0)
         return;
-    Unk_LtXform xform;
-    FUN_140a332d0(&xform);
+    NiTransform xform;
     Unk_LtPoint3 kPos;
     FUN_14027dcf0(&kPos, m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-    FUN_14097faa0(&xform.m_pos, &kPos);
-    xform.m_rot.FUN_142083d40(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
+    FUN_14097faa0(reinterpret_cast<Unk_LtPoint3*>(&xform.m_Translate), &kPos);
+    xform.m_Rotate.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
     xform.m_fScale = 1.0f;
     NoticeMessage req;
     req.m_strName = vfunc_2();
@@ -206,7 +160,7 @@ void CLiftableTarget::FUN_141448750()
 }
 
 // @0x141448920
-void CLiftableTarget::FUN_141448920()
+void CLiftableTarget::DestroyEffect()
 {
     if (m_nFx == 0)
         return;
@@ -226,7 +180,7 @@ int CLiftableTargetGuide::vfunc_1(Unk_EntRef ent)
     if (CLiftableTarget::vfunc_1(ent) == 0)
         return 0;
     efd::utf8string name;
-    if (m_ent.FUN_1408a9280()->FUN_1408a2060(0x86adffcf, &name) != 0)
+    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::utf8string>(0x86adffcf, name) != 0)
         return 0;
     m_strGuide = name.c_str();
     return 1;
@@ -239,7 +193,7 @@ CString CLiftableTargetGuide::vfunc_2()
 }
 
 // ---- hooks ----
-// (vfunc_1 takes Unk_EntRef by value and FUN_1414483e0 / FUN_141448750 go through unrecovered quest/effect views: not hooked)
-MS2_REPLACE_METHOD(0x141448920, CLiftableTarget, FUN_141448920, 60, 0x767CACA6);
+// (vfunc_1 takes Unk_EntRef by value and FUN_1414483e0 / CreateEffect go through unrecovered quest/effect views: not hooked)
+MS2_REPLACE_METHOD(0x141448920, CLiftableTarget, DestroyEffect, 60, 0x767CACA6);
 MS2_REPLACE_METHOD(0x141448970, CLiftableTargetBox, vfunc_2, 68, 0x6C0F74DD);
 MS2_REPLACE_METHOD(0x141448B00, CLiftableTargetGuide, vfunc_2, 66, 0x7D865BC0);

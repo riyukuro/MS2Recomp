@@ -34,6 +34,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/uidialogeventdispatcher.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/placeholder/ascript.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -43,7 +45,6 @@ class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 class ASDialog : public ASDisplayObject
 {
 public:
-    void FUN_1407cb9c0(const char* szName, int n);          // set an int member
 };
 
 // The inventory dialog (UI id 0x4e2d).
@@ -54,11 +55,6 @@ class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_FdInventory* FUN_1405344f0 (calls cast back)
 
 // The world / UI manager singletons.
-class Unk_FdWorld
-{
-public:
-    PC* FUN_141bd0cc0();                                    // the local player
-};
 
 
 // The item / dialog event registries.
@@ -80,7 +76,6 @@ class Unk_LdButton : public ASDisplayObject
 {
 public:
     Unk_LdButton(const Scaleform::GFx::Value& v, int nMovieId);
-    void FUN_1422c1fe0(int bEnabled);                       // enable / disable
 };
 
 // The player's inventory (global 0x143ab2a90) and the item behind a drag source.
@@ -132,7 +127,6 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, 
 // The equipment lists of the doll and of the player.
 typedef ATL::CAtlList<MS2Ptr<CEquipItem> > Unk_FdEquipList;
 void FUN_1411e1b80(Unk_PCEquipSet* pSet, Unk_FdEquipList* pList);
-void FUN_1411e22c0(Unk_PCEquipSet* pSet, Unk_FdEquipList* pList, int n);
 
 // The message box machinery.
 class CMsgBoxData : public CPtred
@@ -192,7 +186,7 @@ CString UIFittingDollDialog::GetTypeName()
 // @0x141933390
 void UIFittingDollDialog::SendFittingDoll()
 {
-    PC* pPlayer = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
@@ -202,7 +196,7 @@ void UIFittingDollDialog::SendFittingDoll()
     if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
         m_nTransforming = 1;
-        spButton->FUN_1422c1fe0(0);
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(spButton)->FUN_1422c1fe0(0);
     }
 }
 
@@ -306,7 +300,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("OnTransform", szMethod) == 0)
     {
-        PC* pPlayer = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
         int nResult = FUN_141934430();
@@ -377,7 +371,7 @@ void UIFittingDollDialog::FUN_141933b00()
 // MS2-FUNCTIONAL: the exe passes the equip flag through an int 1/0 temp read back as a byte
 void UIFittingDollDialog::FUN_141934070()
 {
-    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
@@ -393,7 +387,7 @@ void UIFittingDollDialog::FUN_141934070()
     if (pDlg != 0)
     {
         pDlg->FUN_1407cba60("bagID", GetTypeName());
-        pDlg->FUN_1407cb9c0("owner", bOwner);
+        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("owner", bOwner);
     }
 }
 
@@ -408,7 +402,7 @@ void UIFittingDollDialog::FUN_141934340()
 {
     if (m_nTransforming == 0)
         return;
-    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMe == 0)
         return;
     if (((class PCBase*)(class PC*)(pMe))->FUN_14166c930() == 0x22)
@@ -416,7 +410,7 @@ void UIFittingDollDialog::FUN_141934340()
     if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
         m_nTransforming = 0;
-        spButton->FUN_1422c1fe0(1);
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(spButton)->FUN_1422c1fe0(1);
     }
 }
 
@@ -426,7 +420,7 @@ int UIFittingDollDialog::FUN_141934430()
     FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
         return 0xd;
-    PC* pMe = reinterpret_cast<Unk_FdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
@@ -455,7 +449,7 @@ int UIFittingDollDialog::FUN_141934430()
     }
     list.RemoveAll();
 
-    FUN_1411e22c0(pMe->FUN_1416561a0(), &list, 1);
+    reinterpret_cast<CEquipment*>(pMe->FUN_1416561a0())->FUN_1411e22c0(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(list), 1);
     int nType = pDoll->FUN_14121c710();
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {

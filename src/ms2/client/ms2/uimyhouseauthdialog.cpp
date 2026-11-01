@@ -16,7 +16,7 @@
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
-int FUN_1418fc760(const char* szMethod, const void* pArgs, unsigned int nArgs, int n);   // the shared vfunc_28 back end
+int FUN_1418fc760(char const *, void *, int, void *);  // C3: the definition's signature
 void FUN_14151f200();                                                         // show the next queued message box
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ int UIMyHouseAuthDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0))
+    if (FUN_1418fc760(szMethod, (void *)pArgs, nArgs, 0))
         return 1;
     if (_stricmp("onCancel", szMethod) == 0)
     {

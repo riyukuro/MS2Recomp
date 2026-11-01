@@ -37,7 +37,8 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_GmGlobals*)
 
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
-class Unk_GmSceneMgr { public: void FUN_1417e25a0(unsigned int nEvent); };
+class CStateService { public: int FUN_1417e25a0(int nEvent); };
+class Unk_GmSceneMgr;
 Unk_GmSceneMgr* FUN_140aa6d30();
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow);
 
@@ -109,7 +110,7 @@ int UIGameModeSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnEndPopdown", szMethod) == 0)
     {
-        FUN_140aa6d30()->FUN_1417e25a0(0x6200009);
+        reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0(0x6200009);
         return 1;
     }
     return 0;

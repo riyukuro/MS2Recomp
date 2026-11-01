@@ -592,7 +592,7 @@ bool MS2::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
     DAT_143afcb90 = 0;
     DAT_143afcba8 = 0;
     DAT_143b08a3c = 0;
-    ((class COptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->FUN_14161c360();
+    ((class COptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->ApplyFrameLimitFromOptions();
     MessageLoop();
     Shutdown();
     return true;
@@ -1223,7 +1223,7 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140d9f140();
+    void ClearDungeonState();
 };
 void FUN_1401ae2f0(AttendGiftDataTable* p);
 class CBlackMarketTable* FUN_1401c06d0();   // C3: was FUN_1401c06d0
@@ -1709,7 +1709,7 @@ BOOL CGameApp::InitInstance()
     CWinApp::InitInstance();
     MS2::SetWorkingDirectory(true);
     Unk_SingletonCreator<COptimizer>::CreateInstance();
-    ((class COptimizer*)(class COptimizer*)(TSingleton<COptimizer>::GetInstance()))->FUN_14161baf0();
+    ((class COptimizer*)(class COptimizer*)(TSingleton<COptimizer>::GetInstance()))->Initialize();
     NiInitOptions* pInitOptions = new NiInitOptions;
     pInitOptions->SetFloodgateDefineWorkerThreadCountFunc(Unk_WorkerThreadCount);
     pInitOptions->SetFloodgateParallelExecution(Unk_WorkerThreadCount() != 0);
@@ -1760,7 +1760,7 @@ BOOL CGameApp::InitInstance()
         Unk_SingletonCreator<MultiSceneUpdater>::CreateInstance();
     Unk_SingletonCreator<CommonString>::CreateInstance();
     CLoadingDialog* pLoadingDialog = new CLoadingDialog;
-    if (pLoadingDialog->FUN_140d4a530("LoadingDialog", 0) == true)
+    if (pLoadingDialog->Open("LoadingDialog", 0) == true)
     {
         g_spLoadingDialog.AssignRaw(pLoadingDialog);
         DAT_143af7d58 = 1;
@@ -2079,7 +2079,7 @@ BOOL CGameApp::InitInstance()
         FUN_14149fee0();
         FUN_1414a4630();
     }
-    ((class CMyCharacter*)(class CChatEmoticonCli*)(((class CChatEmoticonCli*)FUN_140931510())))->FUN_140d9f140();
+    ((class CMyCharacter*)(class CChatEmoticonCli*)(((class CChatEmoticonCli*)FUN_140931510())))->ClearDungeonState();
     if (TSingleton<CUgcDownloadDown>::GetInstance())
         ((class CUgcDownloadDown*)(class CUgcDownloadDown*)(TSingleton<CUgcDownloadDown>::GetInstance()))->Stop();
     if (TSingleton<CUgcDownloadLoad>::GetInstance())

@@ -36,13 +36,13 @@ public:
     virtual efd::AsyncResult OnTick();                              // 0x14141b660
     virtual efd::AsyncResult OnShutdown();                          // 0x14141b680
 
-    int FUN_141419f50(CKfmModel* pModel);                           // 0x141419f50 keep a loading KFM model (by entity id)
-    int FUN_14141a000(CKfmModel* pModel);                           // 0x14141a000 forget it
+    int RegisterModel(CKfmModel* pModel);                           // 0x141419f50 keep a loading KFM model (by entity id)
+    int UnregisterModel(CKfmModel* pModel);                           // 0x14141a000 forget it
     // 0x14141a060 create the equip item. nCache is a std::map<std::string, std::list<NiAVObjectPtr> >* of already
     // loaded NIF roots (by path) to take from, or 0 (equipment.cpp passes 0 or its own cache).
     MS2Ptr<CEquipItem> FUN_14141a060(CItem* pItem, PC* pPC, __int64 nCache);
     void FUN_14141ac60(const efd::AssetLoadResponse* pMsg, efd::Category cat);           // 0x14141ac60
-    void FUN_14141acc0(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category cat);       // 0x14141acc0
+    void OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category cat);       // 0x14141acc0
     void FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, efd::Category cat);  // 0x14141ae10
     int FUN_14141b000(CItem* pItem, PC* pPC);                       // 0x14141b000 every worn part is a KFM part
     void FUN_14141b250(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList);   // 0x14141b250 items it replaces

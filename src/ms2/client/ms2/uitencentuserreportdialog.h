@@ -5,8 +5,8 @@
 class CMsgBoxData;
 class COutPacket;
 class Unk_ReportEntity;
-class Unk_ReportText;
-class Unk_ReportCheck;
+class ASTextField;
+class ASCheckBox;
 
 // AS wrapper pointers; only this unit's inline copies/comparisons are defined.
 template<class T> class Unk_ReportHandle {
@@ -133,8 +133,8 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     Unk_ReportHandle<Unk_ReportEntity> m_entity;
-    Unk_ReportHandle<Unk_ReportText> m_text;
-    Unk_ReportHandle<Unk_ReportCheck> m_checks[16]; // real indexed checkbox array, not padding
+    MS2Ptr<ASTextField> m_text;
+    MS2Ptr<ASCheckBox> m_checks[16]; // real indexed checkbox array, not padding
     int m_type;
 };
 MS2_CHECK_SIZE(UITencentUserReportPage, 0x148);

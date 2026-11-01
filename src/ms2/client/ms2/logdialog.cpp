@@ -214,7 +214,7 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 CStringA FUN_140540050(const char* pszFormat, const CStringA& arg0);    // StringFormat<CStringA>
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // narrow -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
-void FUN_14083d990(CStringA strText);                                   // copy to the clipboard
+bool FUN_14083d990(CStringA);  // C3: the definition's signature
 void FUN_1412751b0(const CStringW& strText, int nType);                 // HUD system message
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 

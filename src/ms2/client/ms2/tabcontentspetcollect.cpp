@@ -74,6 +74,11 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/uirenderview.h"
+#include "ms2/guess/worldmapmanager.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // MS2Ptr<ASUIComponent>: the exe shares every member of it (see tabcontentspetevolution.cpp).
 extern template class MS2Ptr<ASUIComponent>;
@@ -95,14 +100,15 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // The pet table singleton and the pet collect table inside it.
-CPetDataTable* FUN_14052d210();
-CPetManager* FUN_140535320();
+class Unk_PetRowTable : public CPetDataTable { };
+class Unk_BreakSelected : public CPetManager { };
+Unk_PetRowTable* FUN_14052d210();
+Unk_BreakSelected* FUN_140535320();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14183e9c0(CStringW str, int n);
-class Unk_PcNpcData : public CPtred { };
-MS2Ptr<Unk_PcNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id
 
 // The map record behind a field id: the flag at +0x9c is cleared for fields that are not shown.
 struct Unk_PcMapData
@@ -111,28 +117,15 @@ struct Unk_PcMapData
     bool m_b9c;
 };
 MS2_CHECK_OFFSET(Unk_PcMapData, m_b9c, 0x9c);
-class Unk_PcMapPtr
-{
-public:
-    ~Unk_PcMapPtr();                                            // 0x1408850f0
-    bool FUN_140965240(int n) const;                            // is null
-    Unk_PcMapData* FUN_140885340() const;                       // operator->
-private:
-    void* m_pad_00;
-    Unk_PcMapData* m_p;
-};
-Unk_PcMapPtr FUN_140a55460(int nMapId);
 
 // The field record (the table behind DAT_143abfb18 hands them out by key).
-class Unk_PcFieldInfo : public CPtred { };
-class Unk_PcFieldTable { public: MS2Ptr<Unk_PcFieldInfo> FUN_141b978e0(unsigned nFieldId); };
+class Unk_PcFieldTable : public WorldMapManager { };
 extern Unk_PcFieldTable* DAT_143abfb18;
 Unk_PcFieldTable* FUN_140cb17d0();
 
 // The event value manager's battle pet spawn table.
 class Unk_PcBattleSpawn : public CGameEventValueBattlePetSpawn { };
-class Unk_PcEventManager { public: Unk_PcBattleSpawn* FUN_1403ed040(); };
-Unk_PcEventManager* FUN_140302b00();
+CGameEventValueManager* FUN_140302b00();
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp): the position and target are built from an efd::Point3.
 struct Unk_PetBoxVector
@@ -144,7 +137,6 @@ struct Unk_PetBoxVector
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();                                             // 0x140cb13b0
-    void FUN_141b48670();
     Unk_PetBoxVector eye, target;
     float f18, f1c, f20;
     float f24;
@@ -152,6 +144,7 @@ struct Unk_PetBoxCameraData
 };
 MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
 float FUN_141b48480(int a, int b);
+class Unk_ModelViewCamera { public: void FUN_141b48670(); };
 class Unk_PcActor
 {
 public:
@@ -169,16 +162,6 @@ public:
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
     virtual void vfunc_13(const Unk_PetBoxCameraData&);
 };
-// Camera smart pointer returned by value from the avatar (dtor and operator-> are exe COMDATs).
-class Unk_PcCameraPtr
-{
-public:
-    ~Unk_PcCameraPtr();                                                 // 0x140cb1460
-    Unk_PcCamera* operator->() const;                                   // 0x1409f7910
-private:
-    Unk_PcCamera* m_p;
-};
-MS2_CHECK_SIZE(Unk_PcCameraPtr, 8);
 // Vtable view of the pet avatar for the four-argument load (slot 28) and the camera accessor.
 class Unk_PcAvatarView
 {
@@ -190,7 +173,6 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24();
     virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27();
     virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
-    Unk_PcCameraPtr FUN_1418b9bc0();
 };
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -299,7 +281,7 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(*pPet); \
         if (spPet == 0) \
             continue; \
-        MS2Ptr<Unk_PcNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
+        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
         if (spNpc == 0) \
             continue; \
         int nGrade = FUN_140535320()->GetCountByKey(*pPet); \
@@ -426,16 +408,16 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
-                Unk_PcMapPtr spMap = FUN_140a55460(*pField);
-                if (spMap.FUN_140965240(0))
+                MS2Ptr<CFieldDataCli> spMap = CFieldDataCli::Find(*pField);
+                if (spMap == 0)
                     continue;
-                if (spMap.FUN_140885340()->m_b9c == 0)
+                if (reinterpret_cast<Unk_PcMapData*>(spMap.operator->())->m_b9c == 0)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
                 if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
-                MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
+                MS2Ptr<UIWorldMap::MapTile> spField = FUN_140cb17d0()->FindMapTileByKey(nKey);
                 if (spField == 0)
                     continue;
                 if (!strPlace.IsEmpty())
@@ -448,20 +430,20 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
-            FUN_140302b00()->FUN_1403ed040()->GetFields(nPet, arrFields);
+            reinterpret_cast<Unk_PcBattleSpawn*>(FUN_140302b00()->GetBattlePetSpawn())->GetFields(nPet, arrFields);
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
-                Unk_PcMapPtr spMap = FUN_140a55460(*pField);
-                if (spMap.FUN_140965240(0))
+                MS2Ptr<CFieldDataCli> spMap = CFieldDataCli::Find(*pField);
+                if (spMap == 0)
                     continue;
-                if (spMap.FUN_140885340()->m_b9c == 0)
+                if (reinterpret_cast<Unk_PcMapData*>(spMap.operator->())->m_b9c == 0)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
                 if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
-                MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
+                MS2Ptr<UIWorldMap::MapTile> spField = FUN_140cb17d0()->FindMapTileByKey(nKey);
                 if (spField == 0)
                     continue;
                 if (!strPlace.IsEmpty())
@@ -544,13 +526,13 @@ void TabContentsPetCollect::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void*
         return;
     reinterpret_cast<Unk_PcAvatarView*>(m_avatar.operator->())->vfunc_28(a1, a2, a3, a4);
     Unk_PetBoxCameraData kCamera;
-    kCamera.FUN_141b48670();
+    reinterpret_cast<Unk_ModelViewCamera*>(&kCamera)->FUN_141b48670();
     kCamera.n28 = 5;
     kCamera.f20 = 100.0f;
     kCamera.f1c = 500.0f;
     kCamera.target += pActor->vfunc_18();
     kCamera.eye += kCamera.target;
-    reinterpret_cast<Unk_PcAvatarView*>(m_avatar.operator->())->FUN_1418b9bc0()->vfunc_13(kCamera);
+    reinterpret_cast<Unk_PcCamera*>(reinterpret_cast<UIAvatarBase*>(m_avatar.operator->())->GetView().operator->())->vfunc_13(kCamera);
     float fScale = FUN_141b48480(0xb, 0);
     m_avatar->vfunc_19(fScale, 0);
 }

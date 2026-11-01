@@ -10,7 +10,6 @@ class Unk_TESWorldMgr {
 public:
     void FUN_141bbae40(IWorldServiceCallback* cb);          // register callback
     void FUN_141bbae80(IWorldServiceCallback* cb);          // unregister callback
-    int FUN_141bd3060();                                    // current map id
     void FUN_141bbbe40(int mapId, int a, int b);            // move/export request
 };
 Unk_TESWorldMgr* FUN_1403ed2d0();

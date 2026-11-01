@@ -132,7 +132,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual efd::Point3 vfunc_18();
 };
-class Unk_AfterImageWorld { public: Unk_AfterImageActor* FUN_141bd1200(int nId); };
 
 // The target context as seen by CAfterImageEffect::vfunc_3: the owner's scene node is at +0x10.
 struct Unk_AfterImageTarget { char m_pad_00[0x10]; NiAVObjectPtr m_spNode; };
@@ -419,9 +418,9 @@ bool CAfterImageEffect::ShouldCapture()
         return false;
     if (GetTickCountMs2() > m_nLastCapture + m_kParam->GetTimeInterval())
         return true;
-    if (reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance()) == 0)
+    if (WorldService::GetInstance() == 0)
         return false;
-    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nTarget);
+    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageActor*>(WorldService::GetInstance()->FUN_141bd1200(m_nTarget));
     if (pActor == 0)
         return false;
     NiPoint3 kActor(pActor->vfunc_18());
@@ -432,9 +431,9 @@ bool CAfterImageEffect::ShouldCapture()
 // @0x14097db30
 void CAfterImageEffect::StartCapture()
 {
-    if (reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance()) == 0)
+    if (WorldService::GetInstance() == 0)
         return;
-    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nTarget);
+    Unk_AfterImageActor* pActor = reinterpret_cast<Unk_AfterImageActor*>(WorldService::GetInstance()->FUN_141bd1200(m_nTarget));
     if (pActor == 0)
         return;
     m_nLastCapture = GetTickCountMs2();

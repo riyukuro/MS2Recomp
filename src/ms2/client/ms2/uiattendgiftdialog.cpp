@@ -54,14 +54,15 @@ static CString s_jobCode="jobCode";
 static CString s_sortValue="sortValue";
 static CString s_tabIndex="tabIndex";
 
-class Unk_140bccd50 { public:
-    void FUN_140da5180(int,Delegate<void(CInPacket&)>);
-    void FUN_140da51e0(int,Delegate<void(CInPacket&)>);
+class Unk_140bccd50;
+class PacketHandlerManager { public:   // C3: member view
+    void RegisterHandler(unsigned,Delegate<void(CInPacket&)>);
+    void UnregisterHandler(unsigned,Delegate<void(CInPacket&)>);
 };
 Unk_140bccd50* FUN_140bccd50();
-class Unk_140933220 { public:
-    void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);
-    void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);
+class GameEventUserValueManager { public:   // C3: member view
+    void RegisterListener(unsigned,Delegate<void(GameEventVariable*)>);
+    void UnregisterListener(unsigned,Delegate<void(GameEventVariable*)>);
 };
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_14070f480 { public:
@@ -101,24 +102,28 @@ public:
 private:
     void* m_0; T* m_p;
 };
-class Unk_140ce3510 { public:
-    int FUN_1402e1d00();
+class GameEventAttendGiftCli   // C3: member view (gameeventcli.h clashes in this TU)
+{
+public:
     bool FUN_140ce3510();
-    int FUN_140ce3960();
-    bool FUN_140ce3a80();
-    int FUN_140ce36d0();
-    CString FUN_140ce3850();
-    bool FUN_140ce35c0();
+    bool IsCheckedInToday();
     unsigned FUN_140ce3660();
-    unsigned FUN_140ce3690();
-    Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
-    CStringW FUN_140ce37a0();
+    unsigned GetAttendedDays();
+    int GetUsablePoints();
     int FUN_140ce38a0();
     unsigned FUN_140ce38c0();
     __int64 FUN_140ce38e0();
     int FUN_140ce3900();
     unsigned FUN_140ce3920();
+    int FUN_140ce3960();
     int FUN_140ce3980();
+    bool FUN_140ce3a80();
+    CStringW GetTitleWithPoints();
+    CStringA GetDesc();
+};
+class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
+    int FUN_1402e1d00();
+    Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
     Unk_AttendDate FUN_140ce3aa0();
     Unk_AttendDate FUN_140ce3ae0();
 };
@@ -220,16 +225,16 @@ UIAttendGiftDialog::UIAttendGiftDialog() : m_eventId(0)
 {
     FUN_141924170(1);
     m_80=0;
-    FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::FUN_14102ebb0));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
+    ((GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102b7f0
 UIAttendGiftDialog::~UIAttendGiftDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::FUN_14102ebb0));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
+    ((GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102bab0
 CString UIAttendGiftDialog::GetTypeName() { return "AttendGiftDialog"; }
@@ -254,7 +259,7 @@ int UIAttendGiftDialog::vfunc_28(const char* method,const Scaleform::GFx::Value*
 }
 MS2_REPLACE_METHOD(0x14102C6D0, UIAttendGiftDialog, vfunc_28, 201, 0xD99DA034);
 // @0x14102c7a0
-bool UIAttendGiftDialog::FUN_14102c7a0(int id)
+bool UIAttendGiftDialog::SelectRequestedEvent(int id)
 {
     m_requested=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
@@ -263,13 +268,13 @@ bool UIAttendGiftDialog::FUN_14102c7a0(int id)
     }
     FUN_140d73ff0(L"s_attendGift_not_found_event"); return false;
 }
-MS2_REPLACE_METHOD(0x14102C7A0, UIAttendGiftDialog, FUN_14102c7a0, 309, 0xF38E5CF2);
+MS2_REPLACE_METHOD(0x14102C7A0, UIAttendGiftDialog, SelectRequestedEvent, 309, 0xF38E5CF2);
 // @0x14102c8e0
 void UIAttendGiftDialog::AddEvent(Unk_14102fe10<Unk_140ce3510> event)
 {
     m_events.insert(std::make_pair(event->FUN_1402e1d00(),event));
     if(event->FUN_140ce3510()) m_activeEvents.Add(event);
-    if(FUN_141924630()) FUN_14102d690();
+    if(FUN_141924630()) RefreshAll();
 }
 MS2_REPLACE_METHOD(0x14102C8E0, UIAttendGiftDialog, AddEvent, 236, 0x8EE28BC0);
 // @0x14102c9e0
@@ -280,7 +285,7 @@ void UIAttendGiftDialog::RemoveEvent(Unk_14102fe10<Unk_140ce3510> event)
     RebuildActiveEvents();
     if(FUN_141924630()) {
         if(m_activeEvents.IsEmpty()) { vfunc_67(); return; }
-        if(m_selected==event.get()) { m_selected=m_activeEvents[0]; FUN_14102d690(); }
+        if(m_selected==event.get()) { m_selected=m_activeEvents[0]; RefreshAll(); }
         else FUN_14102d6e0();
     }
 }
@@ -289,7 +294,7 @@ MS2_REPLACE_METHOD(0x14102C9E0, UIAttendGiftDialog, RemoveEvent, 364, 0xC713545C
 bool UIAttendGiftDialog::HasActiveEvents() { return m_activeEvents.GetCount()>0; }
 MS2_REPLACE_METHOD(0x14102CB60, UIAttendGiftDialog, HasActiveEvents, 61, 0x33D47331);
 // @0x14102cbb0
-Unk_14102fe10<Unk_140ce3510> UIAttendGiftDialog::FUN_14102cbb0(int kind)
+Unk_14102fe10<Unk_140ce3510> UIAttendGiftDialog::FindEventByKind(int kind)
 {
     for(auto it=m_events.begin();it!=m_events.end();it++) {
         Unk_14102fe10<Unk_140ce3510> event=it->second;
@@ -297,14 +302,14 @@ Unk_14102fe10<Unk_140ce3510> UIAttendGiftDialog::FUN_14102cbb0(int kind)
     }
     return Unk_14102fe10<Unk_140ce3510>(0);
 }
-MS2_REPLACE_METHOD(0x14102CBB0, UIAttendGiftDialog, FUN_14102cbb0, 270, 0x245AF2A3);
+MS2_REPLACE_METHOD(0x14102CBB0, UIAttendGiftDialog, FindEventByKind, 270, 0x245AF2A3);
 // @0x14102ccd0
 int UIAttendGiftDialog::FUN_14102ccd0()
 {
     int total=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
         Unk_14102fe10<Unk_140ce3510> event=it->second;
-        if(!event->FUN_140ce3a80()) total+=event->FUN_140ce36d0();
+        if(!event->FUN_140ce3a80()) total+=event->GetUsablePoints();
     }
     return total;
 }
@@ -313,32 +318,32 @@ MS2_REPLACE_METHOD(0x14102CCD0, UIAttendGiftDialog, FUN_14102ccd0, 221, 0xF20BDE
 void UIAttendGiftDialog::FUN_14102cea0(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if(m_selected==NULL) return;
-    FUN_1418fe220(m_selected->FUN_140ce3850());
+    FUN_1418fe220(m_selected->GetDesc());
 }
 MS2_REPLACE_METHOD(0x14102CEA0, UIAttendGiftDialog, FUN_14102cea0, 127, 0xA6FC2A46);
 // @0x14102d4b0
-void UIAttendGiftDialog::FUN_14102d4b0(const Scaleform::GFx::FunctionHandler::Params&) { FUN_14102f0e0(); }
+void UIAttendGiftDialog::FUN_14102d4b0(const Scaleform::GFx::FunctionHandler::Params&) { SendSelectedEventRequest(); }
 MS2_REPLACE_METHOD(0x14102D4B0, UIAttendGiftDialog, FUN_14102d4b0, 29, 0x9237BEA3);
 // @0x14102d5c0
 void UIAttendGiftDialog::SetEventId(int id)
 {
     m_eventId=id;
-    if(FUN_141924630()) { UpdateSelectedEvent(); FUN_14102d690(); }
+    if(FUN_141924630()) { UpdateSelectedEvent(); RefreshAll(); }
 }
 MS2_REPLACE_METHOD(0x14102D5C0, UIAttendGiftDialog, SetEventId, 67, 0xBC002A9E);
 // @0x14102d610
-void UIAttendGiftDialog::FUN_14102d610(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_14102d690(); }
+void UIAttendGiftDialog::FUN_14102d610(GameEventVariable*) { if(!FUN_1422dc2d0()) return; RefreshAll(); }
 MS2_REPLACE_METHOD(0x14102D610, UIAttendGiftDialog, FUN_14102d610, 45, 0x777F4742);
 // @0x14102d650
 void UIAttendGiftDialog::FUN_14102d650(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_14102e6a0(); }
 MS2_REPLACE_METHOD(0x14102D650, UIAttendGiftDialog, FUN_14102d650, 45, 0xBEB08E82);
 // @0x14102d690
-void UIAttendGiftDialog::FUN_14102d690()
+void UIAttendGiftDialog::RefreshAll()
 {
     if(!FUN_1422dc2d0()) return;
     FUN_14102d6e0(); FUN_14102da40(); FUN_14102e490(); FUN_14102e6a0();
 }
-MS2_REPLACE_METHOD(0x14102D690, UIAttendGiftDialog, FUN_14102d690, 70, 0x1A05A86E);
+MS2_REPLACE_METHOD(0x14102D690, UIAttendGiftDialog, RefreshAll, 70, 0x1A05A86E);
 // @0x14102e940
 void UIAttendGiftDialog::RebuildActiveEvents()
 {
@@ -364,7 +369,7 @@ void UIAttendGiftDialog::UpdateSelectedEvent()
 }
 MS2_REPLACE_METHOD(0x14102EA30, UIAttendGiftDialog, UpdateSelectedEvent, 369, 0xFD143DA9);
 // @0x14102ebb0
-void UIAttendGiftDialog::FUN_14102ebb0(CInPacket& packet)
+void UIAttendGiftDialog::OnAttendancePacket(CInPacket& packet)
 {
     int kind=reinterpret_cast<Unk_14070f480*>(&packet.m_stream)->vfunc_1();
     switch(kind) {
@@ -374,9 +379,9 @@ void UIAttendGiftDialog::FUN_14102ebb0(CInPacket& packet)
     case 9: FUN_14102ed90(packet); break;
     }
 }
-MS2_REPLACE_METHOD(0x14102EBB0, UIAttendGiftDialog, FUN_14102ebb0, 164, 0x1D89BC79);
+MS2_REPLACE_METHOD(0x14102EBB0, UIAttendGiftDialog, OnAttendancePacket, 164, 0x1D89BC79);
 // @0x14102ec60
-void UIAttendGiftDialog::FUN_14102ec60(CInPacket&) { FUN_14102d690(); }
+void UIAttendGiftDialog::FUN_14102ec60(CInPacket&) { RefreshAll(); }
 MS2_REPLACE_METHOD(0x14102EC60, UIAttendGiftDialog, FUN_14102ec60, 29, 0xA96931BB);
 // @0x14102ec90
 void UIAttendGiftDialog::FUN_14102ec90(CInPacket& packet) { FUN_140931510()->FUN_140d9f1c0(packet); }
@@ -388,7 +393,7 @@ void UIAttendGiftDialog::FUN_14102ecc0(CInPacket& packet)
     if(m_events.find(id)==m_events.end()) return;
     {
         SetEventId(id);
-        if(FUN_141924630()) FUN_14102d690();
+        if(FUN_141924630()) RefreshAll();
         else FUN_141924680();
     }
 }
@@ -400,14 +405,14 @@ void UIAttendGiftDialog::FUN_14102f080()
 }
 MS2_REPLACE_METHOD(0x14102F080, UIAttendGiftDialog, FUN_14102f080, 75, 0x1496D6EA);
 // @0x14102f0e0
-void UIAttendGiftDialog::FUN_14102f0e0()
+void UIAttendGiftDialog::SendSelectedEventRequest()
 {
     if(m_selected==NULL) return;
     {
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x14102F0E0, UIAttendGiftDialog, FUN_14102f0e0, 144, 0x6F4A4D63);
+MS2_REPLACE_METHOD(0x14102F0E0, UIAttendGiftDialog, SendSelectedEventRequest, 144, 0x6F4A4D63);
 
 // @0x14102bb00
 void UIAttendGiftDialog::OnLoadComplete()
@@ -418,17 +423,17 @@ void UIAttendGiftDialog::OnLoadComplete()
     FUN_141925ec0("m_closeButton");
     FUN_141925fa0("m_dragBar");
     FUN_14102f870("m_giftList",m_giftList);
-    do { m_30->FUN_140bbe640("m_payAttendButton",m_pay);
+    do { m_30->FUN_140bbe640<ASButton>("m_payAttendButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pay));
     if(m_pay==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(64),__FUNCTION__)); } while(0);
-    do { m_30->FUN_140bbe640("m_detailButton",m_detail);
+    do { m_30->FUN_140bbe640<ASButton>("m_detailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_detail));
     if(m_detail==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(65),__FUNCTION__)); } while(0);
-    do { m_30->FUN_140bbe640("m_usePointButton",m_usePoint);
+    do { m_30->FUN_140bbe640<ASButton>("m_usePointButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_usePoint));
     if(m_usePoint==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(66),__FUNCTION__)); } while(0);
     m_buttons.RemoveAll();
     for(unsigned int i=0;i<3;i++) {
         MS2Ptr<Unk_140acd6e0> button;
         if(FUN_140bc6d10(StringFormat("m_eventButton{0}",i),button).get()) {
-            button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cdc0),FUN_140bd09d0(i));
+            button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::SelectEventByIndex),FUN_140bd09d0(i));
             m_buttons.Add(button);
         }
     }
@@ -440,27 +445,27 @@ void UIAttendGiftDialog::OnLoadComplete()
     if(g_attendTable.FUN_140482280(100,nDefault)) {
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
     }
-    FUN_14102d690();
+    RefreshAll();
     ((class Unk_AttendUIMgr*)FUN_140d86260())->vfunc_43(2,0,1000);
 }
 MS2_REPLACE_METHOD(0x14102BB00, UIAttendGiftDialog, OnLoadComplete, 2719, 0xE93CB0C4);
 // @0x14102cdc0
-void UIAttendGiftDialog::FUN_14102cdc0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIAttendGiftDialog::SelectEventByIndex(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if(m_requested.get()!=0) return;
     unsigned int index=FUN_140bd09c0(params.pUserData);
     if(index>=m_activeEvents.GetCount()) return;
     if(m_selected==m_activeEvents[index].get()) return;
     m_selected=m_activeEvents[index];
-    FUN_14102d690();
+    RefreshAll();
 }
-MS2_REPLACE_METHOD(0x14102CDC0, UIAttendGiftDialog, FUN_14102cdc0, 217, 0x06DFF250);
+MS2_REPLACE_METHOD(0x14102CDC0, UIAttendGiftDialog, SelectEventByIndex, 217, 0x06DFF250);
 // @0x14102cf30
 void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if(m_selected==NULL || m_selected->FUN_140ce38a0()==0) return;
     {
-    if(m_selected->FUN_140ce3690()>=m_selected->FUN_140ce3660()) { FUN_140d73ff0(L"s_attendGift_payAttend_attend_all"); return; }
+    if(m_selected->GetAttendedDays()>=m_selected->FUN_140ce3660()) { FUN_140d73ff0(L"s_attendGift_payAttend_attend_all"); return; }
     {
         if(m_selected->FUN_140ce3920()>=m_selected->FUN_140ce38c0()) { FUN_140d73ff0(L"s_attendGift_payAttend_uesd_all"); return; }
         {
@@ -481,7 +486,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
                 box->FUN_141a01800(1);
                 box->FUN_141a024e0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
                 box->FUN_141a02670(couponUid!=0);
-                box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::FUN_14102d4e0));
+                box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
                 box->FUN_1405340b0(couponUid);
                 FUN_140d73c60(box);
             }
@@ -491,7 +496,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
 }
 MS2_REPLACE_METHOD(0x14102CF30, UIAttendGiftDialog, FUN_14102cf30, 1388, 0xDAE18317);
 // @0x14102d4e0
-bool UIAttendGiftDialog::FUN_14102d4e0(int result,const CMsgBoxData& data)
+bool UIAttendGiftDialog::OnAttendanceMsgBox(int result,const CMsgBoxData& data)
 {
     if(result==0) {
         __int64 id=0;
@@ -504,7 +509,7 @@ bool UIAttendGiftDialog::FUN_14102d4e0(int result,const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x14102D4E0, UIAttendGiftDialog, FUN_14102d4e0, 209, 0xA75E113E);
+MS2_REPLACE_METHOD(0x14102D4E0, UIAttendGiftDialog, OnAttendanceMsgBox, 209, 0xA75E113E);
 // @0x14102d6e0
 void UIAttendGiftDialog::FUN_14102d6e0()
 {
@@ -520,7 +525,7 @@ void UIAttendGiftDialog::FUN_14102d6e0()
             CStringW strFrom=FUN_140b8e910(events[i]->FUN_140ce3aa0());
             CStringW strTo=FUN_140b8e910(events[i]->FUN_140ce3ae0());
             m_buttons[i]->vfunc_3(1);
-            m_buttons[i]->FUN_1422cdfb0(FUN_1409eaa20(L"s_attendGift_title_name",strFrom,strTo,events[i]->FUN_140ce37a0()));
+            m_buttons[i]->FUN_1422cdfb0(FUN_1409eaa20(L"s_attendGift_title_name",strFrom,strTo,events[i]->GetTitleWithPoints()));
             m_buttons[i]->FUN_1422ce090(events[i]==m_selected.get());
         }
     }
@@ -531,8 +536,8 @@ void UIAttendGiftDialog::FUN_14102da40()
 {
     if(!FUN_1422dc2d0()) return;
     if(m_selected==NULL) return;
-    unsigned int attended=m_selected->FUN_140ce3690();
-    bool checked=m_selected->FUN_140ce35c0();
+    unsigned int attended=m_selected->GetAttendedDays();
+    bool checked=m_selected->IsCheckedInToday();
     if(!checked) attended=attended+1;
     ASDataProvider slots(2);
     int maxSlots=0x1c;
@@ -583,7 +588,7 @@ void UIAttendGiftDialog::FUN_14102da40()
         strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->FUN_140ce3ae0(),L"/"));
     }
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
-    m_detail->vfunc_4(!m_selected->FUN_140ce3850().IsEmpty());
+    m_detail->vfunc_4(!m_selected->GetDesc().IsEmpty());
 }
 MS2_REPLACE_METHOD(0x14102DA40, UIAttendGiftDialog, FUN_14102da40, 2634, 0x785FE8CD);
 // @0x14102e490

@@ -108,8 +108,6 @@ bool FUN_14087ddc0(void* pClassInfo, int nKind);                    // efd::Clas
 class Unk_AttendAvatarMgr : public WorldService
 {
 public:
-    Unk_ExpActor* FUN_141bd1200(int nObjectId);                     // an object by id
-    int FUN_141bd1a10(Unk_ExpActor* p);                             // object -> owner id
 };
 
 // The effect manager (0x1403ed280).
@@ -320,7 +318,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    Unk_ExpActor* pObj = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1200(nObjectId);
+    Unk_ExpActor* pObj = reinterpret_cast<Unk_ExpActor*>(WorldService::GetInstance()->FUN_141bd1200(nObjectId));
     if (pObj == 0)
         return 0;
     FUN_1409f76f0(&m_spNode, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
@@ -359,7 +357,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
     ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
-    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd1a10(pObj);
+    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
     ((Unk_ExpTarget&)(kRequest)).FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
     m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     return 1;

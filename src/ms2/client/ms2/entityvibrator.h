@@ -37,7 +37,7 @@ public:
     int FUN_1411cd550();                        // physics mode flag
     void FUN_1411cd570(Unk_Entity* pEntity);    // read the entity's properties
     void SetPosition(Vector3 pos);    // set the entity position when it changed
-    void FUN_1411cdb00(Vector3 rot);    // set the entity rotation when it changed
+    void SetRotation(Vector3 rot);    // set the entity rotation when it changed
     void FUN_1411cdba0();                       // start the physics fall
     void FUN_1411cdd90();                       // cancel the fall
     void FUN_1411cddc0(CString strModel, unsigned char nMode);   // swap the model and set the mode

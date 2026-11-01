@@ -289,7 +289,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <utility>
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
-{
+{ public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
@@ -297,10 +297,10 @@ public:
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_140165cf0 {
+class Unk_140165cf0 : public Unk_XmlNode {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char*);
-    Unk_140165cf0* FUN_140168650(const char*);
+
+
 };
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vector<Unk_140165cf0*>&);

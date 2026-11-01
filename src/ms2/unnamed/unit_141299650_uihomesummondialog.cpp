@@ -36,10 +36,6 @@ public:
 class Unk_SumText : public ASDisplayObject
 {
 public:
-    void FUN_1422e0ab0(const CStringW& str);                    // set the text
-    void FUN_1422e1500(int n1, int n2);                         // set the selection
-    void FUN_1422e0e00(int n);                                  // max chars / mode
-    void FUN_1422c7630(int n);                                  // focus
 };
 
 // Keyboard state (FUN_14025e7c0).
@@ -91,8 +87,8 @@ void UIHomeSummonDialog::OnLoadComplete()
     FUN_140bc6d10("m_confirmButton", m_180);
     m_180->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), 0);
     FUN_14129a040("m_textInput", m_190);
-    m_190->FUN_1422e0e00(1);
-    m_190->FUN_1422c7630(1);
+    reinterpret_cast<ASTextInput*>(m_190.operator->())->SetEditable(1);
+    reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422c7630(1);
     FUN_141901390(0, vfunc_48());
 }
 MS2_REPLACE_METHOD(0x141299880, UIHomeSummonDialog, OnLoadComplete, 553, 0x9A682978);
@@ -143,8 +139,8 @@ void UIHomeSummonDialog::Summon()
         return;
     if (strText.GetLength() < 2)
     {
-        m_190->FUN_1422e0ab0(L"");
-        m_190->FUN_1422e1500(0, 0);
+        reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422e0ab0(L"");
+        reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422e1500(0, 0);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);

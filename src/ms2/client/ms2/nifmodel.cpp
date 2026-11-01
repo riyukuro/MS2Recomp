@@ -9,20 +9,22 @@
 #include "nifmodel.h"
 #include "kfmmodel_actor.h"
 #include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/equipment.h"  // C3: was a local member view
 #include <efd/Matrix3.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+class Unk_ResourceMgr;
 
 // ---- out-of-unit callees ----
 void* FUN_1405a8ed0(void* sp);   void FUN_14097eb60(void* out, void* p);
 void* FUN_1411dc7a0(void* owner, void* out);   void FUN_1401bfde0(void* p);
-void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);class CEquipItem   // C3: member view for the former free stand-ins
+void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);class CEquipItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1411dc190(void*);
     struct Unk_EquipItemData* FUN_1411dc7f0();
-    MS2Ptr<class CItem> FUN_1411dc7a0();   // the item
+    MS2Ptr<class CItem> GetItem();   // the item
     void AddModel(class CEquipModel*);
 };
    bool FUN_14053cfd0(void* p);
@@ -36,7 +38,7 @@ void* FUN_141b6dea0(void* out, unsigned v);   void* FUN_1414424f0(void* in, void
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140599fd0(unsigned int);
+    int GetCurrentRgbComponent(unsigned int);
 };
 void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f000
 void* FUN_141200820(class CEquipModel*);   // C3: was FUN_141200820
@@ -49,11 +51,6 @@ char FUN_140534e50(void* p);   bool FUN_14053d2b0(void* p);void* FUN_1416561a0(v
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_140a0b300(void* o, bool b);   void FUN_14098cb80(void* it, void* o);   void* FUN_14098e0d0(void* it, int n);   void FUN_14098cf00(void* it);
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411e75f0();
-};
 void* FUN_141201c90(void* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
 void FUN_1402bd040(float* p);
 void FUN_141203db0(class CEquipModel*);   // C3: was FUN_141203db0
@@ -106,10 +103,8 @@ void* FUN_141566db0(void* p);
 void* FUN_141566d30(void** p);
 
 // The model's owner (the equipped item; held in MS2Ptr). Only the members this unit calls.
-class Unk_EquipModelOwner : public CPtred
+class Unk_EquipModelOwner : public CEquipItem
 {
-public:
-    MS2Ptr<CItem> FUN_1411dc7a0();                        // the item
 };
 class CItem : public CPtred
 {
@@ -131,20 +126,20 @@ CNifModel::CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
     m_i11c = 0;
     m_p120 = 0;
     if (*(int*)&DAT_143ae2b38 != 0) {
-        CItem* pItem = spOwner->FUN_1411dc7a0().get();
+        CItem* pItem = spOwner->GetItem().get();
         if (pItem != 0)
-            m_i11c = spOwner->FUN_1411dc7a0()->FUN_140527a20() == 2;
+            m_i11c = spOwner->GetItem()->FUN_140527a20() == 2;
     }
 }
 
 // The .nif loading service (CNifLoadingService; nifeffectparam.h). Only the loader this unit calls.
-CNifLoadingService* FUN_140a0afd0();                      // the service singleton
+Unk_ResourceMgr*FUN_140a0afd0();                      // the service singleton
 
 // @0x141565700
 int CNifModel::vfunc_4(CString strPath)
 {
     FUN_141200e30((class CEquipModel*)(this), 1);
-    m_unk_f0 = FUN_140a0afd0()->Load(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
+    m_unk_f0 = reinterpret_cast<CNifLoadingService *>(FUN_140a0afd0())->Load(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
     if (m_unk_f0 == 0)
         return 0;
     m_str38 = strPath;
@@ -225,10 +220,10 @@ void CNifModel::vfunc_11()
     if (pPartList != 0) {
         for (int i = 0; i < 3; ++i) {
             char v70[16];
-            FUN_141b6dea0(v70, ((class CItemExtraData*)(void*)(pPartList))->FUN_140599fd0(i));
+            FUN_141b6dea0(v70, ((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
             if (i == 1) {
                 char t38[12], t2c[28], v60[16];
-                void* a = FUN_141b6dea0(t38, ((class CItemExtraData*)(void*)(pPartList))->FUN_140599fd0(0));
+                void* a = FUN_141b6dea0(t38, ((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0));
                 void* b = FUN_1414424f0(a, t2c, 1.3f);
                 FUN_140a0a3a0(v60, b);
                 memcpy(v70, v60, 12);
@@ -285,7 +280,7 @@ void CNifModel::vfunc_13()
     if (pRootNode == 0) return;
     void* pController = FUN_141200820((class CEquipModel*)(this));
     if (pController == 0) return;
-    MS2Ptr<CItem> spItem = ((class CEquipItem*)(void*)(FUN_1405a8ed0(&m_spOwner)))->FUN_1411dc7a0();
+    MS2Ptr<CItem> spItem = ((class CEquipItem*)(void*)(FUN_1405a8ed0(&m_spOwner)))->GetItem();
     if (!spItem)
         return;
     int nDebugFlag = ((Unk_ModelActor*)pController)->vfunc_48();

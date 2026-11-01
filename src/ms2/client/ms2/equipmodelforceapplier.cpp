@@ -35,6 +35,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipmodel.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/equipitem.h"  // C3
 
 extern unsigned char DAT_143afc898;                                        // assertions throw when set
 
@@ -47,9 +49,8 @@ public:
 };
 
 // The owner record's entity reference: a smart pointer to an object that carries the world id (+0x58).
-class Unk_WindRef { public: int FUN_140526b10() const; };
 // The model seen as the owner holder: FUN_141200a40 copies CEquipModel::m_spOwner (a member in the exe).
-class Unk_EquipModelOwner { public: MS2Ptr<Unk_WindRef> FUN_1411dc7a0(); };
+class Unk_EquipModelOwner : public CEquipItem { };
 
 // The world object table (singleton FUN_1403ed2d0) and its game objects (slot 20 = rotation in degrees).
 class Unk_WindObj
@@ -62,10 +63,10 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual Vector3 GetRotation();                          // slot 20 (+0xa0)
 };
-class Unk_WindWorld { public: Unk_WindObj* FUN_141bd1180(int nId); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
 };
 class Unk_WindModel;                                                // the object's 0x6200003 interface
@@ -166,7 +167,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (spOwner == (Unk_EquipModelOwner*)0) {
         return;
     }
-    Unk_WindObj* pObj = ((class Unk_WindWorld*)WorldService::GetInstance())->FUN_141bd1180(spOwner->FUN_1411dc7a0()->FUN_140526b10());
+    Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FUN_141bd1180(spOwner->GetItem()->FUN_140526b10()));
     if (pObj == 0) {
         return;
     }

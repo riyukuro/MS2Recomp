@@ -23,6 +23,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/ascript.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -35,16 +37,12 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bVisible);
-    void FUN_1422e3400();                                       // clear
-    void FUN_1422e3460(const ASObj& row);                       // add a tab
-    void FUN_1422e31e0(int nIndex);                             // select a tab
 };
 
 // The movie root with the "setData" call.
 class Unk_FpScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& data);
 };
 
 
@@ -135,7 +133,7 @@ void UIFamePointBoardDialog::FUN_140c15780()
 {
     if (MS2Ptr<Unk_FpTab> spTab = FUN_140c02870("m_tab"))
     {
-        spTab->FUN_1422e3400();
+        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->FUN_1422e3400();
         ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
         for (size_t i = 0; i < ids.GetCount(); i++)
         {
@@ -148,9 +146,9 @@ void UIFamePointBoardDialog::FUN_140c15780()
             row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
             row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
             row.FUN_1407cb9c0("allianceCode", nAlliance);
-            spTab->FUN_1422e3460(row);
+            reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->AddItem(row);
         }
-        spTab->FUN_1422e31e0(0);
+        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(0);
         spTab->vfunc_24(true);
     }
 }
@@ -206,7 +204,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
         logs.FUN_1422bbf00(line);
     }
     data.FUN_140c16160("log", logs);
-    static_cast<Unk_FpScript*>(m_30.operator->())->FUN_140ba4cc0("setData", data);
+    reinterpret_cast<AScript*>(static_cast<Unk_FpScript*>(m_30.operator->()))->Invoke("setData", data);
 }
 
 // @0x140c16160

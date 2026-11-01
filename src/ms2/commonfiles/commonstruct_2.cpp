@@ -13,6 +13,35 @@
 #include "ms2/placeholder/cclienthardwareinfo.h"
 #include <new>
 #include <sstream>
+#include "ms2/commonfiles/itemgift.h"
+#include "ms2/commonfiles/probability.h"
+#include "ms2/commonfiles/clientreconnectionstructs.h"
+#include "ms2/placeholder/tptrvalue.h"
+#include "ms2/fmt/format.h"
+#include <list>
+#include <map>
+#include <set>
+#include <tuple>
+#include <vector>
+
+// The STL/ATL instances the folded COMDATs are named after in the exe (C3: the calls go to their members).
+enum Unk_LimitValue : int;
+enum Unk_AdditionalEventValue : int;
+class CUserLimitHistory;
+typedef MS2Ptr<CIngredientInfo> PIng;
+typedef MS2Ptr<Probability::LogContext> PLog;
+typedef std::vector<__int64> VI64;
+typedef std::vector<ItemEntity> VItem;
+typedef std::vector<CString> VStr;
+typedef std::vector<PIng> VIng;
+typedef std::vector<PLog> VLog;
+typedef std::vector<MS2Ptr<CPtred>> VPtred;
+typedef std::list<MS2Ptr<CUserChangeableItemHistory>> LHist;
+typedef std::_List_node<MS2Ptr<CUserChangeableItemHistory>, void*> NodeHist;
+typedef std::map<int, int> MapII;
+typedef std::set<unsigned> SetU;
+typedef ATL::CAtlArray<__int64> ArrI64;
+typedef Unk_PktPtr<COutPacket> PktOut;
 
 typedef __int64 i64;
 typedef unsigned __int64 u64;
@@ -30,8 +59,7 @@ i64 FUN_140278920(i64*, i64*); i64 FUN_140278950(i64*, i64*);
 char FUN_14027a640(i64*, i64*); char FUN_14027a670(i64*, i64*);
 char* FUN_140177620(char*, char*);
 void FUN_14027a6e0(i64*, i64); void FUN_14027a700(i64*, i64);
-i64 FUN_140277870(void*, i64); i64 FUN_1402778d0(void*, i64); i64 FUN_140277930(void*, i64);
-i64 FUN_1402890b0(void*); i64 FUN_1402890d0(void*); i64 FUN_1402890f0(void*);
+void FUN_140277870(i64, i64); void FUN_1402778d0(i64, i64); void FUN_140277930(i64, i64);
 void FUN_1402774c0(i64, i64, i64); void FUN_140277470(i64, i64, i64);
 void FUN_140277510(i64, i64, i64); void FUN_140277560(i64, i64, i64); void FUN_1402775b0(i64, i64, i64);
 
@@ -69,11 +97,11 @@ i64 FUN_14027b250(i64 first, i64 last, i64 dest, i64 al)
     return dest;
 }
 
-i64 FUN_140277870(void*, i64);
+void FUN_140277870(i64, i64);
 void FUN_1402769e0(i64*, i64, Unk_StlTag);
 void FUN_140276a10(i64*, i64, Unk_StlTag);
 i64 FUN_140276a40(i64, i64, Unk_StlTag);
-i64 FUN_140276920(i64*, i64*); i64 FUN_140276960(i64*, i64*);
+void FUN_140276920(i64, i64); void FUN_140276960(i64, i64);
 i64 FUN_140276aa0(i64, i64, i64, Unk_StlTag); i64 FUN_140276d40(i64, i64, i64, Unk_StlTag);
 i64 FUN_140278710(i64); i64 FUN_140278750(i64);
 
@@ -82,24 +110,24 @@ i64 FUN_14027b320(i64 first, i64 last, i64 dest, i64 al)
 {
     Unk_BackoutB bo(dest, al);
     for (; first != last; first += 0x30)
-        FUN_140277870(&bo, FUN_14027c3e0(first));
-    return FUN_1402890b0(&bo);
+        FUN_140277870((i64)&bo, FUN_14027c3e0(first));
+    return (i64)reinterpret_cast<std::_Uninitialized_backout_al<ItemEntity*, std::allocator<ItemEntity>>*>(&bo)->_Release();
 }
 // @0x14027b3b0
 i64 FUN_14027b3b0(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutC bo(dest, al);
     for (; first != last; first += 8)
-        FUN_1402778d0(&bo, FUN_14027c3f0(first));
-    return FUN_1402890d0(&bo);
+        FUN_1402778d0((i64)&bo, FUN_14027c3f0(first));
+    return (i64)reinterpret_cast<std::_Uninitialized_backout_al<PIng*, std::allocator<PIng>>*>(&bo)->_Release();
 }
 // @0x14027b440
 i64 FUN_14027b440(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutD bo(dest, al);
     for (; first != last; first += 0x10)
-        FUN_140277930(&bo, FUN_14027c400(first));
-    return FUN_1402890f0(&bo);
+        FUN_140277930((i64)&bo, FUN_14027c400(first));
+    return (i64)reinterpret_cast<std::_Uninitialized_backout_al<MS2Ptr<CPtred>*, std::allocator<MS2Ptr<CPtred>>>*>(&bo)->_Release();
 }
 // @0x14027b4d0
 i64 FUN_14027b4d0(i64 p) { return p; }
@@ -137,14 +165,14 @@ i64 FUN_14027b600(i64 p, i64 n) { Unk_StlTag t; return FUN_140276a40(p, n, t); }
 i64 FUN_14027b630(i64 a, i64 b, i64 c)
 {
     Unk_StlTag t;
-    FUN_140276920(&b, &c);
+    FUN_140276920((i64)&b, (i64)&c);
     return FUN_140276aa0(a, FUN_140278710(b), FUN_140278710(c), t);
 }
 // @0x14027b690
 i64 FUN_14027b690(i64 a, i64 b, i64 c)
 {
     Unk_StlTag t;
-    FUN_140276960(&b, &c);
+    FUN_140276960((i64)&b, (i64)&c);
     return FUN_140276d40(a, FUN_140278750(b), FUN_140278750(c), t);
 }
 
@@ -155,8 +183,6 @@ struct Unk_Tup8 { i64 v; };
 i64 FUN_14027c140(i64); i64 FUN_14027c150(i64); i64 FUN_14027c170(i64); i64 FUN_14027c180(i64); i64 FUN_14027c200(i64);
 i64 FUN_14027c190(i64); i64 FUN_14027c1d0(i64); i64 FUN_14027c210(i64); i64 FUN_14027c1e0(i64); i64 FUN_14027c1a0(i64);
 i64 FUN_14027c230(i64); i64 FUN_14027c1f0(i64);
-i64 FUN_140180940(i64); i64 FUN_140180c50(i64);
-i64 FUN_140162f40(i64); i64 FUN_140162ef0(i64);
 
 Unk_Q8* FUN_14027d650(Unk_Q8*, Unk_Q8*);
 void FUN_140274bb0(void*, char, i64, i64);
@@ -177,8 +203,8 @@ void FUN_14027b790(i64 al, i64 where, i64 a2, i64 b2, i64 c2)
     Unk_Q8 first, second;
     Unk_Q8* p28 = &first;
     Unk_Q8* p30 = &second;
-    FUN_140274bb0(mem, *(char*)FUN_140162ef0(a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
-                  (i64)FUN_140163dc0(p28, (Unk_Q8*)FUN_140162f40(c2)));
+    FUN_140274bb0(mem, *(char*)(i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
+                  (i64)FUN_140163dc0(p28, (Unk_Q8*)(i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))));
 }
 // @0x14027b840
 void FUN_14027b840(i64 al, i64 where, i64 src) { ::new((void*)where) Unk_P8(*(Unk_P8*)FUN_14027c170(src)); }
@@ -187,9 +213,9 @@ void FUN_14027b890(i64 al, i64 where, i64 src) { ::new((void*)where) ItemEntity(
 // @0x14027b8e0
 void FUN_14027b8e0(i64 al, i64 where, i64 src) { ::new((void*)where) ItemEntity((ItemEntity&&)*(ItemEntity*)FUN_14027c200(src)); }
 // @0x14027b930
-void FUN_14027b930(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(CString*)FUN_140180940(src)); }
+void FUN_14027b930(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(CString*)(i64)&std::forward<CStringA&>(*(CStringA*)src)); }
 // @0x14027b980
-void FUN_14027b980(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(CString*)FUN_140180c50(src)); }
+void FUN_14027b980(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(CString*)(i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)src))); }
 // @0x14027b9d0
 void FUN_14027b9d0(i64 al, i64 where, i64 src) { FUN_14027c9b0(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c190(src)); }
 // @0x14027ba20
@@ -232,7 +258,6 @@ i64 FUN_14027bca0(i64 first, i64 last) { Unk_StlTag t; return FUN_140277660(firs
 // vector::push_back(const T&) bodies: construct at end when it has room, otherwise reallocate
 bool FUN_140288510(i64); bool FUN_140288470(i64); bool FUN_1402884c0(i64);
 void FUN_140277990(i64, i64); void FUN_140277a50(i64, i64); void FUN_140277b10(i64, i64); void FUN_140277bd0(i64, i64);
-i64* FUN_140288ba0(i64); i64* FUN_140288b20(i64); i64* FUN_140288b60(i64);
 i64 FUN_140277c90(i64, i64, i64); i64 FUN_140277ee0(i64, i64, i64); i64 FUN_140278130(i64, i64, i64); i64 FUN_140278370(i64, i64, i64);
 // @0x14027bcd0
 void FUN_14027bcd0(i64 vec, i64 val)
@@ -240,7 +265,7 @@ void FUN_14027bcd0(i64 vec, i64 val)
     if (FUN_140288510(vec)) {
         FUN_140277990(vec, FUN_14027c1d0(val));
     } else {
-        i64 r = FUN_140277c90(vec, *FUN_140288ba0(vec), FUN_14027c1d0(val));
+        i64 r = FUN_140277c90(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), FUN_14027c1d0(val));
     }
 }
 // @0x14027bd40
@@ -249,16 +274,16 @@ void FUN_14027bd40(i64 vec, i64 val)
     if (FUN_140288470(vec)) {
         FUN_140277a50(vec, FUN_14027c200(val));
     } else {
-        i64 r = FUN_140277ee0(vec, *FUN_140288b20(vec), FUN_14027c200(val));
+        i64 r = FUN_140277ee0(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), FUN_14027c200(val));
     }
 }
 // @0x14027bdb0
 void FUN_14027bdb0(i64 vec, i64 val)
 {
     if (FUN_1402884c0(vec)) {
-        FUN_140277b10(vec, FUN_140180c50(val));
+        FUN_140277b10(vec, (i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)val)));
     } else {
-        i64 r = FUN_140278130(vec, *FUN_140288b60(vec), FUN_140180c50(val));
+        i64 r = FUN_140278130(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), (i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)val)));
     }
 }
 // @0x14027be20
@@ -267,7 +292,7 @@ void FUN_14027be20(i64 vec, i64 val)
     if (FUN_140288510(vec)) {
         FUN_140277bd0(vec, FUN_14027c210(val));
     } else {
-        i64 r = FUN_140278370(vec, *FUN_140288ba0(vec), FUN_14027c210(val));
+        i64 r = FUN_140278370(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), FUN_14027c210(val));
     }
 }
 
@@ -276,18 +301,18 @@ i64 FUN_140277000(i64, i64, i64, i64); void FUN_140278d90(i64, i64, i64, i64, i6
 // @0x14027be90
 i64 FUN_14027be90(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64 valtuple)
 {
-    i64 node = FUN_140277000(tree, FUN_140162ef0(piecewise), FUN_14027c230(keytuple), FUN_140162f40(valtuple));
+    i64 node = FUN_140277000(tree, (i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)piecewise), FUN_14027c230(keytuple), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)valtuple)));
     FUN_140278d90(tree, out, where, node + 0x1c, node);
     return out;
 }
 
 // std::find_if over a vector<Unk_IngRef> with a by-value predicate argument
-i64 FUN_1402769a0(i64*, i64*); i64 FUN_140278760(i64*); void FUN_14027a740(i64*, i64*);
+void FUN_1402769a0(i64, i64); i64 FUN_140278760(i64*); void FUN_14027a740(i64, i64*);
 bool FUN_14026b560(int*, Unk_Ref16*);
 // @0x14027bf30
 i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
 {
-    FUN_1402769a0(&first, &last);
+    FUN_1402769a0((i64)&first, (i64)&last);
     i64 f = FUN_140278760(&first);
     i64 l = FUN_140278760(&last);
     for (; f != l; f += 0x10) {
@@ -297,7 +322,7 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
         if (FUN_14026b560(&key, copy))
             break;
     }
-    FUN_14027a740(&first, &f);
+    FUN_14027a740((i64)&first, &f);
     *out = first;
     return out;
 }
@@ -306,7 +331,6 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
 struct Unk_FmtVal { i64 w0, w1; int type; };
 struct Unk_Str16 { i64 w0, w1; };
 Unk_Str16* FUN_140182090(Unk_Str16*, const std::wstring&);
-i64 FUN_1402da110(i64, i64*, Unk_FmtVal*);
 // @0x14027bff0
 // MS2-FUNCTIONAL: uses the standard wostringstream/wstring; the exe calls its own out-of-line stream ctor/dtor and str() instances
 void FUN_14027bff0(i64 ctx, i64* out, int* value)
@@ -324,7 +348,7 @@ void FUN_14027bff0(i64 ctx, i64* out, int* value)
         *(int*)pv = *value;
         v.type = 1;
     }
-    *out = FUN_1402da110(ctx, out, &v);
+    *out = (i64)reinterpret_cast<fmt::BasicFormatter<wchar_t>*>(ctx)->format(*(const wchar_t**)out, *(const fmt::internal::Arg*)&v);
 }
 // @0x14027c110
 void FUN_14027c110(i64 ctx, i64 value, i64* out) { FUN_14027bff0(ctx, out, (int*)value); }
@@ -370,31 +394,30 @@ i64 FUN_14027c240(i64 a, i64 b) { FUN_140274c00(a, FUN_14027c1f0(b)); return a; 
 i64 FUN_14027c270(i64* p) { return FUN_14027c1f0(*p); }
 
 // vector<Unk_IngRef>::insert(where, first, last)
-i64 FUN_140288a40(i64); void FUN_140279de0(i64, i64, i64, i64, Unk_StlTag);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
+void FUN_140279de0(i64, i64, i64, i64, Unk_StlTag);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
 // @0x14027c290
 i64 FUN_14027c290(i64 self, i64 out, i64 where, i64 first, i64 last)
 {
     Unk_StlTag t;
-    FUN_1402769a0(&first, &last);
-    i64 idx = (where - *(i64*)FUN_140288a40(self)) >> 4;
+    FUN_1402769a0((i64)&first, (i64)&last);
+    i64 idx = (where - *(i64*)(i64)&reinterpret_cast<VPtred*>(self)->_Myfirst()) >> 4;
     FUN_140279de0(self, where, FUN_140278760(&first), FUN_140278760(&last), t);
     FUN_140288770(self, out, idx);
     return out;
 }
 
 // fmt::internal::make_type<T>(const T&) instances: forward to the per-type MakeValue::type()
-u64 FUN_14020c270(i64); u64 FUN_14028b580(float); u64 FUN_14028b590(i64); u64 FUN_14028b5a0(bool);
 // @0x14027c340
-u64 FUN_14027c340(i64 p) { return FUN_14020c270(p); }
+u64 FUN_14027c340(i64 p) { return fmt::internal::MakeValue<fmt::BasicFormatter<char>>::type((const wchar_t*)p); }
 // @0x14027c360
-u64 FUN_14027c360(i64 p) { return FUN_14028b580(*(float*)p); }
+u64 FUN_14027c360(i64 p) { return fmt::internal::MakeValue<fmt::BasicFormatter<char>>::type(*(float*)p); }
 // @0x14027c380
 u64 FUN_14027c500(i64);
 u64 FUN_14027c380(i64 p) { return FUN_14027c500(p); }
 // @0x14027c3a0
-u64 FUN_14027c3a0(i64 p) { return FUN_14028b590(*(i64*)p); }
+u64 FUN_14027c3a0(i64 p) { return fmt::internal::MakeValue<fmt::BasicFormatter<char>>::type(*(i64*)p); }
 // @0x14027c3c0
-u64 FUN_14027c3c0(i64 p) { return FUN_14028b5a0(*(bool*)p); }
+u64 FUN_14027c3c0(i64 p) { return fmt::internal::MakeValue<fmt::BasicFormatter<char>>::type(*(bool*)p); }
 // @0x14027c3e0
 i64 FUN_14027c3e0(i64 p) { return p; }
 // @0x14027c3f0
@@ -435,7 +458,6 @@ struct Unk_Rec48 {
     void* a; void* b; int n; float x, y, z; u64 id; void* c; int d; int e; void* f; void* g;
 };
 MS2_CHECK_SIZE(Unk_Rec48, 0x48);
-void FUN_140286020(Unk_Rec48*, float, float, float, bool);
 // @0x14027c6b0
 Unk_Rec48* FUN_14027c6b0(Unk_Rec48* t, int n, float x, float y, float z, int e)
 {
@@ -449,7 +471,7 @@ Unk_Rec48* FUN_14027c7a0(Unk_Rec48* t, int n, float x, float y, float z, int e)
 {
     t->a = 0; t->b = 0; t->n = n; t->x = x; t->y = y; t->z = z;
     t->id = 0xFFFFFFFF; t->c = 0; t->d = 0; t->e = e; t->f = 0; t->g = 0;
-    FUN_140286020(t, x, y, z, false);
+    reinterpret_cast<ATL::CAtlMap<int, Unk_LimitValue>*>(t)->SetOptimalLoad(x, y, z, false);
     return t;
 }
 
@@ -526,19 +548,15 @@ Unk_ListBox::Unk_ListBox() { FUN_14027c5f0(&value, 10); }
 
 // ---- std::_Compressed_pair / _Uninitialized_backout ctor glue ----
 // the exe's functions that call a member-subobject ctor at +0 (address of the first member is computed into rax first)
-void FUN_1402749c0(Unk_PairMember*, Unk_StlTag);
-i64 FUN_140286c40(void*);
-i64* FUN_140288ac0(void*);
-void FUN_14016ad80(void*, i64);
-void FUN_140274b60(Unk_PairMember*, Unk_StlTag, i64, char*);
-void FUN_140287520(void*);
+i64 FUN_1402749c0(i64, Unk_StlTag);
+i64 FUN_140274b60(i64, Unk_StlTag, i64, i64);
 Unk_PairHolder* FUN_14027cda0(Unk_PairHolder*);
 // @0x14027cda0
 Unk_PairHolder* FUN_14027cda0(Unk_PairHolder* t)
 {
-    FUN_1402749c0(&t->pair, Unk_StlTag());
-    i64 r = FUN_140286c40(t);
-    *FUN_140288ac0(t) = r;
+    FUN_1402749c0((i64)&t->pair, Unk_StlTag());
+    i64 r = (i64)reinterpret_cast<LHist*>(t)->_Buyheadnode();
+    *(i64*)&reinterpret_cast<LHist*>(t)->_Myhead() = r;
     return t;
 }
 // @0x14027cdf0
@@ -549,7 +567,7 @@ void* FUN_14027ce10(void* t, i64 a, i64 b) { FUN_14027ce90(t, a, b); return t; }
 // @0x14027ce50
 void* FUN_14027ce50(void* t, i64 a, i64 b) { FUN_14027ce10(t, a, b); return t; }
 // @0x14027ce90
-void* FUN_14027ce90(void* t, i64 a, i64 b) { *(i64*)t = a; FUN_14016ad80(t, b); return t; }
+void* FUN_14027ce90(void* t, i64 a, i64 b) { *(i64*)t = a; reinterpret_cast<std::_Iterator_base0*>(t)->_Adopt((const void*)b); return t; }
 // @0x14027ced0
 void* FUN_14027ced0(void* t, i64 a, i64 b) { FUN_14027ce90(t, a, b); return t; }
 struct Unk_Z16 { i64 a, b; };
@@ -559,7 +577,7 @@ Unk_PairHolder* FUN_14027cf70(Unk_PairHolder*, i64);
 // @0x14027cf40
 Unk_PairHolder* FUN_14027cf40(Unk_PairHolder* t, i64 p) { FUN_14027cf70(t, p); return t; }
 // @0x14027cf70
-Unk_PairHolder* FUN_14027cf70(Unk_PairHolder* t, i64 p) { char loc; FUN_140274b60(&t->pair, Unk_StlTag(), p, &loc); FUN_140287520(t); return t; }
+Unk_PairHolder* FUN_14027cf70(Unk_PairHolder* t, i64 p) { char loc; FUN_140274b60((i64)&t->pair, Unk_StlTag(), p, (i64)&loc); reinterpret_cast<MapII*>(t)->_Construct(); return t; }
 void* FUN_14027d050(void*, i64, i64);
 void* FUN_14027cfb0(void*, i64, i64);
 // @0x14027cfb0
@@ -570,7 +588,7 @@ void* FUN_14027cff0(void* t) { FUN_14027d090(t); return t; }
 // @0x14027d010
 void* FUN_14027d010(void* t, i64 a, i64 b) { FUN_14027cfb0(t, a, b); return t; }
 // @0x14027d050
-void* FUN_14027d050(void* t, i64 a, i64 b) { *(i64*)t = a; FUN_14016ad80(t, b); return t; }
+void* FUN_14027d050(void* t, i64 a, i64 b) { *(i64*)t = a; reinterpret_cast<std::_Iterator_base0*>(t)->_Adopt((const void*)b); return t; }
 // @0x14027d090
 void* FUN_14027d090(void* t) { *(i64*)t = 0; return t; }
 // @0x14027d0b0
@@ -586,22 +604,22 @@ Unk_BackoutD::Unk_BackoutD(i64 d, i64 a) { first = d; last = d; al = a; }
 // @0x14027d1e0
 Unk_BackoutE::Unk_BackoutE(i64 d, i64 a) { first = d; last = d; al = a; }
 
-void FUN_140274a20(Unk_PairMember*, Unk_StlTag); void FUN_140274a50(Unk_PairMember*, Unk_StlTag); void FUN_140274a80(Unk_PairMember*, Unk_StlTag);
-void FUN_140274ab0(Unk_PairMember*, Unk_StlTag); void FUN_140274ae0(Unk_PairMember*, Unk_StlTag);
+i64 FUN_140274a20(i64, Unk_StlTag); i64 FUN_140274a50(i64, Unk_StlTag); i64 FUN_140274a80(i64, Unk_StlTag);
+i64 FUN_140274ab0(i64, Unk_StlTag); i64 FUN_140274ae0(i64, Unk_StlTag);
 // @0x14027d220
-Unk_PairHolder* FUN_14027d220(Unk_PairHolder* t) { FUN_140274a20(&t->pair, Unk_StlTag()); return t; }
+Unk_PairHolder* FUN_14027d220(Unk_PairHolder* t) { FUN_140274a20((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d250
-Unk_PairHolder* FUN_14027d250(Unk_PairHolder* t) { FUN_140274a50(&t->pair, Unk_StlTag()); return t; }
+Unk_PairHolder* FUN_14027d250(Unk_PairHolder* t) { FUN_140274a50((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d280
-Unk_PairHolder* FUN_14027d280(Unk_PairHolder* t) { FUN_140274a80(&t->pair, Unk_StlTag()); return t; }
+Unk_PairHolder* FUN_14027d280(Unk_PairHolder* t) { FUN_140274a80((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d2b0
-Unk_PairHolder* FUN_14027d2b0(Unk_PairHolder* t) { FUN_140274ab0(&t->pair, Unk_StlTag()); return t; }
+Unk_PairHolder* FUN_14027d2b0(Unk_PairHolder* t) { FUN_140274ab0((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d2e0
-Unk_PairHolder* FUN_14027d2e0(Unk_PairHolder* t) { FUN_140274ae0(&t->pair, Unk_StlTag()); return t; }
+Unk_PairHolder* FUN_14027d2e0(Unk_PairHolder* t) { FUN_140274ae0((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d310
-void* FUN_14027d310(void* t, i64 a, i64 b) { *(i64*)t = a; FUN_14016ad80(t, b); return t; }
+void* FUN_14027d310(void* t, i64 a, i64 b) { *(i64*)t = a; reinterpret_cast<std::_Iterator_base0*>(t)->_Adopt((const void*)b); return t; }
 // @0x14027d350
-void* FUN_14027d350(void* t, i64 a, i64 b) { *(i64*)t = a; FUN_14016ad80(t, b); return t; }
+void* FUN_14027d350(void* t, i64 a, i64 b) { *(i64*)t = a; reinterpret_cast<std::_Iterator_base0*>(t)->_Adopt((const void*)b); return t; }
 // @0x14027d390
 void* FUN_14027d390(void* t, i64 a, i64 b) { FUN_14027d310(t, a, b); return t; }
 // @0x14027d3d0
@@ -656,12 +674,12 @@ Unk_PairHolder* FUN_14027d750(Unk_PairHolder* t) noexcept { FUN_14027d2e0(t); re
 struct CAdditionalEvent;
 struct Unk_ListB : Unk_List { ~Unk_ListB() throw(); };
 // ATL::CAtlList dtors: RemoveAll(), then the (empty) ATLASSERT do-while
-void FUN_140284b30(void*); void FUN_140284c10(void*);
+void FUN_140284b30(void*);   // CAtlList<MS2Ptr<CUserLimitHistory>>::RemoveAll: FreeNode needs a ~MS2Ptr<CUserLimitHistory> with no row
 struct Unk_ListA : Unk_List { ~Unk_ListA() throw(); };
 // @0x14027de70
 Unk_ListA::~Unk_ListA() throw() { FUN_140284b30(this); do {} while (0); }
 // @0x14027de90
-Unk_ListB::~Unk_ListB() throw() { FUN_140284c10(this); do {} while (0); }
+Unk_ListB::~Unk_ListB() throw() { reinterpret_cast<ATL::CAtlList<Unk_AdditionalEventValue>*>(this)->RemoveAll(); do {} while (0); }
 
 struct CAdditionalEvent : CPtred {
     Unk_ListB events;
@@ -762,9 +780,8 @@ Unk_ItemAbleTwin::Unk_ItemAbleTwin() {}
 i64 FUN_140288dd0(void*); i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
 i64 FUN_140288f10(void*); i64 FUN_140288f50(void*); i64 FUN_140288f90(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
 i64 FUN_140289050(void*); i64 FUN_140289670(void*); i64 FUN_140289740(void*); i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
-i64 FUN_1402899b0(void*); i64 FUN_140284cf0(void*); i64 FUN_140284e00(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
-void FUN_140287d90(void*, i64); void FUN_140287dc0(void*, i64); i64* FUN_140287eb0(void*);
-i64 FUN_140284f10(void*);
+i64 FUN_1402899b0(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
+void FUN_140287dc0(void*, i64);
 // @0x14027df70
 Unk_IngRef::~Unk_IngRef() { FUN_140288dd0(this); }
 // @0x14027e060
@@ -792,9 +809,9 @@ void FUN_14027e3f0(void* t) noexcept { FUN_140289670(t); }
 // @0x14027e4b0
 void FUN_14027e4b0(void* t) noexcept { FUN_1402899b0(t); }
 // @0x14027deb0
-void FUN_14027deb0(void* t) { try { FUN_140284cf0(t); } catch (...) {} }
+void FUN_14027deb0(void* t) { try { reinterpret_cast<ATL::CAtlMap<unsigned, unsigned>*>(t)->RemoveAll(); } catch (...) {} }
 // @0x14027dee0
-void FUN_14027dee0(void* t) { try { FUN_140284e00(t); } catch (...) {} }
+void FUN_14027dee0(void* t) { try { reinterpret_cast<ATL::CAtlMap<int, Unk_LimitValue>*>(t)->RemoveAll(); } catch (...) {} }
 // @0x14027e420
 Unk_ItemVec::~Unk_ItemVec() noexcept { FUN_140289740(this); }
 // @0x14027e450
@@ -804,13 +821,13 @@ Unk_IngVec::~Unk_IngVec() { FUN_1402898e0(this); }
 
 // a list/map header (std::list<Unk_HistRef> / std::map<unsigned,int>): _Tidy = clear + free the sentinel node
 // @0x14027e1b0
-void FUN_14027e1b0(Unk_HistList* t) noexcept { FUN_140287d90(t, *FUN_140288ac0(t)); }
+void FUN_14027e1b0(Unk_HistList* t) noexcept { reinterpret_cast<LHist*>(t)->_Freeheadnode((NodeHist*)*(i64*)&reinterpret_cast<LHist*>(t)->_Myhead()); }
 // @0x14027e1e0
 void FUN_14027e1e0(Unk_HistList* t) { FUN_14027e1b0(t); }
 // @0x14027e3a0
 Unk_HistList::~Unk_HistList() { FUN_140289650(this); FUN_14027e1e0(this); }
 // @0x14027e230
-void FUN_14027e230(Unk_RewardMap* t) noexcept { FUN_140287dc0(t, *FUN_140287eb0(t)); }
+void FUN_14027e230(Unk_RewardMap* t) noexcept { FUN_140287dc0(t, *(i64*)&reinterpret_cast<MapII*>(t)->_Get_data()); }
 // @0x14027e200
 void FUN_14027e200(Unk_RewardMap* t) noexcept { FUN_1402895f0(t); FUN_14027e230(t); }
 // @0x14027e3d0
@@ -856,7 +873,7 @@ Unk_Ref16* FUN_14027e9d0(Unk_Ref16* t, void* p)
 // ---- remaining class dtors, wrappers, comparisons and array accessors ----
 struct Unk_A28 { i64 pad[5]; void* p28; };
 // @0x14027df30
-void FUN_14027df30(Unk_A28* t) { FUN_140284f10(t); if (t->p28) ::free(t->p28); }
+void FUN_14027df30(Unk_A28* t) { reinterpret_cast<ATL::CRBTree<unsigned __int64, TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>>*>(t)->RemoveAll(); if (t->p28) ::free(t->p28); }
 // @0x14027df10
 void FUN_14027df10(Unk_A28* t) { FUN_14027df30(t); }
 // @0x14027e180
@@ -900,25 +917,22 @@ void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, Changea
 // MS2-PIN: ??1ItemDropItemLife@@UEAA@XZ 0x14027e8c0
 // MS2-PIN: ??1NpcShopItemLife@@UEAA@XZ 0x14027e8e0
 struct Unk_DtArr38 : CPtred { i64 pad[4]; i64 arr[1]; };
-void FUN_1401b7d00(void*);
 // @0x14027e640
-void FUN_14027e640(Unk_DtArr38* t) { FUN_1401b7d00(&t->arr); t->CPtred::~CPtred(); }
+void FUN_14027e640(Unk_DtArr38* t) { reinterpret_cast<ArrI64*>(&t->arr)->ArrI64::~ArrI64(); t->CPtred::~CPtred(); }
 struct Unk_DtArr20 : CPtred { i64 pad; Unk_AtlArrP arr; };
 // @0x14027e920
 void FUN_14027e920(Unk_DtArr20* t) { t->arr.Unk_AtlArrP::~Unk_AtlArrP(); t->CPtred::~CPtred(); }
 struct Unk_DtSk28 : CPtred { i64 pad[1]; CStringW s; char cfg[8]; };
-void FUN_140183b40(void*);
 // @0x14027e720
 void FUN_14027e720(Unk_DtSk28* t) { FUN_14027deb0(&t->cfg); t->s.CStringW::~CStringW(); t->CPtred::~CPtred(); }
 struct Unk_DtSk20 : CPtred { CStringW s; char cfg[8]; };
 // @0x14027e760
-void FUN_14027e760(Unk_DtSk20* t) { FUN_140183b40(&t->cfg); t->s.CStringW::~CStringW(); t->CPtred::~CPtred(); }
+void FUN_14027e760(Unk_DtSk20* t) { reinterpret_cast<SetU*>(&t->cfg)->SetU::~SetU(); t->s.CStringW::~CStringW(); t->CPtred::~CPtred(); }
 
 struct Unk_At8 { void* pad; char m[8]; };
 struct Unk_At10 { void* pad[2]; Unk_At8 m; };
-void FUN_14020a5b0(void*);
 // @0x14027e900
-void FUN_14027e900(Unk_At8* t) { FUN_14020a5b0(&t->m); }
+void FUN_14027e900(Unk_At8* t) { reinterpret_cast<PktOut*>(&t->m)->PktOut::~PktOut(); }
 // @0x14027e690
 void FUN_14027e690(Unk_At10* t) { FUN_14027e900(&t->m); }
 // @0x14027e6b0
@@ -932,17 +946,14 @@ void FUN_14027e6e0(Unk_At8* t) { FUN_14027e700(t); }
 
 // range copy helpers
 struct Unk_False { static const bool value = false; };
-i64 FUN_140288a00(i64);
 void FUN_140287550(i64, i64); void FUN_140287580(i64, i64);
-i64* FUN_140288b00(i64); i64* FUN_1402889a0(i64); i64* FUN_140288c00(i64); i64* FUN_140288aa0(i64);
-i64 FUN_140288310(i64); i64 FUN_140288410(i64);
 // @0x14027eb30
 i64 FUN_14027eb30(i64 t, i64 o)
 {
     if (t != FUN_14027b500(o)) {
         if (Unk_False::value) FUN_140289670((void*)t);
-        FUN_140287550(t, FUN_140288310(o));
-        FUN_14027b630(t, *FUN_1402889a0(o), *FUN_140288b00(o));
+        FUN_140287550(t, (i64)&reinterpret_cast<const VI64*>(o)->_Getal());
+        FUN_14027b630(t, *(i64*)&reinterpret_cast<const VI64*>(o)->_Myfirst(), *(i64*)&reinterpret_cast<const VI64*>(o)->_Mylast());
     }
     return t;
 }
@@ -951,8 +962,8 @@ i64 FUN_14027ebb0(i64 t, i64 o)
 {
     if (t != FUN_14027b510(o)) {
         if (Unk_False::value) FUN_1402899b0((void*)t);
-        FUN_140287580(t, FUN_140288410(o));
-        FUN_14027b690(t, *FUN_140288aa0(o), *FUN_140288c00(o));
+        FUN_140287580(t, (i64)&reinterpret_cast<const VPtred*>(o)->_Getal());
+        FUN_14027b690(t, *(i64*)&reinterpret_cast<const VPtred*>(o)->_Myfirst(), *(i64*)&reinterpret_cast<const VLog*>(o)->_Mylast());
     }
     return t;
 }
@@ -976,11 +987,10 @@ bool FUN_14027eda0(Unk_It* a, Unk_It* b) { return a->p == b->p; }
 bool FUN_14027ede0(Unk_It* a, Unk_It* b) { return a->p == b->p; }
 // @0x14027ee20
 bool FUN_14027ee20(Unk_It* a, Unk_It* b) { return a->p == b->p; }
-void FUN_140287500(Unk_It*, Unk_It*); void FUN_140287510(Unk_It*, Unk_It*);
 // @0x14027ee60
-bool FUN_14027ee60(Unk_It* a, Unk_It* b) { FUN_140287500(a, b); return a->p == b->p; }
+bool FUN_14027ee60(Unk_It* a, Unk_It* b) { reinterpret_cast<VItem::const_iterator*>(a)->_Compat(*reinterpret_cast<VItem::const_iterator*>(b)); return a->p == b->p; }
 // @0x14027eeb0
-bool FUN_14027eeb0(Unk_It* a, Unk_It* b) { FUN_140287510(a, b); return a->p == b->p; }
+bool FUN_14027eeb0(Unk_It* a, Unk_It* b) { reinterpret_cast<VIng::const_iterator*>(a)->_Compat(*reinterpret_cast<VIng::const_iterator*>(b)); return a->p == b->p; }
 // @0x14027ef00
 bool FUN_14027ef00(Unk_It* a, Unk_It* b) { return !FUN_14027eda0(a, b); }
 // @0x14027ef40
@@ -993,37 +1003,34 @@ bool FUN_14027efc0(Unk_It* a, Unk_It* b) { return !FUN_14027ee60(a, b); }
 bool FUN_14027f000(Unk_It* a, Unk_It* b) { return !FUN_14027eeb0(a, b); }
 
 // ATL::CAtlArray::operator[] with the E_INVALIDARG bounds check
-void FUN_140159b70(long);
 struct Unk_E16 { i64 a, b; };
 struct Unk_E24 { i64 a, b, c; };
 struct Unk_Arr16 { Unk_E16* data; u64 size; };
 struct Unk_Arr24 { Unk_E24* data; u64 size; };
 // @0x14027f040
-Unk_E16* FUN_14027f040(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_14027f040(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 // @0x14027f080
-Unk_E16* FUN_14027f080(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_14027f080(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 // @0x14027f100
-Unk_E16* FUN_14027f100(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_14027f100(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 // @0x14027f140
-Unk_E16* FUN_14027f140(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_14027f140(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 // @0x14027f0c0
-Unk_E24* FUN_14027f0c0(Unk_Arr24* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E24* FUN_14027f0c0(Unk_Arr24* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 
 struct Unk_UIPair { unsigned first; int second; };
-Unk_UIPair* FUN_14027f370(i64);
 // @0x14027f180
 int& Unk_RewardMap::FUN_14027f180(unsigned& key)
 {
     i64 loc;
-    return FUN_14027f370(FUN_14027c4c0((i64)this, (i64)&loc, (i64)&key))->second;
+    return reinterpret_cast<MapII::iterator*>(FUN_14027c4c0((i64)this, (i64)&loc, (i64)&key))->operator->()->second;
 }
 // @0x14027f1c0
-CString* Unk_StrVec::FUN_14027f1c0(size_t i) { return (CString*)*(i64*)FUN_140288a00((i64)this) + i; }
-i64* FUN_140288a60(i64);
+CString* Unk_StrVec::FUN_14027f1c0(size_t i) { return (CString*)*(i64*)(i64)&reinterpret_cast<VStr*>((i64)this)->_Myfirst() + i; }
 // @0x14027f1f0
-Unk_IngRef* Unk_IngVec::FUN_14027f1f0(size_t i) { return (Unk_IngRef*)*(i64*)FUN_140288a40((i64)this) + i; }
+Unk_IngRef* Unk_IngVec::FUN_14027f1f0(size_t i) { return (Unk_IngRef*)*(i64*)(i64)&reinterpret_cast<VPtred*>((i64)this)->_Myfirst() + i; }
 // @0x14027f220
-Unk_IngRef* Unk_IngVec::FUN_14027f220(size_t i) { return (Unk_IngRef*)*FUN_140288a60((i64)this) + i; }
+Unk_IngRef* Unk_IngVec::FUN_14027f220(size_t i) { return (Unk_IngRef*)*(i64*)&reinterpret_cast<const VIng*>((i64)this)->_Myfirst() + i; }
 // @0x14027f250
 CIngredientInfo* Unk_IngRef::FUN_14027f250() const { return m_p; }
 // @0x14027f260

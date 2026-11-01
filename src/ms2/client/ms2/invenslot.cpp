@@ -161,7 +161,8 @@ public:
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // The item lock manager (FUN_140535310).
-class Unk_IsLockMgr
+class Unk_IsLockMgr;
+class CItemLockManager  // C3: unit-local view (unit_1406125d0.h clashes with this unit's views)
 {
 public:
     int FUN_140612d60();                                  // the lock window is open
@@ -1098,8 +1099,8 @@ int InvenSlot::vfunc_14()
             ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532de0(spItem, -1);
         break;
     case 10:
-        if (FUN_140535310()->FUN_140612d60() != 0)
-            FUN_140535310()->FUN_140612e90(spItem);
+        if (((CItemLockManager*)FUN_140535310())->FUN_140612d60() != 0)
+            ((CItemLockManager*)FUN_140535310())->FUN_140612e90(spItem);
         break;
     case 11:
     {
@@ -1348,9 +1349,9 @@ int InvenSlot::vfunc_18(void* p)
         if (spOld.get() != 0 && spOld->CanBeItemLocked())
         {
             if (spMine.get() != 0 && spMine->CanBeItemLocked())
-                FUN_140535310()->FUN_140612e90(spMine);
+                ((CItemLockManager*)FUN_140535310())->FUN_140612e90(spMine);
             else
-                FUN_140535310()->FUN_1406130e0(spOld->GetItemUid());
+                ((CItemLockManager*)FUN_140535310())->FUN_1406130e0(spOld->GetItemUid());
         }
     }
     else if (PetSlot* pPet = FUN_140dbc0d0(pDrag))
@@ -1449,7 +1450,7 @@ MS2_REPLACE_METHOD(0x1414090C0, InvenSlot, FUN_1414090c0, 136, 0x7DD6C7D5);
 // @0x141409150
 int InvenSlot::FUN_141409150(CItem* pItem)
 {
-    if (FUN_140535310() != 0 && FUN_140535310()->FUN_140613160(pItem) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(pItem) == 0)
         return 0;
     int nReason = 0;
     if (FUN_140633fb0(MS2Ptr<CItem>(pItem), &nReason) != false)
@@ -1502,7 +1503,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_140d73bc0(0x71, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_140535310() != 0 && FUN_140535310()->FUN_140613160(spItem.get()) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(spItem.get()) == 0)
         return 0;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
@@ -1778,7 +1779,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
         return 0;
     if (spItem->FUN_140527930() == 0)
         return 0;
-    if (FUN_140535310() != 0 && FUN_140535310()->FUN_140613160(spItem.get()) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(spItem.get()) == 0)
         return 0;
     int nReason = 0;
     if (FUN_140633e40(spItem, &nReason) == false)
@@ -1824,7 +1825,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x14140B6D0, InvenSlot, FUN_14140b6d0, 1397, 0xA82B334A);
 
 // @0x14140bc50
-int InvenSlot::FUN_14140bc50(CStringW strSearch)
+int InvenSlot::MatchSearchName(CStringW strSearch)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spItem == 0)
@@ -1847,7 +1848,7 @@ int InvenSlot::FUN_14140bc50(CStringW strSearch)
         return m_nIndex;
     return -1;
 }
-MS2_REPLACE_METHOD(0x14140BC50, InvenSlot, FUN_14140bc50, 507, 0x1568B068);
+MS2_REPLACE_METHOD(0x14140BC50, InvenSlot, MatchSearchName, 507, 0x1568B068);
 
 // @0x14140be60
 int InvenSlot::FUN_14140be60(CItem* pItem)
@@ -2407,7 +2408,7 @@ void InventorySlotBag::vfunc_22(void* p)
 MS2_REPLACE_METHOD_VIA(0x14140F510, InventorySlotBag, UIItemEventListener, vfunc_22, 154, 0xA639BE3E);
 
 // @0x14140f5b0
-void InventorySlotBag::FUN_14140f5b0(CItem* pItem)
+void InventorySlotBag::RefreshSlotForItem(CItem* pItem)
 {
     if (IsItemInTab(pItem) == 0)
         return;
@@ -2415,10 +2416,10 @@ void InventorySlotBag::FUN_14140f5b0(CItem* pItem)
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
-MS2_REPLACE_METHOD(0x14140F5B0, InventorySlotBag, FUN_14140f5b0, 99, 0x1FDD6D27);
+MS2_REPLACE_METHOD(0x14140F5B0, InventorySlotBag, RefreshSlotForItem, 99, 0x1FDD6D27);
 
 // @0x14140f620
-int InventorySlotBag::FUN_14140f620(CStringW strSearch)
+int InventorySlotBag::FindSlotBySearch(CStringW strSearch)
 {
     int nResult = -1;
     for (std::pair<const int, CString> entry : m_slots)
@@ -2426,7 +2427,7 @@ int InventorySlotBag::FUN_14140f620(CStringW strSearch)
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
-            int nIndex = pSlot->FUN_14140bc50(strSearch);
+            int nIndex = pSlot->MatchSearchName(strSearch);
             if (nIndex == -1)
                 continue;
             if (nResult == -1)
@@ -2437,7 +2438,7 @@ int InventorySlotBag::FUN_14140f620(CStringW strSearch)
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x14140F620, InventorySlotBag, FUN_14140f620, 363, 0x78F08648);
+MS2_REPLACE_METHOD(0x14140F620, InventorySlotBag, FindSlotBySearch, 363, 0x78F08648);
 
 // @0x14140f7a0
 ASDataProvider InventorySlotBag::GetSlotNames()

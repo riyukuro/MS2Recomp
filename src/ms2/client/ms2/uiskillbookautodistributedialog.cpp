@@ -99,6 +99,14 @@
 #include "ms2/placeholder/cquestmanagercommon.h"  // C3: was a local member view
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/gfxui/astooltipmanager.h"
+#include "ms2/placeholder/unk_blocklist.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -122,17 +130,6 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe objects ----
 
-// The local player and the world (FUN_1403ed2d0 -> FUN_141bd0cc0).
-class Unk_SkillField;
-class Unk_SkillWorld { public: MyPC* FUN_141bd0cc0(); MS2Ptr<Unk_SkillField> FUN_141bd30a0(); };
-
-// The three "m_distribute{N}" buttons.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-    void FUN_1422c7cd0(const Scaleform::GFx::Value& tooltip);               // the tooltip object
-};
-
 // The dialog's bound-child lookup (UISwfEntity members; the exe has one COMDAT per child class).
 class Unk_SkillDlgView : public UIDialog
 {
@@ -150,15 +147,7 @@ public:
     virtual void V18(); virtual void V19(); virtual void V20(); virtual void V21(); virtual void V22(); virtual void V23();
     virtual void Invalidate(bool bNow);                                     // +0xc0
 };
-// The dialog background clip (the height follows the number of entries).
-class Unk_SkillBgClip : public ASMovieClip
-{
-public:
-    void FUN_1422c0ef0(int nHeight);
-};
-
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CString FUN_14052ea30(const char* szFormat, const int* pn);                 // format one int
 void FUN_140d73aa0(CStringW text, int type, void* pListener, CStringW tag); // open a message box that reports to pListener
 class UISkillBookTreeDialog* FUN_1409eb120(int);   // C3: was FUN_1409eb120
 void FUN_14151f200();                                                       // close the message box
@@ -274,8 +263,8 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
     for (unsigned i = 0; i < 3; i++)
     {
         nNo = i + 1;
-        CString strName = FUN_14052ea30("m_distribute{0}", &nNo);
-        MS2Ptr<Unk_140acd6e0> spButton = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>(strName);
+        CString strName = StringFormat("m_distribute{0}", reinterpret_cast<const unsigned&>(nNo));
+        MS2Ptr<ASButton> spButton = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>(strName);
         if (spButton == 0)
             continue;
         spButton->vfunc_3(1);
@@ -299,15 +288,15 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
     {
         if (MS2Ptr<ASMovieClip> spBg = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASMovieClip>("m_bg"))
         {
-            static_cast<Unk_SkillBgClip*>(spBg.operator->())->FUN_1422c0ef0(nShown * 0x2a + 0x41);
+            spBg->FUN_1422c0ef0(nShown * 0x2a + 0x41);
         }
         reinterpret_cast<Unk_ASDialogSlots*>(spDialog.operator->())->Invalidate(true);
     }
 }
 
 
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);               // Value = n (Int)
-void FUN_1422bccb0(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
+void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);               // Value = n (Int)
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);     // Value = n (UInt)
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -372,22 +361,16 @@ typedef Delegate<bool(int, const CMsgBoxData&)> SkillBoxDelegate;
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SkillClickDelegate;
 
 // job code -> (rank -> skill points), and job code -> extra skill points (data of other units).
-class Unk_SSGCountMapMap : public std::map<int, std::map<int, long> > {};
-class Unk_SSGCountMap : public std::map<int, long> {};
-extern Unk_SSGCountMapMap DAT_143ab32e8;
-extern Unk_SSGCountMap DAT_143ab32f8;
+struct Unk_Be790B : public std::map<int, std::map<int, long> > {};
+struct Unk_Be790C : public std::map<int, long> {};
+extern Unk_Be790B DAT_143ab32e8;
+extern Unk_Be790C DAT_143ab32f8;
 
 // ---- unit-local views of exe objects (the skill window) ----
 
 class Unk_PCSkillTree : public CSkillTierOptionManager { };   // the tier option level
-class Unk_SkillTable
-{
-public:
-    MS2Ptr<SkillLevelData> FUN_1407ee2f0(unsigned nSkillId, unsigned short nLevel);
-};
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 JobTable* FUN_1401d7a50();
-class Unk_SkillField : public CPtred { public: int FUN_140375660(int nProperty); };
 UIRewardNotify* FUN_140938cd0(int nWindow);
 UIStatusEventDispatcher* FUN_140aa6d40();
 
@@ -404,7 +387,7 @@ public:
     virtual void S30(); virtual void S31(); virtual void S32(); virtual void S33(); virtual void S34();
     virtual void S35();
     virtual int State();                                        // +0x120
-    virtual int Execute(class Unk_SkillCommand& command);       // +0x128
+    virtual int Execute(Unk_BlockList& command);       // +0x128
     virtual void S38(); virtual void S39();
     virtual bool HasMeret(__int64 nAmount);                     // +0x140
     virtual bool HasMoney(__int64 nAmount);                     // +0x148
@@ -413,7 +396,6 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-int FUN_141654730(MyPC* pPlayer);                                           // the sub job
 // @0x140ed47e0
 int FUN_140ed47e0(MyPC* pPlayer)                                            // the character level (m_n179c)
 {
@@ -425,84 +407,45 @@ CStringW FUN_140a228f0(int nId, const wchar_t* sz, const CStringW& str);   // fo
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);                // notice
 void FUN_1412751b0(const CStringW& strText, int nType);                     // toast
 int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
-void FUN_140a36d00(CString& strPrefix);                                     // clear the slot list of the movie
-void FUN_140a36c30(CString& strPrefix, std::vector<JobSkillPtr>& skills);   // fill it
+void FUN_140a36d00(const CString& strPrefix);                                     // clear the slot list of the movie
+void FUN_140a36c30(const CString& strPrefix, std::vector<JobSkillPtr>& skills);   // fill it
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class Unk_LsHud   // C3: member view for the former free stand-ins
 {
 public:
     int GetPage();
 };
-void FUN_14092fac0(int nSkillId, int nA, int nB, int nPage);                // register a shortcut
+int FUN_14092fac0(int nSkillId, int nA, __int64 nB, int nPage);                // register a shortcut
 int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
 unsigned short FUN_1406438e0(JobSkillData* pData, unsigned short nLevel);
 
-// The "m_buttonBar" tab bar and the point label of the movie.
-class Unk_SkillButtonBar : public ASDisplayObject
-{
-public:
-    void FUN_1422e3400();                                                   // remove all tabs
-    void FUN_1422e31e0(int nIndex);                                         // select a tab
-};
-class Unk_SkillPointLabel : public ASMovieClip
-{
-public:
-    void FUN_1422c2d10(SkillClickDelegate onClick, int nUserData);
-};
-class Unk_SkillScriptView : public AScript { public: MS2Ptr<Unk_SkillButtonBar> FUN_140be23c0(const CString& strName); };
-class Unk_SkillPointHelper : public CPtred { public: void FUN_1422c6160(const Scaleform::GFx::Value& value); };
-MS2Ptr<Unk_SkillPointHelper> FUN_1422c6240(int n);
-class Unk_SkillBtn : public Unk_140acd6e0
-{
-public:
-    void FUN_1422c1fe0(unsigned bEnabled);
-};
 // the three view classes of the movie children (vfunc 24 repaints)
 class Unk_SkillPacketView : public UIDialog { public: void FUN_vfunc_79_base(CInPacket& packet); };
 
-// The command the paid tab sends to the service (ctor 0x1401baa00, dtor 0x1401baaf0; 0x28 bytes).
-class Unk_SkillCommand
-{
-public:
-    Unk_SkillCommand(int nDialog);
-    ~Unk_SkillCommand();
-    void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    void FUN_1401badc0(bool b);
-private:
-    unsigned __int64 m_0, m_8, m_10, m_18, m_20;
-};
-class Unk_SkillWordFilter : public CPtred { public: int FUN_140226830(const CStringW& strText, CStringW& strMsg); };
-class Unk_SkillFilterHost { public: MS2Ptr<Unk_SkillWordFilter> FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
-class Unk_SkillCoupon : public CPtred {};
-class Unk_SkillInventory { public: MS2Ptr<Unk_SkillCoupon> FUN_140a5e040(int nItemId); };
-extern Unk_SkillInventory DAT_143ab2a90;
-class Unk_SkillUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId);  };
+extern Unk_Inventory g_143ab2a90;
 template <class T> T* Unk_SkillDialog(int nId)
 {
     if (((void*)TSingleton<CUIService>::GetInstance()))
     {
-        MS2Ptr<UIObject> sp = static_cast<Unk_SkillUIManager*>(((void*)TSingleton<CUIService>::GetInstance()))->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> sp = TSingleton<CUIService>::GetInstance()->FindObject(static_cast<eUIClassID>(nId));
         if (sp.get())
             return dynamic_cast<T*>((UIObject*)sp);
     }
     return 0;
 }
 
-CStringW FUN_1418fe870(int nType, int* pnValue, int nFlag);                 // money text by pay type
-__int64 FUN_140718370(const CStringW& str);                                 // the uid in the text
-void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);  // pOut = v
+CStringW FUN_1418fe870(int nType, int* pnValue, unsigned nFlag);                 // money text by pay type
+unsigned __int64 FUN_140718370(const CStringW& str);                                 // the uid in the text
 char* FUN_141523ba0(MyPC* pPlayer);                                         // the quest data of a PC
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
-int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pnOut);   // job code attribute
-int FUN_1406452a0(Unk_140165cf0* pElem, const char* pszName, int* pnOut);   // sub job code attribute
-int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW* pstrOut);   // wide string attribute
-void FUN_14028fd90(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
-                   std::vector<Unk_140165cf0*>* pOut);
-CStringW FUN_14052bd00(int nId, const CStringW& str);
+int XmlQuery(class TiXmlElement* pElem, const char* pszName, CStringW& strOut);   // wide string attribute
+struct Unk_XmlElement;
+void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
+                   std::vector<Unk_XmlElement*>& out);
 
 // ---- construction ----
 
@@ -678,7 +621,7 @@ int UISkillBookTreeDialog::CanApply()
         FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, L"");
         return 0;
     }
-    MS2Ptr<Unk_SkillField> spField = ((class Unk_SkillWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
     if (spField->FUN_140375660(0x10) != 0)
@@ -751,7 +694,7 @@ void UISkillBookTreeDialog::RefreshTabButtons(int bKeepSelection)
         nIndex++;
     }
     if (bKeepSelection == 0)
-        m_spButtonBar->FUN_1422e31e0(nSelected);
+        m_spButtonBar->SetSelectedIndex(nSelected);
 }
 
 // @0x140ec8220
@@ -844,7 +787,7 @@ __int64 UISkillBookTreeDialog::AddTab(const CStringW& strName, int bFree)
     std::vector<JobSkillPtr> skills;
     ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->GetSkills(skills, 0, true);
     MS2Ptr<CSkillPointSimulator> spSim(new CSkillPointSimulator);
-    spSim->Reset(pPlayer->vfunc_78(), FUN_141654730(pPlayer), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
+    spSim->Reset(pPlayer->vfunc_78(), reinterpret_cast<PC*>(pPlayer)->FUN_141654730(), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
     if (bFree != 0)
         spSim->ResetRank(0);
     ATL::CAtlArray<unsigned> ids;
@@ -872,7 +815,7 @@ void UISkillBookTreeDialog::LoadTab(MS2Ptr<CSkillBookTreeTabConfig> spTab)
     std::vector<JobSkillPtr> skills;
     ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->GetSkills(skills, 0, true);
     MS2Ptr<CSkillPointSimulator> spSim(new CSkillPointSimulator);
-    spSim->Reset(pPlayer->vfunc_78(), FUN_141654730(pPlayer), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
+    spSim->Reset(pPlayer->vfunc_78(), reinterpret_cast<PC*>(pPlayer)->FUN_141654730(), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
     ATL::CAtlArray<unsigned> ids;
     ATL::CAtlArray<unsigned> points;
     for (POSITION pos = spTab->m_slots.GetStartPosition(); pos != 0; spTab->m_slots.GetNext(pos))
@@ -902,7 +845,7 @@ void UISkillBookTreeDialog::RefreshTabs(__int64 nTabId)
     spTab->m_slots.RemoveAll();
     std::vector<JobSkillPtr> skills;
     ((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->GetSkills(skills, 0, true);
-    spSim->Reset(pPlayer->vfunc_78(), FUN_141654730(pPlayer), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
+    spSim->Reset(pPlayer->vfunc_78(), reinterpret_cast<PC*>(pPlayer)->FUN_141654730(), skills, DAT_143ab32f8, FUN_140ed47e0(pPlayer));
     ATL::CAtlArray<unsigned> ids;
     ATL::CAtlArray<unsigned> points;
     spSim->GetUsedPoints(ids, points, 0);
@@ -1101,10 +1044,10 @@ bool UISkillBookTreeDialog::OnRenameConfirm(int nResult, const CMsgBoxData& box)
         box.FUN_140b19130(0, nTabId);
         if (strName.IsEmpty())
             return false;
-        if (MS2Ptr<Unk_SkillWordFilter> spFilter = ((class Unk_SkillFilterHost*)FUN_14025e7d0())->FUN_140229a50())
+        if (MS2Ptr<CBanTextChecker> spFilter = FUN_14025e7d0()->GetChecker())
         {
             CStringW strMsg;
-            if (spFilter->FUN_140226830(strName, strMsg) != 0)
+            if (spFilter->CheckAutoDistributeEntryName(strName, strMsg) != 0)
             {
                 FUN_1412751f0(strMsg, 1, 1);
                 return false;
@@ -1132,9 +1075,9 @@ bool UISkillBookTreeDialog::OnAddTabConfirm(int nResult, const CMsgBoxData& box)
         strName = strName.Mid(strName.Find(L',', 0) + 1);
         if (strName.IsEmpty())
             return false;
-        Unk_SkillCommand command(0x4f2d);
-        command.FUN_1401bac80("AddTab", CStringW(strName), 0);
-        command.FUN_1401badc0(true);
+        Unk_BlockList command(0x4f2d);
+        command.Add("AddTab", CStringW(strName), 0);
+        command.SetEnabled(true);
         if (((class Unk_SkillService*)FUN_140d86260())->Execute(command) == 1)
             return AddPaidTab(CStringW(strName));
     }
@@ -1152,7 +1095,7 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
         int bHasCoupon = 0;
         if (bCoupon)
         {
-            MS2Ptr<Unk_SkillCoupon> spCoupon = DAT_143ab2a90.FUN_140a5e040(0x76);
+            MS2Ptr<CItem> spCoupon = g_143ab2a90.FUN_140a5e040(0x76);
             if (spCoupon.get() != 0)
                 bHasCoupon = 1;
         }
@@ -1305,7 +1248,7 @@ void UISkillBookTreeDialog::PromptReset()
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
-        int nLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
+        int nLevel = FUN_1401d7a50()->GetJobRank(reinterpret_cast<PC*>(pPlayer)->FUN_141654730());
         if (nLevel > 0)
         {
             spBox = FUN_140d73d20(0x19, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
@@ -1344,7 +1287,7 @@ void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
     for (unsigned i = 0; i < spList->GetCount(); i++)
     {
         MS2Ptr<AutoDistribute> spItem = spList->GetAt(i);
-        if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != FUN_141654730(pPlayer))
+        if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != reinterpret_cast<PC*>(pPlayer)->FUN_141654730())
             continue;
         candidates.Add(spItem);
     }
@@ -1398,7 +1341,7 @@ void UISkillBookTreeDialog::ApplyAutoDistribute()
             for (unsigned i = 0; i < spList->GetCount(); i++)
             {
                 MS2Ptr<AutoDistribute> spItem = spList->GetAt(i);
-                if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != FUN_141654730(pPlayer))
+                if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != reinterpret_cast<PC*>(pPlayer)->FUN_141654730())
                     continue;
                 pDialog->m_names.Add(spItem->m_strName);
                 pDialog->m_tooltips.Add(spItem->m_strTooltip);
@@ -1462,7 +1405,7 @@ void UISkillBookTreeDialog::RequireSkillEffect(int nSkillId, int bFlag)
     JobSkillDataPtr spData = spJob->FindSkill(spSkill->GetID());
     if (spData == 0)
         return;
-    MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(spSkill->GetID(), spSkill->m_nLevel);
+    MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(spSkill->GetID(), spSkill->m_nLevel);
     if (!spLevel)
         return;
     ATL::CAtlArray<unsigned>& requireIds = spData->m_requireSkillIDs;
@@ -1515,7 +1458,7 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
     tooltip.SetTooltipAlign(4);
     tooltip.SetText(strText);
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
-    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+    *pRetVal = tooltip.FUN_1422bb870();
 }
 
 // @0x140ecc030
@@ -1535,7 +1478,7 @@ void UISkillBookTreeDialog::RefreshRemainPoint()
     m_30->FUN_140ed0fd0("setRemainSkillPoint", nRemain, bChanged);
     if (MS2Ptr<ASMovieClip> spPoint = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASMovieClip>("m_point"))
     {
-        static_cast<Unk_SkillPointLabel*>(spPoint.operator->())->FUN_1422c2d10(SkillClickDelegate(this, &UISkillBookTreeDialog::OnPointClick), 0);
+        spPoint->FUN_1422c2d10(SkillClickDelegate(this, &UISkillBookTreeDialog::OnPointClick), 0);
         FUN_1422c6240(2)->FUN_1422c6160(spPoint->FUN_1422bb870());
     }
 }
@@ -1543,41 +1486,41 @@ void UISkillBookTreeDialog::RefreshRemainPoint()
 // @0x140ecc2e0
 void UISkillBookTreeDialog::RefreshPoints()
 {
-    if (MS2Ptr<Unk_140acd6e0> spApply = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>("m_applySkill"))
+    if (MS2Ptr<ASButton> spApply = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>("m_applySkill"))
     {
         unsigned bChanged = 0;
         if (m_spSimulator.get() != 0)
             bChanged = m_spSimulator->IsChanged();
-        static_cast<Unk_SkillBtn*>(spApply.operator->())->FUN_1422c1fe0(bChanged);
+        spApply->FUN_1422c1fe0(bChanged);
         reinterpret_cast<Unk_ASDialogSlots*>(spApply.operator->())->Invalidate(true);
     }
-    if (MS2Ptr<Unk_140acd6e0> spReset = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>("m_skillReset"))
+    if (MS2Ptr<ASButton> spReset = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>("m_skillReset"))
     {
         unsigned bPending = HasPendingChanges();
-        static_cast<Unk_SkillBtn*>(spReset.operator->())->FUN_1422c1fe0(bPending);
+        spReset->FUN_1422c1fe0(bPending);
         reinterpret_cast<Unk_ASDialogSlots*>(spReset.operator->())->Invalidate(true);
     }
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
     if (spTab.get() != 0)
     {
         int bCurrent = spTab->m_nId == m_nTabId;
-        if (MS2Ptr<Unk_140acd6e0> spUse = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>("m_useCurrentTab"))
+        if (MS2Ptr<ASButton> spUse = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>("m_useCurrentTab"))
         {
             bool bNotCurrent = !bCurrent;
             spUse->vfunc_4(bNotCurrent);
             reinterpret_cast<Unk_ASDialogSlots*>(spUse.operator->())->Invalidate(true);
         }
-        if (MS2Ptr<Unk_140acd6e0> spCurrent = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>("m_currentTab"))
+        if (MS2Ptr<ASButton> spCurrent = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>("m_currentTab"))
         {
-            static_cast<Unk_SkillBtn*>(spCurrent.operator->())->FUN_1422c1fe0(0);
+            spCurrent->FUN_1422c1fe0(0);
             spCurrent->vfunc_3(bCurrent);
             reinterpret_cast<Unk_ASDialogSlots*>(spCurrent.operator->())->Invalidate(true);
         }
     }
-    if (MS2Ptr<Unk_140acd6e0> spDistribute = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<Unk_140acd6e0>("m_autoDistribute"))
+    if (MS2Ptr<ASButton> spDistribute = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->GetChild<ASButton>("m_autoDistribute"))
     {
         int nPoints = m_spSimulator->GetTotalPoints(m_nJobLevel);
-        static_cast<Unk_SkillBtn*>(spDistribute.operator->())->FUN_1422c1fe0(nPoints != 0);
+        spDistribute->FUN_1422c1fe0(nPoints != 0);
         reinterpret_cast<Unk_ASDialogSlots*>(spDistribute.operator->())->Invalidate(true);
     }
 }
@@ -1926,7 +1869,7 @@ bool UISkillBookTreeDialog::CanReachLevel(int nSkillId, unsigned short nLevel, i
     {
         if (!((class PC*)(class MyPC*)(pPlayer))->FUN_1416546d0()->vfunc_2(requireIds[i]))
             return false;
-        if (pPlayer->FUN_141528b80(requireIds[i]) < requireLevels[i])
+        if (pPlayer->GetSkillLevel(requireIds[i]) < requireLevels[i])
             return false;
     }
     if (spData->m_requireQuestID != 0)
@@ -1959,26 +1902,26 @@ void UISkillBookTreeDialog::LoadAutoDistribute()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = (class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pJob = pRoot->FUN_140165cf0("job"); pJob != 0; pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
+    for (Unk_140165cf0* pJob = (class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("job"); pJob != 0; pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
     {
         int nJob = 0;
-        FUN_1406363a0(pJob, "code", &nJob);
-        std::vector<Unk_140165cf0*> nodes;
-        FUN_14028fd90(pJob, "type", "subJobCode", "name", &nodes);
+        XmlValue(pJob, "code", reinterpret_cast<Unk_JobGroupID&>(nJob));
+        std::vector<Unk_XmlElement*> nodes;
+        FUN_14028fd90(reinterpret_cast<Unk_XmlElement*>(pJob), "type", "subJobCode", "name", nodes);
         TPtrValue<AutoDistributeArray> spList(Unk_GrNewTag(0));
         for (size_t i = 0; i < nodes.size(); i++)
         {
-            Unk_140165cf0* pNode = nodes[i];
+            Unk_140165cf0* pNode = reinterpret_cast<Unk_140165cf0*>(nodes[i]);
             if (pNode == 0)
                 continue;
             MS2Ptr<AutoDistribute> spItem(new AutoDistribute);
-            FUN_140873b30(pNode, "name", &spItem->m_strName);
-            FUN_140873b30(pNode, "tooltip", &spItem->m_strTooltip);
-            FUN_1406452a0(pNode, "subJobCode", &spItem->m_nSubJob);
-            for (Unk_140165cf0* pSkill = pNode->FUN_140165cf0("skill"); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
+            XmlQuery((class TiXmlElement*)pNode, "name", spItem->m_strName);
+            XmlQuery((class TiXmlElement*)pNode, "tooltip", spItem->m_strTooltip);
+            XmlValue(pNode, "subJobCode", reinterpret_cast<Unk_JobCode&>(spItem->m_nSubJob));
+            for (Unk_140165cf0* pSkill = (class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("skill"); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
             {
                 unsigned nId = 0;
                 unsigned nPoint = 0;
@@ -2001,8 +1944,8 @@ void UISkillBookTreeDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0)
     {
-        m_spButtonBar = static_cast<Unk_SkillScriptView*>(m_30.operator->())->FUN_140be23c0("m_buttonBar");
-        m_spAddButton = m_30->FUN_140acce30<Unk_140acd6e0>("m_addButton");
+        m_spButtonBar = m_30->FUN_140be23c0<ASButtonBar>("m_buttonBar");
+        m_spAddButton = m_30->FUN_140acce30<ASButton>("m_addButton");
         m_30->FUN_140ed11b0("SetMaxTabCount", 3u);
     }
     FUN_1419260d0("m_webGuideButton", 0);
@@ -2010,7 +1953,7 @@ void UISkillBookTreeDialog::OnLoadComplete()
     {
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
-            m_nJobLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
+            m_nJobLevel = FUN_1401d7a50()->GetJobRank(reinterpret_cast<PC*>(pPlayer)->FUN_141654730());
     }
     vfunc_8(0);
     COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
@@ -2098,7 +2041,7 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
             if (nResult == 0)
                 RenameTab(nTabId, CStringW(strName));
             else
-                FUN_140d73aa0(FUN_14052bd00(0x8b9, strName), 0, 0, L"");
+                FUN_140d73aa0(FormatStringId(0x8b9, strName), 0, 0, L"");
         }
     }
 }
@@ -2121,7 +2064,7 @@ void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
             return;
         ASTooltip tooltip(pPlayer, 0x10, 2);
         if (tooltip.FUN_1409e1c50(spSkill->GetID(), GetLevelValue(spSkill), 1) != 0)
-            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+            *pRetVal = tooltip.FUN_1422bb870();
     }
     else if (_stricmp("getTooltipFromNextLevel", strMethod) == 0)
     {
@@ -2143,7 +2086,7 @@ void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
         {
             tooltip.SetTooltipAlign(7);
             tooltip.FUN_1409c0dc0("enablePuton", "");
-            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+            *pRetVal = tooltip.FUN_1422bb870();
         }
     }
     else if (_stricmp("getTooltipFromPrevLevel", strMethod) == 0)
@@ -2161,7 +2104,7 @@ void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
         {
             tooltip.SetTooltipAlign(7);
             tooltip.FUN_1409c0dc0("enablePuton", "");
-            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+            *pRetVal = tooltip.FUN_1422bb870();
         }
     }
 }
@@ -2188,7 +2131,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             if (pPlayer == 0)
                 return 0;
             MS2Ptr<CMsgBoxData> spBox(0);
-            int nLevel = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
+            int nLevel = FUN_1401d7a50()->GetJobRank(reinterpret_cast<PC*>(pPlayer)->FUN_141654730());
             if (nLevel > 1)
             {
                 spBox = FUN_140d73d20(0x19, GetStringCommonByKey(L"s_msg_skillbook_apply_skill_joblevel"), 0, L"");
@@ -2316,7 +2259,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01800(1);
-            MS2Ptr<Unk_SkillCoupon> spCoupon = DAT_143ab2a90.FUN_140a5e040(0x76);
+            MS2Ptr<CItem> spCoupon = g_143ab2a90.FUN_140a5e040(0x76);
             bool bHasCoupon = spCoupon.get() != 0;
             spBox->SetCheckbox0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_add_tab_coupon"), bHasCoupon);
             spBox->SetCheckbox0Enabled(bHasCoupon);
@@ -2338,7 +2281,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 0;
-            int nMax = FUN_1401d7a50()->GetJobRank(FUN_141654730(pPlayer));
+            int nMax = FUN_1401d7a50()->GetJobRank(reinterpret_cast<PC*>(pPlayer)->FUN_141654730());
             if (nMax < nJob)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_disable_sub_job_skill"), 1, 1);

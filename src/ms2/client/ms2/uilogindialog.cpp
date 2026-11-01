@@ -55,7 +55,6 @@ public:
 class Unk_LoginCheck : public ASButton
 {
 public:
-    unsigned char FUN_1422ce0e0();
 };
 
 // The movie root (m_30) with the child lookups and the 4-argument invoke the dialog uses.
@@ -115,14 +114,14 @@ void FUN_14067c080(Unk_LoginMachineId* pDst, const Unk_LoginMachineId& src);
 // The packet handler table and the message boxes.
 class Unk_LoginPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-class Unk_LoginMsgBox : public CPtred
+class CMsgBoxData : public CPtred
 {
 public:
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
 };
-MS2Ptr<Unk_LoginMsgBox> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // create a message box
-void FUN_140d73c60(MS2Ptr<Unk_LoginMsgBox> box);                // show it
-MS2Ptr<Unk_LoginMsgBox> FUN_140d74390(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // create a message box
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
+MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
 class Unk_LoginNotice { public: void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag); };
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
@@ -381,7 +380,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     if (now < deadline)
                     {
                         CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
-                        MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(1, strText, 0, L"");
+                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
                             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
@@ -391,7 +390,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     else
                     {
                         CStringW strText(L"로케일 계정을 사용해야 합니다.");
-                        MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(0, strText, 0, L"");
+                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
                             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));

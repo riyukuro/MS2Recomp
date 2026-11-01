@@ -82,6 +82,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/scaleform/include/gfx/gfx_value.h"
 
 // ---- statics of the included headers (internal linkage, one copy per unit) ------------------------------------------
 
@@ -121,10 +122,11 @@ bool FUN_140633a90(MS2Ptr<CItem> spItem);                           // the item 
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int nMax);   // split
 unsigned int FUN_1401bd000(unsigned int nCategory);                 // the major category of a search category
 int FUN_1401bd010(int nCategory);                                   // the minor category of a search category
-int FUN_1401bce20(int nGroup, int bPercent, int nStat);             // option key of a basic stat
-int FUN_1401bceb0(int nGroup, int bPercent, int nStat);             // option key of a special stat
+int FUN_1401bce20(unsigned int, unsigned int, int);             // option key of a basic stat
+int FUN_1401bceb0(unsigned int, unsigned int, int);             // option key of a special stat
 int FUN_1401bcd30();                                                // default currency
-CBlockManager* FUN_140a6a830();                                     // the block manager
+class Unk_InventoryStateManager;
+Unk_InventoryStateManager*FUN_140a6a830();                                     // the block manager
 void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, int n);    // notice of a blocked action
 CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -170,7 +172,6 @@ void FUN_140d74e50(int n);                                          // close the
 __int64 FUN_1401bcdb0(__int64 nTotal);                              // the register deposit of a total price
 int FUN_1401bce00();                                                // the fee rate
 __int64 FUN_1401bcde0();                                            // the register fee
-int FUN_1409c1750(const Scaleform::GFx::Value& v);                  // an AS int
 
 // ---- unit helpers (free functions; names invented) ----------------------------------------------------------------
 CStringW FUN_140f14c20(CItem& item);
@@ -330,13 +331,13 @@ MS2Ptr<CBlackMarketProduct> BlackMarketPage::vfunc_6(unsigned __int64 nId)
 MS2_REPLACE_METHOD(0x140F0C3B0, BlackMarketPage, vfunc_6, 60, 0x1CAB204B);
 
 // @0x140f0c400
-void BlackMarketPage::FUN_140f0c400(const CString& strState)
+void BlackMarketPage::UpdateNoticeSymbolFrom(const CString& strState)
 {
     if (m_20 == 0 || m_30 == 0)
         return;
     m_20->Invoke("updateNoticeSymbolFrom", strState, m_30->FUN_1422bb870());
 }
-MS2_REPLACE_METHOD(0x140F0C400, BlackMarketPage, FUN_140f0c400, 276, 0x92838747);
+MS2_REPLACE_METHOD(0x140F0C400, BlackMarketPage, UpdateNoticeSymbolFrom, 276, 0x92838747);
 
 // @0x140f0c6c0 - the CRT's bounds-checked memmove_s (UCRT static-inline copy of this TU).
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
@@ -407,7 +408,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
             MS2Ptr<AScript> spRet = FUN_1409e7dc0(m_50, ret);
             if (spRet.get())
-                FUN_140f0efe0(static_cast<ASObj&>(*spRet), nTab);
+                FillSubTabArray(static_cast<ASObj&>(*spRet), nTab);
         }
         return 1;
     }
@@ -433,10 +434,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             int nCount = data.FUN_1422b8a10();
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
             bool bResult = false;
-            if (m_nPending == 0 && FUN_140f0f2c0())
+            if (m_nPending == 0 && CanSearchNow())
             {
                 bResult = true;
-                FUN_140f0f0f0(nFirst, nFirst + nCount, CBlackMarketMan::GetInstance()->m_listSearch.FindIndex(nFirst));
+                FillSearchResults(nFirst, nFirst + nCount, CBlackMarketMan::GetInstance()->m_listSearch.FindIndex(nFirst));
             }
             FUN_1407cd930(&ret, "result", Scaleform::GFx::Value(bResult));
         }
@@ -450,7 +451,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             int nPage = data.FUN_1422b8a10();
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
             bool bResult = false;
-            if (m_nPending == 0 && FUN_140f0f2c0() && m_spCond.get())
+            if (m_nPending == 0 && CanSearchNow() && m_spCond.get())
             {
                 m_spCond->m_dw48 = nPage;
                 m_nPending = m_nCategory;
@@ -481,7 +482,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             bool bUp = data.FUN_1422b8a90();
             bool bResult = false;
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
-            if (m_nPending == 0 && FUN_140f0f2c0() && m_spCond.get())
+            if (m_nPending == 0 && CanSearchNow() && m_spCond.get())
             {
                 m_spCond->m_dw48 = 1;
                 m_spCond->m_dw54 = FUN_140f156d0(strSort, bUp != false);
@@ -498,7 +499,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         if (ItemPreviewMgr::GetInstance()->IsHudOn() != 0)
             return 1;
         {
-            BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x26);
+            BlockPtr spBlock = reinterpret_cast<CBlockManager *>(FUN_140a6a830())->FindBlockedAction(0x26);
             if (spBlock.get())
             {
                 FUN_140a2ff20(spBlock, 0x26, 0);
@@ -528,9 +529,9 @@ void BlackMarketPageItemSearch::vfunc_5()
 {
     if (m_bSendPending && m_nPending > 0)
     {
-        if (!FUN_140f0f2c0())
+        if (!CanSearchNow())
             return;
-        FUN_140f0c400("loading");
+        UpdateNoticeSymbolFrom("loading");
         CBlackMarketMan::GetInstance()->SendBlackMarketMode4(m_spCond);
         m_dwSearchTick = FUN_140869420();
         m_bSendPending = false;
@@ -656,12 +657,12 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
         {
             CBlackMarketTable::TabListPtr spTabs = CBlackMarketTable::GetInstance()->GetTabs();
             if (spTabs.get())
-                FUN_140f0e7b0(categories, spTabs.operator->());
+                AppendTabs(categories, spTabs.operator->());
         }
         data.FUN_1409adbe0("categoryArray", categories.FUN_1422bb870());
         ASArray jobs(2);
         ASObj jobAll(2);
-        if (FUN_140f10720(jobAll, L"$s_blackmarket_dropdown_joball", "code", 200))
+        if (AddLabeledEntry(jobAll, L"$s_blackmarket_dropdown_joball", "code", 200))
             jobs.FUN_1422bc050(jobAll.FUN_1422bb870());
         ATL::CAtlArray<unsigned int> jobCodes;
         FUN_140222be0(jobCodes);
@@ -671,21 +672,21 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
             unsigned int nJob = jobCodes.GetAt(i);
             CStringW strJob = CStringTable::GetInstance()->FUN_141811980(0x4d, nJob);
             ASObj job(2);
-            if (FUN_140f10720(job, strJob, "code", nJob))
+            if (AddLabeledEntry(job, strJob, "code", nJob))
                 jobs.FUN_1422bc050(job.FUN_1422bb870());
         }
         data.FUN_1409adbe0("jobArray", jobs.FUN_1422bb870());
         data.FUN_1407cb9c0("maxLevel", 99);
         ASArray ranks(2);
         ASObj rankAll(2);
-        if (FUN_140f10720(rankAll, L"$s_blackmarket_dropdown_rankall", "rank", 0))
+        if (AddLabeledEntry(rankAll, L"$s_blackmarket_dropdown_rankall", "rank", 0))
             ranks.FUN_1422bc050(rankAll.FUN_1422bb870());
         CStringW strRankFormat = GetStringCommon(0x91c);
         for (int nRank = 2; nRank < 7; nRank++)
         {
             CStringW strRank = StringFormat((const wchar_t*)strRankFormat, CStringTable::GetInstance()->FUN_141813150(nRank));
             ASObj rank(2);
-            if (FUN_140f10720(rank, strRank, "rank", nRank))
+            if (AddLabeledEntry(rank, strRank, "rank", nRank))
                 ranks.FUN_1422bc050(rank.FUN_1422bb870());
         }
         data.FUN_1409adbe0("itemRankArray", ranks.FUN_1422bb870());
@@ -696,7 +697,7 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
 MS2_REPLACE_METHOD(0x140F0E050, BlackMarketPageItemSearch, FUN_140f0e050, 1873, 0x3EC94AF5);
 
 // @0x140f0e7b0
-void BlackMarketPageItemSearch::FUN_140f0e7b0(ASArray& out, ATL::CAtlList<Unk_BmPtr<CBlackMarketTable::TabInfo> >* pTabs)
+void BlackMarketPageItemSearch::AppendTabs(ASArray& out, ATL::CAtlList<Unk_BmPtr<CBlackMarketTable::TabInfo> >* pTabs)
 {
     for (POSITION pos = pTabs->GetHeadPosition(); pos; pTabs->GetNext(pos))
     {
@@ -708,7 +709,7 @@ void BlackMarketPageItemSearch::FUN_140f0e7b0(ASArray& out, ATL::CAtlList<Unk_Bm
             out.FUN_1422bc050(tab.FUN_1422bb870());
             m_tabs.SetAt(spTab->m_nId, spTab);
             if (spTab->m_bShowIncludeLowTab)
-                FUN_140f0e7b0(out, &spTab->m_children);
+                AppendTabs(out, &spTab->m_children);
         }
     }
 }
@@ -780,20 +781,20 @@ void BlackMarketPageItemSearch::FUN_140f0e940(ASObj& out, int nTabId)
 }
 
 // @0x140f0efe0
-void BlackMarketPageItemSearch::FUN_140f0efe0(ASObj& out, int nTabId)
+void BlackMarketPageItemSearch::FillSubTabArray(ASObj& out, int nTabId)
 {
     ASArray list(2);
     Unk_BmPtr<CBlackMarketTable::TabInfo> spTab(0);
     if (m_tabs.Lookup(nTabId, spTab) && !spTab->m_bShowIncludeLowTab)
     {
         ATL::CAtlList<Unk_BmPtr<CBlackMarketTable::TabInfo> >* pChildren = &spTab->m_children;
-        FUN_140f0e7b0(list, pChildren);
+        AppendTabs(list, pChildren);
     }
     out.FUN_1409adbe0("array", list.FUN_1422bb870());
 }
 
 // @0x140f0f0f0
-void BlackMarketPageItemSearch::FUN_140f0f0f0(int nFirst, int nEnd, POSITION pos)
+void BlackMarketPageItemSearch::FillSearchResults(int nFirst, int nEnd, POSITION pos)
 {
     if (m_20.get())
     {
@@ -822,7 +823,7 @@ void BlackMarketPageItemSearch::OnSearchDelayError()
 MS2_REPLACE_METHOD(0x140F0F250, BlackMarketPageItemSearch, OnSearchDelayError, 104, 0x982CFE0B);
 
 // @0x140f0f2c0
-int BlackMarketPageItemSearch::FUN_140f0f2c0()
+int BlackMarketPageItemSearch::CanSearchNow()
 {
     unsigned int dwNow = FUN_140869420();
     if (dwNow < (unsigned int)(FUN_14028d260(1.0f) + m_dwSearchTick))
@@ -995,13 +996,13 @@ void BlackMarketPageItemSearch::FUN_140f103c0(unsigned __int64 nId, const CStrin
 }
 
 // @0x140f10720
-int BlackMarketPageItemSearch::FUN_140f10720(ASObj& obj, const CStringW& strLabel, const CString& strKey, int nValue)
+int BlackMarketPageItemSearch::AddLabeledEntry(ASObj& obj, const CStringW& strLabel, const CString& strKey, int nValue)
 {
     obj.FUN_1407cbb20("label", strLabel);
     obj.FUN_1407cb9c0(strKey, nValue);
     return 1;
 }
-MS2_REPLACE_METHOD(0x140F10720, BlackMarketPageItemSearch, FUN_140f10720, 116, 0xB74BC084);
+MS2_REPLACE_METHOD(0x140F10720, BlackMarketPageItemSearch, AddLabeledEntry, 116, 0xB74BC084);
 
 // @0x140f107a0
 void BlackMarketPageItemSearch::BuyProduct(unsigned __int64 nId, int nCount)
@@ -1089,7 +1090,7 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     spBox->FUN_141a01ee0(spShow, ((CItem*)spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01700(0x477, 0x478, 0);
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::FUN_140f115b0));
+    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::OnBuyCountMsgBox));
     spBox->FUN_1405340b0(nProductId);
     spBox->FUN_140533ff0(nCount);
     FUN_140d73c60(spBox);
@@ -1117,7 +1118,7 @@ bool BlackMarketPageItemSearch::FUN_140f113e0(int nResult, const CMsgBoxData& bo
 }
 
 // @0x140f115b0
-bool BlackMarketPageItemSearch::FUN_140f115b0(int nResult, const CMsgBoxData& box)
+bool BlackMarketPageItemSearch::OnBuyCountMsgBox(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -1127,7 +1128,7 @@ bool BlackMarketPageItemSearch::FUN_140f115b0(int nResult, const CMsgBoxData& bo
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140F115B0, BlackMarketPageItemSearch, FUN_140f115b0, 94, 0xDFDE82A5);
+MS2_REPLACE_METHOD(0x140F115B0, BlackMarketPageItemSearch, OnBuyCountMsgBox, 94, 0xDFDE82A5);
 
 // ---- BlackMarketRegisterItem ----------------------------------------------------------------------------------------
 
@@ -1241,7 +1242,7 @@ void BlackMarketPageItemRegister::OnInit()
             }
         }
     }
-    m_30->FUN_1422c3600("changeTotalPrice", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageItemRegister::FUN_140f13610), 0, 0, 0, nullptr);   // pointer user data (the void* overload): the exe stores a qword 0
+    m_30->FUN_1422c3600("changeTotalPrice", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageItemRegister::UpdateTotalPriceNumber), 0, 0, 0, nullptr);   // pointer user data (the void* overload): the exe stores a qword 0
 }
 
 // @0x140f12090
@@ -1293,7 +1294,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
                             if (FUN_140f14650(static_cast<ASObj&>(*spResult), *spItem, m_item))
                             {
                                 static_cast<ASObj*>(spResult.operator->())->FUN_1407cbbe0("success", true);
-                                FUN_140f13ce0(spItem);
+                                SelectItem(spItem);
                             }
                         }
                     }
@@ -1387,7 +1388,7 @@ void BlackMarketPageItemRegister::FUN_140f12d40(MS2Ptr<CBlackMarketProduct> spEn
     int nIndex = -1;
     if (FUN_140f14ce0(obj, spEntry, true))
     {
-        nIndex = FUN_1409c1750(m_20->Invoke("registItemComplete", obj.FUN_1422bb870()));
+        nIndex = m_20->Invoke("registItemComplete", obj.FUN_1422bb870()).GetInt();
         spEntry->m_n88 = nIndex;
     }
     int nDays = TSingleton<Client::Constants>::GetInstance()->BlackMarketSellEndDay.Read();
@@ -1447,13 +1448,13 @@ void BlackMarketPageItemRegister::FUN_140f13420(NotifyContext::BindData* pSlot, 
         if (FUN_140f14650(obj, item, m_item))
         {
             m_20->Invoke("setRegisterItem", pBind->FUN_1422c8d40(), obj.FUN_1422bb870());
-            FUN_140f13ce0(MS2Ptr<CItem>(&item));
+            SelectItem(MS2Ptr<CItem>(&item));
         }
     }
 }
 
 // @0x140f13610
-void BlackMarketPageItemRegister::FUN_140f13610(const Scaleform::GFx::FunctionHandler::Params& params)
+void BlackMarketPageItemRegister::UpdateTotalPriceNumber(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_spTotalPriceNumber == 0 || m_spTotalPrice == 0)
         return;
@@ -1462,7 +1463,7 @@ void BlackMarketPageItemRegister::FUN_140f13610(const Scaleform::GFx::FunctionHa
     m_spTotalPriceNumber->vfunc_4(true);
     m_spTotalPriceNumber->FUN_1422c4f00(strText);
 }
-MS2_REPLACE_METHOD(0x140F13610, BlackMarketPageItemRegister, FUN_140f13610, 380, 0xC3B47861);
+MS2_REPLACE_METHOD(0x140F13610, BlackMarketPageItemRegister, UpdateTotalPriceNumber, 380, 0xC3B47861);
 
 // @0x140f137a0
 void BlackMarketPageItemRegister::FUN_140f137a0(int nItemId, int nRank, unsigned __int64 nPrice)
@@ -1503,7 +1504,7 @@ bool BlackMarketPageItemRegister::FUN_140f139e0(int nResult, const CMsgBoxData& 
 }
 MS2_REPLACE_METHOD(0x140F139E0, BlackMarketPageItemRegister, FUN_140f139e0, 35, 0xEE40416C);
 
-CGameRule* FUN_1401c0d90();
+void*FUN_1401c0d90();
 
 // @0x140f13a10
 bool BlackMarketPageItemRegister::FUN_140f13a10(int nResult, const CMsgBoxData& box)
@@ -1511,11 +1512,11 @@ bool BlackMarketPageItemRegister::FUN_140f13a10(int nResult, const CMsgBoxData& 
     if (nResult != 0)
         return true;
     FUN_140d74e50(6);
-    int nRate = FUN_1401c0d90()->FUN_140479560();
+    int nRate = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_140479560();
     if (nRate >= 0)
     {
-        __int64 nBegin = FUN_1401c0d90()->FUN_140479580();
-        __int64 nEnd = FUN_1401c0d90()->FUN_1404795a0();
+        __int64 nBegin = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_140479580();
+        __int64 nEnd = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_1404795a0();
         CStringW strMsg = FormatStringId(0x949, FUN_14083bab0(CMsTime(nBegin), L"/"), FUN_14083bab0(CMsTime(nEnd), L"/"), FUN_14083cf50(nRate, true));
         FUN_140d74390(strMsg, 0, Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemRegister::FUN_140f139e0));
     }
@@ -1527,14 +1528,14 @@ bool BlackMarketPageItemRegister::FUN_140f13a10(int nResult, const CMsgBoxData& 
 }
 
 // @0x140f13ce0
-void BlackMarketPageItemRegister::FUN_140f13ce0(MS2Ptr<CItem> spItem)
+void BlackMarketPageItemRegister::SelectItem(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return;
     if (m_item.Set(spItem))
         CBlackMarketMan::GetInstance()->SendBlackMarketMode8(m_item.m_nItemId, m_item.m_nRank);
 }
-MS2_REPLACE_METHOD(0x140F13CE0, BlackMarketPageItemRegister, FUN_140f13ce0, 154, 0x160E98B9);
+MS2_REPLACE_METHOD(0x140F13CE0, BlackMarketPageItemRegister, SelectItem, 154, 0x160E98B9);
 
 // @0x140f13d80
 void BlackMarketPageItemRegister::FUN_140f13d80()
@@ -1569,7 +1570,7 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
         return;
     }
     {
-        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x25);
+        BlockPtr spBlock = reinterpret_cast<CBlockManager *>(FUN_140a6a830())->FindBlockedAction(0x25);
         if (spBlock.get())
         {
             FUN_140a2ff20(spBlock, 0x25, 0);

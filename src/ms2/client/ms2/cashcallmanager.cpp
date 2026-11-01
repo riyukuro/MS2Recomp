@@ -55,7 +55,7 @@ void* FUN_1401c0180(Unk_CcHandle* p);
 class CItem   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_140526a50();
+    __int64 GetItemUid();
 };
 __int64 FUN_140930240();
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -107,7 +107,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
                 FUN_140692c90(&hItem, reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
-                nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();
+                nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->GetItemUid();
                 nKind = 2;
             }
         }
@@ -127,7 +127,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
             Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
             if (FUN_1401c0050(&hItem, 0) != 0)
                 return 0;
-            nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->FUN_140526a50();
+            nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->GetItemUid();
             nKind = 2;
         }
         else

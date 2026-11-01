@@ -22,9 +22,11 @@
 #include <efd/MemoryDefines.h>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include <cmath>
 
 // Unrecovered helpers.
-class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, std::string* pstrActualPath); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
@@ -33,17 +35,14 @@ CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-double FUN_1405e6d60(int nBase, int nExp);
 int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
-unsigned FUN_140557640(Unk_IngTable*, const CString& strName);          // CItemDataTable::GetTagByName
 
 // The ingredient's tag setter (an inline member of CIngredientInfo in the exe, first instantiated by itemgemstonedata.cpp).
 inline void Unk_GemIngredientTag(CIngredientInfo* pInfo, int nTag)
 {
     pInfo->m_b = nTag;
 }
-int FUN_1423933c0(lua_State*, int);                                     // lua_type
-#define lua_type FUN_1423933c0
+extern "C" int lua_type(lua_State*, int);
 
 // the sort name table of the market search (one copy per including unit)
 static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -346,7 +345,7 @@ CLua::ContextPtr CLua::GetContext()
 bool CLua::LoadScripts(lua_State* pLuaState)
 {
     MS2_ASSERT_AT(0x16b, pLuaState);
-    if (!((class Unk_LuaFileSystem*)GetFileSystem())->FUN_140398190())
+    if (!GetFileSystem()->FUN_140398190())
     {
         ATL::CAtlArray<CString> arrPaths;
         arrPaths.Add(CString("./data/lua/Common/common.lua"));
@@ -377,7 +376,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         CString strName = FUN_14016a5c0(strPath, 0);
         void* pBuffer;
         int nSize[2];                                   // the callee writes a 64-bit size; only the low DWORD is read back
-        if (((class Unk_LuaFileSystem*)GetFileSystem())->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
+        if (GetFileSystem()->FUN_1403972f0(strPath, &pBuffer, (unsigned __int64*)nSize, 0) == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
             return false;
@@ -436,8 +435,8 @@ CString CLua::GetLocale()
 int CLua::Round(double dValue, int nDigits)
 {
     double dEps = 1e-06;
-    double dScaled = __imp_floor(dValue * FUN_1405e6d60(10, nDigits) + 0.5 + dEps);
-    return (int)(dScaled / FUN_1405e6d60(10, nDigits));
+    double dScaled = __imp_floor(dValue * pow(10, nDigits) + 0.5 + dEps);
+    return (int)(dScaled / pow(10, nDigits));
 }
 
 // @0x140674040
@@ -447,8 +446,8 @@ int CLua::Round(double dValue) { return (int)__imp_floor(dValue + 0.9); }
 int CLua::Truncate(double dValue, int nDigits)
 {
     double dEps = 1e-06;
-    double dScaled = __imp_floor(dValue * FUN_1405e6d60(10, nDigits) + dEps);
-    return (int)(dScaled / FUN_1405e6d60(10, nDigits));
+    double dScaled = __imp_floor(dValue * pow(10, nDigits) + dEps);
+    return (int)(dScaled / pow(10, nDigits));
 }
 
 // @0x140674100
@@ -1016,7 +1015,7 @@ void CLua::CalcMeratSkinItemBreakReward(unsigned short a, int b, long long c, in
             {
                 int nItem = (int)context->Integer(i);
                 int nAmount = (int)context->Integer(i + 1);
-                int nTag = FUN_140557640(FUN_140281980(), CString(context->String(i + 2)));
+                int nTag = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(CString(context->String(i + 2)));
                 Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
                 Unk_GemIngredientTag(info.operator->(), nTag);
                 rRewards.AddIngredient(info);

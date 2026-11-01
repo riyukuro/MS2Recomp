@@ -12,11 +12,11 @@
 #include <NiRenderedTexture.h>
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"
+#include <ecr/RenderService.h>
+#include <NiRenderStep.h>
 
 // Unrecovered callees (real types unknown).
-unsigned char FUN_1412642d0(void* step);
-NiRenderedTexture* FUN_1416a23f0(unsigned __int64 p, int n);   // the step's input texture n
-void FUN_1416a0fb0(unsigned __int64 p, int n);
 // MS2: unit-local interface; only slot 17 is proven (the class behind FUN_1416a3ec0 is unrecovered). Never instantiated.
 struct Unk_WFTarget
 {
@@ -36,7 +36,6 @@ public:
 void* FUN_140af8310(char* p);
 void* FUN_1411d15b0(void* p);
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
-NiRenderer* FUN_1414fd170(void* p);
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern char DAT_143ae5320;
 extern int DAT_1439f823c;
@@ -181,7 +180,7 @@ bool WorldFadeOutRenderStep::vfunc_15(unsigned int a, void* b)
     if (!PostProcessEffect::vfunc_15(a, 0))
         return false;
     void* p;
-    p = FUN_140c8f690(FUN_1416b4990(this, "FadeOut", (void*)FUN_1416bafb0, this, FUN_1416a23f0(m_70, 5), 0, 0, 0, "FadeInOut", FUN_140c8f680(&((void**)b)[2]), FUN_140c8f680(&((void**)b)[1]), 0));
+    p = FUN_140c8f690(FUN_1416b4990(this, "FadeOut", (void*)FUN_1416bafb0, this, reinterpret_cast<PostProcessingService*>(m_70)->GetRenderedTexture(5), 0, 0, 0, "FadeInOut", FUN_140c8f680(&((void**)b)[2]), FUN_140c8f680(&((void**)b)[1]), 0));
     if (p == 0) {
         vfunc_16();
         return false;
@@ -198,8 +197,8 @@ bool FUN_1416bafb0(void* a, void* step)
     void* s = step;
     s_fade = 1.0f - ((float)GetTickCount() - (float)s_fadeStartTick) / (float)DAT_1439f823c;
     if (s_fade <= 0.0f) {
-        if (FUN_1412642d0(s) == 1) {
-            FUN_1416a0fb0(((PostProcessEffect*)s)->m_70, 0xf);
+        if (reinterpret_cast<NiRenderStep*>(s)->GetActive() == 1) {
+            reinterpret_cast<PostProcessingService*>(((PostProcessEffect*)s)->m_70)->FUN_1416a0fb0(0xf);
             s_fade = 0.0f;
             reinterpret_cast<Unk_WFApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473020(0);
         }
@@ -213,7 +212,7 @@ bool FUN_1416bafb0(void* a, void* step)
 // @0x1416bb0a0
 void WorldFadeOutRenderStep::vfunc_19()
 {
-    if (FUN_1412642d0(this) == 1) {
+    if (reinterpret_cast<NiRenderStep*>(this)->GetActive() == 1) {
         Unk_WFTarget* a = FUN_1416a3ec0(m_70);
         if (a->vfunc_17() != 0) {
             void* h = FUN_1411d15b0(FUN_140af8310(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8));
@@ -222,8 +221,8 @@ void WorldFadeOutRenderStep::vfunc_19()
             int w = q->GetWidth(0);
             int ht = q->GetHeight(0);
             Unk_WFRect rect(0, w, 0, ht);
-            NiRenderedTexture* pp = FUN_1416a23f0(m_70, 5);
-            NiRenderer* rn = FUN_1414fd170(h);
+            NiRenderedTexture* pp = reinterpret_cast<PostProcessingService*>(m_70)->GetRenderedTexture(5);
+            NiRenderer* rn = reinterpret_cast<ecr::RenderService*>(h)->GetRenderer();
             Ni2DBuffer* r = rn->GetDefaultRenderTargetGroup()->GetBuffer(0);
             r->Copy(pp->GetBuffer(), reinterpret_cast<const NiRect<unsigned int>*>(&rect), reinterpret_cast<const NiRect<unsigned int>*>(&rect), (Ni2DBuffer::CopyFilterPreference)0);
             s_fadeStartTick = GetTickCount();

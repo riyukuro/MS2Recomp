@@ -31,10 +31,12 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 // The input state (FUN_14025e7c0).
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-class Unk_BuffContainer
+class Unk_BuffContainer;
+// C3: the movement controller (Unk_PCMove, unit_141682f80) behind FUN_14166d240
+class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nBuffId);
+    bool FUN_141682fe0(int nKey);
 };
 
 // A field actor (FUN_1409ffd30 casts an object to it).
@@ -164,9 +166,9 @@ void CConsoleCameraMode::vfunc_9()
     Unk_RpgActor* pActor = FUN_1409ffd30(pTarget);
     if (pActor)
     {
-        if (pActor->FUN_14166d240()->FUN_141682fe0(300008))
+        if (reinterpret_cast<Unk_PCMove*>(pActor->FUN_14166d240())->FUN_141682fe0(300008))
             ptMove.x = 1.0f;
-        else if (pActor->FUN_14166d240()->FUN_141682fe0(300009))
+        else if (reinterpret_cast<Unk_PCMove*>(pActor->FUN_14166d240())->FUN_141682fe0(300009))
             ptMove.x = -1.0f;
     }
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))

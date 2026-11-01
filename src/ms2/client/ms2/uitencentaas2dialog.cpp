@@ -187,7 +187,7 @@ void UITencentAas2Dialog::vfunc_67()
     UIWebBrowserBase::vfunc_67();
     if (m_nExitOnClose == 1)
     {
-        FUN_140714f90()->FUN_1415388a0();
+        FUN_140714f90()->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
     }

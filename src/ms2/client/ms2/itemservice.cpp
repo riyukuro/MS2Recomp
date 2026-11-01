@@ -55,6 +55,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipmodel.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include <egf/EntityManager.h>
 
 // ---- out-of-unit callees ----
 class CLogString;
@@ -62,8 +63,7 @@ CLogString* GetLogString();
 template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                     const T& first);                // 0x1403a1280 for T = const char*
 
-class Unk_TrigNetSvc2 { public: efd::Category FUN_142156c20(); };
-Unk_TrigNetSvc2* FUN_140ae1200(efd::ServiceManager* pManager);
+egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc2 { public: efd::Category FUN_141235eb0(); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -78,12 +78,6 @@ public:
     PC* FUN_141200820();                                            // the owner PC (0 when none)
     MS2Ptr<CEquipItem> FUN_141200a40() const;                       // the equip item of the model
 };
-class Unk_IsEquipItem
-{
-public:
-    int FUN_1411dc500(CKfmModel* pModel);
-    void FUN_1411dc530(CKfmModel* pModel);
-};
 #define IsModel(p) static_cast<Unk_IsModel*>(static_cast<CEquipModel*>(p))
 int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   // attach an already loaded root
 
@@ -91,7 +85,7 @@ typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
 
 // The registry of named bags (GFx bind data).
 ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
-ItemInfoSlot* FUN_140cfe6c0(DragSlot* p);                           // DragSlot -> ItemInfoSlot (TypeCast)
+ItemInfoSlot*FUN_140cfe6c0(NotifyContext::BindData*);                           // DragSlot -> ItemInfoSlot (TypeCast)
 class AvatarPC;
 CItemData* FUN_140527840(CItem* pItem);                             // the item's template data
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);             // unit_141420a70.cpp
@@ -104,7 +98,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CItemService);
 // @0x1400f6680
 EE_HANDLER(CItemService, FUN_14141ac60, efd::AssetLoadResponse);
 // @0x1400f66e0
-EE_HANDLER_WRAP(CItemService, FUN_14141acc0, ecrPhysX::PhysXPropMessage, 12299);
+EE_HANDLER_WRAP(CItemService, OnPhysXPropCreated, ecrPhysX::PhysXPropMessage, 12299);
 // @0x1400f6740
 EE_HANDLER(CItemService, FUN_14141ae10, egmAnimation::ActorAddedMessage);
 #endif
@@ -156,7 +150,7 @@ const char* CItemService::GetDisplayName() const
 }
 
 // @0x141419f50
-int CItemService::FUN_141419f50(CKfmModel* pModel)
+int CItemService::RegisterModel(CKfmModel* pModel)
 {
     if (pModel == 0)
         return 0;
@@ -170,7 +164,7 @@ int CItemService::FUN_141419f50(CKfmModel* pModel)
 }
 
 // @0x14141a000
-int CItemService::FUN_14141a000(CKfmModel* pModel)
+int CItemService::UnregisterModel(CKfmModel* pModel)
 {
     if (pModel == 0)
         return 0;
@@ -283,14 +277,14 @@ void CItemService::FUN_14141ac60(const efd::AssetLoadResponse* pMsg, efd::Catego
 
 // The PhysX prop of a loading KFM model was created.
 // @0x14141acc0
-void CItemService::FUN_14141acc0(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category)
+void CItemService::OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category)
 {
     egf::EntityID id = pMsg->GetEntityID();
     MS2Ptr<CKfmModel> spModel(0);
     if (m_mapModels.Lookup(id.GetValue(), spModel))
     {
         spModel->vfunc_33();
-        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
+        reinterpret_cast<CEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c00();
@@ -305,14 +299,14 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
     MS2Ptr<CKfmModel> spModel(0);
     if (m_mapModels.Lookup(id.GetValue(), spModel))
     {
-        IsModel(spModel.get())->FUN_141200a40()->FUN_1411dbfd0();
+        IsModel(spModel.get())->FUN_141200a40()->ReleaseLinkedItems();
         spModel->vfunc_34();
-        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
+        reinterpret_cast<CEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c10();
         if (spModel->vfunc_9() != 0)
-            FUN_14141a000(spModel);
+            UnregisterModel(spModel);
     }
 }
 
@@ -377,7 +371,7 @@ efd::AsyncResult CItemService::OnInit()
     m_catGlobal = m_spMessages->GetGloballyUniqueCategory();
     m_spMessages->Subscribe(this, s_catEntityChannel, 0, false);
     m_spMessages->Subscribe(this, m_catGlobal, 0, false);
-    m_spMessages->Subscribe(this, FUN_140ae1200(m_pServiceManager)->FUN_142156c20(), 0, false);
+    m_spMessages->Subscribe(this, FUN_140ae1200(m_pServiceManager)->GetEntityLoadCategory(), 0, false);
     m_spMessages->Subscribe(this, s_catAnimationChannel, 0, false);
     m_spMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
     return efd::AsyncResult_Complete;
@@ -403,7 +397,7 @@ efd::AsyncResult CItemService::OnShutdown()
     {
         m_spMessages->Unsubscribe(this, s_catEntityChannel, 0);
         m_spMessages->Unsubscribe(this, m_catGlobal, 0);
-        m_spMessages->Unsubscribe(this, FUN_140ae1200(m_pServiceManager)->FUN_142156c20(), 0);
+        m_spMessages->Unsubscribe(this, FUN_140ae1200(m_pServiceManager)->GetEntityLoadCategory(), 0);
         m_spMessages->Unsubscribe(this, s_catAnimationChannel, 0);
         m_spMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0);
     }
@@ -495,7 +489,7 @@ ItemSlotBag::~ItemSlotBag()
 // @0x14141fbc0
 void ItemSlotBag::vfunc_13(int nIndex)
 {
-    ItemInfoSlot* pSlot = FUN_140cfe6c0(FUN_1422cd070(nIndex));
+    ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -503,7 +497,7 @@ void ItemSlotBag::vfunc_13(int nIndex)
 // @0x14141fc10
 void ItemSlotBag::vfunc_14(int nIndex)
 {
-    ItemInfoSlot* pSlot = FUN_140cfe6c0(FUN_1422cd070(nIndex));
+    ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -559,7 +553,7 @@ void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
         return;
     for (auto kv : pBag->m_slots)
     {
-        ItemInfoSlot* pSlot = FUN_140cfe6c0(pBag->FUN_1422cd0f0(kv.second));
+        ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(pBag->FUN_1422cd0f0(kv.second)));
         if (pSlot == 0)
             continue;
         int nIndex = pSlot->GetIndex();
@@ -635,11 +629,11 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, s
 MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_REPLACE_METHOD(0x141419F30, CItemService, GetDisplayName, 13, 0xFE406CA6);
-MS2_REPLACE_METHOD(0x141419F50, CItemService, FUN_141419f50, 166, 0x32862F2B);
-MS2_REPLACE_METHOD(0x14141A000, CItemService, FUN_14141a000, 76, 0x1DFADF0C);
+MS2_REPLACE_METHOD(0x141419F50, CItemService, RegisterModel, 166, 0x32862F2B);
+MS2_REPLACE_METHOD(0x14141A000, CItemService, UnregisterModel, 76, 0x1DFADF0C);
 MS2_REPLACE_METHOD(0x14141A060, CItemService, FUN_14141a060, 3052, 0x097F71D7);
 MS2_REPLACE_METHOD(0x14141AC60, CItemService, FUN_14141ac60, 76, 0xF9400BDF);
-MS2_REPLACE_METHOD(0x14141ACC0, CItemService, FUN_14141acc0, 322, 0x5E111DEB);
+MS2_REPLACE_METHOD(0x14141ACC0, CItemService, OnPhysXPropCreated, 322, 0x5E111DEB);
 MS2_REPLACE_METHOD(0x14141AE10, CItemService, FUN_14141ae10, 477, 0x3F4220C9);
 MS2_REPLACE_METHOD(0x14141B000, CItemService, FUN_14141b000, 574, 0x26956EB2);
 MS2_REPLACE_METHOD(0x14141B250, CItemService, FUN_14141b250, 253, 0x9E0E8D7C);

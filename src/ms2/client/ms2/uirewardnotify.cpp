@@ -130,7 +130,7 @@ class Unk_RNGrades { public: unsigned long FUN_1405569f0(int); };
 
 // Item records.
 class Unk_RNItemData : public CItemData { public: unsigned char FUN_14053d990();};
-class Unk_RNItem : public CItem { public: Unk_RNItemData* FUN_140527840();CString FUN_140528590(); };
+class Unk_RNItem : public CItem { public: Unk_RNItemData* FUN_140527840();};
 class Unk_RNItemRef {
 public:
     Unk_RNItemRef(const Unk_RNItemRef& o) : m_0(o.m_0), m_8(o.m_8) { if (m_8) CPtred::AddRefPtred(static_cast<CPtred*>(m_8)); }   // 0x1402034d0
@@ -141,15 +141,7 @@ private:
     void* m_0; void* m_8;
 };
 MS2_CHECK_SIZE(Unk_RNItemRef, 0x10);
-class Unk_RNItemInfo {
-public:
-    ~Unk_RNItemInfo();                          // 0x1401b50d0
-    Unk_RNItemData* FUN_140203c60() const;
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_RNItemInfo, 0x10);
-Unk_RNItemInfo FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 bool FUN_14053f900(unsigned int);   // C3: was FUN_14053f900
 
 // Achievements / titles.
@@ -172,11 +164,6 @@ class Unk_RNSkillTable { public: Unk_RNSkillRef FUN_1407ee1d0(int nSkillId); };
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
 
 // Fishing.
-class Unk_RNFishData : public CPtred {
-public:
-    int FUN_1403b1520(int nLength); int FUN_1403b1590(int nLength); CStringW FUN_1403b1600(); CStringW FUN_1403b1650();
-};
-class Unk_RNFishTable { public: MS2Ptr<Unk_RNFishData> FUN_1403b2d30(int nId); };
 
 // ---- unit statics: the shared header statics come first (header_statics_a.h), then the file's own ----
 static CString s_strPCTitleGet = "PC_TitleGet";
@@ -370,16 +357,16 @@ MS2_REPLACE_METHOD(0x141abf450, UIRewardNotify, FUN_141abf450, 647, 0x3500A818);
 // @0x141abf6e0
 void UIRewardNotify::FUN_141abf6e0(int nItemId, int nGrade)
 {
-    Unk_RNItemInfo info = FUN_14053f870(nItemId);
-    if (info.FUN_140203c60()) {
+    MS2Ptr<CItemData> info = FUN_14053f870(nItemId);
+    if (info.get()) {
         unsigned long nCount = reinterpret_cast<Unk_RNGrades*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nGrade);
         CStringW strMsg = FormatStringId(0x687, nCount, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
         RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(reinterpret_cast<Unk_RNItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(info).operator->())->GetIconPath(), 0));
+        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(reinterpret_cast<Unk_RNItemData*>(info.operator->())->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<Unk_RNItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(info).operator->())->FUN_14053d990() == 1);
+        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<Unk_RNItemData*>(info.operator->())->FUN_14053d990() == 1);
         RN_OBJ(pObj)->FUN_1409c0d20("key", nItemId);
         AppendReward(pObj);
     }
@@ -550,7 +537,7 @@ MS2_REPLACE_METHOD(0x141ac0cd0, UIRewardNotify, FUN_141ac0cd0, 378, 0x4267BFD9);
 // @0x141ac0e50
 void UIRewardNotify::FUN_141ac0e50(int nFishId, unsigned nLength)
 {
-    MS2Ptr<Unk_RNFishData> pFish = reinterpret_cast<Unk_RNFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nFishId);
+    CFishDataPtr pFish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
     if (pFish.IsNull())
         return;
     int nSize = pFish->FUN_1403b1520(nLength);
@@ -571,7 +558,7 @@ MS2_REPLACE_METHOD(0x141ac0e50, UIRewardNotify, FUN_141ac0e50, 848, 0xE41F7F22);
 // @0x141ac11b0
 void UIRewardNotify::FUN_141ac11b0(int nFishId, unsigned nLength)
 {
-    MS2Ptr<Unk_RNFishData> pFish = reinterpret_cast<Unk_RNFishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(nFishId);
+    CFishDataPtr pFish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
     if (pFish.IsNull())
         return;
     int nMedal = pFish->FUN_1403b1590(nLength);
@@ -658,7 +645,7 @@ MS2_REPLACE_METHOD(0x141ac1b50, UIRewardNotify, FUN_141ac1b50, 430, 0xA44E763B);
 void UIRewardNotify::FUN_141ac1d10(int nItemId)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    Unk_RNItemData* pItem = FUN_14053f870(nItemId).FUN_140203c60();
+    Unk_RNItemData* pItem = static_cast<Unk_RNItemData*>(FUN_14053f870(nItemId).get());
     if (!pItem)
         return;
     CString strName = pItem->GetIconPath();
@@ -881,8 +868,7 @@ public:
 class Unk_RLPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_RLSound { public: int FUN_1411a5a60(const CString& strName, const CString& strArg); };
-class Unk_RLChat { public: void FUN_1416fb300(const CStringW& str); };
-class Unk_RLRewardUI : public UITalkCinematic { public: void FUN_141b1ac40(ATL::CAtlArray<MS2Ptr<CItem> >& items, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat); void FUN_141b1a8e0(const CStringW& str, const CString& a, const CString& b); };
+class Unk_RLRewardUI : public UITalkCinematic { public: void FUN_141b1ac40(ATL::CAtlArray<MS2Ptr<CItem> >& items, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat); };
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
@@ -1019,8 +1005,8 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
             CStringW strResult = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20ed0();
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
-            reinterpret_cast<Unk_RLChat*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strResult);
-            reinterpret_cast<Unk_RLChat*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strTitle);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strResult);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
             Unk_RLRewardUI* pUI = ((class Unk_RLRewardUI*)FUN_140a7b2b0(0x4e40));
             if (pUI != 0) {
                 if (items.GetCount() > 0)

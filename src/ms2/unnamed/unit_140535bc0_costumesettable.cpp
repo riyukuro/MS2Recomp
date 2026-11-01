@@ -50,7 +50,7 @@ static CostumeSlotMap s_mapSlotType(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 : public Unk_XmlNode {};
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
@@ -62,8 +62,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-int FUN_1405451c0(const CString& str);                                   // text -> number
-CString FUN_1405451e0(unsigned n);                                       // number -> text
+int FUN_1405451c0(CStringA &);  // C3: the definition's signature
+CStringA FUN_1405451e0(int);  // C3: the definition's signature
 Unk_LaunchOptions* FUN_1406aeee0();
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {

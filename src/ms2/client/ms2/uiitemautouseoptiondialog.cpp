@@ -10,6 +10,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitemautouseoptiondialog.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asdropdownmenu.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asslot.h"
@@ -27,6 +28,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/skillsystem.h"
+#include "ms2/placeholder/chomeprivilege.h"   // C3: mypc.h holds MS2Ptr<CHomePrivilege> by value
+#include "ms2/client/ms2/mypc.h"   // C3: MyPC::FUN_141523bc0 / FUN_14152e2f0, PCBase::FUN_141676a10
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -45,9 +48,6 @@ class ASDialog : public ASDisplayObject
 };
 
 // The local player and its views (see petslot.cpp). Slot 78 (+0x270) of the player is its level.
-class Unk_AuSkills : public CSkillSystem
-{
-};
 class Unk_AuPlayer
 {
 public:
@@ -130,8 +130,6 @@ public:
     virtual void vfunc_76();
     virtual void vfunc_77();
     virtual unsigned short vfunc_78();                    // the level
-    Unk_AuSkills* FUN_141523bc0();                        // the skill system
-    MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);    // the worn item spItem would replace
 };
 #define AU_PLAYER_LEVEL(p) ((p)->vfunc_78())
 class Unk_AuWorld
@@ -145,23 +143,9 @@ public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
-void* FUN_141676a10(void* pPlayer);                       // the player's pet part (null: none)
 
 // The drop-down child of the movie.
-class Unk_AuCombo : public ASDisplayObject
-{
-public:
-#define AU_V(n) virtual void vfunc_##n();
-    AU_V(6) AU_V(7) AU_V(8) AU_V(9) AU_V(10) AU_V(11) AU_V(12) AU_V(13) AU_V(14) AU_V(15) AU_V(16) AU_V(17) AU_V(18)
-    AU_V(19) AU_V(20) AU_V(21) AU_V(22) AU_V(23)
-#undef AU_V
-    virtual void vfunc_24(bool bShow);                    // 24 (+0xc0) refresh
-    void FUN_1422c1fe0(int bEnabled);                     // enable / disable
-    int FUN_1422df6c0();                                  // the selected index
-    void FUN_1422df690(int nIndex);                       // select
-    void FUN_1422dfc10();                                 // clear the entries
-    void FUN_1422dfc70(ASObj& entry);                     // add an entry
-};
+class Unk_AuCombo : public ASDropdownMenu { };   // C3: the real class (asdropdownmenu.h)
 
 // The dialog's child lookups.
 class Unk_AuEntity : public UIDialog
@@ -227,7 +211,7 @@ float UIItemAutoUseOptionDialog::Slot::FUN_140f4e080()
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    return pPlayer->FUN_141523bc0()->FUN_141765fe0(FUN_140f4e0e0(), 0);
+    return reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->FUN_141765fe0(FUN_140f4e0e0(), 0);
 }
 
 // @0x140f4e0e0
@@ -392,7 +376,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
     if (FUN_140534e50(&spItem) != 0)
         return 0;
-    MS2Ptr<CItem> spWorn = pPlayer->FUN_14152e2f0(spItem);
+    MS2Ptr<CItem> spWorn = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
     if (spWorn.get() != 0 ? true : false)
     {
         if (spWorn->GetItemUid() == spItem->GetItemUid())
@@ -698,7 +682,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
             spCombo.get()->FUN_1422c1fe0(1);
         else if (nState == 2)
         {
-            spCombo.get()->FUN_1422df690(DAT_1439ed004 - 1);
+            spCombo.get()->SetSelectedIndex(DAT_1439ed004 - 1);
             spCombo.get()->FUN_1422c1fe0(0);
         }
     }
@@ -741,9 +725,9 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
     ((Unk_AuCombo*)pCombo)->vfunc_24(true);
     Unk_PetOption opt;
     if (((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(nIndex, opt))
-        ((Unk_AuCombo*)pCombo)->FUN_1422df690(opt.type);
+        ((Unk_AuCombo*)pCombo)->SetSelectedIndex(opt.type);
     else
-        ((Unk_AuCombo*)pCombo)->FUN_1422df690(DAT_1439ed004 - 1);
+        ((Unk_AuCombo*)pCombo)->SetSelectedIndex(DAT_1439ed004 - 1);
 }
 
 // @0x140f50480
@@ -752,7 +736,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    void* pPet = FUN_141676a10(pPlayer);
+    void* pPet = reinterpret_cast<PCBase*>(pPlayer)->FUN_141676a10();
     if (pPet == 0)
         return;
     SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
@@ -768,7 +752,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
         if (spCombo)
         {
             int nIdx = i;
-            int nSel = spCombo->FUN_1422df6c0();
+            int nSel = spCombo->GetSelectedIndex();
             Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIdx));
             if (pSlot != 0)
             {

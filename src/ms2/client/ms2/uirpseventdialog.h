@@ -24,11 +24,11 @@ public:
     int FUN_140e832d0();
     void FUN_140e83370(MS2Ptr<Unk_RpsEvent>);
     void FUN_140e83a30();
-    void FUN_140e83e40();
+    void RefreshBannerButton();
     void FUN_140e83fa0(int);
     int FUN_140e841a0();
     void FUN_140e84350(GameEventVariable*);
-    void FUN_140e84380(CInPacket&);
+    void OnPacketRefresh(CInPacket&);
 private:
     MS2_LAYOUT_FRIEND;
     bool m_178;

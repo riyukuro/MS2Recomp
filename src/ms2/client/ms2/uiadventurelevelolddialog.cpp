@@ -29,6 +29,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
@@ -68,17 +69,7 @@ void FUN_141415600(const CString& strBindID);                           // relea
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 
-// A skill record (club / ability icon): CPtred + 0xa8 bytes of data; FUN_1401756c0 copies the icon path.
-class Unk_ALSkillAttr : public CPtred
-{
-public:
-    CString FUN_1401756c0();
-    char m_pad_18[0xa8];
-    CString m_c0;
-};
-MS2_CHECK_OFFSET(Unk_ALSkillAttr, m_c0, 0xc0);
-extern template class MS2Ptr<Unk_ALSkillAttr>;
-class Unk_ALSkillTable { public: MS2Ptr<Unk_ALSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
+extern template class MS2Ptr<AdditionalLevelData>;
 
 // An ability of the adventure level (a skill per character level step).
 class Unk_ALAbility
@@ -170,7 +161,7 @@ public:
 extern Unk_ALClaimed g_unkClaimed;                                          // 0x143ab3308
 
 // The ability manager of the player and the current ability state.
-class Unk_ALAbilityMgr { public: int FUN_140970020(int nSkillId, unsigned short nLevel, int a3, int a4); };
+class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_ALAbilityMgr : public AdditionalCliList { };
 Unk_ALAbilityMgr* FUN_1416749a0(Unk_ALPlayer* pPlayer);
 class Unk_ALCurrent { public: int* FUN_140195640(); };
 extern void* DAT_143aac280;
@@ -325,9 +316,9 @@ void UIAdventureLevelOldDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData*
     if (pAbility->m_0 == 0)
         return;
     unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-    MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
+    MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
     if (spAttr == NULL) {
-        spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
+        spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
         if (spAttr == NULL)
             return;
     }
@@ -413,9 +404,9 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         unsigned int* pId = it.FUN_1401957b0();
         Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(*pId);
         unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-        MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
+        MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
         if (spAttr == NULL) {
-            spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
+            spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
             if (spAttr == NULL)
                 continue;
         }
@@ -427,7 +418,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         ASObj obj(2);
         obj.FUN_1409c0d20("id", pAbility->m_0);
         obj.FUN_1407cbbe0("isLock", bLock);
-        obj.FUN_1407cba60("imgPath", spAttr->FUN_1401756c0());
+        obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
         obj.FUN_1409c4a30("abilityStatus", pAbility->FUN_140195a20(pPlayer->vfunc_141()));
         if (bLock)
             obj.FUN_1409c0d20("level", pAbility->m_8);

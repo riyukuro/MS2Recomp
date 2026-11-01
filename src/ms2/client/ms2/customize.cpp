@@ -50,15 +50,10 @@ public:
     ItemModelHead* FUN_14053ec70();
 };
 
-// The world (FUN_1403ed2d0): the player of an object id.
-class Unk_CustomizeWorld
-{
-public:
-    PC* FUN_141bd1290(int nObjectId);
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
 };
 
@@ -507,7 +502,7 @@ MS2_REPLACE_METHOD(0x140CCBCC0, Customize::EditItems, GetColors, 199, 0x8E4E989E
 PC* Customize::EditItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCBD90, Customize::EditItems, GetPC, 50, 0x78C562D6);
@@ -1086,7 +1081,7 @@ MS2_REPLACE_METHOD(0x140CCEF20, Customize::CloneItems, SaveColors, 103, 0x637BC3
 PC* Customize::CloneItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCEF90, Customize::CloneItems, GetPC, 50, 0xF183C92F);
@@ -1431,7 +1426,7 @@ void Customize::Equipment::ResetEdit()
 PC* Customize::Equipment::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD0AF0, Customize::Equipment, GetPC, 50, 0x900515B6);
@@ -2249,7 +2244,7 @@ MS2_REPLACE_METHOD(0x140CD3D40, Customize, vfunc_25, 161, 0x36B7DD73);
 PC* Customize::GetPlayer()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return ((class Unk_CustomizeWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nObjectId);
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD3DF0, Customize, GetPlayer, 50, 0x4666D5B3);

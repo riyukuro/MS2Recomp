@@ -50,7 +50,7 @@ static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "C
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> RankClickDelegate;
 
-class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int a, int b); };
+class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_PCBaseBuffs : public AdditionalCliList {};
 class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
 UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
@@ -504,7 +504,7 @@ void UIRankPvPDialog::FUN_140f95630(const Scaleform::GFx::FunctionHandler::Param
         return;
     bool bObserve = FUN_14028d780(m_observeCheck->FUN_1422ce0e0());
     ((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer = bObserve;
-    ((class CGameOption*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_141243540();
+    ((class CGameOption*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
     if (bObserve)
         FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_observe_notify"), 0, 0, CStringW(L""));
 }

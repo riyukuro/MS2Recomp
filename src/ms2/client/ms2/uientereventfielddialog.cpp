@@ -102,7 +102,7 @@ void UIEnterEventFieldDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     UpdateVisible();
 }
 MS2_REPLACE_METHOD(0x140F3FC80, UIEnterEventFieldDialog, OnLoadComplete, 255, 0x60BA1C25);

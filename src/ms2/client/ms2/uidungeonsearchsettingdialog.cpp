@@ -50,7 +50,7 @@ void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ac70(int);
+    bool CanEnterDungeonRoom(int);
 };
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
@@ -233,7 +233,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
             row->vfunc_3(0);
             return;
         }
-        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)

@@ -7,6 +7,20 @@
 #include "commonstruct_wa.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <list>
+#include <map>
+#include <vector>
+#include "ms2/placeholder/ascript.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/timeutil.h"
+// The STL/ATL instances behind the unit's views (C3: the calls go to their members).
+typedef std::vector<MS2Ptr<CIngredientInfo>> VIng;
+typedef std::vector<CString> VStr;
+typedef std::vector<ItemEntity> VItem;
+typedef std::map<int, int> MapII;
+typedef std::list<MS2Ptr<CUserChangeableItemHistory>> LHist;
+typedef ATL::CAtlArray<int> ArrI;
+typedef ATL::CAtlArray<unsigned> ArrU;
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -28,9 +42,9 @@ ItemEntity::ItemEntity(ItemAble& source) {
 void ItemEntity::vfunc_1(CStringW text) {
     Unk_UIntArr values;
     FUN_140274fc0(text, &values, L",");
-    if (values.FUN_140186270() >= 1) m_itemId = *values.FUN_140184510(0);
-    if (values.FUN_140186270() >= 2) m_rank = *values.FUN_140184510(1);
-    if (values.FUN_140186270() >= 3) m_count = *values.FUN_140184510(2);
+    if (reinterpret_cast<ArrU&>(values).GetCount() >= 1) m_itemId = reinterpret_cast<ArrU&>(values)[0];
+    if (reinterpret_cast<ArrU&>(values).GetCount() >= 2) m_rank = reinterpret_cast<ArrU&>(values)[1];
+    if (reinterpret_cast<ArrU&>(values).GetCount() >= 3) m_count = reinterpret_cast<ArrU&>(values)[2];
 }
 // @0x14026ae40
 void ItemEntity::vfunc_2(void* xml) {
@@ -118,7 +132,7 @@ void CIngredientInfo::FUN_14026b410(CInPacket& in) {
 // @0x14026b4b0
 unsigned CIngredientInfo::FUN_14026b4b0() {
     if (m_b != 0 && FUN_140281980() != 0) {
-        return FUN_1405575b0(FUN_140281980(), m_b);
+        return reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)m_b);
     }
     return 0;
 }
@@ -139,14 +153,14 @@ bool FUN_14026b560(int* id, Unk_IngRef ref) {
 // @0x14026b5f0
 CIngredientContainer::CIngredientContainer() {}
 // @0x14026b640
-CIngredientContainer::CIngredientContainer(size_t reserve) { m_items.FUN_14028b3a0(reserve); }
+CIngredientContainer::CIngredientContainer(size_t reserve) { reinterpret_cast<VIng&>(m_items).reserve(reserve); }
 // @0x14026b6b0
 CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
-    m_items.FUN_14028a610();
-    m_items.FUN_14028b3a0(other->m_items.FUN_14028b500());
+    reinterpret_cast<VIng&>(m_items).clear();
+    reinterpret_cast<VIng&>(m_items).reserve(reinterpret_cast<VIng&>(other->m_items).size());
     Unk_IngVec* source = &other->m_items;
-    Unk_IngRef* it = source->FUN_140289d60();
-    Unk_IngRef* end = source->FUN_140289dc0();
+    Unk_IngRef* it = (Unk_IngRef*)reinterpret_cast<const VIng&>(*source)._Unchecked_begin();
+    Unk_IngRef* end = (Unk_IngRef*)reinterpret_cast<VIng&>(*source)._Unchecked_end();
     for (; it != end; ++it) {
         Unk_IngRef ref(*it);
         if (ref == 0) continue;
@@ -156,26 +170,26 @@ CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
 }
 // @0x14026b890
 bool CIngredientContainer::IsDifferentFrom(CIngredientContainer* other) {
-    if (m_items.FUN_14028b500() != other->m_items.FUN_14028b500()) return true;
-    size_t count = m_items.FUN_14028b500();
+    if (reinterpret_cast<VIng&>(m_items).size() != reinterpret_cast<VIng&>(other->m_items).size()) return true;
+    size_t count = reinterpret_cast<VIng&>(m_items).size();
     for (size_t i = 0; i < count; ++i) {
         if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->IsDifferent(other->m_items.FUN_14027f220(i)->FUN_140281f10())) return true;
     }
     return false;
 }
 // @0x14026b980
-CIngredientContainer::~CIngredientContainer() { m_items.FUN_14028a610(); }
+CIngredientContainer::~CIngredientContainer() { reinterpret_cast<VIng&>(m_items).clear(); }
 // @0x14026b9d0
 void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
     Unk_StrVec parts;
     FUN_140275180(text, &parts, L",");
-    if (parts.FUN_14028b4c0() != 3) return;
+    if (reinterpret_cast<VStr&>(parts).size() != 3) return;
     Unk_IngRef ref(new CIngredientInfo());
     {
         Unk_StrVec sub;
         FUN_140275080(*parts.FUN_14027f1c0(0), &sub, ":");
-        if (sub.FUN_14028b4c0() > 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
-        if (sub.FUN_14028b4c0() > 1) ref->m_b = FUN_140557640(FUN_140281980(), sub.FUN_14027f1c0(1));
+        if (reinterpret_cast<VStr&>(sub).size() > 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
+        if (reinterpret_cast<VStr&>(sub).size() > 1) ref->m_b = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(*sub.FUN_14027f1c0(1));
     }
     ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
     if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
@@ -200,38 +214,38 @@ void CIngredientContainer::FUN_14026bd10(int a, int b) {
 // @0x14026bdc0
 Unk_IngRef CIngredientContainer::FUN_14026bdc0(size_t index) {
     if (index >= FUN_14026bee0()) return Unk_IngRef(0);
-    return *m_items.FUN_14028a0b0(index);
+    return *reinterpret_cast<Unk_IngRef*>(&reinterpret_cast<VIng&>(m_items).at(index));
 }
 // @0x14026be50
 Unk_IngRef CIngredientContainer::FUN_14026be50(size_t index) {
     if (index >= FUN_14026bf10()) return Unk_IngRef(0);
-    return *m_items.FUN_14028a0f0(index);
+    return *(Unk_IngRef*)&reinterpret_cast<const VIng&>(m_items).at(index);
 }
 // @0x14026bee0
-size_t CIngredientContainer::FUN_14026bee0() { return m_items.FUN_14028b500(); }
+size_t CIngredientContainer::FUN_14026bee0() { return reinterpret_cast<VIng&>(m_items).size(); }
 // @0x14026bf10
-size_t CIngredientContainer::FUN_14026bf10() { return m_items.FUN_14028b500(); }
+size_t CIngredientContainer::FUN_14026bf10() { return reinterpret_cast<VIng&>(m_items).size(); }
 // @0x14026bf40
-bool CIngredientContainer::FUN_14026bf40() { return m_items.FUN_14028a8c0(); }
+bool CIngredientContainer::FUN_14026bf40() { return reinterpret_cast<VIng&>(m_items).empty(); }
 // @0x14026bf70
-bool CIngredientContainer::FUN_14026bf70() { return m_items.FUN_14028a8c0(); }
+bool CIngredientContainer::FUN_14026bf70() { return reinterpret_cast<VIng&>(m_items).empty(); }
 // @0x14026bfa0
-void CIngredientContainer::FUN_14026bfa0(size_t n) { m_items.FUN_14028b3a0(n); }
+void CIngredientContainer::FUN_14026bfa0(size_t n) { reinterpret_cast<VIng&>(m_items).reserve(n); }
 // @0x14026bfd0
 void CIngredientContainer::Write(COutputStream& out) {
-    unsigned char count = (unsigned char)m_items.FUN_14028b500();
+    unsigned char count = (unsigned char)reinterpret_cast<VIng&>(m_items).size();
     out.WriteUInt8(count);
     for (size_t i = 0; i < count; ++i) {
-        Unk_IngRef ref(*m_items.FUN_14028a0b0(i));
+        Unk_IngRef ref(*reinterpret_cast<Unk_IngRef*>(&reinterpret_cast<VIng&>(m_items).at(i)));
         if (ref == 0) continue;
         ref->FUN_14026b3a0(out);
     }
 }
 // @0x14026c0b0
 void CIngredientContainer::Read(CInPacket& in) {
-    m_items.FUN_14028a610();
+    reinterpret_cast<VIng&>(m_items).clear();
     size_t count = in.ReadUInt8();
-    m_items.FUN_14028b3a0(count);
+    reinterpret_cast<VIng&>(m_items).reserve(count);
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef ref(new CIngredientInfo());
         if (ref == 0) continue;
@@ -257,7 +271,7 @@ void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
             pending.FUN_14028b330(cur);
         }
     }
-    if (!pending.FUN_14028a8c0()) {
+    if (!reinterpret_cast<VIng&>(pending).empty()) {
         Unk_It t30, t28, t20;
         Unk_It result;
         Unk_It pos = *m_items.FUN_14028aa90(&t30);
@@ -269,7 +283,7 @@ Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
     int keyBuffer;
     Unk_It lower, t40, t48, t50;
     FUN_14027bf30(&lower, *m_items.FUN_14028a260(&t48), *m_items.FUN_14028aa90(&t40), *FUN_14026b540(&keyBuffer, key));
-    if (FUN_14027f000(&lower, m_items.FUN_14028aa90(&t50))) return *FUN_14027f490(&lower);
+    if (FUN_14027f000(&lower, m_items.FUN_14028aa90(&t50))) return *reinterpret_cast<Unk_IngRef*>(&**reinterpret_cast<VIng::iterator*>(&lower));
     return Unk_IngRef(0);
 }
 // @0x14026c550
@@ -287,20 +301,20 @@ DungeonRewardInfo::~DungeonRewardInfo() {}
 struct Unk_RewardPair { unsigned char key; int value; };
 // @0x14026c660
 void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
-    out.WriteInt32((int)m_rewards.FUN_14028b3f0());
+    out.WriteInt32((int)reinterpret_cast<MapII&>(m_rewards).size());
     Unk_It t80, t88, t90, t98;
     Unk_RewardMap& rewards = m_rewards;
     Unk_It end = *rewards.FUN_14028a910(&t80);
-    for (Unk_It it = *rewards.FUN_14028a130(&t88); FUN_14027ef80(&it, &end); FUN_14027f600(&it)) {
-        Unk_RewardPair* entry = (Unk_RewardPair*)FUN_14027f410(&it);
+    for (Unk_It it = *rewards.FUN_14028a130(&t88); FUN_14027ef80(&it, &end); ++*reinterpret_cast<MapII::const_iterator*>(&it)) {
+        Unk_RewardPair* entry = (Unk_RewardPair*)(void*)&**reinterpret_cast<MapII::const_iterator*>(&it);
         out.WriteUInt8(entry->key);
         out.WriteInt32(entry->value);
     }
-    out.WriteInt32((int)m_items.FUN_14028b470());
+    out.WriteInt32((int)reinterpret_cast<VItem&>(m_items).size());
     Unk_ItemVec& items = m_items;
     Unk_It end2 = *items.FUN_14028aa30(&t90);
-    for (Unk_It it2 = *items.FUN_14028a200(&t98); FUN_14027efc0(&it2, &end2); FUN_14027f6b0(&it2)) {
-        ItemEntity* item = (ItemEntity*)FUN_14027f450(&it2);
+    for (Unk_It it2 = *items.FUN_14028a200(&t98); FUN_14027efc0(&it2, &end2); ++*reinterpret_cast<VItem::const_iterator*>(&it2)) {
+        ItemEntity* item = (ItemEntity*)(void*)&**reinterpret_cast<VItem::const_iterator*>(&it2);
         out.WriteInt32(item->m_itemId);
         out.WriteInt32(item->m_count);
         out.WriteInt32(static_cast<ItemAble&>(*item).vfunc_o18_1());
@@ -321,7 +335,7 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
     for (int i = 0; i < itemCount; ++i) {
         m_items.FUN_14028b2a0(ItemEntity());
         Unk_It tmp;
-        ItemEntity* item = FUN_14027f4b0(m_items.FUN_14028b360(&tmp));
+        ItemEntity* item = &**reinterpret_cast<std::reverse_iterator<VItem::iterator>*>(m_items.FUN_14028b360(&tmp));
         item->m_itemId = in.ReadInt32();
         item->m_count = in.ReadInt32();
         item->SetRank(in.ReadInt32());
@@ -336,7 +350,7 @@ unsigned DungeonRewardInfo::FUN_14026cbf0() {
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
     if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
-    return *(unsigned*)((char*)FUN_14027f350(&found) + 4);
+    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cc70
 unsigned DungeonRewardInfo::FUN_14026cc70() {
@@ -344,7 +358,7 @@ unsigned DungeonRewardInfo::FUN_14026cc70() {
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
     if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
-    return *(unsigned*)((char*)FUN_14027f350(&found) + 4);
+    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026ccf0
 unsigned DungeonRewardInfo::FUN_14026ccf0() {
@@ -352,24 +366,24 @@ unsigned DungeonRewardInfo::FUN_14026ccf0() {
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
     if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
-    return *(unsigned*)((char*)FUN_14027f350(&found) + 4);
+    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cd70
 unsigned DungeonRewardInfo::FUN_14026cd70(unsigned key) {
     Unk_It t20, t18;
     Unk_It found = *m_rewards.FUN_14028ad10(&t20, (int*)&key);
     if (FUN_14027ee20(&found, m_rewards.FUN_14028a910(&t18))) return 0;
-    return *(unsigned*)((char*)FUN_14027f350(&found) + 4);
+    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cdf0
 void DungeonRewardInfo::Clear() {
-    m_rewards.FUN_14028a410();
-    m_items.FUN_14028a590();
+    reinterpret_cast<MapII&>(m_rewards).clear();
+    reinterpret_cast<VItem&>(m_items).clear();
 }
 // @0x14026ce30
 bool DungeonRewardInfo::FUN_14026ce30() {
-    if (m_rewards.FUN_14028b3f0() > 0) return true;
-    if (m_items.FUN_14028b470() > 0) return true;
+    if (reinterpret_cast<MapII&>(m_rewards).size() > 0) return true;
+    if (reinterpret_cast<VItem&>(m_items).size() > 0) return true;
     return false;
 }
 // @0x14026ce80
@@ -452,9 +466,9 @@ bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
         CString text;
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
         FUN_140177de0(text, &parts, "-");
-        if (parts.FUN_140186260() == 6) {
-            m_time = CMsTime(*parts.FUN_1401844d0(0), *parts.FUN_1401844d0(1), *parts.FUN_1401844d0(2),
-                             *parts.FUN_1401844d0(3), *parts.FUN_1401844d0(4), *parts.FUN_1401844d0(5));
+        if (reinterpret_cast<ArrI&>(parts).GetCount() == 6) {
+            m_time = CMsTime(reinterpret_cast<ArrI&>(parts)[0], reinterpret_cast<ArrI&>(parts)[1], reinterpret_cast<ArrI&>(parts)[2],
+                             reinterpret_cast<ArrI&>(parts)[3], reinterpret_cast<ArrI&>(parts)[4], reinterpret_cast<ArrI&>(parts)[5]);
         } else {
             return 0;
         }
@@ -528,14 +542,14 @@ bool NpcShopItemLife::FUN_14026f0f0() {
 __int64 NpcShopItemLife::FUN_14026f170() {
     switch (m_type) {
     case 1:
-        return FUN_140869440() + (unsigned)(m_value * 60);
+        return GetServerTime() + (unsigned)(m_value * 60);
     case 3: {
-        __int64 local = FUN_140869440();
-        return FUN_14086b950(local, m_value);
+        __int64 local = GetServerTime();
+        return GetNthWeekStart(&local, m_value);
     }
     case 4: {
-        __int64 local = FUN_140869440();
-        return FUN_14086ba60(local, m_value);
+        __int64 local = GetServerTime();
+        return GetNthMonthStart(&local, m_value);
     }
     case 2:
         return m_time.Get();
@@ -564,9 +578,9 @@ bool ItemDropItemLife::FUN_14026f290(void* xml) {
         CString text;
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
         FUN_140177de0(text, &parts, "-");
-        if (parts.FUN_140186260() == 6) {
-            m_time = CMsTime(*parts.FUN_1401844d0(0), *parts.FUN_1401844d0(1), *parts.FUN_1401844d0(2),
-                             *parts.FUN_1401844d0(3), *parts.FUN_1401844d0(4), *parts.FUN_1401844d0(5));
+        if (reinterpret_cast<ArrI&>(parts).GetCount() == 6) {
+            m_time = CMsTime(reinterpret_cast<ArrI&>(parts)[0], reinterpret_cast<ArrI&>(parts)[1], reinterpret_cast<ArrI&>(parts)[2],
+                             reinterpret_cast<ArrI&>(parts)[3], reinterpret_cast<ArrI&>(parts)[4], reinterpret_cast<ArrI&>(parts)[5]);
         } else {
             return 0;
         }
@@ -581,14 +595,14 @@ bool ItemDropItemLife::FUN_14026f290(void* xml) {
 __int64 ItemDropItemLife::FUN_14026f520() {
     switch (m_type) {
     case 1:
-        return FUN_140869440() + (unsigned)(m_value * 60);
+        return GetServerTime() + (unsigned)(m_value * 60);
     case 3: {
-        __int64 local = FUN_140869440();
-        return FUN_14086b950(local, m_value);
+        __int64 local = GetServerTime();
+        return GetNthWeekStart(&local, m_value);
     }
     case 4: {
-        __int64 local = FUN_140869440();
-        return FUN_14086ba60(local, m_value);
+        __int64 local = GetServerTime();
+        return GetNthMonthStart(&local, m_value);
     }
     case 2:
         return m_time.Get();
@@ -649,7 +663,7 @@ void CUserChangeableItemHistory::vfunc_3(CInPacket* in) {
 // @0x14026f9c0
 CChangeableHistoryInfo::CChangeableHistoryInfo(int a, int b) : m_lock(), m_48(a), m_4c(b), m_total(0), m_list() {}
 // @0x14026fa50
-CChangeableHistoryInfo::~CChangeableHistoryInfo() { m_list.FUN_14028a4b0(); }
+CChangeableHistoryInfo::~CChangeableHistoryInfo() { reinterpret_cast<LHist&>(m_list).clear(); }
 // @0x14026fab0
 void CChangeableHistoryInfo::FUN_14026fab0() {
     Unk_HistLock lock(m_lock, 1);
@@ -657,14 +671,14 @@ void CChangeableHistoryInfo::FUN_14026fab0() {
     Unk_It it, saved, t30, t28;
     m_list.FUN_14028a1a0(&it);
     while (FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t30))) {
-        Unk_HistRef ref(*FUN_14027f3b0(&it));
+        Unk_HistRef ref(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
         if (ref == 0) {
             saved = it;
             it = *m_list.FUN_14028aca0(&t28, saved);
             continue;
         }
         total = total + ref->m_40;
-        FUN_14027f550(&it);
+        ++*reinterpret_cast<LHist::iterator*>(&it);
     }
     m_total = total;
 }
@@ -677,8 +691,8 @@ int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
         Unk_It cur, end;
         list->FUN_140289d20(&cur);
         list->FUN_140289d80(&end);
-        for (; FUN_14027ef40(&cur, &end); FUN_14027f590(&cur)) {
-            Unk_HistRef* ref = FUN_14027f3f0(&cur);
+        for (; FUN_14027ef40(&cur, &end); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+            Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             total = total + (*ref)->m_40;
         }
     } else if (mode == 2) {
@@ -686,8 +700,8 @@ int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
         Unk_It cur, end;
         list->FUN_140289d20(&cur);
         list->FUN_140289d80(&end);
-        for (; FUN_14027ef40(&cur, &end); FUN_14027f590(&cur)) {
-            Unk_HistRef* ref = FUN_14027f3f0(&cur);
+        for (; FUN_14027ef40(&cur, &end); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+            Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             if ((*ref)->m_28 != id) continue;
             total = total + (*ref)->m_40;
         }
@@ -708,9 +722,9 @@ bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
     Unk_HistLock lock(m_lock, 1);
     Unk_It it, saved, t20, t18;
     m_list.FUN_14028a1a0(&it);
-    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t20)); FUN_14027f550(&it)) {
-        if ((*FUN_14027f3b0(&it))->m_18 == id) {
-            m_total = m_total - (*FUN_14027f3b0(&it))->m_40;
+    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t20)); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+        if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_18 == id) {
+            m_total = m_total - (*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_40;
             saved = it;
             m_list.FUN_14028aca0(&t18, saved);
             return true;
@@ -721,13 +735,13 @@ bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
 // @0x14026ffd0
 Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
     Unk_HistLock lock(m_lock, 1);
-    if (m_list.FUN_14028b410() == 0) return Unk_HistRef(0);
+    if (reinterpret_cast<LHist&>(m_list).size() == 0) return Unk_HistRef(0);
     Unk_HistRef best(*m_list.FUN_14028aef0());
     Unk_It t30, it;
     FUN_14027c480(&it, *m_list.FUN_14028a1a0(&t30), 1);
     Unk_It t28;
-    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t28)); FUN_14027f550(&it)) {
-        if ((*FUN_14027f3b0(&it))->m_38 < best->m_38) best.FUN_14027eab0(*FUN_14027f3b0(&it));
+    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t28)); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+        if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_38 < best->m_38) best.FUN_14027eab0(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
     }
     return best;
 }

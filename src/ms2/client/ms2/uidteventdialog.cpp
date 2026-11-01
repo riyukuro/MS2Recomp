@@ -3,10 +3,10 @@
 // MS2-RANGE: 0x140f359b0-0x140f3a810 .text$mn
 // MS2-RANGE: 0x1400ded40-0x1400deeb0 .text$di
 // MS2-RANGE: 0x142ca9380-0x142ca9410 .text$yd
-// MS2-PIN: ?GetAt@Unk_DTBindList@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAU__POSITION@@@Z 0x140f396a0
+// MS2-PIN: ?GetAt@?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@PEAU__POSITION@@@Z 0x140f396a0
 // MS2-PIN: ?AddRefObject@?$Unk_DTPtr@VRewardItem@UIDTEventDialog@@@@CAXPEAVRewardItem@UIDTEventDialog@@@Z 0x140f3a730
 // MS2-PIN: ??$Unk_Fmt3@JJJ@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBJ11@Z 0x140f38940
-// MS2-PIN: ?Lookup@Unk_DTCtxMap@@QEAAPEAXI@Z 0x140f39b70
+// MS2-PIN: ?Lookup@?$CAtlMap@HV?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@@3@@ATL@@QEAAPEAVCPair@12@H@Z 0x140f39b70
 // MS2-PIN: ?AddRefImpl@?$Unk_DTPtr@VRewardItem@UIDTEventDialog@@@@AEBAXPEAX@Z 0x140f3a750
 // MS2-PIN: ?ReleaseImpl@?$Unk_DTPtr@VRewardItem@UIDTEventDialog@@@@AEAAXPEAX@Z 0x140f3a7c0
 // MS2-PIN: ?vfunc_48@UIDTEventDialog@@UEAAHXZ 0x140f39970
@@ -26,79 +26,23 @@
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cusereventmanager.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/commonfiles/usereventcontext.h"
 
 // ---- the unit's header statics (this unit includes them in a different order than header_statics_a.h) ----
-class Unk_1402a9d70
-{
-public:
-    Unk_1402a9d70(int, float, float, float, int);
-    ~Unk_1402a9d70();
-
-private:
-    void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48;
-};
-MS2_CHECK_SIZE(Unk_1402a9d70, 0x50);
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
+static ATL::CAtlMap<unsigned int, CString> s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 typedef UIDTEventDialog::RewardItem Unk_DTReward;
 
-// Reference counting of the intrusive pointers' targets (CPtred-derived objects): add 0x14015b020, release 0x140159bc0.
-class Unk_DTRefCount
-{
-public:
-    void FUN_14015b020();
-    int FUN_140159bc0();
-    void FUN_140159ba0();
-};
+extern GameEventUserValue DAT_143ab2fc0;
+extern GameEventUserValue DAT_143ab3010;
 
-// One reward step of an event: the seconds it lasts and the item given.
-class Unk_DTStep : public CPtred
-{
-public:
-    unsigned int m_18;
-    unsigned int m_1c;      // +0x1c seconds the step lasts
-    unsigned int m_20;
-    int m_24;               // +0x24 item id
-    int m_28;               // +0x28 item count
-    int m_2c;               // +0x2c item rarity
-};
-
-// An event context (data of the server's event): id, minimum level, kind flag and the steps.
-class Unk_DTCtx : public CPtred
-{
-public:
-    unsigned int m_18;      // +0x18 event id
-    unsigned int m_1c;
-    unsigned int m_20;
-    unsigned int m_24;
-    unsigned int m_28;
-    unsigned int m_2c;
-    unsigned short m_30;    // +0x30 minimum level
-    char m_32;
-    unsigned char m_33;     // +0x33 selects the data table
-    int m_34;
-    ATL::CAtlArray<Unk_DTPtr<Unk_DTStep> > m_38;                    // +0x38 the steps
-};
-MS2_CHECK_SIZE(Unk_DTCtx, 0x58);
-
-// The data tables (two instances of one class; 0x143ab2fc0 and 0x143ab3010): lookup by (kind, id) with a default.
-class Unk_DTTable
-{
-public:
-    unsigned int FUN_1409617d0(int nKind, unsigned int nId, const int& nDefault);          // as an int
-    __int64 FUN_140be8f80(int nKind, unsigned int nId, const __int64& nDefault);           // as a 64-bit value
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
-    void* m_pad_38; void* m_pad_40; void* m_pad_48;
-};
-MS2_CHECK_SIZE(Unk_DTTable, 0x50);
-extern Unk_DTTable g_unkTableA;     // 0x143ab2fc0
-extern Unk_DTTable g_unkTableB;     // 0x143ab3010
+// GameEventUserValue::GetValue<int> (0x1409617d0): its GameEventVariable::GetValue<int> has no body yet.
+class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned int nId, const int& nDefault); };
 
 // The root AS object of the dialog movie and the clip kinds used here.
 class ASDialog : public ASDisplayObject
@@ -114,10 +58,8 @@ class ASObj : public AScript
 {
 public:
     ASObj(int nType);
-    virtual ~ASObj();
     void FUN_1409c0d20(const char* szName, unsigned int n);
-    void FUN_1407cb9c0(const char* szName, int n);
-    void FUN_1407cbb20(const char* szName, CStringW str);
+    virtual ~ASObj();
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 
@@ -174,10 +116,6 @@ public:
     virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short vfunc_78();                              // level
 };
-class Unk_1403ed2d0 { public: Unk_DTPlayer* FUN_141bd0cc0(); };
-
-// The event data manager (singleton 0x14041beb0): fills an array with all event contexts.
-class Unk_DTCtxMgr { public: void FUN_1408d7db0(ATL::CAtlArray<Unk_DTPtr<Unk_DTCtx> >& ctxs); };
 
 // A sound / effect player (singleton 0x140e45740).
 class Unk_DTSound : public UIAlignWidgetManager { };
@@ -185,31 +123,8 @@ class Unk_140e45740* FUN_140e45740();   // C3: was FUN_140e45740
 
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
-// CAtlArray<unsigned int> (32 bytes) with all members in earlier units.
-class Unk_DTUIntArray
-{
-public:
-    Unk_DTUIntArray();                                          // 0x140183460
-    ~Unk_DTUIntArray();                                         // 0x140181d30
-    void FUN_1401855a0(unsigned int n);                         // Add
-    size_t FUN_140186270();                                     // GetCount
-    unsigned int* FUN_1401c0c80(size_t i);                      // operator[]
-    void FUN_1402c2830();                                       // RemoveAll
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18;
-};
-MS2_CHECK_SIZE(Unk_DTUIntArray, 0x20);
-
-// Time-of-day helpers (commonfiles\timeutil.cpp): a 16-byte time value.
-class Unk_Time
-{
-public:
-    Unk_Time(__int64 n);                                        // 0x1406c47a0
-    Unk_Time(const Unk_Time& o);                                // declared: forces by-pointer passing
-private:
-    __int64 m_0; __int64 m_8;
-};
-bool FUN_14086ab70(Unk_Time a, Unk_Time b, int nBaseHour);
+// IsEarlierDay (0x14086ab70) called with its times by value: the exe spills a pointer to each temporary.
+bool FUN_14086ab70(CMsTime a, CMsTime b, int nBaseHour);
 
 // ---- the "{0:02}:{1:02}:{2:02}" formatter (0x140f38940): StringFormat's 3-argument variadic body, but with its own
 // MakeValue copy (the exe has MakeValue(int) 0x14086d170 here and 0x140163770 for the shared one) ----
@@ -242,38 +157,21 @@ template <> inline Unk_DTPtr<Unk_DTReward>::operator Unk_DTReward*() const { ret
 template <> inline Unk_DTReward* Unk_DTPtr<Unk_DTReward>::operator->() const { return m_p; }               // 0x140f39260
 template <> inline void Unk_DTPtr<Unk_DTReward>::AddRefObject(Unk_DTReward* p)                             // 0x140f3a730
 {
-    reinterpret_cast<Unk_DTRefCount*>(p)->FUN_14015b020();
+    CPtred::AddRefPtred(p);
 }
 template <> inline void Unk_DTPtr<Unk_DTReward>::AddRefImpl(void*) const { AddRefObject(m_p); }              // 0x140f3a750
 template <> inline void Unk_DTPtr<Unk_DTReward>::ReleaseImpl(void*)                                          // 0x140f3a7c0
 {
-    if (reinterpret_cast<Unk_DTRefCount*>(m_p)->FUN_140159bc0() == 0) {
+    if (CPtred::ReleasePtred(m_p) == 0) {
         AddRefObject(m_p);
-        reinterpret_cast<Unk_DTRefCount*>(m_p)->FUN_140159ba0();
+        CPtred::DeletePtred(m_p);
     }
 }
 template <> inline void Unk_DTPtr<Unk_DTReward>::AddRef() const { if (m_p) AddRefImpl(0); }                // 0x140f3a700
 template <> inline void Unk_DTPtr<Unk_DTReward>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }      // 0x140f3a780
 
-template <> inline bool Unk_DTPtr<Unk_DTStep>::operator==(Unk_DTStep* p) const { return m_p == p; }        // 0x140f39140
-template <> inline Unk_DTPtr<Unk_DTCtx>::operator Unk_DTCtx*() const { return m_p; }                       // 0x140f39240
-
-// ---- inline COMDATs of the unit's own helper classes ----
-inline CString& Unk_DTBindList::GetAt(POSITION pos)                                                        // 0x140f396a0
-{
-    ATLENSURE(pos != NULL);
-    char* pNode = reinterpret_cast<char*>(pos);
-    return *reinterpret_cast<CString*>(pNode + 0x10);
-}
-inline size_t Unk_DTBindList::GetCount() const { return m_nElements; }                                    // 0x140f39730
-inline void* Unk_DTCtxMap::Lookup(unsigned int nKey)                                                       // 0x140f39b70
-{
-    unsigned int iBin;
-    unsigned int nHash;
-    void* pPrev;
-    void* pNode = GetNode(nKey, iBin, nHash, pPrev);
-    return pNode;
-}
+template <> inline bool MS2Ptr<EventStruct::DTReward>::operator==(EventStruct::DTReward* p) const { return m_p == p; }    // 0x140f39140
+template <> inline MS2Ptr<CommonUserEvent::DTRewardEventContext>::operator CommonUserEvent::DTRewardEventContext*() const { return m_p; }    // 0x140f39240
 
 // @0x1400ded40
 // @0x1400ded70
@@ -288,7 +186,7 @@ UIDTEventDialog::UIDTEventDialog()
 {
     m_2c = 0x19;
     FUN_141925e70(0, 1);
-    m_timer.FUN_140268840();
+    m_timer.Init();
 }
 
 // @0x140f35b20
@@ -326,12 +224,12 @@ MS2_REPLACE_METHOD(0x140F35C90, UIDTEventDialog, vfunc_65, 37, 0x6A349588);
 void UIDTEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_timer.FUN_140268840();
+    m_timer.Init();
     m_active.RemoveAll();
     m_pending.RemoveAll();
     m_ctx.RemoveAll();
-    ATL::CAtlArray<Unk_DTPtr<Unk_DTCtx> > ctxs;
-    reinterpret_cast<Unk_DTCtxMgr*>(TSingleton<CUserEventManager>::GetInstance())->FUN_1408d7db0(ctxs);
+    ATL::CAtlArray<MS2Ptr<CommonUserEvent::DTRewardEventContext> > ctxs;
+    TSingleton<CUserEventManager>::GetInstance()->GetAllDTReward(ctxs);
     for (unsigned int i = 0; i < ctxs.GetCount(); i++)
         FUN_140f38430(ctxs[i]);
 }
@@ -385,34 +283,34 @@ void UIDTEventDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (!FUN_1422dc2d0()) return;
     if (m_30 == NULL) return;
-    if (!reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000)) return;
+    if (!m_timer.Check(1000)) return;
     {
         FUN_140f38750();
-        Unk_DTUIntArray ids;
+        ATL::CAtlArray<unsigned int> ids;
         for (POSITION pos = m_pending.GetStartPosition(); pos != NULL; m_pending.GetNext(pos)) {
             Unk_DTPtr<Unk_DTReward> pReward(m_pending.GetValueAt(pos));
             MS2_ASSERT_AT(186, pReward != NULL);
-            if (FUN_14086ab70(Unk_Time(pReward->m_start), Unk_Time(FUN_140869440()), 0)) {
+            if (FUN_14086ab70(CMsTime(pReward->m_start), CMsTime(GetServerTime()), 0)) {
                 if (vfunc_84(pReward) == 1) {
-                    ids.FUN_1401855a0(m_pending.GetKeyAt(pos));
-                    m_active.SetAt(pReward->m_ctx->m_18, pReward);
+                    ids.Add(m_pending.GetKeyAt(pos));
+                    m_active.SetAt(pReward->m_ctx->m_id, pReward);
                 }
             }
         }
-        for (unsigned int i = 0; i < ids.FUN_140186270(); i++) {
-            unsigned int nKey = *ids.FUN_1401c0c80(i);
+        for (unsigned int i = 0; i < ids.GetCount(); i++) {
+            unsigned int nKey = ids[i];
             if (m_pending.Lookup(nKey) != NULL)
                 m_pending.RemoveKey(nKey);
         }
-        ids.FUN_1402c2830();
+        ids.RemoveAll();
         for (POSITION pos = m_active.GetStartPosition(); pos != NULL; m_active.GetNext(pos)) {
             Unk_DTPtr<Unk_DTReward> pReward(m_active.GetValueAt(pos));
             MS2_ASSERT_AT(211, pReward != NULL);
             if (vfunc_85(pReward) == 0)
-                ids.FUN_1401855a0(m_active.GetKeyAt(pos));
+                ids.Add(m_active.GetKeyAt(pos));
         }
-        for (unsigned int i = 0; i < ids.FUN_140186270(); i++) {
-            unsigned int nKey = *ids.FUN_1401c0c80(i);
+        for (unsigned int i = 0; i < ids.GetCount(); i++) {
+            unsigned int nKey = ids[i];
             Unk_DTPtr<Unk_DTReward> pMoved(0);
             if (m_active.Lookup(nKey, pMoved)) {
                 m_active.RemoveKey(nKey);
@@ -432,30 +330,30 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
         return 0;
     if (pReward == NULL)
         return 0;
-    Unk_DTTable& rTable = pReward->m_ctx->m_33 ? g_unkTableB : g_unkTableA;
+    GameEventUserValue& rTable = pReward->m_ctx->m_b33 ? DAT_143ab3010 : DAT_143ab2fc0;
     int nDefault = 0;
-    pReward->m_step = rTable.FUN_1409617d0(0x2be, pReward->m_ctx->m_18, nDefault);
-    if (pReward->m_ctx->m_38.GetCount() <= pReward->m_step)
+    pReward->m_step = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2be, pReward->m_ctx->m_id, nDefault);
+    if (pReward->m_ctx->m_rewards.GetCount() <= pReward->m_step)
         return 0;
-    Unk_DTPtr<Unk_DTStep> pStep(pReward->m_ctx->m_38[(int)pReward->m_step]);
+    MS2Ptr<EventStruct::DTReward> pStep(pReward->m_ctx->m_rewards[(int)pReward->m_step]);
     if (pStep == NULL)
         return 0;
     __int64 nDefault64 = 0;
-    pReward->m_start = rTable.FUN_140be8f80(700, pReward->m_ctx->m_18, nDefault64);
+    pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = rTable.FUN_1409617d0(0x2bd, pReward->m_ctx->m_18, nDefault2);
-    __int64 now = FUN_140869440();
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
     CTimeSpan elapsed(now - pReward->m_start);
     pReward->m_elapsed += elapsed.GetTotalSeconds();
-    if (pReward->m_elapsed > pStep->m_1c)
-        pReward->m_elapsed = pStep->m_1c;
+    if (pReward->m_elapsed > (unsigned int)pStep->b)
+        pReward->m_elapsed = (unsigned int)pStep->b;
     CTimeSpan remain(0);
-    if (pStep->m_1c > pReward->m_elapsed)
-        remain = pStep->m_1c - pReward->m_elapsed;
+    if ((unsigned int)pStep->b > pReward->m_elapsed)
+        remain = (unsigned int)pStep->b - pReward->m_elapsed;
     float fElapsed = (float)pReward->m_elapsed;
-    int nGauge = (int)(fElapsed * (100.0f / (float)pStep->m_1c));
+    int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
     CStringW strRemain = FUN_140f388c0(&remain);
     int bVibrate = 0;
     if (remain.GetTotalSeconds() <= 10)
@@ -463,15 +361,15 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     ASObj obj(2);
     CString strBindID;
     MS2Ptr<CItem> item(new CItem);
-    if (item->FUN_140523c40(pStep->m_24, pStep->m_2c, 0)) {
-        item->FUN_140526c70(pStep->m_28);
+    if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
+        item->FUN_140526c70(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_18);
+    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cba60("bindID", strBindID);
-    obj.FUN_1409c0d20("itemCount", pStep->m_28);
+    obj.FUN_1409c0d20("itemCount", pStep->e);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
@@ -488,41 +386,41 @@ int UIDTEventDialog::vfunc_85(Unk_DTPtr<RewardItem> pReward)
         return 0;
     if (pReward == NULL)
         return 0;
-    Unk_DTTable& rTable = pReward->m_ctx->m_33 ? g_unkTableB : g_unkTableA;
+    GameEventUserValue& rTable = pReward->m_ctx->m_b33 ? DAT_143ab3010 : DAT_143ab2fc0;
     int nDefault = 0;
-    unsigned int nStep = rTable.FUN_1409617d0(0x2be, pReward->m_ctx->m_18, nDefault);
-    if (pReward->m_ctx->m_38.GetCount() <= nStep) {
+    unsigned int nStep = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2be, pReward->m_ctx->m_id, nDefault);
+    if (pReward->m_ctx->m_rewards.GetCount() <= nStep) {
         vfunc_86(pReward);
         return 0;
     }
     if (pReward->m_step != nStep)
         return vfunc_87(pReward, nStep);
     pReward->m_step = nStep;
-    Unk_DTPtr<Unk_DTStep> pStep(pReward->m_ctx->m_38[(int)pReward->m_step]);
+    MS2Ptr<EventStruct::DTReward> pStep(pReward->m_ctx->m_rewards[(int)pReward->m_step]);
     if (pStep == NULL)
         return 0;
     __int64 nDefault64 = 0;
-    pReward->m_start = rTable.FUN_140be8f80(700, pReward->m_ctx->m_18, nDefault64);
+    pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = rTable.FUN_1409617d0(0x2bd, pReward->m_ctx->m_18, nDefault2);
-    __int64 now = FUN_140869440();
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
     CTimeSpan elapsed(now - pReward->m_start);
     pReward->m_elapsed += elapsed.GetTotalSeconds();
-    if (pReward->m_elapsed > pStep->m_1c)
-        pReward->m_elapsed = pStep->m_1c;
+    if (pReward->m_elapsed > (unsigned int)pStep->b)
+        pReward->m_elapsed = (unsigned int)pStep->b;
     CTimeSpan remain(0);
-    if (pStep->m_1c > pReward->m_elapsed)
-        remain = pStep->m_1c - pReward->m_elapsed;
+    if ((unsigned int)pStep->b > pReward->m_elapsed)
+        remain = (unsigned int)pStep->b - pReward->m_elapsed;
     int bVibrate = 0;
     if (remain.GetTotalSeconds() <= 1)
         bVibrate = 1;
     float fElapsed = (float)pReward->m_elapsed;
-    int nGauge = (int)(fElapsed * (100.0f / (float)pStep->m_1c));
+    int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
     CStringW strRemain = FUN_140f388c0(&remain);
     ASObj obj(2);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_18);
+    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
@@ -539,7 +437,7 @@ int UIDTEventDialog::vfunc_86(Unk_DTPtr<RewardItem> pReward)
     if (pReward == NULL)
         return 0;
     ASObj obj(2);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_18);
+    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
     m_30->Invoke("removeItem", obj.FUN_1422bb870());
     return 1;
 }
@@ -555,26 +453,26 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     if (pReward == NULL)
         return 0;
     pReward->m_step = nStep;
-    Unk_DTPtr<Unk_DTStep> pStep(pReward->m_ctx->m_38[(int)pReward->m_step]);
+    MS2Ptr<EventStruct::DTReward> pStep(pReward->m_ctx->m_rewards[(int)pReward->m_step]);
     if (pStep == NULL)
         return 0;
-    Unk_DTTable& rTable = pReward->m_ctx->m_33 ? g_unkTableB : g_unkTableA;
+    GameEventUserValue& rTable = pReward->m_ctx->m_b33 ? DAT_143ab3010 : DAT_143ab2fc0;
     __int64 nDefault64 = 0;
-    pReward->m_start = rTable.FUN_140be8f80(700, pReward->m_ctx->m_18, nDefault64);
+    pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = rTable.FUN_1409617d0(0x2bd, pReward->m_ctx->m_18, nDefault2);
-    __int64 now = FUN_140869440();
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
     CTimeSpan elapsed(now - pReward->m_start);
     pReward->m_elapsed += elapsed.GetTotalSeconds();
-    if (pReward->m_elapsed > pStep->m_1c)
-        pReward->m_elapsed = pStep->m_1c;
+    if (pReward->m_elapsed > (unsigned int)pStep->b)
+        pReward->m_elapsed = (unsigned int)pStep->b;
     CTimeSpan remain(0);
-    if (pStep->m_1c > pReward->m_elapsed)
-        remain = pStep->m_1c - pReward->m_elapsed;
+    if ((unsigned int)pStep->b > pReward->m_elapsed)
+        remain = (unsigned int)pStep->b - pReward->m_elapsed;
     float fElapsed = (float)pReward->m_elapsed;
-    int nGauge = (int)(fElapsed * (100.0f / (float)pStep->m_1c));
+    int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
     CStringW strRemain = FUN_140f388c0(&remain);
     int bVibrate = 0;
     if (remain.GetTotalSeconds() <= 1)
@@ -582,16 +480,16 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     ASObj obj(2);
     CString strBindID;
     MS2Ptr<CItem> item(new CItem);
-    if (item->FUN_140523c40(pStep->m_24, pStep->m_2c, 0)) {
-        item->FUN_140526c70(pStep->m_28);
+    if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
+        item->FUN_140526c70(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
     obj.FUN_1407cb9c0("change", 1);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_18);
+    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cba60("bindID", strBindID);
-    obj.FUN_1409c0d20("itemCount", pStep->m_28);
+    obj.FUN_1409c0d20("itemCount", pStep->e);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
@@ -604,19 +502,19 @@ MS2_REPLACE_METHOD(0x140F37870, UIDTEventDialog, vfunc_87, 2268, 0x641A42AF);
 void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     unsigned int nID = pArgs->FUN_1422b8b10();
     Unk_DTPtr<Unk_DTReward> pReward(0);
     if (!m_active.Lookup(nID, pReward))
         return;
-    Unk_DTPtr<Unk_DTStep> pStep(pReward->m_ctx->m_38[(int)pReward->m_step]);
+    MS2Ptr<EventStruct::DTReward> pStep(pReward->m_ctx->m_rewards[(int)pReward->m_step]);
     if (pStep == NULL)
         return;
     MS2Ptr<CItem> item(new CItem);
-    if (item->FUN_14052b130(pStep->m_24, pStep->m_2c, 0)) {
-        item->FUN_140526c70(pStep->m_28);
+    if (item->FUN_14052b130(pStep->d, pStep->f, 0)) {
+        item->FUN_140526c70(pStep->e);
         ASTooltip tooltip(pPlayer, 0x20, 2);
         if (tooltip.FUN_1409e0d40(item.get())) {
             *pRetVal = tooltip.FUN_1422bb870();
@@ -627,21 +525,21 @@ void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x140F38160, UIDTEventDialog, vfunc_49, 700, 0x9E104B3A);
 
 // @0x140f38430
-void UIDTEventDialog::FUN_140f38430(Unk_DTPtr<Unk_DTCtx> pCtx)
+void UIDTEventDialog::FUN_140f38430(MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx)
 {
     Unk_DTPtr<Unk_DTReward> pReward(new RewardItem);
     if (pReward == NULL)
         return;
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    if (pPlayer->vfunc_78() < pCtx->m_30) {
-        m_ctx.SetAt(pCtx->m_18, pCtx);
+    if (pPlayer->vfunc_78() < pCtx->m_level) {
+        m_ctx.SetAt(pCtx->m_id, pCtx);
         return;
     }
     pReward->m_ctx = pCtx;
     vfunc_84(pReward);
-    m_active.SetAt(pCtx->m_18, pReward);
+    m_active.SetAt(pCtx->m_id, pReward);
 }
 MS2_REPLACE_METHOD(0x140F38430, UIDTEventDialog, FUN_140f38430, 493, 0xAD898361);
 
@@ -663,16 +561,16 @@ MS2_REPLACE_METHOD(0x140F38630, UIDTEventDialog, FUN_140f38630, 272, 0x3FB9C696)
 // @0x140f38750
 void UIDTEventDialog::FUN_140f38750()
 {
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
     POSITION pos = m_ctx.GetStartPosition();
     while (pos != NULL) {
-        Unk_DTPtr<Unk_DTCtx> pCtx(m_ctx.GetValueAt(pos));
+        MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx(m_ctx.GetValueAt(pos));
         MS2_ASSERT_AT(146, pCtx != NULL);
         m_ctx.GetNext(pos);
-        if (pPlayer->vfunc_78() >= pCtx->m_30) {
-            m_ctx.RemoveKey(pCtx->m_18);
+        if (pPlayer->vfunc_78() >= pCtx->m_level) {
+            m_ctx.RemoveKey(pCtx->m_id);
             FUN_140f38430(pCtx);
         }
     }

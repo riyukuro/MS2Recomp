@@ -566,7 +566,7 @@ void AdditionalCli::FUN_14096d430()
             {
                 UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
                 if (pBar)
-                    pBar->FUN_141b4cfd0(Unk_UpperPtr<Unk_UpperBuff>(reinterpret_cast<Unk_UpperBuff*>(this)));
+                    pBar->FUN_141b4cfd0(MS2Ptr<Unk_AsBuff>(reinterpret_cast<Unk_AsBuff*>(this)));
             }
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)

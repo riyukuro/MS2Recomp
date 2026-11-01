@@ -229,7 +229,7 @@ efd::AsyncResult MS2InputService::OnTick()
         }
         else
         {
-            FUN_140d8be40();
+            DetectGamePad();
         }
     }
     else
@@ -255,7 +255,7 @@ efd::AsyncResult MS2InputService::OnShutdown()
 MS2_REPLACE_METHOD(0x140D8ABA0, MS2InputService, OnShutdown, 155, 0xD0796499);
 
 // @0x140d8ac50
-bool MS2InputService::FUN_140d8ac50(int nKey, int bAllowGroup)
+bool MS2InputService::IsKeyDownGated(int nKey, int bAllowGroup)
 {
     if (DAT_143af7d40 == 0)
         return false;
@@ -266,7 +266,7 @@ bool MS2InputService::FUN_140d8ac50(int nKey, int bAllowGroup)
     {
         for (int nSlot = 0x96; nSlot <= 0x99; nSlot = nSlot + 1)
         {
-            if (FUN_140d8c920(nSlot))
+            if (IsKeyDown(nSlot))
             {
                 if (nSlot != nKey)
                     return false;
@@ -279,23 +279,23 @@ bool MS2InputService::FUN_140d8ac50(int nKey, int bAllowGroup)
             }
         }
     }
-    return FUN_140d8c920(nKey);
+    return IsKeyDown(nKey);
 }
-MS2_REPLACE_METHOD(0x140D8AC50, MS2InputService, FUN_140d8ac50, 255, 0x23AF6714);
+MS2_REPLACE_METHOD(0x140D8AC50, MS2InputService, IsKeyDownGated, 255, 0x23AF6714);
 
 // @0x140d8ad60
-bool MS2InputService::FUN_140d8ad60(int nKey)
+bool MS2InputService::WasKeyPressedGated(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    int nPacked = FUN_140d8b6a0(nKey);
+    int nPacked = WasComboKeyPressed(nKey);
     if (nPacked == 1)
         return true;
     if (0x91 < nKey && nKey < 0xa2)
     {
         for (int nSlot = 0x96; nSlot <= 0x99; nSlot = nSlot + 1)
         {
-            if (FUN_140d8c920(nSlot))
+            if (IsKeyDown(nSlot))
             {
                 if (m_nHeldKey != nSlot)
                 {
@@ -318,7 +318,7 @@ bool MS2InputService::FUN_140d8ad60(int nKey)
                     return false;
                 if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141430b10(pBinding) == 0)
                 {
-                    if (FUN_140d8cd50(nSlot))
+                    if (WasKeyPressed(nSlot))
                         return true;
                 }
                 return false;
@@ -335,29 +335,29 @@ bool MS2InputService::FUN_140d8ad60(int nKey)
             }
         }
     }
-    return FUN_140d8cd50(nKey);
+    return WasKeyPressed(nKey);
 }
-MS2_REPLACE_METHOD(0x140D8AD60, MS2InputService, FUN_140d8ad60, 518, 0xBFBD51FC);
+MS2_REPLACE_METHOD(0x140D8AD60, MS2InputService, WasKeyPressedGated, 518, 0xBFBD51FC);
 
 // @0x140d8af70
-bool MS2InputService::FUN_140d8af70(int nKey)
+bool MS2InputService::WasKeyReleasedGated(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    int nPacked = FUN_140d8b740(nKey);
+    int nPacked = WasComboKeyReleased(nKey);
     if (nPacked == 1)
         return true;
     if (0x91 < nKey && nKey < 0xa2)
     {
         for (int nSlot = 0x96; nSlot <= 0x99; nSlot = nSlot + 1)
         {
-            if (FUN_140d8c920(nSlot))
+            if (IsKeyDown(nSlot))
                 return false;
         }
     }
-    return FUN_140d8d2d0(nKey);
+    return WasKeyReleased(nKey);
 }
-MS2_REPLACE_METHOD(0x140D8AF70, MS2InputService, FUN_140d8af70, 151, 0x78EE826B);
+MS2_REPLACE_METHOD(0x140D8AF70, MS2InputService, WasKeyReleasedGated, 151, 0x78EE826B);
 
 // @0x140d8b010
 bool MS2InputService::IsMouseButtonDown(int nButton)
@@ -416,7 +416,7 @@ bool MS2InputService::InjectKeyPress(int nKey)
         return false;
     if (InjectComboKeyPress(nKey))
         return true;
-    return FUN_140d8d840(nKey);
+    return InjectSingleKeyPress(nKey);
 }
 MS2_REPLACE_METHOD(0x140D8B200, MS2InputService, InjectKeyPress, 70, 0xD71B8A8F);
 
@@ -425,39 +425,39 @@ bool MS2InputService::InjectKeyRelease(int nKey)
 {
     if (InjectComboKeyRelease(nKey))
         return true;
-    return FUN_140d8db30(nKey);
+    return InjectSingleKeyRelease(nKey);
 }
 MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, InjectKeyRelease, 57, 0x5191D965);
 
 // @0x140d8b290
-int MS2InputService::FUN_140d8b290(int nKey)
+int MS2InputService::GetKeyboardCode(int nKey)
 {
     if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a30(nKey))
         return nKey;
     return 0;
 }
-MS2_REPLACE(0x140D8B290, MS2InputService::FUN_140d8b290, 42, 0x6B27C144);
+MS2_REPLACE(0x140D8B290, MS2InputService::GetKeyboardCode, 42, 0x6B27C144);
 
 // @0x140d8b2c0
-int MS2InputService::FUN_140d8b2c0(int nKey)
+int MS2InputService::GetMouseButtonIndex(int nKey)
 {
     if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a60(nKey))
         return nKey - 200;
     return -1;
 }
-MS2_REPLACE(0x140D8B2C0, MS2InputService::FUN_140d8b2c0, 50, 0x886E2638);
+MS2_REPLACE(0x140D8B2C0, MS2InputService::GetMouseButtonIndex, 50, 0x886E2638);
 
 // @0x140d8b300
-int MS2InputService::FUN_140d8b300(int nKey)
+int MS2InputService::GetGamePadButtonIndex(int nKey)
 {
     if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a90(nKey) != 0 && nKey < 0xa2)
     {
-        nKey = FUN_140a58540()->FUN_140d8c150(nKey);
+        nKey = FUN_140a58540()->RemapPadButtonForDualShock(nKey);
         return nKey - 0x92;
     }
     return -1;
 }
-MS2_REPLACE(0x140D8B300, MS2InputService::FUN_140d8b300, 81, 0x3C97B7A6);
+MS2_REPLACE(0x140D8B300, MS2InputService::GetGamePadButtonIndex, 81, 0x3C97B7A6);
 
 // @0x140d8b360
 bool MS2InputService::FUN_140d8b360() const
@@ -467,7 +467,7 @@ bool MS2InputService::FUN_140d8b360() const
 MS2_REPLACE_METHOD(0x140D8B360, MS2InputService, FUN_140d8b360, 8, 0x71679366);
 
 // @0x140d8b370
-bool MS2InputService::FUN_140d8b370() const
+bool MS2InputService::HasKeyHeldOrGamePad() const
 {
     if (m_spKeyboard)
     {
@@ -478,7 +478,7 @@ bool MS2InputService::FUN_140d8b370() const
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, FUN_140d8b370, 106, 0xB57266D3);
+MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, HasKeyHeldOrGamePad, 106, 0xB57266D3);
 
 // @0x140d8b3e0
 void MS2InputService::StartRumbleFor(double dSeconds)
@@ -530,9 +530,9 @@ int MS2InputService::IsComboKeyDown(int nKey)
     {
         int nFirst = key.b.b1 + 0x91;
         int nSecond = key.b.b0 + 0x91;
-        if (!FUN_140d8c920(nFirst))
+        if (!IsKeyDown(nFirst))
             return -1;
-        if (FUN_140d8c920(nSecond))
+        if (IsKeyDown(nSecond))
             return 1;
         return -1;
     }
@@ -541,7 +541,7 @@ int MS2InputService::IsComboKeyDown(int nKey)
 MS2_REPLACE_METHOD(0x140D8B600, MS2InputService, IsComboKeyDown, 143, 0x47CF2044);
 
 // @0x140d8b6a0
-int MS2InputService::FUN_140d8b6a0(int nKey)
+int MS2InputService::WasComboKeyPressed(int nKey)
 {
     Unk_PackedKey key;
     key.n = nKey;
@@ -549,18 +549,18 @@ int MS2InputService::FUN_140d8b6a0(int nKey)
     {
         int nFirst = key.b.b1 + 0x91;
         int nSecond = key.b.b0 + 0x91;
-        if (!FUN_140d8c920(nFirst))
+        if (!IsKeyDown(nFirst))
             return -1;
-        if (FUN_140d8cd50(nSecond))
+        if (WasKeyPressed(nSecond))
             return 1;
         return -1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D8B6A0, MS2InputService, FUN_140d8b6a0, 143, 0xB9D5FA10);
+MS2_REPLACE_METHOD(0x140D8B6A0, MS2InputService, WasComboKeyPressed, 143, 0xB9D5FA10);
 
 // @0x140d8b740
-int MS2InputService::FUN_140d8b740(int nKey)
+int MS2InputService::WasComboKeyReleased(int nKey)
 {
     Unk_PackedKey key;
     key.n = nKey;
@@ -568,15 +568,15 @@ int MS2InputService::FUN_140d8b740(int nKey)
     {
         int nFirst = key.b.b1 + 0x91;
         int nSecond = key.b.b0 + 0x91;
-        if (!FUN_140d8d2d0(nFirst))
+        if (!WasKeyReleased(nFirst))
             return -1;
-        if (FUN_140d8d2d0(nSecond))
+        if (WasKeyReleased(nSecond))
             return 1;
         return -1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D8B740, MS2InputService, FUN_140d8b740, 143, 0xA4A564C8);
+MS2_REPLACE_METHOD(0x140D8B740, MS2InputService, WasComboKeyReleased, 143, 0xA4A564C8);
 
 // @0x140d8b7e0
 bool MS2InputService::InjectComboKeyPress(int nKey)
@@ -587,9 +587,9 @@ bool MS2InputService::InjectComboKeyPress(int nKey)
     {
         int nFirst = key.b.b1 + 0x91;
         int nSecond = key.b.b0 + 0x91;
-        if (!FUN_140d8d840(nFirst))
+        if (!InjectSingleKeyPress(nFirst))
             return false;
-        if (FUN_140d8d840(nSecond))
+        if (InjectSingleKeyPress(nSecond))
             return true;
     }
     return false;
@@ -605,9 +605,9 @@ bool MS2InputService::InjectComboKeyRelease(int nKey)
     {
         int nFirst = key.b.b1 + 0x91;
         int nSecond = key.b.b0 + 0x91;
-        if (!FUN_140d8db30(nFirst))
+        if (!InjectSingleKeyRelease(nFirst))
             return false;
-        if (FUN_140d8db30(nSecond))
+        if (InjectSingleKeyRelease(nSecond))
             return true;
     }
     return false;
@@ -626,13 +626,13 @@ void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
         m_nPadEnabled = bEnable;
         if (bEnable)
         {
-            FUN_140d8be40();
+            DetectGamePad();
             if (m_spGamePad == 0 && bNotify)
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
                 if (box)
                 {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::FUN_140d8c8d0));
+                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::OnNoGamePadMsgBoxResult));
                     FUN_140d73c60(box);
                 }
             }
@@ -690,7 +690,7 @@ float MS2InputService::FUN_140d8be10()
 MS2_REPLACE_METHOD(0x140D8BE10, MS2InputService, FUN_140d8be10, 32, 0xCBEBD717);
 
 // @0x140d8be40
-void MS2InputService::FUN_140d8be40()
+void MS2InputService::DetectGamePad()
 {
     if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xb5) == 1)
     {
@@ -734,13 +734,13 @@ void MS2InputService::FUN_140d8be40()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140D8BE40, MS2InputService, FUN_140d8be40, 600, 0x7CBF8EF8);
+MS2_REPLACE_METHOD(0x140D8BE40, MS2InputService, DetectGamePad, 600, 0x7CBF8EF8);
 
 // @0x140d8c0a0
 int MS2InputService::FUN_140d8c0a0(__int64 nSetting)
 {
     int nKey = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142c940(nSetting, 2);
-    nKey = FUN_140d8c150(nKey);
+    nKey = RemapPadButtonForDualShock(nKey);
     int nSlot = nKey - 0x92;
     return nSlot;
 }
@@ -754,7 +754,7 @@ NiPointer<NiInputGamePad> MS2InputService::GetGamePad()
 MS2_REPLACE_METHOD(0x140D8C100, MS2InputService, GetGamePad, 67, 0xD0E3CADB);
 
 // @0x140d8c150
-int MS2InputService::FUN_140d8c150(int nKey)
+int MS2InputService::RemapPadButtonForDualShock(int nKey)
 {
     int nMapped = nKey;
     if (FUN_140a58540()->FUN_140d8ee40() == 2)
@@ -782,7 +782,7 @@ int MS2InputService::FUN_140d8c150(int nKey)
     }
     return nMapped;
 }
-MS2_REPLACE_METHOD(0x140D8C150, MS2InputService, FUN_140d8c150, 158, 0x643CAA41);
+MS2_REPLACE_METHOD(0x140D8C150, MS2InputService, RemapPadButtonForDualShock, 158, 0x643CAA41);
 
 // @0x140d8c230
 void MS2InputService::UpdateRumble()
@@ -806,7 +806,7 @@ void MS2InputService::UpdateRumble()
 MS2_REPLACE_METHOD(0x140D8C230, MS2InputService, UpdateRumble, 171, 0x76B0BCD7);
 
 // @0x140d8c2f0
-Vector3 MS2InputService::FUN_140d8c2f0()
+Vector3 MS2InputService::GetLeftStickMoveDir()
 {
     if (!m_spGamePad)
         return DAT_143b01a60;
@@ -823,10 +823,10 @@ Vector3 MS2InputService::FUN_140d8c2f0()
     kDir.FUN_140968990();
     return kDir;
 }
-MS2_REPLACE_METHOD(0x140D8C2F0, MS2InputService, FUN_140d8c2f0, 334, 0x7C552B1D);
+MS2_REPLACE_METHOD(0x140D8C2F0, MS2InputService, GetLeftStickMoveDir, 334, 0x7C552B1D);
 
 // @0x140d8c450
-int MS2InputService::FUN_140d8c450()
+int MS2InputService::GetLeftStickYPercent()
 {
     int nResult = 0;
     if (m_spGamePad)
@@ -836,10 +836,10 @@ int MS2InputService::FUN_140d8c450()
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x140D8C450, MS2InputService, FUN_140d8c450, 116, 0x9831EC2D);
+MS2_REPLACE_METHOD(0x140D8C450, MS2InputService, GetLeftStickYPercent, 116, 0x9831EC2D);
 
 // @0x140d8c4d0
-int MS2InputService::FUN_140d8c4d0()
+int MS2InputService::GetLeftStickXPercent()
 {
     int nResult = 0;
     if (m_spGamePad)
@@ -849,7 +849,7 @@ int MS2InputService::FUN_140d8c4d0()
     }
     return nResult;
 }
-MS2_REPLACE_METHOD(0x140D8C4D0, MS2InputService, FUN_140d8c4d0, 116, 0x72F197D8);
+MS2_REPLACE_METHOD(0x140D8C4D0, MS2InputService, GetLeftStickXPercent, 116, 0x72F197D8);
 
 // @0x140d8c550
 bool MS2InputService::FUN_140d8c550()
@@ -873,13 +873,13 @@ bool MS2InputService::FUN_140d8c550()
 MS2_REPLACE_METHOD(0x140D8C550, MS2InputService, FUN_140d8c550, 257, 0x7AC0FD99);
 
 // @0x140d8c660
-int MS2InputService::FUN_140d8c660()
+int MS2InputService::GetPadFamily()
 {
     if (m_nPadKind == 3)
         return 1;
     return m_nPadKind;
 }
-MS2_REPLACE_METHOD(0x140D8C660, MS2InputService, FUN_140d8c660, 38, 0xE5254B11);
+MS2_REPLACE_METHOD(0x140D8C660, MS2InputService, GetPadFamily, 38, 0xE5254B11);
 
 // @0x140d8c690
 CStringW MS2InputService::GetPadKindName()
@@ -893,7 +893,7 @@ CStringW MS2InputService::GetPadKindName()
 MS2_REPLACE_METHOD(0x140D8C690, MS2InputService, GetPadKindName, 157, 0x9EF15297);
 
 // @0x140d8c750
-CStringW MS2InputService::FUN_140d8c750()
+CStringW MS2InputService::GetPadKindDisplayName()
 {
     CStringW strText;
     if (FUN_140d8ee40() == 2)
@@ -904,10 +904,10 @@ CStringW MS2InputService::FUN_140d8c750()
         return GetStringCommonByKey(L"s_gameoption_input_gamepad_steam");
     return L"";
 }
-MS2_REPLACE_METHOD(0x140D8C750, MS2InputService, FUN_140d8c750, 369, 0x67FCD932);
+MS2_REPLACE_METHOD(0x140D8C750, MS2InputService, GetPadKindDisplayName, 369, 0x67FCD932);
 
 // @0x140d8c8d0
-bool MS2InputService::FUN_140d8c8d0(int nResult, const CMsgBoxData& data)
+bool MS2InputService::OnNoGamePadMsgBoxResult(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -917,16 +917,16 @@ bool MS2InputService::FUN_140d8c8d0(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140D8C8D0, MS2InputService, FUN_140d8c8d0, 74, 0xB7CE330A);
+MS2_REPLACE_METHOD(0x140D8C8D0, MS2InputService, OnNoGamePadMsgBoxResult, 74, 0xB7CE330A);
 
 // @0x140d8c920
-bool MS2InputService::FUN_140d8c920(int nKey)
+bool MS2InputService::IsKeyDown(int nKey)
 {
     if (nKey == 0 || nKey == -1)
         return false;
     bool bDown;
-    int nKb = FUN_140d8b290(nKey);
-    int nMouse = FUN_140d8b2c0(nKey);
+    int nKb = GetKeyboardCode(nKey);
+    int nMouse = GetMouseButtonIndex(nKey);
     if (nKb != 0)
     {
         if (m_spKeyboard)
@@ -946,7 +946,7 @@ bool MS2InputService::FUN_140d8c920(int nKey)
             {
                 if (nKey < 0xa2)
                 {
-                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)FUN_140d8b300(nKey);
+                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)GetGamePadButtonIndex(nKey);
                     if (eButton != NiInputGamePad::NIGP_NONE)
                     {
                         bDown = m_spGamePad->ButtonIsDown(eButton);
@@ -991,15 +991,15 @@ bool MS2InputService::FUN_140d8c920(int nKey)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8C920, MS2InputService, FUN_140d8c920, 975, 0xF3BA13B0);
+MS2_REPLACE_METHOD(0x140D8C920, MS2InputService, IsKeyDown, 975, 0xF3BA13B0);
 
 // @0x140d8cd50
-bool MS2InputService::FUN_140d8cd50(int nKey)
+bool MS2InputService::WasKeyPressed(int nKey)
 {
     if (nKey == 0 || nKey == -1)
         return false;
-    int nKb = FUN_140d8b290(nKey);
-    int nMouse = FUN_140d8b2c0(nKey);
+    int nKb = GetKeyboardCode(nKey);
+    int nMouse = GetMouseButtonIndex(nKey);
     if (nKb != 0)
     {
         if (m_spKeyboard)
@@ -1018,7 +1018,7 @@ bool MS2InputService::FUN_140d8cd50(int nKey)
             {
                 if (nKey < 0xa2)
                 {
-                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)FUN_140d8b300(nKey);
+                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)GetGamePadButtonIndex(nKey);
                     if (eButton != NiInputGamePad::NIGP_NONE)
                     {
                         if (m_spGamePad->ButtonWasPressed(eButton))
@@ -1096,15 +1096,15 @@ bool MS2InputService::FUN_140d8cd50(int nKey)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8CD50, MS2InputService, FUN_140d8cd50, 1318, 0xA9F64406);
+MS2_REPLACE_METHOD(0x140D8CD50, MS2InputService, WasKeyPressed, 1318, 0xA9F64406);
 
 // @0x140d8d2d0
-bool MS2InputService::FUN_140d8d2d0(int nKey)
+bool MS2InputService::WasKeyReleased(int nKey)
 {
     if (nKey == 0 || nKey == -1)
         return false;
-    int nKb = FUN_140d8b290(nKey);
-    int nMouse = FUN_140d8b2c0(nKey);
+    int nKb = GetKeyboardCode(nKey);
+    int nMouse = GetMouseButtonIndex(nKey);
     if (nKb != 0)
     {
         if (m_spKeyboard)
@@ -1123,7 +1123,7 @@ bool MS2InputService::FUN_140d8d2d0(int nKey)
             {
                 if (nKey < 0xa2)
                 {
-                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)FUN_140d8b300(nKey);
+                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)GetGamePadButtonIndex(nKey);
                     if (eButton != NiInputGamePad::NIGP_NONE)
                         return m_spGamePad->ButtonWasReleased(eButton);
                 }
@@ -1197,14 +1197,14 @@ bool MS2InputService::FUN_140d8d2d0(int nKey)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D8D2D0, MS2InputService, FUN_140d8d2d0, 1302, 0x9158B018);
+MS2_REPLACE_METHOD(0x140D8D2D0, MS2InputService, WasKeyReleased, 1302, 0x9158B018);
 
 // @0x140d8d840
-bool MS2InputService::FUN_140d8d840(int nKey)
+bool MS2InputService::InjectSingleKeyPress(int nKey)
 {
     if (nKey == 0 || nKey == -1)
         return false;
-    int nKb = FUN_140d8b290(nKey);
+    int nKb = GetKeyboardCode(nKey);
     if (nKb != 0)
     {
         if (m_spKeyboard)
@@ -1218,7 +1218,7 @@ bool MS2InputService::FUN_140d8d840(int nKey)
             {
                 if (nKey < 0xa2)
                 {
-                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)FUN_140d8b300(nKey);
+                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)GetGamePadButtonIndex(nKey);
                     if (eButton != NiInputGamePad::NIGP_NONE)
                     {
                         m_spGamePad->RecordButtonPress(eButton, 0xff);
@@ -1262,14 +1262,14 @@ bool MS2InputService::FUN_140d8d840(int nKey)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140D8D840, MS2InputService, FUN_140d8d840, 660, 0x6A0E4DB8);
+MS2_REPLACE_METHOD(0x140D8D840, MS2InputService, InjectSingleKeyPress, 660, 0x6A0E4DB8);
 
 // @0x140d8db30
-bool MS2InputService::FUN_140d8db30(int nKey)
+bool MS2InputService::InjectSingleKeyRelease(int nKey)
 {
     if (nKey == 0 || nKey == -1)
         return false;
-    int nKb = FUN_140d8b290(nKey);
+    int nKb = GetKeyboardCode(nKey);
     if (nKb != 0)
     {
         if (m_spKeyboard)
@@ -1283,7 +1283,7 @@ bool MS2InputService::FUN_140d8db30(int nKey)
             {
                 if (nKey < 0xa2)
                 {
-                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)FUN_140d8b300(nKey);
+                    NiInputGamePad::Button eButton = (NiInputGamePad::Button)GetGamePadButtonIndex(nKey);
                     if (eButton != NiInputGamePad::NIGP_NONE)
                     {
                         m_spGamePad->RecordButtonRelease(eButton);
@@ -1351,4 +1351,4 @@ bool MS2InputService::FUN_140d8db30(int nKey)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140D8DB30, MS2InputService, FUN_140d8db30, 966, 0xB37FADFE);
+MS2_REPLACE_METHOD(0x140D8DB30, MS2InputService, InjectSingleKeyRelease, 966, 0xB37FADFE);

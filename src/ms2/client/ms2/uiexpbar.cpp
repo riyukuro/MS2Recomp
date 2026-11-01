@@ -41,7 +41,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
-class Unk_ExpCfgHolder { public: Unk_ExpCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
@@ -221,7 +220,7 @@ void UIExpBar::OnLoadComplete()
     UIObject::OnLoadComplete();
     unsigned int nFlags = 3;
     FUN_141932080(nFlags);
-    FUN_141932380(reinterpret_cast<Unk_ExpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowPoint);
+    FUN_141932380(reinterpret_cast<Unk_ExpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowPoint);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_141932430();
 }

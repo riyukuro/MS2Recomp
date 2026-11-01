@@ -70,10 +70,9 @@ public:
 NotifySystem* FUN_140939a10();
 
 // The string table (FUN_1409331f0).
-class Unk_DemolishTable
-{
+class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> FUN_14142d760(int, int); }; class Unk_DemolishTable : public CKeyTable {
 public:
-    CStringW FUN_14142d760(int nId, int n);
+
 };
 Unk_SoundSink* FUN_1409331f0();
 
@@ -138,7 +137,7 @@ void UIHouseDemolishDialog::vfunc_26()
     m_bShown = false;
     m_bRefreshed = false;
     m_nDirty = 0;
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     FUN_140939a10()->UnregisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
     FUN_140939a10()->UnregisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }

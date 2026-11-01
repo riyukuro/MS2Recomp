@@ -68,11 +68,9 @@ static CString s_aStrUgcTab[7] = { CString("None"), CString("Buy"), CString("Lik
 // The item data of an equip item (CItemData-like; only the kind tests this unit calls).
 struct Unk_UgcItemData : public CItemData
 {
-    unsigned char FUN_14053d020();
     unsigned char FUN_14053cf00();                                           // kind test: customize-colour item
     unsigned FUN_14053dc60();                                       // linked item id
     unsigned FUN_14053c510();                                       // name string id
-    struct Unk_UgcDesc* FUN_14053eba0();                            // description text holder
     unsigned FUN_14053e310(int nIndex);
 };
 
@@ -1203,7 +1201,7 @@ CItemUgcMesh::CItemUgcMesh()
 // CItemUgcMesh::~CItemUgcMesh @0x141427620 is implicit (no vftable store in the exe); see itemugcmesh.h.
 
 // @0x141426140
-void CItemUgcMeshContainer::FUN_141426140()
+void CItemUgcMeshContainer::Clear()
 {
     m_meshes.RemoveAll();
 }
@@ -1220,7 +1218,7 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
         return false;
     m_meshes.RemoveAll();
     CAtlArray<CString> aNames;
-    FUN_141426750(aNames, pData);
+    GetPartNames(aNames, pData);
     if (aNames.IsEmpty())
         return false;
     CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
@@ -1257,7 +1255,7 @@ bool CItemUgcMeshContainer::FUN_141426540(MS2Ptr<CItemData> spData, NiAVObjectPt
         return false;
     m_meshes.RemoveAll();
     CAtlArray<CString> aNames;
-    FUN_141426750(aNames, spData.get());
+    GetPartNames(aNames, spData.get());
     if (aNames.IsEmpty())
         return false;
     for (size_t i = 0; i < aNames.GetCount(); i++)
@@ -1271,7 +1269,7 @@ bool CItemUgcMeshContainer::FUN_141426540(MS2Ptr<CItemData> spData, NiAVObjectPt
 }
 
 // @0x141426750 - the attach-part names of an item (the comma list at +0x208), plus the ankle part of shoes
-void CItemUgcMeshContainer::FUN_141426750(CAtlArray<CString>& aNames, void* pItemData)
+void CItemUgcMeshContainer::GetPartNames(CAtlArray<CString>& aNames, void* pItemData)
 {
     aNames.RemoveAll();
     CString strParts(*(CString*)((char*)pItemData + 0x208));
@@ -1281,7 +1279,7 @@ void CItemUgcMeshContainer::FUN_141426750(CAtlArray<CString>& aNames, void* pIte
 }
 
 // @0x141426810
-void CItemUgcMeshContainer::FUN_141426810(NiTexture* pTexture)
+void CItemUgcMeshContainer::SetTextureOnMeshes(NiTexture* pTexture)
 {
     if (m_meshes.IsEmpty())
         return;
@@ -1559,10 +1557,10 @@ MS2_REPLACE(0x141425950, FUN_141425950, 679, 0xA7CF1E8C);
 MS2_REPLACE(0x141425C00, FUN_141425c00, 559, 0xC16BED4A);
 MS2_REPLACE(0x141425E40, FUN_141425e40, 367, 0x07FC4250);
 MS2_REPLACE(0x141425FC0, FUN_141425fc0, 377, 0xA4FE0BD1);
-MS2_REPLACE_METHOD(0x141426140, CItemUgcMeshContainer, FUN_141426140, 31, 0x3504FA6E);
+MS2_REPLACE_METHOD(0x141426140, CItemUgcMeshContainer, Clear, 31, 0x3504FA6E);
 MS2_REPLACE_METHOD(0x141426540, CItemUgcMeshContainer, FUN_141426540, 517, 0xB00154AD);
-MS2_REPLACE_METHOD(0x141426750, CItemUgcMeshContainer, FUN_141426750, 173, 0x4E7801C6);
-MS2_REPLACE_METHOD(0x141426810, CItemUgcMeshContainer, FUN_141426810, 351, 0x90AA05A9);
+MS2_REPLACE_METHOD(0x141426750, CItemUgcMeshContainer, GetPartNames, 173, 0x4E7801C6);
+MS2_REPLACE_METHOD(0x141426810, CItemUgcMeshContainer, SetTextureOnMeshes, 351, 0x90AA05A9);
 MS2_REPLACE_METHOD(0x141426980, CItemUgcMeshContainer, FUN_141426980, 355, 0x097141C4);
 MS2_REPLACE_METHOD(0x141426AF0, CItemUgcMeshContainer, FUN_141426af0, 574, 0x0C2F36BD);
 MS2_REPLACE_METHOD(0x141426D40, CItemUgcMeshContainer, FUN_141426d40, 234, 0xA6B44080);

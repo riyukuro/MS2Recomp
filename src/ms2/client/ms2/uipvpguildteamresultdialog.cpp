@@ -55,18 +55,7 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
 class Unk_PgtrItemData : public CItemData { };       // the icon name
-class Unk_PgtrItemPtr
-{
-public:
-    ~Unk_PgtrItemPtr() { FUN_1401b50d0(); }
-    void* FUN_140203c60() const;
-    void FUN_1401b50d0();
-private:
-    void* unknown;
-    void* object;
-};
-MS2_CHECK_SIZE(Unk_PgtrItemPtr, 0x10);
-Unk_PgtrItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-insensitive equal
@@ -284,9 +273,9 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
     FUN_1413415e0(pRight->m_nGuildId, pRight->m_strMark);
     if (m_nRewardItem != 0)
     {
-        Unk_PgtrItemPtr spItem = FUN_14053f870(m_nRewardItem);
-        if (spItem.FUN_140203c60() != 0)
-            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PgtrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
+        MS2Ptr<CItemData> spItem = FUN_14053f870(m_nRewardItem);
+        if (spItem.get() != 0)
+            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PgtrItemData*>(spItem.operator->())->GetIconPath());
     }
     FUN_141341e70();
 }

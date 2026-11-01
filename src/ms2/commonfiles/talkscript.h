@@ -20,29 +20,6 @@
 
 class CInPacket;
 
-// A second instance of the content pointer (own AddRef/AddRefImpl COMDATs in the exe, 0x14085f0f0).
-template<class T> class Unk_TalkContentPtr {
-public:
-    Unk_TalkContentPtr() : p(0) {}
-    Unk_TalkContentPtr(int) : p(0) {}
-    Unk_TalkContentPtr(T* value) : p(value) { AddRef(); }
-    Unk_TalkContentPtr(const Unk_TalkContentPtr& o) : p(o.p) { AddRef(); }
-    ~Unk_TalkContentPtr() { Release(); }
-    Unk_TalkContentPtr& operator=(int) { Release(); return *this; }
-    Unk_TalkContentPtr& operator=(T* value) { Unk_TalkContentPtr temp(value); T* old=p; p=temp.p; temp.p=old; return *this; }
-    Unk_TalkContentPtr& operator=(const Unk_TalkContentPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
-    bool operator==(T* o) const { return p == o; }
-    T* get() const { return p; }
-    T* operator->() const { return p; }
-private:
-    void AddRef() const { if(p) AddRefImpl(0); }
-    static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
-    void AddRefImpl(void*) const { AddRefObject(p); }
-    void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
-    void* pad_00; T* p;
-};
-
 class CTalkScript : public CPtred, public CValidData<CTalkScript>
 {
 public:

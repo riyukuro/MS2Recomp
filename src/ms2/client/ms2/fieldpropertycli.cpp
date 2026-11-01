@@ -65,12 +65,12 @@ public:
     int FUN_141bca3c0(float);
     void FUN_141bcabf0();
     void* FUN_141bd0cc0();
+    void FUN_141bcad60(void* p, int n);
     static class WorldService* GetInstance();
 };
 void* FUN_1403ed280();
 void* FUN_1403ed2b0();
 void* FUN_1409478c0();
-void FUN_141bcad60(void* o, __int64 a, int b);
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
@@ -90,7 +90,11 @@ class CEffectService   // C3: member view for the former free stand-ins
 public:
     void FUN_1411a7e80(int);
 };
-void FUN_140aeb900(void* o, unsigned char b);
+class CameraMgr   // C3: member view
+{
+public:
+    void FUN_140aeb900(bool b);
+};
 struct Unk_FpWorld {                // the world service (FUN_1403ed2d0)
     Unk_Handle FUN_141bd0420(unsigned hash);    // the entities of a model
 };
@@ -102,9 +106,6 @@ void* FUN_1408a9280(Unk_EntRef* r);
 Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
 void FUN_140b27ec0(void* ent, unsigned id, void* p);
 void FUN_140b27f00(void* ent, unsigned id, void* p);
-struct Unk_FpRgb : Unk_Rgb3b {
-    Unk_Vec3f FUN_1406c3780() const;                         // rgb bytes -> 0..1 floats, by value
-};
 struct Unk_FpEntity {
     void FUN_140b27f00(unsigned id, const Unk_Vec3f& v);     // FUN_140b27f00 called on the entity
 };
@@ -138,9 +139,9 @@ MS2Ptr<FieldProperty> FUN_140b26ff0(int nType)
 void FieldPropertyGravityCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca3c0(m_fGravity); }
 
 // @0x140b27690
-void FieldPropertyMusicConcertCli::vfunc_4() { FUN_141bcad60(((void*)WorldService::GetInstance()), m_i64, m_n); }
+void FieldPropertyMusicConcertCli::vfunc_4() { WorldService::GetInstance()->FUN_141bcad60((void*)m_i64, m_n); }
 // @0x140b276d0
-void FieldPropertyMusicConcertCli::vfunc_5() { FUN_141bcad60(((void*)WorldService::GetInstance()), 0, 0); }
+void FieldPropertyMusicConcertCli::vfunc_5() { WorldService::GetInstance()->FUN_141bcad60(0, 0); }
 
 // @0x140b27700
 void FieldPropertyHideMyPCCli::vfunc_4()
@@ -210,7 +211,7 @@ void FieldPropertyAmbientLightCli::vfunc_4()
         FUN_140b27ec0(FUN_1408a9280(&ent), 0xb086f4a8, &m_vecOld);
         return;
     }
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xb086f4a8, static_cast<const Unk_FpRgb&>(m_color).FUN_1406c3780());
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xb086f4a8, m_color.ToColor());
 }
 
 // @0x140b27a80
@@ -230,17 +231,17 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
         FUN_140b27ec0(FUN_1408a9280(&ent), 0x2d8cf386, &m_vecOld);
         return;
     }
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0x2d8cf386, static_cast<const Unk_FpRgb&>(m_color1).FUN_1406c3780());
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xc3f0329e, static_cast<const Unk_FpRgb&>(m_color1).FUN_1406c3780());
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0x2d8cf386, m_color1.ToColor());
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xc3f0329e, m_color1.ToColor());
 }
 
 // @0x140b27c60
 Unk_Vec3f* FUN_140b27c60(FieldPropertyDirectionalLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color1, out); return out; }
 
 // @0x140b27ca0
-void FieldPropertyEnableLocalCameraCli::vfunc_4() { FUN_140aeb900(FUN_1409478c0(), m_b); }
+void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)FUN_1409478c0())->FUN_140aeb900(m_b); }
 // @0x140b27cd0
-void FieldPropertyEnableLocalCameraCli::vfunc_5() { FUN_140aeb900(FUN_1409478c0(), 1); }
+void FieldPropertyEnableLocalCameraCli::vfunc_5() { ((CameraMgr*)FUN_1409478c0())->FUN_140aeb900(1); }
 
 // @0x140b27d00
 void FieldPropertyPhotoStudioCli::vfunc_4() { (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f8f))); }

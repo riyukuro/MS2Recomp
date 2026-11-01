@@ -194,8 +194,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_AvWorld : public WorldService
 {
 public:
-    void* FUN_141bd1180(unsigned nId);                                       // object registered under the pet / ridee id
-    void* FUN_141bd1290(unsigned nId);                                       // object registered under the avatar id
 };
 
 // The effect manager (TSingleton<CEffectService>): spawn requests are 0x78 bytes built by 0x140a52ef0, released by 0x1405a89e0.
@@ -267,23 +265,8 @@ public:
 class Unk_PetTable { public: Unk_PetRef FUN_1407290f0(int nPetId); };
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
-// An npc record as the pet / npc tables hand it out.
-struct Unk_AvNpcRow
-{
-    char m_pad_00[0x50];
-    CString m_strModelPath;                                 // +0x50
-    float m_fScale;                                         // +0x58
-};
-struct Unk_AvNpcRef
-{
-    ~Unk_AvNpcRef() { FUN_14035e5b0(); }
-    void FUN_14035e5b0();                                   // release
-    Unk_AvNpcRow* FUN_14035eb90() const;                    // operator->
-    Unk_AvNpcRow* FUN_140729ad0() const;                    // get
-    void* m_pad_00;
-    Unk_AvNpcRow* m_p;
-};
-Unk_AvNpcRef FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 // The npc table of the pet effect (FUN_1406d6e90).
 struct Unk_AvNpcEntry
 {
@@ -390,7 +373,6 @@ void FUN_141656a50(PC* pPC, unsigned __int64 n);
 void FUN_140638200(Unk_PCLook* pLook, int a, int b, short c);
 void FUN_14166cc40(PCBase* pPC, int n);
 void FUN_1416591e0(PC* pPC, int nSlot, const Unk_CharEquip& kEquip);
-int FUN_14166c930(PCBase* pPC);                             // action id
 Unk_McState* FUN_14166ccb0(PCBase* pPC);                    // current state
 float FUN_14166da40(PCBase* pPC);
 int FUN_141673ef0(PCBase* pPC);                             // skill id of the running state
@@ -663,7 +645,7 @@ void AvatarPC::FUN_1409f45a0(MS2Ptr<CItemData> spData)
     if (spData == 0)
         return;
     int nInstrument = ((class CItemData*)(spData.operator->()))->GetInstrumentId();
-    if (::FUN_14166c930(this) == 0x2f)
+    if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2f)
     {
         Unk_McState* pState = ::FUN_14166ccb0(this);
         if (pState != 0 && ((class StatePlayInstrument*)(class Unk_McState*)(pState))->FUN_140ddfbb0() == nInstrument)
@@ -742,7 +724,7 @@ void AvatarPC::FUN_1409f4d80(MS2Ptr<CItem> spItem)
 // @0x1409f4f20
 bool AvatarPC::FUN_1409f4f20()
 {
-    if (::FUN_14166c930(this) != 0x21)
+    if (static_cast<PCBase*>(this)->FUN_14166c930() != 0x21)
         return false;
     if ((m_spRidee ? true : false) && m_spRidee->FUN_14123bea0() != 0)
         return true;
@@ -810,9 +792,9 @@ void AvatarPC::vfunc_128(CItem* pItem, int n)
 // @0x1409f5210
 void AvatarPC::vfunc_59(int nState, StateData* pData, int nSub, int bForce)
 {
-    int nOldAction = ::FUN_14166c930(this);
+    int nOldAction = static_cast<PCBase*>(this)->FUN_14166c930();
     PC::vfunc_59(nState, pData, nSub, bForce);
-    bool bChanged = nOldAction != ::FUN_14166c930(this);
+    bool bChanged = nOldAction != static_cast<PCBase*>(this)->FUN_14166c930();
     if (bChanged)
     {
         vfunc_19(m_kPos);
@@ -1007,7 +989,7 @@ void AvatarPC::FUN_1409f5d20()
     }
     if (m_spRidee != 0)
     {
-        if (m_spRidee->FUN_14123bea0() != 0 && ::FUN_14166c930(this) == 0x21)
+        if (m_spRidee->FUN_14123bea0() != 0 && static_cast<PCBase*>(this)->FUN_14166c930() == 0x21)
         {
             NiNodePtr spRideeNode(static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(m_spRidee->FUN_14123c410())))));
             if (spRideeNode != 0)
@@ -1166,7 +1148,7 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
         return;
     }
     int nRod = spItem->FUN_1405276c0();
-    if (::FUN_14166c930(this) == 0x2d)
+    if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2d)
     {
         Unk_McState* pState = ::FUN_14166ccb0(this);
         if (pState != 0 && ((class StateFishing*)(class Unk_McState*)(pState))->FUN_140ddb5d0() == nRod)
@@ -1221,7 +1203,7 @@ unsigned int FUN_1409f6ee0()
 {
     for (unsigned int nId = 0x3fb; nId < 0x40f; nId++)
     {
-        if (((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bd1290(nId) == 0)
+        if (WorldService::GetInstance()->FUN_141bd1290(nId) == 0)
             return nId;
     }
     return 0;
@@ -1281,12 +1263,12 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
         if (kPet.FUN_140729a90(0))
             return;
         int nNpcId = kPet.FUN_14052ceb0()->FUN_140728820();
-        Unk_AvNpcRef kNpc = FUN_1406cd330(nNpcId);
-        if (kNpc.FUN_140729ad0() != 0)
+        MS2Ptr<CNpcData> kNpc = FUN_1406cd330(nNpcId);
+        if (kNpc.get() != 0)
         {
             char szDir[256];
             memset(szDir, 0, sizeof(szDir));
-            _splitpath(kNpc.FUN_14035eb90()->m_strModelPath, 0, 0, szDir, 0);
+            _splitpath(kNpc->m_model.m_strKfm, 0, 0, szDir, 0);
             if (szDir == 0)
             {
                 return;
@@ -1294,7 +1276,7 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
             strModel.Format(m_strModelFormat, szDir);
             if (m_spUgcMesh == 0)
                 FUN_1410855b0();
-            m_fScaleAC = kNpc.FUN_14035eb90()->m_fScale;
+            m_fScaleAC = kNpc->m_model.m_fScale;
         }
     }
     m_spItemData = spData;
@@ -1306,7 +1288,7 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
     else if (FUN_14123c410() != 0)
     {
         if (m_spUgcMesh.get() != 0)
-            m_spUgcMesh.operator->()->FUN_141426140();
+            m_spUgcMesh.operator->()->Clear();
         FUN_14123bc20(CString(strModel));
         m_bReloading = true;
         if (m_pListener != 0)
@@ -1643,7 +1625,7 @@ void AvatarRidee::FUN_1409fa940()
 {
     if (m_pRider == 0 || m_spAttach == 0 || m_spRow.FUN_1407893c0(0))
         return;
-    if (m_bReloading == true || ::FUN_14166c930(m_pRider) != 0x21)
+    if (m_bReloading == true || m_pRider->FUN_14166c930() != 0x21)
         return;
     FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->FUN_140784970());
 }

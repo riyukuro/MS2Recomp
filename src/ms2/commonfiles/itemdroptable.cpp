@@ -182,7 +182,7 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 
 // The item option generator (FUN_140166430()): a random rank for an item.
-class Unk_OptionMgr { public: int FUN_1405f4d30(unsigned nItemId, int nArg, short nLevel, int nRandom, bool bAssist); };
+class CItemOptionTable { public: int GetRandomRank(int, int, unsigned short, int, bool) const; }; class Unk_OptionMgr : public CItemOptionTable { };
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -434,7 +434,7 @@ int ItemDropData::GetDropRank(int nArg, int nLevel, bool bAssist)
 {
     if (m_grade.Remains())
         return PickGrade();
-    int nRank = ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4d30(GetItemId(), nArg, nLevel, rand(), bAssist);
+    int nRank = ((class Unk_OptionMgr*)FUN_140166430())->GetRandomRank(GetItemId(), nArg, nLevel, rand(), bAssist);
     return nRank;
 }
 MS2_REPLACE_METHOD(0x1402E75D0, ItemDropData, GetDropRank, 149, 0xEF08F3AC);

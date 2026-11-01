@@ -36,6 +36,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+namespace egmAnimation { class AnimationService; }
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // @0x140a31af0
@@ -76,9 +77,8 @@ extern unsigned char DAT_143afc898;                              // assertions t
 extern "C" float(__cdecl* __imp_acosf)(float);       // acosf through the CRT import table (the exe calls it indirectly)
 extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
 class Unk_BrAnimSvc { public: };   // the animation service
-Unk_BrAnimSvc* FUN_141b6f910();
+egmAnimation::AnimationService * FUN_141b6f910(void);  // C3: the definition's signature
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);           // the scene node of an entity
-GameObject* FUN_141bd0fa0(WorldService* p, egf::EntityID kId);
 int FUN_1409a8f90(float const*);   // C3: was FUN_1409a8f90
 void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pForward, efd::Point3* pRight);   // the axes of the euler rotation
 
@@ -554,7 +554,7 @@ void CBoneRotateManager::FUN_140a35060()
             efd::Point3 kBase = m_kLookPos;
             if (m_kTargetId != s_kNullId)
             {
-                GameObject* pTarget = FUN_141bd0fa0(WorldService::GetInstance(), m_kTargetId);
+                GameObject* pTarget = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(m_kTargetId));
                 if (pTarget != 0)
                 {
                     kBase = pTarget->vfunc_18();

@@ -192,8 +192,8 @@ void ItemSocketSystemPageSocketTransfer::vfunc_7(MS2Ptr<AScript> root)
     data.FUN_1407cba60("selectedSlotId", m_sourceName);
     m_root->Invoke("initData", data.FUN_1422bb870());
     m_state = 0;
-    FUN_140f6dbe0(m_sourceControl);
-    FUN_140f6dbe0(m_targetControl);
+    ClearListSelection(m_sourceControl);
+    ClearListSelection(m_targetControl);
 }
 
 // @0x140c50d20
@@ -338,7 +338,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
     FUN_141276180(s_strSelectSound, "");
     socket->GetLockedSlotCount();
     m_source = item;
-    FUN_140f6d340(m_sourceName, m_source);
+    SetInfoSlotItem(m_sourceName, m_source);
     ASObj data(2);
     data.FUN_1407cbb20("itemName", m_source->FUN_140528160());
     FUN_140c52b20(data);
@@ -346,7 +346,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
     m_state = 1;
     m_sourceUid = m_source->GetItemUid();
     FUN_140c51410();
-    FUN_140f6dbe0(m_targetControl);
+    ClearListSelection(m_targetControl);
 }
 
 // @0x140c51a60
@@ -360,7 +360,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
     if (item == 0 || item->FUN_140527840() == 0)
         return;
     if (m_state != 1 && m_state != 2) {
-        FUN_140f6dbe0(m_targetControl);
+        ClearListSelection(m_targetControl);
         return;
     }
     FUN_141276180(s_strSelectSound, "");
@@ -384,7 +384,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
-    FUN_140f6d340(m_targetName, m_target);
+    SetInfoSlotItem(m_targetName, m_target);
     ASObj data(2);
     data.FUN_1407cbb20("targetName", m_target->FUN_140528160());
     m_root->Invoke("selectTarget", data.FUN_1422bb870());
@@ -470,9 +470,9 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c527d0()
     m_sourceUid = 0;
     m_source = 0;
     m_target = 0;
-    FUN_140f6d340(m_sourceName, m_source);
-    FUN_140f6dbe0(m_sourceControl);
-    FUN_140f6dbe0(m_targetControl);
+    SetInfoSlotItem(m_sourceName, m_source);
+    ClearListSelection(m_sourceControl);
+    ClearListSelection(m_targetControl);
     m_root->Invoke("playStart");
 }
 
@@ -596,7 +596,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
     result.m_spA = m_source;
     result.m_spB = m_target;
     FUN_1406295b0(result, *packet);
-    FUN_140f6d340(m_sourceName, m_target);   // the exe refreshes the source-name slot (+0x38) with the target
+    SetInfoSlotItem(m_sourceName, m_target);   // the exe refreshes the source-name slot (+0x38) with the target
     ASObj data(2);
     int unlockIndex = -1;
     data.FUN_1407cb9c0("unlockSocketIndex", unlockIndex);
@@ -610,8 +610,8 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
     FUN_141276180(s_strSuccessSound, "");
     m_root->Invoke("playSuccess", data.FUN_1422bb870());
     m_state = 2;
-    FUN_140f6dbe0(m_targetControl);
-    FUN_140f6dbe0(m_sourceControl);
+    ClearListSelection(m_targetControl);
+    ClearListSelection(m_sourceControl);
     FUN_140c54030();
     FUN_140f6e700(m_source->GetItemUid());
     FUN_140f6e700(m_target->GetItemUid());
@@ -721,7 +721,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c54030()
 {
     int index = -1;
     MS2Ptr<CItem> found = FindItemByUid(m_sourceUid, m_sourceItems, &index);
-    FUN_140f6dbe0(m_sourceControl);
+    ClearListSelection(m_sourceControl);
     if (found == 0)
         m_sourceUid = 0;
 }

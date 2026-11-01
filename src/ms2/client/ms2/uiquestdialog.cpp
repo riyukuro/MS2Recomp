@@ -81,6 +81,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdlib.h>
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 extern __int64 DAT_143ab2828;                                   // the character id
 
@@ -284,7 +285,6 @@ class Unk_QdCheck : public Unk_QdCtl
 {
 public:
     bool FUN_1422bfca0();                               // visible
-    unsigned char FUN_1422ce0e0();                      // checked
 };
 class ASDialog : public ASDisplayObject
 {
@@ -478,7 +478,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 if (pMap != 0 && pMap->FUN_141924630() != 0)
                     pMap->FUN_141a3add0();
                 reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd3880();
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
+                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
             }
             return 1;
         }
@@ -1303,7 +1303,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
         if (spCheck->FUN_1422bfca0())
-            bProgressOnly = spCheck->FUN_1422ce0e0();
+            bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     int nAdded = 0;
     ASObj chapter(2);
@@ -1376,7 +1376,6 @@ CStringW FUN_14042cb90(CStringW strKey, const float& v);
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 float FUN_14028aed0(float f);                                   // floor
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
-int FUN_141654700(Unk_QdActor* pActor);                         // the player's job
 int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);
 
 // @0x141a9f3c0
@@ -1415,7 +1414,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
         CQuestData::QuestRewardItem& rItem = spData->m_complete.m_choiceRewards[i];
         if (rItem.m_itemId != 0)
         {
-            if (FUN_140748050(&rItem, FUN_141654700(pPlayer)) != 0)
+            if (FUN_140748050(&rItem, reinterpret_cast<PC*>(pPlayer)->FUN_141654700()) != 0)
             {
                 CString strBind;
                 strBind.Format("reward%d", nIndex++);
@@ -1521,9 +1520,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
     return nAdded;
 }
 
-// The map record of a room (the party finder id sits at +0x1c) and the party finder.
-class Unk_QdMapRec : public CPtred { public: int m_18; int m_1c; };
-class Unk_QdMapTable { public: MS2Ptr<Unk_QdMapRec> FUN_1403206b0(int nMapId); };
+// The party finder.
 int Unk_ClubBuffTypeOf(int n);
 
 // @0x141aa02b0
@@ -1554,10 +1551,10 @@ void UIQuestDialog::AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut)
         MS2Ptr<CQuestData> spData2 = spQuest->GetData();
         if (!spData2)
             return;
-        MS2Ptr<Unk_QdMapRec> spMap = reinterpret_cast<Unk_QdMapTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(spData2->m_30c.m_roomId);
+        DungeonRoomPtr spMap = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(spData2->m_30c.m_roomId);
         if (!spMap)
             return;
-        buttons.FUN_1422bbf70(TSingleton<CPartyManager>::GetInstance()->FUN_14162ac00(Unk_ClubBuffTypeOf(spMap->m_1c)) != 0 ? "partyFindCancel" : "partyFind");
+        buttons.FUN_1422bbf70(TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(Unk_ClubBuffTypeOf(spMap->m_groupType)) != 0 ? "partyFindCancel" : "partyFind");
     }
     rOut.FUN_1409eb1d0("gotoButton", buttons);
 }
@@ -1628,7 +1625,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
         if (spCheck->FUN_1422bfca0())
-            bProgressOnly = spCheck->FUN_1422ce0e0();
+            bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
@@ -1684,7 +1681,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
     CAtlArray<int> chapters;
     CRBMultiMap<int, MS2Ptr<CQuestData> > sorted(10);
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_properLevel"))
-        bProperLevel = spCheck->FUN_1422ce0e0();
+        bProperLevel = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     int nFocusChapter = 0;
     if (m_188 != 0)
     {

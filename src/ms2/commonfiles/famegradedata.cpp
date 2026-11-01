@@ -152,9 +152,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
-// npc table row (commonfiles\\npcdata.cpp), only the kind is read here.
-class Unk_FameNpcData : public CPtred { public: int FUN_1406cd020(); };
-MS2Ptr<Unk_FameNpcData> FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 void* FUN_140204740(Unk_FameLogFilter* pFilter, unsigned nId, int nFlag);
 unsigned* FUN_1401844d0(ATL::CAtlArray<unsigned>& arr, size_t nIndex);                // operator[]
 unsigned FUN_140767ff0();                                                             // random number
@@ -169,7 +168,6 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -835,13 +833,13 @@ CStringA CFameTable::GetSymbolByOfficerNpc(int nKind)
 Unk_FameAlliance CFameTable::GetAllianceByNpc(int nNpcId)
 {
     CheckInit();
-    MS2Ptr<Unk_FameNpcData> spNpc = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
     if (!spNpc)
         return Unk_FameAlliance_None;
     for (POSITION pos = m_mapDef.GetStartPosition(); pos != 0; m_mapDef.GetNext(pos))
     {
         DefPtr spDef = m_mapDef.GetValueAt(pos);
-        if (spDef->m_nOfficerNpcKind == spNpc->FUN_1406cd020())
+        if (spDef->m_nOfficerNpcKind == spNpc->GetKind())
             return spDef->m_nAlliance;
     }
     return Unk_FameAlliance_None;

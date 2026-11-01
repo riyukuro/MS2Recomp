@@ -51,6 +51,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/aslabel.h"
 #include <NiRect.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -80,9 +81,9 @@ class Unk_UgcImageData : public AScript
 {
 };
 
-class Unk_UiScale { public: float FUN_141adbe70(); };            // the UI scale of the UI manager
 
 // The title label of the dialog (a text field child of the movie).
+class Unk_UiScale { public: float FUN_141adbe70(); };            // the UI scale of the UI manager
 class Unk_WcTitle : public ASDisplayObject { public: void FUN_1422e4b80(const CStringW& str); };
 // MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of another unit (declared only).
 template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
@@ -125,7 +126,7 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted table string
-CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int nFlag);   // a price as text
+CStringW FUN_1418fec00(int, __int64, bool);   // a price as text
 bool FUN_1418ff110(int nPayType, __int64 nAmount, bool bFlag);    // the player can pay
 int FUN_141276180(const CString& strName, const CString& strArg);
 CStringW FUN_141026920(int nKind);
@@ -486,7 +487,7 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 return;
             if (nHour < 0 || nHour >= 0x18)
                 return;
-            CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), banner->GetHourly(nHour), 0);
+            CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), banner->GetHourly(nHour), (bool)0);
             CStringW strText = FUN_14052bd00(0x9b6, strPrice);
             ASTooltip tip(1, 2);
             if (tip.ApplyTextTooltip(strText) != 0)
@@ -787,7 +788,7 @@ void UIUGCBannerDialog::FUN_141b36750(__int64 nPrice)
     if (m_238 == 0)
         m_238 = reinterpret_cast<Unk_WcTitleFinder*>(m_30.operator->())->FUN_140c436d0("m_labelMeso");
     if (m_238.get() != 0)
-        m_238->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, 0));
+        reinterpret_cast<MS2Ptr<ASLabel>&>(m_238)->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, (bool)0));
 }
 
 // @0x141b368b0

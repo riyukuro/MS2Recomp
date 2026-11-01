@@ -27,15 +27,15 @@ public:
     CNPSMan();                                          // 0x140db8d80
     virtual ~CNPSMan();                                 // 0x140db8e30 (??_G 0x140db9230)
 
-    void FUN_140db8eb0();                               // arms the survey (+0x30) and caches the survey url (+0x28)
-    void FUN_140db8f30();                               // opens the survey window once (+0x31)
+    void ArmSurvey();                               // arms the survey (+0x30) and caches the survey url (+0x28)
+    void ShowSurvey();                               // opens the survey window once (+0x31)
     void SetMode(int nMode);
     void SetPlayer(__int64 hPlayer);
     void FUN_140db9040(CStringW& strText);              // -> +0x18
     void FUN_140db9070(CStringA& strText);              // -> +0x20 (widened)
     void FUN_140db90e0(CStringW& strText);              // -> +0x20
     void FUN_140db9170();                               // adds the "platform" survey parameter
-    bool FUN_140db9110();                               // has a player handle
+    bool HasPlayerHandle();                               // has a player handle
     bool IsArmed();                               // armed
     bool IsShown();                               // survey already shown
 

@@ -472,7 +472,7 @@ MS2_REPLACE_METHOD(0x1419E50B0, UIMailListDialog, FUN_1419e50b0, 154, 0x92C96AA2
 void UIMailListDialog::FUN_1419e5150()
 {
     m_bRefresh = true;
-    m_timer.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
 }
 MS2_REPLACE_METHOD(0x1419E5150, UIMailListDialog, FUN_1419e5150, 45, 0xA826AB8A); // FUN_1419e5150
 

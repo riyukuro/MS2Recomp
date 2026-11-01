@@ -133,9 +133,9 @@ void UINoticeDialog::OnLoadComplete()
     m_90->vfunc_15("hideComplete");
     if (m_90->FUN_140bc71c0("m_mainWindow", m_mainWindow).get())
     {
-        if (m_mainWindow->FUN_140bbe640("m_showButton", m_showButton).get())
+        if (m_mainWindow->FUN_140bbe640<ASButton>("m_showButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_showButton)).get())
             m_showButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009770), 0);
-        if (m_mainWindow->FUN_140bbe640("m_maviewButton", m_maviewButton).get())
+        if (m_mainWindow->FUN_140bbe640<ASButton>("m_maviewButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_maviewButton)).get())
             m_maviewButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_1410097a0), 0);
         m_mainWindow->FUN_141009c70("m_renderTarget", m_renderTarget);
         m_mainWindow->FUN_141009c70("m_hitArea", m_hitArea);

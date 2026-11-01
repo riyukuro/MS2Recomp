@@ -192,6 +192,12 @@ class UIBootyPopup : public CPtred
 {
 public:
     UIBootyPopup();                                               // 0x141031430
+    void FUN_1410315c0();                                         // show
+    void FUN_1410315f0();                                         // close and release
+    void FUN_141031660(const Vector3& pt);
+    void FUN_141031690(const egf::EntityID& kId);
+    void FUN_1410316d0(int nItemId);
+    void FUN_141031a60(int bShow);
     char m_pad_18[0x90 - 0x18];
 };
 MS2_CHECK_SIZE(UIBootyPopup, 0x90);
@@ -199,6 +205,11 @@ class UIUGCCubeNoticePopup : public CPtred
 {
 public:
     UIUGCCubeNoticePopup();                                       // 0x140fb49b0
+    void FUN_140fb4bb0();
+    void FUN_140fb4be0();                                         // close and release
+    void SetPtWorld(Vector3 ptWorld);
+    void FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText);
+    void FUN_140fb5080(int bShow);
     char m_pad_18[0x98 - 0x18];
 };
 MS2_CHECK_SIZE(UIUGCCubeNoticePopup, 0x98);
@@ -274,32 +285,30 @@ public:
     unsigned char FUN_140967140() { return m_bAlt; }
     Unk_EntRef GetEnt();                                   // 0x141226e60 copy of the entity handle
     egf::EntityID FUN_141226eb0();                               // 0x141226eb0 the entity id (or 0)
-    MS2Ptr<CBoxCollision> FUN_141226f90();                        // 0x141226f90 refresh the box pose, return it
-    void FUN_141227100(int nSound);                               // 0x141227100
+    MS2Ptr<CBoxCollision> UpdateAndGetBoxCollision();                        // 0x141226f90 refresh the box pose, return it
+    void PlayHitSoundAtPosition(int nSound);                               // 0x141227100
     void FUN_1412271c0(int nState);                               // 0x1412271c0
     int FUN_1412271f0();                                          // 0x1412271f0
     int FUN_141227270();                                                   // 0x141227270
-    Unk_FcSkillText FUN_1412272b0();                              // 0x1412272b0
+    Unk_FcSkillText GetWebLinkInfo();                              // 0x1412272b0
     void FUN_141227310();                                         // 0x141227310
     void FUN_141227360();                                         // 0x141227360
     void FUN_1412273b0();                                         // 0x1412273b0
-    void FUN_141227780();                                         // 0x141227780
+    void HideNotice();                                         // 0x141227780
     void FUN_1412277d0(unsigned char bOn);                                 // 0x1412277d0
-    void FUN_1412278b0();                                         // 0x1412278b0
+    void OpenSubKindDialog();                                         // 0x1412278b0
     void FUN_141227950();                                         // 0x141227950
     void FUN_141227cd0();                                         // 0x141227cd0
     void FUN_141227dd0(int nSkip);                                // 0x141227dd0
     void FUN_141228060();                                         // 0x141228060
     void FUN_141228100();                                         // 0x141228100
-    void FUN_141228200();                                         // 0x141228200
-    void FUN_1412282d0();                                         // 0x1412282d0
-    void FUN_141228340();                                         // 0x141228340
+    void OpenCubeSubScene();                                         // 0x141228200
+    void OpenHomePassword();                                         // 0x1412282d0
+    void OpenHomeSummon();                                         // 0x141228340
 
     // exe members defined elsewhere
     int FUN_140966fc0();                                          // cube kind of the data row
     int FUN_1409674f0();                                          // exe member of another unit
-    int FUN_140e5cc00();                                          // exe member of another unit
-    __int64 FUN_140e5cbf0();                                      // exe member of another unit
     int FUN_14112e110();                                          // item id
     int FUN_14122e6d0();                                          // 0x14122e6d0
     int FUN_14122e710();                                          // 0x14122e710
@@ -438,7 +447,7 @@ public:
     void FUN_14122ce80(unsigned short nLevel);                    // 0x14122ce80 respawn on a level change
     int FUN_14122d190();                                          // 0x14122d190 is the timer over
     int FUN_14122d200();                                          // 0x14122d200 action id
-    void FUN_14122d2a0(const CStringW& str);                      // 0x14122d2a0 notice once
+    void ShowNoticeOnce(const CStringW& str);                      // 0x14122d2a0 notice once
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -508,15 +517,15 @@ public:
     void FUN_14122f240(const efd::IMessage* pMsg, efd::Category cat);
     void FUN_14122f270(CInPacket* pPacket);         // the cube packet dispatcher
     void FUN_141230310(CInPacket* pPacket);
-    void FUN_1412304e0(unsigned nA, unsigned nB, int nKind);
-    void FUN_141230580(CString strId, MS2Ptr<CFunctionCubeObject> spObject);
-    MS2Ptr<CFunctionCubeObject> FUN_141230c00(CString strId);
+    void AddPendingCube(unsigned nA, unsigned nB, int nKind);
+    void TransferPendingState(CString strId, MS2Ptr<CFunctionCubeObject> spObject);
+    MS2Ptr<CFunctionCubeObject> FindCube(CString strId);
     void FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject);
     void FUN_141230df0(CString strId);
     MS2Ptr<CFunctionCubeObject> FUN_141230f60(Vector3 pt, float fRange, __int64 nOwner);
     MS2Ptr<CFunctionCubeObject> FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind);
     void FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut);
-    void FUN_1412316a0(MS2Ptr<Unk_FcArea> spArea, MS2Ptr<Unk_FcTag> spTag);
+    void SetTagArea(MS2Ptr<Unk_FcArea> spArea, MS2Ptr<Unk_FcTag> spTag);
     void FUN_141231730();
     void FUN_141231be0();
     void FUN_141231ce0(int nKey, CString str, int bAppend);

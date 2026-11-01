@@ -21,6 +21,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <egf/Entity.h>   // C3: egf::EntityPtr (efd::SmartPointer<egf::Entity>::operator->)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -35,15 +36,6 @@ class Unk_140165cf0
 public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);       // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);       // NextSiblingElement
-};
-class Unk_UhXmlList
-{
-public:
-    Unk_UhXmlList();                                            // 0x140163e20
-    ~Unk_UhXmlList();                                           // 0x1401644e0
-    unsigned __int64 FUN_14016d900();                           // size
-    Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);          // operator[]
-    void *m_a, *m_b, *m_c;
 };
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
@@ -61,34 +53,26 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 
 extern Vector3 DAT_143a08d08;   // zero colour
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Vector3 DAT_143a08cf8;   // zero up axis
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
 
 // The statics of the home apply functions (opaque stand-ins for helpers of other units).
-class Unk_UhUiService { public: void FUN_141ad9980(unsigned char nStage); };
-struct Unk_UhHandle;
-struct Unk_UhWorld { Unk_UhHandle FUN_141bd0420(unsigned hash); };   // the tagged-entity lookup of the world service
 void FUN_14097faa0(void* pDst, const Unk_UhPoint3& pt);     // NiPoint3::operator=
-struct Unk_UhHandle { ~Unk_UhHandle(); void* m_a; void* m_p; void* m_c; };   // 24 byte handle, released at 0x1409f20e0
-long long FUN_1409f2170(Unk_UhHandle* h);   // get()
-void* FUN_1409f2190(Unk_UhHandle* h);
+// The entity list a WorldService model lookup returns (worldservice.h declares it incomplete).
+struct Unk_WsC_TagPtr
+{
+    ~Unk_WsC_TagPtr();                                                      // 0x1409f20e0
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2170() const;  // get
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2190() const;  // operator->
+    void* m_a; void* m_p; void* m_c;
+};
 void* FUN_140b285b0(void* p);
-struct Unk_UhEntRef { Unk_UhEntRef(void* p); ~Unk_UhEntRef(); void* m_p; };    // 0x1408a7ed0 / 0x1408a8720
-void* FUN_1408a9280(Unk_UhEntRef* r);
-struct Unk_UhVec3f { Unk_UhVec3f(float x, float y, float z); float x, y, z; };   // 0x1406c4340
 void FUN_140b27f00(void* pEntity, unsigned id, void* p);
 
 // The part of the camera manager used here (the current mode holder).
-struct Unk_UhModeRef
-{
-    long long FUN_1409f2180() const;                            // non-null test
-    CCameraMode* FUN_1409f21a0() const;                         // operator->
-    void* m_pad_00;
-    CCameraMode* m_p;
-};
 struct Unk_UhCameraView
 {
     char m_pad_00[0x118];
-    Unk_UhModeRef m_mode;                                       // +0x118
+    MS2Ptr<CCameraMode> m_mode;                                 // +0x118
 };
 
 void FUN_140b6bd30(void* pCamera);
@@ -164,19 +148,19 @@ Unk_UhPoint3 UgcHomeOptionData::GetCameraUp(unsigned char nType)
 // @0x140b682c0
 void UgcHomeOptionData::ApplyBg(unsigned char nType)
 {
-    reinterpret_cast<Unk_UhUiService*>(TSingleton<CUIService>::GetInstance())->FUN_141ad9980(nType);
+    TSingleton<CUIService>::GetInstance()->LoadStageBackground(nType);
 }
 
 // @0x140b682f0
 void UgcHomeOptionData::ApplyLight(unsigned char nType)
 {
     Unk_UhPoint3 color = GetLightColor(nType);
-    Unk_UhHandle hTag = reinterpret_cast<Unk_UhWorld*>(WorldService::GetInstance())->FUN_141bd0420(0x169ea355);
-    if ((FUN_1409f2170(&hTag) != 0 ? true : false) && ((ATL::CAtlList<efd::SmartPointer<egf::Entity>, ATL::CElementTraits<efd::SmartPointer<egf::Entity>>>*)(void*)(FUN_1409f2190(&hTag)))->GetCount() > 0)
+    Unk_WsC_TagPtr hTag = WorldService::GetInstance()->FUN_141bd0420(0x169ea355);
+    if ((hTag.FUN_1409f2170() != 0 ? true : false) && hTag.FUN_1409f2190()->GetCount() > 0)
     {
-        Unk_UhEntRef ent(FUN_140b285b0(FUN_1409f2190(&hTag)));
-        Unk_UhVec3f vec(color.x, color.y, color.z);
-        FUN_140b27f00(FUN_1408a9280(&ent), 0xb086f4a8, &vec);
+        efd::SmartPointer<egf::Entity> ent(*reinterpret_cast<efd::SmartPointer<egf::Entity>*>(FUN_140b285b0(hTag.FUN_1409f2190())));
+        efd::Color vec(color.x, color.y, color.z);
+        FUN_140b27f00(reinterpret_cast<void*>(ent.operator->()), 0xb086f4a8, &vec);
     }
 }
 
@@ -200,11 +184,11 @@ void UgcHomeOptionData::LoadBg()
     if (pRoot == 0)
         return;
     m_mapBg.RemoveAll();
-    Unk_UhXmlList list;
+    std::vector<Unk_XmlNode*> list;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "list", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
-    for (unsigned __int64 i = 0; i < list.FUN_14016d900(); ++i)
+    for (unsigned __int64 i = 0; i < list.size(); ++i)
     {
-        Unk_140165cf0* pNode = list.FUN_140164a30(i);
+        Unk_140165cf0* pNode = reinterpret_cast<Unk_140165cf0*&>(list[i]);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CString strPath;
@@ -298,8 +282,8 @@ void Unk_UhSetting::Apply()
 // @0x140b6bd30
 void FUN_140b6bd30(void* pCamera)
 {
-    if (reinterpret_cast<Unk_UhCameraView*>(pCamera)->m_mode.FUN_1409f2180() != 0)
-        reinterpret_cast<Unk_UhCameraView*>(pCamera)->m_mode.FUN_1409f21a0()->vfunc_10();
+    if (reinterpret_cast<Unk_UhCameraView*>(pCamera)->m_mode.get() != 0)
+        reinterpret_cast<Unk_UhCameraView*>(pCamera)->m_mode->vfunc_10();
 }
 
 // @0x140b6c680

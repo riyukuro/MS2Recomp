@@ -18,45 +18,28 @@ class CIngredientContainer;
 #define LUA_GLOBALSINDEX (-10002)
 #define LUA_MULTRET (-1)
 extern "C" {                                                            // C linkage: nothrow under /EHsc, as in the exe
-void FUN_142391870(lua_State*);                                         // lua_close
-void FUN_142392210(lua_State*, int, const char*);                       // lua_getfield
-int FUN_142392310(lua_State*);                                          // lua_gettop
-int FUN_1423926e0(lua_State*, int, int, int);                           // lua_pcall
-void FUN_142392770(lua_State*, int);                                    // lua_pushboolean
-void FUN_142392790(lua_State*, int (*)(lua_State*), int);               // lua_pushcclosure
-void FUN_1423928b0(lua_State*, long long);                              // lua_pushinteger
-void FUN_142392980(lua_State*, double);                                 // lua_pushnumber
-void FUN_1423929a0(lua_State*, const char*);                            // lua_pushstring
-void FUN_142392ec0(lua_State*, int, const char*);                       // lua_setfield
-void FUN_142393030(lua_State*, int);                                    // lua_settop
-int FUN_142393180(lua_State*, int);                                     // lua_toboolean
-long long FUN_1423931e0(lua_State*, int);                               // lua_tointeger
-const char* FUN_142393210(lua_State*, int, size_t*);                    // lua_tolstring
-double FUN_1423932b0(lua_State*, int);                                  // lua_tonumber
-void FUN_142393470(lua_State*);                                         // luaL_openlibs
+void lua_close(lua_State*);
+void lua_getfield(lua_State*, int, const char*);
+int lua_gettop(lua_State*);
+int lua_pcall(lua_State*, int, int, int);
+void lua_pushboolean(lua_State*, int);
+void lua_pushcclosure(lua_State*, int (*)(lua_State*), int);
+void lua_pushinteger(lua_State*, long long);
+void lua_pushnumber(lua_State*, double);
+void lua_pushstring(lua_State*, const char*);
+void lua_setfield(lua_State*, int, const char*);
+void lua_settop(lua_State*, int);
+int lua_toboolean(lua_State*, int);
+long long lua_tointeger(lua_State*, int);
+const char* lua_tolstring(lua_State*, int, size_t*);
+double lua_tonumber(lua_State*, int);
+void luaL_openlibs(lua_State*);
 int FUN_142394530(lua_State*, const char*, size_t, const char*);        // luaL_loadbuffer
 int FUN_142394560(lua_State*, const char*);                             // luaL_loadfile
-lua_State* FUN_142394830();                                             // luaL_newstate
+lua_State* luaL_newstate();
 }
-#define lua_close FUN_142391870
-#define lua_getfield FUN_142392210
-#define lua_gettop FUN_142392310
-#define lua_pcall FUN_1423926e0
-#define lua_pushboolean FUN_142392770
-#define lua_pushcclosure FUN_142392790
-#define lua_pushinteger FUN_1423928b0
-#define lua_pushnumber FUN_142392980
-#define lua_pushstring FUN_1423929a0
-#define lua_setfield FUN_142392ec0
-#define lua_settop FUN_142393030
-#define lua_toboolean FUN_142393180
-#define lua_tointeger FUN_1423931e0
-#define lua_tolstring FUN_142393210
-#define lua_tonumber FUN_1423932b0
-#define luaL_openlibs FUN_142393470
 #define luaL_loadbuffer FUN_142394530
 #define luaL_loadfile FUN_142394560
-#define luaL_newstate FUN_142394830
 
 // The argument block of the OffenseScore / DefenseScore formulas (offsets from the push order; sizes unproved).
 struct Unk_OffenseScore

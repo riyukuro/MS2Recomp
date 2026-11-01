@@ -16,11 +16,11 @@
 
 // ---- unit-local views of exe objects ----
 
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 class Unk_AuCfgValue
 {
 public:
-    const float& FUN_140298f40();
     char m_pad[0x58];
 };
 struct Unk_AuConfig
@@ -99,7 +99,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
         fDuration = GetDistB();
         break;
     case 2:
-        fDuration = GetDistB() - ((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_140298f40();
+        fDuration = GetDistB() - reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->FUN_140298f40());
         break;
     default:
         MS2_ASSERT_AT(0x31, FALSE);

@@ -72,7 +72,7 @@ void UIPortrait::vfunc_2()
         if (pPlayer)
         {
             NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);
-            NiPoint3 kPosition = kTarget + pPlayer->FUN_14123cc20() * 130.0f;
+            NiPoint3 kPosition = kTarget + pPlayer->GetForwardDirection() * 130.0f;
             m_spCamera->SetTranslate(kPosition);
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);

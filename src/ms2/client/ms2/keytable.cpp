@@ -70,6 +70,7 @@
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/placeholder/cskillsettable.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/inventory.h"  // C3: Unk_Inventory (was the Unk_KtInventory view)
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/uiscenegame.h"
 #include <vector>
@@ -121,11 +122,6 @@ CFeatureManager* FUN_140166410();
 MS2InputService* FUN_140a58540();
 CStringTable* GetStringTable();
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
-int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);       // QueryIntAttribute
-int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, unsigned* pOut);  // QueryIntAttribute (unsigned out)
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);         // Attribute
-void FUN_14086f8d0(Unk_140165cf0* pElem, const char* pszName, const char* pszValue);   // SetAttribute
-void FUN_14086f920(Unk_140165cf0* pElem, const char* pszName, int nValue);     // SetAttribute (int)
 void* FUN_14086e090(void* pParent, void* pChild);                              // LinkEndChild
 CString FUN_14028d1f0(const char* psz);
 CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
@@ -158,7 +154,7 @@ CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);  
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);          // string-table text, "{0}" arguments
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);   // split
-class Unk_KtGameOption { public: unsigned char* FUN_140a58500(); };   // CGameOption: &m_gamepad (its first byte: use the pad)
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 CInputKeyHandler* FUN_14025e7c0();
 NotifySystem* FUN_140939a10();
 int SendKeyTableMode8(int nPage);                               // send the quick slot page
@@ -172,13 +168,13 @@ public:
     Unk_KtQuestList m_list;                                 // +0x10
 };
 Unk_KtQuestMgr* FUN_140764020();
-class Unk_KtSceneMgr                                        // the scene sound/UI scene controller
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (the scene-service global)
+class GFxSceneService                                       // the scene sound/UI scene controller
 {
 public:
-    UISceneEntity* FUN_1422b9e80();                         // the current UI scene
-    void FUN_1422b9fd0(int nSceneId);                       // toggle a sub scene
+    UISceneEntity* GetScene();                              // the current UI scene
+    int FUN_1422b9fd0(int nSubSceneId);                     // toggle a sub scene
 };
-Unk_KtSceneMgr* FUN_1408e57f0();
 class Unk_KtPopup { public: void FUN_14193bbe0(); void FUN_14193bdf0(); };   // the 0x4e28 popup menu
 Unk_KtPopup* FUN_140938b90(int nUiId);
 class Unk_KtRuleFlags { public: int FUN_1402c4c90(int nRule); };
@@ -187,18 +183,11 @@ Unk_KtRules* FUN_14025e7b0();
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
 void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
-class Unk_KtInventory                                       // the player's inventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);          // the item of the uid
-    MS2Ptr<CItem> FUN_140a5e2e0(int nItemId);               // an item of the id
-    void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut);   // the items of one inventory tab
-};
 int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
 int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event item command
        // the camera manager: its mode
 class Unk_Inventory;
-extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_KtInventory // the player's inventory
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90);  // the player's inventory
 void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
@@ -206,6 +195,10 @@ class TiXmlElement
 {
 public:
     TiXmlElement(const char* szName);
+    const char* Attribute(const char* name) const;              // 0x14086f4b0 (C3: the former free stand-ins)
+    const char* Attribute(const char* name, int* i) const;      // 0x14086f500
+    void SetAttribute(const char* name, const char* value);     // 0x14086f8d0
+    void SetAttribute(const char* name, int value);             // 0x14086f920
 private:
     void* m_pad[0x90 / sizeof(void*)];
 };
@@ -289,7 +282,7 @@ CKeyTable::CKeyTable()
     : m_nLoaded(0), m_bDirty(0), m_nMode(1), m_nLocked(0)
 {
     FUN_1414307a0();
-    FUN_14142a910();
+    InitKeys();
     LoadKeySettingTable();
 }
 
@@ -305,7 +298,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
     if (nMode == 0)
     {
         int nDefault = packet.ReadUInt8();
-        FUN_14142a800();
+        ClearAllBindings();
         if (nDefault == 1)
         {
             FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
@@ -396,7 +389,7 @@ void CKeyTable::SendKeyTableMode1(int nKey)
 {
     if (m_nLocked != 0)
         return;
-    MS2Ptr<stKeyData> spKey = FUN_14142c890(nKey);
+    MS2Ptr<stKeyData> spKey = FindKeyData(nKey);
     if (spKey.get() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
@@ -413,7 +406,7 @@ void CKeyTable::SendKeyTableMode1(int nKey)
 MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, SendKeyTableMode1, 281, 0xE9AD9B88);
 
 // @0x141429600
-void CKeyTable::FUN_141429600()
+void CKeyTable::SendKeysToServer()
 {
     if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
         return;
@@ -440,7 +433,7 @@ void CKeyTable::FUN_141429600()
     FUN_140710590(packet);
     m_bDirty = 0;
 }
-MS2_REPLACE_METHOD(0x141429600, CKeyTable, FUN_141429600, 467, 0x64A12F3D);
+MS2_REPLACE_METHOD(0x141429600, CKeyTable, SendKeysToServer, 467, 0x64A12F3D);
 
 // @0x1414297e0
 int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
@@ -469,7 +462,7 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
         if (pNode == 0)
             continue;
         unsigned nKeyCode = 0;
-        FUN_14086f500(pNode, "keyCode", &nKeyCode);
+        ((TiXmlElement*)(pNode))->Attribute("keyCode", (int*)&nKeyCode);
         byKey[nKeyCode] = pNode;
     }
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
@@ -478,7 +471,7 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         if (spKey.IsNull())
             continue;
-        if (FUN_141431a90(nKey) != 0)
+        if (IsGamepadKey(nKey) != 0)
             continue;
         {
             Unk_140165cf0* pNode = 0;
@@ -488,17 +481,17 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
             if (pNode == 0)
             {
                 pNode = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("key"));
-                FUN_14086f8d0(pNode, "code", "");
-                FUN_14086f8d0(pNode, "type", "");
-                FUN_14086f920(pNode, "keyCode", nKey);
-                FUN_14086f8d0(pNode, "priority", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("code", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("type", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("keyCode", nKey);
+                ((TiXmlElement*)(pNode))->SetAttribute("priority", "");
                 byKey[nKey] = pNode;
             }
-            if (FUN_14086f4b0(pNode, "keyCode") != 0)
+            if (((TiXmlElement*)(pNode))->Attribute("keyCode") != 0)
             {
-                int nType = atoi(FUN_14028d1f0(FUN_14086f4b0(pNode, "type")));
-                __int64 nCode = _atoi64(FUN_14028d1f0(FUN_14086f4b0(pNode, "code")));
-                int nPriority = atoi(FUN_14028d1f0(FUN_14086f4b0(pNode, "priority")));
+                int nType = atoi(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("type")));
+                __int64 nCode = _atoi64(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("code")));
+                int nPriority = atoi(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("priority")));
                 spKey->m_nType = nType;
                 spKey->m_nCode = nCode;
                 spKey->m_nPriority = nPriority;
@@ -507,7 +500,7 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
         }
     }
     m_bDirty = 1;
-    FUN_141429600();
+    SendKeysToServer();
     FUN_1414321f0();
     return 1;
 }
@@ -540,7 +533,7 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
         if (pNode == 0)
             continue;
         unsigned nKeyCode = 0;
-        FUN_14086f500(pNode, "keyCode", &nKeyCode);
+        ((TiXmlElement*)(pNode))->Attribute("keyCode", (int*)&nKeyCode);
         byKey[nKeyCode] = pNode;
     }
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
@@ -549,7 +542,7 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         if (spKey.IsNull())
             continue;
-        if (FUN_141431a90(nKey) == 0)
+        if (IsGamepadKey(nKey) == 0)
             continue;
         {
             Unk_140165cf0* pNode = 0;
@@ -559,23 +552,23 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
             if (pNode == 0)
             {
                 pNode = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("key"));
-                FUN_14086f8d0(pNode, "code", "");
-                FUN_14086f8d0(pNode, "type", "");
-                FUN_14086f920(pNode, "keyCode", nKey);
-                FUN_14086f8d0(pNode, "priority", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("code", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("type", "");
+                ((TiXmlElement*)(pNode))->SetAttribute("keyCode", nKey);
+                ((TiXmlElement*)(pNode))->SetAttribute("priority", "");
                 byKey[nKey] = pNode;
             }
-            if (pNode != 0 && FUN_14086f4b0(pNode, "keyCode") != 0)
+            if (pNode != 0 && ((TiXmlElement*)(pNode))->Attribute("keyCode") != 0)
             {
-                spKey->m_nType = atoi(FUN_14028d1f0(FUN_14086f4b0(pNode, "type")));
-                spKey->m_nCode = _atoi64(FUN_14028d1f0(FUN_14086f4b0(pNode, "code")));
-                spKey->m_nPriority = atoi(FUN_14028d1f0(FUN_14086f4b0(pNode, "priority")));
+                spKey->m_nType = atoi(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("type")));
+                spKey->m_nCode = _atoi64(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("code")));
+                spKey->m_nPriority = atoi(FUN_14028d1f0(((TiXmlElement*)(pNode))->Attribute("priority")));
                 FUN_141432360((int)spKey->m_nCode);
             }
         }
     }
     m_bDirty = 1;
-    FUN_141429600();
+    SendKeysToServer();
     FUN_1414321f0();
     return 1;
 }
@@ -597,7 +590,7 @@ void CKeyTable::BackupKeys()
 }
 
 // @0x14142a680
-void CKeyTable::FUN_14142a680()
+void CKeyTable::RestoreKeysFromBackup()
 {
     if (m_keysBackup.GetCount() == 0)
         return;
@@ -613,7 +606,7 @@ void CKeyTable::FUN_14142a680()
 }
 
 // @0x14142a800
-void CKeyTable::FUN_14142a800()
+void CKeyTable::ClearAllBindings()
 {
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
@@ -624,7 +617,7 @@ void CKeyTable::FUN_14142a800()
     }
     FUN_1414321f0();
 }
-MS2_REPLACE_METHOD(0x14142A800, CKeyTable, FUN_14142a800, 159, 0xE92B4FDD);
+MS2_REPLACE_METHOD(0x14142A800, CKeyTable, ClearAllBindings, 159, 0xE92B4FDD);
 
 // @0x14142a8b0
 void CKeyTable::FUN_14142a8b0(__int64 nAction)
@@ -636,7 +629,7 @@ void CKeyTable::FUN_14142a8b0(__int64 nAction)
 MS2_REPLACE_METHOD(0x14142A8B0, CKeyTable, FUN_14142a8b0, 85, 0x3BC4C506);
 
 // @0x14142a910
-void CKeyTable::FUN_14142a910()
+void CKeyTable::InitKeys()
 {
     m_keys.RemoveAll();
     for (int nKey = 1; nKey < 0xd0; nKey++)
@@ -653,7 +646,7 @@ void CKeyTable::FUN_14142a910()
             if (nSecond >= 0x96 && nSecond <= 0x99)
                 continue;
             unsigned nCombo;
-            FUN_141430e70(&nCombo, nFirst, nSecond, 0xf0);
+            MakeCombineKey(&nCombo, nFirst, nSecond, 0xf0);
             CStringW strName = CreateCombineKeyString(nFirst, nSecond);
             m_keys.SetAt(nCombo, new stKeyData(strName));
             nCount++;
@@ -661,7 +654,7 @@ void CKeyTable::FUN_14142a910()
         for (int nSecond = 0xa3; nSecond < 0xb3; nSecond++)
         {
             unsigned nCombo;
-            FUN_141430e70(&nCombo, nFirst, nSecond, 0xf1);
+            MakeCombineKey(&nCombo, nFirst, nSecond, 0xf1);
             CStringW strName = CreateCombineKeyString(nFirst, nSecond);
             m_keys.SetAt(nCombo, new stKeyData(strName));
             nCount++;
@@ -717,7 +710,7 @@ int CKeyTable::FUN_14142b1c0(int nKey, int nType, __int64 nAction, int nSlot, in
 MS2_REPLACE_METHOD(0x14142B1C0, CKeyTable, FUN_14142b1c0, 137, 0x8F634E0D);
 
 // @0x14142b250
-int CKeyTable::FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, int nPriority)
+int CKeyTable::SetKeyBindingAndSync(int nKey, int nType, __int64 nAction, int nSlot, int nPriority)
 {
     if (FUN_141431c80(nKey, nType, nAction, nSlot, nPriority, 1))
     {
@@ -729,19 +722,19 @@ int CKeyTable::FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, in
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142B250, CKeyTable, FUN_14142b250, 159, 0xD7F8BAAF);
+MS2_REPLACE_METHOD(0x14142B250, CKeyTable, SetKeyBindingAndSync, 159, 0xD7F8BAAF);
 
 // @0x14142b300
 int CKeyTable::FUN_14142b300(int nKey)
 {
-    if (FUN_14142b340(nKey))
+    if (ExecuteActionKey(nKey))
         return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x14142B300, CKeyTable, FUN_14142b300, 45, 0x00F4DB80);
 
 // @0x14142b340
-int CKeyTable::FUN_14142b340(int nAction)
+int CKeyTable::ExecuteActionKey(int nAction)
 {
     if (!FUN_141431fc0())
         return 0;
@@ -772,14 +765,14 @@ int CKeyTable::FUN_14142b340(int nAction)
         Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
         {
-            UISceneEntity* pScene = FUN_1408e57f0()->FUN_1422b9e80();
+            UISceneEntity* pScene = ((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene();
             if (pScene != 0)
             {
                 UISceneGameBeautyShop* pShop = dynamic_cast<UISceneGameBeautyShop*>(pScene->FUN_1422e7a70(0x620001f));
                 if (pShop != 0)
                     pShop->FUN_141ac8e70(1);
             }
-            FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
+            ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
         }
         break;
     }
@@ -787,7 +780,7 @@ int CKeyTable::FUN_14142b340(int nAction)
     {
         Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
-            FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
+            ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
         break;
     }
     case 300014:
@@ -914,7 +907,7 @@ int CKeyTable::FUN_14142b340(int nAction)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x14142B340, CKeyTable, FUN_14142b340, 1757, 0x7F357C0C);
+MS2_REPLACE_METHOD(0x14142B340, CKeyTable, ExecuteActionKey, 1757, 0x7F357C0C);
 
 // @0x14142bad0
 void CKeyTable::SetMode(int nMode)
@@ -953,9 +946,9 @@ void CKeyTable::FUN_14142bb10()
     for (POSITION pos = pPage->GetStartPosition(); pos != 0; pPage->GetNext(pos))
     {
         unsigned nSlot = pPage->GetKeyAt(pos);
-        Unk_MyPCKeyId nPrimary = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 0);
-        Unk_MyPCKeyId nSecondary = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 1);
-        Unk_MyPCKeyId nThirdly = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 2);
+        Unk_MyPCKeyId nPrimary = (Unk_MyPCKeyId)FindKeyByQuickSlot(nSlot, 0);
+        Unk_MyPCKeyId nSecondary = (Unk_MyPCKeyId)FindKeyByQuickSlot(nSlot, 1);
+        Unk_MyPCKeyId nThirdly = (Unk_MyPCKeyId)FindKeyByQuickSlot(nSlot, 2);
         ATL::CAtlArray<Unk_MyPCKeyId> aKeys;
         if (nPrimary != 0)
         {
@@ -983,7 +976,7 @@ void CKeyTable::FUN_14142bb10()
             int nKey = aKeys[i];
             if (FUN_14025e7c0()->FUN_14116d9c0(nKey, false, 0))
             {
-                if (FUN_14142e6f0(nKey))
+                if (IsShortKey(nKey))
                     continue;
                 Unk_SsQuickEntry entry = pPage->GetValueAt(pos);
                 if (entry.m_nItemId == 0)
@@ -991,7 +984,7 @@ void CKeyTable::FUN_14142bb10()
                 MS2Ptr<CItemData> spData = FUN_14053f870(entry.m_nItemId);
                 if (!spData)
                     continue;
-                MS2Ptr<CItem> spItem = reinterpret_cast<Unk_KtInventory&>(g_143ab2a90).FUN_140a5d680(entry.m_nItemUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(entry.m_nItemUid);
                 if (spItem.get())
                 {
                     if (spData->FUN_14053cd90())
@@ -999,7 +992,7 @@ void CKeyTable::FUN_14142bb10()
                 }
                 else
                 {
-                    MS2Ptr<CItem> spAny = reinterpret_cast<Unk_KtInventory&>(g_143ab2a90).FUN_140a5e2e0(entry.m_nItemId);
+                    MS2Ptr<CItem> spAny = g_143ab2a90.FUN_140a5e2e0(entry.m_nItemId);
                     if (spAny.get())
                     {
                         if (spData->FUN_14053cd90())
@@ -1024,13 +1017,13 @@ void CKeyTable::FUN_14142bb10()
 MS2_REPLACE_METHOD(0x14142BB10, CKeyTable, FUN_14142bb10, 1449, 0x8EF2B619);
 
 // @0x14142c0c0
-int CKeyTable::FUN_14142c0c0(int nSkillId)
+int CKeyTable::IsSkillKeyDown(int nSkillId)
 {
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         int nKey = m_keys.GetKeyAt(pos);
-        if (!FUN_14142cf60(spKey))
+        if (!IsKeyEntryValid(spKey))
             continue;
         if (IsQuickSlotAction(spKey->m_nCode))
         {
@@ -1043,36 +1036,36 @@ int CKeyTable::FUN_14142c0c0(int nSkillId)
             if (spKey->m_nSlot != nSkillId)
                 continue;
         }
-        if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+        if (FUN_140a58540()->IsKeyDownGated(nKey, 0))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142C0C0, CKeyTable, FUN_14142c0c0, 415, 0x7B9191EF);
+MS2_REPLACE_METHOD(0x14142C0C0, CKeyTable, IsSkillKeyDown, 415, 0x7B9191EF);
 
 // @0x14142c270
-int CKeyTable::FUN_14142c270(int nAction)
+int CKeyTable::IsActionKeyDown(int nAction)
 {
     __int64 nCode = nAction;
     POSITION pos = m_actionKeys.FindFirstWithKey(nCode);
     while (pos != 0)
     {
         int nKey = m_actionKeys.GetNextValueWithKey(pos, nCode);
-        if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+        if (FUN_140a58540()->IsKeyDownGated(nKey, 0))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142C270, CKeyTable, FUN_14142c270, 138, 0x83F4819B);
+MS2_REPLACE_METHOD(0x14142C270, CKeyTable, IsActionKeyDown, 138, 0x83F4819B);
 
 // @0x14142c300
-int CKeyTable::FUN_14142c300(int nSkillId)
+int CKeyTable::IsSkillKeyPressed(int nSkillId)
 {
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         int nKey = m_keys.GetKeyAt(pos);
-        if (!FUN_14142cf60(spKey))
+        if (!IsKeyEntryValid(spKey))
             continue;
         if (IsQuickSlotAction(spKey->m_nCode))
         {
@@ -1085,58 +1078,58 @@ int CKeyTable::FUN_14142c300(int nSkillId)
             if (spKey->m_nSlot != nSkillId)
                 continue;
         }
-        if (FUN_140a58540()->FUN_140d8ad60(nKey))
+        if (FUN_140a58540()->WasKeyPressedGated(nKey))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142C300, CKeyTable, FUN_14142c300, 412, 0x9817887F);
+MS2_REPLACE_METHOD(0x14142C300, CKeyTable, IsSkillKeyPressed, 412, 0x9817887F);
 
 // @0x14142c4b0
-int CKeyTable::FUN_14142c4b0(int nAction)
+int CKeyTable::IsActionKeyPressed(int nAction)
 {
     __int64 nCode = nAction;
     POSITION pos = m_actionKeys.FindFirstWithKey(nCode);
     while (pos != 0)
     {
         int nKey = m_actionKeys.GetNextValueWithKey(pos, nCode);
-        if (FUN_140a58540()->FUN_140d8ad60(nKey))
+        if (FUN_140a58540()->WasKeyPressedGated(nKey))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142C4B0, CKeyTable, FUN_14142c4b0, 135, 0xBC98637E);
+MS2_REPLACE_METHOD(0x14142C4B0, CKeyTable, IsActionKeyPressed, 135, 0xBC98637E);
 
 // @0x14142c540
-int CKeyTable::FUN_14142c540(int nAction)
+int CKeyTable::IsActionKeyReleased(int nAction)
 {
     __int64 nCode = nAction;
     POSITION pos = m_actionKeys.FindFirstWithKey(nCode);
     while (pos != 0)
     {
         int nKey = m_actionKeys.GetNextValueWithKey(pos, nCode);
-        if (FUN_140a58540()->FUN_140d8af70(nKey))
+        if (FUN_140a58540()->WasKeyReleasedGated(nKey))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142C540, CKeyTable, FUN_14142c540, 135, 0x7AAC129D);
+MS2_REPLACE_METHOD(0x14142C540, CKeyTable, IsActionKeyReleased, 135, 0x7AAC129D);
 
 // @0x14142c5d0
-void CKeyTable::FUN_14142c5d0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut)
+void CKeyTable::GetBoundKeys(ATL::CAtlArray<Unk_MyPCKeyId>& aOut)
 {
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
         MS2Ptr<stKeyData>& spKey = m_keys.GetValueAt(pos);
         Unk_MyPCKeyId nKey = (Unk_MyPCKeyId)m_keys.GetKeyAt(pos);
-        if (FUN_14142cf60(spKey) == 0)
+        if (IsKeyEntryValid(spKey) == 0)
             continue;
         if (spKey->m_nType == 0)
             continue;
         aOut.Add(nKey);
     }
 }
-MS2_REPLACE_METHOD(0x14142C5D0, CKeyTable, FUN_14142c5d0, 227, 0xFF2FE0A8);
+MS2_REPLACE_METHOD(0x14142C5D0, CKeyTable, GetBoundKeys, 227, 0xFF2FE0A8);
 
 // @0x14142c6c0
 void CKeyTable::FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId)
@@ -1145,11 +1138,11 @@ void CKeyTable::FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId)
     {
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         Unk_MyPCKeyId nKey = (Unk_MyPCKeyId)m_keys.GetKeyAt(pos);
-        if (FUN_14142cf60(spKey) == 0)
+        if (IsKeyEntryValid(spKey) == 0)
             continue;
         if (spKey->m_nType == 0)
             continue;
-        if (FUN_14142d9b0(spKey.get()) != nSkillId)
+        if (GetKeySkillId(spKey.get()) != nSkillId)
             continue;
         aOut.Add(nKey);
     }
@@ -1164,14 +1157,14 @@ int CKeyTable::GetPairKey(int nKey, int& nPair)
 MS2_REPLACE_METHOD(0x14142C830, CKeyTable, GetPairKey, 81, 0x7206F89F);
 
 // @0x14142c890
-MS2Ptr<CKeyTable::stKeyData> CKeyTable::FUN_14142c890(int nKey)
+MS2Ptr<CKeyTable::stKeyData> CKeyTable::FindKeyData(int nKey)
 {
     MS2Ptr<stKeyData> spKey(0);
     if (m_keys.Lookup(nKey, spKey))
         return spKey;
     return MS2Ptr<stKeyData>(0);
 }
-MS2_REPLACE_METHOD(0x14142C890, CKeyTable, FUN_14142c890, 169, 0x3D0D87EE);
+MS2_REPLACE_METHOD(0x14142C890, CKeyTable, FindKeyData, 169, 0x3D0D87EE);
 
 // @0x14142c940
 int CKeyTable::FUN_14142c940(__int64 nAction, int nPriority)
@@ -1216,20 +1209,20 @@ int CKeyTable::FUN_14142ca40(int nId, int nPriority)
 MS2_REPLACE_METHOD(0x14142CA40, CKeyTable, FUN_14142ca40, 240, 0xEF244DAB);
 
 // @0x14142cb40
-int CKeyTable::FUN_14142cb40(unsigned nIndex, int nPriority)
+int CKeyTable::FindKeyByQuickSlot(unsigned nIndex, int nPriority)
 {
     if (m_quickSlotActions.GetCount() <= nIndex)
         return 0;
     return FUN_14142c940(m_quickSlotActions[(int)nIndex], nPriority);
 }
-MS2_REPLACE_METHOD(0x14142CB40, CKeyTable, FUN_14142cb40, 98, 0x88201520);
+MS2_REPLACE_METHOD(0x14142CB40, CKeyTable, FindKeyByQuickSlot, 98, 0x88201520);
 
 // @0x14142cbb0
-size_t CKeyTable::FUN_14142cbb0()
+size_t CKeyTable::GetQuickSlotActionCount()
 {
     return m_quickSlotActions.GetCount();
 }
-MS2_REPLACE_METHOD(0x14142CBB0, CKeyTable, FUN_14142cbb0, 33, 0x2B1D3988);
+MS2_REPLACE_METHOD(0x14142CBB0, CKeyTable, GetQuickSlotActionCount, 33, 0x2B1D3988);
 
 // @0x14142cbe0
 __int64 CKeyTable::GetQuickSlotAction(unsigned nIndex)
@@ -1241,7 +1234,7 @@ __int64 CKeyTable::GetQuickSlotAction(unsigned nIndex)
 MS2_REPLACE_METHOD(0x14142CBE0, CKeyTable, GetQuickSlotAction, 78, 0xDE3D617A);
 
 // @0x14142cc40
-int CKeyTable::FUN_14142cc40(int nKey)
+int CKeyTable::IsKeyRebindable(int nKey)
 {
     if (nKey == 1)
         return 0;
@@ -1255,17 +1248,17 @@ int CKeyTable::FUN_14142cc40(int nKey)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x14142CC40, CKeyTable, FUN_14142cc40, 89, 0x5FBDDE9B);
+MS2_REPLACE_METHOD(0x14142CC40, CKeyTable, IsKeyRebindable, 89, 0x5FBDDE9B);
 
 // @0x14142cca0
-int CKeyTable::FUN_14142cca0(int nKey)
+int CKeyTable::IsKeyBound(int nKey)
 {
     MS2Ptr<stKeyData> spKey(0);
     if (!m_keys.Lookup(nKey, spKey))
         return 0;
-    return FUN_14142cf60(spKey);
+    return IsKeyEntryValid(spKey);
 }
-MS2_REPLACE_METHOD(0x14142CCA0, CKeyTable, FUN_14142cca0, 161, 0x15AABA96);
+MS2_REPLACE_METHOD(0x14142CCA0, CKeyTable, IsKeyBound, 161, 0x15AABA96);
 
 // @0x14142cd50
 int CKeyTable::IsKeyBoundToAction(int nKey, int nAction)
@@ -1306,7 +1299,7 @@ int CKeyTable::IsQuickSlotAction(__int64 nAction)
 MS2_REPLACE_METHOD(0x14142CF10, CKeyTable, IsQuickSlotAction, 70, 0xBDE6A588);
 
 // @0x14142cf60
-int CKeyTable::FUN_14142cf60(MS2Ptr<stKeyData> spKey)
+int CKeyTable::IsKeyEntryValid(MS2Ptr<stKeyData> spKey)
 {
     if (spKey == 0)
         return 0;
@@ -1316,7 +1309,7 @@ int CKeyTable::FUN_14142cf60(MS2Ptr<stKeyData> spKey)
         return 0;
     if (IsQuickSlotAction(spKey->m_nCode))
     {
-        int nSlot = FUN_14142e220(spKey->m_nCode);
+        int nSlot = FindQuickSlotActionIndex(spKey->m_nCode);
         Unk_SsQuickEntry entry;
         if (!GetQuickSlotEntry(nSlot, entry))
             return 0;
@@ -1330,7 +1323,7 @@ int CKeyTable::FUN_14142cf60(MS2Ptr<stKeyData> spKey)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x14142CF60, CKeyTable, FUN_14142cf60, 407, 0x9F237905);
+MS2_REPLACE_METHOD(0x14142CF60, CKeyTable, IsKeyEntryValid, 407, 0x9F237905);
 
 // @0x14142d100
 int CKeyTable::GetKeyType(int nKey)
@@ -1353,14 +1346,14 @@ __int64 CKeyTable::GetKeyAction(int nKey)
 MS2_REPLACE_METHOD(0x14142D190, CKeyTable, GetKeyAction, 134, 0x17DAE7B5);
 
 // @0x14142d220
-CStringW CKeyTable::FUN_14142d220(int nKey)
+CStringW CKeyTable::GetKeyName(int nKey)
 {
     MS2Ptr<stKeyData> spKey(0);
     if (m_keys.Lookup(nKey, spKey))
     {
         if (FUN_140166410()->FUN_14036d570(0xb5) == true)
         {
-            if (FUN_141431a90(nKey) == 0)
+            if (IsGamepadKey(nKey) == 0)
             {
                 return spKey->m_strName;
             }
@@ -1383,10 +1376,10 @@ CStringW CKeyTable::FUN_14142d220(int nKey)
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x14142D220, CKeyTable, FUN_14142d220, 801, 0x02B623A0);
+MS2_REPLACE_METHOD(0x14142D220, CKeyTable, GetKeyName, 801, 0x02B623A0);
 
 // @0x14142d580
-CStringW CKeyTable::FUN_14142d580(int nKey)
+CStringW CKeyTable::GetKeyDisplayName(int nKey)
 {
     if (nKey == 0x1d)
         return L"LCtrl";
@@ -1404,41 +1397,41 @@ CStringW CKeyTable::FUN_14142d580(int nKey)
         return L"LShift";
     else if (nKey == 0x36)
         return L"RShift";
-    return FUN_14142d220(nKey);
+    return GetKeyName(nKey);
 }
-MS2_REPLACE_METHOD(0x14142D580, CKeyTable, FUN_14142d580, 433, 0xC3BED9B7);
+MS2_REPLACE_METHOD(0x14142D580, CKeyTable, GetKeyDisplayName, 433, 0xC3BED9B7);
 
 // @0x14142d760
 CStringW CKeyTable::FUN_14142d760(int nAction, int nPriority)
 {
     __int64 nCode = nAction;
     int nKey = FUN_14142c940(nCode, nPriority);
-    return FUN_14142d220(nKey);
+    return GetKeyName(nKey);
 }
 MS2_REPLACE_METHOD(0x14142D760, CKeyTable, FUN_14142d760, 107, 0xA4DDC314);
 
 // @0x14142d7e0
-CStringW CKeyTable::FUN_14142d7e0(const int& nKey)
+CStringW CKeyTable::GetKeyActionLabel(const int& nKey)
 {
     unsigned __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
     if (IsQuickSlotKey(nKey))
-        return StringFormat(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)nAction), FUN_1409331f0()->FUN_14142d220(nKey));
+        return StringFormat(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)nAction), FUN_1409331f0()->GetKeyName(nKey));
     else if (nAction >= 0xaae61 && nAction <= 0xaae63)
         return GetStringTable()->FUN_1418125b0((int)nAction);
     else if (nAction >= 0xdbba1 && nAction <= 0xdbbaa)
         return GetStringTable()->FUN_1418125b0((int)nAction);
     return GetStringTable()->FUN_1418125b0((int)nAction);
 }
-MS2_REPLACE_METHOD(0x14142D7E0, CKeyTable, FUN_14142d7e0, 442, 0x7180F4EA);
+MS2_REPLACE_METHOD(0x14142D7E0, CKeyTable, GetKeyActionLabel, 442, 0x7180F4EA);
 
 // @0x14142d9b0
-int CKeyTable::FUN_14142d9b0(stKeyData* pKey)
+int CKeyTable::GetKeySkillId(stKeyData* pKey)
 {
     if (pKey == 0)
         return 0;
     if (IsQuickSlotAction(pKey->m_nCode))
     {
-        int nIndex = FUN_14142e220(pKey->m_nCode);
+        int nIndex = FindQuickSlotActionIndex(pKey->m_nCode);
         if (nIndex < 0)
             return 0;
         Unk_SsQuickEntry entry;
@@ -1463,7 +1456,7 @@ int CKeyTable::FUN_14142d9b0(stKeyData* pKey)
     }
     return pKey->m_nSlot;
 }
-MS2_REPLACE_METHOD(0x14142D9B0, CKeyTable, FUN_14142d9b0, 264, 0xE98EBD47);
+MS2_REPLACE_METHOD(0x14142D9B0, CKeyTable, GetKeySkillId, 264, 0xE98EBD47);
 
 // @0x14142dad0
 int CKeyTable::FUN_14142dad0(unsigned nKey)
@@ -1487,7 +1480,7 @@ int CKeyTable::FUN_14142dad0(unsigned nKey)
         if (pMe != 0 && pMe->FUN_14165f150() && (pHeld = pMe->FUN_14165f100()) != 0)
             return pHeld->FUN_140527840()->FUN_14053dc90();
     }
-    return FUN_14142d9b0(FUN_14142c890(nKey).get());
+    return GetKeySkillId(FindKeyData(nKey).get());
 }
 MS2_REPLACE_METHOD(0x14142DAD0, CKeyTable, FUN_14142dad0, 364, 0x70BB5782);
 
@@ -1630,7 +1623,7 @@ int CKeyTable::FindQuickSlotBySkillAndItem(int nSkillId, int nItemId, __int64 nI
 MS2_REPLACE_METHOD(0x14142E150, CKeyTable, FindQuickSlotBySkillAndItem, 198, 0xA02EF2EE);
 
 // @0x14142e220
-int CKeyTable::FUN_14142e220(__int64 nAction)
+int CKeyTable::FindQuickSlotActionIndex(__int64 nAction)
 {
     int nCount = (int)m_quickSlotActions.GetCount();
     for (int i = 0; i < nCount; i++)
@@ -1640,7 +1633,7 @@ int CKeyTable::FUN_14142e220(__int64 nAction)
     }
     return -1;
 }
-MS2_REPLACE_METHOD(0x14142E220, CKeyTable, FUN_14142e220, 120, 0x63DE7BEB);
+MS2_REPLACE_METHOD(0x14142E220, CKeyTable, FindQuickSlotActionIndex, 120, 0x63DE7BEB);
 
 // @0x14142e2a0
 void CKeyTable::SetQuickSlotEntry(unsigned nSlot, const Unk_SsQuickEntry& entry)
@@ -1660,7 +1653,7 @@ void CKeyTable::SetQuickSlotEntryOnPage(int nPage, unsigned nSlot, const Unk_SsQ
 MS2_REPLACE_METHOD(0x14142E2E0, CKeyTable, SetQuickSlotEntryOnPage, 76, 0x0E630629);
 
 // @0x14142e340
-int CKeyTable::FUN_14142e340(int bPressed)
+int CKeyTable::FindActiveKey(int bPressed)
 {
     if (DAT_143af7d40 == 0)
         return 0;
@@ -1670,21 +1663,21 @@ int CKeyTable::FUN_14142e340(int bPressed)
         int nKey = m_keys.GetKeyAt(pos);
         if (bPressed)
         {
-            if (FUN_140a58540()->FUN_140d8ad60(nKey))
+            if (FUN_140a58540()->WasKeyPressedGated(nKey))
                 return nKey;
         }
         else
         {
-            if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+            if (FUN_140a58540()->IsKeyDownGated(nKey, 0))
                 return nKey;
         }
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142E340, CKeyTable, FUN_14142e340, 290, 0x98582408);
+MS2_REPLACE_METHOD(0x14142E340, CKeyTable, FindActiveKey, 290, 0x98582408);
 
 // @0x14142e470
-int CKeyTable::FUN_14142e470(int bPressed)
+int CKeyTable::FindActiveComboPrefixKey(int bPressed)
 {
     if (DAT_143af7d40 == 0)
         return 0;
@@ -1692,18 +1685,18 @@ int CKeyTable::FUN_14142e470(int bPressed)
     {
         if (bPressed)
         {
-            if (FUN_140a58540()->FUN_140d8ad60(nKey))
+            if (FUN_140a58540()->WasKeyPressedGated(nKey))
                 return nKey;
         }
         else
         {
-            if (FUN_140a58540()->FUN_140d8ac50(nKey, 1))
+            if (FUN_140a58540()->IsKeyDownGated(nKey, 1))
                 return nKey;
         }
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142E470, CKeyTable, FUN_14142e470, 140, 0x4FA7D96B);
+MS2_REPLACE_METHOD(0x14142E470, CKeyTable, FindActiveComboPrefixKey, 140, 0x4FA7D96B);
 
 // @0x14142e510
 bool CKeyTable::IsComboKeyValid(unsigned nCombo)
@@ -1739,27 +1732,27 @@ void CKeyTable::GetKeysForAction(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>&
 MS2_REPLACE_METHOD(0x14142E600, CKeyTable, GetKeysForAction, 222, 0xF13E6B05);
 
 // @0x14142e6f0
-int CKeyTable::FUN_14142e6f0(int nKey)
+int CKeyTable::IsShortKey(int nKey)
 {
     if (m_shortKeys.Lookup(nKey))
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142E6F0, CKeyTable, FUN_14142e6f0, 56, 0x1D23C6E6);
+MS2_REPLACE_METHOD(0x14142E6F0, CKeyTable, IsShortKey, 56, 0x1D23C6E6);
 
 // @0x14142e730
-void CKeyTable::FUN_14142e730(int nKey)
+void CKeyTable::AddShortKey(int nKey)
 {
     m_shortKeys.SetAt(nKey, nKey);
 }
-MS2_REPLACE_METHOD(0x14142E730, CKeyTable, FUN_14142e730, 47, 0x7BDF8918);
+MS2_REPLACE_METHOD(0x14142E730, CKeyTable, AddShortKey, 47, 0x7BDF8918);
 
 // @0x14142e770
-void CKeyTable::FUN_14142e770(int nKey)
+void CKeyTable::RemoveShortKey(int nKey)
 {
     m_shortKeys.RemoveKey(nKey);
 }
-MS2_REPLACE_METHOD(0x14142E770, CKeyTable, FUN_14142e770, 42, 0x359C743D);
+MS2_REPLACE_METHOD(0x14142E770, CKeyTable, RemoveShortKey, 42, 0x359C743D);
 
 // @0x14142e7a0
 int CKeyTable::GetLocked()
@@ -1769,7 +1762,7 @@ int CKeyTable::GetLocked()
 MS2_REPLACE_METHOD(0x14142E7A0, CKeyTable, GetLocked, 14, 0x5ADC0513);
 
 // @0x14142e7c0
-int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount)
+int CKeyTable::HasSkillSlotMatch(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount)
 {
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     if (nCount > 25)
@@ -1791,10 +1784,10 @@ int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsign
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14142E7C0, CKeyTable, FUN_14142e7c0, 245, 0x4845B103);
+MS2_REPLACE_METHOD(0x14142E7C0, CKeyTable, HasSkillSlotMatch, 245, 0x4845B103);
 
 // @0x14142e8c0
-void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
+void CKeyTable::ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet)
 {
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     m_nLocked = 1;
@@ -1850,7 +1843,7 @@ void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
 }
 
 // @0x14142ece0
-void CKeyTable::FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds)
+void CKeyTable::ApplyItemListToQuickSlots(const ATL::CAtlArray<unsigned>& aItemIds)
 {
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     m_nLocked = 1;
@@ -1948,7 +1941,7 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
         return;
     if (pSlot->GetSkillId() != 0 || pSlot->GetItemUid() != 0 || pSlot->GetItemId() != 0)
         return;
-    if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
+    if (HasSkillSlotMatch(nSkillId, nItemId, nItemUid, 25))
         return;
     Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer)
@@ -1999,7 +1992,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
     if (pPage == 0)
         return;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    reinterpret_cast<Unk_KtInventory&>(g_143ab2a90).FUN_140a60880(10, items);
+    g_143ab2a90.FUN_140a60880(10, items);
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         int nSkillId = items[i]->FUN_140527840()->FUN_14053dc20();
@@ -2010,7 +2003,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
             continue;
         if (nSlot != nJobSlot)
             continue;
-        if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
+        if (HasSkillSlotMatch(nSkillId, nItemId, nItemUid, 25))
             continue;
         Unk_SsQuickEntry entry;
         entry.m_nSkillId = nSkillId;
@@ -2044,7 +2037,7 @@ void CKeyTable::SendKeyTableMode7()
         pInfo->FUN_1419f2a90();
     m_nLocked = 0;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(false)));
-    FUN_141429600();
+    SendKeysToServer();
     COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.Encode1(7);
     FUN_140710590(packet);
@@ -2223,7 +2216,7 @@ int CKeyTable::FUN_141430470(__int64 nAction)
 MS2_REPLACE_METHOD(0x141430470, CKeyTable, FUN_141430470, 273, 0x5FDCA844);
 
 // @0x141430590
-MS2Ptr<CKeySettingParam> CKeyTable::FUN_141430590(__int64 nAction) const
+MS2Ptr<CKeySettingParam> CKeyTable::FindSettingParam(__int64 nAction) const
 {
     for (POSITION pos = m_settings.GetStartPosition(); pos != 0; m_settings.GetNext(pos))
     {
@@ -2237,7 +2230,7 @@ MS2Ptr<CKeySettingParam> CKeyTable::FUN_141430590(__int64 nAction) const
     }
     return MS2Ptr<CKeySettingParam>(0);
 }
-MS2_REPLACE_METHOD(0x141430590, CKeyTable, FUN_141430590, 374, 0xBC02E11B);
+MS2_REPLACE_METHOD(0x141430590, CKeyTable, FindSettingParam, 374, 0xBC02E11B);
 
 // @0x141430710
 CKeyTable::SettingList CKeyTable::GetSettingList(int nCategory)
@@ -2275,7 +2268,7 @@ void CKeyTable::FUN_1414307a0()
         for (size_t j = 0; j < m_200.GetCount(); j++)
         {
             unsigned nCombo;
-            FUN_141430e70(&nCombo, m_220[i], m_200[j], 0xf0);
+            MakeCombineKey(&nCombo, m_220[i], m_200[j], 0xf0);
             m_240.Add((Unk_MyPCKeyId)nCombo);
         }
     }
@@ -2342,7 +2335,7 @@ void CKeyTable::FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOld
         return;
     if (nKey == nOldKey)
         return;
-    MS2Ptr<stKeyData> spKey = FUN_14142c890(nKey);
+    MS2Ptr<stKeyData> spKey = FindKeyData(nKey);
     if (spKey.get())
     {
         FUN_1414310f0(nOldKey, nKey, spKey->m_nCode, nAction);
@@ -2353,7 +2346,7 @@ void CKeyTable::FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOld
 MS2_REPLACE_METHOD(0x141430D30, CKeyTable, FUN_141430d30, 309, 0x36A93CDE);
 
 // @0x141430e70
-unsigned* CKeyTable::FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int nMode)
+unsigned* CKeyTable::MakeCombineKey(unsigned* pOut, int nFirst, int nSecond, int nMode)
 {
     union { unsigned int value; struct { unsigned char low, high, mode, pad; } bytes; } packed;
     packed.bytes.pad = 0;
@@ -2363,7 +2356,7 @@ unsigned* CKeyTable::FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int 
     *pOut = packed.value;
     return pOut;
 }
-MS2_REPLACE_METHOD(0x141430E70, CKeyTable, FUN_141430e70, 93, 0x06A76195);
+MS2_REPLACE_METHOD(0x141430E70, CKeyTable, MakeCombineKey, 93, 0x06A76195);
 
 // @0x141430ee0
 CStringW CKeyTable::CreateCombineKeyString(int nFirst, int nSecond)
@@ -2385,20 +2378,20 @@ CStringW CKeyTable::CreateCombineKeyString(int nFirst, int nSecond)
 MS2_REPLACE_METHOD(0x141430EE0, CKeyTable, CreateCombineKeyString, 431, 0xF8C5E308);
 
 // @0x1414310a0
-void CKeyTable::FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond)
+void CKeyTable::SplitCombineKey(unsigned nKey, int* pFirst, int* pSecond)
 {
     union { unsigned int value; struct { unsigned char low, high, mode, pad; } bytes; } packed;
     packed.value = nKey;
     *pFirst = packed.bytes.high + 0x91;
     *pSecond = packed.bytes.low + 0x91;
 }
-MS2_REPLACE_METHOD(0x1414310A0, CKeyTable, FUN_1414310a0, 68, 0x7BA7262D);
+MS2_REPLACE_METHOD(0x1414310A0, CKeyTable, SplitCombineKey, 68, 0x7BA7262D);
 
 // @0x1414310f0
 void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 nOtherAction)
 {
-    MS2Ptr<stKeyData> spKey = FUN_14142c890(nKey);
-    MS2Ptr<stKeyData> spOther = FUN_14142c890(nOtherKey);
+    MS2Ptr<stKeyData> spKey = FindKeyData(nKey);
+    MS2Ptr<stKeyData> spOther = FindKeyData(nOtherKey);
     int bOther = FUN_141430b90(nOtherKey);
     __int64 nBase = FUN_1414317b0(nAction);
     __int64 nOtherBase = FUN_1414317b0(nOtherAction);
@@ -2416,9 +2409,9 @@ void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 
             continue;
         int nFirst;
         int nSecond;
-        FUN_1414310a0(nCombo, &nFirst, &nSecond);
+        SplitCombineKey(nCombo, &nFirst, &nSecond);
         unsigned nNewCombo;
-        FUN_141430e70(&nNewCombo, nOtherKey, nSecond, 0xf0);
+        MakeCombineKey(&nNewCombo, nOtherKey, nSecond, 0xf0);
         int nSlot = FUN_14142dad0(nCombo);
         aCombos.Add((Unk_MyPCKeyId)nNewCombo);
         aSlots.Add(nSlot);
@@ -2434,9 +2427,9 @@ void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 
                 continue;
             int nFirst;
             int nSecond;
-            FUN_1414310a0(nCombo, &nFirst, &nSecond);
+            SplitCombineKey(nCombo, &nFirst, &nSecond);
             unsigned nNewCombo;
-            FUN_141430e70(&nNewCombo, nKey, nSecond, 0xf0);
+            MakeCombineKey(&nNewCombo, nKey, nSecond, 0xf0);
             int nSlot = FUN_14142dad0(nCombo);
             aOtherCombos.Add((Unk_MyPCKeyId)nNewCombo);
             aOtherSlots.Add(nSlot);
@@ -2471,7 +2464,7 @@ void CKeyTable::FUN_1414316e0(int nKey, __int64 nAction)
     {
         Unk_MyPCKeyId nSecond = m_200[i];
         unsigned nCombo;
-        FUN_141430e70(&nCombo, nKey, nSecond, 0xf0);
+        MakeCombineKey(&nCombo, nKey, nSecond, 0xf0);
         FUN_141431c80(nCombo, 2, 0, 0, 2, 1);
     }
 }
@@ -2494,7 +2487,7 @@ MS2_REPLACE_METHOD(0x1414317B0, CKeyTable, FUN_1414317b0, 104, 0xEB7B6208);
 // @0x141431820
 CStringW CKeyTable::FUN_141431820(int nKey)
 {
-    if (*reinterpret_cast<Unk_KtGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500())
+    if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
     {
         if (FUN_140a58540()->FUN_140d8ee40() == 2)
         {
@@ -2524,7 +2517,7 @@ MS2_REPLACE_METHOD(0x141431820, CKeyTable, FUN_141431820, 445, 0xA9F48A3D);
 // @0x1414319f0
 int CKeyTable::FUN_1414319f0()
 {
-    if (*reinterpret_cast<Unk_KtGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
+    if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
         return 2;
     else
         return 0;
@@ -2550,7 +2543,7 @@ int CKeyTable::FUN_141431a60(int nKey)
 MS2_REPLACE_METHOD(0x141431A60, CKeyTable, FUN_141431a60, 39, 0xB42A4CF0);
 
 // @0x141431a90
-int CKeyTable::FUN_141431a90(int nKey)
+int CKeyTable::IsGamepadKey(int nKey)
 {
     if (nKey > 0x91 && nKey < 0xb3)
         return 1;
@@ -2558,7 +2551,7 @@ int CKeyTable::FUN_141431a90(int nKey)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141431A90, CKeyTable, FUN_141431a90, 66, 0x3C69A6F2);
+MS2_REPLACE_METHOD(0x141431A90, CKeyTable, IsGamepadKey, 66, 0x3C69A6F2);
 
 // @0x141431ae0
 void CKeyTable::FUN_141431ae0(int nPage, bool bSend)

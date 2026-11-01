@@ -132,7 +132,7 @@ public:
     bool IsDebugMode();
 };
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
-CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);   // the text of a special stat option
+CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signature
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);             // the highlighted text
 bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
@@ -653,7 +653,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
             if (!spValue)
                 continue;
-            CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), spItem->FUN_140527840()), strTag);
+            CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())), strTag);
             CStringW strExtra;
             if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
             {

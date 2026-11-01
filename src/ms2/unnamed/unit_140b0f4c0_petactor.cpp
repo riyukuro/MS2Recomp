@@ -77,14 +77,9 @@ Unk_PetRowTable* FUN_14052d210();                                           // t
 
 // The singletons.
 
-// The client settings: the pet option flags at +0x34 (+0x12 other users' pets, +0x13 the own pet).
-struct Unk_PetOptFlags { char m_pad_00[0x12]; unsigned char m_bOther; unsigned char m_bOwn; };
-struct Unk_PetClientSettings
-{
-    char m_pad_00[0x34];
-    Unk_PetOptFlags m_flags;                                                // +0x34
-    Unk_PetOptFlags* FUN_140b123b0() { return &m_flags; }                   // @0x140b123b0
-};
+// The game options: the status flags at +0x34 (m_bDisplayShowOnlyMyPet +0x12, m_bDisplayHideMyPet +0x13).
+// @0x140b123b0
+Unk_StatusState* CGameOption::FUN_140b123b0() { return &m_status; }
 
 // The game-mode flags of the client config (a blocked-action set at +8).
 struct Unk_PetBanFlags { int FUN_1402c4c90(int nFlag); };
@@ -151,7 +146,6 @@ int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC);
 int FUN_140b118f0(int nItemId, PCBase* pPC);
 unsigned FUN_140b119c0(int nItemId, PCBase* pPC);
 
-void* FUN_140a58500(Unk_PetClientSettings* p);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -410,9 +404,9 @@ int CPet::FUN_140b10150()
     PCBase* pOwner = FUN_141094f60();
     if (pOwner == 0)
         return 0;
-    if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOwn != 0 && pOwner->GetClassID() == 0x6200004)
+    if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayHideMyPet != 0 && pOwner->GetClassID() == 0x6200004)
         return 1;
-    else if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+    else if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayShowOnlyMyPet != 0 && pOwner->GetClassID() != 0x6200004)
         return 1;
     if (FUN_14166cad0())
         return 1;
@@ -728,7 +722,7 @@ int CPet::vfunc_127()
     PCBase* pOwner = FUN_141094f60();
     if (pOwner == 0)
         return 0;
-    if (reinterpret_cast<Unk_PetClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+    if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayShowOnlyMyPet != 0 && pOwner->GetClassID() != 0x6200004)
         return 0;
     return 1;
 }

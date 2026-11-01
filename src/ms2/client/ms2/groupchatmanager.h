@@ -80,13 +80,13 @@ public:
     CGroupChat();
     virtual ~CGroupChat();
     unsigned GetOid() const;                  // oid
-    int FUN_14137b280(CInPacket* packet);            // reads oid + members
-    int FUN_14137b410(__int64 characterId);          // has a member with this id
-    int FUN_14137b510(CStringW name);                // has a member with this name
-    int FUN_14137b680(Unk_ChatMemberPtr member);     // adds (max 20)
-    void FUN_14137b7d0(CStringW name);               // removes by name
-    void FUN_14137b850();                            // removes all
-    Unk_ChatMemberPtr FUN_14137b8b0(__int64 characterId);
+    int ReadFromPacket(CInPacket* packet);            // reads oid + members
+    int HasMemberById(__int64 characterId);          // has a member with this id
+    int HasMemberByName(CStringW name);                // has a member with this name
+    int AddMember(Unk_ChatMemberPtr member);     // adds (max 20)
+    void RemoveMember(CStringW name);               // removes by name
+    void ClearMembers();                            // removes all
+    Unk_ChatMemberPtr FindMemberById(__int64 characterId);
     Unk_ChatMemberPtr FindMemberByName(CStringW name);
     int FUN_14137bad0();                             // member count
     int FUN_14137bb00();                             // joined member count
@@ -111,22 +111,22 @@ public:
     void FUN_14137e160();
     void FUN_14137e190();
     void FUN_14137e1c0();                            // debug dump
-    CStringW FUN_14137e410();
+    CStringW GetLocalPlayerName();
     void AddChat(Unk_ChatPtrChat chat);
     void RemoveChat(unsigned oid);
-    Unk_ChatPtrChat FUN_14137e630(unsigned oid);
-    void FUN_14137e6f0(__int64 characterId, ATL::CAtlList<unsigned>& oids);
+    Unk_ChatPtrChat FindChat(unsigned oid);
+    void FindChatsWithMember(__int64 characterId, ATL::CAtlList<unsigned>& oids);
     int GetChatCount();
     void Create(CStringW name);
     void Invite(unsigned oid, CStringW name);
     void SendGroupChatMode4(unsigned oid, int flag);
     void SendGroupChatMode10(unsigned oid, CStringW text);
     void OnGroupChat(CInPacket* packet);           // packet dispatcher
-    void FUN_14137f490(CInPacket* packet);
+    void OnPacketAddChat(CInPacket* packet);
     void FUN_14137f590(CInPacket* packet);
     void FUN_14137f640(CInPacket* packet);
     void FUN_14137f790(CInPacket* packet);
-    void FUN_14137f910(CInPacket* packet);
+    void OnPacketRemoveChat(CInPacket* packet);
     void FUN_14137f9d0(CInPacket* packet);
     void FUN_14137fc20(CInPacket* packet);
     void FUN_14137fe40(CInPacket* packet);

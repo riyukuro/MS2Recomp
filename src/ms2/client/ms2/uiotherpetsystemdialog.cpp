@@ -14,6 +14,8 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/gfxui/uiswfentity.h"
 
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -36,9 +38,7 @@ public:
 #undef OP_V
     virtual CStringW vfunc_77();                                // character name
 };
-class Unk_OpWorld { public: Unk_OpOwner* FUN_141bd1290(int nObjectId); };  // a player by object id
-Unk_OpWorld* FUN_1403ed2d0();
-class Unk_OpUIService { public: void FUN_141adc530(int nClass); };            // open a dialog
+class Unk_OpUIService;
 Unk_OpUIService* FUN_1403ed2b0();
 UIOtherPetSystemDialog* FUN_140cbe300(int nId);                             // the dialog of a UI id
 
@@ -86,7 +86,7 @@ void UIOtherPetSystemDialog::FUN_140e6d5b0(int nOwnerId, MS2Ptr<CItem> spPet)
     m_1e0 = nOwnerId;
     m_1e8 = spPet;
     if (vfunc_55() != 0)
-        FUN_1403ed2b0()->FUN_141adc530(0x4f41);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->OpenDialog((eUIClassID)0x4f41);
     else
     {
         FUN_140e6d6b0();
@@ -109,7 +109,7 @@ MS2Ptr<CItem> UIOtherPetSystemDialog::vfunc_85()
 // @0x140e6d6b0
 void UIOtherPetSystemDialog::FUN_140e6d6b0()
 {
-    if (Unk_OpOwner* pOwner = FUN_1403ed2d0()->FUN_141bd1290(m_1e0))
+    if (Unk_OpOwner* pOwner = reinterpret_cast<Unk_OpOwner*>(WorldService::GetInstance()->FUN_141bd1290(m_1e0)))
     {
         if (MS2Ptr<ASLabel> spTitle = GetChild<ASLabel>("m_title"))
             spTitle->FUN_1422e4a50(FUN_14028dfa0<CStringW>(CStringW(L"s_pet_owner"), pOwner->vfunc_77()));

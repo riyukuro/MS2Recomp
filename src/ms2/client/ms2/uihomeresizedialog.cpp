@@ -43,7 +43,7 @@ class Unk_HrBlockFlags { public: int FUN_1402c4c90(int nFlag); };       // block
 struct Unk_HrConfig { char m_pad[8]; Unk_HrBlockFlags m_flags; };
 Unk_HrConfig* FUN_14025e7b0();                                  // global client config
 
-class Unk_HrTrophy { public: int FUN_140936640(int nWidth, int nLength); };     // trophy requirement check
+class CAchieveManager { public: int IsGradeCleared(unsigned int nWidth, int nLength); };     // trophy requirement check
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 CMasteryInteriorTable* FUN_140933200();
 
@@ -188,7 +188,7 @@ void UIHomeResizeDialog::OnExtensionArea()
     CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, 0);
     CStringW strTrophy = FUN_14093bad0(spNext->m_nWidth, spNext->m_nLength, CStringW(L""));
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_trophy_messagebox"), nArea, spNext->m_nArea, strTrophy, strPrice);
-    if (strTrophy.IsEmpty() || ((class Unk_HrTrophy*)FUN_1406c7600())->FUN_140936640(spNext->m_nWidth, spNext->m_nLength) != 0)
+    if (strTrophy.IsEmpty() || ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(spNext->m_nWidth, spNext->m_nLength) != 0)
         strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_messagebox"), nArea, spNext->m_nArea, strPrice);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {

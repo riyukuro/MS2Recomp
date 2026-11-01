@@ -56,7 +56,7 @@ CNifAnimationController::~CNifAnimationController()
 const NiRTTI* CNifAnimationController::GetRTTI() const { return &ms_RTTI; }
 
 // The .nif loading service (CNifLoadingService; nifmodel.cpp declares the same view). Only the loader this unit calls.
-CNifLoadingService* FUN_140a0afd0();                      // the service singleton
+class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // The scene-graph walk (applyeffect.cpp / kfmmodel.cpp declare the same view).
 class Unk_NodeQueue
@@ -64,7 +64,7 @@ class Unk_NodeQueue
 public:
     Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
     ~Unk_NodeQueue();                                     // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bEnterChildren);
+    NiAVObject* Next(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
@@ -74,7 +74,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
 {
     m_58 = mode;
     if (m_58 == 0) {
-        m_10 = FUN_140a0afd0()->Load(name, false, 5, 0, 0);
+        m_10 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             NiTransform kXf = m_10->GetLocalTransform();
             kXf.m_Rotate.FromEulerAnglesXYZ((-kEuler.x * 3.1415927f) / 180.0f, (-kEuler.y * 3.1415927f) / 180.0f,
@@ -101,11 +101,11 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
             }
         }
     } else if (m_58 == 1) {
-        m_10 = FUN_140a0afd0()->Load(name, false, 5, 0, 0);
+        m_10 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             m_28 = NiDynamicCast(NiNode, m_10->GetObjectByName("Camera01"));
             Unk_AeSceneIter walk((NiAVObject*)(m_28));
-            while (NiAVObject* pObject = walk.FUN_14098e0d0(true)) {
+            while (NiAVObject* pObject = walk.Next(true)) {
                 NiTimeController* pCtrl = pObject->GetControllers();
                 while (pCtrl != 0 && pCtrl->GetAnimType() == 1) {
                     pCtrl->SetAnimType((NiTimeController::AnimType)0);

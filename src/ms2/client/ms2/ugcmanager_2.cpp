@@ -161,16 +161,16 @@ class Unk_UgcWorld
 {
 public:
     Unk_UgcPlayer* FUN_141bd0cc0();                         // the local player
-    Unk_UgcPlayer* FUN_141bd1180(int nObjectId);
-    Unk_UgcPlayer* FUN_141bd1290(int nObjectId);
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);
     MS2Ptr<Unk_UgcNameTag> FUN_141bc9be0(int nObjectId);
-    void* FUN_141bd0fa0(egf::EntityID id);
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -515,7 +515,7 @@ void CUgcDownloadEquip::ProcessResult()
             MS2Ptr<CUgcItemPC> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcPlayer* pPlayer = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd1290(sp->m_nObjectId);
+            Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1290(sp->m_nObjectId));
             if (pPlayer == NULL)
                 continue;
             MS2Ptr<Unk_UgcEquipItem> spEquip = pPlayer->FUN_141655c30(sp->m_itemUid);
@@ -658,7 +658,7 @@ void CUgcDownloadItemIcon::ProcessResult()
                 continue;
             if (sp->m_nKind == 1)
             {
-                Unk_UgcPlayer* pPlayer = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd1180(sp->m_nObjectId);
+                Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1180(sp->m_nObjectId));
                 Unk_UgcItemIconOwner* pOwner;
                 if (pPlayer && (pOwner = pPlayer->FUN_1417411e0()) != NULL)
                     pOwner->FUN_1411911f0();
@@ -1046,7 +1046,7 @@ void CUgcDownloadRidee::ProcessResult()
             MS2Ptr<CUgcItemRidee> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcRidee* pRidee = FUN_1409ffd80(((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd0fa0(sp->m_entityId));
+            Unk_UgcRidee* pRidee = FUN_1409ffd80(WorldService::GetInstance()->FindObjectByEntityId(sp->m_entityId));
             if (pRidee)
                 pRidee->FUN_1417072b0();
             else

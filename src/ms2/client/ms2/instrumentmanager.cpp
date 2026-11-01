@@ -85,6 +85,11 @@ static CString s_strNotThisPlace("system_notice_error_warningNotThisPlace");
 
 class Unk_ImBuffs : public AdditionalCliList { };      // an active buff of a kind
 
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 // A field actor (PC base): vtable slot 18 returns the world position.
 class Unk_ImActor
 {
@@ -95,7 +100,6 @@ public:
 #undef IM_V
     virtual Vector3 vfunc_18();                                     // the position
     int FUN_14123c580();                                                    // the object id
-    int FUN_14166c930();                                                    // the state id (0x2f = play instrument)
     StatePlayInstrument* FUN_14166ccb0();                                   // the play instrument state
     void FUN_14165ebb0(float fSpeed);                                       // the animation speed
     void FUN_14166cc40(int nSubState);                                      // set the sub state
@@ -110,7 +114,6 @@ class Unk_ImWorld : public WorldService
 {
 public:
     Unk_ImActor* FUN_141bd0cc0();                                           // the local player
-    Unk_ImActor* FUN_141bd1290(int nId);                                    // an actor by object id
     void FUN_141bbae40(IWorldServiceCallback* pCallback);                  // register a callback
 };
 
@@ -287,7 +290,7 @@ void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
     Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(spBuddy->FUN_1401cc230()));
     if (pActor == 0)
         return;
-    if (pActor->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
         return;
     StatePlayInstrument* pState = pActor->FUN_14166ccb0();
     pState->FUN_140ddfc00();
@@ -300,7 +303,7 @@ void CInstrumentManager::vfunc_buddy_7(__int64 nId)
     Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (pActor == 0)
         return;
-    if (pActor->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
         return;
     StatePlayInstrument* pState = pActor->FUN_14166ccb0();
     pState->FUN_140ddfc00();
@@ -469,7 +472,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         // the ensemble effect over a performer
         int nId = packet.ReadInt32();
-        Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nId);
+        Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1290(nId));
         if (pActor == 0)
             return;
         Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -540,7 +543,7 @@ bool CInstrumentManager::SetPcState(int nState)
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return false;
-    if (pMe->FUN_14166c930() == 0x2f)
+    if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() == 0x2f)
     {
         pMe->FUN_14166cc40(nState);
         return true;
@@ -965,7 +968,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
         ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
         m_performing = true;
         m_remote = bRemote;
-        if (pMe->FUN_14166c930() != 0x2f)
+        if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() != 0x2f)
         {
             StopPerform();
             return;
@@ -994,7 +997,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
 // @0x140d098a0
 void CInstrumentManager::OnPerformEnd(int nOwner)
 {
-    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nOwner);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1290(nOwner));
     if (pActor != 0)
         pActor->FUN_14165ebb0(1.0f);
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1099,7 +1102,7 @@ bool CInstrumentManager::HasOtherFlags(unsigned nFlags)
 // @0x140d09dd0
 bool CInstrumentManager::IsBlocked(int nOwner)
 {
-    Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(nOwner);
+    Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1290(nOwner));
     if (pActor == 0)
         return false;
     CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(pActor->FUN_141656a80());
@@ -1294,7 +1297,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
         m_slots[i].m_volume = nVolume;
         int nChannel = i;
         CMidiMessage msg;
-        msg.FUN_140d75600(nChannel, ScaleVolume(nVolume, m_slots[i].m_program));
+        msg.SetVolume(nChannel, ScaleVolume(nVolume, m_slots[i].m_program));
         m_midi.SendMessage(nChannel, msg.m_msg);
     }
     if (m_remoteVoices.size() > 0)
@@ -1307,14 +1310,14 @@ void CInstrumentManager::UpdateVolume(bool bForce)
         {
             m_slots[nChannel].m_volume = nVolume;
             CMidiMessage msg;
-            msg.FUN_140d75600(9, nVolume);
+            msg.SetVolume(9, nVolume);
             m_midi.SendMessage(9, msg.m_msg);
         }
         for (std::map<unsigned, RemoteVoice>::iterator it = m_remoteVoices.begin(), itEnd = m_remoteVoices.end(); it != itEnd; ++it)
         {
             RemoteVoice* pVoice = &it->second;
             bool bActive = true;
-            Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(pVoice->m_owner);
+            Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1290(pVoice->m_owner));
             if (pActor != 0)
             {
                 CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(pActor->FUN_141656a80());
@@ -1353,7 +1356,7 @@ void CInstrumentManager::PlayEvents()
     std::map<unsigned, Unk_ImScoreEvents>::iterator itEnd = m_events.end();
     while (it != itEnd)
     {
-        Unk_ImActor* pActor = reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bd1290(it->first);
+        Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1290(it->first));
         if (pActor == 0)
         {
             std::map<unsigned, Unk_ImScoreEvents>::iterator itErase = it;
@@ -1368,7 +1371,7 @@ void CInstrumentManager::PlayEvents()
             if (itEvent->first > nNow)
                 break;
             std::pair<int, int>* pEvent = &itEvent->second;
-            if (pActor->FUN_14166c930() != 0x2f)
+            if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
                 return;
             if (pEvent->first == 0)
             {
@@ -1416,7 +1419,7 @@ void CInstrumentManager::CheckPlayState()
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
-    if (pMe->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() != 0x2f)
         return;
     if (pMe->FUN_14166cc80() == 0x80)
     {

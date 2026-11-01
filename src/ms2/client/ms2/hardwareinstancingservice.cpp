@@ -313,7 +313,6 @@ void Unk_CMISNotifyA(struct Unk_CMISSink*, int);   // C3: was FUN_1410db460
 
 // ---- entities ----
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-egf::Entity* FUN_1408a9090(const void* pSmartPointer);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 efd::AssetID FUN_1413fa0d0(egf::Entity* pEntity);
 bool FUN_1413fa2a0(egf::Entity* pEntity);
@@ -617,7 +616,7 @@ void HardwareInstancingService::FUN_1413d47b0()
         std::set<MeshInstancing*> setDirty;
         for (POSITION pos = m_mapQueued.GetStartPosition(); pos != NULL; m_mapQueued.GetNext(pos))
         {
-            egf::Entity* pEntity = FUN_1408a9090(&m_mapQueued.GetValueAt(pos));
+            egf::Entity* pEntity = reinterpret_cast<const egf::EntityPtr*>(&m_mapQueued.GetValueAt(pos))->operator egf::Entity*();
             MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
             if (pInstancing != NULL)
             {
@@ -629,13 +628,13 @@ void HardwareInstancingService::FUN_1413d47b0()
             }
         }
         for (std::set<MeshInstancing*>::iterator it = setDirty.begin(); it != setDirty.end(); ++it)
-            (*it)->FUN_14147c910(dTime);
+            (*it)->UpdateNodes(dTime);
         setDirty.clear();
         m_mapQueued.RemoveAll();
     }
     for (std::list<MeshInstancing*>::iterator it = m_maps[m_nMap].m_listInstancings.begin();
          it != m_maps[m_nMap].m_listInstancings.end(); ++it)
-        (*it)->FUN_14147c730(dTime);
+        (*it)->UpdateIfVisible(dTime);
 }
 MS2_REPLACE_METHOD(0x1413D47B0, HardwareInstancingService, FUN_1413d47b0, 564, 0xC5162B8A);
 
@@ -692,7 +691,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d4b40(egf::Entity* pEntity, i
     EntityInstancing* pInstancing = new EntityInstancing(kConfig);
     pInstancing->FUN_1411c5880(pEntity, nCapacity);
     m_maps[m_nMap].m_listInstancings.push_back(pInstancing);
-    pInstancing->FUN_14147c830();
+    pInstancing->RefreshRootAndSource();
     m_maps[m_nMap].m_mapByValue.insert(std::make_pair(pEntity->GetEntityIDValue(), pInstancing));
     ecr::RenderService* pRender = FUN_1413f9890();
     bool bHidden = false;
@@ -729,7 +728,7 @@ int HardwareInstancingService::FUN_1413d4fe0(EntityInstancing* pInstancing, egf:
     if (pInstancing->FUN_1411c58d0(pEntity) != 0)
     {
         pInstancing->FUN_1413eb740();
-        pInstancing->FUN_14147c830();
+        pInstancing->RefreshRootAndSource();
         pInstancing->FUN_1413ed2f0();
         ecr::RenderService* pRender = FUN_1413f9890();
         bool bHidden = false;
@@ -952,7 +951,7 @@ void HardwareInstancingService::FUN_1413d5710()
 
     for (std::list<MeshInstancing*>::iterator it = m_maps[m_nMap].m_listInstancings.begin();
          it != m_maps[m_nMap].m_listInstancings.end(); ++it)
-        (*it)->FUN_14147c830();
+        (*it)->RefreshRootAndSource();
     FUN_1413d7040(m_bVisible);
     m_bReady = true;
     FUN_1413d6db0();
@@ -1006,7 +1005,7 @@ NiNode* HardwareInstancingService::GetInstancedNode(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
-        return pInstancing->FUN_14147d200(pEntity);
+        return pInstancing->GetClone(pEntity);
     return NULL;
 }
 MS2_REPLACE_METHOD(0x1413D6840, HardwareInstancingService, GetInstancedNode, 66, 0xD611F6F6);
@@ -1025,16 +1024,16 @@ int HardwareInstancingService::FUN_1413d68d0(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
-        return pInstancing->FUN_14147d010(pEntity);
+        return pInstancing->HasClone(pEntity);
     return 0;
 }
 
 // @0x1413d6920
-bool HardwareInstancingService::FUN_1413d6920()
+bool HardwareInstancingService::AllExcludedVisited()
 {
     return m_maps[m_nMap].m_nVisited == m_maps[m_nMap].m_mapExcluded.size();
 }
-MS2_REPLACE_METHOD(0x1413D6920, HardwareInstancingService, FUN_1413d6920, 133, 0x99718910);
+MS2_REPLACE_METHOD(0x1413D6920, HardwareInstancingService, AllExcludedVisited, 133, 0x99718910);
 
 // @0x1413d69b0
 void HardwareInstancingService::FUN_1413d69b0(const egf::EntityID& id)
@@ -1053,7 +1052,7 @@ void HardwareInstancingService::FUN_1413d6ab0(bool bShow)
 {
     for (std::list<MeshInstancing*>::iterator it = m_maps[m_nMap].m_listInstancings.begin();
          it != m_maps[m_nMap].m_listInstancings.end(); ++it)
-        (*it)->FUN_14147ca20(bShow);
+        (*it)->SetSourceVisible(bShow);
 }
 MS2_REPLACE_METHOD(0x1413D6AB0, HardwareInstancingService, FUN_1413d6ab0, 167, 0x490BD059);
 
@@ -1122,7 +1121,7 @@ int HardwareInstancingService::FUN_1413d6e60(egf::Entity* pEntity, bool bFlag)
         if (bInstanced && (pInstancing = FUN_1413d66b0(pEntity)) != NULL && pInstancing->FUN_140ad4bb0() == 0)
         {
             static_cast<EntityInstancing*>(pInstancing)->FUN_1411c5e30(pEntity, bFlag);
-            pInstancing->FUN_14147c910(((class CMainSystem*)(class Unk_Clock*)(TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
+            pInstancing->UpdateNodes(((class CMainSystem*)(class Unk_Clock*)(TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
             return 1;
         }
     }
@@ -1410,7 +1409,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d7ef0(int nIndex, bool bOnly)
         {
             if (i < nIndex)
                 pLast = *it;
-            (*it)->FUN_14147ca20(i < nIndex);
+            (*it)->SetSourceVisible(i < nIndex);
             ++i;
         }
     }
@@ -1422,7 +1421,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d7ef0(int nIndex, bool bOnly)
         {
             if (i == nIndex)
                 pLast = *it;
-            (*it)->FUN_14147ca20(i == nIndex);
+            (*it)->SetSourceVisible(i == nIndex);
             ++i;
         }
     }
@@ -1446,7 +1445,7 @@ MeshInstancing* HardwareInstancingService::FUN_1413d80f0(egf::Entity* pEntity)
         pInstancing->FUN_1413ed300(0x4000);
         static_cast<EntityInstancing*>(pInstancing)->FUN_1411c5880(pEntity, 0x4000);
         m_maps[m_nMap].m_listInstancings.push_back(pInstancing);
-        pInstancing->FUN_14147c830();
+        pInstancing->RefreshRootAndSource();
     }
     if (pInstancing->FUN_140ad4bb0() != 0)
         return NULL;
@@ -1471,7 +1470,7 @@ void HardwareInstancingService::FUN_1413d83f0(egf::Entity* pEntity)
         return;
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
-        pInstancing->FUN_14147c910(TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
+        pInstancing->UpdateNodes(TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
 }
 MS2_REPLACE_METHOD(0x1413D83F0, HardwareInstancingService, FUN_1413d83f0, 195, 0xBD0271EA);
 
@@ -1511,7 +1510,7 @@ bool HardwareInstancingService::FUN_1413d84e0(egf::Entity* pEntity, NiTransform*
                     }
                 }
             }
-            pInstancing->FUN_14147c830();
+            pInstancing->RefreshRootAndSource();
             pInstancing->FUN_14147caa0();
             m_maps[m_nMap].m_mapByValue.insert(std::make_pair(pEntity->GetEntityIDValue(), pInstancing));
             m_maps[m_nMap].m_mapDynamic.insert(std::make_pair(pEntity->GetEntityID(), pInstancing));

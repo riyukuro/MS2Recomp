@@ -26,6 +26,7 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/ckeytable.h"
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -47,12 +48,9 @@ class Unk_FishAS
 public:
     Scaleform::GFx::Value FUN_140f446c0(const char* szMethod, int a1);      // 0x140f446c0 Invoke(name, int)
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);      // 0x140caf230 Invoke(name, int)
-    Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);              // Invoke(name)
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
-class Unk_StringTable { public: CStringW FUN_14142d760(int nId, int n); };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_StringTable (calls cast back)
 struct Unk_GpSettings;
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
@@ -94,16 +92,6 @@ public:
     int m_24;
     int m_28;                           // +0x28 fish size
 };
-class Unk_FishRankTable { public: int FUN_1403b1520(int nKey); };
-class Unk_FishRef
-{
-public:
-    ~Unk_FishRef();                                                 // 0x1403b3920
-    void* m_00; void* m_08; void* m_10;
-    void* FUN_140cdf9b0();                                          // 0x140cdf9b0 the entry, null if the id is unknown
-    Unk_FishRankTable* FUN_1403b3c80();                             // 0x1403b3c80 its rank table
-};
-class Unk_FishTable { public: Unk_FishRef FUN_1403b2d30(int nId); };
 CFishingManager* FUN_140953f20();
 
 // @0x1400df560, @0x1400df590 (the two static CStrings above)
@@ -143,7 +131,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     if (m_30.get())
     {
         int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
-        m_30.operator->()->Invoke("setKeyText", reinterpret_cast<Unk_StringTable*>(FUN_1409331f0())->FUN_14142d760(0x493e2, nKeyType));
+        m_30.operator->()->Invoke("setKeyText", reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }
@@ -175,12 +163,12 @@ int UIFishingFloatDialog::vfunc_13()
         return 0;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
     {
-        reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("onFishUp");
+        m_30.operator->()->Invoke("onFishUp");
         return 1;
     }
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x493e2, 0, 0))
     {
-        reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("onFishUpRelease");
+        m_30.operator->()->Invoke("onFishUpRelease");
         return 1;
     }
     return 0;
@@ -221,12 +209,12 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<Unk_FishPacket> spInfo)
 {
     Unk_FishPacket* pInfo = spInfo.operator->();
-    Unk_FishRef ref = reinterpret_cast<Unk_FishTable*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2d30(pInfo->m_1c);
-    if (ref.FUN_140cdf9b0())
+    CFishDataPtr ref = TSingleton<CFishingTable>::GetInstance()->GetFish(pInfo->m_1c);
+    if (ref.get())
     {
         m_17c = spInfo.operator->()->m_28;
         Unk_FishPacket* pInfo2 = spInfo.operator->();
-        m_178 = ref.FUN_1403b3c80()->FUN_1403b1520(pInfo2->m_20);
+        m_178 = ref.operator->()->FUN_1403b1520(pInfo2->m_20);
     }
 }
 
@@ -235,7 +223,7 @@ int UIFishingFloatDialog::FUN_140f44490()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_1422bb330("getResult")))->GetBool();
+    return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30.operator->()->Invoke("getResult")))->GetBool();
 }
 
 // @0x140f44520

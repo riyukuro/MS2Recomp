@@ -24,6 +24,9 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cgameoption.h"  // C3: was a local member view
+#include "ms2/client/ms2/soundproperty.h"  // C3: was a local member view
+#include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 // ---- globals ----
@@ -44,11 +47,6 @@ struct Unk_SoundCfg
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CSoundService* FUN_140c9cb10();                                     // the sound service
 void* FUN_140d13c40();                                              // the channel volume manager
-class CGameOption   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_SoundState* FUN_140d13c70();
-};
 void* FUN_1409a8b10();
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -67,7 +65,7 @@ public:
     void FUN_14177bb70(float);
     void OnLostSoundDevice();
     void FUN_14177bf20();
-    void FUN_14177dbe0(int, unsigned int);
+    void SetCategoryMute(int, unsigned int);
     void FUN_14177dc80(unsigned int);
 };
 void FUN_14177af40(void* pMgr, FMOD::EventSystem* pEvents, FMOD::System* pSystem);
@@ -79,18 +77,7 @@ public:
     void FUN_1411a6160();
 };
 void* FUN_1411b1de0();
-class SoundPropertyMgr   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141793450();
-};
 void* FUN_14086d260();                                              // the time source
-class CMainSystem   // C3: member view for the former free stand-ins
-{
-public:
-    double GetDeltaTime();
-    float GetLastGameTimeDelta();
-};
 class NiRenderer   // C3: member view for the former free stand-ins
 {
 public:
@@ -377,17 +364,17 @@ void CSoundService::FUN_1417ae840(int nFlag)
     else
     {
         unsigned int bVolume = *(unsigned char*)((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_140d13c70());
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(0, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(9, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(1, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(2, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(3, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(4, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(7, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(5, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(8, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(6, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dbe0(10, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(0, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(9, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(1, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(2, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(3, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(4, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(7, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(5, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(8, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(6, bVolume);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(10, bVolume);
     }
 }
 

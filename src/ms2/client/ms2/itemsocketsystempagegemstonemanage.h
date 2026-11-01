@@ -20,7 +20,7 @@ public:
     void vfunc_2(void*) override;
     void vfunc_3(void*, bool) override;
     void vfunc_4(void*, int) override;
-    void FUN_140f70620();
+    void ResetState();
     void FUN_140f70770();
     void FUN_140f70ad0();
     void FUN_140f70c70();
@@ -35,7 +35,7 @@ public:
     bool FUN_140f72bc0(int, const CMsgBoxData&);
     bool FUN_140f72c80(int, const CMsgBoxData&);
     void FUN_140f72e60(ItemInfoSlot&, ASSlot&);
-    MS2Ptr<CGemStoneItem> FUN_140f733a0(CAtlArray<MS2Ptr<CGemStoneItem>>&, unsigned);
+    MS2Ptr<CGemStoneItem> GetGemAt(CAtlArray<MS2Ptr<CGemStoneItem>>&, unsigned);
 
     int m_state;
     CString m_equipmentName, m_gemName, m_selectedName, m_socketName;

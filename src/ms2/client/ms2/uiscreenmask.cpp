@@ -11,6 +11,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class CFieldDataCli;   // C3: the real class (fielddatacli.h), MS2Ptr<CFieldDataCli>::get
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -33,7 +34,6 @@ class Unk_FieldDataPtr
 {
 public:
     ~Unk_FieldDataPtr();                                // 0x1408850f0
-    Unk_FieldData* FUN_1409657a0() const;               // operator T* (NULL when there is no field)
     Unk_FieldData* FUN_140885340() const;               // operator->
 private:
     void* m_pad_00;
@@ -105,7 +105,7 @@ void UIScreenMask::vfunc_43()
 CString UIScreenMask::FUN_141ad09e0()
 {
     Unk_FieldDataPtr spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
-    if (spField.FUN_1409657a0() != 0)
+    if (reinterpret_cast<Unk_FieldData*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spField).get()) != 0)
         return spField.FUN_140885340()->m_strName;
     return "";
 }

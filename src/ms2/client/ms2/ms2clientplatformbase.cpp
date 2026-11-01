@@ -20,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0 / OpenDialog
+#include "ms2/client/ms2/uicashshopdialog.h"
 #include <stdarg.h>
 #include <efd/Win32/Win32PlatformService.h>
 
@@ -68,11 +69,7 @@ __int64 FUN_140930ae0();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
 class CUIService;
-struct Unk_CpUIService {
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);                         // 0x141adcea0 object by id
-};
 class UICashShopDialog* FUN_140b04f80(int);   // C3: was FUN_140b04f80
-void FUN_1410355e0(void* pWindow, CStringA strA, CStringA strB);
 void* FUN_140aadf80();
 void FUN_1416a0e70();
 void* FUN_140c77560(void* pGame);
@@ -82,7 +79,7 @@ void FUN_14125ef60(struct Unk_GraphicState2*, struct Unk_GraphicState2 const*); 
 class CGameOption   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1412432d0();
+    void SaveGameSettings();
 };
 __int64 FUN_140718350(const CStringA& str);
 extern int DAT_1439f4840;
@@ -360,7 +357,7 @@ void CClientPlatformBase::vfunc_47(CStringA strA, CStringA strB)
 {
     void* pWindow = ((void*)FUN_140b04f80(20156));
     if (pWindow != 0)
-        FUN_1410355e0(pWindow, CStringA(strA), CStringA(strB));
+        reinterpret_cast<UICashShopDialog*>(pWindow)->FUN_1410355e0(CStringA(strA), CStringA(strB));
 }
 
 // @0x140c75e70
@@ -445,7 +442,7 @@ void CClientPlatformBase::vfunc_64(int nMode)
             FUN_14125ef60((struct Unk_GraphicState2*)(FUN_140c77560(((void*)TSingleton<CGameOption>::GetInstance()))), (struct Unk_GraphicState2 const*)(&kProfile));
             FUN_14125ef90((struct Unk_GraphicState2*)(&kProfile));
         }
-        ((class CGameOption*)(void*)(((void*)TSingleton<CGameOption>::GetInstance())))->FUN_1412432d0();
+        ((class CGameOption*)(void*)(((void*)TSingleton<CGameOption>::GetInstance())))->SaveGameSettings();
     }
 }
 
@@ -579,7 +576,7 @@ void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszForm
 UIReportDialog* FUN_140c76fd0(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
-        MS2Ptr<UIObject> spObject = ((Unk_CpUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> spObject = ((CUIService*)TSingleton<CUIService>::GetInstance())->FindObject((eUIClassID)nId);
         if (spObject.get() != 0)
             return dynamic_cast<UIReportDialog*>((UIObject*)spObject);
     }

@@ -16,10 +16,9 @@ public:
 // ---- out-of-unit callees ----
 
 // TinyXML element of the game (TiXmlElement/TiXmlNode); only the two navigation calls used here.
-class Unk_140165cf0
-{
+class Unk_140165cf0 : public Unk_XmlNode {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);      // FirstChildElement
+
     Unk_140165cf0* NextSiblingElement();                    // NextSiblingElement
 };
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0

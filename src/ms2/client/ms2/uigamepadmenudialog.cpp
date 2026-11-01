@@ -171,8 +171,8 @@ NotifySystem* FUN_140939a10();
 
 class Unk_GpKeys { public: CStringW FUN_14142d760(int nBind, int n); };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GpKeys (calls cast back)
-class Unk_GpStr { public: CStringW FUN_1422b0570(const CString& strKey); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_GpStr (calls cast back)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 CFeatureManager* FUN_140166410();
 class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -468,7 +468,7 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
     {
         if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
             return 0;
-        CStringW strTip = reinterpret_cast<Unk_GpStr*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strText);
+        CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strText);
         if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
             CStringW strKey = reinterpret_cast<Unk_GpKeys*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);

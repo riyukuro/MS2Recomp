@@ -64,7 +64,6 @@ int FUN_1417b90f0(CString strName);                                      // stat
 
 // The avatar's character info (gender) and the effect lookup key, both unrecovered.
 class Unk_StateActorInfo;
-int FUN_141658e60(Unk_StateActorInfo* pInfo);                            // gender
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -123,7 +122,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         Unk_StateActorInfo* pInfo;
         if (it->m_nGender != 2 && (pInfo = reinterpret_cast<Unk_StateActorInfo*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject)))) != 0)
         {
-            if (FUN_141658e60(pInfo) != it->m_nGender)
+            if (reinterpret_cast<PC*>(pInfo)->FUN_141658e60() != it->m_nGender)
                 continue;
         }
         if (it->m_nEmotionSkillId != 0)

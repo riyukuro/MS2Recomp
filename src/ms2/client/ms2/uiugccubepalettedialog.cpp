@@ -263,7 +263,6 @@ public:
     virtual void vfunc_22();
     virtual void vfunc_23();
     virtual void vfunc_24(int n);
-    Scaleform::GFx::Value FUN_140ba26d0(const char* szMethod, unsigned int n);
     CStringW FUN_1422e0b00();
 };
 
@@ -495,7 +494,6 @@ class Unk_PalPtred298 : public CPtred {};   // WorldService::m_298 (worldservice
 class Unk_WorldMgr : public WorldService
 {
 public:
-    void* FUN_141bd1050(void* pMesh);
     MS2Ptr<Unk_PalPtred298> FUN_141bd30a0();   // copy of m_298 (by value: hidden return in rdx)
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -667,7 +665,7 @@ public:
 class CGameOption   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141243540();
+    void SaveCharacterSettings();
 };
 void FUN_140df5180(MS2Ptr<CUgcItemLook>* pDst, void* pSrc);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
@@ -730,7 +728,7 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141530200();
+    void SendCraftModeOff();
     class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
 int FUN_14166ce30(void* pWorld);
@@ -1488,7 +1486,7 @@ bool UIUGCCubePaletteDialog::FUN_140eec410(int nBtn, const CMsgBoxData& data)
         {
             __int64 n = GetServerTime();
             ((struct Unk_CubeUiData*)((class Unk_QnState*)(void*)(FUN_1409a8b10()))->FUN_140c9b8b0())->m_8 = n;
-            ((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_141243540();
+            ((class CGameOption*)(void*)(FUN_1409a8b10()))->SaveCharacterSettings();
         }
         FUN_140ef37d0();
     }
@@ -1530,7 +1528,7 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
             *pPos = Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pRoot))->GetZ());
             Unk_CubeCtl* pList = FUN_140bcc3f0(&spList);
             pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(pList))->GetZ()));
-            Scaleform::GFx::Value vRow = FUN_140bcc3f0(&spList)->FUN_140ba26d0("getRendererAt", i);
+            Scaleform::GFx::Value vRow = FUN_140bcc3f0(&spList)->Invoke("getRendererAt", i);
             if (((Scaleform::GFx::Value*)(void*)(&vRow))->IsDisplayObject() == 0)
                 return 0;
             RDisp spRow;
@@ -2651,7 +2649,7 @@ void FUN_140ef4010()
         void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
         if (pWorld == 0)
             return;
-        ((class MyPC*)(void*)(pWorld))->FUN_141530200();
+        ((class MyPC*)(void*)(pWorld))->SendCraftModeOff();
     }
 }
 
@@ -2671,9 +2669,9 @@ void FUN_140ef4070(int nIndex)
     if (spSel.get() != 0)
     {
         if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad640() != spSel->instanceId)
-            ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aa0c0(spSel.get());
+            ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
         else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad610() != spSel->itemId)
-            ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aa0c0(spSel.get());
+            ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
     }
     else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetMode() != 1)
         ((class Unk_PCCubeCraft*)(void*)(pEditor))->SendRequestCubeMode0(1);
@@ -2697,9 +2695,9 @@ void FUN_140ef41b0(int nIndex)
     if (spSel.get() != 0)
     {
         if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad640() != spSel->instanceId)
-            ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aa0c0(spSel.get());
+            ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
         else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad610() != spSel->itemId)
-            ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aa0c0(spSel.get());
+            ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
     }
     else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetMode() != 1)
         ((class Unk_PCCubeCraft*)(void*)(pEditor))->SendRequestCubeMode0(1);

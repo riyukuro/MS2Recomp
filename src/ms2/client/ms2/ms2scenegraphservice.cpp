@@ -59,6 +59,7 @@
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/commonfiles/os.h"
 
 using efd::UInt32;
 using efd::utf8string;
@@ -79,11 +80,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // The client options (FUN_1411b1db0 returns them): the scene graph worker thread count.
-class Unk_SgOptions
-{
-public:
-    UInt32 FUN_14070f0a0();
-};
 
 
 // The world objects (WorldService::m_118, an ATL::CRBMap<unsigned, Unk_WsV118> in worldservice.h) and the rider seat
@@ -227,10 +223,10 @@ efd::AsyncResult MS2SceneGraphService::OnInit()
         pkRenderer->AddResetNotificationFunc(FUN_1414f3690, this);
         pkRenderer->AddLostDeviceNotificationFunc(FUN_1414f36b0, this);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::FUN_1414f3700));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::LogStatsToCrashManager));
     if (DAT_143ae2b30 != 0)
     {
-        m_uiThreadCount = ((class Unk_SgOptions*)TSingleton<COSInfo>::GetInstance())->FUN_14070f0a0();
+        m_uiThreadCount = ((class COSInfo*)TSingleton<COSInfo>::GetInstance())->GetProcessorCount();
         MultiSceneUpdater::GetInstance()->Create(m_uiThreadCount);
         MultiSceneUpdater::s_pfnCallback = reinterpret_cast<SceneUpdateCallback>(FUN_1414f1d00);
         MultiSceneUpdater::s_pCallbackContext = this;
@@ -271,7 +267,7 @@ efd::AsyncResult MS2SceneGraphService::OnShutdown()
 MS2_REPLACE_METHOD(0x1414F10E0, MS2SceneGraphService, OnShutdown, 222, 0xFEF72BD6);
 
 // @0x1414f11d0
-void MS2SceneGraphService::FUN_1414f11d0(egf::Entity* pEntity)
+void MS2SceneGraphService::MarkEntityDynamic(egf::Entity* pEntity)
 {
     SceneGraphData* pData = GetEntityData(pEntity);
     if (pData)
@@ -283,16 +279,16 @@ void MS2SceneGraphService::FUN_1414f11d0(egf::Entity* pEntity)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1414F11D0, MS2SceneGraphService, FUN_1414f11d0, 100, 0x3F182875);
+MS2_REPLACE_METHOD(0x1414F11D0, MS2SceneGraphService, MarkEntityDynamic, 100, 0x3F182875);
 
 // @0x1414f1240
-void MS2SceneGraphService::FUN_1414f1240(egf::Entity* pEntity)
+void MS2SceneGraphService::RemoveEntityFromUpdate(egf::Entity* pEntity)
 {
     SceneGraphData* pData = GetEntityData(pEntity);
     if (pData)
         RemoveFromUpdate(pData);
 }
-MS2_REPLACE_METHOD(0x1414F1240, MS2SceneGraphService, FUN_1414f1240, 71, 0x4A9093B5);
+MS2_REPLACE_METHOD(0x1414F1240, MS2SceneGraphService, RemoveEntityFromUpdate, 71, 0x4A9093B5);
 
 // @0x1414f1290
 void MS2SceneGraphService::OnAssetLoadFailure(AssetDataPtr spAssetData)
@@ -508,11 +504,11 @@ void MS2SceneGraphService::AddAlwaysUpdated(NiAVObject* pkSceneGraph)
 MS2_REPLACE_METHOD(0x1414F1E30, MS2SceneGraphService, AddAlwaysUpdated, 48, 0xA04A05A5);
 
 // @0x1414f1e70
-void MS2SceneGraphService::FUN_1414f1e70(const egf::EntityID& entityID, int iBucket)
+void MS2SceneGraphService::SetBucketOverride(const egf::EntityID& entityID, int iBucket)
 {
     m_bucketOverrides[entityID.GetValue()] = iBucket;
 }
-MS2_REPLACE_METHOD(0x1414F1E70, MS2SceneGraphService, FUN_1414f1e70, 60, 0x7F714462);
+MS2_REPLACE_METHOD(0x1414F1E70, MS2SceneGraphService, SetBucketOverride, 60, 0x7F714462);
 
 // @0x1414f1ec0
 void MS2SceneGraphService::FUN_1414f1ec0()
@@ -522,12 +518,12 @@ void MS2SceneGraphService::FUN_1414f1ec0()
 MS2_REPLACE_METHOD(0x1414F1EC0, MS2SceneGraphService, FUN_1414f1ec0, 33, 0xF5AD8023);
 
 // @0x1414f1ef0
-void MS2SceneGraphService::FUN_1414f1ef0(const egf::EntityID& entityID)
+void MS2SceneGraphService::ClearBucketOverride(const egf::EntityID& entityID)
 {
     if (!m_bucketOverrides.IsEmpty())
         m_bucketOverrides.RemoveKey(entityID.GetValue());
 }
-MS2_REPLACE_METHOD(0x1414F1EF0, MS2SceneGraphService, FUN_1414f1ef0, 75, 0x3467E42F);
+MS2_REPLACE_METHOD(0x1414F1EF0, MS2SceneGraphService, ClearBucketOverride, 75, 0x3467E42F);
 
 // @0x1414f1f50
 void MS2SceneGraphService::FUN_1414f1f50(int iBucket)
@@ -881,11 +877,11 @@ void MS2SceneGraphService::EntityExitWorld(SceneGraphData* pSceneGraphData)
 MS2_REPLACE_METHOD(0x1414F3580, MS2SceneGraphService, EntityExitWorld, 217, 0x79C9BE43);
 
 // @0x1414f3660
-efd::UInt32 MS2SceneGraphService::FUN_1414f3660()
+efd::UInt32 MS2SceneGraphService::GetCacheIdentifierCount()
 {
     return m_spSceneGraphCache->GetIdentifierCount();
 }
-MS2_REPLACE_METHOD(0x1414F3660, MS2SceneGraphService, FUN_1414f3660, 41, 0x4EB5A467);
+MS2_REPLACE_METHOD(0x1414F3660, MS2SceneGraphService, GetCacheIdentifierCount, 41, 0x4EB5A467);
 
 // @0x1414f3690
 bool MS2SceneGraphService::FUN_1414f3690(bool bBeforeReset, void* pvData)
@@ -908,10 +904,10 @@ bool MS2SceneGraphService::FUN_1414f36b0(void* pvData)
 MS2_REPLACE(0x1414F36B0, MS2SceneGraphService::FUN_1414f36b0, 64, 0xDE91E682);
 
 // @0x1414f3700
-void MS2SceneGraphService::FUN_1414f3700()
+void MS2SceneGraphService::LogStatsToCrashManager()
 {
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- SceneGraphService Log---");
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("SceneGraphCached count: %d", FUN_1414f3660());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("SceneGraphCached count: %d", GetCacheIdentifierCount());
     egf::FlatModelManager* pFlatModels;
     MS2AnimationService* pAnimation;
     pFlatModels =
@@ -926,6 +922,6 @@ void MS2SceneGraphService::FUN_1414f3700()
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("KFMCached count: %d", pAnimation->GetKFMCacheCount());
     }
 }
-MS2_REPLACE_METHOD(0x1414F3700, MS2SceneGraphService, FUN_1414f3700, 292, 0xF2EAAB3D);
+MS2_REPLACE_METHOD(0x1414F3700, MS2SceneGraphService, LogStatsToCrashManager, 292, 0xF2EAAB3D);
 // MS2-PIN: ??_GClearCachedShaderFunctor@@UEAAPEAXI@Z 0x1414fc560 ; scalar deleting dtor (no symbols.tsv row)
 // MS2-PIN: ??_GNiTexturePalette@@UEAAPEAXI@Z 0x1414fc6c0 ; NiTexturePalette scalar deleting dtor COMDAT copy kept by this TU

@@ -49,7 +49,7 @@ void FUN_140d432f0(ItemSlotBinder* pBinder, int n)
 }
 
 // @0x140d43310
-CString ItemSlotBinder::FUN_140d43310(int nItemId, int nRarity, int nAmount)
+CString ItemSlotBinder::BindNewItem(int nItemId, int nRarity, int nAmount)
 {
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_14052b130(nItemId, nRarity, 0) != 0)
@@ -83,7 +83,7 @@ CString ItemSlotBinder::FUN_140d43510(const void* pItem)
 }
 
 // @0x140d43790
-CString ItemSlotBinder::FUN_140d43790(void* pItem)
+CString ItemSlotBinder::BindItem(void* pItem)
 {
     if (pItem == 0)
         return "";

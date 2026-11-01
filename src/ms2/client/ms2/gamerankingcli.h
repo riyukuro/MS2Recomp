@@ -412,6 +412,7 @@ public:
     int Last() { return m_last; }                           // 0x140b2e9a0
     int First() { return m_first; }                         // 0x140b2e9b0
     int Total() { return m_total; }                         // 0x140b2e9c0
+    int GetRankType();                                      // 0x140e37c20 (uigamerankingdialog.cpp)
     void SetTotal(int nTotal) { m_total = nTotal; }         // 0x140b5f110
     int m_type;                                             // +0x18
     int m_page;                                             // +0x1c

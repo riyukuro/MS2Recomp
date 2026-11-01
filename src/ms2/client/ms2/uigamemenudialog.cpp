@@ -705,7 +705,7 @@ public:
 class CMeratMarketMan   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140d5b6b0();
+    int HasBuyableAdProduct();
 };
 class PaybackTable   // C3: member view for the former free stand-ins
 {
@@ -716,7 +716,7 @@ bool FUN_140a8be20(void*, int);
 class CGuildManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1413bd560();
+    int GetGuildNotificationCount();
 };
 class CTradeManagerEx   // C3: member view for the former free stand-ins
 {
@@ -853,7 +853,7 @@ public:
     int HasNoHome();
     int FUN_141527ed0();
     int FUN_141529ae0(int, int, int, __int64);
-    void FUN_14152a240(int);
+    void SendRequestHome(int);
     int FUN_14152e970(int);
 };
 void FUN_1406395c0(void*, Unk_GmIdList* pOut, int, bool);
@@ -876,7 +876,7 @@ CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int* pArg);
 CString FUN_140536a50(const char* szFormat, const CString& a1);
-struct Unk_GmMovieMgrView { CStringW FUN_1422b0570(const CString& strKey); };   // $-key lookup ("" if unknown)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
 void FUN_1412752d0(const CStringW& str, int n);
@@ -1195,7 +1195,7 @@ void UIGameMenuDialog::vfunc_15()
     }
     if (m_bPetUpdate) {
         m_bPetUpdate = false;
-        bool bShow = ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->FUN_140d5b6b0() == 1;
+        bool bShow = ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->HasBuyableAdProduct() == 1;
         FUN_14193daf0(bShow);
     }
 }
@@ -1465,7 +1465,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
                 nCount++;
         }
     } else if (nId == 0x4e4f) {
-        nCount = ((class CGuildManager*)(void*)(FUN_1403ed290()))->FUN_1413bd560();
+        nCount = ((class CGuildManager*)(void*)(FUN_1403ed290()))->GetGuildNotificationCount();
     } else if (nId == 0x4f43) {
         void* p = FUN_140cf8380(0x4f43);
         if (p != 0)
@@ -1758,7 +1758,7 @@ int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
         if (ref.FUN_140c1cd90()) {
             if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(ref.FUN_140c1cda0()->m_period))->FUN_140c1d130() && ref.FUN_140c1cda0()->m_period.FUN_140c1cdc0() == 0)
                 return 0;
-            CStringW strTip = static_cast<Unk_GmMovieMgrView*>(((void*)FUN_14025e7a0()))->FUN_1422b0570(ref.FUN_140c1cda0()->m_strCaption);
+            CStringW strTip = static_cast<GFxManager*>(((void*)FUN_14025e7a0()))->FUN_1422b0570(ref.FUN_140c1cda0()->m_strCaption);
             if (IsChildMenu(nId) != 0 && ref.FUN_140c1cda0()->m_58 != 0) {
                 CStringW strExtra = reinterpret_cast<Unk_GmGuideTable*>(FUN_1409331f0())->FUN_14142d760(ref.FUN_140c1cda0()->m_58, 0);
                 if (strExtra.GetLength() > 0)
@@ -2404,7 +2404,7 @@ bool UIGameMenuDialog::FUN_14193d9e0(int nResult, const CMsgBoxData&)
         return true;
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc != NULL)
-        ((class MyPC*)(class PCBase*)(pPc))->FUN_14152a240(0);
+        ((class MyPC*)(class PCBase*)(pPc))->SendRequestHome(0);
     return true;
 }
 

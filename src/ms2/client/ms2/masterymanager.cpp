@@ -19,6 +19,8 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/masterytable.h"
+#include "ms2/placeholder/cquestmanagercommon.h"   // C3: CQuestManagerCommon::IsQuestActive
+#include "ms2/client/ms2/inventory.h"   // C3: Unk_Inventory::FUN_140a5f180
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
@@ -37,51 +39,11 @@ class Unk_MmPlayer : public PC
 };
 class Unk_MmWorld { };
 
-// A cost entry of a mastery step: +0x1c kind (0 = item, else an item class), +0x20 count.
-class Unk_MmCost : public CPtred
-{
-public:
-    char m_pad_18[4];
-    int m_nKind;                                            // +0x1c
-    int m_nCount;                                           // +0x20
-    unsigned int FUN_14026b500();                           // the item id
-};
-class Unk_MmCostList
-{
-public:
-    size_t FUN_14026bee0();                                 // count
-    MS2Ptr<Unk_MmCost> FUN_14026bdc0(size_t nIndex);        // the nIndex-th entry
-    char m_pad[0x18];
-};
-class Unk_MmIds
-{
-public:
-    size_t FUN_140186270();                                 // count
-    unsigned int* FUN_140184510(size_t nIndex);             // operator[]
-    char m_pad[0x18];
-};
-
-// A step row of the mastery table.
-class Unk_MmRow : public CPtred
-{
-public:
-    char m_pad_18[4];
-    int m_nType;                                            // +0x1c
-    char m_pad_20[4];
-    unsigned int m_nNeedExp;                                // +0x24
-    __int64 m_nNeedMeso;                                    // +0x28
-    Unk_MmIds m_ids;                                        // +0x30 quest ids (any of them completed)
-    char m_pad_48[8];
-    Unk_MmCostList m_costs;                                 // +0x50
-};
-
 // The mastery table (singleton).
 typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MmItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
 
 class Unk_MmTable : public CMasteryTable
 {
-public:
-    MS2Ptr<Unk_MmRow> FUN_14066aa00(int nStep);             // the row of a step
 };
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 
@@ -91,14 +53,12 @@ extern Unk_MmLearned DAT_143ab31a0;
 class Unk_MmInventory
 {
 public:
-    int FUN_140a5f180(int nItemId, int n);                  // count of an item id
     int FUN_140a5f780(int nKind, int n);                    // count of an item class
 };
-class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MmInventory
 extern __int64 DAT_143ab2898;
 
-class Unk_MmQuests { public: int FUN_140745630(unsigned int nQuestId); };
+class Unk_MmQuests { };
 class Unk_MmQuestMgr
 {
 public:
@@ -168,14 +128,14 @@ int CMasteryManager::HasRewards(int nType, int nLevel)
 // @0x140b6d330
 int CMasteryManager::FUN_140b6d330(int nStep)
 {
-    MS2Ptr<Unk_MmRow> spRow = ((class Unk_MmTable*)FUN_1409670c0())->FUN_14066aa00(nStep);
+    MS2Ptr<CMasteryReceipe> spRow = ((class Unk_MmTable*)FUN_1409670c0())->Find(nStep);
     if (!spRow)
         return 0;
-    if (spRow->m_ids.FUN_140186270() == 0)
+    if (spRow->m_requireQuest.GetCount() == 0)
         return 1;
-    for (size_t i = 0; i < spRow->m_ids.FUN_140186270(); i++)
+    for (size_t i = 0; i < spRow->m_requireQuest.GetCount(); i++)
     {
-        if (((class Unk_MmQuestMgr*)FUN_140764020())->m_10.FUN_140745630(*spRow->m_ids.FUN_140184510(i)) != 0)
+        if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_MmQuestMgr*)FUN_140764020())->m_10)->IsQuestActive(spRow->m_requireQuest[i]) != 0)
             return 1;
     }
     return 0;
@@ -187,30 +147,30 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
     Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return (Unk_MasteryResult)5;
-    MS2Ptr<Unk_MmRow> spRow = ((class Unk_MmTable*)FUN_1409670c0())->FUN_14066aa00(nStep);
+    MS2Ptr<CMasteryReceipe> spRow = ((class Unk_MmTable*)FUN_1409670c0())->Find(nStep);
     if (spRow.get() != 0)
     {
         int nType = spRow->m_nType;
-        if (spRow->m_nNeedExp != 0)
+        if (spRow->m_nRequireMastery != 0)
         {
-            if (pPlayer->GetMastery(nType) < spRow->m_nNeedExp)
+            if (pPlayer->GetMastery(nType) < spRow->m_nRequireMastery)
                 return (Unk_MasteryResult)1;
         }
         if (FUN_140b6d330(nStep) == 0)
             return (Unk_MasteryResult)3;
-        if (spRow->m_nNeedMeso != 0 && DAT_143ab2898 < spRow->m_nNeedMeso)
+        if (spRow->m_nRequireMeso != 0 && DAT_143ab2898 < spRow->m_nRequireMeso)
             return (Unk_MasteryResult)2;
-        for (size_t i = 0; i < spRow->m_costs.FUN_14026bee0(); i++)
+        for (size_t i = 0; i < spRow->m_ingredients.FUN_14026bee0(); i++)
         {
-            MS2Ptr<Unk_MmCost> spCost = spRow->m_costs.FUN_14026bdc0(i);
-            if (spCost->m_nKind != 0)
+            Unk_IngRef spCost = spRow->m_ingredients.FUN_14026bdc0(i);
+            if (spCost->m_b != 0)
             {
-                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f780(spCost->m_nKind, 0) < spCost->m_nCount)
+                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f780(spCost->m_b, 0) < spCost->m_c)
                     return (Unk_MasteryResult)4;
             }
             else
             {
-                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_nCount)
+                if (g_143ab2a90.FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_c)
                     return (Unk_MasteryResult)4;
             }
         }

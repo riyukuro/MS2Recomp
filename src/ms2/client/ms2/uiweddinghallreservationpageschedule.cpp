@@ -53,7 +53,6 @@ public:
 };
 
 // The hall table: is the hour taken?
-class Unk_SchedHallTable { public: bool FUN_140909870(unsigned nType, const CMsTime& time); };
 
 // The public/private radio group (a view of ASButtonGroup, asbuttongroup.h) and the prev/next buttons (AS wrappers
 // of the page movie).
@@ -307,7 +306,7 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     {
         CMsTime tHour(pPage->m_date);
         AddHours(tHour, i);
-        if (reinterpret_cast<Unk_SchedHallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909870(DAT_143ab2830, tHour) == 1)
+        if (reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909870(DAT_143ab2830, tHour) == 1)
             pPage->m_pScript->Invoke("setDisabledTime", i);
     }
     if (MS2Ptr<Unk_SchedButton> spPrev = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_prev"))

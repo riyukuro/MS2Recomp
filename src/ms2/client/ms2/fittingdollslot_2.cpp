@@ -43,11 +43,11 @@ class Unk_FdWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the local player
-    PC* FUN_141bd1290(int nId);                             // the actor with the object id
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, the actor of an entity id)
     static class WorldService* GetInstance();
@@ -303,7 +303,7 @@ MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, FUN_14121dd50, 47, 0x50AAF435);
 // @0x14121dd90
 PC* FittingDollSlot::FUN_14121dd90()
 {
-    return ((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bd1290(m_nPcId);
+    return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nPcId));
 }
 MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, FUN_14121dd90, 38, 0xA1936EAD);
 

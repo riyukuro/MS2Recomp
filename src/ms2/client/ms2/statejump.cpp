@@ -63,12 +63,7 @@ inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->F
 
 // The actor's buffs.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_JpBuff
-{
-public:
-    bool FUN_141683100(int nBuff);
-};
+class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
 class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
@@ -150,7 +145,7 @@ void StateJump::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         pPC->FUN_141676060(m_pOwner->vfunc_18());
-        pPC->FUN_14152e170(0, 6);
+        pPC->SendStateChange(0, 6);
         MS2Ptr<Unk_HsInfo> spInfo = pPC->FUN_141664200();
         if (spInfo.get() ? true : false)
         {
@@ -173,7 +168,7 @@ void StateJump::vfunc_5(int n)
     {
         if (n != 5 && n != 4 && n != 0x10)
             pPC->FUN_141676060(DAT_143b01a60);
-        pPC->FUN_14152e170(1, 6);
+        pPC->SendStateChange(1, 6);
     }
 }
 
@@ -237,8 +232,8 @@ void StateJump::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    Unk_JpBuff* pBuff = (Unk_JpBuff*)m_pOwner->FUN_14166d240();
-    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x27;
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))

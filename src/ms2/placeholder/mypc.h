@@ -31,7 +31,7 @@ public:
     Unk_PCEquipSet* FUN_1416561a0();                        // PC member: the equip holder (scenestategame 0x141712fb0)
     void FUN_141528e50(Vector3 kPos, Vector3 kRot, int nFlag);   // scenestategame 0x141721a30
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // PC member: a worn item by uid (scenestategame 0x14173b420)
-    void FUN_14152f9e0();                                   // begin bulk update (scenestategame 0x14173d2e0)
+    void ClearLapenshards();                                   // begin bulk update (scenestategame 0x14173d2e0)
     void FUN_14152f530(int nA, int nB, int bBulk);          // set entry nA = nB
     void FUN_14152fa20();                                   // end bulk update
     void FUN_14152f620(int nA);                             // remove entry nA
@@ -42,7 +42,10 @@ public:
     class UserUGCMapInfo* FUN_141523c50();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
     void FUN_141524880(Unk_BmPtr<UserUGCMapInfo> spInfo);   // set it
     int HasNoHome();
-    void FUN_141530200();
+    int FUN_141527160(int nNext);                           // 0x141527160
+    int FUN_14152e950();                                    // 0x14152e950
+    void SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd);   // 0x141529c80 password portal move
+    void SendCraftModeOff();
     void FUN_141530700(int bFlag);
     void FUN_14152a2d0(int n);
     void FUN_141699a20();                                   // scenestategame OnAddUser

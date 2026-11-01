@@ -272,7 +272,7 @@ class CMyCharacter   // C3: member view for the former free stand-ins
 public:
     unsigned int FUN_140d9f880(unsigned long);
 public:
-    void FUN_140d9f310(__int64);   // C3: was free FUN_140d9f310
+    void SetExpireAndUpdateTimer(__int64);   // C3: was free SetExpireAndUpdateTimer
 };
 void* FUN_140a8a680(int);
 void FUN_141a74d50(void*, CPartyMember*, int);
@@ -543,7 +543,7 @@ void CPartyManager::OnParty(CInPacket& packet)
 
 // Not hooked: the external actor-pointer copy constructor is not mapped.
 // @0x14162a840
-void CPartyManager::FUN_14162a840(TPtr<PCBase> actor)
+void CPartyManager::UpdateMemberJob(TPtr<PCBase> actor)
 {
     MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
@@ -555,7 +555,7 @@ void CPartyManager::FUN_14162a840(TPtr<PCBase> actor)
 
 // Not hooked: the external actor-pointer copy constructor is not mapped.
 // @0x14162a910
-void CPartyManager::FUN_14162a910(TPtr<PCBase> actor)
+void CPartyManager::UpdateMemberHp(TPtr<PCBase> actor)
 {
     MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
@@ -567,7 +567,7 @@ void CPartyManager::FUN_14162a910(TPtr<PCBase> actor)
 
 // Not hooked: the external actor-pointer copy constructor is not mapped.
 // @0x14162aa10
-void CPartyManager::FUN_14162aa10(TPtr<PCBase> actor)
+void CPartyManager::UpdateMemberLevel(TPtr<PCBase> actor)
 {
     MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
@@ -586,7 +586,7 @@ bool CPartyManager::FUN_14162ab20() { return FUN_14162af00() > 1; }
 MS2_REPLACE_METHOD(0x14162AB20, CPartyManager, FUN_14162ab20, 52, 0x99BFAE5D);
 
 // @0x14162ab60
-bool CPartyManager::FUN_14162ab60()
+bool CPartyManager::IsLocalPlayerLeader()
 {
     if (!FUN_14162ab20())
     {
@@ -594,7 +594,7 @@ bool CPartyManager::FUN_14162ab60()
     }
     return FUN_141630c30(DAT_143ab2828);
 }
-MS2_REPLACE_METHOD(0x14162AB60, CPartyManager, FUN_14162ab60, 52, 0x4F5E0B6C);
+MS2_REPLACE_METHOD(0x14162AB60, CPartyManager, IsLocalPlayerLeader, 52, 0x4F5E0B6C);
 
 // @0x14162aba0
 bool CPartyManager::IsPartyId(int id) { return partyId == id; }
@@ -605,19 +605,19 @@ bool CPartyManager::IsMatchmaking() { return matchmaking; }
 MS2_REPLACE_METHOD(0x14162ABE0, CPartyManager, IsMatchmaking, 15, 0x82B3C62D);
 
 // @0x14162ac00
-bool CPartyManager::FUN_14162ac00(int bit)
+bool CPartyManager::IsMatchSearching(int bit)
 {
     if (bit == 0) return false;
     return permissions.FUN_1402e4ee0(bit);
 }
-MS2_REPLACE_METHOD(0x14162AC00, CPartyManager, FUN_14162ac00, 50, 0xBD8235D8);
+MS2_REPLACE_METHOD(0x14162AC00, CPartyManager, IsMatchSearching, 50, 0xBD8235D8);
 
 // @0x14162ac40
-bool CPartyManager::FUN_14162ac40() { return permissions.FUN_140b912f0(); }
-MS2_REPLACE_METHOD(0x14162AC40, CPartyManager, FUN_14162ac40, 31, 0x7B803D45);
+bool CPartyManager::IsAnySearching() { return permissions.FUN_140b912f0(); }
+MS2_REPLACE_METHOD(0x14162AC40, CPartyManager, IsAnySearching, 31, 0x7B803D45);
 
 // @0x14162ac70
-bool CPartyManager::FUN_14162ac70(int key)
+bool CPartyManager::CanEnterDungeonRoom(int key)
 {
     if (!FUN_14162ab20()) {
         if ((int)((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f880(key) >= 10) return false;
@@ -627,7 +627,7 @@ bool CPartyManager::FUN_14162ac70(int key)
         if (members[i]->counters.FUN_140268570(key) >= 10) return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x14162AC70, CPartyManager, FUN_14162ac70, 177, 0xA0EAF4F7);
+MS2_REPLACE_METHOD(0x14162AC70, CPartyManager, CanEnterDungeonRoom, 177, 0xA0EAF4F7);
 
 // @0x14162ad30
 bool CPartyManager::FUN_14162ad30() { return flag29; }
@@ -1408,7 +1408,7 @@ void CPartyManager::FUN_14162ed60(CInPacket&)
 void CPartyManager::FUN_14162ee10(CInPacket& packet)
 {
     __int64 value = packet.ReadInt64();
-    ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f310(value);
+    ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->SetExpireAndUpdateTimer(value);
 }
 MS2_REPLACE_METHOD(0x14162EE10, CPartyManager, FUN_14162ee10, 76, 0x8AE4F91C);
 
@@ -1564,7 +1564,7 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
 void CPartyManager::FUN_141630a60(CInPacket& packet)
 {
     int dungeon = packet.ReadInt32();
-    if (!FUN_14162ab60()) {
+    if (!IsLocalPlayerLeader()) {
         FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70),
             FUN_14028dfa0<CStringW>(L"s_party_create_dungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, dungeon)));
         FUN_141276180("Dungeon_Room_Open", "");

@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
@@ -34,20 +35,8 @@ public:
 };
 Unk_140bccd50* FUN_140bccd50();
 
-// The dungeon room record looked up by room id; +0x1c is the room kind (2 and 3 move the web guide button).
-class Unk_DungeonRoomData
-{
-public:
-    int FUN_14031ddd0();                                // dungeon id
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; int m_pad_18;
-public:
-    int m_nKind;                                        // +0x1c
-};
-MS2_CHECK_SIZE(Unk_DungeonRoomData, 0x20);
-class Unk_14031c2a0 { public: MS2Ptr<Unk_DungeonRoomData> FUN_1403206b0(int nRoomId); };
     // string table lookup
-CStringW FUN_140e14b70(MS2Ptr<Unk_DungeonRoomData> pRoom);                          // dungeon name of a room
+CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> pRoom);                          // dungeon name of a room
 CStringW FUN_140938ae0(CStringW strKey, const int& n);                              // localized, formatted
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
@@ -95,31 +84,31 @@ void UIDungeonLobby::OnLoadComplete()
     {
         FUN_1419260d0("m_webGuideButton", 0);
         do {
-            m_30->FUN_140bbe640("m_webGuideButton", m_pWebGuideButton);
+            m_30->FUN_140bbe640<ASButton>("m_webGuideButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pWebGuideButton));
             if (m_pWebGuideButton == NULL)
                 throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                             MS2_THIS_FILE, MS2_LINE(45), __FUNCTION__));
         } while (0);
         do {
-            m_30->FUN_140bbe640("m_title", m_pTitle);
+            m_30->FUN_140beaf20<ASTextField>("m_title", m_pTitle);
             if (m_pTitle == NULL)
                 throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                             MS2_THIS_FILE, MS2_LINE(46), __FUNCTION__));
         } while (0);
-        MS2Ptr<Unk_DungeonRoomData> pRoom = reinterpret_cast<Unk_14031c2a0*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(m_nRoomId);
+        DungeonRoomPtr pRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nRoomId);
         if (pRoom == NULL)
             return;
         {
             CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
-                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->FUN_14031ddd0()));
+                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->GetDungeonRoomID()));
             m_pTitle->FUN_1422c4cd0(strTitle);
             FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_140938ae0(L"s_dungeonLobby_subTitle", m_n17c));
-            if (pRoom->m_nKind == 2 || pRoom->m_nKind == 3) {
+            if (pRoom->m_groupType == 2 || pRoom->m_groupType == 3) {
                 const float fOffset = 10.0f;
                 float x = 0.0f;
                 float y = 0.0f;
                 m_pWebGuideButton->FUN_1422c0f60(&x, &y);
-                x += static_cast<float>(m_pTitle->FUN_1422c5970()) / 2.0f;
+                x += static_cast<float>(m_pTitle->GetTextWidth()) / 2.0f;
                 x += fOffset;
                 m_pWebGuideButton->FUN_1422c00f0(x, y);
             } else {

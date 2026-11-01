@@ -23,17 +23,17 @@ public:
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual int vfunc_48() { return 0x4f68; }
-    void FUN_140feb1b0(CInPacket&);
-    void FUN_140feb2c0(CInPacket&);
-    void FUN_140feb440(CInPacket&);
+    void OnPacket(CInPacket&);
+    void OnSeasonRewardPacket(CInPacket&);
+    void OnNextSeasonPacket(CInPacket&);
     void SendWorldChampionMode8();
     void UpdatePageFromStep();
     void FUN_140feb6b0();
     void FUN_140feb870();
     void FUN_140febc40();
-    void FUN_140fec200(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140fec260(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140fec2b0(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnStepClick(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnPrevPageClick(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnNextPageClick(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140fec310(const Scaleform::GFx::FunctionHandler::Params&);
     bool SendWorldChampionMode9(int, const CMsgBoxData&);
     void FUN_140fec540(size_t);

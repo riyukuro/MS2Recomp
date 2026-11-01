@@ -597,7 +597,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140f8ff40(0xb38, 1, 1);
                         return 1;
                     }
-                    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+                    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
                     {
                         FUN_140f8ff40(0xb39, 1, 1);
                         return 1;
@@ -857,7 +857,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
     PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
     {
         FUN_140d73bc0(0xb3a, 0, 0, L"");
         return;
@@ -876,7 +876,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
     PCBase* pPlayer = static_cast<PCBase*>(reinterpret_cast<Unk_PsdWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (((class MyPC*)(class PCBase*)(pPlayer))->FUN_141527280() && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
     {
         FUN_140d73bc0(0xb3e, 0, 0, L"");
         return;

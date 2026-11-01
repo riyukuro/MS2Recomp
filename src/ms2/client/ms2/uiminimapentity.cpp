@@ -87,6 +87,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 
 // ---- unit-local views of exe objects ----
 
@@ -159,7 +160,6 @@ public:
     Unk_MmEntityList FUN_141bd0420(unsigned nModel);                // the entities of a model
     MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
-    class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
     ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject> >& FUN_141bc9fb0();   // the proxy objects by object id
@@ -582,7 +582,7 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
     } else if (m_type == 4) {
         MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
         if (pPC)
-            strText = FormatStringId<CStringW>(0x70f, pPC->FUN_1415281c0());
+            strText = FormatStringId<CStringW>(0x70f, pPC->GetHomeAddress());
     } else if (m_type == 6) {
         strText = m_text;
     } else {
@@ -841,7 +841,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
     int nHome = 0;
     const int& nField = spPortal->FUN_14169d280();
     if (pPC->GetHomeMapId(&nHome) && nHome == nField)
-        strLabel = FormatStringId<CStringW>(0x70f, pPC->FUN_1415281c0());
+        strLabel = FormatStringId<CStringW>(0x70f, pPC->GetHomeAddress());
     UIMinimapDialog* pDialog = FUN_141386800();
     if (pDialog) {
         CStringW strBuddies;
@@ -1195,8 +1195,8 @@ void UIMinimapDialog::vfunc_26()
     FUN_141a3fd20();
     m_460 = 0;
     m_468 = 0;
-    m_timer46c.FUN_140268840();
-    m_timer474.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_timer46c).Init();
+    reinterpret_cast<Unk_IntervalTimer&>(m_timer474).Init();
     m_47c = 1;
 }
 MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 707, 0xEB99CE5C);
@@ -1207,7 +1207,7 @@ void UIMinimapDialog::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30 == 0 || vfunc_64() == 1 || !m_1fc)
         return;
-    if (!m_timer474.FUN_140268870(60))
+    if (!reinterpret_cast<Unk_IntervalTimer&>(m_timer474).Check(60))
         return;
     FUN_141a402b0(m_player);
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
@@ -1239,7 +1239,7 @@ MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 916, 0x744426E4);
 void UIMinimapDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_timer46c.FUN_140268870(1000)) {
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer46c).Check(1000)) {
         const std::pair<unsigned, __int64>& target = ((class CQuestManager*)FUN_140764020())->FUN_1416d1e90();
         m_468 = target.first;
         m_460 = target.second;
@@ -1343,7 +1343,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             if (!((Scaleform::GFx::Value*)(void*)(&value))->IsNull()) {
                 ASMovieClip clip(value, 2);
                 if (static_cast<MinimapViewport*>(m_viewport) != 0)
-                    m_viewport->FUN_141485770(clip.FUN_1422c1340());
+                    m_viewport->InitFromFieldMinimap(clip.FUN_1422c1340());
                 m_1fc = true;
                 FUN_141a3ea10();
             }
@@ -2053,7 +2053,7 @@ void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
             MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
             if (pPC != 0) {
                 efd::Point3 kPos = efd::Point3::ZERO;
-                if (pPC->FUN_141528020(kPos)) {
+                if (pPC->GetHomePosition(kPos)) {
                     if (static_cast<ASMovieClip*>(m_return->m_clip) != 0) {
                         FUN_141a44730(kPos, m_return->m_clip);
                         bShouldRemove = false;
@@ -2660,7 +2660,7 @@ bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
     if (spProxy == 0)
         return false;
     if (spProxy->FUN_1416c2b70()) {
-        Unk_MmActor* pActor = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd1320(spProxy->m_proxyId);
+        Unk_MmActor* pActor = reinterpret_cast<Unk_MmActor*>(WorldService::GetInstance()->FUN_141bd1320(spProxy->m_proxyId));
         if (pActor != 0)
             return pActor->FUN_14123c660() == 0;
     }
@@ -2784,7 +2784,7 @@ void UIMinimapDialog::FUN_141a3dda0()
     MyPC* pPC = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC != 0) {
         efd::Point3 kPos = efd::Point3::ZERO;
-        if (pPC->FUN_141528020(kPos)) {
+        if (pPC->GetHomePosition(kPos)) {
             EntityPtr spEntity = new UIMinimapEntity(4);
             spEntity->m_icon = s_strMyHome;
             spEntity->m_layer = s_strLayerMyHome;

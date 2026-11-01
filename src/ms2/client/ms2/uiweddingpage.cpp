@@ -49,6 +49,9 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/skilldatatablecli.h"   // C3: SkillDataTableCli::FUN_140aafef0
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
+#include "ms2/placeholder/astextinput.h"  // C3: ASTextInput::FUN_1422e0ab0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -62,8 +65,6 @@ public:
 // A text input child of the page.
 class Unk_WpInput : public ASDisplayObject
 {
-public:
-    void FUN_1422e0ab0(const CStringW& str);                    // set the text
 };
 
 // The embedded item (+0x50) of an item grant row: its virtual slots give the item id / its count.
@@ -101,17 +102,6 @@ public:
     MS2Ptr<Unk_WpPerk> FUN_140909910(int nId);                  // one perk (null: none)
 };
 
-// Skill record and its icon.
-class Unk_WpSkill : public CPtred
-{
-public:
-    CString FUN_1401756c0();                                    // the icon path
-};
-class Unk_WpSkillMgr
-{
-public:
-    MS2Ptr<Unk_WpSkill> FUN_140aafef0(int nSkillId, short nLevel);
-};
 class Unk_WpItemData : public CPtred
 {
 public:
@@ -123,7 +113,7 @@ public:
     CStringW FUN_141812290(int nSkillId, short nLevel, CString strKey);
 };
 
-Unk_WpSkillMgr* FUN_1401958b0();
+class Unk_WpSkillMgr* FUN_1401958b0();   // TSingleton<SkillDataTableCli>::GetInstance
 MS2Ptr<Unk_WpItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
@@ -239,9 +229,9 @@ bool UIWeddingPageMessage::vfunc_1()
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     bool bGroom = pProxy->IsGroom(DAT_143ab2828);
     if (MS2Ptr<Unk_WpInput> spMine = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_myMessage"))
-        spMine->FUN_1422e0ab0(pProxy->GetMessageW(bGroom));
+        reinterpret_cast<ASTextInput*>(spMine.operator->())->FUN_1422e0ab0(pProxy->GetMessageW(bGroom));
     if (MS2Ptr<Unk_WpInput> spPartner = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_partnerMessage"))
-        spPartner->FUN_1422e0ab0(pProxy->GetMessageW(!bGroom));
+        reinterpret_cast<ASTextInput*>(spPartner.operator->())->FUN_1422e0ab0(pProxy->GetMessageW(!bGroom));
     return true;
 }
 
@@ -324,12 +314,12 @@ bool UIWeddingPageSkill::vfunc_1()
             if (spPerk->m_nType == 0)
             {
                 unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
-                MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+                MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
                 obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
                 obj.FUN_1409c4a30("status", spPerk->FUN_140907b50(nGrade));
-                obj.FUN_1407cba60("imgPath", spSkill->FUN_1401756c0());
+                obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
             {
@@ -400,7 +390,7 @@ void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (spPerk->m_nType == 0)
     {
         unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
-        MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+        MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
         if (spSkill.get() != 0)
         {
             ASTooltip tip(*pRetVal, 2);
@@ -538,9 +528,9 @@ void UIWeddingPageMission::FUN_140fe8fb0()
             row.FUN_1409c1180("exp", spData->m_complete.m_weddingExp);
             const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards = spData->m_complete.m_choiceRewards;
             if (rewards.GetCount() > 0)
-                row.FUN_1407cba60("binding", m_binder.FUN_140d43310(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
+                row.FUN_1407cba60("binding", m_binder.BindNewItem(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
             if (1 < rewards.GetCount())
-                row.FUN_1407cba60("binding2", m_binder.FUN_140d43310(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));
+                row.FUN_1407cba60("binding2", m_binder.BindNewItem(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));
             spList->AddItem(row);
         }
         spList->vfunc_24(true);

@@ -103,7 +103,7 @@ void RootRotateInterpolator::FUN_140dc9e40(Unk_RrPoint3* pRotation)
 }
 
 // @0x140dc9fb0
-void RootRotateInterpolator::FUN_140dc9fb0(const Unk_RrPoint3* pValue)
+void RootRotateInterpolator::SetAxis(const Unk_RrPoint3* pValue)
 {
     m_axis.x = pValue->x;
     m_axis.y = pValue->y;

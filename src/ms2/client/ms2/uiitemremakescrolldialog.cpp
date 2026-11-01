@@ -151,7 +151,6 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-class Unk_RmWorld { public: void FUN_1416fb300(const CStringW& text); };
 class Unk_RmIconTable { public: void FUN_141adc530(int nId); };
 class Unk_RmPlayers { public: PCBase* FUN_141bd0cc0(); };
 CFeatureManager* FUN_140166410();
@@ -834,7 +833,7 @@ void UIItemRemakeScrollDialog::FUN_140f5bbb0(ASData& data)
         if (nNeed == 0)
         {
             CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
-            reinterpret_cast<Unk_RmWorld*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strNotice);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strNotice);
             FUN_140d73aa0(CStringW(strNotice), 0, 0, CStringW(L""));
         }
         else if (nNeed <= nHave)
@@ -1133,7 +1132,7 @@ bool UIItemRemakeScrollDialog::FUN_140f5dd50(MS2Ptr<CItem> spItem, MS2Ptr<CItemR
         }
     }
     strDesc = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_itemremake_scroll_desc"), strText, strName);
-    reinterpret_cast<Unk_RmWorld*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strDesc);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strDesc);
     return true;
 }
 

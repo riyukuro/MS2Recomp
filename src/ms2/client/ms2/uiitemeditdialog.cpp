@@ -111,6 +111,11 @@ public:
     CItemData* FUN_1411dc7f0();                 // the worn item data
 };
 typedef MS2Ptr<Unk_IEEquip> Unk_IEEquipPtr;
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 class Unk_IEPlayer
 {
 public:
@@ -121,7 +126,6 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49();
     virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58();
     virtual void vfunc_59(int nState, int a2, int a3, int a4);      // 59 (0x1d8) switch the player state
-    int FUN_14166c930();                        // the player state
     void FUN_14166cc40(int n);
     Unk_IEEquipPtr FUN_141655e10(int nSlot);    // the handle of the worn item of a slot
 };
@@ -360,7 +364,7 @@ void UIItemEditDialog::vfunc_24(void* p)
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (pPc->FUN_14166c930() != 0xe)
+    if (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x4c);
     NoticeMessage effect;   // C3: was Unk_IEEffectRequest

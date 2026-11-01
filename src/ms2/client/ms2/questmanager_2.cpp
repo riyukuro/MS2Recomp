@@ -127,6 +127,11 @@
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/commonfiles/fieldmissiontable.h"  // C3: was a local member view
+#include "ms2/placeholder/gfxservice.h"  // C3: was a local member view
+#include "ms2/commonfiles/masterytable.h"  // C3: was a local member view
+#include "ms2/client/ms2/dungeonrecordcli.h"  // C3: was a local member view
+#include "ms2/client/ms2/mentoringmanager.h"  // C3: was a local member view
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // These instances belong to earlier objects, not the look-alike destructors
@@ -176,27 +181,12 @@ private:
 class Unk_QmGroupTable { public: Unk_QmGroupRewardPtr FUN_14037c3d0(int group); };
 Unk_QmGroupTable* FUN_140d738f0();
 int FUN_14037c510(void*, int);
-class CFieldMissionTable   // C3: member view for the former free stand-ins
-{
-public:
-    int GetMaxRound();
-};
 int FUN_140408410(const ATL::CAtlArray<unsigned>*, const int&);
-class GFxSceneService   // C3: member view for the former free stand-ins
-{
-public:
-    int GetSubSceneId();
-};
 void* FUN_141bd0cc0(void*);
 int FUN_140931210(int);
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 int FUN_14035a870(void*, int, int);
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
-class CMasteryTable   // C3: member view for the former free stand-ins
-{
-public:
-    int Grade(int, unsigned int);
-};
 void* FUN_140764020();   // C3: was FUN_140764020
 unsigned FUN_14035b590(void*, int);
 int FUN_141472bc0();   // C3: was FUN_141472bc0
@@ -223,12 +213,6 @@ public:
     Unk_QmQuestIdList FUN_14074df70(int itemId, int kind);   // quests started (0) / advanced (1) by an item
        // quests of an npc (null when none)
 };
-class DungeonRecordManagerCli   // C3: member view (real class not in this TU)
-{
-public:
-    bool CanClaimHelperReward(unsigned int);
-    long GetRoomValue5c(unsigned int);
-};
 class Unk_QuestDungeonRecord {
 public:
 };
@@ -241,12 +225,7 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140d9f880(unsigned long);
-};
-class CMentoringManager   // C3: member view for the former free stand-ins
-{
-public:
-    unsigned int FUN_140b71580();
+    unsigned int GetDungeonEnterState(unsigned long);
 };
 class CGuildManager;
 extern __int64 DAT_143ab2828;
@@ -647,7 +626,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9c70, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9ce0
 int CQuestManager::vfunc_o10_16(int id)
 {
-    return ((class CMyCharacter*)(void*)(((class Unk_QuestNotifyState*)FUN_140931510())))->FUN_140d9f880(id);
+    return ((class CMyCharacter*)(void*)(((class Unk_QuestNotifyState*)FUN_140931510())))->GetDungeonEnterState(id);
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9ce0, CQuestManager, CQuestManagerCommon, vfunc_o10_16, 35, 0xF17E0AF2);
 

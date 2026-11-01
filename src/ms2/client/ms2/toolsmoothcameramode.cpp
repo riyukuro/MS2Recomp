@@ -100,10 +100,9 @@ public:
     void* m_p;
 };
 // The cursor (FUN_140aadf80).
-class Unk_Cursor
-{
+class CWindowService { public: int GetCursorClientPos(float *, float *); }; class Unk_Cursor : public CWindowService {
 public:
-    void FUN_141b90e30(float* pfX, float* pfY);
+
 };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
@@ -371,7 +370,7 @@ void CToolSmoothCameraMode::vfunc_30()
 {
     float fX;
     float fY;
-    ((class Unk_Cursor*)FUN_140aadf80())->FUN_141b90e30(&fX, &fY);
+    ((class Unk_Cursor*)FUN_140aadf80())->GetCursorClientPos(&fX, &fY);
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;

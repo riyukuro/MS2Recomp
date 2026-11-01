@@ -5,6 +5,9 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "depthoffieldmanager.h"
 #include "hook/ms2hook.h"
+#include <NiFixedString.h>
+#include <NiPoint2.h>
+#include <efd/Point2.h>
 
 // Unrecovered callees (real types unknown).
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
@@ -33,7 +36,7 @@ public:
 void FUN_1416a3920(void* p, int n, unsigned char v);
 void FUN_1416aa6a0(void* p, int n, unsigned char v);
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
-bool FUN_140c900e0(void* name, void* data, int n);
+bool FUN_140c900e0(const NiFixedString& name, const efd::Point2* data, int n);
 void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
 unsigned char FUN_1411782b0(void* p);
 void* FUN_1411782c0(void* p, int n);
@@ -43,11 +46,9 @@ void* FUN_141178320(void* p);
 void FUN_1411781e0(void* name, void* data, int n);
 void** FUN_141178210(void* a, __int64 idx);
 void* FUN_141178240(void** p);
-extern char DAT_143ae53a8;
-extern char DAT_143ae53b0;
-extern char DAT_143ae53b8;
-struct Unk_DOFVecA { Unk_DOFVecA(float x, float y); float a, b, c, d; };   // 0x140a0a600
-struct Unk_DOFVecB { Unk_DOFVecB(float x, float y); float a, b, c, d; };   // 0x140a0a4c0
+extern NiFixedString DAT_143ae53a8;
+extern NiFixedString DAT_143ae53b0;
+extern NiFixedString DAT_143ae53b8;
 
 // @0x141177ee0
 CDepthOfFieldManager::CDepthOfFieldManager() : m_10(0), m_50(1)
@@ -81,8 +82,8 @@ void CDepthOfFieldManager::FUN_141178020(unsigned char on)
     m_50 = on;
     FUN_1416a3920(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 4, on);
     FUN_1416aa6a0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1, on);
-    Unk_DOFVecA v(1.5f, 1.5f);
-    FUN_140c900e0(&DAT_143ae53a8, &v, 1);
+    efd::Point2 v(1.5f, 1.5f);
+    FUN_140c900e0(DAT_143ae53a8, &v, 1);
 }
 MS2_REPLACE_METHOD(0x141178020, CDepthOfFieldManager, FUN_141178020, 142, 0x215C81C8);
 
@@ -95,9 +96,9 @@ unsigned char CDepthOfFieldManager::FUN_1411780c0()
 // @0x1411780e0
 void FUN_1411780e0(void* a, float x, float y)
 {
-    Unk_DOFVecB v(x, y);
+    NiPoint2 v(x, y);
     FUN_1411781e0(&DAT_143ae53b0, &v, 1);
-    FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae53b8), (float const*)(&x), 1);
+    FUN_1409a5770(DAT_143ae53b8, (float const*)(&x), 1);
 }
 MS2_REPLACE(0x1411780E0, FUN_1411780e0, 94, 0xC811E5B5);
 
@@ -115,7 +116,7 @@ MS2_REPLACE(0x141178150, FUN_141178150, 138, 0x939E3141);
 // @0x1411781e0
 void FUN_1411781e0(void* name, void* data, int n)
 {
-    FUN_140c900e0(name, data, n);
+    FUN_140c900e0(*(const NiFixedString*)name, (const efd::Point2*)data, n);
 }
 
 // @0x141178210

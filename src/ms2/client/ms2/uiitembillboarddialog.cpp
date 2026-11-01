@@ -61,21 +61,15 @@
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
+#include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker
+#include "ms2/commonfiles/npcdata.h"   // C3: CNpcData::GetFriendly
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x1400cce40
 
 // ---- unit-local placeholders and externals ----
 
 class PCBase;
-class Unk_BbText : public ASDisplayObject { public: };            // the text input: its text
-class Unk_BbCheck : public ASDisplayObject { public: bool FUN_1422ce0e0(); };              // the check box state
-// The advertiser movie with the input / check box lookups.
-class Unk_BbMovie : public ASMovieClip
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);
-};
 
 class Unk_DTPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
@@ -93,8 +87,6 @@ extern unsigned short DAT_143ab2964;
 extern int DAT_143ab2970;
 
 // The string table and the job table.
-class Unk_BbJobTable;
-int FUN_140644bb0(Unk_BbJobTable* p, int nId);
 
 // Localized formatters.
 CStringW FormatStringId(int id, const fmt::ArgList& args);      // 0x14028dee0
@@ -133,13 +125,7 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
 WC_WRAP(6)
 
 // The text filter.
-class Unk_TextFilter;
-// An MS2Ptr (16 bytes, m_p at +8): FUN_140229a50 returns it through a hidden pointer, the dtor 0x14025c670 writes 16.
-class Unk_TextFilterPtr { public: Unk_TextFilter* FUN_14025cea0() const; ~Unk_TextFilterPtr(); void* m_00; void* m_p; };
-class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
-int FUN_140226440(Unk_TextFilter* p, const CStringW& str, CStringW& strErr);
-int FUN_140226590(Unk_TextFilter* p, const CStringW& str, CStringW& strErr);
 
 // Message boxes and the inventory (0x143ab2a90).
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -205,7 +191,6 @@ Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell cen
 struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
 class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
 class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
-class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
 class Unk_RxNpc : public CPtred { public:  };
 // The five actor ids near which a bill board can't be installed (.rdata, defined in data_rdata_game; passed by address).
 extern const unsigned int DAT_142e03614;
@@ -295,7 +280,7 @@ void UIItemBillBoardDialog::OnLoadComplete()
         }
         __int64 nDiff = m_info.end - m_info.start;
         CMsTime createTime(m_info.start);
-        CStringW strCharInfo = FormatStringId(2, m_info.type, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_BbJobTable*>(TSingleton<JobTable>::GetInstance()), m_info.value)));
+        CStringW strCharInfo = FormatStringId(2, m_info.type, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(m_info.value)));
         __int64 nHours = nDiff / 60 / 60;
         int nMin = createTime.GetMinute();
         int nHour = createTime.GetHour();
@@ -470,7 +455,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             continue;
         if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
             continue;
-        bool bNotNpcKind = reinterpret_cast<Unk_RxNpcData*>(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData().operator->())->FUN_1406ccfc0() != 2;
+        bool bNotNpcKind = reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData().operator->())->GetFriendly() != 2;
         if (bNotNpcKind)
             continue;
         if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() != 0)
@@ -557,13 +542,13 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
         return;
     if (!FUN_140c323f0())
         return;
-    MS2Ptr<Unk_BbText> spTitle = static_cast<Unk_BbMovie*>(m_advertiserMovie.operator->())->FUN_140bbe880<Unk_BbText>("m_titleInput");
-    MS2Ptr<Unk_BbText> spDesc = static_cast<Unk_BbMovie*>(m_advertiserMovie.operator->())->FUN_140bbe880<Unk_BbText>("m_descInput");
-    MS2Ptr<Unk_BbCheck> spCheck = static_cast<Unk_BbMovie*>(m_advertiserMovie.operator->())->FUN_140c11f50<Unk_BbCheck>("m_homeEnableCheckBox");
+    MS2Ptr<ASTextInput> spTitle = m_advertiserMovie.operator->()->FUN_140bbe880<ASTextInput>("m_titleInput");
+    MS2Ptr<ASTextInput> spDesc = m_advertiserMovie.operator->()->FUN_140bbe880<ASTextInput>("m_descInput");
+    MS2Ptr<ASCheckBox> spCheck = m_advertiserMovie.operator->()->FUN_140c11f50<ASCheckBox>("m_homeEnableCheckBox");
     if (spTitle == 0 || spDesc == 0 || spCheck == 0)
         return;
-    CStringW strTitle = reinterpret_cast<ASTextInput*>(spTitle.operator->())->GetText();
-    CStringW strDesc = reinterpret_cast<ASTextInput*>(spDesc.operator->())->GetText();
+    CStringW strTitle = spTitle.operator->()->GetText();
+    CStringW strDesc = spDesc.operator->()->GetText();
     bool bHome = spCheck->FUN_1422ce0e0();
     strTitle.Replace(L"'", L"`");
     strDesc.Replace(L"'", L"`");
@@ -577,9 +562,9 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
         return;
     if (strDesc.GetLength() > 0x64)
         return;
-    if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0()) {
+    if (CBanTextChecker* pFilter = ((class CommonString*)FUN_14025e7d0())->GetChecker()) {
         CStringW strError;
-        if (FUN_140226440(pFilter, strTitle, strError) != 0 || FUN_140226590(pFilter, strDesc, strError) != 0) {
+        if (pFilter->FUN_140226440(strTitle, strError) != 0 || pFilter->FUN_140226590(strDesc, strError) != 0) {
             FUN_1412751f0(strError, 1, 1);
             return;
         }

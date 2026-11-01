@@ -14,6 +14,7 @@
 #include <ecr/SceneGraphService.h>
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/commonfiles/timeutil.h"
+#include "ms2/commonfiles/dungeonroom.h"   // C3: DungeonRoomTable::GetRoom
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -22,9 +23,7 @@
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 CQuestManager* FUN_140764020();                                         // the quest manager
 
-// The dungeon room table: a record handle (released through FUN_14031c0f0) and the room's open period.
-void FUN_14031c0f0(struct Unk_WfRoomRef* pRoom);
-struct Unk_WfRoomRef { void* m_0; void* m_8; ~Unk_WfRoomRef() { FUN_14031c0f0(this); } };
+// The dungeon room's open period (DungeonRoom::m_limitDayOfWeeks, +0x106).
 struct Unk_WfSpan
 {
     __int64 m_nStart;
@@ -37,11 +36,6 @@ struct Unk_WfPeriodVal
     char m_data[16];
     Unk_WfSpan FUN_1402e4e80(int nTime);                                // the period relative to the time
 };
-struct Unk_WfPeriod { char m_pad[0x106]; Unk_WfPeriodVal m_period; };
-class Unk_WfRoomTable { public: Unk_WfRoomRef FUN_1403206b0(int nRoomId); };
-Unk_WfRoomTable* FUN_14031c2a0();
-void* FUN_14031c160(Unk_WfRoomRef* pRoom);                               // the handle is valid
-Unk_WfPeriod* FUN_1403347d0(Unk_WfRoomRef* pRoom);                      // the room record
 bool FUN_140b91330(void* pPeriod);                                      // the period is unlimited
 
 // An entry that can be gated by a dungeon room and a quest (the tail of this unit's range).
@@ -145,13 +139,13 @@ int Unk_WfGate::FUN_141b94b90()
 {
     if (m_nRoomId != 0)
     {
-        Unk_WfRoomRef room = FUN_14031c2a0()->FUN_1403206b0(m_nRoomId);
-        if (FUN_14031c160(&room) ? true : false)
+        DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nRoomId);
+        if (room.get() ? true : false)
         {
-            if (!FUN_140b91330(&FUN_1403347d0(&room)->m_period))
+            if (!FUN_140b91330(&room->m_limitDayOfWeeks))
             {
                 int nNow = GetServerDayOfWeek();
-                if (!FUN_1403347d0(&room)->m_period.FUN_1402e4e80(nNow).FUN_140837280())
+                if (!reinterpret_cast<Unk_WfPeriodVal&>(room->m_limitDayOfWeeks).FUN_1402e4e80(nNow).FUN_140837280())
                     return 0;
             }
         }

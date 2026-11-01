@@ -119,7 +119,6 @@ private:
     int m_iFrameLimit;                                  // +0x20
 };
 void FUN_141610410(int nFrameLimit);
-class Unk_MsWorld { public: int FUN_141bd1a10(GameObject* pObject); };
 // The scene graph service as these callers see it: the exe passes the entity id by value (ms2scenegraphservice.h has const&).
 class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
 __int64 FUN_14028d260(float fTime);
@@ -213,7 +212,7 @@ void CMainSystem::ResetFps()
 }
 
 // @0x141473020
-void CMainSystem::FUN_141473020(bool bActive)
+void CMainSystem::SetRenderStepActive(bool bActive)
 {
     ecr::RenderSurface* pSurface = m_pRenderService->GetActiveRenderSurface();
     NiRenderStep* pStep = pSurface->GetRenderStep();
@@ -287,9 +286,9 @@ double CMainSystem::FUN_141473280()
 }
 
 // @0x1414732b0
-DWORD CMainSystem::FUN_1414732b0(GameObject* pObject)
+DWORD CMainSystem::GetObjectTime(GameObject* pObject)
 {
-    int nKind = reinterpret_cast<Unk_MsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pObject);
+    int nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObject));
     return GetTimeByKind(nKind);
 }
 
@@ -329,7 +328,7 @@ int CMainSystem::FUN_141473390()
 }
 
 // @0x141473410
-int CMainSystem::FUN_141473410(DWORD dwTick)
+int CMainSystem::GetServerTickAt(DWORD dwTick)
 {
     m_iServerTick = dwTick - m_dwLocalTickBase + m_iServerTickBase;
     return m_iServerTick;
@@ -354,7 +353,7 @@ int CMainSystem::FUN_1414734a0()
 }
 
 // @0x1414734c0
-void CMainSystem::FUN_1414734c0(int nServerTick, int n78, int n7c, int n74)
+void CMainSystem::SetServerTickBase(int nServerTick, int n78, int n7c, int n74)
 {
     m_dwLocalTickBase = GetTickCountMs2();
     m_iServerTickBase = nServerTick;
@@ -402,7 +401,7 @@ __time64_t CMainSystem::GetServerTime()
 }
 
 // @0x141473690
-void CMainSystem::FUN_141473690(__time64_t tServer)
+void CMainSystem::SyncServerTime(__time64_t tServer)
 {
     __time64_t t;
     time(&t);
@@ -475,7 +474,7 @@ bool CMainSystem::IsMainThread()
 
 // The MSDN __cpuid sample, cut down to the vendor and brand strings.
 // @0x141473990
-CStringW CMainSystem::FUN_141473990()
+CStringW CMainSystem::GetCpuInfoString()
 {
     int CPUInfo[4] = {0};
     char CPUString[0x20] = {0};

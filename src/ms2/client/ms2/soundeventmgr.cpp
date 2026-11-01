@@ -164,29 +164,32 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cooltimemanager.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/effectquery.h"
+#include <egf/Entity.h>
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-int FUN_140873ad0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);      // string attribute
+int XmlQuery(class TiXmlElement*, char const*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned&);
+int XmlGetAttr(class TiXmlElement*, char const*, float&);
+int XmlGetAttr(class TiXmlElement*, char const*, CString&);
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };
 class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
 CLogString* GetLogString();                                        // the logger
 void FUN_1401d3700(CString& str);
 int FUN_140718170(const CString& str);                              // parses an int
 float FUN_140718450(const CString& str);                            // parses a float
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_1411a8ae0(int n);                                       // int to string
 CString FUN_140188f50(const char* psz, int nCodePage);                 // multi-byte to string
 CSoundService* FUN_140c9cb10();                                     // the sound service                                   // normalises a sound path
 // The application object: the sound switch byte and the session.
-class Unk_SmSession { public: int FUN_141260470(); };
-class Unk_SmApp
+int FUN_141260470(Unk_SoundFlag* pFlag);
+struct Unk_SmPoint3 : public Vector3
 {
-public:
-    unsigned char* FUN_140d13c70();                                        // the sound off switch
-    Unk_SmSession* FUN_1411b1f30();
+    Unk_SmPoint3(float fX, float fY, float fZ);                     // 0x14097f250
+    Unk_SmPoint3(const Vector3& pt);                        // 0x14027dcf0
 };
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 bool FUN_14028d470(float a, float b);                               // nearly equal
 void FUN_140194470(void* pDst, const Vector3& vSrc);        // NiPoint3 assignment
@@ -200,11 +203,10 @@ struct Unk_SoundPitch
     FMOD_EVENT_PITCHUNITS m_nUnits;
 };
 MS2_CHECK_SIZE(Unk_SoundPitch, 8);
-class Unk_SmVoiceTable { public: void FUN_141793340(int nObjectId, Unk_SoundPitch* pPitchOut); };
-Unk_SmVoiceTable* FUN_1411b1de0();
+class SoundPropertyMgr { public: int FUN_141793340(int nObjectId, Unk_SoundPitch* pPitchOut); };
+SoundPropertyMgr* FUN_1411b1de0();
 // Cooltime table of the local player.
-class Unk_SmCooltimes : public CooltimeManager { };
-Unk_SmCooltimes* FUN_1411b1dc0();
+class CCooltimeManager : public CooltimeManager { public: static CCooltimeManager* GetInstance(); };
 // The unit's log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0): one COMDAT per argument list.
 // @0x1417775f0
 template <class A> inline void Unk_SoundLog(CLogString* log, int level, int category, const wchar_t* format, const A& a)
@@ -287,8 +289,8 @@ MS2Ptr<CSoundEventEffectParam> FUN_141775980(CString strName, CString strCategor
 void CSoundEventEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1408733e0(pNode, "event", m_strEvent);
-    FUN_1408733e0(pNode, "group", m_strGroup);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "event", m_strEvent);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "group", m_strGroup);
     if (!m_strGroup.IsEmpty())
         FUN_1401d3700(m_strGroup);
     XmlGetAttr((class TiXmlElement*)(pNode), "byJob", m_bByJob);
@@ -298,15 +300,15 @@ void CSoundEventEffectParam::vfunc_1(Unk_140165cf0* pNode)
         FUN_141776330(pNode);
         FUN_1417764c0(pNode);
     }
-    FUN_140873360(pNode, "forceHearDistance", m_fViewDistance);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "forceHearDistance", m_fViewDistance);
     XmlGetAttr((class TiXmlElement*)(pNode), "doNotStop", m_bDoNotStop);
-    FUN_140873220(pNode, "cooltimeID", m_nCooltimeId);
-    Unk_140165cf0* pAttach = pNode->FUN_140165cf0("attachInfo");
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "cooltimeID", m_nCooltimeId);
+    Unk_140165cf0* pAttach = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->FirstChild("attachInfo"));
     if (pAttach != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pAttach), "attachToNode", m_bAttachToNode);
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyNodeTransform", m_bApplyNodeTransform);
-        FUN_1408733e0(pAttach, "parentNode", m_strParentNode);
+        XmlGetAttr(reinterpret_cast<TiXmlElement*>(pAttach), "parentNode", m_strParentNode);
     }
 }
 
@@ -373,15 +375,15 @@ bool CSoundEventEffectParam::FUN_1417760d0() const
 {
     if (m_nCooltimeId == 0)
         return true;
-    if (FUN_1411b1dc0() == 0)
+    if (CCooltimeManager::GetInstance() == 0)
         return true;
-    return FUN_1411b1dc0()->Use(m_nCooltimeId);
+    return CCooltimeManager::GetInstance()->Use(m_nCooltimeId);
 }
 
 // @0x141776120
 CString CSoundEventEffectParam::FUN_141776120(int nJob) const
 {
-    if (reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470() != 0)
+    if (FUN_141260470(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
         return m_strEvent;
     if (!m_bByJob)
         return m_strEvent;
@@ -412,7 +414,7 @@ float CSoundEventEffectParam::FUN_1417762a0(int nJob) const
 void CSoundEventEffectParam::FUN_141776330(Unk_140165cf0* pNode)
 {
     CString strList;
-    FUN_140873ad0(pNode, "jobEvent", strList);
+    XmlQuery(reinterpret_cast<TiXmlElement*>(pNode), "jobEvent", strList);
     ATL::CAtlArray<CString> arrList;
     Unk_SplitA(const_cast<CStringA&>(strList), (ATL::CAtlArray<CStringA>*)&(arrList), ";");
     for (unsigned i = 0; i < arrList.GetCount(); i++)
@@ -431,7 +433,7 @@ void CSoundEventEffectParam::FUN_141776330(Unk_140165cf0* pNode)
 void CSoundEventEffectParam::FUN_1417764c0(Unk_140165cf0* pNode)
 {
     CString strList;
-    FUN_140873ad0(pNode, "byJobStartDelay", strList);
+    XmlQuery(reinterpret_cast<TiXmlElement*>(pNode), "byJobStartDelay", strList);
     ATL::CAtlArray<CString> arrList;
     Unk_SplitA(const_cast<CStringA&>(strList), (ATL::CAtlArray<CStringA>*)&(arrList), ";");
     for (unsigned i = 0; i < arrList.GetCount(); i++)
@@ -461,7 +463,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
 {
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
-    if (*reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70() != 0)
+    if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()) != 0)
         return false;
     const CSoundEventEffectParam* pSound = static_cast<const CSoundEventEffectParam*>(pParam);
     if (!pSound->FUN_1417760d0())
@@ -470,7 +472,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     MS2Ptr<CSoundEvent> spSound;
     FMOD::EventGroup* pGroup = 0;
     const CString& strGroup = pSound->FUN_141776260();
-    NiNode* pOwner = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&pTarget->m_spObject))))));
+    NiNode* pOwner = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pTarget->m_spObject.operator NiAVObject*())))));
     if (!strGroup.IsEmpty())
     {
         pGroup = TSingleton<CSoundEventMgr>::GetInstance()->GetEventGroup(strGroup, 0);
@@ -480,14 +482,14 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (pSound->m_bOnlyCasterMyPC && m_unk_18 != 1)
         return false;
 
-    CString strEvent = pSound->FUN_141776120(pTarget->FUN_140a53050());
+    CString strEvent = pSound->FUN_141776120(reinterpret_cast<NoticeMessage*>(pTarget)->FUN_140a53050());
     if (pGroup != 0)
     {
         if (!strEvent.IsEmpty())
         {
             Unk_SoundPitch kPitch;
-            if (pTarget->FUN_140a53090() != 0 && strGroup.Find("ms2sound/sound/voice", 0) != -1)
-                FUN_1411b1de0()->FUN_141793340(pTarget->FUN_140a53090(), &kPitch);
+            if (reinterpret_cast<NoticeMessage*>(pTarget)->GetObjectCode() != 0 && strGroup.Find("ms2sound/sound/voice", 0) != -1)
+                FUN_1411b1de0()->FUN_141793340(reinterpret_cast<NoticeMessage*>(pTarget)->GetObjectCode(), &kPitch);
             spSound = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177b3d0(pGroup, strEvent, kPitch.m_fPitch, kPitch.m_nUnits);
         }
     }
@@ -496,15 +498,15 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (spSound == (CSoundEvent*)0)
         return false;
 
-    m_dStartTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + (double)pSound->FUN_1417762a0(pTarget->FUN_140a53050());
+    m_dStartTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + (double)pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->FUN_140a53050());
     m_dStopTime = m_dStartTime + 10.0;
     m_spSound = spSound;
     m_b2c = false;
     m_bDoNotStop = pSound->m_bDoNotStop;
     m_strExtra = pSound->m_strExtra;
 
-    Unk_NodePtr spRoot(new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
-    static_cast<NiNode*>(FUN_1409475f0(&spRoot))->SetName("Effect Root");
+    efd::SmartPointer<NiNode> spRoot(new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
+    static_cast<NiNode*>(spRoot.operator->())->SetName("Effect Root");
     m_spRoot = spRoot;
 
     NiTransform kXform;
@@ -527,14 +529,14 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
             pParent = pOwner;
         if (pSound->m_bApplyNodeTransform || pParent == 0)
         {
-            static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(kXform);
+            static_cast<NiAVObject*>(spRoot.operator->())->SetLocalTransform(kXform);
         }
         else
         {
             NiTransform kInverse;
             pParent->GetWorldTransform().Invert(kInverse);
             NiTransform kLocal = kInverse * kXform;
-            static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(kLocal);
+            static_cast<NiAVObject*>(spRoot.operator->())->SetLocalTransform(kLocal);
         }
     }
     else
@@ -550,28 +552,28 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
             NiNode* pNode = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pOwner->GetObjectByName((const char*)pSound->FUN_141776280()))))));
             if (pNode != 0)
             {
-                static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(pNode->GetWorldTransform() * kXform);
+                static_cast<NiAVObject*>(spRoot.operator->())->SetLocalTransform(pNode->GetWorldTransform() * kXform);
             }
             else
             {
-                static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(kXform);
+                static_cast<NiAVObject*>(spRoot.operator->())->SetLocalTransform(kXform);
             }
         }
         else
         {
-            static_cast<NiAVObject*>(FUN_1409475f0(&spRoot))->SetLocalTransform(kXform);
+            static_cast<NiAVObject*>(spRoot.operator->())->SetLocalTransform(kXform);
         }
     }
     if (pParent != 0)
     {
-        pParent->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
+        pParent->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), true);
+        static_cast<NiAVObject*>(m_spRoot.operator->())->UpdateEffects();
+        static_cast<NiAVObject*>(m_spRoot.operator->())->UpdateProperties();
+        static_cast<NiAVObject*>(m_spRoot.operator->())->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     }
     m_fVolume = pSound->m_fVolume;
     m_spSound->FUN_14177abc0(FUN_1417775b0, this);
-    if (FUN_14028d470(pSound->FUN_1417762a0(pTarget->FUN_140a53050()), 0.0f))
+    if (FUN_14028d470(pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->FUN_140a53050()), 0.0f))
         vfunc_4();
     return true;
 }
@@ -585,7 +587,7 @@ bool CSoundEventEffect::vfunc_9()
         if (!FUN_14119f3c0() && m_dStartTime <= dNow)
             vfunc_4();
         if (FUN_14119f3c0() && m_spSound.get() != 0)
-            m_spSound->SetPosition(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
+            m_spSound->SetPosition(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate()));
         if (m_bStopRequested && m_dStopTime <= dNow)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"sound event - doNotStop이 True 이며, Stop 메시지 이후 10초 경과[{0}]",
@@ -604,8 +606,8 @@ void CSoundEventEffect::vfunc_4()
     {
         if (GetLogString() != 0)
             Unk_SoundLog(GetLogString(), 0xc, 0x12f, L"Start SoundID {0} volume {1} {2}", m_spSound->GetName(),
-                         m_fVolume, FUN_1411a8ae0(m_unk_18));
-        m_spSound->SetPosition(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
+                         m_fVolume, CEffectService::FUN_1411a8ae0(m_unk_18));
+        m_spSound->SetPosition(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate()));
         m_spSound->SetVolume(m_fVolume);
         if (!m_spSound->Start())
             m_b2d = true;
@@ -659,13 +661,13 @@ FMOD_RESULT F_CALLBACK FUN_1417775b0(FMOD_EVENT* pEvent, FMOD_EVENT_CALLBACKTYPE
 void CSoundEventEffect::vfunc_7()
 {
     m_b2e = false;
-    FUN_140a0b2a0((NiAVObject*)FUN_1409475d0(&m_spRoot));
+    FUN_140a0b2a0((NiAVObject*)m_spRoot.operator NiNode*());
 }
 
 // @0x1417776b0
 int CSoundEventEffect::vfunc_8(void* p)
 {
-    FUN_140194470(p, reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate()));
+    FUN_140194470(p, reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate()));
     return 1;
 }
 
@@ -683,11 +685,6 @@ int CSoundEventEffect::vfunc_12()
 
 // ---- CSoundEvent ----
 // NiPoint3 built from coordinates / from an efd::Point3 (out-of-line copies 0x14097f250 / 0x14027dcf0).
-struct Unk_SmPoint3 : public Vector3
-{
-    Unk_SmPoint3(float fX, float fY, float fZ);                     // 0x14097f250
-    Unk_SmPoint3(const Vector3& pt);                        // 0x14027dcf0
-};
 // @0x14177a590
 CSoundEvent::CSoundEvent(FMOD::Event* pEvent, CString strName)
     : m_pRange(0), m_pEvent(pEvent), m_nStarted(0), m_nStopped(0), m_strName(strName)
@@ -888,12 +885,9 @@ const char* FUN_141788f10(FMOD_RESULT nResult)
 
 // Out-of-unit callees of the manager.
 CString FUN_14038f6d0(const CString& strA, const char* pszB);        // operator+
-void FUN_1403b0310(std::vector<CString>* pVec, const CString& rItem);   // push_back
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
-void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
+template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
-int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);         // property: string
-class Unk_SmUiMgr { public: void FUN_141adbf70(unsigned bMute); };
 
 // The category names of the designer project (index = event category slot).
 static const char* s_apszCategory[11] = {"effect", "environment", "bgm", "UISound", "npcVoice", "SystemVoice",
@@ -1144,14 +1138,14 @@ void CSoundEventMgr::FUN_14177bf20()
          it != m_mapEnvSounds.end(); ++it)
     {
         efd::utf8string strEvent;
-        FUN_1408a2060(it->first, 0xed530c5f, &strEvent);
+        static_cast<egf::Entity*>(it->first)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
         if (!strEvent.empty())
         {
             MS2Ptr<CSoundEvent> spEvent = FUN_14177b6a0(strEvent.c_str());
             it->second = spEvent;
         }
     }
-    if (*reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70() == 0)
+    if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()) == 0)
         WorldService::GetInstance()->FUN_141bc7b80(1);
     if (0 < m_histReverb.GetPos())
     {
@@ -1182,7 +1176,7 @@ int CSoundEventMgr::FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPri
                 if (nResult == FMOD_OK)
                 {
                     FUN_14177c420(5, fParam, nPriority, 0);
-                    FUN_140177a80(GetLogString(), 0xc, 0x12f, L"PlayMusic {0}", kPrevious.m_nId);
+                    Unk_AdditionalLog<unsigned>(GetLogString(), 0xc, 0x12f, L"PlayMusic {0}", kPrevious.m_nId);
                     m_bMusicPlaying = 1;
                     return 1;
                 }
@@ -1204,7 +1198,7 @@ int CSoundEventMgr::FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPri
             {
                 FUN_14177c420(5, fParam, nPriority, 0);
                 m_bMusicPlaying = 1;
-                FUN_140177a80(GetLogString(), 0xc, 0x12f, L"PlayMusic {0}", nMusicId);
+                Unk_AdditionalLog<unsigned>(GetLogString(), 0xc, 0x12f, L"PlayMusic {0}", nMusicId);
                 return 1;
             }
             else
@@ -1434,7 +1428,7 @@ void CSoundEventMgr::FUN_14177ce30(Unk_EntityPtr spEntity, int bOn)
     if (it != m_mapEnvSounds.end())
     {
         efd::utf8string strEvent;
-        FUN_1408a2060(spEntity, 0xed530c5f, &strEvent);
+        static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
         if (bOn == 0)
         {
             it->second->FUN_14177a920(0);
@@ -1457,7 +1451,7 @@ void CSoundEventMgr::FUN_14177ce30(Unk_EntityPtr spEntity, int bOn)
     {
         Vector3 vPos;
         efd::utf8string strEvent;
-        FUN_1408a2060(spEntity, 0xed530c5f, &strEvent);
+        static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
         static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
         if (!strEvent.empty())
         {
@@ -1516,7 +1510,7 @@ void CSoundEventMgr::RemoveEnvironmentSound(Unk_EntityPtr spEntity)
         if (it != m_mapEnvSounds.end())
         {
             efd::utf8string strEvent;
-            FUN_1408a2060(it->first, 0xed530c5f, &strEvent);
+            static_cast<egf::Entity*>(it->first)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
             const char* pszEvent = strEvent.c_str();
             FUN_1403a1280(GetLogString(), 0xc, 0x12f, L"Remove Environment Sound [{0}]", pszEvent);
             if (it->second.get())
@@ -1651,7 +1645,7 @@ static void FUN_14177e3d0(FMOD::EventGroup* pGroup, CString strPrefix, std::vect
             return;
         }
         CString strName = FUN_14038f6d0(FUN_14038f6d0(strPrefix, "/"), pszName);
-        FUN_1403b0310(&rNames, strName);
+        rNames.push_back(strName);
     }
 }
 
@@ -1727,7 +1721,7 @@ void CSoundEventMgr::FUN_14177dc80(unsigned bMute)
             if (m_apCategory[i])
                 m_apCategory[i]->setMute(bMute & 1);
         }
-        reinterpret_cast<Unk_SmUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbf70(bMute);
+        TSingleton<CUIService>::GetInstance()->FUN_141adbf70(bMute);
     }
 }
 
@@ -1830,7 +1824,7 @@ void CSoundEventMgr::FUN_14177e2e0(int bFlag)
              it != m_mapEnvSounds.end(); ++it)
         {
             efd::utf8string strEvent;
-            FUN_1408a2060(it->first, 0xed530c5f, &strEvent);
+            static_cast<egf::Entity*>(it->first)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
         }
     }
 }

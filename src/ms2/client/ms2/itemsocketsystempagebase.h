@@ -40,9 +40,9 @@ public:
     MS2Ptr<CItem> CreateItem(int itemId, int grade);
     MS2Ptr<CItem> FUN_140f6ce00(int itemId, int grade, bool bindOwner, MS2Ptr<CItem> source);
     MS2Ptr<CItem> FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo> info, int grade, bool bindOwner);
-    ItemInfoSlot* FUN_140f6d300(const CString& name);
-    ItemInfoSlot* FUN_140f6d340(const CString& name, MS2Ptr<CItem> item);
-    ItemInfoSlot* FUN_140f6d400(const CString& name);
+    ItemInfoSlot* GetItemSlot(const CString& name);
+    ItemInfoSlot* SetInfoSlotItem(const CString& name, MS2Ptr<CItem> item);
+    ItemInfoSlot* RefreshInfoSlot(const CString& name);
     MS2Ptr<CItem> FindItemByUid(__int64 uid, CAtlArray<MS2Ptr<CItem>>& items, int* index);
     MS2Ptr<CItem> GetItemAt(CAtlArray<MS2Ptr<CItem>>& items, unsigned index);
     void SwapItems(CAtlArray<MS2Ptr<CItem>>& items, int first, int second);
@@ -51,7 +51,7 @@ public:
     void FUN_140f6d590(const CString& name, MS2Ptr<CItem> item, int icon, int flags);
     bool FUN_140f6d9a0(int index, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
     bool FUN_140f6db00(MS2Ptr<CItem> item, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
-    void FUN_140f6dbe0(MS2Ptr<Unk_SocketPageBag> control);
+    void ClearListSelection(MS2Ptr<Unk_SocketPageBag> control);
     void FUN_140f6dc70(const CString& name, CIngredientContainer& ingredients, ASObj& data, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
     void SetSlotNew(int index, bool isNew);
     void FUN_140f6e250(const CString& name, const CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);

@@ -19,6 +19,9 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/client/ms2/itempreview.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/questmanager_1.h"
 static CString s_jobCode = "jobCode";
 static CString s_sortValue = "sortValue";
 static CString s_tabIndex = "tabIndex";
@@ -342,7 +345,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
     UIObject::vfunc_45(out, method, args);
     if ((method == "getTooltipQuest")) {
         int quest = args->FUN_1422b8b10();
-        if (!FUN_140764020()->state.FUN_140745630(quest) && !FUN_140764020()->state.FUN_140745590(quest)) return;
+        if (!((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestActive(quest) && !((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(quest)) return;
         CStringW text = FUN_1416e5660(quest);
         ASTooltip tip(1, 2);
         if (tip.ApplyTextTooltip(text)) {
@@ -421,7 +424,7 @@ void UIGalleryEventDialog::vfunc_o178_10(void* p)
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
     if (reinterpret_cast<Unk_GalleryQuestView*>(&static_cast<Unk_GalleryQuest*>(p)->data)->vfunc_0()->type != 4) return;
-    UpdateQuestState(static_cast<Unk_GalleryQuest*>(p)->FUN_140bfc580());
+    UpdateQuestState(((CQuest*)static_cast<Unk_GalleryQuest*>(p))->FUN_140bfc580());
     FUN_140c17d20(context);
 }
 MS2_REPLACE_METHOD_VIA(0x140C17020, UIGalleryEventDialog, UIQuestEventListener, vfunc_o178_10, 468, 0x8B363119);
@@ -470,7 +473,7 @@ int UIGalleryEventDialog::FUN_140c17560()
     for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
         auto card = context->cards.FUN_140410e70(i);
         if (!card) { MS2_ASSERT_AT(515, "pCard" && 0); return 0; }
-        if (FUN_140764020()->state.FUN_1407456d0(card->quest)) ++count;
+        if (((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestComplete(card->quest)) ++count;
     }
     return count;
 }
@@ -500,7 +503,7 @@ void UIGalleryEventDialog::FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext> cont
         Unk_GalleryAS questInfo(2);
         questInfo.FUN_1409c0d20("id", card->quest);
         questInfo.FUN_1407cb9c0("state", FUN_140c18c60((int)i));
-        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.FUN_140d43310(item.id, item.rank, item.count));
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.BindNewItem(item.id, item.rank, item.count));
         questInfo.FUN_1407cbb20("desc", FUN_1416e4df0(card->quest));
         questInfo.FUN_1409c0d20("itemID", item.id);
         questInfo.FUN_1409adc90("itemRank", item.rank);
@@ -624,7 +627,7 @@ int UIGalleryEventDialog::FUN_140c187e0()
     for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
         auto card = context->cards.FUN_140410e70(i);
         if (!card) { MS2_ASSERT_AT(449, "pCard" && 0); return 0; }
-        if (!FUN_140764020()->state.FUN_140745590(card->quest)) return 0;
+        if (!((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 0;
     }
     return 1;
 }
@@ -636,7 +639,7 @@ CString UIGalleryEventDialog::FUN_140c189d0(int id)
     if (!id) return "";
     auto item = FUN_14053f870(id);
     if (!item) return "";
-    return item->FUN_14053fdd0();
+    return ((CItemData*)item.operator->())->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x140C189D0, UIGalleryEventDialog, FUN_140c189d0, 211, 0x632BB788);
 
@@ -647,8 +650,8 @@ int UIGalleryEventDialog::FUN_140c18ab0(int index)
     if (context == 0) return 0;
     auto card = context->FUN_1403ff3e0(index);
     if (!card) { MS2_ASSERT_AT(477, "pCard" && 0); return 0; }
-    if (FUN_140764020()->state.FUN_140745630(card->quest)) return 1;
-    if (FUN_140764020()->state.FUN_140745590(card->quest)) return 2;
+    if (((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestActive(card->quest)) return 1;
+    if (((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 2;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C18AB0, UIGalleryEventDialog, FUN_140c18ab0, 416, 0xC5CC6671);
@@ -660,8 +663,8 @@ int UIGalleryEventDialog::FUN_140c18c60(int index)
     if (context == 0) return 0;
     auto card = context->FUN_1403ff3e0(index);
     if (!card) { MS2_ASSERT_AT(495, "pCard" && 0); return 0; }
-    if (FUN_140764020()->state.FUN_140745590(card->quest)) return 2;
-    else if (!FUN_140764020()->state.FUN_140746ba0(card->quest, 0, 0)) return 1;
+    if (((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 2;
+    else if (!((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140746ba0(card->quest, 0, 0)) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C18C60, UIGalleryEventDialog, FUN_140c18c60, 422, 0xC1D54FAC);

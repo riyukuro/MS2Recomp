@@ -22,9 +22,9 @@ int FUN_14020abe0(const int&);
 int FUN_14020ad80(int,unsigned char*);
 int FUN_14020abf0(const __int64&);
 int FUN_14020ae20(__int64,unsigned char*);
-int FUN_14020ac00(const CString&);
+__int64 FUN_14020ac00(CStringA const &);  // C3: the definition's signature
 int FUN_14020b020(const CString&,unsigned char*);
-int FUN_14020ac20(const CStringW&);
+__int64 FUN_14020ac20(CStringW const &);  // C3: the definition's signature
 int FUN_14020b170(const CStringW&,unsigned char*);
 int FUN_14020b410(float,unsigned char*);
 int FUN_14020aec0(void const *, unsigned int, unsigned char *);  // C3: the definition's signature

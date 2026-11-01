@@ -39,6 +39,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdatatable.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -262,7 +263,7 @@ int CItemLapenshardTable::Load()
                         if (tokens.FUN_14028b4c0() > 0)
                             nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
                         if (tokens.FUN_14028b4c0() > 1)
-                            nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                            nTag = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(*tokens.FUN_14027f1c0(1));
                     }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_LapenIngredientTag(info.operator->(), nTag);

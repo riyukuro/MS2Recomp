@@ -40,7 +40,7 @@ ExchangeItemType FUN_14021a270(const CStringA& str);        // the "type" name -
 
 // The discount service chain: the discount rate (per 10000) of an item grade.
 class Unk_140302b00 { public: };
-class Unk_1403ed190 { public: int FUN_140428cb0(int nGrade); };
+class CGameEventValueExchangeScrollSale { public: int Get(unsigned long); }; class Unk_1403ed190 : public CGameEventValueExchangeScrollSale { };
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -56,7 +56,7 @@ __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
 // @0x140595050
 __int64 CExchangeItemInfo::GetMeso() const
 {
-    int nRate = ((class Unk_1403ed190*)((class CGameEventValueManager*)(class Unk_140302b00*)(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetExchangeScrollSale())->FUN_140428cb0(m_nId);
+    int nRate = ((class Unk_1403ed190*)((class CGameEventValueManager*)(class Unk_140302b00*)(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetExchangeScrollSale())->Get(m_nId);
     if (nRate != 0)
         return FUN_1405957d0(m_nMeso, nRate);
     return m_nMeso;

@@ -56,7 +56,7 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);
 int FUN_14074bc90(int);   // C3: was FUN_14074bc90
 unsigned short FUN_14074bd10(int nQuestId);             // quest level
-CStringW FUN_1416e5900(unsigned nQuestId, int n);       // quest title
+CStringW FUN_1416e5900(int, bool);       // quest title
 CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);    // formatted string table entry
 UIQuestEventDispatcher* FUN_140bfc4b0();
 int FUN_140e7fc90(const void* pa, const void* pb);
@@ -128,7 +128,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             unsigned nQuest = quests[i];
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_1416e5900(nQuest, 0));
+            row.FUN_1407cbb20("label", FUN_1416e5900(nQuest, (bool)0));
             row.FUN_1407cbb20("level", FUN_1409e88d0(0x459, FUN_14074bd10(nQuest)));
             row.FUN_1409c0d20("id", nQuest);
             row.FUN_1407cba60("icon", FUN_140e7fb90(nQuest));

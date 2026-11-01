@@ -43,10 +43,9 @@ public:
 };
 
 // The enchant data object of an item (a CItemStatus).
-class Unk_ItemEnchantData
-{
+class CItemStatus { public: bool FUN_140630810(void); }; class Unk_ItemEnchantData : public CItemStatus {
 public:
-    bool FUN_140630810();                               // the item is merged
+
 };
 
 // UI service: handle to a registered UI object.

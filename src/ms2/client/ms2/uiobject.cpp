@@ -26,19 +26,18 @@
 #include "ms2/client/ms2/uiupperhuddialog.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/uiworldmapdialog.h"
+#include "ms2/client/ms2/uipetsystemdialog.h"   // C3: UIPetSystemDialog::FUN_140e74550
+#include "ms2/client/ms2/uidungeonroomdialog.h"   // C3: UIDungeonRoomDialog::FUN_1412b8ff0
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143ad7930
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
 
-class ASUIComponent : public AScript    // RTTI .?AVASUIComponent@@
-{
-public:
-    void FUN_1422c7a90(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, int n);
-};
+#include "ms2/placeholder/asuicomponent.h"   // C3: the real ASUIComponent (FUN_1422c7a90)
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);
 
@@ -59,9 +58,9 @@ void FUN_1418fe1c0(const CString& strUrl);
 UIWebBrowserBase* FUN_140c43790(int nUIType);
 class Unk_140961730 : public UIWorldMapDialog { };
 Unk_140961730* FUN_140961730(int nUIType);
-class Unk_140b99ba0 { public: void FUN_140e74550(int nId); };
+class Unk_140b99ba0 : public UIPetSystemDialog { };
 Unk_140b99ba0* FUN_140b99ba0(int nUIType);
-class Unk_140961550 : public UIDialog { public: void FUN_1412b8ff0(int nDungeonId); };
+class Unk_140961550 : public UIDungeonRoomDialog { };
 Unk_140961550* FUN_140961550(int nUIType);
 
 class Unk_1401aa6a0                     // 8-byte dictionary key (ctor 0x1401aa6a0)
@@ -89,8 +88,7 @@ public:
     void FocusQuest(int nQuestId);
 };
 
-class Unk_1406cd330 { public: int FUN_1406ccfc0(); };       // NPC data
-MS2Ptr<Unk_1406cd330> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 class Unk_1403ed2b0 { public: };
 
@@ -176,10 +174,10 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
-        MS2Ptr<Unk_1406cd330> pNpc = FUN_1406cd330(nNpcId);
+        MS2Ptr<CNpcData> pNpc = FUN_1406cd330(nNpcId);
         if (pNpc == NULL)
             return;
-        if (pNpc->FUN_1406ccfc0() > 0)
+        if (pNpc->GetFriendly() > 0)
             p->FUN_140f46ea0(1, Unk_1401aa6a0(nNpcId), 1);
         else
             p->FUN_140f46ea0(2, Unk_1401aa6a0(nNpcId), 1);

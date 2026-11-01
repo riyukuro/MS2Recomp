@@ -23,6 +23,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/citemdata.h"
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -206,7 +207,7 @@ CString CEnchantScrollRecipe::GetRewardName()
     Unk_EnchantItemPtr item = FUN_14053f870(m_scroll.vfunc_o18_0());
     if (item.FUN_1402ffd90())
         return CString("");
-    return reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053fdd0();
+    return reinterpret_cast<CItemData*>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->()))->GetIconPath();
 }
 
 // @0x14034dcb0

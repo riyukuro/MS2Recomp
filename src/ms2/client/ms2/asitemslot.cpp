@@ -475,7 +475,7 @@ void ASItemSlot::FUN_1409baa60(const Scaleform::GFx::FunctionHandler::Params& pa
         return;
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_14052b130(m_itemId, m_rarity, 0) != 0 && FUN_1409bb9e0()->IsHudOn() != 0)
-        ((ItemPreviewMgr*)(Unk_ItemPreview*)(FUN_1409bb9e0()))->FUN_140d40120(spItem, 0);
+        ((ItemPreviewMgr*)(Unk_ItemPreview*)(FUN_1409bb9e0()))->OpenPreview(spItem, 0);
 }
 
 // @0x1409bab90

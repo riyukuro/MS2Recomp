@@ -158,6 +158,7 @@
 #include <cmath>
 #include <limits>
 #include "ms2/fmt/format.h"
+#include "ms2/placeholder/itemremakeoption.h"
 
 // Header inlines whose first copy is in this TU: the float helpers of the record code and the fmt argument tags of its
 // log lines (float, __int64 and bool arguments), referenced through selectany pointers so the compiler emits them here.
@@ -177,59 +178,61 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // template instances; these give the same behaviour over the real containers. ----
 typedef std::vector<MS2Ptr<CIngredientInfo> > Unk_CsIngVector;
 typedef std::list<MS2Ptr<CUserChangeableItemHistory> > Unk_CsHistList;
+// The ICF-folded accessor instances, named by the instantiation the exe's symbol rows bind.
+class Unk_XmlNode;
+typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_CsRemakeAlloc;
+typedef std::_Vector_alloc<std::_Vec_base_types<__int64, std::allocator<__int64> > > Unk_CsI64Alloc;
+typedef std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<CPtred>, std::allocator<MS2Ptr<CPtred> > > > Unk_CsPtredAlloc;
+typedef std::_Vector_alloc<std::_Vec_base_types<Unk_XmlNode*, std::allocator<Unk_XmlNode*> > > Unk_CsXmlAlloc;
+typedef std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<CIngredientInfo>, std::allocator<MS2Ptr<CIngredientInfo> > > > Unk_CsIngAlloc;
+typedef std::_Compressed_pair<std::allocator<MS2Ptr<CPtred> >, std::_Vector_val<std::_Simple_types<MS2Ptr<CPtred> > >, true> Unk_CsPtredPair;
+typedef std::_List_alloc<std::_List_base_types<MS2Ptr<CUserChangeableItemHistory>, std::allocator<MS2Ptr<CUserChangeableItemHistory> > > > Unk_CsHistAlloc;
 
 // vector<MS2Ptr<CIngredientInfo>>::_Make_iterator_offset: auto& d = _Get_data(); return iterator(d._Myfirst + idx, addressof(d)).
 struct Unk_CsIngVal { Unk_IngRef* first; Unk_IngRef* last; Unk_IngRef* end; };   // _Vector_val
-struct Unk_CsVecAlloc { Unk_CsIngVal* FUN_140288210() const; };      // _Vector_alloc::_Get_data
-struct Unk_CsVecView { Unk_CsVecAlloc m_alloc; };
-void* FUN_14027b590(void* p);                           // std::addressof
-void FUN_14027d3d0(__int64 it, Unk_IngRef* ptr, void* cont);  // iterator ctor
+struct Unk_CsVecView { Unk_CsPtredPair m_alloc; };
+__int64 FUN_14027b590(__int64 p);                       // std::addressof
+void* FUN_14027d3d0(void* it, __int64 ptr, __int64 cont);   // iterator ctor
 // @0x140288770
 __int64 FUN_140288770(__int64 self, __int64 out, __int64 idx) noexcept
 {
-    Unk_CsIngVal* d = reinterpret_cast<Unk_CsVecView*>(self)->m_alloc.FUN_140288210();
-    FUN_14027d3d0(out, d->first + idx, FUN_14027b590(d));
+    Unk_CsIngVal* d = reinterpret_cast<Unk_CsIngVal*>(&reinterpret_cast<Unk_CsVecView*>(self)->m_alloc._Get_second());
+    FUN_14027d3d0((void*)out, (__int64)(d->first + idx), FUN_14027b590((__int64)d));
     return out;
 }
 
 // vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
-struct Unk_CsI64Alloc { void FUN_14028a7d0(__int64* p, unsigned __int64 n); };   // allocator::deallocate
+__int64 FUN_1402875b0(__int64, __int64, __int64);     // _Destroy
 struct Unk_CsI64Vec {
-    void FUN_140288c60();                       // _Orphan_all
-    __int64*& FUN_140288980();                  // _Myfirst
-    __int64*& FUN_140288ae0();                  // _Mylast
-    __int64*& FUN_140288840();                  // _Myend
-    void FUN_1402875b0(__int64* first, __int64* last);   // _Destroy
-    unsigned __int64 FUN_14028a2c0();           // capacity
-    Unk_CsI64Alloc& FUN_1402882f0();            // _Getal
     void FUN_140289670();
 };
 // @0x140289670
 void Unk_CsI64Vec::FUN_140289670()
 {
-    FUN_140288c60();
-    if (FUN_140288980() != 0) {
-        FUN_1402875b0(FUN_140288980(), FUN_140288ae0());
-        FUN_1402882f0().FUN_14028a7d0(FUN_140288980(), FUN_14028a2c0());
-        FUN_140288980() = 0;
-        FUN_140288ae0() = 0;
-        FUN_140288840() = 0;
+    reinterpret_cast<Unk_CsXmlAlloc*>(this)->_Orphan_all();
+    if (reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Myfirst() != 0) {
+        FUN_1402875b0((__int64)this, (__int64)reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Myfirst(),
+                      (__int64)reinterpret_cast<Unk_CsI64Alloc*>(this)->_Mylast());
+        reinterpret_cast<std::allocator<__int64>&>(reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Getal()).deallocate(
+            reinterpret_cast<__int64*>(reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Myfirst()),
+            reinterpret_cast<std::vector<__int64>*>(this)->capacity());
+        reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Myfirst() = 0;
+        reinterpret_cast<Unk_CsI64Alloc*>(this)->_Mylast() = 0;
+        reinterpret_cast<Unk_CsPtredAlloc*>(this)->_Myend() = 0;
     }
 }
 
 // The list/vector iterator helpers below go through the exe's accessor and iterator-ctor instances.
-void*& FUN_140288ac0(void* list);                       // list::_Myhead
-void* FUN_140287e70(void* list);                        // list::_Get_data
-void* FUN_14027b560(void* p);                           // std::addressof
-void FUN_14027ce50(Unk_It* it, void* node, void* cont); // list iterator ctor
+__int64 FUN_14027b560(__int64 p);                       // std::addressof
+void* FUN_14027ce50(void* it, __int64 node, __int64 cont); // list iterator ctor
 void * FUN_14027ced0(void *, __int64, __int64);  // C3: the definition's signature
-void FUN_14027d630(Unk_It* it, Unk_It base);            // reverse_iterator ctor
+__int64* FUN_14027d630(__int64* it, __int64 base);      // reverse_iterator ctor
 
 // list::_Unchecked_begin: an unchecked iterator at the head's next node.
 // @0x140289d20
 Unk_It* Unk_HistList::FUN_140289d20(Unk_It* out)
 {
-    FUN_14027ced0(out, (__int64)(*(void**)FUN_140288ac0(this)), 0);
+    FUN_14027ced0(out, (__int64)reinterpret_cast<Unk_CsHistAlloc*>(this)->_Myhead()->_Next, 0);
     return out;
 }
 
@@ -237,7 +240,8 @@ Unk_It* Unk_HistList::FUN_140289d20(Unk_It* out)
 // @0x14028a1a0
 Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out) noexcept
 {
-    FUN_14027ce50(out, *(void**)FUN_140288ac0(this), FUN_14027b560(FUN_140287e70(this)));
+    FUN_14027ce50(out, (__int64)reinterpret_cast<Unk_CsHistAlloc*>(this)->_Myhead()->_Next,
+                  FUN_14027b560((__int64)&reinterpret_cast<Unk_CsHistAlloc*>(this)->_Get_data()));
     return out;
 }
 
@@ -246,7 +250,7 @@ Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out) noexcept
 Unk_HistRef* Unk_HistList::FUN_14028aef0()
 {
     Unk_It it;
-    return FUN_14027f3b0(FUN_14028a1a0(&it));
+    return reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<Unk_CsHistList::iterator*>(FUN_14028a1a0(&it)));
 }
 
 // float floor(float): <cmath>'s inline, calling floorf through the exe's import slot.
@@ -278,7 +282,7 @@ void Unk_IngVec::FUN_14028b330(Unk_IngRef& r)
 Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out) noexcept
 {
     Unk_It it;
-    FUN_14027d630(out, *FUN_14028aa30(&it));
+    FUN_14027d630((__int64*)out, (__int64)FUN_14028aa30(&it)->p);
     return out;
 }
 
@@ -288,8 +292,7 @@ Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out) noexcept
 __int64 FUN_140289b00(void* vec, __int64 first, __int64 last, __int64 dest)
 {
     extern __int64 FUN_14027b250(__int64, __int64, __int64, __int64);
-    extern __int64 FUN_1402883b0(__int64);
-    return FUN_14027b250(first, last, dest, FUN_1402883b0((__int64)vec));
+    return FUN_14027b250(first, last, dest, (__int64)&reinterpret_cast<Unk_CsIngAlloc*>(vec)->_Getal());
 }
 
 // Alternate call-site prototype recorded for the same folded helper in the exe.

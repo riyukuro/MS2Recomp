@@ -25,13 +25,13 @@ public:
     CMyCharacter();                                                 // 0x140d9ee70
     ~CMyCharacter();                                                // 0x140d9efd0
 
-    void FUN_140d9f040();                                           // register the packet 0xd9 handler
-    void FUN_140d9f0c0();                                           // unregister it
-    void FUN_140d9f140();                                           // reset the state
+    void RegisterPacketHandler();                                           // register the packet 0xd9 handler
+    void UnregisterPacketHandler();                                           // unregister it
+    void ClearDungeonState();                                           // reset the state
     void FUN_140d9f1c0(CInPacket& packet);                          // read the id -> time table
-    void FUN_140d9f200(CInPacket& packet);                          // packet 0xd9: titles bit set, then a NotifyDebugState
+    void OnTitlesPacket(CInPacket& packet);                          // packet 0xd9: titles bit set, then a NotifyDebugState
     MS2Ptr<DungeonRecordManagerCli> GetRecord();                // the dungeon record manager
-    void FUN_140d9f310(__int64 nExpire);                            // set the expire time, (re)start the main info UI timer
+    void SetExpireAndUpdateTimer(__int64 nExpire);                            // set the expire time, (re)start the main info UI timer
     void CreateStage(int nA, int nB, bool bFlag);                 // new room stage state
     void ClearStage();                                           // drop the room stage state
     MS2Ptr<RoomStageDungeonCli> GetStage();                    // the room stage state
@@ -39,7 +39,7 @@ public:
     __int64 GetTime(int nId);                                 // the time of the id, or 0
     bool FUN_140d9f5d0(int nIndex);                                 // title bit
     CStringW FUN_140d9f600(int nIndex);                             // title bit name suffix
-    void FUN_140d9f710(CInPacket& packet);                          // read the id -> state map, then a NotifyDungeonEnterState
+    void OnDungeonEnterStatePacket(CInPacket& packet);                          // read the id -> state map, then a NotifyDungeonEnterState
     unsigned GetDungeonEnterState(unsigned long nId);                      // the state of the id, or 0
     MS2Ptr<CChatEmoticonCli> GetChatEmoticon();                       // the chat emoticon state
 

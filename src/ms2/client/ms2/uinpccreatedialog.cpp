@@ -75,14 +75,11 @@ class Unk_NcActor { public: virtual void Unk_Slot0(); virtual void Unk_Slot1(); 
                             virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void* vfunc_6(); };
 bool FUN_14087ddc0(void* pKind, int nMask);
 
-class Unk_UpperEvt { public: Unk_UpperEvt(const Unk_UpperEvt&); private: void* m_0; };
-
 // The world: the local player, the entity of an event, the proxy of an object id, the current map.
 class Unk_NcWorld : public WorldService
 {
 public:
     Unk_NcPlayer* FUN_141bd0cc0();
-    Unk_NcActor* FUN_141bd0fa0(Unk_UpperEvt evt);
     MS2Ptr<CProxyGameObject> FUN_141bc9e70(int nId);
 };
 
@@ -116,7 +113,7 @@ private:
 MS2_CHECK_SIZE(Unk_NcHandle, 0x10);
 class Unk_NcMgr { public: Unk_NcHandle FUN_140a7cab0(unsigned nNpc); };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
-MS2Ptr<CNpcData> FUN_1406cd330(unsigned nNpc);   // the npc row; FUN_141a6b800 discards it
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpc);   // the npc row; FUN_141a6b800 discards it
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
 CStringW GetStringCommon(int nId);                        // string table text
@@ -294,7 +291,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x141a6b030
 void UINpcCreateDialog::vfunc_1(void* pEvt)
 {
-    Unk_NcActor* pActor = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(*(const Unk_UpperEvt*)pEvt);
+    Unk_NcActor* pActor = reinterpret_cast<Unk_NcActor*>(WorldService::GetInstance()->FindObjectByEntityId(*(const egf::EntityID*)pEvt));
     if (pActor != 0) {
         if (FUN_14087ddc0(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
             if (m_nPendingNpc == 0)

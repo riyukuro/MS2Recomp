@@ -135,6 +135,7 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@std@@@2@XZ 0x1419d83a0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemmergeoptiondialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 #include "uiitemmergeoptiondialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -150,6 +151,7 @@
 #include "ms2/commonfiles/item.h"
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/equipitem.h"  // C3
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -171,18 +173,15 @@ class Unk_MergeClip : public ASMovieClip { };
 class Unk_MergeDialogAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140fdd6b0(const char* szMethod, __int64 n, bool b);   // Invoke(method, uid, flag)
 };
 class ASDialog : public ASMovieClip
 {
 };
-class Unk_MergeBag : public ASObj { };
 
 // The game feature switches (FUN_14025e7c0): GM keys and the debug flag.
 class Unk_MergeFeature : public CInputKeyHandler
 {
 public:
-    bool FUN_14116dd30(int nKey, int a, int b);
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -232,7 +231,7 @@ int FUN_14053feb0(int nItemId);
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);         // an inventory or equipped item by uid
 
 // The equipment of the local player (FUN_1416561a0 / FUN_1411e1ce0) and its slot list.
-class Unk_MergeEquipItem : public CPtred { public: MS2Ptr<CItem> FUN_1411dc7a0(); };
+class Unk_MergeEquipItem : public CEquipItem { };
 class Unk_MergeEquipList
 {
 public:
@@ -635,7 +634,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
             MS2Ptr<Unk_MergeEquipItem> spEquip(equipment.FUN_140885600(pos));
             if (!spEquip)
                 continue;
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (!spItem)
                 continue;
             if (spItem->FUN_140527840() == 0)
@@ -650,7 +649,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     FUN_14123a080(strBag, guids);
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_itemBag"))
     {
-        if (MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag"))
+        if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
             spBag->FUN_1407cba60("bagId", CString(strBag));
     }
 }
@@ -803,7 +802,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
     FUN_14123a080(strBag, m_items190);
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_ingredientBag"))
     {
-        if (MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag"))
+        if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
             spBag->FUN_1407cba60("bagId", CString(strBag));
     }
 }

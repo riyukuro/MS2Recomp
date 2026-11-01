@@ -124,18 +124,10 @@ class Unk_TrigNpc;
 void FUN_14166ed50(Unk_TrigNpc* p, int n);
 
 // ---- UI ----
+// usercommandcli.cpp's out-of-line copy of the MS2Ptr<UIObject> object getter (0x141371280).
 class Unk_CommandUIRef {
 public:
-    ~Unk_CommandUIRef();                                            // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
     UIObject* FUN_141371280();
-private: void* unknown; UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
-struct Unk_TsUiMgrView                                              // UI manager members (this=rcx, hidden return=rdx)
-{
-    Unk_CommandUIRef FUN_141adcea0(int nId);
-    Unk_CommandUIRef FUN_141adcf50(const CString& strName);
 };
 
 class UITypingGameDialog : public UIDialog
@@ -721,11 +713,11 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
     Unk_SplitA(strNames, (ATL::CAtlArray<CStringA>*)&(aNames), ",");
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
-        Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcf50(aNames[i]);
-        if (((MS2Ptr<UIObject>*)&static_cast<class Unk_CommandUIRef&>(kRef))->IsNull())
+        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(FUN_1403ed2b0())->FindObjectByName(aNames[i]);
+        if (kRef.IsNull())
             continue;
-        if (kRef.FUN_141371280()->vfunc_9() != nState)
-            kRef.FUN_141371280()->vfunc_8(nState);
+        if (reinterpret_cast<Unk_CommandUIRef&>(kRef).FUN_141371280()->vfunc_9() != nState)
+            reinterpret_cast<Unk_CommandUIRef&>(kRef).FUN_141371280()->vfunc_8(nState);
     }
 }
 
@@ -741,7 +733,7 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
         UINpcDuelHPBarDialog* pUi = FUN_14096e200(0x4f62);
         if (pUi != 0)
         {
-            pUi->FUN_140e6bb70(nA, nB, nC);
+            pUi->StartDuelBar(nA, nB, nC);
             pUi->FUN_141924680();
         }
         FUN_141add0b0(FUN_1403ed2b0(), 0x4e3d);
@@ -765,9 +757,9 @@ static UITypingGameDialog* FUN_1418644d0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcea0(nId);
-        if (kRef.FUN_1403e8a70() != 0)
-            return dynamic_cast<UITypingGameDialog*>(((MS2Ptr<UIObject>*)(&(kRef)))->operator UIObject*());
+        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nId);
+        if (kRef.get() != 0)
+            return dynamic_cast<UITypingGameDialog*>(kRef.operator UIObject*());
     }
     return 0;
 }

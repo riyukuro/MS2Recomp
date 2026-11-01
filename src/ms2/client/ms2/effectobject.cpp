@@ -19,6 +19,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/stateskill.h"
+#include "ms2/placeholder/fittingdollpc.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- out-of-unit callees (names of the Unk_ types are invented) ----
@@ -31,8 +32,6 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1290(int);
     static class WorldService* GetInstance();
 };
-void FUN_141663b70(PCBase* pActor, int nEffectId);                  // PCBase: add to its effect list (+0x1210)
-void FUN_141663bb0(PCBase* pActor, int nEffectId);                  // PCBase: remove from its effect list
 
 // Target of a state (MS2Ptr, the pointer is a CPtred); its +0x30 member holds a descriptor with a kind at +0x88.
 struct Unk_EffDesc
@@ -126,7 +125,7 @@ CEffectObject::~CEffectObject()
 {
     PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
-        FUN_141663bb0(pOwner, FUN_14123c580());
+        reinterpret_cast<PC*>(pOwner)->FUN_141663bb0(FUN_14123c580());
 }
 
 // @0x140a53830
@@ -150,7 +149,7 @@ int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
     FUN_14123c5a0(FUN_140a53830());
     PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
-        FUN_141663b70(pOwner, FUN_14123c580());
+        reinterpret_cast<PC*>(pOwner)->FUN_141663b70(FUN_14123c580());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a53880, CEffectObject, FUN_140a53880, 322, 0x61463D26);

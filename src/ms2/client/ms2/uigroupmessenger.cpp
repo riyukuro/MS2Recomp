@@ -39,6 +39,7 @@
 #include <stdlib.h>
 
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/formatstringid.h"
 #include "ms2/client/ms2/chatemoticoncli.h"
 #include "ms2/client/ms2/groupchatmanager.h"
 #include "ms2/client/ms2/pcbase.h"
@@ -56,6 +57,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/asslider.h"
 #include "ms2/placeholder/astextinput.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asuicomponent.h"
@@ -118,34 +120,21 @@ public:
 #undef GRM_V
     virtual void vfunc_24(bool b);
 };
-// The member list is a plain CLIK scrolling list (MS2Ptr<ASScrollingList> ops), unlike the chat lines.
-struct Unk_GrmUserListView
+// The member list and the chat input come through the lookups of other dialogs' template instances.
+class UIDailyMissionDialog
 {
+public:
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);  // 0x140c02900
 };
 // "m_textInput": the chat input.
-class Unk_GrmInput : public ASTextInput
+class Unk_RankInput : public ASTextInput {};
+class UIGameRankingDialog
 {
 public:
-    void FUN_1422e0b80(const CString& strText);                     // set the text (narrow)
-    void FUN_1422e0bd0(const CStringW& strHtml);                    // set the html text
-    CStringW FUN_1422e0c20();                                       // the html text
-    void FUN_1422e0d60(int nMaxChars);                              // limit the length
-    int FUN_1422e0da0();                                            // the length limit
-    void FUN_1422e1500(int nBegin, int nEnd);                       // select a range
+    MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);    // 0x140e35bd0
 };
 // "m_slider0" of the settings box: the window alpha.
-class Unk_GrmSlider : public AScript
-{
-public:
-    float FUN_1422ce840();
-};
-// The settings box's movie (the child lookup of the slider).
-class Unk_GrmBoxRoot : public ASObj
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);
-};
+class Unk_HudSlider : public ASSlider {};
 // The message carries the box's AS root.
 typedef UIMsg Unk_GrmMsg;
 
@@ -154,29 +143,28 @@ class ASDialog : public ASUIComponent
 {
 };
 
-// The chat UI: the current chat name and the group chat tray (+0x50).
-class Unk_GrmChatUI
+// The chat UI (messengerdata.cpp): the current chat name and the group chat tray (+0x50).
+struct Unk_MdNames
 {
-public:
     void FUN_141482c80(CStringW strName);                           // make a chat the current one
     void FUN_141482d30(CStringW strName);                           // drop a chat name
     CStringW FUN_1414829e0();                                       // the current chat name
     void FUN_141482b70();                                           // forgets every chat name
+};
+struct Unk_MdState : Unk_MdNames
+{
     char m_pad_00[0x50];
     UIGroupMessengerBrowser* m_pBrowser;                            // +0x50
 };
-MS2_CHECK_OFFSET(Unk_GrmChatUI, m_pBrowser, 0x50);
-Unk_GrmChatUI* FUN_141482e80();
-
-// The own player.
-class Unk_GrmWorld { public: PCBase* FUN_141bd0cc0(); };
+MS2_CHECK_OFFSET(Unk_MdState, m_pBrowser, 0x50);
+Unk_MdState* FUN_141482e80();
 
 // The key state.
 class Unk_GrmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The notify manager.
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 
 // The UGC event dispatcher (the typing notices).
 UIUGCEventDispatcher* FUN_140bc09f0();
@@ -208,10 +196,10 @@ private:
     Unk_PmA m_infoA;
     Unk_PmB m_infoB;
 };
-class Unk_GrmMenu
+class UIPopUpMenu
 {
 public:
-    void FUN_141a7f890(const Unk_PopupMenuInfo& info, CGroupChatMember* pMember, const CStringW& strHistory, int nKind);
+    void FUN_141a7f890(const Unk_PopupMenuInfo& info, class Unk_PmUserEntry* pEntry, const CStringW& strHistory, int nKind);
 };
 class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 
@@ -229,38 +217,35 @@ public:
 UIInviteGroupDialog* FUN_14194dd10(int nUiId);
 
 // One member row of the member list (messengerdata.cpp's entry, built from a group chat member).
-struct Unk_GrmEntry
+struct Unk_MdEntry
 {
-    Unk_GrmEntry(CGroupChatMember* pMember);                        // 0x141483af0
-    unsigned FUN_141483d80();                                       // online
+    Unk_MdEntry(class Unk_MdSrcD& src);                             // 0x141483af0
+    unsigned GetKind();                                             // online
     __int64 FUN_141483da0();                                        // the character id
-    CStringW FUN_141483dc0();                                       // the image
-    CStringW FUN_141483e10();                                       // the name
-    CStringW FUN_141483e60();                                       // the level / job line
+    CStringW GetImage();                                            // the image
+    CStringW GetName();                                             // the name
+    CStringW GetInfo();                                             // the level / job line
     unsigned m_nKind;                                               // +0x00
     __int64 m_nId;                                                  // +0x08
     CStringW m_strImage;                                            // +0x10
     CStringW m_strName;                                             // +0x18
     CStringW m_strInfo;                                             // +0x20
 };
-MS2_CHECK_SIZE(Unk_GrmEntry, 0x28);
+MS2_CHECK_SIZE(Unk_MdEntry, 0x28);
 
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strA);
-CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
-CStringW FUN_140cde1f0(const wchar_t* szFormat, const unsigned& nId, const int& nVSpace, const CStringW& strSize);
 CString FUN_1414842b0(int nKind, CStringW strName);                 // the line's icon
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 void FUN_14083d2b0(CStringW& str);                                  // strips the markup
 bool FUN_140d2aa60(CStringW& strHtml);                              // the input has item links
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
-void FUN_140d2c2a0(MS2Ptr<Unk_GrmInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
+void FUN_140d2c2a0(MS2Ptr<Unk_RankInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
 #ifdef __clang__
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);  // operator+
 #endif
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void* FUN_140d86260();   // C3: was FUN_140d86260
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -276,7 +261,6 @@ public:
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
 class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -284,12 +268,10 @@ public:
 };
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
-void FUN_1408740a0(void* pCfg, const char* szName, const CStringW& str);
+void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was FUN_1408740a0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_140873420(void* pCfg, const char* szName, CStringW& str);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
-void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
 
 class TiXmlElement
 {
@@ -331,7 +313,7 @@ MS2_REPLACE_METHOD(0x141947C60, UIGroupMessenger, GetTypeName, 61, 0xEA0A8AA4);
 int UIGroupMessenger::vfunc_65()
 {
     UIDialog::vfunc_65();
-    FUN_140939a10()->RegisterNotify(L"NotifyChatEmoticonSelected",
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIGroupMessenger::FUN_14194a6f0));
     return 1;
 }
@@ -340,7 +322,7 @@ int UIGroupMessenger::vfunc_65()
 void UIGroupMessenger::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140939a10()->UnregisterNotify(L"NotifyChatEmoticonSelected",
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChatEmoticonSelected",
                                    Delegate<void(NotifyObject*)>(this, &UIGroupMessenger::FUN_14194a6f0));
     FUN_140bc09f0()->FUN_141b38c70(this);
     m_inputHistory.RemoveAll();
@@ -364,7 +346,7 @@ void UIGroupMessenger::vfunc_63(int n)
     vfunc_4();
     if (n != 0)
     {
-        if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+        if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
         {
             if (spInput->FUN_1422c76c0())
             {
@@ -377,7 +359,7 @@ void UIGroupMessenger::vfunc_63(int n)
     }
     else
     {
-        if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
+        if (MS2Ptr<ASScrollingList> spOutput = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_textOutput"))
         {
             unsigned nCount = FUN_141482e80()->m_pBrowser->FUN_141952b30(m_nGroupId);
             unsigned nRows;
@@ -410,7 +392,7 @@ int UIGroupMessenger::vfunc_4()
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()));
+    return doc.SaveFile(FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()));
 }
 MS2_REPLACE_METHOD(0x1419482C0, UIGroupMessenger, vfunc_4, 598, 0x06A5FC79);
 
@@ -456,7 +438,7 @@ int UIGroupMessenger::vfunc_53(void* pCfg)
         XmlSetAttr((class TiXmlElement*)(pCfg), "scrollPosition", m_nScrollPosition);
         XmlSetAttr((class TiXmlElement*)(pCfg), "width", pDialog->FUN_1422c1340());
         XmlSetAttr((class TiXmlElement*)(pCfg), "height", pDialog->GetHeightCeil());
-        FUN_1408740a0(pCfg, "name", m_strName);
+        XmlSetAttr((TiXmlElement*)pCfg, "name", m_strName);
         XmlSetAttr((class TiXmlElement*)(pCfg), "alpha", m_nAlpha);
         XmlSetAttr((class TiXmlElement*)(pCfg), "userlist", m_bUserList);
         XmlSetAttr((class TiXmlElement*)(pCfg), "minimize", m_6c);
@@ -516,13 +498,13 @@ void UIGroupMessenger::OnLoadComplete()
             TalkLog log(logs[i]);
             FUN_14194d3d0(log.m_nKind, log.m_strMsg, log.m_strName, log.m_nA);
         }
-        if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
+        if (MS2Ptr<ASScrollingList> spOutput = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_textOutput"))
         {
             m_nScrollPosition = nScrollPosition;
             spOutput->FUN_1422e17f0(m_nScrollPosition);
         }
-        if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
-            spInput->FUN_1422e0d60(*Client::Constants::GetInstance()->MaxChatLength.Get());
+        if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+            spInput->SetMaxChars(*Client::Constants::GetInstance()->MaxChatLength.Get());
     }
 }
 MS2_REPLACE_METHOD(0x141948C20, UIGroupMessenger, OnLoadComplete, 783, 0xCFF786F7);
@@ -601,7 +583,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         SetName(spName->GetTextW());
                     }
                 }
-                if (MS2Ptr<Unk_GrmSlider> spAlpha = static_cast<Unk_GrmBoxRoot&>(box).FUN_140fafed0<Unk_GrmSlider>("m_slider0"))
+                if (MS2Ptr<Unk_HudSlider> spAlpha = reinterpret_cast<AScript&>(box).FUN_140accef0<Unk_HudSlider>("m_slider0"))
                     m_nAlpha = (int)spAlpha->FUN_1422ce840();
                 FUN_14194bde0();
                 if (FUN_141482e80()->m_pBrowser != 0)
@@ -625,7 +607,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x141949640
 void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (FUN_141482e80()->m_pBrowser == 0)
@@ -641,7 +623,7 @@ void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& s
             {
                 tooltip.FUN_1409c6c80();
                 tooltip.FUN_1409db7b0(spItem);
-                FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+                *pRetVal = tooltip.FUN_1422bb870();
             }
         }
     }
@@ -652,7 +634,7 @@ void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& s
         if (FUN_141482e80()->m_pBrowser->m_items.Lookup(nUid, spItem))
         {
             if (ItemPreviewMgr::GetInstance()->IsHudOn())
-                ItemPreviewMgr::GetInstance()->FUN_140d40120(spItem, 0);
+                ItemPreviewMgr::GetInstance()->OpenPreview(spItem, 0);
         }
     }
 }
@@ -697,17 +679,17 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnShowConfigDialog", szMethod) == 0)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x15, L"", this, s_strGroupEdit);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x15, L"", static_cast<IMessageListener*>(this), s_strGroupEdit);
         if (spBox)
         {
             spBox->FUN_140b76940(m_strName);
-            spBox->FUN_140533ff0(m_nAlpha);
+            spBox->Append<int>(m_nAlpha);
             FUN_140d73c60(spBox);
         }
     }
     else if (_stricmp("OnLeaveGroupMessenger", szMethod) == 0)
     {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0x81b, GetName()), this, s_strGroupExit))
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0x81b, GetName()), static_cast<IMessageListener*>(this), s_strGroupExit))
             FUN_140d73c60(spBox);
     }
     else if (_stricmp("OnBuildScrollingList", szMethod) == 0)
@@ -729,7 +711,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     {
         if (_stricmp("eventTextInput", szMethod) == 0)
         {
-            if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+            if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
                 FUN_140d2c2a0(spInput, m_inputHistory);
             return 1;
         }
@@ -783,7 +765,7 @@ MS2_REPLACE_METHOD(0x14194A320, UIGroupMessenger, FUN_14194a320, 20, 0x19CBB9B4)
 void UIGroupMessenger::FUN_14194a340(int nKind, const CStringW& strName, const CStringW& strOther)
 {
     FUN_14194bde0();
-    CStringW strMsg = FUN_140632a60(0x80e, strName, strOther);
+    CStringW strMsg = FormatStringId<CStringW, CStringW>(0x80e, strName, strOther);
     AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A340, UIGroupMessenger, FUN_14194a340, 109, 0xF1D02319);
@@ -794,9 +776,9 @@ void UIGroupMessenger::FUN_14194a3c0(int nKind, const CStringW& strName, int nMo
     FUN_14194bde0();
     CStringW strMsg;
     if (nMode == 0)
-        strMsg = FUN_14052bd00(0x810, strName);
+        strMsg = FormatStringId<CStringW>(0x810, strName);
     else if (nMode == 1)
-        strMsg = FUN_14052bd00(0x813, strName);
+        strMsg = FormatStringId<CStringW>(0x813, strName);
     AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A3C0, UIGroupMessenger, FUN_14194a3c0, 252, 0xF0BC3812);
@@ -805,7 +787,7 @@ MS2_REPLACE_METHOD(0x14194A3C0, UIGroupMessenger, FUN_14194a3c0, 252, 0xF0BC3812
 void UIGroupMessenger::FUN_14194a4d0(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
-    CStringW strMsg = FUN_14052bd00(0x811, strName);
+    CStringW strMsg = FormatStringId<CStringW>(0x811, strName);
     AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A4D0, UIGroupMessenger, FUN_14194a4d0, 99, 0xBA001AB9);
@@ -814,7 +796,7 @@ MS2_REPLACE_METHOD(0x14194A4D0, UIGroupMessenger, FUN_14194a4d0, 99, 0xBA001AB9)
 void UIGroupMessenger::FUN_14194a540(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
-    CStringW strMsg = FUN_14052bd00(0x812, strName);
+    CStringW strMsg = FormatStringId<CStringW>(0x812, strName);
     AddSystemMessage(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A540, UIGroupMessenger, FUN_14194a540, 99, 0x5DE0CDB3);
@@ -956,7 +938,7 @@ void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
     CStringW strSize(L"");
     if (spEmo->m_nWidth != 0 || spEmo->m_nHeight != 0)
         strSize = StringFormat(L"width='{0}' height='{1}'", spEmo->m_nWidth, spEmo->m_nHeight);
-    CStringW strLine = FUN_140cde1f0(L"<img src='img://emoticon:{0}' vspace='{1}' {2} />", spEmo->m_nId,
+    CStringW strLine = StringFormat<unsigned, int, CStringW>(L"<img src='img://emoticon:{0}' vspace='{1}' {2} />", spEmo->m_nId,
                                      spEmo->m_nVSpace, strSize);
     CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strLine);
 }
@@ -992,7 +974,7 @@ void UIGroupMessenger::vfunc_ugc_1(void* pId, CString strText)
         return;
     if (pId == 0)
         return;
-    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     m_nTypingTime = GetTickCountMs2();
@@ -1003,12 +985,12 @@ MS2_REPLACE_METHOD_VIA(0x14194B360, UIGroupMessenger, UIUGCEventListener, vfunc_
 // @0x14194b440
 void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (pPlayer->vfunc_77() != strName)
     {
-        Unk_GrmMenu* pMenu = ((class Unk_GrmMenu*)FUN_140c30140(0x4e39));
+        UIPopUpMenu* pMenu = ((class UIPopUpMenu*)FUN_140c30140(0x4e39));
         if (pMenu != 0)
         {
             Unk_PopupMenuInfo info(x, y, 3, 0x635e, 0, "", 0);
@@ -1025,12 +1007,12 @@ void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
                     strHistory.AppendFormat(strLine);
                 }
             }
-            Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
+            Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(m_nGroupId);
             if (spChat.get())
             {
                 Unk_ChatMemberPtr spMember = spChat->FindMemberByName(strName);
                 if (spMember.get())
-                    pMenu->FUN_141a7f890(info, spMember, strHistory, 6);
+                    pMenu->FUN_141a7f890(info, reinterpret_cast<Unk_PmUserEntry*>(static_cast<CGroupChatMember*>(spMember)), strHistory, 6);
             }
         }
     }
@@ -1083,8 +1065,8 @@ MS2_REPLACE_METHOD(0x14194B9B0, UIGroupMessenger, GetGroupId, 17, 0xABC1DB6D);
 // @0x14194b9d0
 int UIGroupMessenger::FUN_14194b9d0(__int64 nCharacterId)
 {
-    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
-    if ((spChat.get() ? true : false) && spChat->FUN_14137b410(nCharacterId))
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(m_nGroupId);
+    if ((spChat.get() ? true : false) && spChat->HasMemberById(nCharacterId))
         return 1;
     return 0;
 }
@@ -1093,7 +1075,7 @@ MS2_REPLACE_METHOD(0x14194B9D0, UIGroupMessenger, FUN_14194b9d0, 168, 0x604A3AB2
 // @0x14194ba80
 CStringW UIGroupMessenger::FUN_14194ba80(unsigned __int64 nCharacterId)
 {
-    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(m_nGroupId);
     if (spChat == 0)
         return L"";
     ATL::CAtlList<Unk_ChatMemberPtr> members(10);
@@ -1120,7 +1102,7 @@ MS2_REPLACE_METHOD(0x14194BC70, UIGroupMessenger, SetName, 65, 0x6116EF81);
 // @0x14194bcc0
 void UIGroupMessenger::FUN_14194bcc0(CStringW strText)
 {
-    if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         vfunc_78();
         FUN_14194d100(spInput, strText, 1);
@@ -1132,7 +1114,7 @@ MS2_REPLACE_METHOD(0x14194BCC0, UIGroupMessenger, FUN_14194bcc0, 270, 0x53094138
 // @0x14194bde0
 void UIGroupMessenger::FUN_14194bde0()
 {
-    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(m_nGroupId);
     if (spChat == 0)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -1161,14 +1143,14 @@ void UIGroupMessenger::OnBuildScrollingList()
         return;
     if (m_bUserList == 0)
         return;
-    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(m_nGroupId);
     if (spChat == 0)
         return;
     ATL::CAtlList<Unk_ChatMemberPtr> joined(10);
     spChat->FUN_14137bdc0(joined);
     ATL::CAtlList<Unk_ChatMemberPtr> invited(10);
     spChat->FUN_14137bee0(invited);
-    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<Unk_GrmUserListView*>(this)->FUN_140c02900("m_userList"))
+    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_userList"))
     {
         spList->FUN_1422dd1d0();
         static_cast<Unk_GrmControl*>(static_cast<ASUIComponent*>(spList.operator->()))->vfunc_24(1);   // slot 24 validateNow
@@ -1177,12 +1159,12 @@ void UIGroupMessenger::OnBuildScrollingList()
             Unk_ChatMemberPtr spMember = joined.GetAt(pos);
             if (spMember == 0)
                 continue;
-            Unk_GrmEntry entry(spMember.get());
+            Unk_MdEntry entry(reinterpret_cast<Unk_MdSrcD&>(*spMember.get()));
             ASObj item(2);
-            item.FUN_1407cb9c0(s_strOnline, entry.FUN_141483d80());
-            item.FUN_1407cbb20(s_strIconPath, entry.FUN_141483dc0());
-            item.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
-            item.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
+            item.FUN_1407cb9c0(s_strOnline, entry.GetKind());
+            item.FUN_1407cbb20(s_strIconPath, entry.GetImage());
+            item.FUN_1407cbb20(s_strCharacterName, entry.GetName());
+            item.FUN_1407cbb20(s_strLevelAndJobName, entry.GetInfo());
             spList->AddItem(item);
         }
         for (POSITION pos = invited.GetHeadPosition(); pos != 0; invited.GetNext(pos))
@@ -1190,12 +1172,12 @@ void UIGroupMessenger::OnBuildScrollingList()
             Unk_ChatMemberPtr spMember = invited.GetAt(pos);
             if (spMember == 0)
                 continue;
-            Unk_GrmEntry entry(spMember.get());
+            Unk_MdEntry entry(reinterpret_cast<Unk_MdSrcD&>(*spMember.get()));
             ASObj item(2);
-            item.FUN_1407cb9c0(s_strOnline, entry.FUN_141483d80());
-            item.FUN_1407cbb20(s_strIconPath, entry.FUN_141483dc0());
-            item.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
-            item.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
+            item.FUN_1407cb9c0(s_strOnline, entry.GetKind());
+            item.FUN_1407cbb20(s_strIconPath, entry.GetImage());
+            item.FUN_1407cbb20(s_strCharacterName, entry.GetName());
+            item.FUN_1407cbb20(s_strLevelAndJobName, entry.GetInfo());
             spList->AddItem(item);
         }
         unsigned nRows;
@@ -1215,7 +1197,7 @@ int UIGroupMessenger::FUN_14194c6d0()
         return 0;
     if (FUN_141482e80()->FUN_1414829e0() != m_strName)
         return 0;
-    if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->FUN_1422c76c0())
             return 1;
@@ -1230,7 +1212,7 @@ MS2_REPLACE_METHOD(0x14194C6D0, UIGroupMessenger, FUN_14194c6d0, 331, 0xF9EA75FE
 // @0x14194c830
 int UIGroupMessenger::FUN_14194c830()
 {
-    MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput");
+    MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput");
     if (spInput == 0)
         return 0;
     CStringW strText = spInput->GetText();
@@ -1240,7 +1222,7 @@ int UIGroupMessenger::FUN_14194c830()
         FUN_14194cd00();
         return 0;
     }
-    CStringW strHtml = spInput->FUN_1422e0c20();
+    CStringW strHtml = spInput->GetHtmlText();
     bool bHtml = FUN_140d2aa60(strHtml);
     if (bHtml)
     {
@@ -1270,7 +1252,7 @@ MS2_REPLACE_METHOD(0x14194C830, UIGroupMessenger, FUN_14194c830, 884, 0x4FB1EAAB
 // @0x14194cbb0
 int UIGroupMessenger::FUN_14194cbb0()
 {
-    if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->FUN_1422c76c0())
         {
@@ -1291,7 +1273,7 @@ MS2_REPLACE_METHOD(0x14194CBB0, UIGroupMessenger, FUN_14194cbb0, 322, 0x0B436CC5
 // @0x14194cd00
 int UIGroupMessenger::FUN_14194cd00()
 {
-    if (MS2Ptr<Unk_GrmInput> spInput = FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->FUN_1422c76c0())
         {
@@ -1334,13 +1316,13 @@ MS2_REPLACE_METHOD(0x14194CE40, UIGroupMessenger, FUN_14194ce40, 696, 0xB730CB0A
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d100
-void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CStringW& strText, int bSelectEnd)
+void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_RankInput> spInput, const CStringW& strText, int bSelectEnd)
 {
     CStringW strCurrent = spInput->GetText();
-    if (strCurrent.GetLength() >= spInput->FUN_1422e0da0())
+    if (strCurrent.GetLength() >= spInput->GetMaxChars())
         return;
     CStringW strSpace(L" ");
-    CStringW strHtml = spInput->FUN_1422e0c20();
+    CStringW strHtml = spInput->GetHtmlText();
     unsigned int nTotal = strHtml.GetLength() + strSpace.GetLength() + strText.GetLength();
     if (nTotal >= 0x800)
         return;
@@ -1362,7 +1344,7 @@ MS2_REPLACE_METHOD(0x14194D100, UIGroupMessenger, FUN_14194d100, 701, 0x77104F6D
 // @0x14194d3d0
 void UIGroupMessenger::FUN_14194d3d0(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem)
 {
-    if (MS2Ptr<ASScrollingList> spOutput = FUN_140c02900("m_textOutput"))
+    if (MS2Ptr<ASScrollingList> spOutput = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_textOutput"))
     {
         bool bVisibleBg = FUN_14194da30(strMsg);
         CStringW strFrame = FUN_14194d8f0(strName, bSystem);
@@ -1399,7 +1381,7 @@ MS2_REPLACE_METHOD(0x14194D6F0, UIGroupMessenger, FUN_14194d6f0, 498, 0x612545BC
 // @0x14194d8f0
 CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (bSystem)
         return L"notify";
     if (pPlayer != 0 && pPlayer->vfunc_77() == strName)
@@ -1443,31 +1425,13 @@ MS2_REPLACE_METHOD(0x14194F120, UIGroupMessenger, vfunc_48, 11, 0xF4D94525);
 
 // ---- the tray's views ----
 
-// The message box record: the group list box's choices and its dropdown's text.
-class Unk_GrmBox : public CMsgBoxData
-{
-public:
-    CStringW FUN_141a02d00() const;                                 // the text the box was opened with
-    void FUN_141a02b00(const CStringW& strText, ATL::CAtlList<CStringW>& choices);   // the dropdown entries
-};
-class Unk_GrmDropdown : public ASDropdownMenu
-{
-public:
-    CStringW FUN_1422dfe00();                                       // the selected label
-};
-// The item rarity colours.
-class Unk_GrmRarityColors
-{
-public:
-    unsigned FUN_1405569f0(int nRarity);
-};
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the shown message box
 CStringW BlockFormat(int nStringId);
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 __int64 GetServerTime();                                            // the server time (epoch seconds)
 bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);
 __int64 FUN_140d2caf0(const CStringW& strLink);                     // an item link's uid
-CStringW FUN_14183e930(const CStringW& strText, int nColor);        // colours a text
+CStringW FUN_14183e930(const CStringW& strText, unsigned nColor);        // colours a text
 void FUN_141484270(TalkLog* pLog);                                  // marks a line read
 int FUN_141484290(TalkLog* pLog);                                   // a line is unread
 extern int DAT_143ab2864;
@@ -1592,11 +1556,11 @@ int UIGroupMessengerBrowser::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
                 if (spBox.get())
                 {
-                    CStringW strText = static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02d00();
+                    CStringW strText = spBox->FUN_141a02d00();
                     ASObj box(root, 2);
                     if (MS2Ptr<ASDropdownMenu> spGroups = box.GetDropdownMenu("m_dropdown"))
                     {
-                        CStringW strGroup = static_cast<Unk_GrmDropdown*>(spGroups.operator->())->FUN_1422dfe00();
+                        CStringW strGroup = spGroups->FUN_1422dfe00();
                         UIGroupMessenger* pWindow = FindWindowByName(strGroup);
                         if (pWindow != 0)
                         {
@@ -1722,11 +1686,11 @@ void UIGroupMessengerBrowser::FUN_1419517b0(int nGroupId, const CStringW& strNam
     m_logs.SetAt(nGroupId, new TalkLogList());
     FUN_141952d80(nGroupId, 1, 1);
     FUN_141276180(s_strSystemGroupChat, "");
-    FUN_1412751f0(FUN_14052bd00(0x80f, strName), 3, 1);
+    FUN_1412751f0(FormatStringId<CStringW>(0x80f, strName), 3, 1);
     UIGroupMessenger* pWindow = FindWindowByGroupId(nGroupId);
     if (pWindow != 0)
     {
-        pWindow->AddSystemMessage(nGroupId, strName, FUN_140632a60(0x80e, strName, strOther));
+        pWindow->AddSystemMessage(nGroupId, strName, FormatStringId<CStringW, CStringW>(0x80e, strName, strOther));
         if (pWindow->vfunc_64())
             FUN_141952530();
     }
@@ -1836,7 +1800,7 @@ void UIGroupMessengerBrowser::FUN_141951f70(const CStringW& strText)
     }
     else if (nCount < 3)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), this, s_strGroupList);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), static_cast<IMessageListener*>(this), s_strGroupList);
         if (spBox.get())
         {
             ATL::CAtlList<CStringW> choices(10);
@@ -1848,13 +1812,13 @@ void UIGroupMessengerBrowser::FUN_141951f70(const CStringW& strText)
                     continue;
                 choices.AddTail(pWindow->GetName());
             }
-            static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02b00(strText, choices);
+            spBox->FUN_141a02b00(strText, choices);
             FUN_140d73c60(spBox);
         }
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), this, s_strGroupList);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), static_cast<IMessageListener*>(this), s_strGroupList);
         if (spBox.get())
         {
             ATL::CAtlList<CStringW> choices(10);
@@ -1866,7 +1830,7 @@ void UIGroupMessengerBrowser::FUN_141951f70(const CStringW& strText)
                     continue;
                 choices.AddTail(pWindow->GetName());
             }
-            static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02b00(strText, choices);
+            spBox->FUN_141a02b00(strText, choices);
             FUN_140d73c60(spBox);
         }
     }
@@ -2002,11 +1966,11 @@ MS2_REPLACE_METHOD(0x141952B30, UIGroupMessengerBrowser, FUN_141952b30, 161, 0x0
 // @0x141952be0
 int UIGroupMessengerBrowser::FUN_141952be0()
 {
-    PCBase* pPlayer = reinterpret_cast<Unk_GrmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     ATL::CAtlList<unsigned> groups(10);
-    CGroupChatManager::GetInstance()->FUN_14137e6f0(pPlayer->FUN_141656a80(), groups);
+    CGroupChatManager::GetInstance()->FindChatsWithMember(pPlayer->FUN_141656a80(), groups);
     for (POSITION pos = groups.GetHeadPosition(); pos != 0; groups.GetNext(pos))
     {
         unsigned nGroupId = groups.GetAt(pos);
@@ -2022,7 +1986,7 @@ int UIGroupMessengerBrowser::FUN_141952d80(unsigned nGroupId, int bDeleteSave, i
 {
     if (m_windows.GetCount() >= 3)
         return 0;
-    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(nGroupId);
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FindChat(nGroupId);
     if (spChat == 0)
         return 0;
     FUN_1419532d0(nGroupId);
@@ -2199,7 +2163,7 @@ CStringW UIGroupMessengerBrowser::FUN_141953b10(const CStringW& strMsg)
         {
             MS2Ptr<CItem> spItem = FUN_141953df0(nUid);
             if (spItem.get())
-                nColor = reinterpret_cast<Unk_GrmRarityColors*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(spItem->FUN_140526bd0());
+                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->FUN_140526bd0());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);

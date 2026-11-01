@@ -52,25 +52,6 @@ public:
     void FUN_140e6f820(int nOldLevel, unsigned nOldMerat);          // 0x140e6f820 the level / merat changed
 };
 
-// The reference the UI manager hands out for a dialog (16 bytes, object at +8).
-class Unk_PbUIRef
-{
-public:
-    ~Unk_PbUIRef();                                                 // 0x1403e5630
-private:
-    void* unknown;
-    UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_PbUIRef, 0x10);
-UIObject* FUN_1403ed9e0(Unk_PbUIRef& rRef);
-
-// The UI manager.
-class Unk_PbUiMgr
-{
-public:
-    Unk_PbUIRef FUN_141adcea0(int nId);                             // object by class id
-};
-
 // The events of the game (a closed event is not running).
 
 // The blocked-action flags of the client config.
@@ -341,11 +322,11 @@ bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMa
 // @0x140a8c5f0 the payback dialog, if it is open
 UIPaybackDialog* FUN_140a8c5f0(int nId)
 {
-    if (reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_PbUIRef ref = reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (((MS2Ptr<UIObject>*)(Unk_PbUIRef*)&(ref))->get())
-            return dynamic_cast<UIPaybackDialog*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get())
+            return dynamic_cast<UIPaybackDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

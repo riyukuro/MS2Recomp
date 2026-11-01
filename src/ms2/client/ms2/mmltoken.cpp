@@ -89,14 +89,14 @@ void MMLParser::Parse()
                 bDotted = true;
             }
             MS2Ptr<MMLToken> spToken(new MMLToken());
-            double dTime = FUN_140d7ff80(nLength, bDotted);
+            double dTime = NoteLengthToMs(nLength, bDotted);
             spToken->m_dTime = dTime;
             if (nClass == 1)
             {
                 spToken->m_nType = 0;
-                int nPitch = FUN_140d7ff60(nNote);
+                int nPitch = ToMidiNote(nNote);
                 spToken->m_nPitch = nPitch;
-                int nVolume = FUN_140d7ff40(m_nVolume);
+                int nVolume = ToMidiVolume(m_nVolume);
                 spToken->m_nValue = nVolume;
             }
             else if (nClass == 4)
@@ -133,11 +133,11 @@ void MMLParser::Parse()
             if (nPitch < 0xc || 0x77 < nPitch)
                 continue;
             MS2Ptr<MMLToken> spToken(new MMLToken());
-            double dTime = FUN_140d7ff80(m_nLength, m_bDotted);
+            double dTime = NoteLengthToMs(m_nLength, m_bDotted);
             spToken->m_dTime = dTime;
             spToken->m_nType = 0;
             spToken->m_nPitch = nPitch;
-            int nVolume = FUN_140d7ff40(m_nVolume);
+            int nVolume = ToMidiVolume(m_nVolume);
             spToken->m_nValue = nVolume;
             if (bTie && !m_tokens.empty())
             {
@@ -447,19 +447,19 @@ int MMLParser::ParseNote(const char* p, int* pnNote)
 }
 
 // @0x140d7ff40
-int MMLParser::FUN_140d7ff40(int nVolume)
+int MMLParser::ToMidiVolume(int nVolume)
 {
     return nVolume << 3;
 }
 
 // @0x140d7ff60
-int MMLParser::FUN_140d7ff60(int nNote)
+int MMLParser::ToMidiNote(int nNote)
 {
     return m_nOctave * 0xc + nNote;
 }
 
 // @0x140d7ff80
-double MMLParser::FUN_140d7ff80(int nLength, bool bDotted)
+double MMLParser::NoteLengthToMs(int nLength, bool bDotted)
 {
     if (nLength == 0)
         return 0.0;

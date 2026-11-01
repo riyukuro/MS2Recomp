@@ -81,7 +81,7 @@ struct Unk_NodeQueue
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
     Unk_NodeQueue(NiAVObject* pRoot);                    // 0x14098cb80
     ~Unk_NodeQueue();                                  // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bDescend);
+    NiAVObject* Next(bool bDescend);
 };
 typedef Unk_NodeQueue Unk_CmWalker;   // C3: was a local stand-in for Unk_NodeQueue
 extern char DAT_143afa7d0;                                         // NiRTTI of the mesh type
@@ -171,7 +171,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
         if (spRoot != 0)
         {
             Unk_CmWalker walker((NiAVObject*)(spRoot));
-            while (NiAVObject* pObject = walker.FUN_14098e0d0(true))
+            while (NiAVObject* pObject = walker.Next(true))
             {
                 NiObject* pMesh = NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pObject));
                 void* pMat;

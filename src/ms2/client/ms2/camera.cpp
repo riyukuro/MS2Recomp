@@ -111,6 +111,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, GameObject>)
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -226,7 +227,6 @@ void FUN_141b90e30(Unk_CameraCursor* pCursor, float* pX, float* pY);    // curso
 class Unk_CameraActor : public PCBase
 {
 };
-Unk_CameraActor* FUN_14099eef0(Unk_CameraTargetEntity* pTarget);       // the rpg object of a target (or null)
 ecr::RenderService* FUN_1413f9890();                                    // the render service
 ecr::CameraService* FUN_1413f9910();                                    // the camera service
 class Unk_SceneApp;
@@ -236,9 +236,6 @@ class Unk_140ad4b90;
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 void FUN_1418631a0(Unk_140ad4b90* p);
 bool FUN_141863100(Unk_140ad4b90* p, int nMapId, const Vector3& ptPos);   // the point is in the map's area
-void FUN_141bdb5a0(Unk_GameContext* pContext, int bOn);
-void FUN_141bd9e60(Unk_GameContext* pContext, float f1, float f2, float fTime, int nTargetId);
-void FUN_141bda050(Unk_GameContext* pContext, float f, int nTargetId);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n); // set a global shader constant
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
@@ -260,11 +257,11 @@ public:
     Unk_CameraOption m_8;
 };
 Unk_ClientSettings* FUN_1409a8b10();
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 class Unk_CameraConstValue
 {
 public:
-    const float& FUN_140298f40();
     char m_pad[0x58];
 };
 struct Unk_CameraConsts
@@ -275,7 +272,6 @@ struct Unk_CameraConsts
     Unk_CameraConstValue m_kCameraSpeed3;                               // +0x1b30
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-egf::Entity* FUN_1408a9090(const void* sp);                             // the entity of a smart pointer
 float FUN_1409f25a0(float f);                                           // cos
 float FUN_1409f2310(float f);                                           // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);                       // &p->m_setting
@@ -330,7 +326,7 @@ public:
     NiAVObjectPtr FUN_141551ea0(CString strPath, int n1, int n2, int n3, int n4);   // load (cached) nif
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-NiNode* FUN_141b6efc0(egf::Entity* pEntity);                            // the entity's scene root
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                            // the entity's scene root
 // A NiNode that follows only some parts of its parent's transform (0x138 bytes; unrecovered class).
 class Unk_SeparateNode : public NiNode
 {
@@ -1223,9 +1219,9 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                         if (pNpc)
                         {
                             FUN_140aeaf40(pNpc, 1);
-                            FUN_141bdb5a0(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), 1);
+                            WorldService::GetInstance()->FUN_141bdb5a0(1);
                         }
-                        FUN_141bd9e60(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), 1.0f, 0, setup.m_3c, nTargetId);
+                        WorldService::GetInstance()->FUN_141bd9e60(1.0f, 0, setup.m_3c, nTargetId);
                         m_27c = true;
                     }
                 }
@@ -1235,10 +1231,10 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                     FUN_140aeb920();
                     FUN_140aed260();
                     FUN_140aeaf40(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 1);
-                    FUN_141bdb5a0(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), 0);
+                    WorldService::GetInstance()->FUN_141bdb5a0(0);
                     if (pTarget)
                         pTarget->FUN_14183cc80(0);
-                    FUN_141bda050(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance()), 1.0f, nTargetId);
+                    WorldService::GetInstance()->FUN_141bda050(1.0f, nTargetId);
                 }
                 return;
             }
@@ -1888,7 +1884,7 @@ void CameraMgr::FUN_140aec4c0()
         LoadMapCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3060());
         egf::EntityID id = egf::EntityIDFactory::GetNextID();
         egf::EntityPtr spEntity = TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity((const char*)FUN_140af80c0(), id, true);
-        if (FUN_1408a9090(&spEntity) != 0)
+        if (reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*() != 0)
         {
             float fDistance = m_spMapCameraData->m_distance;
             float fHAngle = ((m_spMapCameraData->m_hAngle + 180.0f) * 3.1415927f) / 180.0f;
@@ -1900,13 +1896,13 @@ void CameraMgr::FUN_140aec4c0()
             ptEye.y = fDistance * FUN_1409f2310(fHAngle) + ptAt.y;
             ptEye.z = fDistance * FUN_1409f2310(fVAngle) + ptAt.z;
             Vector3 ptRot = CCameraMode::FUN_140afdd40(ptAt, ptEye, g_143a08cf8);
-            FUN_140ae9ed0(FUN_1408a9090(&spEntity), &ptEye, &ptRot);
-            TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(FUN_1408a9090(&spEntity), 0);
+            FUN_140ae9ed0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), &ptEye, &ptRot);
+            TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), 0);
         }
         float fSpeed = (float)FUN_1409a8b10()->FUN_140af7de0()->m_4 / 100.0f;
-        float f1 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1.FUN_140298f40() * fSpeed;
-        float f2 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2.FUN_140298f40() * fSpeed;
-        float f3 = ((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3.FUN_140298f40() * fSpeed;
+        float f1 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1)->FUN_140298f40()) * fSpeed;
+        float f2 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2)->FUN_140298f40()) * fSpeed;
+        float f3 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3)->FUN_140298f40()) * fSpeed;
         FUN_140aeb880(f1, f2, f3);
     }
 }
@@ -2241,7 +2237,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
         }
         m_spMode->vfunc_6(1);
     }
-    Unk_CameraActor* pActor = FUN_14099eef0(m_pTarget);
+    Unk_CameraActor* pActor = reinterpret_cast<Unk_CameraActor*>(efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(m_pTarget)));
     if (pActor)
         pActor->FUN_1416781a0(nNewMode);
 }
@@ -2259,7 +2255,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     NiNodePtr spParent = 0;
     if (bAttach && !FUN_140a38d60())
         return;
-    NiNode* pTargetRoot = FUN_141b6efc0(((class GameObject*)(class Unk_CameraTargetEntity*)(FUN_140a38d60()))->FUN_14123c410());
+    NiNode* pTargetRoot = reinterpret_cast<NiNode*>(FUN_141b6efc0(((class GameObject*)(class Unk_CameraTargetEntity*)(FUN_140a38d60()))->FUN_14123c410()));
     m_effect.m_spScene = ((class Unk_CamNifCache*)FUN_140a0afd0())->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pParam->m_strFilePath), 0, 5, 0, 0);
     if (m_effect.m_spScene != 0)
     {

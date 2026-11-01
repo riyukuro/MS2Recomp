@@ -58,10 +58,9 @@ private:
 };
 
 // The inventory (global 0x143ab2a90); its count queries take an Unk_InventoryItemKey (id, +8 kind 1 = by item id).
-class Unk_IesInventory
-{
+class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); }; class Unk_IesInventory : public Unk_Inventory {
 public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nUid);
+
     int FUN_140a5eda0(Unk_InventoryItemKey* pKey);           // how many items match
     int FUN_140a5f780(int nTypeId, int n);              // how many items of the type
 };

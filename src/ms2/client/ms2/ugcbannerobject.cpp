@@ -8,10 +8,10 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (the entity's banner component; names invented) ----
-unsigned int FUN_140b60d90(Unk_Entity* pEntity);       // banner id
-unsigned char FUN_140b60dd0(Unk_Entity* pEntity);               // banner visibility
-void FUN_140b60e10(Unk_Entity* pEntity, unsigned char b);
-void FUN_140b60e40(Unk_Entity* pEntity, unsigned char b);
+int FUN_140b60d90(egf::Entity *);  // C3: the definition's signature
+bool FUN_140b60dd0(egf::Entity *);  // C3: the definition's signature
+void FUN_140b60e10(egf::Entity *, bool);  // C3: the definition's signature
+void FUN_140b60e40(egf::Entity *, bool);  // C3: the definition's signature
 
 // @0x140b9c680
 UgcBannerObject::UgcBannerObject(Unk_EntRef ent)
@@ -39,8 +39,8 @@ void UgcBannerObject::SetVisible(unsigned char bVisible)
     if (m_bVisible == bVisible)
         return;
     m_bVisible = bVisible;
-    FUN_140b60e10(m_ent.FUN_1408a9090(), m_bVisible);
-    FUN_140b60e40(m_ent.FUN_1408a9090(), m_bVisible);
+    FUN_140b60e10((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
+    FUN_140b60e40((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
 }
 
 // @0x140b9c7f0
@@ -60,8 +60,8 @@ void UgcBannerObject::Init()
 {
     if (m_ent.FUN_1408b70b0(0))
         return;
-    m_nBannerId = FUN_140b60d90(m_ent.FUN_1408a9090());
-    m_bVisible = FUN_140b60dd0(m_ent.FUN_1408a9090());
+    m_nBannerId = FUN_140b60d90((egf::Entity *)(m_ent.FUN_1408a9090()));
+    m_bVisible = FUN_140b60dd0((egf::Entity *)(m_ent.FUN_1408a9090()));
     if (m_bVisible == 0)
-        FUN_140b60e40(m_ent.FUN_1408a9090(), m_bVisible);
+        FUN_140b60e40((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
 }

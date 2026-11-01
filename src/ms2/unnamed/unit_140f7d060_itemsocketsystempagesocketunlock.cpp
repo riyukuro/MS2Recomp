@@ -77,7 +77,8 @@ public:
     unsigned int FUN_141662de0();
 };
 void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
-float FUN_1411e1110(Unk_TrInventory*, int);
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 // The player's inventory (global 0x143ab2a90).
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
@@ -329,8 +330,8 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     m_root->Invoke("initData", data.FUN_1422bb870());
     m_state = 0;
     reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140f6dbe0(m_sourceControl);
-    FUN_140f6dbe0(m_ingredientControl);
+    ClearListSelection(m_sourceControl);
+    ClearListSelection(m_ingredientControl);
 }
 
 // @0x140f7e340
@@ -519,7 +520,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f210(MS2Ptr<CItem> item)
     if (item == 0)
         return;
     m_selected = item;
-    FUN_140f6d340(m_selectedName, m_selected);
+    SetInfoSlotItem(m_selectedName, m_selected);
     ASObj data(2);
     data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
     data.FUN_1409c0e60("unlockAllNotice", L"$s_itemsocketsystem_socketunlock_msg_unlock_all");
@@ -540,11 +541,11 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f420(MS2Ptr<CItem> item)
     if (item == 0 || item->FUN_140527840() == 0)
         return;
     if (socket->GetLockedSlotCount() == 0) {
-        FUN_140f6dbe0(m_ingredientControl);
+        ClearListSelection(m_ingredientControl);
         return;
     }
     if (m_state != 1 && m_state != 2) {
-        FUN_140f6dbe0(m_ingredientControl);
+        ClearListSelection(m_ingredientControl);
         return;
     }
     CStringW highSa;
@@ -580,11 +581,11 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
     if (item == 0 || item->FUN_140527840() == 0)
         return;
     if (socket->GetLockedSlotCount() == 0) {
-        FUN_140f6dbe0(m_ingredientControl);
+        ClearListSelection(m_ingredientControl);
         return;
     }
     if (m_state != 1 && m_state != 2) {
-        FUN_140f6dbe0(m_ingredientControl);
+        ClearListSelection(m_ingredientControl);
         return;
     }
     FUN_141276180(s_strSelectSound, "");
@@ -608,7 +609,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_ingredient", 1);
         return;
     }
-    FUN_140f6d340(m_ingredientSlotName, item);
+    SetInfoSlotItem(m_ingredientSlotName, item);
     m_root->Invoke("selectIngredientEquip");
     FUN_140f83170();
 }
@@ -685,7 +686,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     int flag = data->GetSkinType();
     Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (player != 0)
-        bonus = (unsigned)(FUN_1411e1110(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()), 0xb3) * 10000.0f);
+        bonus = (unsigned)(reinterpret_cast<CEquipment*>(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()))->GetAbilityRate((SAType)0xb3) * 10000.0f);
     int sale = FUN_140627ac0(flag, &rate, bonus);
     CIngredientContainer cost;
     FUN_140628390(m_selected->FUN_140526bd0(), m_selected->GetRequiredLevel(), flag, &cost);
@@ -753,8 +754,8 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80d70()
     }
     m_selectedUid = 0;
     m_selected = 0;
-    FUN_140f6d340(m_selectedName, m_selected);
-    FUN_140f6dbe0(m_sourceControl);
+    SetInfoSlotItem(m_selectedName, m_selected);
+    ClearListSelection(m_sourceControl);
     m_root->Invoke("playStart");
 }
 
@@ -807,7 +808,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
         unsigned bonus = 0;
         Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (player != 0)
-            bonus = (unsigned)(FUN_1411e1110(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()), 0xb3) * 10000.0f);
+            bonus = (unsigned)(reinterpret_cast<CEquipment*>(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()))->GetAbilityRate((SAType)0xb3) * 10000.0f);
         sale->enabled = FUN_140627ac0(flag, reinterpret_cast<unsigned*>(&sale->rate), bonus);
     }
     __int64 fee = 0;
@@ -902,7 +903,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
     }
-    FUN_140f6d340(m_selectedName, m_selected);
+    SetInfoSlotItem(m_selectedName, m_selected);
     ASObj data(2);
     data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
     {
@@ -917,7 +918,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
     m_state = 1;
     m_selectedUid = m_selected->GetItemUid();
     FUN_140f7ec20();
-    FUN_140f6dbe0(m_ingredientControl);
+    ClearListSelection(m_ingredientControl);
 }
 
 // @0x140f82340
@@ -934,7 +935,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
     Unk_SockItemMsg msg;
     msg.m_spItem = m_selected;
     FUN_140629140(msg, *packet);
-    FUN_140f6d340(m_selectedName, m_selected);
+    SetInfoSlotItem(m_selectedName, m_selected);
     ASObj data(2);
     bool success = msg.m_bValid;
     int index = msg.m_nByte;
@@ -950,7 +951,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
     }
     m_root->Invoke((const char*)method, data.FUN_1422bb870());
     m_state = 2;
-    FUN_140f6dbe0(m_ingredientControl);
+    ClearListSelection(m_ingredientControl);
     FUN_140f82f90();
     FUN_140f83060(highlight);
     FUN_140f6e700(m_selected->GetItemUid());
@@ -971,7 +972,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f826b0(CInPacket*)
         unsigned bonus = 0;
         Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (player != 0)
-            bonus = (unsigned)(FUN_1411e1110(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()), 0xb3) * 10000.0f);
+            bonus = (unsigned)(reinterpret_cast<CEquipment*>(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0()))->GetAbilityRate((SAType)0xb3) * 10000.0f);
         int flag = m_selected->FUN_140527840()->GetSkinType();
         sale->enabled = FUN_140627ac0(flag, reinterpret_cast<unsigned*>(&sale->rate), bonus);
     }
@@ -1084,7 +1085,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82f90()
 {
     int index = -1;
     MS2Ptr<CItem> found = FindItemByUid(m_selectedUid, m_sourceItems, &index);
-    FUN_140f6dbe0(m_sourceControl);
+    ClearListSelection(m_sourceControl);
     if (found == 0)
         m_selectedUid = 0;
 }
@@ -1130,7 +1131,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f832f0()
     int index = -1;
     MS2Ptr<CItem> found = FindItemByUid(m_selectedUid, m_sourceItems, &index);
     if (found == 0) {
-        FUN_140f6dbe0(m_sourceControl);
+        ClearListSelection(m_sourceControl);
         m_selectedUid = 0;
     } else {
         if (((class ASCoreList*)(class Unk_SocketPageBag*)(m_sourceControl.operator->()))->GetSelectedIndex() != index) {

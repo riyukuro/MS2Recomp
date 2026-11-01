@@ -29,7 +29,7 @@ class CMeshUVPicker : public efd::MemObject
 {
 public:
     CMeshUVPicker();                                                    // 0x14147e6e0
-    int FUN_14147e900();                                                // init
+    int Init();                                                // init
     bool FUN_14147ea50(NiAVObject* pMesh, NiCamera* pCam, float x, float y, efd::Point3* pHit, efd::Point3* pNormal,
                        NiPoint2* pUV, unsigned __int64* pTri, CAtlArray<NiRenderObject*>* pSkins);   // pick
     char m_pad[0x98];
@@ -60,7 +60,8 @@ NiRenderObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);
 struct Unk_PickItemData { bool FUN_14053cfd0() const; };
 class CItem : public CPtred { public: Unk_PickItemData* FUN_140527840(); };                         // item -> item data
 void* FUN_14123c410(void* pObj);                                        // the game object's entity
-void* FUN_141b6efc0(void* pEntity);                                     // entity -> scene root
+namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
 // Scene-graph walker (56 bytes): ctor 0x14098cb80, dtor 0x14098cf00.
 struct Unk_PickSceneIter
 {
@@ -95,7 +96,7 @@ CItemPickingHelper::~CItemPickingHelper()
 int CItemPickingHelper::CreatePicker()
 {
     m_spPicker.FUN_1412861e0(new (efd::MemHint(efd::MemHint::NONE)) CMeshUVPicker);
-    return m_spPicker.FUN_141286290()->FUN_14147e900();
+    return m_spPicker.FUN_141286290()->Init();
 }
 
 // @0x141418e00
@@ -240,7 +241,7 @@ void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 {
     if (pObject == 0)
         return;
-    Unk_PickSceneIter it(FUN_141b6efc0(FUN_14123c410(pObject)));
+    Unk_PickSceneIter it(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(pObject))));
     NiAVObject* pNode;
     while ((pNode = it.FUN_14098e0d0(true)) != 0)
     {

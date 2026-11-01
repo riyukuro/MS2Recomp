@@ -92,11 +92,6 @@ static CString s_strTabIndex = "tabIndex";
 class ASDialog : public ASDisplayObjectContainer {
 public:
     ASDialog(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422e63e0
-    void FUN_1422c0f60(float* pX, float* pY);                      // get the position
-    int FUN_1422c1500();                                           // width
-    int FUN_1422c1530();                                           // height
-    float FUN_1422c10a0();                                         // x
-    float FUN_1422c1110();                                         // y
 private:
     void* m_unrecovered_80;
 };
@@ -109,8 +104,6 @@ public:
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
 Unk_SingletonObj* FUN_140939a00();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_McInput { public: void FUN_1422b06e0(int nMovie, unsigned* pWidth, unsigned* pHeight); };
-Unk_AltStringMgr* FUN_14025e7a0();
 int FUN_1422db730();
 class Unk_AdPlayerMgr;
 class Unk_AdActor : public PCBase { };
@@ -120,7 +113,9 @@ public:
     int HasDTReward(unsigned short);
 };
 struct Unk_AdLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
-class Unk_140e45740 : public UIAlignWidgetManager { public: int FUN_1422e6bf0(UIDialog* p, int n);};
+class Unk_140e45740 : public UIAlignWidgetManager { };
+class GFxManager { public: void FUN_1422b06e0(int nMovieId, int* pnWidth, int* pnHeight); };   // the stage size of a movie
+Unk_AltStringMgr* FUN_14025e7a0();
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 UIObject* FUN_140ce8270(int nClass);
 int FUN_1422dc430(UIObject* p);
@@ -133,11 +128,9 @@ CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CString FUN_14038f6d0(const CString&, const char*);
 CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
-bool FUN_140164830(const CStringW& a, const CStringW& b) throw();   // the exe caller keeps no unwind state
 bool FUN_140e45240(const CStringW& s, const char* c);
 extern Unk_140e45740* DAT_143ac5d88;
 bool FUN_1406c4cc0(const CMsTime& a, const CMsTime& b);
-unsigned __int64 FUN_140282020(const CMsTime& t);
 CStringA FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item);
 class ASWindow   // C3: member view for the former free stand-ins
 {
@@ -145,8 +138,6 @@ public:
     int FUN_1422e6270();
     int FUN_1422e6310();
 };
-void FUN_1407cbbe0(AScript* p, const char* szName, bool v);
-void FUN_1407cb9c0(AScript* p, const char* szName, int v);
 // Bit flags of the XML/refresh state (m_nFlags): 1 default loaded, 2 my-pc complete, 4 swf loaded.
 extern long DAT_1439f60ac;              // the next entity id
 
@@ -181,10 +172,9 @@ class TiXmlNode   // C3: member view for the former free stand-ins
 public:
     void Clear();
     bool RemoveChild(class TiXmlNode*);
+    TiXmlNode* LinkEndChild(TiXmlNode* addThis);
 };
 class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szFile);            // SaveFile
-bool FUN_14086e090(TiXmlDocument* pDoc, void* pNode);                   // LinkEndChild
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -204,7 +194,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
-void FUN_1408740a0(Unk_AdXmlNode* pNode, const char* szName, const CStringW& v);
+void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was FUN_1408740a0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
@@ -290,14 +280,14 @@ int UIAdPushDialog::vfunc_4()
         if (dlg.get())
         {
             unsigned nWidth = 0, nHeight = 0;
-            reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
+            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
             float x = 0.0f, y = 0.0f;
-            dlg->FUN_1422c0f60(&x, &y);
+            dlg->GetPosition(&x, &y);
             CStringA strKey("limitedbundle");
             const CStringA& rKey = strKey;
             XmlSetChildAttr((class TiXmlElement*)(pRoot), rKey, "rateX", x / (float)nWidth, true);
             XmlSetChildAttr((class TiXmlElement*)(pRoot), rKey, "rateY", y / (float)nHeight, true);
-            bool bOk = FUN_1408710c0(&m_xmlSave, GetStatePath());
+            bool bOk = m_xmlSave.SaveFile(GetStatePath());
             bSaved = bSaved | bOk;
         }
     }
@@ -321,7 +311,7 @@ int UIAdPushDialog::vfunc_4()
                     ((class TiXmlNode*)(class Unk_AdXmlNode*)(pAccount))->RemoveChild((class TiXmlNode*)(pCur));
             }
         }
-        bool bAccountOk = FUN_1408710c0(&m_xmlAccountSave, GetAccountStatePath());
+        bool bAccountOk = m_xmlAccountSave.SaveFile(GetAccountStatePath());
         bSaved = bSaved | bAccountOk;
     }
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->Clear();
@@ -350,7 +340,7 @@ int UIAdPushDialog::vfunc_5()
             XmlGetChildAttr((class TiXmlElement*)(pNode), rKey, "rateX", *(float*)(&rateX));
             XmlGetChildAttr((class TiXmlElement*)(pNode), rKey, "rateY", *(float*)(&rateY));
             unsigned nWidth = 0, nHeight = 0;
-            reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
+            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
             float fX = (float)nWidth * rateX;
             float fY = (float)nHeight * rateY;
             dlg->FUN_1422c00f0(fX, fY);
@@ -359,14 +349,14 @@ int UIAdPushDialog::vfunc_5()
     }
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->Clear();
-    FUN_14086e090(&m_xmlSave, new TiXmlElement(GetTypeName()));
+    ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
     FUN_140870fc0(&m_xmlAccountLoaded, GetAccountStatePath(), 0);
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->Clear();
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountLoaded)))
         FUN_140870cf0(&m_xmlAccountSave, &m_xmlAccountLoaded);
     else
-        FUN_14086e090(&m_xmlAccountSave, new TiXmlElement(GetTypeName()));
+        ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
     return 1;
 }
 
@@ -390,7 +380,7 @@ void UIAdPushDialog::vfunc_26()
     m_pending.RemoveAll();
     m_sns.clear();
     m_limitedBundle = 0;
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }
@@ -854,7 +844,7 @@ void UIAdPushDialog::FixPosition()
     else if (bRetry)
     {
         float x = 0.0f, y = 0.0f;
-        dlg->FUN_1422c0f60(&x, &y);
+        dlg->GetPosition(&x, &y);
         if (FindMinimizePos(&x, &y))
             dlg->FUN_1422c00f0(x, y);
     }
@@ -982,9 +972,9 @@ bool AdPushEntityLimitedBundle::vfunc_1()
                 Unk_AdItemInfo& info = m_item->m_info;
                 CStringA strIcon = info.FUN_1406a0160();
                 static_cast<AScript*>(script.operator->())->FUN_1407cba60(s_strIconPath, CStringA(strIcon));
-                FUN_1407cbbe0(script.operator->(), "visible", true);
-                FUN_1407cb9c0(script.operator->(), "id", m_nId);
-                FUN_1407cbbe0(script.operator->(), "showRemainTime", m_bShowRemain);
+                script->FUN_1407cbbe0("visible", true);
+                script->FUN_1407cb9c0("id", m_nId);
+                script->FUN_1407cbbe0("showRemainTime", m_bShowRemain);
                 MS2Ptr<ASMovieClip> badge = pDlg->AddBadge(script);
                 SetBadge(badge);
             }
@@ -1066,13 +1056,13 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
             ((class TiXmlNode*)(class Unk_AdXmlNode*)(pRoot))->RemoveChild((class TiXmlNode*)(pNode));
         return;
     }
-    FUN_1408740a0(pNode, "marketSN", m_item->m_id.FUN_1409b0470());
+    XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_id.FUN_1409b0470());
     XmlSetAttr((class TiXmlElement*)(pNode), "minimize", m_bMinimized);
     XmlSetAttr((class TiXmlElement*)(pNode), "endTime", *(__int64 const*)&static_cast<__int64&>(m_endTime));
-    __int64 nSaleEnd = FUN_140282020(m_item->m_info.FUN_1406a1a70(0));
+    __int64 nSaleEnd = m_item->m_info.FUN_1406a1a70(0).Get();
     XmlSetAttr((class TiXmlElement*)(pNode), "saleEndTime", *(__int64 const*)&static_cast<__int64&>(nSaleEnd));
     unsigned nWidth = 0, nHeight = 0;
-    reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(2, &nWidth, &nHeight);
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(2, (int*)&nWidth, (int*)&nHeight);
     XmlSetChildAttr((class TiXmlElement*)(pNode), "transform", "rateX_maximize", m_max.x / (float)nWidth, true);
     XmlSetChildAttr((class TiXmlElement*)(pNode), "transform", "rateY_maximize", m_max.y / (float)nHeight, true);
 }
@@ -1086,7 +1076,7 @@ void AdPushEntityLimitedBundle::vfunc_5(Unk_AdXmlNode* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "endTime", m_endTime);
     XmlGetAttr((class TiXmlElement*)(pNode), "saleEndTime", m_saleEndTime);
     unsigned nWidth = 0, nHeight = 0;
-    reinterpret_cast<Unk_McInput*>(FUN_14025e7a0())->FUN_1422b06e0(2, &nWidth, &nHeight);
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(2, (int*)&nWidth, (int*)&nHeight);
     efd::Point2 rate = efd::Point2::ZERO;
     XmlGetChildAttr((class TiXmlElement*)(pNode), "transform", "rateX_maximize", *(float*)(&rate.x));
     XmlGetChildAttr((class TiXmlElement*)(pNode), "transform", "rateY_maximize", *(float*)(&rate.y));
@@ -1155,7 +1145,7 @@ NiPoint2* AdPushEntityLimitedBundle::GetMaximizePos()
 bool FUN_140e45240(const CStringW& s, const char* c)
 {
     CStringW t(c, s.GetManager());
-    return FUN_140164830(s, t);
+    return s != t;
 }
 
 // @0x140e45740

@@ -17,10 +17,10 @@ public:
     virtual ~ItemSlotBinder();              // 0x140d43260
 
     // Creates the item from (id, rarity), sets its amount and binds it under a new "{owner}_{n}" slot name.
-    CString FUN_140d43310(int nItemId, int nRarity, int nAmount);
+    CString BindNewItem(int nItemId, int nRarity, int nAmount);
     CString FUN_140d43510(const void* pItem);   // binds an item info under a new slot name (dungeon control center reward)
     void FUN_140d43990();                       // unbinds all slots
-    CString FUN_140d43790(void* pItem);         // binds an already built item (MS2Ptr<CItem>-compatible) under a new slot name
+    CString BindItem(void* pItem);         // binds an already built item (MS2Ptr<CItem>-compatible) under a new slot name
     void FUN_140d438f0(CString strSlot);        // unbinds one slot by name
     friend void FUN_140d432d0(ItemSlotBinder* pBinder, int n);     // sets m_24
     friend void FUN_140d432f0(ItemSlotBinder* pBinder, int n);     // sets m_28

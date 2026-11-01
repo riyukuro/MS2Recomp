@@ -958,7 +958,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_141275260(0x36c, 1, 1);
         return false;
     }
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (!TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
     {
         FUN_141275260(0x36c, 1, 1);
         return false;

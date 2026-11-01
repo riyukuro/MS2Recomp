@@ -44,27 +44,27 @@ class MyPC   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_MyPCComp1618* FUN_141523c50();
+    static class PCBase* FUN_141530930();
 };
-bool FUN_1406c4d20(const Unk_GcTime& a, const Unk_GcTime& b);
-int FUN_141654700(Unk_G9Player* pPlayer);               // the job code
-int FUN_141654730(Unk_G9Player* pPlayer);               // the sub job code
-void* FUN_1416769f0(Unk_G9Player* pPlayer);             // the summoned pet
 void FUN_140178570(Unk_140165cf0* pElem, const char* pszName, CAtlArray<int>& arr);
+class PC { public: int FUN_141654700(); int FUN_141654730(); };   // C3: member views
+class UIGameMenuDialog { public: int FUN_141938a00(CStringA strMenu); };
+class UIItemEnchantDialog { public: unsigned __int64 GetSelectedUid(); };
+class CStatPointManager { public: int GetRemaining(); };
+__int64 GetServerTime();
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
-int FUN_141938a00(void* pMenu, CStringA strMenu);
-void* FUN_1419c16a0(void* pDialog);
 void* FUN_140faf160(unsigned nUIId);                    // the mastery dialog
 class UIMasteryDialog   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140eb5040();
-    int FUN_140eb5150();
+    int GetMainTabIndex();
+    int GetSubTabIndex();
 };
 void* FUN_140d0c040(unsigned nUIId);                    // the play instrument dialog
 class UIPlayInstrumentDialog   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14100c890();
+    int GetSelectedTabIndex();
     bool HasAnyScore();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -72,6 +72,7 @@ class PCBase   // C3: member view for the former free stand-ins
 public:
     int FUN_14166c930();
     int FUN_14166cc80();
+    __int64 FUN_1416769f0();
 };
 class UGCCubePalette* GetUGCCubePalette();   // C3: was FUN_140ef0b20
 class CubeHolderManager   // C3: member view for the former free stand-ins
@@ -79,17 +80,15 @@ class CubeHolderManager   // C3: member view for the former free stand-ins
 public:
     int GetSelectedItemId();
 };
-void* FUN_141530930();                                  // the stat window
 // the stat window's value handle, returned by value (dtor 0x140c24a50, accessor 0x140c24af0)
 class Unk_StatRef { public: ~Unk_StatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
 class Unk_StatWnd { public: Unk_StatRef FUN_140c25130(); };
-unsigned FUN_140caa1a0(void* pRef);
 void* FUN_140b72e80(unsigned nUIId);                    // the mentoring pane
 bool FUN_1401647e0(const CStringA& strA, const CStringA& strB) throw();   // operator!= (true when the names differ)
 class CMeratMarketMan   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_140d59970();
+    __int64 GetEarliestSaleEnd();
 };
 class UIDialog   // C3: member view for the former free stand-ins
 {
@@ -203,7 +202,7 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140d9f880(unsigned long);
+    unsigned int GetDungeonEnterState(unsigned long);
 };
 bool Unk_GcNoPoint(char*);   // C3: was FUN_1413b57d0
 
@@ -220,7 +219,7 @@ void CGuideConditionHasMoney::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     m_nMoneyType = 0;
     CStringA strType;
-    FUN_1408733e0(pElem, "moneyType", strType);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "moneyType", strType);
     if (strType == "meso")
         m_nMoneyType = 0;
     else if (strType == "merat")
@@ -320,15 +319,15 @@ CStringW CGuideConditionRealEstateExpireDays::GetTypeName()
 // @0x1413ad570
 int CGuideConditionRealEstateExpireDays::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
     Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
     if (!pRec)
         return 0;
-    Unk_GcTime now(FUN_140869440());
-    Unk_GcTime expire(pRec->m_nExpire);
-    if (FUN_1406c4d20(now, expire))
+    CMsTime now(GetServerTime());
+    CMsTime expire(pRec->m_nExpire);
+    if (now >= expire)
         return 0;
     ATL::CTimeSpan span = expire - now;
     __int64 nDays = span.GetDays();
@@ -352,12 +351,12 @@ int CGuideConditionUgcProductExpireDays::vfunc_3()
 {
     if (!FUN_140939a00())
         return 0;
-    __int64 nExpire = ((class CMeratMarketMan*)(void*)(FUN_140939a00()))->FUN_140d59970();
+    __int64 nExpire = ((class CMeratMarketMan*)(void*)(FUN_140939a00()))->GetEarliestSaleEnd();
     if (!nExpire)
         return 0;
-    Unk_GcTime now(FUN_140869440());
-    Unk_GcTime expire(nExpire);
-    if (FUN_1406c4d20(now, expire))
+    CMsTime now(GetServerTime());
+    CMsTime expire(nExpire);
+    if (now >= expire)
         return 0;
     ATL::CTimeSpan span = expire - now;
     __int64 nDays = span.GetDays();
@@ -386,10 +385,10 @@ void CGuideConditionJobCode::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413ad8d0
 int CGuideConditionJobCode::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    return FUN_1413a5600(FUN_141654700(pPlayer) == m_n20);
+    return FUN_1413a5600(reinterpret_cast<PC*>(pPlayer)->FUN_141654700() == m_n20);
 }
 
 // @0x1413ad940
@@ -420,12 +419,12 @@ void CGuideConditionSubJobCode::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413ada50
 int CGuideConditionSubJobCode::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
     for (size_t i = 0; i < m_subJobCodes.GetCount(); ++i) {
         int nCode = m_subJobCodes[i];
-        if (FUN_141654730(pPlayer) == nCode)
+        if (reinterpret_cast<PC*>(pPlayer)->FUN_141654730() == nCode)
             return FUN_1413a55a0(1);
     }
     return FUN_1413a55a0(0);
@@ -453,7 +452,7 @@ void CGuideConditionBattleState::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413adbf0
 int CGuideConditionBattleState::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
     return FUN_1413a55a0(pPlayer->vfunc_65());
@@ -480,10 +479,10 @@ CStringW CGuideConditionSummonPet::GetTypeName()
 // @0x1413add10
 int CGuideConditionSummonPet::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    return FUN_1413a5600(FUN_1416769f0(pPlayer) != 0);
+    return FUN_1413a5600(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416769f0() != 0);
 }
 
 // @0x1413add70
@@ -520,7 +519,7 @@ CStringW CGuideConditionMenuExpand::GetTypeName()
 void CGuideConditionMenuExpand::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_1408733e0(pElem, "menuName", m_strMenuName);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "menuName", m_strMenuName);
 }
 
 // @0x1413adf50
@@ -529,7 +528,7 @@ int CGuideConditionMenuExpand::vfunc_3()
     void* pMenu = ((void*)FUN_140938b90(0x4e28));
     if (pMenu != 0)
     {
-        int nExpanded = FUN_141938a00(pMenu, m_strMenuName);
+        int nExpanded = reinterpret_cast<UIGameMenuDialog*>(pMenu)->FUN_141938a00(m_strMenuName);
         return FUN_1413a55a0(nExpanded);
     }
     return 0;
@@ -560,7 +559,7 @@ int CGuideConditionSelectItemEnchant::vfunc_3()
 {
     void* pDlg = FUN_1413b1bc0(0x4e92);
     if (pDlg)
-        return FUN_1413a5600(FUN_1419c16a0(pDlg) != 0);
+        return FUN_1413a5600(reinterpret_cast<UIItemEnchantDialog*>(pDlg)->GetSelectedUid() != 0);
     return 0;
 }
 
@@ -581,7 +580,7 @@ int CGuideConditionMasteryMainTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->FUN_140eb5040() == m_n20);
+        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetMainTabIndex() == m_n20);
     return 0;
 }
 
@@ -602,7 +601,7 @@ int CGuideConditionMasterySubTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->FUN_140eb5150() == m_n20);
+        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetSubTabIndex() == m_n20);
     return 0;
 }
 
@@ -623,7 +622,7 @@ int CGuideConditionPlayInstrumentTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->FUN_14100c890() == m_n20);
+        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->GetSelectedTabIndex() == m_n20);
     return 0;
 }
 
@@ -663,7 +662,7 @@ CStringW CGuideConditionPlayingInstrument::GetTypeName()
 // @0x1413ae6b0
 int CGuideConditionPlayingInstrument::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
     if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166c930() != 0x2f)
@@ -706,10 +705,10 @@ CStringW CGuideConditionHasStatPoint::GetTypeName()
 // @0x1413ae8f0
 int CGuideConditionHasStatPoint::vfunc_3()
 {
-    void* pStat = FUN_141530930();
+    void* pStat = MyPC::FUN_141530930();
     if (!pStat)
         return 0;
-    return FUN_1413a5600(FUN_140caa1a0(static_cast<Unk_StatWnd*>(pStat)->FUN_140c25130().FUN_140c24af0()) > 0);
+    return FUN_1413a5600(static_cast<unsigned>(reinterpret_cast<CStatPointManager*>(static_cast<Unk_StatWnd*>(pStat)->FUN_140c25130().FUN_140c24af0())->GetRemaining()) > 0);
 }
 
 // @0x1413ae990
@@ -727,7 +726,7 @@ CStringW CGuideConditionMentoringPage::GetTypeName()
 // @0x1413aea40
 void CGuideConditionMentoringPage::vfunc_2(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "pageName", m_strPageName);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "pageName", m_strPageName);
 }
 
 // @0x1413aea80
@@ -817,9 +816,9 @@ void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
     CGuideCondition::vfunc_2(pElem);
     if (m_b1c)
         throw std::exception("ButtonSelected is Not Allow Keword 'not'");
-    FUN_1408733e0(pElem, "dialogName", m_strDialog);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "dialogName", m_strDialog);
     CStringA strChild;
-    FUN_1408733e0(pElem, "childName", strChild);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "childName", strChild);
     FUN_14015f050(strChild, m_children, ".");
 }
 
@@ -853,7 +852,7 @@ CGuideConditionContract::CGuideConditionContract()
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionContract::vfunc_3()
 {
-    Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
     Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
@@ -871,7 +870,7 @@ int CGuideConditionContract::vfunc_3()
         return 0;
     if (!((class ASDisplayObject*)(void*)(val.FUN_140d03230()))->FUN_1422bfca0())
         return 0;
-    const __int64& nLeft = pRec->m_nExpire - FUN_140869440();
+    const __int64& nLeft = pRec->m_nExpire - GetServerTime();
     Unk_G9Span* pInfo = ((struct Unk_G9Span*)FUN_1413a52a0(&nLeft));
     if (pInfo && pInfo->m_nDays <= 7)
         return 1;
@@ -883,8 +882,8 @@ void CGuideConditionContract::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_nDialogId);
-    FUN_1408733e0(pElem, "childName", m_strChild);
-    FUN_1408733e0(pElem, "dialogName", m_strDialog);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "childName", m_strChild);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "dialogName", m_strDialog);
 }
 
 // @0x1413af5e0
@@ -916,7 +915,7 @@ CGuideConditionHomeMode::CGuideConditionHomeMode()
 // @0x1413af830
 int CGuideConditionHomeMode::vfunc_3()
 {
-    return FUN_1413a5600(((class CubeMapInformationService*)(class Unk_G9Home*)(FUN_1409670e0()))->FUN_1410c3650() == m_nMode);
+    return FUN_1413a5600(((class CubeMapInformationService*)(class Unk_G9Home*)(Unk_AkoHouseSvc::GetInstance()))->FUN_1410c3650() == m_nMode);
 }
 
 // @0x1413af880
@@ -961,7 +960,7 @@ void CGuideConditionEnterDungeon::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413afab0
 int CGuideConditionEnterDungeon::vfunc_3()
 {
-    int nState = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f880(m_n20);
+    int nState = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetDungeonEnterState(m_n20);
     return FUN_1413a5600(nState == 0 || nState == 1);
 }
 
@@ -1009,7 +1008,7 @@ int CGuideConditionChatEmoticon::vfunc_8()
 {
     return 0;
 }
-// MS2-PIN: ??0Unk_GcTime@@QEAA@_K@Z 0x1406c47a0
-// MS2-PIN: ??GUnk_GcTime@@QEBA?AVCTimeSpan@ATL@@AEBV0@@Z 0x1406c4a20
+// MS2-PIN: ??0CMsTime@@QEAA@_J@Z 0x1406c47a0
+// MS2-PIN: ??GCMsTime@@QEBA?AVCTimeSpan@ATL@@AEBV0@@Z 0x1406c4a20
 // MS2-PIN: ??1Unk_G9Iter@@QEAA@XZ 0x140e60460
 // MS2-PIN: ?FUN_140e5e890@Unk_G9Pane@@QEAA?AUUnk_G9Iter@@XZ 0x140e5e890

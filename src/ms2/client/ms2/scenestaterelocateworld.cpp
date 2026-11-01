@@ -57,7 +57,7 @@ void CSceneStateRelocateWorld::OnUpdate(double fTime)
     if (m_nState == 1)
     {
         m_nState = 2;
-        FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
     }
 }
 

@@ -56,8 +56,8 @@ class CUgcMarketSeller;
 class ASMeratMarketProduct;
 struct Unk_PCEquipSet;
 class Unk_MpRideePtr;                                               // uimainplayerinfo.h (the ridee avatar handle)
-class Unk_MmSellerShop;
-class Unk_MeratBasketEntry;
+class CUgcCharBookMark;
+class CMeratMarketBasket;
 namespace UIMeratMarketDialogUtil { class ASOutData; class ASClickOutData; }
 
 // The payment map of the market bill and its gift callback (exe RTTI: the strings by const reference; the shared
@@ -167,7 +167,7 @@ public:
     void ResetPreview();                                            // 0x1412f7f10
     void ResetModels();                                             // 0x1412f8190
     void OnChangeEnableFeature(NotifyObject* pNotify);              // 0x14130be10
-    int BuildSellerRow(ASObj& row, MS2Ptr<Unk_MmSellerShop> spShop, const CStringW& strTooltipKey);   // 0x1412ef960
+    int BuildSellerRow(ASObj& row, MS2Ptr<CUgcCharBookMark> spShop, const CStringW& strTooltipKey);   // 0x1412ef960
     int BuildQuery(ASObj& data, SearchQuery& query);                // 0x1412efc30
     void ShowUgcTerms(int nParam, int nKind);                       // 0x1412ee460
     void OpenBannerProduct(const CStringA& strBanner);              // 0x1412ee920
@@ -408,7 +408,7 @@ public:
     void InitMarketData();                                          // 0x14130eaf0
     void UpdateSellerList();                                        // 0x14130ed10
     void UpdateSaleNotice();                                        // 0x14130ee60
-    void AddBasket(MS2Ptr<Unk_MeratBasketEntry> spEntry, int nCount);   // 0x14130f010
+    void AddBasket(MS2Ptr<CMeratMarketBasket> spEntry, int nCount);   // 0x14130f010
     void RemoveBasket(const Unk_MeratProductKey& key, int nCount);  // 0x14130f310
     void OnSellerVisible(bool bVisible);                            // 0x14130f430
     bool RebuildShopTab(int nTab);                                  // 0x14130f720
@@ -417,7 +417,7 @@ public:
     void SearchByText(const CStringW& strText);                     // 0x14130fa80
     void SearchByCategory(const int& nTab, const int& nValue);      // 0x14130fb10
     void RequestPending(int nFlag, bool bSet);                      // 0x14130fba0
-    bool FillBasketRow(ASMeratMarketProduct& row, MS2Ptr<Unk_MeratBasketEntry> spEntry, int nCount, Unk_MmViewScope* pScope);   // 0x1412ef150 foreign
+    bool FillBasketRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMarketBasket> spEntry, int nCount, Unk_MmViewScope* pScope);   // 0x1412ef150 foreign
     void ApplySearch(MS2Ptr<CMeratMarketSchCond> spCond, AScript& data);   // 0x1413107f0
     void ClearSearchRequest();                                      // 0x141310920
     void ClearSearchInput();                                        // 0x141310970

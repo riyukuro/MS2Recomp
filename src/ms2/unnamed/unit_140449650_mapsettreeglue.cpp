@@ -11,36 +11,41 @@
 
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
+#include <list>
+#include <map>
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gameeventcontext.h"
+#include "ms2/placeholder/dungeongrouptype.h"
+#include "ms2/placeholder/tptreddummy.h"
 
-// ---- callees defined outside this unit ----
-void* FUN_140465540(void* pNode);
-void* FUN_140465570(void* pNode);
-void* FUN_1404655a0(void* pNode);
-void* FUN_1404655d0(void* pNode);
-void* FUN_140465600(void* pNode);
-void* FUN_140465630(void* pNode);
-void* FUN_140465660(void* pNode);
-void* FUN_140465690(void* pNode);
-void* FUN_1404656c0(void* pNode);
-void* FUN_1404656f0(void* pNode);
-void* FUN_140465720(void* pNode);
-void* FUN_140465750(void* pNode);
-void* FUN_140465780(void* pNode);
-void* FUN_14033e2b0(void* pNode);
-void  FUN_14042ca70(void* pA, void* pB);
+// ---- the types whose _Max helpers and destructors this unit reaches ----
+typedef std::_Tree_val<std::_Tree_simple_types<__int64> > Unk_Tv_14033e2b0;
+typedef MS2Ptr<CollectItemGroupContext> Unk_Dt_1403e51b0;
+typedef MS2Ptr<EventShopNpcContext> Unk_Dt_140446470;
+typedef TPtredDummy<ATL::CAtlList<unsigned int, ATL::CElementTraits<unsigned int> > > Unk_Dt_140446590;
+typedef std::pair<int const, MS2Ptr<ArcadeOpenContext> > Unk_Dt_140446c80;
+typedef std::pair<unsigned int const, MS2Ptr<BurningLevelupContext> > Unk_Dt_140446ca0;
+typedef std::pair<unsigned int const, MS2Ptr<CollectItemGroupContext> > Unk_Dt_140446cc0;
+typedef std::pair<unsigned int const, MS2Ptr<EventShopNpcContext> > Unk_Dt_140446ce0;
+typedef std::pair<unsigned int const, MS2Ptr<ItemBoxEventContext> > Unk_Dt_140446d00;
+typedef std::pair<unsigned int const, MS2Ptr<LimitedQuantityContext> > Unk_Dt_140446d20;
+typedef std::pair<unsigned long const, std::list<MS2Ptr<EventShopNpcContext>, std::allocator<MS2Ptr<EventShopNpcContext> > > > Unk_Dt_140446d40;
+typedef std::pair<unsigned long const, std::map<std::pair<int, unsigned long>, int, std::less<std::pair<int, unsigned long> >, std::allocator<std::pair<std::pair<int, unsigned long> const, int> > > > Unk_Dt_140446d60;
+typedef std::pair<unsigned long const, std::map<unsigned __int64, unsigned int, std::less<unsigned __int64>, std::allocator<std::pair<unsigned __int64 const, unsigned int> > > > Unk_Dt_140446d80;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<ArcadeOpenContext> > > > Unk_Tv_140465540;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, unsigned long> > > Unk_Tv_140465570;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, MS2Ptr<BurningLevelupContext> > > > Unk_Tv_1404655a0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, MS2Ptr<CollectItemGroupContext> > > > Unk_Tv_1404655d0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, MS2Ptr<EventShopNpcContext> > > > Unk_Tv_140465600;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, MS2Ptr<ItemBoxEventContext> > > > Unk_Tv_140465630;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, MS2Ptr<LimitedQuantityContext> > > > Unk_Tv_140465660;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, std::list<MS2Ptr<EventShopNpcContext>, std::allocator<MS2Ptr<EventShopNpcContext> > > > > > Unk_Tv_140465690;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, std::map<std::pair<int, unsigned long>, int, std::less<std::pair<int, unsigned long> >, std::allocator<std::pair<std::pair<int, unsigned long> const, int> > > > > > Unk_Tv_1404656c0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned long const, std::map<unsigned __int64, unsigned int, std::less<unsigned __int64>, std::allocator<std::pair<unsigned __int64 const, unsigned int> > > > > > Unk_Tv_1404656f0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<std::pair<int, unsigned long> const, int> > > Unk_Tv_140465720;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<Unk_DungeonGroupType const, std::pair<int, int> > > > Unk_Tv_140465750;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned __int64 const, unsigned int> > > Unk_Tv_140465780;
 
-void  FUN_1403e51b0(void* p);
-void  FUN_140446470(void* p);
-void  FUN_140446590(void* p);
-void  FUN_140446c80(void* p);
-void  FUN_140446ca0(void* p);
-void  FUN_140446cc0(void* p);
-void  FUN_140446ce0(void* p);
-void  FUN_140446d00(void* p);
-void  FUN_140446d20(void* p);
-void  FUN_140446d40(void* p);
-void  FUN_140446d60(void* p);
-void  FUN_140446d80(void* p);
 
 // ---- this unit's own forward declarations ----
 void* FUN_140449650(void* pIter);
@@ -167,7 +172,7 @@ void* FUN_1404499b0(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465540((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465540::_Max(reinterpret_cast<Unk_Tv_140465540::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -189,7 +194,7 @@ void* FUN_140449a80(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465570((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465570::_Max(reinterpret_cast<Unk_Tv_140465570::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -211,7 +216,7 @@ void* FUN_140449b50(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_1404655a0((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_1404655a0::_Max(reinterpret_cast<Unk_Tv_1404655a0::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -233,7 +238,7 @@ void* FUN_140449c20(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_1404655d0((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_1404655d0::_Max(reinterpret_cast<Unk_Tv_1404655d0::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -255,7 +260,7 @@ void* FUN_140449cf0(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465600((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465600::_Max(reinterpret_cast<Unk_Tv_140465600::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -277,7 +282,7 @@ void* FUN_140449dc0(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465630((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465630::_Max(reinterpret_cast<Unk_Tv_140465630::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -299,7 +304,7 @@ void* FUN_140449e90(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465660((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465660::_Max(reinterpret_cast<Unk_Tv_140465660::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -321,7 +326,7 @@ void* FUN_140449f60(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465690((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465690::_Max(reinterpret_cast<Unk_Tv_140465690::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -343,7 +348,7 @@ void* FUN_14044a030(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_1404656c0((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_1404656c0::_Max(reinterpret_cast<Unk_Tv_1404656c0::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -365,7 +370,7 @@ void* FUN_14044a100(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_1404656f0((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_1404656f0::_Max(reinterpret_cast<Unk_Tv_1404656f0::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -387,7 +392,7 @@ void* FUN_14044a1d0(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465720((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465720::_Max(reinterpret_cast<Unk_Tv_140465720::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -409,7 +414,7 @@ void* FUN_14044a2a0(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465750((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465750::_Max(reinterpret_cast<Unk_Tv_140465750::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -431,7 +436,7 @@ void* FUN_14044a370(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_140465780((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_140465780::_Max(reinterpret_cast<Unk_Tv_140465780::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -453,7 +458,7 @@ void* FUN_14044a440(Unk_TreeNode** pIter)
     }
     else
     {
-        *pIter = (Unk_TreeNode*)FUN_14033e2b0((*pIter)->m_pLeft);
+        *pIter = (Unk_TreeNode*)Unk_Tv_14033e2b0::_Max(reinterpret_cast<Unk_Tv_14033e2b0::_Nodeptr>((*pIter)->m_pLeft));
     }
     return pIter;
 }
@@ -466,7 +471,7 @@ void* FUN_14044a440(Unk_TreeNode** pIter)
 // @0x14044a510
 void FUN_14044a510(void* pUnused, void* pA, void* pB)
 {
-    FUN_14042ca70(pA, pB);
+    *reinterpret_cast<const std::pair<int, unsigned long>*>(pA) < *reinterpret_cast<const std::pair<int, unsigned long>*>(pB);
 }
 
 // The unit's ordering predicate: unsigned "less" over the first field of two keys.
@@ -483,7 +488,7 @@ bool FUN_14044a540(void* pUnused, unsigned __int64* pA, unsigned __int64* pB)
 // @0x14044a580
 void* FUN_14044a580(void* p, unsigned int nFlags)
 {
-    FUN_1403e51b0(p);
+    reinterpret_cast<Unk_Dt_1403e51b0*>(p)->Unk_Dt_1403e51b0::~Unk_Dt_1403e51b0();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x10);
     return p;
@@ -492,7 +497,7 @@ void* FUN_14044a580(void* p, unsigned int nFlags)
 // @0x14044a5c0
 void* FUN_14044a5c0(void* p, unsigned int nFlags)
 {
-    FUN_140446470(p);
+    reinterpret_cast<Unk_Dt_140446470*>(p)->Unk_Dt_140446470::~Unk_Dt_140446470();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x10);
     return p;
@@ -501,7 +506,7 @@ void* FUN_14044a5c0(void* p, unsigned int nFlags)
 // @0x14044a600
 void* FUN_14044a600(void* p, unsigned int nFlags)
 {
-    FUN_140446590(p);
+    reinterpret_cast<Unk_Dt_140446590*>(p)->Unk_Dt_140446590::~Unk_Dt_140446590();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x48);
     return p;
@@ -510,7 +515,7 @@ void* FUN_14044a600(void* p, unsigned int nFlags)
 // @0x14044a640
 void* FUN_14044a640(void* p, unsigned int nFlags)
 {
-    FUN_140446c80(p);
+    reinterpret_cast<Unk_Dt_140446c80*>(p)->Unk_Dt_140446c80::~Unk_Dt_140446c80();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -519,7 +524,7 @@ void* FUN_14044a640(void* p, unsigned int nFlags)
 // @0x14044a680
 void* FUN_14044a680(void* p, unsigned int nFlags)
 {
-    FUN_140446ca0(p);
+    reinterpret_cast<Unk_Dt_140446ca0*>(p)->Unk_Dt_140446ca0::~Unk_Dt_140446ca0();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -528,7 +533,7 @@ void* FUN_14044a680(void* p, unsigned int nFlags)
 // @0x14044a6c0
 void* FUN_14044a6c0(void* p, unsigned int nFlags)
 {
-    FUN_140446cc0(p);
+    reinterpret_cast<Unk_Dt_140446cc0*>(p)->Unk_Dt_140446cc0::~Unk_Dt_140446cc0();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -537,7 +542,7 @@ void* FUN_14044a6c0(void* p, unsigned int nFlags)
 // @0x14044a700
 void* FUN_14044a700(void* p, unsigned int nFlags)
 {
-    FUN_140446ce0(p);
+    reinterpret_cast<Unk_Dt_140446ce0*>(p)->Unk_Dt_140446ce0::~Unk_Dt_140446ce0();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -546,7 +551,7 @@ void* FUN_14044a700(void* p, unsigned int nFlags)
 // @0x14044a740
 void* FUN_14044a740(void* p, unsigned int nFlags)
 {
-    FUN_140446d00(p);
+    reinterpret_cast<Unk_Dt_140446d00*>(p)->Unk_Dt_140446d00::~Unk_Dt_140446d00();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -555,7 +560,7 @@ void* FUN_14044a740(void* p, unsigned int nFlags)
 // @0x14044a780
 void* FUN_14044a780(void* p, unsigned int nFlags)
 {
-    FUN_140446d20(p);
+    reinterpret_cast<Unk_Dt_140446d20*>(p)->Unk_Dt_140446d20::~Unk_Dt_140446d20();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -564,7 +569,7 @@ void* FUN_14044a780(void* p, unsigned int nFlags)
 // @0x14044a7c0
 void* FUN_14044a7c0(void* p, unsigned int nFlags)
 {
-    FUN_140446d40(p);
+    reinterpret_cast<Unk_Dt_140446d40*>(p)->Unk_Dt_140446d40::~Unk_Dt_140446d40();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -573,7 +578,7 @@ void* FUN_14044a7c0(void* p, unsigned int nFlags)
 // @0x14044a800
 void* FUN_14044a800(void* p, unsigned int nFlags)
 {
-    FUN_140446d60(p);
+    reinterpret_cast<Unk_Dt_140446d60*>(p)->Unk_Dt_140446d60::~Unk_Dt_140446d60();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;
@@ -582,7 +587,7 @@ void* FUN_14044a800(void* p, unsigned int nFlags)
 // @0x14044a840
 void* FUN_14044a840(void* p, unsigned int nFlags)
 {
-    FUN_140446d80(p);
+    reinterpret_cast<Unk_Dt_140446d80*>(p)->Unk_Dt_140446d80::~Unk_Dt_140446d80();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x18);
     return p;

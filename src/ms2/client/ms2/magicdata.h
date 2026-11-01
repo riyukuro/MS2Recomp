@@ -164,7 +164,7 @@ public:
     void SetMatRotation(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
     void FUN_141463fb0(unsigned nNow);                              // 0x141463fb0 end-of-flight transitions
     void UpdateCulling();                                           // 0x141464160 show/hide the scene root by distance
-    bool FUN_141464220();                                           // 0x141464220 is the projectile out of the visible range
+    bool ShouldCullByDistance();                                           // 0x141464220 is the projectile out of the visible range
     Unk_MagicEntity* FUN_141464360();                               // 0x141464360 the target entity
     int FUN_141464410();                                            // 0x141464410 the caster's lock-on entity
     int FUN_141464490();                                            // 0x141464490 has an attacker record
@@ -244,8 +244,8 @@ public:
     CMagicModel();                                                  // 0x141467480
     virtual ~CMagicModel() = default;                               // 0 0x141468db0
     int GetTotalDuration();                                            // 0x141467b30 the model's own duration
-    int FUN_141467a90();                                            // 0x141467a90 state > 2
-    int FUN_141467ae0();                                            // 0x141467ae0 state == 4
+    int IsEnding();                                            // 0x141467a90 state > 2
+    int IsFinished();                                            // 0x141467ae0 state == 4
     Unk_MagicTagPtr FUN_141467bc0();                                // 0x141467bc0 copy of the cast record handle
     unsigned long long FUN_141467b60();                             // 0x141467b60 the tag's sub id
     Vector3 GetPosition();                                // 0x141467c10 projectile position
@@ -256,7 +256,7 @@ public:
     void FUN_141467ed0();                                           // 0x141467ed0 begin the destroy phase of an orphaned model
     void FUN_141467da0();                                           // 0x141467da0
     void FUN_141467800();                                           // 0x141467800
-    int FUN_141467dd0(unsigned long long nTag);                     // 0x141467dd0 can this cast be cancelled
+    int CanCancel(unsigned long long nTag);                     // 0x141467dd0 can this cast be cancelled
     CMagic* GetMagic();                                        // 0x141467b90 the projectile
     void FUN_141467860();                                           // 0x141467860 per-tick update
     void FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Vector3 ptStart,
@@ -336,12 +336,12 @@ public:
     virtual efd::AsyncResult OnShutdown();          // 0x14146d0b0
 
     // Members below are the table accessors (names invented): casts are keyed by (caster id, cast id).
-    void FUN_14146c4b0(unsigned long long nCaster, unsigned long long nCast);       // 0x14146c4b0 drop one model
+    void DestroyModel(unsigned long long nCaster, unsigned long long nCast);       // 0x14146c4b0 drop one model
     Unk_SocketPtr<CMagicModel> FindModel(unsigned long long nCaster, unsigned long long nCast);  // 0x14146c5d0 find one model
-    void FUN_14146c6c0(unsigned long long nCaster, int bForce, int bDestroy);        // 0x14146c6c0 cancel the casts of a caster
-    Unk_MagicModelMapPtr FUN_14146c910(unsigned long long nCaster);                // 0x14146c910 all models of a caster
+    void RemoveCasterModels(unsigned long long nCaster, int bForce, int bDestroy);        // 0x14146c6c0 cancel the casts of a caster
+    Unk_MagicModelMapPtr FindCasterModels(unsigned long long nCaster);                // 0x14146c910 all models of a caster
     int AddModel(Unk_SocketPtr<CMagicModel> spModel);                         // 0x14146cbd0 register a model
-    void FUN_14146cd10(Unk_SocketPtr<CMagicModel> spModel);                        // 0x14146cd10 unregister a model
+    void RemoveModel(Unk_SocketPtr<CMagicModel> spModel);                        // 0x14146cd10 unregister a model
     Unk_SocketPtr<Unk_MagicTag> FindCast(unsigned long long nCast);          // 0x14146ce30 find a cast record
     void FUN_14146ceb0(unsigned long long nCast);                                  // 0x14146ceb0 forget a cast record
     std::pair<bool, bool> FUN_14146c990(int* pKey, Unk_NiPoint3* pPoint, unsigned nOwner, Unk_MagicEntity* pCaster, int* pType);   // 0x14146c990 may the cast and end effects of a hit play

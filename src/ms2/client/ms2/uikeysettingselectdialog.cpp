@@ -114,7 +114,7 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
         FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultKey.xml", 0);
         FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), false);
     }
-    ((class CGameOption*)(class Unk_KsInputState*)(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance())))->FUN_141243540();
+    ((class CGameOption*)(class Unk_KsInputState*)(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
     void* pDlg = ((void*)FUN_140a02e60(0x4ef3));
     if (pDlg != 0)
         ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();

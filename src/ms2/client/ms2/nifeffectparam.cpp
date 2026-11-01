@@ -213,6 +213,9 @@
 #include <NiSearchPath.h>
 #include <NiMaterialProperty.h>
 #include <NiStringExtraData.h>
+#include <NiSourceTexture.h>   // C3: ms_RTTI
+#include <NiDX9Renderer.h>     // C3: ms_RTTI
+#include <NiPhysXProp.h>       // C3: ms_RTTI
 #include <NiString.h>
 #include <NiStudioShaderContext.h>
 #include <NiFloatData.h>
@@ -508,25 +511,15 @@ efd::ServiceManager* FUN_1413f9850();
 #define MS2_NODEPTR(sp) reinterpret_cast<NiNodePtr&>(sp)
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-efd::FixedString* FUN_1409a8b90(NiAVObject* pNode);                 // node name
 const char* FUN_142087e50(const void* kFixed);
 bool FUN_141068d50(efd::FixedString* pName, const char* pszName);
 void FUN_140a0b330(void* pObj, bool bOn, short sFlags);
 
 // Transforms (the exe's NiTransform helpers) and node transforms.
-void FUN_140aacb60(void* pObj, const void* pXform);                 // SetLocalTransform
-void FUN_140aacb60(void* pObj, const NiTransform& kXform);          // the same, from a temporary
-const efd::Point3& FUN_140947900(void* pNode);              // world translate
 void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
 void FUN_140194470(void* pDst, const void* pSrc);                   // point assign
 
 // The effect manager (singleton 0x1403ed280) and the world.
-class Unk_EffectMgr
-{
-public:
-    void* FUN_1411a6b10();                          // scene root
-    unsigned FUN_1411a88c0();                       // quality level (1..3)
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -614,10 +607,8 @@ typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_Nod
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // Controllers and extra data of a node.
-const efd::FixedString* FUN_141168130(NiStringExtraData* pExtra);   // string value
 extern char DAT_143ae51b8;                                          // NiFixedString: the Eff_LOD tag key
 extern char DAT_143ae50e8;                                          // NiFixedString: the tag text
-extern NiRTTI DAT_143afb000;                                        // NiStringExtraData RTTI
 extern char DAT_143ae5198;                                          // NiFixedString: the nif path key
 
 // Players, their equipment and the equipped item's model.
@@ -629,8 +620,6 @@ GameObject* FUN_140aac440(Unk_NifPCPtr* pPtr);
 class Unk_NifEquipSet : public CEquipment
 {
 public:
-    MS2Ptr<CEquipItem> FUN_1411e2610(NiAVObject* pNode, int nA, int nKind, bool bB);   // equipped item owning the node
-    NiAVObjectPtr FUN_1411e2a60(void* pAttach, const CString& strName, bool bA);       // model node of the item by name
 };
 class PC   // C3: member view for the former free stand-ins
 {
@@ -739,10 +728,10 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     switch (m_spParam->m_nAttachType)
     {
     case 0:
-        FUN_14154ba40(pTarget);
+        AttachToOwnerNode(pTarget);
         break;
     case 1:
-        FUN_14154bdd0(pTarget);
+        AttachToModelNode(pTarget);
         break;
     case 2:
         FUN_14154c260(pTarget);
@@ -789,7 +778,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     }
     if (0 < m_spParam->m_nLodSkipLevel)
     {
-        if ((int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0() < m_spParam->m_nLodSkipLevel)
+        if ((int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0() < m_spParam->m_nLodSkipLevel)
             return false;
     }
 
@@ -803,7 +792,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         if (pT->m_bTagLod)
         {
             NiAVObject* pLoaded = static_cast<NiAVObject*>(MS2_NODEPTR(kLoaded).operator->());
-            NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afb000), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pLoaded))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
+            NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pLoaded))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
             if (pTag == 0)
             {
                 pTag = new (efd::MemHint(efd::MemHint::NONE)) NiStringExtraData(*(NiFixedString*)&DAT_143ae50e8);
@@ -811,7 +800,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
             }
             else
             {
-                efd::utf8string strTag(FUN_142087e50(FUN_141168130(pTag)));
+                efd::utf8string strTag(FUN_142087e50(&pTag->GetValue()));
                 strTag += FUN_142087e50(&DAT_143ae50e8);
                 pTag->SetValue(NiFixedString(strTag.c_str()));
             }
@@ -863,11 +852,10 @@ bool CNifEffect::vfunc_9()
         }
     }
     if ((m_spModel).operator NiAVObject*() != 0)
-        FUN_140aacb60(MS2_NODEPTR(m_spRoot).operator->(),
-                      *static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)((m_spModel).operator->()))->GetLocalTransform())) * m_kXform);
+        ((NiAVObject*)(MS2_NODEPTR(m_spRoot).operator->()))->SetLocalTransform(*static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)((m_spModel).operator->()))->GetLocalTransform())) * m_kXform);
     if (m_spEffectObject != 0 && MS2_NODEPTR(m_spRoot).operator!=((NiNode*)(0)))
     {
-        efd::Point3 kPos = FUN_140947900(MS2_NODEPTR(m_spRoot).operator->());
+        efd::Point3 kPos = (const efd::Point3&)(MS2_NODEPTR(m_spRoot).operator->()->GetWorldTranslate());
         m_spEffectObject->vfunc_19(kPos);
         efd::Point3 kDir;
         NiMatrix3 kRot = *static_cast<NiMatrix3*>(((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spRoot).operator->()))->GetWorldRotate()));
@@ -876,7 +864,7 @@ bool CNifEffect::vfunc_9()
     }
     if (!CEffect::vfunc_9())
         return false;
-    if ((int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0() != m_nLodLevel)
+    if ((int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0() != m_nLodLevel)
     {
         if (FUN_14028d470(m_fDuration, 0.0f))
             FUN_14154cf20(static_cast<NiAVObject*>(MS2_NODEPTR(m_spRoot).operator NiNode*()));
@@ -933,9 +921,9 @@ void CNifEffect::vfunc_6(float fFadeTime)
         NiProperty* pProp = pObj->GetProperty(NiProperty::MATERIAL);
         if (pProp != 0)
         {
-            bool bDuplicated = FUN_14154b4a0(pProp);
+            bool bDuplicated = ReplaceAlphaControllers(pProp);
             if (!bDuplicated)
-                FUN_14154b630(pProp, fFadeTime);
+                AddFadeOutController(pProp, fFadeTime);
         }
     }
 }
@@ -958,7 +946,7 @@ MS2_REPLACE_METHOD(0x14154B080, CNifEffect, vfunc_7, 218, 0xC2FE4FBF);
 // @0x14154b160
 int CNifEffect::vfunc_8(void* p)
 {
-    FUN_140194470(p, &FUN_140947900(MS2_NODEPTR(m_spRoot).operator->()));
+    FUN_140194470(p, &(const efd::Point3&)(MS2_NODEPTR(m_spRoot).operator->()->GetWorldTranslate()));
     return 1;
 }
 MS2_REPLACE_METHOD(0x14154B160, CNifEffect, vfunc_8, 64, 0xEAE8C028);
@@ -979,8 +967,8 @@ int CNifEffect::vfunc_11()
     {
         m_bSplit = true;
         MS2_NODEPTR(m_spSplit).operator=((NiNode*)(new (efd::MemHint(efd::MemHint::NONE)) NiNode(0)));
-        FUN_140aacb60(MS2_NODEPTR(m_spSplit).operator->(), ((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spTarget).operator->()))->GetWorldTransform()));
-        MS2_NODEPTR(m_spTarget).operator=((NiNode*)(reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10()));
+        ((NiAVObject*)(MS2_NODEPTR(m_spSplit).operator->()))->SetLocalTransform(*(const NiTransform*)(((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spTarget).operator->()))->GetWorldTransform())));
+        MS2_NODEPTR(m_spTarget).operator=((NiNode*)(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()));
         FUN_140a0b2a0((class NiAVObject*)(MS2_NODEPTR(m_spRoot).operator NiNode*()));
         static_cast<NiNode*>(MS2_NODEPTR(m_spSplit).operator->())->AttachChild(static_cast<NiAVObject*>(MS2_NODEPTR(m_spRoot).operator NiNode*()), false);
         static_cast<NiNode*>(MS2_NODEPTR(m_spTarget).operator->())->AttachChild(static_cast<NiAVObject*>(MS2_NODEPTR(m_spSplit).operator NiNode*()), true);
@@ -1011,7 +999,7 @@ MS2_REPLACE_METHOD(0x14154B470, CNifEffect, FUN_14154b470, 41, 0x69BAF271);
 
 // @0x14154b4a0
 // Replaces every NiAlphaController of the node by a DuplicatedAlphaController (kept in m_aAlphaCtrls).
-bool CNifEffect::FUN_14154b4a0(NiObjectNET* pkNode)
+bool CNifEffect::ReplaceAlphaControllers(NiObjectNET* pkNode)
 {
     bool bAny = false;
     NiTimeController* pCtrl = ((class NiObjectNET*)(class NiObjectNET*)(pkNode))->GetControllers();
@@ -1042,7 +1030,7 @@ MS2_REPLACE_METHOD(0x14154B5E0, CNifEffect, IsNotForceStop, 72, 0x779086E4);
 
 // @0x14154b630
 // Adds an alpha controller to the material that fades its current alpha to 0 over fTime.
-void CNifEffect::FUN_14154b630(NiObjectNET* pkNode, float fTime)
+void CNifEffect::AddFadeOutController(NiObjectNET* pkNode, float fTime)
 {
     NiFloatDataPtr spData = new (efd::MemHint(efd::MemHint::NONE)) NiFloatData;
     NiLinFloatKey* pKeys = NiNew NiLinFloatKey[2];
@@ -1059,12 +1047,12 @@ void CNifEffect::FUN_14154b630(NiObjectNET* pkNode, float fTime)
     spCtrl->SetAnimType(NiTimeController::APP_INIT);
     spCtrl->Start(0.0f);
 }
-MS2_REPLACE_METHOD(0x14154B630, CNifEffect, FUN_14154b630, 1031, 0x19B4F7C1);
+MS2_REPLACE_METHOD(0x14154B630, CNifEffect, AddFadeOutController, 1031, 0x19B4F7C1);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x14154ba40
 // Attach type 0: hang the effect on the target's owner node, placed relative to the named parent node.
-void CNifEffect::FUN_14154ba40(Unk_EffectTarget* pTarget)
+void CNifEffect::AttachToOwnerNode(Unk_EffectTarget* pTarget)
 {
     Unk_NifTarget* pT = reinterpret_cast<Unk_NifTarget*>(pTarget);
     MS2_NODEPTR(m_spTarget).operator=((NiNode*)(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetRoot()));
@@ -1090,12 +1078,12 @@ void CNifEffect::FUN_14154ba40(Unk_EffectTarget* pTarget)
             if (!m_spParam->m_bitsApply[2])
                 kParent.m_fScale = 1.0f;
             NiTransform kResult = kParent * kLocal;
-            FUN_140aacb60(MS2_NODEPTR(m_spRoot).operator->(), &kResult);
+            ((NiAVObject*)(MS2_NODEPTR(m_spRoot).operator->()))->SetLocalTransform(*(const NiTransform*)(&kResult));
         }
         else
         {
             NiTransform kResult = *static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)(pParent))->GetWorldTransform())) * kLocal;
-            FUN_140aacb60(MS2_NODEPTR(m_spRoot).operator->(), &kResult);
+            ((NiAVObject*)(MS2_NODEPTR(m_spRoot).operator->()))->SetLocalTransform(*(const NiTransform*)(&kResult));
         }
     }
 }
@@ -1103,7 +1091,7 @@ void CNifEffect::FUN_14154ba40(Unk_EffectTarget* pTarget)
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x14154bdd0
 // Attach type 1: hang the effect on the named node of the target's model (or the equipped item's node).
-void CNifEffect::FUN_14154bdd0(Unk_EffectTarget* pTarget)
+void CNifEffect::AttachToModelNode(Unk_EffectTarget* pTarget)
 {
     Unk_NifTarget* pT = reinterpret_cast<Unk_NifTarget*>(pTarget);
     if ((pT->m_hNode).operator==((NiAVObject*)0))
@@ -1184,7 +1172,7 @@ void CNifEffect::FUN_14154c260(Unk_EffectTarget* pTarget)
                 MS2_NODEPTR(m_spTarget).operator=((NiNode*)(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((pT->m_hNode).operator NiAVObject*())))));
             FUN_14154c580();
             if ((m_spModel).operator NiAVObject*() != 0)
-                FUN_140aacb60(MS2_NODEPTR(m_spRoot).operator->(), ((void*)&((class NiAVObject*)(void*)((m_spModel).operator->()))->GetLocalTransform()));
+                ((NiAVObject*)(MS2_NODEPTR(m_spRoot).operator->()))->SetLocalTransform(*(const NiTransform*)(((void*)&((class NiAVObject*)(void*)((m_spModel).operator->()))->GetLocalTransform())));
         }
     }
 }
@@ -1220,7 +1208,7 @@ void CNifEffect::FUN_14154c580()
         NiTransform kInverse;
         static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spTarget).operator->()))->GetWorldTransform()))->Invert(kInverse);
         NiTransform kLocal = *static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spRoot).operator->()))->GetLocalTransform()));
-        FUN_140aacb60(MS2_NODEPTR(m_spRoot).operator->(), kInverse * kLocal);
+        ((NiAVObject*)(MS2_NODEPTR(m_spRoot).operator->()))->SetLocalTransform(kInverse * kLocal);
     }
 }
 MS2_REPLACE_METHOD(0x14154C580, CNifEffect, FUN_14154c580, 611, 0x338E1372);
@@ -1244,8 +1232,8 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
                 if (((void*)((class NiAVObject*)(void*)(MS2_NODEPTR(kTarget).operator->()))->GetParent()) == 0)
                     strParent = "empty";
                 else
-                    strParent = FUN_142087e50(FUN_1409a8b90(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->())));
-                CString strNode(FUN_142087e50(FUN_1409a8b90(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))));
+                    strParent = FUN_142087e50(&(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName());
+                CString strNode(FUN_142087e50(&(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName()));
                 strWhere = FUN_140741200("targetNode:{0}, parent:{1}", strNode, strParent);
             }
             else
@@ -1254,14 +1242,14 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
                 MS2Ptr<CEquipItem> spModelEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610((spModel).operator NiAVObject*(), 0, 6, false);
                 if (spModelEquip.get() == 0)
                 {
-                    CString strNode(FUN_142087e50(FUN_1409a8b90((spModel).operator->())));
+                    CString strNode(FUN_142087e50(&((spModel).operator->())->GetName()));
                     strWhere = FUN_140536a50("targetNode:{0} in character", strNode);
                 }
                 else
                 {
                     unsigned nItemId = ((class CEquipItem*)(class CEquipItem*)(spModelEquip.get()))->FUN_1411dc820();
                     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-                    strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(FUN_1409a8b90((spModel).operator->()))), nItemId, CString((const wchar_t*)strName));
+                    strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(&((spModel).operator->())->GetName())), nItemId, CString((const wchar_t*)strName));
                 }
             }
         }
@@ -1269,7 +1257,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
         {
             unsigned nItemId = ((class CEquipItem*)(class CEquipItem*)(spEquip.get()))->FUN_1411dc820();
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-            strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(FUN_1409a8b90(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->())))), nItemId, CString((const wchar_t*)strName));
+            strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(&(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName())), nItemId, CString((const wchar_t*)strName));
         }
     }
     if (GetLogString() != 0)
@@ -1282,7 +1270,7 @@ MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, FUN_14154c7f0, 1827, 0x12B3C2BF);
 // Re-applies the "Eff_LOD=<n>" extra-data levels of the model: parts above the current quality level are culled.
 void CNifEffect::FUN_14154cf20(NiAVObject* pkRoot)
 {
-    int nLevel = (int)reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0();
+    int nLevel = (int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0();
     if (m_nLodLevel != nLevel)
     {
         m_nLodLevel = nLevel;
@@ -1291,11 +1279,11 @@ void CNifEffect::FUN_14154cf20(NiAVObject* pkRoot)
         {
             if (((class NiAVObject*)(class NiAVObject*)(pObj))->GetAppCulled() != true)
             {
-                NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afb000), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pObj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
+                NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pObj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
                 if (pTag != 0)
                 {
                     int nLod = 0;
-                    std::string strTag(FUN_142087e50(FUN_141168130(pTag)));
+                    std::string strTag(FUN_142087e50(&pTag->GetValue()));
                     size_t nPos = strTag.find("Eff_LOD=", 0);
                     if (nPos != std::string::npos)
                     {
@@ -1348,7 +1336,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
     if (FUN_140a53440(pTarget) != 0)
     {
         CString strName(pszName);
-        spFound = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2a60(FUN_140a53440(pTarget), strName, bFlag);
+        spFound = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2a60((__int64)FUN_140a53440(pTarget), strName, bFlag);
     }
     if ((spFound).operator==((NiAVObject*)0))
     {
@@ -1356,7 +1344,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
         Unk_SceneWalker kWalker((NiAVObject*)((pT->m_hNode).operator NiAVObject*()));
         while (NiAVObject* pObj = kWalker.Next(true))
         {
-            if (!FUN_141068d50(FUN_1409a8b90(pObj), pszName))
+            if (!FUN_141068d50((efd::FixedString*)&(pObj)->GetName(), pszName))
             {
                 MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610(pObj, 1, nKind, bFlag);
                 bool bSkip;
@@ -1668,7 +1656,6 @@ public:
 
 extern int DAT_143ae1f20;                                           // the render device is lost
 extern int DAT_1439ed00c;                                           // the caches are enabled
-extern char DAT_143d6eb58;                                          // class descriptor handed to the lookup FUN_14098d8d0
 
 CNifLoadingService* TSingleton<CNifLoadingService>::s_instance = 0;
 inline TSingleton<CNifLoadingService>::TSingleton() { s_instance = static_cast<CNifLoadingService*>(this); }
@@ -1681,15 +1668,6 @@ extern CLockCriticalSection DAT_143ae1f28;
 extern CLockCriticalSection DAT_143ae1f58;
 #endif
 
-class NiRenderer   // C3: member view for the former free stand-ins
-{
-public:
-    static class NiRenderer* GetRenderer();
-};
-void FUN_1411d7c70(void* pObj, bool (*pfn)(char, void*), CNifLoadingService* pOwner);
-void FUN_1411d7c10(void* pObj, bool (*pfn)(void*), CNifLoadingService* pOwner);
-void FUN_1414fe370(void* pObj, bool (*pfn)(char, void*));
-void FUN_1414fe240(void* pObj, bool (*pfn)(void*));
 void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 void FUN_1411ab7a0(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nRequired);
@@ -1705,7 +1683,6 @@ public:
 };
 class Unk_SingletonObj* FUN_1414a5720();   // C3: was FUN_1414a5720
 void FUN_1414a26b0();
-extern char DAT_143afa930;                                          // NiRTTI table entry: NiSourceTexture
 typedef efd::SmartPointer<NiTexture> NiTexturePtr;
 NiTexture* FUN_14097fbf0(NiTexturePtr* pHandle);                    // handle -> texture pointer
 NiTexture* FUN_140a5acb0(NiTexturePtr* pHandle);                    // handle -> texture pointer (non-const)
@@ -1732,7 +1709,7 @@ CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10), m_dLifeti
     m_kTexCount.nNPC = 0;
     m_kTexCount.nDependTime = 0;
     m_bRefreshTextures = 0;
-    m_kSweepTimer.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Init();
 }
 #endif
 
@@ -1888,11 +1865,11 @@ MS2_REPLACE_METHOD(0x141555CE0, CNifLoadingService, OnPreInit, 114, 0xA912D745);
 // @0x141555d60
 efd::AsyncResult CNifLoadingService::OnInit()
 {
-    void* pNotifier = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    void* pNotifier = ((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pNotifier != 0)
     {
-        FUN_1411d7c70(pNotifier, OnDeviceReset, this);
-        FUN_1411d7c10(pNotifier, OnDeviceLost, this);
+        ((NiDX9Renderer*)pNotifier)->AddResetNotificationFunc((NiDX9Renderer::RESETNOTIFYFUNC)OnDeviceReset, this);
+        ((NiDX9Renderer*)pNotifier)->AddLostDeviceNotificationFunc(OnDeviceLost, this);
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CNifLoadingService::LogCounts));
     return efd::AsyncResult_Complete;
@@ -1910,11 +1887,11 @@ MS2_REPLACE_METHOD(0x141555E60, CNifLoadingService, OnTick, 29, 0xA5EF1433);
 // @0x141555e90
 efd::AsyncResult CNifLoadingService::OnShutdown()
 {
-    void* pNotifier = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    void* pNotifier = ((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pNotifier != 0)
     {
-        FUN_1414fe370(pNotifier, OnDeviceReset);
-        FUN_1414fe240(pNotifier, OnDeviceLost);
+        ((NiDX9Renderer*)pNotifier)->RemoveResetNotificationFunc((NiDX9Renderer::RESETNOTIFYFUNC)OnDeviceReset);
+        ((NiDX9Renderer*)pNotifier)->RemoveLostDeviceNotificationFunc(OnDeviceLost);
     }
     m_bShutdown = 1;
     if (TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/ != 0)
@@ -1953,7 +1930,7 @@ void CNifLoadingService::RefreshTextures()
                     if (FUN_1401d1320(&pPair->m_value->m_kFile) && static_cast<CCachedTexture*>(pPair->m_value) != 0)
                     {
                         NiSourceTexture* pTexture = static_cast<NiSourceTexture*>(
-                            ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa930), (class NiObject const*)(FUN_14097fbf0(&pPair->m_value->m_spData)))));
+                            ((void*)NiObject::DynamicCast(&NiSourceTexture::ms_RTTI, (class NiObject const*)(FUN_14097fbf0(&pPair->m_value->m_spData)))));
                         NiTexture::RendererData* pOld = ((class NiTexture*)(class NiSourceTexture*)(pTexture))->GetRendererData();
                         if (pOld != 0)
                         {
@@ -2302,9 +2279,6 @@ static NiTexture::FormatPrefs FUN_14155d6d0()
 }
 
 // ---- weights, cloning, creation --------------------------------------------------------------------------------
-extern char DAT_143afa4d8;                                          // NiRTTI table entry: NiNode
-extern char DAT_143afa458;                                          // NiRTTI table entry: NiAVObject
-extern char DAT_143afc918;                                          // NiRTTI table entry: top-level stream object
 extern char DAT_142f2d1c8;                                          // xml element names of the weight file
 extern char DAT_142f2d1d0;
 extern char DAT_142f2d1d8;
@@ -2321,7 +2295,7 @@ static void SetWeights(NiAVObject* pObj, int nWeight)
 {
     if (pObj == 0)
         return;
-    NiNode* pNode = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pObj))));
+    NiNode* pNode = static_cast<NiNode*>(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pObj))));
     if (pNode != 0)
     {
         unsigned nCount = ((class NiNode*)(class NiNode*)(pNode))->GetChildCount();
@@ -2338,7 +2312,7 @@ static void SetWeights(NiAVObject* pObj, int nWeight)
 // @0x141555f50
 void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
 {
-    NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pkRoot))));
+    NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pkRoot))));
     if (pRoot == 0)
         return;
     CString strXml(strNifPath);
@@ -2389,7 +2363,7 @@ NiAVObject* CNifLoadingService::CloneCached(CString strPath, CCachedNifPtr spCac
     NiCloningProcess kCloning(0x25);
     kCloning.m_eCopyType = NiObjectNET::COPY_EXACT;
     NiObject* pClone = (spCached->m_spData).operator->()->Clone(kCloning);
-    NiAVObject* pNode = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pClone))));
+    NiAVObject* pNode = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast(&NiAVObject::ms_RTTI, (class NiObject const*)(pClone))));
     ApplyWeights(CString(strPath), pNode);
     return pNode;
 }
@@ -2434,7 +2408,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     CCachedNifPtr spEntry = EE_NEW CCachedNif;
     spEntry->m_kFile.FUN_1401d1160(CString(strPath));
     spEntry->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
-    (spEntry->m_spData).operator=((NiAVObject*)(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(FUN_14155d900(pStream, 0))))));
+    (spEntry->m_spData).operator=((NiAVObject*)(((void*)NiObject::DynamicCast(&NiAVObject::ms_RTTI, (class NiObject const*)(FUN_14155d900(pStream, 0))))));
     spEntry->m_nClass = nClass;
     if ((spEntry->m_spData).operator NiAVObject*() == 0)
     {
@@ -2445,7 +2419,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     FUN_1415672e0((spEntry->m_spData).operator NiAVObject*(), bFlag);
     for (unsigned i = 1; i < FUN_14155d950(pStream); ++i)
     {
-        NiAVObjectPtr spExtra = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afc918), (class NiObject const*)(FUN_14155d900(pStream, i)))));
+        NiAVObjectPtr spExtra = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast(&NiPhysXProp::ms_RTTI, (class NiObject const*)(FUN_14155d900(pStream, i)))));
         if (spExtra != 0)
             spEntry->m_aClones.Add(spExtra);
     }
@@ -2506,7 +2480,7 @@ NiAVObjectPtr CNifLoadingService::Load(CString strPath, bool bFlag, int nClass, 
                         pParent->DetachChild((spOld).operator NiAVObject*());
                     NiTransform kIdentity;
                     kIdentity.MakeIdentity();
-                    FUN_140aacb60((spOld).operator->(), &kIdentity);
+                    ((NiAVObject*)((spOld).operator->()))->SetLocalTransform(*(const NiTransform*)(&kIdentity));
                     (spOld).operator->()->Update(0.0, true);
                     rRing.Push(spOld);
                     return spOld;

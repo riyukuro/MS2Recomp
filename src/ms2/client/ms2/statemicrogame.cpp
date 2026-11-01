@@ -44,12 +44,15 @@
 #include "ms2/placeholder/commandchat.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/inventory.h"            // C3: g_143ab2a90
+#include "ms2/placeholder/formatstringid.h"      // C3: FormatStringId<...>
+#include "ms2/placeholder/wcformat.h"            // C3: FUN_14028dfa0<...>
+#include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::GetCoupleDance
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cf8;                    // the up axis
-extern char DAT_143ab2a90;                               // the rps event's context table
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_MgPos
@@ -85,13 +88,6 @@ public:
     virtual void vfunc_3();                              // reset
     void FUN_14192f8b0(int nMode);                       // 0x14192f8b0
     void FUN_14192f8d0(const CString& strEffect);        // 0x14192f8d0
-};
-
-// The player manager: actors by id.
-class Unk_MgWorld
-{
-public:
-    PCBase* FUN_141bd1290(int nId);                      // 0x141bd1290
 };
 
 // The UI manager.
@@ -140,26 +136,18 @@ public:
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_nMinScore, 0x30);
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_aDances, 0x80);
 class Unk_MgEventHolder { public: MS2Ptr<Unk_MgDanceEvent> FUN_140428700(); };
-class Unk_MgGameService { public: Unk_MgEventHolder* FUN_1403ed140(); };
-Unk_MgGameService* FUN_140302b00();
+class Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_MgBuffMgr { public: };
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
-bool FUN_1401647e0(const CString& strA, const CString& strB) noexcept;   // 0x1401647e0 the strings are equal
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
 CStringW FUN_140298ea0(CStringW str);                    // 0x140298ea0 string-table lookup of a key
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // 0x14052bd00 string table text with {0}
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg); // 0x1405c2690 the same by key
 void FUN_141275260(int nStringId, int nA, int nB);       // 0x141275260 notice by string id
 int FUN_140768010(int, int);   // C3: was FUN_140768010
-class Unk_Inventory   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140a5f180(int, int);
-};
+extern Unk_Inventory g_143ab2a90;                        // the rps event's context table
 class UICoupleDanceEventDialog* FUN_140b769d0(int);   // C3: was FUN_140b769d0
 
 // The scene-graph probes of the placement test (see statecoupleemotion.cpp: the same helper sits in that obj).
@@ -281,7 +269,7 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
     CString strAnim;
     if (!pRider->FUN_14166f790(&strKey, strAnim, 0))
         return;
-    if (FUN_1401647e0(pRider->FUN_14166dc50(), strAnim))
+    if (pRider->FUN_14166dc50() != strAnim)
         return;
     MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
@@ -489,11 +477,11 @@ void StateMicroGameRps::FUN_140b877c0()
 // @0x140b879d0
 PCBase* StateMicroGameRps::GetRpsPC()
 {
-    Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return 0;
     if (m_spRps.get() != 0)
-        return pWorld->FUN_141bd1290(m_spRps->m_n18);
+        return reinterpret_cast<PCBase*>(pWorld->FUN_141bd1290(m_spRps->m_n18));
     return 0;
 }
 
@@ -638,7 +626,7 @@ bool FUN_140b883c0()
     MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == 0)
         return false;
-    int nCount = ((class Unk_Inventory*)(void const*)(&DAT_143ab2a90))->FUN_140a5f180(spEvent->m_20, 0);
+    int nCount = g_143ab2a90.FUN_140a5f180(spEvent->m_20, 0);
     if (nCount <= 0)
         return false;
     return true;
@@ -672,17 +660,17 @@ bool FUN_140b884e0(Vector3& kPoint)
     if (kHit.m_hitEntity == 0)
         return false;
     efd::utf8string strTag("None");
-    ((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a2060(0x15014205, strTag);
+    reinterpret_cast<egf::Entity*>(kHit.m_hitEntity)->GetPropertyValue<efd::utf8string>(0x15014205, strTag);
     int nType = FUN_1408a01e0((const char*)((efd::utf8string*)&static_cast<class efd::utf8string const&>(strTag))->c_str());
     if (nType == 0x40)
         return false;
-    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0xd3b04f05))
+    if (reinterpret_cast<egf::Entity*>(kHit.m_hitEntity)->GetModel()->ContainsModel(0xd3b04f05))
         return false;
-    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x032767dd))
+    if (reinterpret_cast<egf::Entity*>(kHit.m_hitEntity)->GetModel()->ContainsModel(0x032767dd))
         return false;
-    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x72f49865))
+    if (reinterpret_cast<egf::Entity*>(kHit.m_hitEntity)->GetModel()->ContainsModel(0x72f49865))
         return false;
-    if (reinterpret_cast<WorldService*>(reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance()))->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
+    if (WorldService::GetInstance()->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
         return false;
     return true;
 }
@@ -710,19 +698,19 @@ CStringW FUN_140b887d0(__int64 nActorId, int nWhy)
     switch (nWhy)
     {
     case 0:
-        strMessage = FUN_14052bd00(0xd0a, strPartner);
+        strMessage = FormatStringId(0xd0a, strPartner);
         break;
     case 1:
-        strMessage = FUN_14052bd00(0xd07, strPartner);
+        strMessage = FormatStringId(0xd07, strPartner);
         break;
     case 2:
-        strMessage = FUN_14052bd00(0xd0b, strPartner);
+        strMessage = FormatStringId(0xd0b, strPartner);
         break;
     case 3:
-        strMessage = FUN_14052bd00(0xd06, strPartner);
+        strMessage = FormatStringId(0xd06, strPartner);
         break;
     default:
-        strMessage = FUN_14052bd00(0xd11, strPartner);
+        strMessage = FormatStringId(0xd11, strPartner);
         break;
     }
     return strMessage;
@@ -802,7 +790,7 @@ void StateMicroGameCoupleDance::EndOfSequence(NiActorManager*, unsigned int, NiC
         return;
     if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
         return;
-    if (FUN_1401647e0(pRider->FUN_14166dc50(), m_spDance->m_str))
+    if (pRider->FUN_14166dc50() != m_spDance->m_str)
         return;
     if (FUN_1417b7e40() == 0xad)
         return;
@@ -883,7 +871,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
         return;
     }
     FUN_140b8b020(aStages);
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -923,7 +911,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -941,7 +929,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    pUI->FUN_140e646e0();
+    pUI->Hide();
     m_nStage = nStage;
     if (nDance < 0 || nDance >= (int)spEvent->m_aDances.size())
     {
@@ -971,11 +959,11 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
 // @0x140b89dd0
 PCBase* StateMicroGameCoupleDance::GetDancePC()
 {
-    Unk_MgWorld* pWorld = reinterpret_cast<Unk_MgWorld*>(WorldService::GetInstance());
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return 0;
     if (m_spDance.get() != 0)
-        return pWorld->FUN_141bd1290(m_spDance->m_n18);
+        return reinterpret_cast<PCBase*>(pWorld->FUN_141bd1290(m_spDance->m_n18));
     return 0;
 }
 
@@ -1011,7 +999,7 @@ void StateMicroGameCoupleDance::FUN_140b89ed0(double)
 // @0x140b89f90
 bool StateMicroGameCoupleDance::FUN_140b89f90()
 {
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0x2f1, 0);
@@ -1026,7 +1014,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1088,7 +1076,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1121,7 +1109,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1140,7 +1128,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
         return;
     }
     pUI->FUN_140b8be30(m_aStages[m_nStage]);
-    pUI->FUN_140e641d0(0, 0);
+    pUI->Show(0, 0);
 }
 
 // @0x140b8a910
@@ -1158,7 +1146,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1195,7 +1183,7 @@ void StateMicroGameCoupleDance::FUN_140b8acc0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1234,19 +1222,19 @@ CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy)
     switch (nWhy)
     {
     case 0:
-        strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_request_failed_peer_wrong_state"), strPartner);
+        strMessage = FUN_14028dfa0(CStringW(L"s_microgame_couple_dance_request_failed_peer_wrong_state"), strPartner);
         break;
     case 1:
-        strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_request_failed_blocked_in_this_field"), strPartner);
+        strMessage = FUN_14028dfa0(CStringW(L"s_microgame_couple_dance_request_failed_blocked_in_this_field"), strPartner);
         break;
     case 2:
-        strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_accept_failed_peer_wrong_state"), strPartner);
+        strMessage = FUN_14028dfa0(CStringW(L"s_microgame_couple_dance_accept_failed_peer_wrong_state"), strPartner);
         break;
     case 3:
-        strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_banner_failed_blocked_in_this_field"), strPartner);
+        strMessage = FUN_14028dfa0(CStringW(L"s_microgame_couple_dance_banner_failed_blocked_in_this_field"), strPartner);
         break;
     default:
-        strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_failed"), strPartner);
+        strMessage = FUN_14028dfa0(CStringW(L"s_microgame_couple_dance_failed"), strPartner);
         break;
     }
     return strMessage;

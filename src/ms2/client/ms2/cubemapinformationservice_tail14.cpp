@@ -24,58 +24,25 @@
 #include <egf/EntityChangeMessage.h>
 #include "ms2/client/ms2/cubemotionmanager.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
+#include "ms2/client/ms2/interactobject.h"
+#include "ms2/client/ms2/notifychangebuff.h"
 #include <efd/MessageService.h>
 #include <ecr/CoreRuntimeMessages.h>
+#include <efd/BitUtils.h>
+#include <egf/PropertyDescriptor.h>
 
 typedef unsigned __int64 u64;
 
-__declspec(noreturn) void FUN_140159b70(long hr);              // ATL::AtlThrowImpl
-void* FUN_140159860(u64 nSize, void* pWhere);                  // placement operator new
 void FUN_14015b310(void* p, u64 nSize);                        // sized global delete
+void* FUN_140159860(u64 nSize, void* pWhere);                  // placement operator new (not noexcept: the CallConstructors try blocks)
 
 // ---- scalar deleting destructors ---------------------------------------------------------------------------------
 // of the record / handle types (59 bytes: dtor, then operator delete when bit 0 of the flags is set)
 void FUN_1411237f0(void* p);
-void FUN_1409648f0(void* p);
 void FUN_140fac610(void* p);
 void FUN_140fac640(void* p);
 void FUN_1411238b0(void* p);
-void FUN_141125910(void* p);
-void FUN_141125930(void* p);
-void FUN_141125950(void* p);
 void FUN_141125970(void* p);
-void FUN_141125990(void* p);
-void FUN_1411259b0(void* p);
-void FUN_1411259d0(void* p);
-void FUN_1411259f0(void* p);
-void FUN_141125a10(void* p);
-void FUN_141125a30(void* p);
-void FUN_141125a50(void* p);
-void FUN_141125a70(void* p);
-void FUN_141125a90(void* p);
-void FUN_141125ab0(void* p);
-void FUN_141125ad0(void* p);
-void FUN_141125af0(void* p);
-void FUN_141125b10(void* p);
-void FUN_141125b30(void* p);
-void FUN_141125b50(void* p);
-void FUN_141125e20(void* p);
-void FUN_141125e50(void* p);
-void FUN_1410b6990(void* p);
-void FUN_141125fa0(void* p);
-void FUN_141125fc0(void* p);
-void FUN_141125fe0(void* p);
-void FUN_141126060(void* p);
-void FUN_1411236c0(void* p);
-void FUN_1411236e0(void* p);
-void FUN_141123700(void* p);
-void FUN_141123740(void* p);
-void FUN_141123720(void* p);
-void FUN_1410b7240(void* p);
-void FUN_141125ee0(void* p);
-void FUN_141125f70(void* p);
-void FUN_141126010(void* p);
-void FUN_141126030(void* p);
 
 // @0x14112cdec
 // secondary-vftable thunk (this - 0x18 = the service) of the service's deleting destructor
@@ -91,7 +58,7 @@ void* FUN_14112cdec(void* pSecondary, unsigned f)
 // @0x14112ce00 MessageHandlerImpl<CMIS, EntityChangeMessage>
 void* FUN_14112ce00(void* p, unsigned f)
 {
-    FUN_1411236c0(p);
+    static_cast<efd::MessageHandlerImpl<CubeMapInformationService, egf::EntityChangeMessage>*>(p)->efd::MessageHandlerImpl<CubeMapInformationService, egf::EntityChangeMessage>::~MessageHandlerImpl();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -100,7 +67,7 @@ void* FUN_14112ce00(void* p, unsigned f)
 // @0x14112ce40 MessageHandlerImpl<CMIS, SceneGraphAddedMessage>
 void* FUN_14112ce40(void* p, unsigned f)
 {
-    FUN_1411236e0(p);
+    static_cast<efd::MessageHandlerImpl<CubeMapInformationService, ecr::SceneGraphAddedMessage>*>(p)->efd::MessageHandlerImpl<CubeMapInformationService, ecr::SceneGraphAddedMessage>::~MessageHandlerImpl();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -109,7 +76,7 @@ void* FUN_14112ce40(void* p, unsigned f)
 // @0x14112ce80 MessageSubclassHandler<CMIS, EntityChangeMessage, EntityChangeMessage>
 void* FUN_14112ce80(void* p, unsigned f)
 {
-    FUN_141123700(p);
+    static_cast<efd::MessageSubclassHandler<CubeMapInformationService, egf::EntityChangeMessage, egf::EntityChangeMessage>*>(p)->efd::MessageSubclassHandler<CubeMapInformationService, egf::EntityChangeMessage, egf::EntityChangeMessage>::~MessageSubclassHandler();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -118,7 +85,7 @@ void* FUN_14112ce80(void* p, unsigned f)
 // @0x14112cec0 MessageWrapper<EntityChangeMessage, 8253>
 void* FUN_14112cec0(void* p, unsigned f)
 {
-    FUN_141123720(p);
+    static_cast<efd::MessageWrapper<egf::EntityChangeMessage, 8253>*>(p)->efd::MessageWrapper<egf::EntityChangeMessage, 8253>::~MessageWrapper();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x20);
@@ -131,7 +98,7 @@ void* FUN_14112cec0(void* p, unsigned f)
 // @0x14112cf20 MessageWrapperSubclassHandler<CMIS, EntityChangeMessage, EntityChangeMessage, 8253>
 void* FUN_14112cf20(void* p, unsigned f)
 {
-    FUN_141123740(p);
+    static_cast<efd::MessageWrapperSubclassHandler<CubeMapInformationService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>*>(p)->efd::MessageWrapperSubclassHandler<CubeMapInformationService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>::~MessageWrapperSubclassHandler();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -150,7 +117,7 @@ void* FUN_14112cf60(void* p, unsigned f)
 // @0x14112cfa0
 void* FUN_14112cfa0(void* p, unsigned f)
 {
-    FUN_1409648f0(p);
+    static_cast<MS2Ptr<CFunctionCubeObject>*>(p)->MS2Ptr<CFunctionCubeObject>::~MS2Ptr();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -186,7 +153,7 @@ void* FUN_14112d060(void* p, unsigned f)
 // @0x14112d0a0
 void* FUN_14112d0a0(void* p, unsigned f)
 {
-    FUN_141125910(p);
+    static_cast<std::pair<const int, Unk_CMISMarkRec>*>(p)->std::pair<const int, Unk_CMISMarkRec>::~pair();
     if (f & 1)
         operator delete(p, 0x58);
     return p;
@@ -195,7 +162,7 @@ void* FUN_14112d0a0(void* p, unsigned f)
 // @0x14112d0e0
 void* FUN_14112d0e0(void* p, unsigned f)
 {
-    FUN_141125930(p);
+    static_cast<std::pair<const int, Unk_CMISCell>*>(p)->std::pair<const int, Unk_CMISCell>::~pair();
     if (f & 1)
         operator delete(p, 0x40);
     return p;
@@ -204,7 +171,7 @@ void* FUN_14112d0e0(void* p, unsigned f)
 // @0x14112d120
 void* FUN_14112d120(void* p, unsigned f)
 {
-    FUN_141125950(p);
+    static_cast<std::pair<const int, egf::EntityPtr>*>(p)->std::pair<const int, egf::EntityPtr>::~pair();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -222,7 +189,7 @@ void* FUN_14112d160(void* p, unsigned f)
 // @0x14112d1a0
 void* FUN_14112d1a0(void* p, unsigned f)
 {
-    FUN_141125990(p);
+    static_cast<std::pair<const int, MS2Ptr<FittingDollData> >*>(p)->std::pair<const int, MS2Ptr<FittingDollData> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -231,7 +198,7 @@ void* FUN_14112d1a0(void* p, unsigned f)
 // @0x14112d1e0
 void* FUN_14112d1e0(void* p, unsigned f)
 {
-    FUN_1411259b0(p);
+    static_cast<std::pair<const std::pair<int, int>, MS2Ptr<SaleStateData> >*>(p)->std::pair<const std::pair<int, int>, MS2Ptr<SaleStateData> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -240,7 +207,7 @@ void* FUN_14112d1e0(void* p, unsigned f)
 // @0x14112d220
 void* FUN_14112d220(void* p, unsigned f)
 {
-    FUN_1411259d0(p);
+    static_cast<std::pair<const int, Unk_PayloadPtr<CubeOwner> >*>(p)->std::pair<const int, Unk_PayloadPtr<CubeOwner> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -249,7 +216,7 @@ void* FUN_14112d220(void* p, unsigned f)
 // @0x14112d260
 void* FUN_14112d260(void* p, unsigned f)
 {
-    FUN_1411259f0(p);
+    static_cast<std::pair<const int, MS2Ptr<UICubeUGCHead> >*>(p)->std::pair<const int, MS2Ptr<UICubeUGCHead> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -258,7 +225,7 @@ void* FUN_14112d260(void* p, unsigned f)
 // @0x14112d2a0
 void* FUN_14112d2a0(void* p, unsigned f)
 {
-    FUN_141125a10(p);
+    static_cast<std::pair<const int, Unk_CMISMapBucket>*>(p)->std::pair<const int, Unk_CMISMapBucket>::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -267,7 +234,7 @@ void* FUN_14112d2a0(void* p, unsigned f)
 // @0x14112d2e0
 void* FUN_14112d2e0(void* p, unsigned f)
 {
-    FUN_141125a30(p);
+    static_cast<std::pair<const int, efd::map<__int64, MS2Ptr<Cube> > >*>(p)->std::pair<const int, efd::map<__int64, MS2Ptr<Cube> > >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -276,7 +243,7 @@ void* FUN_14112d2e0(void* p, unsigned f)
 // @0x14112d320
 void* FUN_14112d320(void* p, unsigned f)
 {
-    FUN_141125a50(p);
+    static_cast<std::pair<const int, Unk_CMISIntSet>*>(p)->std::pair<const int, Unk_CMISIntSet>::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -285,7 +252,7 @@ void* FUN_14112d320(void* p, unsigned f)
 // @0x14112d360
 void* FUN_14112d360(void* p, unsigned f)
 {
-    FUN_141125a70(p);
+    static_cast<std::pair<const int, efd::vector<egf::EntityID> >*>(p)->std::pair<const int, efd::vector<egf::EntityID> >::~pair();
     if (f & 1)
         operator delete(p, 0x20);
     return p;
@@ -294,7 +261,7 @@ void* FUN_14112d360(void* p, unsigned f)
 // @0x14112d3a0
 void* FUN_14112d3a0(void* p, unsigned f)
 {
-    FUN_141125a90(p);
+    static_cast<std::pair<const int, Unk_CMISCubeTimer>*>(p)->std::pair<const int, Unk_CMISCubeTimer>::~pair();
     if (f & 1)
         operator delete(p, 0x50);
     return p;
@@ -303,7 +270,7 @@ void* FUN_14112d3a0(void* p, unsigned f)
 // @0x14112d3e0
 void* FUN_14112d3e0(void* p, unsigned f)
 {
-    FUN_141125ab0(p);
+    static_cast<std::pair<const int, MS2Ptr<SalesInfo> >*>(p)->std::pair<const int, MS2Ptr<SalesInfo> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -312,7 +279,7 @@ void* FUN_14112d3e0(void* p, unsigned f)
 // @0x14112d420
 void* FUN_14112d420(void* p, unsigned f)
 {
-    FUN_141125ad0(p);
+    static_cast<std::pair<const int, MS2Ptr<SetItemEffectInfo> >*>(p)->std::pair<const int, MS2Ptr<SetItemEffectInfo> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -321,7 +288,7 @@ void* FUN_14112d420(void* p, unsigned f)
 // @0x14112d460
 void* FUN_14112d460(void* p, unsigned f)
 {
-    FUN_141125af0(p);
+    static_cast<std::pair<const CString, int>*>(p)->std::pair<const CString, int>::~pair();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -330,7 +297,7 @@ void* FUN_14112d460(void* p, unsigned f)
 // @0x14112d4a0
 void* FUN_14112d4a0(void* p, unsigned f)
 {
-    FUN_141125b10(p);
+    static_cast<std::pair<const egf::EntityID, Unk_InteractPropPtr>*>(p)->std::pair<const egf::EntityID, Unk_InteractPropPtr>::~pair();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -339,7 +306,7 @@ void* FUN_14112d4a0(void* p, unsigned f)
 // @0x14112d4e0
 void* FUN_14112d4e0(void* p, unsigned f)
 {
-    FUN_141125b30(p);
+    static_cast<std::pair<const egf::EntityID, MS2Ptr<Cube> >*>(p)->std::pair<const egf::EntityID, MS2Ptr<Cube> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -348,7 +315,7 @@ void* FUN_14112d4e0(void* p, unsigned f)
 // @0x14112d520
 void* FUN_14112d520(void* p, unsigned f)
 {
-    FUN_141125b50(p);
+    static_cast<std::pair<const __int64, MS2Ptr<Cube> >*>(p)->std::pair<const __int64, MS2Ptr<Cube> >::~pair();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -357,7 +324,7 @@ void* FUN_14112d520(void* p, unsigned f)
 // @0x14112d560 AutomaticCreateCubeInfo
 void* FUN_14112d560(void* p, unsigned f)
 {
-    FUN_141125e20(p);
+    static_cast<AutomaticCreateCubeInfo*>(p)->AutomaticCreateCubeInfo::~AutomaticCreateCubeInfo();
     if (f & 1)
         operator delete(p, 0x50);
     return p;
@@ -366,7 +333,7 @@ void* FUN_14112d560(void* p, unsigned f)
 // @0x14112d5a0 efd::BaseMessageHandler
 void* FUN_14112d5a0(void* p, unsigned f)
 {
-    FUN_141125e50(p);
+    static_cast<efd::BaseMessageHandler*>(p)->efd::BaseMessageHandler::~BaseMessageHandler();
     if (f & 1)
         operator delete(p, 0x18);
     return p;
@@ -375,7 +342,7 @@ void* FUN_14112d5a0(void* p, unsigned f)
 // @0x14112d5e0 CubeMapInformationService
 void* FUN_14112d5e0(void* p, unsigned f)
 {
-    FUN_1410b7240(p);
+    static_cast<CubeMapInformationService*>(p)->CubeMapInformationService::~CubeMapInformationService();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x4a8);
@@ -388,7 +355,7 @@ void* FUN_14112d5e0(void* p, unsigned f)
 // @0x14112d640 egf::EntityChangeMessage
 void* FUN_14112d640(void* p, unsigned f)
 {
-    FUN_141125ee0(p);
+    static_cast<egf::EntityChangeMessage*>(p)->egf::EntityChangeMessage::~EntityChangeMessage();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x20);
@@ -401,7 +368,7 @@ void* FUN_14112d640(void* p, unsigned f)
 // @0x14112d6a0 FittingDollData
 void* FUN_14112d6a0(void* p, unsigned f)
 {
-    FUN_1410b6990(p);
+    static_cast<FittingDollData*>(p)->FittingDollData::~FittingDollData();
     if (f & 1)
         operator delete(p, 0x70);
     return p;
@@ -410,7 +377,7 @@ void* FUN_14112d6a0(void* p, unsigned f)
 // @0x14112d6e0 efd::ISystemService
 void* FUN_14112d6e0(void* p, unsigned f)
 {
-    FUN_141125f70(p);
+    static_cast<efd::ISystemService*>(p)->efd::ISystemService::~ISystemService();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x18);
@@ -423,7 +390,7 @@ void* FUN_14112d6e0(void* p, unsigned f)
 // @0x14112d740 NotifyChangeUIBuildingCount
 void* FUN_14112d740(void* p, unsigned f)
 {
-    FUN_141125fa0(p);
+    static_cast<NotifyChangeUIBuildingCount*>(p)->NotifyChangeUIBuildingCount::~NotifyChangeUIBuildingCount();
     if (f & 1)
         operator delete(p, 0x20);
     return p;
@@ -432,7 +399,7 @@ void* FUN_14112d740(void* p, unsigned f)
 // @0x14112d780 SaleStateData
 void* FUN_14112d780(void* p, unsigned f)
 {
-    FUN_141125fc0(p);
+    static_cast<SaleStateData*>(p)->SaleStateData::~SaleStateData();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -441,7 +408,7 @@ void* FUN_14112d780(void* p, unsigned f)
 // @0x14112d7c0 SalesInfo
 void* FUN_14112d7c0(void* p, unsigned f)
 {
-    FUN_141125fe0(p);
+    static_cast<SalesInfo*>(p)->SalesInfo::~SalesInfo();
     if (f & 1)
         operator delete(p, 0x38);
     return p;
@@ -450,7 +417,7 @@ void* FUN_14112d7c0(void* p, unsigned f)
 // @0x14112d800 ecr::SceneGraphAddedMessage
 void* FUN_14112d800(void* p, unsigned f)
 {
-    FUN_141126010(p);
+    static_cast<ecr::SceneGraphAddedMessage*>(p)->ecr::SceneGraphAddedMessage::~SceneGraphAddedMessage();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x28);
@@ -463,7 +430,7 @@ void* FUN_14112d800(void* p, unsigned f)
 // @0x14112d860 ecr::SceneGraphMessage
 void* FUN_14112d860(void* p, unsigned f)
 {
-    FUN_141126030(p);
+    static_cast<ecr::SceneGraphMessage*>(p)->ecr::SceneGraphMessage::~SceneGraphMessage();
     if (f & 1) {
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x28);
@@ -476,7 +443,7 @@ void* FUN_14112d860(void* p, unsigned f)
 // @0x14112d8c0 SetItemEffectInfo
 void* FUN_14112d8c0(void* p, unsigned f)
 {
-    FUN_141126060(p);
+    static_cast<SetItemEffectInfo*>(p)->SetItemEffectInfo::~SetItemEffectInfo();
     if (f & 1)
         operator delete(p, 0x28);
     return p;
@@ -521,9 +488,9 @@ u64 FUN_14112d900(Unk_CMISArr16* a, const void* pElem)
     if (iElement >= a->m_nMaxSize) {
         bool bOk = FUN_14112e310(a, iElement + 1);
         if (!bOk)
-            FUN_140159b70(0x8007000e);
+            ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = FUN_140159860(0x10, a->m_pData + iElement);
+    void* p = ::operator new(0x10, a->m_pData + iElement);
     FUN_140884f70(p, pElem);
     a->m_nSize++;
     return iElement;
@@ -536,9 +503,9 @@ u64 FUN_14112d9b0(Unk_CMISArr16* a, const void* pElem)
     if (iElement >= a->m_nMaxSize) {
         bool bOk = FUN_14112e4b0(a, iElement + 1);
         if (!bOk)
-            FUN_140159b70(0x8007000e);
+            ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = FUN_140159860(0x10, a->m_pData + iElement);
+    void* p = ::operator new(0x10, a->m_pData + iElement);
     FUN_140fac570(p, pElem);
     a->m_nSize++;
     return iElement;
@@ -551,9 +518,9 @@ u64 FUN_14112da60(Unk_CMISArr16* a, const void* pElem)
     if (iElement >= a->m_nMaxSize) {
         bool bOk = FUN_14112e650(a, iElement + 1);
         if (!bOk)
-            FUN_140159b70(0x8007000e);
+            ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = FUN_140159860(0x10, a->m_pData + iElement);
+    void* p = ::operator new(0x10, a->m_pData + iElement);
     FUN_140fac5b0(p, pElem);
     a->m_nSize++;
     return iElement;
@@ -616,7 +583,7 @@ void FUN_14112dcd0(Unk_CMISHandle16* pElements, u64 nElements)
 Unk_CMISHandle16* FUN_14112dfe0(Unk_CMISArr16* a, u64 iElement)
 {
     if (iElement >= a->m_nSize)
-        FUN_140159b70(0x80070057);
+        ATL::AtlThrowImpl(0x80070057);
     return a->m_pData + iElement;
 }
 
@@ -624,7 +591,7 @@ Unk_CMISHandle16* FUN_14112dfe0(Unk_CMISArr16* a, u64 iElement)
 Unk_CMISHandle16* FUN_14112e020(Unk_CMISArr16* a, u64 iElement)
 {
     if (iElement >= a->m_nSize)
-        FUN_140159b70(0x80070057);
+        ATL::AtlThrowImpl(0x80070057);
     return a->m_pData + iElement;
 }
 
@@ -824,31 +791,14 @@ bool FUN_14112f480(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy)
 }
 
 // ---- small glue: ref counts, class descs, type casts, accessors, message-factory registration ------------------------
-extern char DAT_143acf950;      // CubeMapInformationService class desc
-extern char DAT_143b05e50;      // EntityChangeMessage class desc
-extern char DAT_1439ff650;      // SceneGraphAddedMessage class desc
-extern char DAT_1439ff240;      // SceneGraphMessage class desc
 extern int DAT_143ae2b3c;
 extern CCubeMotionManager* DAT_143acf6c8;
 extern void* DAT_143b023e0;
 
-int FUN_1409f2d80(void* pCount);
-void FUN_1409f2d50(void* pCount);
-void FUN_1409f2d60(void* pCount);
-void FUN_1409f2e10(void* pInfo, const char* pszName, unsigned nId, void* pCtx, void* pDesc);
-void FUN_1409f30f0(void* pInfo, void* pCtx);
-void FUN_1408a9090(void* p);
-__int64 FUN_1408a9080(void* p);
 void* FUN_141128450(void* p);
-void FUN_14211f220(void* p);
-void FUN_1409a1a90();
 u64 FUN_140c20b50(void* a, u64 b);
-u64 FUN_1410dc0d0();
-u64 FUN_1410dc0e0();
-void FUN_1410dc0f0(void* p);
+unsigned FUN_1410dc0d0();
 CCubeMotionManager* GetCubeMotionManager();
-void* FUN_1410dbe40(void*);
-void* FUN_1410dbee0(void*);
 
 struct Unk_CMISBits { u64 m_nLow : 27; u64 m_nMid : 32; u64 m_nHigh : 5; };
 
@@ -868,14 +818,14 @@ struct Unk_CMISVDel8
 // @0x14112ddb0 CubeMapInformationService::DecRefCount
 void FUN_14112ddb0(char* pThis)
 {
-    if (FUN_1409f2d80(pThis + 0x20) == 0)
+    if (reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator--() == 0)
         (**reinterpret_cast<void (***)(void*)>(pThis))(pThis);
 }
 
 // @0x14112ddf0 DecRefCount of a ref-counted object whose count follows the vftable pointer
 void FUN_14112ddf0(char* pThis)
 {
-    if (FUN_1409f2d80(pThis + 8) == 0)
+    if (reinterpret_cast<efd::AtomicRefCount*>(pThis + 8)->operator--() == 0)
         (**reinterpret_cast<void (***)(void*)>(pThis))(pThis);
 }
 
@@ -897,13 +847,13 @@ void FUN_14112ded0()
 u64 Unk_CMISGlue::Zero0(void*) { return 0; }
 
 // @0x14112e060
-void* Unk_CMISGlue::Desc0() { return &DAT_143acf950; }
+void* Unk_CMISGlue::Desc0() { return (void*)&CubeMapInformationService::ms_ClassInfo; }
 // @0x14112e070
-void* Unk_CMISGlue::Desc1() { return &DAT_143b05e50; }
+void* Unk_CMISGlue::Desc1() { return (void*)&egf::EntityChangeMessage::ms_ClassInfo; }
 // @0x14112e080
-void* Unk_CMISGlue::Desc2() { return &DAT_1439ff650; }
+void* Unk_CMISGlue::Desc2() { return (void*)&ecr::SceneGraphAddedMessage::ms_ClassInfo; }
 // @0x14112e090
-void* Unk_CMISGlue::Desc3() { return &DAT_1439ff240; }
+void* Unk_CMISGlue::Desc3() { return (void*)&ecr::SceneGraphMessage::ms_ClassInfo; }
 
 // @0x14112e0a0 MessageWrapper<EntityChangeMessage, 8253>::GetClassID
 u64 Unk_CMISGlue::ClassId() { return 0x203d; }
@@ -913,7 +863,7 @@ u64 FUN_14112e0b0(char* p) { return *reinterpret_cast<u64*>(p + 8); }
 // @0x14112e0c0
 unsigned FUN_14112e0c0(char* p) { return *reinterpret_cast<unsigned*>(p + 0xc); }
 // @0x14112e0d0
-void FUN_14112e0d0(char* p) { FUN_1408a9090(p + 0x18); }
+void FUN_14112e0d0(char* p) { reinterpret_cast<egf::EntityPtr*>(p + 0x18)->operator egf::Entity*(); }
 // @0x14112e0f0
 u64 FUN_14112e0f0(char* p) { return *reinterpret_cast<u64*>(p + 0x18); }
 // @0x14112e100
@@ -924,10 +874,10 @@ unsigned FUN_14112e110(char* p) { return *reinterpret_cast<unsigned*>(p + 0x40);
 // @0x14112e120
 void FUN_14112e120(char* p)
 {
-    if (FUN_1408a9080(p + 0x48))
-        FUN_14211f220(FUN_141128450(p + 0x48));
+    if (reinterpret_cast<efd::SmartPointer<const egf::FlatModel>*>(p + 0x48)->operator const egf::FlatModel*())
+        static_cast<egf::PropertyDescriptor*>(FUN_141128450(p + 0x48))->GetName();
     else
-        FUN_1409a1a90();
+        efd::utf8string::NullString();
 }
 
 // @0x14112e170 exchange
@@ -939,9 +889,9 @@ u64 FUN_14112e170(void* a, u64* pSlot)
 }
 
 // @0x14112e250 CubeMapInformationService::GetRefCount
-void FUN_14112e250(char* pThis) { FUN_1409f2d50(pThis + 0x20); }
+void FUN_14112e250(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator efd::UInt32(); }
 // @0x14112e270
-void FUN_14112e270(char* pThis) { FUN_1409f2d50(pThis + 8); }
+void FUN_14112e270(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 8)->operator efd::UInt32(); }
 // @0x14112e290
 unsigned FUN_14112e290(char* p) { return *reinterpret_cast<unsigned*>(p + 0x38); }
 // @0x14112e2a0
@@ -954,40 +904,40 @@ char* FUN_14112e2b0(void*, char* p)
         int cond = !!(p != 0);
         do { } while (0);
         if (!cond)
-            FUN_140159b70(0x80004005);
+            ATL::AtlThrowImpl(0x80004005);
     } while (0);
     return p + 8;
 }
 
 // @0x14112f070 CubeMapInformationService::IncRefCount
-void FUN_14112f070(char* pThis) { FUN_1409f2d60(pThis + 0x20); }
+void FUN_14112f070(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator++(); }
 // @0x14112f090
-void FUN_14112f090(char* pThis) { FUN_1409f2d60(pThis + 8); }
+void FUN_14112f090(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 8)->operator++(); }
 // @0x14112f0b0
 int Unk_CMISGlue::Global() { return DAT_143ae2b3c; }
 
 // @0x14112f0c0 MessageHandlerImpl<CMIS, EntityChangeMessage>::RegisterMessageFactory
 void FUN_14112f0c0(char* pThis, char* pReg)
 {
-    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), FUN_1410dbe40);
+    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), (void*)&efd::MessageFactory::GenerateFactoryMethod<egf::EntityChangeMessage>);
 }
 // @0x14112f100 MessageHandlerImpl<CMIS, SceneGraphAddedMessage>::RegisterMessageFactory
 void FUN_14112f100(char* pThis, char* pReg)
 {
-    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), FUN_1410dbee0);
+    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), (void*)&efd::MessageFactory::GenerateFactoryMethod<ecr::SceneGraphAddedMessage>);
 }
 // @0x14112f140 MessageSubclassHandler<...>::RegisterMessageFactory
 void FUN_14112f140(char* pThis, char* pReg)
 {
-    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), FUN_1410dbe40);
+    (*reinterpret_cast<void (**)(void*, unsigned, void*)>(*reinterpret_cast<char**>(pReg) + 0x10))(pReg, *reinterpret_cast<unsigned*>(pThis + 0x10), (void*)&efd::MessageFactory::GenerateFactoryMethod<egf::EntityChangeMessage>);
 }
 // @0x14112f180 MessageWrapperSubclassHandler<...>::RegisterMessageFactory
-void FUN_14112f180(void*, void* pReg) { FUN_1410dc0f0(pReg); }
+void FUN_14112f180(void*, void* pReg) { efd::RegisterMessageWrapperFactory<egf::EntityChangeMessage, 8253>(static_cast<efd::MessageFactory*>(pReg)); }
 
 // @0x14112f2a0 set the low 27 bits
 bool FUN_14112f2a0(Unk_CMISBits* p, u64 v)
 {
-    if (v > FUN_1410dc0e0())
+    if (v > efd::BitUtils::MakeBitMask<efd::UInt64, 27, 0>())
         return false;
     p->m_nLow = v;
     return true;
@@ -999,7 +949,7 @@ void FUN_14112f630(char* p, unsigned v) { *reinterpret_cast<unsigned*>(p + 0x20)
 // @0x14112f650 set bits 27..58
 bool FUN_14112f650(Unk_CMISBits* p, unsigned v)
 {
-    if (v > unsigned(FUN_1410dc0d0()))
+    if (v > FUN_1410dc0d0())
         return false;
     p->m_nMid = v;
     return true;
@@ -1014,14 +964,14 @@ struct Unk_T14Service : Unk_T14ISystemService {};
 // @0x14112f6b0 CubeMapInformationService::SetupClassInfo
 void FUN_14112f6b0(void* pInfo, void* pCtx)
 {
-    FUN_1409f2e10(pInfo, "CubeMapInformationService", 0x6100017, pCtx, &DAT_143acf950);
+    static_cast<efd::ClassInfo*>(pInfo)->AddClass("CubeMapInformationService", 0x6100017, (size_t)pCtx, &CubeMapInformationService::ms_ClassInfo);
     FUN_14112f710(pInfo, (void*)((size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14ISystemService, Unk_T14Service)));
 }
 // @0x14112f710 ISystemService::SetupClassInfo
 void FUN_14112f710(void* pInfo, void* pCtx)
 {
-    FUN_1409f2e10(pInfo, "ISystemService", 0x7000001, pCtx, 0);
-    FUN_1409f30f0(pInfo, (void*)((size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14IBase, Unk_T14ISystemService)));
+    static_cast<efd::ClassInfo*>(pInfo)->AddClass("ISystemService", 0x7000001, (size_t)pCtx, 0);
+    efd::IBase::SetupClassInfo(static_cast<efd::ClassInfo*>(pInfo), (size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14IBase, Unk_T14ISystemService));
 }
 // @0x14112f770
 u64 Unk_CMISGlue::Zero1(void*) { return 0; }
@@ -1036,21 +986,21 @@ u64 Unk_CMISGlue::Zero1(void*) { return 0; }
         return false; \
     }
 // @0x14112f810
-CMIS_TYPECAST(14112f810, DAT_143acf950)
+CMIS_TYPECAST(14112f810, CubeMapInformationService::ms_ClassInfo)
 // @0x14112f860
-CMIS_TYPECAST(14112f860, DAT_143acf950)
+CMIS_TYPECAST(14112f860, CubeMapInformationService::ms_ClassInfo)
 // @0x14112f8b0
-CMIS_TYPECAST(14112f8b0, DAT_143b05e50)
+CMIS_TYPECAST(14112f8b0, egf::EntityChangeMessage::ms_ClassInfo)
 // @0x14112f900
-CMIS_TYPECAST(14112f900, DAT_143b05e50)
+CMIS_TYPECAST(14112f900, egf::EntityChangeMessage::ms_ClassInfo)
 // @0x14112f950
-CMIS_TYPECAST(14112f950, DAT_1439ff650)
+CMIS_TYPECAST(14112f950, ecr::SceneGraphAddedMessage::ms_ClassInfo)
 // @0x14112f9a0
-CMIS_TYPECAST(14112f9a0, DAT_1439ff650)
+CMIS_TYPECAST(14112f9a0, ecr::SceneGraphAddedMessage::ms_ClassInfo)
 // @0x14112f9f0
-CMIS_TYPECAST(14112f9f0, DAT_1439ff240)
+CMIS_TYPECAST(14112f9f0, ecr::SceneGraphMessage::ms_ClassInfo)
 // @0x14112fa40
-CMIS_TYPECAST(14112fa40, DAT_1439ff240)
+CMIS_TYPECAST(14112fa40, ecr::SceneGraphMessage::ms_ClassInfo)
 
 // @0x14112dd30 CCubeMotionManager::GetInstance (creates the manager on first use)
 CCubeMotionManager* FUN_14112dd30()

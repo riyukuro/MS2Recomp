@@ -14,6 +14,7 @@
 #include <string.h>
 #include "ms2/placeholder/cgameoption.h"   // C3: TSingleton<> needs the class
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 
 // ---- unit-local views of exe objects ----
 
@@ -27,7 +28,6 @@ struct Unk_IndOpt
 class Unk_IndSettings
 {
 public:
-    Unk_IndOpt* FUN_140e09150();                            // 0x140e09150 &m_18
     char m_pad_00[0x18];
     Unk_IndOpt m_opt;                                       // +0x18
 };
@@ -101,7 +101,7 @@ void UIIndividualDPSDialog::vfunc_67()
 void UIIndividualDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
@@ -118,7 +118,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        reinterpret_cast<Unk_IndSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->m_bFlag = 0;
+        reinterpret_cast<Unk_IndOpt*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())->m_bFlag = 0;
         CBattleRecordManager::GetInstance()->StopGroup(m_nGroup);
         vfunc_67();
         return 1;
@@ -145,13 +145,13 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIIndividualDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_IndSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bb90() == 0)
+    if (reinterpret_cast<Unk_IndOpt*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())->FUN_14125bb90() == 0)
         vfunc_67();
     else
     {
         if (m_30.IsNull())
             return;
-        if (!m_tick.FUN_140268870(100))
+        if (!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100))
             return;
         PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)

@@ -10,7 +10,7 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees ----
-class Unk_BuildKeyTable { public: CStringW FUN_14142d760(int nId, int n); };
+class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> FUN_14142d760(int, int); }; class Unk_BuildKeyTable : public CKeyTable {};
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_BuildKeyTable (calls cast back)
 
 // the slot list of ASGameEntity is not recovered: only slot 25 is called here

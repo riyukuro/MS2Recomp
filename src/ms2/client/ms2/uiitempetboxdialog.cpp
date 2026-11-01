@@ -28,6 +28,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
@@ -257,7 +258,7 @@ void UIItemPetBoxDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     ClearCards();
-    FUN_140e4f9e0();
+    ReleaseSlotBinds();
 }
 
 // @0x140e4e490
@@ -272,12 +273,12 @@ void UIItemPetBoxDialog::OnLoadComplete()
     if (FUN_140bc6d10("m_multiOpenButton", m_multiOpen).get())
         m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), 1);
     if (FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
-        if (m_previewSingle->FUN_140bbe640<Unk_PetBoxButton>("m_petPreviewClose", m_closeSingle).get())
-            m_closeSingle->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fb70), 0);
+        if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())
+            m_closeSingle->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
     if (FUN_140c57ce0("m_petPreviewMulti", m_previewMulti).get()) {
-        if (m_previewMulti->FUN_140bbe640<Unk_PetBoxButton>("m_petPreviewClose", m_closeMulti).get())
-            m_closeMulti->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fb70), 0);
+        if (m_previewMulti->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeMulti).get())
+            m_closeMulti->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
     FUN_140c57ce0("m_itemBox", m_itemBox);
     FUN_140c57ce0("m_resultItem", m_resultItem);
@@ -372,7 +373,7 @@ void UIItemPetBoxDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp, void* b,
 void UIItemPetBoxDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_140e4f8e0();
+    UnloadAllRenderTargets();
 }
 
 // @0x140e4f5d0
@@ -380,7 +381,7 @@ bool UIItemPetBoxDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17())
         return false;
-    FUN_140e4f7d0();
+    LoadAllRenderTargets();
     return true;
 }
 
@@ -411,7 +412,7 @@ void UIItemPetBoxDialog::LoadCardRenderTarget(int idx)
 }
 
 // @0x140e4f7d0
-void UIItemPetBoxDialog::FUN_140e4f7d0()
+void UIItemPetBoxDialog::LoadAllRenderTargets()
 {
     for (size_t i = 0; i < m_cards.size(); ++i) {
         if (m_cards[i].m_clip.get())
@@ -420,7 +421,7 @@ void UIItemPetBoxDialog::FUN_140e4f7d0()
 }
 
 // @0x140e4f8e0
-void UIItemPetBoxDialog::FUN_140e4f8e0()
+void UIItemPetBoxDialog::UnloadAllRenderTargets()
 {
     for (size_t i = 0; i < m_cards.size(); ++i) {
         if (m_cards[i].m_clip.get())
@@ -431,12 +432,12 @@ void UIItemPetBoxDialog::FUN_140e4f8e0()
 // @0x140e4f9a0
 void UIItemPetBoxDialog::ClearCards()
 {
-    FUN_140e4f8e0();
+    UnloadAllRenderTargets();
     m_cards.clear();
 }
 
 // @0x140e4f9e0
-void UIItemPetBoxDialog::FUN_140e4f9e0()
+void UIItemPetBoxDialog::ReleaseSlotBinds()
 {
     for (size_t i = 0; i < PETBOX_BINDS.FUN_14028b4c0(); ++i)
         FUN_14141f970(*m_slotBinds.FUN_14027f1c0(i));
@@ -463,7 +464,7 @@ void UIItemPetBoxDialog::FUN_140e4fa60(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140e4fb70
-void UIItemPetBoxDialog::FUN_140e4fb70(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemPetBoxDialog::OnClosePreview(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_30 == 0)
         return;
@@ -550,7 +551,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
 {
     if (m_30 == 0 || PETBOX_ITEMS.FUN_140c0e9f0())
         return;
-    FUN_140e4f9e0();
+    ReleaseSlotBinds();
     if (PETBOX_ITEMS.FUN_14028b470() == 1) {
         MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
         if (single.get() == 0)
@@ -776,7 +777,7 @@ void UIItemPetBoxDialog::FUN_140e52110()
 }
 
 // @0x140e52670
-MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FUN_140e52670(const CString& name)
+MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FindCheckBox(const CString& name)
 {
     if (m_30 == 0)
         return MS2Ptr<Unk_PetBoxCheck>(0);
@@ -786,7 +787,7 @@ MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FUN_140e52670(const CString& name)
 // @0x140e52700
 MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FUN_140e52700(const CString& name, MS2Ptr<Unk_PetBoxCheck>& member)
 {
-    member = FUN_140e52670(name);
+    member = FindCheckBox(name);
     return member;
 }
 
@@ -801,17 +802,17 @@ MS2_REPLACE_METHOD(0x140E4F2E0, UIItemPetBoxDialog, vfunc_25, 683, 0x523E66EC);
 MS2_REPLACE_METHOD(0x140E4F5A0, UIItemPetBoxDialog, vfunc_16, 34, 0x867535AC);
 MS2_REPLACE_METHOD(0x140E4F5D0, UIItemPetBoxDialog, vfunc_17, 47, 0xA0F8AF34);
 MS2_REPLACE_METHOD(0x140E4F6D0, UIItemPetBoxDialog, LoadCardRenderTarget, 244, 0x58DDE214);
-MS2_REPLACE_METHOD(0x140E4F7D0, UIItemPetBoxDialog, FUN_140e4f7d0, 251, 0xFE9B33A1);
-MS2_REPLACE_METHOD(0x140E4F8E0, UIItemPetBoxDialog, FUN_140e4f8e0, 176, 0x6354CE48);
+MS2_REPLACE_METHOD(0x140E4F7D0, UIItemPetBoxDialog, LoadAllRenderTargets, 251, 0xFE9B33A1);
+MS2_REPLACE_METHOD(0x140E4F8E0, UIItemPetBoxDialog, UnloadAllRenderTargets, 176, 0x6354CE48);
 MS2_REPLACE_METHOD(0x140E4F9A0, UIItemPetBoxDialog, ClearCards, 43, 0x34618B18);
-MS2_REPLACE_METHOD(0x140E4F9E0, UIItemPetBoxDialog, FUN_140e4f9e0, 117, 0x33366119);
+MS2_REPLACE_METHOD(0x140E4F9E0, UIItemPetBoxDialog, ReleaseSlotBinds, 117, 0x33366119);
 MS2_REPLACE_METHOD(0x140E4FA60, UIItemPetBoxDialog, FUN_140e4fa60, 259, 0x6554B4A2);
-MS2_REPLACE_METHOD(0x140E4FB70, UIItemPetBoxDialog, FUN_140e4fb70, 182, 0x99CD677A);
+MS2_REPLACE_METHOD(0x140E4FB70, UIItemPetBoxDialog, OnClosePreview, 182, 0x99CD677A);
 MS2_REPLACE_METHOD(0x140E4FC30, UIItemPetBoxDialog, SetBoxItemId, 25, 0x9BF64FA6);
 MS2_REPLACE_METHOD(0x140E4FC50, UIItemPetBoxDialog, FUN_140e4fc50, 50, 0x3FD9DD97);
 MS2_REPLACE_METHOD(0x140E4FC90, UIItemPetBoxDialog, IsSpecialItem, 187, 0x768844F2);
 MS2_REPLACE_METHOD(0x140E519B0, UIItemPetBoxDialog, FUN_140e519b0, 734, 0x3387E636);
 MS2_REPLACE_METHOD(0x140E51CA0, UIItemPetBoxDialog, FUN_140e51ca0, 401, 0x3F87147F);
-MS2_REPLACE_METHOD(0x140E52670, UIItemPetBoxDialog, FUN_140e52670, 139, 0x2C5278D7);
+MS2_REPLACE_METHOD(0x140E52670, UIItemPetBoxDialog, FindCheckBox, 139, 0x2C5278D7);
 MS2_REPLACE_METHOD(0x140E52700, UIItemPetBoxDialog, FUN_140e52700, 138, 0x48954D03);
 MS2_REPLACE_METHOD_VIA(0x140E4F610, UIItemPetBoxDialog, IUIAvatarEventListener, vfunc_o178_1, 178, 0xCEE1D1D9);

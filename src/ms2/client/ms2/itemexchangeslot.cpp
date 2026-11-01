@@ -39,18 +39,6 @@ public:
     void FUN_140f52c80();                               // refresh after the item changed
 };
 
-// UI registry: a handle to a registered UI object.
-class Unk_IesUIRef
-{
-public:
-    ~Unk_IesUIRef();                                    // FUN_1403e5630
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* unknown;
-    UIObject* object;
-};
-class Unk_IesUIMgr { public: Unk_IesUIRef FUN_141adcea0(int nId); };
-
 
 ItemExchangeSlot* FUN_140b6cde0(NotifyContext::BindData* p);
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId);
@@ -176,11 +164,11 @@ ItemExchangeSlot* FUN_140b6cde0(NotifyContext::BindData* p)
 // @0x140b6ce30
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId)
 {
-    if (reinterpret_cast<Unk_IesUIMgr*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_IesUIRef ref = reinterpret_cast<Unk_IesUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIItemExchangeScrollDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get())
+            return dynamic_cast<UIItemExchangeScrollDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

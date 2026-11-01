@@ -108,7 +108,7 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
         int nItemId = spItem->FUN_1405276c0();
         int nRarity = spItem->FUN_140526bd0();
         int nAmount = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
-        CString strBind = m_binder.FUN_140d43310(nItemId, nRarity, nAmount);
+        CString strBind = m_binder.BindNewItem(nItemId, nRarity, nAmount);
         if (strBind.IsEmpty())
             continue;
         ASObj entry(2);

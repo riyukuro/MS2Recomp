@@ -182,7 +182,8 @@ public:
 NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour value as NiColor
 
 class Unk_PciCfgU16 { public: unsigned short FUN_140ba4b30(); };
-class Unk_PciCfgFloat { public: float* FUN_140298f40(); };
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+class Unk_PciCfgFloat { public: };
 struct Unk_PciConstants
 {
     char m_pad_0[0x9298];
@@ -195,8 +196,8 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 UIWebBrowserBase* FUN_140c43790(int nId);
 
-class Unk_PciAltStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_PciAltStrings* FUN_14025e7a0();
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+GFxManager* FUN_14025e7a0();
 
 // The 8-byte min/max pair constructed (and unused) by the record builder.
 struct Unk_PciRange
@@ -285,7 +286,7 @@ CString UIPCInfoDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x14132C030, UIPCInfoDialog, GetTypeName, 61, 0x75B53313);
 
 // @0x14132c080
-int UIPCInfoDialog::FUN_14132c080(__int64 nCharacterId)
+int UIPCInfoDialog::TryBeginRequest(__int64 nCharacterId)
 {
     if (nCharacterId == m_1d8 && m_1e0.Check(5000) == 0)
         return 1;
@@ -296,7 +297,7 @@ int UIPCInfoDialog::FUN_14132c080(__int64 nCharacterId)
     m_1e0.Init();
     return 0;
 }
-MS2_REPLACE_METHOD(0x14132C080, UIPCInfoDialog, FUN_14132c080, 168, 0xDC1D34D4);
+MS2_REPLACE_METHOD(0x14132C080, UIPCInfoDialog, TryBeginRequest, 168, 0xDC1D34D4);
 
 // @0x14132c130
 void UIPCInfoDialog::FUN_14132c130(PC* pPC)
@@ -430,7 +431,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         }
     }
     Unk_PciRange range;
-    float fDivisor = *((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10.FUN_140298f40();
+    float fDivisor = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10)->FUN_140298f40());
     switch (nRings)
     {
     case 0:
@@ -472,7 +473,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         if (pAvatarPC != 0)
         {
             MS2Ptr<CItem> spCopy = spItem->Clone();
-            ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->FUN_14165f460())->FUN_141270bf0(spCopy);
+            ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->FUN_14165f460())->EquipItem(spCopy);
         }
     }
     if (spInfo->m_508)
@@ -560,7 +561,7 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
             vfunc_85();
             vfunc_86();
             vfunc_88(m_nTab);
-            vfunc_98(FUN_141336c90());
+            vfunc_98(GetProfileImagePath());
         }
     }
     else
@@ -584,7 +585,7 @@ void UIPCInfoDialog::vfunc_ugc_1(void* nCharacterId, CString strPath)
     if (m_spInfo->m_30 != (__int64)nCharacterId)
         return;
     m_spInfo->m_3e0 = strPath;
-    vfunc_98(FUN_141336c90());
+    vfunc_98(GetProfileImagePath());
 }
 MS2_REPLACE_METHOD_VIA(0x14132D900, UIPCInfoDialog, UIUGCEventListener, vfunc_ugc_1, 352, 0x960E76E2);
 
@@ -636,7 +637,7 @@ void UIPCInfoDialog::OnLoadComplete()
     vfunc_85();
     vfunc_86();
     vfunc_88(m_nTab);
-    vfunc_98(FUN_141336c90());
+    vfunc_98(GetProfileImagePath());
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
     m_spMyNews = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_myNews");
     m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132ed50), 0);
@@ -739,7 +740,7 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (vfunc_93() != 0)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_char_info_reset_stat_point"), 0, L"");
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::FUN_14132ee90));
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::OnResetStatPointsAnswer));
             FUN_140d73c60(spBox);
         }
         return 1;
@@ -771,14 +772,14 @@ void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params
 MS2_REPLACE_METHOD(0x14132ED50, UIPCInfoDialog, FUN_14132ed50, 304, 0x65E39183);
 
 // @0x14132ee90
-bool UIPCInfoDialog::FUN_14132ee90(int nResult, const CMsgBoxData& data)
+bool UIPCInfoDialog::OnResetStatPointsAnswer(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
         vfunc_92();
     FUN_14151f200();
     return true;
 }
-MS2_REPLACE_METHOD(0x14132EE90, UIPCInfoDialog, FUN_14132ee90, 56, 0x8AAF4EEA);
+MS2_REPLACE_METHOD(0x14132EE90, UIPCInfoDialog, OnResetStatPointsAnswer, 56, 0x8AAF4EEA);
 
 // @0x14132eed0
 void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -878,27 +879,27 @@ void UIPCInfoDialog::FUN_14132fa50(const CStringW& strAddress)
 MS2_REPLACE_METHOD(0x14132FA50, UIPCInfoDialog, FUN_14132fa50, 43, 0xFF5DCCEA);
 
 // @0x14132fa90
-void UIPCInfoDialog::FUN_14132fa90()
+void UIPCInfoDialog::RefreshProfileImage()
 {
-    vfunc_98(FUN_141336c90());
+    vfunc_98(GetProfileImagePath());
 }
-MS2_REPLACE_METHOD(0x14132FA90, UIPCInfoDialog, FUN_14132fa90, 89, 0xD17D819F);
+MS2_REPLACE_METHOD(0x14132FA90, UIPCInfoDialog, RefreshProfileImage, 89, 0xD17D819F);
 
 // @0x14132faf0
-void UIPCInfoDialog::FUN_14132faf0(const CStringW& strProfile)
+void UIPCInfoDialog::ShowProfileImage(const CStringW& strProfile)
 {
     if (vfunc_55() != 0)
         return;
     vfunc_98(strProfile);
 }
-MS2_REPLACE_METHOD(0x14132FAF0, UIPCInfoDialog, FUN_14132faf0, 68, 0x12AB7DB9);
+MS2_REPLACE_METHOD(0x14132FAF0, UIPCInfoDialog, ShowProfileImage, 68, 0x12AB7DB9);
 
 // @0x14132fb40
 void UIPCInfoDialog::vfunc_84()
 {
     if (m_spInfo == 0)
     {
-        FUN_141333090();
+        ClearProfile();
         return;
     }
     vfunc_94(m_spInfo->m_20);
@@ -1140,7 +1141,7 @@ void UIPCInfoDialog::vfunc_88(int nTab)
     else
     {
         strBag = m_strEquipBag;
-        int nKind = FUN_141336de0(nTab);
+        int nKind = GetEquipBagKindForTab(nTab);
         if (nKind != 6)
             FUN_14120d7c0(strBag, m_spInfo, nKind, 0);
     }
@@ -1186,14 +1187,14 @@ int UIPCInfoDialog::vfunc_93()
 MS2_REPLACE_METHOD(0x141333080, UIPCInfoDialog, vfunc_93, 8, 0x7F371472);
 
 // @0x141333090
-void UIPCInfoDialog::FUN_141333090()
+void UIPCInfoDialog::ClearProfile()
 {
     vfunc_97(L"");
     vfunc_104(0);
     if (MS2Ptr<Unk_PciCombo> spTitle = ((Unk_PciMovieEntity*)this)->FUN_140c28560("m_title"))
         ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
 }
-MS2_REPLACE_METHOD(0x141333090, UIPCInfoDialog, FUN_141333090, 220, 0x5680505A);
+MS2_REPLACE_METHOD(0x141333090, UIPCInfoDialog, ClearProfile, 220, 0x5680505A);
 
 // @0x141333180
 void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
@@ -1466,7 +1467,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
         score.m_08 = m_spInfo->m_aStats0[7];
         score.m_10 = m_spInfo->m_aStats0[0xa];
         score.m_18 = FUN_141335940(0xe, &fA, &fB, &fC);
-        score.m_20 = FUN_141335780();
+        score.m_20 = GetAverageStat();
         score.m_28 = (__int64)FUN_141335940(0x1d, &fA, &fB, &fC);
         score.m_30 = (__int64)FUN_141335940(0x17, &fA, &fB, &fC);
         score.m_38 = (__int64)FUN_141335940(0x18, &fA, &fB, &fC);
@@ -1500,7 +1501,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
     MS2Ptr<Unk_PciFieldInfo> spField = reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField.get() != 0)
         nFieldLevel = spField->m_4c;
-    __int64 nMeanAttack = FUN_141335780();
+    __int64 nMeanAttack = GetAverageStat();
     __int64 nAttackMin = m_spInfo->m_aStats2[0x17];
     __int64 nAttackMax = m_spInfo->m_aStats2[0x18];
     float fA1, fB1, fC1;
@@ -1557,7 +1558,7 @@ __int64 UIPCInfoDialog::FUN_141335290()
 MS2_REPLACE_METHOD(0x141335290, UIPCInfoDialog, FUN_141335290, 1251, 0x9126E927);
 
 // @0x141335780
-__int64 UIPCInfoDialog::FUN_141335780()
+__int64 UIPCInfoDialog::GetAverageStat()
 {
     if (m_spInfo == 0)
         return 0;
@@ -1565,7 +1566,7 @@ __int64 UIPCInfoDialog::FUN_141335780()
     __int64 nMax = m_spInfo->m_aStats2[0x1c];
     return (__int64)((float)(nMin + nMax) * 0.5f);
 }
-MS2_REPLACE_METHOD(0x141335780, UIPCInfoDialog, FUN_141335780, 162, 0x879E9A4F);
+MS2_REPLACE_METHOD(0x141335780, UIPCInfoDialog, GetAverageStat, 162, 0x879E9A4F);
 
 // @0x141335830
 __int64 UIPCInfoDialog::FUN_141335830(int nStat)
@@ -1600,7 +1601,7 @@ float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, fl
     else if (nStat == 0x1b || nStat == 0x1c)
     {
         *pfBase = 0.0f;
-        *pfBonus = (float)FUN_141335780();
+        *pfBonus = (float)GetAverageStat();
         *pfTotal = *pfBonus;
     }
     else if (nStat == 0x1f || nStat == 0x15)
@@ -1788,16 +1789,16 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
 MS2_REPLACE_METHOD(0x1413369A0, UIPCInfoDialog, FUN_1413369a0, 736, 0x224D2010);
 
 // @0x141336c90
-CStringW UIPCInfoDialog::FUN_141336c90()
+CStringW UIPCInfoDialog::GetProfileImagePath()
 {
     if (m_spInfo == 0)
         return L"";
     return FUN_14016a730(FUN_141028be0(m_spInfo->m_30, m_spInfo->m_3e0, 1, ""), 0);
 }
-MS2_REPLACE_METHOD(0x141336C90, UIPCInfoDialog, FUN_141336c90, 328, 0xFC5A761A);
+MS2_REPLACE_METHOD(0x141336C90, UIPCInfoDialog, GetProfileImagePath, 328, 0xFC5A761A);
 
 // @0x141336de0
-int UIPCInfoDialog::FUN_141336de0(int nTab)
+int UIPCInfoDialog::GetEquipBagKindForTab(int nTab)
 {
     switch (m_nTab)
     {
@@ -1810,7 +1811,7 @@ int UIPCInfoDialog::FUN_141336de0(int nTab)
     }
     return 6;
 }
-MS2_REPLACE_METHOD(0x141336DE0, UIPCInfoDialog, FUN_141336de0, 75, 0xC50A4756);
+MS2_REPLACE_METHOD(0x141336DE0, UIPCInfoDialog, GetEquipBagKindForTab, 75, 0xC50A4756);
 
 // @0x141336e40
 void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& strLabel, const CStringW& strFrame,

@@ -173,8 +173,8 @@ class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14162ab20();
-    bool FUN_14162ac00(int);
-    bool FUN_14162ac70(int);
+    bool IsMatchSearching(int);
+    bool CanEnterDungeonRoom(int);
     unsigned int FUN_14162c1e0();
 };
 bool FUN_14162ab70(void*);
@@ -274,7 +274,7 @@ public:
 class UIDungeonSearchSelectDialog : public UIDialog
 {
 public:
-    void FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);
+    void InitSelection(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);
 };
 class Unk_DsHelperDialog : public UIDungeonRoomDialog
 {
@@ -348,10 +348,10 @@ bool UIDungeonSearchPage::Init(MS2Ptr<ASMovieClip> root)
     if (root == NULL)
         return false;
     m_movie = root;
-    DS_BIND(m_movie->FUN_140bbe640<Unk_DsButton>("m_settingButton", m_settingButton), m_settingButton, 0x24);
-    DS_BIND(m_movie->FUN_140bbe640<Unk_DsButton>("m_findButton", m_findButton), m_findButton, 0x25);
-    DS_BIND(m_movie->FUN_140bbe640<Unk_DsButton>("m_cancelButton", m_cancelButton), m_cancelButton, 0x26);
-    m_findButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e192d0), 0);
+    DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_settingButton", m_settingButton), m_settingButton, 0x24);
+    DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_findButton", m_findButton), m_findButton, 0x25);
+    DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_cancelButton", m_cancelButton), m_cancelButton, 0x26);
+    m_findButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::OnClickFind), 0);
     m_cancelButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::SendPartyMode34), 0);
     m_settingButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e19380), 0);
     FUN_140d01420((*m_movie).FUN_1422bb890(), "m_title", 2);
@@ -401,21 +401,21 @@ void UIDungeonSearchPage::SetRooms(std::set<unsigned>& rooms)
 MS2_REPLACE_METHOD(0x140e19250, UIDungeonSearchPage, SetRooms, 51, 0x0EA65951);
 
 // @0x140e19290
-bool UIDungeonSearchPage::FUN_140e19290(int nResult, const CMsgBoxData& data)
+bool UIDungeonSearchPage::OnNoMoreRewardConfirm(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
         SendPartyMode32(false);
     return true;
 }
-MS2_REPLACE_METHOD(0x140e19290, UIDungeonSearchPage, FUN_140e19290, 44, 0xB906C87F);
+MS2_REPLACE_METHOD(0x140e19290, UIDungeonSearchPage, OnNoMoreRewardConfirm, 44, 0xB906C87F);
 
 // @0x140e192d0
-void UIDungeonSearchPage::FUN_140e192d0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchPage::OnClickFind(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_140e194f0())
         SendPartyMode32(true);
 }
-MS2_REPLACE_METHOD(0x140e192d0, UIDungeonSearchPage, FUN_140e192d0, 48, 0x9DDC2185);
+MS2_REPLACE_METHOD(0x140e192d0, UIDungeonSearchPage, OnClickFind, 48, 0x9DDC2185);
 
 // @0x140e19310
 void UIDungeonSearchPage::SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -438,7 +438,7 @@ void UIDungeonSearchPage::FUN_140e19380(const Scaleform::GFx::FunctionHandler::P
         ids.insert(room->FUN_14031ddd0());
     UIDungeonSearchSelectDialog* pDialog = FUN_140e1cfe0(0x4f22);
     if (pDialog != 0) {
-        pDialog->FUN_140e27ed0(m_nPage, ids, &m_rooms);
+        pDialog->InitSelection(m_nPage, ids, &m_rooms);
         pDialog->FUN_141924680();
     }
 }
@@ -457,7 +457,7 @@ bool UIDungeonSearchPage::FUN_140e194f0()
     }
     if (((class Unk_DsSession*)FUN_140931510())->FUN_140d9f2c0()->FUN_140b22290(0x3ee))
         return true;
-    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonSearchPage::FUN_140e19290),
+    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonSearchPage::OnNoMoreRewardConfirm),
                   CStringW(L"s_dungeonSearch_no_more_reward_dungeon"));
     return false;
 }
@@ -478,7 +478,7 @@ MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4EC
 // @0x140e19770
 void UIDungeonSearchPage::FUN_140e19770()
 {
-    bool bSearching = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac00(1);
+    bool bSearching = ((class CPartyManager*)(void*)(FUN_1409670d0()))->IsMatchSearching(1);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressIcon", bSearching);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressBg", bSearching);
     m_findButton->vfunc_4(!bSearching);
@@ -513,7 +513,7 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
     Unk_DsRoomVec rooms;
     reinterpret_cast<Unk_DsRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320da0(nLevelMin, nLevelMax, rooms);
     for (unsigned i = 0; i < rooms.size(); ++i) {
-        if (!((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(rooms[i]->FUN_14031ddd0()))
+        if (!((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(rooms[i]->FUN_14031ddd0()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;
@@ -584,7 +584,7 @@ void UIDungeonSearchDialog::OnLoadComplete()
             m_pageCustom->FUN_140e18f90();
             m_pageRandom->FUN_140e18f90();
             m_unitedReward->FUN_140e13c00();
-            FUN_140e1bb70();
+            UpdateSubButtonVisibility();
             ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b640));
             ((class Unk_DsPacketManager*)FUN_140bccd50())->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonSearchDialog::FUN_140e1b6f0));
         }
@@ -631,19 +631,19 @@ void UIDungeonSearchDialog::FUN_140e1b6f0(CInPacket& packet)
     int b = reinterpret_cast<Unk_DsStream*>(&packet.m_stream)->ReadByte();
     switch (b) {
     case 0x17:
-        FUN_140e1b760(packet);
+        OnUnitedRewardReset(packet);
         break;
     }
 }
 MS2_REPLACE_METHOD(0x140e1b6f0, UIDungeonSearchDialog, FUN_140e1b6f0, 92, 0x407AF0E0);
 
 // @0x140e1b760
-void UIDungeonSearchDialog::FUN_140e1b760(CInPacket& packet)
+void UIDungeonSearchDialog::OnUnitedRewardReset(CInPacket& packet)
 {
     FUN_1412751b0(FUN_140298ea0(CStringW(L"s_dungeonSearch_success_united_reward_reset")), 0x14);
     m_unitedReward->FUN_140e13c00();
 }
-MS2_REPLACE_METHOD(0x140e1b760, UIDungeonSearchDialog, FUN_140e1b760, 145, 0x7DFB33D4);
+MS2_REPLACE_METHOD(0x140e1b760, UIDungeonSearchDialog, OnUnitedRewardReset, 145, 0x7DFB33D4);
 
 // @0x140e1b800
 void UIDungeonSearchDialog::RefreshPages(NotifyObject* pNotify)
@@ -711,13 +711,13 @@ void UIDungeonSearchDialog::FUN_140e1ba50(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140e1ba50, UIDungeonSearchDialog, FUN_140e1ba50, 37, 0x93C9A0C4);
 
 // @0x140e1ba80
-void UIDungeonSearchDialog::FUN_140e1ba80(int nPage, std::set<unsigned>& rooms)
+void UIDungeonSearchDialog::SetPageRooms(int nPage, std::set<unsigned>& rooms)
 {
     MS2Ptr<UIDungeonSearchPage> pPage = GetPage(nPage);
     if (pPage.get() != 0)
         pPage->SetRooms(rooms);
 }
-MS2_REPLACE_METHOD(0x140e1ba80, UIDungeonSearchDialog, FUN_140e1ba80, 102, 0xAFD0353A);
+MS2_REPLACE_METHOD(0x140e1ba80, UIDungeonSearchDialog, SetPageRooms, 102, 0xAFD0353A);
 
 // @0x140e1baf0
 MS2Ptr<UIDungeonSearchPage> UIDungeonSearchDialog::GetPage(int nPage)
@@ -727,24 +727,24 @@ MS2Ptr<UIDungeonSearchPage> UIDungeonSearchDialog::GetPage(int nPage)
 MS2_REPLACE_METHOD(0x140e1baf0, UIDungeonSearchDialog, GetPage, 114, 0xAEAD2CE8);
 
 // @0x140e1bb70
-void UIDungeonSearchDialog::FUN_140e1bb70()
+void UIDungeonSearchDialog::UpdateSubButtonVisibility()
 {
-    FUN_140e1bc70(5, 1);
-    FUN_140e1bc70(0x4b, 5);
-    FUN_140e1bc70(0x80, 4);
-    FUN_140e1bc70(0x55, 6);
-    FUN_140e1bc70(0x4c, 7);
-    FUN_140e1bc70(0x76, 8);
-    FUN_140e1bc70(0xaa, 0);
-    FUN_140e1bc70(0xab, 9);
-    FUN_140e1bc70(0xcb, 10);
-    FUN_140e1bc70(0xf0, 11);
-    FUN_140e1bd90(0xf0, 8);
+    SetSubButtonVisibleByFeature(5, 1);
+    SetSubButtonVisibleByFeature(0x4b, 5);
+    SetSubButtonVisibleByFeature(0x80, 4);
+    SetSubButtonVisibleByFeature(0x55, 6);
+    SetSubButtonVisibleByFeature(0x4c, 7);
+    SetSubButtonVisibleByFeature(0x76, 8);
+    SetSubButtonVisibleByFeature(0xaa, 0);
+    SetSubButtonVisibleByFeature(0xab, 9);
+    SetSubButtonVisibleByFeature(0xcb, 10);
+    SetSubButtonVisibleByFeature(0xf0, 11);
+    HideSubButtonByFeature(0xf0, 8);
 }
-MS2_REPLACE_METHOD(0x140e1bb70, UIDungeonSearchDialog, FUN_140e1bb70, 242, 0x8316022B);
+MS2_REPLACE_METHOD(0x140e1bb70, UIDungeonSearchDialog, UpdateSubButtonVisibility, 242, 0x8316022B);
 
 // @0x140e1bc70
-void UIDungeonSearchDialog::FUN_140e1bc70(int nContent, int nButton)
+void UIDungeonSearchDialog::SetSubButtonVisibleByFeature(int nContent, int nButton)
 {
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(nContent)) {
         m_subButtons[nButton]->vfunc_4(true);
@@ -754,17 +754,17 @@ void UIDungeonSearchDialog::FUN_140e1bc70(int nContent, int nButton)
         m_subLabels[nButton]->vfunc_4(false);
     }
 }
-MS2_REPLACE_METHOD(0x140e1bc70, UIDungeonSearchDialog, FUN_140e1bc70, 273, 0x42F12825);
+MS2_REPLACE_METHOD(0x140e1bc70, UIDungeonSearchDialog, SetSubButtonVisibleByFeature, 273, 0x42F12825);
 
 // @0x140e1bd90
-void UIDungeonSearchDialog::FUN_140e1bd90(int nContent, int nButton)
+void UIDungeonSearchDialog::HideSubButtonByFeature(int nContent, int nButton)
 {
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(nContent)) {
         m_subButtons[nButton]->vfunc_4(false);
         m_subLabels[nButton]->vfunc_4(false);
     }
 }
-MS2_REPLACE_METHOD(0x140e1bd90, UIDungeonSearchDialog, FUN_140e1bd90, 159, 0xDB49752F);
+MS2_REPLACE_METHOD(0x140e1bd90, UIDungeonSearchDialog, HideSubButtonByFeature, 159, 0xDB49752F);
 
 // @0x140e1cfe0
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType)

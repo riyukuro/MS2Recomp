@@ -39,6 +39,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -58,13 +60,11 @@ public:
 class Unk_DictTab : public Unk_DictCtl
 {
 public:
-    void FUN_1422e31e0(int n);                              // select
 };
 // "m_inputSearch": the search text input.
 class Unk_DictInput : public ASDisplayObject
 {
 public:
-    void FUN_1422e0ab0(const CStringW& str);                // set the text
 };
 class ASDialog : public ASDisplayObject {};
 
@@ -113,8 +113,7 @@ struct Unk_DictRequestValue
 // Input state, the movie manager, the player and the text hooks.
 class Unk_DictInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_DictUiMgr { public: int FUN_1422d4e20(CString strKey); };
-Unk_DictUiMgr* FUN_140b632f0();
+UISwfEntityManager* FUN_140b632f0();
 WorldService* FUN_1403ed2d0();
 CReservedWordTable* FUN_1403b4750();
 CStringW GetStringCommon(int nStringId);                      // common string by id
@@ -225,9 +224,9 @@ void UIGameDictionaryDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_140f452e0();
     if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        spInput->FUN_1422e0ab0(m_180);
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0ab0(m_180);
     if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
-        spTab->FUN_1422e31e0(m_178);
+        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(m_178);
     if (m_17c != 0)
     {
         if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
@@ -461,7 +460,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
     m_17c = bSelectFirst;
     m_180 = strSearch;
     if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        spInput->FUN_1422e0ab0(m_180);
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0ab0(m_180);
     if (vfunc_55() == 0)
     {
         if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
@@ -469,7 +468,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
             if (m_178 == nTab)
                 FUN_140f45870();
             else
-                spTab->FUN_1422e31e0(nTab);
+                reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(nTab);
         }
         if (m_17c != 0)
         {

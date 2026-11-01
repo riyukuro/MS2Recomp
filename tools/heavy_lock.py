@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Machine-wide counting semaphore for the memory-heavy steps (progress.py gates, DLL links, merge).
 
-N slot files work/locks/heavy.1..N (N = MS2_HEAVY_SLOTS, default 5), each flock()ed; the kernel drops the lock when the holder
+N slot files work/locks/heavy.1..N (N = MS2_HEAVY_SLOTS, default 12), each flock()ed; the kernel drops the lock when the holder
 dies. The fds are close-on-exec, so no child (wineserver!) can keep a slot after its holder exits.
 
     heavy_lock.py [--all | --all-but N] [--client] [--quiet] -- <cmd> [args...]   run cmd holding one slot (--all: every slot, exclusive; --all-but N: all but N)
@@ -59,7 +59,7 @@ DIR = _lock_dir()
 
 def nslots():
     try:
-        return max(1, int(os.environ.get("MS2_HEAVY_SLOTS", "5")))
+        return max(1, int(os.environ.get("MS2_HEAVY_SLOTS", "12")))
     except ValueError:
         return 3
 

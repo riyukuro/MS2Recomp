@@ -23,11 +23,12 @@
 CItemData* FUN_140527840(CItem* pItem);                 // CItem::GetItemData
 
 // Sound player (effectservice.cpp): FUN_1403ed280 is its singleton getter.
-class Unk_SoundPlayer
+class CEffectService
 {
 public:
-    int FUN_1411a5110(CString strDir, CString strName, CString strSub, int a4, __int64 a5, float fVolume, int a7);
+    unsigned int FUN_1411a5110(CString strDir, CString strName, CString strSub, int a4, class NiTransform* a5, float fVolume, int a7);
 };
+class Unk_SoundPlayer;
 Unk_SoundPlayer* FUN_1403ed280();
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
@@ -183,7 +184,7 @@ void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
     {
         if (FUN_140527840(spItem.operator->()))
         {
-            FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
         }
     }
 }

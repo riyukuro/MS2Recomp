@@ -26,9 +26,9 @@ public:
     // implicit virtual dtor 0x140d70a70 (??_G 0x140d70ca0): the exe stores no vftable in it
 
     bool IsExpired();                                   // the sale is over
-    void FUN_140d6d940(ASObj& row);                         // the row of an own listing
-    void FUN_140d6dab0(ASObj& row);                         // the row of a listing of the market
-    void FUN_140d6db30(ASObj& row);                         // the fields both rows share
+    void FillOwnRow(ASObj& row);                         // the row of an own listing
+    void FillMarketRow(ASObj& row);                         // the row of a listing of the market
+    void FillCommonRow(ASObj& row);                         // the fields both rows share
 };
 MS2_CHECK_SIZE(CMesoMarketProductCli, 0x58);
 
@@ -64,23 +64,23 @@ public:
 
     void SendMesoMarket();                                   // forget the lists and ask for the market (0x81/3)
     void OnMesoMarket(CInPacket& packet);                  // packet 0x81 dispatcher by the sub code
-    void FUN_140d6e5b0(ASArray& rows);                      // the rows of the own listing
-    void FUN_140d6e6d0(ASArray& rows);                      // the rows of the market
+    void FillOwnRows(ASArray& rows);                      // the rows of the own listing
+    void FillMarketRows(ASArray& rows);                      // the rows of the market
     MS2Ptr<CMesoMarketProductCli> FindOwnProduct(unsigned __int64 qwId);   // product of the own listing
     MS2Ptr<CMesoMarketProductCli> FindMarketProduct(unsigned __int64 qwId);   // product of the market
     Unk_MesoLimits& GetLimits();                        // the limits
-    bool FUN_140d6e960(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
-    bool FUN_140d6ea50(unsigned __int64 qwId);              // validate a buy
+    bool CanRegister(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
+    bool CanBuy(unsigned __int64 qwId);              // validate a buy
     int GetOwn();                                    // the own count
     int GetBuy();                                    // the buy count
-    void FUN_140d6eb90(CInPacket& packet);                  // 0: result code
-    void FUN_140d6ebe0(CInPacket& packet);                  // 1: the limits
-    void FUN_140d6ec20(CInPacket& packet);                  // 2: the counts
-    void FUN_140d6eca0(CInPacket& packet);                  // 4: the own listing
-    void FUN_140d6ecf0(CInPacket& packet);                  // 5: one own product
-    void FUN_140d6ee00(CInPacket& packet);                  // 6: one own product left
-    void FUN_140d6eec0(CInPacket& packet);                  // 7: a market page
-    void FUN_140d6efb0(CInPacket& packet);                  // 8: a product was bought
+    void OnMesoMarketResult(CInPacket& packet);                  // 0: result code
+    void OnMesoMarketLimits(CInPacket& packet);                  // 1: the limits
+    void OnMesoMarketCounts(CInPacket& packet);                  // 2: the counts
+    void OnMesoMarketOwnList(CInPacket& packet);                  // 4: the own listing
+    void OnMesoMarketRegistered(CInPacket& packet);                  // 5: one own product
+    void OnMesoMarketOwnRemoved(CInPacket& packet);                  // 6: one own product left
+    void OnMesoMarketMarketList(CInPacket& packet);                  // 7: a market page
+    void OnBuyResult(CInPacket& packet);                  // 8: a product was bought
     void AddOwnProduct(MS2Ptr<CMesoMarketProductCli> sp);   // add to the own listing
     void ShowResultMessage(int nCode);                          // result code -> message
     __int64 GetMinPrice();                                // lowest price allowed

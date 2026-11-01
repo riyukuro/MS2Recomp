@@ -7,9 +7,11 @@ class CItem;
 #include <atlcoll.h>
 #include <assert.h>
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);
-class Unk_RewardClip;
-class Unk_RewardButton;
-class Unk_RewardRoom;
+#include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/commonfiles/timer.h"
 class Unk_RewardAvatar;
 template<class T> class Unk_RewardPtr {
 public:
@@ -27,8 +29,6 @@ public:
  operator T*() const;
 private: void* m_0; T* m_p;
 };
-template<> Unk_RewardPtr<Unk_RewardClip>& Unk_RewardPtr<Unk_RewardClip>::operator=(int);
-template<> Unk_RewardPtr<Unk_RewardButton>& Unk_RewardPtr<Unk_RewardButton>::operator=(int);
 struct ItemEntity;
 class Unk_RewardItemIter {
 public: bool operator!=(const Unk_RewardItemIter&) const; Unk_RewardItemIter& operator++(); ItemEntity& operator*() const;
@@ -51,20 +51,8 @@ public:
  Unk_RewardItemVec m_28;
 };
 MS2_CHECK_SIZE(DungeonRewardInfo,0x40);
-class Timer {
-public: Timer(); ~Timer(); void FUN_1408687f0(); int FUN_140868c00(); void FUN_140868750(unsigned int);
-private:
- void* m_0;
- void* m_8;
- void* m_10;
- void* m_18;
- void* m_20;
- void* m_28;
- void* m_30;
-};
-MS2_CHECK_SIZE(Timer,0x38);
 class Unk_RewardLabels {
-public: Unk_RewardLabels(); ~Unk_RewardLabels(); void FUN_140bcfb70(); size_t FUN_140bd0940(); Unk_RewardPtr<Unk_RewardClip>& FUN_140bcc370(size_t); void FUN_140bd0800(const Unk_RewardPtr<Unk_RewardClip>&);
+public: Unk_RewardLabels(); ~Unk_RewardLabels(); void FUN_140bcfb70(); size_t FUN_140bd0940(); MS2Ptr<ASMovieClip>& FUN_140bcc370(size_t); void FUN_140bd0800(const MS2Ptr<ASMovieClip>&);
 private: void* m_0; void* m_8; void* m_10;
 };
 class Unk_RewardStream;
@@ -103,16 +91,16 @@ public:
  // @0x140e26850
  virtual int vfunc_48() { return 20217; }
  void OnPacket(CInPacket&); void FUN_140e22210(CInPacket&);
- void FUN_140e225a0(CInPacket&); void FUN_140e22650(CInPacket&); void FUN_140e226b0(CInPacket&);
- void FUN_140e22740(const Scaleform::GFx::FunctionHandler::Params&);
- void FUN_140e22780(const Scaleform::GFx::FunctionHandler::Params&);
+ void OnRoundPacket(CInPacket&); void FUN_140e22650(CInPacket&); void FUN_140e226b0(CInPacket&);
+ void OnCloseButton(const Scaleform::GFx::FunctionHandler::Params&);
+ void OnPartyLeaveButton(const Scaleform::GFx::FunctionHandler::Params&);
  void FUN_140e22820();
  void FUN_140e22d70();
  void FUN_140e23690();
  void FUN_140e23e10(bool);
  void FUN_140e24060();
- void FUN_140e24e80();
- void FUN_140e24ed0();
+ void UpdateMinigameStage();
+ void SetMinigameRound();
  void FUN_140e24fc0();
  void FUN_140e25050();
  void FUN_140e250e0();
@@ -120,22 +108,22 @@ public:
  void CreateAvatar();
  void LoadRenderTarget();
  void UnloadRenderTarget();
- void FUN_140e25610();
+ void ResetState();
  void RequestClose();
  void SendDungeonReward();
  void FUN_140e24c50(bool);
  CStringW FUN_140e25840(int);
  void BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);
- Unk_RewardPtr<Unk_RewardClip> FUN_140ba7930(const CString&);
+ MS2Ptr<ASMovieClip> FUN_140ba7930(const CString&);
 private:
  MS2_LAYOUT_FRIEND;
- Unk_RewardPtr<Unk_RewardClip> m_180,m_190,m_1a0,m_1b0;
- Unk_RewardPtr<Unk_RewardButton> m_1c0,m_1d0;
+ MS2Ptr<ASMovieClip> m_180,m_190,m_1a0,m_1b0;
+ MS2Ptr<ASButton> m_1c0,m_1d0;
  int m_type; bool m_win;
  DungeonRewardInfo m_1e8,m_228;
  CString m_268;
  int m_round,m_stage,m_278;
- Unk_RewardPtr<Unk_RewardRoom> m_room;
+ MS2Ptr<DungeonRoom> m_room;
  bool m_party; int m_294,m_298;
  Unk_RewardBits m_bits;
  Unk_RewardPtr<Unk_RewardAvatar> m_avatar;

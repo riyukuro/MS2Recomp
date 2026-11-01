@@ -45,6 +45,11 @@
 #include "ms2/client/ms2/uicharacterlistdialog.h"
 #include "ms2/placeholder/cserverstring.h"
 #include "ms2/client/ms2/worldservice.h"  // C3: was a local member view
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/client/ms2/equipitem.h"
+#include "ms2/placeholder/citem.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/client/ms2/windowservice.h"
 #include "ms2/client/ms2/statemanager.h"  // C3: was a local member view
 #include <efd/SmartPointer.h>
 #include <efd/Helpers.h>
@@ -77,14 +82,7 @@ typedef ATL::CRBMap<unsigned long long, efd::SmartPointer<Unk_LobbyActor> > Unk_
 class Unk_FieldMgr
 {
 public:
-    void FUN_141bbae40(IWorldServiceCallback* cb);          // register callback
-    void FUN_141bbae80(IWorldServiceCallback* cb);          // unregister callback
-    void FUN_141bbbe40(unsigned nMapId, int a, int b);           // move to a map
     void FUN_141bbbc60(Unk_1401cd100 id, int a);              // remove an actor
-    void FUN_141bdb690();
-    void* FUN_141bd0cc0();                                  // the player actor
-    void FUN_141bd0cf0(void* pActor);
-    int FUN_141bd3060();                                    // current map id
     char m_pad[0xb8];
     Unk_LobbyActorMap m_actors;                             // +0xb8
 };
@@ -101,7 +99,6 @@ void* FUN_14136f520(int);   // C3: was FUN_14136f520
 class Unk_CharSelectDialog : public UICharacterListDialog
 {
 public:
-    unsigned FUN_1418f1b90();
 };
 Unk_CharSelectDialog* FUN_140b72de0(int nId);
 extern int DAT_1439f4a78;
@@ -130,7 +127,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CString FUN_14071a5b0(const CString&, const CString&);
 struct Unk_LobbyFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
@@ -146,19 +142,9 @@ struct Unk_AllocHint
 Unk_AllocHint FUN_140876480(int nCategory);
 class Unk_PCItems;
 void* FUN_1401d7a50();
-int FUN_140644bb0(void*, int);
-class Unk_ItemSub;
 class Unk_BackUpItem : public CPtred
 {
-public:
-    MS2Ptr<Unk_ItemSub> FUN_1411dc7a0();                    // copy of the sub item at +0x20
 };
-class Unk_ItemSub : public CPtred
-{
-public:
-    void FUN_140526b30(int);
-};
-void FUN_141653d10(MyPC*, MS2Ptr<Unk_ItemSub>);
 
 // ---- packets / messages ----
 struct Unk_1407a7d20
@@ -185,10 +171,6 @@ int FUN_1406516b0();
 CStringW GetStringCommon(int);
 CStringW FUN_1401ceea0(const wchar_t*, const int&);
 UIMessageBox* FUN_14151f890();
-const CStringW& FUN_141a02ce0(void*);   // CMsgBoxData::GetExtra: returns a reference in rax, no hidden slot
-void FUN_141a01690(void*, const CStringW&, const CStringW&, const CStringW&);
-void FUN_141a01660(void*, const CStringW&);
-void FUN_141a027c0(void*, Delegate<bool(int, const CMsgBoxData&)>);
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 void* FUN_140534fc0(const Unk_MessageBoxPtr&);
@@ -221,7 +203,6 @@ public:
 };
 __int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
-class Unk_LobbyScanner { public: void FUN_141b90e30(float* pfX, float* pfY); };   // cursor position inside the window
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class Unk_QueryList { public: void* FUN_140a17e00(); unsigned FUN_140a17ea0(); void* FUN_140a17d70(unsigned); };
 class Unk_QueryResult
@@ -384,7 +365,7 @@ CSceneStateMulti::BackUpCharacterInfo::BackUpCharacterInfo(MyPC* pPC)
         m_nJobCode = reinterpret_cast<PC*>(pPC)->FUN_141654700();
         m_n68 = reinterpret_cast<PC*>(pPC)->FUN_141654730();
         ATL::CAtlArray<MS2Ptr<Unk_BackUpItem> > tmp;
-        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->FUN_1416561a0()))->FUN_1411e1b80(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*>(static_cast<ATL::CAtlList<MS2Ptr<Unk_BackUpItem>, ATL::CElementTraits<MS2Ptr<Unk_BackUpItem>>>*>(&m_items)));
+        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->FUN_1416561a0()))->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*>(static_cast<ATL::CAtlList<MS2Ptr<Unk_BackUpItem>, ATL::CElementTraits<MS2Ptr<Unk_BackUpItem>>>*>(&m_items)));
     }
 }
 
@@ -402,7 +383,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
         Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
     m_lobbyField.Load();
     FUN_141275500();
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbae40(this);
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     if (nPrevState == 0x6200009)
         FUN_14174f4a0();
@@ -416,7 +397,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
         reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_0 = true;
         reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_1 = true;
         reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_2 = true;
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
+        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
     }
 }
 
@@ -428,7 +409,7 @@ void CSceneStateMulti::OnLeave(int nNextState)
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
     FUN_14174fd00();
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbae80(this);
+    WorldService::GetInstance()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
 }
@@ -445,7 +426,7 @@ void CSceneStateMulti::OnUpdate(double fTime)
             {
                 if (FUN_140714f90()->FUN_1415384e0() == 0)
                 {
-                    FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+                    FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
                     m_nRetry = m_nRetry + 1;
                     CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
                     void* loading = ((void*)FUN_141540270(0x3ed));
@@ -524,7 +505,7 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
 // @0x14174e880
 void CSceneStateMulti::vfunc_1(int)
 {
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bdb690();
+    WorldService::GetInstance()->FUN_141bdb690();
     if (m_nMode == 2)
     {
         FUN_14174ec40(rand() % 2, true);
@@ -559,7 +540,7 @@ void CSceneStateMulti::vfunc_4(int)
         m_bReconnecting = 1;
         m_nRetry = 0;
         m_reconnectTimer.FUN_140868750(10000);
-        FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
     }
 }
 
@@ -581,7 +562,7 @@ int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x14174eaf0
 int CSceneStateMulti::FUN_14174eaf0()
 {
-    return ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bd0cc0() != 0;
+    return WorldService::GetInstance()->FUN_141bd0cc0() != 0;
 }
 
 // @0x14174eb30
@@ -633,7 +614,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
         info.m_nType = 3;
         info.m_nGender = nGender;
         info.m_nJobCode = m_nJobCode;
-        info.m_n30 = FUN_140644bb0(FUN_1401d7a50(), m_nJobCode);
+        info.m_n30 = reinterpret_cast<JobTable*>(FUN_1401d7a50())->GetSubJob1(m_nJobCode);
         info.m_b58 = bFlag;
         if (info.FUN_14107c3a0(reinterpret_cast<PC*>(spPC.operator MyPC*())))
             m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c500();
@@ -661,11 +642,11 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
             ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >& items = pInfo->m_items;
             for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
             {
-                MS2Ptr<Unk_ItemSub> sub = items.GetAt(pos)->FUN_1411dc7a0();
+                MS2Ptr<CItem> sub = reinterpret_cast<CEquipItem*>(items.GetAt(pos).operator->())->GetItem();
                 if (sub.get() != 0)
                 {
-                    sub->FUN_140526b30(reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c580());
-                    FUN_141653d10(spPC.operator->(), sub);
+                    sub->SetObjectId(reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c580());
+                    reinterpret_cast<PC*>(spPC.operator->())->FUN_141653d10(sub);
                 }
             }
         }
@@ -676,7 +657,7 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
 Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 {
     float fMapX, fMapY;
-    ((class Unk_LobbyScanner*)FUN_140aadf80())->FUN_141b90e30(&fMapX, &fMapY);
+    reinterpret_cast<CWindowService*>(FUN_140aadf80())->GetCursorClientPos(&fMapX, &fMapY);
     if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return 0;
     Unk_QueryResult result = reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fMapX, fMapY, true, true, false, 0);
@@ -707,7 +688,7 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 // @0x14174f390
 void CSceneStateMulti::FUN_14174f390(void* pActor, int)
 {
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bd0cf0(pActor);
+    WorldService::GetInstance()->FUN_141bd0cf0(pActor);
 }
 
 // @0x14174f3c0
@@ -781,7 +762,7 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
         CStringW text(info.m_text);
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
-            FUN_140714f90()->FUN_1415388a0();
+            FUN_140714f90()->SendRequestQuitAndDisconnect();
             ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x6200009);
             FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
         }
@@ -805,7 +786,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         Unk_MessageBoxPtr current = pBox->FUN_1419f8470();
         if (FUN_140534fc0(current) != 0)
         {
-            if (operator==(FUN_141a02ce0(FUN_140534fe0(current)), L"waitingticketdialog"))
+            if (operator==(reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(current))->GetExtra(), L"waitingticketdialog"))
             {
                 pBox->UpdateMessage(text);
                 return;
@@ -813,11 +794,11 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
-    FUN_141a01690(FUN_140534fe0(box), GetStringCommon(0xac1), L"", L"");
-    FUN_141a01660(FUN_140534fe0(box), L"waitingticketdialog");
+    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->FUN_141a01690(GetStringCommon(0xac1), L"", L"");
+    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetExtra(L"waitingticketdialog");
     UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
     if (pList != 0)
-        FUN_141a027c0(FUN_140534fe0(box), Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
+        reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
     FUN_140d73c60(Unk_MessageBoxPtr(box));
 }
 
@@ -838,7 +819,7 @@ void CSceneStateMulti::FUN_14174fd00()
 // @0x14174fd70
 int CSceneStateMulti::FUN_14174fd70()
 {
-    return ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bd3060() == 1;
+    return WorldService::GetInstance()->FUN_141bd3060() == 1;
 }
 
 // @0x14174fdb0
@@ -857,7 +838,7 @@ void CSceneStateMulti::FUN_14174fe40()
     if (m_nMode != 0)
     {
         if (!FUN_14174fd70())
-            ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbbe40(1, 1, 0);
+            WorldService::GetInstance()->FUN_141bbbe40(1, 1, 0);
     }
     m_nMode = 0;
 }
@@ -868,7 +849,7 @@ void CSceneStateMulti::FUN_14174fea0()
     unsigned nMap = FUN_14174ff70();
     if (nMap == 0)
         nMap = FUN_14174f3e0();
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbbe40(nMap, 1, 0);
+    WorldService::GetInstance()->FUN_141bbbe40(nMap, 1, 0);
     m_nMode = 1;
 }
 
@@ -879,7 +860,7 @@ void CSceneStateMulti::FUN_14174ff00()
     if (nMap == 0)
         nMap = FUN_14174f440();
     m_nCreateMap = nMap;
-    ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbbe40(nMap, 1, 0);
+    WorldService::GetInstance()->FUN_141bbbe40(nMap, 1, 0);
     m_nMode = 2;
 }
 

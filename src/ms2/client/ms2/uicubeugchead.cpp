@@ -33,7 +33,7 @@ public:
 Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invoker on the label's movie clip (instance of the AScript::Invoke template).
-class Unk_UgcMovie
+class ASDialog
 {
 public:
     Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
@@ -128,7 +128,7 @@ void UICubeUGCHead::vfunc_52()
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
-        reinterpret_cast<Unk_UgcMovie*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
+        reinterpret_cast<ASDialog*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
         pClip->Invoke("setFontSize", 0x12);
         if (FUN_140707660(m_8c) != 0)
             pClip->Invoke("setFontColor", 0x45ff98);

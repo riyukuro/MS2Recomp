@@ -22,10 +22,9 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The local player's actor: only the birthday test and the birthday time (member +0x11e8) are used here.
-class Unk_BirthdayActor
-{
+class PC { public: int FUN_141660030(void); }; class Unk_BirthdayActor : public PC {
 public:
-    unsigned int FUN_141660030();                               // has a birthday
+
     __int64 m_pad_00[0x23d];
     __int64 m_nBirthday;                                        // +0x11e8
 };

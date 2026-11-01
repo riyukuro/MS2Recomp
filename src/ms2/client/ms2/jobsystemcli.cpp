@@ -24,12 +24,6 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 
 class Unk_JscSkillRow : public CPtred { public:  };
 
-class Unk_JscSkillTable
-{
-public:
-    MS2Ptr<SkillLevelData> FUN_1407ee2f0(int nSkillId, short nLevel);
-};
-
 class CSkillSet   // C3: member view (real class not in this TU)
 {
 public:
@@ -46,11 +40,12 @@ public:
     unsigned short GetSkillLevel(unsigned int);
 };
 class Unk_JscTree : public CPtred { public:  };   // the tier option level
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
 class Unk_JscSkillSys { public: MS2Ptr<Unk_JscSkillSet> FUN_141768380(); };
 class Unk_JscPlayer
 {
 public:
-    Unk_JscSkillSys* FUN_141523bc0();
     unsigned short FUN_14152fce0(int nSkillId);                 // the override level of the skill
     MS2Ptr<Unk_JscTree> FUN_1409eee00();
 };
@@ -80,18 +75,18 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_JscSkillSet> spSet = pPlayer->FUN_141523bc0()->FUN_141768380();
+        MS2Ptr<Unk_JscSkillSet> spSet = reinterpret_cast<Unk_JscSkillSys*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141768380();
         if (spSet.get() != 0)
         {
             unsigned short nLevel = ((CSkillSet*)(spSet).operator->())->GetSkillLevel(nSkillId);
             if (nLevel != 0)
-                return reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
+                return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkillId, nLevel);
         }
         if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3))
         {
             unsigned short nLevel = pPlayer->FUN_14152fce0(nSkillId);
             if (nLevel != 0)
-                return reinterpret_cast<Unk_JscSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
+                return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkillId, nLevel);
         }
     }
     return JobSystem::vfunc_1(nSkillId);
@@ -108,7 +103,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_JscSkillSet> spSet = pPlayer->FUN_141523bc0()->FUN_141768380();
+        MS2Ptr<Unk_JscSkillSet> spSet = reinterpret_cast<Unk_JscSkillSys*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141768380();
         if (spSet.get() != 0)
         {
             if (spSet->FUN_140809410(nSkillId, 0) != 0)

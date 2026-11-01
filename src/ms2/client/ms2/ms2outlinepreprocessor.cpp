@@ -14,6 +14,11 @@
 #include <efd/Color.h>
 #include <NiColorExtraData.h>
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <NiNode.h>
+#include <NiStringExtraData.h>
+#include <NiPSParticleSystem.h>
+#include "ms2/client/ms2/effectservice.h"   // C3: EffectNode::ms_RTTI
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"   // C3: PostProcessingService::SetStepActive
 
 struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
 
@@ -25,7 +30,8 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-   void* FUN_14123c410(void* a);   void* FUN_141b6efc0(void* a);
+namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
+   void* FUN_14123c410(void* a);   NiAVObject* FUN_141b6efc0(egf::Entity* a);
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
 {
 public:
@@ -33,7 +39,7 @@ public:
 };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
    Unk_Colc FUN_1408a85e0(unsigned c);bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
-bool FUN_1402b74f0(void* p);   void FUN_1402b7560(void* p, const char* s);   void FUN_1402c2870(void* arr);   void FUN_1402bf0f0(void* arr, void* src);
+void FUN_1402c2870(void* arr);   void FUN_1402bf0f0(void* arr, void* src);
 bool FUN_14098dfc0(class NiAVObject*);   // C3: was FUN_14098dfc0
 bool FUN_141568c90(class NiRenderObject*);   // C3: was FUN_141568c90
 unsigned int FUN_141568dc0(class NiAVObject*);   // C3: was FUN_141568dc0
@@ -48,7 +54,6 @@ class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-   void FUN_1416a3920(void* svc, int id, char b);
 void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 unsigned int FUN_140d96630(class NiAVObject*);   // C3: was FUN_140d96630
 class Unk_NodeQueue   // C3: member view for the former free stand-ins
@@ -57,14 +62,8 @@ public:
     void AddChildren(class NiNode*);
 };
    void FUN_14098da10(void* wl, void* node);
-void* FUN_142087e50(void* p);class NiStringExtraData   // C3: member view for the former free stand-ins
-{
-public:
-    class NiFixedString const& GetValue() const;
-};
-void FUN_140159b70(long hr);
-extern char DAT_143ae2b34, DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8, DAT_143ae53c8, DAT_143ae5210, DAT_143a09680;
-extern char DAT_143afafd0, DAT_143afb000, DAT_143ad1588, DAT_143afbfb8, DAT_143afa7d0, DAT_143afa4d8;
+extern char DAT_143ae2b34, DAT_143a09680;
+extern NiFixedString DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8, DAT_143ae53c8, DAT_143ae5210;
 
 typedef CAtlMap<NiAVObject*, NiAVObject*> OutlineMap;
 
@@ -80,7 +79,7 @@ bool FUN_1414d4110(void* cfg, CAtlArray<COLORREF>& arr);
 MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     : NiShaderSortProcessor(0x20, 0x25, 0x200), m_spOutlineMaterial(0)
 {
-    m_spOutlineMaterial = (NiMaterial*)((void*)NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5210)));
+    m_spOutlineMaterial = (NiMaterial*)((void*)NiMaterialLibrary::CreateMaterial(DAT_143ae5210));
     int idx = 0;
     CAtlArray<COLORREF> arr;
     float col[10];
@@ -94,7 +93,7 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)FUN_1401d3200()) + 0xb4d0)->Read();
     for (unsigned j = 0; j < 9; ++j)
         col[j] = col[j] * scale;
-    FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae53c8), (float const*)(col), 9);
+    FUN_1409a5770(DAT_143ae53c8, (float const*)(col), 9);
     m_nOutlined = 0;
 }
 
@@ -120,21 +119,21 @@ void MS2OutlinePreProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
         NiAVObject* key = obj;
         bool found = objSet.Lookup(key) ? true : false;
         if (flag != 0 || found) {
-            NiColorExtraData* ent = (NiColorExtraData*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afafd0), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50e0))))));
+            NiColorExtraData* ent = (NiColorExtraData*)((void*)NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)))));
             if (ent != 0 || found) {
                 matMap.SetAt(obj, obj->GetActiveMaterial());
                 obj->ApplyAndSetActiveMaterial(m_spOutlineMaterial, 0xffffffff);
                 ((class NiMaterialInstance*)(void*)(((void*)((class NiRenderObject*)(void*)(obj))->GetActiveMaterialInstance())))->ClearCachedShader();
                 obj->SetMaterialNeedsUpdate(true);
                 NiColorA packed = ent != 0 ? ent->GetValue() : efd::ColorA::BLACK;
-                CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), *(class NiFixedString const*)(&DAT_143ae50f0), *(class NiColorA const*)(&packed));
+                CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), DAT_143ae50f0, *(class NiColorA const*)(&packed));
                 outArr.Add(*obj);
                 if (ent != 0) any = true;
             }
         }
     }
     void* svc = ((void*)Unk_AeFeatureMgr::FUN_1409a8b20());
-    FUN_1416a3920(svc, 0x11, any);
+    reinterpret_cast<PostProcessingService*>(svc)->SetStepActive(0x11, any);
     if (any) {
         NiShaderSortProcessor::PreRenderProcessList(&outArr, kOutput, pvExtraData);
         m_nOutlined = outArr.GetCount();
@@ -161,7 +160,7 @@ void FUN_1414d37a0(void* obj, int idx)
     if (idx < 0 || idx >= 3)
         return;
     static Unk_Colc axes[3] = { Unk_Colc(1.0f, 0.0f, 0.0f), Unk_Colc(0.0f, 1.0f, 0.0f), Unk_Colc(0.0f, 0.0f, 1.0f) };
-    FUN_1410479a0((class NiObjectNET*)(obj), *(class NiFixedString const*)(&DAT_143ae50e0), *(class NiColor const*)(&axes[idx]));
+    FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColor const*)(&axes[idx]));
     if (*(int*)&DAT_143ae2b34 != 0)
         FUN_141568df0((class NiAVObject*)(obj));
 }
@@ -173,8 +172,8 @@ void FUN_1414d38b0(void* obj, void* color)
     if (*(int*)&DAT_143ae2b34 != 0)
         v = FUN_141568dc0((class NiAVObject*)(obj));
     if (v == 0) {
-        if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50e0))) == 0) {
-            CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), *(class NiFixedString const*)(&DAT_143ae50e0), *(class NiColorA const*)(color));
+        if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) == 0) {
+            CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColorA const*)(color));
             if (*(int*)&DAT_143ae2b34 != 0)
                 FUN_141568df0((class NiAVObject*)(obj));
         }
@@ -187,8 +186,8 @@ void FUN_1414d4c70(void* obj, unsigned v) { *(unsigned*)((char*)obj + 0xe0) = v;
 // @0x1414d3930
 void FUN_1414d3930(void* obj)
 {
-    if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50e0))) != 0)
-        ((class NiObjectNET*)(void*)(obj))->RemoveExtraData(*(class NiFixedString const*)(&DAT_143ae50e0));
+    if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) != 0)
+        ((class NiObjectNET*)(void*)(obj))->RemoveExtraData(DAT_143ae50e0);
     if (*(int*)&DAT_143ae2b34 != 0) {
         unsigned u = FUN_140d96630((class NiAVObject*)(obj)) & 0xfffffffb;
         FUN_1414d4c70(obj, u);
@@ -203,7 +202,7 @@ void* FUN_1414d4a50(Unk_OlpList* list)
         int bOk = !!(list->m_pHead != 0);
         do {} while (0);
         if (!bOk)
-            FUN_140159b70(0x80004005);
+            ATL::AtlThrowImpl(0x80004005);
     } while (0);
     Unk_OlpNode* pn = list->m_pHead;
     void* r = pn->m_element;
@@ -236,23 +235,23 @@ void FUN_1414d39a0(OutlineMap& map)
 {
     void* sc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (sc == 0) return;
-    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(FUN_14123c410(sc)));
+    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(sc))));
     while ((size_t)FUN_1414d3ff0(&wl) > 0) {
         NiAVObject* node = (NiAVObject*)FUN_1414d4a50((Unk_OlpList*)&wl);
         if (node != 0) {
-            void* c1 = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afb000), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(node))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8))))));
+            void* c1 = ((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(node))->GetExtraData(DAT_143ae51b8)))));
             if (c1 != 0) {
-                if (((efd::FixedString*)((void*)&((class NiStringExtraData*)(void*)(c1))->GetValue()))->ContainsNoCase((const char*)FUN_142087e50(&DAT_143ae50e8)))
+                if (((efd::FixedString*)((void*)&((class NiStringExtraData*)(void*)(c1))->GetValue()))->ContainsNoCase((const char*)DAT_143ae50e8))
                     continue;
             }
-            if (((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143ad1588), (class NiObject const*)(node))) != 0)
+            if (((void*)NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(node))) != 0)
                 continue;
-            if (((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbfb8), (class NiObject const*)(node))) != 0)
+            if (((void*)NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, (class NiObject const*)(node))) != 0)
                 continue;
-            void* c2 = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(node)));
+            void* c2 = ((void*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(node)));
             if (c2 != 0)
                 map.SetAt(node, node);
-            void* c3 = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(node)));
+            void* c3 = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(node)));
             if (c3 != 0)
                 ((class Unk_NodeQueue*)(void*)(&wl))->AddChildren((class NiNode*)(c3));
         }
@@ -275,7 +274,7 @@ bool FUN_1414d4110(void* cfg, CAtlArray<COLORREF>& arr)
         FUN_1402bf0f0(&arr, (char*)cfg + 0x50);
         return true;
     }
-    if (!FUN_1402b74f0(cfg))
-        FUN_1402b7560(cfg, "constants has no key");
+    if (!reinterpret_cast<Common::Constants::Object*>(cfg)->HasKey())
+        reinterpret_cast<Common::Constants::Object*>(cfg)->Error("constants has no key");
     return false;
 }

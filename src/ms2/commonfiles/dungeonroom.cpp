@@ -164,7 +164,7 @@ void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // spl
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
-class Unk_1406aeee0 { public: bool FUN_1406af020(); };
+class Unk_LaunchOptions { public: bool FUN_1406af020(void); }; class Unk_1406aeee0 : public Unk_LaunchOptions { };
 Unk_1406aeee0* FUN_1406aeee0();
 
 // Clamps v into [lo, hi].

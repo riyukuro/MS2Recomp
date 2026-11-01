@@ -18,113 +18,31 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/aseffect.h"
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/client/ms2/additionalcli.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
-// The effect (buff icon) container clip, created in OnLoadComplete (operator new 0x120; ctor 0x1409b5200).
-class ASEffectManager : public ASDisplayObject
-{
-public:
-    ASEffectManager(Scaleform::GFx::Value& root, int nMovieId);
-    void Update();                                       // per-tick refresh
-    void SetPosA(int x, int y);
-    void SetPosB(int x, int y);
-    void FUN_1409b5940(MS2Ptr<Unk_NdBuff> buff);                // add the buff icon
-    void FUN_1409b5aa0(MS2Ptr<Unk_NdBuff> buff);                // remove the buff icon
-    void RemoveEffect(int nBuffId);
-    void Clear();                                       // clear the icons
-private:
-    unsigned char m_unrecovered_80[0xa0];
-};
-MS2_CHECK_SIZE(ASEffectManager, 0x120);
+// The buff record of the dialog's by-value parameters (additionalcli_1.cpp passes it under this name).
+class Unk_NdBuff : public AdditionalCli { };
 
-struct Unk_NdNpcRow;
-// The actor (player or npc): only the virtual slots the dialog reads.
-class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
-class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
-class Unk_NdActor
-{
-public:
-    virtual ~Unk_NdActor();
-        virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); 
-    virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); 
-    virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); 
-    virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); 
-    virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); 
-    virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); 
-    virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); 
-    virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); 
-    virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); 
-    virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); 
-    virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); 
-    virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); 
-    virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76();
-    virtual CStringW vfunc_77();                                // 77 name (player)
-    virtual short vfunc_78();                                   // 78 level
-    __int64 FUN_141670a00(int nStat);                           // stat 4 = current hp
-    __int64 FUN_141670a30(int nStat);                           // stat 4 = max hp
-    CString FUN_1416612e0();                                    // profile picture path
-    int FUN_141092fa0();                                        // npc id
-};
-class Unk_NdFlags { public: bool FUN_1401927c0(bool bFlag); };
-struct Unk_NdBuffInfo { char m_pad[0xb8]; Unk_NdFlags m_flags; };
-class Unk_NdBuff : public CPtred
-{
-public:
-    Unk_NdActor* FUN_14096d280();                               // owner actor
-    Unk_NdBuffInfo* FUN_14096d810();
-    int m_18;                                                   // +0x18 buff id
-};
-MS2_CHECK_OFFSET(Unk_NdBuff, m_18, 0x18);
-// the npc's table row (profile name at +0x90); refcounted
-struct Unk_NdNpcRow : public CPtred { char m_pad[0x78]; CString m_90; };
-MS2_CHECK_OFFSET(Unk_NdNpcRow, m_90, 0x90);
-class CNpcData   // C3: member view for the former free stand-ins
-{
-public:
-    int GetRace() const;
-};
-// a fixed-size list of buffs (0x30 bytes, hash map bins = 10)
-// ATL::CAtlList<MS2Ptr<AdditionalCli> > (ctor 0x1409750c0, dtor 0x140975690).
-struct Unk_NdBuffList
-{
-    Unk_NdBuffList(unsigned nBlockSize);
-    ~Unk_NdBuffList();
-    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28;
-};
-POSITION FUN_140976550(Unk_NdBuffList* pList);
-MS2Ptr<Unk_NdBuff>& FUN_140976370(Unk_NdBuffList* pList, POSITION pos);
-void FUN_140976590(Unk_NdBuffList* pList, POSITION* pos);
-struct Unk_NdBuffSource { void FUN_1409725f0(Unk_NdBuffList* pList); };
-class PCBase   // C3: member view for the former free stand-ins
-{
-public:
-    __int64 FUN_141656a80();
-    class Unk_PCBaseBuffs* FUN_1416749a0();
-};
-
-class Unk_NdWorld;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
-Unk_NdJobCode FUN_141654730(Unk_NdActor* pPc);                  // job id (an enum: the formatter takes it by reference)
 bool FUN_140930110(int nBuffId);
-class GameObject   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_14123c580();
-};
 CStringW FUN_1401aa6a0(int nId);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
-CStringW FUN_140719dc0(const wchar_t* szFmt, const short& nValue);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strIcon);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pValue);     // localized text with one {0} argument
 
-// the movie that creates AS objects by class name
-class Unk_NdMovie { public: void FUN_14256e8e0(Scaleform::GFx::Value& out, const char* szClass, __int64 a1, int a2); };
-Unk_NdMovie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
 MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1, int a2);   // create the clip
 
 // AScript calls with a fixed argument list (the 3-argument one is this unit's own COMDAT copy)
@@ -176,8 +94,8 @@ void UINpcDuelHPBarDialog::vfunc_72()
 {
     if (m_30 == 0)
         return;
-    FUN_140e6c7a0();
-    FUN_140e6c900();
+    UpdateRemainingTime();
+    UpdatePlayerHpBar();
     FUN_140e6c9c0();
     if (m_effects.get() != 0)
         m_effects->Update();
@@ -195,7 +113,7 @@ void UINpcDuelHPBarDialog::OnLoadComplete()
 }
 
 // @0x140e6bb70
-void UINpcDuelHPBarDialog::FUN_140e6bb70(int nObjectId, int nDurationMs, int nBarCount)
+void UINpcDuelHPBarDialog::StartDuelBar(int nObjectId, int nDurationMs, int nBarCount)
 {
     m_nObjectId = nObjectId;
     m_nEndTick = GetTickCountMs2() + nDurationMs;
@@ -212,36 +130,36 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
 {
     if (m_nObjectId == 0)
         return;
-    Unk_NdActor* pPc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != 0) {
         FUN_140cfee80(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
-        Unk_NdJobCode nJob = FUN_141654730(pPc);
+        Unk_NdJobCode nJob = (Unk_NdJobCode)pPc->FUN_141654730();
         CString strJobIcon = Unk_SocketFormat("_{0}", nJob);
         FUN_140cffca0(FUN_1422dbc00(), "m_leftJobIcon", strJobIcon);
-        CString strProfile = FUN_141028be0(((class PCBase*)(class Unk_NdActor*)(pPc))->FUN_141656a80(), pPc->FUN_1416612e0(), 1, "");
+        CString strProfile = FUN_141028be0(pPc->FUN_141656a80(), pPc->FUN_1416612e0(), 1, "");
         ((Unk_NdScript*)m_30.operator->())->Invoke("setLeftProfile", strProfile);
-        FUN_140e6c900();
+        UpdatePlayerHpBar();
     }
-    Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nObjectId));
     if (pNpc != 0) {
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
-            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, ((class CNpcData*)(struct Unk_NdNpcRow*)(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->()))->GetRace()));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetNpcData()->GetRace()));
         FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", FUN_140719dc0(L"{0}", pNpc->vfunc_78()));
-        CString strProfile(reinterpret_cast<Unk_NdNpcRow*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_90);
+        FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", StringFormat(L"{0}", pNpc->vfunc_78()));
+        CString strProfile(pNpc->GetNpcData()->m_strPortrait);
         m_30->Invoke("setRightProfile", strProfile);
         FUN_140e6c9c0();
         m_effects->Clear();
-        Unk_NdBuffList list(10);
-        ((struct Unk_NdBuffSource*)((class PCBase*)(class Unk_NdActor*)(pNpc))->FUN_1416749a0())->FUN_1409725f0(&list);
-        for (POSITION pos = FUN_140976550(&list); pos != 0; FUN_140976590(&list, &pos)) {
-            MS2Ptr<Unk_NdBuff> buff = FUN_140976370(&list, pos);
+        ATL::CAtlList<MS2Ptr<AdditionalCli> > list(10);
+        reinterpret_cast<AdditionalCliList*>(pNpc->FUN_1416749a0())->FUN_1409725f0(list);
+        for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
+            MS2Ptr<AdditionalCli> buff = list.GetAt(pos);
             if (buff == 0)
                 continue;
-            bool bFlag = FUN_140930110(buff->m_18);
-            if (!buff->FUN_14096d810()->m_flags.FUN_1401927c0(bFlag))
+            bool bFlag = FUN_140930110(buff->m_nCasterId);
+            if (!buff->FUN_14096d810()->m_ui.FUN_1401927c0(bFlag))
                 continue;
-            FUN_140e6c440(buff);
+            FUN_140e6c440(reinterpret_cast<MS2Ptr<Unk_NdBuff>&>(buff));
         }
     }
 }
@@ -253,9 +171,9 @@ void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (m_effects == 0)
         return;
-    if (((class GameObject*)(class Unk_NdActor*)(buff->FUN_14096d280()))->FUN_14123c580() != m_nObjectId)
+    if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
         return;
-    m_effects->FUN_1409b5940(buff);
+    m_effects->AddEffect(reinterpret_cast<MS2Ptr<Unk_AsBuff>&>(buff));
 }
 
 // @0x140e6c540
@@ -265,13 +183,13 @@ void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (m_effects == 0)
         return;
-    if (((class GameObject*)(class Unk_NdActor*)(buff->FUN_14096d280()))->FUN_14123c580() != m_nObjectId)
+    if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
         return;
-    m_effects->FUN_1409b5aa0(buff);
+    m_effects->UpdateEffect(reinterpret_cast<MS2Ptr<Unk_AsBuff>&>(buff));
 }
 
 // @0x140e6c640
-void UINpcDuelHPBarDialog::FUN_140e6c640(int nBuffId)
+void UINpcDuelHPBarDialog::RemoveBuffEffect(int nBuffId)
 {
     if (m_30 == 0)
         return;
@@ -292,7 +210,7 @@ void UINpcDuelHPBarDialog::vfunc_43()
 }
 
 // @0x140e6c7a0
-void UINpcDuelHPBarDialog::FUN_140e6c7a0()
+void UINpcDuelHPBarDialog::UpdateRemainingTime()
 {
     unsigned int nMinutes = 0;
     unsigned int nSeconds = 0;
@@ -312,11 +230,11 @@ void UINpcDuelHPBarDialog::FUN_140e6c7a0()
 }
 
 // @0x140e6c900
-void UINpcDuelHPBarDialog::FUN_140e6c900()
+void UINpcDuelHPBarDialog::UpdatePlayerHpBar()
 {
     if (m_30 == 0)
         return;
-    Unk_NdActor* pPc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     __int64 nHp = pPc->FUN_141670a00(4);
@@ -331,7 +249,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
         return;
     if (m_nBarCount == 0)
         return;
-    Unk_NdActor* pNpc = ((class Unk_NdActor*)((class WorldService*)(class Unk_NdWorld*)(reinterpret_cast<Unk_NdWorld*>(WorldService::GetInstance())))->FUN_141bd1320(m_nObjectId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nObjectId));
     if (pNpc == 0)
         return;
     const __int64& nHp = pNpc->FUN_141670a00(4);
@@ -357,7 +275,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
     if (nShown <= 1) {
         FUN_140cff840(FUN_1422dbc00(), "m_rightBarCount", 0);
     } else {
-        CStringW strCount = FUN_14062b4f0(L"s_npc_duelhpbar_dialog_barCount", &nShown);
+        CStringW strCount = FUN_14028dfa0(L"s_npc_duelhpbar_dialog_barCount", nShown);
         FUN_140cff840(FUN_1422dbc00(), "m_rightBarCount", 1);
         FUN_140cfee80(FUN_1422dbc00(), "m_rightBarCount", strCount);
     }
@@ -366,11 +284,11 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
 // @0x140e6cd80
 MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1, int a2)
 {
-    Unk_NdMovie* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<ASEffectManager>(0);
     Scaleform::GFx::Value obj;
-    pMovie->FUN_14256e8e0(obj, strClass, a1, a2);
+    pMovie->CreateObject(&obj, strClass, reinterpret_cast<const Scaleform::GFx::Value*>(a1), a2);
     if (((Scaleform::GFx::Value*)(void*)(&obj))->IsUndefined() != 0)
         return MS2Ptr<ASEffectManager>(0);
     MS2Ptr<ASEffectManager> pEffects(new ASEffectManager(obj, nMovieId));
@@ -392,11 +310,11 @@ MS2_REPLACE_METHOD(0x140E6B8A0, UINpcDuelHPBarDialog, GetTypeName, 61, 0x01524E8
 MS2_REPLACE_METHOD(0x140E6B8F0, UINpcDuelHPBarDialog, vfunc_67, 90, 0x54B3777A);
 MS2_REPLACE_METHOD(0x140E6B950, UINpcDuelHPBarDialog, vfunc_72, 123, 0x2C3B24B1);
 MS2_REPLACE_METHOD(0x140E6B9E0, UINpcDuelHPBarDialog, OnLoadComplete, 387, 0x3FEED2D8);
-MS2_REPLACE_METHOD(0x140E6BB70, UINpcDuelHPBarDialog, FUN_140e6bb70, 145, 0x9B9A0FFE);
+MS2_REPLACE_METHOD(0x140E6BB70, UINpcDuelHPBarDialog, StartDuelBar, 145, 0x9B9A0FFE);
 MS2_REPLACE_METHOD(0x140E6C440, UINpcDuelHPBarDialog, FUN_140e6c440, 247, 0xDB003D3C);
 MS2_REPLACE_METHOD(0x140E6C540, UINpcDuelHPBarDialog, FUN_140e6c540, 247, 0x169BBFC0);
-MS2_REPLACE_METHOD(0x140E6C640, UINpcDuelHPBarDialog, FUN_140e6c640, 107, 0x38164386);
+MS2_REPLACE_METHOD(0x140E6C640, UINpcDuelHPBarDialog, RemoveBuffEffect, 107, 0x38164386);
 MS2_REPLACE_METHOD(0x140E6C6C0, UINpcDuelHPBarDialog, vfunc_43, 203, 0x0737E564);
-MS2_REPLACE_METHOD(0x140E6C900, UINpcDuelHPBarDialog, FUN_140e6c900, 181, 0x15054B8C);
+MS2_REPLACE_METHOD(0x140E6C900, UINpcDuelHPBarDialog, UpdatePlayerHpBar, 181, 0x15054B8C);
 MS2_REPLACE_METHOD(0x140E6C9C0, UINpcDuelHPBarDialog, FUN_140e6c9c0, 951, 0xE11ED690);
 MS2_REPLACE(0x140E6CD80, FUN_140e6cd80, 436, 0x15B246EF);

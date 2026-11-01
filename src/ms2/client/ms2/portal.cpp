@@ -81,24 +81,6 @@ int FUN_141472bc0();   // C3: was FUN_141472bc0
 class Unk_PortalWorld { };
 class Unk_PortalTableHolder { public:  };   // CPortalTable::GetName
 
-// The dungeon room table and a room row.
-class Unk_PortalRoom : public CPtred
-{
-public:
-    int FUN_14031ddd0();
-    unsigned char m_pad_18[0x140];
-    int m_nBoss;                                                    // +0x158
-    unsigned char m_bSpecial;                                       // +0x15c
-};
-MS2_CHECK_OFFSET(Unk_PortalRoom, m_nBoss, 0x158);
-MS2_CHECK_OFFSET(Unk_PortalRoom, m_bSpecial, 0x15c);
-class Unk_PortalRoomTable
-{
-public:
-    MS2Ptr<Unk_PortalRoom> FUN_140320950(int nRoomId);
-    MS2Ptr<Unk_PortalRoom> FUN_1403206b0(int nRoomId);
-};
-
 // The scene: the node of the entity, a fade call and the texture loader.
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // scene root by id
@@ -117,7 +99,6 @@ struct Unk_PortalMapRef
     void* m_p;
 };
 Unk_PortalMapRef* FUN_140a55460(Unk_PortalMapRef* pOut, int nMapId);
-void* FUN_1409657a0(Unk_PortalMapRef* pRef);                        // operator T*
 void* FUN_140885340(Unk_PortalMapRef* pRef);                        // operator->
 void FUN_1408850f0(Unk_PortalMapRef* pRef);                         // release
 void* FUN_140a56f90(void* pList);                                   // first element, or null
@@ -253,7 +234,7 @@ bool CPortal::FUN_14169ba90()
             {
                 Unk_PortalMapRef spMap;
                 FUN_140a55460(&spMap, nMapId);
-                if (FUN_1409657a0(&spMap) != 0)
+                if (reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>*>(&spMap)->get()) != 0)
                 {
                     void* pList = (char*)FUN_140885340(&spMap) + 0x160;
                     if (FUN_140a56f90(pList) != 0)
@@ -404,17 +385,17 @@ CString CPortal::FUN_14169c5f0()
     case 8:
     {
         const unsigned nFieldLimit = 100000;
-        MS2Ptr<Unk_PortalRoom> spRoom;
+        DungeonRoomPtr spRoom;
         if (m_nId < nFieldLimit)
-            spRoom = reinterpret_cast<Unk_PortalRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320950(m_nId);
+            spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetLastRoom(m_nId);
         else
-            spRoom = reinterpret_cast<Unk_PortalRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(m_nId);
+            spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nId);
         if (spRoom.get() != 0)
         {
-            if (spRoom->m_bSpecial != 0)
-                return spRoom->m_nBoss != 0 ? s_strBossPortalSpecial : s_strBossPortal;
+            if (spRoom->m_isUseBossIcon != 0)
+                return spRoom->m_isTimeUp != 0 ? s_strBossPortalSpecial : s_strBossPortal;
             else
-                return spRoom->m_nBoss != 0 ? s_strDungeonSpecial : s_strDungeon;
+                return spRoom->m_isTimeUp != 0 ? s_strDungeonSpecial : s_strDungeon;
         }
         break;
     }

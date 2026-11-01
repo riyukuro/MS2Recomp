@@ -37,7 +37,6 @@ class Unk_SrEntity;
 class Unk_SrWorld : public WorldService
 {
 public:
-    Unk_SrEntity* FUN_141bd1200(int nObjectId);             // the field object
 };
 
 // The state machine of an actor: the attack state takes the hit records of the own player's casts.
@@ -164,7 +163,7 @@ int SkillTargetRecord::GetStartTick()
 // @0x1417591b0
 void SkillTargetRecord::FUN_1417591b0()
 {
-    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
+    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
     if (pOwner == 0)
         return;
     Unk_SrMyPC* pMe = FUN_14096e160(pOwner);
@@ -602,7 +601,7 @@ int CDamageRecord::FUN_14175acc0()
 int CDamageRecord::FUN_14175ad50()
 {
     int nMaterial = 1;
-    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
+    Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
     if (pOwner == 0)
         return nMaterial;
     nMaterial = GetAttackData()->m_damage.m_nAttackMaterial;
@@ -671,7 +670,7 @@ int CDotDamageRecord::Init(int nOwnerId, int nCasterId, int nEffectLevel, int nT
 // @0x14175b070
 int CDotDamageRecord::vfunc_1()
 {
-    Unk_SrEntity* pCaster = reinterpret_cast<Unk_SrWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nCasterId);
+    Unk_SrEntity* pCaster = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nCasterId));
     if (pCaster == 0)
         return 0;
     MS2Ptr<AdditionalCli> spBuff = ((Unk_SrBuffs*)(reinterpret_cast<PCBase*>(pCaster)->FUN_1416749a0()))->FUN_14096fc80(m_nEffectLevel);

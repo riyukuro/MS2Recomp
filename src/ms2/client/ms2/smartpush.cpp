@@ -117,6 +117,7 @@
 #include "ms2/client/ms2/uisystemshopdialog.h"
 #include "ms2/client/ms2/instrumentmanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 
 // The ridee data handle (not a CPtred): its members are the exe's out-of-line instances.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
@@ -224,21 +225,15 @@ extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read t
 extern __int64 DAT_143ab2898;                                           // the money
 
 // The additional effect (buff) table seen through an item's skill.
-class Unk_SpBuffLevel { public: char m_pad_00[0x30]; int m_nType; unsigned m_nValue; bool FUN_140175790(int nAbility); };
-MS2_CHECK_OFFSET(Unk_SpBuffLevel, m_nValue, 0x34);
-// The exe dtors are MS2Ptr<AdditionalLevelData>/MS2Ptr<SkillLevelData> (0x1401836a0/0x1407eb950); forwarded by VA.
-void FUN_1401836a0(void* p);
+// The exe dtor is MS2Ptr<SkillLevelData> (0x1407eb950); forwarded by VA.
 void FUN_1407eb950(void* p);
-class Unk_SpBuffLevelPtr { public: ~Unk_SpBuffLevelPtr() { FUN_1401836a0(this); } bool FUN_14096e7e0(int n) const; Unk_SpBuffLevel* FUN_140184880();
-    void* m_p0; void* m_p8; };
 struct Unk_SpSkillEffect { char m_pad_00[0x18]; int m_nId; unsigned short m_nLevel; };
 Unk_SpSkillEffect* FUN_1407e4770(void* p);
 class Unk_SpSkillEffects { public: char* FUN_140aba700(); char* FUN_140aba7f0(); };
 struct Unk_SpSkillLevel { char m_pad_00[0x98]; Unk_SpSkillEffects m_effects; };
 class Unk_SpSkillLevelPtr { public: ~Unk_SpSkillLevelPtr() { FUN_1407eb950(this); } Unk_SpSkillLevel* FUN_140932d90(); Unk_SpSkillLevel* FUN_1407ebbf0();
     void* m_p0; void* m_p8; };
-class Unk_SpSkillTable { public: Unk_SpBuffLevelPtr FUN_140aafef0(int nId, unsigned short nLevel);
-    Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, short nLevel); };
+class Unk_SpSkillTable { public: Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, short nLevel); };
 
 // CMsgBoxData::SetValue<T> (the COMDATs 0x140dd6030..0x140dd63d0): a named GFx value of the box.
 void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
@@ -527,7 +522,7 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
     if (CFishingManager::GetInstance()->FUN_140954150() != 0 && CFishingManager::GetInstance()->FUN_140cdbb90() != 0)
         CFishingManager::GetInstance()->SendFishingMode9();
     CGameOption::GetInstance()->FUN_140c9b8b0()->m_n2c = FUN_140dd06b0();
-    CGameOption::GetInstance()->FUN_141243540();
+    CGameOption::GetInstance()->SaveCharacterSettings();
 }
 
 // @0x140dd0470
@@ -625,7 +620,7 @@ bool CSmartPushAutoFishing::FUN_140dd0a00(int nResult, const CMsgBoxData& data)
         bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
         CGameOption::GetInstance()->FUN_140c9b8b0()->m_n24 = m_n1c;
-        CGameOption::GetInstance()->FUN_141243540();
+        CGameOption::GetInstance()->SaveCharacterSettings();
         int nOk = FUN_140dd07b0();
         if (nOk == 0)
         {
@@ -878,7 +873,7 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1df0(int nResult, const CMsgBoxData&
         bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
         CGameOption::GetInstance()->FUN_140c9b8b0()->m_n28 = m_n1c;
-        CGameOption::GetInstance()->FUN_141243540();
+        CGameOption::GetInstance()->SaveCharacterSettings();
         int nOk = FUN_140dd1ba0();
         if (nOk == 0)
         {
@@ -1564,13 +1559,13 @@ int FUN_140dd5340(int nAbility)
             for (char *p = effects.FUN_140aba700(), *pEnd = effects.FUN_140aba7f0(); p != pEnd; p += 0x10)
             {
                 char& effect = *p;
-                Unk_SpBuffLevelPtr spBuff = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
-                if (spBuff.FUN_14096e7e0(0))
+                MS2Ptr<AdditionalLevelData> spBuff = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
+                if (spBuff == 0)
                     continue;
-                if (spBuff.FUN_140184880()->FUN_140175790(nAbility) && nBest < spBuff.FUN_140184880()->m_nValue)
+                if (spBuff->HasSA((SAType)nAbility) && nBest < spBuff->m_nDurationTick)
                 {
                     nItemId = static_cast<CItem*>(spItem)->FUN_1405276c0();
-                    nBest = spBuff.FUN_140184880()->m_nValue;
+                    nBest = spBuff->m_nDurationTick;
                     break;
                 }
             }

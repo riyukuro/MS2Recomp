@@ -259,7 +259,7 @@ public:
     ~Unk_SkillRowRef();                                     // MS2Ptr<SkillData>::~MS2Ptr 0x14063e5c0
 };
 void FUN_1409f7320(efd::Matrix3*);
-float FUN_14123ce70(const efd::Point3&);
+#include "ms2/client/ms2/gameobject.h"
 extern long long DAT_143acf618;
 void* FUN_1409982c0(void*);
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
@@ -322,7 +322,6 @@ class Unk_GuideWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                    // local player
-    PCBase* FUN_141bd1290(int nId);                             // actor by id
     int FUN_141bd1a10(PCBase* p);
 };
 struct Unk_NullableFloat { bool m_bSet; float m_fValue; };
@@ -341,7 +340,6 @@ Unk_GuideHost* FUN_1409613d0(PCBase*);
 class Unk_GuideApp : public CMainSystem
 {
 public:
-    unsigned FUN_141473390();
 };
 class Unk_GuideCamera : public CameraMgr
 {
@@ -378,7 +376,6 @@ class Unk_CubeSelection : public Unk_PCCubeCraft
 public:
     efd::Point3* FUN_1410aa520(efd::Point3*);
 };
-int FUN_14166c930(PCBase*);
 // The owner's state machine (slot 8 advances it, slot 22 compares a record).
 class Unk_CcStateMgr
 {
@@ -491,7 +488,7 @@ void CGuideObject::FUN_1410a12e0(PCBase* pOwner)
 // @0x1410a1310
 PCBase* CGuideObject::FUN_1410a1310()
 {
-    return reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())->FUN_141bd1290(m_nOwnerId);
+    return reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
 }
 
 // The record the controller keeps: re-created every tick and handed to the network layer when it differs.
@@ -504,12 +501,12 @@ void CGuideObject::vfunc_126()
     MS2Ptr<Unk_GuideRecord> spOld = m_ctrl.GetCurrent();
     if (!spOld
         || spOld->m_pos3c != m_pos98
-        || spOld->m_nType != ::FUN_14166c930(this)
+        || spOld->m_nType != FUN_14166c930()
         || ::FUN_14166ccb0(this)->vfunc_22(spOld) != 0)
     {
         if (spOld.get() != 0)
             m_ctrl.vfunc_0();
-        MS2Ptr<Unk_GuideRecord> spNew = FUN_140835450(::FUN_14166c930(this));
+        MS2Ptr<Unk_GuideRecord> spNew = FUN_140835450(FUN_14166c930());
         spNew->m_nObjId = ::FUN_14166cc80(this);
         spNew->m_pos3c = m_pos98;
         spNew->m_pos20 = vfunc_18();
@@ -831,7 +828,7 @@ void CConstructionGuideObject::FUN_1410a3190()
         Vector3 kLocal = FUN_1408a1430(kSel);
         Unk_CubeGridSvc* pGrid = ((class Unk_CubeGridSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         int nCell = pGrid->FUN_1410ba5f0(kLocal, kA);
-        kB.z = pGrid->FUN_1410ba440(nCell);
+        kB.z = pGrid->DirectionToAngle(nCell);
     }
     kC.z = kB.z - kA.z;
     NiMatrix3 kRot;
@@ -1259,7 +1256,7 @@ void CFishingGuideObject::vfunc_53(float f)
         Vector3 kPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(vfunc_18() + efd::Point3(0.0f, 0.0f, 75.0f)));
         m_spBirdHead->FUN_1418ce8c0(kPos);
     }
-    if (pOwner != 0 && ::FUN_14166c930(pOwner) == 0x2d && ::FUN_14166cc80(pOwner) != 0x75 && m_nShown == 0)
+    if (pOwner != 0 && pOwner->FUN_14166c930() == 0x2d && ::FUN_14166cc80(pOwner) != 0x75 && m_nShown == 0)
         FUN_1410a4cb0();
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200004))
     {
@@ -1385,7 +1382,7 @@ int CSkillMagicControlGuide::FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::
 {
     efd::Matrix3 kRot;
     // kRot: NiMatrix3 default ctor 0x1409f7320
-    float fAngle = FUN_14123ce70(kDir);
+    float fAngle = GameObject::DirectionToNegYawRadians(kDir);
     kRot.MakeZRotation(fAngle);
     efd::Point3 kFwd = DAT_143a08d08;
     FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&kRot), (struct Vector3*)(&kFwd));
@@ -1412,7 +1409,7 @@ void CSkillMagicControlGuide::vfunc_127()
     {
         CSkillMagicControlGuide* pRec = ((class PC*)(class PCBase*)(pOwner))->FUN_141662610();
         if (pRec != 0)
-            pRec->FUN_1410a6520();
+            pRec->ReleaseGuide();
         ((class PC*)(class PCBase*)(pOwner))->SetGuide(efd::SmartPointer<CGuideObject>(this), 2);
         if (!m_bLocal)
         {
@@ -1444,7 +1441,7 @@ void CSkillMagicControlGuide::vfunc_128()
     {
         CSkillMagicControlGuide* pCur = ((class PC*)(class PCBase*)(pOwner))->FUN_141662610();
         if (pCur != 0 && pCur->FUN_1410a67f0() == FUN_1410a67f0())
-            FUN_1410a6520();
+            ReleaseGuide();
     }
     FUN_141bc5b30(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance()), efd::SmartPointer<CGuideObject>(this));
     FUN_14146c6c0(FUN_1410a7630(), m_spInfo->m_n18, 1, 1);
@@ -1461,7 +1458,7 @@ void CSkillMagicControlGuide::vfunc_125(double fTime)
 }
 
 // @0x1410a6520
-void CSkillMagicControlGuide::FUN_1410a6520()
+void CSkillMagicControlGuide::ReleaseGuide()
 {
     m_bReleased = true;
     PCBase* pOwner = FUN_1410a1310();
@@ -1508,7 +1505,7 @@ int CSkillMagicControlGuide::FUN_1410a65f0(int nSkill)
 bool CSkillMagicControlGuide::IsReleased() { return m_bReleased; }
 
 // @0x1410a6750
-efd::Point3 CSkillMagicControlGuide::FUN_1410a6750() { return *(efd::Point3*)&m_kAim; }
+efd::Point3 CSkillMagicControlGuide::GetOriginPosition() { return *(efd::Point3*)&m_kAim; }
 
 // @0x1410a6790
 float CSkillMagicControlGuide::FUN_1410a6790()

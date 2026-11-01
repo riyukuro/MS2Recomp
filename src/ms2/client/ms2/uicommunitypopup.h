@@ -52,8 +52,8 @@ private:
     void* m_00;
     T* m_p;
 };
-class Unk_PopupMovie;
-class Unk_PopupField;
+class ASMovieClip;
+class ASTextField;
 class UICommunityPopup : public UIHeadUpDisplay {
 public:
     struct PopupText { CStringW text; CString url; };
@@ -73,8 +73,8 @@ public:
     void FUN_140bea960(const Scaleform::GFx::FunctionHandler::Params&);
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_PopupMovie> m_movie;
-    MS2Ptr<Unk_PopupField> m_field;
+    MS2Ptr<ASMovieClip> m_movie;
+    MS2Ptr<ASTextField> m_field;
     CString m_url;
     CStringW m_text;
     bool m_pending;

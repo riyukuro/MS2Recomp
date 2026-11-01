@@ -42,9 +42,9 @@ public:
     int Classify(char c);                               // 0x140d7faf0 the command class of a character (0 = ignored)
     int ParseNumber(const char* p, int* pnValue);       // 0x140d7fc50 reads the digits at p, returns their count
     int ParseNote(const char* p, int* pnNote);          // 0x140d7fd80 a note letter with + / -, returns its length
-    int FUN_140d7ff40(int nVolume);                     // nVolume * 8
-    int FUN_140d7ff60(int nNote);                       // m_nOctave * 12 + nNote
-    double FUN_140d7ff80(int nLength, bool bDotted);    // the duration in ms of a note length
+    int ToMidiVolume(int nVolume);                     // nVolume * 8
+    int ToMidiNote(int nNote);                       // m_nOctave * 12 + nNote
+    double NoteLengthToMs(int nLength, bool bDotted);    // the duration in ms of a note length
 
 public:
     MS2_LAYOUT_FRIEND;

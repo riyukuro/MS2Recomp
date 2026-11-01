@@ -72,6 +72,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/cmainsystem.h"
 
 #include <stdlib.h>
@@ -96,7 +97,6 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern const Vector3 g_143a08ce8;   // NiPoint3::ZERO
 #define g_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 g_143b01a60
 extern const efd::Color g_143a09660; // white
-extern const efd::Color g_143b01ef0; // efd::Color::BLACK
 
 // The local player, as far as this unit reads it.
 class Unk_RainActor
@@ -122,13 +122,7 @@ class Unk_CubeDisplayLookup   // C3: member view (real class not in this TU)
 public:
     int FUN_1410b24b0(unsigned int, unsigned int);
 };
-class Unk_CubeWorld
-{
-public:
-};
-class Unk_CubeService;
 class CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
-Unk_CubeWorld* FUN_1410b9e70(Unk_CubeService* pService);
 
 int FUN_1408a13d0(Vector3 kPos);                            // column key of a position
 Unk_Int3 FUN_1408a1430(Vector3 kPos);                       // cube cell of a position (all 3 ints)
@@ -145,25 +139,7 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CNifLoadingService* FUN_140a0afd0();
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
-struct Unk_RainAVPtr
-{
-    Unk_RainAVPtr(void* pObject);                                   // 0x1411aedc0
-    ~Unk_RainAVPtr();                                               // 0x1410471c0
-    void* m_pObject;
-};
-class Unk_RainNodeList
-{
-public:
-    Unk_RainNodeList();                                             // 0x1411af860
-    ~Unk_RainNodeList();                                            // 0x1411b00f0
-    void FUN_1411b83f0(Unk_RainAVPtr& spNode);
-    void* m_pad_00[3];
-};
-class Unk_RainScene
-{
-public:
-};
-Unk_RainScene* FUN_1413f98b0();
+ecr::SceneGraphService* FUN_1413f98b0();
 
 #define AsPoint(kPoint) reinterpret_cast<const efd::Point3&>(kPoint)
 
@@ -205,8 +181,8 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
 {
     const int nSpan = 20;
     const int nHalf = 10;
-    Unk_CubeService* pService = ((class Unk_CubeService*)GetCubeMapService());
-    Unk_CubeWorld* pWorld = FUN_1410b9e70(pService);
+    CubeMapInformationService* pService = GetCubeMapService();
+    Unk_CMISTree<277>* pWorld = pService->FUN_1410b9e70();
     Unk_Int3 kCell = FUN_1408a1430(kPos);
     for (int dx = -nHalf; dx < nHalf; dx++)
     {
@@ -214,7 +190,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
         {
             int x = kCell.x + dx;
             int y = kCell.y + dy;
-            int z = ((Unk_CubeDisplayLookup*)(Unk_CubeWorld*)(pWorld))->FUN_1410b24b0(x, y);
+            int z = ((Unk_CubeDisplayLookup*)(pWorld))->FUN_1410b24b0(x, y);
             if (z == INT_MIN)
                 continue;
             arrCube.Add(Unk_Int3(x, y, z + 1));
@@ -373,9 +349,9 @@ RainDropSystem::~RainDropSystem()
 {
     if (m_nHandle != ecr::SceneGraphService::kInvalidHandle)
     {
-        Unk_RainScene* pScene = FUN_1413f98b0();
+        ecr::SceneGraphService* pScene = FUN_1413f98b0();
         if (pScene)
-            ((ecr::SceneGraphService*)(Unk_RainScene*)(pScene))->RemoveSceneGraph(m_nHandle);
+            pScene->RemoveSceneGraph(m_nHandle);
     }
 }
 
@@ -402,12 +378,12 @@ void RainDropSystem::Create()
     kBound.SetCenterAndRadius(AsPoint(g_143b01a60), 3000.0f);
     m_spSystem->SetModelBound(kBound);
 
-    Unk_RainNodeList kList;
+    efd::vector<efd::SmartPointer<NiObject>> kList;
     {
-        Unk_RainAVPtr spObject(NiObject::DynamicCast(&NiObject::ms_RTTI, (class NiObject const*)(static_cast<NiNode*>(FUN_1409475d0(&m_spNode)))));
-        kList.FUN_1411b83f0(spObject);
+        efd::SmartPointer<NiObject> spObject(NiObject::DynamicCast(&NiObject::ms_RTTI, (class NiObject const*)(static_cast<NiNode*>(FUN_1409475d0(&m_spNode)))));
+        kList.push_back(static_cast<efd::SmartPointer<NiObject>&&>(spObject));
     }
-    m_nHandle = ((ecr::SceneGraphService*)(Unk_RainScene*)(FUN_1413f98b0()))->AddSceneGraph(*(efd::vector<efd::SmartPointer<NiObject>> const*)(Unk_RainNodeList*)&(kList), true, true);
+    m_nHandle = FUN_1413f98b0()->AddSceneGraph(kList, true, true);
 
     SetupProperties();
     NiFixedString kEmitterName("RainDropOnCubeEmitter");
@@ -460,7 +436,7 @@ void RainDropSystem::SetupProperties()
 
     NiMaterialPropertyPtr spMaterial = NiNew NiMaterialProperty;
     spMaterial->SetAmbientColor(g_143a09660);
-    spMaterial->SetDiffuseColor(g_143b01ef0);
+    spMaterial->SetDiffuseColor(efd::Color::BLACK);
     m_spSystem->AttachProperty(spMaterial);
 
     NiZBufferPropertyPtr spZBuffer = NiNew NiZBufferProperty;

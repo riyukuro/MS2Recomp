@@ -23,7 +23,7 @@ int FUN_14053feb0(int nItemId);                 // the rank of an item
 bool FUN_140635b90(unsigned nFlags, unsigned nFlag);
 template<class Map> void CopyEnchantMap(Map& to, const Map& from);   // itemoptiondata.cpp
 // The option table (CItemOptionTable; FUN_140166430 returns the singleton).
-class Unk_140166430 { public: void FUN_1405f5870(MS2Ptr<CItemOption> spOption, int nItemId, int nRank); };
+class CItemOptionTable { public: bool ApplyConstantOptions(class MS2Ptr<class CItemOption>, int, int); }; class Unk_140166430 : public CItemOptionTable {};
 Unk_140166430* FUN_140166430();
 
 // @0x14061f540
@@ -922,7 +922,7 @@ void CItemSocket::RebuildStats()
         if (spOption == 0)
             continue;
         int nRank = FUN_14053feb0(nGemId);
-        FUN_140166430()->FUN_1405f5870(spOption, nGemId, nRank);
+        FUN_140166430()->ApplyConstantOptions(spOption, nGemId, nRank);
         AccumulateStatOptions(spOption);
         AccumulateSpecialOptions(spOption);
     }

@@ -45,6 +45,10 @@
 #include <vector>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/astilelist.h"
+#include "ms2/client/ms2/uidungeonroomdialog.h"
 
 // ---- unit-local views of exe types ----
 
@@ -59,14 +63,10 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422cf4f0(int n);
 };
 class Unk_LgCheck : public ASButton
 {
 public:
-    bool FUN_1422ce0e0();                                       // is checked
 };
 // the event dialog child (m_eventDialog): a display object with the same Invoke targets as the movie root
 class Unk_LgEvent : public ASDisplayObject {};
@@ -102,15 +102,13 @@ void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, 
 // quests
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-int FUN_140748050(void* pItem, int nJob);                       // the reward item suits the job
+int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);                       // the reward item suits the job
 
 // strings
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_1409e8820(CStringW strKey, const short& a1);
-CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
+template <class T> CStringW FUN_14028dfa0(CStringW strKey, const T& a1);
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 int FUN_14074b030(CQuestData* pData);                           // the quest id
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                     // the script behind the pointer
 
 // message boxes and packets
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* listener, CStringW tag);
@@ -118,44 +116,16 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);
 
 // npcs and the boss tooltip
-class Unk_LgNpc : public CPtred {};
-MS2Ptr<Unk_LgNpc> FUN_1406cd330(int nNpcId);
-class CNpcData   // C3: member view for the former free stand-ins
-{
-public:
-    unsigned short GetLevel() const;
-};
-class Unk_LgBossTip { public: void FUN_141b99dc0(int nNpcId, ASTooltip* pTip); };
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+class WorldMapManager { public: void BuildNpcRewardPreview(int npc, ASObj* script); };   // 0x141b99dc0
 class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 
 // opening the dialogs of a row
-class Unk_LgUIMgr
-{
-public:
-    void FUN_141adc530(int nUiId);
-    void FUN_141adc690(int nUiId);
-};
-class Unk_LgRoomDlg { public: void FUN_1412b8ff0(int nId); };
-Unk_LgRoomDlg* FUN_140961550(int nUiId);
-class Unk_LgWorldMap : public UIWorldMapDialog
-{
-};
-Unk_LgWorldMap* FUN_140961730(int nUiId);
-class Unk_CommandUIRef
-{
-public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* m_unk;
-    UIObject* m_object;
-};
-MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
-struct Unk_LgUiMgr { Unk_CommandUIRef FUN_141adcf50(const CString& strName); };
+template <class T> T* Unk_GetUI(int nUiType);
 
 // recommendContents.xml
 CString FUN_14071a5b0(const CString&, const CString&);
-struct Unk_LgFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
+class CFileSystem { public: int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
@@ -170,11 +140,9 @@ public:
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
-int FUN_140873ad0(void*, const char*, CString&);
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 
 // the root of the movie
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
 typedef Delegate<bool(int, const CMsgBoxData&)> LgAnswerDelegate;
 
@@ -393,15 +361,15 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
     if (spRow->m_link.GetLength() == 0)
         return;
     if (spRow->m_link == "DungeonRoomDialog") {
-        Unk_LgRoomDlg* pDialog = FUN_140961550(0x4ebd);
+        UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
         if (pDialog != 0) {
-            reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
+            TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
             pDialog->FUN_1412b8ff0(spRow->m_code);
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
         }
     }
     else if (spRow->m_link == "WorldMapDialog") {
-        Unk_LgWorldMap* pDialog = FUN_140961730(0x4e42);
+        UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42);
         if (pDialog == 0)
             return;
         if (spRow->m_kind == 0 || spRow->m_kind == 2) {
@@ -419,7 +387,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
         pDialog->FUN_141924680();
     }
     else {
-        UIDialog* pDialog = dynamic_cast<UIDialog*>(((MS2Ptr<UIObject>*)(&(const_cast<Unk_CommandUIRef&>(static_cast<const Unk_CommandUIRef&>(reinterpret_cast<Unk_LgUiMgr*>(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adcf50(spRow->m_link))))))->operator UIObject*());
+        UIDialog* pDialog = dynamic_cast<UIDialog*>(TSingleton<CUIService>::GetInstance()->FindObjectByName(spRow->m_link).operator UIObject*());
         if (pDialog != 0)
             pDialog->FUN_141924680();
     }
@@ -441,7 +409,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
         return;
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
-            spBox->FUN_140534050(nQuest);
+            spBox->Append<unsigned>(nQuest);
             spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
             FUN_140d73c60(spBox);
         }
@@ -459,7 +427,7 @@ void UILevelUpGuideDialog::FUN_140f85ba0()
 {
     CString path = FUN_14071a5b0("Table", "recommendContents.xml");
     TiXmlDocument doc;
-    if (((struct Unk_LgFiles*)GetFileSystem())->FUN_1403974b0(doc, path, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false) == 0)
         return;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (root == 0) {
@@ -475,9 +443,9 @@ void UILevelUpGuideDialog::FUN_140f85ba0()
         XmlGetAttr((class TiXmlElement*)(node), "maxLevel", spRow->m_maxLevel);
         XmlGetAttr((class TiXmlElement*)(node), "code", spRow->m_code);
         XmlGetAttr((class TiXmlElement*)(node), "sorting", spRow->m_sorting);
-        FUN_140873ad0(node, "type", spRow->m_type);
-        FUN_140873ad0(node, "img", spRow->m_img);
-        FUN_140873ad0(node, "link", spRow->m_link);
+        XmlQuery((class TiXmlElement*)(node), "type", spRow->m_type);
+        XmlQuery((class TiXmlElement*)(node), "img", spRow->m_img);
+        XmlQuery((class TiXmlElement*)(node), "link", spRow->m_link);
         if (spRow->m_type == "common")
             spRow->m_kind = 0;
         else if (spRow->m_type == "boss")
@@ -507,7 +475,7 @@ void UILevelUpGuideDialog::FUN_140f85f90()
     void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    static_cast<Unk_LgRoot*>(FUN_1409ee290(&m_30))->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
+    static_cast<Unk_LgRoot*>(m_30.operator->())->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
 }
 
 // @0x140f861c0
@@ -520,13 +488,13 @@ void UILevelUpGuideDialog::FUN_140f861c0()
         if (m_1c8.m_nLow != m_1c8.m_nHigh)
             strTitle = FUN_14028dfa0<unsigned short, unsigned short>(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
         else
-            strTitle = FUN_1409e8820(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
+            strTitle = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
         spLevel->FUN_1422c4cd0(strTitle);
     }
     if (MS2Ptr<Unk_LgList> spList = FUN_140ba4b70("m_contentsList")) {
         spList->Invoke("resetRenderer");
-        spList->FUN_1422dd1d0();
-        spList->FUN_1422cf4f0(0);
+        reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();
+        reinterpret_cast<ASTileList*>(spList.operator->())->FUN_1422cf4f0(0);
         std::vector<MS2Ptr<RecommendContnets> > rows;
         for (POSITION pos = m_1e0.GetHeadPosition(); pos != 0; m_1e0.GetNext(pos)) {
             MS2Ptr<RecommendContnets> spRow = m_1e0.GetValueAt(pos);
@@ -562,7 +530,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x23, spRow->m_id));
             row.FUN_1407cba60("imgPath", spRow->m_img);
             row.FUN_1407cbbe0("clickable", spRow->m_link.GetLength() ? true : false);
-            spList->FUN_1422dd230(row);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);
         }
         spList->vfunc_24(true);
     }
@@ -626,9 +594,9 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
     unsigned short nLevel = LgQuestLevel(spData);
     CStringW strLevel;
     if (nLevel == m_1d8)
-        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_max_level"), nLevel);
+        strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_max_level"), nLevel);
     else
-        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_level"), nLevel);
+        strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), nLevel);
     rObj.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
     rObj.FUN_1407cba60("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);
@@ -677,12 +645,12 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
 void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
 {
     int nNpc = spRow->m_code;
-    MS2Ptr<Unk_LgNpc> spNpc = FUN_1406cd330(nNpc);
+    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpc);
     if (!spNpc)
         return;
     ASTooltip tip(1, 2);
-    ((class Unk_LgBossTip*)FUN_140cb17d0())->FUN_141b99dc0(nNpc, &tip);
-    tip.FUN_1407cbb20("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), ((class CNpcData*)(class Unk_LgNpc*)(spNpc.get()))->GetLevel()));
+    reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->BuildNpcRewardPreview(nNpc, &tip);
+    tip.FUN_1407cbb20("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), spNpc->GetLevel()));
     tip.FUN_1409c0e60("enableLClick", L"");
     tip.SetTooltipClass("WorldMapTooltip_Boss");
     tip.SetOnDelay(300);
@@ -760,9 +728,9 @@ static bool LgRowOrder(MS2Ptr<UILevelUpGuideDialog::RecommendContnets> spA, MS2P
 // @0x140f880c0
 MS2Ptr<Unk_LgEvent> UILevelUpGuideDialog::FUN_140f880c0(const CString& strName)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == 0)
         return MS2Ptr<Unk_LgEvent>(0);
-    return static_cast<Unk_LgRoot*>(FUN_1409ee290(&m_30))->FUN_140e44410<Unk_LgEvent>(strName);
+    return static_cast<Unk_LgRoot*>(m_30.operator->())->FUN_140e44410<Unk_LgEvent>(strName);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

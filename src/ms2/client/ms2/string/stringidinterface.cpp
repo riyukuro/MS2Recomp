@@ -45,14 +45,13 @@ size_t FUN_14015a000(ATL::CAtlArray<CStringW>& arr);                    // GetCo
 CStringW& FUN_14025e580(ATL::CAtlArray<CStringW>& arr, size_t i);       // operator[]
 
 // Builds the text of a "{0} {1}" format with arguments.
-class Unk_StringArgFormatter
-{
+class Unk_TextFormat { public: class Unk_TextFormat & FUN_140840530(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_StringArgFormatter : public Unk_TextFormat {
 public:
     // @0x1410254e0
     Unk_StringArgFormatter(const CStringW& strFormat) : m_strFormat(strFormat), m_nCount(0), m_nPad(0) {}
     // @0x141025530
     ~Unk_StringArgFormatter() {}
-    void FUN_140840530(CStringW strArg);                                // appends one argument
+
     operator CStringW();                                                // the formatted text (@0x1408405d0)
 private:
     CStringW m_strFormat;                                               // +0x00

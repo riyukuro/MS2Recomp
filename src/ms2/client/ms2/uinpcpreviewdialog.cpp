@@ -85,7 +85,6 @@ public:
 class Unk_NpWorld : public WorldService
 {
 public:
-    PCBase* FUN_141bd1320(int nId);                     // the actor of an object id
     PCBase* FUN_141bd0cc0();                            // the local player
     int FUN_141bd0dd0(efd::Point3* pPos, efd::Point3* pDir);    // a spawn position in front of the camera
     ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* FUN_141bd36d0();   // the npc tree
@@ -95,8 +94,8 @@ int FUN_141274aa0(GameObject* pObj);                    // the actor filter of t
 CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 
 // The ui text service (singleton): the text of a "$s_..." key.
-class Unk_NpText { public: CStringW FUN_1422b0570(const CString& strKey); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_NpText (calls cast back)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 CStringTable* GetStringTable();
 CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
 
@@ -234,7 +233,7 @@ void UINpcPreviewDialog::vfunc_15()
         return;
     if (m_nActorOid == 0)
         return;
-    PCBase* pActor = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid);
+    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid));
     if (pActor == 0)
         return;
     std::vector<CString> names;
@@ -341,7 +340,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
     if (FUN_141a711b0()) {
         Unk_NpRow rowLoc;
         rowLoc.m_kind = 1;
-        rowLoc.m_text = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_location"));
+        rowLoc.m_text = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_location"));
         m_rows.Add(rowLoc);
         std::vector<unsigned>* pQuests = FUN_1407476c0()->GetQuestIdsByNpc(nNpcId);
         if (pQuests != 0) {
@@ -353,9 +352,9 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 rowQuest.m_kind = 2;
                 rowQuest.m_a = *pId;
                 rowQuest.m_b = spQuest->m_2e8 == nNpcId;
-                CStringW strQuest = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_quest"));
-                CStringW strStart = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_start"));
-                CStringW strComplate = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_complate"));
+                CStringW strQuest = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_quest"));
+                CStringW strStart = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_start"));
+                CStringW strComplate = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_complate"));
                 rowQuest.m_text = StringFormat<CStringW, CStringW>(strQuest, rowQuest.m_b != 0 ? strStart : strComplate, FUN_1416e4df0(*pId));
                 m_rows.Add(rowQuest);
             }
@@ -366,9 +365,9 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 Unk_NpRow rowCine;
                 rowCine.m_kind = 4;
                 rowCine.m_c = (int)i;
-                CStringW strCine = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk"));
-                CStringW strSelect = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_select_talk"));
-                CStringW strJob = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_job_talk"));
+                CStringW strCine = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk"));
+                CStringW strSelect = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_select_talk"));
+                CStringW strJob = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_job_talk"));
                 rowCine.m_text = StringFormat<CStringW>(strCine, i == 0 ? strSelect : strJob);
                 m_rows.Add(rowCine);
             }
@@ -381,7 +380,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     Unk_NpRow rowTalk;
                     rowTalk.m_kind = 3;
                     rowTalk.m_c = spTalk->m_id;
-                    CStringW strTalk = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk2"));
+                    CStringW strTalk = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk2"));
                     rowTalk.m_text = FUN_1406c6bd0(strTalk, i);
                     m_rows.Add(rowTalk);
                 }
@@ -395,7 +394,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     Unk_NpRow rowMono;
                     rowMono.m_kind = 5;
                     rowMono.m_c = spTalk->m_id;
-                    CStringW strMono = reinterpret_cast<Unk_NpText*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_monologue"));
+                    CStringW strMono = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_monologue"));
                     rowMono.m_text = FUN_1406c6bd0(strMono, i);
                     m_rows.Add(rowMono);
                 }
@@ -539,7 +538,7 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
 {
     if (nRow < 0 || nRow >= (int)m_rows.GetCount())
         return;
-    PCBase* pActor = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid);
+    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid));
     if (pActor == 0)
         return;
     Unk_NpRow row = m_rows.GetAt(nRow);
@@ -607,7 +606,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
 // @0x141a717c0
 void UINpcPreviewDialog::FUN_141a717c0()
 {
-    efd::SmartPointer<PCBase> spActor(reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nActorOid));
+    efd::SmartPointer<PCBase> spActor(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid)));
     if (spActor) {
         reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb7f0(spActor, 0);
         m_nActorOid = 0;

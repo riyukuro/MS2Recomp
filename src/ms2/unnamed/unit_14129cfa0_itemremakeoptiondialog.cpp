@@ -32,6 +32,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "ms2/client/ms2/uiitemremakeoptiondialog.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -86,12 +87,11 @@ extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 // Backup (equipped) item record.
-class Unk_BackUpItem : public CPtred
-{
+class CEquipItem : public CPtred { public: class MS2Ptr<class CItem> GetItem(void); void FUN_1411dd280(void); void SetItem(class CItem *); }; class Unk_BackUpItem : public CEquipItem {
 public:
-    MS2Ptr<CItem> FUN_1411dc7a0();
-    void FUN_1411dd6d0(CItem* item);
-    void FUN_1411dd280();
+
+
+
 };
 class Unk_PCItems
 {
@@ -109,9 +109,6 @@ public:
 
 // AS script views.
 class Unk_EnButton : public ASDisplayObject
-{
-};
-class Unk_EnBag : public ASObj
 {
 };
 class Unk_EnScript : public AScript
@@ -194,9 +191,11 @@ int FUN_140616d40(int a, unsigned b);
 CString FUN_140719530(unsigned __int64 uid);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 void FUN_140f73320(CMsgBoxData* box, bool b);
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
+    float GetAbilityRate(SAType eType);   // 0x1411e1110
     void FUN_1411e7660();
 };
 void FUN_1412752d0(const CStringW& key, int a);
@@ -206,7 +205,6 @@ CStringW FUN_140b99120(CStringW key, const unsigned& a, const int& b);
 CStringW FUN_1419021b0(int a, int b);
 CStringW FUN_1409404f0(__int64 v);
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
-float FUN_1411e1110(Unk_PCItems* items, int a);   // returns in xmm0
 extern __int64 DAT_143ab2898;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* pListener, CStringW b);
@@ -409,7 +407,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
             MS2Ptr<Unk_BackUpItem> equip = equips.GetAt(pos);
             if (!equip)
                 continue;
-            MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+            MS2Ptr<CItem> item = equip->GetItem();
             if (!item)
                 continue;
             if (FUN_140526470(item.get(), m_remakeMode) != 0) {
@@ -421,7 +419,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
     const CString& strName = GetTypeName();
     FUN_141414e50(strName);
     FUN_141414d60(strName, uids);
-    if (MS2Ptr<Unk_EnBag> bag = m_enchantAni->FUN_140accef0<Unk_EnBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = m_enchantAni->FUN_140accef0<ASTileList>("m_itemBag"))
         bag->FUN_1407cba60("bagId", GetTypeName());
 }
 
@@ -801,7 +799,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
     unsigned rate = 0;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
-        rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
+        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->GetAbilityRate((SAType)0xa9) * 10000.0f);
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->FUN_140527840())), &discount, rate);
     __int64 fee = 0;
     size_t count = m_names1b8.GetCount();
@@ -850,7 +848,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     unsigned rate = 0;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
-        rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
+        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->GetAbilityRate((SAType)0xa9) * 10000.0f);
     __int64 fee = 0;
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(equipData), &discount, rate);
     ASArray list(2);
@@ -905,7 +903,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
             if (pc != 0) {
                 MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->GetItemUid());
                 if (equip.get() != 0) {
-                    equip->FUN_1411dd6d0(item.get());
+                    equip->SetItem(item.get());
                     equip->FUN_1411dd280();
                     ((class CEquipment*)(class Unk_PCItems*)(FUN_1416561a0(pc)))->FUN_1411e7660();
                 }

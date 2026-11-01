@@ -35,6 +35,8 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/client/ms2/uimeratmarketdialog.h"
+#include "ms2/commonfiles/imagehttpclient.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -82,7 +84,7 @@ public:
     bool FUN_1410d5640();                                               // the player owns a home
     bool FUN_1410d56a0();                                               // the player may edit a home
     int FUN_1410ce310();                                                // the saved design slot (0: none)
-    int FUN_1410b9a50();                                                // the blueprints of the player
+    int CountCubes();                                                // the blueprints of the player
     CStringW FUN_1410c31d0();                                           // the home id
     CStringW FUN_1410c3260();                                           // the owner id
     Unk_CMISFlags3 FUN_1410c34f0();                                     // the camera / state bytes
@@ -114,7 +116,6 @@ public:
 };
 
 CameraMgr* FUN_1409478c0();
-class Unk_HmWorldMenu { public: void FUN_14130fb10(const int* pnA, const int* pnB); };
 class UIMeratMarketDialog* FUN_140bd2c00();   // C3: was FUN_140bd2c00
 class Unk_HmOptions;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -215,13 +216,13 @@ inline ecr::RenderContext* ecr::RenderService::GetRenderContextAt(const efd::UIn
     return m_renderContexts[index];
 }
 }
-efd::ServiceManager* FUN_1413f9850();
+class Unk_ServiceManager;
+Unk_ServiceManager*FUN_1413f9850();
 ecr::RenderService* FUN_1413f9890();
 
 // A child of the movie (a button or a check box), held through MS2Ptr (dtor 0x140acd6e0).
 class Unk_140acd6e0 : public ASButton {
 public:
-    void FUN_1422c1fe0(unsigned enabled);
 };
 class Unk_HmMovieEntity : public UIDialog {
 public:
@@ -243,7 +244,6 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
 
@@ -254,7 +254,7 @@ UIHomeMenuDialog::UIHomeMenuDialog() : m_bFreeCamera(0)
     m_88 = 1;
     FUN_1422dc3b0(1);
     FUN_141925e70(0, 1);
-    m_screenshot.FUN_140511190(0);
+    reinterpret_cast<CImageHttpClient*>(&m_screenshot)->SetMode(0);
 }
 
 // @0x140c29230
@@ -405,7 +405,7 @@ void UIHomeMenuDialog::FUN_140c29710()
             if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530() != 0)
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 1);
-                FUN_141a024a0(spBox.operator->(), 0);
+                reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
                 spBox->FUN_141a01800(1);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
                 FUN_140d73c60(spBox);
@@ -431,7 +431,7 @@ void UIHomeMenuDialog::FUN_140c29980()
         if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530() != 0)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 1);
-            FUN_141a024a0(spBox.operator->(), 0);
+            reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
             FUN_140d73c60(spBox);
@@ -461,7 +461,7 @@ void UIHomeMenuDialog::ToggleCraftMode()
     if (nOwner != 0 || nDesign != 0 || nBlueprint != 0 || FUN_140930c50() != 0)
     {
         if (FUN_140c2af70() != 0)
-            pPc->FUN_141530200();
+            pPc->SendCraftModeOff();
         else
             pPc->FUN_14152feb0(1, 0);
     }
@@ -476,7 +476,7 @@ void UIHomeMenuDialog::OnScreenshot()
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L"")))
         {
-            FUN_141a024a0(spBox.operator->(), 0);
+            reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b180));
             FUN_140d73c60(spBox);
         }
@@ -504,7 +504,7 @@ void UIHomeMenuDialog::OnDesignSave()
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
-            FUN_141a024a0(spBox.operator->(), 0);
+            reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b0e0));
             FUN_140d73c60(spBox);
         }
@@ -534,7 +534,7 @@ void UIHomeMenuDialog::OnBlueprintSave()
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
-            FUN_141a024a0(spBox.operator->(), 0);
+            reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b130));
             FUN_140d73c60(spBox);
         }
@@ -597,7 +597,7 @@ void UIHomeMenuDialog::OnBlueprintExport()
 {
     if (!FUN_141902580(1))
         return;
-    if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9a50() > 0)
+    if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->CountCubes() > 0)
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f7b)));
     else
         FUN_140d73bc0(0xbba, 0, 0, CStringW(L""));
@@ -608,12 +608,12 @@ void UIHomeMenuDialog::OnBlueprintShop()
 {
     if (!FUN_1419025f0(1))
         return;
-    Unk_HmWorldMenu* pMenu = ((class Unk_HmWorldMenu*)FUN_140bd2c00());
+    UIMeratMarketDialog* pMenu = ((class UIMeratMarketDialog*)FUN_140bd2c00());
     if (pMenu != 0)
     {
         int nA = 0xcc;
         int nB = 3;
-        pMenu->FUN_14130fb10(&nB, &nA);
+        pMenu->SearchByCategory(nB, nA);
     }
 }
 
@@ -631,14 +631,14 @@ void UIHomeMenuDialog::FUN_140c2a780()
     {
         sp->FUN_1422ce090(bDesign);
         if (bBlueprint != 0)
-            sp->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintMode"))
     {
         sp->FUN_1422ce090(bBlueprint);
-        sp->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
         if (bDesign != 0)
-            sp->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_freeCamera"))
     {
@@ -646,19 +646,19 @@ void UIHomeMenuDialog::FUN_140c2a780()
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintSave"))
     {
-        sp->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintImport"))
     {
-        sp->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintExport"))
     {
-        sp->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintShop"))
     {
-        sp->FUN_1422c1fe0(FUN_1419025f0(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_1419025f0(0));
     }
 }
 
@@ -718,7 +718,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps a dead movzx of the screenshot flag before the call
 CStringW UIHomeMenuDialog::FUN_140c2b080()
 {
-    return TakeScreenshotJpg(((int)m_screenshot.FUN_1405116c0(), 0), 1);
+    return TakeScreenshotJpg(((int)reinterpret_cast<CImageHttpClient*>(&m_screenshot)->BeginImage(), 0), 1);
 }
 
 // @0x140c2b0e0
@@ -752,7 +752,7 @@ bool UIHomeMenuDialog::FUN_140c2b130(int nResult, const CMsgBoxData& data)
 // @0x140c2b180
 bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
 {
-    efd::ServiceManager* pServices = FUN_1413f9850();
+    efd::ServiceManager* pServices = reinterpret_cast<efd::ServiceManager *>(FUN_1413f9850());
     if (pServices == 0)
         return 0;
     ecr::RenderService* pRender = FUN_1413f9890();

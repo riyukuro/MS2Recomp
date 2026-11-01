@@ -38,6 +38,11 @@ class State;
 
 // The local player (0x1403ed2d0's singleton -> 0x141bd0cc0): a large virtual class; only a few slots are used here.
 struct Unk_Pos { Unk_Pos(); float m_0; float m_4; float m_8; };
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 class Unk_141bd0cc0
 {
 public:
@@ -102,7 +107,6 @@ public:
     virtual void vfunc_58();
     virtual void vfunc_59(int a1, int a2, int a3, int a4);          // 59: switch to a microgame state
     int FUN_14123c580();                                            // the actor kind / team
-    int FUN_14166c930();                                            // current state id
     State* FUN_14166ccb0();                                         // current state
     __int64 FUN_141656a80();                                        // the character id
 };
@@ -124,12 +128,11 @@ public:
 
 // Message boxes (CMsgBoxData): the button index lives at +0x18 of the timer struct.
 struct Unk_MsgBoxTimer { int m_nSec; int m_nMs; int m_nShowFormat; void* m_strFormat; int m_nButton; int m_nArmed; };
-class Unk_CMsgBoxData
-{
+class CMsgBoxData { public: struct Unk_MsgBoxTimer const & GetTimer(void) const; void FUN_141a024a0(int); void SetExtra(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> const &); }; class Unk_CMsgBoxData : public CMsgBoxData {
 public:
-    void FUN_141a01660(const CStringW& strTag);
-    void FUN_141a024a0(int n);
-    const Unk_MsgBoxTimer& FUN_141a04a80() const;
+
+
+
 };
 MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
@@ -182,7 +185,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         // We cannot challenge ourselves.
         CStringW strMessage = BlockFormat(0xd0c);
         MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(strMessage, 1);
-        box->FUN_141a01660(s_strBannerClose);
+        box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
         return;
@@ -223,7 +226,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
 // @0x140bac700
 bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
 {
-    if (box.FUN_141a04a80().m_nButton != 0)
+    if (box.GetTimer().m_nButton != 0)
         return true;
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
@@ -231,7 +234,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0x5f, 0);
         return true;
     }
-    if (pPlayer->FUN_14166c930() != 0x3c)
+    if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() != 0x3c)
         return true;
     State* pState = pPlayer->FUN_14166ccb0();
     if (!pState)
@@ -274,7 +277,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     {
         // We cannot dance with ourselves.
         MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
-        box->FUN_141a01660(s_strBannerClose);
+        box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
         return;
@@ -317,7 +320,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
 // @0x140bacda0
 bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
 {
-    if (box.FUN_141a04a80().m_nButton != 0)
+    if (box.GetTimer().m_nButton != 0)
         return true;
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
@@ -325,7 +328,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0xd0, 0);
         return true;
     }
-    if (pPlayer->FUN_14166c930() != 0x45)
+    if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() != 0x45)
         return true;
     State* pState = pPlayer->FUN_14166ccb0();
     if (!pState)

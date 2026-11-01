@@ -141,16 +141,9 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 class Unk_GmMovie : public UICutSceneMovie { };
 Unk_GmMovie* FUN_14138fd50(unsigned nUIId);                         // the cut scene movie dialog
-class Unk_CommandUIRef {
-public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
-private: void* unknown; UIObject* object;
-};
-struct Unk_GeUiMgr { Unk_CommandUIRef FUN_141adcea0(int); };
 class Unk_GmPane : public UISwfEntity { };
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
-class Unk_GmScene { public: int FUN_1422b9dc0(); int FUN_1422b9e00(); };
+class GFxSceneService { public: int GetSceneId(); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 struct Unk_GmApp { char m_pad[0x48]; void* m_pActiveWnd; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 struct Unk_GmPlayerFlags { unsigned char m_a; unsigned char m_b; unsigned char m_nMode; };
@@ -363,7 +356,7 @@ void CGuideManager::UpdateEntities()
         return;
     if (FUN_14138fd50(0x4e7e)->FUN_1419102c0() != 0)
         return;
-    if (((Unk_GmScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() == 0x6200031)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
         return;
     if (!m_names.IsEmpty() && ((struct Unk_GmApp*)FUN_141482e80())->m_pActiveWnd != 0)
     {
@@ -1089,7 +1082,7 @@ void CGuideManager::OnDungeonEnterState(NotifyObject*)
 // @0x14138ec70
 void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 {
-    if (((Unk_GmScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() != 0x620000c)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() != 0x620000c)
         return;
     QueueOccurrence(static_cast<Occurrence>(5), 0);
     if (nMode != 1)
@@ -1101,9 +1094,9 @@ Unk_GmMovie* FUN_14138fd50(unsigned nUIId)
 {
     if (CUIService::GetInstance() != 0)
     {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_GeUiMgr*>(CUIService::GetInstance())->FUN_141adcea0(nUIId);
-        if (ref.FUN_1403e8a70() != 0)
-            return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*()));
+        MS2Ptr<UIObject> ref = CUIService::GetInstance()->FindObject((eUIClassID)nUIId);
+        if (ref.get() != 0)
+            return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(ref.operator UIObject*()));
     }
     return 0;
 }

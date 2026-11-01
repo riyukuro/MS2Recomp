@@ -148,7 +148,7 @@ int LapenshardSlot::vfunc_18(void* p)
     if (spItem->GetRequiredLevel() > (unsigned short)pPc->vfunc_78())
         return static_cast<DragSlot*>(p)->vfunc_10();
     int nItemId = spItem->FUN_1405276c0();
-    int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
+    int nCurrent = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)GetSlot());
     if (pPc->FUN_14152f8b0(nItemId) != 0)
     {
         int nCurrentGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nCurrent);
@@ -176,11 +176,11 @@ int LapenshardSlot::vfunc_14()
     if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
-        int nSlot = pPc->FUN_14152fd50(nKind);
+        int nSlot = pPc->FindLapenSlotForItem(nKind);
         if (nSlot == 0)
             return 0;
         int nItemId = spItem->FUN_1405276c0();
-        int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
+        int nCurrent = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)nSlot);
         if (pPc->FUN_14152f8b0(nItemId) != 0)
         {
             int nGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nItemId);
@@ -269,7 +269,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
         MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPc == 0)
             return MS2Ptr<CItem>(0);
-        int nItemId = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
+        int nItemId = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)GetSlot());
         if (nItemId == 0)
             return MS2Ptr<CItem>(0);
         MS2Ptr<CItem> spItem(new CItem());

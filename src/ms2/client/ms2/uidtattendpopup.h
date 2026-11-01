@@ -3,6 +3,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/delegate.h"
 #include <map>
 class CInPacket; class GameEventVariable; class NotifyObject;
@@ -23,7 +24,6 @@ class Unk_DTEntry:public CPtred {public:
  bool FUN_140ce3510();bool FUN_140ce35c0();unsigned FUN_140ce3690();unsigned FUN_140ce3660();unsigned FUN_140ce3a20();unsigned long FUN_1402e1d00();
  MS2Ptr<Unk_DTReward> FUN_140ce3710(unsigned);
 };
-class Unk_DTText:public ASDisplayObject {public:void FUN_1422c4cd0(const CStringW&);};
 class Unk_DTIcon:public ASDisplayObject {public:void FUN_1409ba630(const Unk_DTItemData&);};
 class Unk_DTTick {public:Unk_DTTick();int FUN_140268870(unsigned);private:unsigned __int64 m_tick;};
 class UIDTAttendPopup:public UIDialog {
@@ -35,7 +35,7 @@ public:
  void OnPacket(CInPacket&);void OnClick(const Scaleform::GFx::FunctionHandler::Params&);void OnEvent(GameEventVariable*);void OnNotify(NotifyObject*);Unk_DTPtr<Unk_DTEntry> GetCurrent();
 private:
  MS2_LAYOUT_FRIEND;
- MS2Ptr<ASMovieClip> m_item;MS2Ptr<Unk_DTText> m_time;MS2Ptr<Unk_DTIcon> m_icon;
+ MS2Ptr<ASMovieClip> m_item;MS2Ptr<ASTextField> m_time;MS2Ptr<Unk_DTIcon> m_icon;
  std::map<unsigned long,Unk_DTPtr<Unk_DTEntry>> m_entries;Unk_DTTick m_tick,m_requestTick;
 };
 MS2_CHECK_SIZE(UIDTAttendPopup,0x1c8);

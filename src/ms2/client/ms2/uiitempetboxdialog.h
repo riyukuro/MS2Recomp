@@ -13,6 +13,7 @@ class CMsgBoxData;
 class UIAvatarPet;
 class ASMovieClip;
 class Unk_PetBoxButton;
+class ASButton;
 class Unk_PetBoxCheck;
 // Orders the set of dropped pets (the comparator is the ItemEntity ordering of commonfiles\commonstruct).
 struct Unk_PetBoxLess
@@ -52,12 +53,12 @@ public:
     // @0x140e54120
     virtual int vfunc_48() { return 20268; }
     void LoadCardRenderTarget(int);
-    void FUN_140e4f7d0();
-    void FUN_140e4f8e0();
+    void LoadAllRenderTargets();
+    void UnloadAllRenderTargets();
     void ClearCards();
-    void FUN_140e4f9e0();
+    void ReleaseSlotBinds();
     void FUN_140e4fa60(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140e4fb70(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnClosePreview(const Scaleform::GFx::FunctionHandler::Params&);
     void SetBoxItemId(int);
     bool FUN_140e4fc50(int, const CMsgBoxData&);
     bool IsSpecialItem(const ItemEntity&);
@@ -68,7 +69,7 @@ public:
     int FUN_140e51ca0();
     void FUN_140e51e40();
     void FUN_140e52110();
-    MS2Ptr<Unk_PetBoxCheck> FUN_140e52670(const CString&);
+    MS2Ptr<Unk_PetBoxCheck> FindCheckBox(const CString&);
     MS2Ptr<Unk_PetBoxCheck> FUN_140e52700(const CString&, MS2Ptr<Unk_PetBoxCheck>&);
     MS2Ptr<Unk_PetBoxButton> FUN_140bc6d10(const CString&, MS2Ptr<Unk_PetBoxButton>&);
     MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString&, MS2Ptr<ASMovieClip>&);
@@ -89,8 +90,8 @@ private:
     MS2Ptr<ASMovieClip> m_resultItem;           // +0x228
     MS2Ptr<ASMovieClip> m_previewSingle;        // +0x238
     MS2Ptr<ASMovieClip> m_previewMulti;         // +0x248
-    MS2Ptr<Unk_PetBoxButton> m_closeSingle;     // +0x258
-    MS2Ptr<Unk_PetBoxButton> m_closeMulti;      // +0x268
+    MS2Ptr<ASButton> m_closeSingle;             // +0x258
+    MS2Ptr<ASButton> m_closeMulti;              // +0x268
     std::vector<Unk_PetBoxCard> m_cards;        // +0x278
 };
 MS2_CHECK_SIZE(UIItemPetBoxDialog, 0x290);

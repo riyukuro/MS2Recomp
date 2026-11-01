@@ -9,6 +9,34 @@
 #include <intrin.h>
 #include "ms2/commonfiles/logstring.h"
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
+#include "ms2/commonfiles/commonstruct_wa.h"
+#include "ms2/commonfiles/commonstruct_wb.h"
+#include "ms2/commonfiles/itemgift.h"
+#include "ms2/commonfiles/probability.h"
+#include "ms2/placeholder/itemremakeoption.h"
+#include <list>
+#include <map>
+#include <vector>
+CString Unk_CopyString(const CString& str);   // C3: was FUN_14015efc0 (achievedata.cpp)
+
+// The STL instances the folded COMDATs are named after in the exe (C3: the calls go to their members).
+class Unk_XmlNode;
+typedef MS2Ptr<CIngredientInfo> PIng;
+typedef MS2Ptr<Probability::LogContext> PLog;
+typedef std::vector<__int64> VI64;
+typedef std::vector<ItemEntity> VItem;
+typedef std::vector<CString> VStr;
+typedef std::vector<PIng> VIng;
+typedef std::vector<PLog> VLog;
+typedef std::vector<MS2Ptr<CPtred>> VPtred;
+typedef std::vector<Unk_RemakeLockOpt> VRemake;
+typedef std::vector<Unk_XmlNode*> VXml;
+typedef std::list<MS2Ptr<CUserChangeableItemHistory>> LHist;
+typedef std::_List_node<MS2Ptr<CUserChangeableItemHistory>, void*> NodeHist;
+typedef std::map<int, int> MapII;
+typedef std::_Tree_node<std::pair<const int, int>, void*> NodeII;
+typedef std::map<std::pair<unsigned, int>, int> MapPUI;
+typedef std::_Tree_node<std::pair<const std::pair<unsigned, int>, int>, void*> NodePUI;
 
 // Slice-C functions are written as plain functions with loose (i64/pointer) types; the element types of the STL instances
 // they come from are not recovered (8-byte pair, 16-byte and 0x30-byte records of the neighbouring slices).
@@ -52,23 +80,23 @@ struct Unk_WcSelf { i64 m_0; };
 // @0x140274970
 void FUN_140274970(Unk_CwObj* owner)
 {
-    CStringW text = owner->FUN_1402728f0();
+    CStringW text = reinterpret_cast<DamageCalculatorInfo*>(owner)->ToString();
     FUN_1412751b0(text, 0x14);
 }
 // @0x1402749c0
-i64 FUN_1402749c0(i64 p, Unk_StlTag) { FUN_14027d550(p); FUN_14027cf10((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_1402749c0(i64 p, Unk_StlTag) { FUN_14027d550((void*)p); FUN_14027cf10((Unk_Z16*)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x1402749f0
-i64 FUN_1402749f0(i64 p, char) { FUN_14027d560(p); FUN_14027d0b0((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_1402749f0(i64 p, char) { FUN_14027d560((void*)p); FUN_14027d0b0((Unk_Z16*)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a20
-i64 FUN_140274a20(i64 p, Unk_StlTag) { FUN_14027d570(p); FUN_14027d410((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_140274a20(i64 p, Unk_StlTag) { FUN_14027d570((void*)p); FUN_14027d410((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a50
-i64 FUN_140274a50(i64 p, Unk_StlTag) { FUN_14027d580(p); FUN_14027d450((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_140274a50(i64 p, Unk_StlTag) { FUN_14027d580((void*)p); FUN_14027d450((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a80
-i64 FUN_140274a80(i64 p, Unk_StlTag) { FUN_14027d590(p); FUN_14027d490((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_140274a80(i64 p, Unk_StlTag) { FUN_14027d590((void*)p); FUN_14027d490((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274ab0
-i64 FUN_140274ab0(i64 p, Unk_StlTag) { FUN_14027d5a0(p); FUN_14027d4d0((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_140274ab0(i64 p, Unk_StlTag) { FUN_14027d5a0((void*)p); FUN_14027d4d0((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274ae0
-i64 FUN_140274ae0(i64 p, Unk_StlTag) { FUN_14027d5b0(p); FUN_14027d510((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+i64 FUN_140274ae0(i64 p, Unk_StlTag) { FUN_14027d5b0((void*)p); FUN_14027d510((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
 // pair<unsigned,unsigned> built piecewise (key from the tuple, value zero-initialized).
 struct Unk_PairU32 { unsigned first; unsigned second; };
 // pair<iterator, bool>: the iterator is a one-pointer struct, copied whole.
@@ -85,7 +113,7 @@ i64* FUN_140274b10(i64* out, i64 a, i64 b)
 i64 FUN_140274b60(i64 out, Unk_StlTag, i64 a, i64 b)
 {
     FUN_14027c1c0(a);
-    FUN_1402749f0((i64)&((Unk_WcSelf*)out)->m_0, *FUN_140162f10(b));
+    FUN_1402749f0((i64)&((Unk_WcSelf*)out)->m_0, *(char*)&reinterpret_cast<std::_Zero_then_variadic_args_t&>(std::forward<std::_Zero_then_variadic_args_t>(*reinterpret_cast<std::_Zero_then_variadic_args_t*>(b))));
     return out;
 }
 // @0x140274bb0
@@ -124,7 +152,7 @@ i64* FUN_140274d10(i64* out, i64 a, i64 b)
 // @0x140274d60
 i64* FUN_140274d60(i64* out, i64 a, i64, Unk_StlTag, Unk_StlTag)
 {
-    ((Unk_PairU32*)out)->first = *FUN_14027c270(FUN_14027c410(a));
+    ((Unk_PairU32*)out)->first = *(unsigned*)FUN_14027c270((i64*)FUN_14027c410(a));
     ((Unk_PairU32*)out)->second = 0;
     return out;
 }
@@ -163,7 +191,7 @@ void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims)
     int pos = 0;
     CStringW token = text.Tokenize(delims, pos);
     while (!token.IsEmpty()) {
-        FUN_1401855a0(ids, FUN_140274f40(token));
+        reinterpret_cast<ATL::CAtlArray<unsigned>*>(ids)->Add(FUN_140274f40(token));
         token = text.Tokenize(delims, pos);
     }
 }
@@ -173,7 +201,7 @@ void FUN_140275080(CString& text, void* out, const char* delims)
     int pos = 0;
     CString token = text.Tokenize(delims, pos);
     while (!token.IsEmpty()) {
-        FUN_14028b2d0(out, FUN_14015efc0(token));
+        reinterpret_cast<VStr*>(out)->push_back(Unk_CopyString(token));
         token = text.Tokenize(delims, pos);
     }
 }
@@ -183,7 +211,7 @@ void FUN_140275180(CStringW& text, void* out, const wchar_t* delims)
     int pos = 0;
     CStringW token = text.Tokenize(delims, pos);
     while (!token.IsEmpty()) {
-        FUN_14028b2d0(out, FUN_140274f70(token));
+        reinterpret_cast<VStr*>(out)->push_back(FUN_140274f70(token));
         token = text.Tokenize(delims, pos);
     }
 }
@@ -257,65 +285,65 @@ void FUN_140276a10(i64* p, i64 n, Unk_StlTag) { *p += n * 0x10; }
 void FUN_140276a40(i64 it, i64 n, Unk_StlTag)
 {
     for (; 0 < n; n = n - 1)
-        FUN_14027f550(it);
+        reinterpret_cast<LHist::iterator*>(it)->operator++();
     for (; n < 0; n = n + 1)
-        FUN_14027f700(it);
+        reinterpret_cast<LHist::iterator*>(it)->operator--();
 }
 // vector::_Assign_range(first, last, forward_iterator_tag) for 8- and 16-byte elements.
 // @0x140276aa0
 void FUN_140276aa0(i64 vec, i64 first, i64 last, Unk_StlTag)
 {
-    u64 newsize = FUN_1401a4580(FUN_14027bc40(first, last));
-    FUN_140288c60(vec);
-    u64 oldsize = FUN_14028b430(vec);
-    u64 oldcapacity = FUN_14028a2c0(vec);
+    u64 newsize = std::_Convert_size<unsigned __int64>(FUN_14027bc40(first, last));
+    reinterpret_cast<VXml*>(vec)->_Orphan_all();
+    u64 oldsize = reinterpret_cast<VI64*>(vec)->size();
+    u64 oldcapacity = reinterpret_cast<VI64*>(vec)->capacity();
     if (newsize > oldcapacity) {
-        if (newsize > FUN_14028b090(vec))
+        if (newsize > reinterpret_cast<VI64*>(vec)->max_size())
             FUN_140289ea0();
         u64 newcapacity = FUN_140286ec0(vec, newsize);
-        if (*FUN_140288980(vec) != 0) {
-            FUN_1402875b0(vec, *FUN_140288980(vec), *FUN_140288ae0(vec));
-            FUN_14028a7d0(FUN_1402882f0(vec), *FUN_140288980(vec), oldcapacity);
+        if ((i64)reinterpret_cast<VRemake*>(vec)->_Myfirst() != 0) {
+            FUN_1402875b0(vec, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
+            reinterpret_cast<std::allocator<__int64>*>(&reinterpret_cast<VRemake*>(vec)->_Getal())->deallocate((__int64*)reinterpret_cast<VRemake*>(vec)->_Myfirst(), oldcapacity);
         }
         FUN_140286a60(vec, newcapacity);
-        *FUN_140288ae0(vec) = FUN_14027a8c0(vec, first, last, *FUN_140288980(vec));
+        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = FUN_14027a8c0(vec, first, last, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
     } else if (newsize > oldsize) {
         i64 mid = FUN_14027c420(first, oldsize);
-        FUN_140277230(first, mid, *FUN_140288980(vec));
-        *FUN_140288ae0(vec) = FUN_14027a8c0(vec, mid, last, *FUN_140288ae0(vec));
+        FUN_140277230(first, mid, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
+        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = FUN_14027a8c0(vec, mid, last, *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
     } else {
-        i64 newlast = *FUN_140288980(vec) + newsize * 8;
-        FUN_140277230(first, last, *FUN_140288980(vec));
-        FUN_1402875b0(vec, newlast, *FUN_140288ae0(vec));
-        *FUN_140288ae0(vec) = newlast;
+        i64 newlast = (i64)reinterpret_cast<VRemake*>(vec)->_Myfirst() + newsize * 8;
+        FUN_140277230(first, last, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
+        FUN_1402875b0(vec, newlast, *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
+        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = newlast;
     }
 }
 // @0x140276d40
 void FUN_140276d40(i64 vec, i64 first, i64 last, Unk_StlTag)
 {
-    u64 newsize = FUN_1401a4580(FUN_14027bca0(first, last));
-    FUN_140288ce0(vec);
-    u64 oldsize = FUN_14028b540(vec);
-    u64 oldcapacity = FUN_14028a3d0(vec);
+    u64 newsize = std::_Convert_size<unsigned __int64>(FUN_14027bca0(first, last));
+    reinterpret_cast<VI64*>(vec)->_Orphan_all();
+    u64 oldsize = reinterpret_cast<VLog*>(vec)->size();
+    u64 oldcapacity = reinterpret_cast<VLog*>(vec)->capacity();
     if (newsize > oldcapacity) {
-        if (newsize > FUN_14028b1d0(vec))
+        if (newsize > reinterpret_cast<VLog*>(vec)->max_size())
             FUN_140289f20();
         u64 newcapacity = FUN_140287100(vec, newsize);
-        if (*FUN_140288a80(vec) != 0) {
-            FUN_1402876b0(vec, *FUN_140288a80(vec), *FUN_140288be0(vec));
-            FUN_14028a890(FUN_1402883f0(vec), *FUN_140288a80(vec), oldcapacity);
+        if ((i64)reinterpret_cast<VLog*>(vec)->_Myfirst() != 0) {
+            FUN_1402876b0(vec, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
+            reinterpret_cast<VLog*>(vec)->_Getal().deallocate((PLog*)reinterpret_cast<VLog*>(vec)->_Myfirst(), oldcapacity);
         }
         FUN_140286b50(vec, newcapacity);
-        *FUN_140288be0(vec) = FUN_14027a940(vec, first, last, *FUN_140288a80(vec));
+        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = FUN_14027a940(vec, first, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
     } else if (newsize > oldsize) {
         i64 mid = FUN_14027c450(first, oldsize);
-        FUN_140277280(first, mid, *FUN_140288a80(vec));
-        *FUN_140288be0(vec) = FUN_14027a940(vec, mid, last, *FUN_140288be0(vec));
+        FUN_140277280(first, mid, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
+        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = FUN_14027a940(vec, mid, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
     } else {
-        i64 newlast = *FUN_140288a80(vec) + newsize * 0x10;
-        FUN_140277280(first, last, *FUN_140288a80(vec));
-        FUN_1402876b0(vec, newlast, *FUN_140288be0(vec));
-        *FUN_140288be0(vec) = newlast;
+        i64 newlast = (i64)reinterpret_cast<VLog*>(vec)->_Myfirst() + newsize * 0x10;
+        FUN_140277280(first, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
+        FUN_1402876b0(vec, newlast, *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
+        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = newlast;
     }
 }
 // @0x140276fe0
@@ -324,13 +352,13 @@ i64 FUN_140276fe0(i64, i64 b, i64) { return b; }
 // @0x140277000
 i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
 {
-    Unk_140277000* node = (Unk_140277000*)FUN_140286de0(list);
+    Unk_140277000* node = (Unk_140277000*)reinterpret_cast<MapII*>(list)->_Buynode0();
     node->m_color = 0;
     node->m_isNil = 0;
     try {
-        FUN_14027b790(FUN_140288290(list), FUN_14027b540(node->m_value), FUN_140162ef0(a), FUN_14027c230(b), FUN_140162f40(c));
+        FUN_14027b790((i64)&reinterpret_cast<MapII*>(list)->_Getal(), FUN_14027b540((i64)&node->m_value), (i64)&std::forward<const std::piecewise_construct_t&>(*reinterpret_cast<const std::piecewise_construct_t*>(a)), FUN_14027c230(b), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*reinterpret_cast<std::tuple<>*>(c))));
     } catch (...) {
-        FUN_140287df0(list, (i64)node);
+        reinterpret_cast<MapPUI*>(list)->_Freeheadnode((NodePUI*)node);
         throw;
     }
     return (i64)node;
@@ -341,12 +369,12 @@ struct Unk_ListNode { i64 m_next; i64 m_prev; i64 m_value; };
 // @0x1402770d0
 i64 FUN_1402770d0(i64 list, i64 a, i64 b, i64 c)
 {
-    Unk_ListNode* node = (Unk_ListNode*)FUN_140286d20(list, a, b);
-    i64 al = FUN_140288250(list);
+    Unk_ListNode* node = (Unk_ListNode*)reinterpret_cast<LHist*>(list)->_Buynode0((NodeHist*)a, (NodeHist*)b);
+    i64 al = (i64)&reinterpret_cast<LHist*>(list)->_Getal();
     try {
-        FUN_14027bac0(al, FUN_14027b550(node->m_value), FUN_14027c1e0(c));
+        FUN_14027bac0(al, FUN_14027b550((i64)&node->m_value), FUN_14027c1e0(c));
     } catch (...) {
-        FUN_14028a770(al, (i64)node, 1);
+        reinterpret_cast<std::allocator<NodeHist>*>(al)->deallocate((NodeHist*)node, 1);
         throw;
     }
     return (i64)node;
@@ -364,7 +392,7 @@ i64 FUN_140277170(i64 first, i64 last, i64 dest, Unk_StlTag)
 i64 FUN_1402771d0(i64 first, i64 last, i64 dest, Unk_StlTag)
 {
     for (; first != last; dest += 0x10, first += 0x10)
-        FUN_14027eaf0(dest, first);
+        reinterpret_cast<PLog*>(dest)->operator=(*reinterpret_cast<PLog*>(first));
     return dest;
 }
 // @0x140277230
@@ -385,7 +413,7 @@ void FUN_1402772d0(i64, i64, i64, Unk_StlTag) {}
 void FUN_1402772f0(i64 first, i64 last, i64 al, Unk_StlTag)
 {
     for (; first != last; first += 0x30) {
-        FUN_14027bb90(al, FUN_14027a990(first));
+        FUN_14027bb90(al, (Unk_VDtor*)FUN_14027a990(first));
     }
 }
 // @0x140277350
@@ -441,7 +469,7 @@ void FUN_1402776f0(i64 self, i64 v)
 // @0x140277750
 void FUN_140277750(i64 self, i64 v)
 {
-    FUN_14027b930(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), FUN_140180940(v));
+    FUN_14027b930(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), (i64)&std::forward<CString&>(*reinterpret_cast<CString*>(v)));
     ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 8;
 }
 // @0x1402777b0
@@ -465,7 +493,7 @@ void FUN_140277870(i64 self, i64 v)
 // @0x1402778d0
 void FUN_1402778d0(i64 self, i64 v)
 {
-    FUN_14027b980(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), FUN_140180c50(v));
+    FUN_14027b980(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
     ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 8;
 }
 // @0x140277930
@@ -478,167 +506,167 @@ void FUN_140277930(i64 self, i64 v)
 // @0x140277990
 void FUN_140277990(i64 vec, i64 v)
 {
-    FUN_14027ba20(FUN_1402883b0(vec), FUN_14027a9b0(*FUN_140288ba0(vec)), FUN_14027c1d0(v));
-    FUN_140288d20(vec, *FUN_140288ba0(vec), *FUN_140288ba0(vec));
-    i64 result = *FUN_140288ba0(vec);
-    *FUN_140288ba0(vec) += 0x10;
+    FUN_14027ba20((i64)&reinterpret_cast<VIng*>(vec)->_Getal(), FUN_14027a9b0(*(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()), FUN_14027c1d0(v));
+    FUN_140288d20(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+    i64 result = *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
+    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() += 0x10;
 }
 // @0x140277a50
 void FUN_140277a50(i64 vec, i64 v)
 {
-    FUN_14027b8e0(FUN_140288330(vec), FUN_14027a990(*FUN_140288b20(vec)), FUN_14027c200(v));
-    FUN_140288d00(vec, *FUN_140288b20(vec), *FUN_140288b20(vec));
-    i64 result = *FUN_140288b20(vec);
-    *FUN_140288b20(vec) += 0x30;
+    FUN_14027b8e0((i64)&reinterpret_cast<VItem*>(vec)->_Getal(), FUN_14027a990(*(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast()), FUN_14027c200(v));
+    FUN_140288d00(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast());
+    i64 result = *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast();
+    *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast() += 0x30;
 }
 // @0x140277b10
 void FUN_140277b10(i64 vec, i64 v)
 {
-    FUN_14027b980(FUN_140288370(vec), FUN_14027a9a0(*FUN_140288b60(vec)), FUN_140180c50(v));
-    FUN_140288d10(vec, *FUN_140288b60(vec), *FUN_140288b60(vec));
-    i64 result = *FUN_140288b60(vec);
-    *FUN_140288b60(vec) += 8;
+    FUN_14027b980((i64)&reinterpret_cast<VStr*>(vec)->_Getal(), FUN_14027a9a0(*(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast()), (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
+    FUN_140288d10(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast());
+    i64 result = *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast();
+    *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast() += 8;
 }
 // @0x140277bd0
 void FUN_140277bd0(i64 vec, i64 v)
 {
-    FUN_14027ba70(FUN_1402883b0(vec), FUN_14027a9b0(*FUN_140288ba0(vec)), FUN_14027c210(v));
-    FUN_140288d20(vec, *FUN_140288ba0(vec), *FUN_140288ba0(vec));
-    i64 result = *FUN_140288ba0(vec);
-    *FUN_140288ba0(vec) += 0x10;
+    FUN_14027ba70((i64)&reinterpret_cast<VIng*>(vec)->_Getal(), FUN_14027a9b0(*(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()), FUN_14027c210(v));
+    FUN_140288d20(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+    i64 result = *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
+    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() += 0x10;
 }
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
 // MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140277c90
 i64 FUN_140277c90(i64 vec, i64 where, i64 v)
 {
-    i64 off = (where - *FUN_140288a40(vec)) >> 4;
-    i64 al = FUN_1402883b0(vec);
-    i64 oldsize = FUN_14028b500(vec);
-    if (oldsize == FUN_14028b180(vec))
+    i64 off = (where - *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst()) >> 4;
+    i64 al = (i64)&reinterpret_cast<VIng*>(vec)->_Getal();
+    i64 oldsize = reinterpret_cast<VIng*>(vec)->size();
+    if (oldsize == reinterpret_cast<VIng*>(vec)->max_size())
         FUN_140289f00();
     i64 newsize = oldsize + 1;
     u64 newcap = FUN_140287070(vec, newsize);
-    i64 newvec = FUN_14028a050(al, newcap);
+    i64 newvec = (i64)reinterpret_cast<std::allocator<PIng>*>(al)->allocate(newcap);
     i64 constructed_last = newvec + off * 0x10 + 0x10;
     i64 constructed_first = constructed_last;
     try {
         i64 slot = FUN_14027a9b0(newvec + off * 0x10);
         FUN_14027ba20(al, slot, FUN_14027c1d0(v));
         constructed_first = newvec + off * 0x10;
-        if (where == *FUN_140288ba0(vec)) {
-            FUN_140289cc0(vec, *FUN_140288a40(vec), *FUN_140288ba0(vec), newvec);
+        if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
+            FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
         } else {
-            FUN_140289b00((void*)vec, *FUN_140288a40(vec), where, newvec);
+            FUN_140289b00((void*)vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), where, newvec);
             constructed_first = newvec;
-            FUN_140289b00((void*)vec, where, *FUN_140288ba0(vec), newvec + off * 0x10 + 0x10);
+            FUN_140289b00((void*)vec, where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec + off * 0x10 + 0x10);
         }
     } catch (...) {
         FUN_140287670(vec, constructed_first, constructed_last);
-        FUN_14028a860(al, newvec, newcap);
+        reinterpret_cast<std::allocator<PIng>*>(al)->deallocate((PIng*)newvec, newcap);
         throw;
     }
     FUN_1402873b0(vec, newvec, newsize, newcap);
-    return off * 0x10 + *FUN_140288a40(vec);
+    return off * 0x10 + *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
 }
 // MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140277ee0
 i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
 {
-    i64 off = (where - *FUN_1402889c0(vec)) / 0x30;
-    i64 al = FUN_140288330(vec);
-    i64 oldsize = FUN_14028b470(vec);
-    if (oldsize == FUN_14028b0e0(vec))
+    i64 off = (where - *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst()) / 0x30;
+    i64 al = (i64)&reinterpret_cast<VItem*>(vec)->_Getal();
+    i64 oldsize = reinterpret_cast<VItem*>(vec)->size();
+    if (oldsize == reinterpret_cast<VItem*>(vec)->max_size())
         FUN_140289ec0();
     i64 newsize = oldsize + 1;
     u64 newcap = FUN_140286f50(vec, newsize);
-    i64 newvec = FUN_140289ff0(al, newcap);
+    i64 newvec = (i64)reinterpret_cast<std::allocator<ItemEntity>*>(al)->allocate(newcap);
     i64 constructed_last = newvec + off * 0x30 + 0x30;
     i64 constructed_first = constructed_last;
     try {
         i64 slot = FUN_14027a990(newvec + off * 0x30);
         FUN_14027b8e0(al, slot, FUN_14027c200(v));
         constructed_first = newvec + off * 0x30;
-        if (where == *FUN_140288b20(vec)) {
-            FUN_140289c00(vec, *FUN_1402889c0(vec), *FUN_140288b20(vec), newvec);
+        if (where == *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast()) {
+            FUN_140289c00(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), newvec);
         } else {
-            FUN_140289a80(vec, *FUN_1402889c0(vec), where, newvec);
+            FUN_140289a80(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst(), where, newvec);
             constructed_first = newvec;
-            FUN_140289a80(vec, where, *FUN_140288b20(vec), newvec + off * 0x30 + 0x30);
+            FUN_140289a80(vec, where, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), newvec + off * 0x30 + 0x30);
         }
     } catch (...) {
         FUN_1402875f0(vec, constructed_first, constructed_last);
-        FUN_14028a800(al, newvec, newcap);
+        reinterpret_cast<std::allocator<ItemEntity>*>(al)->deallocate((ItemEntity*)newvec, newcap);
         throw;
     }
     FUN_140287190(vec, newvec, newsize, newcap);
-    return off * 0x30 + *FUN_1402889c0(vec);
+    return off * 0x30 + *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst();
 }
 // MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140278130
 i64 FUN_140278130(i64 vec, i64 where, i64 v)
 {
-    i64 off = (where - *FUN_140288a00(vec)) >> 3;
-    i64 al = FUN_140288370(vec);
-    i64 oldsize = FUN_14028b4c0(vec);
-    if (oldsize == FUN_14028b130(vec))
+    i64 off = (where - *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst()) >> 3;
+    i64 al = (i64)&reinterpret_cast<VStr*>(vec)->_Getal();
+    i64 oldsize = reinterpret_cast<VStr*>(vec)->size();
+    if (oldsize == reinterpret_cast<VStr*>(vec)->max_size())
         FUN_140289ee0();
     i64 newsize = oldsize + 1;
     u64 newcap = FUN_140286fe0(vec, newsize);
-    i64 newvec = FUN_14028a020(al, newcap);
+    i64 newvec = (i64)reinterpret_cast<std::allocator<CString>*>(al)->allocate(newcap);
     i64 constructed_last = newvec + off * 8 + 8;
     i64 constructed_first = constructed_last;
     try {
         i64 slot = FUN_14027a9a0(newvec + off * 8);
-        FUN_14027b980(al, slot, FUN_140180c50(v));
+        FUN_14027b980(al, slot, (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
         constructed_first = newvec + off * 8;
-        if (where == *FUN_140288b60(vec)) {
-            FUN_140289c60(vec, *FUN_140288a00(vec), *FUN_140288b60(vec), newvec);
+        if (where == *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast()) {
+            FUN_140289c60(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), newvec);
         } else {
-            FUN_140289ac0(vec, *FUN_140288a00(vec), where, newvec);
+            FUN_140289ac0(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst(), where, newvec);
             constructed_first = newvec;
-            FUN_140289ac0(vec, where, *FUN_140288b60(vec), newvec + off * 8 + 8);
+            FUN_140289ac0(vec, where, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), newvec + off * 8 + 8);
         }
     } catch (...) {
         FUN_140287630(vec, constructed_first, constructed_last);
-        FUN_14028a830(al, newvec, newcap);
+        reinterpret_cast<std::allocator<CString>*>(al)->deallocate((CString*)newvec, newcap);
         throw;
     }
     FUN_1402872a0(vec, newvec, newsize, newcap);
-    return *FUN_140288a00(vec) + off * 8;
+    return (i64)reinterpret_cast<VStr*>(vec)->_Myfirst() + off * 8;
 }
 // MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140278370
 i64 FUN_140278370(i64 vec, i64 where, i64 v)
 {
-    i64 off = (where - *FUN_140288a40(vec)) >> 4;
-    i64 al = FUN_1402883b0(vec);
-    i64 oldsize = FUN_14028b500(vec);
-    if (oldsize == FUN_14028b180(vec))
+    i64 off = (where - *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst()) >> 4;
+    i64 al = (i64)&reinterpret_cast<VIng*>(vec)->_Getal();
+    i64 oldsize = reinterpret_cast<VIng*>(vec)->size();
+    if (oldsize == reinterpret_cast<VIng*>(vec)->max_size())
         FUN_140289f00();
     i64 newsize = oldsize + 1;
     u64 newcap = FUN_140287070(vec, newsize);
-    i64 newvec = FUN_14028a050(al, newcap);
+    i64 newvec = (i64)reinterpret_cast<std::allocator<PIng>*>(al)->allocate(newcap);
     i64 constructed_last = newvec + off * 0x10 + 0x10;
     i64 constructed_first = constructed_last;
     try {
         i64 slot = FUN_14027a9b0(newvec + off * 0x10);
         FUN_14027ba70(al, slot, FUN_14027c210(v));
         constructed_first = newvec + off * 0x10;
-        if (where == *FUN_140288ba0(vec)) {
-            FUN_140289cc0(vec, *FUN_140288a40(vec), *FUN_140288ba0(vec), newvec);
+        if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
+            FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
         } else {
-            FUN_140289b00((void*)vec, *FUN_140288a40(vec), where, newvec);
+            FUN_140289b00((void*)vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), where, newvec);
             constructed_first = newvec;
-            FUN_140289b00((void*)vec, where, *FUN_140288ba0(vec), newvec + off * 0x10 + 0x10);
+            FUN_140289b00((void*)vec, where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec + off * 0x10 + 0x10);
         }
     } catch (...) {
         FUN_140287670(vec, constructed_first, constructed_last);
-        FUN_14028a860(al, newvec, newcap);
+        reinterpret_cast<std::allocator<PIng>*>(al)->deallocate((PIng*)newvec, newcap);
         throw;
     }
     FUN_1402873b0(vec, newvec, newsize, newcap);
-    return off * 0x10 + *FUN_140288a40(vec);
+    return off * 0x10 + *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
 }
 // node free: destroy the two (three) pointer members, then deallocate the node
 // @0x1402785c0
@@ -647,7 +675,7 @@ void FUN_1402785c0(i64, i64 node) noexcept
     i64 al;
     FUN_14027bb60(&al, FUN_14027b520((i64)&((Unk_WcSelf*)node)->m_0));
     FUN_14027bb60(&al, FUN_14027b520(node + 8));
-    FUN_14028a710(&al, node, 1);
+    std::_Default_allocator_traits<std::allocator<NodeHist>>::deallocate(*reinterpret_cast<std::allocator<NodeHist>*>(&al), (NodeHist*)node, 1);
 }
 // @0x140278630
 void FUN_140278630(i64, i64 node) noexcept
@@ -656,7 +684,7 @@ void FUN_140278630(i64, i64 node) noexcept
     FUN_14027bb70(&al, FUN_14027b530((i64)&((Unk_WcSelf*)node)->m_0));
     FUN_14027bb70(&al, FUN_14027b530(node + 8));
     FUN_14027bb70(&al, FUN_14027b530(node + 0x10));
-    FUN_14028a740(&al, node, 1);
+    std::_Default_allocator_traits<std::allocator<NodeII>>::deallocate(*reinterpret_cast<std::allocator<NodeII>*>(&al), (NodeII*)node, 1);
 }
 // @0x1402786c0
 u64 FUN_1402786c0(u64 count)
@@ -678,7 +706,7 @@ i64 FUN_140278740(i64 p) { return p; }
 // @0x140278750
 i64 FUN_140278750(i64 p) { return p; }
 // @0x140278760
-void FUN_140278760(i64 p) { FUN_140289e90(p); }
+void FUN_140278760(i64 p) { reinterpret_cast<std::initializer_list<__int64>*>(p)->begin(); }
 // @0x140278780
 i64 FUN_140278780(i64 p, i64) { return p; }
 // @0x140278790
@@ -715,7 +743,7 @@ void FUN_1402789b0(i64 al, i64 list, i64 v)
     i64 head = list;
     i64* where = *(i64**)(head + 8);
     i64 node = FUN_1402770d0(al, head, (i64)where, FUN_14027c1e0(v));
-    FUN_140288560(al, 1);
+    reinterpret_cast<LHist*>(al)->_Incsize(1);
     *(i64*)(head + 8) = node;
     *where = node;
 }

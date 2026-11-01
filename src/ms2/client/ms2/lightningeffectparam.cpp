@@ -42,6 +42,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
+#include <NiTexturingProperty.h>
+#include <NiAVObject.h>
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element and attribute helpers (commonfiles\tinyxmlhelper.cpp).
@@ -60,7 +62,6 @@ int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CStr
 bool FUN_14028d470(float a, float b);                               // nearly equal
 CMainSystem* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-const Vector3& FUN_140947900(void* pNode);                  // world translate
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 struct Unk_LightningNiPoint3 : public Vector3 {};
 // NiPoint3(const efd::Point3&) (0x14027dcf0) into a temporary, then NiPoint3::operator=(NiPoint3&&) (0x14097faa0).
@@ -70,9 +71,7 @@ struct Unk_LightningPtPair { Unk_LightningPt3 m_left, m_right; };
 void FUN_14027dcf0(Unk_LightningPt3* p, const Vector3* pPoint);
 void FUN_14097faa0(NiPoint3* p, Unk_LightningPt3* pSrc);
 class Unk_LightningCamera { public: Unk_LightningNiPoint3 FUN_140af0250(); };
-void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
 
 // Random float (about -1..1), tick counter, camera direction.
 float FUN_14109ace0();
@@ -92,14 +91,11 @@ Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 int FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArr);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_1409807b0(NiTexturingProperty* pProp, int n);
-void FUN_1409805c0(NiTexturingProperty* pProp, int n);
-void FUN_1409806e0(NiTexturingProperty* pProp, int n);
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
 void FUN_140a0b6c0(NiWireframeProperty* pProp, int n);
 void FUN_140a0b450(NiStencilProperty* pProp, int n);
-void FUN_1415672e0(NiAVObject* pObj, int n);
+void FUN_1415672e0(NiAVObject*, bool);
 
 // The effect node (400 bytes) carries the effect-space point.
 class Unk_EffectNode : public NiNode
@@ -222,9 +218,9 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spMesh->GetMesh()->SetName("LightningEffect");
 
     m_spTexProp = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-    FUN_1409807b0(m_spTexProp.operator->(), 0);
-    FUN_1409805c0(m_spTexProp.operator->(), 1);
-    FUN_1409806e0(m_spTexProp.operator->(), 0);
+    reinterpret_cast<NiTexturingProperty*>(m_spTexProp.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
+    reinterpret_cast<NiTexturingProperty*>(m_spTexProp.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)1);
+    reinterpret_cast<NiTexturingProperty*>(m_spTexProp.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
     m_spMesh->GetMesh()->AttachProperty(m_spTexProp);
 
     NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -268,7 +264,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spMesh->GetMesh()->AttachProperty(pZBuffer);
 
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), 0);
+    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
     static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
 
     NiPointer<NiSortAdjustNode> spSort = new (efd::MemHint(efd::MemHint::NONE)) NiSortAdjustNode;
@@ -303,10 +299,10 @@ bool LightningEffect::vfunc_9()
 // @0x14144ca70
 void LightningEffect::vfunc_4()
 {
-    static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
+    static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
     static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
     static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-    FUN_141d16040(FUN_1409475f0(&m_spRoot), (float)FUN_14086d260()->FUN_141473280(), true);
+    reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)FUN_14086d260()->FUN_141473280(), true);
     m_b2e = true;
 }
 
@@ -327,7 +323,7 @@ int LightningEffect::vfunc_8(void* p)
 {
     if (FUN_1409475d0(&m_spTarget) != 0)
     {
-        *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
+        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spTarget))->GetWorldTranslate());
         return 1;
     }
     return 0;

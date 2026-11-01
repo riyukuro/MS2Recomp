@@ -58,7 +58,7 @@ public:
     int FUN_1414090c0();                                // may the item be registered on the black market
     int FUN_141409150(CItem* pItem);
     int FUN_14140b6d0(MS2Ptr<CItem> spItem);            // put the item into the trade window
-    int FUN_14140bc50(CStringW strSearch);              // slot index when the item name contains strSearch (-1: no)
+    int MatchSearchName(CStringW strSearch);              // slot index when the item name contains strSearch (-1: no)
     int FUN_14140be60(CItem* pItem);                    // sell the item to the npc shop
     CItem* FUN_14140c030(MS2Ptr<CItem> spItem);         // the worn item the item would replace
     void FUN_14140c100();                               // re-check the item (the quest listener slots)
@@ -94,8 +94,8 @@ public:
     virtual void vfunc_22(void* p) override;            // 0x14140f510
     virtual void vfunc_ugc_2(void* p, CString str) override;   // UIUGCEventListener 0x14140f030
 
-    void FUN_14140f5b0(CItem* pItem);                   // refresh the slot of the item
-    int FUN_14140f620(CStringW strSearch);              // the first slot whose item name contains strSearch
+    void RefreshSlotForItem(CItem* pItem);                   // refresh the slot of the item
+    int FindSlotBySearch(CStringW strSearch);              // the first slot whose item name contains strSearch
     ASDataProvider GetSlotNames();                     // the slot names
     int IsItemInTab(CItem* pItem);                    // the item is in the bag's tab
 

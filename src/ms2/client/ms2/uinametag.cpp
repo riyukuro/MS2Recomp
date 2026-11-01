@@ -35,6 +35,14 @@ static int s_nNameTagMode;                                      // 0x143af45f0
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cpet.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include "ms2/placeholder/cbreakableobject.h"
+#pragma pop_macro("max")
+#pragma pop_macro("min")
+#include "ms2/commonfiles/npcdata.h"
 #include "ms2/commonfiles/pvpinfo.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -74,9 +82,8 @@ struct Unk_NtCfg
     Unk_NtCfgFloat m_848;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-// The display flags (reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()): which tags are shown for whom.
+// The display flags (CGameOption::FUN_140b123b0, viewed as Unk_NtFlags): which tags are shown for whom.
 struct Unk_NtFlags { bool m_0; bool m_1; bool m_2; bool m_3; bool m_4; bool m_5; };
-class Unk_NtFlagHolder { public: Unk_NtFlags* FUN_140b123b0(); };
 
 class Unk_NtUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -120,7 +127,6 @@ struct Unk_NtNpcData
     int m_7c;                                           // rank
     char m_pad_80[0xd8 - 0x80];
     __int64 m_d8[0x1b];                                 // stats (index = stat id)
-    unsigned int FUN_1406cd0d0();
 };
 class Unk_NtNpc : public CNpc
 {
@@ -129,8 +135,6 @@ public:
 class Unk_NtPet : public CPet
 {
 public:
-    unsigned int FUN_140b109f0();                       // tamer oid
-    __int64 FUN_140b10c00();                            // taming point
 };
 struct Unk_NtMountSeat { int FUN_140f48d40(); };
 class Unk_NtMountSeatPtr
@@ -154,7 +158,7 @@ public:
     void* m_pad_00;
     Unk_NtTeam* m_p;
 };
-class Unk_NtSeatSub { public: efd::Point3 FUN_140adf8e0(); };
+class Unk_NtSeatSub { public: };
 // PC with its virtuals after slot 132 (PC itself declares 124..132).
 class Unk_NtPC : public PC
 {
@@ -163,7 +167,6 @@ public:
     Unk_NtMountSeatPtr FUN_141657730();
     Unk_NtTeamPtr FUN_140967420();
 };
-Unk_NtPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 Unk_NtSeatSub* FUN_14165ca20(PC* pPc);
 AdditionalCliList* FUN_1416749a0(PCBase* pActor);
 CStringW* FUN_141656be0(PC* pPc);                       // guild name
@@ -393,7 +396,7 @@ NiPoint3 UINameTag::Entity::vfunc_10()
         if (Unk_NtSeatSub* pSeat = FUN_14165ca20(pPc))
         {
             NiPoint3 base = UIHudEntity::Entity::vfunc_10();
-            NiPoint3 pos(pSeat->FUN_140adf8e0());
+            NiPoint3 pos(((CBreakableObject*)pSeat)->GetPtPos());
             pos.z = base.z;
             return pos;
         }
@@ -487,13 +490,13 @@ void UINameTag::Entity::FUN_141a5f080()
                            (LPCWSTR)FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pNpc))->FUN_14166c930(), s_gosNames), 0),
                            (unsigned int)nLevel,
                            (LPCWSTR)GetStringCommon(aRankStr[nRank]));
-            bool bShop = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->FUN_1406cd0d0() > 0;
+            bool bShop = reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->GetShopId() > 0;
             if (bShop)
-                strInfo.AppendFormat(L" shopID:[%d]", reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->FUN_1406cd0d0());
-            Unk_NtPet* pPet = FUN_1409ffc60(pActor);
+                strInfo.AppendFormat(L" shopID:[%d]", reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->GetShopId());
+            Unk_NtPet* pPet = static_cast<Unk_NtPet*>(efd::DynamicCast<CPet>(pActor));
             if (pPet != 0)
                 strInfo.AppendFormat(L" tamingLevel:[%d], tamerOID:[%d], tamingPoint:[%d]",
-                                     pPet->GetGrade(), pPet->FUN_140b109f0(), pPet->FUN_140b10c00());
+                                     pPet->GetGrade(), pPet->GetKind(), pPet->GetTamingPoint());
         }
         obj.FUN_1407cb9c0("visibleSymbol", m_7c);
         obj.FUN_1407cb9c0("visibleName", m_78);
@@ -612,31 +615,31 @@ int UINameTag::Entity::FUN_141a60920()
         return 0;
     if (FUN_1417ddbf0(pActor ? pActor->GetClassDesc() : 0, 0x6200004))   // the exe uses the exact-class check here
     {
-        FUN_141a60b90(reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_1, reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_0);
+        FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_0);
         return m_78 != 0 || m_7c != 0;
     }
     else if (Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor)))
     {
         if (pPlayer->vfunc_122(pPc) == 0)
         {
-            FUN_141a60b90(reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_1, reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_2);
+            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_2);
         }
         else
         {
-            FUN_141a60b90(reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_1, reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_3);
+            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_3);
         }
         return m_78 != 0 || m_7c != 0;
     }
-    else if (Unk_NtPet* pPet = FUN_1409ffc60(pActor))
+    else if (Unk_NtPet* pPet = static_cast<Unk_NtPet*>(efd::DynamicCast<CPet>(pActor)))
     {
         return 1;
     }
     else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
     {
         if (pNpc->vfunc_116() == 0)
-            return reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_5;
+            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_5;
         else
-            return reinterpret_cast<Unk_NtFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_4;
+            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_4;
     }
     return 0;
 }

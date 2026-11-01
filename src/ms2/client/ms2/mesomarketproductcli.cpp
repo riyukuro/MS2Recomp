@@ -18,20 +18,19 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/client/ms2/blockmanager.h"  // C3: CBlockManager::FindBlockedAction, BlockPtr
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-__int64* FUN_1402c05b0(void* pConstBlock);              // the <constants> record
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
 CStringW FUN_1412757d0(__int64 n);                      // number text
 CStringW FUN_1409404f0(__int64 n);                      // number text, grouped
-CStringW FUN_140719a80(__int64 n);                      // number text
+CStringW FUN_140719a80(unsigned __int64 n);                      // number text
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
-CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& strA, const int& nB);
 void FUN_141b70f90(const CMsTime& kTime, const CStringW& kFormat, CStringW& kOut);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 void FUN_140710590(COutPacket&);                        // send
@@ -46,23 +45,8 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int
 class CUIService;
 
 // The penalty (block) record a result code asks for.
-struct Unk_MesoBlockRef;
-void FUN_1401cb250(Unk_MesoBlockRef*);
-struct Unk_MesoBlockRef
-{
-    void* m_00;
-    void* m_08;
-    ~Unk_MesoBlockRef() { FUN_1401cb250(this); }
-};
-MS2_CHECK_SIZE(Unk_MesoBlockRef, 0x10);
-class Unk_MesoBlockMgr
-{
-public:
-    Unk_MesoBlockRef FUN_140a2f620(int nKind);
-};
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void* FUN_1401cb3d0(Unk_MesoBlockRef* pRef);
-void FUN_140a2ff20(Unk_MesoBlockRef* pRef, int nKind, __int64 n);
+void FUN_140a2ff20(const BlockPtr& spBlock, int nKind, unsigned __int64 n);   // the blocked-action notice
 
 extern __int64 DAT_143ab2898;                           // the highest meso a listing may ask
 
@@ -106,9 +90,9 @@ bool CMesoMarketProductCli::IsExpired()
 }
 
 // @0x140d6d940
-void CMesoMarketProductCli::FUN_140d6d940(ASObj& row)
+void CMesoMarketProductCli::FillOwnRow(ASObj& row)
 {
-    FUN_140d6db30(row);
+    FillCommonRow(row);
     if (IsExpired())
     {
         row.FUN_1409c0e60("subText", L"$s_mesoMarket_own_product_expired");
@@ -127,9 +111,9 @@ void CMesoMarketProductCli::FUN_140d6d940(ASObj& row)
 }
 
 // @0x140d6dab0
-void CMesoMarketProductCli::FUN_140d6dab0(ASObj& row)
+void CMesoMarketProductCli::FillMarketRow(ASObj& row)
 {
-    FUN_140d6db30(row);
+    FillCommonRow(row);
     row.FUN_1409c0e60("subText", L"");
     row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_buy_product");
     if (m_b50)
@@ -137,9 +121,9 @@ void CMesoMarketProductCli::FUN_140d6dab0(ASObj& row)
 }
 
 // @0x140d6db30
-void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
+void CMesoMarketProductCli::FillCommonRow(ASObj& row)
 {
-    __int64 nBase = *FUN_1402c05b0((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6018);
+    __int64 nBase = *reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6018)->Get();
     __int64 nUnit = m_n28;
     if (m_n20 > nBase)
         nUnit = nUnit / (m_n20 / nBase);
@@ -203,7 +187,7 @@ CStringW FUN_140d6e230(int nCurrency)
 {
     int nVSpace = 0;
     CStringW strSrc = FUN_1418fe870(nCurrency, &nVSpace, 0);
-    return FUN_140275590(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace);
+    return StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace);
 }
 
 // @0x140d6e2b0
@@ -235,51 +219,51 @@ void CMesoMarketMan::OnMesoMarket(CInPacket& packet)
     switch (nSub)
     {
     case 0:
-        FUN_140d6eb90(packet);
+        OnMesoMarketResult(packet);
         break;
     case 1:
-        FUN_140d6ebe0(packet);
+        OnMesoMarketLimits(packet);
         break;
     case 2:
-        FUN_140d6ec20(packet);
+        OnMesoMarketCounts(packet);
         break;
     case 4:
-        FUN_140d6eca0(packet);
+        OnMesoMarketOwnList(packet);
         break;
     case 5:
-        FUN_140d6ecf0(packet);
+        OnMesoMarketRegistered(packet);
         break;
     case 6:
-        FUN_140d6ee00(packet);
+        OnMesoMarketOwnRemoved(packet);
         break;
     case 7:
-        FUN_140d6eec0(packet);
+        OnMesoMarketMarketList(packet);
         break;
     case 8:
-        FUN_140d6efb0(packet);
+        OnBuyResult(packet);
     }
 }
 
 // @0x140d6e5b0
-void CMesoMarketMan::FUN_140d6e5b0(ASArray& rows)
+void CMesoMarketMan::FillOwnRows(ASArray& rows)
 {
     for (POSITION pos = m_mapOwn.GetHeadPosition(); pos != 0; m_mapOwn.GetNext(pos))
     {
         MS2Ptr<CMesoMarketProductCli> sp = m_mapOwn.GetValueAt(pos);
         ASObj row(2);
-        sp->FUN_140d6d940(row);
+        sp->FillOwnRow(row);
         rows.FUN_1422bc050(row.FUN_1422bb890());
     }
 }
 
 // @0x140d6e6d0
-void CMesoMarketMan::FUN_140d6e6d0(ASArray& rows)
+void CMesoMarketMan::FillMarketRows(ASArray& rows)
 {
     for (unsigned i = 0; i < m_arrMarket.GetCount(); i++)
     {
         MS2Ptr<CMesoMarketProductCli> sp = m_arrMarket[i];
         ASObj row(2);
-        sp->FUN_140d6dab0(row);
+        sp->FillMarketRow(row);
         rows.FUN_1422bc050(row.FUN_1422bb890());
     }
 }
@@ -309,7 +293,7 @@ Unk_MesoLimits& CMesoMarketMan::GetLimits()
 }
 
 // @0x140d6e960
-bool CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
+bool CMesoMarketMan::CanRegister(__int64 nMeso, __int64 nPrice)
 {
     if (nMeso > DAT_143ab2898)
     {
@@ -337,7 +321,7 @@ bool CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
 }
 
 // @0x140d6ea50
-bool CMesoMarketMan::FUN_140d6ea50(unsigned __int64 qwId)
+bool CMesoMarketMan::CanBuy(unsigned __int64 qwId)
 {
     MS2Ptr<CMesoMarketProductCli> sp;
     if (!m_mapMarket.Lookup(qwId, sp))
@@ -371,34 +355,34 @@ int CMesoMarketMan::GetBuy()
 }
 
 // @0x140d6eb90
-void CMesoMarketMan::FUN_140d6eb90(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketResult(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
     ShowResultMessage(nCode);
 }
 
 // @0x140d6ebe0
-void CMesoMarketMan::FUN_140d6ebe0(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketLimits(CInPacket& packet)
 {
     m_limits.Read(packet);
 }
 
 // @0x140d6ec20
-void CMesoMarketMan::FUN_140d6ec20(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketCounts(CInPacket& packet)
 {
     m_nOwn = packet.ReadInt32();
     m_nBuy = packet.ReadInt32();
 }
 
 // @0x140d6eca0
-void CMesoMarketMan::FUN_140d6eca0(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketOwnList(CInPacket& packet)
 {
     m_mapOwn.RemoveAll();
     FUN_140d701a0(packet, m_mapOwn);
 }
 
 // @0x140d6ecf0
-void CMesoMarketMan::FUN_140d6ecf0(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketRegistered(CInPacket& packet)
 {
     MS2Ptr<CMesoMarketProductCli> sp(new CMesoMarketProductCli);
     sp->Read(packet);
@@ -407,7 +391,7 @@ void CMesoMarketMan::FUN_140d6ecf0(CInPacket& packet)
 }
 
 // @0x140d6ee00
-void CMesoMarketMan::FUN_140d6ee00(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketOwnRemoved(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
@@ -417,7 +401,7 @@ void CMesoMarketMan::FUN_140d6ee00(CInPacket& packet)
 }
 
 // @0x140d6eec0
-void CMesoMarketMan::FUN_140d6eec0(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarketMarketList(CInPacket& packet)
 {
     m_arrMarket.RemoveAll();
     m_mapMarket.RemoveAll();
@@ -427,7 +411,7 @@ void CMesoMarketMan::FUN_140d6eec0(CInPacket& packet)
 }
 
 // @0x140d6efb0
-void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
+void CMesoMarketMan::OnBuyResult(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
@@ -512,9 +496,9 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
     case 0x13:
     {
         int nKind = (nCode == 0x13) ? 0x27 : 0x28;
-        Unk_MesoBlockRef block = ((class Unk_MesoBlockMgr*)FUN_140a6a830())->FUN_140a2f620(nKind);
-        if (FUN_1401cb3d0(&block) != 0)
-            FUN_140a2ff20(&block, nKind, 0);
+        BlockPtr block = ((CBlockManager*)FUN_140a6a830())->FindBlockedAction(nKind);
+        if (block.get() != 0)
+            FUN_140a2ff20(block, nKind, 0);
     }
         break;
         break;      // the exe has a second jmp to the switch end here

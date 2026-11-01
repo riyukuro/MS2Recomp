@@ -81,6 +81,9 @@ static CStringW s_remakeOptionBindPet(L"remakeOptionBindPet");
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/ascript.h"
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 #ifdef __clang__
@@ -99,8 +102,6 @@ class Unk_PetButton : public ASMovieClip
 {
 public:
     Unk_PetButton(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-    void FUN_1422c1fe0(unsigned int nFrame);                            // go to the state frame
-    void FUN_1422cdfb0(const CStringW& strLabel);                       // the button label
 private:
     unsigned char m_pad_80[8];
 };
@@ -115,9 +116,6 @@ public:
     PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
 #undef PB_V
     virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                // set the bag id
-    void FUN_1422dd1d0();                                               // drop the selection
-    void FUN_1422dcca0(int nIndex);                                     // select a slot
 private:
     unsigned char m_pad_80[8];
 };
@@ -153,10 +151,10 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-float FUN_1411e1110(Unk_PetEquipSet* pSet, int nStat);
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
+    float GetAbilityRate(SAType eType);   // 0x1411e1110
     void FUN_1411e7660();
 };
 
@@ -236,7 +234,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14042cb90(CStringW strKey, const float& f);
-CStringW FUN_1419021b0(int nHave, int nNeed);                           // "have/need"
+CStringW FUN_1419021b0(unsigned int, unsigned int);                           // "have/need"
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 int FUN_1407181d0(const CString& str);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
@@ -323,8 +321,8 @@ void PetRemakeOptionPetCard::vfunc_4()
         CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140b95220(ids);
         FUN_140b773a0(&m_strBag, ids);
-        bag->FUN_1422dd1d0();
-        bag->FUN_1407cba60("bagId", m_strBag);
+        reinterpret_cast<MS2Ptr<ASCoreList>&>(bag)->FUN_1422dd1d0();
+        reinterpret_cast<MS2Ptr<AScript>&>(bag)->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
     }
 }
@@ -373,8 +371,8 @@ void PetRemakeOptionPetIngredient::vfunc_4()
             m_pOwner->FUN_140b95250(items);
             FUN_140b77e50(&m_strBag);
             FUN_140b77cf0(&m_strBag, items);
-            bag->FUN_1422dd1d0();
-            bag->FUN_1407cba60("bagId", m_strBag);
+            reinterpret_cast<MS2Ptr<ASCoreList>&>(bag)->FUN_1422dd1d0();
+            reinterpret_cast<MS2Ptr<AScript>&>(bag)->FUN_1407cba60("bagId", m_strBag);
             bag->vfunc_24(true);
         }
     }
@@ -428,7 +426,7 @@ void PetRemakeOptionBoard::vfunc_3()
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_submit");
-            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
     bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
@@ -458,7 +456,7 @@ void PetRemakeOptionBoard::vfunc_4()
         return;
     {
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
-            submit->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(0);
     }
     board->Invoke("ClearData");
 }
@@ -502,7 +500,7 @@ void PetRemakeOptionBoard::vfunc_6(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_apply");
-            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
 }
@@ -545,7 +543,7 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_retry");
-            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
 }
@@ -580,14 +578,14 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     ASObj obj(2);
     obj.FUN_1407cbb20(s_itemName, pet->FUN_140527b10());
     obj.FUN_1409c48f0(s_itemLevel, pet->FUN_140528c20());
-    obj.FUN_1407cba60("bagId", m_strBag);
+    reinterpret_cast<AScript*>(&obj)->FUN_1407cba60("bagId", m_strBag);
     int nRemakeCount = pet->FUN_140527300();
     CStringW strCount = FUN_14062b4f0(CStringW(L"s_pet_remake_option_count"), &nRemakeCount);
     obj.FUN_1407cbb20("remakeCount", strCount);
     unsigned nFrame = (FUN_140b937c0(obj, ItemPtr(pet)) != 0 || ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode() != 0) ? 1 : 0;
     {
         if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
-            submit->FUN_1422c1fe0(nFrame);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(nFrame);
     }
     unsigned nOptionCount = 0;
     Unk_RemakeStat stat(2, ItemPtr(pet), true);
@@ -651,7 +649,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     unsigned nRate = 0;
     Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player != 0)
-        nRate = (unsigned)(__int64)(FUN_1411e1110(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0()), 0xad) * 10000.0f);
+        nRate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0()))->GetAbilityRate((SAType)0xad) * 10000.0f);
     int nSale = FUN_140616c50(MS2Ptr<CItemData>(data), &nDiscount, nRate);
     __int64 nFee = 0;
     int bEnough = 1;
@@ -669,7 +667,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
         if (pIngredient->InitWithCount(nItemId, nRank, 0, nNeed) != 0)
         {
             CString strKey = StringFormat("{0}.ingredient.{1}", m_strBag, i);
-            entry.FUN_1407cba60("binding", FUN_140b94260(pIngredient, CString(strKey), m_names));
+            reinterpret_cast<AScript*>(&entry)->FUN_1407cba60("binding", FUN_140b94260(pIngredient, CString(strKey), m_names));
             int nHave = FUN_140b94340(ItemPtr(pIngredient));
             int nCount = nSale != 0 ? FUN_140616d40(nNeed, nDiscount) : nNeed;
             if (nType != 0x60 && nHave < nCount)
@@ -1182,7 +1180,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         if (ingredient)
         {
             if (MS2Ptr<Unk_PetButton> bag = ingredient->FUN_140accef0<Unk_PetButton>("m_itemBag"))
-                bag->FUN_1422c1fe0(1);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(1);
         }
     }
     else
@@ -1191,7 +1189,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         if (ingredient)
         {
             if (MS2Ptr<Unk_PetButton> bag = ingredient->FUN_140accef0<Unk_PetButton>("m_itemBag"))
-                bag->FUN_1422c1fe0(0);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(0);
         }
     }
 }
@@ -1428,7 +1426,7 @@ void TabContentsPetRemakeOption::OnClickRetry()
     if (card)
     {
         if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
-            bag->FUN_1422dcca0(m_nPetIndex);
+            reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(m_nPetIndex);
     }
     FUN_140b96520(2);
     vfunc_2(0xe);
@@ -1528,7 +1526,7 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
     {
         {
             if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
-                submit->FUN_1422c1fe0(1);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(1);
         }
         CAtlArray<unsigned __int64> ids;
         ids.Add(m_uidPet);
@@ -1536,7 +1534,7 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
         ASObj obj(2);
         obj.FUN_1407cbb20(s_itemName, m_pet->FUN_140527b10());
         obj.FUN_1409c48f0(s_itemLevel, m_pet->FUN_140528c20());
-        obj.FUN_1407cba60("bagId", m_board->FUN_140b9ad20());
+        reinterpret_cast<AScript*>(&obj)->FUN_1407cba60("bagId", m_board->FUN_140b9ad20());
         int nRemakeCount = m_pet->FUN_140527300();
         CStringW strCount = FUN_14062b4f0(CStringW(L"s_pet_remake_option_count"), &nRemakeCount);
         obj.FUN_1407cbb20("remakeCount", strCount);

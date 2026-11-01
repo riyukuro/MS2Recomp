@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\terrainexportscheduler.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "terrainexportscheduler.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: WorldService::FUN_141bd3060
 #include "hook/ms2hook.h"
 
 // @0x14183e270
@@ -17,7 +18,7 @@ void TerrainExportScheduler::FUN_14183e2c0(unsigned char select)
     m_cur = 0;
     Unk_TESMapList list;
     list.FUN_140374090();
-    int curId = FUN_1403ed2d0()->FUN_141bd3060();
+    int curId = reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd3060();
     int index = 0;
     Unk_TESMapList* range = &list;
     Unk_TESMapRecord* it = range->FUN_140704520();

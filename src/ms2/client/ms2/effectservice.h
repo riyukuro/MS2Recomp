@@ -128,8 +128,8 @@ public:
     void SetMovement(INodeMovement* pMovement);               // set the movement
     void SetOnGround(int bOnGround);                          // snap to the ground
     void SetRotationTarget(NiAVObject* pTarget);                    // rotation target (ignored if this)
-    void FUN_1411a4000(const NiMatrix3& kRot);                  // local + own rotation
-    void FUN_1411a4040(const NiPoint3& kPos);                   // local + own translation
+    void SetRotation(const NiMatrix3& kRot);                  // local + own rotation
+    void SetTranslation(const NiPoint3& kPos);                   // local + own translation
 
     static const NiRTTI ms_RTTI;
 
@@ -268,10 +268,10 @@ public:
     void FUN_1411a69e0(unsigned nId);                           // stop the id once every effect is done (vfunc_11)
     NiNode* GetLeastLoadedRoot();                                    // the root with the fewest children
     void FUN_1411a6490();                                       // drop the finished effects and the empty groups
-    void FUN_1411a6be0();                                       // detach every child of the roots
-    void FUN_1411a6d50(NiAVObject* pChild);                     // detach pChild from the roots
+    void DetachAllChildren();                                       // detach every child of the roots
+    void DetachChildFromRoots(NiAVObject* pChild);                     // detach pChild from the roots
     void AddTracked(Unk_EsTracked* p);                       // keep p
-    void FUN_1411a6f00(const egf::EntityID& id);                // drop the kept object of an entity
+    void RemoveTracked(const egf::EntityID& id);                // drop the kept object of an entity
     void FUN_1411a7000(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8253 added
     void FUN_1411a7070(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
     void FUN_1411a7330(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8196 updated
@@ -285,7 +285,7 @@ public:
     void FUN_1411a7960(unsigned nIndex);                        // show preloaded sky object nIndex on the root
     void SetRainEnabled(bool bRain);                             // create / drop the rain
     void DestroyRain();
-    void FUN_1411a7e00(const CString& strName);                 // set the area effect (stops the playing one)
+    void SetAreaEffectName(const CString& strName);                 // set the area effect (stops the playing one)
     void FUN_1411a7e80(int nType);                              // pick the area effect of a weather type
     unsigned FUN_1411a85a0();                                   // the effect count
     unsigned FUN_1411a85c0();
@@ -304,7 +304,7 @@ public:
     void SetTick(unsigned nTick);
     unsigned GetTick();
     bool IsEffectTypeVisible(int nType);                              // false when the option hides that effect type
-    static unsigned FUN_1411a9230();                            // next effect id (never 0)
+    static unsigned NextEffectId();                            // next effect id (never 0)
     static unsigned s_nLastId;                                  // 0x1439f7038
 
     MS2_LAYOUT_FRIEND;

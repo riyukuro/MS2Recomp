@@ -126,6 +126,9 @@ public:
     void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
     void FUN_1422dfce0(const CStringW& strLabel);                       // append an entry
     void FUN_1422dfc10();                                               // remove every entry
+    unsigned FUN_1422dfb90();                                           // the entry count (0 without a data provider)
+    CStringW FUN_1422dfe00();                                           // the selected row's "label"
+    void FUN_1422dfc70(const class ASObj& row);                         // append a row object
     void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider" (asdropdownmenu.cpp)
     MS2Ptr<class ASDataProvider> GetDataProvider();                       // "dataProvider" (asdropdownmenu.cpp)
     void FUN_140f1fe00(const CString& strMember, __int64* pOut);        // 0x140f1fe00 the selected entry's member (inline COMDAT, defined in uiblackmarketpagemeso.cpp)

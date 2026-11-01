@@ -19,6 +19,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -44,7 +45,6 @@ extern Unk_AttendTable g_stampTable;                    // 0x143ab3010
 
 // The world manager (singleton accessor 0x1403ed2d0).
 class Unk_StampUIMgr { public: void FUN_141adc530(int nClass); };
-class Unk_StampItem { public: CString FUN_14053fdd0(); };
 NotifySystem* FUN_140939a10();
 
 // A quest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
@@ -75,7 +75,7 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
 CString FUN_14016a600(const wchar_t*, int);
-Unk_GalleryPtr<Unk_StampItem> FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -398,9 +398,9 @@ MS2_REPLACE_METHOD(0x140ED9180, UIStampEventDialog, FUN_140ed9180, 753, 0x2729A4
 CString UIStampEventDialog::FUN_140ed9480(int nItemId)
 {
     if (nItemId == 0) return "";
-    Unk_GalleryPtr<Unk_StampItem> spItem = FUN_14053f870(nItemId);
+    MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem) return "";
-    return spItem->FUN_14053fdd0();
+    return spItem->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x140ED9480, UIStampEventDialog, FUN_140ed9480, 211, 0x4478F50B);
 

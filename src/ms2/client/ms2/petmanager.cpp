@@ -74,10 +74,8 @@ class Unk_PmPetDialog : public UIPetSystemDialog { };
 Unk_PmPetDialog* FUN_140b99ba0(int nId);
 
 // The local player or another player object (a PC). FUN_141663400 clears / sets the worn pet item, FUN_141663450 reads it.
-class Unk_PmSkillLevel : public CPtred {};
 class Unk_PCBaseComp_a78 : public CPtred {};
 class CSkillRecord : public CPtred {};
-class Unk_PmSkillTable { public: MS2Ptr<Unk_PmSkillLevel> FUN_1407ee2f0(int, unsigned short); };
 struct Unk_InventorySkillRequest
 {
     Unk_InventorySkillRequest(int, unsigned short);                // 0x141763fa0
@@ -107,7 +105,6 @@ public:
 class Unk_PmWorld
 {
 public:
-    int FUN_141bd1a10(void* pObject);                       // the entity kind of an object
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_PmPetRowTable : public CPtred { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
@@ -655,11 +652,11 @@ bool CPetInventory::UseItemSkill(ItemPtr spItem)
     }
     if (!((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053d270())
         return false;
-    MS2Ptr<Unk_PmSkillLevel> spLevel = reinterpret_cast<Unk_PmSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053dc20(), 1);
+    MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053dc20(), 1);
     if (spLevel == 0)
         return false;
     Unk_InventorySkillRequest request(((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053dc20(), 1);
-    request.remap = ((class SkillLevelData*)(class Unk_PmSkillLevel*)(spLevel.operator->()))->FUN_140804450();
+    request.remap = spLevel->FUN_140804450();
     request.itemUse = true;
     request.item = spItem->GetItemUid();
     MS2Ptr<CSkillRecord> spRecord = ((Unk_PmSkills*)((MyPC*)(Unk_PmPlayer*)(pPlayer))->FUN_141523bc0())->FUN_141765570(request);
@@ -992,7 +989,7 @@ void CPetManager::OnPetLevelUp(CInPacket& in)
             {
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PmConfig*)FUN_1401d31f0())->m_strLevelUpEffect;
-                ((Unk_EffectTarget&)(kTarget)).m_nKind = reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pPet);
+                ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pPet));
                 ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(pPet->FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
             }

@@ -349,7 +349,7 @@ MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, FUN_1416c2570, 133, 0x325768ED
 CStringW CProxyGameObject::FUN_1416c2600()
 {
     if (FUN_1416c1ff0() != 0) {
-        return ((class Unk_Tbl141bd0cc0*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FUN_141bd0cc0())->FUN_1415281c0();
+        return ((class Unk_Tbl141bd0cc0*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FUN_141bd0cc0())->GetHomeAddress();
     } else {
         {
             Unk_Handle97a h = reinterpret_cast<Unk_Svc97a780*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4880(reinterpret_cast<void*>(m_40));

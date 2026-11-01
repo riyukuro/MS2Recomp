@@ -28,20 +28,20 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextinput.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/ugcdesigntable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/ascript.h"   // C3 type identity: AScript
+#include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/placeholder/clientconstants.h"
 
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;
 
-class Unk_BpButton : public ASMovieClip {
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, size_t);
-};
-class Unk_BpInput : public ASTextInput {
-};
 class Unk_BpImage {
 public: CStringW FUN_14187e9f0(); CStringW FUN_14187ebe0();
 };
@@ -114,25 +114,14 @@ MS2_CHECK_SIZE(CUgcUploadCtrl, 0xe8);
 MS2_CHECK_OFFSET(CUgcUploadCtrl, viewer, 0x98);
 MS2_CHECK_OFFSET(CUgcUploadCtrl, image, 0xa8);
 MS2_CHECK_OFFSET(CUgcUploadCtrl, itemId, 0xb8);
-class Unk_BpItem {
-public:
-    void FUN_140529fd0(CString);
-    __int64 FUN_140528540();
-    __int64 FUN_140526a50();
-    int FUN_1405276c0();
-    int FUN_140526c50();
-};
 class Unk_BpUploadManager : public CUgcManager {
 public:
     Unk_BpPtr<CUgcUploadCtrl> FUN_141882610();
     void FUN_141882450(Unk_BpPtr<CUgcUploadCtrl>);
     bool FUN_141880490(Unk_BpPtr<CUgcUploadCtrl>);
-    void FUN_141882020();
 };
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-class Unk_BpUIManager { public: void FUN_141adc530(int); MS2Ptr<UIObject> FUN_141adcea0(int); };
-class Unk_BpItemManager { public: MS2Ptr<Unk_BpItem> FUN_140a5d680(__int64); };
-extern Unk_BpItemManager g_blueprintItems;
+extern Unk_Inventory g_143ab2a90;                                   // the inventory
 class Unk_BpImageDialog : public UIDialog {
 public: int FUN_140c39820() { return m_type; }
 // @0x140c39850
@@ -144,16 +133,16 @@ private: void* p178; void* p180; int m_type;
 class UIUGCImageUploadDialog { public: virtual ~UIUGCImageUploadDialog(); };
 // @0x140c38e50
 Unk_BpImageDialog* FUN_140c38e50() {
-    Unk_BpUIManager* mgr = reinterpret_cast<Unk_BpUIManager*>(TSingleton<CUIService>::GetInstance());
+    CUIService* mgr = TSingleton<CUIService>::GetInstance();
     if (!mgr) return NULL;
-    MS2Ptr<UIObject> obj = mgr->FUN_141adcea0(Unk_BpImageDialog::FUN_140c39850());
+    MS2Ptr<UIObject> obj = mgr->FindObject((eUIClassID)Unk_BpImageDialog::FUN_140c39850());
     if (obj.IsNull()) return NULL;
     return reinterpret_cast<Unk_BpImageDialog*>(dynamic_cast<UIUGCImageUploadDialog*>((UIObject*)obj));
 }
 MS2_REPLACE(0x140C38E50, FUN_140c38e50, 172, 0x589591CB);
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
-void FUN_1418ffef0(int&, int);
-void FUN_1418ffec0(int&, int);
+void FUN_1418ffef0(unsigned int*, unsigned int);
+void FUN_1418ffec0(unsigned int*, unsigned int);
 struct Unk_BpImageResult {
     void* p0; CStringW path; CStringW other; void* p18;
 };
@@ -163,19 +152,8 @@ public: Scaleform::GFx::Value FUN_140c38f00(const char*, CString, CStringW);
 };
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);
 void FUN_1422bcea0(Scaleform::GFx::Value*, const wchar_t*);
-class Unk_BpASObj : public AScript {
-public:
-    Unk_BpASObj(int); virtual ~Unk_BpASObj();
-    void FUN_1407cbb20(const char*, CStringW);
-    void FUN_1407cb9c0(const char*, int);
-};
-CStringW FUN_1418fec00(int, __int64, int);
-class Unk_BpFee {
-public: Unk_BpCurrency FUN_14089e200();
-    void* p0; void* p8; void* p10; void* p18; void* p20; __int64 cost;
-};
-class Unk_BpFeeManager { public: MS2Ptr<Unk_BpFee> FUN_14089e9f0(int); };
-class Unk_BpSetting { public: int& FUN_1402056b0(); private: void* p0; void* p8; void* p10; void* p18; void* p20; void* p28; void* p30; void* p38; void* p40; void* p48; void* p50; };
+using Unk_BpASObj = AScript;   // C3 type identity: Unk_BpASObj stood in for AScript
+CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);  // a money text (uicommon.cpp)
 class Unk_BpSettings {
 public:
     void* p0;
@@ -5258,13 +5236,13 @@ public:
     void* p9ea8;
     void* p9eb0;
     void* p9eb8;
-    Unk_BpSetting minLength; Unk_BpSetting maxLength;
+    Common::Constants::Value<int> minLength; Common::Constants::Value<int> maxLength;
 };
 MS2_CHECK_OFFSET(Unk_BpSettings, minLength, 0x9ec0);
 MS2_CHECK_OFFSET(Unk_BpSettings, maxLength, 0x9f18);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-#define BP_BIND(name, member, line) do { \
-    m_30->FUN_140bbe640(name, member); \
+#define BP_BIND(bind, name, member, line) do { \
+    m_30->bind(name, member); \
     if (member == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
 } while (0)
 
@@ -5301,19 +5279,18 @@ public:
     ~Delegate();
 private: DelegateImplBase* p;
 };
-class Unk_BpMessage {
+// View of CMsgBoxData (uimessageboxdata.h, not included: this unit has its own Delegate specialization).
+class CMsgBoxData {
 public:
-    void FUN_141a01ee0(MS2Ptr<Unk_BpItem>, const CStringW&, int, int, int, int, int);
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
+    void FUN_141a01ee0(MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);   // item entry
+    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);                  // result callback
 };
-MS2Ptr<Unk_BpMessage> FUN_140d73d20(int, CStringW, int, CStringW);
-void FUN_140d73c60(MS2Ptr<Unk_BpMessage>);
-MS2Ptr<Unk_BpMessage> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
+MS2Ptr<CMsgBoxData> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegate<bool(int, const CMsgBoxData&)>);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412750f0(Unk_BpItem*, int, int, int);
-class Unk_BpFilter { public: int FUN_140225630(CStringW&, CStringW&); };
-class Unk_BpFilterManager { public: MS2Ptr<Unk_BpFilter> FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_BpIdentity {
 public:
@@ -5348,9 +5325,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_BpIdentity, name, 0xd8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-class Unk_BpItemRef {
-public: void FUN_1401bffe0(Unk_BpItem*); void FUN_140692c90(const MS2Ptr<Unk_BpItem>&);
-};
 
 // @0x140c35890
 UIItemBlueprintCreateDialog::UIItemBlueprintCreateDialog() : m_type(0), m_fee(Unk_BpCurrency_Default, 0), m_itemId(0), m_ready(0), m_dirty(0) {
@@ -5364,27 +5338,27 @@ MS2_REPLACE_METHOD(0x140C35AE0, UIItemBlueprintCreateDialog, GetTypeName, 61, 0x
 // @0x140c35b30
 void UIItemBlueprintCreateDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();
-    BP_BIND("m_addIcon", m_addIcon, 44);
-    BP_BIND("m_addImage", m_addImage, 45);
-    BP_BIND("m_create", m_create, 46);
-    BP_BIND("m_inputName", m_input, 47);
+    BP_BIND(FUN_140bbe640, "m_addIcon", m_addIcon, 44);
+    BP_BIND(FUN_140bbe640, "m_addImage", m_addImage, 45);
+    BP_BIND(FUN_140bbe640, "m_create", m_create, 46);
+    BP_BIND(FUN_140bbe940, "m_inputName", m_input, 47);
     if (m_addIcon.get()) m_addIcon->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddIconClick), 0);
     if (m_addImage.get()) m_addImage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddImageClick), 0);
     if (m_create.get()) m_create->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37700), 0);
     if (m_input.get()) m_input->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
     Unk_BpASObj data(2);
-    int minLength = ((class Unk_BpSettings*)FUN_1401d3200())->minLength.FUN_1402056b0();
-    int maxLength = ((class Unk_BpSettings*)FUN_1401d3200())->maxLength.FUN_1402056b0();
+    int minLength = *((class Unk_BpSettings*)FUN_1401d3200())->minLength.Get();
+    int maxLength = *((class Unk_BpSettings*)FUN_1401d3200())->maxLength.Get();
     data.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(L"s_ugc_itemedit_input_name", minLength, maxLength));
     data.FUN_1407cb9c0("ugcNameLengthMax", maxLength);
     {
-    MS2Ptr<Unk_BpFee> fee = reinterpret_cast<Unk_BpFeeManager*>(TSingleton<CUGCDesignTable>::GetInstance())->FUN_14089e9f0(35200000);
+    MS2Ptr<CUGCDesignData> fee = TSingleton<CUGCDesignTable>::GetInstance()->GetData(35200000);
     if (fee == NULL) { vfunc_67(); return; }
-    __int64 cost = fee->cost;
-    Unk_BpCurrency currency = fee->FUN_14089e200();
+    __int64 cost = fee->m_nPrice;
+    Unk_BpCurrency currency = (Unk_BpCurrency)fee->FUN_14089e200();
     if (static_cast<unsigned __int64>(m_itemId) > 0) cost = 0;
     m_fee = std::make_pair(currency, cost);
-    data.FUN_1407cbb20("createFee", FUN_1418fec00(currency, cost, 0));
+    data.FUN_1407cbb20("createFee", FUN_1418fec00(currency, cost, false));
     }
     m_30->Invoke("initData", data.FUN_1422bb870());
     Unk_BpPtr<CUgcViewerBlueprintImage> viewer(new CUgcViewerBlueprintImage);
@@ -5414,13 +5388,13 @@ void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     if (upload.get() != m_upload.get()) return;
     Unk_BpPtr<CUgcUploadCtrl> completed = upload->FUN_1418a4100();
     if (completed == NULL) return;
-    reinterpret_cast<Unk_BpItemRef*>(&m_item)->FUN_1401bffe0(item);
+    m_item.AssignRaw(reinterpret_cast<CItem*>(item));
     CString owner = ((class Unk_BpIdentity*)FUN_1401d31f0())->name;
-    m_item->FUN_140529fd0(owner);
+    m_item->SetName(owner);
     CStringW text = GetStringCommonByKey(L"s_blueprint_msg_item_edit_complete");
-    MS2Ptr<Unk_BpMessage> message = FUN_140d73d20(0x11, text, 0, L"");
+    MS2Ptr<CMsgBoxData> message = FUN_140d73d20(0x11, text, 0, L"");
     if (message == NULL) return;
-    FUN_1412750f0(item, item->FUN_140526c50(), 0x2ba, 0x2b9);
+    FUN_1412750f0(item, reinterpret_cast<CItem*>(item)->GetCount(), 0x2ba, 0x2b9);
     CStringW name = GetTrimmedName();
     message->FUN_141a01ee0(m_item, name, 1, 0, -1, -1, 1);
     message->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));
@@ -5439,7 +5413,7 @@ void UIItemBlueprintCreateDialog::vfunc_72() {
     if (m_30 == NULL) return;
     if (FUN_1418ffe80(m_dirty, 1)) {
         UpdateCreateButtonEnabled();
-        FUN_1418ffef0(m_dirty, 1);
+        FUN_1418ffef0((unsigned int*)&m_dirty, 1);
     }
 }
 MS2_REPLACE_METHOD(0x140C37020, UIItemBlueprintCreateDialog, vfunc_72, 114, 0x363C6D80);
@@ -5462,8 +5436,8 @@ MS2_REPLACE_METHOD(0x140C370A0, UIItemBlueprintCreateDialog, FUN_140c370a0, 685,
 // @0x140c37360
 void UIItemBlueprintCreateDialog::FUN_140c37360(Unk_BpPtr<Unk_BpImage> image, const int& mask) {
     if (image == NULL) return;
-    if (static_cast<bool>(image.get()) && static_cast<bool>(static_cast<const wchar_t*>(image->FUN_14187ebe0()))) FUN_1418ffec0(m_ready, mask);
-    else FUN_1418ffef0(m_ready, mask);
+    if (static_cast<bool>(image.get()) && static_cast<bool>(static_cast<const wchar_t*>(image->FUN_14187ebe0()))) FUN_1418ffec0((unsigned int*)&m_ready, mask);
+    else FUN_1418ffef0((unsigned int*)&m_ready, mask);
 }
 MS2_REPLACE_METHOD(0x140C37360, UIItemBlueprintCreateDialog, FUN_140c37360, 315, 0xEDCB99AB);
 // @0x140c374b0
@@ -5498,7 +5472,7 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     FUN_140c38150();
     CStringW name = GetTrimmedName();
     CStringW& nameRef = name;
-    if (Unk_BpFilter* filter = ((class Unk_BpFilterManager*)FUN_14025e7d0())->FUN_140229a50().get()) {
+    if (CBanTextChecker* filter = FUN_14025e7d0()->GetChecker()) {
         CStringW error;
         if (filter->FUN_140225630(nameRef, error) != 0) {
             FUN_140d73aa0(error, 0, 0, L"");
@@ -5507,10 +5481,10 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     }
     Unk_BpPtr<CUgcUploadCtrl> upload = m_upload;
     if (upload == NULL) return;
-    MS2Ptr<Unk_BpItem> item(0);
-    if (static_cast<unsigned __int64>(upload->itemId) > 0) reinterpret_cast<Unk_BpItemRef*>(&item)->FUN_140692c90(g_blueprintItems.FUN_140a5d680(upload->itemId));
+    MS2Ptr<CItem> item(0);
+    if (static_cast<unsigned __int64>(upload->itemId) > 0) item = g_143ab2a90.FUN_140a5d680(upload->itemId);
     CStringW price;
-    if (item == NULL) price = FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, 0));
+    if (item == NULL) price = FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, false));
     FUN_140d748b0(10, FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms", price),
         GetStringCommonByKey(L"s_ugc_edit_terms_text_content"),
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37d50));
@@ -5519,9 +5493,9 @@ MS2_REPLACE_METHOD(0x140C37700, UIItemBlueprintCreateDialog, FUN_140c37700, 1359
 // @0x140c37c60
 void UIItemBlueprintCreateDialog::OnNameInputChanged(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_input == NULL) return;
-    if (!m_input->GetText().IsEmpty()) FUN_1418ffec0(m_ready, 1);
-    else FUN_1418ffef0(m_ready, 1);
-    FUN_1418ffec0(m_dirty, 1);
+    if (!m_input->GetText().IsEmpty()) FUN_1418ffec0((unsigned int*)&m_ready, 1);
+    else FUN_1418ffef0((unsigned int*)&m_ready, 1);
+    FUN_1418ffec0((unsigned int*)&m_dirty, 1);
 }
 MS2_REPLACE_METHOD(0x140C37C60, UIItemBlueprintCreateDialog, OnNameInputChanged, 228, 0xF42A0CB1);
 // @0x140c37d50
@@ -5531,10 +5505,10 @@ bool UIItemBlueprintCreateDialog::FUN_140c37d50(int result, const CMsgBoxData&) 
     Unk_BpViewerBase* viewer = m_upload->viewer.get();
     if (!viewer) return true;
     viewer->m_name = GetTrimmedName();
-    MS2Ptr<Unk_BpItem> item = g_blueprintItems.FUN_140a5d680(m_upload->itemId);
+    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(m_upload->itemId);
     if (item.get()) {
         viewer->m_30 = item->FUN_140528540();
-        viewer->m_38 = item->FUN_140526a50();
+        viewer->m_38 = item->GetItemUid();
         viewer->m_40 = item->FUN_1405276c0();
         ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882450(m_upload);
         ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882020();
@@ -5548,7 +5522,7 @@ MS2_REPLACE_METHOD(0x140C37D50, UIItemBlueprintCreateDialog, FUN_140c37d50, 568,
 // @0x140c37f90
 bool UIItemBlueprintCreateDialog::FUN_140c37f90(int result, const CMsgBoxData&) {
     if (result == 0) {
-        if (m_item.get()) m_item->FUN_140529fd0("");
+        if (m_item.get()) m_item->SetName("");
         m_item = 0;
         m_itemId = 0;
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
@@ -5612,7 +5586,7 @@ void UIItemBlueprintCreateDialog::FUN_140c38400() {
         m_image = upload->image;
         FUN_140c37360(m_image, 4);
     }
-    FUN_1418ffec0(m_dirty, 1);
+    FUN_1418ffec0((unsigned int*)&m_dirty, 1);
 }
 MS2_REPLACE_METHOD(0x140C38400, UIItemBlueprintCreateDialog, FUN_140c38400, 480, 0x7068E705);
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -31,7 +31,7 @@ UIDialog* FUN_141386950(const CStringA* pName);             // the dialog of a n
 void FUN_141386b50(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& arr);   // the "control" name list
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
 
-class Unk_GdMgr { public: int FUN_14138d870(const CStringA* pName); };   // the dialog state service
+class CGuideManager { public: int InternOccurrence(const CStringA& strName); };   // the dialog state service
 Unk_Restrictions* FUN_1409331e0();
 
 template <> MS2Ptr<ASDisplayObject> UISwfEntity::GetChild<ASDisplayObject>(const CString& strName);    // 0x1413b1a90
@@ -95,7 +95,7 @@ int CGuideConditionDialog::vfunc_8()
 {
     if (m_nIsOpen == 0)
         return 0;
-    int nResult = reinterpret_cast<Unk_GdMgr*>(FUN_1409331e0())->FUN_14138d870(&m_strDialog);
+    int nResult = reinterpret_cast<CGuideManager*>(FUN_1409331e0())->InternOccurrence(m_strDialog);
     return nResult;
 }
 

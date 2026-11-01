@@ -40,15 +40,15 @@ public:
     CItemUgcMeshContainer() {}
     // Implicit virtual dtor (0x141086340, pinned in clonecube.cpp): no vptr store, just ~CAtlArray + ~CPtred.
 
-    void FUN_141426140();                                   // 0x141426140 m_meshes.RemoveAll()
+    void Clear();                                   // 0x141426140 m_meshes.RemoveAll()
     // Rebuilds the mesh list for spData under spRoot; false if either is null or nothing was found. Both by value.
     bool FUN_141426540(MS2Ptr<CItemData> spData, NiAVObjectPtr spRoot);   // 0x141426540
     void FUN_141426980();                                   // 0x141426980 re-applies the texture of every mesh
     NiTexturePtr FUN_141426d40();                           // 0x141426d40 texture of the first mesh (or null)
     // itemugcmesh.cpp (appended by w79): rebuild from an equip item's parts, helpers
     bool FUN_141426170(MS2Ptr<CEquipItem> spItem);          // 0x141426170
-    void FUN_141426750(CAtlArray<CString>& aNames, void* pItemData);   // 0x141426750 part names of the item data
-    void FUN_141426810(NiTexture* pTexture);                // 0x141426810 sets the texture on every mesh
+    void GetPartNames(CAtlArray<CString>& aNames, void* pItemData);   // 0x141426750 part names of the item data
+    void SetTextureOnMeshes(NiTexture* pTexture);                // 0x141426810 sets the texture on every mesh
     MS2Ptr<CItemUgcMesh> FUN_141426af0(const CString& strName, NiAVObjectPtr spRoot);   // 0x141426af0
     NiTexturePtr FUN_141426e30();                           // 0x141426e30 decal texture of the first mesh's object
 

@@ -560,7 +560,7 @@ int UIClosetDialog::vfunc_13()
         {
             if (nKey != 0)
             {
-                if (FUN_1409331f0()->FUN_14142cc40(nKey))
+                if (FUN_1409331f0()->IsKeyRebindable(nKey))
                 {
                     if (CGameOptionInputDefault::FUN_1412532b0(nKey))
                     {
@@ -575,7 +575,7 @@ int UIClosetDialog::vfunc_13()
                         m_pendingKey->FUN_140be6250(true);
                         m_pendingKey->FUN_140be6230(reinterpret_cast<const unsigned&>(nKey));
                         __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
-                        CStringW strKey = FUN_1409331f0()->FUN_14142d7e0(nKey);
+                        CStringW strKey = FUN_1409331f0()->GetKeyActionLabel(nKey);
                         if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
                         {
                             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14052bd00(0x84f, strKey), 1);
@@ -841,7 +841,7 @@ void UIClosetDialog::UpdateTab(int nIndex)
         return;
     const __int64& nId = TabIdentifier(nIndex);
     int nKey = FUN_1409331f0()->FUN_14142c940(nId, FUN_1409331f0()->FUN_1414319f0());
-    CStringW strKey = FUN_1409331f0()->FUN_14142d220(nKey);
+    CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
     m_inputKey->FUN_1422cdfb0(strKey);
     m_inputKey->FUN_1422c7630(0);
     if (nKey > 0x91)
@@ -1354,7 +1354,7 @@ MS2Ptr<UICloset::CTab> UIClosetDialog::CurrentTab()
 bool UIClosetDialog::AssignKey(const unsigned& nKey, const __int64& nId)
 {
     int nLayout = FUN_1409331f0()->FUN_1414319f0();
-    if (FUN_1409331f0()->FUN_14142b250(nKey, 2, nId, 0, nLayout) != 0)
+    if (FUN_1409331f0()->SetKeyBindingAndSync(nKey, 2, nId, 0, nLayout) != 0)
     {
         FUN_1409331f0()->FUN_14142a8b0(nId);
         MS2Ptr<UICloset::CTab> sp = CurrentTab();

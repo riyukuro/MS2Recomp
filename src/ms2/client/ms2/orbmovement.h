@@ -19,7 +19,7 @@ public:
 
     NiTransform UpdateMovement(double dTime, const NiTransform& kTarget);  // first call snaps, then steps
     void FUN_1416263a0(const NiTransform& kTarget);             // snap onto the target
-    void FUN_1416256f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut);  // lerp/slerp
+    void LerpTransformClamped(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut);  // lerp/slerp
     void FUN_1416260f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut);  // slerp the rotation only
 
     NiTransform m_kTransform;                                   // +0x18 current transform (rotate +0x18, translate +0x3c)

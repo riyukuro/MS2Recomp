@@ -17,6 +17,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 #include <new>
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
@@ -42,10 +43,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-CString FUN_140188f50(Unk_140165cf0*, int);                              // node text
-void FUN_141b6ed40(const CString&, Unk_GVec3*);                          // parse "x,y,z"
+CStringA FUN_140188f50(char const*, int);                              // node text
+struct Unk_UtilFloat3;
+void FUN_141b6ed40(CStringA const&, Unk_UtilFloat3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
-void FUN_14028c2d0(CString, float*);
+struct Unk_CommonVec3;
+void FUN_14028c2d0(CStringA, Unk_CommonVec3*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
 void FUN_140203800(float*);
 extern char DAT_143b01a60;
@@ -267,11 +270,11 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
         XmlGetAttr((class TiXmlElement*)(pCamera), "useFileSetting", m_bUseFileSetting);
         Unk_140165cf0* t = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(pCamera))->Attribute("dummyTargetPos");
         if (t) {
-            FUN_141b6ed40(FUN_140188f50(t, 0), &m_vecDummyTargetPos);
+            FUN_141b6ed40(FUN_140188f50(reinterpret_cast<char const *>(t), 0), reinterpret_cast<Unk_UtilFloat3 *>(&m_vecDummyTargetPos));
         }
         Unk_140165cf0* t2 = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(pCamera))->Attribute("usedummytarget");
         if (t2) {
-            FUN_14028d1a0(FUN_140188f50(t2, 0), &m_nUseDummyTarget);
+            FUN_14028d1a0(FUN_140188f50(reinterpret_cast<char const *>(t2), 0), &m_nUseDummyTarget);
         }
     }
     Unk_140165cf0* pShadow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("shadow"));
@@ -297,10 +300,9 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
 int FUN_140a55d20(CFieldDataCli* self, CStringW* out)
 {
     extern void* FUN_14025e7c0();
-    extern bool FUN_14116d720(void*);
     extern CStringW GetStringCommon(int id);
     extern CStringW StringFormat(const wchar_t*);
-    if (FUN_14116d720(FUN_14025e7c0()))
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode())
         return 1;
     if (self->m_nEnterAdminLevel > 0)
     {
@@ -322,14 +324,14 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
             if (pos) {
                 struct { float x, y, z; char pad[4]; } v;
                 FUN_140203800(&v.x);
-                FUN_14028c2d0(FUN_140188f50(pos, 0), &v.x);
+                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(pos), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
                 spMM->m_vecCamPos = Unk_GVec3(v.x, v.y, v.z);
             }
             Unk_140165cf0* rot = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(cam))->Attribute("rotation");
             if (rot) {
                 struct { float x, y, z; char pad[4]; } v;
                 FUN_140203800(&v.x);
-                FUN_14028c2d0(FUN_140188f50(rot, 0), &v.x);
+                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(rot), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
                 spMM->m_vecCamRot = Unk_GVec3(v.x, v.y, v.z);
             }
         }

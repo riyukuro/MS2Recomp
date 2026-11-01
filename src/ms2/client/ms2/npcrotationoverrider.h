@@ -12,8 +12,8 @@ public:
     CNPCRotationOverrider();                        // 0x14160c280
     virtual ~CNPCRotationOverrider();               // 0x14160c2f0
 
-    bool FUN_14160c3f0(float* pfAngle, float fDelta);   // advance by fDelta; the yaw (0..360) in *pfAngle; false once finished
-    float FUN_14160c500();                          // the eased yaw at the elapsed time
+    bool AdvanceRotation(float* pfAngle, float fDelta);   // advance by fDelta; the yaw (0..360) in *pfAngle; false once finished
+    float GetEasedAngle();                          // the eased yaw at the elapsed time
 
     float m_fFrom;                      // +0x10 the yaw the turn starts at
     float m_fTo;                        // +0x14 the yaw it ends at

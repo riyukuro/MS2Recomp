@@ -457,7 +457,7 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     m_spScorePage = FUN_140c02990("m_playScorePage");
     m_spFold = GetChild<ASTextField>("m_foldText");
     FUN_14100e060();
-    FUN_14100e910();
+    ClampAndApplyOctave();
     do
     {
         m_30->FUN_140be2480("m_tab", m_spTab);
@@ -583,14 +583,14 @@ void UIPlayInstrumentDialog::vfunc_72()
         m_nEndTick = 0;
     }
     FUN_14100da10();
-    FUN_14100d920();
+    TickAutoPlay();
     if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsEnsemble())
         return;
     if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return;
     for (KeyButtonMap::iterator it = m_keyButtons.begin(), itEnd = m_keyButtons.end(); it != itEnd; ++it)
     {
-        if (FUN_140a58540()->FUN_140d8ad60(it->first))
+        if (FUN_140a58540()->WasKeyPressedGated(it->first))
         {
             int nNote = m_nOctave * 12 + 12 + it->second.first;
             m_pressed[it->first] = nNote;
@@ -601,7 +601,7 @@ void UIPlayInstrumentDialog::vfunc_72()
     }
     for (std::vector<std::pair<int, int> >::iterator itKey = m_octaveKeys.begin(), itKeyEnd = m_octaveKeys.end(); itKey != itKeyEnd; ++itKey)
     {
-        if (FUN_140a58540()->FUN_140d8ad60(itKey->first))
+        if (FUN_140a58540()->WasKeyPressedGated(itKey->first))
         {
             if (itKey->second == 100)
                 m_nOctave--;
@@ -609,7 +609,7 @@ void UIPlayInstrumentDialog::vfunc_72()
                 m_nOctave++;
             else
                 m_nOctave = itKey->second;
-            FUN_14100e910();
+            ClampAndApplyOctave();
         }
     }
     PressedMap::iterator itDown = m_pressed.begin();
@@ -617,7 +617,7 @@ void UIPlayInstrumentDialog::vfunc_72()
     size_t nBefore = m_pressed.size();
     while (itDown != itDownEnd)
     {
-        if (FUN_140a58540()->FUN_140d8af70(itDown->first))
+        if (FUN_140a58540()->WasKeyReleasedGated(itDown->first))
         {
             unsigned long& nNote = itDown->second;
             ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
@@ -748,7 +748,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nDelta = data.FUN_1422b8a10();
             m_nOctave += nDelta;
-            FUN_14100e910();
+            ClampAndApplyOctave();
             return 1;
         }
     }
@@ -883,7 +883,7 @@ int UIPlayInstrumentDialog::OnPlayNote()
 }
 
 // @0x14100c890
-int UIPlayInstrumentDialog::FUN_14100c890()
+int UIPlayInstrumentDialog::GetSelectedTabIndex()
 {
     if (m_spTab == 0)
         return -1;
@@ -1045,7 +1045,7 @@ bool UIPlayInstrumentDialog::HasAnyScore()
 }
 
 // @0x14100d920
-void UIPlayInstrumentDialog::FUN_14100d920()
+void UIPlayInstrumentDialog::TickAutoPlay()
 {
     if (m_nMode != 1)
         return;
@@ -1129,7 +1129,7 @@ void UIPlayInstrumentDialog::FUN_14100e060()
         MS2Ptr<Unk_140acd6e0> spButton = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
         CStringW strKey = reinterpret_cast<Unk_PiKeyNames*>(FUN_1409331f0())->FUN_14142d220(aKeys[i]);
         spButton->FUN_1422cdfb0(strKey);
-        FUN_14100e880(aKeys[i], MS2Ptr<Unk_140acd6e0>(spButton), i);
+        MapKeyButton(aKeys[i], MS2Ptr<Unk_140acd6e0>(spButton), i);
     }
     m_octaveKeys.push_back(std::make_pair(0x3b, 1));
     m_octaveKeys.push_back(std::make_pair(0x3c, 2));
@@ -1170,13 +1170,13 @@ void UIPlayInstrumentDialog::FUN_14100e060()
 }
 
 // @0x14100e880
-void UIPlayInstrumentDialog::FUN_14100e880(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex)
+void UIPlayInstrumentDialog::MapKeyButton(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex)
 {
     m_keyButtons[nKey] = std::make_pair(nIndex, spButton);
 }
 
 // @0x14100e910
-void UIPlayInstrumentDialog::FUN_14100e910()
+void UIPlayInstrumentDialog::ClampAndApplyOctave()
 {
     if (m_nOctave < 1)
         m_nOctave = 1;
@@ -1220,7 +1220,7 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
             Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return;
-            if (((class CPartyManager*)(class Unk_PiPartyMgr*)(reinterpret_cast<Unk_PiPartyMgr*>(TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab60())
+            if (((class CPartyManager*)(class Unk_PiPartyMgr*)(reinterpret_cast<Unk_PiPartyMgr*>(TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader())
                 spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_ensemble"));
             else
                 spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_ready_ensemble"));

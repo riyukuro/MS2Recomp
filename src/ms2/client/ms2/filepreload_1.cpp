@@ -326,7 +326,7 @@ public:
     static class WorldService* GetInstance();
 };
 void FUN_141b6de20();
-void FUN_141b6db40(int);
+int FUN_141b6db40(unsigned __int64);
 // @0x14120f7c0
 CFilePreload::CFilePreload() : stopped(0),preloadIds(0),asynchronous(true),initialized(0),dataReady(1),phase(0),state(0),backgroundThread(0) {
     semaphore=CreateSemaphoreA(0,0,INT_MAX,0);
@@ -548,7 +548,7 @@ public:
     static void LoadAll();
 };
 void FUN_1410917a0(unsigned);
-void FUN_1411a4800(const CString&,int);
+bool FUN_1411a4800(CStringA const&, int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
 void FUN_1415525d0(CNifLoadingService*,CString,int,int);
@@ -649,7 +649,7 @@ void CFilePreload::FUN_1412115e0(void*) {
     std::set<Unk_PreloadPath> pending;
     { if(Unk_LockGuard guard=effectLock) { __assume(0); } else { pending=effectRequests; effectRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0) { FUN_1411a4800(it->path,it->priority); }
+        if(stopped==0) { FUN_1411a4800(it->path, it->priority); }
         else return;
     }
 }
@@ -786,7 +786,7 @@ static unsigned __stdcall PreloadThreadEntry(void* context) {
         startup->owner->vfunc_1(startup->user,*startup);
     } catch(std::bad_alloc& error) {
         error.what();
-        FUN_141b6db40(0);
+        FUN_141b6db40((unsigned __int64)0);
     }
     return 0;
 }

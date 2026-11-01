@@ -47,10 +47,9 @@ struct Unk_ClientConfig
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
-class Unk_Cursor
-{
+class Unk_McApp { public: struct tagRECT FUN_140ad4c30(void); }; class Unk_Cursor : public Unk_McApp {
 public:
-    RECT FUN_140ad4c30();
+
 };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 

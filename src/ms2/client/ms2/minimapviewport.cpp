@@ -43,7 +43,7 @@ MinimapViewport::MinimapViewport()
 //   NiPoint3/efd::Point3) while Unk_GVec3 (fielddatacli.h) declares a copy ctor 0x14027dcf0 -> 2 extra calls and a
 //   different local slot order; needs the camera-vector type recovery in fielddatacli.h
 // @0x141485770
-unsigned MinimapViewport::FUN_141485770(int nScale)
+unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
 {
     ResetScale();
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_MvWorld*>(WorldService::GetInstance())->FUN_141bd30a0();

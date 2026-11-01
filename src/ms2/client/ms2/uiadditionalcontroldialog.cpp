@@ -64,15 +64,8 @@ class Unk_AcRow : public ASObj
 {
 };
 
-// The skill table (FUN_1401958b0).
-class Unk_AcSkillTable : public SkillDataTableCli
-{
-public:
-    MS2Ptr<AdditionalLevelData> FUN_140aafef0(unsigned nId, unsigned short nLevel);
-};
-
-class Unk_AcStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
-Unk_AcStringMgr* FUN_14025e7a0();
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+GFxManager* FUN_14025e7a0();
 CStringTable* GetStringTable();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
@@ -154,7 +147,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
             unsigned nId = data.FUN_1422b8b10();
             unsigned nLevel = data.FUN_1422b8b10();
             float fValue = data.FUN_1422b8ca0();
-            MS2Ptr<AdditionalLevelData> spLevel = ((class Unk_AcSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nId, nLevel);
+            MS2Ptr<AdditionalLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nId, nLevel);
             if (spLevel.get() != 0) {
                 Unk_AcEffectReq req;
                 req.m_nId = nId;
@@ -213,7 +206,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
     if (!list)
         return;
     list->FUN_1422dd1d0();
-    std::vector<MS2Ptr<AdditionalData> > vecData = ((class Unk_AcSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->GetAdditionals();
+    std::vector<MS2Ptr<AdditionalData> > vecData = TSingleton<SkillDataTableCli>::GetInstance()->GetAdditionals();
     std::sort(vecData.begin(), vecData.end(), [](const MS2Ptr<AdditionalData>& a, const MS2Ptr<AdditionalData>& b) {
         return a->GetID() < b->GetID();
     });

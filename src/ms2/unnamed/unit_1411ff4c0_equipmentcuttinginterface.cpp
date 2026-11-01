@@ -31,11 +31,10 @@
 class MyPC;
 
 // The equip holder the cutting works on (+8 is the owning PC); names invented.
-struct Unk_CuttingTarget
-{
-    void FUN_1411e2e40(ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);     // 0x1411e2e40 the worn items
-    MyPC* FUN_1411e0ee0();                                          // 0x1411e0ee0 the owning PC
-    void FUN_1411e8d20(const CString& strName);                     // 0x1411e8d20 hide the model part
+class CEquipment { public: class PC * FUN_1411e0ee0(void); void FUN_1411e2e40(class ATL::CAtlList<class MS2Ptr<class CEquipItem>, class ATL::CElementTraits<class MS2Ptr<class CEquipItem>>> &); void FUN_1411e8d20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &); }; struct Unk_CuttingTarget : public CEquipment {
+
+
+
 };
 class PC   // C3: member view for the former free stand-ins
 {

@@ -20,44 +20,34 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/singletonclass.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 
 static CString s_marketSort[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_jobCode = "jobCode";
 static CString s_sortValue = "sortValue";
 static CString s_tabIndex = "tabIndex";
+template<> inline bool MS2Ptr<ASCheckBox>::IsNull() const { return m_p == 0; }
 
-class Unk_ReportText : public CPtred {
-public:
-    void FUN_1422c4cd0(const CStringW& text);
-    CStringW FUN_1422c4da0();
-};
-class Unk_ReportCheck : public CPtred {
-public:
-    void FUN_1422c1fe0(int enabled);
-    bool FUN_1422ce0e0();
-    void FUN_1422cdfb0(const CStringW& text);
-};
 class Unk_ReportEntity : public AScript {
 public:
     template<class T> Unk_ReportHandle<T> GetChild(const CString&, Unk_ReportHandle<T>&);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
-class Unk_ReportValue { public: bool FUN_1409b4d40() const; };
 template<class T> Unk_ReportHandle<T> MakeReportEntity(int, const Scaleform::GFx::Value&);
 class Unk_ReportScript : public CPtred {
 public:
-    Scaleform::GFx::Value FUN_1422baa20(const char*);
-    Scaleform::GFx::Value FUN_1422bb8f0(const char*, ASArgList&);
     template<class T> Scaleform::GFx::Value Invoke(const char* method, T value) {
         ASArgList args;
         args.FUN_1409b2800(1);
         FUN_1422bccb0(args.FUN_1409b1f70(0), value);
-        return FUN_1422bb8f0(method, args);
+        return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
     }
     template<class T> Unk_ReportHandle<T> GetChild(const CString& name) {
-        Scaleform::GFx::Value child = FUN_1422baa20(name);
-        if (reinterpret_cast<const Unk_ReportValue*>(&child)->FUN_1409b4d40())
+        Scaleform::GFx::Value child = reinterpret_cast<AScript*>(this)->GetMember(name);
+        if (child.IsObject())
             return MakeReportEntity<T>(m_id, child);
         return Unk_ReportHandle<T>(0);
     }
@@ -79,13 +69,6 @@ public:
 extern const int g_reportTypes[16]; // exe table; no mutable DLL-local copy
 void FUN_141275260(int message, int a, int b);
 CStringW GetStringCommon(int id);
-class Unk_ReportBlindManager : public BlindManager {
-public:
-    bool FUN_140a25950(int kind, __int64 id);
-};
-Unk_ReportBlindManager* FUN_1409c1730();
-CUgcManager* FUN_14052d220();
-class Unk_ReportUserManager { public: void FUN_1413baef0(int id, int flag); };
 
 template<class F> class Unk_ReportDelegate;
 template <class R, class A1, class A2>
@@ -141,11 +124,10 @@ private:
 
 class Unk_ReportMessageBox {
 public:
-    void FUN_141a024a0(int);
     void FUN_141a027c0(Unk_ReportDelegate<bool(int, const CMsgBoxData&)>);
 };
-MS2Ptr<Unk_ReportMessageBox> FUN_140d73e40(int, int, int, CStringW);
-void FUN_140d73c60(MS2Ptr<Unk_ReportMessageBox>);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, void* pListener, CStringW tag);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // Notification payload: the 16-byte target identifier is real data, not padding.
 struct Unk_ReportTarget { __int64 low; __int64 high; };
@@ -160,26 +142,6 @@ private:
     Unk_ReportTarget m_target;
 };
 MS2_CHECK_SIZE(NotifyBlindTarget, 0x30);
-NotifySystem* FUN_140939a10();
-class Unk_ReportContact {
-public:
-    int FUN_1401cc5b0();
-    __int64 FUN_1401cc2f0();
-};
-struct Unk_ReportContactRequest {
-    Unk_ReportContactRequest();
-    ~Unk_ReportContactRequest();
-    unsigned char kind;
-    __int64 id;
-    CStringW name;
-    CStringW reason;
-};
-MS2_CHECK_SIZE(Unk_ReportContactRequest, 0x20);
-class Unk_ReportContactManager {
-public:
-    MS2Ptr<Unk_ReportContact> FUN_140ae4950(const CStringW&);
-    void FUN_140ae4820(const Unk_ReportContactRequest&);
-};
 
 namespace TencentUserReport {
 
@@ -256,10 +218,10 @@ int UITencentUserReportDialog::vfunc_28(const char* method, const Scaleform::GFx
         if (!m_page->FUN_140edca20())
             return 0;
         {
-        MS2Ptr<Unk_ReportMessageBox> box = FUN_140d73e40(1, 0x8a7, 0, L"");
+        MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x8a7, 0, L"");
         if (box.get()) {
             box->FUN_141a024a0(0);
-            box->FUN_141a027c0(Unk_ReportDelegate<bool(int, const CMsgBoxData&)>(this, &UITencentUserReportDialog::FUN_140edbc00));
+            reinterpret_cast<Unk_ReportMessageBox*>(box.operator->())->FUN_141a027c0(Unk_ReportDelegate<bool(int, const CMsgBoxData&)>(this, &UITencentUserReportDialog::FUN_140edbc00));
             FUN_140d73c60(box);
             return 1;
         }
@@ -306,39 +268,39 @@ MS2_REPLACE_METHOD(0x140EDBC60, UITencentUserReportDialog, FUN_140edbc60, 133, 0
 // @0x140edbcf0
 void UITencentUserReportDialog::FUN_140edbcf0()
 {
-    if (FUN_1409c1730()->FUN_140a25950(3, m_data.itemId) == true)
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_data.m_38))));
+    if (TSingleton<BlindManager>::GetInstance()->BlockId(3, m_data.itemId) == true)
+        TSingleton<NotifySystem>::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_data.m_38))));
 }
 MS2_REPLACE_METHOD(0x140EDBCF0, UITencentUserReportDialog, FUN_140edbcf0, 216, 0x99A521CC);
 
 // @0x140edbdd0
 void UITencentUserReportDialog::FUN_140edbdd0()
 {
-    if (FUN_1409c1730()->FUN_140a25950(2, m_data.guildId) == true)
-        FUN_14052d220()->FUN_1418885b0(m_data.guildNumber);
+    if (TSingleton<BlindManager>::GetInstance()->BlockId(2, m_data.guildId) == true)
+        TSingleton<CUgcManager>::GetInstance()->FUN_1418885b0(m_data.guildNumber);
 }
 MS2_REPLACE_METHOD(0x140EDBDD0, UITencentUserReportDialog, FUN_140edbdd0, 76, 0x62053618);
 
 // @0x140edbe30
 void UITencentUserReportDialog::FUN_140edbe30()
 {
-    MS2Ptr<Unk_ReportContact> contact = reinterpret_cast<Unk_ReportContactManager*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4950(m_data.name);
+    CBuddyManager::Ptr contact = TSingleton<CBuddyManager>::GetInstance()->FindByName(m_data.name);
     if (contact.get() && contact->FUN_1401cc5b0() == 1)
         return;
-    Unk_ReportContactRequest request;
-    request.kind = 5;
+    Unk_BuddyRequest request;
+    request.protocol = 5;
     request.name = m_data.name;
-    request.reason = GetStringCommon(0x8af);
+    request.memo = GetStringCommon(0x8af);
     request.id = contact.get() ? contact->FUN_1401cc2f0() : 0;
-    reinterpret_cast<Unk_ReportContactManager*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4820(request);
+    TSingleton<CBuddyManager>::GetInstance()->SendBuddyRequest(request);
 }
 MS2_REPLACE_METHOD(0x140EDBE30, UITencentUserReportDialog, FUN_140edbe30, 329, 0xC76388B8);
 
 // @0x140edbf80
 void UITencentUserReportDialog::FUN_140edbf80()
 {
-    if (FUN_1409c1730()->Block(5, m_data.content) == true)
-        reinterpret_cast<Unk_ReportUserManager*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413baef0(m_data.m_28, 0);
+    if (TSingleton<BlindManager>::GetInstance()->Block(5, m_data.content) == true)
+        TSingleton<CGuildManager>::GetInstance()->FUN_1413baef0(m_data.m_28, 0);
 }
 MS2_REPLACE_METHOD(0x140EDBF80, UITencentUserReportDialog, FUN_140edbf80, 132, 0x3A397539);
 
@@ -387,7 +349,7 @@ void UITencentUserReportPage::FUN_140edc3b0()
         m_checks[nIndex] = 0;
         CString name;
         name.Format("m_checkBoxReportType%d", g_reportTypes[nIndex]);
-        if (!((m_entity.get() ? true : false) && m_entity->GetChild(name, m_checks[nIndex]))) {
+        if (!((m_entity.get() ? true : false) && m_entity->FUN_140c12010(name, m_checks[nIndex]))) {
             MS2_ASSERT_AT(269, "m_pEntity && m_pEntity->GetChild(sCheckBoxName, m_aCheckBoxReportType[nIndex])" && 0);
             continue;
         }
@@ -475,9 +437,9 @@ bool UITencentUserReportPage::FUN_140edca20()
         FUN_141275260(0x8ac, 1, 1);
         return false;
     }
-    Unk_ReportHandle<Unk_ReportText> target;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldTargetItemName", target)) {
-        CStringW name = target->FUN_1422c4da0();
+    MS2Ptr<ASTextField> target;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemName", target)) {
+        CStringW name = target->GetTextW();
         if (name.GetLength() > 24) {
             FUN_141275260(0x8ac, 1, 1);
             return false;
@@ -487,13 +449,13 @@ bool UITencentUserReportPage::FUN_140edca20()
             return false;
         }
     }
-    Unk_ReportHandle<Unk_ReportText> comment;
-    if (m_entity->GetChild("m_textAreaComment", comment) == NULL) {
+    MS2Ptr<ASTextField> comment;
+    if (m_entity->FUN_140beaf20("m_textAreaComment", comment) == NULL) {
         FUN_141275260(0x8ac, 1, 1);
         return false;
     }
     {
-        CStringW text = comment->FUN_1422c4da0();
+        CStringW text = comment->GetTextW();
         if (text.GetLength() > 4000) {
             FUN_141275260(0x8ac, 1, 1);
             return false;
@@ -531,8 +493,8 @@ MS2_REPLACE_METHOD(0x140EDCA20, UITencentUserReportPage, FUN_140edca20, 1445, 0x
 // @0x140edcfd0
 void UITencentUserReportPage::FUN_140edcfd0(CStringW name)
 {
-    Unk_ReportHandle<Unk_ReportText> text;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldTargetName", text))
+    MS2Ptr<ASTextField> text;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetName", text))
         text->FUN_1422c4cd0(name);
 }
 MS2_REPLACE_METHOD(0x140EDCFD0, UITencentUserReportPage, FUN_140edcfd0, 374, 0xFE5824BF);
@@ -540,8 +502,8 @@ MS2_REPLACE_METHOD(0x140EDCFD0, UITencentUserReportPage, FUN_140edcfd0, 374, 0xF
 // @0x140edd150
 void UITencentUserReportPage::FUN_140edd150(CStringW name)
 {
-    Unk_ReportHandle<Unk_ReportText> text;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldTargetItemName", text))
+    MS2Ptr<ASTextField> text;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemName", text))
         text->FUN_1422c4cd0(name);
 }
 MS2_REPLACE_METHOD(0x140EDD150, UITencentUserReportPage, FUN_140edd150, 374, 0x721E8FEF);
@@ -549,8 +511,8 @@ MS2_REPLACE_METHOD(0x140EDD150, UITencentUserReportPage, FUN_140edd150, 374, 0x7
 // @0x140edd2d0
 void UITencentUserReportPage::FUN_140edd2d0(CStringW name)
 {
-    Unk_ReportHandle<Unk_ReportText> text;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldTargetItemSellerName", text))
+    MS2Ptr<ASTextField> text;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemSellerName", text))
         text->FUN_1422c4cd0(name);
 }
 MS2_REPLACE_METHOD(0x140EDD2D0, UITencentUserReportPage, FUN_140edd2d0, 374, 0x8887ABE7);
@@ -558,8 +520,8 @@ MS2_REPLACE_METHOD(0x140EDD2D0, UITencentUserReportPage, FUN_140edd2d0, 374, 0x8
 // @0x140edd450
 void UITencentUserReportPage::FUN_140edd450()
 {
-    Unk_ReportHandle<Unk_ReportText> text;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldWarnig", text)) {
+    MS2Ptr<ASTextField> text;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldWarnig", text)) {
         switch (m_type) {
         case 3: text->FUN_1422c4cd0(GetStringCommon(0x8b2)); break;
         case 4: text->FUN_1422c4cd0(GetStringCommon(0x8b1)); break;
@@ -573,13 +535,13 @@ MS2_REPLACE_METHOD(0x140EDD450, UITencentUserReportPage, FUN_140edd450, 715, 0x0
 // @0x140edd730
 void UITencentUserReportPage::FUN_140edd730()
 {
-    Unk_ReportHandle<Unk_ReportCheck> check;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_checkBoxBlock", check)) {
+    MS2Ptr<ASCheckBox> check;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140c12010("m_checkBoxBlock", check)) {
         switch (m_type) {
-        case 3: check->FUN_1422cdfb0(FUN_14025e7a0()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        case 4: check->FUN_1422cdfb0(FUN_14025e7a0()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        case 16: check->FUN_1422cdfb0(FUN_14025e7a0()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        default: check->FUN_1422cdfb0(FUN_14025e7a0()->FUN_1422b0570("$s_report_ban_character_check")); break;
+        case 3: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
+        case 4: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
+        case 16: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
+        default: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_ban_character_check")); break;
         }
     }
 }
@@ -588,8 +550,8 @@ MS2_REPLACE_METHOD(0x140EDD730, UITencentUserReportPage, FUN_140edd730, 899, 0x8
 // @0x140eddac0
 bool UITencentUserReportPage::FUN_140eddac0()
 {
-    Unk_ReportHandle<Unk_ReportCheck> check;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_checkBoxBlock", check))
+    MS2Ptr<ASCheckBox> check;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140c12010("m_checkBoxBlock", check))
         return check->FUN_1422ce0e0();
     return false;
 }
@@ -634,9 +596,9 @@ MS2_REPLACE_METHOD(0x140EDDD60, UITencentUserReportPage, FUN_140eddd60, 97, 0x5A
 // @0x140edddd0
 CStringW UITencentUserReportPage::FUN_140edddd0()
 {
-    Unk_ReportHandle<Unk_ReportText> comment;
-    if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textAreaComment", comment))
-        return comment->FUN_1422c4da0();
+    MS2Ptr<ASTextField> comment;
+    if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textAreaComment", comment))
+        return comment->GetTextW();
     return L"";
 }
 MS2_REPLACE_METHOD(0x140EDDDD0, UITencentUserReportPage, FUN_140edddd0, 429, 0x45919D1D);

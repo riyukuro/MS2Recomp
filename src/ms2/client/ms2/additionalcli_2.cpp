@@ -71,6 +71,8 @@
 #include "ms2/commonfiles/specialeffectfunctionmanager.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/commonfiles/pvpinfo.h"
 
 // The shield bar entity behind PCBase vfunc_81 and the buff balloon entity behind vfunc_84.
 class Unk_PCBaseComp_a68 : public UIShieldBar::Entity {};
@@ -100,19 +102,11 @@ class UILapenshardShieldBar : public UIHeadUpDisplay, public UIEntityEventListen
 public:
     void FUN_140c5f8f0(MS2Ptr<AdditionalCli> sp);           // show the shield record
 };
-// The skill table (SkillDataTableCli; placeholder/skilldatatablecli.h clashes with commonfiles/skilloverlapcompare.h).
+// The skill table (SkillDataTableCli).
 class Unk_AclSkillTable : public SkillDataTable
 {
-public:
-    const std::set<unsigned>* FUN_140aaffb0(unsigned nGroup);   // the effects of an additional effect group
 };
 // The current field data.
-// the caller tests the result as an int (no movzx); the definition in additionalactionadditional.cpp returns bool
-class Unk_AclInvokeEffect : public AdditionalLevelData::InvokeEffectProperty
-{
-public:
-    int FUN_140192ac0();
-};
 
 // the exe passes the entity id by value here (the callee's own header takes it by reference; same ABI)
 class Unk_AclEffect : public CEffectService
@@ -121,10 +115,12 @@ public:
     void FUN_1411a6f00(egf::EntityID id);
 };
 
-class Unk_AclWorld : public WorldService
+
+class Unk_Gauge   // C3: the InvokeEffectOption setters are this class's
 {
 public:
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    void SetAmount(float);
+    void SetCount(int);
 };
 
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
@@ -210,7 +206,7 @@ int AdditionalCliList::FUN_14096f070(MS2Ptr<AdditionalCli> sp)
     FUN_140973f40(sp);
     if (PC* pPC = efd::DynamicCast<PC>(m_pOwner))
     {
-        pPC->FUN_1416561a0()->FUN_1411e7640();
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e7640();
         if (sp->FUN_14096d810()->m_nCostumeSetID)
             pPC->FUN_1409763e0()->FUN_140b1d360(sp->FUN_14096d810()->m_nCostumeSetID);
         if (sp->FUN_14096d810()->m_nTailEffect)
@@ -260,7 +256,7 @@ void AdditionalCliList::FUN_14096f500(int nKey, int nCaster)
     FUN_140974130(sp);
     if (PC* pPC = efd::DynamicCast<PC>(m_pOwner))
     {
-        pPC->FUN_1416561a0()->FUN_1411e7640();
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e7640();
         if (sp->FUN_14096d810()->m_nCostumeSetID)
             pPC->FUN_1409763e0()->FUN_140b1d890(sp->FUN_14096d810()->m_nCostumeSetID);
         if (sp->FUN_14096d810()->m_nTailEffect)
@@ -305,7 +301,7 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096f820(const Unk_AdditionalOwner
         {
             if (sp->FUN_14096d810()->m_nTailEffect)
                 pPC->FUN_1416640d0(sp);
-            pPC->FUN_1416561a0()->FUN_1411e7640();
+            reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e7640();
         }
         if (FUN_1409735c0())
         {
@@ -516,7 +512,7 @@ float AdditionalCliList::ComputeAlphaBlending()
             {
                 if (pPC->vfunc_122(pLocal))
                     fAlpha = 0.0f;
-                else if (pPC->FUN_140967420()->FUN_140743550())
+                else if (reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->HasPoint())
                     fAlpha = 0.0f;
             }
         }
@@ -868,7 +864,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
             continue;
         if (!sp->FUN_14096d050())
             continue;
-        if (!static_cast<Unk_AclInvokeEffect&>(sp->FUN_14096d810()->m_invokeEffect).FUN_140192ac0())
+        if (!sp->FUN_14096d810()->m_invokeEffect.FUN_140192ac0())
             continue;
         for (unsigned i = 0; i < sp->FUN_14096d810()->m_invokeEffect.m_vTypes.size(); ++i)
         {
@@ -922,7 +918,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 if (FUN_14081d8e0(nType) == 0)
                     continue;
                 const std::set<unsigned>* pGroup =
-                    reinterpret_cast<Unk_AclSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aaffb0(sp->FUN_14096d810()->m_invokeEffect.m_nEffectGroupID);
+                    TSingleton<SkillDataTableCli>::GetInstance()->GetAdditionalGroup(sp->FUN_14096d810()->m_invokeEffect.m_nEffectGroupID);
                 if (!pGroup)
                     continue;
                 for (unsigned nId : *pGroup)
@@ -946,16 +942,16 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 {
                     spOption.AssignRaw(new InvokeEffectOption);
                     spOption->m_nA = nType;
-                    spOption->FUN_140267330(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
-                    spOption->FUN_140267300(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
+                    reinterpret_cast<Unk_Gauge*>(spOption.operator->())->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
+                    reinterpret_cast<Unk_Gauge*>(spOption.operator->())->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
                     spStat->m_18.SetAt(nType, spOption);
                 }
                 else
                 {
                     MS2Ptr<InvokeEffectOption> spOther(new InvokeEffectOption);
                     spOther->m_nA = nType;
-                    spOther->FUN_140267330(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
-                    spOther->FUN_140267300(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
+                    reinterpret_cast<Unk_Gauge*>(spOther.operator->())->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
+                    reinterpret_cast<Unk_Gauge*>(spOther.operator->())->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
                     spOption->FUN_140267220(spOther);
                 }
             }
@@ -1133,7 +1129,7 @@ void AdditionalCliList::FUN_140972a00()
     }
     m_bDirty = 0;
     if (MyPC* pMy = FUN_140973920())
-        pMy->FUN_1416561a0()->FUN_1411e7660();
+        reinterpret_cast<CEquipment*>(pMy->FUN_1416561a0())->FUN_1411e7660();
 }
 
 // @0x1409733f0
@@ -1206,11 +1202,11 @@ bool AdditionalCliList::FUN_140973680(MS2Ptr<AdditionalCli> sp)
         return false;
     if (PC* pPC = efd::DynamicCast<PC>(m_pOwner))
     {
-        if (static_cast<Unk_AclWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->GetPkMode())
+        if (WorldService::GetInstance()->FUN_141bd30a0()->GetPkMode())
             return true;
-        if (static_cast<Unk_AclWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->m_nMapType == 3)
+        if (WorldService::GetInstance()->FUN_141bd30a0()->m_nMapType == 3)
             return true;
-        if (pPC->FUN_140967420()->FUN_140743550())
+        if (reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->HasPoint())
             return true;
     }
     if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
@@ -1281,7 +1277,7 @@ void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
             static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->GetKey());
         UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
         if (pDuel)
-            pDuel->FUN_140e6c640(sp->GetKey());
+            pDuel->RemoveBuffEffect(sp->GetKey());
     }
     if (sp->FUN_14096d810()->m_ui.m_bIconBalloonOnOff)
     {

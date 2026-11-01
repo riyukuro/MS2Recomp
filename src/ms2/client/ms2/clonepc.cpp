@@ -65,15 +65,6 @@ class Unk_ActorRegistry
 public:
 };
 
-// The entity manager (singleton FUN_1403ed2d0): finds PCs by object id.
-class Unk_EntityMgr
-{
-public:
-    PC* FUN_141bd1290(int nId);                                     // 0x141bd1290
-    PC* FUN_141bd1200(int nId);                                     // 0x141bd1200
-    void* FUN_141bd1180(unsigned int nId);                          // 0x141bd1180 NULL when the id is free
-};
-
 // A CPtred-derived buff record (AdditionalCli, 0x78, ?\additionalcli.cpp). Only what the clone uses.
 class AdditionalCli : public CPtred
 {
@@ -146,6 +137,9 @@ egmAnimation::AnimationService* FUN_141b6f910();
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
+    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
 };
 Unk_PCCliList* FUN_1416749a0(PC* pPC);
@@ -475,7 +469,7 @@ ClonePC::ClonePC(PC* pSource)
 void ClonePC::vfunc_12()
 {
     PC::vfunc_12();
-    m_pSourcePC = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1290(m_nSourceId);
+    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
     if (m_pSourcePC)
         m_pSourcePC->FUN_1416630e0(FUN_14123c580());
     if (m_spD88.get() != 0)
@@ -490,7 +484,7 @@ MS2_REPLACE_METHOD(0x1410875f0, ClonePC, vfunc_12, 176, 0xB0E12472);
 void ClonePC::vfunc_14()
 {
     PC::vfunc_14();
-    m_pSourcePC = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1290(m_nSourceId);
+    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
     if (m_pSourcePC)
         m_pSourcePC->FUN_141663120(FUN_14123c580());
     m_pSourcePC = 0;
@@ -610,7 +604,7 @@ void ClonePC::vfunc_151()
     }
     if (m_nSourceId == 0)
         return;
-    PC* pSource = ((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1200(m_nSourceId);
+    PC* pSource = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1200(m_nSourceId));
     if (pSource == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
@@ -724,7 +718,7 @@ unsigned int FUN_141088660()
 {
     for (unsigned int nId = 0x43c; nId < 0x45a; nId++)
     {
-        if (((class Unk_EntityMgr*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
+        if (WorldService::GetInstance()->FUN_141bd1180(nId) == 0)
             return nId;
     }
     return 0;

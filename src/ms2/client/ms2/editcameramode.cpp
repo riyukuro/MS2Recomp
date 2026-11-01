@@ -38,7 +38,6 @@ public:
     ~Unk_FreeCamOptionPtr() { FUN_140885ab0(); }    // 0x1408850f0 (another obj)
     Unk_FreeCamOption* FUN_140885340() const;       // operator->
     void FUN_140885ab0();                           // release
-    Unk_FreeCamOption* FUN_1409657a0() const;       // get
 
     void* m_pad_00;
     Unk_FreeCamOption* m_p;

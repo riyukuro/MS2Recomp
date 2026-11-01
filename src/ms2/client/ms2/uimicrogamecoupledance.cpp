@@ -896,8 +896,8 @@ CString UIMicroGameCoupleDance::GetTypeName() { return "MicroGameCoupleDance"; }
 MS2_REPLACE_METHOD(0x140E63F20, UIMicroGameCoupleDance, GetTypeName, 61, 0xBF427CC0);
 // @0x140e63f70
 void UIMicroGameCoupleDance::vfunc_15() {
-    if (FUN_140e64e80()) FUN_140e646e0();
-    else FUN_140e648d0();
+    if (FUN_140e64e80()) Hide();
+    else UpdatePosition();
 }
 MS2_REPLACE_METHOD(0x140E63F70, UIMicroGameCoupleDance, vfunc_15, 50, 0x2618509B);
 // @0x140e63fb0
@@ -907,7 +907,7 @@ MS2_REPLACE_METHOD(0x140E63FB0, UIMicroGameCoupleDance, vfunc_43, 6, 0xA9AF6E37)
 void UIMicroGameCoupleDance::vfunc_2() { UIHeadUpDisplay::vfunc_2(); }
 MS2_REPLACE_METHOD(0x140E63FC0, UIMicroGameCoupleDance, vfunc_2, 24, 0xA68C61E5);
 // @0x140e63fe0
-void UIMicroGameCoupleDance::vfunc_3() { FUN_140e646e0(); UIHeadUpDisplay::vfunc_3(); }
+void UIMicroGameCoupleDance::vfunc_3() { Hide(); UIHeadUpDisplay::vfunc_3(); }
 MS2_REPLACE_METHOD(0x140E63FE0, UIMicroGameCoupleDance, vfunc_3, 34, 0xDA9B8844);
 // @0x140e64010
 int UIMicroGameCoupleDance::vfunc_28(const char* method, const Scaleform::GFx::Value* args, unsigned int count) {
@@ -929,15 +929,15 @@ int UIMicroGameCoupleDance::vfunc_28(const char* method, const Scaleform::GFx::V
 }
 MS2_REPLACE_METHOD(0x140E64010, UIMicroGameCoupleDance, vfunc_28, 428, 0x9D69AB2F);
 // @0x140e641d0
-void UIMicroGameCoupleDance::FUN_140e641d0(int mode, int time) {
+void UIMicroGameCoupleDance::Show(int mode, int time) {
     if (m_30 == NULL) return;
     m_68 = 1;
-    FUN_140e648d0();
+    UpdatePosition();
     m_mode = mode;
     if (m_mode == 0) FUN_140e64270();
     else if (m_mode == 1) FUN_140e64590(time);
 }
-MS2_REPLACE_METHOD(0x140E641D0, UIMicroGameCoupleDance, FUN_140e641d0, 142, 0xDACF8A45);
+MS2_REPLACE_METHOD(0x140E641D0, UIMicroGameCoupleDance, Show, 142, 0xDACF8A45);
 // @0x140e64270
 void UIMicroGameCoupleDance::FUN_140e64270() {
     MS2Ptr<Unk_CoupleDanceEvent> event = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
@@ -963,7 +963,7 @@ void UIMicroGameCoupleDance::FUN_140e64590(int time) {
 }
 MS2_REPLACE_METHOD(0x140E64590, UIMicroGameCoupleDance, FUN_140e64590, 317, 0x204AF7F2);
 // @0x140e646e0
-void UIMicroGameCoupleDance::FUN_140e646e0() {
+void UIMicroGameCoupleDance::Hide() {
     if (m_30 == NULL) return;
     if (!FUN_141986d30()) return;
     m_68 = 0;
@@ -971,21 +971,21 @@ void UIMicroGameCoupleDance::FUN_140e646e0() {
     for (size_t i = 0; i < m_dances.size(); ++i) m_dances[i] = -1;
     m_selected = -1;
 }
-MS2_REPLACE_METHOD(0x140E646E0, UIMicroGameCoupleDance, FUN_140e646e0, 213, 0x3F34A2A6);
+MS2_REPLACE_METHOD(0x140E646E0, UIMicroGameCoupleDance, Hide, 213, 0x3F34A2A6);
 // @0x140e647c0
-void UIMicroGameCoupleDance::FUN_140e647c0(int event, Unk_CoupleEvent* data) {
+void UIMicroGameCoupleDance::OnCoupleEvent(int event, Unk_CoupleEvent* data) {
     if (event == 7) {
         bool show = reinterpret_cast<Unk_CoupleEventData*>(&data->m_data)->vfunc_0();
-        if (show) { int time = reinterpret_cast<Unk_CoupleEventData*>(&data->m_data)->vfunc_3(); FUN_140e641d0(1, time); }
-        else FUN_140e646e0();
+        if (show) { int time = reinterpret_cast<Unk_CoupleEventData*>(&data->m_data)->vfunc_3(); Show(1, time); }
+        else Hide();
     }
 }
-MS2_REPLACE_METHOD(0x140E647C0, UIMicroGameCoupleDance, FUN_140e647c0, 146, 0x658CFC17);
+MS2_REPLACE_METHOD(0x140E647C0, UIMicroGameCoupleDance, OnCoupleEvent, 146, 0x658CFC17);
 // @0x140e64860
 void UIMicroGameCoupleDance::vfunc_41(const Scaleform::GFx::Value& root) { m_30 = FUN_140ba77e0(m_28, root); }
 MS2_REPLACE_METHOD(0x140E64860, UIMicroGameCoupleDance, vfunc_41, 99, 0x54B24861);
 // @0x140e648d0
-void UIMicroGameCoupleDance::FUN_140e648d0() {
+void UIMicroGameCoupleDance::UpdatePosition() {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL) return;
     int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
@@ -994,7 +994,7 @@ void UIMicroGameCoupleDance::FUN_140e648d0() {
     int nHeight = (int)(pEntity->FUN_1422c1530() * 0.5f + nY);
     pEntity->FUN_1422bffe0(nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x140E648D0, UIMicroGameCoupleDance, FUN_140e648d0, 305, 0x58D9DEB6);
+MS2_REPLACE_METHOD(0x140E648D0, UIMicroGameCoupleDance, UpdatePosition, 305, 0x58D9DEB6);
 // @0x140e64a10
 void UIMicroGameCoupleDance::FUN_140e64a10(int dance) {
     for (size_t i=0; i<m_dances.size(); ++i) {

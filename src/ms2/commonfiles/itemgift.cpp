@@ -11,13 +11,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItemData>::operator->
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 struct Unk_GiftItem : public CItemData { };
-struct Unk_GiftItemPtr {
-    ~Unk_GiftItemPtr(); // 0x1401b50d0
-    bool FUN_1402ffd90();
-    void* m_00; Unk_GiftItem* m_08;
-};
-MS2_CHECK_SIZE(Unk_GiftItemPtr,0x10);
-Unk_GiftItemPtr FUN_14053f870(unsigned int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 CStringW FUN_140292a70(const wchar_t*,const unsigned int&);
 int FUN_14053feb0(int);  // C3: the definition's signature
 enum { ItemRank_Unknown=0 };
@@ -27,10 +21,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 ItemGift::ItemGift() {}
 // @0x1405b3930
 int ItemGift::ValidateItem(CString& error) {
-    Unk_GiftItemPtr item=FUN_14053f870(m_itemId);
-    if(item.FUN_1402ffd90()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no item:{0}",m_itemId);return 0; }
+    MS2Ptr<CItemData> item=FUN_14053f870(m_itemId);
+    if(item.IsNull()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no item:{0}",m_itemId);return 0; }
     if(m_count>1) {
-        if(!reinterpret_cast<Unk_GiftItem*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053c7c0()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
+        if(!reinterpret_cast<Unk_GiftItem*>(item.operator->())->FUN_14053c7c0()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
     }
     return 1;
 }

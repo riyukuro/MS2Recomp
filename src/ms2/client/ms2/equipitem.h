@@ -31,7 +31,7 @@ public:
 
     void FUN_1411dbf60();                                           // 0x1411dbf60 OnEquipped: refresh the PC's effect source
     void FUN_1411dbf80(int bKeepModels);                            // 0x1411dbf80 Detach (Equipment 0x1411e3bd0)
-    void FUN_1411dbfd0();                                           // 0x1411dbfd0 unequip the items worn along with this one
+    void ReleaseLinkedItems();                                           // 0x1411dbfd0 unequip the items worn along with this one
     void FUN_1411dc040();                                           // 0x1411dc040 Unequip: unload and drop every model
     int FUN_1411dc0d0();                                            // 0x1411dc0d0 IsLoaded: every model reports a state
     int FUN_1411dc190(void* p);                                     // 0x1411dc190 (load callback: rebuild when p is set)
@@ -73,12 +73,12 @@ public:
     void FUN_1411dd650();                                           // 0x1411dd650 drop effect slot 2 of every model
     void SetItem(CItem* pItem);                               // 0x1411dd6d0
     efd::SmartPointer<NiNode> FindPoint01Node();                      // 0x1411dd700 the first model's "Point01"
-    efd::SmartPointer<NiTexture> FUN_1411dd820();                   // 0x1411dd820 the UGC texture
+    efd::SmartPointer<NiTexture> GetUgcTexture();                   // 0x1411dd820 the UGC texture
     MS2Ptr<CItemUgcMeshContainer> GetUgcMeshes();                  // 0x1411dd950 the UGC meshes of the item (ugcmanager.cpp#4)
     void FUN_1411dd9a0();                                           // 0x1411dd9a0 request the UGC download
     void FUN_1411ddae0();                                           // 0x1411ddae0 the UGC download finished
     int FUN_1411ddcb0();                                            // 0x1411ddcb0 the UGC file is here (1)
-    CString FUN_1411ddd50();                                        // 0x1411ddd50 the UGC file name
+    CString GetUgcFile();                                        // 0x1411ddd50 the UGC file name
     void AddModel(CEquipModel* pModel);                        // 0x1411dde50 add a model
     void FUN_1411ddf10(CEquipModel* pModel);                        // 0x1411ddf10 RemoveModel
     void FUN_1411ddfb0(double fTime);                               // 0x1411ddfb0 update the models (slot 19)

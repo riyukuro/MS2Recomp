@@ -362,7 +362,7 @@ void UIBlueprintMarketDialog::vfunc_72()
             int nUIClassID = vfunc_48();
             CMeratMarketMan::GetInstance()->SendMeretMarketMode29(false, m_saved.m_nId, nUIClassID);
         } else {
-            CMeratMarketMan::GetInstance()->FUN_140d54e50(m_spCond);
+            CMeratMarketMan::GetInstance()->SendSearchCondition(m_spCond);
         }
         FUN_1418ffef0((unsigned int*)(&m_nFlags), 1);
     }

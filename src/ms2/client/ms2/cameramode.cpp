@@ -450,7 +450,7 @@ void CCameraMode::FUN_140afe4b0()
             if (pCamera)
             {
                 pCamera->SetZoomFactor(m_70);
-                static_cast<MS2CameraService*>(spCamera.operator->())->FUN_1414af480(pCamera);
+                static_cast<MS2CameraService*>(spCamera.operator->())->UpdateCameraFromMgr(pCamera);
             }
         }
     }

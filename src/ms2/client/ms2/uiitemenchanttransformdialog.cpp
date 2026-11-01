@@ -6,7 +6,9 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemenchanttransformdialog.cpp"    // assumed
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiitemenchanttransformdialog.h"
 
@@ -33,6 +35,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/commonfiles/itemenchanttransformtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -59,20 +62,6 @@ public:
     void FUN_1422c1fe0(int bEnable);                    // enable / disable
 };
 
-// The item bag control of the movie.
-class Unk_TfBag : public AScript
-{
-public:
-    void FUN_1422dcca0(int n);
-    void FUN_1422dd1d0();                               // clear
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
 
 // The movie's board (the root child of the dialog).
 class Unk_TfBoard : public AScript
@@ -288,8 +277,8 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_targetItems");
     if (board == 0)
         return;
-    if (MS2Ptr<Unk_TfBag> bag = ((Unk_TfBoard*)board)->FUN_140accef0<Unk_TfBag>("m_itemBag")) {
-        bag->FUN_1422dcca0(-1);
+    if (MS2Ptr<ASTileList> bag = ((Unk_TfBoard*)board)->FUN_140accef0<ASTileList>("m_itemBag")) {
+        reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(-1);
         bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strTargetBag);
         bag->vfunc_24(true);

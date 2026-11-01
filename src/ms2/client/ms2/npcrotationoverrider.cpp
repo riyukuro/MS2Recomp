@@ -26,7 +26,7 @@ CNPCRotationOverrider::~CNPCRotationOverrider()
 }
 
 // @0x14160c3f0
-bool CNPCRotationOverrider::FUN_14160c3f0(float* pfAngle, float fDelta)
+bool CNPCRotationOverrider::AdvanceRotation(float* pfAngle, float fDelta)
 {
     m_fElapsed += fDelta;
     bool bFinished = false;
@@ -35,7 +35,7 @@ bool CNPCRotationOverrider::FUN_14160c3f0(float* pfAngle, float fDelta)
         bFinished = true;
         *pfAngle = m_fTo;
     } else {
-        *pfAngle = FUN_14160c500();
+        *pfAngle = GetEasedAngle();
     }
     if (*pfAngle < 0.0f)
         *pfAngle = *pfAngle + 360.0f;
@@ -43,10 +43,10 @@ bool CNPCRotationOverrider::FUN_14160c3f0(float* pfAngle, float fDelta)
         *pfAngle = *pfAngle - 360.0f;
     return !bFinished;
 }
-MS2_REPLACE_METHOD(0x14160C3F0, CNPCRotationOverrider, FUN_14160c3f0, 257, 0xC30D598D);
+MS2_REPLACE_METHOD(0x14160C3F0, CNPCRotationOverrider, AdvanceRotation, 257, 0xC30D598D);
 
 // @0x14160c500
-float CNPCRotationOverrider::FUN_14160c500()
+float CNPCRotationOverrider::GetEasedAngle()
 {
     float fHalf = m_fDuration * 0.5f;
     float fRatio = 0.0f;
@@ -59,4 +59,4 @@ float CNPCRotationOverrider::FUN_14160c500()
     }
     return m_fFrom + fRatio * (m_fTo - m_fFrom);
 }
-MS2_REPLACE_METHOD(0x14160C500, CNPCRotationOverrider, FUN_14160c500, 357, 0x06A522B3);
+MS2_REPLACE_METHOD(0x14160C500, CNPCRotationOverrider, GetEasedAngle, 357, 0x06A522B3);

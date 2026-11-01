@@ -51,7 +51,6 @@ class WeddingManager   // C3: member view for the former free stand-ins
 public:
     class WeddingProxy* FUN_140d295d0();
 };
-class Unk_WdRates { public: __int64 FUN_140908e60(int a, int b); };   // the base experience per day
 __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
 CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
@@ -93,7 +92,7 @@ void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_WdWedding* pWedding = ((struct Unk_WdWedding*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0());
-    __int64 nExp = reinterpret_cast<Unk_WdRates*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
+    __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
     int nDays = GetDayNumberDifference(pWedding->m_nMarriedTime, GetServerTime());
     nExp = nExp * nDays;
     CStringW strHistory;

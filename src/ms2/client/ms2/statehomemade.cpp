@@ -109,10 +109,10 @@ struct Unk_HmUseInfo
 void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
 // The cursor manager scales a duration (shared with the interact objects).
-class Unk_HmCursorMgr { public: int FUN_1404240e0(int n); };
+class CGameEventValueMasteryReduce { public: unsigned int Apply(unsigned int); }; class Unk_HmCursorMgr : public CGameEventValueMasteryReduce {};
 
 // The gathering table service: how the cube's kind may be gathered.
-class Unk_HmGatherMgr { public: int FUN_14066bc40(int nId); };
+class CMasteryTable { public: int LimitState(int); }; class Unk_HmGatherMgr : public CMasteryTable {};
 Unk_HmGatherMgr* FUN_1409670c0();
 
 // The equipment of a player: the worn item of a slot.
@@ -292,7 +292,7 @@ MS2_REPLACE_METHOD(0x140CA4DE0, StateHomemade, vfunc_25, 17, 0xFFB1988B);
 int StateHomemade::FUN_140ca4e00()
 {
     unsigned nDuration = static_cast<Client::Constants*>(FUN_1401d3200())->HarvestDuration.Read();
-    return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(((void*)TSingleton<CGameEventValueManager>::GetInstance()))->MasteryReduce()))->FUN_1404240e0(nDuration);
+    return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(((void*)TSingleton<CGameEventValueManager>::GetInstance()))->MasteryReduce()))->Apply(nDuration);
 }
 MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, FUN_140ca4e00, 62, 0xFE21669A);
 
@@ -342,7 +342,7 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
         if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())
             continue;
         int nKind = static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580()->m_n100;
-        if (FUN_1409670c0()->FUN_14066bc40(nKind) == 3)
+        if (FUN_1409670c0()->LimitState(nKind) == 3)
             continue;
         return 1;
     }

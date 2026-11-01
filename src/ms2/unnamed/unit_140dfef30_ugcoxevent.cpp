@@ -38,6 +38,7 @@
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/creservedwordtable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 
 // return types of the getters this unit calls
@@ -89,7 +90,6 @@ class Unk_OxArgs : public Unk_CommandArgs
 };
 
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-void FUN_1416fb300(void* p, const CStringW& str);                // remember the host's notice
 CStringW FUN_140298ea0(CStringW strKey);                         // localized string
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -354,7 +354,7 @@ void FUN_140dffb50(void* pListener)
     if (s_bHost)
     {
         strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_host");
-        FUN_1416fb300(TSingleton<CReservedWordTable>::GetInstance(), strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
     }
     else
     {

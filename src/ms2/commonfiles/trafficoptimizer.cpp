@@ -7,9 +7,17 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\trafficoptimizer.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "trafficoptimizer.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: WorldService::FUN_141bd3060
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/fielddata.h"
 #include "hook/ms2hook.h"
 #include <algorithm>
+
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 
 const unsigned CTrafficOptimizer::MIN_TRAFFIC = 100;
 
@@ -40,12 +48,12 @@ unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {
         return 100;
     }
     unsigned traffic = 0;
-    if (FUN_14087d630(FUN_141bd3060(FUN_1403ed2d0())) != 0) {
+    if (FUN_14087d630((unsigned)reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd3060()) != 0) {
         traffic += GetTraffic(3);
     } else {
         traffic += GetTraffic(4);
     }
-    if (entity->FUN_14166c930() == 1) {
+    if (reinterpret_cast<PCBase*>(entity)->FUN_14166c930() == 1) {
         traffic += GetTraffic(5);
     } else {
         traffic += GetTraffic(6);
@@ -64,7 +72,7 @@ MS2_REPLACE_METHOD(0x14087D500, CTrafficOptimizer, FUN_14087d500, 54, 0x149E8801
 // @0x14087d540
 unsigned CTrafficOptimizer::FUN_14087d540(Unk_TOEntity* entity) {
     unsigned traffic = 0;
-    if (entity->FUN_14166c930() == 1) {
+    if (reinterpret_cast<PCBase*>(entity)->FUN_14166c930() == 1) {
         traffic = GetTraffic(1);
     } else {
         traffic = GetTraffic(2);
@@ -93,7 +101,7 @@ int CTrafficOptimizer::FUN_14087d630(unsigned id) {
     if (field == 0) {
         return 0;
     }
-    if (field->FUN_140375270()) {
+    if (reinterpret_cast<CFieldData*>(field)->FUN_140375270()) {
         return 1;
     }
     return 0;

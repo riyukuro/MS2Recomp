@@ -208,8 +208,6 @@ public:
 };
 
 // collected ids: dungeons, fish, pets, quests, items
-struct Unk_AcRoom : public CPtred { int m_pad_18; int m_1c; };
-class Unk_AcRoomTable { public: MS2Ptr<Unk_AcRoom> FUN_1403206b0(int nRoomId); };
 class Unk_AcDungeonMgr : public CPtred { public: int FUN_140b22890(int nId); };
 class Unk_AcMyChar { public: MS2Ptr<Unk_AcDungeonMgr> FUN_140d9f2c0(); };
 Unk_AcMyChar* FUN_140931510();
@@ -1410,9 +1408,9 @@ CStringW UIAchieveDialog::FUN_1418ad5d0(int nCondType, __int64 nId)
     case 0x10a:
         return FUN_1405c2690(CStringW(L"s_achieve_collectiong_pet_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, nId));
     case 0xc5: {
-        MS2Ptr<Unk_AcRoom> spRoom = reinterpret_cast<Unk_AcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nId);
+        DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nId);
         if (spRoom.get() != 0)
-            return FUN_1408f71a0(CStringW(L"s_achieve_collectiong_dungeon_clear"), FUN_140cbf840(spRoom->m_1c),
+            return FUN_1408f71a0(CStringW(L"s_achieve_collectiong_dungeon_clear"), FUN_140cbf840(spRoom->m_groupType),
                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nId));
     }
         break;

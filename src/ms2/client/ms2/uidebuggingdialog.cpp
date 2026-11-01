@@ -76,7 +76,6 @@ public:
 class Unk_DbgWorld
 {
 public:
-    Unk_DbgNpc* FUN_141bd1320(int nId);                                 // npc by object id
     void* FUN_141bd36d0();                                              // npc tree
 };
 // The marker effect request: a NoticeMessage (placeholder/effectquery.h), 0x70 bytes. The ctor 0x140a52ef0 fills all of
@@ -334,7 +333,7 @@ void UIDebuggingDialog::vfunc_72()
     int bClear = 1;
     if (m_nTargetId != 0)
     {
-        Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_nTargetId);
+        Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nTargetId));
         if (pNpc != 0)
         {
             Unk_DbgModelSet kModel = reinterpret_cast<Unk_DbgModelTable*>(FUN_141b6f910())->FUN_141206030(pNpc->FUN_14123c460());

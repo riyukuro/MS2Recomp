@@ -52,7 +52,6 @@ public:
     __int64 GetItemUid();
 };
 DragSlot* FUN_14140e5e0(NotifyContext::BindData* p);
-NotifyContext::BindData* FUN_1422cd070(DragSlotBag* pBag, int nIndex);
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -64,6 +63,7 @@ ItemBreakSlotBag* FUN_1414109f0(NotifyContext::BindData* p);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemBreakSlot);
 
 // Header-defined statics (same in every obj that includes the shared item header).
+#include "ms2/gfxui/dragslot.h"
 #include "ms2/placeholder/header_statics_a.h"
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemBreakSlotBag);
@@ -212,7 +212,7 @@ DragSlot* ItemBreakSlotBag::vfunc_16(int nIndex)
 // @0x1414109a0
 void FUN_1414109a0(DragSlotBag* pBag, int nIndex)
 {
-    DragSlot* pSlot = FUN_14140e5e0(FUN_1422cd070(pBag, nIndex));
+    DragSlot* pSlot = FUN_14140e5e0(reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cd070(nIndex));
     if (pSlot)
         pSlot->vfunc_10();
 }

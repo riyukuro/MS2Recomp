@@ -79,13 +79,13 @@ public:
     void FUN_141356dc0(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356df0(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356e20(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356e50(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356e90(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356ed0(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnGamePadOnClick(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnGamePadOffClick(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OpenEventBrowser(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356f90(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141357050(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141357180(NotifyObject* pObj);
-    void FUN_1413571f0(NotifyObject* pObj);
+    void OnPcBangNotify(NotifyObject* pObj);
+    void OnTokenMoneyChanged(NotifyObject* pObj);
     void FUN_141357300(NotifyObject* pObj);
     void FUN_141357330(NotifyObject* pObj);
     void SetNoticeSpeed(float f);
@@ -93,22 +93,22 @@ public:
     void SetGamePadMode(int nMode);
     void SetInputMode(int nMode);
     void FUN_141357640(__int64 tTime, __int64 nBonus);
-    bool FUN_1413579d0();
+    bool ToggleVersionText();
     void FUN_141357ac0(CInPacket& packet);
     void ResetClock();
     void FUN_141357b30();
     void FUN_141357d90(int nQuiet);
     void FUN_141358020(bool bForce);
     void FUN_1413581f0();
-    void FUN_141358360();
-    void FUN_141358420();
+    void RefreshPcBang();
+    void UpdateSearchDungeon();
     void FUN_141358490();
     void FUN_1413586c0(Scaleform::GFx::Value* pRetVal);
     void FUN_141358b20(Scaleform::GFx::Value* pRetVal);
     void FUN_141358df0(Scaleform::GFx::Value* pRetVal);
-    void FUN_141359340();
+    void ShowPendingNotice();
     void SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount);
-    void FUN_141359510(int nState);
+    void SetPcBangState(int nState);
 
     MS2Ptr<Unk_HudButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_HudButton>& out);
     MS2Ptr<Unk_HudInput> FUN_14129a040(const CString& strName, MS2Ptr<Unk_HudInput>& out);
@@ -217,18 +217,18 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14135c5f0
     virtual int vfunc_48();                                                 // 48 0x14135dea0
 
-    void FUN_14135d2d0(const NiFixedString& kName, float fValue);
+    void SetShaderFloat(const NiFixedString& kName, float fValue);
     void FUN_14135d310(bool bOn);
     void OnSelectRadioMotionBlurAll();
     void OnSelectRadioMotionBlurCharacter();
     void FUN_14135d410(bool bOn);
     void FUN_14135d440(bool bOn);
     void FUN_14135d490(bool bOn);
-    void FUN_14135d4f0(bool bOn);
+    void SetGlowEnabled(bool bOn);
     void SetGlowColor(float fRed, float fGreen, float fBlue);
     void FUN_14135d630(bool bOn);
     void FUN_14135d660(float fValue);
-    void FUN_14135d690(float fNear, float fFar);
+    void SetNearFarRange(float fNear, float fFar);
     void FUN_14135d700(bool bOn);
     void FUN_14135d730(ASData& data);
     void SetSliderValue(const CString& strName, float fValue);

@@ -63,7 +63,7 @@ MS2_CHECK_OFFSET(Unk_CcStrings, m_str3b8, 0x3b8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
-class Unk_CcConstValue { public: int FUN_140ad5c50(); };
+class Unk_SSGConstValue { public: int FUN_140ad5c50(void); }; class Unk_CcConstValue : public Unk_SSGConstValue {};
 class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
 {
 public:

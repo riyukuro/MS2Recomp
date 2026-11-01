@@ -94,8 +94,8 @@ typedef UIMsg Unk_LdUIMsg;
 // The message box machinery (unit_140d73aa0.cpp) and the string tables.
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_14151f200();
-class Unk_LdStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_LdStringMgr (calls cast back)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 
 void FUN_140d42100(const CString& strName);
 void FUN_140d42050(const CString& strName);
@@ -227,7 +227,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
-                CStringW strMsg = reinterpret_cast<Unk_LdStringMgr*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
@@ -246,7 +246,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
-                CStringW strMsg = reinterpret_cast<Unk_LdStringMgr*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);

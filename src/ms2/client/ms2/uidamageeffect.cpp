@@ -36,9 +36,9 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
+#include "ms2/placeholder/cgameoption.h"
 class Unk_DmgCfgInfo { public: char m_pad_00[0xc]; int m_0c; };
 void* FUN_1409a8b10();
-Unk_DmgCfgInfo* FUN_140e09150(void* pCfg);
 
 int FUN_141277f40();                                                // next UI layer
 
@@ -138,7 +138,7 @@ void UIDamageEffect::OnLoadComplete()
     UIObject::OnLoadComplete();
     FUN_141910ab0();
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgCfgInfo* pInfo = FUN_140e09150(FUN_1409a8b10());
+    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140e09150());
     static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
     Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)

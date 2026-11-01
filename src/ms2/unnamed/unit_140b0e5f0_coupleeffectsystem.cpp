@@ -13,6 +13,7 @@
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 // return types of the getters this unit calls
 class CItemGemPropertyTable;
@@ -42,7 +43,6 @@ class Unk_CeMapPtr
 {
 public:
     ~Unk_CeMapPtr();                                    // 0x1408850f0
-    void* FUN_1409657a0() const;                        // operator T*
     Unk_CeMapData* FUN_140885340() const;               // operator->
 private:
     void* m_pad_00;
@@ -109,7 +109,6 @@ public:
     Unk_CeMapPtr FUN_141bd30a0();                       // current map data
 };
 void* FUN_1409613d0(PCBase* p);
-int FUN_141658e60(PCBase* p);
 int FUN_141663940(PCBase* p);
 __int64 FUN_141663990(PCBase* p);
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
@@ -288,7 +287,7 @@ void CoupleEffectSystem::FUN_140b0eed0()
 bool CoupleEffectSystem::FUN_140b0ef20()
 {
     Unk_CeMapPtr spMap = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (spMap.FUN_1409657a0() != 0)
+    if (reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spMap).get()) != 0)
     {
         if (spMap.FUN_140885340()->FUN_140375660(0x400) != 0)
             return false;
@@ -305,7 +304,7 @@ CString CoupleEffectSystem::FUN_140b0efb0()
     Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(reinterpret_cast<Unk_GemDb*>(FUN_1405a96f0())->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
     if (spEffect.FUN_1405a8d70(0) != 0)
         return "";
-    return spEffect.FUN_1405a8ef0()->GetCoupleEffect(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
+    return spEffect.FUN_1405a8ef0()->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60());
 }
 
 // @0x140b0f160

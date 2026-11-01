@@ -30,11 +30,6 @@ class ASDialog : public ASDisplayObject
 {
 };
 
-// The room record handle (released through FUN_14031c0f0) and the room table.
-void FUN_14031c0f0(struct Unk_DxRoomRef* pRoom);
-struct Unk_DxRoomRef { void* m_0; void* m_8; ~Unk_DxRoomRef() { FUN_14031c0f0(this); } };
-class Unk_DxRoomTable { public: Unk_DxRoomRef FUN_1403206b0(int nRoomId); };
-bool FUN_140334010(Unk_DxRoomRef* pRoom, int n);
 
 void FUN_140cff310(const Scaleform::GFx::Value&, CString, CString, CStringW);     // set a text clip's text
 int FUN_1418dd0d0();                                                    // the screen margin
@@ -118,8 +113,8 @@ void UIDungeonExpenseRewardDialog::FUN_140f3ad50()
 // @0x140f3ae40
 void UIDungeonExpenseRewardDialog::FUN_140f3ae40(int nRoomId, int nUnused)
 {
-    Unk_DxRoomRef room = reinterpret_cast<Unk_DxRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoomId);
-    if (FUN_140334010(&room, 0))
+    DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
+    if (room == 0)
         return;
     if (FUN_141924630() != 0)
         vfunc_68();

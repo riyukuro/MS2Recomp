@@ -2,6 +2,7 @@
 // box's result slots). Unk_ names are local reconstruction names.
 #pragma once
 #include <set>
+#include <vector>
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
@@ -32,8 +33,8 @@ public:
     virtual int vfunc_28(const char*, const Scaleform::GFx::Value*, unsigned int);
     // @0x140ea04b0
     virtual int vfunc_48() { return 20267; }
-    void FUN_140e9c0d0();
-    void FUN_140e9c150(const Scaleform::GFx::FunctionHandler::Params&);
+    void ReleaseSlotBinds();
+    void OnSelectMode(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140e9c1e0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140e9c210(const Scaleform::GFx::FunctionHandler::Params&);
     void SetBoxItemId(int);
@@ -58,8 +59,8 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened
     CString m_bagId;                            // +0x180 "bagId" of the key items (ItemLullu_...)
-    Unk_ItemVec m_result;                       // +0x188 the obtained items (std::vector<ItemEntity>)
-    Unk_StrVec m_slotBinds;                     // +0x1a0 the "binding" strings handed to the AS slots
+    std::vector<ItemEntity> m_result;           // +0x188 the obtained items
+    std::vector<CString> m_slotBinds;            // +0x1a0 the "binding" strings handed to the AS slots
     std::set<ItemEntity, Unk_LulluBoxLess> m_special1;  // +0x1b8 drops of the box that are special
     std::set<ItemEntity, Unk_LulluBoxLess> m_special2;  // +0x1c8 items of the second set (flag read from the packet)
     bool m_multi;                               // +0x1d8 ten at a time

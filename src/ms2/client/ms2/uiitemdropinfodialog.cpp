@@ -22,28 +22,13 @@ static CString s_itemCount("itemCount");
 #include "ms2/commonfiles/itemdroptable.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/citem.h"   // C3: the real CItem
+#include "ms2/placeholder/astextfield.h"   // C3: ASTextField::FUN_1422c4f00
 
 // Unit-local declarations; Unk names and member names are invented.
-class Unk_ItemData;
-class Unk_ItemPtrSetter { public: void FUN_1401bffe0(CItem*); };
-class CItem {
-public:
-    CItem();
-    int FUN_1405276c0();
-    int FUN_140526bd0();
-    Unk_ItemData* FUN_140527840();
-    int FUN_14052b130(int id, int rarity, int flag);
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
-    void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
-    void* m_80; void* m_88; void* m_90; void* m_98; void* m_a0; void* m_a8; void* m_b0; void* m_b8;
-    void* m_c0; void* m_c8; void* m_d0; void* m_d8; void* m_e0; void* m_e8; void* m_f0; void* m_f8;
-    void* m_100; void* m_108; void* m_110; void* m_118; void* m_120; void* m_128; void* m_130; void* m_138;
-    void* m_140; void* m_148; void* m_150; void* m_158; void* m_160; void* m_168; void* m_170; void* m_178;
-    void* m_180; void* m_188; void* m_190; void* m_198;
-};
-MS2_CHECK_SIZE(CItem, 0x1a0);
-class Unk_DropText : public ASDisplayObject { public: void FUN_1422c4f00(const CStringW&); };
+class CItemData;
+// C3: CItem is the real class (citem.h)
+class Unk_DropText : public ASDisplayObject { public: };
 class Unk_DropInput : public ASDisplayObject { public: };
 class Unk_DropButton : public ASButton { public: };
 class Unk_DropSlot : public ASDisplayObject {
@@ -56,7 +41,6 @@ private:
     void* m_pad_80;
 };
 MS2_CHECK_SIZE(Unk_DropSlot, 0x88);
-class Unk_DropValue { public: bool FUN_1409b4d40() const; };
 template <class T> Unk_DropHandle<T> MakeDropChild(int id, const Scaleform::GFx::Value& v) {
     Unk_DropHandle<T> h(new T(v, id));
     return h;
@@ -66,7 +50,7 @@ public:
     Scaleform::GFx::Value FUN_1422baa20(const char*);
     template <class T> Unk_DropHandle<T> GetChild(const CString& name) {
         Scaleform::GFx::Value child = FUN_1422baa20(name);
-        if (reinterpret_cast<const Unk_DropValue*>(&child)->FUN_1409b4d40())
+        if (child.IsObject())
             return MakeDropChild<T>(m_id, child);
         return Unk_DropHandle<T>(0);
     }
@@ -113,8 +97,7 @@ public:
     Unk_DropPtr<Unk_DropText> FUN_140beaf20(const CString&, Unk_DropPtr<Unk_DropText>&);
     Unk_DropPtr<Unk_DropInput> FUN_140bbe940(const CString&, Unk_DropPtr<Unk_DropInput>&);
 };
-class Unk_1403ed2d0 { public: void* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
+class WorldService { public: static WorldService* GetInstance(); void* FUN_141bd0cc0(); };   // C3: member view
 class ASTooltip : public AScript {
 public: ASTooltip(void*, int, int); virtual ~ASTooltip(); int FUN_1409e0d40(CItem*);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
@@ -125,13 +108,9 @@ void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW FUN_141425950(int);
 CStringW FUN_14183e9c0(CStringW, int);
 int FUN_1407181a0(const CStringW&);
-CStringW FUN_140323ab0(const wchar_t*, const int&, const int&);
-void FUN_141361e60(CStringW);
+class CUserCommandCli { public: static void SendCommand(CStringW); };   // C3: member view
 int FUN_14053feb0(int);
 class Unk_DropRef { public: void* m_08; };
-int FUN_140159bc0(Unk_DropRef*);
-void FUN_140159ba0(Unk_DropRef*);
-void FUN_14015b020(Unk_DropRef*);
 class Unk_DropEntry : public Unk_DropRef {
 public:
     virtual int vfunc_0();
@@ -144,12 +123,12 @@ MS2_CHECK_OFFSET(Unk_DropEntry, m_max, 0x28);
 template <> Unk_DropEntry* MS2Ptr<Unk_DropEntry>::get() const { return m_p; }  // COMDAT first instantiated here
 // The rest of the MS2Ptr<Unk_DropEntry> COMDAT chain (shared with a sibling unit; defined here so the DLL links).
 // @0x1403038d0
-template <> void MS2Ptr<Unk_DropEntry>::Reference(Unk_DropEntry* p) { FUN_14015b020(p); }
+template <> void MS2Ptr<Unk_DropEntry>::Reference(Unk_DropEntry* p) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(p)); }
 // @0x14030d460
 template <> void MS2Ptr<Unk_DropEntry>::ReleaseImpl(void*) {
-    if (FUN_140159bc0(m_p) == 0) {
+    if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(m_p)) == 0) {
         Reference(m_p);
-        FUN_140159ba0(m_p);
+        CPtred::DeletePtred(reinterpret_cast<CPtred*>(m_p));
     }
 }
 // @0x14030d010
@@ -157,18 +136,21 @@ template <> void MS2Ptr<Unk_DropEntry>::Release() { if (m_p) { ReleaseImpl((Unk_
 // @0x1402fee10
 template <> MS2Ptr<Unk_DropEntry>::~MS2Ptr() { Release(); }
 class Unk_1405a1fd0 { public: void FUN_1402eab20(int, std::vector<MS2Ptr<Unk_DropEntry>>&); };
-MS2Ptr<Unk_ItemData> FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 class ASObj : public AScript {
 public: ASObj(int); virtual ~ASObj();
     void FUN_1409c5bd0(Unk_DropEntry*);
     void FUN_1407cb9c0(const char*, int);
     void FUN_1407cbb20(const char*, CStringW);
 };
-class Unk_DropArray : public AScript {
-public: Unk_DropArray(int); virtual ~Unk_DropArray(); bool FUN_1422bc050(Scaleform::GFx::Value);
+class ASArray : public AScript {
+public: int FUN_1422bc050(Scaleform::GFx::Value);
+};
+class ASDataProvider : public ASArray {
+public: ASDataProvider(int); virtual ~ASDataProvider();
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
-MS2_CHECK_SIZE(Unk_DropArray, 0x40);
+MS2_CHECK_SIZE(ASDataProvider, 0x40);
 CStringW FUN_1409eb450(int);
 
 // Unk_DropPtr<T> members whose COMDATs are first instantiated in this unit (the others are declared only).
@@ -250,7 +232,7 @@ void UIItemDropInfoDialog::vfunc_49(Scaleform::GFx::Value* result, ASData* args)
     if (index >= m_items.GetCount()) return;
     MS2Ptr<CItem> item(m_items.GetAt(index));
     if (item == NULL) return;
-    void* player = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* player = WorldService::GetInstance()->FUN_141bd0cc0();
     ASTooltip tooltip(player,0x20,2);
     if (tooltip.FUN_1409e0d40(item.get())) *result = tooltip.FUN_1422bb870();
 }
@@ -265,7 +247,7 @@ void UIItemDropInfoDialog::FUN_140c3ad20() {
     if (m_name.get()) {
         CStringW name = FUN_141425950(m_item->FUN_1405276c0());
         CStringW label = FUN_14183e9c0(name, m_item->FUN_140526bd0());
-        m_name->FUN_1422c4f00(label);
+        ((ASTextField*)m_name.operator->())->FUN_1422c4f00(label);
     }
 }
 MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, FUN_140c3ad20, 578, 0x5553B0EC);
@@ -273,14 +255,14 @@ MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, FUN_140c3ad20, 578, 0x5553
 void UIItemDropInfoDialog::FUN_140c3af70() {
     m_items.RemoveAll();
     if (m_list == NULL || m_item == NULL) return;
-    MS2Ptr<Unk_ItemData> data(m_item->FUN_140527840());
+    MS2Ptr<CItemData> data((CItemData*)m_item->FUN_140527840());
     if (data == NULL) return;
     if (m_box == 0) return;
     std::vector<MS2Ptr<Unk_DropEntry>> entries;
     reinterpret_cast<Unk_1405a1fd0*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402eab20(m_box, entries);
-    Unk_DropArray array(2);
+    ASDataProvider array(2);
     for (auto& entry : entries) {
-        MS2Ptr<Unk_ItemData> info = FUN_14053f870(entry->vfunc_0());
+        MS2Ptr<CItemData> info = FUN_14053f870(entry->vfunc_0());
         if (info == NULL) continue;
         MS2Ptr<CItem> item(new CItem);
         if (!item->FUN_14052b130(entry->vfunc_0(),entry->vfunc_1(),0)) continue;
@@ -314,15 +296,15 @@ MS2_REPLACE_METHOD(0x140C3B640, UIItemDropInfoDialog, GetDropCount, 163, 0xA1209
 // @0x140c3b6f0
 void UIItemDropInfoDialog::OnClickDropOrTestButton(const Scaleform::GFx::FunctionHandler::Params& params) {
     int count = GetDropCount();
-    if (params.pUserData == m_test.get()) FUN_141361e60(FUN_140323ab0(L"DropBox {0} {1} 0 t",m_box,count));
-    else if (params.pUserData == m_drop.get()) FUN_141361e60(FUN_140323ab0(L"DropBox {0} {1}",m_box,count));
+    if (params.pUserData == m_test.get()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1} 0 t",reinterpret_cast<const unsigned&>(m_box),count));
+    else if (params.pUserData == m_drop.get()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1}",reinterpret_cast<const unsigned&>(m_box),count));
 }
 MS2_REPLACE_METHOD(0x140C3B6F0, UIItemDropInfoDialog, OnClickDropOrTestButton, 217, 0x7CE52B06);
 // @0x140c3b7d0
 void UIItemDropInfoDialog::FUN_140c3b7d0(int item, int box) {
     if (m_item.get() ? true : false) { if (m_item->FUN_1405276c0() == item) return; }
     m_box = box;
-    reinterpret_cast<Unk_ItemPtrSetter*>(&m_item)->FUN_1401bffe0(new CItem);
+    m_item.AssignRaw(new CItem);
     if (!m_item->FUN_14052b130(item,FUN_14053feb0(item),0)) vfunc_67();
     else if (FUN_141924630()) { FUN_140c3ad20(); FUN_140c3af70(); }
 }

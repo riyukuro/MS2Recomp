@@ -57,15 +57,16 @@ static UICommon::CMyPCKeyInputController s_keyInputController;                  
 
 // ---- unit-local views of exe objects ----
 
-// The stored login options (FUN_1409a8b10 -> FUN_140cfd260).
+// The stored login options (FUN_1409a8b10 -> FUN_140cfd260), gameoptionstruct.cpp's Unk_GsConnect.
+// C3: its setters are gameoptionstruct.cpp's free functions on the record.
+struct Unk_GsConnect;
+void FUN_141260a30(Unk_GsConnect* p, const CStringW& strWorldName);    // remember the server name
+void FUN_141260ab0(Unk_GsConnect* p, int nChannel);                    // remember the channel
+void FUN_141260b60(Unk_GsConnect* p, const CString& strUserName);      // remember the login name (CStringA)
+void FUN_141260c00(Unk_GsConnect* p, const unsigned __int64& nCharSN); // remember the character id
 class Unk_SlOptions
 {
 public:
-    void FUN_141260a30(const CStringW& strServer);              // remember the server name
-    void FUN_141260ab0(int nChannel);                           // remember the channel
-    void FUN_141260b60(const CString& strName);                 // remember the login name (CStringA)
-    void FUN_141260c00(const __int64* pnCharId);                // remember the character id
-
     void* m_00;                                                 // +0x00
     CStringW m_strServer;                                       // +0x08
     CString m_strChannel;                                       // +0x10 text of the channel (atoi)
@@ -148,7 +149,6 @@ extern int DAT_1439f4a7c;
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set an Int value
-class Unk_SlKeys { public: bool FUN_14116d890(int nKey); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 UIBannerAdvertisingDialog* FUN_141876420(int nId);
@@ -359,7 +359,7 @@ void UIServerListDialog::ReceiveServerList(CInPacket& packet)
             m_servers.SetAt(server->m_strName, server);
         }
     }
-    FUN_1409a8b10()->FUN_140cfd260()->FUN_141260b60(DAT_143ab29d8);
+    FUN_141260b60((Unk_GsConnect*)FUN_1409a8b10()->FUN_140cfd260(), DAT_143ab29d8);
 }
 
 // @0x141ad16b0
@@ -417,7 +417,7 @@ int UIServerListDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_SlKeys*)FUN_14025e7c0())->FUN_14116d890(0))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false))
     {
         m_30->Invoke("onEnterKey");
         return 1;
@@ -632,7 +632,7 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
         return;
     }
     {
-        TSingleton<CMainSystem>::GetInstance()->FUN_141473690(reply.a18);
+        TSingleton<CMainSystem>::GetInstance()->SyncServerTime(reply.a18);
         CMsTime::SetTimeZone(reply.zone, reply.zoneFlag);
         DAT_143ab2820 = reply.id;
         DAT_1439f4a7c = m_nChannel;
@@ -663,10 +663,10 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
     if (pOptions != 0) {
         if (pOptions->m_nCharId != nCharId)
             FUN_140da4fe0(((void*)FUN_140939a10()), MS2Ptr<NotifyObject>(new NotifyChangeMyPC));
-        pOptions->FUN_141260c00(&nCharId);
-        pOptions->FUN_141260a30(GetServer());
+        FUN_141260c00((Unk_GsConnect*)pOptions, reinterpret_cast<const unsigned __int64&>(nCharId));
+        FUN_141260a30((Unk_GsConnect*)pOptions, GetServer());
         if (nChannel != 0)
-            pOptions->FUN_141260ab0(nChannel);
+            FUN_141260ab0((Unk_GsConnect*)pOptions, nChannel);
     }
     ((class Unk_SlLogin*)FUN_140d86260())->vfunc_7();
     ((class Unk_SlLogin*)FUN_140d86260())->vfunc_22(0x2c6, "GameLoading");
@@ -678,7 +678,7 @@ void UIServerListDialog::FUN_141ad2ea0(int nChannel)
 {
     m_nChannel = nChannel;
     if (nChannel != 0)
-        FUN_1409a8b10()->FUN_140cfd260()->FUN_141260ab0(nChannel);
+        FUN_141260ab0((Unk_GsConnect*)FUN_1409a8b10()->FUN_140cfd260(), nChannel);
 }
 
 // @0x141ad2ef0

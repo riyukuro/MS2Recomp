@@ -62,6 +62,8 @@ static CString s_strHouseIcon = "System_HouseIcon";                 // the popup
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/client/ms2/addresstable.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 // ---- unit-local views of exe types ----
 
@@ -86,8 +88,6 @@ class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   //
 class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422de800(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int a, int b);  // roll over
-    void FUN_1422de880(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int a, int b);  // roll out
 };
 
 // The house contract dialog (UI 0x4e76).
@@ -126,20 +126,16 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-class Unk_HouseMarkCamera { public: bool FUN_140af0700(const NiPoint3& ptWorld, NiPoint3& ptScreen); };
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // Point3 operator*=
 float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
 float FUN_14029d220(float f);                                       // fabs
 
 CBuddyManager* FUN_14097a780();
 
-__int64 FUN_141656ad0(PCBase* pPc);                                 // the character id
-int FUN_1416595d0(PCBase* pPc);
 int FUN_1406516b0();
 int FUN_141277f40();
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 CString FUN_1402bb1c0(const char* szFormat, const int& n);          // StringFormat<int>
-CStringW FUN_140979570(int nMapId);                                 // the map name
 CStringW FUN_1409404f0(__int64 n);                                  // a number with separators
 CStringW FUN_14052bd00(int nId, const CStringW& str);               // a string table entry with an argument
 int FUN_1408a0890(int nMapId, int nGroup, int* pnResult);
@@ -184,8 +180,8 @@ void UIHouseMarkEntity::FUN_14198ae60(MS2Ptr<ASMovieClip> spClip)
     if (m_btn.get() != NULL)
     {
         m_btn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c670), 0);
-        m_btn->FUN_1422de800(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6a0), 0, 0);
-        m_btn->FUN_1422de880(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6d0), 0, 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de800(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6a0), 0, 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de880(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6d0), 0, 0);
     }
 }
 MS2_REPLACE_METHOD(0x14198AE60, UIHouseMarkEntity, FUN_14198ae60, 659, 0x37455A51);
@@ -212,7 +208,7 @@ void UIHouseMarkEntity::FUN_14198b100()
         return;
     }
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPc != NULL && IsPopup() && FUN_1416595d0(pPc) != 0)
+    if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->FUN_1416595d0() != 0)
     {
         if ((unsigned)(m_nPopupTick + *((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390.FUN_1402056b0()) < GetTickCountMs2())
             FUN_14198b320();
@@ -300,7 +296,7 @@ void UIHouseMarkEntity::FUN_14198b340()
     if (bShow)
     {
         NiPoint3 ptScreen;
-        if (reinterpret_cast<Unk_HouseMarkCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
+        if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
         {
             FUN_14198c0d0(true);
             FUN_140ad0c10(&ptScreen, ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250()));
@@ -408,7 +404,7 @@ void UIHouseMarkEntity::FUN_14198b970()
         if (spOwner.get() != NULL)
         {
             strOwner = spOwner->ownerName;
-            if (spOwner->ownerID == FUN_141656ad0(pPc))
+            if (spOwner->ownerID == reinterpret_cast<PC*>(pPc)->FUN_141656ad0())
                 nState = 1;
             else if (FUN_14097a780()->FUN_140ae52d0(nMapId, nGroup) != 0)
                 nState = 2;
@@ -418,7 +414,7 @@ void UIHouseMarkEntity::FUN_14198b970()
             nState = 0;
         }
     }
-    CStringW strMap = FUN_140979570(nMapId);
+    CStringW strMap = CAddressTable::GetText(nMapId);
     CStringW strEmpty(L"");
     CStringW strItem;
     CStringW strPrice;

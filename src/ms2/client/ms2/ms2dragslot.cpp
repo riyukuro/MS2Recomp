@@ -51,7 +51,7 @@ int MS2DragSlot::vfunc_16()
     if (spItem == NULL)
         return 0;
     if (FUN_1409bb9e0()->IsHudOn())
-        FUN_1409bb9e0()->FUN_140d40120(spItem, 0);
+        FUN_1409bb9e0()->OpenPreview(spItem, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a7bbd0, MS2DragSlot, vfunc_16, 225, 0xF2650599);

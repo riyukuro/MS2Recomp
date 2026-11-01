@@ -71,8 +71,8 @@ public:
 
     MS2Ptr<AScript> GetScript();                                        // 0x14127aaf0 copy of the AS object
     int IsLoaded();                                                    // 0x14127ab40 loaded
-    int FUN_14127ab60(CString strLabel);                                    // 0x14127ab60 bgGotoAndPlay
-    int FUN_14127ac70(CString strLabel);                                    // 0x14127ac70 bgGotoAndStop
+    int GotoAndPlay(CString strLabel);                                    // 0x14127ab60 bgGotoAndPlay
+    int GotoAndStop(CString strLabel);                                    // 0x14127ac70 bgGotoAndStop
     int Play();                                                    // 0x14127ad80 bgPlay
     int Stop();                                                    // 0x14127ae10 bgStop
     void ShowBackgroundColor(int bShow);                                          // 0x14127aea0 showBackgroundColor

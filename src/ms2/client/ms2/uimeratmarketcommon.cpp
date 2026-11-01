@@ -604,7 +604,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
         spBuy.get()->FUN_140d60a80(*(MS2Ptr<CMeratMarketProduct>*)&pParam->m_spE8, nSrc, pParam->m_nCurrency, 1);
         spBuy->FUN_140d60d60(0, 1);
         ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-        pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+        pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
     }
     else
     {
@@ -620,10 +620,10 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
             spBuy.get()->FUN_140d604c0(spBill, nSrc, 1);
             spBuy->FUN_140d60d60((int)i, (int)nCount);
             ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-            pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+            pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
         }
     }
-    pMan->FUN_140d58650(nSrc);
+    pMan->StartPendingPurchases(nSrc);
     return true;
 }
 
@@ -710,11 +710,11 @@ bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
             continue;
         spBuy.get()->FUN_140d604c0(arrBuy[i], nSrc, 1);
         spBuy->FUN_140d60d60((int)i, (int)nCount);
-        ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60dd0(strA, strB);
+        ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->SetGift(strA, strB);
         ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-        pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+        pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
     }
-    pMan->FUN_140d58650(nSrc);
+    pMan->StartPendingPurchases(nSrc);
     return true;
 }
 
@@ -1061,19 +1061,11 @@ CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct)
 }
 MS2_REPLACE(0x140EC05F0, FUN_140ec05f0, 258, 0x533F6FAB);
 
-// The data provider as this unit creates it (ctor 0x1422deec0, dtor 0x1422df070: a second copy of ASDataProvider's).
-class Unk_McDataProvider : public ASArray
-{
-public:
-    Unk_McDataProvider(int nType);
-    virtual ~Unk_McDataProvider();
-};
-
 // Fill the sort drop down of a tab.
 // @0x140ec0700
 void FUN_140ec0700(ASObj* pDialog, int nTab)
 {
-    Unk_McDataProvider dp(2);
+    ASDataProvider dp(2);
     FUN_140ec0990(&dp, nTab);
     pDialog->FUN_1409adbe0("dpDropDownSort", dp.FUN_1422bb870());
     pDialog->FUN_1407cb9c0("dpDropDownSortSelectedIndex", 0);

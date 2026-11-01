@@ -146,17 +146,11 @@ class Unk_DpsWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the own player
-    PCBase* FUN_141bd1200(int nId);                         // an actor by object id
     Unk_DpsSummon* FUN_141bd13a0(int nId);                  // a pet / summon by object id
 };
 
 // The skill table (FUN_1401958b0) as this unit uses it.
-class Unk_DpsSkillTable
-{
-public:
-    MS2Ptr<SkillLevelData> FUN_1407ee2f0(int nSkillId, unsigned short nLevel);
-};
-Unk_DpsSkillTable* FUN_1401958b0();
+SkillDataTable* FUN_1401958b0();
 
 // The buffs of an actor (PCBase::FUN_1416749a0).
 class Unk_PCBaseBuffs : public AdditionalCliList
@@ -979,7 +973,7 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
     spData->m_nGrade = nGrade;
     spData->m_nDamage = nDamage;
     spData->m_dRate = fRate;
-    PCBase* pTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1200(nTargetId);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(nTargetId));
     if (pTarget != 0 && pTarget->FUN_14166ce30() != 0)
         spData->m_bKilled = 1;
     if (Unk_LockGuard guard = m_lock)
@@ -1106,7 +1100,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     float fRate = 0.0f;
     if (!bTarget)
     {
-        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->FUN_1407ee2f0(spRecord->m_nSkillId, spRecord->m_nLevel);
+        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);
@@ -1144,7 +1138,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
         bTarget = 1;
     MS2Ptr<AdditionalCli> spBuff;
-    PCBase* pCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1200(spRecord->m_nCasterId);
+    PCBase* pCaster = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(spRecord->m_nCasterId));
     if (pCaster != 0)
         spBuff = pCaster->FUN_1416749a0()->FUN_14096fc80(spRecord->m_nEffectLevel);
     if (spBuff.IsNull())
@@ -1188,7 +1182,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     float fRate = 0.0f;
     if (!bTarget)
     {
-        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->FUN_1407ee2f0(spRecord->m_nSkillId, spRecord->m_nLevel);
+        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);

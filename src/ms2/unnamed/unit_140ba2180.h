@@ -11,7 +11,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 
 // The (never dereferenced in this unit) AS child held at +0x70.
-class Unk_StanceClip : public ASDisplayObject {};
+class ASTextField;
 
 // The pair handed to the start-stance AS call: members are passed to the movie in the order (m_b, m_a).
 struct Unk_StanceInfo
@@ -45,7 +45,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_StanceClip> m_70;        // +0x70 (reset only)
+    MS2Ptr<ASTextField> m_70;        // +0x70 (reset only)
     int m_80;                           // +0x80 current step (1 = first)
     bool m_84;                          // +0x84 stopped
 };

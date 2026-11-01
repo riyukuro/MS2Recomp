@@ -92,7 +92,7 @@ void CMidiMessage::PitchBend(unsigned int ch, unsigned int lsb, unsigned int msb
 }
 
 // @0x140d75600
-void CMidiMessage::FUN_140d75600(unsigned int ch, unsigned int val)
+void CMidiMessage::SetVolume(unsigned int ch, unsigned int val)
 {
     m_msg = ch | 0xb0 | 7 << 8 | (val & 0xff) << 16;
 }

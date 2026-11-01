@@ -34,7 +34,7 @@ public:
 };
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
+class Unk_140165cf0 : public Unk_XmlNode {};   // FirstChildElement
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);

@@ -1,20 +1,19 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Header name assumed.
 #pragma once
 #include "ms2/placeholder/uidialog.h"
+#include "ms2/placeholder/cptred.h"
 #include <utility>
-class Unk_BpButton;
-class Unk_BpInput;
+class ASButton;
+class ASTextInput;
 class CUgcUploadCtrl;
 class CUgcViewerBlueprintImage;
 class Unk_BpViewerBase;
 class Unk_BpImage;
 class Unk_BpItem;
+class CItem;
 class CMsgBoxData;
 enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
 // Unit-local intrusive pointer family. Names are invented; the template instances occur in this CU.
-class Unk_BpRefCount {
-public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0();
-};
 template<class T> class Unk_BpPtr {
     template<class U> friend class Unk_BpPtr;
 public:
@@ -31,12 +30,12 @@ public:
     T* get() const { return p; }
     T* operator->() const { return p; }
 private:
-    static void AddRefObject(T* ptr) { reinterpret_cast<Unk_BpRefCount*>(ptr)->FUN_14015b020(); }
+    static void AddRefObject(T* ptr) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(ptr)); }
     void AddRefImpl(void*) const { AddRefObject(p); }
     void ReleaseImpl(void*) {
-        if (reinterpret_cast<Unk_BpRefCount*>(p)->FUN_140159bc0() == 0) {
+        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p)) == 0) {
             AddRefObject(p);
-            reinterpret_cast<Unk_BpRefCount*>(p)->FUN_140159ba0();
+            CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));
         }
     }
     void AddRef() const { if (p) AddRefImpl((void*)0); }
@@ -72,11 +71,11 @@ public:
     void FUN_140c38400();
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_BpButton> m_addIcon, m_addImage, m_create;
-    MS2Ptr<Unk_BpInput> m_input;
+    MS2Ptr<ASButton> m_addIcon, m_addImage, m_create;
+    MS2Ptr<ASTextInput> m_input;
     int m_type;
     Unk_BpPtr<CUgcUploadCtrl> m_upload;
-    MS2Ptr<Unk_BpItem> m_item;
+    MS2Ptr<CItem> m_item;
     Unk_BpPtr<Unk_BpImage> m_icon, m_image;
     std::pair<Unk_BpCurrency, __int64> m_fee;
     __int64 m_itemId;

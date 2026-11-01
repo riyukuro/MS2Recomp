@@ -156,7 +156,8 @@ class MyPC   // C3: member view for the former free stand-ins
 public:
     int FUN_141527160(int);
 };
-class Unk_WmField { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
+class Unk_WmField;
+class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
 class Unk_WmFieldHolder { public: void* FUN_1401cd040(); };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_WmFieldHolder*)&egf::g_bapiContext)          // C3: was extern Unk_WmFieldHolder DAT_143b059e8
@@ -1216,7 +1217,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
     }
     int allowed = 0;
     Unk_WmFieldRef field(DAT_143b059e8.FUN_1401cd040());
-    if ((field.FUN_140885310() ? true : false) && field.FUN_1401cd1a0()->FUN_1410d2f10() && !field.FUN_1401cd1a0()->FUN_1410c35c0()) {
+    if ((field.FUN_140885310() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.FUN_1401cd1a0())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.FUN_1401cd1a0())->FUN_1410c35c0()) {
         allowed = 1;
     } else {
         allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c;

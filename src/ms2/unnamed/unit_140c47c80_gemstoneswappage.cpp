@@ -317,7 +317,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_6()
         ASObj data(2);
         {
             ASObj obj(2);
-            obj.FUN_1407cba60("binding", m_binder.FUN_140d43790(source.get()));
+            obj.FUN_1407cba60("binding", m_binder.BindItem(source.get()));
             obj.FUN_1407cbb20("itemName", static_cast<CItem*>(source)->FUN_140527b10());
             ASArray gems(2);
             FUN_140c49990(source, "GemStoneSwapPage_source_gemstone", &gems);
@@ -326,7 +326,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_6()
         }
         {
             ASObj obj(2);
-            obj.FUN_1407cba60("binding", m_binder.FUN_140d43790(target.get()));
+            obj.FUN_1407cba60("binding", m_binder.BindItem(target.get()));
             obj.FUN_1407cbb20("itemName", static_cast<CItem*>(target)->FUN_140527b10());
             ASArray gems(2);
             FUN_140c49990(target, "GemStoneSwapPage_dest_gemstone", &gems);
@@ -434,7 +434,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49250(int index)
     m_binder.FUN_140d43990();
     FUN_140c4a2b0(MS2Ptr<CItem>(item));
     ASObj data(2);
-    data.FUN_1407cba60("binding", m_binder.FUN_140d43790(item.get()));
+    data.FUN_1407cba60("binding", m_binder.BindItem(item.get()));
     data.FUN_1407cbb20("itemName", static_cast<CItem*>(item)->FUN_140527b10());
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_source_gemstone", &gems);
@@ -452,7 +452,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
         return;
     m_targetUid = static_cast<CItem*>(item)->GetItemUid();
     ASObj data(2);
-    data.FUN_1407cba60("binding", m_binder.FUN_140d43790(item.get()));
+    data.FUN_1407cba60("binding", m_binder.BindItem(item.get()));
     data.FUN_1407cbb20("itemName", static_cast<CItem*>(item)->FUN_140527b10());
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_dest_gemstone", &gems);

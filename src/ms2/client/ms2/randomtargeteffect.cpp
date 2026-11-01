@@ -34,6 +34,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/gameobject.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, GameObject>)
 #include "ms2/client/ms2/effectservice.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
@@ -62,11 +63,10 @@ class WorldService
 public:
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0();     // &m_118
     ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0();     // &m_148
+    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
 };
-class Unk_UpperPlayer { public: void* FUN_141bd1180(int nId); };   // object by id (world service)
-Unk_RtePlayer* FUN_14099eef0(void* pObj);                   // object -> player
 Unk_UpperNpc* FUN_140a38a00(void* pObj);                    // object -> npc
 
 // The exe's map value assign / dtor (0x140aac1c0, 0x140aac2b0, 0x140aac150) are older inline forms of
@@ -379,8 +379,8 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByNpcMap(unsigned
 MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::Find(unsigned nId)
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
-    void* pObj = reinterpret_cast<Unk_UpperPlayer*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd1180(nId);
-    if (Unk_RtePlayer* pPlayer = FUN_14099eef0(pObj))
+    void* pObj = reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd1180(nId);
+    if (Unk_RtePlayer* pPlayer = reinterpret_cast<Unk_RtePlayer*>(efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj))))
         spResult.AssignRaw(pPlayer->GetEffectPtr());
     else if (Unk_UpperNpc* pNpc = FUN_140a38a00(pObj))
         spResult = pNpc->GetEffect();

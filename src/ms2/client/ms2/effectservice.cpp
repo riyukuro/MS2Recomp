@@ -152,6 +152,7 @@
 #include "afterimageeffectparam.h"
 #include "soundeventmgr.h"
 
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/fittingdollpc.h"
@@ -220,15 +221,10 @@ class Unk_EsPlayer : public PC
 class Unk_EsWorld
 {
 public:
-    Unk_EsPlayer* FUN_141bd0cc0();
-    int FUN_141bd1a10(GameObject* pObject);                     // the effect kind of an object (1 = the local player)
-    int FUN_141bcfbd0();                                        // a field is loaded
     // @0x1411b2740
     int FUN_1411b2740() { return m_n2ac; }                      // the field is being left
     char m_pad_00[0x2ac];
     int m_n2ac;                                                 // +0x2ac
-    GameObject* FUN_141bd0fa0(egf::EntityID id);                // the object of an entity
-    void FUN_141bbae40(IWorldServiceCallback* pCallback);       // add a map callback
 };
 NiAVObject* FUN_141b6ef70(egf::EntityID id);            // scene node of an entity
 
@@ -251,15 +247,15 @@ void CEffectParam::vfunc_4()
 // @0x14119e940
 bool CEffectParam::vfunc_7(Unk_EffectTarget* p)
 {
-    if (!m_bIgnoreOptimize && p->FUN_140a53110())
+    if (!m_bIgnoreOptimize && reinterpret_cast<NoticeMessage*>(p)->CanShow())
         return true;
-    if (m_nGender != 2 && m_nGender != p->FUN_140a53010())
+    if (m_nGender != 2 && m_nGender != reinterpret_cast<NoticeMessage*>(p)->FUN_140a53010())
         return true;
-    if (m_nJobCode != 0 && m_nJobCode != p->FUN_140a53050())
+    if (m_nJobCode != 0 && m_nJobCode != reinterpret_cast<NoticeMessage*>(p)->FUN_140a53050())
         return true;
     if (m_bOnlyCasterMyPC && p->m_nKind != 1)
         return true;
-    if (m_bOnlyTargetMyPC && !p->FUN_140a530d0())
+    if (m_bOnlyTargetMyPC && !reinterpret_cast<NoticeMessage*>(p)->IsMyPC())
         return true;
     return false;
 }
@@ -290,7 +286,7 @@ CEffect::~CEffect()
 // @0x14119eae0
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
-    pTarget->FUN_140a534a0();
+    reinterpret_cast<NoticeMessage*>(pTarget)->Bind();
     if (pParam->vfunc_7(pTarget))
         return 0;
     Unk_SkipCheck kCheck;
@@ -308,7 +304,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
         float fDistance = static_cast<CSoundEventEffectParam*>(pParam)->m_fViewDistance;
         if (!FUN_14028d470(fDistance, 0) && (pTarget->m_nKind == 5 || pTarget->m_nKind == 6))
             kCheck.m_fViewDistance = fDistance;
-        GameObject* pOwner = pTarget->FUN_140a533b0();
+        GameObject* pOwner = reinterpret_cast<NoticeMessage*>(pTarget)->GetOwner();
         if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200044))
         {
             Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -365,7 +361,7 @@ bool CEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
     m_unk_18 = pTarget->m_nKind;
     m_b2f = pTarget->m_b34;
-    double dStart = pTarget->FUN_140a53420();
+    double dStart = reinterpret_cast<NoticeMessage*>(pTarget)->GetTimestamp();
     if (dStart == 0.0)
         dStart = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     m_dStartTime = dStart + pParam->m_fStartDelay;
@@ -913,8 +909,8 @@ void EffectNode::CopyMembers(EffectNode* pkDest, NiCloningProcess& kCloning)
     pkDest->m_bApplyLocalScale = m_bApplyLocalScale;
     pkDest->m_bApplyWorldTransform = m_bApplyWorldTransform;
     pkDest->SetRotationTarget(m_pTarget);
-    pkDest->FUN_1411a4040(m_kTranslate);
-    pkDest->FUN_1411a4000(m_kRotate);
+    pkDest->SetTranslation(m_kTranslate);
+    pkDest->SetRotation(m_kRotate);
     pkDest->SetOnGround(m_bOnGround);
 }
 MS2_REPLACE_METHOD(0x1411a3380, EffectNode, CopyMembers, 291, 0xCB6031CB);
@@ -999,11 +995,11 @@ void EffectNode::ApplyDummy(const CEffectDummy& kDummy)
 {
     m_bApplyWorldTransform = kDummy.m_bApplyWorldTransform;
     m_bApplyLocalScale = kDummy.m_bApplyLocalScale;
-    FUN_1411a4040(reinterpret_cast<const NiPoint3&>(kDummy.GetTranslate()));
+    SetTranslation(reinterpret_cast<const NiPoint3&>(kDummy.GetTranslate()));
     SetScale(kDummy.m_fScale);
     m_kRotate.FromEulerAnglesXYZ(kDummy.m_vRotation.x * 3.1415927f / 180.0f, kDummy.m_vRotation.y * 3.1415927f / 180.0f,
                                  kDummy.m_vRotation.z * 3.1415927f / 180.0f);
-    FUN_1411a4000(m_kRotate);
+    SetRotation(m_kRotate);
 }
 MS2_REPLACE_METHOD(0x1411a3cb0, EffectNode, ApplyDummy, 244, 0x5441C62C);
 
@@ -1027,16 +1023,16 @@ void EffectNode::SetRotationTarget(NiAVObject* pTarget)
 MS2_REPLACE_METHOD(0x1411a3fd0, EffectNode, SetRotationTarget, 40, 0xF6CFED15);
 
 // @0x1411a4000
-void EffectNode::FUN_1411a4000(const NiMatrix3& kRot)
+void EffectNode::SetRotation(const NiMatrix3& kRot)
 {
     m_kLocal.m_Rotate = kRot;
     m_kRotate = m_kLocal.m_Rotate;
 }
-MS2_REPLACE_METHOD(0x1411a4000, EffectNode, FUN_1411a4000, 64, 0x244D07F7);
+MS2_REPLACE_METHOD(0x1411a4000, EffectNode, SetRotation, 64, 0x244D07F7);
 
 // @0x1411a4040
-void EffectNode::FUN_1411a4040(const NiPoint3& kPos) { m_kLocal.m_Translate = m_kTranslate = kPos; }
-MS2_REPLACE_METHOD(0x1411a4040, EffectNode, FUN_1411a4040, 60, 0xFFB13170);
+void EffectNode::SetTranslation(const NiPoint3& kPos) { m_kLocal.m_Translate = m_kTranslate = kPos; }
+MS2_REPLACE_METHOD(0x1411a4040, EffectNode, SetTranslation, 60, 0xFFB13170);
 
 // ======== second CU: CEffectService ========
 #include "ms2/commonfiles/timeutil.h"
@@ -1060,23 +1056,15 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/soundeventmgr.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/commonfiles/gameeventcontext.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/soundproperty.h"
+#include "ms2/placeholder/cooltimemanager.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
-class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
-{
-public:
-    NoticeMessage();
-    ~NoticeMessage();
-    void* m_storage[14];
-};
 namespace FMOD { class EventGroup; }
 
-// PendingEffect::Init (0x140a8f300) with the real argument types (pendingeffect.h declares it over stand-ins of
-// CEffectData / Unk_EffectTarget).
-bool FUN_140a8f300(PendingEffect* pPending, CEffectDataPtr spSet, const Unk_EffectTarget& kTarget);
-// PendingEffect members (pendingeffect.h declares none; this is the first argument).
-void FUN_140a8f4a0(PendingEffect* pPending, std::vector<CEffectPtr>& vOut);    // create the effects
-Unk_EffectTarget& FUN_140a8f5c0(PendingEffect* pPending);       // the request target (+0x30)
 void* FUN_1413f9950();   // C3: was FUN_1413f9950
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg0, const CString& strArg1);
 CString FUN_140298360(const char* psz, const CString& str);     // ATL operator+(const char*, const CString&)
@@ -1097,38 +1085,6 @@ struct Unk_EsPoint3
     Unk_EsPoint3& operator=(Unk_EsPoint3&& o);                  // 0x14097faa0
 };
 MS2_CHECK_SIZE(Unk_EsPoint3, 0xc);
-// One voice row of the sound property table (0x20 bytes, implicit ctor 0x1411af960 / dtor 0x1411b01c0).
-struct Unk_EsVoice
-{
-    int m_bPlayerOnly;                                          // +0x00 only for the local player
-    CString m_strCategory;                                      // +0x08
-    CString m_strMale;                                          // +0x10
-    CString m_strFemale;                                        // +0x18
-};
-MS2_CHECK_SIZE(Unk_EsVoice, 0x20);
-// A field sound of the sound property table (?\soundproperty.cpp).
-class Unk_EsSoundProp : public CPtred
-{
-public:
-    CString FUN_141790e00(int nGender);                         // the category
-    CString FUN_141790ed0(int nGender, int nJob);               // the sound name
-    int FUN_141791120();                                        // the cooltime id
-};
-// A voice of the sound property table (?\soundproperty.cpp).
-class Unk_EsVoiceProp : public CPtred
-{
-public:
-    bool FUN_141791400(int nGender, int nJob, CString& strOut); // the voice name of a gender and job
-};
-// ?\soundproperty.cpp (0x141790890-0x1417ae520); singleton 0x143ad1ac8.
-class SoundPropertyMgr : public TSingleton<SoundPropertyMgr>
-{
-public:
-    unsigned FUN_141792d70(int nA, int nB);                     // the hit sound id
-    int FUN_141792e00(int nId, GameObject* pActor, Unk_EsVoice* pOut);
-    MS2Ptr<Unk_EsSoundProp> FUN_141792ee0(const CString& strName, const CString& strArg);
-    MS2Ptr<Unk_EsVoiceProp> FUN_141793110(const CString& strName);
-};
 // CooltimeManager (placeholder/cooltimemanager.h), viewed through the call made here. Its singleton slot (0x143ab6718)
 // is the one TSingleton<CooltimeManager>::s_instance every CooltimeManager user shares (a TSingleton<CCooltimeManager>
 // of its own would be a second copy).
@@ -1138,7 +1094,6 @@ class CCooltimeManager
 public:
     static CCooltimeManager* GetInstance()
     { return reinterpret_cast<CCooltimeManager*>(TSingleton<CooltimeManager>::s_instance); }
-    bool FUN_140a40ca0(int nId);                                // false while cooling down
 };
 extern int DAT_143ae2b30;                                       // 1: the scene is split over several effect roots
 efd::MessageService* FUN_1413f9830();
@@ -1164,7 +1119,6 @@ class Unk_EsVoiceOption { public: int FUN_141260470(); };      // nonzero: the f
 class Unk_EsOption
 {
 public:
-    Unk_EsOptionData* FUN_140b123b0();
     // @0x1411b1f30
     Unk_EsVoiceOption* FUN_1411b1f30() { return &m_voice; }
     char m_pad_00[0xe4];
@@ -1196,44 +1150,6 @@ class Unk_EsCamera : public CameraMgr
 public:
     GameObject* FUN_140a38d60();
 };
-// The field data of a map (MS2Ptr<CFieldDataCli>, FUN_140a55460).
-struct Unk_EsFieldData
-{
-    char m_pad_000[0x1a0];
-    CString m_strEffect1a0;                                     // +0x1a0 the field effect
-    char m_pad_1a8[0x28];
-    CString m_strAreaEffect;                                    // +0x1d0 the area (weather) effect
-};
-class Unk_EsFieldPtr
-{
-public:
-    ~Unk_EsFieldPtr();                                          // 0x1408850f0
-    Unk_EsFieldData* FUN_1409657a0() const;                     // get
-    Unk_EsFieldData* FUN_140885340() const;                     // operator->
-private:
-    void* m_pad_00;
-    Unk_EsFieldData* m_p;
-};
-Unk_EsFieldPtr FUN_140a55460(int nMapId);
-// A map override row (reinterpret_cast<Unk_EsMapMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed1d0()->FUN_140428a90()).
-struct Unk_EsMapRow
-{
-    int FUN_1404054d0(int nMapId);                              // applies to the map
-    char m_pad_00[0x38];
-    CStringW m_strAreaEffect;                                   // +0x38
-};
-class Unk_EsMapRowPtr
-{
-public:
-    ~Unk_EsMapRowPtr();                                         // 0x1403e5330
-    void* FUN_1403e8a60() const;                                // get
-    Unk_EsMapRow* FUN_1403e8c40() const;                        // operator->
-private:
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_EsMapTable { public: Unk_EsMapRowPtr FUN_140428a90(); };
-class Unk_EsMapMgr { public: Unk_EsMapTable* FUN_1403ed1d0(); };
 CString FUN_1401d4330(const wchar_t* psz, int n);              // wide to multi-byte
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class, same as util.cpp).
 class Unk_NodeQueue
@@ -1382,12 +1298,12 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
     CEffectDataPtr spData = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(kTarget.m_strName);
     if (!spData)
         return 0;
-    unsigned nId = FUN_1411a9230();
+    unsigned nId = NextEffectId();
     if (!spData->FUN_14119f680()) {
         // not loaded yet: queue the request until its resources are ready
-        kTarget.FUN_140a53550();
+        reinterpret_cast<NoticeMessage&>(kTarget).Stamp();
         MS2Ptr<PendingEffect> spPending(new PendingEffect(nId));
-        FUN_140a8f300(spPending.operator->(), spData, kTarget);
+        spPending.operator->()->Init(reinterpret_cast<MS2Ptr<Unk_PeEffectSet>&>(spData), reinterpret_cast<const Unk_PeTarget&>(kTarget));
         m_listPending.push_back(spPending);
         return nId;
     }
@@ -1408,8 +1324,8 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
     if (((void*)GetLogString()) != 0)
         FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"InsertEffect OID[{0}] Name[{1}]", nId, kTarget.m_strName);
     FUN_1411ab010(kTarget.m_strName);
-    if (!kTarget.FUN_140a53460().IsNull())
-        kTarget.FUN_140a53460()(nId, kTarget.m_strName, true);
+    if (!reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(kTarget).GetCallback()).IsNull())
+        reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(kTarget).GetCallback())(nId, kTarget.m_strName, true);
     return nId;
 }
 MS2_REPLACE_METHOD(0x1411a4a00, CEffectService, FUN_1411a4a00, 1332, 0x9B8A2A0F);
@@ -1448,13 +1364,13 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
     MS2Ptr<CSoundEventEffectParam> spParam = FUN_141775980(strName, strCategory, fScale * fVolume, strExtra);
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_pXform = pXform;
-    ((Unk_EffectTarget&)(kTarget)).FUN_140a53170(nOwner);
+    kTarget.SetObjectCode(nOwner);
     ((Unk_EffectTarget&)(kTarget)).m_nKind = nKind;
     ((Unk_EffectTarget&)(kTarget)).m_b34 = true;
     CEffectPtr spEffect = FUN_14119eae0(spParam, &((Unk_EffectTarget&)(kTarget)));
     if (spEffect == 0)
         return 0;
-    unsigned nId = FUN_1411a9230();
+    unsigned nId = NextEffectId();
     Unk_EsEffectGroup* pGroup = FUN_1411aac40(nId);
     pGroup->SetName(strName);
     pGroup->AddEffect(spEffect);
@@ -1480,22 +1396,22 @@ unsigned CEffectService::FUN_1411a5580(int nA, int nB, int nKind, const NiPoint3
 // @0x1411a5770
 unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
 {
-    Unk_EsVoice kVoice;
-    if (TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792e00(nId, pActor, &kVoice)) {
+    Unk_EventVoice kVoice;
+    if (TSingleton<SoundPropertyMgr>::GetInstance()->GetEventVoice(nId, pActor, &kVoice)) {
         CString strName;
         if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470())
-            strName = kVoice.m_strFemale;
+            strName = kVoice.m_strRestoreSoundId;
         else
-            strName = kVoice.m_strMale;
+            strName = kVoice.m_strSoundId;
         if (!strName.IsEmpty()) {
-            int nKind = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(pActor);
-            if (kVoice.m_bPlayerOnly && nKind != 1)
+            int nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(pActor));
+            if (kVoice.m_bOnlyCasterMyPC && nKind != 1)
                 return 0;
             NiTransform kXform;
             kXform.m_fScale = 1.0f;
             kXform.MakeIdentity();
             reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = pActor->vfunc_18();
-            return FUN_1411a5110(kVoice.m_strCategory, strName, "", nKind, &kXform, 1.0f, ((class PCBase*)(class GameObject*)(pActor))->FUN_140976780());
+            return FUN_1411a5110(kVoice.m_strGroup, strName, "", nKind, &kXform, 1.0f, ((class PCBase*)(class GameObject*)(pActor))->FUN_140976780());
         }
     }
     return 0;
@@ -1511,19 +1427,19 @@ unsigned CEffectService::FUN_1411a5a60(const CString& strName, const CString& st
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
     }
-    MS2Ptr<Unk_EsSoundProp> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792ee0(strName, strArg);
+    MS2Ptr<SystemSoundProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792ee0(strName, strArg);
     if (spProp == 0)
         return 0;
-    CString strSound = spProp->FUN_141790ed0(nGender, nJob);
+    CString strSound = spProp->GetSoundName(nGender, nJob);
     if (strSound.IsEmpty() || strSound == "0")
         return 0;
-    if (spProp->FUN_141791120() != 0 && CCooltimeManager::GetInstance() != 0) {
-        if (!CCooltimeManager::GetInstance()->FUN_140a40ca0(spProp->FUN_141791120()))
+    if (spProp->GetCooltimeId() != 0 && CCooltimeManager::GetInstance() != 0) {
+        if (!reinterpret_cast<CooltimeManager*>(CCooltimeManager::GetInstance())->Use(spProp->GetCooltimeId()))
             return 0;
     }
     NiTransform kXform;
     kXform.MakeIdentity();
-    return FUN_1411a5110(spProp->FUN_141790e00(nGender), strSound, "", 0, &kXform, 1.0f, 0);
+    return FUN_1411a5110(spProp->GetCategory(nGender), strSound, "", 0, &kXform, 1.0f, 0);
 }
 
 // @0x1411a5d80
@@ -1536,10 +1452,10 @@ unsigned CEffectService::FUN_1411a5d80(const CString& strName)
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
     }
-    MS2Ptr<Unk_EsVoiceProp> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793110(strName);
+    MS2Ptr<TriggerVoiceProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793110(strName);
     if (spProp.get() != 0) {
         CString strSound;
-        if (!spProp->FUN_141791400(nGender, nJob, strSound))
+        if (!spProp->GetVoice(nGender, nJob, strSound))
             return 0;
         if (FUN_140c9cb10()->FUN_1417b03d0(strSound)) {
             NiTransform kXform;
@@ -1751,7 +1667,7 @@ NiNode* CEffectService::GetLeastLoadedRoot()
 MS2_REPLACE_METHOD(0x1411a6b10, CEffectService, GetLeastLoadedRoot, 193, 0x5DC1F652);
 
 // @0x1411a6be0
-void CEffectService::FUN_1411a6be0()
+void CEffectService::DetachAllChildren()
 {
     if (DAT_143ae2b30 != 0) {
         for (unsigned i = 0; i < m_nRoots; i++) {
@@ -1765,10 +1681,10 @@ void CEffectService::FUN_1411a6be0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411a6be0, CEffectService, FUN_1411a6be0, 362, 0x5B05E66E);
+MS2_REPLACE_METHOD(0x1411a6be0, CEffectService, DetachAllChildren, 362, 0x5B05E66E);
 
 // @0x1411a6d50
-void CEffectService::FUN_1411a6d50(NiAVObject* pChild)
+void CEffectService::DetachChildFromRoots(NiAVObject* pChild)
 {
     if (DAT_143ae2b30 != 0) {
         for (unsigned i = 0; i < m_nRoots; i++) {
@@ -1782,7 +1698,7 @@ void CEffectService::FUN_1411a6d50(NiAVObject* pChild)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411a6d50, CEffectService, FUN_1411a6d50, 322, 0x64E3F501);
+MS2_REPLACE_METHOD(0x1411a6d50, CEffectService, DetachChildFromRoots, 322, 0x64E3F501);
 
 // @0x1411a6ea0
 void CEffectService::AddTracked(Unk_EsTracked* p)
@@ -1795,14 +1711,14 @@ void CEffectService::AddTracked(Unk_EsTracked* p)
 MS2_REPLACE_METHOD(0x1411a6ea0, CEffectService, AddTracked, 85, 0xBF19BC72);
 
 // @0x1411a6f00
-void CEffectService::FUN_1411a6f00(const egf::EntityID& id)
+void CEffectService::RemoveTracked(const egf::EntityID& id)
 {
     POSITION pos = m_listTracked.GetHeadPosition();
     while (pos != NULL) {
         POSITION posCur = pos;
         Unk_EsTrackedPtr& spTracked = m_listTracked.GetNext(pos);
         if (spTracked->FUN_1411b1ee0() == id) {
-            GameObject* pObject = reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(id);
+            GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(id));
             if (pObject != NULL)
                 pObject->vfunc_39();
             m_listTracked.RemoveAt(posCur);
@@ -1810,7 +1726,7 @@ void CEffectService::FUN_1411a6f00(const egf::EntityID& id)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411a6f00, CEffectService, FUN_1411a6f00, 245, 0xD3ECCB7F);
+MS2_REPLACE_METHOD(0x1411a6f00, CEffectService, RemoveTracked, 245, 0xD3ECCB7F);
 
 // @0x1411a7000
 void CEffectService::FUN_1411a7000(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel)
@@ -2029,7 +1945,7 @@ void CEffectService::DestroyRain()
 MS2_REPLACE_METHOD(0x1411a7db0, CEffectService, DestroyRain, 65, 0x253E07BD);
 
 // @0x1411a7e00
-void CEffectService::FUN_1411a7e00(const CString& strName)
+void CEffectService::SetAreaEffectName(const CString& strName)
 {
     if (m_nAreaEffect != 0) {
         FUN_1411a6060(m_nAreaEffect);
@@ -2038,7 +1954,7 @@ void CEffectService::FUN_1411a7e00(const CString& strName)
     m_strAreaEffect = strName;
     m_strAreaEffectCur = strName;
 }
-MS2_REPLACE_METHOD(0x1411a7e00, CEffectService, FUN_1411a7e00, 119, 0xFEB155A4);
+MS2_REPLACE_METHOD(0x1411a7e00, CEffectService, SetAreaEffectName, 119, 0xFEB155A4);
 
 // @0x1411a7e80
 void CEffectService::FUN_1411a7e80(int nType)
@@ -2081,17 +1997,17 @@ MS2_REPLACE_METHOD(0x1411a7e80, CEffectService, FUN_1411a7e80, 454, 0x4C74E821);
 // @0x1411a8070
 void CEffectService::vfunc_1(int nMap)
 {
-    Unk_EsFieldPtr spField = FUN_140a55460(nMap);
-    if (spField.FUN_1409657a0() != NULL) {
-        CString strArea = spField.FUN_140885340()->m_strAreaEffect;
-        Unk_EsMapRowPtr spRow = reinterpret_cast<Unk_EsMapMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed1d0()->FUN_140428a90();
-        if (spRow.FUN_1403e8a60() != NULL) {
-            if (spRow.FUN_1403e8c40()->FUN_1404054d0(nMap) != 0)
-                strArea = FUN_1401d4330(spRow.FUN_1403e8c40()->m_strAreaEffect, 0);
+    MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nMap);
+    if (spField.get() != NULL) {
+        CString strArea = spField->m_strMapEffectId;
+        MS2Ptr<FieldEffectContext> spRow = reinterpret_cast<CGameEventValueFieldEffect*>(TSingleton<CGameEventValueManager>::GetInstance()->GetFieldEffect())->Get();
+        if (spRow.get() != NULL) {
+            if (spRow->HasField(nMap) != 0)
+                strArea = FUN_1401d4330(spRow->m_effect, 0);
         }
-        FUN_1411a7e00(strArea);
-        if (spField.FUN_140885340()->m_strEffect1a0.GetLength() > 0)
-            FUN_1411a5a60(spField.FUN_140885340()->m_strEffect1a0, "");
+        SetAreaEffectName(strArea);
+        if (spField->m_strEnterSystemSound.GetLength() > 0)
+            FUN_1411a5a60(spField->m_strEnterSystemSound, "");
     }
 }
 MS2_REPLACE_METHOD_VIA(0x1411a8070, CEffectService, IWorldServiceCallback, vfunc_1, 0, 0);
@@ -2133,7 +2049,7 @@ void CEffectService::vfunc_3(int nMap)
     FUN_1411a7960(0);
     FUN_1411a67c0();
     FUN_1411a6490();
-    FUN_1411a6be0();
+    DetachAllChildren();
 }
 MS2_REPLACE_METHOD_VIA(0x1411a8210, CEffectService, IWorldServiceCallback, vfunc_3, 0, 0);
 
@@ -2277,7 +2193,7 @@ void CEffectService::FUN_1411a8cb0(const CString& strName)
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = strName;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(pTarget->FUN_14123c580());
+    kTarget.SetActor(pTarget->FUN_14123c580());
     void* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != NULL)
         ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
@@ -2308,9 +2224,9 @@ MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, GetTick, 17, 0xFA964832);
 // @0x1411a91d0
 bool CEffectService::IsEffectTypeVisible(int nType)
 {
-    if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bHide12 == true && nType == 4)
+    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bHide12 == true && nType == 4)
         return false;
-    if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bHide13 == true && nType == 2)
+    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bHide13 == true && nType == 2)
         return false;
     return true;
 }
@@ -2319,7 +2235,7 @@ MS2_REPLACE_METHOD(0x1411a91d0, CEffectService, IsEffectTypeVisible, 86, 0x70658
 unsigned CEffectService::s_nLastId = 1;                            // the exe image holds 1 (.data 0x1439f7038)
 
 // @0x1411a9230
-unsigned CEffectService::FUN_1411a9230()
+unsigned CEffectService::NextEffectId()
 {
     if (++s_nLastId == 0)
         s_nLastId = 1;
@@ -2396,7 +2312,7 @@ efd::AsyncResult CEffectService::OnInit()
     m_spF8 = 0;
     m_spRain = 0;
     m_nAreaEffect = 0;
-    reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bbae40(this);
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CEffectService::FUN_1411a8610));
     return efd::AsyncResult_Complete;
 }
@@ -2456,7 +2372,7 @@ efd::AsyncResult CEffectService::OnTick()
         if (!spTracked->vfunc_2())
             m_listTracked.RemoveAt(posCur);
     }
-    if (reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_141bcfbd0() && !reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_1411b2740()) {
+    if (WorldService::GetInstance()->FUN_141bcfbd0() && !reinterpret_cast<Unk_EsWorld*>(WorldService::GetInstance())->FUN_1411b2740()) {
         FUN_1411aab90(m_spF8);
         if (m_spRain)
             m_spRain->Update();
@@ -2524,7 +2440,7 @@ void CEffectService::FUN_1411aa800()
         MS2Ptr<PendingEffect> spPending = *it;
         if (((class PendingEffect*)(spPending.operator->()))->Poll()) {
             std::vector<CEffectPtr> vEffects;
-            FUN_140a8f4a0(spPending.operator->(), vEffects);
+            spPending.operator->()->CreateEffects(vEffects);
             Unk_EsEffectGroup* pGroup = FUN_1411aac40(((class PendingEffect*)(spPending.operator->()))->GetId());
             // cl's `for each` (C++/CLI-style extension) is the exe's loop shape; clang only has the range-for
 #ifdef __clang__
@@ -2535,10 +2451,10 @@ void CEffectService::FUN_1411aa800()
                 pSkip->AddCount(spEffect->GetName());
                 pGroup->AddEffect(spEffect);
             }
-            if (!FUN_140a8f5c0(spPending.operator->()).FUN_140a53460().IsNull()) {
+            if (!reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(spPending.operator->()->GetTarget()).GetCallback()).IsNull()) {
                 bool bInserted = !vEffects.empty();
-                Unk_EffectTarget& kTarget = FUN_140a8f5c0(spPending.operator->());
-                kTarget.FUN_140a53460()(((class PendingEffect*)(spPending.operator->()))->GetId(), kTarget.m_strName, bInserted);
+                Unk_EffectTarget& kTarget = reinterpret_cast<Unk_EffectTarget&>(spPending.operator->()->GetTarget());
+                reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(kTarget).GetCallback())(((class PendingEffect*)(spPending.operator->()))->GetId(), kTarget.m_strName, bInserted);
             }
             it = m_listPending.erase(it);
         } else {

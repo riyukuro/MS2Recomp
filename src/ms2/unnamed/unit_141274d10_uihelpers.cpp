@@ -85,14 +85,6 @@ class UITopLayerNotify : public UIObject {              // the top-layer notice 
 public:
     void FUN_140fa8970(const CStringW& msg, int a);
 };
-class Unk_CommandUIRef {
-public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
-private: void* unknown; UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
-class Unk_UIEntityMgr { public: Unk_CommandUIRef FUN_141adcea0(int nId); };
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
@@ -176,14 +168,14 @@ void FUN_141274f50()
 {
     FUN_14151f460(0);
     FUN_141a8a730();
-    ((class CUIService*)(void*)(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())))->CloseAllDialogs();
+    TSingleton<CUIService>::GetInstance()->CloseAllDialogs();
 }
 MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
 
 // @0x141274f80
 int FUN_141274f80()
 {
-    if (FUN_141adcbb0(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()), FUN_141274d10) != 0)
+    if (FUN_141adcbb0(TSingleton<CUIService>::GetInstance(), FUN_141274d10) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -197,7 +189,7 @@ MS2_REPLACE(0x141274f80, FUN_141274f80, 97, 0x2E5323AD);
 // @0x141274ff0
 int FUN_141274ff0()
 {
-    if (FUN_141adcbb0(reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()), FUN_141274df0) != 0)
+    if (FUN_141adcbb0(TSingleton<CUIService>::GetInstance(), FUN_141274df0) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -1254,10 +1246,10 @@ MS2_REPLACE(0x1412780f0, FUN_1412780f0, 32, 0x2D2EB095);
 // @0x141278110
 UISystemText* FUN_141278110(int nId)
 {
-    if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISystemText*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get() != 0)
+            return dynamic_cast<UISystemText*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -1266,10 +1258,10 @@ MS2_REPLACE(0x141278110, FUN_141278110, 147, 0xBEDFD4A1);
 // @0x1412781b0
 UITopLayerNotify* FUN_1412781b0(int nId)
 {
-    if (reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_UIEntityMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UITopLayerNotify*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+    if (TSingleton<CUIService>::GetInstance() != 0) {
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get() != 0)
+            return dynamic_cast<UITopLayerNotify*>(ref.operator UIObject*());
     }
     return 0;
 }

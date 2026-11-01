@@ -766,7 +766,7 @@ efd::AsyncResult MS2RenderService::OnInit()
     if (fullscreenMode != 0) {
         reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nMode = 2;
         reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125eb00(width, height);
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412432d0();
+        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->SaveGameSettings();
     }
     ((class Unk_RsApp*)FUN_140aadf80());
     if (DAT_143af7d58 == 0) {

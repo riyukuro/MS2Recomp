@@ -145,7 +145,7 @@ COptimizer::~COptimizer()
 }
 
 // @0x14161baf0
-void COptimizer::FUN_14161baf0()
+void COptimizer::Initialize()
 {
     m_nStartTick = GetTickCountMs2();
     MEMORYSTATUSEX status;
@@ -155,7 +155,7 @@ void COptimizer::FUN_14161baf0()
 }
 
 // @0x14161bb60
-void COptimizer::FUN_14161bb60()
+void COptimizer::Update()
 {
     float fDelta = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetDeltaTime();
     m_fMemoryTime += fDelta;
@@ -185,7 +185,7 @@ void COptimizer::FUN_14161bb60()
                 PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(*pId));
                 if (pPC != 0)
                 {
-                    FUN_14161dbe0(pPC, preloadMode);
+                    ApplyFlagsToPlayer(pPC, preloadMode);
                 }
             }
             m_players.clear();
@@ -237,7 +237,7 @@ unsigned __int64 COptimizer::GetPrivateUsageMB() const
 }
 
 // @0x14161bee0
-void COptimizer::FUN_14161bee0()
+void COptimizer::WriteSystemInfoToCrashLog()
 {
     CString strText;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- COptimizer Log ---");
@@ -334,7 +334,7 @@ void COptimizer::FUN_14161bee0()
 }
 
 // @0x14161c360
-float COptimizer::FUN_14161c360()
+float COptimizer::ApplyFrameLimitFromOptions()
 {
     m_fFrameLimit = (float)*FUN_1402056b0(&((class Unk_OptOptions*)FUN_1401d3200())->m_frameLimit);
     if (FUN_14028d470(m_fFrameLimit, 0))
@@ -429,7 +429,7 @@ void COptimizer::LoadOptimization()
 }
 
 // @0x14161c8c0
-void COptimizer::FUN_14161c8c0()
+void COptimizer::LogFirstMyPCLoadTime()
 {
     if (m_nFirstLoadTick == 0)
     {
@@ -517,13 +517,13 @@ void COptimizer::FUN_14161cc80(int nFlags, int nLimit, int nEnabled, int nMode)
     }
     m_nEnabled = nEnabled;
     m_selected.clear();
-    FUN_14161dd30(0, 0);
+    SetModeAndLimit(0, 0);
     m_nMode = nMode;
-    FUN_14161dd30(nFlags, nLimit);
+    SetModeAndLimit(nFlags, nLimit);
 }
 
 // @0x14161cd00
-void COptimizer::FUN_14161cd00()
+void COptimizer::Reset()
 {
     m_selected.clear();
     m_players.clear();
@@ -533,7 +533,7 @@ void COptimizer::FUN_14161cd00()
 }
 
 // @0x14161cd60
-void COptimizer::FUN_14161cd60(unsigned __int64 nId)
+void COptimizer::AddPreloadPlayer(unsigned __int64 nId)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0 && preloadMode != 0 && preloadMode != 1)
     {
@@ -545,7 +545,7 @@ void COptimizer::FUN_14161cd60(unsigned __int64 nId)
 }
 
 // @0x14161cdd0
-void COptimizer::FUN_14161cdd0(unsigned nId)
+void COptimizer::RemoveSelectedPlayer(unsigned nId)
 {
     unsigned __int64 nKey = nId;
     std::map<unsigned __int64, Entry>::iterator it = m_selected.find(nKey);
@@ -582,7 +582,7 @@ void COptimizer::SetSuppressed(int nSuppressed)
         {
             if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
             {
-                FUN_14161db10(preloadMode);
+                ApplyModeToAllPlayers(preloadMode);
             }
         }
     }
@@ -595,24 +595,24 @@ int COptimizer::GetSuppressed() const
 }
 
 // @0x14161cf60
-void COptimizer::FUN_14161cf60(PCBase* pPC)
+void COptimizer::ApplyModeToPlayer(PCBase* pPC)
 {
     if (pPC != 0)
     {
         unsigned __int64 nKey = pPC->FUN_141656a80();
         if (m_selected.find(nKey) != m_selected.end())
         {
-            FUN_14161dbe0(pPC, 0);
+            ApplyFlagsToPlayer(pPC, 0);
         }
         else
         {
-            FUN_14161dbe0(pPC, preloadMode);
+            ApplyFlagsToPlayer(pPC, preloadMode);
         }
     }
 }
 
 // @0x14161d010
-void COptimizer::FUN_14161d010(const egf::EntityID& kId)
+void COptimizer::AddSuppressor(const egf::EntityID& kId)
 {
     if (m_suppress.empty())
     {
@@ -622,7 +622,7 @@ void COptimizer::FUN_14161d010(const egf::EntityID& kId)
 }
 
 // @0x14161d070
-void COptimizer::FUN_14161d070(const egf::EntityID& kId)
+void COptimizer::RemoveSuppressor(const egf::EntityID& kId)
 {
     if (!m_suppress.empty())
     {
@@ -636,7 +636,7 @@ void COptimizer::FUN_14161d070(const egf::EntityID& kId)
 }
 
 // @0x14161d0f0
-int COptimizer::FUN_14161d0f0() const
+int COptimizer::IsUpdateEnabled() const
 {
     int nResult;
     if (m_nUpdateOn2 != 0 && m_nUpdateOn != 0)
@@ -686,7 +686,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                 std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(it->first);
                 if (itOld == m_selected.end())
                 {
-                    FUN_14161dbe0(it->second, preloadMode);
+                    ApplyFlagsToPlayer(it->second, preloadMode);
                     selected[it->first] = Entry(0, it->second);
                 }
                 else
@@ -729,7 +729,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                         std::map<unsigned __int64, Entry>::iterator itFound = selected.find(nKey);
                         if (itFound == selected.end())
                         {
-                            FUN_14161dbe0(it->m_pPC, preloadMode);
+                            ApplyFlagsToPlayer(it->m_pPC, preloadMode);
                         }
                     }
                     m_selected.clear();
@@ -750,7 +750,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                         }
                         else
                         {
-                            FUN_14161dbe0(it->m_pPC, 0);
+                            ApplyFlagsToPlayer(it->m_pPC, 0);
                             selected[it->m_pPC->FUN_141656a80()] = Entry(0, it->m_pPC);
                         }
                         nAdded = nAdded + 1;
@@ -762,7 +762,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                 PCBase* pOld = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(it->first));
                 if (pOld != 0)
                 {
-                    FUN_14161dbe0(pOld, preloadMode);
+                    ApplyFlagsToPlayer(pOld, preloadMode);
                 }
             }
             m_selected.clear();
@@ -775,7 +775,7 @@ void COptimizer::FUN_14161d130(bool bForce)
 }
 
 // @0x14161db10
-void COptimizer::FUN_14161db10(int nFlags)
+void COptimizer::ApplyModeToAllPlayers(int nFlags)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
@@ -785,14 +785,14 @@ void COptimizer::FUN_14161db10(int nFlags)
             for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; FUN_140c20a30(pMap, &pos))
             {
                 TPtr<PC> spActor(FUN_140c20a80(pMap, pos));
-                FUN_14161dbe0(spActor.get(), nFlags);
+                ApplyFlagsToPlayer(spActor.get(), nFlags);
             }
         }
     }
 }
 
 // @0x14161dbe0
-void COptimizer::FUN_14161dbe0(PCBase* pPC, int nFlags)
+void COptimizer::ApplyFlagsToPlayer(PCBase* pPC, int nFlags)
 {
     if (pPC != 0)
     {
@@ -836,7 +836,7 @@ void COptimizer::FUN_14161dbe0(PCBase* pPC, int nFlags)
 }
 
 // @0x14161dd30
-void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
+void COptimizer::SetModeAndLimit(int nFlags, int nLimit)
 {
     m_nLimit = nLimit;
     preloadMode = nFlags;
@@ -851,7 +851,7 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
             }
             else
             {
-                FUN_14161db10(nFlags);
+                ApplyModeToAllPlayers(nFlags);
             }
         }
     }

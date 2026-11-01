@@ -72,7 +72,7 @@ CEquipItem::CEquipItem(PC* pPC, CItem* pItem)
 // @0x1411dbe30
 CEquipItem::~CEquipItem()
 {
-    FUN_1411dbfd0();
+    ReleaseLinkedItems();
     if (!m_models.IsEmpty())
         FUN_1411dbf80(0);
     m_pPC = 0;
@@ -94,7 +94,7 @@ void CEquipItem::FUN_1411dbf80(int bKeepModels)
 {
     if (bKeepModels != 0)
     {
-        FUN_1411dbfd0();
+        ReleaseLinkedItems();
     }
     else
     {
@@ -105,7 +105,7 @@ void CEquipItem::FUN_1411dbf80(int bKeepModels)
 MS2_REPLACE_METHOD(0x1411DBF80, CEquipItem, FUN_1411dbf80, 69, 0x7DB620F3);
 
 // @0x1411dbfd0
-void CEquipItem::FUN_1411dbfd0()
+void CEquipItem::ReleaseLinkedItems()
 {
     PC* pPC = FUN_1411dc8c0();
     if (pPC != 0)
@@ -114,7 +114,7 @@ void CEquipItem::FUN_1411dbfd0()
         m_linkedItems.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x1411DBFD0, CEquipItem, FUN_1411dbfd0, 97, 0x58A50CD3);
+MS2_REPLACE_METHOD(0x1411DBFD0, CEquipItem, ReleaseLinkedItems, 97, 0x58A50CD3);
 
 // @0x1411dc040
 void CEquipItem::FUN_1411dc040()
@@ -617,11 +617,11 @@ NiNodePtr CEquipItem::FindPoint01Node()
 MS2_REPLACE_METHOD(0x1411DD700, CEquipItem, FindPoint01Node, 281, 0x1E098B50);
 
 // @0x1411dd820
-NiTexturePtr CEquipItem::FUN_1411dd820()
+NiTexturePtr CEquipItem::GetUgcTexture()
 {
     return m_spUgcMeshes.get() ? m_spUgcMeshes->FUN_141426d40() : NiTexturePtr(0);
 }
-MS2_REPLACE_METHOD(0x1411DD820, CEquipItem, FUN_1411dd820, 284, 0xE0250037);
+MS2_REPLACE_METHOD(0x1411DD820, CEquipItem, GetUgcTexture, 284, 0xE0250037);
 
 // @0x1411dd950
 MS2Ptr<CItemUgcMeshContainer> CEquipItem::GetUgcMeshes()
@@ -653,7 +653,7 @@ void CEquipItem::FUN_1411ddae0()
         return;
     if (!m_spItem->FUN_140525f60())
         return;
-    CString strFile = FUN_1411ddd50();
+    CString strFile = GetUgcFile();
     if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName) == 0)
         return;
     CUgcItemPC kItem(m_spItem.get(), m_pPC->FUN_14123c580());
@@ -674,13 +674,13 @@ int CEquipItem::FUN_1411ddcb0()
 MS2_REPLACE_METHOD(0x1411DDCB0, CEquipItem, FUN_1411ddcb0, 141, 0x1EE2CF38);
 
 // @0x1411ddd50
-CString CEquipItem::FUN_1411ddd50()
+CString CEquipItem::GetUgcFile()
 {
     if (m_strUgcFile.IsEmpty())
         m_strUgcFile = FUN_1410280d0(1, m_spItem->GetUgcInfo()->m_strName);
     return m_strUgcFile;
 }
-MS2_REPLACE_METHOD(0x1411DDD50, CEquipItem, FUN_1411ddd50, 238, 0xBAD18CBE);
+MS2_REPLACE_METHOD(0x1411DDD50, CEquipItem, GetUgcFile, 238, 0xBAD18CBE);
 
 // @0x1411dde50
 void CEquipItem::AddModel(CEquipModel* pModel)

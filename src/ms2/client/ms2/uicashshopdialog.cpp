@@ -165,6 +165,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ccashmarketman.h"
+#include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
@@ -173,46 +174,6 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 
 // ---- unit-local views of exe objects ----
-
-// A product of the shop (the record behind the manager's sale list).
-class Unk_CashProduct : public CPtred
-{
-public:
-    int m_nId;                                                      // +0x18
-    int m_nSalePrice;                                               // +0x1c
-    char m_pad_20[0x18];
-    __int64 m_nSerial;                                              // +0x38
-    char m_pad_40[8];
-    int m_nItemId;                                                  // +0x48
-    int m_nRank;                                                    // +0x4c
-    int m_nPrice;                                                   // +0x50
-    int m_n54;
-    int m_nSaleTag;                                                 // +0x58
-    char m_pad_5c[8];
-    int m_nSlot;                                                    // +0x64
-    int m_nPage;                                                    // +0x68
-    int m_nDiscount;                                                // +0x6c 1: discounted
-    char m_pad_70[0x20];
-    int m_nLimitKind;                                               // +0x90 3: limited
-    int m_nLimitMax;                                                // +0x94
-    int m_nLimitCount;                                              // +0x98
-};
-
-// A row of the cash inventory (gifts waiting to be received, items to use).
-class Unk_CashInvItem : public CPtred
-{
-public:
-    int m_nId;                                                      // +0x18
-    int m_nSerial;                                                  // +0x1c
-    char m_pad_20[0x30];
-    int m_nItemId;                                                  // +0x50
-    char m_pad_54[0x24];
-    int m_nUsable;                                                  // +0x78
-    char m_pad_7c[0x2c];
-    CStringW m_strSender;                                           // +0xa8
-    CStringW m_strMessage;                                          // +0xb0
-    int m_nState;                                                   // +0xb8 0: not received yet
-};
 
 // One banner record of the ad manager (the strings are wide).
 class Unk_CashBannerRecord : public CPtred
@@ -225,36 +186,6 @@ public:
     CStringW m_strType;                                             // +0x30
     CStringW m_strValue;                                            // +0x38
     CStringW m_strImage;                                            // +0x40
-};
-
-class Unk_CashInvArr                                                // the cash inventory rows of the manager
-{
-public:
-    size_t FUN_140b05be0();                                         // the count
-    MS2Ptr<Unk_CashInvItem>& FUN_140b05b10(size_t nIndex);          // 0x140b05b10 returns &slot[n] (0x10 stride) in rax, no hidden slot
-};
-
-class Unk_CashMgr                                                   // the cash shop manager singleton
-{
-public:
-    ATL::CAtlArray<MS2Ptr<Unk_CashProduct> >& FUN_14103d2c0();      // the sale products at +0x88 (inline COMDAT of this unit)
-    MS2Ptr<Unk_CashProduct> FUN_140b06750(int nId);                 // a product by id
-    int FUN_140b06680(MS2Ptr<Unk_CashProduct> spProduct);           // the product is hidden
-    int FUN_140b06600(int nId);                                     // the pending request of a product (0: none)
-    void FUN_140b06980(int nKind, int nError);                      // show the request error
-    void FUN_140b06240(int nId, int nCount);                        // buy
-    void FUN_140b062c0(int nId, int nCount, CString strRecipient, CString strMessage);   // gift
-    void FUN_140b06580(unsigned nSerial, int nCount);               // refund
-    MS2Ptr<Unk_CashInvItem> FUN_140b06870(unsigned nSerial, int nCount);   // an inventory row
-    void FUN_140b063b0(unsigned nSerial, int nCount, int n);        // use
-    void FUN_140b064c0(int nSerial, int nCount, int n, int m);      // pick up
-    void FUN_140b061e0();                                           // request the cash balance
-    void FUN_140b06180();                                           // request the basket
-    void FUN_140b06450(int nCategory);                              // request a page
-    Unk_CashInvArr* FUN_140b05c00();                                // the inventory rows
-private:
-    char m_pad_00[0x88];
-    ATL::CAtlArray<MS2Ptr<Unk_CashProduct> > m_saleProducts;        // +0x88
 };
 
 // The list control behind "m_saleProduct" / "m_basketProduct" (the AS list with append).
@@ -272,11 +203,7 @@ public:
 };
 
 class Unk_CashBag : public ASObj {};                                // "m_inven": the bag of the inventory movie
-class Unk_CashButton : public ASDisplayObject                       // "m_btnNext" / "m_btnPrev"
-{
-public:
-    void FUN_1422c1fe0(int bEnable);
-};
+class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
 class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rOut); };
 
@@ -294,9 +221,9 @@ class Unk_CashPlayer;
 class Unk_CashUiMgr { public: void FUN_141adc530(int uiId); };
 UIMarketBillDialog* FUN_140b09580(int uiId);                        // the open dialog of a UI id
 
-class Unk_CashMsgBox : public CMsgBoxData { public: void FUN_141a020b0(int nItemId, int nRank, int n); };
+class Unk_CashMsgBox : public CMsgBoxData { public: };
 
-class Unk_CashInventoryTabs { public: bool FUN_140a5cdc0(int nTab); };
+class Unk_CashInventoryTabs { public: bool FUN_140a5cdc0(unsigned category); };
 extern Unk_CashInventoryTabs DAT_143ab2a90;
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
@@ -305,7 +232,6 @@ extern CString DAT_143ab2a40;
 extern char DAT_143ab2943;
 
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-int FUN_1402c4c90(unsigned char* pFlags, int nBit);
 void FUN_141275260(int nStringId, int a, int b);                    // a notice
 int FUN_1407181d0(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
@@ -326,7 +252,7 @@ CString FUN_14102a0b0(int nType, const CString& strKey, const CString& strImage,
 CString FUN_14016a5c0(const char* sz, int n);
 CString FUN_140695240(const char* sz);
 __int64 GetServerTime();                                            // the server time
-CString FUN_140c84fc0(__int64 nAddress);                            // the charge url (checked)
+CString FUN_140c84fc0(unsigned __int64 nAddress);                            // the charge url (checked)
 int FUN_1415c3b50(const char* szUrl, char* szOut, int a, int b, int nLen);
 void* FUN_140aadf80();
 void* FUN_140c7fa70(size_t nSize);                                  // operator new of CCashUnlockDialog
@@ -336,7 +262,7 @@ CString FUN_140513200(const char* szFormat, const __int64& n);      // StringFor
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);      // StringFormat<int> (wide)
 CStringW FUN_140763e10(int nAmount);                                // the amount with separators
 CStringW FUN_1409404f0(__int64 nPrice);
-CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);
+CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool b);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& str);
@@ -344,12 +270,12 @@ int FUN_1402912d0(CStringW strName);                                // the inven
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);            // notice
-void FUN_140d73bc0(unsigned nStringId, int a, int b, CStringW strTag);          // message
+void FUN_140d73bc0(int nStringId, int a, void* b, CStringW strTag);          // message
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                                  // show
-void FUN_140d2cd80(MS2Ptr<Unk_CashProduct> spProduct);                          // the link of a product
+void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct);                          // the link of a product
 void FUN_1416fb340(void* pLog, const CStringW& strText);
 void* FUN_1403b4750();
 CommonString* FUN_14025e7d0();
@@ -394,10 +320,10 @@ void UICashShopDialog::CategoryFilter::FUN_141033200()
 void UICashShopDialog::CategoryFilter::FUN_141033240(int nCategory)
 {
     m_mapInclude.SetAt(nCategory, 1);
-    Unk_CashInvArr* pRows = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b05c00();
-    for (size_t i = 0; i < pRows->FUN_140b05be0(); i++) {
-        MS2Ptr<Unk_CashInvItem> spRow = pRows->FUN_140b05b10(i);
-        m_mapExclude.SetAt(spRow->m_nSerial, 1);
+    ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& rows = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b05c00();
+    for (size_t i = 0; i < rows.GetCount(); i++) {
+        MS2Ptr<CCashInventoryProduct> spRow = rows[i];
+        m_mapExclude.SetAt(spRow->m_n1c, 1);
     }
 }
 
@@ -461,7 +387,7 @@ CString UICashShopDialog::GetTypeName()
 // @0x1410336b0
 int UICashShopDialog::vfunc_73()
 {
-    if (FUN_1402c4c90(((unsigned char*)FUN_14025e7b0()) + 8, 0x15) != 0) {
+    if (reinterpret_cast<CContentShutdown*>(((unsigned char*)FUN_14025e7b0()) + 8)->Get((CContentShutdown::Content)0x15) != 0) {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
@@ -490,11 +416,11 @@ void UICashShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     int nProductId = FUN_1407181d0(pArgs->FUN_1422b8d30());
-    MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+    MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
     if (!spProduct)
         return;
     ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
-    if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
+    if (tip.FUN_1409e1770(spProduct->m_data.m_n28, spProduct->m_data.m_n2c) != 0)
         *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -518,9 +444,9 @@ void UICashShopDialog::OnLoadComplete()
     m_nCategory = 1;
     FUN_141035e40();
     FUN_141036ca0();
-    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b061e0();
-    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06180();
-    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06450(m_nCategory);
+    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode1();
+    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode0();
+    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode5(m_nCategory);
 }
 
 // @0x141033a50
@@ -599,9 +525,9 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     return 0;
                 int nSerial = FUN_1407181a0(values[0]);
                 int nCount = FUN_140718200(values[1]);
-                MS2Ptr<Unk_CashInvItem> spRow = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06870(nSerial, nCount);
+                MS2Ptr<CCashInventoryProduct> spRow = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06870(nSerial, nCount);
                 if (spRow.get() != 0)
-                    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b064c0(nSerial, nCount, 1, 0);
+                    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode7(nSerial, nCount, 1, 0);
             }
             else if (strTag.Find(L"retraction", 0) != -1) {
                 ATL::CAtlArray<CStringW> values;
@@ -633,10 +559,10 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
-            MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+            MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
             if (spProduct == 0)
                 return 0;
-            if (m_nCash >= spProduct->m_nSalePrice) {
+            if (m_nCash >= spProduct->m_n1c) {
                 ATL::CAtlArray<unsigned> ids;
                 ids.Add(nProductId);
                 CString strName(szMethod);
@@ -651,7 +577,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
-            MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+            MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
             if (!spProduct)
                 return 0;
             FUN_140d2cd80(spProduct);
@@ -662,16 +588,16 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onPrevPage", szMethod) == 0) {
         if (m_nCategory > 1)
-            reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06450(m_nCategory - 1);
+            TSingleton<CCashMarketMan>::GetInstance()->SendCashMode5(m_nCategory - 1);
     }
     else if (_stricmp("onNextPage", szMethod) == 0) {
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06450(m_nCategory + 1);
+        TSingleton<CCashMarketMan>::GetInstance()->SendCashMode5(m_nCategory + 1);
     }
     else if (_stricmp("onBasket", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             int nProductId = FUN_140718200(data.FUN_1422b8f40());
-            if (reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId) == 0) {
+            if (TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId) == 0) {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa5f, 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->FUN_140534050(nProductId);
@@ -755,7 +681,7 @@ void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
     }
     if (m_waiting.GetCount() > 0) {
         int nNext = m_waiting[0];
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06240(nNext, 1);
+        TSingleton<CCashMarketMan>::GetInstance()->SendCashMode2(nNext, 1);
         m_waiting.RemoveAt(0, 1);
     }
 }
@@ -785,7 +711,7 @@ void UICashShopDialog::FUN_1410350d0(MS2Ptr<CashBannerInfo> spBanner)
     }
     else if (strType == "product") {
         int nProductId = FUN_1407181d0(spBanner->m_strValue);
-        MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+        MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
         if (spProduct == 0)
             return;
         ATL::CAtlArray<unsigned> ids;
@@ -858,8 +784,8 @@ void UICashShopDialog::FUN_141035920(int n)
 {
     m_n2c8 = n;
     if (n == 0) {
-        if (reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance()) != 0)
-            reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b061e0();
+        if (TSingleton<CCashMarketMan>::GetInstance() != 0)
+            TSingleton<CCashMarketMan>::GetInstance()->SendCashMode1();
     }
 }
 
@@ -883,17 +809,17 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
     unsigned nIds = rIds.GetCount();
     for (unsigned i = 0; i < nIds; i++) {
         int nProductId = rIds[i];
-        MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+        MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
         if (spProduct == 0)
             continue;
-        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_nItemId);
+        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_data.m_n28);
         if (spItem == 0)
             continue;
         MS2Ptr<ASCashShopBillData> spBill(new ASCashShopBillData());
-        spBill->SetIconFromItem(spItem, spProduct->m_nRank);
-        spBill->SetItemName(GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
-        spBill->SetSalePrice(FUN_1418fec00(nZero, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
-        spBill->SetEnableGift(spProduct->m_nDiscount == 1);
+        spBill->SetIconFromItem(spItem, spProduct->m_data.m_n2c);
+        spBill->SetItemName(GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
+        spBill->SetSalePrice(FUN_1418fec00(nZero, spProduct->m_n1c, 0), spProduct->m_n1c);
+        spBill->SetEnableGift(spProduct->m_data.m_n4c == 1);
         spBill->FUN_1409abcd0(nZero);
         spBill->FUN_14103fba0(nProductId);
         bills.Add(spBill);
@@ -907,9 +833,9 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
 // @0x141035e40
 void UICashShopDialog::FUN_141035e40()
 {
-    Unk_CashInvArr* pRows = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b05c00();
+    ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& rows = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b05c00();
     if (MS2Ptr<Unk_CashButton> spNext = FUN_140bb4b10("m_btnNext")) {
-        int bFullPage = pRows->FUN_140b05be0() == 0x1e;
+        int bFullPage = rows.GetCount() == 0x1e;
         spNext->FUN_1422c1fe0(bFullPage);
     }
     if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
@@ -934,31 +860,31 @@ void UICashShopDialog::FUN_1410360c0()
         pages.SetAt((int)nPage, spNew);
     }
     int nPayType = 0;
-    ATL::CAtlArray<MS2Ptr<Unk_CashProduct> >& products = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_14103d2c0();
+    ATL::CAtlArray<MS2Ptr<CCashSaleProduct> >& products = TSingleton<CCashMarketMan>::GetInstance()->FUN_14103d2c0();
     for (size_t i = 0; i < products.GetCount(); i++) {
-        MS2Ptr<Unk_CashProduct> spProduct = products[i];
-        if (reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06680(spProduct) != 0)
+        MS2Ptr<CCashSaleProduct> spProduct = products[i];
+        if (TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06680(spProduct) != 0)
             continue;
-        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_nItemId);
+        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_data.m_n28);
         if (!spItem)
             continue;
         MS2Ptr<AScript> spRow(new AScript(2));
-        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
-        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
+        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", *reinterpret_cast<__int64*>(&spProduct->m_data.m_n18)));
+        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
         spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
-        spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
-        __int64 nPrice = spProduct->m_nPrice;
-        __int64 nSalePrice = spProduct->m_nSalePrice;
+        spRow->FUN_1407cb9c0("saleTag", spProduct->m_data.m_n38);
+        __int64 nPrice = spProduct->m_data.m_n30;
+        __int64 nSalePrice = spProduct->m_n1c;
         bool bSale = nPrice > nSalePrice;
         CStringW strOriginal = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
         CStringW strSale = FUN_1418fec00(nPayType, nSalePrice, 0);
         spRow->FUN_1407cbb20("salePrice", strSale);
         spRow->FUN_1407cbb20("originalPrice", strOriginal);
         spRow->FUN_1407cb9c0("tooltip", 1);
-        if (spProduct->m_nLimitKind == 3)
-            spRow->FUN_1407cbbe0("soldout", spProduct->m_nLimitCount >= spProduct->m_nLimitMax ? true : false);
-        int nSlot = spProduct->m_nSlot;
-        int nPageOfRow = spProduct->m_nPage;
+        if (spProduct->m_data.m_n70 == 3)
+            spRow->FUN_1407cbbe0("soldout", spProduct->m_data.m_n78 >= spProduct->m_data.m_n74 ? true : false);
+        int nSlot = spProduct->m_data.m_n44;
+        int nPageOfRow = spProduct->m_data.m_n48;
         TPtrValue<Unk_CashSlotMap> spSlots(0);
         if (!pages.Lookup(nPageOfRow, spSlots)) {
             spSlots = Unk_GrNewTag(0);
@@ -998,19 +924,19 @@ void UICashShopDialog::FUN_141036ca0()
     spList->Invoke("resetRenderer");
     int nPayType = 0;
     for (POSITION pos = m_basket.GetHeadPosition(); pos != 0; m_basket.GetNext(pos)) {
-        MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(m_basket.GetAt(pos));
-        if (reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06680(spProduct) != 0)
+        MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(m_basket.GetAt(pos));
+        if (TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06680(spProduct) != 0)
             continue;
-        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_nItemId);
+        MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_data.m_n28);
         if (!spItem)
             continue;
         MS2Ptr<ASObj> spRow(new ASObj(2));
-        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
-        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
+        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", *reinterpret_cast<__int64*>(&spProduct->m_data.m_n18)));
+        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
         spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
-        spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
-        __int64 nPrice = spProduct->m_nPrice;
-        __int64 nSalePrice = spProduct->m_nSalePrice;
+        spRow->FUN_1407cb9c0("saleTag", spProduct->m_data.m_n38);
+        __int64 nPrice = spProduct->m_data.m_n30;
+        __int64 nSalePrice = spProduct->m_n1c;
         bool bSale = nPrice > nSalePrice;
         CStringW strOriginal = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
         CStringW strSale = FUN_1418fec00(nPayType, nSalePrice, 0);
@@ -1025,20 +951,20 @@ void UICashShopDialog::FUN_141036ca0()
 // @0x141037360
 void UICashShopDialog::FUN_141037360()
 {
-    Unk_CashInvArr* pRows = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b05c00();
-    for (size_t i = 0; i < pRows->FUN_140b05be0(); i++) {
-        MS2Ptr<Unk_CashInvItem> spRow = pRows->FUN_140b05b10(i);
-        if (spRow->m_nState == 0 && spRow->m_strSender.GetLength() != 0) {
-            CStringW strText = StringFormat<CStringW, CStringW>(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
+    ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& rows = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b05c00();
+    for (size_t i = 0; i < rows.GetCount(); i++) {
+        MS2Ptr<CCashInventoryProduct> spRow = rows[i];
+        if (spRow->m_nB8 == 0 && spRow->m_strA8.GetLength() != 0) {
+            CStringW strText = StringFormat<CStringW, CStringW>(GetStringCommon(0xa66), spRow->m_strA8, spRow->m_strB0);
             MS2Ptr<CItem> spGift(new CItem());
-            if (spGift->FUN_140523c40(spRow->m_nItemId, 1, 0) == 0)
+            if (spGift->FUN_140523c40(spRow->m_data.m_n28, 1, 0) == 0)
                 continue;
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
             if (spBox.get() != 0) {
                 spGift->FUN_140526c70(1);
                 spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
-                spBox->Append<int>(spRow->m_nSerial);
-                spBox->FUN_140534050(spRow->m_nId);
+                spBox->Append<int>(spRow->m_n1c);
+                spBox->FUN_140534050(spRow->m_n18);
                 spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
                 FUN_140d73c60(spBox);
             }
@@ -1181,12 +1107,12 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
         if (spCashBill == 0)
             continue;
         int nProductId = spCashBill->FUN_14103d2b0();
-        MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+        MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
         if (spProduct == 0)
             continue;
         int nTab = -1;
         int nReason = 0;
-        if (!FUN_141037cd0(spProduct->m_nItemId, &nReason, &nTab)) {
+        if (!FUN_141037cd0(spProduct->m_data.m_n28, &nReason, &nTab)) {
             CStringW strText;
             if (nTab > -1)
                 strText = FUN_14052bd00(nReason, GetStringTable()->FUN_141813300(nTab));
@@ -1202,19 +1128,19 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
             }
             return true;
         }
-        int nPending = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId);
+        int nPending = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId);
         if (nPending == 0) {
             if (nFirstId == 0)
                 nFirstId = nProductId;
             else
                 ids.Add(nProductId);
         } else {
-            reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06980(2, nPending);
+            TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06980(2, nPending);
             return true;
         }
     }
     if (nFirstId != 0)
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06240(nFirstId, 1);
+        TSingleton<CCashMarketMan>::GetInstance()->SendCashMode2(nFirstId, 1);
     if (ids.GetCount() > 0)
         m_waiting.Copy(ids);
     return true;
@@ -1248,7 +1174,7 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     }
     ATL::CAtlArray<unsigned> ids;
     size_t nBills = bills.GetCount();
-    MS2Ptr<Unk_CashProduct> spGift(0);
+    MS2Ptr<CCashSaleProduct> spGift(0);
     for (size_t i = 0; i < nBills; i++) {
         MS2Ptr<ASBillData> spBill = bills[i];
         if (spBill == 0)
@@ -1257,12 +1183,12 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         if (spCashBill == 0)
             continue;
         int nProductId = spCashBill->FUN_14103d2b0();
-        MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(nProductId);
+        MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
         if (spProduct == 0)
             continue;
-        int nPending = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId);
+        int nPending = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId);
         if (nPending != 0) {
-            reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06980(3, nPending);
+            TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06980(3, nPending);
             return true;
         }
         if (spGift == 0)
@@ -1286,12 +1212,12 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
         if (spBox.get() != 0) {
-            spBox->FUN_140534050(spGift->m_nId);
+            spBox->FUN_140534050(spGift->m_n18);
             spBox->FUN_140b76940(strRecipient);
             spBox->FUN_140b76940(strMessage);
             spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));
             spBox->FUN_141a024a0(0);
-            static_cast<Unk_CashMsgBox*>(spBox.operator->())->FUN_141a020b0(spGift->m_nItemId, spGift->m_nRank, 0);
+            static_cast<Unk_CashMsgBox*>(spBox.operator->())->SetItemById(spGift->m_data.m_n28, spGift->m_data.m_n2c, 0);
             spBox->FUN_141a01700(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
         }
@@ -1317,11 +1243,11 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
     MS2Ptr<ASCashShopBillData> spCashBill(dynamic_cast<ASCashShopBillData*>(spBill.get()));
     if (spCashBill == 0)
         return false;
-    MS2Ptr<Unk_CashProduct> spProduct = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06750(spCashBill->FUN_14103d2b0());
+    MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(spCashBill->FUN_14103d2b0());
     if (spProduct == 0)
         return false;
     ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
-    if (tip.FUN_1409e1770(spProduct->m_nItemId, spProduct->m_nRank) != 0)
+    if (tip.FUN_1409e1770(spProduct->m_data.m_n28, spProduct->m_data.m_n2c) != 0)
         *pRetVal = tip.FUN_1422bb870();
     return true;
 }
@@ -1353,9 +1279,9 @@ bool UICashShopDialog::FUN_141039bf0(int nButton, const CMsgBoxData& rData)
     if (nButton != 0)
         return true;
     unsigned nProductId = rData.FUN_141a02e90(0, 0);
-    int nPending = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId);
+    int nPending = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId);
     if (nPending != 0) {
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06980(2, nPending);
+        TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06980(2, nPending);
         return false;
     }
     m_basket.AddTail(nProductId);
@@ -1369,12 +1295,12 @@ bool UICashShopDialog::FUN_141039ca0(int nButton, const CMsgBoxData& rData)
     if (nButton != 0)
         return true;
     unsigned nProductId = rData.FUN_141a02e90(0, 0);
-    int nPending = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId);
+    int nPending = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId);
     if (nPending != 0) {
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06980(2, nPending);
+        TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06980(2, nPending);
         return false;
     }
-    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06240(nProductId, 1);
+    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode2(nProductId, 1);
     return true;
 }
 
@@ -1385,7 +1311,7 @@ bool UICashShopDialog::FUN_141039d30(int nButton, const CMsgBoxData& rData)
         return true;
     int nSerial = rData.FUN_141a02e50(0, 0);
     unsigned nCount = rData.FUN_141a02e90(1, 0);
-    reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06580(nSerial, nCount);
+    TSingleton<CCashMarketMan>::GetInstance()->SendCashMode6(nSerial, nCount);
     return true;
 }
 
@@ -1396,11 +1322,11 @@ bool UICashShopDialog::FUN_141039da0(int nButton, const CMsgBoxData& rData)
         return true;
     int nSerial = rData.FUN_141a02e50(0, 0);
     unsigned nCount = rData.FUN_141a02e90(1, 0);
-    MS2Ptr<Unk_CashInvItem> spRow = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06870(nSerial, nCount);
+    MS2Ptr<CCashInventoryProduct> spRow = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06870(nSerial, nCount);
     if (spRow.get() != 0) {
-        if (spRow->m_nUsable == 0)
+        if (spRow->m_data.m_n50 == 0)
             return false;
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b063b0(nSerial, nCount, 1);
+        TSingleton<CCashMarketMan>::GetInstance()->SendCashMode4(nSerial, nCount, 1);
     }
     return true;
 }
@@ -1413,9 +1339,9 @@ bool UICashShopDialog::FUN_141039e80(int nButton, const CMsgBoxData& rData)
     unsigned nProductId = rData.FUN_141a02e90(0, 0);
     CStringW strRecipient = rData.FUN_141a02fd0(1, CStringW());
     CStringW strMessage = rData.FUN_141a02fd0(2, CStringW());
-    int nOwned = reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b06600(nProductId);
+    int nOwned = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId);
     if (nOwned == 0)
-        reinterpret_cast<Unk_CashMgr*>(TSingleton<CCashMarketMan>::GetInstance())->FUN_140b062c0(nProductId, 1, FUN_1401d4330(strRecipient, 0), FUN_1401d4330(strMessage, 0));
+        TSingleton<CCashMarketMan>::GetInstance()->SendCashMode3(nProductId, 1, FUN_1401d4330(strRecipient, 0), FUN_1401d4330(strMessage, 0));
     return true;
 }
 
@@ -1429,9 +1355,9 @@ bool UICashShopDialog::FUN_14103a040(int nButton, const CMsgBoxData& rData)
 }
 
 // @0x14103d2c0
-ATL::CAtlArray<MS2Ptr<Unk_CashProduct> >& Unk_CashMgr::FUN_14103d2c0()
+ATL::CAtlArray<MS2Ptr<CCashSaleProduct> >& CCashMarketMan::FUN_14103d2c0()
 {
-    return m_saleProducts;
+    return m_aSale;
 }
 
 // @0x14103d310

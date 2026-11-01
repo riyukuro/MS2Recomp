@@ -1471,7 +1471,6 @@ public:
     Unk_UtilEntityRef(egf::Entity* pEntity);
     ~Unk_UtilEntityRef();                                           // 0x1408a8720
     bool FUN_1408b70b0(int nNull) const;                            // == NULL
-    egf::Entity* FUN_1408a9090() const;                             // operator->
 private:
     egf::Entity* m_p;
 };
@@ -1482,7 +1481,7 @@ void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEf
     Unk_UtilEntityRef kEntity(FUN_1411cf440(FUN_1409670f0(), id));
     if (kEntity.FUN_1408b70b0(0))
         return;
-    NiAVObject* pRoot = FUN_141b6efc0(kEntity.FUN_1408a9090());
+    NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<const egf::EntityPtr&>(kEntity).operator egf::Entity*());
     if (pRoot != NULL)
         FUN_141b71f20(pRoot, bEnable, uColor, bSkipEffectRoot);
 }

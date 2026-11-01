@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x141507ff0-0x141508390 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2searchtexturepath.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/filesystem.h"
 #include "ms2searchtexturepath.h"
 #include <efd/PathUtils.h>
 #include "hook/ms2hook.h"
@@ -34,11 +35,11 @@ MS2_REPLACE_METHOD(0x1415080D0, MS2SearchTexturePath, Reset, 36, 0xABE92DA7);
 // @0x141508100
 bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiStringLen)
 {
-    if (FUN_140166420()->FUN_140398190()) {
+    if (reinterpret_cast<CFileSystem*>(FUN_140166420())->FUN_140398190()) {
         if (!m_bQueried) {
             m_bQueried = true;
             FUN_141508220(pcPath);
-            return FUN_140166420()->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
+            return reinterpret_cast<CFileSystem*>(FUN_140166420())->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
         }
     } else {
         return Unk_STPBase::GetNextSearchPath(pcPath, uiStringLen);

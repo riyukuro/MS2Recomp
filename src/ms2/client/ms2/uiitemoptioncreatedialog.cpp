@@ -99,21 +99,14 @@ class Unk_CoupleInput : public AScript
 public:
 };
 
-// The string table (item rank names, item names).
-class Unk_OcStringTable : public CStringTable
-{
-public:
-    CStringW FUN_141811980(int nTable, unsigned nId);       // text of an item
-};
-
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item row (NULL: no such item)
+MS2Ptr<CItemData> FUN_14053f870(int);          // the item row (NULL: no such item)
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
-int FUN_1405451c0(const CString& strGroup);                 // the item group index of a group name
+int FUN_1405451c0(CStringA&);                 // the item group index of a group name
 const CString& FUN_14082efb0(int nStat);                    // text of a stat
 CStringW FUN_14082f000(int nStat);                          // text of a stat (wide)
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_140710590(COutPacket& packet);                     // send
 
@@ -273,7 +266,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
         int nSelected = 0;
         if (item->GetRank() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("label", ((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813150(item->GetRank()));
+            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(item->GetRank()));
             row.FUN_1409adc90("itemRank", item->GetRank());
             combo->FUN_1422dfc70(row);
             nSelected = 0;
@@ -282,7 +275,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             for (int nRank = 1; nRank < 7; ++nRank) {
                 int nItemRank = nRank;
                 ASObj row(2);
-                row.FUN_1407cbb20("label", ((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813150(nItemRank));
+                row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nItemRank));
                 row.FUN_1407cb9c0("itemRank", nRank);
                 if (nItemRank == m_nRank)
                     nSelected = combo->FUN_1422dfb90();
@@ -415,11 +408,11 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
         int nLevel = item->limit.levelLimit;
         CStringW strFormat(L"[%ld] [%s] [Lv.%d] %s");
         if (item->IsCashItem() != 0) {
-            strLabel.Format(strFormat, nId, L"CASH", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
+            strLabel.Format(strFormat, nId, L"CASH", nLevel, (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId));
         } else if (item->HasSkinType() != 0) {
-            strLabel.Format(strFormat, nId, L"SKIN", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
+            strLabel.Format(strFormat, nId, L"SKIN", nLevel, (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId));
         } else {
-            strLabel.Format(strFormat, nId, L"GAME", nLevel, (LPCWSTR)((class Unk_OcStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nId));
+            strLabel.Format(strFormat, nId, L"GAME", nLevel, (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId));
         }
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
@@ -448,7 +441,7 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
                     list->AddItem(row);
             } else {
                 if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
-                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
+                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(const_cast<CStringA&>(strGroup))))
                         list->AddItem(row);
                 }
             }

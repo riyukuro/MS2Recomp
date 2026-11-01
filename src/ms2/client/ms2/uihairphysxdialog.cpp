@@ -44,28 +44,28 @@
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/asslider.h"
+#include "ms2/placeholder/astextinput.h"
+#include "ms2/client/ms2/uicameraeditdialog.h"
+#include "ms2/client/ms2/uigamerankingdialog.h"
+#include <egf/ScriptContext.h>
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 
+class Unk_HudSlider;
+class Unk_IbDropdown;
+template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName);
+template <> MS2Ptr<Unk_IbDropdown> UISwfEntity::GetChild<Unk_IbDropdown>(const CString& strName);
 template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);   // owned by uibingoeventdialog (0x140bb4cf0)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
 // The AS controls of the page (all are AS UI components).
-class Unk_HpxRadio : public ASUIComponent
+class Unk_HpxRadio : public ASButton
 {
-public:
-    bool FUN_1422ce0e0();                                       // is selected
 };
-class Unk_HpxSlider : public ASUIComponent
-{
-public:
-    void FUN_1422ce5f0(float fValue);                           // set the value
-};
-class Unk_HpxInput : public ASUIComponent
-{
-public:
-    void FUN_1422e0a60(const CString& strText);                 // set the text
-};
-class Unk_HpxCombo : public ASDropdownMenu {};                    // "m_joints"
+class Unk_HudSlider : public ASSlider {};
+class Unk_RankInput : public ASTextInput {};
+class Unk_IbDropdown : public ASDropdownMenu {};                    // "m_joints"
 
 // The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
 // equipmodelforceapplier.cpp's, whose accessors were first emitted there.
@@ -96,25 +96,27 @@ public:
     void FUN_141adc530(int nId);                                // open
 };
 class Unk_HpxEquipSet : public CEquipment { };
+class Unk_EquipModelOwner : public CEquipItem {};               // what CEquipModel::FUN_141200a40 hands back
 class PC   // C3: member view for the former free stand-ins
 {
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
 void FUN_141901390(int bRelease, int nLayer);                   // the player key input layer
-void FUN_141695f10(PCBase* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony parts
-CKfmModel* FUN_1411de170(Unk_PickTarget* pPart);                // the part's model as a .kfm model
+class Unk_PonyPlayer;
+void FUN_141695f10(Unk_PonyPlayer* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony parts
+void* FUN_141200ab0(CEquipModel* pModel);                       // m_unk_20
+void FUN_141202240(CEquipModel* pModel, void* pXform);          // set the model transform
 void FUN_1412021a0(CEquipModel* pModel, NiTransform* pXform);   // the model transform
-Unk_BSCamera* FUN_140cd47b0(int nId);
+UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
 Unk_ServiceManager* FUN_1413f9850();                            // the framework's service manager
-extern char DAT_143b059e8;                                      // the app framework
-ecrPhysX::PropService* FUN_1412938c0(char* pFramework);
+ecrPhysX::PropService* FUN_1412938c0(struct Unk_DvCell* pFramework);
 efd::utf8string FUN_1414d7990(const efd::utf8string& strName);  // the scene name of a PhysX scene key
 class CPhysXHelper
 {
 public:
     void FUN_14168a540(int n);                                  // lock the scene
-    void* FUN_1416892a0(int nScene);                            // the scene
+    class Unk_PhysXSceneHandle* FUN_1416892a0(int nScene);      // the scene
     void FUN_14168a570();                                       // unlock
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -168,19 +170,19 @@ void UIHairPhysxDialog::FUN_141981060()
             kValue = kXform.m_Translate;
         else if (nMode == 2)
             FUN_141984da0(kXform.m_Rotate, kValue);
-        if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformX"))
+        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
         {
             CString str;
             str.Format("%f", kValue.x);
             sp->FUN_1422e0a60(str);
         }
-        if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformY"))
+        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
         {
             CString str;
             str.Format("%f", kValue.y);
             sp->FUN_1422e0a60(str);
         }
-        if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformZ"))
+        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
         {
             CString str;
             str.Format("%f", kValue.z);
@@ -210,7 +212,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     m_2c0->HideSlot(6);
     m_2c0->SelectSlot(1);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
-    m_2d0 = FUN_140cd47b0(0x4ef2);
+    m_2d0 = FUN_140cd47b0((eUIClassID)0x4ef2);
     m_190.MakeIdentity();
     m_1c4.MakeIdentity();
     Unk_HpxModel* pLeft = 0;
@@ -240,7 +242,7 @@ void UIHairPhysxDialog::vfunc_26()
         pPc->vfunc_59(1, 0, 0, 0);
         FUN_141901390(1, 0x3eb);
     }
-    ecrPhysX::PropService* pService = FUN_1412938c0(&DAT_143b059e8);
+    ecrPhysX::PropService* pService = FUN_1412938c0((Unk_DvCell*)&egf::g_bapiContext);
     if (pService)
     {
         efd::utf8string strScene("PhysXItemSceneName");
@@ -362,7 +364,7 @@ int UIHairPhysxDialog::vfunc_5(void* p1, void* p2)
 void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
 {
     bool bActive = nDebug ? true : false;
-    ecrPhysX::PropService* pService = FUN_1412938c0(&DAT_143b059e8);
+    ecrPhysX::PropService* pService = FUN_1412938c0((Unk_DvCell*)&egf::g_bapiContext);
     if (pService)
     {
         efd::utf8string strScene("PhysXItemSceneName");
@@ -429,9 +431,9 @@ void UIHairPhysxDialog::FUN_141982480(float fSoft)
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(FUN_1419833e0(), &pLeft, &pRight);
     if (pLeft)
-        pLeft->FUN_141440110(FUN_141983600(), fSoft);
+        pLeft->SetPonyTailDamping(FUN_141983600(), fSoft);
     if (pRight)
-        pRight->FUN_141440110(FUN_141983600(), fSoft);
+        pRight->SetPonyTailDamping(FUN_141983600(), fSoft);
     FUN_141984360();
 }
 MS2_REPLACE_METHOD(0x141982480, UIHairPhysxDialog, FUN_141982480, 252, 0xAC6F6B42);
@@ -443,9 +445,9 @@ void UIHairPhysxDialog::FUN_141982590(float fX, float fY, float fZ)
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(FUN_1419833e0(), &pLeft, &pRight);
     if (pLeft)
-        pLeft->FUN_1414401b0(FUN_141983600(), fX, fY, fZ);
+        pLeft->SetPonyTailOffset(FUN_141983600(), fX, fY, fZ);
     if (pRight)
-        pRight->FUN_1414401b0(FUN_141983600(), fX, fY, fZ);
+        pRight->SetPonyTailOffset(FUN_141983600(), fX, fY, fZ);
     FUN_141984360();
 }
 MS2_REPLACE_METHOD(0x141982590, UIHairPhysxDialog, FUN_141982590, 318, 0x2ACD60EE);
@@ -524,7 +526,7 @@ void UIHairPhysxDialog::FUN_141982940(const Scaleform::GFx::FunctionHandler::Par
         const CString& strJoint = m_1f8.GetKeyAt(pos);
         float fSoft = 0;
         FUN_141984c30(pSrc, strJoint, &fSoft);
-        pDst->FUN_141440110(strJoint, fSoft);
+        pDst->SetPonyTailDamping(strJoint, fSoft);
         float fX = 0.0f;
         float fY = 0.0f;
         float fZ = 0.0f;
@@ -544,7 +546,7 @@ void UIHairPhysxDialog::FUN_141982940(const Scaleform::GFx::FunctionHandler::Par
         kAxes = NiMatrix3(kAxisX, kAxisY, kAxisZ);
         NiPoint3 kEuler(efd::Point3::ZERO);
         FUN_141984da0(kAxes, kEuler);
-        pDst->FUN_1414401b0(strJoint, kEuler.x, kEuler.y, kEuler.z);
+        pDst->SetPonyTailOffset(strJoint, kEuler.x, kEuler.y, kEuler.z);
     }
     FUN_141983f50();
     FUN_141983c60();
@@ -565,15 +567,15 @@ void UIHairPhysxDialog::FUN_141982dc0()
         {
             const CString& strJoint = m_1f8.GetKeyAt(pos);
             const NiPoint4& kJoint = m_1f8.GetValueAt(pos);
-            pLeft->FUN_141440110(strJoint, kJoint.m_afPt[0]);
-            pLeft->FUN_1414401b0(strJoint, kJoint.m_afPt[1], kJoint.m_afPt[2], kJoint.m_afPt[3]);
+            pLeft->SetPonyTailDamping(strJoint, kJoint.m_afPt[0]);
+            pLeft->SetPonyTailOffset(strJoint, kJoint.m_afPt[1], kJoint.m_afPt[2], kJoint.m_afPt[3]);
         }
         for (POSITION pos2 = m_228.GetHeadPosition(); pos2; m_228.GetNext(pos2))
         {
             const CString& strJoint = m_228.GetKeyAt(pos2);
             const NiPoint4& kJoint = m_228.GetValueAt(pos2);
-            pRight->FUN_141440110(strJoint, kJoint.m_afPt[0]);
-            pRight->FUN_1414401b0(strJoint, kJoint.m_afPt[1], kJoint.m_afPt[2], kJoint.m_afPt[3]);
+            pRight->SetPonyTailDamping(strJoint, kJoint.m_afPt[0]);
+            pRight->SetPonyTailOffset(strJoint, kJoint.m_afPt[1], kJoint.m_afPt[2], kJoint.m_afPt[3]);
         }
     }
 }
@@ -589,8 +591,8 @@ void UIHairPhysxDialog::FUN_141983010()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
-    CKfmModel* pKfm = FUN_1411de170(pPart);
+    FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
     NiPhysXProp* pProp = pService->GetPropAt(pKfm->FUN_14143ff70(), 0);
@@ -660,7 +662,7 @@ MS2_REPLACE_METHOD(0x1419834A0, UIHairPhysxDialog, FUN_1419834a0, 344, 0xEAC2138
 // MS2-FUNCTIONAL: CString returned by value from inside the scope of the combo handle
 CString UIHairPhysxDialog::FUN_141983600()
 {
-    if (MS2Ptr<Unk_HpxCombo> sp = FUN_140c28560("m_joints"))
+    if (MS2Ptr<Unk_IbDropdown> sp = GetChild<Unk_IbDropdown>("m_joints"))
         return FUN_14016a600(sp->FUN_1422dfe00(), 0);
     return CString("");
 }
@@ -676,8 +678,8 @@ void UIHairPhysxDialog::FUN_141983730()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_PickTarget* pPart = 0;
-    FUN_141695f10(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
-    CKfmModel* pKfm = FUN_1411de170(pPart);
+    FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
     NiPhysXProp* pProp = pService->GetPropAt(pKfm->FUN_14143ff70(), 0);
@@ -697,7 +699,7 @@ void UIHairPhysxDialog::FUN_141983730()
             arrJoints.Add(strName);
         }
     }
-    if (MS2Ptr<Unk_HpxCombo> sp = FUN_140c28560("m_joints"))
+    if (MS2Ptr<Unk_IbDropdown> sp = GetChild<Unk_IbDropdown>("m_joints"))
     {
         sp->FUN_1422dfc10();
         for (unsigned j = 0; j < arrJoints.GetCount(); j++)
@@ -721,7 +723,7 @@ void UIHairPhysxDialog::FUN_141983af0()
     {
         float fSoft = 0;
         FUN_141984c30(pModel, FUN_141983600(), &fSoft);
-        if (MS2Ptr<Unk_HpxSlider> sp = FUN_140faff90("m_softSlider"))
+        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_softSlider"))
             sp->FUN_1422ce5f0(fSoft);
     }
 }
@@ -741,11 +743,11 @@ void UIHairPhysxDialog::FUN_141983c60()
         float fY = 0;
         float fZ = 0;
         FUN_141984cd0(pModel, FUN_141983600(), &fX, &fY, &fZ);
-        if (MS2Ptr<Unk_HpxSlider> sp = FUN_140faff90("m_xSlider"))
+        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_xSlider"))
             sp->FUN_1422ce5f0(fX);
-        if (MS2Ptr<Unk_HpxSlider> sp = FUN_140faff90("m_ySlider"))
+        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_ySlider"))
             sp->FUN_1422ce5f0(fY);
-        if (MS2Ptr<Unk_HpxSlider> sp = FUN_140faff90("m_zSlider"))
+        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_zSlider"))
             sp->FUN_1422ce5f0(fZ);
     }
 }
@@ -778,19 +780,19 @@ void UIHairPhysxDialog::FUN_141983f50()
         else if (nMode == 2)
             FUN_141984da0(kXform.m_Rotate, kValue);
     }
-    if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformX"))
+    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
     {
         CString str;
         str.Format("%f", kValue.x);
         sp->FUN_1422e0a60(str);
     }
-    if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformY"))
+    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
     {
         CString str;
         str.Format("%f", kValue.y);
         sp->FUN_1422e0a60(str);
     }
-    if (MS2Ptr<Unk_HpxInput> sp = FUN_140e35bd0("m_transformZ"))
+    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
     {
         CString str;
         str.Format("%f", kValue.z);
@@ -845,7 +847,7 @@ void UIHairPhysxDialog::FUN_141984360()
             Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
             if (pData != 0)
             {
-                int nIndex = pModel->FUN_141200ab0()->m_nIndex;
+                int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
                 float fScale = pData->m_afScale[nIndex];
                 efd::Point3 kPos = pData->m_akPos[nIndex];
                 efd::Point3 kRot = pData->m_akRot[nIndex];
@@ -867,19 +869,19 @@ int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
         return 0;
     Unk_PickTarget* pFirst = 0;
     Unk_PickTarget* pSecond = 0;
-    FUN_141695f10(pPc, &pFirst, &pSecond);
+    FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {
     case 0:
     case 1:
         if (ppModel)
-            *ppModel = static_cast<Unk_HpxModel*>(FUN_1411de170(pFirst));
+            *ppModel = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pFirst));
         if (*ppModel)
             return 1;
         break;
     case 2:
         if (ppModel)
-            *ppModel = static_cast<Unk_HpxModel*>(FUN_1411de170(pSecond));
+            *ppModel = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pSecond));
         if (*ppModel)
             return 1;
         break;
@@ -896,26 +898,26 @@ int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxMo
         return 0;
     Unk_PickTarget* pFirst = 0;
     Unk_PickTarget* pSecond = 0;
-    FUN_141695f10(pPc, &pFirst, &pSecond);
+    FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {
     case 1:
         if (ppLeft)
-            *ppLeft = static_cast<Unk_HpxModel*>(FUN_1411de170(pFirst));
+            *ppLeft = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pFirst));
         if (*ppLeft)
             return 1;
         break;
     case 2:
         if (ppRight)
-            *ppRight = static_cast<Unk_HpxModel*>(FUN_1411de170(pSecond));
+            *ppRight = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pSecond));
         if (*ppRight)
             return 1;
         break;
     case 0:
         if (ppLeft)
-            *ppLeft = static_cast<Unk_HpxModel*>(FUN_1411de170(pFirst));
+            *ppLeft = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pFirst));
         if (ppRight)
-            *ppRight = static_cast<Unk_HpxModel*>(FUN_1411de170(pSecond));
+            *ppRight = static_cast<Unk_HpxModel*>(efd::DynamicCast<CKfmModel>((CEquipModel*)pSecond));
         if (*ppLeft && *ppRight)
             return 1;
         break;
@@ -931,7 +933,7 @@ void UIHairPhysxDialog::FUN_141984c30(Unk_HpxModel* pModel, const CString& strJo
         return;
     for (unsigned i = 0; i < 4; i++)
     {
-        Unk_KfmPonyTail* pJoint = &pModel->FUN_141200ab0()->m_aJoints[i];
+        Unk_KfmPonyTail* pJoint = &((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_aJoints[i];
         if (pJoint->m_strBone == strJoint)
         {
             *pSoft = pJoint->m_fDamping;
@@ -948,7 +950,7 @@ void UIHairPhysxDialog::FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJo
         return;
     for (unsigned i = 0; i < 4; i++)
     {
-        Unk_KfmPonyTail* pJoint = &pModel->FUN_141200ab0()->m_aJoints[i];
+        Unk_KfmPonyTail* pJoint = &((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_aJoints[i];
         if (pJoint->m_strBone == strJoint)
         {
             *pX = pJoint->m_fX;
@@ -978,15 +980,15 @@ void UIHairPhysxDialog::FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos)
     Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
     if (pData)
     {
-        int nIndex = pModel->FUN_141200ab0()->m_nIndex;
+        int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
         NiTransform kXform;
         FUN_1412021a0(pModel, &kXform);
         pData->m_akPos[nIndex] = kPos;
         kXform.m_Translate = kPos;
-        pModel->FUN_141202240(kXform);
-        Unk_HpxModelConfig* pConfig = pModel->FUN_141200ab0();
+        FUN_141202240(pModel, (void*)&kXform);
+        Unk_HpxModelConfig* pConfig = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel));
         if (pConfig)
-            pConfig->m_customs.FUN_14059ce40(nIndex)->unknown18 = kPos;
+            const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown18 = kPos;
     }
 }
 MS2_REPLACE_METHOD(0x141984E50, UIHairPhysxDialog, FUN_141984e50, 423, 0x0E4E740D);
@@ -999,15 +1001,15 @@ void UIHairPhysxDialog::FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg)
     Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
     if (pData)
     {
-        int nIndex = pModel->FUN_141200ab0()->m_nIndex;
+        int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
         NiTransform kXform;
         FUN_1412021a0(pModel, &kXform);
         pData->m_akRot[nIndex] = kDeg;
         kXform.m_Rotate.FromEulerAnglesXYZ(kDeg.x * 3.1415927f / 180.0f, kDeg.y * 3.1415927f / 180.0f, kDeg.z * 3.1415927f / 180.0f);
-        pModel->FUN_141202240(kXform);
-        Unk_HpxModelConfig* pConfig = pModel->FUN_141200ab0();
+        FUN_141202240(pModel, (void*)&kXform);
+        Unk_HpxModelConfig* pConfig = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel));
         if (pConfig)
-            pConfig->m_customs.FUN_14059ce40(nIndex)->unknown24 = kDeg;
+            const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown24 = kDeg;
     }
 }
 MS2_REPLACE_METHOD(0x141985000, UIHairPhysxDialog, FUN_141985000, 522, 0x08D88F3F);
@@ -1020,12 +1022,12 @@ void UIHairPhysxDialog::FUN_141985210(Unk_HpxModel* pModel, const NiTransform& k
     Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
     if (pData)
     {
-        int nIndex = pModel->FUN_141200ab0()->m_nIndex;
+        int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
         NiPoint3 kDeg;
         FUN_141984da0(kXform.m_Rotate, kDeg);
         pData->m_akRot[nIndex] = kDeg;
         pData->m_akPos[nIndex] = kXform.m_Translate;
-        pModel->FUN_141202240(kXform);
+        FUN_141202240(pModel, (void*)&kXform);
     }
 }
 MS2_REPLACE_METHOD(0x141985210, UIHairPhysxDialog, FUN_141985210, 333, 0xCBB33673);

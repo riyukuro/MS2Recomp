@@ -75,7 +75,6 @@ class Unk_DeadWorld
 {
 public:
     Unk_DeadFieldRef FUN_141bd30a0();                    // the current field data
-    int FUN_141bd1a10(GameObject* pObject);              // object -> effect owner id
     MyPC* FUN_141bd0cc0();                               // the local player
 };
 
@@ -280,7 +279,7 @@ void StateDeadNPC::vfunc_4(StateData* pData)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
-        ((Unk_EffectTarget&)(kTarget)).m_nKind = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }

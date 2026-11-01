@@ -118,7 +118,6 @@ class Unk_DcPlayerMgr { public: Unk_DcPlayer* FUN_141bd0cc0(); };
 class Unk_DcParty : public CPartyManager
 {
 public:
-    int FUN_14162c1e0();                                        // party job
 };
 
 // The UI manager.
@@ -131,7 +130,6 @@ public:
 class Unk_DcBookmarkDlg : public UIDungeonRoomDialog
 {
 public:
-    void FUN_1412b8ff0(int nId);
 };
 Unk_DcBookmarkDlg* FUN_140961550(int nUiId);
 class UIDungeonSearchSettingDialog : public UIDialog
@@ -178,7 +176,6 @@ class Unk_DcRoomTable : public DungeonRoomTable
 public:
     void FUN_140320c30(unsigned short nLevel, int nJob, UIDungeonControlCenter::RoomVec& out);
     void FUN_140320da0(unsigned short nLevel, int nJob, UIDungeonControlCenter::RoomVec& out);
-    MS2Ptr<Unk_DcRoom> FUN_1403206b0(int nRoomId);
     void FUN_140321160(int nGroupType, UIDungeonControlCenter::RoomVec& out);
     MS2Ptr<Unk_DcRewardStep> FUN_140321bf0(size_t nIndex);
     MS2Ptr<Unk_DcRewardStep> FUN_140321c90(int nNeed);
@@ -506,7 +503,7 @@ int UIDungeonControlCenter::vfunc_54(void* pCfg)
     std::vector<unsigned int> ids;
     FUN_140178770(pCfg, "dungeon", ids);
     for (size_t i = 0; i < ids.size(); i++) {
-        if (reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(ids[i]).get())
+        if (reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->GetRoom(ids[i]).get())
             m_bookmarks.insert(ids[i]);
     }
     return 1;
@@ -583,7 +580,7 @@ MS2_REPLACE_METHOD(0x140C0BAB0, UIDungeonControlCenter, FUN_140c0bab0, 2415, 0xF
 // @0x140c0c430
 void UIDungeonControlCenter::FUN_140c0c430()
 {
-    int nMatch = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ac00(1);
+    int nMatch = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsMatchSearching(1);
     int bEnabled = FUN_140e146a0();
     if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonFindComponent")) {
         pComponent->Invoke("setMatch", nMatch);
@@ -816,7 +813,7 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
     RoomVec rooms;
     FUN_140c0d800(rooms);
     for (unsigned int i = 0; i < rooms.size(); i++) {
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ac70(rooms[i]->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(rooms[i]->FUN_14031ddd0()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;
@@ -878,7 +875,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];
         if (nLevel < pRoom->m_nMinLevel)
             continue;
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ac70(pRoom->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(pRoom->FUN_14031ddd0()))
             continue;
         if (pRoom->m_bHidden)
             continue;
@@ -912,7 +909,7 @@ void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
     RoomVec rooms;
     reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320da0(nLevel, nJob, rooms);
     for (unsigned int i = 0; i < rooms.size(); i++) {
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ac70(rooms[i]->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(rooms[i]->FUN_14031ddd0()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;

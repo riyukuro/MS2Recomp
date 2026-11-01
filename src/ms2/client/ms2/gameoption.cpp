@@ -462,11 +462,10 @@ void CGameOptionCamera::vfunc_7()
     }
 }
 
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // A float table value of the client configuration (FUN_1401d3200).
 class Unk_GoCfgValue
 {
-public:
-    const float& FUN_140298f40();
 private:
     char m_pad[0x58];
 };
@@ -499,9 +498,9 @@ void CGameOptionCamera::vfunc_10()
         float fScale = WorldService::GetInstance()->FUN_141bcfc50();
         TSingleton<CameraMgr>::GetInstance()->FUN_140ad4ff0(fScale);
         float fStep = (float)m_state.m_n04 / 100.0f;
-        float f1 = ((struct Unk_GoConfig*)FUN_1401d3200())->m_1a80.FUN_140298f40() * fStep;
-        float f2 = ((struct Unk_GoConfig*)FUN_1401d3200())->m_1ad8.FUN_140298f40() * fStep;
-        float f3 = ((struct Unk_GoConfig*)FUN_1401d3200())->m_1b30.FUN_140298f40() * fStep;
+        float f1 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1a80)->FUN_140298f40()) * fStep;
+        float f2 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1ad8)->FUN_140298f40()) * fStep;
+        float f3 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1b30)->FUN_140298f40()) * fStep;
         TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(f1, f2, f3);
         CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
         if (pMode != 0)
@@ -1775,7 +1774,7 @@ int CGameOption::LoadAccountOption()
         TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_bDisplayChatComfirmSuper = true;
         TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_bDisplayChatComfirmWorld = true;
         TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_bDisplayChatComfirmChannel = true;
-        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     return bReadDefault;
 }
@@ -1813,7 +1812,7 @@ int CGameOption::LoadCharacterOption()
     if (LoadGameOptionGamepad(&m_gamepad, &m_docCharacter) == 0)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[E] Can not read m_gamePadOption option");
     if (FUN_14125c970(&m_statusChar, &m_docCharacter) != 0)
-        FUN_141243540();
+        SaveCharacterSettings();
     return GetFileSystem()->FUN_1403974b0(&m_docCharacterDefault, GetOptionFilePath(2, true), 0, true, false);
 }
 
@@ -1848,7 +1847,7 @@ int CGameOption::FUN_141242f60()
 }
 
 // @0x1412432d0
-void CGameOption::FUN_1412432d0()
+void CGameOption::SaveGameSettings()
 {
     SaveGameOptionCamera(&m_camera, &m_docGame);
     SaveGameOptionInterface(&m_interface, &m_docGame);
@@ -1862,11 +1861,11 @@ void CGameOption::FUN_1412432d0()
     SaveGameOptionLanguage(&m_language, &m_docGame);
     FUN_14125d580(&m_account, &m_docAccount);
     FUN_141261700(&m_chroma, &m_docGame);
-    FUN_141243450();
+    WriteGameAndAccountFiles();
 }
 
 // @0x141243450
-void CGameOption::FUN_141243450()
+void CGameOption::WriteGameAndAccountFiles()
 {
     FUN_141244320(&m_docGame);
     FUN_141244320(&m_docAccount);
@@ -1875,7 +1874,7 @@ void CGameOption::FUN_141243450()
 }
 
 // @0x141243540
-void CGameOption::FUN_141243540()
+void CGameOption::SaveCharacterSettings()
 {
     SaveGameOptionAutoLooting((struct Unk_GsAutoLoot*)(&m_autoLoot), &m_docCharacter);
     SaveGameOptionEtc((struct Unk_GsEtc*)(&m_etc), &m_docCharacter);
@@ -1884,7 +1883,7 @@ void CGameOption::FUN_141243540()
     FUN_14125bcc0(&m_interfaceChar, &m_docCharacter);
     SaveGameOptionGamepad(&m_gamepad, &m_docCharacter);
     FUN_141244320(&m_docCharacter);
-    FUN_1412437e0();
+    WriteCharacterFile();
 }
 
 // @0x141243630
@@ -1908,7 +1907,7 @@ void CGameOption::FUN_141243630()
 }
 
 // @0x1412437e0
-void CGameOption::FUN_1412437e0()
+void CGameOption::WriteCharacterFile()
 {
     FUN_1408710c0(&m_docCharacter, GetOptionFilePath(2, false));
 }
@@ -2062,7 +2061,7 @@ unsigned int CGameOption::FUN_141243f50(int nKind)
 }
 
 // @0x141244240
-void CGameOption::FUN_141244240(int nLevel)
+void CGameOption::SetBenchmarkLevel(int nLevel)
 {
     if (m_nBenchmark != nLevel)
     {

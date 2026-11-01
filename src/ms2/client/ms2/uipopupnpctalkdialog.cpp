@@ -312,7 +312,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     {
         if (!bLast)
         {
-            CStringW strEnd = FUN_14028dfa0<CStringW>(L"s_field_quest_talk_end", FUN_1409331f0()->FUN_14142d220(1));
+            CStringW strEnd = FUN_14028dfa0<CStringW>(L"s_field_quest_talk_end", FUN_1409331f0()->GetKeyName(1));
             spEnd->FUN_1422cdfb0(strEnd);
             spEnd->vfunc_3(1);
         }

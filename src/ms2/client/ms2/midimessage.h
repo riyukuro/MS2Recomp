@@ -23,7 +23,7 @@ public:
     void ProgramChange(unsigned int ch, unsigned int prog);                     // 0x140d754f0 remaps GM programs 0x29/0x2b/0x4c
     void ControlChange(unsigned int ch, unsigned int ctrl, unsigned int val);   // 0x140d75560
     void PitchBend(unsigned int ch, unsigned int lsb, unsigned int msb);        // 0x140d755b0
-    void FUN_140d75600(unsigned int ch, unsigned int val);                      // 0x140d75600
+    void SetVolume(unsigned int ch, unsigned int val);                      // 0x140d75600
     void AllNotesOff(unsigned int ch);                                          // 0x140d75640
     void ResetControllers(unsigned int ch);                                     // 0x140d75670
     void SetChannel(unsigned int ch);                                           // 0x140d756a0

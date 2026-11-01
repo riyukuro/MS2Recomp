@@ -1054,7 +1054,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
             break;
         }
         m_rewardItems[i]->vfunc_3(1);
-        m_rewardItems[i]->Invoke("setData", m_slotBinder.FUN_140d43790(spItem.get()));
+        m_rewardItems[i]->Invoke("setData", m_slotBinder.BindItem(spItem.get()));
     }
 }
 MS2_REPLACE_METHOD(0x1412B2250, UIDungeonRoomInfo, FUN_1412b2250, 3095, 0x7A36D83B);
@@ -1144,7 +1144,7 @@ void UIDungeonRoomInfo::RefreshResetButton()
     if (FUN_140930b40())
         return;
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1 && TSingleton<CPartyManager>::GetInstance()->IsMatchmaking()
-        && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID() && TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+        && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID() && TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         m_resetButton->vfunc_3(1);
 }
 MS2_REPLACE_METHOD(0x1412B3720, UIDungeonRoomInfo, RefreshResetButton, 293, 0x9D2A6F74);
@@ -1171,7 +1171,7 @@ void UIDungeonRoomInfo::FUN_1412b3890()
         m_enterSoloButton->FUN_1422c1fe0(1);
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1)
     {
-        bool bLeader = TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60();
+        bool bLeader = TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader();
         if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID())
         {
             m_enterPartyButton->FUN_1422c1fe0(1);
@@ -1239,7 +1239,7 @@ void UIDungeonRoomInfo::FUN_1412b3e90()
         return;
     if (!m_partySearchButton->FUN_1422bfca0())
         return;
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ac00(Unk_ClubBuffTypeOf(m_spRoom->m_groupType)))
+    if (!TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(Unk_ClubBuffTypeOf(m_spRoom->m_groupType)))
     {
         m_partySearchButton->FUN_1422ce090(0);
         m_partySearchButton->FUN_1422cdfb0(L"$s_dungeonSearch_find_button");
@@ -1265,7 +1265,7 @@ void UIDungeonRoomInfo::FUN_1412b3fe0()
     }
     else
     {
-        bool bSearching = TSingleton<CPartyManager>::GetInstance()->FUN_14162ac00(Unk_ClubBuffTypeOf(m_spRoom->m_groupType));
+        bool bSearching = TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(Unk_ClubBuffTypeOf(m_spRoom->m_groupType));
         if (bSearching)
             LayoutSearching();
         m_dungeonSearching->vfunc_4(bSearching);
@@ -1314,7 +1314,7 @@ void UIDungeonRoomInfo::OnEnterParty(const ASParams& params)
         TSingleton<CPartyManager>::GetInstance()->SendRoomDungeon(m_spRoom->GetDungeonID());
         return;
     }
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (!TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         return;
     if (AskExtraTicketEnter(true))
         return;
@@ -1476,7 +1476,7 @@ void UIDungeonRoomInfo::OnReset(const ASParams& params)
         return;
     if (m_spRoom == 0)
         return;
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (!TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         return;
     if (AskExtraTicketEnter(true))
         return;
@@ -1651,7 +1651,7 @@ bool UIDungeonRoomInfo::CanAskHelp()
         return false;
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
     {
-        if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+        if (!TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         {
             FUN_1412751f0(FUN_140298ea0(L"s_party_err_not_chief"), 1, 1);
             return false;

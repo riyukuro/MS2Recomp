@@ -17,6 +17,7 @@
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/astextinput.h"
 #include <NiCamera.h>
 #include <errno.h>
 #include <string.h>
@@ -49,7 +50,6 @@ public:
     virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-    void FUN_1422e0a60(const CString& strText);                 // set the text
 };
 
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -196,7 +196,7 @@ void UICameraDialog::FUN_141032610(const CString& strName, float f)
     if (spInput) {
         CString str;
         str.Format("%.1f", (double)f);
-        spInput->FUN_1422e0a60(str);
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0a60(str);
         Unk_CdInput* pInput = spInput.operator->();
         pInput->vfunc_24(true);
     }

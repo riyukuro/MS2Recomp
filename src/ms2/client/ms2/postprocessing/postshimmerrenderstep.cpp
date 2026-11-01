@@ -36,11 +36,10 @@ Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_14016a5c0(const char* psz, int n);          // path normalise
 
 // Post-processing service (singleton 0x1409a8b20): find step by id, enable step by id.
-class Unk_PostProcessSvc
-{
+class PostProcessingService { public: bool SetStepActive(int, bool); class PostProcessEffect * GetStep(int); }; class Unk_PostProcessSvc : public PostProcessingService {
 public:
-    void* FUN_1416a3a90(int nId);
-    void FUN_1416a3920(int nId, bool bOn);
+
+
 };
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -127,7 +126,7 @@ void FUN_140c8f490(Unk_PPSmartC spTexture)
 {
     if (s_pkShimmerProp != 0)
     {
-        void* pStep = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3a90(0x12);
+        void* pStep = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(0x12);
         if (pStep != 0)
         {
             s_shimmerTexture = spTexture;
@@ -261,7 +260,7 @@ void PostShimmerEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
     m_dStart = m_dStartTime;
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0x12, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0x12, true);
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
@@ -290,7 +289,7 @@ MS2_REPLACE_METHOD(0x140c8fdf0, PostShimmerEffect, vfunc_2, 139, 0x7171511D);
 void PostShimmerEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0x12, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0x12, false);
 }
 MS2_REPLACE_METHOD(0x140c8fe90, PostShimmerEffect, vfunc_4, 45, 0xB9116348);
 

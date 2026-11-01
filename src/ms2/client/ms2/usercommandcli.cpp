@@ -63,6 +63,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/uiobject.h"
 #include "usercommandcli.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -266,7 +267,7 @@ public:
 void* FUN_141264060(int);class UIUpperHudDialog   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_1413579d0();
+    bool ToggleVersionText();
     void SetNoticeSpeed(float);
 };
  void FUN_141357430(void*,CStringW);
@@ -282,26 +283,17 @@ public:
     void Reload();
 };
 class Unk_CommandItemData;
-class Unk_CommandItemPtr {
-public:
-    ~Unk_CommandItemPtr();
-    bool FUN_1402ffd90() const;
-private: void* unknown; void* object;
-};
-MS2_CHECK_SIZE(Unk_CommandItemPtr,0x10);
-Unk_CommandItemPtr FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 class CSoundService* FUN_140c9cb10();   // C3: was FUN_140c9cb10
 void FUN_1417af4f0(void*,CString);
 void* FUN_14136f290(int); void FUN_141907f80(void*,int,CStringW);
+// The MS2Ptr<UIObject> object getter's out-of-line copy (0x141371280), defined below.
 class Unk_CommandUIRef {
 public:
-    ~Unk_CommandUIRef();
-    UIObject* FUN_1403e8a70() const;
     UIObject* FUN_141371280();
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-struct Unk_CommandUIMgr { Unk_CommandUIRef FUN_141adcf50(const CString&); Unk_CommandUIRef FUN_141adcea0(int); };
 void* FUN_1409a8b10();struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
 class CLogString   // C3: member view for the former free stand-ins
@@ -615,7 +607,7 @@ void FUN_14162ba50(void*,CStringW);
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ab60();
+    bool IsLocalPlayerLeader();
     void SendPartyMode3();
     void SendPartyMode46();
 };
@@ -686,7 +678,6 @@ public:
     void ReloadFiles();
 };
 extern bool DAT_143aac548;
-UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 // @0x141371d80
 inline int FUN_141371d80() { return 0x4e28; }
 void* FUN_14136f1f0(int);
@@ -808,126 +799,126 @@ bool CUserCommandCli::Load() {
 }
 // @0x141362e60
 void CUserCommandCli::RegisterChat() {
-    Register(L"SearchMaview",&CUserCommandCli::FUN_14136c6f0);
-    Register(L"GuildInvite",&CUserCommandCli::FUN_14136c7f0);
-    Register(L"GuildLeave",&CUserCommandCli::FUN_14136c880);
-    Register(L"PartyInvite",&CUserCommandCli::FUN_14136c940);
-    Register(L"PartyLeave",&CUserCommandCli::FUN_14136ca90);
-    Register(L"PartyVoteReady",&CUserCommandCli::FUN_14136cb60);
-    Register(L"HomeInvite",&CUserCommandCli::FUN_14136cc10);
-    Register(L"Help",&CUserCommandCli::FUN_14136ccf0);
+    Register(L"SearchMaview",&CUserCommandCli::SearchMaview);
+    Register(L"GuildInvite",&CUserCommandCli::InviteGuild);
+    Register(L"GuildLeave",&CUserCommandCli::ConfirmLeaveGuild);
+    Register(L"PartyInvite",&CUserCommandCli::InviteToPartyByName);
+    Register(L"PartyLeave",&CUserCommandCli::LeaveParty);
+    Register(L"PartyVoteReady",&CUserCommandCli::StartPartyReadyCheck);
+    Register(L"HomeInvite",&CUserCommandCli::InviteHome);
+    Register(L"Help",&CUserCommandCli::ShowHelp);
     Register(L"SuperWorldChat",&CUserCommandCli::SendSuperWorldChat);
     Register(L"MovePrevChannel",&CUserCommandCli::MovePrevChannel);
     Register(L"MoveNextChannel",&CUserCommandCli::MoveNextChannel);
 }
 // @0x141363160
 void CUserCommandCli::RegisterDebug() {
-    Register(L"출석",&CUserCommandCli::FUN_141365e70);
+    Register(L"출석",&CUserCommandCli::SendAttendance);
     Register(L"카메라",&CUserCommandCli::FUN_141365270);
-    Register(L"LocalCamera",&CUserCommandCli::FUN_141365350);
-    Register(L"TargetCamera",&CUserCommandCli::FUN_141365420);
+    Register(L"LocalCamera",&CUserCommandCli::SetLocalCamera);
+    Register(L"TargetCamera",&CUserCommandCli::SetTargetCamera);
     Register(L"UiDev",&CUserCommandCli::ToggleUIDevMode);
-    Register(L"SaleMarket",&CUserCommandCli::FUN_141365630);
-    Register(L"Stat",&CUserCommandCli::FUN_1413656a0);
+    Register(L"SaleMarket",&CUserCommandCli::RequestSaleMarket);
+    Register(L"Stat",&CUserCommandCli::ToggleStat);
     Register(L"GuideDebug",&CUserCommandCli::FUN_141365720);
     Register(L"GuideShowState",&CUserCommandCli::FUN_141365750);
     Register(L"GuideChangeState",&CUserCommandCli::ChangeGuideEntityState);
     Register(L"GuideResetClear",&CUserCommandCli::ResetGuideClearState);
-    Register(L"GuideTestCondition",&CUserCommandCli::FUN_141365820);
-    Register(L"GuideTestFunction",&CUserCommandCli::FUN_141365890);
+    Register(L"GuideTestCondition",&CUserCommandCli::TestGuideCondition);
+    Register(L"GuideTestFunction",&CUserCommandCli::TestGuideFunction);
     Register(L"GuideClearAll",&CUserCommandCli::ClearAllGuides);
-    Register(L"ShowServerTime",&CUserCommandCli::FUN_1413659d0);
-    Register(L"PlayVoiceSound",&CUserCommandCli::FUN_141365b00);
-    Register(L"PlayBgm",&CUserCommandCli::FUN_141365bf0);
-    Register(L"ShowBgmState",&CUserCommandCli::FUN_141365c60);
-    Register(L"ReloadString",&CUserCommandCli::FUN_141365cd0);
-    Register(L"ReloadGuideString",&CUserCommandCli::FUN_141365d50);
-    Register(L"스마트추천",&CUserCommandCli::FUN_141365dd0);
-    Register(L"showcodename",&CUserCommandCli::FUN_141368b50);
-    Register(L"showupperversiontext",&CUserCommandCli::FUN_141368c20);
-    Register(L"CacheKeepTime",&CUserCommandCli::FUN_141365ee0);
+    Register(L"ShowServerTime",&CUserCommandCli::ShowServerTime);
+    Register(L"PlayVoiceSound",&CUserCommandCli::PlayVoiceSound);
+    Register(L"PlayBgm",&CUserCommandCli::PlayBgm);
+    Register(L"ShowBgmState",&CUserCommandCli::ShowBgmState);
+    Register(L"ReloadString",&CUserCommandCli::ReloadStrings);
+    Register(L"ReloadGuideString",&CUserCommandCli::ReloadGuideString);
+    Register(L"스마트추천",&CUserCommandCli::ShowSmartRecommend);
+    Register(L"showcodename",&CUserCommandCli::ShowCodeName);
+    Register(L"showupperversiontext",&CUserCommandCli::ToggleUpperVersionText);
+    Register(L"CacheKeepTime",&CUserCommandCli::SetNifLifetime);
     Register(L"RemoveNif",&CUserCommandCli::ClearNifCache);
     Register(L"RemoveTexture",&CUserCommandCli::ClearTextureCache);
-    Register(L"Weather",&CUserCommandCli::FUN_141366060);
-    Register(L"MaxFPS",&CUserCommandCli::FUN_141366100);
-    Register(L"AddDevEffect",&CUserCommandCli::FUN_1413661b0);
-    Register(L"RemoveDevEffect",&CUserCommandCli::FUN_141366270);
-    Register(L"SetHomePwd",&CUserCommandCli::FUN_1413662a0);
-    Register(L"CommendHome",&CUserCommandCli::FUN_141366470);
-    Register(L"GoIntoHome",&CUserCommandCli::FUN_141366500);
-    Register(L"HomeNotice",&CUserCommandCli::FUN_141366600);
+    Register(L"Weather",&CUserCommandCli::SetWeather);
+    Register(L"MaxFPS",&CUserCommandCli::SetMaxFps);
+    Register(L"AddDevEffect",&CUserCommandCli::AddDevEffect);
+    Register(L"RemoveDevEffect",&CUserCommandCli::RemoveDevEffect);
+    Register(L"SetHomePwd",&CUserCommandCli::SetHomePassword);
+    Register(L"CommendHome",&CUserCommandCli::CommendHome);
+    Register(L"GoIntoHome",&CUserCommandCli::GoIntoHome);
+    Register(L"HomeNotice",&CUserCommandCli::SetHomeNotice);
     Register(L"ExportUGCMap",&CUserCommandCli::ExportUgcMap);
-    Register(L"GoIntoDesignHome",&CUserCommandCli::FUN_1413669a0);
-    Register(L"OpenVIP",&CUserCommandCli::FUN_1413669f0);
-    Register(L"optimize",&CUserCommandCli::FUN_141368ce0);
-    Register(L"SamplingFrame",&CUserCommandCli::FUN_141368fb0);
+    Register(L"GoIntoDesignHome",&CUserCommandCli::GoIntoDesignHome);
+    Register(L"OpenVIP",&CUserCommandCli::OpenVip);
+    Register(L"optimize",&CUserCommandCli::Optimize);
+    Register(L"SamplingFrame",&CUserCommandCli::SamplingFrame);
     Register(L"SetNPS",&CUserCommandCli::SetNps);
     Register(L"SetForceGMId",&CUserCommandCli::SetForceGmId);
-    Register(L"FindNpcGameOID",&CUserCommandCli::FUN_141369330);
+    Register(L"FindNpcGameOID",&CUserCommandCli::FindNpcGameOid);
     Register(L"NpcDebugMode",&CUserCommandCli::SetNpcDebugMode);
     Register(L"NpcDebugModeByID",&CUserCommandCli::SetNpcDebugModeById);
-    Register(L"NetStreamURL",&CUserCommandCli::FUN_1413674f0);
-    Register(L"CutScene",&CUserCommandCli::FUN_1413675e0);
-    Register(L"HideUI",&CUserCommandCli::FUN_141367710);
-    Register(L"HideMe",&CUserCommandCli::FUN_141367840);
+    Register(L"NetStreamURL",&CUserCommandCli::SetNetStreamUrl);
+    Register(L"CutScene",&CUserCommandCli::ControlCutScene);
+    Register(L"HideUI",&CUserCommandCli::HideUi);
+    Register(L"HideMe",&CUserCommandCli::HideMe);
     Register(L"PhysXItem",&CUserCommandCli::TogglePhysXItem);
-    Register(L"ShowNode",&CUserCommandCli::FUN_141369620);
-    Register(L"CountUI",&CUserCommandCli::FUN_141369650);
+    Register(L"ShowNode",&CUserCommandCli::ShowNode);
+    Register(L"CountUI",&CUserCommandCli::CountUi);
     Register(L"ClubCmd",&CUserCommandCli::ClubCommand);
     Register(L"TakeInteriorGift",&CUserCommandCli::FUN_141366a40);
-    Register(L"TakeInteriorGradeGift",&CUserCommandCli::FUN_141366ac0);
-    Register(L"SetUGCMapBackground",&CUserCommandCli::FUN_141366b60);
+    Register(L"TakeInteriorGradeGift",&CUserCommandCli::TakeInteriorGradeGift);
+    Register(L"SetUGCMapBackground",&CUserCommandCli::SetUgcMapBackground);
     Register(L"SetEventBoardTextSpeed",&CUserCommandCli::SetNoticeSpeed);
-    Register(L"SetEventBoardText",&CUserCommandCli::FUN_141366c60);
-    Register(L"SetUGCMapBalance",&CUserCommandCli::FUN_141366cd0);
-    Register(L"AddUGCMapPriv",&CUserCommandCli::FUN_141366da0);
-    Register(L"RemoveUGCMapPriv",&CUserCommandCli::FUN_141366eb0);
-    Register(L"SellMyHome",&CUserCommandCli::FUN_141366fc0);
+    Register(L"SetEventBoardText",&CUserCommandCli::SetEventBoardText);
+    Register(L"SetUGCMapBalance",&CUserCommandCli::SetUgcMapBalance);
+    Register(L"AddUGCMapPriv",&CUserCommandCli::AddUgcMapPriv);
+    Register(L"RemoveUGCMapPriv",&CUserCommandCli::RemoveUgcMapPriv);
+    Register(L"SellMyHome",&CUserCommandCli::SellMyHome);
     Register(L"EnableFeature",&CUserCommandCli::FUN_141367030);
-    Register(L"EnableSkipFrame",&CUserCommandCli::FUN_141367050);
-    Register(L"FaceEmotion",&CUserCommandCli::FUN_1413670c0);
+    Register(L"EnableSkipFrame",&CUserCommandCli::EnableSkipFrame);
+    Register(L"FaceEmotion",&CUserCommandCli::PlayFaceEmotion);
     Register(L"ReloadScript",&CUserCommandCli::ReloadScript);
     Register(L"SetClientItemTransferType",&CUserCommandCli::FUN_141367240);
-    Register(L"PacketSendDelay",&CUserCommandCli::FUN_14136c260);
-    Register(L"PacketRecvDelay",&CUserCommandCli::FUN_14136c330);
-    Register(L"DungeonVoiceChatEnter",&CUserCommandCli::FUN_141369b70);
-    Register(L"DungeonVoiceChatLeave",&CUserCommandCli::FUN_141369b90);
-    Register(L"DungeonVoiceChatShowUi",&CUserCommandCli::FUN_141369bb0);
-    Register(L"TraceQuest",&CUserCommandCli::FUN_141369bd0);
+    Register(L"PacketSendDelay",&CUserCommandCli::SetPacketSendDelay);
+    Register(L"PacketRecvDelay",&CUserCommandCli::SetPacketRecvDelay);
+    Register(L"DungeonVoiceChatEnter",&CUserCommandCli::EnterDungeonVoiceChat);
+    Register(L"DungeonVoiceChatLeave",&CUserCommandCli::LeaveDungeonVoiceChat);
+    Register(L"DungeonVoiceChatShowUi",&CUserCommandCli::ShowDungeonVoiceChatUi);
+    Register(L"TraceQuest",&CUserCommandCli::TraceQuest);
     Register(L"CompleteQuest",&CUserCommandCli::CompleteQuest);
     Register(L"CompleteEpicChapter",&CUserCommandCli::CompleteEpicChapter);
     Register(L"CompleteEpicQuest",&CUserCommandCli::CompleteEpicQuest);
     Register(L"SetEpicChapterStatus",&CUserCommandCli::SetEpicChapterStatus);
     Register(L"SetEpicQuestStatus",&CUserCommandCli::SetEpicQuestStatus);
-    Register(L"PopupText",&CUserCommandCli::FUN_14136d300);
+    Register(L"PopupText",&CUserCommandCli::ShowPopupText);
     Register(L"DPSLog",&CUserCommandCli::ToggleDpsLog);
-    Register(L"UseGamePad",&CUserCommandCli::FUN_141367970);
+    Register(L"UseGamePad",&CUserCommandCli::UseGamePad);
     Register(L"ClientLogLevel",&CUserCommandCli::SetClientLogLevel);
-    Register(L"savekey",&CUserCommandCli::FUN_141367ae0);
-    Register(L"combinekey",&CUserCommandCli::FUN_141367f20);
+    Register(L"savekey",&CUserCommandCli::ExportDefaultKeyXml);
+    Register(L"combinekey",&CUserCommandCli::CombineKey);
     Register(L"m",&CUserCommandCli::FUN_141368000);
     Register(L"맵",&CUserCommandCli::FUN_141368000);
-    Register(L"RecordFishing",&CUserCommandCli::FUN_1413686b0);
-    Register(L"ReportFishing",&CUserCommandCli::FUN_141368730);
-    Register(L"effect_afterimage",&CUserCommandCli::FUN_1413687d0);
+    Register(L"RecordFishing",&CUserCommandCli::RecordFishing);
+    Register(L"ReportFishing",&CUserCommandCli::ShowFishRecordReport);
+    Register(L"effect_afterimage",&CUserCommandCli::ShowEffectAfterimage);
     Register(L"TestDisconnect",&CUserCommandCli::TestDisconnect);
-    Register(L"EnableFog",&CUserCommandCli::FUN_141368990);
-    Register(L"EnableEffectLimit",&CUserCommandCli::FUN_141368a60);
-    Register(L"GetDamageMovieCount",&CUserCommandCli::FUN_14136c400);
+    Register(L"EnableFog",&CUserCommandCli::SetFieldFogEnabled);
+    Register(L"EnableEffectLimit",&CUserCommandCli::EnableEffectLimit);
+    Register(L"GetDamageMovieCount",&CUserCommandCli::GetDamageMovieCount);
     Register(L"SkillNotFind",&CUserCommandCli::FUN_14136c4b0);
-    Register(L"ResetOpendUgcTerms",&CUserCommandCli::FUN_14136c550);
-    Register(L"FishingCastingBarMode",&CUserCommandCli::FUN_14136a590);
-    Register(L"LearnAllAbility",&CUserCommandCli::FUN_14136c5e0);
-    Register(L"ShowKey",&CUserCommandCli::FUN_14136ba00);
+    Register(L"ResetOpendUgcTerms",&CUserCommandCli::ResetOpenedUgcTerms);
+    Register(L"FishingCastingBarMode",&CUserCommandCli::SetFishingCastingBarMode);
+    Register(L"LearnAllAbility",&CUserCommandCli::LearnAllAbilities);
+    Register(L"ShowKey",&CUserCommandCli::ShowKey);
     Register(L"SendPacket",&CUserCommandCli::SendRawPacket);
-    Register(L"SetPosition",&CUserCommandCli::FUN_14136be40);
-    Register(L"ChatLog",&CUserCommandCli::FUN_14136bf10);
-    Register(L"NoWaitRoomExit",&CUserCommandCli::FUN_14136bf50);
-    Register(L"DamageUseOld",&CUserCommandCli::FUN_14136bfe0);
-    Register(L"DamageTestLoop",&CUserCommandCli::FUN_14136c0f0);
-    Register(L"SetDisableClonePC",&CUserCommandCli::FUN_14136c1a0);
-    Register(L"ShowMyPCNodes",&CUserCommandCli::FUN_14136c1e0);
-    Register(L"SkipLoadingUGCCube",&CUserCommandCli::FUN_14136c660);
+    Register(L"SetPosition",&CUserCommandCli::SetPosition);
+    Register(L"ChatLog",&CUserCommandCli::DumpChatLog);
+    Register(L"NoWaitRoomExit",&CUserCommandCli::SetNoWaitRoomExit);
+    Register(L"DamageUseOld",&CUserCommandCli::ToggleDamageUseOld);
+    Register(L"DamageTestLoop",&CUserCommandCli::SetDamageTestLoop);
+    Register(L"SetDisableClonePC",&CUserCommandCli::SetDisableClonePc);
+    Register(L"ShowMyPCNodes",&CUserCommandCli::ShowMyPcNodes);
+    Register(L"SkipLoadingUGCCube",&CUserCommandCli::SkipLoadingUgcCube);
 }
 // @0x141364f70
 void CUserCommandCli::RegisterInternalCommands() {
@@ -953,7 +944,7 @@ int CUserCommandCli::FUN_141365270(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141365350
-int CUserCommandCli::FUN_141365350(Unk_CommandArgs& args) {
+int CUserCommandCli::SetLocalCamera(Unk_CommandArgs& args) {
     int id=args.FUN_1408d1f60(0,0);
     bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
     void* player=((void*)WorldService::GetInstance());
@@ -964,7 +955,7 @@ int CUserCommandCli::FUN_141365350(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141365420
-int CUserCommandCli::FUN_141365420(Unk_CommandArgs& args) {
+int CUserCommandCli::SetTargetCamera(Unk_CommandArgs& args) {
     if(!FUN_1409478c0()) return 0;
     int nKind=args.FUN_1408d1f60(0,0);
     bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
@@ -989,12 +980,12 @@ int CUserCommandCli::ToggleUIDevMode(Unk_CommandArgs&) {
     return 1;
 }
 // @0x141365630
-int CUserCommandCli::FUN_141365630(Unk_CommandArgs&) {
+int CUserCommandCli::RequestSaleMarket(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket),0); packet.WriteUInt8(0xc9); FUN_140710590(packet); return 1;
 }
 // @0x1413656a0
-int CUserCommandCli::FUN_1413656a0(Unk_CommandArgs&) {
+int CUserCommandCli::ToggleStat(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
     ((struct Unk_CommandToggle*)FUN_1401d3200())->enabled=!((struct Unk_CommandToggle*)FUN_1401d3200())->enabled;
     if(((struct Unk_CommandToggle*)FUN_1401d3200())->enabled) FUN_141a60d40(2); else FUN_141a60d40(1);
@@ -1009,16 +1000,16 @@ int CUserCommandCli::ChangeGuideEntityState(Unk_CommandArgs& args) { ((class CGu
 // @0x1413657f0
 int CUserCommandCli::ResetGuideClearState(Unk_CommandArgs&) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ResetClearState(); return 1; }
 // @0x141365820
-int CUserCommandCli::FUN_141365820(Unk_CommandArgs& args) { FUN_14138cce0(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0),args.FUN_1408d1f60(1,0)); return 1; }
+int CUserCommandCli::TestGuideCondition(Unk_CommandArgs& args) { FUN_14138cce0(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0),args.FUN_1408d1f60(1,0)); return 1; }
 // @0x141365890
-int CUserCommandCli::FUN_141365890(Unk_CommandArgs& args) { FUN_14138d090(((void*)FUN_1409331e0()),FUN_14016a600(args.FUN_1408d21c0(0,L""),0)); return 1; }
+int CUserCommandCli::TestGuideFunction(Unk_CommandArgs& args) { FUN_14138d090(((void*)FUN_1409331e0()),FUN_14016a600(args.FUN_1408d21c0(0,L""),0)); return 1; }
 // @0x141365960
 int CUserCommandCli::ClearAllGuides(Unk_CommandArgs&) {
     ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->SetInitialState(); ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ClearEntities();
     { CStringW text(L"Success GuideClearAll"); FUN_1412751b0(text,20); } return 1;
 }
 // @0x1413659d0
-int CUserCommandCli::FUN_1413659d0(Unk_CommandArgs&) {
+int CUserCommandCli::ShowServerTime(Unk_CommandArgs&) {
     if(DAT_143ab0248==2) { if(DAT_143ab2914<51) return 0; }
     else if(DAT_143ab2914<50) return 0;
     CMsTime time(GetServerTime());
@@ -1027,36 +1018,36 @@ int CUserCommandCli::FUN_1413659d0(Unk_CommandArgs&) {
     FUN_1412751b0(message,20); return 1;
 }
 // @0x141365b00
-int CUserCommandCli::FUN_141365b00(Unk_CommandArgs& args) {
+int CUserCommandCli::PlayVoiceSound(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
      FUN_1411a4f40(((void*)TSingleton<CEffectService>::GetInstance()),FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),DAT_143b01a60);
     return 1;
 }
 // @0x141365bf0
-int CUserCommandCli::FUN_141365bf0(Unk_CommandArgs& args) {
+int CUserCommandCli::PlayBgm(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
     if(FUN_140d13c40()) ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177c100(args.FUN_1408d1f60(0,0), 0, 128, 0);
     return 1;
 }
 // @0x141365c60
-int CUserCommandCli::FUN_141365c60(Unk_CommandArgs&) {
+int CUserCommandCli::ShowBgmState(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
     if(FUN_140d13c40()) { CStringW text=static_cast<Unk_UcSoundView*>(FUN_140d13c40())->FUN_14177e020(); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x141365cd0
-int CUserCommandCli::FUN_141365cd0(Unk_CommandArgs&) {
+int CUserCommandCli::ReloadStrings(Unk_CommandArgs&) {
     ((class CommonString*)(void*)(((void*)FUN_14025e7d0())))->Reload(); FUN_1409c51f0(); FUN_141815db0(FUN_141371b20());
     { CStringW text(L"Success Reload String"); FUN_1412751b0(text,20); } return 1;
 }
 // @0x141365d50
-int CUserCommandCli::FUN_141365d50(Unk_CommandArgs&) {
+int CUserCommandCli::ReloadGuideString(Unk_CommandArgs&) {
     void* dialog=FUN_14136f3e0(0x4e53);
     if(dialog) ((class UIGuideEvent*)(void*)(dialog))->FUN_14195b970();
     { CStringW text(L"Success Reload GuideString"); FUN_1412751b0(text,20); } return 1;
 }
 // @0x141365dd0
-int CUserCommandCli::FUN_141365dd0(Unk_CommandArgs& args) {
+int CUserCommandCli::ShowSmartRecommend(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
     void* dialog=FUN_14136f5c0(0x4e9e);
     if(dialog) ((class UISmartRecommendNotifyDialog*)(void*)(dialog))->FUN_14134dc50(args.FUN_1408d1f60(0,0));
@@ -1064,12 +1055,12 @@ int CUserCommandCli::FUN_141365dd0(Unk_CommandArgs& args) {
     ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e9e)); return 1;
 }
 // @0x141365e70
-int CUserCommandCli::FUN_141365e70(Unk_CommandArgs&) {
+int CUserCommandCli::SendAttendance(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
     COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.WriteUInt8(0); FUN_140710590(packet); return 1;
 }
 // @0x141365ee0
-int CUserCommandCli::FUN_141365ee0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetNifLifetime(Unk_CommandArgs& args) {
     float time=args.FUN_1408d2280(0,0);
     ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->SetLifetime(double(time));
     FUN_1412751b0(StringFormat(L"SetCacheKeepTime {0}",time),20); return 1;
@@ -1079,25 +1070,25 @@ int CUserCommandCli::ClearNifCache(Unk_CommandArgs&) { ((class CNifLoadingServic
 // @0x141365ff0
 int CUserCommandCli::ClearTextureCache(Unk_CommandArgs&) { ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->ClearTextureCache(); { CStringW text(L"Remove All Cached Texture"); FUN_1412751b0(text,20); } return 1; }
 // @0x141366060
-int CUserCommandCli::FUN_141366060(Unk_CommandArgs& args) {
+int CUserCommandCli::SetWeather(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
      { int weather=args.FUN_1408d1f60(0,0); ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a7e80(weather); FUN_1412751b0(StringFormat(L"Weather {0}",weather),20); }
     return 1;
 }
 // @0x141366100
-int CUserCommandCli::FUN_141366100(Unk_CommandArgs& args) {
+int CUserCommandCli::SetMaxFps(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
      { int fps=args.FUN_1408d1f60(0,0); ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->SetFrameLimit(float(fps)); FUN_1412751b0(StringFormat(L"MaxFPS {0}",fps),20); }
     return 1;
 }
 // @0x1413661b0
-int CUserCommandCli::FUN_1413661b0(Unk_CommandArgs& args) {
+int CUserCommandCli::AddDevEffect(Unk_CommandArgs& args) {
     CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0); FUN_1411a8cb0(((void*)TSingleton<CEffectService>::GetInstance()),name); return 1;
 }
 // @0x141366270
-int CUserCommandCli::FUN_141366270(Unk_CommandArgs&) { ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a8dc0(); return 1; }
+int CUserCommandCli::RemoveDevEffect(Unk_CommandArgs&) { ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a8dc0(); return 1; }
 // @0x1413662a0
-int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetHomePassword(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==0) return 0;
     int mode=args.FUN_1408d1f60(0,0);
     if(mode<0||mode>1) return 0;
@@ -1116,13 +1107,13 @@ int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141366470
-int CUserCommandCli::FUN_141366470(Unk_CommandArgs& args) {
+int CUserCommandCli::CommendHome(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
     if(DAT_143ab0248==2&&DAT_143ab2914<59) return 0;
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x19); FUN_140710590(packet); return 1;
 }
 // @0x141366500
-int CUserCommandCli::FUN_141366500(Unk_CommandArgs& args) {
+int CUserCommandCli::GoIntoHome(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=4) return 0;
     int first=args.FUN_1408d1f60(0,0),second=args.FUN_1408d1f60(1,0),third=args.FUN_1408d1f60(2,0);
     __int64 fourth=args.FUN_1408d2040(3,0);
@@ -1131,7 +1122,7 @@ int CUserCommandCli::FUN_141366500(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141366600
-int CUserCommandCli::FUN_141366600(Unk_CommandArgs& args) {
+int CUserCommandCli::SetHomeNotice(Unk_CommandArgs& args) {
     CStringW name=L"";
     if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
@@ -1154,22 +1145,22 @@ int CUserCommandCli::ExportUgcMap(Unk_CommandArgs& args) {
     return result;
 }
 // @0x1413669a0
-int CUserCommandCli::FUN_1413669a0(Unk_CommandArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
+int CUserCommandCli::GoIntoDesignHome(Unk_CommandArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
 // @0x1413669f0
-int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
+int CUserCommandCli::OpenVip(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
 // @0x141366a40
 int CUserCommandCli::FUN_141366a40(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x28); FUN_140710590(packet); return 1;
 }
 // @0x141366ac0
-int CUserCommandCli::FUN_141366ac0(Unk_CommandArgs& args) {
+int CUserCommandCli::TakeInteriorGradeGift(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x29); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
 // @0x141366b60
-int CUserCommandCli::FUN_141366b60(Unk_CommandArgs& args) {
+int CUserCommandCli::SetUgcMapBackground(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x33); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
@@ -1177,38 +1168,38 @@ int CUserCommandCli::FUN_141366b60(Unk_CommandArgs& args) {
 // @0x141366c00
 int CUserCommandCli::SetNoticeSpeed(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNoticeSpeed(args.FUN_1408d2280(0,0)); return 1; }
 // @0x141366c60
-int CUserCommandCli::FUN_141366c60(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) FUN_141357430(dialog,args.FUN_1408d2330()); return 1; }
+int CUserCommandCli::SetEventBoardText(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) FUN_141357430(dialog,args.FUN_1408d2330()); return 1; }
 // @0x141366cd0
-int CUserCommandCli::FUN_141366cd0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetUgcMapBalance(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=2) return 0;
     __int64 a=args.FUN_1408d2040(0,0),b=args.FUN_1408d2040(1,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x38); packet.WriteInt64(a); packet.WriteInt64(b); FUN_140710590(packet); return 1;
 }
 // @0x141366da0
-int CUserCommandCli::FUN_141366da0(Unk_CommandArgs& args) {
+int CUserCommandCli::AddUgcMapPriv(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x39); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366eb0
-int CUserCommandCli::FUN_141366eb0(Unk_CommandArgs& args) {
+int CUserCommandCli::RemoveUgcMapPriv(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x3a); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366fc0
-int CUserCommandCli::FUN_141366fc0(Unk_CommandArgs&) { COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(6); FUN_140710590(packet); return 1; }
+int CUserCommandCli::SellMyHome(Unk_CommandArgs&) { COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(6); FUN_140710590(packet); return 1; }
 // @0x141367030
 int CUserCommandCli::FUN_141367030(Unk_CommandArgs&) { return 1; } // Original command intentionally does nothing.
 // @0x141367050
-int CUserCommandCli::FUN_141367050(Unk_CommandArgs& args) {
+int CUserCommandCli::EnableSkipFrame(Unk_CommandArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<52) return 0;
     int flag=args.FUN_1408d1fd0(0,0);
     if(flag==0) ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3c00(false); else ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3c00(true);
     return 1;
 }
 // @0x1413670c0
-int CUserCommandCli::FUN_1413670c0(Unk_CommandArgs& args) {
+int CUserCommandCli::PlayFaceEmotion(Unk_CommandArgs& args) {
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) FUN_14166ef10(actor,FUN_14016a600(args.FUN_1408d21c0(0,L""),0),1,0,false);
     return 1;
@@ -1222,11 +1213,11 @@ int CUserCommandCli::ReloadScript(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_141367240(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=2) { FUN_1412751b0(StringFormat(L"Error! Usage: [cmd] [itemId] [transferType]"),20); return 0; }
     int id=args.FUN_1408d1f60(0,0),kind=args.FUN_1408d1f60(1,0);
-    Unk_CommandItemPtr item=FUN_14053f870(id);
-    if(item.FUN_1402ffd90()) { FUN_1412751b0(StringFormat(L"Wrong itemID! {0}",id),20); return 0; }
+    MS2Ptr<CItemData> item=FUN_14053f870(id);
+    if(item.IsNull()) { FUN_1412751b0(StringFormat(L"Wrong itemID! {0}",id),20); return 0; }
     if(kind<0||kind>=4) { FUN_1412751b0(StringFormat(L"Wrong transferType! {0}",kind),20); return 0; }
-    int old=reinterpret_cast<Unk_CommandItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->transferType;
-    reinterpret_cast<Unk_CommandItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->transferType=kind;
+    int old=reinterpret_cast<Unk_CommandItemData*>(item.operator->())->transferType;
+    reinterpret_cast<Unk_CommandItemData*>(item.operator->())->transferType=kind;
     bool changed=old!=kind;
     int prev=old;
     CStringW msg=StringFormat(L"Client {0} itemID:{1}, trasferType[now:{2}, prev:{3}]",changed?L"Done!":L"Oops!",id,kind,prev);
@@ -1234,14 +1225,14 @@ int CUserCommandCli::FUN_141367240(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x1413674f0
-int CUserCommandCli::FUN_1413674f0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetNetStreamUrl(Unk_CommandArgs& args) {
     CStringW url=args.FUN_1408d2330();
     if(!url.IsEmpty()) FUN_1412751b0(StringFormat(L"OnNetStreamURL :{0}",url),20);
     if(((void*)FUN_140c9cb10())) FUN_1417af4f0(((void*)FUN_140c9cb10()),FUN_14016a600(url,0));
     return 1;
 }
 // @0x1413675e0
-int CUserCommandCli::FUN_1413675e0(Unk_CommandArgs& args) {
+int CUserCommandCli::ControlCutScene(Unk_CommandArgs& args) {
     void* dialog=FUN_14136f290(0x4e52);
     if(dialog) {
         int command=args.FUN_1408d1fd0(0,0);
@@ -1253,16 +1244,16 @@ int CUserCommandCli::FUN_1413675e0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141367710
-int CUserCommandCli::FUN_141367710(Unk_CommandArgs& args) {
+int CUserCommandCli::HideUi(Unk_CommandArgs& args) {
     CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
     {
-        Unk_CommandUIRef object=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcf50(name);
-        if(object.FUN_1403e8a70()) { object.FUN_141371280()->vfunc_3(); object.FUN_141371280()->vfunc_8(0); }
+        MS2Ptr<UIObject> object=((CUIService*)FUN_1403ed2b0())->FindObjectByName(name);
+        if(object.get()) { reinterpret_cast<Unk_CommandUIRef&>(object).FUN_141371280()->vfunc_3(); reinterpret_cast<Unk_CommandUIRef&>(object).FUN_141371280()->vfunc_8(0); }
     }
     return 1;
 }
 // @0x141367840
-int CUserCommandCli::FUN_141367840(Unk_CommandArgs& args) {
+int CUserCommandCli::HideMe(Unk_CommandArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<51) return 0;
     Unk_CommandActor* actor=static_cast<Unk_CommandActor*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(!actor) return 0;
@@ -1276,7 +1267,7 @@ int CUserCommandCli::ToggleDpsLog(Unk_CommandArgs&) {
     FUN_1412751b0(StringFormat(L"OnDPSLog {0}",DAT_143ab5b00),20); return 1;
 }
 // @0x141367970
-int CUserCommandCli::FUN_141367970(Unk_CommandArgs& args) {
+int CUserCommandCli::UseGamePad(Unk_CommandArgs& args) {
     int enabled=args.FUN_1408d20b0(0,0)!=0;
     FUN_14125f670((struct Unk_GpState*)(((void*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))), enabled!=0, false);
     FUN_1412751b0(StringFormat(L"UseGamePad {0}",enabled),20); return 1;
@@ -1290,7 +1281,7 @@ int CUserCommandCli::SetClientLogLevel(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141367ae0
-int CUserCommandCli::FUN_141367ae0(Unk_CommandArgs& args) {
+int CUserCommandCli::ExportDefaultKeyXml(Unk_CommandArgs& args) {
     int priority=args.FUN_1408d1f60(0,0);
     TiXmlDocument doc;
     TiXmlDeclaration* decl=new TiXmlDeclaration("1.0","utf-8","");
@@ -1323,13 +1314,13 @@ int CUserCommandCli::FUN_141367ae0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141367f20
-int CUserCommandCli::FUN_141367f20(Unk_CommandArgs& args) {
+int CUserCommandCli::CombineKey(Unk_CommandArgs& args) {
     Unk_CommandKeyCode first=(Unk_CommandKeyCode)args.FUN_1408d1f60(0,0);
     Unk_CommandKeyCode second=(Unk_CommandKeyCode)args.FUN_1408d1f60(1,0);
     void* keys=FUN_1409331f0();
     if(keys!=0) {
         unsigned combined;
-        ((class CKeyTable*)(void*)(keys))->FUN_141430e70(&combined, first, second, 0xf0);
+        ((class CKeyTable*)(void*)(keys))->MakeCombineKey(&combined, first, second, 0xf0);
         FUN_1412751b0(StringFormat(L"CombinKey : {0} + {1} = {2}",first,second,combined),20);
     }
     return 1;
@@ -1386,21 +1377,21 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
     }
 }
 // @0x1413686b0
-int CUserCommandCli::FUN_1413686b0(Unk_CommandArgs&) {
+int CUserCommandCli::RecordFishing(Unk_CommandArgs&) {
     void* fishing=FUN_141371ac0(((void*)TSingleton<CFishingManager>::GetInstance()));
     ((struct Unk_FishRecord*)(void*)(fishing))->Reset();
     { CStringW text(L"FishRecord"); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x141368730
-int CUserCommandCli::FUN_141368730(Unk_CommandArgs&) {
+int CUserCommandCli::ShowFishRecordReport(Unk_CommandArgs&) {
     void* fishing=FUN_141371ac0(((void*)TSingleton<CFishingManager>::GetInstance()));
     CString report=((Unk_FishRecord*)fishing)->FUN_140cd8f60();
     FUN_1412751b0(StringFormat(L"FishReport >> {0}",report),20);
     return 1;
 }
 // @0x1413687d0
-int CUserCommandCli::FUN_1413687d0(Unk_CommandArgs&) {
+int CUserCommandCli::ShowEffectAfterimage(Unk_CommandArgs&) {
     Unk_ShList list(10);
     FUN_141bd2db0(((void*)WorldService::GetInstance()),&list,(void*)FUN_141274b10);
     for(__int64 pos=list.FUN_140967000(); pos!=0; list.FUN_1409671f0(&pos)) {
@@ -1422,7 +1413,7 @@ int CUserCommandCli::TestDisconnect(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368990
-int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
+int CUserCommandCli::SetFieldFogEnabled(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     ((class ApplyEffect*)(void*)(((void*)TSingleton<ApplyEffect>::GetInstance())))->ApplyFieldFogEnabled(enabled);
     if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable Fog"),20);
@@ -1430,7 +1421,7 @@ int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368a60
-int CUserCommandCli::FUN_141368a60(Unk_CommandArgs& args) {
+int CUserCommandCli::EnableEffectLimit(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     ((class EffectSkipMgr*)(void*)(((void*)TSingleton<EffectSkipMgr>::GetInstance())))->SetSuspended(enabled==false);
     if(enabled!=false) FUN_1412751b0(StringFormat(L"Enable effect limit"),20);
@@ -1438,7 +1429,7 @@ int CUserCommandCli::FUN_141368a60(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368b50
-int CUserCommandCli::FUN_141368b50(Unk_CommandArgs& args) {
+int CUserCommandCli::ShowCodeName(Unk_CommandArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<52) return 0;
     int enabled=args.FUN_1408d20b0(0,1);
     DAT_143ae0fc0=enabled;
@@ -1450,10 +1441,10 @@ int CUserCommandCli::FUN_141368b50(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368c20
-int CUserCommandCli::FUN_141368c20(Unk_CommandArgs&) {
+int CUserCommandCli::ToggleUpperVersionText(Unk_CommandArgs&) {
     void* dialog=FUN_141264060(0x4ebe);
     if(dialog==0) return 1;
-    bool shown=((class UIUpperHudDialog*)(void*)(dialog))->FUN_1413579d0();
+    bool shown=((class UIUpperHudDialog*)(void*)(dialog))->ToggleVersionText();
     CStringW message;
     const wchar_t* state;
     if(shown!=false) state=L"On"; else state=L"Off";
@@ -1462,7 +1453,7 @@ int CUserCommandCli::FUN_141368c20(Unk_CommandArgs&) {
     return 1;
 }
 // @0x141368ce0
-int CUserCommandCli::FUN_141368ce0(Unk_CommandArgs& args) {
+int CUserCommandCli::Optimize(Unk_CommandArgs& args) {
     CStringW mode=args.FUN_1408d21c0(0,L"");
     int value=args.FUN_1408d1f60(1,0);
     if(operator==(mode, L"debug")) {
@@ -1482,7 +1473,7 @@ int CUserCommandCli::FUN_141368ce0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368fb0
-int CUserCommandCli::FUN_141368fb0(Unk_CommandArgs& args) {
+int CUserCommandCli::SamplingFrame(Unk_CommandArgs& args) {
     int first=args.FUN_1408d1fd0(0,100);
     int second=args.FUN_1408d1fd0(1,3000);
     ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161c940(first, second);
@@ -1518,7 +1509,7 @@ int CUserCommandCli::SetForceGmId(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141369330
-int CUserCommandCli::FUN_141369330(Unk_CommandArgs& args) {
+int CUserCommandCli::FindNpcGameOid(Unk_CommandArgs& args) {
     unsigned npcId=args.FUN_1408d1fd0(0,0);
     unsigned oid=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3fe0(npcId);
     FUN_1412751b0(StringFormat(L"NpcID:{0}'s GameOID is {1}",npcId,oid),20);
@@ -1555,12 +1546,12 @@ int CUserCommandCli::TogglePhysXItem(Unk_CommandArgs&) {
     return 1;
 }
 // @0x141369620
-int CUserCommandCli::FUN_141369620(Unk_CommandArgs&) {
+int CUserCommandCli::ShowNode(Unk_CommandArgs&) {
     ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdaae0();
     return 1;
 }
 // @0x141369650
-int CUserCommandCli::FUN_141369650(Unk_CommandArgs& args) {
+int CUserCommandCli::CountUi(Unk_CommandArgs& args) {
     void* dialog=FUN_140e01890(0x4e4c);
     if(dialog!=0) {
         FUN_1419f6bc0(dialog,args.FUN_1408d21c0(0,L""),args.FUN_1408d1f60(1,0),args.FUN_1408d1f60(2,0),args.FUN_1408d1f60(3,0));
@@ -1595,13 +1586,13 @@ int CUserCommandCli::ClubCommand(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141369b70
-int CUserCommandCli::FUN_141369b70(Unk_CommandArgs&) { return 1; }
+int CUserCommandCli::EnterDungeonVoiceChat(Unk_CommandArgs&) { return 1; }
 // @0x141369b90
-int CUserCommandCli::FUN_141369b90(Unk_CommandArgs&) { return 1; }
+int CUserCommandCli::LeaveDungeonVoiceChat(Unk_CommandArgs&) { return 1; }
 // @0x141369bb0
-int CUserCommandCli::FUN_141369bb0(Unk_CommandArgs&) { return 1; }
+int CUserCommandCli::ShowDungeonVoiceChatUi(Unk_CommandArgs&) { return 1; }
 // @0x141369bd0
-int CUserCommandCli::FUN_141369bd0(Unk_CommandArgs&) {
+int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
     CStringW text;
     for (int pass = 0; pass < 2; pass++) {
         void* list;
@@ -1684,7 +1675,7 @@ int CUserCommandCli::CompleteQuest(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136a590
-int CUserCommandCli::FUN_14136a590(Unk_CommandArgs& args) {
+int CUserCommandCli::SetFishingCastingBarMode(Unk_CommandArgs& args) {
     unsigned mode = args.FUN_1408d20b0(0,0);
     *(unsigned*)((char*)((void*)TSingleton<CFishingManager>::GetInstance()) + 0x1b8) = mode;
     FUN_1412751b0(StringFormat(L"SetFishingCastingBarMode {0} ",*(int*)((char*)((void*)TSingleton<CFishingManager>::GetInstance()) + 0x1b8)),20);
@@ -1869,7 +1860,7 @@ void FUN_14136b910(void*,Unk_g2_Vec24* src,int status) {
     }
 }
 // @0x14136ba00
-int CUserCommandCli::FUN_14136ba00(Unk_CommandArgs& args) {
+int CUserCommandCli::ShowKey(Unk_CommandArgs& args) {
     bool on = args.FUN_1408d2140(0,false);
     *((char*)((void*)FUN_14025e7d0()) + 0xf0) = on;
     if (on) FUN_1412751b0(L"Now You can see text to keyText(Converted)",20);
@@ -1908,7 +1899,7 @@ int CUserCommandCli::SendRawPacket(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136be40
-int CUserCommandCli::FUN_14136be40(Unk_CommandArgs& args) {
+int CUserCommandCli::SetPosition(Unk_CommandArgs& args) {
     Vector3 pos=DAT_143b01a60;
     pos.x=args.FUN_1408d2280(0,0);
     pos.y=args.FUN_1408d2280(1,0);
@@ -1919,20 +1910,20 @@ int CUserCommandCli::FUN_14136be40(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136bf10
-int CUserCommandCli::FUN_14136bf10(Unk_CommandArgs&) {
+int CUserCommandCli::DumpChatLog(Unk_CommandArgs&) {
     void* dialog=FUN_140a3ab70(0x4e61);
     if(dialog) ((class UIMessengerBrowser*)(void*)(dialog))->FUN_141a26680();
     return 1;
 }
 // @0x14136bf50
-int CUserCommandCli::FUN_14136bf50(Unk_CommandArgs&) {
+int CUserCommandCli::SetNoWaitRoomExit(Unk_CommandArgs&) {
     int one=1;
     FUN_1402be3c0((char*)((struct Unk_CommandToggle*)FUN_1401d3200())+0xcfe0,&one);
     FUN_1412751b0(StringFormat(L"OnNoWaitRoomExit"),20);
     return 1;
 }
 // @0x14136bfe0
-int CUserCommandCli::FUN_14136bfe0(Unk_CommandArgs&) {
+int CUserCommandCli::ToggleDamageUseOld(Unk_CommandArgs&) {
     Unk_DamageTest* obj=(Unk_DamageTest*)FUN_140b624b0(0x4e32);
     if(obj) {
         bool bOld=!obj->m_2c0; ((class UIDamageText*)(void*)(obj))->SetClearing(bOld);
@@ -1944,7 +1935,7 @@ int CUserCommandCli::FUN_14136bfe0(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136c0f0
-int CUserCommandCli::FUN_14136c0f0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetDamageTestLoop(Unk_CommandArgs& args) {
     int value=args.FUN_1408d1f60(0,0);
     Unk_DamageTest* obj=(Unk_DamageTest*)FUN_140b624b0(0x4e32);
     if(obj) {
@@ -1954,12 +1945,12 @@ int CUserCommandCli::FUN_14136c0f0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136c1a0
-int CUserCommandCli::FUN_14136c1a0(Unk_CommandArgs& args) {
+int CUserCommandCli::SetDisableClonePc(Unk_CommandArgs& args) {
     ClonePC::FUN_141087400(args.FUN_1408d2140(0,true));
     return 1;
 }
 // @0x14136c1e0
-int CUserCommandCli::FUN_14136c1e0(Unk_CommandArgs& args) {
+int CUserCommandCli::ShowMyPcNodes(Unk_CommandArgs& args) {
     bool value=args.FUN_1408d2140(0,false);
     void* player=((void*)WorldService::GetInstance());
     if(player==0) return 0;
@@ -1969,7 +1960,7 @@ int CUserCommandCli::FUN_14136c1e0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136c260
-int CUserCommandCli::FUN_14136c260(Unk_CommandArgs& args) {
+int CUserCommandCli::SetPacketSendDelay(Unk_CommandArgs& args) {
     DWORD minDelay=args.FUN_1408d1fd0(0,0);
     DWORD maxDelay=args.FUN_1408d1fd0(1,0);
     if(maxDelay<minDelay) maxDelay=minDelay;
@@ -1979,7 +1970,7 @@ int CUserCommandCli::FUN_14136c260(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136c330
-int CUserCommandCli::FUN_14136c330(Unk_CommandArgs& args) {
+int CUserCommandCli::SetPacketRecvDelay(Unk_CommandArgs& args) {
     DWORD minDelay=args.FUN_1408d1fd0(0,0);
     DWORD maxDelay=args.FUN_1408d1fd0(1,0);
     if(maxDelay<minDelay) maxDelay=minDelay;
@@ -1989,7 +1980,7 @@ int CUserCommandCli::FUN_14136c330(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136c400
-int CUserCommandCli::FUN_14136c400(Unk_CommandArgs&) {
+int CUserCommandCli::GetDamageMovieCount(Unk_CommandArgs&) {
     void* obj=FUN_140b624b0(0x4e32);
     if(obj) {
         CStringW result;
@@ -2006,7 +1997,7 @@ int CUserCommandCli::FUN_14136c4b0(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136c550
-int CUserCommandCli::FUN_14136c550(Unk_CommandArgs&) {
+int CUserCommandCli::ResetOpenedUgcTerms(Unk_CommandArgs&) {
     void* a=((void*)FUN_140bd2c00());
     if(a) ((class UIMeratMarketDialog*)(void*)(a))->ResetUgcTermsAgreed();
     void* b=FUN_14136f330();
@@ -2015,7 +2006,7 @@ int CUserCommandCli::FUN_14136c550(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136c5e0
-int CUserCommandCli::FUN_14136c5e0(Unk_CommandArgs&) {
+int CUserCommandCli::LearnAllAbilities(Unk_CommandArgs&) {
     if(FUN_140f2d250()==0) return 0;
     if(FUN_140f2d240()==0) return 0;
     COutPacket packet(static_cast<int>(SendOp::CharacterAbility),0);
@@ -2024,14 +2015,14 @@ int CUserCommandCli::FUN_14136c5e0(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136c660
-int CUserCommandCli::FUN_14136c660(Unk_CommandArgs& args) {
+int CUserCommandCli::SkipLoadingUgcCube(Unk_CommandArgs& args) {
     bool skip=args.FUN_1408d2140(0,false);
     ((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af0e0(skip);
     FUN_1412751b0(StringFormat(L"SkipLoadingUGCCube {0}",skip),20);
     return 1;
 }
 // @0x14136c6f0
-int CUserCommandCli::FUN_14136c6f0(Unk_CommandArgs& args) {
+int CUserCommandCli::SearchMaview(Unk_CommandArgs& args) {
     CStringW url=StringFormat(L"maview:/Main/Search?tk={0}",args.FUN_1408d2330());
     void* browser=FUN_140c43790(0x4e6a);
     if(!browser) return 0;
@@ -2039,7 +2030,7 @@ int CUserCommandCli::FUN_14136c6f0(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136c7f0
-int CUserCommandCli::FUN_14136c7f0(Unk_CommandArgs& args) {
+int CUserCommandCli::InviteGuild(Unk_CommandArgs& args) {
     FUN_1413b71c0(FUN_1403ed290(),args.FUN_1408d21c0(0,L""));
     return 1;
 }
@@ -2048,14 +2039,14 @@ struct Unk_UccGuildDlgHead { char m_00[0x18]; };
 struct Unk_UccGuildDlgListener { void* m_00; };
 struct Unk_UccGuildDlg : Unk_UccGuildDlgHead, Unk_UccGuildDlgListener {};
 // @0x14136c880
-int CUserCommandCli::FUN_14136c880(Unk_CommandArgs&) {
+int CUserCommandCli::ConfirmLeaveGuild(Unk_CommandArgs&) {
     FUN_140d73aa0(BlockFormat(0x3e0),1,static_cast<Unk_UccGuildDlgListener*>(static_cast<Unk_UccGuildDlg*>(FUN_14136f480(0x4e4f))),L"leaveGuild");
 
 
     return 1;
 }
 // @0x14136c940
-int CUserCommandCli::FUN_14136c940(Unk_CommandArgs& args) {
+int CUserCommandCli::InviteToPartyByName(Unk_CommandArgs& args) {
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(!actor) return 1;
     MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
@@ -2066,7 +2057,7 @@ int CUserCommandCli::FUN_14136c940(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136ca90
-int CUserCommandCli::FUN_14136ca90(Unk_CommandArgs&) {
+int CUserCommandCli::LeaveParty(Unk_CommandArgs&) {
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(!actor) return 1;
     MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
@@ -2075,8 +2066,8 @@ int CUserCommandCli::FUN_14136ca90(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136cb60
-int CUserCommandCli::FUN_14136cb60(Unk_CommandArgs&) {
-    if(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab60()) {
+int CUserCommandCli::StartPartyReadyCheck(Unk_CommandArgs&) {
+    if(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader()) {
         ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode46();
     } else {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_err_can_use_only_chief")),1,1);
@@ -2084,7 +2075,7 @@ int CUserCommandCli::FUN_14136cb60(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136cc10
-int CUserCommandCli::FUN_14136cc10(Unk_CommandArgs& args) {
+int CUserCommandCli::InviteHome(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==1) {
         COutPacket packet(static_cast<int>(SendOp::RequestHome),0);
         packet.WriteUInt8(1);
@@ -2094,7 +2085,7 @@ int CUserCommandCli::FUN_14136cc10(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x14136ccf0
-int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
+int CUserCommandCli::ShowHelp(Unk_CommandArgs&) {
     if(DAT_143ab2914>=0x32) return 0;
     bool bRebuild=text.IsEmpty();
     bRebuild=true;
@@ -2156,7 +2147,7 @@ int CUserCommandCli::MoveNextChannel(Unk_CommandArgs&) {
     return 1;
 }
 // @0x14136d300
-int CUserCommandCli::FUN_14136d300(Unk_CommandArgs& args) {
+int CUserCommandCli::ShowPopupText(Unk_CommandArgs& args) {
     void* target=FUN_14136f1f0(0x4f5c);
     if(target) {
         ((class UICommunityPopup*)(void*)(target))->FUN_140bea390(args.FUN_1408d21c0(0,L""), FUN_14016a600(args.FUN_1408d21c0(1,L""),0));
@@ -2257,16 +2248,16 @@ int CUserCommandCli::FUN_14136dab0(Unk_CommandArgs& args) {
 // @0x14136f1f0
 void* FUN_14136f1f0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UICommunityPopup*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UICommunityPopup*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f290
 void* FUN_14136f290(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UICutSceneCinematic*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UICutSceneCinematic*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -2274,39 +2265,39 @@ void* FUN_14136f290(int id) {
 void* FUN_14136f330() {
     void* mgr=FUN_1403ed2b0();
     if(!mgr) return 0;
-    Unk_CommandUIRef ref=((Unk_CommandUIMgr*)mgr)->FUN_141adcea0(FUN_141371d80());
-    if(((MS2Ptr<UIObject>*)&static_cast<class Unk_CommandUIRef&>(ref))->IsNull()) return 0;
-    return dynamic_cast<UIGameMenuDialog*>(FUN_1403ed9e0(ref));
+    MS2Ptr<UIObject> ref=((CUIService*)mgr)->FindObject((eUIClassID)FUN_141371d80());
+    if(ref.IsNull()) return 0;
+    return dynamic_cast<UIGameMenuDialog*>(ref.operator UIObject*());
 }
 // @0x14136f3e0
 void* FUN_14136f3e0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UIGuideEvent*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UIGuideEvent*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f480
 void* FUN_14136f480(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UIGuildDialog*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UIGuildDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f520
 void* FUN_14136f520(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UIServerListDialog*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UIServerListDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f5c0
 void* FUN_14136f5c0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
-        if(ref.FUN_1403e8a70()) return dynamic_cast<UISmartRecommendNotifyDialog*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+        if(ref.get()) return dynamic_cast<UISmartRecommendNotifyDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

@@ -30,33 +30,33 @@ public:
     unsigned __int64 FUN_141245b10() const { return m_nTotalMemory; }   // 0x141245b10
     static int ms_nModelCulling;                            // 0x143ae2b44 model node culling enabled
     // optimizer.cpp
-    void FUN_14161baf0();                                   // Initialize
-    void FUN_14161bb60();                                   // Update
+    void Initialize();                                   // Initialize
+    void Update();                                   // Update
     unsigned __int64 GetPagefileUsageMB() const;                 // pagefile MB
     unsigned __int64 GetPrivateUsageMB() const;                 // private MB
-    void FUN_14161bee0();                                   // log the hardware
-    float FUN_14161c360();                                  // frame limit from the options
+    void WriteSystemInfoToCrashLog();                                   // log the hardware
+    float ApplyFrameLimitFromOptions();                                  // frame limit from the options
     void ClearFrameLimit();                                   // no frame limit
     void SetFrameLimit(float fLimit);
     void LoadOptimization();                                   // load Optimization.xml
-    void FUN_14161c8c0();                                   // log the first MyPC load time
+    void LogFirstMyPCLoadTime();                                   // log the first MyPC load time
     void StartFrameSampling(unsigned nCount, int nCycle);        // start frame sampling
     void UpdateFrameSampling();                                   // sample the frame rate
     void FUN_14161cc80(int nFlags, int nLimit, int nEnabled, int nMode);
-    void FUN_14161cd00();                                   // clear
-    void FUN_14161cd60(unsigned __int64 nId);
-    void FUN_14161cdd0(unsigned nId);
+    void Reset();                                   // clear
+    void AddPreloadPlayer(unsigned __int64 nId);
+    void RemoveSelectedPlayer(unsigned nId);
     int FUN_14161ce60(unsigned nId);
     void SetSuppressed(int nSuppressed);
     int GetSuppressed() const;
-    void FUN_14161cf60(PCBase* pPC);
-    void FUN_14161d010(const egf::EntityID& kId);
-    void FUN_14161d070(const egf::EntityID& kId);
-    int FUN_14161d0f0() const;
+    void ApplyModeToPlayer(PCBase* pPC);
+    void AddSuppressor(const egf::EntityID& kId);
+    void RemoveSuppressor(const egf::EntityID& kId);
+    int IsUpdateEnabled() const;
     void FUN_14161d130(bool bForce);
-    void FUN_14161db10(int nFlags);
-    void FUN_14161dbe0(PCBase* pPC, int nFlags);
-    void FUN_14161dd30(int nFlags, int nLimit);
+    void ApplyModeToAllPlayers(int nFlags);
+    void ApplyFlagsToPlayer(PCBase* pPC, int nFlags);
+    void SetModeAndLimit(int nFlags, int nLimit);
     int GetEnabled() const;
     void FUN_14109ac50(int n);                              // m_nUpdateOn = n
     std::set<unsigned __int64> m_players;                   // +0x08

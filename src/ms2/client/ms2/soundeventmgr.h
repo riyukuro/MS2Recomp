@@ -131,7 +131,7 @@ public:
 
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_NodePtr m_spRoot;           // +0x30 "Effect Root" node
+    efd::SmartPointer<NiNode> m_spRoot;           // +0x30 "Effect Root" node
     float m_fVolume;                // +0x38
     MS2Ptr<CSoundEvent> m_spSound;  // +0x40
     bool m_bDoNotStop;              // +0x50

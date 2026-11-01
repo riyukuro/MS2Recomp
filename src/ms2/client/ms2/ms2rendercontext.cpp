@@ -17,16 +17,14 @@
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 class Unk_RendererWrap;
-class Unk_RenderTarget
-{
+class Unk_AeGraphicOption { public: unsigned int FUN_1409a8aa0(void) const; unsigned int FUN_1409a8ab0(void) const; }; class Unk_RenderTarget : public Unk_AeGraphicOption {
 public:
-    unsigned int FUN_1409a8ab0();   // width
-    unsigned int FUN_1409a8aa0();   // height
+
+
 };
-class Unk_RendererWrap
-{
+class Unk_AeGameOption { public: class Unk_AeGraphicOption * FUN_1409a8ac0(void); }; class Unk_RendererWrap : public Unk_AeGameOption {
 public:
-    Unk_RenderTarget* FUN_1409a8ac0();
+
 };
 class Unk_RenderLog;
 class CLogString* GetLogString();   // C3: was FUN_140166440

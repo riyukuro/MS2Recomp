@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/fittingdollpc.h"   // C3: PC::FUN_140967420
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pvpmanager.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
@@ -62,33 +63,11 @@ private:
     Unk_PrTable m_table;
 };
 
-// The player's PvP info proxy (PC method 0x140967420): get 0x140965810, operator-> 0x140965970, release 0x140964aa0.
-class Unk_PrInfoPtr
-{
-public:
-    ~Unk_PrInfoPtr() { FUN_140964aa0(); }
-    void* FUN_140965810() const;                                    // get
-    CPvPInfo* FUN_140965970() const;                                // operator->
-    void FUN_140964aa0();                                           // release
-    void* m_pad_00;
-    CPvPInfo* m_p;
-};
-class Unk_PrActor { public: Unk_PrInfoPtr FUN_140967420(); };
+// The player's PvP info (C3: PC::FUN_140967420's MS2Ptr<Unk_PCInteractMode>, fittingdollpc.h).
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
 class Unk_PrItemData : public CItemData { };         // the icon name
-class Unk_PrItemPtr
-{
-public:
-    ~Unk_PrItemPtr() { FUN_1401b50d0(); }
-    void* FUN_140203c60() const;
-    void FUN_1401b50d0();
-private:
-    void* unknown;
-    void* object;
-};
-MS2_CHECK_SIZE(Unk_PrItemPtr, 0x10);
-Unk_PrItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The AS root with the two-argument Invoke ("showLastResult").
 class Unk_PrScript : public AScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };
@@ -185,9 +164,9 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
     {
         strText = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_17c), m_180);
         m_30->Invoke("setRewardText", strText);
-        Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
-        if (spItem.FUN_140203c60() != 0)
-            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
+        MS2Ptr<CItemData> spItem = FUN_14053f870(m_17c);
+        if ((CItemData*)spItem != 0)
+            m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrItemData*>(spItem.operator->())->GetIconPath());
     }
     static_cast<Unk_PrScript*>(m_30.operator->())->FUN_14129cce0("showLastResult", m_180, strText);
 }
@@ -195,12 +174,12 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
 // @0x1413440a0
 void UIPvPResultDialog::FUN_1413440a0()
 {
-    Unk_PrActor* pPC = (Unk_PrActor*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    bool bInPvP = pPC && (pPC->FUN_140967420().FUN_140965810() ? true : false);
+    PC* pPC = reinterpret_cast<PC*>((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    bool bInPvP = pPC && ((Unk_PCInteractMode*)pPC->FUN_140967420() ? true : false);
     if (bInPvP)
     {
-        m_178 = pPC->FUN_140967420().FUN_140965970()->m_nMode;
-        m_17c = pPC->FUN_140967420().FUN_140965970()->GetRewardItemId();
+        m_178 = reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->m_nMode;
+        m_17c = reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->GetRewardItemId();
     }
 }
 
@@ -214,9 +193,9 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
         return false;
     PCBase* pOther = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));
     CString strIcon("");
-    Unk_PrItemPtr spItem = FUN_14053f870(m_17c);
-    if (spItem.FUN_140203c60() != 0)
-        strIcon = reinterpret_cast<Unk_PrItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath();
+    MS2Ptr<CItemData> spItem = FUN_14053f870(m_17c);
+    if ((CItemData*)spItem != 0)
+        strIcon = reinterpret_cast<Unk_PrItemData*>(spItem.operator->())->GetIconPath();
     pObj->FUN_1407cb9c0("rank", nRank);
     {
         CStringW strRank(L"-");

@@ -24,9 +24,9 @@ public:
     void ClearParty();
     void FUN_14162a480();
     void OnParty(CInPacket&);
-    void FUN_14162a840(TPtr<PCBase>);
-    void FUN_14162a910(TPtr<PCBase>);
-    void FUN_14162aa10(TPtr<PCBase>);
+    void UpdateMemberJob(TPtr<PCBase>);
+    void UpdateMemberHp(TPtr<PCBase>);
+    void UpdateMemberLevel(TPtr<PCBase>);
     void SendPartyMode1(CStringW);
     void SendPartyMode23(const Unk_PartyRecruitInvite&);
     void FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>);
@@ -35,12 +35,12 @@ public:
     void SendMatchPartyMode2(const CMatchPartyRecruitSchCond&);
     int GetPartyId();
     bool FUN_14162ab20();
-    bool FUN_14162ab60();
+    bool IsLocalPlayerLeader();
     bool IsPartyId(int);
     bool IsMatchmaking();
-    bool FUN_14162ac00(int);
-    bool FUN_14162ac40();
-    bool FUN_14162ac70(int);
+    bool IsMatchSearching(int);
+    bool IsAnySearching();
+    bool CanEnterDungeonRoom(int);
     bool FUN_14162ad30();
     int FUN_14162ad50(CStringW);                // exe returns a full int (callers test eax)
     int FUN_14162ae20(__int64);                 // exe returns a full int (callers test eax)

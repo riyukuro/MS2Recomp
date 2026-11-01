@@ -20,7 +20,7 @@
 class CInPacket;
 class Unk_140165cf0;
 class Unk_DebugGuideList;
-class Unk_DebugGuideButton;
+class ASButton;
 class Unk_DebugGuideInput;
 class ASMovieClip;
 
@@ -97,9 +97,9 @@ private:
     MS2Ptr<Unk_DebugGuideList> m_leftList;                      // +0x178 "m_leftList"
     MS2Ptr<Unk_DebugGuideList> m_rightList;                     // +0x188 "m_rightList"
     MS2Ptr<ASMovieClip> m_movie;                                // +0x198 (double click)
-    MS2Ptr<Unk_DebugGuideButton> m_unused;                      // +0x1a8
-    MS2Ptr<Unk_DebugGuideButton> m_executeButton;               // +0x1b8 "m_executeButton"
-    MS2Ptr<Unk_DebugGuideButton> m_multiExecuteButton;          // +0x1c8 "m_multiExecuteButton"
+    MS2Ptr<ASButton> m_unused;                      // +0x1a8
+    MS2Ptr<ASButton> m_executeButton;               // +0x1b8 "m_executeButton"
+    MS2Ptr<ASButton> m_multiExecuteButton;          // +0x1c8 "m_multiExecuteButton"
     MS2Ptr<Unk_DebugGuideInput> m_input;                        // +0x1d8 "m_input"
     std::vector<Unk_DebugGuideGroup> m_groups;                  // +0x1e8
 };

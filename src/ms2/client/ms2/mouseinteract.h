@@ -9,6 +9,8 @@
 #include <atlstr.h>
 #include "ms2/placeholder/cptred.h"
 
+template <class T> class MS2Ptr;
+
 // efd::Point3 in the exe; the declared (never called here) default ctor keeps a Unk_MouseRay local out of /GS.
 struct Unk_Vec3 { Unk_Vec3(); float x, y, z; };
 
@@ -62,7 +64,7 @@ public:
     virtual int vfunc_3();                             // 0x140a79cd0
     virtual void vfunc_5();                             // 0x140a79d90
     virtual int vfunc_6();
-    struct Unk_PortalHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a79db0
+    MS2Ptr<class CPortal> FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a79db0
     int m_nPortalId;                                    // +0x18
 };
 
@@ -75,7 +77,7 @@ public:
     virtual int vfunc_3();                             // 0x140a7a3d0
     virtual void vfunc_5();                             // 0x140a7a4a0
     virtual int vfunc_6();
-    struct Unk_ObjectHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7a4e0
+    MS2Ptr<class CInteractObject> FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7a4e0
     int m_nAction;                                      // +0x18
     CStringA m_strObjectId;                             // +0x20
 };
@@ -132,6 +134,6 @@ public:
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a7ae80
     virtual int vfunc_3();                             // 0x140a7af50
     virtual int vfunc_6();
-    struct Unk_WeaponHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7b040
+    MS2Ptr<class Cube> FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7b040
     unsigned long long m_qwObjectId;                    // +0x18
 };

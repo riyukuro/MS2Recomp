@@ -37,7 +37,6 @@ class Unk_RsActor;
 class Unk_RsWorld : public WorldService
 {
 public:
-    Unk_RsActor* FUN_141bd1200(int nId);
 };
 // The local session (0x1409f7c90): zero when the id is a local player.
 class Unk_RsSession { public: int FUN_14161ce60(int nId); };
@@ -184,7 +183,7 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
     FUN_1416f7790();
     if (DAT_143ae95e1 || DAT_143ae95e0)
     {
-        Unk_RsActor* pActor = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_nOwnerId);
+        Unk_RsActor* pActor = reinterpret_cast<Unk_RsActor*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
         if (pActor != 0)
         {
             CSkillCollisionManager::CollisionPtr spShape;

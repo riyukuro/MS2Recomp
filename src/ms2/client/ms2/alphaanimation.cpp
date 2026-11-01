@@ -59,6 +59,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/effectservice.h"
 
 // ---- statics (.text$di) ----
 
@@ -81,7 +82,6 @@ class Unk_AlphaService : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x0610000c;
-    void FUN_1411a6ea0(CAlphaAnimation* pAnim);
 };
 
 // The per-entity tracker of the hardware instancing service (0x30+ bytes; +0x2a = visible flag).
@@ -120,8 +120,8 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
 };
-Unk_ActorSlots* FUN_141bd0fa0(void* pContext, egf::EntityID id);
 
 unsigned FUN_1408a2010();                       // property type id of bool
 
@@ -289,7 +289,7 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<Unk_AlphaKey>& keys, con
 
     Unk_AlphaService* pService = FUN_14098c540(&DAT_143b059e8);
     if (pService)
-        pService->FUN_1411a6ea0(pAnim);
+        reinterpret_cast<CEffectService*>(pService)->AddTracked(reinterpret_cast<Unk_EsTracked*>(pAnim));
     pkObject->Update(fNow, true);
 }
 
@@ -304,7 +304,7 @@ bool CAlphaAnimation::vfunc_2()
 
         if (m_idOwner != s_nullEntityId)
         {
-            Unk_ActorSlots* pActor = FUN_141bd0fa0(((void*)WorldService::GetInstance()), m_idOwner);
+            Unk_ActorSlots* pActor = reinterpret_cast<Unk_ActorSlots*>(WorldService::GetInstance()->FindObjectByEntityId(m_idOwner));
             if (pActor)
                 pActor->vfunc_39();
         }

@@ -145,8 +145,8 @@ public:
     void SetDiffuseColor(class NiColor const&);
     void SetEmittance(class NiColor const&);
 };
-void* FUN_14123c410(void* owner);   void* FUN_141b6efc0(void* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
-void* FUN_14099eef0(void* owner);
+namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
+void* FUN_14123c410(void* owner);   NiAVObject* FUN_141b6efc0(egf::Entity* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
 void FUN_1411e1b80(void* src, void* list);
    void FUN_140885680(void* list, void** pos);
 void* FUN_1405a8ed0(void* elem);class CEquipItem   // C3: member view for the former free stand-ins
@@ -298,12 +298,12 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
     }
     if (force || self->m_bDirty != 0) {
-        void* h = FUN_141b6efc0(FUN_14123c410(self->m_pOwner));
+        void* h = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(self->m_pOwner)));
         if (h != 0) {
             FUN_141567540((class NiAVObject*)(h), self->m_bShown);
             self->m_bDirty = false;
         }
-        void* o = FUN_14099eef0(self->m_pOwner);
+        void* o = efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(self->m_pOwner));
         if (o != 0) {
             void* pos2;
             Unk_ShList2 list(10);

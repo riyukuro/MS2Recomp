@@ -73,14 +73,6 @@ public:
 };
 void FUN_1411e1ce0(void*, ATL::CAtlList<MS2Ptr<Unk_QuestSkill>>&, int);
 
-// A read-only prefix of the dungeon-room row; no instance is constructed here.
-struct Unk_QuestRoom : CPtred {
-    unsigned char m_unrecovered[0xe0];
-    unsigned m_maxUsers;
-};
-MS2_CHECK_OFFSET(Unk_QuestRoom, m_maxUsers, 0xf8);
-bool FUN_140e36ca0(const MS2Ptr<Unk_QuestRoom>&);
-class Unk_QuestRoomTable { public: MS2Ptr<Unk_QuestRoom> FUN_1403206b0(int); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -264,9 +256,9 @@ int CQuest::HasMultiUserRoom(int field)
     if (FUN_1407443e0(field) == 0) return 0;
     int roomId = m_data->m_30c.m_roomId;
     if (roomId == 0) return 0;
-    MS2Ptr<Unk_QuestRoom> room = reinterpret_cast<Unk_QuestRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(roomId);
-    if (FUN_140e36ca0(room)) return 0;
-    if (room->m_maxUsers <= 1) return 0;
+    DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(roomId);
+    if (!room) return 0;
+    if (room->m_maxUserCount <= 1) return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x1416C6CA0, CQuest, SetTrackedValue, 22, 0x161CE143);

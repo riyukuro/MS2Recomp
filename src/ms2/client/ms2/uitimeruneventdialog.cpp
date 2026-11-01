@@ -29,6 +29,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -260,7 +261,7 @@ void UITimeRunEventDialog::vfunc_o178_10(void* pQuest)
 void UITimeRunEventDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (m_tick.FUN_140268870(1000)) {
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000)) {
         MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
         if (spContext.IsNull()) {
             vfunc_67();
@@ -369,7 +370,7 @@ void UITimeRunEventDialog::FUN_140ee3c00(int nDay)
             row.FUN_1407cb9c0("satisfied", quest->IsComplete());
             row.FUN_1407cbb20("label", FUN_140938ae0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
             row.FUN_1407cbb20("desc", CStringW(strDesc));
-            row.FUN_1407cba60("binding", m_missionBinder.FUN_140d43310(reward.m_itemId, reward.m_count, reward.m_job));
+            row.FUN_1407cba60("binding", m_missionBinder.BindNewItem(reward.m_itemId, reward.m_count, reward.m_job));
             row.FUN_1409c1180("exp", FUN_140761ba0(spQuest->m_questId, 1));
             spList->FUN_1422dd230(row);
         }

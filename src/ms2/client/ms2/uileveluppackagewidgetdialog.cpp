@@ -393,7 +393,7 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
             pReward = &spData->m_complete.m_choiceRewards[i];
     }
     rObj.FUN_1409c0dc0("title", "$s_levelup_package_widget");
-    rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(pReward->m_itemId, pReward->m_count, pReward->m_job));
+    rObj.FUN_1407cba60("binding", m_178->BindNewItem(pReward->m_itemId, pReward->m_count, pReward->m_job));
     rObj.FUN_1407cb9c0("max", (unsigned)range.m_nHigh - (unsigned)range.m_nLow);
     rObj.FUN_1407cb9c0("current", (unsigned)Unk_EwActorLevel(pSelf) - (unsigned)range.m_nLow);
     rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), range.m_nHigh));
@@ -568,7 +568,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
         return 0;
     m_190 = spResult->m_eventId;
     rObj.FUN_1407cbb20("title", GetStringCommonByKey(spResult->m_rewardUiTitleStringKey));
-    rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(spResult->m_rewardItems.begin()->m_itemId, spResult->m_rewardItems.begin()->vfunc_o18_1(), spResult->m_rewardItems.begin()->m_count));
+    rObj.FUN_1407cba60("binding", m_178->BindNewItem(spResult->m_rewardItems.begin()->m_itemId, spResult->m_rewardItems.begin()->vfunc_o18_1(), spResult->m_rewardItems.begin()->m_count));
     rObj.FUN_1409c48f0("max", spResult->m_endLevel);
     rObj.FUN_1409c48f0("current", Unk_EwActorLevel(pSelf));
     rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), spResult->m_endLevel));

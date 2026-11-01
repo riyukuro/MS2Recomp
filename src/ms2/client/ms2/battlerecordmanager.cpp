@@ -41,66 +41,6 @@ public: Unk_BattleBytes(const CString&) noexcept; // ctor 0x1402923c0
 private: void* data;
 };
 MS2_CHECK_SIZE(Unk_BattleBytes,8);
-class Unk_BattleRoom {
-public:
-    unsigned __int64 pad_0;
-    unsigned __int64 pad_8;
-    unsigned __int64 pad_10;
-    unsigned __int64 pad_18;
-    unsigned __int64 pad_20;
-    unsigned __int64 pad_28;
-    unsigned __int64 pad_30;
-    unsigned __int64 pad_38;
-    unsigned __int64 pad_40;
-    unsigned __int64 pad_48;
-    unsigned __int64 pad_50;
-    unsigned __int64 pad_58;
-    unsigned __int64 pad_60;
-    unsigned __int64 pad_68;
-    unsigned __int64 pad_70;
-    unsigned __int64 pad_78;
-    unsigned __int64 pad_80;
-    unsigned __int64 pad_88;
-    unsigned __int64 pad_90;
-    unsigned __int64 pad_98;
-    unsigned __int64 pad_a0;
-    unsigned __int64 pad_a8;
-    unsigned __int64 pad_b0;
-    unsigned __int64 pad_b8;
-    unsigned __int64 pad_c0;
-    unsigned __int64 pad_c8;
-    unsigned __int64 pad_d0;
-    unsigned __int64 pad_d8;
-    unsigned __int64 pad_e0;
-    unsigned __int64 pad_e8;
-    unsigned __int64 pad_f0;
-    unsigned __int64 pad_f8;
-    unsigned __int64 pad_100;
-    unsigned __int64 pad_108;
-    unsigned __int64 pad_110;
-    unsigned __int64 pad_118;
-    unsigned __int64 pad_120;
-    unsigned __int64 pad_128;
-    unsigned __int64 pad_130;
-    unsigned __int64 pad_138;
-    unsigned __int64 pad_140;
-    unsigned __int64 pad_148;
-    unsigned __int64 pad_150;
-    unsigned __int64 pad_158;
-    unsigned __int64 pad_160;
-    unsigned __int64 pad_168;
-    unsigned __int64 pad_170;
-    unsigned __int64 pad_178;
-    unsigned __int64 pad_180;
-    unsigned pad188; bool enabled;
-};
-MS2_CHECK_OFFSET(Unk_BattleRoom,enabled,0x18c);
-class Unk_BattleRoomPtr {
-public: ~Unk_BattleRoomPtr(); bool operator==(Unk_BattleRoom*) const; Unk_BattleRoom* operator->() const;
-private: void* pad; Unk_BattleRoom* p;
-};
-MS2_CHECK_SIZE(Unk_BattleRoomPtr,16);
-class Unk_BattleRoomMgr { public: Unk_BattleRoomPtr FUN_1403206b0(int); };
 class Unk_BattleActor {
 public:
     virtual void vfunc_0();
@@ -185,7 +125,7 @@ public:
 };
 class Unk_BattleNpc : public CNpc { public: unsigned FUN_141094f40();};
 class Unk_BattleWorld {
-public: __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned); Unk_BattleNpc* FUN_141bd1320(unsigned);
+public: __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned);
 };
 struct Unk_BattleDamage {
     unsigned __int64 pad_0;
@@ -256,7 +196,7 @@ void CBattleRecordGroup::Stop() {
 MS2_REPLACE_METHOD(0x140a03460, CBattleRecordGroup, Stop, 199, 0xEAC73EAE);
 // @0x140a03530
 int CBattleRecordGroup::IsActive() {
-    if(type==2) { int roomId=DAT_143ab2884; if(!roomId) return 0; Unk_BattleRoomPtr room=reinterpret_cast<Unk_BattleRoomMgr*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(roomId); if(room==0) return 0; if(!room->enabled) return 0; }
+    if(type==2) { int roomId=DAT_143ab2884; if(!roomId) return 0; DungeonRoomPtr room=TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(roomId); if(room==0) return 0; if(!room->m_chaosDamageMeter) return 0; }
     return active;
 }
 MS2_REPLACE_METHOD(0x140a03530, CBattleRecordGroup, IsActive, 192, 0x1BC023A0);
@@ -405,7 +345,7 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
             unsigned count=(unsigned)damage->values.FUN_1401b8910();
             group->RecordAmount(record,2,count);
             group->RecordAmount(record,0,std::abs(damage->FUN_14175ac30()));
-            Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1320(damage->target);
+            Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
             if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(damage->FUN_14175ac30()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {

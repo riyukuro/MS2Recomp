@@ -91,7 +91,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
             }
             if (bRemove)
             {
-                FUN_140e2b140(nOther);
+                UnEquipItem(nOther);
                 pOther = 0;
             }
         }
@@ -105,19 +105,19 @@ MS2_REPLACE_METHOD(0x140E2A090, UIEquipIconContainer, FUN_140e2a090, 1436, 0xC34
 // @0x140e2a640
 void UIEquipIconContainer::FUN_140e2a640(int nSlot)
 {
-    FUN_140e2b140(nSlot);
+    UnEquipItem(nSlot);
 }
 
 MS2_REPLACE_METHOD(0x140E2A640, UIEquipIconContainer, FUN_140e2a640, 32, 0x531E2C2D);
 // @0x140e2a670
-void UIEquipIconContainer::FUN_140e2a670()
+void UIEquipIconContainer::UnEquipAll()
 {
     m_28.RemoveAll();
     if (m_18.get() != 0)
         m_18->Invoke("unEquipAll");
 }
 
-MS2_REPLACE_METHOD(0x140E2A670, UIEquipIconContainer, FUN_140e2a670, 100, 0x7661BBFA);
+MS2_REPLACE_METHOD(0x140E2A670, UIEquipIconContainer, UnEquipAll, 100, 0x7661BBFA);
 // @0x140e2a6e0
 void UIEquipIconContainer::FUN_140e2a6e0(int nVisible)
 {
@@ -190,7 +190,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIco
 
 MS2_REPLACE_METHOD(0x140E2AD70, UIEquipIconContainer, FUN_140e2ad70, 962, 0x0958F663);
 // @0x140e2b140
-void UIEquipIconContainer::FUN_140e2b140(int nSlot)
+void UIEquipIconContainer::UnEquipItem(int nSlot)
 {
     if (m_28.IsEmpty())
         return;
@@ -204,7 +204,7 @@ void UIEquipIconContainer::FUN_140e2b140(int nSlot)
     }
 }
 
-MS2_REPLACE_METHOD(0x140E2B140, UIEquipIconContainer, FUN_140e2b140, 395, 0x38131CDE);
+MS2_REPLACE_METHOD(0x140E2B140, UIEquipIconContainer, UnEquipItem, 395, 0x38131CDE);
 // @0x140e2b2d0
 // MS2-FUNCTIONAL: frame is 0x10 larger (the exe's ASArgList is 0x18 bytes; the shared asdata.h placeholder says 0x20)
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int a1, Scaleform::GFx::Value a2)

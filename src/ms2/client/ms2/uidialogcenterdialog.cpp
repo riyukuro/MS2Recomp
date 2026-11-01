@@ -56,20 +56,6 @@ MS2_CHECK_SIZE(Unk_140acd6e0, 0x88);
 
 class ASDialog : public ASDisplayObjectContainer {};
 
-// The ui manager: toggle a dialog, look one up.
-class Unk_DcUiMgr {};
-class Unk_DcUiRef
-{
-public:
-    ~Unk_DcUiRef();                                                     // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* m_unknown;
-    UIObject* m_pObject;
-};
-MS2_CHECK_SIZE(Unk_DcUiRef, 0x10);
-struct Unk_DcUiMgrCall { Unk_DcUiRef FUN_141adcea0(int nId); };
-
 // The dialog of a ui id, and the value of a movie member.
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 
@@ -173,11 +159,11 @@ Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 // @0x141296ab0
 UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 {
-    if (reinterpret_cast<Unk_DcUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        Unk_DcUiRef ref = reinterpret_cast<Unk_DcUiMgrCall*>(reinterpret_cast<Unk_DcUiMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UIWeddingHallReservationDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get() != 0)
+            return dynamic_cast<UIWeddingHallReservationDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -197,8 +183,8 @@ static MS2Ptr<Unk_140acd6e0> FUN_1412968a0(int nMovieId, CString strLinkage, __i
 }
 
 // The ui text service (singleton): the text of a "$s_..." key.
-class Unk_DcText { public: CStringW FUN_1422b0570(const CString& strKey); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_DcText (calls cast back)
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 
 // ---- UIDialogCenterDialog -------------------------------------------------------------------------------------------
 
@@ -477,7 +463,7 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
 // @0x141296370
 void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId)
 {
-    CStringW strLabel = reinterpret_cast<Unk_DcText*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
     MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
@@ -489,7 +475,7 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
 // @0x141296500
 void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
-    CStringW strLabel = reinterpret_cast<Unk_DcText*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
     MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
         spBtn->FUN_1422ce240(cb, 0);

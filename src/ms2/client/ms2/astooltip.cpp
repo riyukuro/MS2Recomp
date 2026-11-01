@@ -53,6 +53,8 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/worldservice.h"  // C3: WorldService::FUN_141bd1290
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 #ifdef __clang__
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);   // the exe's operator+(const CStringW&, const wchar_t*)
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);   // the exe's operator+(const CStringW&, const CStringW&)
@@ -956,7 +958,7 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
         unsigned nRequired = (unsigned)sets[i]->GetItemCount();
         CStringW strPieces;
         int nPcGender = 2;
-        PCBase* pPc = FUN_141bd1290(FUN_1403ed2d0_p1(), pItem->FUN_140526b10());
+        PCBase* pPc = reinterpret_cast<PCBase*>(FUN_1403ed2d0_p1()->FUN_141bd1290(pItem->FUN_140526b10()));
         if (pPc == 0 && pItem->FUN_140526b10() == 0)
             pPc = reinterpret_cast<PCBase*>(FUN_1409c6540());
         std::list<MS2Ptr<CEquipItem> > equipped;
@@ -2697,12 +2699,12 @@ void ASTooltip::FUN_1409d3f10(CItem* pItem)
         int nMinutes = (std::max)((int)(remain.Get() % 3600 / 60), 1);
         if (nHours > 0)
         {
-            strText = FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock");
+            strText = reinterpret_cast<GFxManager*>(FUN_14025e7a0_p3())->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock");
             strText = StringFormat(strText, nHours, nMinutes);
         }
         else
         {
-            strText = FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock2");
+            strText = reinterpret_cast<GFxManager*>(FUN_14025e7a0_p3())->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock2");
             strText = StringFormat(strText, nMinutes);
         }
         FUN_1407cbb20("itemLockInfo", strText);
@@ -2712,7 +2714,7 @@ void ASTooltip::FUN_1409d3f10(CItem* pItem)
     {
         FUN_1407cbbe0(s_strItemIconLock, true);
         FUN_1407cbbe0(s_strItemIconUnLock, false);
-        FUN_1407cbb20("itemLockInfo", FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_lock"));
+        FUN_1407cbb20("itemLockInfo", reinterpret_cast<GFxManager*>(FUN_14025e7a0_p3())->FUN_1422b0570("$s_itemlock_tooltip_msg_lock"));
     }
     else
     {

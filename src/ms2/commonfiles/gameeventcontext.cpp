@@ -284,6 +284,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/cnpcshopproductbase.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/classobject.h"
 #include "gameeventcontext.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -299,49 +300,33 @@ public:
 };
 
 // Out-of-unit helpers.
-// Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 int FUN_140718200(CStringW* text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's signature
-Unk_GEOut* FUN_14070fb70(Unk_GEOut* out, const CMsTime* date);
-Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
-Unk_GEOut* FUN_14070faa0(Unk_GEOut* out, const CStringA* text);
-Unk_GEReader* FUN_14070f480(Unk_GEReader* in, int* value);
-Unk_GEReader* FUN_14070f500(Unk_GEReader* in, __int64* value);
-Unk_GEReader* FUN_14070f300(Unk_GEReader* in, bool* value);
-Unk_GEReader* FUN_14070f6b0(Unk_GEReader* in, CMsTime* date);
-Unk_GEReader* FUN_14070f5f0(Unk_GEReader* in, CStringW* text);
-Unk_GEReader* FUN_14070f580(Unk_GEReader* in, CStringA* text);
+COutputStream & FUN_14070fb70(COutputStream &, const Unk_OSNumber &);  // C3: the definition's signature
+COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
+COutputStream & FUN_14070faa0(COutputStream &, const CStringA &);  // C3: the definition's signature
 Unk_AttendGiftDataGroup* FUN_1403fc330();
 // Typed stream operators (packet.cpp).
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f960(COutputStream& out, long value);
 COutputStream& FUN_14070fa60(COutputStream& out, float value);
-CInputStream& FUN_14070f440(CInputStream& in, long& value);
-CInputStream& FUN_14070f480(CInputStream& in, int& value);
-CInputStream& FUN_14070f480(CInputStream& in, unsigned& value);
-CInputStream& FUN_14070f540(CInputStream& in, float& value);
-COutputStream& FUN_1403d7730(COutputStream& out, const ATL::CAtlArray<unsigned>& arr);   // count + values (gameevent.cpp)
-CInputStream& FUN_1403d7440(CInputStream& in, ATL::CAtlArray<unsigned>& arr);          // count + values (gameevent.cpp)
+template <class T> COutputStream& operator<<(COutputStream& out, const ATL::CAtlArray<T>& arr);   // count + values (gameevent.cpp)
+template <class T> CInputStream& operator>>(CInputStream& in, ATL::CAtlArray<T>& arr);          // count + values (gameevent.cpp)
 __int64 GetServerTime();                                                               // server time
-int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);   // tinyxmlhelper string attribute
+int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // tinyxmlhelper string attribute
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);  // split into ints
+void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);  // split into ints
 void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);    // split into ints
-int FUN_140274f40(const CStringW& str);                                                // _wtoi
-void FUN_1401cdae0(ATL::CAtlArray<int>& arr, unsigned seed);                            // shuffle by the seed
-int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);                           // index of the value or -1
+int FUN_140274f40(CStringW& str);                                                // _wtoi
+void FUN_1401cdae0(ATL::CAtlArray<int>* arr, int seed);                            // shuffle by the seed
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }                           // index of the value or -1
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, long& nOut);   // tinyxmlhelper int attribute, long overload
 Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
-Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pNode);  // next sibling element
 CString FUN_140223380(int result);                    // rps result node name: draw / win / lose
-void FUN_14015f0b0(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);  // split into strings
+void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* rOut, const char* pszSep);  // split into strings
 CString CoupleDanceStepName(int step);
 // Enum name parsers (commonenum.cpp).
 Unk_BlueMarbleSlotType FUN_140218100(const CStringA& name);
@@ -363,7 +348,7 @@ template <class T> CInputStream& operator>>(CInputStream& in, std::vector<T>& ve
     vec.reserve(count);
     for (unsigned i = 0; i < count; i++) {
         T value;
-        FUN_14070f480(in, value);
+        reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(value));
         vec.push_back(value);
     }
     return in;
@@ -381,8 +366,8 @@ static CStringA s_sortNames7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 
 #ifndef MS2_HOOK_DLL
 // Registration of the event factories by name (dynamic initializers).
-static Unk_GEFactoryRegistry s_regAttendGift(L"GameEventAttendGift", FUN_1403fb400);     // 0x143aaee24
-static Unk_GEFactoryRegistry s_regCashAttend(L"GameEventCashAttend", FUN_1403fb9a0);     // 0x143aaee25
+static ClassObjectRegistrar s_regAttendGift(L"GameEventAttendGift", (ClassObjectCreateFn)FUN_1403fb400);     // 0x143aaee24
+static ClassObjectRegistrar s_regCashAttend(L"GameEventCashAttend", (ClassObjectCreateFn)FUN_1403fb9a0);     // 0x143aaee25
 #endif
 
 // @0x1403fb400
@@ -409,10 +394,10 @@ MS2_REPLACE_METHOD(0x1403fb5e0, GameEventAttendGift, vfunc_2, 6, 0xA9AF6E37);
 void GameEventAttendGift::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070fb70(out, &m_28);
-    FUN_14070fb70(out, &m_38);
-    FUN_14070fae0(out, &m_strName);
-    FUN_14070faa0(out, &m_strDesc);
+    FUN_14070fb70(reinterpret_cast<COutputStream&>(*out), reinterpret_cast<const Unk_OSNumber&>(m_28));
+    FUN_14070fb70(reinterpret_cast<COutputStream&>(*out), reinterpret_cast<const Unk_OSNumber&>(m_38));
+    FUN_14070fae0(reinterpret_cast<COutputStream&>(*out), m_strName);
+    FUN_14070faa0(reinterpret_cast<COutputStream&>(*out), m_strDesc);
     FUN_14070f820(*(COutputStream *)out, m_b124);
     FUN_14070f820(*(COutputStream *)out, m_b125);
     FUN_14070f9a0(*(COutputStream *)out, m_i120);
@@ -432,20 +417,20 @@ MS2_REPLACE_METHOD(0x1403fb5f0, GameEventAttendGift, vfunc_3, 370, 0xF9D3D0D4);
 void GameEventAttendGift::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    FUN_14070f6b0(&in->reader, &m_28);
-    FUN_14070f6b0(&in->reader, &m_38);
-    FUN_14070f5f0(&in->reader, &m_strName);
-    FUN_14070f580(&in->reader, &m_strDesc);
-    FUN_14070f300(&in->reader, &m_b124);
-    FUN_14070f300(&in->reader, &m_b125);
-    FUN_14070f480(&in->reader, &m_i120);
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read13(reinterpret_cast<Unk_OSNumber&>(m_28));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read13(reinterpret_cast<Unk_OSNumber&>(m_38));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read11(m_strName);
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read10(m_strDesc);
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read0(reinterpret_cast<bool&>(m_b124));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read0(reinterpret_cast<bool&>(m_b125));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i120));
     m_i114 = MS2_GE_READ_BYTE(&in->reader);
-    FUN_14070f480(&in->reader, &m_i118);
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i118));
     m_i100 = MS2_GE_READ_BYTE(&in->reader);
     if (m_i100 != 0) {
-        FUN_14070f480(&in->reader, &m_i104);
-        FUN_14070f500(&in->reader, &m_i108);
-        FUN_14070f480(&in->reader, &m_i110);
+        reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i104));
+        reinterpret_cast<Unk_OSInput*>(&in->reader)->Read8(reinterpret_cast<unsigned __int64&>(m_i108));
+        reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i110));
     }
     FUN_1403fbe50(&in->reader, &m_gifts);
     vfunc_10();
@@ -493,11 +478,11 @@ MS2_REPLACE_METHOD(0x1403fbb00, GameEventCashAttend, vfunc_2, 189, 0x68160277);
 void GameEventCashAttend::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070fb70(out, &m_28);
-    FUN_14070fb70(out, &m_38);
+    FUN_14070fb70(reinterpret_cast<COutputStream&>(*out), reinterpret_cast<const Unk_OSNumber&>(m_28));
+    FUN_14070fb70(reinterpret_cast<COutputStream&>(*out), reinterpret_cast<const Unk_OSNumber&>(m_38));
     FUN_14070f9a0(*(COutputStream *)out, m_i0);
     FUN_14070f9a0(*(COutputStream *)out, m_i4);
-    FUN_14070fae0(out, &m_strDesc);
+    FUN_14070fae0(reinterpret_cast<COutputStream&>(*out), m_strDesc);
 }
 MS2_REPLACE_METHOD(0x1403fbbd0, GameEventCashAttend, vfunc_3, 144, 0xD55548FA);
 
@@ -505,11 +490,11 @@ MS2_REPLACE_METHOD(0x1403fbbd0, GameEventCashAttend, vfunc_3, 144, 0xD55548FA);
 void GameEventCashAttend::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    FUN_14070f6b0(&in->reader, &m_28);
-    FUN_14070f6b0(&in->reader, &m_38);
-    FUN_14070f480(&in->reader, &m_i0);
-    FUN_14070f480(&in->reader, &m_i4);
-    FUN_14070f5f0(&in->reader, &m_strDesc);
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read13(reinterpret_cast<Unk_OSNumber&>(m_28));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read13(reinterpret_cast<Unk_OSNumber&>(m_38));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i0));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i4));
+    reinterpret_cast<Unk_OSInput*>(&in->reader)->Read11(m_strDesc);
     m_entry = FUN_1403fc330()->FUN_1401ae630(m_i0);
     vfunc_10();
 }
@@ -630,8 +615,8 @@ MS2_REPLACE_METHOD(0x1403fcb80, EventTimeLimitDungeonContext, Write, 113, 0x253F
 // @0x1403fcc00
 void EventTimeLimitDungeonContext::Read(CInputStream& in)
 {
-    FUN_14070f480(in, m_eventId);
-    FUN_14070f480(in, m_dungeonId);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(m_eventId));
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(m_dungeonId));
     m_rangeTime.m_start.SetSeconds(in.ReadInt32());
     m_rangeTime.m_end.SetSeconds(in.ReadInt32());
 }
@@ -732,9 +717,9 @@ MS2_REPLACE_METHOD(0x1403fd750, DungeonExtraRewardCountCtx, Load, 135, 0x7AA036E
 // @0x1403fd7e0
 CInputStream& operator>>(CInputStream& in, DungeonExtraRewardCountCtx& ctx)
 {
-    FUN_14070f480(in, ctx.m_dungeonID);
-    FUN_14070f480(in, ctx.m_18);
-    FUN_14070f480(in, ctx.m_count);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(ctx.m_dungeonID));
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(ctx.m_18));
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(ctx.m_count));
     return in;
 }
 MS2_REPLACE_OVERLOAD(0x1403fd7e0, CInputStream&(CInputStream&, DungeonExtraRewardCountCtx&), operator>>, 90, 0x68A75E42);
@@ -782,11 +767,11 @@ MS2_REPLACE_METHOD(0x1403fda00, DungeonBonusRewardCtx, Write, 136, 0xABDF08DD);
 // @0x1403fda90
 void DungeonBonusRewardCtx::Read(CInputStream& in)
 {
-    FUN_14070f480(in, m_dungeonID);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(m_dungeonID));
     m_groupType = (Unk_DungeonGroupType)in.ReadUInt8();
-    FUN_14070f540(in, m_mesoRate);
-    FUN_14070f540(in, m_expRate);
-    FUN_14070f440(in, m_itemRolls);
+    reinterpret_cast<Unk_OSInput&>(in).Read9(m_mesoRate);
+    reinterpret_cast<Unk_OSInput&>(in).Read9(m_expRate);
+    reinterpret_cast<Unk_OSInput&>(in).Read5(m_itemRolls);
     in >> m_customDropBoxIds;
 }
 MS2_REPLACE_METHOD(0x1403fda90, DungeonBonusRewardCtx, Read, 156, 0xFFB55CCC);
@@ -1235,7 +1220,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x2f9, 0);
         return false;
     }
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
         CStringW strValue;
         XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
         m_play.m_messages.Add(strValue);
@@ -1258,7 +1243,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
             MS2_ASSERT_AT(0x31c, 0);
             return false;
         }
-        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultActions); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultActions); pNode != NULL; pNode = pNode->NextSiblingElement()) {
             CStringW strValue;
             XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_actions.Add(strValue);
@@ -1268,7 +1253,7 @@ bool RpsGameData::Load(Unk_140165cf0* pElem)
             MS2_ASSERT_AT(0x32a, 0);
             return false;
         }
-        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = FUN_1403f0510(pNode)) {
+        for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
             CStringW strValue;
             XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_messages.Add(strValue);
@@ -1399,7 +1384,7 @@ bool CoupleDanceContext::LoadDance(Unk_140165cf0* pElem)
         MS2_ASSERT_AT(0x3ed, 0);
         return false;
     }
-    for (Unk_140165cf0* pDance = FUN_140345b40((TiXmlDocument *)pDances); pDance != NULL; pDance = FUN_1403f0510(pDance)) {
+    for (Unk_140165cf0* pDance = FUN_140345b40((TiXmlDocument *)pDances); pDance != NULL; pDance = pDance->NextSiblingElement()) {
         CStringW strAnim;
         XmlGetAttr((class TiXmlElement*)(pDance), "anim", strAnim);
         m_dances.push_back(strAnim);
@@ -1425,7 +1410,7 @@ bool CoupleDanceContext::LoadDance(Unk_140165cf0* pElem)
             continue;
         }
         ATL::CAtlArray<CString> names;
-        FUN_14015f0b0(strPath, names, ".");
+        Unk_SplitImplA(strPath, &names, ".");
         Unk_140165cf0* pNode = NULL;
         for (size_t j = 0; j < names.GetCount(); j++) {
             if (pNode == NULL) {
@@ -1746,9 +1731,9 @@ MS2_REPLACE_METHOD(0x1404038c0, TreeWateringContext, FUN_1404038c0, 186, 0xD98CD
 // @0x140403980
 void Unk_FieldObjectDropContext::Write(COutputStream& out)
 {
-    FUN_1403d7730(out, m_fieldIds);
-    FUN_1403d7730(out, m_objectIds);
-    FUN_1403d7730(out, m_itemIds);
+    out << m_fieldIds;
+    out << m_objectIds;
+    out << m_itemIds;
     FUN_14070f9a0(out, m_percent);
 }
 MS2_REPLACE_METHOD(0x140403980, Unk_FieldObjectDropContext, Write, 103, 0x40D0EDB5);
@@ -1756,10 +1741,10 @@ MS2_REPLACE_METHOD(0x140403980, Unk_FieldObjectDropContext, Write, 103, 0x40D0ED
 // @0x1404039f0
 void Unk_FieldObjectDropContext::Read(CInPacket& packet)
 {
-    FUN_1403d7440(packet, m_fieldIds);
-    FUN_1403d7440(packet, m_objectIds);
-    FUN_1403d7440(packet, m_itemIds);
-    FUN_14070f480(packet, m_percent);
+    packet >> m_fieldIds;
+    packet >> m_objectIds;
+    packet >> m_itemIds;
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read6(reinterpret_cast<unsigned&>(m_percent));
 }
 MS2_REPLACE_METHOD(0x1404039f0, Unk_FieldObjectDropContext, Read, 123, 0xAE40BE2F);
 
@@ -1790,20 +1775,20 @@ MS2_REPLACE_METHOD(0x140403b50, Unk_FieldObjectDropContext, IsValid, 115, 0x6183
 // @0x140403bd0
 void Unk_FieldObjectDropListContext::Write(COutputStream& out)
 {
-    FUN_1403d7730(out, m_fieldIds);
-    FUN_1403d7730(out, m_objectIds);
-    FUN_1403d7730(out, m_itemIds);
-    FUN_1403d7730(out, m_percents);
+    out << m_fieldIds;
+    out << m_objectIds;
+    out << m_itemIds;
+    out << m_percents;
 }
 MS2_REPLACE_METHOD(0x140403bd0, Unk_FieldObjectDropListContext, Write, 107, 0x20FA03BD);
 
 // @0x140403c50
 void Unk_FieldObjectDropListContext::Read(CInPacket& packet)
 {
-    FUN_1403d7440(packet, m_fieldIds);
-    FUN_1403d7440(packet, m_objectIds);
-    FUN_1403d7440(packet, m_itemIds);
-    FUN_1403d7440(packet, m_percents);
+    packet >> m_fieldIds;
+    packet >> m_objectIds;
+    packet >> m_itemIds;
+    packet >> m_percents;
 }
 MS2_REPLACE_METHOD(0x140403c50, Unk_FieldObjectDropListContext, Read, 123, 0x9D600FC0);
 
@@ -2255,7 +2240,7 @@ bool BingoContext::LoadNumbers(CStringW strPath)
          pNumber = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNumber))->NextSibling("number"))) {
         CStringW value;
         NumbersPtr spNumbers(Unk_BingoNewTag(0));
-        FUN_140873b30(pNumber, "value", value);
+        XmlQuery(reinterpret_cast<TiXmlElement*>(pNumber), "value", value);
         if (value.GetLength() == 0)
             return false;
         FUN_1401d9a30(value, *spNumbers, L",");
@@ -2329,10 +2314,10 @@ int BingoContext::CountLines(__int64 seed, ATL::CAtlArray<int>& checked)
     ATL::CAtlArray<int> board;
     for (int n = 1; n <= kBoardSize * kBoardSize; n++)
         board.Add(n);
-    FUN_1401cdae0(board, (unsigned)seed);
+    FUN_1401cdae0(&board, (unsigned)seed);
     bool cells[kBoardSize][kBoardSize];
     for (size_t i = 0; i < board.GetCount(); i++) {
-        if (FUN_1402bacf0(checked, board[i]) == -1) {
+        if (Common::FindElement<int>(checked, board[i]) == -1) {
             bool* row = cells[i % kBoardSize];
             row[i / kBoardSize] = false;
         } else {

@@ -18,6 +18,9 @@
 #include "ms2/client/ms2/ugchomebgdata.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/asbutton.h"
+#include <ecr/RenderService.h>
+class Unk_ServiceManager;
 
 // @0x140fad9e0
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -28,7 +31,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class Unk_UgcCameraButton : public ASMovieClip
 {
 public:
-    void FUN_1422cdf50(const CString& strLabel);                // set the label
 };
 // The screenshot service: slot 2 says whether a screenshot can be taken, slot 54 takes it and returns 1 when it was sent.
 class Unk_UgcShot
@@ -107,14 +109,13 @@ CameraMgr* FUN_1409478c0();
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
 class Unk_UgcUpdateList { public: unsigned FUN_140c2b8c0(); Unk_UgcUpdatable* FUN_140c2b890(unsigned n); };
-efd::ServiceManager* FUN_1413f9850();                           // the game's service manager
-Unk_UgcUpdateList* FUN_1413f9890();
+Unk_ServiceManager*FUN_1413f9850();                           // the game's service manager
+ecr::RenderService*FUN_1413f9890();
 CStringW TakeScreenshotJpg(int a, int b);                       // the screenshot path
 void FUN_141275260(int nId, int a, int b);                      // show a notice by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 
 // @0x140facb20
 UIUGCExtraCNDialog::UIUGCExtraCNDialog()
@@ -171,7 +172,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
             {
-                FUN_141a024a0(spBox.get(), false);
+                reinterpret_cast<CMsgBoxData*>(spBox.get())->FUN_141a024a0(false);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::FUN_140fad0a0));
                 FUN_140d73c60(spBox);
             }
@@ -203,14 +204,14 @@ void UIUGCExtraCNDialog::FUN_140fad070(bool bCameraMode)
 // @0x140fad0a0
 bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
 {
-    efd::ServiceManager* pManager = FUN_1413f9850();
+    efd::ServiceManager* pManager = reinterpret_cast<efd::ServiceManager *>(FUN_1413f9850());
     if (pManager == 0)
         return false;
-    Unk_UgcUpdateList* pList = FUN_1413f9890();
+    Unk_UgcUpdateList* pList = reinterpret_cast<Unk_UgcUpdateList *>(FUN_1413f9890());
     if (pList == 0)
         return false;
     float fTime = (float)pManager->GetTime(0xe001001b);
-    for (unsigned i = 0; i < pList->FUN_140c2b8c0(); i++)
+    for (unsigned i = 0; i < reinterpret_cast<ecr::RenderService*>(pList)->GetRenderContextCount(); i++)
     {
         Unk_UgcUpdatable* pItem = pList->FUN_140c2b890(i);
         if (pItem == 0)
@@ -232,9 +233,9 @@ void UIUGCExtraCNDialog::FUN_140fad2b0()
     if (MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10("m_cameraMode"))
     {
         if (m_bCameraMode)
-            spButton.operator->()->FUN_1422cdf50("$s_camera_default");
+            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422cdf50("$s_camera_default");
         else
-            spButton.operator->()->FUN_1422cdf50("$s_camera_free");
+            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422cdf50("$s_camera_free");
         if (MS2Ptr<ASMovieClip> spIcon = spButton.operator->()->FUN_1409b4560("m_icon"))
         {
             if (m_bCameraMode)

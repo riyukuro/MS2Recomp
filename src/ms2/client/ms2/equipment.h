@@ -101,17 +101,17 @@ public:
     float FUN_1411e0f50(float f);                           // add special ability 4
     float FUN_1411e0f90(float f);                           // reduce by special ability 0x27
     unsigned FUN_1411e1080(unsigned n);                     // reduce by special ability 0x22
-    float FUN_1411e1110(SAType eType);                      // the special ability rate (/ 1000)
-    int FUN_1411e1160(SAType eType);                        // the special ability total
+    float GetAbilityRate(SAType eType);                      // the special ability rate (/ 1000)
+    int GetAbilityTotal(SAType eType);                        // the special ability total
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate
     float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count
     MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid);         // FindByUid
     MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nLayer);    // FindItem
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nSkip, int bCheck);  // FindUsableItem
-    MS2Ptr<CEquipItem> FUN_1411e1a50(int nSlot, int bCheck);    // FindEquippableItem
-    void FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;          // CollectItems
-    void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsAt
-    void FUN_1411e1e30(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nSkip);     // CollectItemsExcept
+    MS2Ptr<CEquipItem> GetTopLayerItem(int nSlot, int bCheck);    // FindEquippableItem
+    void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;          // CollectItems
+    void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsAt
+    void CollectShownItemsExceptLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nSkip);     // CollectItemsExcept
     void FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip);         // CollectItemsExcept
     void FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer);        // CollectItemsAt
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsUpTo
@@ -166,13 +166,13 @@ public:
     void FUN_1411e8d20(const CString& strName);             // hide the model part (CPriortyCutting)
     int FUN_1411e9530(int nSlot, const CString& strName);    // re-attach the slot's swapped meshes
     int FUN_1411e9760(int nSlot, const CString& strName);    // detach them
-    void FUN_1411ea2e0(bool bEnable);                       // SetOptimize
+    void SetMeshOptimize(bool bEnable);                       // SetOptimize
     void FUN_1411ea430(MS2Ptr<CEquipItem> spItem);          // ModelReady
     void FUN_1411ea500(MS2Ptr<CEquipItem> spItem);          // ModelChanged
     void FUN_1411ea320();                                   // drop effect slot 2 of every item
     CString FUN_1411ea5d0(const CString& str);
     void SetLayerPeriod(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
-    bool FUN_1411ea770();                                   // IsLayerActive
+    bool IsLayerActive();                                   // IsLayerActive
     void FUN_1411ea7c0();
     void FUN_1411ea8c0();
     void FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo);    // ApplySetEffect
@@ -196,10 +196,10 @@ public:
     void FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB);   // the miss match tag
     void FUN_1411eebc0();                                   // log the worn items
     void FUN_1411eeda0();                                   // ResetMeshOptimizer
-    void FUN_1411ef740();                                   // Reset
+    void ClearAbilities();                                   // Reset
     int FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer);      // CanEquip
     int FUN_1411ef870(MS2Ptr<CEquipmentSlot> spSlot, int nLayer);  // IsSlotActive
-    void FUN_1411ef970();                                   // ClearSetEffects
+    void ClearSetEffects();                                   // ClearSetEffects
     void FUN_1411efa00(int nIndex);                         // RemoveSetEffect
     MS2Ptr<Equipment::SetEffectInfo> FindSetEffect(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
     int FindSetEffectIndex(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);

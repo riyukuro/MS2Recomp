@@ -13,10 +13,9 @@
 class Unk_SingletonObj1;
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_GmGuideCfg
-{
+class Unk_AvTextCfg { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> FUN_1409f6f30(void); }; class Unk_GmGuideCfg : public Unk_AvTextCfg {
 public:
-    CString FUN_1409f6f30();                                    // the guide movie path
+
 };
 class Unk_GmConfig                                              // the game constants singleton
 {

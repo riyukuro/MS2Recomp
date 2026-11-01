@@ -93,9 +93,9 @@ public:
     bool IsCheckedInToday();
     unsigned FUN_140ce3660();
     unsigned GetAttendedDays();
-    MS2Ptr<ItemGift> FUN_140ce3710(unsigned nDay);
+    MS2Ptr<ItemGift> GetGiftByDay(unsigned nDay);
     int GetUsablePoints();
-    CStringW FUN_140ce37a0();
+    CStringW GetTitleWithPoints();
     CStringA GetDesc();
     int FUN_140ce38a0();
     unsigned FUN_140ce38c0();
@@ -129,7 +129,7 @@ public:
     CStringW GetDesc();
     AttendGiftDataGroupPtr GetDayGroup(unsigned nDay);
     CMsTime GetBeginTime();
-    CMsTime FUN_140ce4090();
+    CMsTime GetEndTime();
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();

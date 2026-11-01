@@ -14,6 +14,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/commonfiles/itemdroptable.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/itemslotbinder.h"
@@ -60,9 +61,8 @@ public:
 };
 
 
-// The polymorphic reward entries of a drop table and their vector (ctor 0x1405a1910, dtor 0x1405a1a40; shared with
-// UIItemPetBoxDialog's unit-local copy of this declaration). The vector is a std::vector<ItemDropResult>
-// (commonfiles/itemdroptable.h); the unit clears it as one (0x140f9b7d0).
+// The polymorphic reward entries of a drop table, and a view of m_rewards (a std::vector<ItemDropResult>) for the
+// element read the exe shares with another vector instance (0x140c461b0).
 class Unk_PetBoxDrop
 {
 public:
@@ -73,8 +73,6 @@ public:
 class Unk_PetBoxDropVec
 {
 public:
-    Unk_PetBoxDropVec();                    // 0x1405a1910
-    ~Unk_PetBoxDropVec();                   // 0x1405a1a40
     size_t FUN_140314170();
     Unk_PetBoxDrop* FUN_140c461b0(size_t);
     void FUN_140313cd0(Unk_PetBoxDrop*);
@@ -110,7 +108,7 @@ protected:
     std::vector<MS2Ptr<Unk_SibSlot> > m_selectedSlots;                  // +0x1a0 six "m_selectedSlot<n>"
     MS2Ptr<Unk_SibText> m_selectedCount;                                // +0x1b8
     MS2Ptr<Unk_SibText> m_selectNotice;                                 // +0x1c8
-    Unk_PetBoxDropVec m_rewards;                                        // +0x1d8 the box's reward entries
+    std::vector<ItemDropResult> m_rewards;                              // +0x1d8 the box's reward entries
     unsigned m_nSelectCount;                                            // +0x1f0 how many the player may take
     ItemSlotBinder m_binder;                                            // +0x1f8 "SelectItemBoxDialog"
     ItemSlotBinder m_binderSel;                                         // +0x238 "SelectItemBoxDialog_Sel"

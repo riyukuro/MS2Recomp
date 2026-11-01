@@ -3,11 +3,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/delegate.h"
 
-class Unk_LoginNoticeButton : public CPtred
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int flags);
-};
+class ASButton;
 
 class UILoginNotice : public UIDialog
 {
@@ -22,7 +18,7 @@ public:
     virtual int vfunc_48() { return 20266; }
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_LoginNoticeButton> m_createButton;
+    MS2Ptr<ASButton> m_createButton;
 };
 MS2_CHECK_SIZE(UILoginNotice, 0x188);
 MS2_CHECK_OFFSET(UILoginNotice, m_createButton, 0x178);

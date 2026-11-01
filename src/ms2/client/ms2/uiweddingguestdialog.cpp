@@ -47,6 +47,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/scaleform/include/gfx/gfx_value.h"
 
 // The second copy of the notice board sort names (this unit's own static table).
 static CString s_sortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
@@ -57,7 +59,6 @@ class ASDialog : public ASDisplayObject
 {
 public:
     virtual void vfunc_2(int, int, int);                        // place the movie
-    int FUN_1422c13b0();                                        // width
 };
 
 // The tab strip of the movie.
@@ -71,9 +72,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422e3400();                                       // clear
-    void FUN_1422e3460(const ASObj& row);                       // append a tab
-    void FUN_1422e31e0(unsigned int nIndex);                    // select a tab
 };
 
 // The page movie clip (looks up its list).
@@ -109,14 +107,14 @@ unsigned __int64 FUN_140718370(const CStringW& text);           // text -> numbe
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_141028be0(__int64 nCharSN, const CString& strProfile, int nA, CString strB);   // the profile picture url
-int FUN_140900f00();                                            // max invitations
+unsigned int FUN_140900f00();                                            // max invitations
 CStringW FUN_1409e94c0(CStringW strKey, const int& nLevel, const CStringW& strJob);
 // The buddy's level getter as this unit sees it: an int result (the body returns the 16-bit field; the call site
 // takes eax as is).
-struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strJob);
-void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
+Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
+struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
@@ -195,7 +193,7 @@ void UIWeddingGuestDialog::vfunc_43()
             int nY = pRef->GetIllustGlobalX() - 0x50;
             if (nX != -1 && nY != -1)
             {
-                pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+                pDialog->vfunc_2(5, nY, nX - reinterpret_cast<ASDisplayObject*>(pDialog)->GetHeightCeil());
                 return;
             }
         }
@@ -357,15 +355,15 @@ void UIWeddingGuestDialog::FUN_140fcdcf0()
 {
     if (MS2Ptr<Unk_GsTab> spTab = FUN_140c02870("m_tab"))
     {
-        spTab->FUN_1422e3400();
+        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->FUN_1422e3400();
         for (std::map<CString, PagePtr>::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
         {
             ASObj row(2);
             row.FUN_1407cba60("page", it->second->vfunc_6());
             row.FUN_1407cbb20("label", it->second->vfunc_7());
-            spTab->FUN_1422e3460(row);
+            reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->AddItem(row);
         }
-        spTab->FUN_1422e31e0(0);
+        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(0);
         spTab->vfunc_24(true);
     }
 }
@@ -381,7 +379,7 @@ bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
         return false;
     }
     nGuests = (int)m_guests.size();
-    if (nGuests > FUN_140900f00())
+    if (nGuests > (int)(FUN_140900f00()))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_error_max_user"), 1, 1);
         return false;
@@ -392,7 +390,7 @@ bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
 // @0x140fce0a0
 int UIWeddingGuestDialog::FUN_140fce0a0()
 {
-    return FUN_140900f00() - WeddingManager::GetInstance()->GetInvitedCount();
+    return (int)(FUN_140900f00()) - WeddingManager::GetInstance()->GetInvitedCount();
 }
 
 // @0x140fce870

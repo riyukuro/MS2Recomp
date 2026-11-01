@@ -6,7 +6,7 @@
 #include "ms2/placeholder/cptred.h"
 #include <vector>
 class CMsgBoxData;
-class Unk_DhButton;
+class ASButton;
 class Unk_DhRewardAmount;
 
 // The AS item slot of a reward icon; carries the meso/exp amounts shown in its tooltip.
@@ -42,7 +42,7 @@ private:
     MS2Ptr<ASMovieClip> m_gauge;                                // +0x58
     MS2Ptr<ASTextField> m_daily;                                // +0x68
     MS2Ptr<ASTextField> m_weekly;                               // +0x78
-    MS2Ptr<Unk_DhButton> m_resetButton;                         // +0x88
+    MS2Ptr<ASButton> m_resetButton;                         // +0x88
 };
 MS2_CHECK_SIZE(UIDungeonSearchUnitedReward, 0x98);
 MS2_CHECK_OFFSET(UIDungeonSearchUnitedReward, m_root, 0x18);

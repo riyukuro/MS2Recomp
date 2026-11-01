@@ -25,10 +25,9 @@ class MyPC;
 // ---- callees outside this unit ----
 
 // The wedding-emotion table singleton (0x143ab26c8) and its row lookup, both owned by ?\weddingemotiontable.cpp.
-class Unk_SingletonObj
-{
+class WeddingEmotionTable { public: class MS2Ptr<class WeddingEmotionData> FUN_140903740(unsigned int); }; class Unk_SingletonObj : public WeddingEmotionTable {
 public:
-    MS2Ptr<WeddingEmotionData> FUN_140903740(int nKey);     // 0x140903740
+
 };
 Unk_SingletonObj* FUN_140ac74e0();                          // 0x140ac74e0 (defined below)
 extern Unk_SingletonObj* DAT_143ab26c8;                     // 0x143ab26c8

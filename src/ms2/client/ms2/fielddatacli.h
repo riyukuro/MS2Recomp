@@ -14,7 +14,10 @@ struct Unk_GVec3 {
     Unk_GVec3& operator=(const Unk_GVec3& o);      // 0x14097faa0 (NiPoint3 assignment; the exe passes the source by address)
     float x, y, z;
 };
+#ifndef MS2_UNK_RECT4
+#define MS2_UNK_RECT4
 struct Unk_Rect4 { Unk_Rect4(float l, float r, float t, float b); float l, r, t, b; };   // ctor 0x14097eac0
+#endif
 struct Unk_Frustum { Unk_Frustum(int bOrtho); float l, r, t, b, n, f; bool ortho; char pad[3]; };   // ctor 0x141d2fba0 (28 bytes)
 
 struct Unk_Vec3Cli : Unk_Vec3f { Unk_Vec3Cli(float x, float y, float z); };   // 0x140a56db0 (forwards to Unk_Vec3f)

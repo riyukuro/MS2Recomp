@@ -71,7 +71,6 @@ public:
     static class WorldService* GetInstance();
 };
 struct Unk_ShieldCfgData { char m_pad[0xb]; bool m_b; char m_c; bool m_d; };
-class Unk_ShieldCfgHolder { public: Unk_ShieldCfgData* FUN_140b123b0(); };
 bool FUN_140930110(int nActorId);
 class Unk_ShieldUIMgr { public: };
 
@@ -261,7 +260,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
     if (pActor == 0)
         return 0;
     if (efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200004) != 0)
-        return reinterpret_cast<Unk_ShieldCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_b;
+        return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_b;
     else
     {
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(pActor);
@@ -269,7 +268,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
         {
             if (pPlayer->FUN_1415278d0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
                 return 0;
-            return reinterpret_cast<Unk_ShieldCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_d;
+            return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_d;
         }
     }
     return 1;

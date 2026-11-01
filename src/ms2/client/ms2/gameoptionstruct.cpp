@@ -44,6 +44,7 @@
 #include <ecr/LightService.h>
 #include "ms2/client/ms2/depthoffieldmanager.h"
 #include <d3d9.h>
+#include <NiDX9Renderer.h>     // C3: ms_RTTI, GetD3DDevice
 #include <NiString.h>
 #include <ctype.h>
 #include "ms2/placeholder/coutpacket.h"
@@ -376,7 +377,7 @@ void CGameOptionInterface::vfunc_10()
     UIDamageEffect* pEffect = FUN_140ac55a0((eUIClassID)0x4e3c);
     if (pEffect != 0)
         pEffect->FUN_141910b30((float)TSingleton<CGameOption>::GetInstance()->FUN_140e09150()->m_n0c);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+    TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x1412569A0, CGameOptionInterface, vfunc_10, 415, 0x86CDC5AF);
 
@@ -636,7 +637,7 @@ void CGameOptionSoundDefault::vfunc_10()
     FUN_14125fdf0(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), &m_state);
     FUN_141260450(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30(), &m_flag);
     FUN_140c8dac0()->UpdateVolume(true);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+    TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x1412585A0, CGameOptionSoundDefault, vfunc_10, 155, 0x23023006);
 
@@ -1008,7 +1009,7 @@ void CGameOptionStatus::vfunc_10()
         FUN_14125b140(m_state.m_bDisplayHideMyPet);
     FUN_14125c5a0(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0(), &m_state);
     FUN_14125c950(TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0(), &m_flag);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+    TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x14125AE50, CGameOptionStatus, vfunc_10, 386, 0x5770892F);
 
@@ -1824,7 +1825,6 @@ struct Unk_GsFieldFlags
 class Unk_GsPostEffectMgr : public ApplyEffect
 {
 public:
-    bool FUN_1409a4c60(bool bHdr, int n);                       // hdr on / off; true when it took
 };
 Unk_GsPostEffectMgr* FUN_1409a8b00();
 PostProcessingService* FUN_1409a8b20();
@@ -1847,10 +1847,6 @@ class Unk_GsRenderer
 public:
     Unk_GsModeSource* FUN_14124fea0();                          // +0x728 the display mode source
 };
-Unk_GsRenderer* FUN_140994450();                                // NiRenderer::GetRenderer()
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);
-extern const NiRTTI DAT_143d6eb58;                              // NiDX9Renderer::ms_RTTI
-IDirect3DDevice9* FUN_140d89690(NiObject* pRenderer);           // NiDX9Renderer::GetD3DDevice
 // The application window.
 class Unk_GsApp
 {
@@ -1862,7 +1858,7 @@ public:
 };
 Unk_GsApp* FUN_140aadf80();
 ecr::SceneGraphService* FUN_1413f98b0();
-COptimizer* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 // The network service's callbacks (slot 65 takes the hide-others level).
 class Unk_GsNetCallbacks
 {
@@ -1890,13 +1886,6 @@ Unk_ServiceManager* FUN_1413f9850();
 template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }
 
 // The quality-level table: the hdr / dof / shimmer flags of a level.
-class Unk_GsQuality
-{
-public:
-    int FUN_141376510(int nLevel);                                  // hdr
-    int FUN_141376580(int nLevel);
-    int FUN_1413765f0(int nLevel);                                  // shimmer
-};
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
 void FUN_14125e300(Unk_GraphicState* p, int b);
 
@@ -1942,8 +1931,8 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
     if (nDefault != 0)
     {
         p->m_nQuality = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
-        p->m_bHdr = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376510(p->m_nQuality) ? true : false;
-        p->m_bShimmer = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_1413765f0(p->m_nQuality) ? true : false;
+        p->m_bHdr = TSingleton<CGraphicOptionTable>::GetInstance()->IsHdrSupported(p->m_nQuality) ? true : false;
+        p->m_bShimmer = TSingleton<CGraphicOptionTable>::GetInstance()->IsShimmerSupported(p->m_nQuality) ? true : false;
         p->m_nMultisampling = 0;
         p->m_nEffectStep = p->m_nQuality;
         p->m_nShadow = p->m_nQuality;
@@ -1989,7 +1978,7 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
     ReadGameOptionBool(pDoc, "graphic", "showEnchantEffect", &p->m_bEnchantEffect);
     p->m_b1a = p->m_b15;
     p->m_b1b = p->m_b15;
-    p->m_b1f = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376580(p->m_nQuality) ? true : false;
+    p->m_b1f = TSingleton<CGraphicOptionTable>::GetInstance()->IsMirrorSupported(p->m_nQuality) ? true : false;
     return 1;
 }
 MS2_REPLACE(0x14125D9B0, FUN_14125d9b0, 1092, 0xF1FFDCB9);
@@ -2063,9 +2052,9 @@ MS2_REPLACE(0x14125E160, FUN_14125e160, 128, 0x9EA98AE1);
 // @0x14125e1f0
 void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow)
 {
-    Unk_GsQuality* pTable = reinterpret_cast<Unk_GsQuality*>(TSingleton<CGraphicOptionTable>::GetInstance());
+    CGraphicOptionTable* pTable = TSingleton<CGraphicOptionTable>::GetInstance();
     p->m_nQuality = nQuality;
-    p->m_b1f = pTable->FUN_141376580(p->m_nQuality) ? true : false;
+    p->m_b1f = pTable->IsMirrorSupported(p->m_nQuality) ? true : false;
     if (bFollow != 0)
     {
         p->m_nShadow = p->m_nQuality;
@@ -2074,8 +2063,8 @@ void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow)
             p->m_nEffectStep = 1;
         if (p->m_nEffectStep > 3)
             p->m_nEffectStep = 3;
-        if (p->m_bHdr != (pTable->FUN_141376510(nQuality) != 0))
-            FUN_14125e300(p, pTable->FUN_141376510(nQuality));
+        if (p->m_bHdr != (pTable->IsHdrSupported(nQuality) != 0))
+            FUN_14125e300(p, pTable->IsHdrSupported(nQuality));
     }
 }
 MS2_REPLACE(0x14125E1F0, FUN_14125e1f0, 254, 0xE1E58952);
@@ -2085,7 +2074,7 @@ MS2_REPLACE(0x14125E1F0, FUN_14125e1f0, 254, 0xE1E58952);
 void FUN_14125e300(Unk_GraphicState* p, int b)
 {
     p->m_bHdr = b != 0;
-    bool bOk = FUN_1409a8b00()->FUN_1409a4c60(p->m_bHdr, 0);
+    bool bOk = FUN_1409a8b00()->SetSoftParticlesOption(p->m_bHdr, 0);
     ecr::LightService* pService = GetService<ecr::LightService>();
     float fScale = 1.1f;
     if (p->m_bHdr && bOk)
@@ -2171,10 +2160,10 @@ void FUN_14125e5c0(Unk_GraphicState* p, int n)
         ramp.green[i] += ramp.green[i] << 8;
         ramp.blue[i] += ramp.blue[i] << 8;
     }
-    NiObject* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, (NiObject*)FUN_140994450());
-    if (pRenderer != 0 && FUN_140d89690(pRenderer) != 0)
+    NiObject* pRenderer = NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (NiObject*)NiRenderer::GetRenderer());
+    if (pRenderer != 0 && ((NiDX9Renderer*)pRenderer)->GetD3DDevice() != 0)
     {
-        IDirect3DDevice9* pDevice = FUN_140d89690(pRenderer);
+        IDirect3DDevice9* pDevice = ((NiDX9Renderer*)pRenderer)->GetD3DDevice();
         pDevice->SetGammaRamp(0, D3DSGR_CALIBRATE, &ramp);
     }
 }
@@ -2194,7 +2183,7 @@ MS2_REPLACE(0x14125E7E0, FUN_14125e7e0, 53, 0xCA567DD9);
 // @0x14125e820
 bool FUN_14125e820(Unk_GraphicState* p, int nWidth, int nHeight)
 {
-    Unk_GsRenderer* pRenderer = FUN_140994450();
+    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
         Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
@@ -2228,7 +2217,7 @@ void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx)
 {
     bool bWindowed = nScreenMode == 0;
     bool bFullWindow = nScreenMode == 2;
-    Unk_GsRenderer* pRenderer = FUN_140994450();
+    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
         Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
@@ -2249,7 +2238,7 @@ void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx)
                         FUN_140aadf80()->FUN_141b91010(bWindowed, nWidth, nHeight);
                         p->m_nWidth = nWidth;
                         p->m_nHeight = nHeight;
-                        TSingleton<CGameOption>::GetInstance()->FUN_1412432d0();
+                        TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
                     }
                 }
             }
@@ -2268,7 +2257,7 @@ MS2_REPLACE(0x14125E910, FUN_14125e910, 479, 0x48A44F42);
 // @0x14125eb00
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight)
 {
-    Unk_GsRenderer* pRenderer = FUN_140994450();
+    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
         Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
@@ -2380,7 +2369,7 @@ void FUN_14125ef90(Unk_GraphicState2* p)
         nFlags = 0;
     }
     int nMode = p->m_nOptimalHide == 1 ? 1 : 0;
-    FUN_1409f7c90()->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, nMode);
+    ((class COptimizer*)FUN_1409f7c90())->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, nMode);
     FUN_140d86260()->vfunc_65(p->m_nOptimalHide);
 }
 MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
@@ -2397,11 +2386,7 @@ CSoundService* FUN_140c9cb10();
 class Unk_GsIdArray
 {
 public:
-    void FUN_1403f19e0();                                       // RemoveAll
-    void FUN_140212bf0(unsigned __int64 nId);                   // Add
-    unsigned __int64 FUN_1403ed0f0();                           // GetCount
-    unsigned __int64* FUN_1403ed000(unsigned __int64 nIndex);   // the nIndex-th id
-    void FUN_140acde40(const Unk_GsIdArray& src);               // Copy
+    // C3: the members are CAtlArray<unsigned __int64>'s (cast at the call; the id parser Adds through CAtlArray<__int64>)
 };
 // The connect block (Unk_GoConnect) with its fields named.
 struct Unk_GsConnect
@@ -2603,7 +2588,7 @@ void FUN_14125f670(Unk_GpState* p, bool bUse, bool bNotify)
     UIUpperHudDialog* pHud = Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
     if (pHud != 0)
         pHud->SetGamePadMode(bUse);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+    TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE(0x14125F670, FUN_14125f670, 152, 0xA1D71C34);
 
@@ -2888,7 +2873,7 @@ int LoadGameOptionConnect(Unk_GsConnect* p, TiXmlDocument* pDoc)
     ReadGameOptionString(pDoc, "connect", "UserName", &p->m_strUserName);
     ReadGameOptionUInt64(pDoc, "connect", "CharSN", &p->m_nCharSN);
     ReadGameOptionStringW(pDoc, "connect", "CharName", &p->m_strCharName);
-    p->m_charList.FUN_1403f19e0();
+    (*(ATL::CAtlArray<unsigned __int64>*)&p->m_charList).RemoveAll();
     CString strList;
     ReadGameOptionString(pDoc, "connect", "CharList", &strList);
     if (!strList.IsEmpty())
@@ -2924,7 +2909,7 @@ void FUN_1412608d0(Unk_GsConnect* pDst, const Unk_GsConnect* pSrc)
     pDst->m_strCharName = pSrc->m_strCharName;
     pDst->m_bSaveUserName = pSrc->m_bSaveUserName;
     pDst->m_bLoginByLocaleName = pSrc->m_bLoginByLocaleName;
-    pDst->m_charList.FUN_140acde40(pSrc->m_charList);
+    (*(ATL::CAtlArray<unsigned __int64>*)&pDst->m_charList).Copy(*(const ATL::CAtlArray<unsigned __int64>*)&pSrc->m_charList);
 }
 MS2_REPLACE(0x1412608D0, FUN_1412608d0, 224, 0x583AC658);
 
@@ -2934,7 +2919,7 @@ void FUN_1412609c0(Unk_GsConnect* p, const CStringW& strRegion)
     p->m_strRegion = strRegion;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionStringW(pDoc, "connect", "Region", p->m_strRegion);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x1412609C0, FUN_1412609c0, 101, 0x0F9E1263);
 
@@ -2944,7 +2929,7 @@ void FUN_141260a30(Unk_GsConnect* p, const CStringW& strWorldName)
     p->m_strWorldName = strWorldName;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionStringW(pDoc, "connect", "WorldName", p->m_strWorldName);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260A30, FUN_141260a30, 109, 0x5FC78FF4);
 
@@ -2954,7 +2939,7 @@ void FUN_141260ab0(Unk_GsConnect* p, int nChannel)
     p->m_strChannel = FUN_1402bad60("{0}", &nChannel);
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionString(pDoc, "connect", "Channel", p->m_strChannel);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260AB0, FUN_141260ab0, 166, 0x41FFF08B);
 
@@ -2967,7 +2952,7 @@ void FUN_141260b60(Unk_GsConnect* p, const CString& strUserName)
         p->m_strUserName = "";
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionString(pDoc, "connect", "UserName", p->m_strUserName);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260B60, FUN_141260b60, 149, 0xD20113B6);
 
@@ -2979,7 +2964,7 @@ void FUN_141260c00(Unk_GsConnect* p, const unsigned __int64& nCharSN)
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionUInt64(pDoc, "connect", "CharSN", p->m_nCharSN);
     WriteGameOptionStringW(pDoc, "connect", "CharName", p->m_strCharName);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260C00, FUN_141260c00, 161, 0x6FB68DB0);
 
@@ -2987,7 +2972,7 @@ MS2_REPLACE(0x141260C00, FUN_141260c00, 161, 0x6FB68DB0);
 void FUN_141260cb0(Unk_GsConnect* p)
 {
     FUN_141260ce0(p);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260CB0, FUN_141260cb0, 37, 0xE2AC6BFD);
 
@@ -2995,13 +2980,13 @@ MS2_REPLACE(0x141260CB0, FUN_141260cb0, 37, 0xE2AC6BFD);
 // @0x141260ce0
 void FUN_141260ce0(Unk_GsConnect* p)
 {
-    unsigned __int64 nCount = p->m_charList.FUN_1403ed0f0();
+    unsigned __int64 nCount = (*(const ATL::CAtlArray<unsigned __int64>*)&p->m_charList).GetCount();
     CString strList;
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
         if (!strList.IsEmpty())
             strList.Append(",");
-        strList.Append(FUN_140719530(*p->m_charList.FUN_1403ed000(i)));
+        strList.Append(FUN_140719530((*(const ATL::CAtlArray<unsigned __int64>*)&p->m_charList).GetAt(i)));
     }
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionString(pDoc, "connect", "CharList", strList);
@@ -3014,7 +2999,7 @@ void FUN_141260e00(Unk_GsConnect* p, bool b)
     p->m_bLoginByLocaleName = b;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionBool(pDoc, "connect", "LoginByLocaleName", p->m_bLoginByLocaleName);
-    TSingleton<CGameOption>::GetInstance()->FUN_141243450();
+    TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
 }
 MS2_REPLACE(0x141260E00, FUN_141260e00, 96, 0xDCA96A2F);
 
@@ -3331,7 +3316,8 @@ class Unk_140acd6e0 : public ASDisplayObject {};                // the button wr
 
 // ---- CPersonalInfoAgreement: the personal information agreements (house visit) ------------------------------------
 // The UIs the agreement updates.
-class Unk_GsUiAgreeIcon { public: void FUN_1419394a0(bool b); void FUN_141939320(bool b); };   // 0x4e28
+class UIGameMenuDialog { public: void FUN_1419394a0(bool b); void FUN_141939320(bool b); };   // C3: unit-local view
+class Unk_GsUiAgreeIcon : public UIGameMenuDialog { public: };   // 0x4e28
 Unk_GsUiAgreeIcon* FUN_140938b90(int nUiId);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
@@ -3342,12 +3328,13 @@ UIHomeMenuDialog* FUN_140ef49b0(int nUiId);
            // 0x4e6a
 UIWebBrowserBase* FUN_140c43790(int nUiId);
 // The house service (cube map information) behind its smart pointer (see uirealestatesell.cpp).
-class Unk_HoService
+class CubeMapInformationService   // C3: unit-local view
 {
 public:
     int FUN_1410d2f10();                                        // in a house
     __int64 FUN_1410c3180();                                    // the account id of the house owner
 };
+class Unk_HoService : public CubeMapInformationService { public: };
 struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
 class Unk_HoServicePtr
@@ -3372,17 +3359,17 @@ public:
     int FUN_141261d40();
     void FUN_141261d90();
     void FUN_141261da0(const CPersonalInfoAgreement* pSrc);
-    void FUN_141261dd0(int nGroup);
+    void SendAgreement(int nGroup);
     void FUN_141261e40(int nGroup, unsigned nFlags);
-    void FUN_141261e90(unsigned nFlags);
+    void SetFlagsAndRefresh(unsigned nFlags);
     bool FUN_141261ec0(unsigned nMask);
-    bool FUN_141261f00(int nGroup);
+    bool HasGroupAgreement(int nGroup);
     void FUN_141261fd0(int nGroup);
     void FUN_141262060(unsigned nFlags);
     void FUN_141262090();
     void FUN_141262180();
     void FUN_141262650();
-    void FUN_1412627c0(CString strUrl);
+    void OpenLink(CString strUrl);
     bool FUN_141262830(int nResult, const CMsgBoxData& data);
     bool FUN_141262b70(int nResult, const CMsgBoxData& data);
     bool FUN_141262f10(int nResult, const CMsgBoxData& data);
@@ -3432,14 +3419,14 @@ MS2_REPLACE_METHOD(0x141261DA0, CPersonalInfoAgreement, FUN_141261da0, 32, 0x2CD
 
 // Send the agreement of a group to the server.
 // @0x141261dd0
-void CPersonalInfoAgreement::FUN_141261dd0(int nGroup)
+void CPersonalInfoAgreement::SendAgreement(int nGroup)
 {
     COutPacket packet(0xc0, 0);
     packet.Encode4(nGroup);
     packet.Encode4(m_nFlags);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141261DD0, CPersonalInfoAgreement, FUN_141261dd0, 99, 0xBEC3F05B);
+MS2_REPLACE_METHOD(0x141261DD0, CPersonalInfoAgreement, SendAgreement, 99, 0xBEC3F05B);
 
 // @0x141261e40
 void CPersonalInfoAgreement::FUN_141261e40(int nGroup, unsigned nFlags)
@@ -3451,12 +3438,12 @@ void CPersonalInfoAgreement::FUN_141261e40(int nGroup, unsigned nFlags)
 MS2_REPLACE_METHOD(0x141261E40, CPersonalInfoAgreement, FUN_141261e40, 61, 0xFCFDCD1C);
 
 // @0x141261e90
-void CPersonalInfoAgreement::FUN_141261e90(unsigned nFlags)
+void CPersonalInfoAgreement::SetFlagsAndRefresh(unsigned nFlags)
 {
     m_nFlags = nFlags;
     FUN_141261d40();
 }
-MS2_REPLACE_METHOD(0x141261E90, CPersonalInfoAgreement, FUN_141261e90, 40, 0xBBFEF17F);
+MS2_REPLACE_METHOD(0x141261E90, CPersonalInfoAgreement, SetFlagsAndRefresh, 40, 0xBBFEF17F);
 
 // @0x141261ec0
 bool CPersonalInfoAgreement::FUN_141261ec0(unsigned nMask)
@@ -3467,7 +3454,7 @@ MS2_REPLACE_METHOD(0x141261EC0, CPersonalInfoAgreement, FUN_141261ec0, 50, 0xE1F
 
 // Any agreement of the group given.
 // @0x141261f00
-bool CPersonalInfoAgreement::FUN_141261f00(int nGroup)
+bool CPersonalInfoAgreement::HasGroupAgreement(int nGroup)
 {
     if (nGroup == 0)
         return FUN_141261ec0(2) || FUN_141261ec0(4);
@@ -3475,7 +3462,7 @@ bool CPersonalInfoAgreement::FUN_141261f00(int nGroup)
         return FUN_141261ec0(8) || FUN_141261ec0(0x10) || FUN_141261ec0(0x20);
     return false;
 }
-MS2_REPLACE_METHOD(0x141261F00, CPersonalInfoAgreement, FUN_141261f00, 194, 0x2EA97AFB);
+MS2_REPLACE_METHOD(0x141261F00, CPersonalInfoAgreement, HasGroupAgreement, 194, 0x2EA97AFB);
 
 // @0x141261fd0
 void CPersonalInfoAgreement::FUN_141261fd0(int nGroup)
@@ -3510,7 +3497,7 @@ void CPersonalInfoAgreement::FUN_141262090()
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
         return;
-    bool bShow = !FUN_141261f00(0);
+    bool bShow = !HasGroupAgreement(0);
     Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
     if (pIcon != 0)
         pIcon->FUN_1419394a0(bShow);
@@ -3534,7 +3521,7 @@ void CPersonalInfoAgreement::FUN_141262180()
     Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    bool bShow = !FUN_141261f00(1);
+    bool bShow = !HasGroupAgreement(1);
     if (pPC->HasNoHome() != 0)
         bShow = false;
     Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
@@ -3598,14 +3585,14 @@ MS2_REPLACE_METHOD(0x141262650, CPersonalInfoAgreement, FUN_141262650, 350, 0x37
 
 // Open the home page link UI.
 // @0x1412627c0
-void CPersonalInfoAgreement::FUN_1412627c0(CString strUrl)
+void CPersonalInfoAgreement::OpenLink(CString strUrl)
 {
     UIWebBrowserBase* pLink = FUN_140c43790(0x4e6a);
     if (pLink == 0)
         return;
     pLink->FUN_14135ec00(strUrl, true);
 }
-MS2_REPLACE_METHOD(0x1412627C0, CPersonalInfoAgreement, FUN_1412627c0, 94, 0xA1CF5C66);
+MS2_REPLACE_METHOD(0x1412627C0, CPersonalInfoAgreement, OpenLink, 94, 0xA1CF5C66);
 
 // The house visit question: 0 public, 1 password (asks for it), 2 private.
 // @0x141262830
@@ -3693,23 +3680,23 @@ bool CPersonalInfoAgreement::FUN_141262f10(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x141262F10, CPersonalInfoAgreement, FUN_141262f10, 35, 0x556A5A8F);
 
 // ---- XML helpers: <section key="value"/> under the document root ---------------------------------------------------
-class TiXmlElement
+class TiXmlNode { public: TiXmlNode* LinkEndChild(TiXmlNode* addThis); };   // C3: member view
+class TiXmlElement : public TiXmlNode
 {
 public:
     TiXmlElement(const char* szName);                           // 0x14086f2f0
+    const char* Attribute(const char* name) const;
+    const char* Attribute(const char* name, int* i) const;
+    const char* Attribute(const char* name, double* d) const;
+    void SetAttribute(const char* name, const char* value);
+    void SetAttribute(const char* name, int value);
+    void SetDoubleAttribute(const char* name, double value);
+    void RemoveAttribute(const char* name);
 private:
     void* m_pad[0x90 / sizeof(void*)];
 };
 TiXmlElement* FUN_14081b310(TiXmlDocument* pDoc);               // RootElement
 TiXmlElement* FUN_140165cf0(TiXmlElement* pElem, const char* pszName);  // FirstChildElement
-void FUN_14086e090(TiXmlElement* pParent, TiXmlElement* pChild); // LinkEndChild
-const char* FUN_14086f4b0(TiXmlElement* pElem, const char* pszName);    // Attribute
-const char* FUN_14086f500(TiXmlElement* pElem, const char* pszName, int* pn);   // Attribute (int)
-const char* FUN_14086f580(TiXmlElement* pElem, const char* pszName, double* pf);    // Attribute (double)
-void FUN_14086f8d0(TiXmlElement* pElem, const char* pszName, const char* pszValue); // SetAttribute
-void FUN_14086f920(TiXmlElement* pElem, const char* pszName, int nValue);           // SetAttribute (int)
-void FUN_14086f970(TiXmlElement* pElem, const char* pszName, double fValue);        // SetDoubleAttribute
-void FUN_14086fa40(TiXmlElement* pElem, const char* pszName);                       // RemoveAttribute
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_1408732e0(TiXmlElement* pElem, const char* pszName, __int64* pn);
 int FUN_140873320(TiXmlElement* pElem, const char* pszName, unsigned __int64* pn);
@@ -3728,15 +3715,15 @@ void WriteGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
         {
-            FUN_14086f8d0(pSection, pszKey, bValue ? "true" : "false");
+            pSection->SetAttribute(pszKey, bValue ? "true" : "false");
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_14086f8d0(pNew, pszKey, bValue ? "true" : "false");
-                FUN_14086e090(pRoot, pNew);
+                pNew->SetAttribute(pszKey, bValue ? "true" : "false");
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3752,15 +3739,15 @@ void WriteGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char*
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
         {
-            FUN_14086f920(pSection, pszKey, nValue);
+            pSection->SetAttribute(pszKey, nValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_14086f920(pNew, pszKey, nValue);
-                FUN_14086e090(pRoot, pNew);
+                pNew->SetAttribute(pszKey, nValue);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3776,15 +3763,15 @@ void WriteGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const cha
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
         {
-            FUN_14086f970(pSection, pszKey, fValue);
+            pSection->SetDoubleAttribute(pszKey, fValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_14086f970(pNew, pszKey, fValue);
-                FUN_14086e090(pRoot, pNew);
+                pNew->SetDoubleAttribute(pszKey, fValue);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3800,15 +3787,15 @@ void WriteGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const ch
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
         {
-            FUN_14086f8d0(pSection, pszKey, strValue);
+            pSection->SetAttribute(pszKey, strValue);
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_14086f8d0(pNew, pszKey, strValue);
-                FUN_14086e090(pRoot, pNew);
+                pNew->SetAttribute(pszKey, strValue);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3824,15 +3811,15 @@ void WriteGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const c
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
         {
-            FUN_14086f8d0(pSection, pszKey, FUN_140390ea0(strValue, 0));
+            pSection->SetAttribute(pszKey, FUN_140390ea0(strValue, 0));
         }
         else
         {
             TiXmlElement* pNew = new TiXmlElement(pszSection);
             if (pNew != 0)
             {
-                FUN_14086f8d0(pNew, pszKey, FUN_140390ea0(strValue, 0));
-                FUN_14086e090(pRoot, pNew);
+                pNew->SetAttribute(pszKey, FUN_140390ea0(strValue, 0));
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3856,7 +3843,7 @@ void WriteGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const cha
             if (pNew != 0)
             {
                 XmlSetAttr(pNew, pszKey, nValue);
-                FUN_14086e090(pRoot, pNew);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3880,7 +3867,7 @@ void WriteGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const ch
             if (pNew != 0)
             {
                 XmlSetAttr(pNew, pszKey, nValue);
-                FUN_14086e090(pRoot, pNew);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3904,7 +3891,7 @@ void WriteGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char
             if (pNew != 0)
             {
                 XmlSetAttr(pNew, pszKey, nValue);
-                FUN_14086e090(pRoot, pNew);
+                pRoot->LinkEndChild(pNew);
             }
         }
     }
@@ -3918,7 +3905,7 @@ int ReadGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* 
     TiXmlElement* pSection;
     if (pRoot != 0 && (pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0)
     {
-        NiString strValue(FUN_14086f4b0(pSection, pszKey));
+        NiString strValue(pSection->Attribute(pszKey));
         if (!strValue.IsEmpty())
         {
             if (strValue.CompareNoCase("true") == 0)
@@ -3937,7 +3924,7 @@ int ReadGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* p
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
-    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && FUN_14086f500(pElem, pszKey, pnValue) != 0)
+    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey, pnValue) != 0)
         return 1;
     return 0;
 }
@@ -3962,7 +3949,7 @@ int ReadGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char*
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0)
     {
         double fValue = 0.0;
-        if (FUN_14086f580(pElem, pszKey, &fValue) != 0)
+        if (pElem->Attribute(pszKey, &fValue) != 0)
         {
             *pfValue = (float)fValue;
             return 1;
@@ -3977,9 +3964,9 @@ int ReadGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
-    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && FUN_14086f4b0(pElem, pszKey) != 0)
+    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey) != 0)
     {
-        *pstrValue = FUN_14086f4b0(pElem, pszKey);
+        *pstrValue = pElem->Attribute(pszKey);
         return 1;
     }
     return 0;
@@ -3991,9 +3978,9 @@ int ReadGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const cha
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
-    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && FUN_14086f4b0(pElem, pszKey) != 0)
+    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey) != 0)
     {
-        *pstrValue = XmlWide(FUN_14086f4b0(pElem, pszKey));
+        *pstrValue = XmlWide(pElem->Attribute(pszKey));
         return 1;
     }
     return 0;
@@ -4030,7 +4017,7 @@ void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
         if (pSection != 0)
-            FUN_14086fa40(pSection, pszKey);
+            pSection->RemoveAttribute(pszKey);
     }
 }
 MS2_REPLACE(0x141263D30, FUN_141263d30, 90, 0xE379D4E2);
@@ -4043,7 +4030,7 @@ void FUN_141263f00(CString& str, Unk_GsIdArray* pArr, const char* pszTokens)
     CString strToken = str.Tokenize(pszTokens, nPos);
     while (!strToken.IsEmpty())
     {
-        pArr->FUN_140212bf0(FUN_1404082e0(strToken));
+        ((ATL::CAtlArray<__int64>*)pArr)->Add(FUN_1404082e0(strToken));
         strToken = str.Tokenize(pszTokens, nPos);
     }
 }

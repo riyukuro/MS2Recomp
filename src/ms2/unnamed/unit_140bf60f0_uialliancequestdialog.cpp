@@ -47,6 +47,7 @@
 #include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/effectservice.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include <algorithm>
 #include <stdlib.h>
@@ -129,7 +130,6 @@ public:
 Unk_PnScriptPtr FUN_140856c50(unsigned nNpcId, int nMode);              // the default script of an npc
 Unk_PnScriptPtr FUN_140856980(unsigned nNpcId, const CStringW& strTag); // the script with the tag
 
-struct Unk_AqPos { Unk_AqPos(); float x, y, z; };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -146,7 +146,7 @@ public:
 // the local player's vtable up to its level getter (slot 78)
 struct Unk_AqActorView
 {
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual Unk_AqPos GetPos(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual NiPoint3 GetPos(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short GetLevel();
 };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
@@ -214,7 +214,6 @@ __int64 GetServerTime();
 __int64 NextWeekdayStart(int nKind, __int64 nTime);
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);
 void FUN_140710590(COutPacket&);
-void FUN_1411a4f40(void* pEffects, CString strSound, const Unk_AqPos& kPos);
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
@@ -495,7 +494,7 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
             {
                 void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
                 if (pActor != 0)
-                    FUN_1411a4f40(FUN_1403ed280(), pScript->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound, static_cast<Unk_AqActorView*>(pActor)->GetPos());
+                    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a4f40(pScript->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound, static_cast<Unk_AqActorView*>(pActor)->GetPos());
             }
         }
     }
@@ -594,12 +593,12 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             if (spData->m_complete.m_choiceRewards.GetCount() > 0)
             {
                 const CQuestData::QuestRewardItem& rItem = spData->m_complete.m_choiceRewards[0];
-                row.FUN_1407cba60("bind1", m_180.FUN_140d43310(rItem.m_itemId, rItem.m_count, rItem.m_job));
+                row.FUN_1407cba60("bind1", m_180.BindNewItem(rItem.m_itemId, rItem.m_count, rItem.m_job));
             }
             if (spData->m_complete.m_choiceRewards.GetCount() > 1)
             {
                 const CQuestData::QuestRewardItem& rItem = spData->m_complete.m_choiceRewards[1];
-                row.FUN_1407cba60("bind2", m_180.FUN_140d43310(rItem.m_itemId, rItem.m_count, rItem.m_job));
+                row.FUN_1407cba60("bind2", m_180.BindNewItem(rItem.m_itemId, rItem.m_count, rItem.m_job));
             }
             if (FUN_140bf8800(nQuest) != 0)
             {

@@ -57,7 +57,6 @@ CStringTable* FUN_1401a9d70_p1();                 // 0x1401a9d70 the string tabl
 class PCBase;
 class WorldService;
 WorldService* FUN_1403ed2d0_p1();                 // 0x1403ed2d0 WorldService::GetInstance (exe copy)
-PCBase* FUN_141bd1290(WorldService* pWorld, int nId);   // the player of an object id (worldservice_1.cpp)
 CEquipment* FUN_1416561a0_p1(PCBase* pPc);        // 0x1416561a0 the player's equipment
 int FUN_141658e60_p1(PCBase* pPc);                // 0x141658e60 the player's gender
 CStringW FUN_1406319f0(int nId, unsigned short nLevel);   // the additional-effect text (itemsocketsystemutil.cpp)
@@ -265,7 +264,7 @@ struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
 CQuestManager* FUN_140764020_p3();                          // 0x140764020 TSingleton<CQuestManager>::GetInstance (exe copy)
 CStringW FUN_1416e5210(unsigned nQuestId, CStringW strKey); // the quest name formatted with a string-table key (by value)
 // the UI string service (0x14025e7a0): "$"-prefixed keys translated by FUN_1422b0570
-class Unk_TooltipUiStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
+class Unk_TooltipUiStrings;   // C3: the GFxManager singleton (astooltip.cpp casts it to its GFxManager view)
 Unk_TooltipUiStrings* FUN_14025e7a0_p3();
 bool IsStatKindTwo(int nStat);                              // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)

@@ -16,7 +16,7 @@ class CLoadingDialog : public CPtred
 public:
     CLoadingDialog();                                       // 0x140d4a310
     virtual ~CLoadingDialog();                              // 0x140d4a3f0
-    bool FUN_140d4a530(const char* pszName, HINSTANCE hInst);   // Open(): names the window class, starts the thread
+    bool Open(const char* pszName, HINSTANCE hInst);   // Open(): names the window class, starts the thread
     void Close();                                           // 0x140d4a600: closing flag, set the event, join the thread
     void ThreadMain();                                      // 0x140d4ae50
 private:

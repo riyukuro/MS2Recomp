@@ -41,50 +41,50 @@ public:
     virtual efd::AsyncResult OnTick();                  // 0x140d8a880
     virtual efd::AsyncResult OnShutdown();              // 0x140d8aba0
 
-    bool FUN_140d8ac50(int nKey, int bAllowGroup);      // key is held (group-aware)
-    bool FUN_140d8ad60(int nKey);                       // key was pressed this frame (group-aware, tracks the held modifier)
-    bool FUN_140d8af70(int nKey);                       // key was released this frame (group-aware)
+    bool IsKeyDownGated(int nKey, int bAllowGroup);      // key is held (group-aware)
+    bool WasKeyPressedGated(int nKey);                       // key was pressed this frame (group-aware, tracks the held modifier)
+    bool WasKeyReleasedGated(int nKey);                       // key was released this frame (group-aware)
     bool IsMouseButtonDown(int nButton);                    // mouse button is held
     bool WasMouseButtonPressed(int nButton);                    // mouse button was pressed
     bool WasMouseButtonReleased(int nButton);                    // mouse button was released
     bool GetMouseDelta(int* pnX, int* pnY, int* pnZ);   // mouse movement deltas
     bool InjectKeyPress(int nKey);                       // inject a press
     bool InjectKeyRelease(int nKey);                       // inject a release
-    static int FUN_140d8b290(int nKey);                 // keyboard code of a key id (0 if not a keyboard key)
-    static int FUN_140d8b2c0(int nKey);                 // mouse button of a key id (-1 if not a mouse button)
-    static int FUN_140d8b300(int nKey);                      // gamepad button of a key id (-1 if none)
+    static int GetKeyboardCode(int nKey);                 // keyboard code of a key id (0 if not a keyboard key)
+    static int GetMouseButtonIndex(int nKey);                 // mouse button of a key id (-1 if not a mouse button)
+    static int GetGamePadButtonIndex(int nKey);                      // gamepad button of a key id (-1 if none)
     bool FUN_140d8b360() const;                         // always true
-    bool FUN_140d8b370() const;                         // a keyboard key is held or a gamepad is present
+    bool HasKeyHeldOrGamePad() const;                         // a keyboard key is held or a gamepad is present
     void StartRumbleFor(double dSeconds);                // rumble for the given time
     void StartRumble();                               // start rumbling
     void StopRumble(bool bQuickStop);                // stop rumbling
     int IsComboKeyDown(int nKey);                        // modifier group (both held) test: down
-    int FUN_140d8b6a0(int nKey);                        // modifier group test: pressed
-    int FUN_140d8b740(int nKey);                        // modifier group test: released
+    int WasComboKeyPressed(int nKey);                        // modifier group test: pressed
+    int WasComboKeyReleased(int nKey);                        // modifier group test: released
     bool InjectComboKeyPress(int nKey);                       // modifier group inject press
     bool InjectComboKeyRelease(int nKey);                       // modifier group inject release
     void SetGamePadEnabled(bool bEnable, bool bNotify);     // enable / disable gamepad input
     void ToggleCursorMode();                               // toggle gamepad cursor mode
     float FUN_140d8bde0();                              // cursor speed x
     float FUN_140d8be10();                         // cursor speed y
-    void FUN_140d8be40();                               // find a gamepad
+    void DetectGamePad();                               // find a gamepad
     int FUN_140d8c0a0(__int64 nSetting);   // gamepad button for a key setting
-    int FUN_140d8c150(int nKey);                        // remap a gamepad key id for the dual layout
+    int RemapPadButtonForDualShock(int nKey);                        // remap a gamepad key id for the dual layout
     void UpdateRumble();                               // rumble timer update
-    Vector3 FUN_140d8c2f0();                           // gamepad left stick as a direction
-    int FUN_140d8c450();                                // left stick Y percent
-    int FUN_140d8c4d0();                                // left stick X percent
+    Vector3 GetLeftStickMoveDir();                           // gamepad left stick as a direction
+    int GetLeftStickYPercent();                                // left stick Y percent
+    int GetLeftStickXPercent();                                // left stick X percent
     bool FUN_140d8c550();                               // stick changed direction
-    int FUN_140d8c660();                                // pad kind (3 folds into 1)
+    int GetPadFamily();                                // pad kind (3 folds into 1)
     CStringW GetPadKindName();                           // layout name
-    CStringW FUN_140d8c750();           // layout display text
-    bool FUN_140d8c8d0(int nResult, const CMsgBoxData& data);   // message box callback: resume the input system
-    bool FUN_140d8c920(int nKey);                       // key is held
+    CStringW GetPadKindDisplayName();           // layout display text
+    bool OnNoGamePadMsgBoxResult(int nResult, const CMsgBoxData& data);   // message box callback: resume the input system
+    bool IsKeyDown(int nKey);                       // key is held
     NiPointer<NiInputGamePad> GetGamePad();           // the active gamepad (by value)
-    bool FUN_140d8cd50(int nKey);                       // key was pressed
-    bool FUN_140d8d2d0(int nKey);                       // key was released
-    bool FUN_140d8d840(int nKey);                       // inject a key press
-    bool FUN_140d8db30(int nKey);                       // inject a key release
+    bool WasKeyPressed(int nKey);                       // key was pressed
+    bool WasKeyReleased(int nKey);                       // key was released
+    bool InjectSingleKeyPress(int nKey);                       // inject a key press
+    bool InjectSingleKeyRelease(int nKey);                       // inject a key release
     int FUN_140d8ee40() const { return m_nPadKind; }    // 0x140d8ee40
 
 private:

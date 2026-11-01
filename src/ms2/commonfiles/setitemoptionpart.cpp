@@ -16,7 +16,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 void FUN_140178670(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<int>& arr);
 void FUN_140645110(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned short>& arr);
 const CStringA& FUN_14082efb0(UnlimitedEnchantInfo::OptionKey nStat);       // the xml name of a stat
-const CStringA& FUN_14081d380(Unk_SocketSpecialStat nStat);                 // the xml name of a special ability
+CStringA const & FUN_14081d380(int);  // C3: the definition's signature
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 extern const UnlimitedEnchantInfo::OptionKey DAT_1439f48d0[16];

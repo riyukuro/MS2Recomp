@@ -166,9 +166,9 @@ int FUN_14138c930(Unk_PCBuffTable* p, int n);
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14142c270(int);
-    int FUN_14142c4b0(int);
-    int FUN_14142c540(int);
+    int IsActionKeyDown(int);
+    int IsActionKeyPressed(int);
+    int IsActionKeyReleased(int);
 };
 int FUN_14142c940(Unk_PCBuffTable* p, int n, int m);
 Unk_PCBuffKey FUN_14142d190(Unk_PCBuffTable* p, int n);
@@ -184,9 +184,9 @@ class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
 class MS2InputService   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_140d8ac50(int, int);
-    bool FUN_140d8ad60(int);
-    bool FUN_140d8af70(int);
+    bool IsKeyDownGated(int, int);
+    bool WasKeyPressedGated(int);
+    bool WasKeyReleasedGated(int);
     bool FUN_140d8c550();
 };
 // the input controller FUN_140a58540 returns
@@ -239,7 +239,7 @@ bool Unk_PCMove::FUN_141682f80(int nKey)
         return false;
     if (!FUN_141684170(nKey))
         return false;
-    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ac50(nKey, 0);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->IsKeyDownGated(nKey, 0);
 }
 
 // @0x141682fe0
@@ -258,7 +258,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
     }
     if (!FUN_1416840c0(nKey))
         return false;
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c270(nKey) != 0) {
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyDown(nKey) != 0) {
         if (((void*)WorldService::GetInstance()) != 0)
             ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca010();
         return true;
@@ -273,7 +273,7 @@ bool Unk_PCMove::FUN_1416830b0(int nKey)
         return false;
     if (!FUN_141684170(nKey))
         return false;
-    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8ad60(nKey);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->WasKeyPressedGated(nKey);
 }
 
 // @0x141683100
@@ -281,7 +281,7 @@ bool Unk_PCMove::FUN_141683100(int nKey)
 {
     if (!FUN_1416840c0(nKey))
         return false;
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c4b0(nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyPressed(nKey) != 0)
         return true;
     return false;
 }
@@ -300,7 +300,7 @@ bool Unk_PCMove::FUN_141683150(int nKey)
         if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
-    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->FUN_140d8af70(nKey);
+    return ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->WasKeyReleasedGated(nKey);
 }
 
 // @0x141683200
@@ -316,7 +316,7 @@ bool Unk_PCMove::FUN_141683200(int nKey)
         if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->FUN_14142c540(nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyReleased(nKey) != 0)
         return true;
     return false;
 }

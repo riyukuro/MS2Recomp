@@ -49,18 +49,7 @@ public:
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
 class Unk_PrdItemData : public CItemData { };        // the icon name
-class Unk_PrdItemPtr
-{
-public:
-    ~Unk_PrdItemPtr() { FUN_1401b50d0(); }
-    void* FUN_140203c60() const;
-    void FUN_1401b50d0();
-private:
-    void* unknown;
-    void* object;
-};
-MS2_CHECK_SIZE(Unk_PrdItemPtr, 0x10);
-Unk_PrdItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The AS root with the five-argument Invoke ("setLeftData" / "setRightData"; the strings by value: the callee destroys them).
 class Unk_PrdScript : public AScript
@@ -255,10 +244,10 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
     if (nReward == 0)
         strReward = L"";
     m_30->Invoke("setRewardText", strReward);
-    Unk_PrdItemPtr spItem = FUN_14053f870(0x55d4a86);
-    if (spItem.FUN_140203c60() != 0)
+    MS2Ptr<CItemData> spItem = FUN_14053f870(0x55d4a86);
+    if (spItem.get() != 0)
     {
-        m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrdItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(spItem).operator->())->GetIconPath());
+        m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrdItemData*>(spItem.operator->())->GetIconPath());
         return;
     }
     FUN_141276180(s_strGuildBattleReward, "");

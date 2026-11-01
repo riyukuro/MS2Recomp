@@ -39,6 +39,8 @@
 #include <NiInstancingUtilities.h>
 #include <NiShadowGenerator.h>
 #include <NiMaterialLibrary.h>
+#include <NiSkinningMeshModifier.h>   // C3: NiSkinningMeshModifier::ms_RTTI
+#include <efd/Point2.h>   // C3: efd::Point2::ZERO
 #include "decoeditservice.h"
 #include "worldservice.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -94,7 +96,6 @@ void* FUN_1408b6b20(void* pDst, const void* pSrc);
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
 CString FUN_141b6ed00(const CString& strPath);
 CString FUN_140298360(const char* pszPrefix, const CString& strPath);
-bool FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
 
 // ---- scene helpers ----
 class Unk_NodeQueue
@@ -108,14 +109,8 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
-class NiSkinningMeshModifier   // C3: member view for the former free stand-ins
-{
-public:
-    bool GetSoftwareSkinned() const;
-};
-extern char DAT_143ae51e8;                                          // material tables
-extern char DAT_143ae5278;
-extern NiRTTI DAT_143afbef0;                                        // the modifier type the overdraw material needs
+extern NiFixedString DAT_143ae51e8;                                          // material tables
+extern NiFixedString DAT_143ae5278;
 
 // ---- xml (game TinyXML) ----
 class Unk_TiXmlElement;
@@ -144,13 +139,9 @@ bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 // ---- cursor ray ----
 // (Unk_DecoPoint3, the efd::Point3 of the ray, is in decoeditservice.h)
 struct Unk_PickXY { float x, y; };                                  // cursor position
-extern Unk_PickXY DAT_143b02320;                                    // initial value of the cursor position
 struct Unk_DecoCursor : public CWindowService { };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-struct Unk_DecoCamera : public CameraMgr
-{
-    bool FUN_140af0520(const Unk_PickXY& kCursor, Unk_DecoPoint3* pOrigin, Unk_DecoPoint3* pDir);    // cursor ray
-};
+struct Unk_DecoCamera : public CameraMgr { };
 struct Unk_DecoCollision
 {
     int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
@@ -426,14 +417,14 @@ efd::AsyncResult DecoEditService::OnTick()
     MS2Ptr<EditBrush> spBrush(0);
     if (m_mapBrushes.Lookup(m_nBrush, spBrush))
     {
-        Unk_PickXY kCursor = DAT_143b02320;
+        Unk_PickXY kCursor = *reinterpret_cast<const Unk_PickXY*>(&efd::Point2::ZERO);
         if (((struct Unk_DecoCursor*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
         {
             if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
             {
                 Unk_DecoPoint3 kOrigin;
                 Unk_DecoPoint3 kDir;
-                if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+                if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->ScreenToRay(*reinterpret_cast<const NiPoint2*>(&kCursor), *reinterpret_cast<NiPoint3*>(&kOrigin), *reinterpret_cast<NiPoint3*>(&kDir)) != 0)
                 {
                     Vector3 kHit;
                     if (((struct Unk_DecoCollision*)FUN_1409f7ca0())->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
@@ -816,7 +807,7 @@ bool DecoItem::PrepareMesh(NiMesh* pMesh, bool bOverdraw)
     }
     else
     {
-        NiMeshModifier* pModifier = pMesh->GetModifierByType(&DAT_143afbef0);
+        NiMeshModifier* pModifier = pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI);
         if (pModifier != 0)
         {
             if (!((class NiSkinningMeshModifier*)(class NiMeshModifier*)(pModifier))->GetSoftwareSkinned() && bOverdraw)
@@ -972,7 +963,7 @@ bool DecoLayer::SetAsset(CString strAsset)
 // @0x1411770b0
 bool DecoLayer::ChangeAsset(CString strAsset)
 {
-    if (FUN_1402a5b40(m_strAsset, ""))
+    if (m_strAsset != "")
     {
         m_strAsset = strAsset;
         ATL::CAtlArray<efd::SmartPointer<DecoItem> > aOld;

@@ -41,7 +41,7 @@ public:
     void FUN_14160db10();                               // 0x14160db10
     void FUN_14160db40(void* p1, void* p2);             // 0x14160db40
     int  FUN_14160db80();                               // 0x14160db80
-    void FUN_14160dd20();                               // 0x14160dd20
+    void Logout();                               // 0x14160dd20
     int  FUN_14160dd50(CStringW& rResult);              // 0x14160dd50
     int  FUN_14160e260();                               // 0x14160e260
     void FUN_14160e410();                               // 0x14160e410
@@ -49,12 +49,12 @@ public:
     CString FUN_14160e550();                            // 0x14160e550
     CString FUN_14160e5a0();                            // 0x14160e5a0
     int FUN_14160e5f0();                                // 0x14160e5f0
-    int  FUN_14160e630();                               // 0x14160e630
+    int  LoadAnySetting();                               // 0x14160e630
     void FUN_14160e870();                               // 0x14160e870
     void SetCommandLine();                               // 0x14160e9b0
-    CString FUN_14160e9e0(CString strHost);             // 0x14160e9e0
-    CString FUN_14160eb70();                            // 0x14160eb70
-    CString FUN_14160ebf0();                            // 0x14160ebf0
+    CString ResolveHostIp(CString strHost);             // 0x14160e9e0
+    CString GetDefaultUgcUrl();                            // 0x14160eb70
+    CString GetLoginServerIp();                            // 0x14160ebf0
 
     int m_08;                                           // +0x08
     int m_0c;                                           // +0x0c

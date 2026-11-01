@@ -30,7 +30,7 @@ extern char DAT_143afa4d8;                                  // shadow-node table
 extern char DAT_143a08cf8;                                  // the up axis handed to FUN_140a0b080
 
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // entity -> its scene graph root (util.cpp)
-void* FUN_141b6efc0(void* p);                               // entity -> its scene root key
+NiAVObject* FUN_141b6efc0(egf::Entity* p);                               // entity -> its scene root key
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
@@ -66,12 +66,7 @@ public:
 void FUN_1409fabf0(void* pSmartPointer, void* pNode);       // efd::SmartPointer<NiAVObject>::operator=
 
 // The effect manager singleton (0x1403ed280).
-class Unk_TeEffectMgr
-{
-public:
-    void* FUN_1411a6b10();                                  // the effect root NiNode
-    void FUN_1411a68f0(int nHandle, bool bVisible);
-};
+
 
 // The tail table singleton accessor (0x140ad0da0).
 // @0x140ad0da0
@@ -171,12 +166,12 @@ void CTailEffectObject::FUN_140acee90()
     Unk_NodePtr spNode(NiNew NiNode(0));
     if (m_pOwner->GetClassID() == 0x6200044)
     {
-        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410()))))));
+        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410())))))));
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
     else
     {
-        NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
+        NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot());
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
 
@@ -186,7 +181,7 @@ void CTailEffectObject::FUN_140acee90()
     ((class NoticeMessage*)(struct Unk_TeRequest*)(&((Unk_TeRequest&)(kRequest))))->SetActor(m_pOwner->FUN_14123c580());
     FUN_1409fabf0(&((Unk_TeRequest&)(kRequest)).m_spNode, FUN_1409475d0(&spNode));
     int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
-    reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(nHandle, m_bVisible);
+    reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(nHandle, m_bVisible);
 
     MS2Ptr<TailEffectInfo> spInfo;
     FUN_140ad0d30(spInfo, Unk_BmNewTag(0));
@@ -354,7 +349,7 @@ void CTailEffectObject::FUN_140acfda0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, true);
+        reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, true);
     }
 }
 
@@ -370,7 +365,7 @@ void CTailEffectObject::FUN_140acfeb0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        reinterpret_cast<Unk_TeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, false);
+        reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0(spInfo->m_nEffectId, false);
     }
 }
 

@@ -21,13 +21,13 @@ public:
     virtual void OnLoadComplete();                      // 22 0x140e6b9e0 create the effect manager clip
     virtual int vfunc_48() { return 0x4f62; }           // 48 0x140e6d2a0
 
-    void FUN_140e6bb70(int nObjectId, int nDurationMs, int nBarCount);   // start a duel (npc id, time, bars)
+    void StartDuelBar(int nObjectId, int nDurationMs, int nBarCount);   // start a duel (npc id, time, bars)
     void FUN_140e6bc10();                               // refresh both profiles, hp bars and the npc buffs
     void FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff);        // add a buff icon (when it belongs to the npc)
     void FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff);        // remove a buff icon
-    void FUN_140e6c640(int nBuffId);                    // update a buff icon
-    void FUN_140e6c7a0();                               // "setTime" mmss
-    void FUN_140e6c900();                               // "setHpBarLeft" (local player hp, max hp)
+    void RemoveBuffEffect(int nBuffId);                    // update a buff icon
+    void UpdateRemainingTime();                               // "setTime" mmss
+    void UpdatePlayerHpBar();                               // "setHpBarLeft" (local player hp, max hp)
     void FUN_140e6c9c0();                               // "setHpBarRight" (npc hp split into bars)
 
 private:

@@ -31,6 +31,11 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/client/ms2/itempreview.h"
+#include "ms2/commonfiles/contentshutdown.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
+class Unk_140166410;
 
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_cond(17, 0.75f, 0.25f, 2.25f, 10);
@@ -42,7 +47,6 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 class Unk_140acd6e0 : public ASDisplayObject
 {
 public:
-    void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);
 };
 CBlackMarketTable* FUN_1401c0d80();
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -59,7 +63,7 @@ class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
-CFeatureManager* FUN_140166410();
+Unk_140166410*FUN_140166410();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: int FUN_140f20b90(); };
 class Unk_Cfg6198 { public: CString FUN_1409f6f30(); };
@@ -68,18 +72,16 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_Cfg* FUN_1401d3200()
 void FUN_1418fe1c0(const CString& str);
 class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_SwfMgr { public: UISwfEntity* FUN_1422d4980(int nLayer); };
-Unk_SwfMgr* FUN_140b632f0();
+UISwfEntityManager* FUN_140b632f0();
 __int64 FUN_141b71960(const char* sz);
 unsigned __int64 FUN_140718350(const CString& str);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 class Unk_Hotbar { public: int FUN_140d40670(); };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
-int FUN_140d40670(Unk_Hotbar* p);
 void FUN_140d40120(Unk_Hotbar* p, MS2Ptr<CItem> spItem, int n);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem);
-void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool b, unsigned n1, unsigned n2);
+void FUN_1413490b0(MS2Ptr<CItem>, Scaleform::GFx::Value*, bool, int, int);
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int n, const CString& str);
 Scaleform::GFx::Value& FUN_1422dbc00();
 
@@ -148,7 +150,7 @@ void UIBlackMarketDialog::vfunc_67()
 // @0x1418cf770
 int UIBlackMarketDialog::vfunc_73()
 {
-    if (((class Unk_14025e7b0*)FUN_14025e7b0())->m_8.FUN_1402c4c90(7) != 0)
+    if (reinterpret_cast<CContentShutdown*>(&((class Unk_14025e7b0*)FUN_14025e7b0())->m_8)->Get((CContentShutdown::Content)7) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -221,14 +223,14 @@ void UIBlackMarketDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    if (!FUN_140166410()->FUN_14036d570(0x15))
+    if (!reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0x15))
         FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
-    if (FUN_140166410()->FUN_14036d570(0xf4))
+    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
     {
         m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6078.FUN_140f20b90() == 1);
-        m_30->FUN_140bbe640<Unk_140acd6e0>("m_mesoMarketDetailButton", m_spDetailButton);
+        m_30->FUN_140bbe640<ASButton>("m_mesoMarketDetailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton));
         if (m_spDetailButton.get())
-            m_spDetailButton->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
+            reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
     }
     for (size_t i = 0; i < m_pages.size(); i++)
     {
@@ -322,7 +324,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     }
     else if (strMethod.CompareNoCase("OnRightClick") == 0)
     {
-        if (FUN_140d40670(((class Unk_Hotbar*)FUN_1409bb9e0())) != 0)
+        if (reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->IsHudOn() != 0)
         {
             MS2Ptr<CItem> spItem(0);
             CString strArg = pArgs->FUN_1422b8d30();
@@ -390,7 +392,7 @@ void UIBlackMarketDialog::FUN_1418d0c20(int nIndex)
     m_pCurPage = m_pages[nIndex];
     if (m_pCurPage)
         m_pCurPage->vfunc_3();
-    if (FUN_140166410()->FUN_14036d570(0xf4))
+    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
     {
         if (FUN_1418d0da0(m_spMesoRegister.get()) || FUN_1418d0da0(m_spMesoSearch.get()) || FUN_1418d0da0(m_spMesoSearchSingle.get()))
             FUN_140cff840(FUN_1422dbc00(), "m_mesoMarketDetailButton", 1);

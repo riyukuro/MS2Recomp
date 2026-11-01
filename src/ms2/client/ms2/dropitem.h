@@ -55,7 +55,7 @@ public:
 
     int FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId);                 // build the item and its model
     int FUN_14118d1c0(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>& kOwners);   // set the owners, init
-    int FUN_14118d230(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners);   // add the owners, init
+    int InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners);   // add the owners, init
     void FUN_14118d720(NiAVObject* pRoot);                                      // the "Item_Icon:0" texture of the item
     void FUN_14118d9a0(int nState);                                         // enter a state
     void FUN_14118fe60(int nValue);                                         // 0x14118fe60 m_n28c
@@ -65,33 +65,33 @@ public:
     int FUN_14118ff10();                                                    // the item is type 0x55d4a8a
     int FUN_14118ff60();                                                    // the item is type 0x55d4a83
     int FUN_14118ffb0();                                                    // the item is a valid gem item
-    int FUN_141190030();                                                    // the local player owns it
-    int FUN_141190080(unsigned __int64 nUid);                               // nUid is an owner
+    int IsOwnedByLocalPlayer();                                                    // the local player owns it
+    int IsOwner(unsigned __int64 nUid);                               // nUid is an owner
     int FUN_1411900d0();                                                    // owner id and state both set
     int FUN_141190120(const efd::Point3& kPos, int nA, int nB);             // can pick up from kPos
     int FUN_141190320(GameObject* pActor, int nA, int nB);                 // can pick up with range m_f21c
     int FUN_141190370(GameObject* pActor, int nA, int nB);                 // can pick up with range m_f220
     int FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB);    // can pick up within fRange
-    int FUN_1411905a0();                                                    // the local player may pick it up
+    int IsPickupAllowedForLocalPlayer();                                                    // the local player may pick it up
     int FUN_141190640(bool bForce);                                         // the pickup setting allows it
     int FUN_1411906a0();                                                    // the inventory can take the item
     void SendRequestItemPickup(int nPickerId);                                      // send the pickup packet
     void FUN_141190900(int nPickerId);                                      // try to pick up
     void FUN_141190b70(int nPickerId);                                      // picked up by an actor
     void FUN_141191030();                                                   // m_nTick = now
-    bool FUN_141191060();                                                   // 1000 ms since m_nTick
+    bool HasPickupDelayElapsed();                                                   // 1000 ms since m_nTick
     int GetOwnerObjId();                                                    // m_nOwnerObjId
     int GetDropKind();                                                    // m_nDropKind
-    unsigned __int64 FUN_1411910e0();                                       // the first owner uid
+    unsigned __int64 GetFirstOwner();                                       // the first owner uid
     int FUN_141191150();                                                    // state is 1 or 6
     void FUN_1411911a0();                                                   // enter state 5
     void FUN_1411911f0();                                                   // "Item_Icon:0" of the model
-    void FUN_141191240();                                                   // read the drop settings
+    void LoadSpepBallConstants();                                                   // read the drop settings
     void FUN_141191330(int nValue);                                         // 0x141191330 m_n278
     void FUN_141191780(double fTime, GameObject* pTarget);                  // state 1: fly out
     void FUN_141191a10(double fTime, GameObject* pTarget);                  // state 0: bob
     void FUN_141191d10(double fTime, GameObject* pTarget);                  // state 2: fly to the owner
-    void FUN_1411920b0(double fTime, GameObject* pTarget);                  // state 3
+    void UpdatePickUpHoverState(double fTime, GameObject* pTarget);                  // state 3
     void FUN_141192200(double fTime, GameObject* pTarget);                  // state 4
     void FUN_1411923a0(double fTime, GameObject* pTarget);                  // state 5: grow in
     void FUN_1411925e0(efd::Point3 kAxis, float fDegrees);           // spin the model

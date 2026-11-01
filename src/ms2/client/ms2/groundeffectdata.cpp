@@ -85,12 +85,11 @@ public:
 private:
     GameObject* m_p;
 };
-int FUN_141654700(PCBase* pPc);
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class COptimizer   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14161d0f0() const;
+    int IsUpdateEnabled() const;
 };
 void* FUN_1408b6b20(Unk_ModelKeyCopy* pDst, const Unk_ModelKey* pSrc);
 void* FUN_141b6ef70(void* pKey);
@@ -284,7 +283,7 @@ MS2_REPLACE_METHOD(0x1413771F0, CGroundEffectDataManager, GetEffectFiles, 548, 0
 void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strAction)
 {
     PCBase* pPc;
-    if ((pPc = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject))) != 0 && FUN_141654700(pPc) == 0x6e && pPc->vfunc_65() != 0
+    if ((pPc = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject))) != 0 && reinterpret_cast<PC*>(pPc)->FUN_141654700() == 0x6e && pPc->vfunc_65() != 0
         && strAction.Find("run", 0) == 0)
         return;
     CString strGround = static_cast<Unk_GroundOwner*>(pObject)->FUN_141671480();
@@ -294,7 +293,7 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c460(&kModel);
     if (static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c660() != 0)
         return;
-    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161d0f0() == 0)
+    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->IsUpdateEnabled() == 0)
     {
         if (Unk_ObjectRef(pObject).FUN_141b71120() == 0)
             return;

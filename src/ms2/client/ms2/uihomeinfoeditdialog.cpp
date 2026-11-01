@@ -31,8 +31,6 @@ class Unk_HmInput : public ASDisplayObject
 {
 public:
     Unk_HmInput(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e4570
-    void FUN_1422e0d60(int nMaxChars);
-    void FUN_1422e0ab0(const CStringW& strText);
 private:
     char m_pad_40[0x88 - sizeof(ASDisplayObject)];
 };
@@ -165,13 +163,13 @@ void UIHomeInfoEditDialog::OnLoadComplete()
     UIModalDialog::OnLoadComplete();
     if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
     {
-        spName->FUN_1422e0d60(FUN_140c26920());
-        spName->FUN_1422e0ab0(FUN_140c268d0());
+        reinterpret_cast<ASTextInput*>(spName.operator->())->SetMaxChars(FUN_140c26920());
+        reinterpret_cast<ASTextInput*>(spName.operator->())->FUN_1422e0ab0(FUN_140c268d0());
     }
     if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
     {
-        spNotice.operator->()->FUN_1422e0d60(100);
-        spNotice.operator->()->FUN_1422e0ab0(FUN_140c26850());
+        reinterpret_cast<ASTextInput*>(spNotice.operator->())->SetMaxChars(100);
+        reinterpret_cast<ASTextInput*>(spNotice.operator->())->FUN_1422e0ab0(FUN_140c26850());
     }
 }
 MS2_REPLACE_METHOD(0x140C26540, UIHomeInfoEditDialog, OnLoadComplete, 548, 0x8AF667C3);

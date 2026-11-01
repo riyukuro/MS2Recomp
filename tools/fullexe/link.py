@@ -15,7 +15,7 @@
                off by default since TAG 17, whose links had no duplicate
   Always: the asm objs and libs of asm.py (<OUT>/asm/*.obj, *.lib: hookglue.lib's ms2::hook::Register) and the SDK
   data libs (dinput8; the DirectX SDK's dxguid).
-  --max-held   wait until at most N heavy slots are held before taking one (default 3: leave the gates a free slot);
+  --max-held   wait until at most N heavy slots are held before taking one (default slots - 2: leave the gates a free slot);
                meanwhile work/locks/heavy.drain holds new heavy_lock acquirers off (tools/heavy_lock.py)
 Outputs: <OUT>/link<TAG>.rsp, link<TAG>.log, fullexe<TAG>.exe/.map (TAG: FULLEXE_TAG)."""
 import argparse, collections, os, shutil, subprocess, sys, time
@@ -63,7 +63,7 @@ def main():
     ap.add_argument("--shim", action="store_true")
     ap.add_argument("--before")
     ap.add_argument("--force-multiple", action="store_true")
-    ap.add_argument("--max-held", type=int, default=3)
+    ap.add_argument("--max-held", type=int, default=heavy_lock.nslots() - 2)
     a = ap.parse_args()
     rows = [l.rstrip("\n").split("\t") for l in open(os.path.join(OUT, "order.tsv")) if l[0] != "#"]
     rules = [p for l in open(a.before) if len(p := l.split("#")[0].rstrip().split("\t")) >= 2] if a.before else []

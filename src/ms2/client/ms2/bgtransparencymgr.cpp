@@ -141,6 +141,7 @@
 #include "ms2/client/ms2/hardwareinstancingservice.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2recover.h"
+class Unk_CachedEntity;
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 BGTransparencyMgr* TSingleton<BGTransparencyMgr>::s_instance;
@@ -150,13 +151,13 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
 WorldService* FUN_1403ed2d0();                                  // world service singleton
-ecr::PickService* FUN_1413f98f0();                              // pick service (manager id 0x7002004)
+void * FUN_1413f98f0(void);  // C3: the definition's signature
 ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
 void FUN_140961880(egf::Entity* pEntity, unsigned nHash, float* pOut);       // get a float property
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool* pValue);// set a bool property
+void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 void FUN_14098f4d0(NiAVObject* pNode, bool b);
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -210,7 +211,7 @@ bool BGTransparencyMgr::Init()
     m_map30.clear();
     m_map40.clear();
     m_timer.FUN_140868750(300);
-    m_spService = FUN_1413f98f0();
+    m_spService = (ecr::PickService*)FUN_1413f98f0();
     m_spSceneGraph = FUN_1413f98b0();
     return true;
 }
@@ -524,7 +525,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                                     if (spInstancing->FUN_1413d6f40(pEntity) != 0)
                                     {
                                         bool bTrue = true;
-                                        FUN_14098c6e0(pEntity, 0xa0b6b179, &bTrue);
+                                        FUN_14098c6e0((Unk_CachedEntity*)pEntity, 0xa0b6b179, bTrue);
                                     }
                                 }
                                 pMaterial->vfunc_2(kBound);
@@ -619,7 +620,7 @@ void BGTransparencyMgr::UpdateFadeIn()
                 if (spInstancing->FUN_1413d6fc0(pEntity) != 0)
                 {
                     bool bFalse = false;
-                    FUN_14098c6e0(pEntity, 0xa0b6b179, &bFalse);
+                    FUN_14098c6e0((Unk_CachedEntity*)pEntity, 0xa0b6b179, bFalse);
                 }
             }
             ReleaseMaterials(pEntity, pElement);

@@ -37,6 +37,7 @@ template<> void MS2Ptr<CClubCli>::Release();
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/clubcli.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -115,33 +116,9 @@ public:
     MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);
 };
 
-// The AS array (ctor 0x1422deec0, dtor 0x1422df070) of the row objects.
-class Unk_ClubArray : public AScript
-{
-public:
-    Unk_ClubArray(int nType);
-    virtual ~Unk_ClubArray();
-    bool FUN_1422bc050(Scaleform::GFx::Value v);                        // push
-};
-
 // The popup menu (UIPopUpMenu); the club member menu entry point.
 class Unk_ClubPopupDialog { public: void FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember); };
 
-
-// The skill-attribute record behind a club buff icon (CPtred + 0xa8 bytes, then the icon path at +0xc0).
-class Unk_ClubSkillAttr : public CPtred
-{
-public:
-    char m_pad_18[0xa8];
-    CString m_strIcon;                                                  // +0xc0
-    CString FUN_1401756c0();                                            // copy of the icon path
-};
-MS2_CHECK_OFFSET(Unk_ClubSkillAttr, m_strIcon, 0xc0);
-class Unk_ClubSkillTable
-{
-public:
-    MS2Ptr<Unk_ClubSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
-};
 
 // ---- string helpers (instances living in other units; declared with their real argument lists) ----
 CString FUN_140719530(__int64 n);                                       // number to text
@@ -271,7 +248,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (box.get() != 0) {
             box->SetExtra(s_strClubBuff);
             box->FUN_141a01800(2);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0be00));
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::OnMsgBoxBuffConfirm));
             if (club->GetBuffId() != 0) {
                 box->FUN_141a02880(club->GetBuffId(), club->GetBuffLevel(),
                                    TSingleton<CStringTable>::GetInstance()->FUN_141812290(club->GetBuffId(), club->GetBuffLevel(), CString("name")));
@@ -352,7 +329,7 @@ bool UIClubDialog::FUN_140e0bdb0(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x140E0BDB0, UIClubDialog, FUN_140e0bdb0, 61, 0x7B7F7ED9);
 
 // @0x140e0be00
-bool UIClubDialog::FUN_140e0be00(int nResult, const CMsgBoxData& data)
+bool UIClubDialog::OnMsgBoxBuffConfirm(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
@@ -364,7 +341,7 @@ bool UIClubDialog::FUN_140e0be00(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140E0BE00, UIClubDialog, FUN_140e0be00, 229, 0xCF3E7CF4);
+MS2_REPLACE_METHOD(0x140E0BE00, UIClubDialog, OnMsgBoxBuffConfirm, 229, 0xCF3E7CF4);
 
 // @0x140e0bef0
 bool UIClubDialog::FUN_140e0bef0(int nResult, const CMsgBoxData& data)
@@ -389,7 +366,7 @@ void UIClubDialog::FUN_140e0bfd0()
             if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_category")) {
                 spList->SetSelectedIndex(-1);
                 spList->FUN_1422dd1d0();
-                Unk_ClubArray rows(2);
+                ASDataProvider rows(2);
                 CStringW strMyName = FUN_1403ed2d0()->FUN_141bd0d30();
                 for (POSITION pos = spMap->FUN_140b1a4c0(); pos != 0; spMap->FUN_140b1a550(pos)) {
                     __int64 nClubSN = spMap->FUN_140b1a4f0(pos);
@@ -401,8 +378,8 @@ void UIClubDialog::FUN_140e0bfd0()
                     row.FUN_1407cb9c0("master", spClub->IsLeaderName(CStringW(strMyName)));
                     row.FUN_1407cbb20("label", spClub->FUN_14020f1a0());
                     row.FUN_1407cbb20("memberCount", FUN_14083dc40(GetStringCommon(0x367), spClub->GetMemberCount(), 10));
-                    FUN_140e0d180(row, spClub->GetBuffId(), spClub->GetBuffLevel());
-                    FUN_140e0d230(row, spClub->GetNameChangeAvailableTime());
+                    SetRowBuffIcon(row, spClub->GetBuffId(), spClub->GetBuffLevel());
+                    SetRowNameChange(row, spClub->GetNameChangeAvailableTime());
                     rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
                 }
                 spList->vfunc_25(rows.FUN_1422bb870());
@@ -427,7 +404,7 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
             return;
         if (MS2Ptr<ASScrollingList> spList = spClip->FUN_140bc7280("m_items")) {
             spList->FUN_1422dd1d0();
-            Unk_ClubArray rows(2);
+            ASDataProvider rows(2);
             MS2Ptr<CClubMember> spLeader = spClub->GetLeader();
             if (spLeader.get() != 0) {
                 ASObj row(2);
@@ -488,16 +465,16 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
 }
 
 // @0x140e0d180
-void UIClubDialog::FUN_140e0d180(ASObj& row, int nBuffId, unsigned short nLevel)
+void UIClubDialog::SetRowBuffIcon(ASObj& row, int nBuffId, unsigned short nLevel)
 {
-    MS2Ptr<Unk_ClubSkillAttr> spAttr = reinterpret_cast<Unk_ClubSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
+    MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
     if (spAttr.get() != 0)
-        row.FUN_1407cba60("buffIcon", spAttr->FUN_1401756c0());
+        row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
 }
-MS2_REPLACE_METHOD(0x140E0D180, UIClubDialog, FUN_140e0d180, 155, 0x66BCF20D);
+MS2_REPLACE_METHOD(0x140E0D180, UIClubDialog, SetRowBuffIcon, 155, 0x66BCF20D);
 
 // @0x140e0d230
-void UIClubDialog::FUN_140e0d230(ASObj& row, __int64 nNameChangeTime)
+void UIClubDialog::SetRowNameChange(ASObj& row, __int64 nNameChangeTime)
 {
     __int64 nNow = GetServerTime();
     if (nNow > nNameChangeTime)
@@ -505,6 +482,6 @@ void UIClubDialog::FUN_140e0d230(ASObj& row, __int64 nNameChangeTime)
     else
         row.FUN_1407cb9c0("nameChange", 0);
 }
-MS2_REPLACE_METHOD(0x140E0D230, UIClubDialog, FUN_140e0d230, 91, 0x3A2471AF);
+MS2_REPLACE_METHOD(0x140E0D230, UIClubDialog, SetRowNameChange, 91, 0x3A2471AF);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca62f0-0x142ca6350 .text$yd

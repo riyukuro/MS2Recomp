@@ -10,10 +10,10 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/nipoint3.h"
-#include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/commonfiles/timer.h"
 
 class PC;
+class NiNode;
 class CubeItemInfo;
 class CCubeGuideWrapper;   // cubeguide.h
 class CGodModeInfo;        // 0x30-byte floating "god mode" marker (cubecraft_1.cpp)
@@ -35,21 +35,21 @@ public:
     void FUN_1410a9630();                                               // create the owned guide (NIF / KFM / doll)
     void FUN_1410a9cc0();                                               // rebuild the guides for the current mode
     void FUN_1410a9d60();                                               // drop the effect node and the guide
-    void FUN_1410a9e70();                                               // drop the second guide
+    void ReleaseGuides();                                               // drop the second guide
     void UpdateGuidePositions();                                               // move the guides to the cell position
     bool FUN_1410aa010();                                               // the second guide exists
     void AdjustLift(unsigned char bUp);                                       // lift +- 150
-    void FUN_1410aa0c0(CubeItemInfo* pInfo);                            // select an item to place
+    void RequestCube(CubeItemInfo* pInfo);                            // select an item to place
     int FUN_1410aa1f0();                                                // mode != 2
     int FUN_1410aa220();                                                // mode is 0 or 1
     int FUN_1410aa260();                                               // the six cells below are free
-    void FUN_1410aa380(bool bVisible);                                  // show / hide the guide
+    void SetGuideVisible(bool bVisible);                                  // show / hide the guide
     bool FUN_1410aa420();                                               // the guide is idle
     void SetGuide2Visible(bool bVisible);                                  // show / hide the second guide
     Vector3 GetPtCell();                                    // the cell position
     void SetMode(int nMode);                                      // set the mode
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
-    void FUN_1410aa5c0(CubeItemInfo* pInfo);                            // set the item (or clear it)
+    void SetCurrentItem(CubeItemInfo* pInfo);                            // set the item (or clear it)
     void FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate);    // place the guide at a cell
     void FUN_1410aad50();                                               // confirm: build / move / rotate
     void FUN_1410ab5a0();                                               // remove (without the notice)
@@ -72,8 +72,8 @@ public:
     void FUN_1410ae960(unsigned* pLeft, unsigned* pRight);              // can the character lift up / down
     void FUN_1410aeec0(const Vector3& kPos);                    // snap down to the nearest cube column
     void FUN_1410af0c0();                                               // empty
-    void FUN_1410af0d0();                                               // drop the third guide
-    void FUN_1410af140();                                               // orient the third guide
+    void ReleaseGuide3();                                               // drop the third guide
+    void UpdateGuide3Rotation();                                               // orient the third guide
     void FUN_1410af1f0();                                               // find the housing quest cell
 
     PC* m_pOwner;                           // +0x00 the local player
@@ -97,7 +97,7 @@ public:
     MS2Ptr<CItem> m_spEffectA;              // +0x128
     MS2Ptr<CItem> m_spEffectB;              // +0x138
     MS2Ptr<CItem> m_spEffectC;              // +0x148
-    Unk_NodePtr m_spNode;                   // +0x158
+    efd::SmartPointer<NiNode> m_spNode;     // +0x158
     int m_nHud;                             // +0x160 (1 shown)
     int m_nMode;                            // +0x164
     efd::SmartPointer<Unk_Service6100017> m_svc;   // +0x168

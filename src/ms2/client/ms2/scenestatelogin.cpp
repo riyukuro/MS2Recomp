@@ -31,8 +31,7 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBo
 bool FUN_141902530(int, const CMsgBoxData&);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-class Unk_MsgBoxData {};
-MS2Ptr<Unk_MsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool (int, CMsgBoxData const &)>);  // C3: the definition's signature
 void* FUN_140aa6d30();
 class CStateService   // C3: member view for the former free stand-ins
 {

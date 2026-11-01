@@ -37,7 +37,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-unsigned char FUN_1410c35c0(void* pHousing);                    // the camera housing mode is active
+class CubeMapInformationService { public: bool FUN_1410c35c0(); };
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 class Unk_McPc : public PC
 {
@@ -218,7 +218,7 @@ void UIMasteryObjectMark::OnLoadComplete()
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(pos);
         if (spContext == 0)
         {
-            CFunctionCubeObject* pCube = FUN_1409670b0()->FUN_141230c00(m_cubes.GetKeyAt(pos));
+            CFunctionCubeObject* pCube = FUN_1409670b0()->FindCube(m_cubes.GetKeyAt(pos));
             if (!pCube)
                 continue;
             CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(pCube);
@@ -312,7 +312,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPC)
         return;
-    if (FUN_1410c35c0(((class Unk_CameraHousing*)Unk_AkoHouseSvc::GetInstance())) != 0)
+    if (((class CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0() != 0)
         return;
     POSITION pos = m_cubes.GetStartPosition();
     while (pos)
@@ -323,7 +323,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(posCur);
         if (spContext == 0)
             continue;
-        MS2Ptr<CFunctionCubeObject> spCube = FUN_1409670b0()->FUN_141230c00(strKey);
+        MS2Ptr<CFunctionCubeObject> spCube = FUN_1409670b0()->FindCube(strKey);
         if (spCube.IsNull())
         {
             FUN_140e5b450(strKey);

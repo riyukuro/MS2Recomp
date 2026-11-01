@@ -421,7 +421,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
             pPC->FUN_14165f460()->FUN_141270f10(const_cast<ATL::CAtlArray<MS2Ptr<CItem> >&>(pState->m_240), nObjId);
             MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(1);
             if (spGem.get() != 0)
-                spGem->vfunc_6(pPC, pPC->FUN_14165f460()->FUN_141270140(1));
+                spGem->vfunc_6(pPC, pPC->FUN_14165f460()->GetItemByGemType(1));
         }
         CMsTime kEnd(pState->m_288);
         CMsTime kStart(pState->m_280);
@@ -531,7 +531,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
                 else
                     nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400();
                 spItem->FUN_140526c10(nSlot);
-                spItem->SetItemUid(pPC->FUN_14123cec0());
+                spItem->SetItemUid(pPC->GenerateSerialId());
                 spItem->SetObjectId(m_nType);
                 pPC->FUN_141653d10(spItem);
             }

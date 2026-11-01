@@ -49,6 +49,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce240
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -93,16 +95,6 @@ public:
 class Unk_DebugGuideList : public Unk_DebugGuideCtl
 {
 public:
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd310(const CStringW& strLabel);               // add a row
-    void FUN_1422dcca0(int nIndex);                             // select
-    int FUN_1422dccd0();                                        // the selected index
-    void FUN_1422e1890(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback);   // selection callback
-};
-class Unk_DebugGuideButton : public Unk_DebugGuideCtl
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);   // click
 };
 class Unk_DebugGuideInput : public Unk_DebugGuideCtl { public: };    // the text
 class Unk_DebugGuideMovie
@@ -279,8 +271,8 @@ void UIDebugGuideDialog::OnLoadInit()
     } while (0);
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
-    m_leftList->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectGroup));
-    m_rightList->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
+    reinterpret_cast<ASScrollingList*>(m_leftList.operator->())->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectGroup));
+    reinterpret_cast<ASScrollingList*>(m_rightList.operator->())->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
     m_executeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnExecute), 0);
     m_multiExecuteButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnMultiExecute), 0);
     reinterpret_cast<Unk_DebugGuideMovie*>(m_movie.operator->())->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
@@ -387,11 +379,11 @@ void UIDebugGuideDialog::LoadXml(CString strPath)
 // @0x141288200
 void UIDebugGuideDialog::FillGroups()
 {
-    m_leftList->FUN_1422dd1d0();
+    reinterpret_cast<ASCoreList*>(m_leftList.operator->())->FUN_1422dd1d0();
     for (unsigned int i = 0; i < m_groups.size(); i++)
-        m_leftList->FUN_1422dd310(m_groups[i].m_strName);
+        reinterpret_cast<ASCoreList*>(m_leftList.operator->())->FUN_1422dd310(m_groups[i].m_strName);
     if (!m_groups.empty())
-        m_leftList->FUN_1422dcca0(0);
+        reinterpret_cast<ASCoreList*>(m_leftList.operator->())->SetSelectedIndex(0);
     m_leftList->vfunc_24(true);
     FillCommands();
 }
@@ -401,10 +393,10 @@ void UIDebugGuideDialog::FillCommands()
 {
     if (m_groups.empty())
         return;
-    int nGroup = m_leftList->FUN_1422dccd0();
+    int nGroup = reinterpret_cast<ASCoreList*>(m_leftList.operator->())->GetSelectedIndex();
     if (nGroup >= (int)m_groups.size())
         return;
-    m_rightList->FUN_1422dd1d0();
+    reinterpret_cast<ASCoreList*>(m_rightList.operator->())->FUN_1422dd1d0();
     Unk_DebugGuideGroup& rGroup = m_groups[nGroup];
     for (unsigned int i = 0; i < rGroup.m_commands.size(); i++)
     {
@@ -414,20 +406,20 @@ void UIDebugGuideDialog::FillCommands()
             int nKey = i + 1;
             strPrefix = FUN_140292a70(L"F{0}] ", nKey);
         }
-        m_rightList->FUN_1422dd310(StringFormat<CStringW, CStringW>(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
+        reinterpret_cast<ASCoreList*>(m_rightList.operator->())->FUN_1422dd310(StringFormat<CStringW, CStringW>(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
     }
     if (!rGroup.m_commands.empty())
-        m_rightList->FUN_1422dcca0(0);
+        reinterpret_cast<ASCoreList*>(m_rightList.operator->())->SetSelectedIndex(0);
     m_rightList->vfunc_24(true);
 }
 
 // @0x141288570
 void UIDebugGuideDialog::ShowExplain()
 {
-    int nGroup = m_leftList->FUN_1422dccd0();
+    int nGroup = reinterpret_cast<ASCoreList*>(m_leftList.operator->())->GetSelectedIndex();
     if (nGroup >= (int)m_groups.size())
         return;
-    int nCommand = m_rightList->FUN_1422dccd0();
+    int nCommand = reinterpret_cast<ASCoreList*>(m_rightList.operator->())->GetSelectedIndex();
     if (nCommand >= (int)m_groups[nGroup].m_commands.size())
         return;
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
@@ -439,12 +431,12 @@ void UIDebugGuideDialog::ShowExplain()
 // @0x141288770
 bool UIDebugGuideDialog::PrintCommand(int nIndex)
 {
-    int nGroup = m_leftList->FUN_1422dccd0();
+    int nGroup = reinterpret_cast<ASCoreList*>(m_leftList.operator->())->GetSelectedIndex();
     if (nGroup >= (int)m_groups.size())
         return false;
     int nCommand = nIndex;
     if (nCommand < 0)
-        nCommand = m_rightList->FUN_1422dccd0();
+        nCommand = reinterpret_cast<ASCoreList*>(m_rightList.operator->())->GetSelectedIndex();
     if (nCommand >= (int)m_groups[nGroup].m_commands.size())
         return false;
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
@@ -466,12 +458,12 @@ bool UIDebugGuideDialog::PrintCommand(int nIndex)
 // @0x141288a70
 bool UIDebugGuideDialog::SendCommand(int nIndex)
 {
-    int nGroup = m_leftList->FUN_1422dccd0();
+    int nGroup = reinterpret_cast<ASCoreList*>(m_leftList.operator->())->GetSelectedIndex();
     if (nGroup >= (int)m_groups.size())
         return false;
     int nCommand = nIndex;
     if (nCommand < 0)
-        nCommand = m_rightList->FUN_1422dccd0();
+        nCommand = reinterpret_cast<ASCoreList*>(m_rightList.operator->())->GetSelectedIndex();
     if (nCommand >= (int)m_groups[nGroup].m_commands.size())
         return false;
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];

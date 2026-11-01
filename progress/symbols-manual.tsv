@@ -1,5 +1,3 @@
-?AddRef@?$Unk_UpperPtr@VUnk_UpperClip@@@@QEAAXXZ	1409b9cc0	func
-?AddRef@?$Unk_UpperPtr@VUnk_UpperBuff@@@@QEAAXXZ	14096e960	func
 ?AddRef@?$MS2Ptr@VASGameEntity@@@@AEBAXXZ	140ba7c80	func
 ??0?$MS2Ptr@VUnk_WcButton@@@@QEAA@AEBV0@@Z	140bbf530	func
 ?GetNode@Unk_DTCtxMap@@AEAAPEAXIAEAI0AEAPEAX@Z	1408db570	func
@@ -3823,13 +3821,13 @@ __imp_NxGetUtilLib	142cced28	data
 ?RunQuery@UIMeratMarketDialog@@QEAAXXZ	141308de0	func
 ?SelectCategory@UIMeratMarketDialog@@QEAAXHH@Z	141308d60	func
 ?SetSlotKind@UIMeratMarketDialog@@QEAAXH@Z	141308440	func
-?FillBasketRow@UIMeratMarketDialog@@QEAA_NAEAVASMeratMarketProduct@@V?$MS2Ptr@VUnk_MeratBasketEntry@@@@HPEAVUnk_MmViewScope@@@Z	1412ef150	func
+?FillBasketRow@UIMeratMarketDialog@@QEAA_NAEAVASMeratMarketProduct@@V?$MS2Ptr@VCMeratMarketBasket@@@@HPEAVUnk_MmViewScope@@@Z	1412ef150	func
 ?RefreshMyShop@UIMeratMarketDialog@@QEAAXXZ	1412eef70	func
 ?OnAskMoveToModelHouse@UIMeratMarketDialog@@QEAA_NHAEBVCMsgBoxData@@@Z	1413065c0	func
 ?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func
 ??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
-?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
+?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcCharBookMark@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
 ?GetID@GameEvent@@QEAAHXZ	1402e1d00	func
 ??0Unk_ChaosChat@@QEAA@XZ	140acd570	func
 ??1Unk_ChaosChat@@QEAA@XZ	140acd770	func
@@ -17388,3 +17386,7 @@ CRICRS_Enter	1400683d0	func
 ?CRICRS_Leave@@YAIPEAU_RTL_CRITICAL_SECTION@@@Z	140068430	func
 CRICRS_Leave	140068430	func
 ?MPVUMC_BiDirect@@YAXPEAX@Z	142cccad0	func
+?addSyncPoint@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@IIPEBDPEAPEAUFMOD_SYNCPOINT@@@Z	1428d8ed2	func
+?get@?$MS2Ptr@VUnk_WsB_Marker@@@@QEBAPEAVUnk_WsB_Marker@@XZ	140d290a0	func
+??0?$MS2Ptr@VDTReward@EventStruct@@@@QEAA@AEBV0@@Z	1408d6030	func
+??C?$MS2Ptr@VDTReward@EventStruct@@@@QEBAPEAVDTReward@EventStruct@@XZ	1408d62e0	func

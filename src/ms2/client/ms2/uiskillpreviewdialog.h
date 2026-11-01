@@ -12,24 +12,7 @@ public:
     virtual int vfunc_o178_3(void*);
 };
 MS2_CHECK_SIZE(IUIAvatarEventListener, 8);
-class Unk_SkillPreviewAvatar;
-// The avatar's 16-byte owning pointer; its null predicate is instantiated in this unit.
-template<class T> class Unk_SkillPreviewPtr
-{
-public:
-    Unk_SkillPreviewPtr();
-    ~Unk_SkillPreviewPtr();
-    Unk_SkillPreviewPtr& operator=(T*);
-    void Reset(int);
-    bool operator==(T*) const;
-    T* get() const;
-    T* operator->() const;
-    bool operator!() const { return m_p == 0; }
-private:
-    void* m_0;
-    T* m_p;
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewPtr<Unk_SkillPreviewAvatar>, 0x10);
+class UIAvatarPC;
 
 class UISkillPreviewDialog : public UIDialog, public IUIAvatarEventListener
 {
@@ -56,7 +39,7 @@ public:
     virtual int vfunc_48() { return 20163; }
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_SkillPreviewPtr<Unk_SkillPreviewAvatar> m_avatar;
+    MS2Ptr<UIAvatarPC> m_avatar;
     int m_skill;
     unsigned short m_level;
 };

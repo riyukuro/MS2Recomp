@@ -42,10 +42,10 @@ struct Unk_ChTree
 };
 
 // The home (cube map information) service.
+class CubeMapInformationService { public: bool FUN_1410c35c0(); };
 class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    bool FUN_1410c35c0();                                       // construct mode
     void FUN_1410d5930(Unk_ChTree* pOut);                       // collect the visitors
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
@@ -107,7 +107,7 @@ void UIConstructHelpDialog::OnLoadComplete()
     if (FUN_140ef4cb0(&spService, 0))
         return;
     if (m_30.get() != 0)
-        m_30->Invoke("setMode", !reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c35c0());
+        m_30->Invoke("setMode", !reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c35c0());
 }
 
 // @0x1419060e0

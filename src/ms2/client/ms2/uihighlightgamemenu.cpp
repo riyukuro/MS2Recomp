@@ -40,6 +40,7 @@
 #include "ms2/placeholder/mstime.h"  // C3: was a local member view
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::ToggleDialog
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // The key-input controller singleton of this unit.
@@ -88,7 +89,6 @@ extern P DAT_143abd628;
 class Unk_HlAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140bd2cb0(const char* szMethod, ASArray& arr);   // Invoke(name, array)
 };
 void FUN_140614800(Scaleform::GFx::Value* v);               // ~Value
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
@@ -233,10 +233,7 @@ public:
     void FUN_141999d40(int);
 };
 void FUN_140d1bd60(Unk_HlH item, int n);
-void FUN_141adcea0(P pUi, Unk_HlH* pOut, int nId);
 char FUN_140534e80(Unk_HlH* p);
-P FUN_1403ed9e0(Unk_HlH* p);
-void FUN_1403e5630(Unk_HlH* p);
 P FUN_140c24650();
 int FUN_140c25190();
 
@@ -265,11 +262,6 @@ P FUN_1416546d0(P);
 unsigned FUN_140639b40(P, int);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 P FUN_1409a8b10();
-class Unk_PetClientSettings   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_PetOptFlags* FUN_140b123b0();
-};
 unsigned FUN_140caa1a0(P);
 
 // lists, arrays, item records
@@ -724,7 +716,7 @@ void UIHighlightGameMenu::FUN_140c22f50()
     if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0xe558)->Get())
         return;
     ASArray names(2);
-    if (*((unsigned char*)((void*)((class Unk_PetClientSettings*)(void*)(FUN_1409a8b10()))->FUN_140b123b0()) + 0x15) == 0)
+    if (*((unsigned char*)((void*)reinterpret_cast<CGameOption*>((FUN_1409a8b10()))->FUN_140b123b0()) + 0x15) == 0)
     {
         for (POSITION pos = m_actions.GetStartPosition(); pos != 0; m_actions.GetNext(pos))
         {
@@ -1103,15 +1095,13 @@ void UIHighlightGameMenu::FUN_140c24470(NotifyObject* pObj)
     m_bitsSocket.FUN_140c26080();
 }
 
-class Unk_UiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
-
 // @0x140c24650
 P FUN_140c24650()
 {
     P pUi = FUN_1403ed2b0();
     if (pUi == 0)
         return 0;
-    MS2Ptr<UIObject> spUi = ((Unk_UiManager*)pUi)->FUN_141adcea0(FUN_140c25190());
+    MS2Ptr<UIObject> spUi = ((CUIService*)pUi)->FindObject((eUIClassID)FUN_140c25190());
     if (spUi.IsNull())
         return 0;
     return dynamic_cast<UIItemSocketSystemDialog*>(spUi.operator->());

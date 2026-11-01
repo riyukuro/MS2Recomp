@@ -11,6 +11,11 @@
 #include "ms2/placeholder/notifysystem.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
+#include <efd/ParseHelper.h>   // C3: ParseHelper<ID128>::ToString
+#include <NiNode.h>   // C3: NiNode::ms_RTTI
+#include <new>
+#include "ms2/client/ms2/notifychangebuff.h"   // C3: NotifyAddLiftable
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // C3: CubeMapInformationService::GetCubeByKey
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -32,69 +37,36 @@ struct Unk_LiftSoundReq
     int m_nPad0c;                                                   // +0x0c
     void* m_unk[12];                                                // +0x10 node (assigned by FUN_1409fabf0) .. +0x68; 0x70 bytes (NoticeMessage)
 };
-class Unk_LiftFxMgr
-{
-public:
-    int FUN_1411a49c0(Unk_LiftSoundReq* pRequest);                  // play, returns the handle
-    void FUN_1411a6060(int nHandle);                                // stop
-};
-void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
-extern char DAT_143afa4d8;
-void* FUN_141b6efc0(Unk_Entity* pEntity);                           // the scene-graph root of an entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene-graph root of an entity
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The physics helper (singleton): collision group of the lifted prop.
 class CPhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-void FUN_141689ec0(CPhysXHelper* pHelper, Unk_Entity* pEntity, short nKind, int nArg, int bFlag);
+class NxGroupsMask;
+class CPhysXHelper   // C3: member view for the former free stand-in
+{
+public:
+    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
+};
 
 // Entity properties read by hash.
-int FUN_140961880(Unk_Entity* pEntity, unsigned nHash, float* pValue);
-int FUN_140ae11a0(Unk_Entity* pEntity, unsigned nHash, int* pValue);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
-// The entity's model name (a 32-byte string object).
-struct Unk_LiftName
-{
-    void* m_p[4];
-};
-void FUN_1408a8700(Unk_LiftName* p);                                // construct
-void FUN_1408a8900(Unk_LiftName* p);                                // destroy
-void FUN_140ae1f60(void* pModel, Unk_LiftName* pName);
-void FUN_1401d3700(CString* p);
+void FUN_1401d3700(CString& str);
 
 // The item service handed out by the global at 0x143b059e8 (reference counted) and its cube lookup.
 class Unk_LiftCube : public Cube
 {
 };
-class Unk_LiftSvc
-{
-public:
-    virtual ~Unk_LiftSvc();
-    virtual void vfunc_1();                                         // AddRef
-    virtual void vfunc_2();                                         // Release
-    Unk_LiftCube* FUN_1410b8b00(int nKey);
-};
-struct Unk_LiftSvcPtr
-{
-    Unk_LiftSvc* m_p;
-};
-extern char DAT_143b059e8;
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-void FUN_1401cd0b0(Unk_LiftSvcPtr* pThis, Unk_LiftSvc* p);          // construct
-void FUN_1401cd150(Unk_LiftSvcPtr* pThis);                          // destroy
 Vector3 FUN_1408a1430(Vector3 pt);
 int FUN_1408a03c0(Vector3 pt);
 
 // The "lift state changed" notice posted through the notify manager.
-struct Unk_LiftNotifyPtr
-{
-    void* m_a;
-    void* m_b;
-};
-void* FUN_140db4ab0(void* pMem, CLiftableObject* pOwner);          // construct the notice
-Unk_LiftNotifyPtr* FUN_140938f40(Unk_LiftNotifyPtr* pPtr, void* pNotice);   // smart pointer from raw
-void FUN_140da4fe0(void* pMgr, Unk_LiftNotifyPtr* pNotice);         // post
 
 // Quest-mask checks (the quest manager's condition interface sits at +0x10).
 struct Unk_LiftQuestCond
@@ -134,16 +106,9 @@ void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds
-struct Unk_LiftHandle
-{
-    Unk_LiftHandle(void* pSrc);                                     // 0x1408b6b20
-    Unk_LiftHandle(const Unk_LiftHandle& other);                    // never called: the by-value args are built in place
-    void* m_a;
-    void* m_b;
-};
-void FUN_141b71e70(Unk_LiftHandle kHandle, bool bOn, int nArg, bool bFlag);   // the handle by value
-void FUN_140ae1e80(void* pComp, float fA, float fB, float fC, float fD, Unk_LiftHandle kHandle);
-void FUN_14098b3e0(void* pComp, float fA, int nB);
+void FUN_141b71e70(egf::EntityID kId, bool bOn, unsigned int nArg, bool bFlag);   // the id by value
+void FUN_140ae1e80(NiAVObject* pComp, float fA, float fB, float fC, float fD, egf::EntityID kId);
+void FUN_14098b3e0(NiAVObject* pComp, float fA, bool bB);
 void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 int FUN_140ae1c10();
 class CGraphicOptionTable   // C3: member view for the former free stand-ins
@@ -168,7 +133,7 @@ CLiftableObject::~CLiftableObject()
 {
     if (m_nEffect != 0)
     {
-        reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
     m_ent = 0;
@@ -206,54 +171,49 @@ int CLiftableObject::Init(Unk_Entity* pEntity, bool bFixed, int nKind)
     m_bC1 = 1;
     m_bFixed = bFixed;
     SetState(0);
-    FUN_141447410(pEntity);
+    BindEntity(pEntity);
     return 1;
 }
 
 // @0x141447410
 // MS2-FUNCTIONAL: written from the decompile; the callbacks' temporaries are not matched
-void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
+void CLiftableObject::BindEntity(Unk_Entity* pEntity)
 {
     m_ent.FUN_1408b6ec0(pEntity);
     if (m_ent.FUN_1408b70b0(0) == 0)
     {
         if (m_bFixed == 0)
         {
-            Unk_LiftName name;
-            FUN_1408a8700(&name);
-            FUN_140ae1f60(((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID()), &name);
-            m_strName = ((efd::utf8string*)(struct Unk_LiftName*)(&name))->c_str();
-            FUN_1401d3700(&m_strName);
-            FUN_1408a8900(&name);
+            efd::utf8string name;
+            efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID(), name);
+            m_strName = name.c_str();
+            FUN_1401d3700(m_strName);
         }
         float fRange = 150.0f;
-        if (FUN_140961880(m_ent.FUN_1408a9280(), 0xf39fa2a1, &fRange) == 0)
+        if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
             m_fRange = fRange;
         reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue(0xd89e9b12, m_b108);
         reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
         reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
         if (m_bFixed == 0)
         {
-            FUN_140ae11a0(pEntity, 0x2e687f77, &m_nA8);
+            reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned int>(0x2e687f77, (unsigned int&)(m_nA8));
         }
         else
         {
             Vector3 pt;
             reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
-            Unk_LiftSvcPtr spSvc;
-            FUN_1401cd0b0(&spSvc, ((class Unk_LiftSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+            efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
             Vector3 cell = FUN_1408a1430(pt);
             int nKey = FUN_1408a03c0(cell);
-            Unk_LiftCube* pCube = reinterpret_cast<Unk_LiftSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>*>(&spSvc)->operator->())->FUN_1410b8b00(nKey);
+            Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(nKey);
             if (pCube != 0)
                 m_nA8 = pCube->FUN_1408b4f20();
-            FUN_1401cd150(&spSvc);
         }
-        FUN_141447de0();
+        UpdateConditions();
         void* pNotice = ::operator new(0x20);
-        void* pBuilt = pNotice ? FUN_140db4ab0(pNotice, this) : 0;
-        Unk_LiftNotifyPtr spNotice;
-        FUN_140da4fe0(NotifySystem::GetInstance(), FUN_140938f40(&spNotice, pBuilt));
+        NotifyObject* pBuilt = pNotice ? new (pNotice) NotifyAddLiftable(this) : 0;
+        NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(pBuilt));
     }
 }
 
@@ -270,7 +230,7 @@ void CLiftableObject::FUN_141447850(CString strA, CString strB)
 }
 
 // @0x1414478b0
-void CLiftableObject::FUN_1414478b0(bool bValue)
+void CLiftableObject::SetLiftEnabled(bool bValue)
 {
     if (bValue == m_bC0)
         return;
@@ -278,13 +238,13 @@ void CLiftableObject::FUN_1414478b0(bool bValue)
 }
 
 // @0x1414478f0
-bool CLiftableObject::FUN_1414478f0() const
+bool CLiftableObject::IsLiftEnabled() const
 {
     return m_bC0;
 }
 
 // @0x141447910
-void CLiftableObject::FUN_141447910(bool bOn)
+void CLiftableObject::SetEffectEnabled(bool bOn)
 {
     if (m_ent.FUN_1408b70b0(0) != 0)
         return;
@@ -293,12 +253,12 @@ void CLiftableObject::FUN_141447910(bool bOn)
         NoticeMessage kReq;   // C3: was Unk_LiftSoundReq
         ((Unk_LiftSoundReq&)(kReq)).m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
         ((Unk_LiftSoundReq&)(kReq)).m_nType = 0;
-        FUN_1409fabf0(((Unk_LiftSoundReq&)(kReq)).m_unk, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(m_ent.FUN_1408a9090())))));
-        m_nEffect = reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&((Unk_LiftSoundReq&)(kReq)));
+        *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(((Unk_LiftSoundReq&)(kReq)).m_unk) = (NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()))));
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0((Unk_EffectTarget&)(kReq));
     }
     else if (!bOn && m_nEffect != 0)
     {
-        reinterpret_cast<Unk_LiftFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
     }
 }
@@ -343,15 +303,15 @@ void CLiftableObject::SetState(int nState)
     {
     case 0:
     case 2:
-        FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 9, 0, 1);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()), 9, 0, 1);
         FUN_141447ec0(1);
         break;
     case 1:
-        FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), m_ent.FUN_1408a9090(), 5, 0, 1);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()), 5, 0, 1);
         FUN_141447ec0(0);
         break;
     }
-    FUN_141447de0();
+    UpdateConditions();
 }
 
 // @0x141447c10
@@ -384,7 +344,7 @@ void CLiftableObject::FUN_141447ce0()
 }
 
 // @0x141447d10
-int CLiftableObject::FUN_141447d10() const
+int CLiftableObject::IsNotFixed() const
 {
     return m_bFixed ? 0 : 1;
 }
@@ -394,22 +354,22 @@ void CLiftableObject::FUN_141447d50(int nOn)
 {
     if (m_ent.FUN_1408a9090() == 0)
         return;
-    FUN_141b71e70(((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID()), nOn ? true : false, 1, 0);
+    FUN_141b71e70(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID(), nOn ? true : false, 1, 0);
 }
 
 // @0x141447de0
-void CLiftableObject::FUN_141447de0()
+void CLiftableObject::UpdateConditions()
 {
     if ((&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskA))
-        FUN_1414478b0(1);
+        SetLiftEnabled(1);
     else
-        FUN_1414478b0(0);
+        SetLiftEnabled(0);
     if (m_bC2 != 0 && (&((struct Unk_LiftQuestMgr*)FUN_140764020())->m_cond)->vfunc_23(&m_maskB) && CanLift() != 0)
     {
-        FUN_141447910(1);
+        SetEffectEnabled(1);
         return;
     }
-    FUN_141447910(0);
+    SetEffectEnabled(0);
 }
 
 // @0x141447ec0
@@ -422,18 +382,18 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
         {
             bool bOn = true;
             FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.FUN_1408a9280()), 0xa0b6b179, *(bool const*)(&bOn));
-            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
             if (pComp != 0)
-                FUN_14098b3e0(pComp, 1.0f, 0);
+                FUN_14098b3e0((NiAVObject*)pComp, 1.0f, false);
         }
     }
     else
     {
         if (m_ent.FUN_1408a9090() != 0)
         {
-            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
             if (pComp != 0)
-                FUN_140ae1e80(pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((void*)&((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID()));
+                FUN_140ae1e80((NiAVObject*)pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID());
         }
         m_timer.FUN_140868750(500);
     }
@@ -447,7 +407,7 @@ void CLiftableObject::FUN_141448050(bool bActive)
         return;
     if (bActive)
     {
-        void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
         if (pComp != 0 && m_b108 != 0)
         {
             bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(((void*)TSingleton<CGraphicOptionTable>::GetInstance())))->GetShadowOption(5);
@@ -456,7 +416,7 @@ void CLiftableObject::FUN_141448050(bool bActive)
     }
     else
     {
-        void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
         if (pComp != 0)
             FUN_141567330((class NiAVObject*)(pComp), false);
     }

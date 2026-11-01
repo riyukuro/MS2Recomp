@@ -45,6 +45,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
@@ -60,7 +61,6 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);             
 class Unk_MpScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);
     Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2);
     Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1);
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
@@ -722,7 +722,7 @@ void UIMainPlayerInfo::vfunc_15()
             FUN_141b706a0(nEnd - nNow, (unsigned int*)(&nHour), (unsigned int*)(&nMin), (unsigned int*)(&nSec));
         }
     }
-    if (s_refreshTimer.FUN_140268870(200) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(s_refreshTimer).Check(200) != 0)
         FUN_1419f3590();
 }
 

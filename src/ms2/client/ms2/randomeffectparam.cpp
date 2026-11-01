@@ -46,10 +46,9 @@ public:
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // Game context (singleton 0x1403ed280): random seed source.
-class Unk_GameCtx
-{
+class CEffectService { public: unsigned int GetTick(void); }; class Unk_GameCtx : public CEffectService {
 public:
-    int FUN_1411a8e70();
+
 };
 Unk_GameCtx* FUN_1403ed280();
 
@@ -173,7 +172,7 @@ bool CRandomEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         }
         if (!kPicker.Build())
             return false;
-        int nSeed = FUN_1403ed280()->FUN_1411a8e70();
+        int nSeed = FUN_1403ed280()->GetTick();
         Unk_Random kRandom(nSeed);
         nIndex = *kPicker.Pick(kRandom);
     }

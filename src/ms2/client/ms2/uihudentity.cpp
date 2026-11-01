@@ -23,6 +23,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/camera.h"
+#include <efd/ServiceManager.h>
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -32,22 +33,11 @@ public:
     Unk_HudActor* FUN_1416764a0();                      // ridden character
     float FUN_140f4a450();          // distance used by Entity::vfunc_8
 };
-class Unk_HudWorld
-{
-public:
-    Unk_HudActor* FUN_141bd1200(int nActorId);          // actor by id
-};
 // 12-byte screen point with the out-of-line default ctor 0x1405522f0.
 struct Unk_HudPoint3 { Unk_HudPoint3(); float x, y, z; };
-class Unk_HudCamera
-{
-public:
-    bool FUN_140af0700(const NiPoint3& ptWorld, Unk_HudPoint3& ptScreen);    // world -> screen; false when off screen
-};
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
 void* FUN_140af8310(Unk_HudSub* p);
-bool FUN_14207c4d0(void* p);
 int FUN_141277f40();                                    // next UI layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
@@ -266,7 +256,7 @@ NiPoint3 UIHudEntity::Entity::vfunc_10()
 // @0x140f49330
 PCBase* UIHudEntity::Entity::FUN_140f49330()
 {
-    return (PCBase*)reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(m_1c);
+    return (PCBase*)reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(m_1c));
 }
 
 // @0x140f49360
@@ -335,7 +325,7 @@ void UIHudEntity::FUN_140f49740()
     for (POSITION pos = m_a8.GetStartPosition(); pos != 0; m_a8.GetNext(pos))
     {
         const int& nActorId = m_a8.GetKeyAt(pos);
-        PCBase* pActor = (PCBase*)reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
+        PCBase* pActor = (PCBase*)reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(nActorId));
         if (pActor == 0)
             continue;
         lstActors.AddTail(pActor);
@@ -352,9 +342,9 @@ void UIHudEntity::FUN_140f49740()
 // @0x140f49890
 int UIHudEntity::FUN_140f49890(int nActorId)
 {
-    if (FUN_14207c4d0(FUN_140af8310(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)))
+    if (reinterpret_cast<efd::ServiceManager*>(FUN_140af8310(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub))->GetShutdown())
         return 1;
-    Unk_HudActor* pActor = reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
+    Unk_HudActor* pActor = reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(nActorId));
     if (pActor == 0)
         return 1;
     return 0;
@@ -380,7 +370,7 @@ void UIHudEntity::vfunc_15()
     for (POSITION pos = m_a8.GetStartPosition(); pos != 0; m_a8.GetNext(pos))
     {
         const int& nActorId = m_a8.GetKeyAt(pos);
-        Unk_HudActor* pActor = reinterpret_cast<Unk_HudWorld*>(WorldService::GetInstance())->FUN_141bd1200(nActorId);
+        Unk_HudActor* pActor = reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(nActorId));
         if (pActor == 0)
             continue;
         MS2Ptr<Entity>& spEntity = m_a8.GetValueAt(pos);
@@ -389,7 +379,7 @@ void UIHudEntity::vfunc_15()
         if (spEntity->FUN_140f48d40() == 0)
             continue;
         Unk_HudPoint3 ptScreen;
-        if (!reinterpret_cast<Unk_HudCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(spEntity->vfunc_10(), ptScreen))
+        if (!reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(spEntity->vfunc_10(), reinterpret_cast<NiPoint3&>(ptScreen)))
         {
             if (spEntity->FUN_140f48e60() == 0)
             {

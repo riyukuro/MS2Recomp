@@ -673,7 +673,7 @@ void UIHomeInfoDialog::OnConstruct()
     if (pPc->FUN_1416595d0() == 0)
         pPc->FUN_14152feb0(1, 0);
     else
-        pPc->FUN_141530200();
+        pPc->SendCraftModeOff();
 }
 
 // @0x1412c7770

@@ -1115,7 +1115,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             bool bInform = data.FUN_1422b8a90();
             reinterpret_cast<bool&>(CGameOption::GetInstance()->FUN_140c9b8b0()->m_n00) = bInform;
-            CGameOption::GetInstance()->FUN_141243540();
+            CGameOption::GetInstance()->SaveCharacterSettings();
         }
         return 1;
     }
@@ -1130,7 +1130,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (spSkill == 0)
                 return 1;
             CStringW strMsg;
-            CStringW strCost = FUN_140763e10(CGuildManager::GetInstance()->FUN_1413bd050(spSkill->f18, spSkill->f1c));
+            CStringW strCost = FUN_140763e10(CGuildManager::GetInstance()->GetSkillCostWithEventDiscount(spSkill->f18, spSkill->f1c));
             CStringW strName = CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name"));
             if (spSkill->FUN_1404d4e80())
                 strMsg = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_skill_event"), strCost, strName);
@@ -1164,7 +1164,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (!spSkill->FUN_1404d4e40())
                 return 1;
             CStringW strMsg = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_personal_skill"),
-                FUN_140763e10(CGuildManager::GetInstance()->FUN_1413bd1a0(nSkillId, nLevel)),
+                FUN_140763e10(CGuildManager::GetInstance()->GetPersonalSkillDiscountedCost(nSkillId, nLevel)),
                 CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name")));
             CReservedWordTable::GetInstance()->FUN_1416fb340(strMsg);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
@@ -1669,7 +1669,7 @@ void UIGuildDialog::FUN_14196a3b0()
     if (!CGameRule::GetInstance()->IsGuildChampionshipOpen())
         return;
     if (FUN_141969d10("guild_pvp_history_page", m_pvpHistoryPage))
-        CGuildManager::GetInstance()->FUN_1413bbe80();
+        CGuildManager::GetInstance()->RequestPvpHistoryAndSeason();
 }
 MS2_REPLACE_METHOD(0x14196a3b0, UIGuildDialog, FUN_14196a3b0, 130, 0x61127482);
 
@@ -2240,7 +2240,7 @@ void UIGuildDialog::FUN_14196e590()
         if (spEffect == 0)
             continue;
         bool bEvent = spData->FUN_1404d4e80();
-        int nRequire = CGuildManager::GetInstance()->FUN_1413bd050(spData->f18, spData->f1c);
+        int nRequire = CGuildManager::GetInstance()->GetSkillCostWithEventDiscount(spData->f18, spData->f1c);
         int nHave = bEvent ? nEventFund : nFund;
         bool bEnough = (nHave >= nRequire) ? true : false;
         int nType = bEvent ? 2 : 0;
@@ -2351,7 +2351,7 @@ void UIGuildDialog::FUN_14196f830()
         if (spEffect == 0)
             continue;
         CString strIcon = spEffect->GetIcon();
-        __int64 nRequire = CGuildManager::GetInstance()->FUN_1413bd1a0(nId, nLevel);
+        __int64 nRequire = CGuildManager::GetInstance()->GetPersonalSkillDiscountedCost(nId, nLevel);
         bool bEnough = nMoney >= nRequire;
         int nType = 1;
         ASObj objSkill(2);
@@ -2853,7 +2853,7 @@ void UIGuildDialog::FUN_141974240()
         return;
     ASArray arrHistory(2);
     ATL::CAtlArray<MS2Ptr<CGuildPVPHistoryData>> arr;
-    CGuildManager::GetInstance()->FUN_1413bbf70(arr);
+    CGuildManager::GetInstance()->GetPvpHistoryNewestFirst(arr);
     std::set<__int64> guildIds;
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
@@ -2899,7 +2899,7 @@ void UIGuildDialog::FUN_141974640()
         return;
     ASArray arrHistory(2);
     ATL::CAtlArray<MS2Ptr<CGuildPVPSeasonHistoryData>> arr;
-    CGuildManager::GetInstance()->FUN_1413bbfe0(arr);
+    CGuildManager::GetInstance()->GetPvpSeasonHistoryNewestFirst(arr);
     int nWin = 0;
     int nLose = 0;
     for (size_t i = 0; i < arr.GetCount(); i++)

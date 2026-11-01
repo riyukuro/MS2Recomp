@@ -22,6 +22,7 @@ typedef unsigned long long u64;
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 
 CStringW BlockFormat(int, const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -38,7 +39,6 @@ class Unk_BmMsgBox : public CPtred {};
 MS2Ptr<Unk_BmMsgBox> FUN_140d73d20(int flags, CStringW msg, u64 cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
 MS2Ptr<Unk_BmMsgBox> FUN_140d73e40(int a, int id, int b, CStringW s);
 void FUN_140d73c60(MS2Ptr<Unk_BmMsgBox> box);                                       // show (by value)
-void FUN_141a015d0(void* dialog, const CStringW& text);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -194,7 +194,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
         }
         MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
         if (h) {
-            FUN_141a015d0(h.operator->(), title);
+            reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
             FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
         }
     }
@@ -204,7 +204,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
             MS2Ptr<Unk_BmMsgBox> h = FUN_140d73e40(1, 0x440, 0, CStringW(s_externalBlock));
             if (h) {
                 FUN_140a30b80((char*)h.operator->(), 1);
-                FUN_141a015d0(h.operator->(), GetStringCommon(0x43f));
+                reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(GetStringCommon(0x43f));
                 FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
             }
         } else {
@@ -216,7 +216,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
             MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
             if (h) {
-                FUN_141a015d0(h.operator->(), title);
+                reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
                 FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
             }
         }

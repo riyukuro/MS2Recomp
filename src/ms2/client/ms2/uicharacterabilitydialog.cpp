@@ -38,8 +38,10 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 
 // ---- unit-local views of unrecovered callees -------------------------------------------------------------------------
 
@@ -93,20 +95,6 @@ CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool 
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14151f200();
 __time64_t GetServerTime();
-
-// The skill table: the row of a skill id.
-struct Unk_CaSkillRow { char m_pad_00[0xc0]; CString m_strIcon; };
-class Unk_CaSkillRef
-{
-public:
-    ~Unk_CaSkillRef();                                  // 0x1401836a0
-    bool FUN_14096e7e0(int n) const;                    // the skill is missing
-    Unk_CaSkillRow* FUN_140184880() const;
-    void* FUN_140184830() const;
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_CaSkillTable { public: Unk_CaSkillRef FUN_140aafef0(int nSkillId, unsigned short nLevel); };
 
 // The level rules.
 int FUN_1401e0800(unsigned short nLevel);
@@ -352,7 +340,7 @@ int CCharacterAbilityManager::FUN_140f2a210()
 UICharacterAbilityDialog::UICharacterAbilityDialog()
 {
     FUN_141924170(1);
-    m_timer.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
     m_bBuilt = 0;
 }
 
@@ -389,7 +377,7 @@ void UICharacterAbilityDialog::vfunc_72()
         return;
     if (m_bBuilt == 0)
         return;
-    if (m_timer.FUN_140268870(1000) == 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) == 0)
         return;
     FUN_140f2b850();
 }
@@ -487,11 +475,11 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
         MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
-        Unk_CaSkillRef skill = reinterpret_cast<Unk_CaSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
-        if (skill.FUN_14096e7e0(0))
+        MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
+        if (skill == 0)
             return;
         ASTooltip tip(*pRetVal, 2);
-        tip.FUN_1409e2750(skill.FUN_140184830(), 5, 0);
+        tip.FUN_1409e2750(skill.get(), 5, 0);
     }
     else if (strKind == "CategoryIcon")
     {
@@ -588,12 +576,12 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
         for (POSITION p = byLevel.GetHeadPosition(); p != NULL; byLevel.GetNext(p))
         {
             MS2Ptr<Unk_CaAbilityRow> a = byLevel.GetValueAt(p);
-            Unk_CaSkillRef skill = reinterpret_cast<Unk_CaSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(a->m_nSkillId, a->m_nSkillLevel);
-            if (skill.FUN_14096e7e0(0))
+            MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(a->m_nSkillId, a->m_nSkillLevel);
+            if (skill == 0)
                 continue;
             ASObj item(2);
             item.FUN_1409c0d20("id", a->m_nId);
-            item.FUN_1407cba60("iconPath", CString(skill.FUN_140184880()->m_strIcon));
+            item.FUN_1407cba60("iconPath", CString(skill->m_ui.m_strIcon));
             item.FUN_1409c48f0("requireLevel", a->m_nRequireLevel);
             item.FUN_1407cb9c0("disableAbility", FUN_140f2d240()->FUN_140f2a100(a->m_nId));
             item.FUN_1407cb9c0("learnAbility", FUN_140f2d240()->FUN_140f2a0b0(a->m_nId));

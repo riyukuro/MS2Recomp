@@ -84,14 +84,14 @@ public:
     void FUN_140eb4ba0();  // 0x140eb4ba0
     void FUN_140eb4be0();  // 0x140eb4be0
     void FUN_140eb4c10(int nType, int bRefreshTabs);  // 0x140eb4c10
-    bool FUN_140eb4c70(int nResult, const CMsgBoxData& box);  // 0x140eb4c70
-    bool FUN_140eb4d40(int nResult, const CMsgBoxData& box);  // 0x140eb4d40
-    bool FUN_140eb4e30(int nResult, const CMsgBoxData&);  // 0x140eb4e30
-    int FUN_140eb5040();  // 0x140eb5040
-    int FUN_140eb5150();  // 0x140eb5150
-    void FUN_140eb5260(int nType);  // 0x140eb5260
-    void FUN_140eb52c0(int nType);  // 0x140eb52c0
-    void FUN_140eb5320(NotifyObject* pNotify);  // 0x140eb5320
+    bool OnRecipeCraftCountInput(int nResult, const CMsgBoxData& box);  // 0x140eb4c70
+    bool OnMagicScrollCraftConfirm(int nResult, const CMsgBoxData& box);  // 0x140eb4d40
+    bool OnRestoreMagicScrollSelectionMsgBox(int nResult, const CMsgBoxData&);  // 0x140eb4e30
+    int GetMainTabIndex();  // 0x140eb5040
+    int GetSubTabIndex();  // 0x140eb5150
+    void SetPendingSub(int nType);  // 0x140eb5260
+    void SetPendingList(int nType);  // 0x140eb52c0
+    void OnDamagedMyPC(NotifyObject* pNotify);  // 0x140eb5320
     void FUN_140eb53a0();  // 0x140eb53a0
     void FUN_140eb5450(int nIndex);  // 0x140eb5450
     void FUN_140eb55e0(int nId);  // 0x140eb55e0
@@ -103,21 +103,21 @@ public:
     void CancelCraft();  // 0x140eb6c80
     int FUN_140eb6d40(int nKind, int nId);  // 0x140eb6d40
     CStringW FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec);  // 0x140eb71a0
-    int FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0
-    unsigned int FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
-    unsigned int FUN_140eb7bb0(int nType);  // 0x140eb7bb0
+    int CalcAdjustedItemCount(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0
+    unsigned int CalcIngredientCount(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
+    unsigned int GetMyMastery(int nType);  // 0x140eb7bb0
     void FUN_140eb7c00(int nType);  // 0x140eb7c00
-    CStringW FUN_140eb7c50(int nType);  // 0x140eb7c50
-    CStringW FUN_140eb7d40();  // 0x140eb7d40
+    CStringW GetMasteryTabName(int nType);  // 0x140eb7c50
+    CStringW GetHousingTabName();  // 0x140eb7d40
     void FUN_140eb7e30();  // 0x140eb7e30
     int FUN_140eb8120(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8120
-    int FUN_140eb82e0();  // 0x140eb82e0
-    int FUN_140eb8410();  // 0x140eb8410
-    int FUN_140eb8550(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8550
-    int FUN_140eb8630(int nType);  // 0x140eb8630
-    void FUN_140eb8670(int nType, int nValue);  // 0x140eb8670
+    int GetSelectedMagicScrollSlot();  // 0x140eb82e0
+    int GetSelectedMagicScrollGrade();  // 0x140eb8410
+    int HasRequiredLevel(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8550
+    int GetCachedTypeValue(int nType);  // 0x140eb8630
+    void SetTypeValue(int nType, int nValue);  // 0x140eb8670
     int FUN_140eb86b0();  // 0x140eb86b0
-    int FUN_140eb89e0(int nSlot);  // 0x140eb89e0
+    int GetTypeForSlot(int nSlot);  // 0x140eb89e0
     int FUN_140eb8a90();  // 0x140eb8a90
     int FUN_140eb8ac0();  // 0x140eb8ac0
     void FUN_140eb8b20();  // 0x140eb8b20
@@ -127,7 +127,7 @@ public:
     MS2Ptr<Unk_MLevelCtrl> FUN_140c02990(const CString& strName);   // child lookup
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);
     MS2Ptr<Unk_MSubTab> FUN_140c02870(const CString& strName);
-    MS2Ptr<Unk_MGroup> FUN_140eb9db0(const CString& strName);
+    MS2Ptr<Unk_MGroup> FindControl(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

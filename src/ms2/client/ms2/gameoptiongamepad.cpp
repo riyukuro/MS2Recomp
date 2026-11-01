@@ -16,6 +16,8 @@
 #include <string.h>
 #include <algorithm>
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/asmousecursor.h"
+#include "ms2/placeholder/asslider.h"
 
 // ---- unit-local placeholders ----
 
@@ -24,7 +26,6 @@ class Unk_GpCheck : public CPtred
 {
 public:
     Unk_GpCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ceac0
-    unsigned char FUN_1422ce0e0();
 private:
     char m_pad[0x88 - sizeof(CPtred)];
 };
@@ -34,8 +35,6 @@ class Unk_GpSlider : public CPtred
 {
 public:
     Unk_GpSlider(const Scaleform::GFx::Value& v, int nId);      // 0x1422ce570
-    void FUN_1422ce5f0(float f);
-    float FUN_1422ce630();
 private:
     char m_pad[0x88 - sizeof(CPtred)];
 };
@@ -44,8 +43,6 @@ private:
 class Unk_GpHud : public CPtred
 {
 public:
-    void FUN_1422cee00();
-    void FUN_1422cee50(int n);
 };
 
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
@@ -145,7 +142,7 @@ void CGameOptionGamePad::vfunc_6()
     {
         MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<Unk_GpSlider*>(spStick) != 0)
-            spStick->FUN_1422ce5f0((float)m_state.m_nLStickSensitivity);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce5f0((float)m_state.m_nLStickSensitivity);
     }
     {
         MS2Ptr<Unk_GpCheck> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
@@ -155,12 +152,12 @@ void CGameOptionGamePad::vfunc_6()
     {
         MS2Ptr<Unk_GpSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
         if (static_cast<Unk_GpSlider*>(spH) != 0)
-            spH->FUN_1422ce5f0(m_state.m_fSensitivityH * 100.0f);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce5f0(m_state.m_fSensitivityH * 100.0f);
     }
     {
         MS2Ptr<Unk_GpSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
         if (static_cast<Unk_GpSlider*>(spV) != 0)
-            spV->FUN_1422ce5f0(m_state.m_fSensitivityV * 100.0f);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce5f0(m_state.m_fSensitivityV * 100.0f);
     }
 }
 MS2_REPLACE_METHOD(0x140A572E0, CGameOptionGamePad, vfunc_6, 1098, 0x80A5AEFD);
@@ -171,19 +168,19 @@ void CGameOptionGamePad::vfunc_7()
     {
         MS2Ptr<Unk_GpCheck> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
         if (static_cast<Unk_GpCheck*>(spUse) != 0)
-            m_state.m_bUse = spUse->FUN_1422ce0e0() ? true : false;
+            m_state.m_bUse = reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GpCheck> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
         if (static_cast<Unk_GpCheck*>(spSkill) != 0)
-            m_state.m_bShowSkillName = spSkill->FUN_1422ce0e0() ? true : false;
+            m_state.m_bShowSkillName = reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<Unk_GpSlider*>(spStick) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xd6))
-                m_state.m_nLStickSensitivity = (int)spStick->FUN_1422ce630();
+                m_state.m_nLStickSensitivity = (int)reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce630();
             else
                 m_state.m_nLStickSensitivity = 0;
         }
@@ -193,7 +190,7 @@ void CGameOptionGamePad::vfunc_7()
         if (static_cast<Unk_GpCheck*>(spVibration) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xc3))
-                m_state.m_bVibration = spVibration->FUN_1422ce0e0() ? true : false;
+                m_state.m_bVibration = reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce0e0() ? true : false;
             else
                 m_state.m_bVibration = false;
         }
@@ -203,7 +200,7 @@ void CGameOptionGamePad::vfunc_7()
         if (static_cast<Unk_GpSlider*>(spH) != 0)
         {
             float fMin = 0.01f;
-            float fValue = spH->FUN_1422ce630() / 100.0f;
+            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce630() / 100.0f;
             m_state.m_fSensitivityH = (std::max)(fValue, fMin);
         }
     }
@@ -212,7 +209,7 @@ void CGameOptionGamePad::vfunc_7()
         if (static_cast<Unk_GpSlider*>(spV) != 0)
         {
             float fMin = 0.01f;
-            float fValue = spV->FUN_1422ce630() / 100.0f;
+            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce630() / 100.0f;
             m_state.m_fSensitivityV = (std::max)(fValue, fMin);
         }
     }
@@ -230,8 +227,8 @@ void CGameOptionGamePad::vfunc_10()
         MS2Ptr<Unk_GpHud> spHud = ((class Unk_GpHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
         if (static_cast<Unk_GpHud*>(spHud) != 0)
         {
-            spHud->FUN_1422cee00();
-            spHud->FUN_1422cee50(0);
+            reinterpret_cast<MS2Ptr<ASMouseCursor>&>(spHud)->FUN_1422cee00();
+            reinterpret_cast<MS2Ptr<ASMouseCursor>&>(spHud)->FUN_1422cee50((Unk_MouseCursorType)0);
         }
     }
 }

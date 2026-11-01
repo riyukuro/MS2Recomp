@@ -22,6 +22,9 @@
 #include "ms2/placeholder/commandchat.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/placeholder/asdropdownmenu.h"
+#include "ms2/placeholder/citemmergeoptionproxy.h"
+#include "ms2/commonfiles/timeutil.h"
 
 // The header statics of this unit: the label key of the combo rows, then the game header's sort names and "skill".
 static CString s_strLabel = "label";
@@ -37,21 +40,10 @@ public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
 };
-class Unk_DpButton : public Unk_DpControl
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);   // click
-    void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);   // toggle
-};
+class Unk_DpButton : public ASButton { };                  // click FUN_1422ce240, toggle FUN_1422c2a70
 class Unk_DpInput : public Unk_DpControl { public: };         // the text
 class Unk_DpCheck : public Unk_DpControl { };
-class Unk_DpCombo : public Unk_DpControl
-{
-public:
-    void FUN_1422dfc70(ASObj& item);                            // add a row
-    void FUN_1422df690(int nRow);                               // select a row
-    int FUN_1422df6c0();                                        // selected row
-};
+class Unk_DpCombo : public ASDropdownMenu { };
 // The "m_param<n>" movie clip: the child lookups by name.
 class Unk_DpParam
 {
@@ -59,17 +51,14 @@ public:
     MS2Ptr<Unk_DpCombo> FUN_140bbe700(const CString& strName);
     MS2Ptr<Unk_DpInput> FUN_140bbe880(const CString& strName);
 };
-class Unk_DpMovie { public: void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback,
-                                               int a3, int a4, int a5, void* a6); };
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
-CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
-unsigned FUN_140869420();                                       // the server time
-unsigned int FUN_140768010(int nRange, int nBase);                       // a random number
+int FUN_140768010(int nRange, int nBase);                       // a random number
 void FUN_140710590(COutPacket& packet);                         // send
-unsigned char FUN_1406c3b20(const CStringW& str);               // text to number
-short FUN_140729360(const CStringW& str);
+template <class T> T Unk_StrToNum(const CStringW& str);         // text to number (unit_1406c3700)
+template <> unsigned char Unk_StrToNum<unsigned char>(const CStringW& str);
+unsigned short FUN_140729360(const CStringW& str);
 int FUN_1401d9a00(const CStringW& str);
 __int64 FUN_140d2eff0(const CStringW& str);
 
@@ -109,7 +98,7 @@ void UIDebugPacketDialog::OnLoadInit()
     for (int i = 0; i < 5; i++)
     {
         int nNumber = i + 1;
-        CStringA strParam = FUN_1402bb1c0("m_param{0}", nNumber);
+        CStringA strParam = StringFormat<int>("m_param{0}", nNumber);
         MS2Ptr<ASMovieClip> spParam = GetChild<ASMovieClip>(strParam);
         m_type[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe700("m_type");
         m_value[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe880("m_value");
@@ -143,7 +132,7 @@ void UIDebugPacketDialog::OnLoadInit()
             row.FUN_1409c0dc0((const char*)s_strLabel, "String");
             m_type[i]->FUN_1422dfc70(row);
         }
-        m_type[i]->FUN_1422df690(0);
+        m_type[i]->SetSelectedIndex(0);
     }
     m_executeRandom = FUN_140bb4b10("m_executeRandom");
     m_randomStart = FUN_140e35bd0("m_randomStart");
@@ -159,9 +148,9 @@ void UIDebugPacketDialog::OnLoadInit()
     FUN_141925ec0("m_close");
     m_execute->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecute), 0);
     m_executeRandom->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecuteRandom), 0);
-    m_usePacketCount->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnPacketCount), 0);
-    m_usePostClose->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnCloseFromPacket), 0);
-    reinterpret_cast<Unk_DpMovie*>(m_movie.operator->())->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnDoubleClick), 0, 0, 0, 0);
+    m_usePacketCount->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnPacketCount), (void*)0);
+    m_usePostClose->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnCloseFromPacket), (void*)0);
+    m_movie->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnDoubleClick), false, 0, 0, 0);
 }
 
 // @0x141290c90
@@ -197,7 +186,7 @@ void UIDebugPacketDialog::OnLoadComplete()
 // @0x141290e20
 void UIDebugPacketDialog::vfunc_72()
 {
-    unsigned int uNow = FUN_140869420();
+    unsigned int uNow = GetTickCountMs2();
     if (m_nRemain != 0)
     {
         while (m_nRemain > 0 && uNow > m_nNext)
@@ -243,9 +232,9 @@ void UIDebugPacketDialog::vfunc_72()
                     else if (nKind == 4)
                     {
                         __int64 n = 0;
-                        n = FUN_140768010(0x7fffffff, 0);
+                        n = (unsigned)FUN_140768010(0x7fffffff, 0);
                         n >>= 32;   // the exe shifts right, so the high half is always 0
-                        n += FUN_140768010(0x7fffffff, 0);
+                        n += (unsigned)FUN_140768010(0x7fffffff, 0);
                         packet.WriteInt64(n);
                         nWritten += 8;
                     }
@@ -323,18 +312,18 @@ bool UIDebugPacketDialog::FUN_141291470()
     m_nDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_loopDelay.operator->())->GetText());
     if (m_nRemain < 1)
         m_nRemain = 1;
-    m_nNext = FUN_140869420() + m_nDelay;
+    m_nNext = GetTickCountMs2() + m_nDelay;
     m_packet.FUN_140710740(m_nId, 0, 1);
     for (int i = 0; i < 5; i++)
     {
-        int nType = m_type[i]->FUN_1422df6c0();
+        int nType = m_type[i]->GetSelectedIndex();
         CStringW strValue = reinterpret_cast<ASTextInput*>(m_value[i].operator->())->GetText();
         if (strValue.GetLength() < 1 && nType != 5)
             break;
         if (nType == 0)
             break;
         else if (nType == 1)
-            m_packet.WriteUInt8(FUN_1406c3b20(strValue));
+            m_packet.WriteUInt8(Unk_StrToNum<unsigned char>(strValue));
         else if (nType == 2)
             m_packet.WriteInt16(FUN_140729360(strValue));
         else if (nType == 3)
@@ -352,11 +341,11 @@ bool UIDebugPacketDialog::FUN_141291850()
 {
     int nStart = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomStart.operator->())->GetText());
     int nEnd = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomEnd.operator->())->GetText());
-    m_range.FUN_1405c6380(nStart, nEnd);
+    reinterpret_cast<Unk_MergeRange*>(&m_range)->Set(nStart, nEnd);
     m_nRandomRemain = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopCount.operator->())->GetText());
     m_nRandomDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopDelay.operator->())->GetText());
     m_nRandomLength = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopLength.operator->())->GetText());
-    m_nRandomNext = FUN_140869420() + m_nRandomDelay;
+    m_nRandomNext = GetTickCountMs2() + m_nRandomDelay;
     return true;
 }
 

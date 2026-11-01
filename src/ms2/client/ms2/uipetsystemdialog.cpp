@@ -26,6 +26,7 @@
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/commonfiles/featuremanager.h"
 
+#include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -47,8 +48,7 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 
-class Unk_PsBanFlags { public: int FUN_1402c4c90(int nFlag); };            // blocked-action flag set
-struct Unk_PsConfig { char m_0[8]; Unk_PsBanFlags m_8; };                   // global client config
+struct Unk_PsConfig { char m_0[8]; CContentShutdown m_8; };                   // global client config
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
@@ -56,7 +56,7 @@ class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 extern Unk_Inventory g_143ab2a90;                                           // the player's inventory
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_1412761e0(MS2Ptr<AScript> spMovie, int n);
 CStringW GetStringCommon(int nId);                                            // a common string by id
 
@@ -313,7 +313,7 @@ void UIPetSystemDialog::FUN_140e74970(CString strName, const Scaleform::GFx::Val
                 m_188 = spTab->m_28;
                 if (m_188)
                 {
-                    MS2Ptr<ASUIComponent> spUi = FUN_140acca70(m_28, root);
+                    MS2Ptr<ASUIComponent> spUi = Unk_ASCreate<ASUIComponent>(m_28, root);
                     if (spUi.get() != 0)
                         m_188->vfunc_3(spUi);
                 }
@@ -334,7 +334,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74be0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (((struct Unk_PsConfig*)FUN_14025e7b0())->m_8.FUN_1402c4c90(0x37) != 0)
+    if (((struct Unk_PsConfig*)FUN_14025e7b0())->m_8.Get((CContentShutdown::Content)0x37) != 0)
         return MS2Ptr<PetSystemTabContents>(0);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)

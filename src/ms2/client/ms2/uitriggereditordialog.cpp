@@ -101,6 +101,8 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiupperhuddialog.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
+#include "ms2/placeholder/fittingdollpc.h"
 
 class PCBase;
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_TeBoxDelegate;
@@ -109,12 +111,10 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 
 // Unit-local views of unrecovered callees.
 // The cube map service (class id 0x06100017, CubeMapInformationService; only the lookups used here).
-class Unk_TeCubeService : public efd::ISystemService
+class Unk_TeCubeService : public CubeMapInformationService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    Cube* FUN_1410b8b00(int nCubeId);                                   // the cube of an object id
-    int FUN_1410b9e90(__int64 nOwnerId, std::vector<Cube*>& rOut);      // the cubes a character installed
 };
 struct Unk_TeFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -131,7 +131,6 @@ public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
-__int64 FUN_141656ad0(PCBase* pPlayer);                                 // the character id
 // AScript invoke helpers that are not in ascript.h (one COMDAT per argument list).
 class Unk_TeScript : public AScript
 {
@@ -176,7 +175,7 @@ void FUN_140710590(COutPacket& packet);                                 // send 
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field
 int FUN_1408a03c0(Unk_Int3 pos);                                        // the cube key of a position
 int FUN_140768010(int nRange, int nMin);                                // random position
-void* FUN_1422bb8b0(int nMovieId);                                      // the GFx movie of a movie id
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                     // the GFx movie of a movie id
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxDelegate cb, const wchar_t* pszTag);
@@ -296,7 +295,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-    Cube* pCube = spService->FUN_1410b8b00(m_nCubeId);
+    Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
         FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
@@ -752,7 +751,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
         return;
     std::vector<Cube*> cubes;
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-    spService->FUN_1410b9e90(FUN_141656ad0(pPlayer), cubes);
+    spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->FUN_141656ad0(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
     if (!cubes.empty())
         std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
     MS2Ptr<Unk_TeList> spList = GetChild<Unk_TeList>("m_installScrollingList");

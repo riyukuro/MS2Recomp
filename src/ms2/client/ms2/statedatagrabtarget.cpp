@@ -42,7 +42,6 @@ public:
     GameObjectControllerHitReport* FUN_141240f20();
     void FUN_141241070();                                                // start falling
 };
-class Unk_SSGWorld { public: PCBase* FUN_141bd1200(int nId); };          // the field's actor by id
 void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
 
 // ---- StateDataGrabTarget ----
@@ -123,7 +122,7 @@ void StateGrabTarget::vfunc_3(double fTime)
     if (m_spGrab == 0)
         return;
     StateDataGrabTarget* pData = m_spGrab.get();
-    PCBase* pGrabber = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1200(pData->m_nTarget);
+    PCBase* pGrabber = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTarget));
     if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || reinterpret_cast<AdditionalCliList*>(pGrabber->FUN_1416749a0())->FUN_1409709b0() != 0)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);

@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <string.h>
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/client/ms2/uirenderview.h"
 static CString s_winSound = "BattleField_Win";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -117,15 +118,11 @@ public:
     virtual void vfunc_12(int);
     virtual void vfunc_13(const Unk_ClosingCameraData&);
 };
-class Unk_ClosingCameraPtr
+class UIAvatarBase
 {
 public:
-    ~Unk_ClosingCameraPtr();
-    Unk_ClosingCamera* operator->() const;
-private:
-    Unk_ClosingCamera* m_p;
+    efd::SmartPointer<UIRenderView> GetView();
 };
-MS2_CHECK_SIZE(Unk_ClosingCameraPtr, 8);
 class Unk_ClosingAvatar : public CPtred
 {
 public:
@@ -159,7 +156,6 @@ public:
     virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
     void FUN_1418bc790(int, int);
     Unk_ClosingActor* FUN_1418bd1d0();
-    Unk_ClosingCameraPtr FUN_1418b9bc0();
 };
 class UIAvatarPC : public Unk_ClosingAvatar
 {
@@ -282,7 +278,7 @@ void UIDungeonClosingPhotoDialog::OnLoadComplete()
         std::vector<int> pending(m_pending);
         m_pending.clear();
         for (size_t k = 0; k < pending.size(); ++k)
-            FUN_140e0fd20(pending[k]);
+            LoadEntryRenderTarget(pending[k]);
     }
     FUN_140e0f790();
     int delay = 5000;
@@ -311,7 +307,7 @@ void UIDungeonClosingPhotoDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp,
     data.f1c = 300.0f;
     data.target += actor->vfunc_18();
     data.eye += data.target;
-    m_entries[idx].m_avatar->FUN_1418b9bc0()->vfunc_13(data);
+    reinterpret_cast<Unk_ClosingCamera*>(reinterpret_cast<UIAvatarBase*>(m_entries[idx].m_avatar.operator->())->GetView().operator->())->vfunc_13(data);
     m_entries[idx].m_avatar->FUN_1418bc790(14, 85);
 }
 
@@ -381,7 +377,7 @@ int UIDungeonClosingPhotoDialog::vfunc_o178_1(void* av)
         }
     }
     if (found >= 0)
-        FUN_140e0fd20(found);
+        LoadEntryRenderTarget(found);
     return 1;
 }
 
@@ -509,7 +505,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0fcf0(int n)
 }
 
 // @0x140e0fd20
-void UIDungeonClosingPhotoDialog::FUN_140e0fd20(int idx)
+void UIDungeonClosingPhotoDialog::LoadEntryRenderTarget(int idx)
 {
     if (idx > (int)m_entries.size())
         return;

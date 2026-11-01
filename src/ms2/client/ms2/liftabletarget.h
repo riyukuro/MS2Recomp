@@ -17,8 +17,8 @@ public:
     virtual CString vfunc_2() = 0;                              //  2 the marker's effect name
 
     void FUN_1414483e0();                                       // show the marker while a matching quest step is open
-    void FUN_141448750();                                       // start the marker effect
-    void FUN_141448920();                                       // stop the marker effect
+    void CreateEffect();                                       // start the marker effect
+    void DestroyEffect();                                       // stop the marker effect
 
     int m_nId;                          // +0x18 target id (property 0x79ec600a)
     Vector3 m_vPos;             // +0x1c position (property 0xfd95ca52)

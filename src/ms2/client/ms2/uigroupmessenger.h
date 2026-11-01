@@ -101,14 +101,12 @@ public:
     int FUN_14194cbb0();                                                    // enter: focus the input or send
     int FUN_14194cd00();                                                    // escape: leave the input
     int FUN_14194ce40(CStringW strName);                                    // the new name is refused
-    void FUN_14194d100(MS2Ptr<class Unk_GrmInput> spInput, const CStringW& strText, int bSelectEnd);
+    void FUN_14194d100(MS2Ptr<class Unk_RankInput> spInput, const CStringW& strText, int bSelectEnd);
     void FUN_14194d3d0(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem);   // adds a line
     void FUN_14194d6f0();                                                   // shows the typing members
     static CStringW FUN_14194d8f0(const CStringW& strName, int bSystem);    // the line frame name (static in the exe: rcx = sret)
     static bool FUN_14194da30(CStringW strMsg);                                  // the line shows a background
 
-    MS2Ptr<class ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 list / text output
-    MS2Ptr<class Unk_GrmInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input
 
 private:
     MS2_LAYOUT_FRIEND;

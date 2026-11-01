@@ -245,6 +245,7 @@
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- exe functions and singletons used by the PC TU (other units) ----
@@ -556,8 +557,7 @@ public:
     bool m_bShowHpBar;                                              // +0xc
     bool m_bShowPartyHp;                                            // +0xd
 };
-class Unk_PCOptions { public: Unk_PCOption* FUN_140b123b0(); };
-Unk_PCOptions* FUN_1409a8b10();
+class Unk_PCOptions* FUN_1409a8b10();
 unsigned FUN_140a7d630(Common::Constants::Value<Unk_ConstColor>* pColor); // the colour as ARGB (npcdatacli.cpp)
 // The running skill cast (CSkillRecord, skillrecord.h; its SkillMotionData clashes with jobsystem.h's skilldata.h
 // placeholder here). The smart pointer helpers are the exe's shared copies.
@@ -1601,7 +1601,7 @@ MS2Ptr<Unk_PCBaseComp_a68> PC::vfunc_81()
     {
         if (pPlayer->FUN_1415278d0(FUN_141656a80()) == 0)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
-        if (!FUN_1409a8b10()->FUN_140b123b0()->m_bShowPartyHp)
+        if (!reinterpret_cast<Unk_PCOption*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0())->m_bShowPartyHp)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
     }
     if (m_spA68 == 0)
@@ -2812,7 +2812,7 @@ MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
 {
     if (((Unk_AvModeSvc*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)FUN_1409f7c90())))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
-    if (!FUN_1409a8b10()->FUN_140b123b0()->m_bShowHpBar)
+    if (!reinterpret_cast<Unk_PCOption*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0())->m_bShowHpBar)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (Unk_PCLocalPlayer* pPlayer = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
@@ -3045,7 +3045,7 @@ int PC::FUN_14165c090(efd::Point3 kPos)
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, 54.0000038f);
-    kInfo.m_dir = FUN_14123cc20();
+    kInfo.m_dir = GetForwardDirection();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = 0x201;
     if (!((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
@@ -3492,7 +3492,7 @@ void PC::FUN_14165f1f0(int nItemId, int bHold)
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return;
         spItem->SetObjectId(FUN_14123c580());
-        spItem->SetItemUid(FUN_14123cec0());
+        spItem->SetItemUid(GenerateSerialId());
         spItem->FUN_14052a130(5);
         vfunc_127(spItem.get(), 0);
         FUN_14165f0b0(spItem);
@@ -4363,7 +4363,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         if (PC_RECORD_PT(m_ptDir) == efd::Point3::ZERO) {
             PCBase* pAttacker = ((PCBase*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1200(spRecord->m_nOwnerId));
             if (pAttacker)
-                kDir = pAttacker->FUN_14123cc20();
+                kDir = pAttacker->GetForwardDirection();
         }
         else {
             kDir = PC_RECORD_PT(m_ptDir);

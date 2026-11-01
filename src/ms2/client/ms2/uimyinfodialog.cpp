@@ -126,7 +126,6 @@ struct Unk_MiSlotHandle { void* m_p[2]; ~Unk_MiSlotHandle() { FUN_1405a85f0(this
 struct Unk_MiItemHandle { void* m_p[2]; ~Unk_MiItemHandle() { FUN_1401bfde0(this); } };
 struct Unk_MiSlotPc { Unk_MiSlotHandle FUN_141655e10(int nSlot); };   // PC: the handle of an equip slot
 struct Unk_MiSlotEquip { Unk_MiItemHandle FUN_1411dc7a0(); };         // the item handle of the equip
-PC* FUN_14099eef0(GameObject* pObj);
 // The equip holder of the player and its title record.
 class Unk_MiTitleData
 {
@@ -561,7 +560,7 @@ void UIMyInfoDialog::vfunc_il23(void* p)
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0)
     {
-        PC* pPc = FUN_14099eef0(pAvatar->vfunc_24());
+        PC* pPc = efd::DynamicCast<PC, GameObject>(pAvatar->vfunc_24());
         if (pPc != 0)
         {
             Unk_MiSlotHandle hOne = reinterpret_cast<Unk_MiSlotPc*>(pPc)->FUN_141655e10(4);
@@ -595,7 +594,7 @@ void UIMyInfoDialog::vfunc_30(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->FUN_141270bf0(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->EquipItem(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
 }
 
 // @0x141a5a090
@@ -605,7 +604,7 @@ void UIMyInfoDialog::vfunc_31(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->FUN_1412709d0(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->RemoveItemOfSameGemType(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
 }
 
 // @0x141a5a190

@@ -823,7 +823,7 @@ egmAnimation::AnimationService* FUN_141b6f910();
 // Free helpers of other units.
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
 void FUN_140ae1240(void* pEntity, unsigned uHash, const efd::utf8string& str);   // set an entity string property
-NiAVObject* FUN_141b6efc0(void* pEntity);
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 CString FUN_140188f50(const char* psz, int nCodePage);              // multibyte copy (0 = default code page)
 void FUN_141567330(NiAVObject* pNode, bool bShadow);
 const char* FUN_142087e50(const NiFixedString& kFixed);            // NiFixedString -> c string
@@ -965,7 +965,7 @@ MS2_REPLACE_METHOD(0x14166b470, PCBase, vfunc_9, 203, 0x4ACEA6A0);
 void PCBase::vfunc_12()
 {
     GameObject::vfunc_12();
-    NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410());
+    NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410()));
     if (pNode)
         FUN_141567330(pNode, true);
     vfunc_119();
@@ -2755,7 +2755,7 @@ void PCBase::vfunc_101(MS2Ptr<CSkillRecord> spSkill, int n, void* pRot)
     if (spSkill->FUN_141759f70() == 0) {
         kOffset = pCast->m_kOffset;
         kRaise.z = pCast->m_fRaise;
-        float fYaw = GameObject::FUN_14123ce70(FUN_14123cc20());
+        float fYaw = GameObject::DirectionToNegYawRadians(GetForwardDirection());
         NiMatrix3 kRot;
         kRot.MakeZRotation(fYaw + 3.1415927f);
         kOffset = kRot * kOffset;
@@ -3097,7 +3097,7 @@ NiAVObject* PCBase::FUN_141675150(const CString& strNode)
     Ridee* pRidee;
     if (FUN_14123c660() != 0 && (pRidee = FUN_1416764a0()) != 0)
         return pRidee->FUN_141675150(strNode);
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
     if (pRoot != 0) {
         NiFixedString kName((const char*)strNode);
         return static_cast<NiAVObject*>(NiObject::DynamicCast(&DAT_143ad1588, pRoot->GetObjectByName(kName)));
@@ -3146,7 +3146,7 @@ void PCBase::vfunc_119()
     m_unk_b88.RemoveAll();
     if (((COptimizer*)(Unk_PCBaseGfxOption*)(((class Unk_PCBaseGfxOption*)FUN_1409f7c90())))->FUN_14109a9d0() != 0)
     {
-        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
         if (pRoot != 0)
         {
             for (int i = 0; i < 50; i++)
@@ -3166,7 +3166,7 @@ void PCBase::vfunc_119()
     }
     else
     {
-        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
         if (pRoot != 0)
         {
             for (int i = 0; i < 50; i++)
@@ -3199,7 +3199,7 @@ void PCBase::FUN_141675980()
     m_unk_bb8.RemoveAll();
     if (((COptimizer*)(Unk_PCBaseGfxOption*)(((class Unk_PCBaseGfxOption*)FUN_1409f7c90())))->FUN_14109a9d0() != 0)
     {
-        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
         if (pRoot != 0)
         {
             for (unsigned int i = 0; i < 9; i++)
@@ -3218,7 +3218,7 @@ void PCBase::FUN_141675980()
     }
     else
     {
-        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+        NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
         if (pRoot != 0)
         {
             for (unsigned int i = 0; i < 9; i++)
@@ -4266,7 +4266,7 @@ void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         if (spRecord->m_kPushDir == efd::Point3::ZERO) {
             Unk_PCBaseWorldObj* pAttacker = ((Unk_PCBaseWorldObj*)((WorldService*)(Unk_PCBaseWorld*)(reinterpret_cast<Unk_PCBaseWorld*>(WorldService::GetInstance())))->FUN_141bd1200(spRecord->m_n2c));
             if (pAttacker)
-                kDir = pAttacker->FUN_14123cc20();
+                kDir = pAttacker->GetForwardDirection();
         }
         else {
             kDir = spRecord->m_kPushDir;
@@ -4336,7 +4336,7 @@ MS2_REPLACE_METHOD(0x141674750, PCBase, vfunc_106, 577, 0x913C575A);
 // @0x141674ef0
 bool PCBase::FUN_141674ef0(const CEffectDummy& kDummy)
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())));
     if (pRoot == 0)
         return false;
     NiNode* pParent;

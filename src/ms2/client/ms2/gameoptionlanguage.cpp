@@ -17,23 +17,10 @@
 #include "ms2/placeholder/ascorelist.h"
 #include <io.h>
 
-// ---- handles: a smart reference whose destructor is the exe function REL ----
-template <void (*REL)(void*)>
-struct Unk_Ref
-{
-    void* m_0;
-    void* m_p;
-    Unk_Ref() : m_0(0), m_p(0) {}
-    Unk_Ref(Unk_Ref& o);                        // takes o's handle (auto_ptr style), per handle type below
-    explicit Unk_Ref(int n);                    // the null handle, per handle type below
-    Unk_Ref(int nId, const Scaleform::GFx::Value* pChild);   // a child control, per handle type below
-    ~Unk_Ref() { REL(this); }
-};
-
-void FUN_140bbfda0(void*);
-void FUN_140be3520(void*);
-typedef Unk_Ref<FUN_140bbfda0> RLg;             // a drop down of the option dialog
-typedef Unk_Ref<FUN_140be3520> RProv;           // its data provider
+typedef MS2Ptr<ASDropdownMenu> RLg;             // a drop down of the option dialog
+// The drop down factory (uiblueprintmarketdialog.cpp).
+template <class T> MS2Ptr<T> Unk_BpCreate(int nMovieId, const Scaleform::GFx::Value& v);
+template <> MS2Ptr<ASDropdownMenu> Unk_BpCreate<ASDropdownMenu>(int nMovieId, const Scaleform::GFx::Value& v);
 
 // ---- unit-local placeholders ----
 
@@ -43,21 +30,6 @@ class Unk_LgProv
 public:
     ASObj FUN_1422df140(int nIndex);                            // the row at the index
 };
-class Unk_LgCombo : public ASDropdownMenu
-{
-public:
-    void FUN_1422dfc70(ASObj& obj);                             // add an item
-    void FUN_1422c1fe0(unsigned int nEnabled);                  // set enabled
-    RProv FUN_1422df770();                                      // the data provider
-};
-Unk_LgCombo* FUN_140bc0530(RLg* p);                             // the control
-void FUN_140bbe120(RLg* pOut, int nId, const Scaleform::GFx::Value* pChild);
-void FUN_140bbf570(RLg* pDst, RLg* pSrc);                       // transfer: pDst takes pSrc's handle, pSrc is nulled
-void FUN_140bbf5e0(RLg* pDst, int);                             // null
-template <> inline Unk_Ref<FUN_140bbfda0>::Unk_Ref(Unk_Ref& o) { FUN_140bbf570(this, &o); }
-template <> inline Unk_Ref<FUN_140bbfda0>::Unk_Ref(int n) { FUN_140bbf5e0(this, n); }
-template <> inline Unk_Ref<FUN_140bbfda0>::Unk_Ref(int nId, const Scaleform::GFx::Value* pChild) { FUN_140bbe120(this, nId, pChild); }
-Unk_LgProv* FUN_140be3d00(const RProv& r);
 
 // View of the option dialog: the option id at +0x28 and the AS root at +0x30.
 struct Unk_LgDialog
@@ -166,14 +138,14 @@ void CGameOptionLanguage::vfunc_6()
     {
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
                 for (unsigned __int64 i = 0; i < row->m_languages.GetCount(); i++)
                 {
                     CString strCode = FUN_140652030(m_state.m_nLanguage);
                     if (row->m_languages.GetAt(i).CompareNoCase((const char*)strCode) == 0)
                     {
-                        FUN_140bc0530(&list)->SetSelectedIndex((int)i);
+                        list->SetSelectedIndex((int)i);
                         break;
                     }
                 }
@@ -181,14 +153,14 @@ void CGameOptionLanguage::vfunc_6()
         }
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_regionSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
                 for (unsigned __int64 i = 0; i < row->m_regions.GetCount(); i++)
                 {
                     CString strCode = FUN_1406521f0(DAT_143ab0248);
                     if (row->m_voices.GetAt(i).CompareNoCase((const char*)strCode) == 0)
                     {
-                        FUN_140bc0530(&list)->SetSelectedIndex((int)i);
+                        list->SetSelectedIndex((int)i);
                         break;
                     }
                 }
@@ -196,14 +168,14 @@ void CGameOptionLanguage::vfunc_6()
         }
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
                 for (unsigned __int64 i = 0; i < row->m_voices.GetCount(); i++)
                 {
                     CString strCode = FUN_140652030(m_state.m_nVoice);
                     if (row->m_voices.GetAt(i).CompareNoCase((const char*)strCode) == 0)
                     {
-                        FUN_140bc0530(&list)->SetSelectedIndex((int)i);
+                        list->SetSelectedIndex((int)i);
                         break;
                     }
                 }
@@ -218,18 +190,18 @@ void CGameOptionLanguage::vfunc_7()
 {
     {
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
-        if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+        if (((void*)list.get()) != 0)
         {
-            ASObj item = FUN_140be3d00(FUN_140bc0530(&list)->FUN_1422df770())->FUN_1422df140(FUN_140bc0530(&list)->GetSelectedIndex());
+            ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
             if (item.FUN_1422ba9a0() == 0)
                 m_state.m_nLanguage = item.GetMember("index").GetInt();
         }
     }
     {
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
-        if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+        if (((void*)list.get()) != 0)
         {
-            ASObj item = FUN_140be3d00(FUN_140bc0530(&list)->FUN_1422df770())->FUN_1422df140(FUN_140bc0530(&list)->GetSelectedIndex());
+            ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
             if (item.FUN_1422ba9a0() == 0)
                 m_state.m_nVoice = item.GetMember("index").GetInt();
         }
@@ -303,28 +275,28 @@ void CGameOptionLanguage::FUN_140cfbf50()
     {
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
-                FUN_140bc0530(&list)->FUN_1422dfc10();
+                list->FUN_1422dfc10();
                 for (unsigned __int64 i = 0; i < row->m_languages.GetCount(); i++)
                 {
                     ASObj item(2);
                     CString strCode(row->m_languages.GetAt(i));
                     item.FUN_1407cbb20("label", FUN_140cfc970(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
-                    FUN_140bc0530(&list)->FUN_1422dfc70(item);
+                    list->FUN_1422dfc70(item);
                 }
                 if (row->m_languages.GetCount() <= 3)
-                    FUN_140bc0530(&list)->FUN_1422df5f0((unsigned int)row->m_languages.GetCount());
+                    list->FUN_1422df5f0((unsigned int)row->m_languages.GetCount());
                 if (row->m_languages.GetCount() == 1)
-                    FUN_140bc0530(&list)->FUN_1422c1fe0(0);
+                    list->FUN_1422c1fe0(0);
             }
         }
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_regionSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
-                FUN_140bc0530(&list)->FUN_1422dfc10();
+                list->FUN_1422dfc10();
                 if (DAT_143ab0248 == 2)
                 {
                     CString strRegion;
@@ -334,10 +306,10 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     ASObj item(2);
                     item.FUN_1407cbb20("label", FUN_140cfca90(CString(strRegion)));
                     item.FUN_1407cb9c0("index", 0);
-                    FUN_140bc0530(&list)->FUN_1422dfc70(item);
-                    FUN_140bc0530(&list)->FUN_1422df5f0(1);
-                    FUN_140bc0530(&list)->SetSelectedIndex(0);
-                    FUN_140bc0530(&list)->FUN_1422c1fe0(0);
+                    list->FUN_1422dfc70(item);
+                    list->FUN_1422df5f0(1);
+                    list->SetSelectedIndex(0);
+                    list->FUN_1422c1fe0(0);
                 }
                 else
                 {
@@ -347,32 +319,32 @@ void CGameOptionLanguage::FUN_140cfbf50()
                         CString strCode(row->m_regions.GetAt(i));
                         item.FUN_1407cbb20("label", FUN_140cfca90(CString(row->m_regions.GetAt(i))));
                         item.FUN_140cfd170("index", FUN_140651b00(CString(strCode)));
-                        FUN_140bc0530(&list)->FUN_1422dfc70(item);
+                        list->FUN_1422dfc70(item);
                     }
                     if (row->m_regions.GetCount() <= 3)
-                        FUN_140bc0530(&list)->FUN_1422df5f0((unsigned int)row->m_regions.GetCount());
+                        list->FUN_1422df5f0((unsigned int)row->m_regions.GetCount());
                     if (row->m_regions.GetCount() == 1)
-                        FUN_140bc0530(&list)->FUN_1422c1fe0(0);
+                        list->FUN_1422c1fe0(0);
                 }
             }
         }
         {
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
+            if (((void*)list.get()) != 0)
             {
-                FUN_140bc0530(&list)->FUN_1422dfc10();
+                list->FUN_1422dfc10();
                 for (unsigned __int64 i = 0; i < row->m_voices.GetCount(); i++)
                 {
                     ASObj item(2);
                     CString strCode(row->m_voices.GetAt(i));
                     item.FUN_1407cbb20("label", FUN_140cfca00(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
-                    FUN_140bc0530(&list)->FUN_1422dfc70(item);
+                    list->FUN_1422dfc70(item);
                 }
                 if (row->m_voices.GetCount() <= 3)
-                    FUN_140bc0530(&list)->FUN_1422df5f0((unsigned int)row->m_voices.GetCount());
+                    list->FUN_1422df5f0((unsigned int)row->m_voices.GetCount());
                 if (row->m_voices.GetCount() == 1)
-                    FUN_140bc0530(&list)->FUN_1422c1fe0(0);
+                    list->FUN_1422c1fe0(0);
             }
         }
     }
@@ -411,8 +383,8 @@ void CGameOptionLanguage::vfunc_10()
         {
             m_state.m_nVoice = ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nVoice;
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
-            if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
-                FUN_140bc0530(&list)->SetSelectedIndex(m_state.m_nVoice);
+            if (((void*)list.get()) != 0)
+                list->SetSelectedIndex(m_state.m_nVoice);
         }
         if (nOk == 0)
         {
@@ -466,9 +438,9 @@ RLg Unk_LgDialog::FUN_140cfcf10(CString name, int nIndex)
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (child.IsDisplayObject())
     {
-        RLg list(m_nId, &child);
-        if (((void*)((MS2Ptr<ASDropdownMenu>*)(void*)(&list))->get()) != 0)
-            return RLg(list);
+        RLg list = Unk_BpCreate<ASDropdownMenu>(m_nId, child);
+        if (((void*)list.get()) != 0)
+            return RLg(static_cast<RLg&&>(list));
     }
     return RLg(0);
 }

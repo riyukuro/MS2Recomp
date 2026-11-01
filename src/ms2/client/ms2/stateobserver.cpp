@@ -54,6 +54,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uihudentity.h"
 
 // ---- unit statics (.text$di): three statics ahead of the shared header statics ----
 
@@ -87,7 +88,6 @@ CString FUN_140719530(unsigned __int64 nId);                // id -> id text
 class Unk_PCBaseComp_a78 : public CPtred
 {
 public:
-    void FUN_140f48dc0(int bVisible);
 };
 class Unk_FieldRef : public CPtred {};                      // the current map record (only null-tested here)
 
@@ -108,7 +108,6 @@ public:
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);                // the proxy of a player by id
     MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);    // the proxy of a player by name
     MS2Ptr<Unk_FieldRef> FUN_141bd30a0();                               // the current map
-    PCBase* FUN_141bd0cc0();                                            // the local player
     Unk_ObsProxyMap* FUN_141bc9fb0();                                   // the proxy table
 };
 
@@ -118,16 +117,12 @@ public:
     void FUN_141910660();
     void FUN_141910700();
 };
-class Unk_ObsUIMgr
-{
-public:
-    void FUN_141add120(int nUiId, int bShow);
-};
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 
 Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);             // the actor's action key set
 void FUN_141274f50();
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj;
+Unk_SingletonObj*FUN_140939a10();
 CameraMgr* FUN_1409478c0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -187,7 +182,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
     MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
     if (spMap.IsNull())
         return 0;
-    PCBase* pPlayer = pWorld->FUN_141bd0cc0();
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     float fBest = FLT_MAX;
@@ -223,7 +218,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
 // @0x140ac55a0
 UIDamageEffect* FUN_140ac55a0(int nUiId)
 {
-    if (reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
         MS2Ptr<UIObject> spRef = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spRef.get() != 0)
@@ -292,7 +287,7 @@ void StateObserver::vfunc_4(StateData* pData)
     {
         MS2Ptr<Unk_PCBaseComp_a78> spComp = m_pOwner->vfunc_82();
         if (spComp.get() != 0)
-            spComp->FUN_140f48dc0(0);
+            reinterpret_cast<MS2Ptr<UIHudEntity::Entity>&>(spComp)->FUN_140f48dc0(0);
     }
     m_pOwner->vfunc_23(1);
     m_pOwner->vfunc_31(false);
@@ -419,9 +414,9 @@ void StateObserver::FUN_140ac45e0()
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
         pInfo->FUN_1419f1d10(8, false);
-    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e43, 0);
-    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e28, 0);
-    FUN_140939a10()->RegisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
+    reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 0);
+    reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e28, 0);
+    reinterpret_cast<NotifySystem *>(FUN_140939a10())->RegisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac4760
@@ -439,9 +434,9 @@ void StateObserver::FUN_140ac4760()
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
         pInfo->FUN_1419f1d10(8, true);
-    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e43, 1);
-    reinterpret_cast<Unk_ObsUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add120(0x4e28, 1);
-    FUN_140939a10()->UnregisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
+    reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 1);
+    reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e28, 1);
+    reinterpret_cast<NotifySystem *>(FUN_140939a10())->UnregisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac48e0

@@ -43,6 +43,7 @@
 // The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
 #define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/ascorelist.h"
 #include <afxdialogex.h>
 #include "tabcontentspetinfo.h"
@@ -81,6 +82,7 @@ static CString s_itemLevel("itemLevel");
 static CString s_itemPetRank("itemPetRank");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/exptable.h"
@@ -115,20 +117,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_PetButton, 0x88);
 
-// The item bag control of a section clip.
-class Unk_PetItemBag : public ASMovieClip
-{
-public:
-    Unk_PetItemBag(const Scaleform::GFx::Value& v, int nMovieId);       // 0x1422cf330
-#define PB_V(n) virtual void vfunc_##n();
-    PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
-#undef PB_V
-    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                // set the bag id
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetItemBag, 0x88);
 
 // A component of the page with the helpers of this unit and the exe.
 class Unk_PiComp : public ASUIComponent
@@ -172,15 +160,6 @@ class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nKey); };
 Unk_PetRowTable* FUN_14052d210();
 class Unk_ItemEquipData : public CItemData { };
 
-// The skill record of the skill table (the icon path at +0xc0).
-class Unk_PiSkillRec : public CPtred
-{
-public:
-    unsigned char m_pad_18[0xa8];
-    CString m_strIcon;                                                  // +0xc0
-};
-MS2_CHECK_OFFSET(Unk_PiSkillRec, m_strIcon, 0xc0);
-class Unk_PiSkillTable { public: MS2Ptr<Unk_PiSkillRec> FUN_140aafef0(unsigned nSkillId, unsigned short nLevel); };
 
 // The local player: SendRequestPet requests the pet inventory, FUN_14152b2d0 summons the pet of an item.
 class Unk_PetPlayer : public MyPC
@@ -242,7 +221,6 @@ class Unk_PiBag : public CPetInventory { public: __int64 FUN_140c874f0();};
 class Unk_PetSelected
 {
 public:
-    Unk_PiPetData* FUN_140c8b450();
     Unk_PiBag* FUN_140c8b410();
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
@@ -429,7 +407,7 @@ Unk_PiPetData* FUN_140cbdba0(int nPet)
     if (pet == 0)
         return 0;
     if (nPet != 0)
-        return ((class Unk_PetSelected*)FUN_140535320())->FUN_140c8b450();
+        return reinterpret_cast<Unk_PiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo());
     return 0;
 }
 
@@ -846,7 +824,7 @@ void PetInfoInventory::vfunc_4()
     if (inv == 0)
         return;
     int nSlots = FUN_140cbdc80(m_nPet);
-    if (MS2Ptr<Unk_PetItemBag> bag = inv->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = inv->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         FUN_140dbc370(m_strBag, nSlots);
         bag->FUN_1407cba60("bagId", m_strBag);
@@ -983,7 +961,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
     {
         unsigned short nLevel = *row->m_skills.FUN_14063f490(pos);
         unsigned nSkillId = *row->m_skills.FUN_14063f360(pos);
-        MS2Ptr<Unk_PiSkillRec> rec = reinterpret_cast<Unk_PiSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nSkillId, nLevel);
+        MS2Ptr<AdditionalLevelData> rec = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nLevel);
         if (rec == 0)
             continue;
         CStringW strName = FUN_14052bd00(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, "name"));
@@ -991,7 +969,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         ASObj obj(2);
         obj.FUN_1407cbb20("buffName", CStringW(strName));
         obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
-        obj.FUN_1407cba60(s_iconPath, CString(rec->m_strIcon));
+        obj.FUN_1407cba60(s_iconPath, CString(rec->m_ui.m_strIcon));
         list->AddItem(obj);
     }
 }

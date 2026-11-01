@@ -29,9 +29,11 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 
 // 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
 // this unit's range, so the instance is emitted here.
@@ -62,10 +64,8 @@ public:
     int FUN_1422c1530();                                            // height
     void FUN_1422c0f60(float* pX, float* pY);                       // position
 };
-class Unk_MsgCheck : public ASDisplayObject
+class Unk_MsgCheck : public ASButton
 {
-public:
-    bool FUN_1422ce0e0();                                           // checked
 };
 class Unk_MsgInput : public ASDisplayObject
 {
@@ -90,28 +90,13 @@ class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
 class Unk_MsgColors { public: int FUN_1405569f0(int nColor); };
 
 CFeatureManager* FUN_140166410();
-class Unk_MsgLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
-Unk_MsgLocalizer* FUN_14025e7a0();
+class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+GFxManager* FUN_14025e7a0();
 class Unk_MsgOption { public: int* FUN_1402056b0(); char m_pad[0x58]; };
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_MsgPad { public: int FUN_140d8ee40(); };
 Unk_MsgPad* FUN_140a58540();
-
-// The skill-attribute record behind a buff icon (CPtred + 0xa8 bytes, then the icon path at +0xc0).
-class Unk_MsgSkillAttr : public CPtred
-{
-public:
-    char m_pad_18[0xa8];
-    CString m_strIcon;                                              // +0xc0
-    CString FUN_1401756c0();                                        // copy of the icon path
-};
-MS2_CHECK_OFFSET(Unk_MsgSkillAttr, m_strIcon, 0xc0);
-class Unk_MsgSkillTable
-{
-public:
-    MS2Ptr<Unk_MsgSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
-};
 
 class Unk_ClubBuffData : public CPtred
 {
@@ -542,11 +527,11 @@ void CMsgBoxData::FUN_141a05730(ASObj& obj)
 // @0x141a05770
 void CMsgBoxData::FUN_141a05770(ASObj& obj)
 {
-    MS2Ptr<Unk_MsgSkillAttr> spAttr = reinterpret_cast<Unk_MsgSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
+    MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
     if (spAttr.get() != 0)
     {
         obj.FUN_1407cbb20("buffDesc", m_buff.m_strDesc);
-        obj.FUN_1407cba60("buffIcon", spAttr->m_strIcon);
+        obj.FUN_1407cba60("buffIcon", spAttr->m_ui.m_strIcon);
         obj.FUN_1407cbb20("extraBuffDesc", m_buff.m_strExtra);
     }
 }
@@ -612,12 +597,12 @@ void CMsgBoxData::FUN_141a05f30(ASObj& obj)
         unsigned int nBuffId = buffs[i]->m_nBuffId;
         unsigned short nLevel = buffs[i]->m_nLevel;
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nBuffId, nLevel, CString("name"));
-        MS2Ptr<Unk_MsgSkillAttr> spAttr = reinterpret_cast<Unk_MsgSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nBuffId, nLevel);
+        MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
         if (spAttr.get() != 0)
         {
             row.FUN_1409c0d20("effectID", nBuffId);
             row.FUN_1409c48f0("level", nLevel);
-            row.FUN_1407cba60("buffIcon", spAttr->FUN_1401756c0());
+            row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
             row.FUN_1407cbb20(DAT_143af3e28, strName);
             list.FUN_1422bc050(row.FUN_1422bb870());
         }

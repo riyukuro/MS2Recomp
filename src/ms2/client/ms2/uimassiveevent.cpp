@@ -27,7 +27,7 @@
 class Unk_140a87690 : public CServerStringGroup { };      // the text filter
 class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
 
-class Unk_ExpUiScale { public: float FUN_1422afec0(int nUiId); };
+class GFxManager { public: float FUN_1422afec0(int); }; class Unk_ExpUiScale : public GFxManager {};
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_ExpUiScale (calls cast back)
 
 int FUN_1412755a0();

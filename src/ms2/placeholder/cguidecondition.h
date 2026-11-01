@@ -12,6 +12,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/classobject.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/nipoint3.h"
 
 class Unk_140165cf0;
@@ -507,22 +508,6 @@ struct Unk_GcOptBool
 };
 MS2_CHECK_SIZE(Unk_GcOptBool, 2);
 
-// A calendar time (the ServerTime target / now).
-class Unk_GcTime
-{
-public:
-    Unk_GcTime();                                                   // 0x1406c4730 (calls 0x1406c5270(this, 0, 0))
-    Unk_GcTime(unsigned __int64 nTime);                             // 0x1406c47a0 from the epoch seconds
-    Unk_GcTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec); // 0x1406c47d0
-    ATL::CTimeSpan operator-(const Unk_GcTime& rhs) const;          // 0x1406c4a20
-    Unk_GcTime& FUN_1406c47a0(unsigned __int64 nTime);              // from the epoch seconds
-    Unk_GcTime& FUN_1406c47d0(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
-    Unk_GcTime& FUN_1406c4930(const Unk_GcTime& rhs);               // operator=
-    bool FUN_1406c4cc0(const Unk_GcTime& now) const;                // passed
-    unsigned __int64 FUN_140282020() const;                         // the epoch seconds
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_GcTime, 0x10);
 
 // 0x28. Passes while the local player is on the continent m_n20 (the continent code of the current map).
 class CGuideConditionContinentCode : public CGuideCondition
@@ -796,7 +781,7 @@ public:
     virtual void vfunc_5();                                 // 5 0x1413ac8e0: logs the times
     virtual CStringW vfunc_7();                             // 7 0x1413acbe0
 
-    Unk_GcTime m_time;                                      // +0x28
+    CMsTime m_time;                                      // +0x28
 };
 MS2_CHECK_SIZE(CGuideConditionServerTime, 0x38);
 

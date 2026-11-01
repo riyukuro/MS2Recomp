@@ -101,13 +101,7 @@ public:
 // Buff container of an actor.
 // The knock-back direction (a POD with a declared ctor, so the return temp is not a /GS buffer).
 struct Unk_SeiPoint { float x, y, z; Unk_SeiPoint(); };
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_BuffMgr
-{
-public:
-    bool FUN_141683100(int nBuff);
-    bool FUN_141682fe0(int nBuff);
-};
+class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // Config constants singleton (FUN_1401d3200): the idle delay at +0xa00 and the idle-emotion chance at +0x29c8.
 class Unk_IdleDelay { public: unsigned FUN_14025a620(); };
@@ -285,8 +279,8 @@ void StateEmotion::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    Unk_BuffMgr* pBuff = ((Unk_BuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
+    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
     {
         pPC->vfunc_59(2, 0, 0, 0);
@@ -746,8 +740,8 @@ void StateEmotionIdle::vfunc_8(double fTime)
         return;
     if (m_pOwner->vfunc_63() == 0)
         return;
-    Unk_BuffMgr* pBuff = ((Unk_BuffMgr*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
+    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
         egf::Entity* pEntity = FUN_141659af0(pPC, 1);

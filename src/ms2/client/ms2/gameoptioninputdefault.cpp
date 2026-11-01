@@ -171,16 +171,16 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             {
                 row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0(0x49409));
                 row.FUN_141253870("keyGUID", 0x49409);
-                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->FUN_14142d220(1));
+                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(1));
             }
             else
             {
                 row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0((int)spKey->m_nAction));
                 row.FUN_1407cba60("keyGUID", FUN_141252540(spKey->m_nAction));
-                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->FUN_14142d220(nSecondary));
+                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(nSecondary));
             }
-            row.FUN_1407cbb20("primaryKey", FUN_1409331f0()->FUN_14142d220(nPrimary));
-            row.FUN_1407cbb20("thirdlyKey", bGamePad ? FUN_1409331f0()->FUN_14142d220(nThirdly) : CStringW(L""));
+            row.FUN_1407cbb20("primaryKey", FUN_1409331f0()->GetKeyName(nPrimary));
+            row.FUN_1407cbb20("thirdlyKey", bGamePad ? FUN_1409331f0()->GetKeyName(nThirdly) : CStringW(L""));
             row.FUN_1407cbbe0("primaryEnable", 0 != 1 && spKey->m_nPrimaryLocked == 0);
             row.FUN_1407cbbe0("secondaryEnable", 0 != 1 && spKey->m_nSecondaryLocked == 0);
             row.FUN_1407cbbe0("thirdlyEnable", 0 != 1 && spKey->m_nThirdlyLocked == 0);
@@ -232,10 +232,10 @@ int CGameOptionInputDefault::vfunc_8()
         return 0;
     bool bCaptured = false;
     Unk_CommandKeyCode nKey = (Unk_CommandKeyCode)0;
-    int nHeld = FUN_1409331f0()->FUN_14142e470(0);
+    int nHeld = FUN_1409331f0()->FindActiveComboPrefixKey(0);
     if (nHeld != 0)
     {
-        nKey = (Unk_CommandKeyCode)FUN_1409331f0()->FUN_14142e340(0);
+        nKey = (Unk_CommandKeyCode)FUN_1409331f0()->FindActiveKey(0);
         if (nHeld != nKey)
         {
             if (FUN_1409331f0()->FUN_141430cb0(nKey) != 0)
@@ -265,7 +265,7 @@ int CGameOptionInputDefault::vfunc_8()
     }
     else
     {
-        nKey = (Unk_CommandKeyCode)FUN_1409331f0()->FUN_14142e340(0);
+        nKey = (Unk_CommandKeyCode)FUN_1409331f0()->FindActiveKey(0);
         if (nKey != 0)
         {
             s_nHeldKey = 0;
@@ -287,7 +287,7 @@ int CGameOptionInputDefault::vfunc_8()
             bCaptured = false;
             return 0;
         }
-        if (FUN_1409331f0()->FUN_14142cc40(nKey) == 0)
+        if (FUN_1409331f0()->IsKeyRebindable(nKey) == 0)
         {
             FUN_140d73bc0(0x84c, 0, 0, CStringW(L""));
             return 1;
@@ -298,7 +298,7 @@ int CGameOptionInputDefault::vfunc_8()
             CStringW strKey = StringFormat(L"{0}", nKey);
             CStringW strName;
             if (FUN_1409331f0()->IsQuickSlotAction(nAction) != 0)
-                strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->GetKeyAction(nKey)), FUN_1409331f0()->FUN_14142d220(nKey));
+                strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->GetKeyAction(nKey)), FUN_1409331f0()->GetKeyName(nKey));
             else
                 strName = GetStringTable()->FUN_1418125b0((int)nAction);
             if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
@@ -391,7 +391,7 @@ MS2_REPLACE_METHOD(0x141251DB0, CGameOptionInputDefault, vfunc_9, 45, 0xE253219B
 void CGameOptionInputDefault::vfunc_10()
 {
     CBaseOption::vfunc_10();
-    FUN_1409331f0()->FUN_141429600();
+    FUN_1409331f0()->SendKeysToServer();
     FUN_141252910();
     m_mapQuickSlots.RemoveAll();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
@@ -543,7 +543,7 @@ void CGameOptionInputDefault::FUN_1412525c0(CString strAction, int nPriority)
     __int64 nAction = atoi(strAction);
     if (nAction == 0)
         return;
-    MS2Ptr<CKeySettingParam> spKey = FUN_1409331f0()->FUN_141430590(nAction);
+    MS2Ptr<CKeySettingParam> spKey = FUN_1409331f0()->FindSettingParam(nAction);
     if (spKey.get() != 0)
     {
         m_nOldKey = FUN_1409331f0()->FUN_14142c940(nAction, nPriority);
@@ -594,7 +594,7 @@ MS2_REPLACE_METHOD(0x141252910, CGameOptionInputDefault, FUN_141252910, 38, 0x7A
 void CGameOptionInputDefault::FUN_141252940()
 {
     if (m_nId == 9)
-        FUN_1409331f0()->FUN_14142a680();
+        FUN_1409331f0()->RestoreKeysFromBackup();
 }
 MS2_REPLACE_METHOD(0x141252940, CGameOptionInputDefault, FUN_141252940, 38, 0xEAAB0136);
 
@@ -605,7 +605,7 @@ void CGameOptionInputDefault::FUN_141252970()
     {
         m_mapQuickSlots.RemoveAll();
         ATL::CAtlArray<Unk_MyPCKeyId> aSlots;
-        FUN_1409331f0()->FUN_14142c5d0(aSlots);
+        FUN_1409331f0()->GetBoundKeys(aSlots);
         for (unsigned int i = 0; i < aSlots.GetCount(); i++)
         {
             int nSkillId = FUN_1409331f0()->FUN_14142dad0(aSlots[i]);
@@ -691,7 +691,7 @@ int CGameOptionInputDefault::FUN_141252d40(int nKey)
             return 0;
         }
     }
-    else if (FUN_1409331f0()->FUN_141431a90(nKey) != 0)
+    else if (FUN_1409331f0()->IsGamepadKey(nKey) != 0)
     {
         FUN_141252840(0x854);
         return 0;
@@ -763,10 +763,10 @@ bool CGameOptionInputDefault::FUN_1412530e0(int* pKey)
     *pKey = 0;
     bool bCaptured = false;
     int nKey = 0;
-    int nHeld = FUN_1409331f0()->FUN_14142e470(0);
+    int nHeld = FUN_1409331f0()->FindActiveComboPrefixKey(0);
     if (nHeld != 0)
     {
-        nKey = FUN_1409331f0()->FUN_14142e340(0);
+        nKey = FUN_1409331f0()->FindActiveKey(0);
         if (nHeld != nKey)
         {
             if (FUN_1409331f0()->FUN_141430cb0(nKey) != 0)
@@ -796,7 +796,7 @@ bool CGameOptionInputDefault::FUN_1412530e0(int* pKey)
     }
     else
     {
-        nKey = FUN_1409331f0()->FUN_14142e340(0);
+        nKey = FUN_1409331f0()->FindActiveKey(0);
         if (nKey != 0)
         {
             s_nCapturedKey = 0;

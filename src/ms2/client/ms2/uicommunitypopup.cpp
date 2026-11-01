@@ -8,6 +8,8 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uicommunitypopup.h"
 #include "ms2/placeholder/gfxexception.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -25,21 +27,6 @@ static CString s_stun("stun");
 static Unk_1402a9d70 s_condition(17,0.75f,0.25f,2.25f,10);
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
-class Unk_PopupField : public ASDisplayObject {
-public:
-    float FUN_1422c1110();
-    void FUN_1422c4f00(const CStringW&);
-    double FUN_1422c5970();
-    void FUN_1422c0e20(int);
-};
-class Unk_PopupMovie : public ASDisplayObject {
-public:
-    // @0x140beaf20 (ascript.inl GetChild: asserts outChild == NULL, then outChild = <lookup>)
-    MS2Ptr<Unk_PopupField> FUN_140beaf20(const CString&, MS2Ptr<Unk_PopupField>& outChild);
-    MS2Ptr<Unk_PopupField> FUN_1409b4620(const CString&);
-    void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, void*);
-};
-class Unk_PopupBinding { public: MS2Ptr<Unk_PopupMovie> FUN_140bc71c0(const CString&, MS2Ptr<Unk_PopupMovie>&); };
 class ASGameEntity : public ASDisplayObject {
 public: virtual void vfunc_2(int,int,int);
 };
@@ -58,21 +45,10 @@ UIWebBrowserPopup* FUN_140beafe0(int id) {
 }
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
-// @0x140beb340
-template <> MS2Ptr<Unk_PopupField>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddRef(); }
-// @0x140beb520
-template <> bool MS2Ptr<Unk_PopupField>::operator==(Unk_PopupField* p) const { return m_p == p; }
-// @0x1409b4b80
-template <> template <> MS2Ptr<Unk_PopupField>& MS2Ptr<Unk_PopupField>::operator=<Unk_PopupField>(const MS2Ptr<Unk_PopupField>& o) {
-    o.AddRef();
-    Release();
-    m_p = o.m_p;
-    return *this;
-}
 // @0x140beaf20
-MS2Ptr<Unk_PopupField> Unk_PopupMovie::FUN_140beaf20(const CString& name, MS2Ptr<Unk_PopupField>& outChild) {
+template <> MS2Ptr<ASTextField> AScript::FUN_140beaf20<ASTextField>(const CString& name, MS2Ptr<ASTextField>& outChild) {
     MS2_ASCRIPT_INL_ASSERT(0xd5, outChild == NULL);
-    outChild.operator=<Unk_PopupField>(FUN_1409b4620(name));
+    outChild = FUN_1409b4620(name);
     return outChild;
 }
 
@@ -90,11 +66,11 @@ MS2_REPLACE_METHOD(0x140BE9B90, UICommunityPopup, GetTypeName, 61, 0x2E1C0B56);
 void UICommunityPopup::OnLoadComplete() {
     UIObject::OnLoadComplete();
     do {
-        reinterpret_cast<Unk_PopupBinding*>(m_30.operator->())->FUN_140bc71c0("m_popupText",m_movie);
+        m_30->FUN_140bc71c0<ASMovieClip>("m_popupText",m_movie);
         if (m_movie == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(43),__FUNCTION__));
     } while(0);
-    if (m_movie->FUN_140beaf20("textField",m_field) == NULL)
+    if (m_movie->FUN_140beaf20<ASTextField>("textField",m_field) == NULL)
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(46),__FUNCTION__));
     m_y = (int)m_field->FUN_1422c1110();
     m_movie->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICommunityPopup::FUN_140bea960),0);
@@ -191,13 +167,13 @@ void UICommunityPopup::FUN_140bea730() {
     } else {
         m_movie->vfunc_3(1);
         m_field->FUN_1422c4f00(m_text);
-        m_width = (int)m_field->FUN_1422c5970();
+        m_width = (int)m_field->GetTextWidth();
         int totalWidth = m_width + 275;
         int repeat = totalWidth / m_width + 1;
         CStringW text;
         for (int i=0; i<repeat; ++i) text += m_text;
         m_field->FUN_1422c4f00(text);
-        m_field->FUN_1422c0e20((int)(m_field->FUN_1422c5970() + 20.0));
+        m_field->FUN_1422c0e20((int)(m_field->GetTextWidth() + 20.0));
         m_x = 275.0f;
         m_pending = false;
         FUN_140bea540();

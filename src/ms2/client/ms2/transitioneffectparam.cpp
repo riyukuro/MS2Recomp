@@ -30,13 +30,11 @@ struct Unk_InterpLinear
         return t;
     }
 };
-struct Unk_InterpEase1
-{
-    float FUN_140cd8c20(float t);
+class Unk_EaseOut { public: float Evaluate(float); }; struct Unk_InterpEase1 : public Unk_EaseOut {
+
 };
-struct Unk_InterpEase2
-{
-    float FUN_1410af700(float t);
+class Unk_C2Ease { public: float FUN_1410af700(float); }; struct Unk_InterpEase2 : public Unk_C2Ease {
+
 };
 struct Unk_InterpSine
 {
@@ -121,7 +119,7 @@ bool TransitionEffect::vfunc_9()
             fT = Unk_InterpLinear().FUN_14185fb50(fT);
             break;
         case 1:
-            fT = Unk_InterpEase1().FUN_140cd8c20(fT);
+            fT = Unk_InterpEase1().Evaluate(fT);
             break;
         case 2:
             fT = Unk_InterpEase2().FUN_1410af700(fT);

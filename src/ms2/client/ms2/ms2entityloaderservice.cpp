@@ -54,10 +54,10 @@ MS2EntityLoaderService::~MS2EntityLoaderService()
 {
 }
 
-// Access view: FUN_1414b4030 calls the protected EntityLoaderService::GetRequestID, so it is a static member here.
+// Access view: GetBlockEntities calls the protected EntityLoaderService::GetRequestID, so it is a static member here.
 struct ELSAccess : egf::EntityLoaderService
 {
-    static bool FUN_1414b4030(egf::EntityLoaderService* svc, const egf::BlockIdentification* blk, void* outList);
+    static bool GetBlockEntities(egf::EntityLoaderService* svc, const egf::BlockIdentification* blk, void* outList);
 };
 
 // @0x1414b3f50
@@ -82,7 +82,7 @@ bool FUN_1414b3f50(MS2EntityLoaderService* svc, const egf::BlockIdentification& 
 }
 
 // @0x1414b4030
-bool ELSAccess::FUN_1414b4030(egf::EntityLoaderService* svc, const egf::BlockIdentification* blk, void* outList)
+bool ELSAccess::GetBlockEntities(egf::EntityLoaderService* svc, const egf::BlockIdentification* blk, void* outList)
 {
     egf::BlockIdentification req = static_cast<ELSAccess*>(svc)->GetRequestID(*blk);
     Unk_ELSIt it;

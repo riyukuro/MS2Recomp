@@ -34,7 +34,8 @@ static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::get() const;         // 0x1405a8eb0
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::operator->() const;  // 0x1405a8f40
 template <> MS2Ptr<Unk_PCBaseComp_aa8>::~MS2Ptr();                               // 0x1405a8980
-class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); float* FUN_140298f40(); void* m_unknown; };
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); void* m_unknown; };
 struct Unk_EmoCfg
 {
     char m_pad_0000[0x218];
@@ -219,7 +220,7 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
         FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
         {
-            pPos->y = pPos->y + *((struct Unk_EmoCfg*)FUN_1401d3200())->m_638.FUN_140298f40();
+            pPos->y = pPos->y + reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_638)->FUN_140298f40());
         }
         else
         {

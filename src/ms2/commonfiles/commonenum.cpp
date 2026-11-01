@@ -163,7 +163,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-CStringA FUN_14016a600(const wchar_t* psz, bool bFlag);        // wide -> narrow
+CStringA FUN_14016a600(wchar_t const *, int);  // C3: the definition's signature
 CStringA FUN_14016a5c0(const char* psz, unsigned nFlags);      // undecorated class name
 
 struct CommonEnumNoCaseLess {

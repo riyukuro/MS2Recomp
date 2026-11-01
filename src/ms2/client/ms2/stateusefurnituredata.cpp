@@ -66,6 +66,8 @@ struct Unk_UfDirRet : public efd::Point3
 
 // The buff set of the actor.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include <egmAnimation/AnimationService.h>
+#include <efd/Matrix3.h>
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_UfBuff
 {
@@ -78,11 +80,6 @@ CFunctionCubeService* FUN_1409670b0();
 bool FUN_1402a5b40(const CString& a, const char* b);       // CString != C string
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
-class Unk_UfAnimSvc
-{
-public:
-    efd::utf8string FUN_1409a1790(const egf::EntityID& kId, unsigned int nSeq);
-};
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 class Unk_SeqAccess   // C3: member view for the former free stand-ins
@@ -110,7 +107,7 @@ struct Unk_UfUseInfo
 void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
-NiAVObject* FUN_141b6efc0(void* pEntity);                    // the scene root of an entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
 NiTransform* FUN_140a35c30(NiTransform* pDst, const NiTransform& kSrc);   // NiTransform::operator=
 void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);           // NiTransform assignment
 // NiTransform::operator* (a view of the transform; the result is returned by value).
@@ -118,7 +115,7 @@ struct Unk_UfXform
 {
     NiTransform FUN_140a33de0(const NiTransform& kOther) const;
 };
-void FUN_140b86230(const Vector3& kEuler, Unk_NiMatrix3& kOut);   // matrix of euler angles (degrees)
+void FUN_140b86230(efd::Point3 const&, NiMatrix3&);   // matrix of euler angles (degrees)
 void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pOut);
 
 // Explicit views of the MS2Ptr members instantiated by earlier objs (FunctionCubeData / CFunctionCubeObject).
@@ -141,12 +138,12 @@ struct Unk_CamNiPoint3
     float x, y, z;
 };
 
-int FUN_140de9280(const efd::utf8string& s, const char* psz);   // compare
+int FUN_140de9280(std::basic_string<char, std::char_traits<char>, std::allocator<char>> const&, char const*);   // compare
 
 // @0x141284840
 inline bool UfEqual(const char* psz, const efd::utf8string& s)
 {
-    return FUN_140de9280(s, psz) == 0;
+    return FUN_140de9280(reinterpret_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>> const &>(s), psz) == 0;
 }
 
 // ---- StateUseFurnitureData ----
@@ -196,14 +193,14 @@ void StateUseFurniture::vfunc_4(StateData* pData)
     m_spFurniture.AssignRaw(dynamic_cast<StateUseFurnitureData*>(pData));
     if (m_spFurniture.get())
     {
-        m_spCube = FUN_1409670b0()->FUN_141230c00(m_spFurniture->m_strKey);
+        m_spCube = FUN_1409670b0()->FindCube(m_spFurniture->m_strKey);
     }
     else
     {
         m_spFurniture.AssignRaw(new StateUseFurnitureData());
         PCBase* pMe = FUN_1417b8370();
         if (pMe != 0)
-            m_spCube = FUN_1409670b0()->FUN_141230c00(m_spFurniture->m_strKey);
+            m_spCube = FUN_1409670b0()->FindCube(m_spFurniture->m_strKey);
     }
     if (m_spCube.get())
     {
@@ -240,7 +237,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
         if (bModel)
         {
-            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_UfAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_spCube->FUN_141226eb0());
+            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->FUN_141226eb0());
             if (pMgr != 0)
             {
                 NiControllerSequence* pSeq = pMgr->GetActiveSequence(static_cast<NiActorManager*>(pMgr)->GetCurAnimation(), true, true);
@@ -257,7 +254,7 @@ void StateUseFurniture::vfunc_3(double fTime)
     if (nType != 0)
     {
         Unk_EntRef kEnt = m_spCube->GetEnt();
-        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
+        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.FUN_1408a9090()))));
         if (pNode)
         {
             NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
@@ -277,18 +274,18 @@ void StateUseFurniture::vfunc_3(double fTime)
                     static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.y,
                     static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
                 Unk_NiMatrix3 kAdd;
-                FUN_140b86230(kEuler, kAdd);
+                FUN_140b86230(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
                 Unk_NiMatrix3 kProd(kRot.FUN_140a33480(kAdd));
                 kRot = kProd;
                 FUN_140a0b1f0(kRot, &kDir);
                 Vector3 kCol0;
-                kRot.FUN_140a01190(0, kCol0);
+                reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(0, reinterpret_cast<efd::Point3&>(kCol0));
                 kCol0.FUN_140968990();
                 Vector3 kCol1;
-                kRot.FUN_140a01190(1, kCol1);
+                reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(1, reinterpret_cast<efd::Point3&>(kCol1));
                 kCol1.FUN_140968990();
                 Vector3 kCol2;
-                kRot.FUN_140a01190(2, kCol2);
+                reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
                 kCol2.FUN_140968990();
                 reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
                     kCol1.FUN_14097fc90(-static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y)));
@@ -395,7 +392,7 @@ void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eS
         return;
     if (m_n64 == 0)
     {
-        efd::utf8string kName = reinterpret_cast<Unk_UfAnimSvc*>(FUN_141b6f910())->FUN_1409a1790(m_pOwner->FUN_14123c460(), eSequenceID);
+        efd::utf8string kName = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationNameFromId(m_pOwner->FUN_14123c460(), eSequenceID);
         if (UfEqual((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
             m_n64 = 1;
     }

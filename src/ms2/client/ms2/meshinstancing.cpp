@@ -46,7 +46,6 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
 bool FUN_140af0aa0(void* cam, const NiPoint3& center, float radius);
 bool FUN_1413d3370(const Unk_MeshInstancingConfig&, const Unk_MeshInstancingConfig&);
 void FUN_14147dae0(NiNode*, bool);
-egf::Entity* FUN_1408a9090(const void* smartPointer);
 const efd::utf8string& FUN_14112e120(egf::Entity*);
 
 // @0x14147be60
@@ -105,7 +104,7 @@ void MeshInstancing::vfunc_1() {
         NiMesh* mesh = *it;
         NiInstancingUtilities::DisableMeshInstancing(mesh);
     }
-    if (FUN_1408a9090(&source) != NULL) {
+    if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*() != NULL) {
         TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(source);
         source = NULL;
     }
@@ -115,15 +114,15 @@ void MeshInstancing::vfunc_1() {
     meshes.clear();
 }
 // @0x14147c730
-void MeshInstancing::FUN_14147c730(double dt) {
+void MeshInstancing::UpdateIfVisible(double dt) {
     if (!unknown24 && root && (flag26 || dirty)) {
         if (FUN_140af0aa0(TSingleton<CameraMgr>::GetInstance(), root->GetWorldBound().GetCenter(), root->GetWorldBound().GetRadius()))
-            FUN_14147c910(dt);
+            UpdateNodes(dt);
     }
 }
-MS2_REPLACE_METHOD(0x14147c730, MeshInstancing, FUN_14147c730, 244, 0x6D8D9B6A);
+MS2_REPLACE_METHOD(0x14147c730, MeshInstancing, UpdateIfVisible, 244, 0x6D8D9B6A);
 // @0x14147c830
-void MeshInstancing::FUN_14147c830() {
+void MeshInstancing::RefreshRootAndSource() {
     if ((NiNode*)root != NULL) {
         FUN_14147dae0(root.operator->(), true);
         FUN_141851f90((void*)((NiNode*)root), 0.0f);
@@ -134,7 +133,7 @@ void MeshInstancing::FUN_14147c830() {
     if (flag28) FUN_1413fa4c0(source);
 }
 // @0x14147c910
-void MeshInstancing::FUN_14147c910(double dt) {
+void MeshInstancing::UpdateNodes(double dt) {
     if (flag26 || dirty) root->Update((float)dt, true);
     if (dirty) {
         efd::vector<NiMesh*>& range = meshes;
@@ -146,13 +145,13 @@ void MeshInstancing::FUN_14147c910(double dt) {
     }
 }
 // @0x14147ca20
-void MeshInstancing::FUN_14147ca20(bool enabled) {
-    if (FUN_1408a9090(&source)) {
+void MeshInstancing::SetSourceVisible(bool enabled) {
+    if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()) {
         FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0xa0b6b179, enabled);
         unknown24 = !enabled;
     }
 }
-MS2_REPLACE_METHOD(0x14147ca20, MeshInstancing, FUN_14147ca20, 115, 0xCDBED009);
+MS2_REPLACE_METHOD(0x14147ca20, MeshInstancing, SetSourceVisible, 115, 0xCDBED009);
 // @0x14147caa0
 void MeshInstancing::FUN_14147caa0() {
     ecr::RenderService* renderer = FUN_1413f9890();
@@ -215,7 +214,7 @@ int MeshInstancing::FUN_14147cf90(const Unk_MeshInstancingConfig& other) { retur
 // @0x14147cfd0
 int MeshInstancing::FUN_14147cfd0(const Unk_MeshInstancingConfig& other) { return ((struct Unk_MeshInstancingConfig*)&(config))->Equals(other); }
 // @0x14147d010
-int MeshInstancing::FUN_14147d010(egf::Entity* entity) {
+int MeshInstancing::HasClone(egf::Entity* entity) {
     if (entity != NULL) {
         std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.find(entity->GetEntityID());
         if (it != entries.end()) return it->second.clone == NULL ? 0 : 1;
@@ -226,7 +225,7 @@ MS2_REPLACE_METHOD(0x14147cfd0, MeshInstancing, FUN_14147cfd0, 44, 0x02E3B8F4);
 MS2_REPLACE_METHOD(0x14147cf90, MeshInstancing, FUN_14147cf90, 44, 0xBBAC2F44);
 // @0x14147d0c0
 void MeshInstancing::FUN_14147d0c0(bool enabled) {
-    if (FUN_1408a9090(&source)) {
+    if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()) {
         if (!config.flags30) enabled = false;
         FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, enabled);
         NiAVObject* object = FUN_141b6efc0(source);
@@ -240,28 +239,28 @@ void MeshInstancing::FUN_14147d0c0(bool enabled) {
 }
 // @0x14147d180
 void MeshInstancing::FUN_14147d180(bool value) {
-    if ((bool)(FUN_1408a9090(&source)))
+    if ((bool)(reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()))
     {
         if (config.flags31)
             FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, value);
     }
 }
 // @0x14147d200
-NiNode* MeshInstancing::FUN_14147d200(egf::Entity* entity) {
+NiNode* MeshInstancing::GetClone(egf::Entity* entity) {
     if (entity != NULL) {
         std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.find(entity->GetEntityID());
         if (it != entries.end()) return it->second.clone;
     }
     return NULL;
 }
-MS2_REPLACE_METHOD(0x14147d200, MeshInstancing, FUN_14147d200, 132, 0x3AF20654);
+MS2_REPLACE_METHOD(0x14147d200, MeshInstancing, GetClone, 132, 0x3AF20654);
 // @0x14147d290
 void MeshInstancing::FUN_14147d290() {
     NiNode* node = NiDynamicCast(NiNode, FUN_141b6efc0(source));
     ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7100((class Unk_WsB_SceneObj*)(node));
 }
 // @0x14147d2f0
-efd::utf8string MeshInstancing::FUN_14147d2f0() {
+efd::utf8string MeshInstancing::GetSourceName() {
     return FUN_14112e120(source.operator->());
 }
 // @0x14147d4b0

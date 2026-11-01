@@ -98,7 +98,7 @@ MS2_CHECK_SIZE(Unk_CommonVec2, 8);
 
 extern long g_lUniqueSeq;
 void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wchar_t* pszDelim);
-int FUN_140274f40(const CStringW& strText);                     // _wtoi
+int FUN_140274f40(CStringW&);                     // _wtoi
 bool FUN_14028d470(float fValue, float fTolerance);
 float FUN_14029d220(float fValue);
 
@@ -156,13 +156,11 @@ public:
 };
 
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-bool FUN_14036e510(void* pFeatures);
 void* FUN_140166410();
 
 struct Unk_XmlElement;                                          // XML element node
 CStringW FUN_1401bf530(Unk_XmlElement* pElem, const char* pszName, CStringW strDefault);
 CString FUN_14015f710(Unk_XmlElement* pElem, const char* pszName, CString strDefault);
-bool FUN_14036d4b0(void* pFeatures, const CStringW& strFeature);   // feature enabled
 bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
 Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);         // next sibling
@@ -775,7 +773,7 @@ CString FUN_14028d890(const CString& strPath)
 // @0x14028d990
 CString FUN_14028d990(const CString& strPath)
 {
-    if (FUN_14036e510(FUN_140166410()))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e510())
         return FUN_14028d890(strPath);
     return FUN_14028d7a0(strPath);
 }
@@ -1037,7 +1035,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
-        if (!FUN_14036d4b0(FUN_140166410(), strFeature))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             return false;
     }
     return true;
@@ -1054,7 +1052,7 @@ bool FUN_14028f710(Unk_XmlElement* pElem)
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
-        if (!FUN_14036d4b0(FUN_140166410(), strFeature))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             return false;
     }
     return true;
@@ -1074,7 +1072,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
         bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
         if (bLocale)
             continue;
-        if (!FUN_14036d4b0(FUN_140166410(), strFeature))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
         pResult = FUN_14036e160(FUN_140166410(), pResult, pElem);
     }
@@ -1702,7 +1700,7 @@ void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wcha
     CStringW strToken = strText.Tokenize(pszDelim, nStart);
     while (!strToken.IsEmpty())
     {
-        arrOut.push_back(FUN_140274f40(strToken));
+        arrOut.push_back(FUN_140274f40(reinterpret_cast<CStringW &>(strToken)));
         strToken = strText.Tokenize(pszDelim, nStart);
     }
 }

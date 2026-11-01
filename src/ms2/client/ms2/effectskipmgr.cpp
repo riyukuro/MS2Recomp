@@ -21,6 +21,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/nipoint3.h"
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -147,7 +148,7 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
     Unk_SkipActorPos pos;
     pActor->GetPosition(&pos);
     Unk_SkipDelta delta = pCheck->m_pos.FUN_140965c40(pos);
-    float fDist = delta.FUN_140968990();
+    float fDist = reinterpret_cast<Vector3*>(&delta)->FUN_140968990();
     float fView = pCheck->m_fViewDistance;
     if (FUN_14028d470(fView, -1.0f))
         fView = *FUN_140552770(const_cast<std::vector<float>*>(&m_rows[pCheck->m_nRow].m_dist), pCheck->m_nCaster);

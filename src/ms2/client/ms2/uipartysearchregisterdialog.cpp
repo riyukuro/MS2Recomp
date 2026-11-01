@@ -38,18 +38,9 @@ public:
 };
 class Unk_PsInput : public Unk_PsDisplay            // m_inputTitle
 {
-public:
-    void FUN_1422e0ab0(const CStringW& strText);
 };
-class Unk_PsCheck : public Unk_PsDisplay            // m_checkAllowAutoJoin
+class Unk_PsCheck : public ASButton                 // m_checkAllowAutoJoin
 {
-public:
-    unsigned char FUN_1422ce0e0();
-};
-class Unk_PsButton : public Unk_PsDisplay           // m_btnRegister / m_btnRemove
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int nFlags);
 };
 
 // The party size choices (ints) held by the global config at +0xe770.
@@ -104,23 +95,6 @@ public:
 };
 Unk_PsDialogMgr* FUN_140b632f0();
 
-// UI manager lookup by id (reference to a UI object, 0x10 bytes).
-class Unk_PsUIRef
-{
-public:
-    ~Unk_PsUIRef();                                 // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;                // the object, 0 if none
-private:
-    void* m_unknown;
-    UIObject* m_object;
-};
-MS2_CHECK_SIZE(Unk_PsUIRef, 0x10);
-class Unk_PsUIManager
-{
-public:
-    Unk_PsUIRef FUN_141adcea0(int nUiId);
-};
-
 // The party search list dialog (UI id 0x4eda); only its RTTI is needed here.
 class UIPartySearchDialog : public UIObject
 {
@@ -141,11 +115,11 @@ MS2_CHECK_SIZE(Unk_140694210, 0x10);
 // @0x1413226d0
 UIPartySearchDialog* FUN_1413226d0(int nUiId)
 {
-    if (reinterpret_cast<Unk_PsUIManager*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_PsUIRef ref = reinterpret_cast<Unk_PsUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIPartySearchDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
+        if (ref.get())
+            return dynamic_cast<UIPartySearchDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -242,8 +216,8 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
 
         m_1b0->FUN_1422dfc10();
         m_1b0->FUN_1422df5f0((unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0());
-        m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322400), 0);
-        m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322520), 0);
+        m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRegisterClicked), 0);
+        m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRemoveClicked), 0);
         for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0(); ++i)
         {
             m_1b0->FUN_1422dfce0(FUN_140719630(*((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1404f0a10(i)));
@@ -251,7 +225,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
-            m_1c0->FUN_1422e0ab0(m_190.m_text);
+            reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(m_190.m_text);
             reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090((unsigned int)m_190.m_flag);
             m_1b0->FUN_1422df690((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0() - 1));
             m_1e0->vfunc_4(1);
@@ -262,9 +236,9 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
             m_1c0->FUN_1422c1fe0(0);
             m_1d0->FUN_1422c1fe0(0);
             m_1b0->FUN_1422c1fe0(0);
-            m_1c0->FUN_1422e0ab0(pRecruit->title);
+            reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(pRecruit->title);
             reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090(pRecruit->minimumLevel);
-            m_1b0->FUN_1422df690(FUN_141322380(pRecruit->members));
+            m_1b0->FUN_1422df690(FindMaxUserCountIndex(pRecruit->members));
             m_1e0->vfunc_4(0);
             m_1f0->vfunc_4(1);
         }
@@ -334,7 +308,7 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x141321cc0
-void UIPartySearchRegisterDialog::FUN_141321cc0(CStringW* pText, unsigned char nAutoJoin, Unk_PsRegState* pState)
+void UIPartySearchRegisterDialog::ApplyTitleAndAutoJoin(CStringW* pText, unsigned char nAutoJoin, Unk_PsRegState* pState)
 {
     if (FUN_140164830(m_220, *pText))
         pState->m_text = *pText;
@@ -359,7 +333,7 @@ void UIPartySearchRegisterDialog::FUN_141321d60()
 }
 
 // @0x141321f10
-CStringW UIPartySearchRegisterDialog::FUN_141321f10(CStringW strArg, int nArg)
+CStringW UIPartySearchRegisterDialog::GetRandomTitle(CStringW strArg, int nArg)
 {
     if (m_200.GetCount() == 0)
         return CStringW(L"");
@@ -367,7 +341,7 @@ CStringW UIPartySearchRegisterDialog::FUN_141321f10(CStringW strArg, int nArg)
 }
 
 // @0x141322020
-int UIPartySearchRegisterDialog::FUN_141322020()
+int UIPartySearchRegisterDialog::GetSelectedMaxUserCount()
 {
     if (m_1b0 == 0)
         return 10;
@@ -399,15 +373,15 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
     Unk_140694210 request;
     request.m_00 = *pTitle;
     request.m_08 = nAutoJoin;
-    request.m_0c = FUN_141322020();
+    request.m_0c = GetSelectedMaxUserCount();
     if (bSilent == 0)
         TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode0(*(const Unk_PartyRecruitRequest*)&request);
-    FUN_141321cc0(pTitle, nAutoJoin, &m_190);
+    ApplyTitleAndAutoJoin(pTitle, nAutoJoin, &m_190);
     return 1;
 }
 
 // @0x141322380
-int UIPartySearchRegisterDialog::FUN_141322380(int nValue)
+int UIPartySearchRegisterDialog::FindMaxUserCountIndex(int nValue)
 {
     for (int i = 0; i < (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0(); ++i)
     {
@@ -418,7 +392,7 @@ int UIPartySearchRegisterDialog::FUN_141322380(int nValue)
 }
 
 // @0x141322400
-void UIPartySearchRegisterDialog::FUN_141322400(const Scaleform::GFx::FunctionHandler::Params&)
+void UIPartySearchRegisterDialog::OnRegisterClicked(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_1c0 == 0 || m_1d0 == 0)
         return;
@@ -430,7 +404,7 @@ void UIPartySearchRegisterDialog::FUN_141322400(const Scaleform::GFx::FunctionHa
 }
 
 // @0x141322520
-void UIPartySearchRegisterDialog::FUN_141322520(const Scaleform::GFx::FunctionHandler::Params&)
+void UIPartySearchRegisterDialog::OnRemoveClicked(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_140d73bc0(0xb56, 1, static_cast<IMessageListener*>(this), CStringW(L"remove"));
 }

@@ -15,7 +15,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
-#include "ms2/placeholder/gamerankingcli.h"
+#include "ms2/client/ms2/gamerankingcli.h"
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/uidialog.h"
 
@@ -23,8 +23,9 @@ class ASArray;
 class ASData;
 class ASObj;
 class CMsgBoxData;
+class CSeasonData;
 class ASScrollingList;
-class Unk_RankTab;
+class ASButtonBar;
 class Unk_RankInput;
 
 // ---- the data of the boards ----
@@ -59,6 +60,12 @@ public:
     int m_nSeasonID;                                        // +0x28
 };
 MS2_CHECK_SIZE(GameRankingTabData, 0x30);
+
+// The tag that selects the "make a fresh object" constructor of the handles (0x1401b7b90, no code).
+struct Unk_RankNewTag
+{
+    explicit Unk_RankNewTag(int);
+};
 
 // ---- unit-local smart pointers (16 bytes: field 0 unused, field 1 the pointee) ----
 
@@ -204,29 +211,6 @@ typedef Unk_RankBoxPtr<Unk_RankTabArray> Unk_RankTabsPtr;
 // the exe's map passes the int key by const reference
 struct Unk_RankKeyTraits : ATL::CElementTraits<int> { typedef const int& INARGTYPE; };
 
-// A season record of the season table (CSeasonData-like; only the fields the dialog reads).
-struct Unk_RankSeason
-{
-    char m_pad_00[0x1c];
-    int m_nSeason;                                          // +0x1c season number (yyyyss / 100 = ...)
-    char m_pad_20[0x10];
-    void* m_start;                                          // +0x30 start time
-    char m_pad_38[8];
-    void* m_end;                                            // +0x40 end time
-};
-
-// 16-byte smart pointer of a season record (copy 0x140795e50, dtor 0x1404eec20).
-struct Unk_RankSeasonPtr
-{
-    Unk_RankSeasonPtr() : m_00(0), m_p(0) {}                // 0x140e362f0 (folded with the other m_p = 0 ctors)
-    Unk_RankSeasonPtr(const Unk_RankSeasonPtr& o);          // 0x140795e50
-    ~Unk_RankSeasonPtr();                                   // 0x1404eec20
-    Unk_RankSeason* FUN_1404f0bf0() const;                  // the record
-    bool FUN_1404f01a0(int) const;                          // == NULL
-    void* m_00;
-    Unk_RankSeason* m_p;
-};
-
 // ---- the dialog ----
 
 class UIGameRankingDialog : public UIDialog
@@ -268,30 +252,30 @@ public:
     void FUN_140e32f30(int nPush, int nForce, CStringW strSearch);                                  // request the page
     Unk_RankTabsPtr FUN_140e33240(Unk_RankCatPtr spCategory);                                       // build the tabs of a category
     Unk_RankTabPtr FUN_140e339e0(int nType, int nIndex);                                            // the tab of (type, index)
-    CStringW FUN_140e33ae0(Unk_RankCatPtr spCategory, Unk_RankSeasonPtr spSeason);                  // season label
+    CStringW FUN_140e33ae0(Unk_RankCatPtr spCategory, MS2Ptr<CSeasonData> spSeason);                  // season label
     void FUN_140e33e20();                                                                           // select the category in the swf list
     void FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, int nFlag);                           // my rank text and recommender
     void FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory);                                      // description text
     void FUN_140e34bb0(ASObj& obj, Unk_RankCatPtr spCategory);                                      // job image / icon
     void FUN_140e34ce0(int nPage, int nPages);                                                      // "setButtonPage"
     void FUN_140e34d50(CStringW strSearch);                                                         // search
-    void FUN_140e34eb0(Unk_RankPageReq spReply);                                                    // a page arrived
+    void FUN_140e34eb0(MS2Ptr<GameRanking::Page> spReply);                                                    // a page arrived
     Unk_RankCatPtr FUN_140e350c0(int nCategoryId);                                                  // find a category
-    void FUN_140e351d0(int nCategoryId, Unk_RankKey* pKey);                                         // key of a board
-    void FUN_140e35350(int nCategoryId, Unk_RankKey* pKey);                                         // key of a board (second variant)
+    void FUN_140e351d0(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board
+    void FUN_140e35350(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board (second variant)
     int FUN_140e354d0(int nType, int nSub);                                                         // category id of (type, sub)
     void FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType);                           // party member tooltip
     bool FUN_140e359e0(int nBtn, const CMsgBoxData& data);                                         // move-home confirm result
 
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);                                     // bind a list child
-    MS2Ptr<Unk_RankTab> FUN_140c02870(const CString& strName);                                      // bind a tab child
+    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);                                      // bind a tab child
     MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);                                  // find the search input
 
 private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlList<Unk_RankCatPtr> m_categories;             // +0x178 (block size 10)
     ATL::CAtlMap<int, Unk_RankTabsPtr, Unk_RankKeyTraits> m_tabs;              // +0x1a8 board type -> tabs (17 bins, 0.75, 0.25, 2.25, block 10)
-    ATL::CAtlArray<Unk_RankDataPtr> m_rows;                 // +0x1f0 the rows of the page
+    ATL::CAtlArray<TPtrValue<CGameRankingData> > m_rows;                 // +0x1f0 the rows of the page
     ATL::CAtlArray<CString> m_missingMarks;                 // +0x210 mark files still downloading
     MS2Ptr<ASScrollingList> m_items;                           // +0x230 the "m_items" list
     int m_nCategory;                                        // +0x240

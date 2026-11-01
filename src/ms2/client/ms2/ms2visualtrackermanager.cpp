@@ -433,7 +433,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         }
         MS2SceneGraphService* pSceneGraphs = FUN_1413f98b0();
         if (pSceneGraphs != 0)
-            m_spSceneGraphCacheCount->FUN_14118b9b0(pSceneGraphs->FUN_1414f3660(), bForce, 0);
+            m_spSceneGraphCacheCount->FUN_14118b9b0(pSceneGraphs->GetCacheIdentifierCount(), bForce, 0);
         MS2AnimationService* pAssets = ((class MS2AnimationService*)FUN_1413f9b10());
         if (pAssets != 0)
         {
@@ -721,8 +721,8 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     const float fMaxTraffic = 10000.0f;
     m_pPacketChart = AddChartPage("Packet Traffic", NiRect<float>(0.0f, 100.0f, fMaxTraffic, 0.0f),
         NiRect<float>(0.05f, 0.95f, 0.25f, 0.6f), 0.1f, 0, true);
-    float* pfRecvSize = (float*)FUN_140714f90()->FUN_141539330();
-    float* pfSendSize = (float*)FUN_140714f90()->FUN_141539380();
+    float* pfRecvSize = (float*)FUN_140714f90()->GetSendRate();
+    float* pfSendSize = (float*)FUN_140714f90()->GetReceiveRate();
     m_pPacketChart->AddGraph("RecvSize", NiNew GenericFloatUpdate(1.0f, pfRecvSize), yellow, true);
     m_pPacketChart->AddGraph("SendSize", NiNew GenericFloatUpdate(1.0f, pfSendSize), red, true);
 

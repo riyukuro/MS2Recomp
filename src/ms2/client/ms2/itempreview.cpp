@@ -117,16 +117,16 @@ ItemPreview::~ItemPreview()
 }
 
 // @0x140d3bc30
-int ItemPreview::FUN_140d3bc30()
+int ItemPreview::GetAvatarObjectId()
 {
     if (m_spAvatar.get())
         return m_spAvatar->vfunc_25();
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D3BC30, ItemPreview, FUN_140d3bc30, 81, 0xC9B845CA);
+MS2_REPLACE_METHOD(0x140D3BC30, ItemPreview, GetAvatarObjectId, 81, 0xC9B845CA);
 
 // @0x140d3bc90
-int ItemPreview::FUN_140d3bc90(MS2Ptr<CItem> spItem)
+int ItemPreview::InitWithItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
@@ -159,20 +159,20 @@ int ItemPreview::FUN_140d3bc90(MS2Ptr<CItem> spItem)
     if ((m_spPreview = CreatePreviewItem(spItem)).get())
     {
         m_spPreview->SetItemUid(FUN_14028d0e0());
-        m_spPreview->SetObjectId(FUN_140d3bc30());
-        FUN_140d3fea0(m_spPreview);
+        m_spPreview->SetObjectId(GetAvatarObjectId());
+        AddWornItem(m_spPreview);
         return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D3BC90, ItemPreview, FUN_140d3bc90, 1830, 0xAF0C7E00);
+MS2_REPLACE_METHOD(0x140D3BC90, ItemPreview, InitWithItem, 1830, 0xAF0C7E00);
 
 // @0x140d3c3c0
-int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
+int ItemPreview::InitWithItems(std::vector<MS2Ptr<CItem> > items)
 {
     if (m_pPC == 0)
         return 0;
-    m_spAvatar = FUN_140d3e2f0();
+    m_spAvatar = CreatePcAvatar();
     m_items.clear();
     int nGender = ((class PC*)(class PC*)(m_pPC))->FUN_141658e60();
     for (size_t i = 0; i < items.size(); ++i)
@@ -185,14 +185,14 @@ int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
             if (!((class CItemData*)((class CItem*)(class CItem*)(spShown))->FUN_140527840())->IsGenderAllowed(nGender))
                 continue;
             spShown->SetItemUid(FUN_14028d0e0());
-            spShown->SetObjectId(FUN_140d3bc30());
+            spShown->SetObjectId(GetAvatarObjectId());
             m_items.push_back(spShown);
             m_spPreview = spShown;
         }
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x140D3C3C0, ItemPreview, FUN_140d3c3c0, 623, 0xB44AB87E);
+MS2_REPLACE_METHOD(0x140D3C3C0, ItemPreview, InitWithItems, 623, 0xB44AB87E);
 
 // @0x140d3c640
 MS2Ptr<CItem> ItemPreview::GetPreview()
@@ -268,7 +268,7 @@ MS2Ptr<CItem> ItemPreview::CreatePreviewItem(MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x140D3C760, ItemPreview, CreatePreviewItem, 1689, 0xFD61A5FE);
 
 // @0x140d3ce10
-MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
+MS2Ptr<CItemData> ItemPreview::GetPreviewData()
 {
     if (m_spData.get())
         return m_spData;
@@ -277,7 +277,7 @@ MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
         return MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spShown))->FUN_140527840()));
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D3CE10, ItemPreview, FUN_140d3ce10, 229, 0x38F6D89B);
+MS2_REPLACE_METHOD(0x140D3CE10, ItemPreview, GetPreviewData, 229, 0x38F6D89B);
 
 // @0x140d3cf00
 MS2Ptr<UIAvatarBase> ItemPreview::GetAvatar()
@@ -302,22 +302,22 @@ void ItemPreview::ApplyPreviewToCube()
 MS2_REPLACE_METHOD(0x140D3CF50, ItemPreview, ApplyPreviewToCube, 182, 0x72033574);
 
 // @0x140d3d010
-void ItemPreview::FUN_140d3d010()
+void ItemPreview::AvatarZoomIn()
 {
     if (m_spAvatar == 0)
         return;
     m_spAvatar->vfunc_5();
 }
-MS2_REPLACE_METHOD(0x140D3D010, ItemPreview, FUN_140d3d010, 80, 0x9DA10FC9);
+MS2_REPLACE_METHOD(0x140D3D010, ItemPreview, AvatarZoomIn, 80, 0x9DA10FC9);
 
 // @0x140d3d070
-void ItemPreview::FUN_140d3d070()
+void ItemPreview::AvatarZoomOut()
 {
     if (m_spAvatar == 0)
         return;
     m_spAvatar->vfunc_6();
 }
-MS2_REPLACE_METHOD(0x140D3D070, ItemPreview, FUN_140d3d070, 80, 0xFE7EB861);
+MS2_REPLACE_METHOD(0x140D3D070, ItemPreview, AvatarZoomOut, 80, 0xFE7EB861);
 
 // @0x140d3d0d0
 void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
@@ -339,7 +339,7 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
         if (m_items.size() == 0)
         {
             FUN_140d3fa30();
-            FUN_140d3e130();
+            ResetCamera();
         }
         else
         {
@@ -365,16 +365,16 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
 MS2_REPLACE_METHOD(0x140D3D0D0, ItemPreview, FUN_140d3d0d0, 1180, 0x54958EE2);
 
 // @0x140d3d580
-int ItemPreview::FUN_140d3d580(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+int ItemPreview::OnAvatarEvent(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (m_spAvatar.get())
         return m_spAvatar->vfunc_27(szEvent, pArgs, nArgs);
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D3D580, ItemPreview, FUN_140d3d580, 111, 0xFC58E31F);
+MS2_REPLACE_METHOD(0x140D3D580, ItemPreview, OnAvatarEvent, 111, 0xFC58E31F);
 
 // @0x140d3d600
-void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
+void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
@@ -459,7 +459,7 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
     }
     pView->vfunc_13(kCamera);
 }
-MS2_REPLACE_METHOD(0x140D3D600, ItemPreview, FUN_140d3d600, 2170, 0x7C5FBDA4);
+MS2_REPLACE_METHOD(0x140D3D600, ItemPreview, SetupCameraForItem, 2170, 0x7C5FBDA4);
 
 // @0x140d3de80
 bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
@@ -499,7 +499,7 @@ bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
 MS2_REPLACE_METHOD(0x140D3DE80, ItemPreview, FUN_140d3de80, 679, 0xB525CDB5);
 
 // @0x140d3e130
-void ItemPreview::FUN_140d3e130()
+void ItemPreview::ResetCamera()
 {
     UIRenderView* pView = m_spAvatar->GetView();
     if (pView == 0)
@@ -520,10 +520,10 @@ void ItemPreview::FUN_140d3e130()
     }
     pView->vfunc_13(kCamera);
 }
-MS2_REPLACE_METHOD(0x140D3E130, ItemPreview, FUN_140d3e130, 431, 0xC0358E39);
+MS2_REPLACE_METHOD(0x140D3E130, ItemPreview, ResetCamera, 431, 0xC0358E39);
 
 // @0x140d3e2f0
-MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e2f0()
+MS2Ptr<UIAvatarBase> ItemPreview::CreatePcAvatar()
 {
     MS2Ptr<WeaponType> spFilter(new WeaponType(m_pPC));
     UIAvatarPC* pAvatar = new UIAvatarPC(m_pPC, true);
@@ -536,7 +536,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e2f0()
     }
     return MS2Ptr<UIAvatarBase>(pAvatar);
 }
-MS2_REPLACE_METHOD(0x140D3E2F0, ItemPreview, FUN_140d3e2f0, 331, 0xA089AB81);
+MS2_REPLACE_METHOD(0x140D3E2F0, ItemPreview, CreatePcAvatar, 331, 0xA089AB81);
 
 // @0x140d3e450
 MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nUnused, bool bDefault)
@@ -640,7 +640,7 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
             if (m_spPackageData.get())
             {
                 MS2Ptr<CItem> spPackageItem = FUN_140ebc2b0(m_spPackageData, 1);
-                FUN_140d3f160(m_spPackageData, spPackageItem);
+                ApplyToPCAvatar(m_spPackageData, spPackageItem);
             }
         }
         else
@@ -661,12 +661,12 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
             pAvatar->FUN_1418baf40(spItem.get());
         }
     }
-    FUN_140d3d600(spItem);
+    SetupCameraForItem(spItem);
 }
 MS2_REPLACE_METHOD(0x140D3EB30, ItemPreview, FUN_140d3eb30, 1569, 0x6E2231A6);
 
 // @0x140d3f160
-void ItemPreview::FUN_140d3f160(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
+void ItemPreview::ApplyToPCAvatar(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 {
     if (spData == 0 || m_spAvatar == 0)
         return;
@@ -683,7 +683,7 @@ void ItemPreview::FUN_140d3f160(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
             pAvatar->FUN_1418bd050(spData, spItem);
     }
 }
-MS2_REPLACE_METHOD(0x140D3F160, ItemPreview, FUN_140d3f160, 586, 0x1EDE7B85);
+MS2_REPLACE_METHOD(0x140D3F160, ItemPreview, ApplyToPCAvatar, 586, 0x1EDE7B85);
 
 // @0x140d3f3b0
 void ItemPreview::ClearPackageData()
@@ -695,14 +695,14 @@ void ItemPreview::ClearPackageData()
 MS2_REPLACE_METHOD(0x140D3F3B0, ItemPreview, ClearPackageData, 73, 0xD3320356);
 
 // @0x140d3f400
-bool ItemPreview::FUN_140d3f400(MS2Ptr<CItem> spItem)
+bool ItemPreview::TryOnItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
     MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spItemData == 0)
         return false;
-    if (FUN_140d3fda0(spItem) == true)
+    if (IsItemWorn(spItem) == true)
         return false;
     ClearPackageData();
     bool bDefault = false;
@@ -722,29 +722,29 @@ bool ItemPreview::FUN_140d3f400(MS2Ptr<CItem> spItem)
     if ((m_spPreview = CreatePreviewItem(spItem)).get())
     {
         m_spPreview->SetItemUid(FUN_14028d0e0());
-        m_spPreview->SetObjectId(FUN_140d3bc30());
+        m_spPreview->SetObjectId(GetAvatarObjectId());
         FUN_140d3eb30(m_spPreview);
-        FUN_140d3fea0(m_spPreview);
+        AddWornItem(m_spPreview);
         spItem->SetItemUid(m_spPreview->GetItemUid());
-        spItem->SetObjectId(FUN_140d3bc30());
+        spItem->SetObjectId(GetAvatarObjectId());
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140D3F400, ItemPreview, FUN_140d3f400, 1421, 0x740DDA1A);
+MS2_REPLACE_METHOD(0x140D3F400, ItemPreview, TryOnItem, 1421, 0x740DDA1A);
 
 // @0x140d3f9a0
-void ItemPreview::FUN_140d3f9a0()
+void ItemPreview::ResetAvatarOutfit()
 {
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatar)
     {
         pAvatar->FUN_1418bbe40();
         pAvatar->FUN_1418bd830();
-        FUN_140d3e130();
+        ResetCamera();
     }
     m_items.clear();
 }
-MS2_REPLACE_METHOD(0x140D3F9A0, ItemPreview, FUN_140d3f9a0, 123, 0x35E48EEF);
+MS2_REPLACE_METHOD(0x140D3F9A0, ItemPreview, ResetAvatarOutfit, 123, 0x35E48EEF);
 
 // @0x140d3fa30
 void ItemPreview::FUN_140d3fa30()
@@ -754,7 +754,7 @@ void ItemPreview::FUN_140d3fa30()
     {
         pAvatar->vfunc_3();
         pAvatar->FUN_1418bd830();
-        FUN_140d3e130();
+        ResetCamera();
     }
     m_items.clear();
 }
@@ -797,13 +797,13 @@ void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
                 continue;
             items.push_back(m_items[i]);
         }
-        FUN_140d3c3c0(items);
+        InitWithItems(items);
     }
 }
 MS2_REPLACE_METHOD(0x140D3FAC0, ItemPreview, FUN_140d3fac0, 722, 0x91DD141A);
 
 // @0x140d3fda0
-bool ItemPreview::FUN_140d3fda0(MS2Ptr<CItem> spItem)
+bool ItemPreview::IsItemWorn(MS2Ptr<CItem> spItem)
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
@@ -814,10 +814,10 @@ bool ItemPreview::FUN_140d3fda0(MS2Ptr<CItem> spItem)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140D3FDA0, ItemPreview, FUN_140d3fda0, 236, 0x41E8037B);
+MS2_REPLACE_METHOD(0x140D3FDA0, ItemPreview, IsItemWorn, 236, 0x41E8037B);
 
 // @0x140d3fea0
-void ItemPreview::FUN_140d3fea0(MS2Ptr<CItem> spItem)
+void ItemPreview::AddWornItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
@@ -833,7 +833,7 @@ void ItemPreview::FUN_140d3fea0(MS2Ptr<CItem> spItem)
     }
     m_items.push_back(spItem);
 }
-MS2_REPLACE_METHOD(0x140D3FEA0, ItemPreview, FUN_140d3fea0, 325, 0xF500E04F);
+MS2_REPLACE_METHOD(0x140D3FEA0, ItemPreview, AddWornItem, 325, 0xF500E04F);
 
 // ---- ItemPreviewMgr ---------------------------------------------------------------------------------------------------
 
@@ -850,23 +850,23 @@ ItemPreviewMgr::~ItemPreviewMgr()
 }
 
 // @0x140d400d0
-int ItemPreviewMgr::FUN_140d400d0()
+int ItemPreviewMgr::GetAvatarObjectId()
 {
     if (m_spPreview == 0)
         return 0;
-    return m_spPreview->FUN_140d3bc30();
+    return m_spPreview->GetAvatarObjectId();
 }
-MS2_REPLACE_METHOD(0x140D400D0, ItemPreviewMgr, FUN_140d400d0, 69, 0x3872E652);
+MS2_REPLACE_METHOD(0x140D400D0, ItemPreviewMgr, GetAvatarObjectId, 69, 0x3872E652);
 
 // @0x140d40120
-int ItemPreviewMgr::FUN_140d40120(MS2Ptr<CItem> spItem, int nArg)
+int ItemPreviewMgr::OpenPreview(MS2Ptr<CItem> spItem, int nArg)
 {
     if (spItem == 0)
         return 0;
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    UIItemPreviewDialog* pDialog = FUN_140d40ab0(0x4ec2);
+    UIItemPreviewDialog* pDialog = FindPreviewDialog(0x4ec2);
     if (pDialog == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
@@ -886,9 +886,9 @@ int ItemPreviewMgr::FUN_140d40120(MS2Ptr<CItem> spItem, int nArg)
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ec2);
     if (m_spPreview == 0)
         m_spPreview.AssignRaw(new ItemPreview(pPC, pDialog, 0));
-    return m_spPreview->FUN_140d3bc90(spItem);
+    return m_spPreview->InitWithItem(spItem);
 }
-MS2_REPLACE_METHOD(0x140D40120, ItemPreviewMgr, FUN_140d40120, 842, 0x26150E8E);
+MS2_REPLACE_METHOD(0x140D40120, ItemPreviewMgr, OpenPreview, 842, 0x26150E8E);
 
 // @0x140d40470
 MS2Ptr<CItem> ItemPreviewMgr::GetPreviewItem()
@@ -900,22 +900,22 @@ MS2Ptr<CItem> ItemPreviewMgr::GetPreviewItem()
 MS2_REPLACE_METHOD(0x140D40470, ItemPreviewMgr, GetPreviewItem, 125, 0x8A1C73D5);
 
 // @0x140d40500
-MS2Ptr<CItem> ItemPreviewMgr::FUN_140d40500()
+MS2Ptr<CItem> ItemPreviewMgr::GetSourceItem()
 {
     if (m_spPreview.get())
         return m_spPreview->GetItem();
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D40500, ItemPreviewMgr, FUN_140d40500, 125, 0xB42171E2);
+MS2_REPLACE_METHOD(0x140D40500, ItemPreviewMgr, GetSourceItem, 125, 0xB42171E2);
 
 // @0x140d40590
-MS2Ptr<CItemData> ItemPreviewMgr::FUN_140d40590()
+MS2Ptr<CItemData> ItemPreviewMgr::GetPreviewData()
 {
     if (m_spPreview.get())
-        return m_spPreview->FUN_140d3ce10();
+        return m_spPreview->GetPreviewData();
     return 0;
 }
-MS2_REPLACE_METHOD(0x140D40590, ItemPreviewMgr, FUN_140d40590, 125, 0xEDD763B6);
+MS2_REPLACE_METHOD(0x140D40590, ItemPreviewMgr, GetPreviewData, 125, 0xEDD763B6);
 
 // @0x140d40620
 MS2Ptr<ItemPreview> ItemPreviewMgr::GetPreview()
@@ -934,12 +934,12 @@ MS2_REPLACE_METHOD(0x140D40670, ItemPreviewMgr, IsHudOn, 14, 0xC2D0886F);
 // @0x140d40690
 void ItemPreviewMgr::ToggleHud()
 {
-    FUN_140d406d0(m_bHudOn == 0);
+    SetHudMode(m_bHudOn == 0);
 }
 MS2_REPLACE_METHOD(0x140D40690, ItemPreviewMgr, ToggleHud, 57, 0x628BB16C);
 
 // @0x140d406d0
-void ItemPreviewMgr::FUN_140d406d0(int bOn)
+void ItemPreviewMgr::SetHudMode(int bOn)
 {
     if (m_bHudOn == bOn)
         return;
@@ -958,14 +958,14 @@ void ItemPreviewMgr::FUN_140d406d0(int bOn)
         spHud->FUN_1422cee50(0);
     }
 }
-MS2_REPLACE_METHOD(0x140D406D0, ItemPreviewMgr, FUN_140d406d0, 213, 0xDBA85ECF);
+MS2_REPLACE_METHOD(0x140D406D0, ItemPreviewMgr, SetHudMode, 213, 0xDBA85ECF);
 
 // @0x140d407d0
-void ItemPreviewMgr::FUN_140d407d0()
+void ItemPreviewMgr::ClearPreview()
 {
     m_spPreview = 0;
 }
-MS2_REPLACE_METHOD(0x140D407D0, ItemPreviewMgr, FUN_140d407d0, 33, 0xFE99409C);
+MS2_REPLACE_METHOD(0x140D407D0, ItemPreviewMgr, ClearPreview, 33, 0xFE99409C);
 
 // @0x140d40800
 void ItemPreviewMgr::ApplyPreviewToCube()
@@ -984,22 +984,22 @@ int ItemPreviewMgr::GetArg()
 MS2_REPLACE_METHOD(0x140D40850, ItemPreviewMgr, GetArg, 14, 0x92BE4827);
 
 // @0x140d40870
-void ItemPreviewMgr::FUN_140d40870()
+void ItemPreviewMgr::AvatarZoomIn()
 {
     if (m_spPreview == 0)
         return;
-    m_spPreview->FUN_140d3d010();
+    m_spPreview->AvatarZoomIn();
 }
-MS2_REPLACE_METHOD(0x140D40870, ItemPreviewMgr, FUN_140d40870, 67, 0x18A91909);
+MS2_REPLACE_METHOD(0x140D40870, ItemPreviewMgr, AvatarZoomIn, 67, 0x18A91909);
 
 // @0x140d408c0
-void ItemPreviewMgr::FUN_140d408c0()
+void ItemPreviewMgr::AvatarZoomOut()
 {
     if (m_spPreview == 0)
         return;
-    m_spPreview->FUN_140d3d070();
+    m_spPreview->AvatarZoomOut();
 }
-MS2_REPLACE_METHOD(0x140D408C0, ItemPreviewMgr, FUN_140d408c0, 67, 0x7544A367);
+MS2_REPLACE_METHOD(0x140D408C0, ItemPreviewMgr, AvatarZoomOut, 67, 0x7544A367);
 
 // @0x140d40910
 void ItemPreviewMgr::FUN_140d40910(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
@@ -1011,14 +1011,14 @@ void ItemPreviewMgr::FUN_140d40910(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, 
 MS2_REPLACE_METHOD(0x140D40910, ItemPreviewMgr, FUN_140d40910, 193, 0x208C52FF);
 
 // @0x140d409e0
-int ItemPreviewMgr::FUN_140d409e0(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+int ItemPreviewMgr::HandleAvatarEvent(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return m_spPreview->FUN_140d3d580(szEvent, pArgs, nArgs);
+    return m_spPreview->OnAvatarEvent(szEvent, pArgs, nArgs);
 }
-MS2_REPLACE_METHOD(0x140D409E0, ItemPreviewMgr, FUN_140d409e0, 69, 0xD3764FA6);
+MS2_REPLACE_METHOD(0x140D409E0, ItemPreviewMgr, HandleAvatarEvent, 69, 0xD3764FA6);
 
 // @0x140d40ab0
-UIItemPreviewDialog* ItemPreviewMgr::FUN_140d40ab0(int nClass)
+UIItemPreviewDialog* ItemPreviewMgr::FindPreviewDialog(int nClass)
 {
     if (CUIService::GetInstance())
     {
@@ -1028,7 +1028,7 @@ UIItemPreviewDialog* ItemPreviewMgr::FUN_140d40ab0(int nClass)
     }
     return 0;
 }
-MS2_REPLACE(0x140D40AB0, ItemPreviewMgr::FUN_140d40ab0, 147, 0x8B528740);
+MS2_REPLACE(0x140D40AB0, ItemPreviewMgr::FindPreviewDialog, 147, 0x8B528740);
 
 // ---- COMDAT emitted here --------------------------------------------------------------------------------------------
 

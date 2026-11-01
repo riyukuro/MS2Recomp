@@ -35,15 +35,13 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_MMPlayer : public PC
 {
 public:
-    unsigned FUN_14165ffe0();                               // get the mentoring state
 };
 class Unk_MMWorld
 {
 public:
     Unk_MMPlayer* FUN_141bd0cc0();                          // the local player
-    Unk_MMPlayer* FUN_141bd1290(int nId);                   // a player by id
 };
-class Unk_MMScene { public: int FUN_1422b9e00(); };
+class GFxSceneService { public: int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 
 class Unk_MMUIService
 {
@@ -93,21 +91,18 @@ struct Unk_MMResultPacket1                                  // protocol 1 (0x140
     unsigned char protocol, result;
     int value;
     Unk_MMResultPacket1() : protocol(1), result(0), value(0) {}
-    void FUN_14069a420(Unk_MentorReader& stream);
 };
 struct Unk_MMListPacket2                                    // protocol 2 (0x140b730b0)
 {
     unsigned char protocol;
     MentorArray entries;
     Unk_MMListPacket2() : protocol(2) {}
-    void FUN_14069a0b0(Unk_MentorReader& stream);
 };
 struct Unk_MMListPacket3                                    // protocol 3 (0x140b73050)
 {
     unsigned char protocol;
     MentorArray entries;
     Unk_MMListPacket3() : protocol(3) {}
-    void FUN_14069a290(Unk_MentorReader& stream);
 };
 struct Unk_MMNamePacket5                                    // protocol 5 (0x140b73110)
 {
@@ -115,21 +110,18 @@ struct Unk_MMNamePacket5                                    // protocol 5 (0x140
     __int64 id;
     CStringW name;
     Unk_MMNamePacket5() : protocol(5), id(0) {}
-    void FUN_14069a5a0(Unk_MentorReader& stream);
 };
 struct Unk_MMIdPacket6                                      // protocol 6 (0x140b73010)
 {
     unsigned char protocol;
     __int64 id;
     Unk_MMIdPacket6() : protocol(6), id(0) {}
-    void FUN_14069a670(Unk_MentorReader& stream);
 };
 struct Unk_MMIdPacket7                                      // protocol 7 (0x140b73030)
 {
     unsigned char protocol;
     __int64 id;
     Unk_MMIdPacket7() : protocol(7), id(0) {}
-    void FUN_14069a700(Unk_MentorReader& stream);
 };
 struct Unk_MMValuePacket10                                  // protocol 10 (0x140b731a0)
 {
@@ -137,7 +129,6 @@ struct Unk_MMValuePacket10                                  // protocol 10 (0x14
     int value;
     __int64 id;
     Unk_MMValuePacket10() : protocol(10), value(0), id(0) {}
-    void FUN_14069a9c0(Unk_MentorReader& stream);
 };
 struct Unk_MMTwoValuePacket11                               // protocol 11 (0x140b731d0)
 {
@@ -145,28 +136,24 @@ struct Unk_MMTwoValuePacket11                               // protocol 11 (0x14
     int a, b;
     __int64 id;
     Unk_MMTwoValuePacket11() : protocol(11), a(0), b(0), id(0) {}
-    void FUN_14069aa90(Unk_MentorReader& stream);
 };
 struct Unk_MMTwoIdPacket12                                  // protocol 12 (0x140b73180)
 {
     unsigned char protocol;
     __int64 a, b;
     Unk_MMTwoIdPacket12() : protocol(12) {}
-    void FUN_14069ac90(Unk_MentorReader& stream);
 };
 struct Unk_MMPairPacket15                                   // protocol 15 (0x140b730e0)
 {
     unsigned char protocol;
     ATL::CAtlArray<CMentorPairModePacket::CPairMode> entries;
     Unk_MMPairPacket15() : protocol(15) {}
-    void FUN_14069ab50(Unk_MentorReader& stream);
 };
 struct Unk_MMResultPacket16                                 // protocol 16 (0x140b73080)
 {
     unsigned char protocol, result;
     int value;
     Unk_MMResultPacket16() : protocol(16), result(0), value(0) {}
-    void FUN_14069a910(Unk_MentorReader& stream);
 };
 
 // The payload readers take the packet's input stream (the CInputStream base at +8).
@@ -348,8 +335,8 @@ void CMentoringManager::OnResult(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMResultPacket1 data;
-    data.FUN_14069a420(MMReader(packet));
-    Unk_MMPlayer* pPlayer = reinterpret_cast<Unk_MMWorld*>(WorldService::GetInstance())->FUN_141bd1290(data.value);
+    reinterpret_cast<Unk_MentorResultPacket*>(&data)->FUN_14069a420(MMReader(packet));
+    Unk_MMPlayer* pPlayer = reinterpret_cast<Unk_MMPlayer*>(WorldService::GetInstance()->FUN_141bd1290(data.value));
     if (pPlayer != 0)
         pPlayer->FUN_14165ffc0(data.result);
 }
@@ -359,7 +346,7 @@ void CMentoringManager::OnMentorList(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMListPacket2 data;
-    data.FUN_14069a0b0(MMReader(packet));
+    reinterpret_cast<Unk_MentorListPacket*>(&data)->FUN_14069a0b0(MMReader(packet));
     m_mentors.RemoveAll();
     m_mentors.Copy(data.entries);
     Unk_MentorPtr<UIInviteMentoringDialog> spDialog(FUN_140b6f4c0(0x4f4c));
@@ -373,7 +360,7 @@ void CMentoringManager::OnMenteeList(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMListPacket3 data;
-    data.FUN_14069a290(MMReader(packet));
+    reinterpret_cast<Unk_MentorListPacket*>(&data)->FUN_14069a290(MMReader(packet));
     m_mentees.RemoveAll();
     m_mentees.Copy(data.entries);
     UIMentoringDialog* pDialog = Unk_MMDialog<UIMentoringDialog>(0x4f4b);
@@ -386,7 +373,7 @@ void CMentoringManager::OnPairMode(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMPairPacket15 data;
-    data.FUN_14069ab50(MMReader(packet));
+    reinterpret_cast<CMentorPairModePacket*>(&data)->FUN_14069ab50(MMReader(packet));
     for (unsigned i = 0; i < data.entries.GetCount(); i = i + 1)
     {
         const CMentorPairModePacket::CPairMode& entry = data.entries.GetAt(i);
@@ -415,7 +402,7 @@ void CMentoringManager::OnInviteMentee(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMNamePacket5 data;
-    data.FUN_14069a5a0(MMReader(packet));
+    reinterpret_cast<Unk_MentorNamePacket*>(&data)->FUN_14069a5a0(MMReader(packet));
     FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_invite_mentee"), data.name), 0x10);
 }
 
@@ -424,7 +411,7 @@ void CMentoringManager::OnMentorApproved(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMIdPacket6 data;
-    data.FUN_14069a670(MMReader(packet));
+    reinterpret_cast<Unk_MentorIdPacket*>(&data)->FUN_14069a670(MMReader(packet));
     CStringW strName(L"");
     for (unsigned i = 0; i < m_mentors.GetCount(); i = i + 1)
     {
@@ -449,7 +436,7 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMIdPacket7 data;
-    data.FUN_14069a700(MMReader(packet));
+    reinterpret_cast<Unk_MentorIdPacket*>(&data)->FUN_14069a700(MMReader(packet));
     for (unsigned i = 0; i < m_mentors.GetCount(); i = i + 1)
     {
         MentorPtr spMentor(m_mentors.GetAt(i));
@@ -495,7 +482,7 @@ void CMentoringManager::OnSetDate(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMValuePacket10 data;
-    data.FUN_14069a9c0(MMReader(packet));
+    reinterpret_cast<Unk_MentorValuePacket*>(&data)->FUN_14069a9c0(MMReader(packet));
     m_n18 = data.value;
     m_n20 = data.id;
 }
@@ -505,7 +492,7 @@ void CMentoringManager::OnSetCounts(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMTwoValuePacket11 data;
-    data.FUN_14069aa90(MMReader(packet));
+    reinterpret_cast<Unk_MentorTwoValuePacket*>(&data)->FUN_14069aa90(MMReader(packet));
     m_n8 = data.a;
     m_nC = data.b;
     m_n10 = data.id;
@@ -529,7 +516,7 @@ void CMentoringManager::OnSetIds(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMTwoIdPacket12 data;
-    data.FUN_14069ac90(MMReader(packet));
+    reinterpret_cast<Unk_MentorTwoIdPacket*>(&data)->FUN_14069ac90(MMReader(packet));
     m_n28 = data.a;
     m_n30 = data.b;
 }
@@ -539,7 +526,7 @@ void CMentoringManager::OnError(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMResultPacket16 data;
-    data.FUN_14069a910(MMReader(packet));
+    reinterpret_cast<Unk_MentorResultPacket*>(&data)->FUN_14069a910(MMReader(packet));
     switch (data.result)
     {
     case 1:
@@ -577,7 +564,7 @@ bool FUN_140b73bc0(MyPC* pMyPC)
 {
     if (pMyPC == 0)
         return false;
-    if (((Unk_MMScene*)CUserMail::FUN_1408e57f0())->FUN_1422b9e00() == 0x620001f)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x620001f)
         return false;
     if (((Unk_MMPlayer*)pMyPC)->FUN_1416595d0() == 1)
         return false;

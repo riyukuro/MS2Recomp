@@ -158,13 +158,13 @@ public:
     void SetKEntityID(const egf::EntityID& kId);           // 0x14123c3e0 m_kEntityID = kId
     void FUN_14123c430(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
     unsigned __int64 FUN_14123c500();                       // 0x14123c500 entity id value
-    void FUN_14123c680(bool b);                             // 0x14123c680 join/leave the update list
+    void SetKeepVisibleForBGTransparency(bool b);                             // 0x14123c680 join/leave the update list
     void FUN_14123cb20(bool b);                             // 0x14123cb20 shadow
-    efd::Point3 FUN_14123cc20();                             // 0x14123cc20 facing direction of vfunc_20()
+    efd::Point3 GetForwardDirection();                             // 0x14123cc20 facing direction of vfunc_20()
     static efd::Point3 RotationToDirection(NiPoint3 kRot);         // 0x14123cc80 rotation (degrees) -> direction
     static float DirectionToYawDegrees(efd::Point3 kDir);           // 0x14123cd50 direction -> z angle (degrees)
-    static float FUN_14123ce70(efd::Point3 kDir);           // 0x14123ce70 direction -> -radians
-    unsigned __int64 FUN_14123cec0();                       // 0x14123cec0 (m_unk_70 << 32) | serial
+    static float DirectionToNegYawRadians(efd::Point3 kDir);           // 0x14123ce70 direction -> -radians
+    unsigned __int64 GenerateSerialId();                       // 0x14123cec0 (m_unk_70 << 32) | serial
     void FUN_14123d7a0(CString strKey, int nValue);         // 0x14123d7a0
     int FUN_14123d870();                                    // 0x14123d870 first non-zero value of m_mapD8
     void FUN_14123d900();                                   // 0x14123d900
@@ -176,8 +176,8 @@ public:
     void FUN_14123e020(NiAVObject* pNode);                  // 0x14123e020 tag meshes with the alpha extra data
     float FUN_140a17da0();                                  // 0x140a17da0 m_fUnk110 (header inline; body in ?\bgtransparencymgr.cpp)
     float FUN_140a17dc0();                                  // 0x140a17dc0 m_fUnk114 (header inline; body in ?\bgtransparencymgr.cpp)
-    void FUN_14123e350();                                   // 0x14123e350 push m_pos28 to the entity
-    void FUN_14123e3a0();                                   // 0x14123e3a0 push m_pos34 to the entity
+    void SyncPositionProperty();                                   // 0x14123e350 push m_pos28 to the entity
+    void SyncRotationProperty();                                   // 0x14123e3a0 push m_pos34 to the entity
     float FUN_14123ee40() { return m_unk_c4; }              // 0x14123ee40 (COMDAT)
     float FUN_140f4a450();                                  // 0x140f4a450 (another unit)
 

@@ -86,11 +86,16 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cguidemanager.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/commonfiles/famegradedata.h"
+#include "ms2/commonfiles/titletable.h"
+#include "ms2/commonfiles/masteryinteriortable.h"
 
 #include <map>
 #include <set>
 #include <vector>
 #include <utility>
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 // ---- unit-local stand-ins ---------------------------------------------------------------------------------------------
 
@@ -237,13 +242,10 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_141275260(int nStringId, int nA, int nB);
 
-class Unk_MapRec : public CPtred { public: char m_pad_18[4]; int m_nKind; };
-class Unk_MapTable { public: MS2Ptr<Unk_MapRec> FUN_1403206b0(int nMapId); };
 
 class Unk_PartyRef : public CPtred { };
 class Unk_PartyHolder { public: MS2Ptr<Unk_PartyRef> FUN_141768380(); };
 class Unk_FieldRef : public CPtred { };
-int FUN_141654700(Unk_MyPc* pPc);
 unsigned FUN_1403bb210(int nKind, int nMode);
 int IsNotRecentDayChange(__int64 nTime);
 bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
@@ -311,11 +313,11 @@ void FUN_141276180(const CString& strSound, const CString& strArg);
 // @0x14092f420
 void FUN_14092f420()
 {
-    FUN_140931510()->FUN_140d9f140();
+    FUN_140931510()->ClearDungeonState();
     DAT_143ab2d80.Clear();
     g_143ab2a90.FUN_140a5c970();
-    DAT_143ab2fc0.FUN_14041f6e0();
-    DAT_143ab3010.FUN_14041f6e0();
+    ((GameEventUserValue&)DAT_143ab2fc0).Clear();
+    ((GameEventUserValue&)DAT_143ab3010).Clear();
     DAT_143ab2e20.RemoveAll();
     DAT_143ab2e50.FUN_140dfc4f0();
     DAT_143ab2857 = 0;
@@ -825,9 +827,9 @@ void FUN_140930ba0(int nMapId)
 {
     DAT_143ab2884 = nMapId;
     DAT_143ab2888 = 0;
-    MS2Ptr<Unk_MapRec> spMap = reinterpret_cast<Unk_MapTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(DAT_143ab2884);
+    DungeonRoomPtr spMap = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(DAT_143ab2884);
     if (spMap.get() != 0)
-        DAT_143ab2888 = spMap->m_nKind;
+        DAT_143ab2888 = spMap->m_groupType;
 }
 
 // @0x140930c20
@@ -902,7 +904,7 @@ int FUN_140930e10()
     for (unsigned short nLevel = 1; nLevel <= DAT_143ab291c; nLevel++)
     {
         ATL::CAtlArray<MS2Ptr<ItemEntity> > quests;
-        FUN_140663010(FUN_140933200(), nLevel, FUN_141654700(pPc), quests);
+        ((CMasteryInteriorTable*)FUN_140933200())->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), quests);
         if (quests.GetCount() == 0)
             continue;
         if (FUN_140931890(&DAT_143ab32b8, &nLevel) != -1)
@@ -937,9 +939,9 @@ void FUN_140930fe0(Unk_Notice* pNotice)
     {
         int nList = (&pNotice->m_sub)->vfunc_1();
         if (nList == 0)
-            DAT_143ab2fc0.FUN_14041f7c0(pNotice);
+            ((GameEventUserValue&)DAT_143ab2fc0).Read(*(CInPacket*)pNotice);
         else if (nList == 1)
-            DAT_143ab3010.FUN_14041f7c0(pNotice);
+            ((GameEventUserValue&)DAT_143ab3010).Read(*(CInPacket*)pNotice);
         break;
     }
     case 1:
@@ -952,7 +954,7 @@ void FUN_140930fe0(Unk_Notice* pNotice)
             spTarget = DAT_143ab3010.FUN_14041f850(pNotice);
         if (spTarget.get() != 0)
         {
-            ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(spTarget->FUN_14041f250(), (class GameEventVariable*)(spTarget.get()));
+            ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
         }
         break;
     }
@@ -970,7 +972,7 @@ unsigned FUN_140931210(Unk_SlotKey nKey)
 // @0x140931250
 int FUN_140931250(Unk_SlotKey nKey)
 {
-    return FUN_14035a870(reinterpret_cast<Unk_QuickSlots*>(FUN_140764010()), nKey, FUN_140931210(nKey));
+    return ((CFameTable*)FUN_140764010())->GetGradeByPoint((Unk_FameAlliance)nKey, FUN_140931210(nKey));
 }
 
 // @0x140931290
@@ -1022,7 +1024,7 @@ unsigned FUN_1409313b0()
 // @0x140931450
 unsigned FUN_140931450(CString strName)
 {
-    int nSlot = FUN_140933210()->FUN_14087a930(strName);
+    int nSlot = ((CTitleTable*)FUN_140933210())->FindTitleId(strName);
     if (nSlot == 0)
         return 0;
     return DAT_143ab3268.FUN_140408410(nSlot) != -1;
@@ -1672,10 +1674,10 @@ void FUN_140934c70(Unk_TailBoxPtr* pThis)
 // @0x140934cd0
 void FUN_140934cd0(Unk_TailBoxPtr* pThis, void*)
 {
-    if (FUN_140159bc0((CPtred*)pThis->m_p) == 0)
+    if (CPtred::ReleasePtred((CPtred*)pThis->m_p) == 0)
     {
         FUN_1409334e0((CPtred*)pThis->m_p);
-        FUN_140159ba0((CPtred*)pThis->m_p);
+        CPtred::DeletePtred((CPtred*)pThis->m_p);
     }
 }
 

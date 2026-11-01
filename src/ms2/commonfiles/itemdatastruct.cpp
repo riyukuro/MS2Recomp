@@ -47,6 +47,9 @@
 #include <algorithm>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/dungeonmatch.h"
+#include "ms2/commonfiles/pricetable.h"
+#include "ms2/placeholder/cinstrumentdatatable.h"
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -101,14 +104,9 @@ int FUN_141901d20(int, __int64, __int64);  // C3: the definition's signature
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The item price table (commonfiles\pricetable.cpp).
-class Unk_PriceTable
-{
-public:
-    void FUN_140738d40(int nItemId, bool* pbFound, __int64* pnPrice, int* pnCount);
-};
-extern Unk_PriceTable* DAT_143aaf5e8;
+extern CPriceTable* DAT_143aaf5e8;
 // @0x140552df0
-inline Unk_PriceTable* FUN_140552df0()
+inline CPriceTable* FUN_140552df0()
 {
     return DAT_143aaf5e8;
 }
@@ -396,7 +394,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
          pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummy))->NextSibling("dummy")))
     {
         ModelNameEntry entry;
-        entry.FUN_140314350(pDummy);
+        reinterpret_cast<ItemDummyInfo*>(&entry)->Load(pDummy);
         if (entry.targetNode.IsEmpty())
             entry.targetNode = name10;
         if (entry.gender == 2)
@@ -1469,7 +1467,7 @@ int ItemHousing::LoadXml(Unk_140165cf0* pElem, int nItemId)
         XmlGetAttr((class TiXmlElement*)(pHousing), "trophyID", trophyID);
         XmlGetAttr((class TiXmlElement*)(pHousing), "trophyLevel", trophyLevel);
         XmlGetAttr((class TiXmlElement*)(pHousing), "interiorLevel", reinterpret_cast<unsigned short&>(interiorLevel));
-        FUN_140552df0()->FUN_140738d40(nItemId, &hasPrice, &price, &priceCount);
+        FUN_140552df0()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
         XmlGetAttr((class TiXmlElement*)(pHousing), "setItemID", setItemID);
         XmlQuery((class TiXmlElement*)(pHousing), "doNotInstallBlueprint", doNotInstallBlueprint);
     }
@@ -1487,7 +1485,7 @@ void ItemHousing::LoadElement(Unk_140165cf0* pElem, int nItemId)
     XmlGetAttr((class TiXmlElement*)(pElem), "trophyLevel", trophyLevel);
     XmlGetAttr((class TiXmlElement*)(pElem), "interiorLevel", reinterpret_cast<unsigned short&>(interiorLevel));
     if (FUN_140552df0() != 0)
-        FUN_140552df0()->FUN_140738d40(nItemId, &hasPrice, &price, &priceCount);
+        FUN_140552df0()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
     XmlGetAttr((class TiXmlElement*)(pElem), "setItemID", setItemID);
     XmlQuery((class TiXmlElement*)(pElem), "doNotInstallBlueprint", doNotInstallBlueprint);
 }
@@ -1976,7 +1974,7 @@ CStringW ItemMusicScore::FUN_14054ad20()
     MS2Ptr<Unk_MusicBookInfo> spInfo = FUN_14052d1d0()->FUN_14072cc10(recommendCategoryId);
     if (spInfo == 0)
         return L"";
-    return spInfo->FUN_14072c480();
+    return reinterpret_cast<MS2Ptr<CInstrumentCategoryData>&>(spInfo)->GetName();
 }
 
 // @0x14054ade0

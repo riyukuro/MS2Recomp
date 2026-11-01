@@ -121,6 +121,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/placeholder/mypc.h"
+#include "ms2/placeholder/citemdata.h"  // C3: CItemData::HasMaidId / HasCubeTextureMesh
 #include "ms2/placeholder/cpartymember.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
@@ -184,8 +185,8 @@ class CMsgBoxData : public CPtred
 public:
     template <class T> void Append(T v);                            // 0x140533ff0 (int) / 0x1405340b0 (__int64)
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
-    void FUN_141a024a0(bool b);
-    __int64 FUN_141a02f10(int nIndex, int nDefault) const;
+    void FUN_141a024a0(int n);
+    __int64 FUN_141a02f10(int nIndex, __int64 nDefault) const;
 private:
     unsigned char m_pad[0x2a0 - sizeof(CPtred)];
 };
@@ -223,8 +224,8 @@ public:
     int FUN_1410c3100();
     int FUN_1410c3000();
     int FUN_1410c3650();
-    int FUN_1410b9b20(int nItemId);
-    int FUN_1410b9c20(int nItemId, __int64 nRank);
+    int CountCubesByItemId(int nItemId);
+    int CountCubesByItemIdAndOwner(int nItemId, __int64 nRank);
     int FUN_1410d2f10();
     bool FUN_1410c35c0();
 };
@@ -273,11 +274,13 @@ public:
 MS2_CHECK_OFFSET(Unk_UcPCInfo, m_nField1c, 0x1c);
 
 // The local player and other actors (free callees taking the actor).
-__int64 FUN_141656ad0(PCBase* p);
-int FUN_141659690(PCBase* p);
-int FUN_141527160(MyPC* p, int nFlag);
-int FUN_14152e950(MyPC* p);
-void FUN_141529c80(MyPC* p, int a, int b, int c, __int64 nId, CStringW strText);
+class PC   // C3: unit-local view (fittingdollpc.h)
+{
+public:
+    __int64 FUN_141656ad0();
+    int FUN_141659690();
+    class CConstructionGuideObject* FUN_1416625b0();
+};
 
 
 // The user report record (ctor 0x140c74fc0, 0x118 bytes) and its counted reference.
@@ -412,12 +415,12 @@ int FUN_1418fd330(__int64 nOwner)
         FUN_141275260(0x87d, 1, 0);
         return 0;
     }
-    if (FUN_141659690(pPC) != 0)
+    if (((PC*)pPC)->FUN_141659690() != 0)
     {
         FUN_141275260(0x87b, 1, 0);
         return 0;
     }
-    if (FUN_141527160(pPC, 0x27) == 0)
+    if (pPC->FUN_141527160(0x27) == 0)
     {
         FUN_141275260(0x87b, 1, 0);
         return 0;
@@ -493,7 +496,7 @@ int FUN_1418fd6c0(__int64 nId)
     MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    FUN_141529c80(pPC, 0, 0, 0, nId, CStringW(L""));
+    pPC->SendRequestMoveFieldMode2(0, 0, 0, nId, CStringW(L""));
     return 1;
 }
 MS2_REPLACE(0x1418fd6c0, FUN_1418fd6c0, 120, 0xBFBC3BD2);
@@ -560,7 +563,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
         CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nId);
         if (spBuddy.get() != 0)
         {
-            FUN_141529c80(pPC, spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(),
+            pPC->SendRequestMoveFieldMode2(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(),
                           spBuddy->FUN_1401cc250(), CStringW(L""));
             return 1;
         }
@@ -570,7 +573,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
         Unk_UcGuildRef guild = reinterpret_cast<Unk_UcGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413b6200(nId);
         if (guild.FUN_1404f0ab0() != 0)
         {
-            FUN_141529c80(pPC, 0, 0, 0, guild.FUN_1404f0b80()->m_nGuildId, CStringW(L""));
+            pPC->SendRequestMoveFieldMode2(0, 0, 0, guild.FUN_1404f0b80()->m_nGuildId, CStringW(L""));
             return 1;
         }
     }
@@ -579,7 +582,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
         MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nId);
         if (spMember.get() != 0)
         {
-            FUN_141529c80(pPC, 0, 0, 0, FUN_141637b90(spMember.operator->()), CStringW(L""));
+            pPC->SendRequestMoveFieldMode2(0, 0, 0, FUN_141637b90(spMember.operator->()), CStringW(L""));
             return 1;
         }
     }
@@ -587,7 +590,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
     {
         if (nType == 4)
         {
-            FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
+            pPC->SendRequestMoveFieldMode2(0, 0, 0, nParam, CStringW(L""));
             return 1;
         }
         else if (nType == 0xe)
@@ -599,14 +602,14 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
                 MS2Ptr<CClubMember> spMember = ((class CClubClientManager*)FUN_140e0d900())->FindMember(nClubId, nId);
                 if (spMember)
                 {
-                    FUN_141529c80(pPC, 0, 0, 0, spMember->m_info.m_accountId, CStringW(L""));
+                    pPC->SendRequestMoveFieldMode2(0, 0, 0, spMember->m_info.m_accountId, CStringW(L""));
                     return 1;
                 }
             }
         }
         else if (nType == 0x11)
         {
-            FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
+            pPC->SendRequestMoveFieldMode2(0, 0, 0, nParam, CStringW(L""));
             return 1;
         }
         else
@@ -617,7 +620,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
                 MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
                 if (spProxy.get() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
                 {
-                    FUN_141529c80(pPC, spProxy->m_b4, spProxy->m_b8, spProxy->m_bc,
+                    pPC->SendRequestMoveFieldMode2(spProxy->m_b4, spProxy->m_b8, spProxy->m_bc,
                                   reinterpret_cast<__int64>(spProxy->FUN_1416c2310()), CStringW(L""));
                     return 1;
                 }
@@ -664,7 +667,6 @@ public:
     bool FUN_141532fa0(int n);
     void* m_pad_00; void* m_pad_08;
 };
-class Unk_UcTextFilter { public: void FUN_1416fb300(const CStringW& str); };
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 class Unk_UcUiMgr : public CUIService
 {
@@ -699,7 +701,7 @@ bool FUN_1418fe060()
     {
         if (CFieldData::FUN_140374410(nMapId) && ((class MyPC*)(class MyPC*)(pPC))->HasNoHome() == 0)
         {
-            if (((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == FUN_141656ad0(pPC))
+            if (((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == ((PC*)pPC)->FUN_141656ad0())
                 return true;
         }
         if (DAT_143ab0248 == 2 && nMapId == 0x1e8673)
@@ -718,7 +720,7 @@ bool FUN_1418fe120()
     MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
-    if (FUN_14152e950(pPC) == 0)
+    if (pPC->FUN_14152e950() == 0)
         return false;
     Unk_UcStatRef stat(((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50()));
     if (stat.FUN_141532fa0(0))
@@ -1102,7 +1104,7 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
     case 2:
     {
         CStringW strText = FUN_1409e97f0(0x38, reinterpret_cast<const unsigned&>(nItemId));
-        reinterpret_cast<Unk_UcTextFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
         FUN_1412751f0(strText, 1, 1);
         break;
     }
@@ -1200,8 +1202,6 @@ public:
     CStringW m_strType;                                             // +0x290
     void* m_pad_298; void* m_pad_2a0; void* m_pad_2a8;
     Unk_CommandArgs m_args;                                         // +0x2b0
-    bool FUN_14053cde0();                                           // unique (non-stacking) item
-    bool FUN_14053d6f0();                                           // item with ranks
 };
 class Unk_UcItemPtr
 {
@@ -1444,7 +1444,7 @@ MS2_REPLACE(0x141900a90, FUN_141900a90, 213, 0xCCB33585);
 // @0x141900b70
 CString FUN_141900b70()
 {
-    switch (FUN_140a58540()->FUN_140d8c660())
+    switch (FUN_140a58540()->GetPadFamily())
     {
     case 1:
         return CString("xbox");
@@ -1552,7 +1552,6 @@ class UIRegionListDialog* FUN_1418f6130(int);   // C3: was FUN_1418f6130
 // ---- the game and combat controllers touched by the key blocks ----
 CKeyTable* FUN_1409331f0();
 int FUN_1410af7a0(class PC*);   // C3: was FUN_1410af7a0
-PCBase* FUN_1416625b0(PCBase* p);
 
 // @0x141900750
 // Fill the server-info AS object: server name and icon, and the region name and icon.
@@ -1679,7 +1678,7 @@ void UICommon::CMyPCKeyInputController::FUN_141901070(int nRelease, int nLayer)
             ((class PCBase*)(class PCBase*)(pPC))->FUN_14166cce0(0x20);
         if (FUN_1410af7a0((class PC*)(pPC)) != 0)
         {
-            PCBase* pMount = FUN_1416625b0(pPC);
+            PCBase* pMount = (PCBase*)((PC*)pPC)->FUN_1416625b0();
             if (pMount != 0)
             {
                 if (nBlock != 0)
@@ -1917,7 +1916,7 @@ int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit
     Unk_UcItemPtr item = FUN_14053f870(nItemId);
     if (item.FUN_1401b5240(0) != 0)
         return 0;
-    if (reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053cde0())
+    if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())
     {
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nUid);
         if (spItem.get() != 0)
@@ -1926,7 +1925,7 @@ int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit
         if (spStock.get() != 0)
             return ((class CUGCMapItem*)(class Unk_UcStockEntry*)(spStock.operator->()))->FUN_140dfc350();
     }
-    else if (reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053d6f0())
+    else if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasCubeTextureMesh())
     {
         int nCount = DAT_143ab2e20.FUN_1408fc2f0(nItemId, nRank);
         nCount += DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
@@ -1949,7 +1948,7 @@ int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
     if (item.FUN_1401b5240(0) != 0)
         return 0;
     int nMode = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650();
-    if (reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053cde0())
+    if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())
     {
         MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
         if (spStock.get() != 0)
@@ -1957,18 +1956,18 @@ int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
         if (nMode == 1 || nMode == 3)
             return ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9d80(nUid);
     }
-    else if (reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053d6f0())
+    else if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasCubeTextureMesh())
     {
         int nCount = DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
         if (nMode == 1 || nMode == 3)
-            nCount += ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9c20(nItemId, nRank);
+            nCount += ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->CountCubesByItemIdAndOwner(nItemId, nRank);
         return nCount;
     }
     else
     {
         int nCount = DAT_143ab2e50.FUN_140dfcb00(nItemId);
         if (nMode == 1 || nMode == 3)
-            nCount += ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9b20(nItemId);
+            nCount += ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->CountCubesByItemId(nItemId);
         return nCount;
     }
     return 0;

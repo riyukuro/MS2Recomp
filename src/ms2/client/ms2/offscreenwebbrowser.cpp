@@ -168,7 +168,7 @@ COffscreenWebBrowser::~COffscreenWebBrowser()
 }
 
 // @0x1416119d0
-void COffscreenWebBrowser::FUN_1416119d0(const CefRefPtr<CefBrowser>& browser)
+void COffscreenWebBrowser::AttachBrowser(const CefRefPtr<CefBrowser>& browser)
 {
     m_browser = browser;
     m_pPixels = new unsigned char[0x800000];
@@ -176,7 +176,7 @@ void COffscreenWebBrowser::FUN_1416119d0(const CefRefPtr<CefBrowser>& browser)
     m_bClosed = false;
     m_hIMC = ImmCreateContext();
 }
-MS2_REPLACE_METHOD(0x1416119D0, COffscreenWebBrowser, FUN_1416119d0, 141, 0);
+MS2_REPLACE_METHOD(0x1416119D0, COffscreenWebBrowser, AttachBrowser, 141, 0);
 
 // @0x141611a70
 void COffscreenWebBrowser::Close()

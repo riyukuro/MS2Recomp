@@ -44,6 +44,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/cbreakableobject.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 
 // ---- unit-local placeholders ----
@@ -180,8 +181,6 @@ CString FUN_1410280d0(int nKind, CString strUrl);                   // local pat
 class Unk_RideeFieldObj
 {
 public:
-    NiPoint3 FUN_140adf8e0();                                       // position
-    NiPoint3 FUN_140ae0660();                                       // collision box size
 };
 template <> MS2Ptr<Unk_RideeFieldObj>::~MS2Ptr();                                       // 0x140d28f40
 template <> Unk_RideeFieldObj* MS2Ptr<Unk_RideeFieldObj>::get() const;                  // 0x140d290a0
@@ -201,7 +200,6 @@ class Unk_RideeWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(Unk_Entity* pEntity);
-    NiPoint3 FUN_141bd37e0();                                       // water line
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName);
 };
 
@@ -212,11 +210,11 @@ public:
     unsigned int FUN_1411a49c0(Unk_EffectTarget&);
     unsigned int FUN_1411a4a00(Unk_EffectTarget&);
     void FUN_1411a6060(unsigned int);
+    void GetGroupEffects(unsigned nId, ATL::CAtlArray<efd::SmartPointer<CEffect> >& aOut);
 };
 class Unk_RideeEffects
 {
 public:
-    void FUN_1411a7760(int nHandle, ATL::CAtlArray<efd::SmartPointer<CEffect> >& out);    // the live instances of a handle
 };
 
 class Unk_AvModeSvc   // C3: member view (real class not in this TU)
@@ -233,7 +231,7 @@ class Unk_RideeGameMode
 {
 public:
 };
-Unk_RideeGameMode* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 class Unk_RideeEntity;
 class Unk_RideePhysX : public CPhysXHelper
@@ -272,9 +270,14 @@ public:
 class Unk_RideeSpawnMgr
 {
 public:
-    Unk_PCBaseFxLib* FUN_1411bf1e0();
 };
 Unk_RideeSpawnMgr* FUN_140a50010();
+class CEmotionTable;
+class CEmotionManager   // C3: member view (real class not in this TU)
+{
+public:
+    CEmotionTable* GetNpcTable();
+};
 
 // The actor's ground shadow (unit_14160fb10).
 class CObjectShadow : public NiRefObject
@@ -296,9 +299,11 @@ class Unk_RideePC : public PCBase
 {
 };
 class Unk_RideeStats;
-int FUN_141658e60(Unk_RideePC* pc);                                 // level
-Unk_RideeStats* FUN_1416561a0(Unk_RideePC* pc);
-float FUN_1411e1110(Unk_RideeStats* pStats, int nStat);
+class CEquipment   // C3: member view (real class not in this TU)
+{
+public:
+    float FUN_1411e1110(SAType eType);
+};
 float FUN_1411f0e30(float fBase, float fRate);
 bool FUN_14028d470(float a, float b);
 
@@ -354,7 +359,7 @@ void FUN_1401d3700(CString& str);
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_140298360(const char* pszPrefix, const CString& str);
 void FUN_14098c6e0(void* pEntity, unsigned int uiPropId, const bool& b);
-NiAVObject* FUN_141b6efc0(void* pEntity);                          // the scene root of an entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 MS2Ptr<Unk_StateArg22> FUN_140835450(int nState);                   // new state record
 MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // hp bar
@@ -415,7 +420,7 @@ Ridee::Ridee()
     m_unk_190.m_w = 3.5f;
     m_nD40 = FUN_141472bc0();
     m_nD44 = 0;
-    m_controller.FUN_1417b7430(this);
+    ((StatePcGuideObjectController*)&m_controller)->SetOwner(this);
     m_nDE0 = 0;
     m_f164 = 0;
     m_f174 = 0;
@@ -451,7 +456,7 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
 
     int nLevel = 1;
     if (Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(pRider)))
-        nLevel = FUN_141658e60(pc);
+        nLevel = ((PC*)pc)->FUN_141658e60();
     const CString& strAnim = spData->FUN_140784880(nLevel);
     const CString& strModel = spData->FUN_140784920(nLevel);
     if (strAnim.IsEmpty() && strModel.IsEmpty())
@@ -501,7 +506,7 @@ int Ridee::vfunc_10()
                 MS2Ptr<Unk_RideeFieldObj> spObj = ((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4f10(spEntity.FUN_1408a9090());
                 if (spObj.get())
                 {
-                    kPos.z = spObj->FUN_140adf8e0().z + spObj->FUN_140ae0660().z + 10.0f;
+                    kPos.z = ((CBreakableObject*)spObj.operator->())->GetPtPos().z + ((CBreakableObject*)spObj.operator->())->GetPtSize().z + 10.0f;
                     ((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(this)))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
                     egf::EntityID kId(s_kNoEntity);
                     NiPoint3 kAt = g_kCubeGuideZero;
@@ -531,7 +536,7 @@ void Ridee::vfunc_12()
     for (size_t i = 0; i < m_spData->m_parts.FUN_14078cd60(); i++)
         FUN_141674ef0(m_spData->m_parts.FUN_140789540(i));
 
-    if (NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410()))
+    if (NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())))
     {
         m_spSeat = pRoot->GetObjectByName((const char*)m_spData->FUN_140784970()->m_strNode);
         if (DAT_143ae2b30 == 0)
@@ -553,7 +558,7 @@ void Ridee::vfunc_12()
     {
         m_pRider->vfunc_59(0x21, 0, 0, 0);
         vfunc_19(static_cast<const efd::Point3&>(m_pRider->vfunc_18()));
-        if (((Unk_FsOptimizer*)(Unk_RideeGameMode*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+        if (((Unk_FsOptimizer*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         {
             bool bValue = false;
             FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bValue);
@@ -588,7 +593,7 @@ void Ridee::vfunc_24(int n)
         if (m_unk_b0 != 0 && m_unk_40 == m_pRider->vfunc_25())
             return;
         m_unk_40 = m_pRider->vfunc_25();
-        if (((Unk_FsOptimizer*)(Unk_RideeGameMode*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0)
+        if (((Unk_FsOptimizer*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0)
         {
             efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
             if (m_unk_40 != 0)
@@ -683,7 +688,7 @@ void Ridee::vfunc_119()
                 CString strNode(spModel->m_strNode);
                 if (strNode.IsEmpty())
                     return;
-                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
+                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410()))))
                 {
                     NiAVObject* pNode;
                     {
@@ -704,7 +709,7 @@ void Ridee::vfunc_119()
 // @0x141705880
 Unk_PCBaseFxLib* Ridee::vfunc_70()
 {
-    return FUN_140a50010()->FUN_1411bf1e0();
+    return (Unk_PCBaseFxLib*)((CEmotionManager*)FUN_140a50010())->GetNpcTable();
 }
 MS2_REPLACE_METHOD(0x141705880, Ridee, vfunc_70, 27, 0x48167045);
 
@@ -722,7 +727,7 @@ void Ridee::FUN_1417058b0()
                 CString strNode(spModel->m_strNode);
                 if (strNode.IsEmpty())
                     return;
-                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
+                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410()))))
                 {
                     NiAVObject* pNode;
                     {
@@ -771,7 +776,7 @@ void Ridee::FUN_141705b60(double fTime)
         if (m_nRunFx)
         {
             ATL::CAtlArray<efd::SmartPointer<CEffect> > kLive;
-            ((class Unk_RideeEffects*)TSingleton<CEffectService>::GetInstance())->FUN_1411a7760(m_nRunFx, kLive);
+            ((CEffectService*)TSingleton<CEffectService>::GetInstance())->GetGroupEffects(m_nRunFx, kLive);
             if (kLive.GetCount() == 0)
                 m_nRunFx = 0;
             else
@@ -816,7 +821,7 @@ void Ridee::FUN_141705b60(double fTime)
         if (m_nRunFx2)
         {
             ATL::CAtlArray<efd::SmartPointer<CEffect> > kLive;
-            ((class Unk_RideeEffects*)TSingleton<CEffectService>::GetInstance())->FUN_1411a7760(m_nRunFx2, kLive);
+            ((CEffectService*)TSingleton<CEffectService>::GetInstance())->GetGroupEffects(m_nRunFx2, kLive);
             if (kLive.GetCount() == 0)
                 m_nRunFx2 = 0;
             else
@@ -924,7 +929,7 @@ MS2_REPLACE_METHOD(0x141706560, Ridee, FUN_141706560, 33, 0x91641508);
 // @0x141706590
 void Ridee::FUN_141706590()
 {
-    m_controller.FUN_1417b76b0(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
+    ((StatePcGuideObjectController*)&m_controller)->FUN_1417b76b0(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
     m_controller.vfunc_0();
 }
 MS2_REPLACE_METHOD(0x141706590, Ridee, FUN_141706590, 87, 0xB093DCCD);
@@ -942,12 +947,12 @@ void Ridee::FUN_141706650(bool bForce)
 {
     if (!FUN_14166c930())
         return;
-    m_controller.FUN_1417b76b0(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
-    if (m_controller.FUN_1417b7490())
+    ((StatePcGuideObjectController*)&m_controller)->FUN_1417b76b0(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
+    if (((StatePcGuideObjectController*)&m_controller)->FUN_1417b7490())
         m_controller.vfunc_0();
     if (m_nDE0 == 0)
     {
-        if (vfunc_18().z < ((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bd37e0().z)
+        if (vfunc_18().z < ((class Unk_RideeWorld*)WorldService::GetInstance())->GetBoundsMin().z)
         {
             m_nDE0 = 1;
             bForce = true;
@@ -1019,7 +1024,7 @@ void Ridee::FUN_141706650(bool bForce)
             }
         }
     }
-    m_controller.FUN_1417b7670(spNew.get());
+    ((StatePcGuideObjectController*)&m_controller)->FUN_1417b7670((Unk_GuideRecord*)spNew.get());
     if (bFlushAfter)
         m_controller.vfunc_0();
 }
@@ -1055,8 +1060,8 @@ float Ridee::FUN_1417070a0()
     if (!pc)
         return fSpeed;
     if (FUN_14028d470(m_spData->m_f7c, m_spData->m_f80))
-        return FUN_1411f0e30(fSpeed, 1.0f + FUN_1411e1110(FUN_1416561a0(pc), 0xae));
-    return FUN_1411f0e30(fSpeed, 1.0f + FUN_1411e1110(FUN_1416561a0(pc), 0xa5));
+        return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xae));
+    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xa5));
 }
 MS2_REPLACE_METHOD(0x1417070a0, Ridee, FUN_1417070a0, 291, 0x5C3B4FBE);
 
@@ -1069,14 +1074,14 @@ float Ridee::FUN_1417071d0()
     Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(m_pRider));
     if (!pc)
         return fSpeed;
-    return FUN_1411f0e30(fSpeed, 1.0f + FUN_1411e1110(FUN_1416561a0(pc), 0xae));
+    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xae));
 }
 MS2_REPLACE_METHOD(0x1417071d0, Ridee, FUN_1417071d0, 146, 0x045C94C9);
 
 // @0x141707270
 void Ridee::FUN_141707270()
 {
-    m_controller.FUN_1417b7450();
+    ((StatePcGuideObjectController*)&m_controller)->FUN_1417b7450();
     m_nDE0 = 0;
 }
 MS2_REPLACE_METHOD(0x141707270, Ridee, FUN_141707270, 48, 0x05F57870);
@@ -1148,7 +1153,7 @@ MS2_REPLACE_METHOD(0x141707750, Ridee, GetData, 67, 0x6F354F30);
 // @0x1417077a0
 MS2Ptr<Unk_PCBaseComp_a58> Ridee::vfunc_80()
 {
-    if (((Unk_AvModeSvc*)(Unk_RideeGameMode*)(FUN_1409f7c90()))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
+    if (((Unk_AvModeSvc*)(FUN_1409f7c90()))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (!reinterpret_cast<Unk_RideeOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowHpBar)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
@@ -1189,7 +1194,7 @@ void Ridee::vfunc_53(float f)
     {
         if (m_spShadow->FUN_141534300())
         {
-            if (NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410()))
+            if (NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())))
                 pRoot->UpdateEffects();
         }
     }

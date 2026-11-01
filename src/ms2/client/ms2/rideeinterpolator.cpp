@@ -17,9 +17,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 
 // ---- out-of-unit callees (all unit-local views) ----
-class Unk_RiMain { };
 class Unk_RiObj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual bool vfunc_5(int nId, __int64* pOut); };
-__int64 FUN_141bd1200(Unk_RiMain* p, int nObjectId);            // find the object by id
 __int64 FUN_141020ad0(__int64 pObject);                         // the rider's body component (vfunc 5, id 0x6200013)
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                    // the scene root of an entity
 void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut);    // euler angles (degrees) to a rotation matrix
@@ -51,7 +49,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
 {
     if (m_nObjectId == 0)
         return false;
-    PCBase* pBody = (PCBase*)FUN_141020ad0(FUN_141bd1200(reinterpret_cast<Unk_RiMain*>(WorldService::GetInstance()), m_nObjectId));
+    PCBase* pBody = (PCBase*)FUN_141020ad0(reinterpret_cast<__int64>(WorldService::GetInstance()->FUN_141bd1200(m_nObjectId)));
     if (pBody == 0)
         return false;
     efd::SmartPointer<Ridee> spRidee(pBody->FUN_1416764a0());

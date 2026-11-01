@@ -24,10 +24,9 @@
 CReservedWordTable* FUN_1403b4750();
 
 // The client constants (singleton): the reward icons.
-class Unk_CbIcons
-{
+class CommonResource { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> GetPath(int); }; class Unk_CbIcons : public CommonResource {
 public:
-    CString FUN_140cca050(int nKind);                           // skill point icon
+
     char m_pad_000[0x1d0];
     CString m_strStatIcon;                                      // +0x1d0
 };
@@ -120,7 +119,7 @@ void UIChapterBook::OnLoadComplete()
                 else if (reward.m_nType == 3)
                 {
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->FUN_140cca050(reward.m_nKind));
+                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->GetPath(reward.m_nKind));
                     CStringW strKey(L"s_chapterbook_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_achieve_reward_skill_point_sub_1";

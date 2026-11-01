@@ -121,6 +121,11 @@ extern Unk_Table g_unkTable;                // 0x143ab2fc0
 struct Unk_Pos { Unk_Pos(); float m_0; float m_4; float m_8; };
 class Unk_PartyInfo { public: int FUN_140f48d40(); };
 class Unk_Mode : public Unk_ActionKeyManager { };
+class PCBase   // C3: member view for 0x14166c930
+{
+public:
+    int FUN_14166c930();                                    // 0x14166c930 current state id
+};
 class Unk_141bd0cc0
 {
 public:
@@ -214,7 +219,6 @@ public:
     virtual MS2Ptr<Unk_PartyInfo> vfunc_87();                      // 87
     bool FUN_140b7f400();
     Unk_Mode* FUN_140a7b810();
-    int FUN_14166c930();
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
@@ -269,7 +273,7 @@ void UICoupleDanceEventDialog::vfunc_67()
 {
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
-        if (pPlayer->FUN_14166c930() == 0x3b)
+        if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() == 0x3b)
             pPlayer->vfunc_59(1, 0, 0, 0);
     }
     UIDialog::vfunc_67();
@@ -401,7 +405,7 @@ void UICoupleDanceEventDialog::FUN_140bfd5e0()
     ASArray items(2);
     for (size_t i = 0; i < pEvent->m_38.size(); i++) {
         ASObj item(2);
-        item.FUN_1407cba60("binding", m_180.FUN_140d43310(pEvent->m_38[i].begin()->m_20, (&pEvent->m_38[i].begin()->m_18)->vfunc_1(),
+        item.FUN_1407cba60("binding", m_180.BindNewItem(pEvent->m_38[i].begin()->m_20, (&pEvent->m_38[i].begin()->m_18)->vfunc_1(),
                                                           pEvent->m_38[i].begin()->m_24));
         if (i >= states.size()) {
             item.FUN_1407cbbe0("received", false);

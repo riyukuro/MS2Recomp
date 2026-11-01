@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/filepreload_1.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116dd30
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -46,7 +47,6 @@ class Unk_LgPreload
 public:
     void SetCallback(LgProgressCallback kCallback);   // set the progress callback (by value: the callee destroys it)
     void FUN_141ad0320();                               // clear it
-    int FUN_141210c60();                                // the preload is finished
     char m_pad_00[0x20];
     LgProgressCallback m_callback;                      // +0x20
 };
@@ -67,8 +67,6 @@ public:
 class Unk_LgUIMgr                                       // the UI service (FUN_1403ed2b0)
 {
 public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);          // looks a UI up by id
-    void FUN_141adbe00(float f, int n);
 };
 class Unk_LgWorld;                                      // FUN_1403ed2d0
 class Unk_LgHost;                                       // FUN_14025e7a0
@@ -98,19 +96,11 @@ public:
     class GFxMovie* FUN_1422b01a0(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
-bool FUN_14116dd30(Unk_LgInput* p, int a, int b, int c);
-class CInputKeyHandler   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_14116d840();
-    bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d9c0
-};
-int FUN_141210c60(Unk_LgPreload* p);
 int FUN_1406c34c0();
 CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
 void* FUN_140d86260();   // C3: was FUN_140d86260
-Unk_LgNet* FUN_140714f90();
+class CNetworkService* FUN_140714f90();
 Unk_LgState* FUN_140aa6d30();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
@@ -125,7 +115,6 @@ public:
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern unsigned char DAT_143ab284b;
 extern int DAT_143ab0248;
-extern const NiRTTI DAT_143ad6328;
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);   // Value = n (Int)
 
 static int FUN_141acfd00();
@@ -164,7 +153,7 @@ void UISceneLogin::vfunc_48(int n)
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
-    FUN_1403ed2b0()->FUN_141adbe00(1.0f, 0);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adbe00(1.0f, 0);
     UIDialog* pDlg = FUN_140c300a0(0x4ef0);
     if (pDlg != 0)
     {
@@ -207,7 +196,7 @@ void UISceneLogin::vfunc_15()
         FUN_141acfc70();
     if (m_nShown != 0)
         return;
-    if (FUN_141210c60(reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())) != 0)
+    if (TSingleton<CFilePreload>::GetInstance()->FUN_141210c60() != 0)
         FUN_141acf860(0x3ffe);
     if (m_nProgress == 0xffff)
     {
@@ -215,7 +204,7 @@ void UISceneLogin::vfunc_15()
         {
             if (FUN_140714f90() != 0)
             {
-                if (FUN_140714f90()->FUN_1415384e0() == 0 && DAT_143ab284b == 0)
+                if (reinterpret_cast<Unk_LgNet*>(FUN_140714f90())->FUN_1415384e0() == 0 && DAT_143ab284b == 0)
                     FUN_141acf420();
             }
         }
@@ -278,9 +267,9 @@ void UISceneLogin::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     if (((class WorldService*)(class Unk_LgWorld*)(((class Unk_LgWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    if (FUN_141210c60(reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())) != 0)
+    if (TSingleton<CFilePreload>::GetInstance()->FUN_141210c60() != 0)
         FUN_141acf860(0x3ffe);
-    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -381,10 +370,10 @@ void UISceneLogin::FUN_141acf700(unsigned int nBits)
 void UISceneLogin::FUN_141acf7c0()
 {
     ShowTitle();
-    GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
     if (pBg != 0)
     {
-        if (pBg->FUN_14127ab60(FUN_14016a5c0("endTitleAni", 0)) != 0)
+        if (pBg->GotoAndPlay(FUN_14016a5c0("endTitleAni", 0)) != 0)
             FUN_141acf700(0x4000);
     }
     m_nTitleDone = 1;
@@ -493,7 +482,7 @@ void UISceneLogin::FUN_141acfc70()
 void UISceneLogin::OnEndPopdown()
 {
     if (FUN_141acfb40() == 0)
-        FUN_140714f90()->FUN_1415382c0();
+        reinterpret_cast<Unk_LgNet*>(FUN_140714f90())->FUN_1415382c0();
 }
 
 // @0x141acfd00
@@ -501,16 +490,16 @@ static int FUN_141acfd00()
 {
     if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LgPlayerState*)FUN_1409331f0()))) == 0)
         return reinterpret_cast<CInputKeyHandler*>(((class Unk_LgInput*)FUN_14025e7c0()))->FUN_14116d9c0(0x75, 0, 0);
-    return FUN_14116dd30(((class Unk_LgInput*)FUN_14025e7c0()), 0x493ef, 0, 0);
+    return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dd30(0x493ef, 0, 0);
 }
 
 // @0x141acfe40
 static UILoginDialog* FUN_141acfe40()
 {
-    Unk_LgUIMgr* pMgr = FUN_1403ed2b0();
+    CUIService* pMgr = reinterpret_cast<CUIService*>(FUN_1403ed2b0());
     if (pMgr == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pMgr->FUN_141adcea0(FUN_141ad0390());
+    MS2Ptr<UIObject> spUI = pMgr->FindObject((eUIClassID)FUN_141ad0390());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UILoginDialog*>((UIObject*)spUI);
@@ -519,10 +508,10 @@ static UILoginDialog* FUN_141acfe40()
 // @0x141acfef0
 static UIRegionListDialog* FUN_141acfef0()
 {
-    Unk_LgUIMgr* pMgr = FUN_1403ed2b0();
+    CUIService* pMgr = reinterpret_cast<CUIService*>(FUN_1403ed2b0());
     if (pMgr == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pMgr->FUN_141adcea0(FUN_141ad03a0());
+    MS2Ptr<UIObject> spUI = pMgr->FindObject((eUIClassID)FUN_141ad03a0());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UIRegionListDialog*>((UIObject*)spUI);

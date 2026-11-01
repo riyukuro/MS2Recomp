@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x14144df10-0x14144e400 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\lightunaffectednode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <NiShadowGenerator.h>
 #include "lightunaffectednode.h"
 #include "hook/ms2hook.h"
 
@@ -55,7 +56,7 @@ LightUnaffectedNode::~LightUnaffectedNode()
     void* pos1 = FUN_140afe720(list1);
     while (pos1 != 0) {
         Unk_LUNLight* light1 = FUN_140afe6c0(FUN_140afe730(list1, &pos1));
-        light1->FUN_141176660(true);
+        reinterpret_cast<NiShadowGenerator*>(light1)->SetRenderViewsDirty(true);
     }
     if (m_bTemplate == false) {
         Unk_LUNList* list2 = FUN_140afe770();

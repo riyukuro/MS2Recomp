@@ -49,10 +49,10 @@ public:
     void FUN_140d60a80(MS2Ptr<Unk_AdMarketItem> spItem, int nBuyType, int nPayType, int nFlag);
     void FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int nBuyType, int nFlag);   // from a bill row
     void FUN_140d60d60(int nA, int nB);                             // 0x140d60d60 packet +0x40 / +0x44
-    int FUN_140d60ef0();                                            // 0x140d60ef0 the basket line index
+    int GetBasketIndex();                                            // 0x140d60ef0 the basket line index
     void FUN_140d60d10(int nValue);                                 // 0x140d60d10 packet +0x34
-    void FUN_140d60dd0(const CStringW& strReceiver, const CStringW& strMessage);    // 0x140d60dd0 a gift
-    void FUN_140d60e70(int nPayType);                               // 0x140d60e70
+    void SetGift(const CStringW& strReceiver, const CStringW& strMessage);    // 0x140d60dd0 a gift
+    void SetPayType(int nPayType);                               // 0x140d60e70
     void FUN_140d60ea0(const int& nValue);                          // 0x140d60ea0 packet +0x48
     CStringW vfunc_1() override;                                    //  1 0x140d60f40
     int vfunc_3() override;                                         //  3 0x140d611f0

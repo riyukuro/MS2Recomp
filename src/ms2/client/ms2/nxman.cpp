@@ -14,6 +14,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/cwinhttpclient.h"
+#include "ms2/client/ms2/rawstring.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -86,7 +87,6 @@ struct Unk_PlatformErrorTable
     void* m_pad[9];
     Unk_PlatformErrorTable() { FUN_140c79890(this); }
     ~Unk_PlatformErrorTable() { FUN_140c79b50(this); }
-    CStringW FUN_140c7a360(const int& nIndex);
 };
 
 // Stage settings read from .\anysetting.ini / the platform helpers.
@@ -123,17 +123,17 @@ CNXMan::~CNXMan()
 unsigned CNXMan::FUN_14160d820()
 {
     Unk_PlatformErrorTable kErrors;
-    if (FUN_14160e630() == 0)
+    if (LoadAnySetting() == 0)
     {
         DAT_143ac2fd0 = 0x44d;
-        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
         return 0;
     }
     FUN_1415cb420(FUN_1415fa260());
     if (FUN_1415c4540(FUN_1415fa1b0(), m_0c, m_10, 0, 0) == 0)
     {
         DAT_143ac2fd0 = 0x44e;
-        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
         return 0;
     }
     unsigned uResult = 1;
@@ -141,7 +141,7 @@ unsigned CNXMan::FUN_14160d820()
     {
         uResult = 0;
         DAT_143ac2fd0 = 0x44f;
-        g_143ac2fe0 = kErrors.FUN_140c7a360(2);
+        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
     }
     FUN_1415ca030("MapleStory2", (LPCSTR)m_str18, (LPCSTR)g_strSid);
     return uResult;
@@ -150,7 +150,7 @@ unsigned CNXMan::FUN_14160d820()
 // @0x14160da80
 void CNXMan::FUN_14160da80()
 {
-    FUN_14160dd20();
+    Logout();
     FUN_14160db10();
     FUN_1415cb430(FUN_1415fa260());
 }
@@ -200,7 +200,7 @@ int CNXMan::FUN_14160db80()
 }
 
 // @0x14160dd20
-void CNXMan::FUN_14160dd20()
+void CNXMan::Logout()
 {
     if (m_30 != 0)
         FUN_1415c4a30(FUN_1415fa1b0());
@@ -326,11 +326,11 @@ int CNXMan::FUN_14160e5f0()
 }
 
 // @0x14160e630
-int CNXMan::FUN_14160e630()
+int CNXMan::LoadAnySetting()
 {
     char szUgc[0x104];
     memset(szUgc, 0, sizeof(szUgc));
-    CString strUgcDefault = FUN_14160eb70();
+    CString strUgcDefault = GetDefaultUgcUrl();
     GetPrivateProfileStringA("Stage", "ugc", (LPCSTR)strUgcDefault, szUgc, 0x104, ".\\anysetting.ini");
     m_60 = FUN_14016a730(szUgc, 0);
     int nGameCodeDefault = FUN_14160eb40(this);
@@ -340,7 +340,7 @@ int CNXMan::FUN_14160e630()
     {
         char szIp[0x104];
         memset(szIp, 0, sizeof(szIp));
-        CString strIpDefault = FUN_14160ebf0();
+        CString strIpDefault = GetLoginServerIp();
         GetPrivateProfileStringA("Stage", "cip", (LPCSTR)strIpDefault, szIp, 0x104, ".\\anysetting.ini");
         int nPortDefault = FUN_14160ecd0(this);
         int nPort = GetPrivateProfileIntA("Stage", "cport", nPortDefault, ".\\anysetting.ini");
@@ -379,7 +379,7 @@ void CNXMan::SetCommandLine()
 }
 
 // @0x14160e9e0
-CString CNXMan::FUN_14160e9e0(CString strHost)
+CString CNXMan::ResolveHostIp(CString strHost)
 {
     WSADATA kData;
     WSAStartup(0x202, &kData);
@@ -400,7 +400,7 @@ int FUN_14160eb40(void* p)
 }
 
 // @0x14160eb70
-CString CNXMan::FUN_14160eb70()
+CString CNXMan::GetDefaultUgcUrl()
 {
     CString strHost("");
     strHost = "ugc.game.maplestory2.nexon.com";
@@ -408,10 +408,10 @@ CString CNXMan::FUN_14160eb70()
 }
 
 // @0x14160ebf0
-CString CNXMan::FUN_14160ebf0()
+CString CNXMan::GetLoginServerIp()
 {
     CString strHost("");
-    strHost = FUN_14160e9e0("login.game.maplestory2.nexon.com");
+    strHost = ResolveHostIp("login.game.maplestory2.nexon.com");
     return strHost;
 }
 
@@ -431,29 +431,29 @@ CStringW FUN_14160ed00(int nErrorCode)
     CStringW strResult(L"");
     switch (nErrorCode)
     {
-    case 0x4e22: strResult = kErrors.FUN_140c7a360(0x5); break;
-    case 0x4e23: strResult = kErrors.FUN_140c7a360(0x6); break;
-    case 0x4e27: strResult = kErrors.FUN_140c7a360(0x7); break;
-    case 0x4e28: strResult = kErrors.FUN_140c7a360(0x8); break;
-    case 0x4e2a: strResult = kErrors.FUN_140c7a360(0x9); break;
-    case 0x4e2e: strResult = kErrors.FUN_140c7a360(0x17); break;
-    case 0x4e39: strResult = kErrors.FUN_140c7a360(0xa); break;
-    case 0x4e3a: strResult = kErrors.FUN_140c7a360(0xb); break;
-    case 0x4e3c: strResult = kErrors.FUN_140c7a360(0xc); break;
-    case 0x4e3f: strResult = kErrors.FUN_140c7a360(0xd); break;
-    case 0x4e44: strResult = kErrors.FUN_140c7a360(0xe); break;
-    case 0x4e4f: strResult = kErrors.FUN_140c7a360(0xf); break;
-    case 0x4e54: strResult = kErrors.FUN_140c7a360(0x10); break;
-    case 0x4e5a: strResult = kErrors.FUN_140c7a360(0x11); break;
-    case 0x4e5d: strResult = kErrors.FUN_140c7a360(0x12); break;
-    case 0x4e5f: strResult = kErrors.FUN_140c7a360(0x13); break;
-    case 0x4e64: strResult = kErrors.FUN_140c7a360(0x14); break;
-    case 0x4e65: strResult = kErrors.FUN_140c7a360(0x15); break;
-    case 0x4e32: strResult = kErrors.FUN_140c7a360(0x16); break;
+    case 0x4e22: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x5); break;
+    case 0x4e23: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x6); break;
+    case 0x4e27: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x7); break;
+    case 0x4e28: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x8); break;
+    case 0x4e2a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x9); break;
+    case 0x4e2e: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x17); break;
+    case 0x4e39: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xa); break;
+    case 0x4e3a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xb); break;
+    case 0x4e3c: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xc); break;
+    case 0x4e3f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xd); break;
+    case 0x4e44: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xe); break;
+    case 0x4e4f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xf); break;
+    case 0x4e54: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x10); break;
+    case 0x4e5a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x11); break;
+    case 0x4e5d: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x12); break;
+    case 0x4e5f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x13); break;
+    case 0x4e64: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x14); break;
+    case 0x4e65: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x15); break;
+    case 0x4e32: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x16); break;
     }
     if (strResult.IsEmpty())
     {
-        strResult = FUN_14160f680(kErrors.FUN_140c7a360(0x18), &nErrorCode);
+        strResult = FUN_14160f680(reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x18), &nErrorCode);
     }
     return strResult;
 }

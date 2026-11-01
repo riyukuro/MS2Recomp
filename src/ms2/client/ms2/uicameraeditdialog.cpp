@@ -142,10 +142,9 @@ public:
     Unk_CamCursorPtr FUN_1422b0370(int nSlot);                      // cursor widget
 };
 Unk_CamInput* FUN_14025e7a0();
+class PC;   // C3: completed by fittingdollpc.h further down; efd::DynamicCast<PC, GameObject> instantiates at the end of the TU
 
 
-// Game object -> player (0 if it is not one).
-PCBase* FUN_14099eef0(GameObject* pObject);
 
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 
@@ -358,7 +357,7 @@ void UICameraEditDialog::vfunc_38(void* p, float x, float y)
         if (360.0f < vRotated.z)
             vRotated.z = vRotated.z - 360.0f;
         pTarget->vfunc_21(reinterpret_cast<const efd::Point3&>(vRotated));
-        PCBase* pPlayer = FUN_14099eef0(pTarget);
+        PCBase* pPlayer = reinterpret_cast<PCBase*>(efd::DynamicCast<PC, GameObject>(pTarget));
         if (pPlayer != 0)
             pPlayer->SetTargetYaw(vRotated.z);
     }
@@ -544,7 +543,7 @@ void UICameraEditDialog::FUN_1418de980()
         if (WorldService::GetInstance()->FUN_141bd0dd0(&vPosition, &vDirection) == 0)
             return;
         pTarget->vfunc_21(*reinterpret_cast<efd::Point3*>(&vDirection));
-        PCBase* pPlayer = FUN_14099eef0(pTarget);
+        PCBase* pPlayer = reinterpret_cast<PCBase*>(efd::DynamicCast<PC, GameObject>(pTarget));
         if (pPlayer != 0)
             pPlayer->SetTargetYaw(vDirection.z);
     }
@@ -636,16 +635,16 @@ void UICartoonDialog::vfunc_67()
     m_nBookId = 0;
     m_2c = 0x19;
     m_e0 = 4;
-    FUN_1409331f0()->FUN_14142e770(0x7f);
-    FUN_1409331f0()->FUN_14142e770(0x7a);
+    FUN_1409331f0()->RemoveShortKey(0x7f);
+    FUN_1409331f0()->RemoveShortKey(0x7a);
 }
 
 // @0x1418df790
 void UICartoonDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_1409331f0()->FUN_14142e730(0x7f);
-    FUN_1409331f0()->FUN_14142e730(0x7a);
+    FUN_1409331f0()->AddShortKey(0x7f);
+    FUN_1409331f0()->AddShortKey(0x7a);
     FUN_1418dfd50();
 }
 

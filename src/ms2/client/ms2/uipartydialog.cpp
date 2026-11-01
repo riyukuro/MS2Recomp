@@ -224,7 +224,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_PdPopupMenu;                                                  // UIPopUpMenu (below) as seen by the lookup
 class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 struct Unk_PdBuddyLevel { int FUN_1401cc210(); };                        // CBuddy's level getter as UIPopUpMenu reads it: the zero-extended 32-bit result
-class Unk_PdClubManager : public CClubClientManager { public: void FUN_140b15c10(CStringW strName); };
+class Unk_PdClubManager : public CClubClientManager { public: };
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class Unk_PdNametagFlags { public: char m_00[0x30]; bool m_30; };       // m_30: show the returning-user mark
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
@@ -259,7 +259,7 @@ CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute,
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat& kChat);                            // post a chat record
-class Unk_PdMainSystem : public CMainSystem { public: unsigned int FUN_141473460();};   // CMainSystem: draw count, fps
+class Unk_PdMainSystem : public CMainSystem { public: };   // CMainSystem: draw count, fps
 extern const wchar_t DAT_142fd11d4[];                                   // L","
 extern const char DAT_142fd1144[];                                      // "x"
 extern const char DAT_142fd116c[];                                      // "y"
@@ -831,7 +831,7 @@ void UIPartyDialog::FUN_141a77ab0(const Scaleform::GFx::FunctionHandler::Params&
 // @0x141a77ae0
 void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
     {
         if (((class Unk_PdClubManager*)FUN_140e0d900())->IsClubLimitReached() == 1)
         {
@@ -1132,7 +1132,7 @@ void UIPartyDialog::UpdateCreateClubButton()
 {
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
     {
-        if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+        if (TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
             m_createClub->vfunc_3(1);
         else
             m_createClub->vfunc_3(0);
@@ -1147,7 +1147,7 @@ void UIPartyDialog::UpdateCreateClubButton()
 void UIPartyDialog::UpdateGiveUpDungeonButton()
 {
     RoomStageDungeonCli* pStage = FUN_140931510()->GetStage().get();
-    if (pStage != 0 && pStage->IsStageFlagSet() && TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())
+    if (pStage != 0 && pStage->IsStageFlagSet() && TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
     {
         m_giveUpDungeon->vfunc_4(true);
         return;
@@ -3143,7 +3143,7 @@ void UIPopUpMenu::SendCharacterInfo()
     {
         if (m_a8 == 0 || m_100 != 0)
             return;
-        int nState = pInfo->FUN_14132c080(m_a8);
+        int nState = pInfo->TryBeginRequest(m_a8);
         if (nState == 1)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_char_info_already_request"), 0, 0, CStringW(L""));

@@ -57,7 +57,7 @@ public:
     char const* Attribute(char const*) const;
 };
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
-{
+{ public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
@@ -69,7 +69,7 @@ class CFileSystem;
 class Unk_SingletonObj1;
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); public:
+class Unk_140165cf0 : public Unk_XmlNode { public:
     class Unk_140165cf0* NextSiblingElement();   // C3: was free FUN_1403f0510
 };
 class Unk_140166420 : public CFileSystem { };

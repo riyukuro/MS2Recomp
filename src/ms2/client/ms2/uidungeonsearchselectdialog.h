@@ -15,7 +15,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class Unk_SdRadio;
-class Unk_SdButton;
+class ASButton;
 class ASScrollingList;
 class Unk_SdRow;
 class Unk_SdCheck;
@@ -31,10 +31,10 @@ public:
     virtual int vfunc_48() { return 0x4f22; }                   // 48 0x140e290a0
 
     // Opens the dialog for one page: rooms = the dungeon ids of its group, pSelected = the ids ticked so far.
-    void FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);   // 0x140e27ed0
-    void FUN_140e27f80();                                       // title and the "recommended" radio
+    void InitSelection(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);   // 0x140e27ed0
+    void InitTitleAndRadio();                                       // title and the "recommended" radio
     void UpdateListCount();                                       // the list's row count
-    void FUN_140e28170(const Scaleform::GFx::FunctionHandler::Params& params);   // the radio was clicked: select all
+    void OnSelectAllClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the radio was clicked: select all
     void FUN_140e281f0(const Scaleform::GFx::FunctionHandler::Params& params);   // OK
     void FUN_140e28280(const Scaleform::GFx::FunctionHandler::Params& params);   // a row was filled
     void FUN_140e286a0(const Scaleform::GFx::FunctionHandler::Params& params);   // a row's tooltip
@@ -45,7 +45,7 @@ private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<Unk_SdRadio> m_radio;                                // +0x180 "m_radioRecommend"
     MS2Ptr<ASMovieClip> m_page;                                 // +0x190 "m_customPage"
-    MS2Ptr<Unk_SdButton> m_okButton;                            // +0x1a0 "m_okButton"
+    MS2Ptr<ASButton> m_okButton;                                // +0x1a0 "m_okButton"
     MS2Ptr<ASScrollingList> m_list;                                  // +0x1b0 "m_customList"
     std::vector<MS2Ptr<Unk_SdRow> > m_rows;                     // +0x1c0 "m_listItem1".."m_listItem11"
     std::vector<MS2Ptr<Unk_SdCheck> > m_checks;                 // +0x1d8 the rows' "m_checkBox"

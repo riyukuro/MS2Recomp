@@ -10,6 +10,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/asbutton.h"
 
 class Unk_LoginNoticeManager
 {

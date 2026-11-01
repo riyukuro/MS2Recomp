@@ -27,10 +27,9 @@ public:
 Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invokers on the tooltip's movie clip (instances of the AScript::Invoke templates).
-class Unk_TooltipMovie
-{
+class Unk_CbScript { public: class Scaleform::GFx::Value FUN_140e0a8c0(char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, int); }; class Unk_TooltipMovie : public Unk_CbScript {
 public:
-    Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW a1, int a2);
+
     Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
 };
 

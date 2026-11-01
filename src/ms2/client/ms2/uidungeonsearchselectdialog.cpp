@@ -43,20 +43,13 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 // The radio ("recommend") and the check boxes of the rows.
 class Unk_SdToggle : public ASButton
 {
-public:
-    void FUN_1422cdf20(bool bVisible);                           // show
-    unsigned char FUN_1422ce0e0();                              // is checked
-    void FUN_1422ce320(const ParamsDelegate& onClick, void* pUserData);
 };
 class Unk_SdRadio : public Unk_SdToggle {};
 class Unk_SdCheck : public Unk_SdToggle {};
-class Unk_SdButton : public ASDisplayObject {};
 // A row of the list.
-class Unk_SdRow : public ASDisplayObject
+class Unk_SdRow : public ASItemRendererBase
 {
 public:
-    void FUN_1422c6640(bool bVisible);
-    void FUN_1422e1f50(ParamsDelegate onClick, void* pUserData);
     template <class T> MS2Ptr<T> FUN_140c12010(const CString& strName, MS2Ptr<T>& outChild);   // bind a check box
 };
 
@@ -68,7 +61,7 @@ void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ac70(int);
+    bool CanEnterDungeonRoom(int);
 };
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
@@ -155,7 +148,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
     FUN_141925ec0("m_closeButton");
     SD_BIND(m_30->FUN_140bbe640<Unk_SdRadio>("m_radioRecommend", m_radio), m_radio, 0x27);
     SD_BIND(m_30->FUN_140bc71c0<ASMovieClip>("m_customPage", m_page), m_page, 0x28);
-    SD_BIND(m_30->FUN_140bbe640<Unk_SdButton>("m_okButton", m_okButton), m_okButton, 0x29);
+    SD_BIND(m_30->FUN_140bbe640<ASButton>("m_okButton", m_okButton), m_okButton, 0x29);
     SD_BIND(m_page->FUN_140bc7340<ASScrollingList>("m_customList", m_list), m_list, 0x2b);
     if (!FUN_140c123f0((*m_page).FUN_1422bb890(), "m_listItem", 11, m_rows, 1))
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
@@ -163,7 +156,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
     unsigned nZero = 0;
     m_roomOfRow.resize(m_rows.size(), nZero);
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e281f0), 0);
-    m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28170), 0);
+    m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::OnSelectAllClick), 0);
     {
         MS2Ptr<Unk_SdCheck> spNone(0);
         m_checks.resize(m_rows.size(), spNone);
@@ -176,7 +169,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
         }
     }
     TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)m_nPage, m_rooms);
-    FUN_140e27f80();
+    InitTitleAndRadio();
 }
 
 // @0x140e27df0
@@ -195,7 +188,7 @@ void UIDungeonSearchSelectDialog::vfunc_26()
 }
 
 // @0x140e27ed0
-void UIDungeonSearchSelectDialog::FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected)
+void UIDungeonSearchSelectDialog::InitSelection(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected)
 {
     m_nPage = nPage;
     m_allRooms.swap(rooms);
@@ -207,7 +200,7 @@ void UIDungeonSearchSelectDialog::FUN_140e27ed0(int nPage, std::set<unsigned>& r
 }
 
 // @0x140e27f80
-void UIDungeonSearchSelectDialog::FUN_140e27f80()
+void UIDungeonSearchSelectDialog::InitTitleAndRadio()
 {
     if (m_nPage == 1)
         FUN_140cfee80(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_normal");
@@ -225,7 +218,7 @@ void UIDungeonSearchSelectDialog::UpdateListCount()
 }
 
 // @0x140e28170
-void UIDungeonSearchSelectDialog::FUN_140e28170(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchSelectDialog::OnSelectAllClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_bAll)
         return;
@@ -242,7 +235,7 @@ void UIDungeonSearchSelectDialog::FUN_140e281f0(const Scaleform::GFx::FunctionHa
     if (pDialog != 0) {
         if (m_bAll)
             m_selected.clear();
-        pDialog->FUN_140e1ba80(m_nPage, m_selected);
+        pDialog->SetPageRooms(m_nPage, m_selected);
     }
     vfunc_67();
 }
@@ -266,7 +259,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
         return;
     }
     {
-        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ac70(m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)

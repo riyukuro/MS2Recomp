@@ -501,8 +501,8 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
             return;
         spBuy->FUN_140d60a80(spItem, nBuyType, FUN_14069c3e0(nPriceKind), 1);
         spBuy->FUN_140d60d60(0, 1);
-        ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
-        ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d58650(nBuyType);
+        ((class Unk_LpWorld*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
+        ((class Unk_LpWorld*)FUN_140939a00())->StartPendingPurchases(nBuyType);
     }
     else
     {

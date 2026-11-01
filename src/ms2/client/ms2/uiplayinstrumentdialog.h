@@ -52,19 +52,19 @@ public:
     void FUN_14100c200(int nPage);                                          // 0x14100c200 the play page / score page tab
     void FUN_14100c2c0();                                                   // 0x14100c2c0 the mastery bar
     int OnPlayNote();                                                    // 0x14100c750 start the first score
-    int FUN_14100c890();                                                    // 0x14100c890 the selected tab
+    int GetSelectedTabIndex();                                                    // 0x14100c890 the selected tab
     bool FUN_14100c8f0();                                                   // 0x14100c8f0 the score page is shown
     void FUN_14100c910(MS2Ptr<CItem> spItem);                               // 0x14100c910 put a score into a free slot
     void FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem);                   // 0x14100ca90 set one score slot
     void FUN_14100d260(int nStart, int nEnd);                               // 0x14100d260 a score starts to play
     void FUN_14100d600();                                                   // 0x14100d600 a score ended
     bool HasAnyScore();                                                   // 0x14100d8c0 any score chosen
-    void FUN_14100d920();                                                   // 0x14100d920 auto start
+    void TickAutoPlay();                                                   // 0x14100d920 auto start
     int GetAutoPlay();                                                    // 0x14100d9f0 m_nAutoPlay
     void FUN_14100da10();                                                   // 0x14100da10 the play timer text
     void FUN_14100e060();                                                   // 0x14100e060 bind the key buttons
-    void FUN_14100e880(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex);   // 0x14100e880
-    void FUN_14100e910();                                                   // 0x14100e910 apply the octave
+    void MapKeyButton(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex);   // 0x14100e880
+    void ClampAndApplyOctave();                                                   // 0x14100e910 apply the octave
     void FUN_14100e9a0(int nMode);                                          // 0x14100e9a0 the play / stop buttons
     int GetMode();                                                    // inline: m_nMode (instrumentmanager.cpp)
     void SetInstrument(int nInstrument);                                    // inline: set m_nInstrument (instrumentmanager.cpp)

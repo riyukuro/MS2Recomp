@@ -5,44 +5,18 @@
 #pragma once
 
 #include <afx.h>
+#include <atlcoll.h>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/commonfiles/scriptptr.h"
 
-// The distractor texts of the talk script: pointee of the 16-byte handle at CCinematicContent+0x98
-// (ctor 0x14078edb0 stores [+8] = 0). The texts are in an array at +0x18 of the pointee.
-struct CCinematicDistractor
-{
-    CStringW m_text;                        // +0x00 shown text
-    CStringA m_script;                      // +0x08 (only its length is read)
-};
-
-class CCinematicDistractorArray
+// The choices of a talk page: pointee of the 16-byte handle at CCinematicContent+0x98 (ctor 0x14078edb0 stores [+8] = 0).
+class CCinematicDistractor : public CPtred
 {
 public:
-    size_t FUN_14078fad0() const;               // GetCount
-    CCinematicDistractor& FUN_14078f310(size_t i);   // checked GetAt
-private:
-    void* m_data; size_t m_count; size_t m_max; size_t m_grow;
+    ATL::CAtlArray<Unk_ScriptChoice> m_choices;     // +0x18
 };
-MS2_CHECK_SIZE(CCinematicDistractorArray, 0x20);
-
-class CCinematicDistractorTexts : public CPtred
-{
-public:
-    CCinematicDistractorArray m_texts;      // +0x18
-};
-
-class CCinematicDistractorHandle
-{
-public:
-    CCinematicDistractorTexts* FUN_14078f390() const;   // get
-    CCinematicDistractorTexts* FUN_14078f3b0() const;   // operator->
-private:
-    void* m_0;
-    CCinematicDistractorTexts* m_p;         // +0x08
-};
-MS2_CHECK_SIZE(CCinematicDistractorHandle, 0x10);
 
 class CScriptContent : public CPtred
 {
@@ -78,7 +52,7 @@ public:
     CStringA m_screenEffectAction;          // +0x88
     unsigned m_screenEffectValue;           // +0x90
     int m_pad94;
-    CCinematicDistractorHandle m_distractors;   // +0x98
+    Unk_ScriptPtr<CCinematicDistractor> m_distractors;   // +0x98
     void* m_events0; void* m_events8; void* m_events10; void* m_events18;   // +0xa8 CAtlArray (0x20)
 };
 MS2_CHECK_OFFSET(CCinematicContent, m_questId, 0x34);

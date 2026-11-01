@@ -16,11 +16,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/systemmailcontent.h"   // C3: CSystemMailContent::GetMail
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 __int64 GetServerTime();                                                       // current server time
-MS2Ptr<Unk_MailTpl> FUN_140851e50(int id);                                     // mail template by id
 CStringW FUN_14083d340(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 
@@ -645,18 +645,18 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
     m_str68 = packet.ReadUnicodeString();
     if (FUN_140692690(m_nKind))
     {
-        MS2Ptr<Unk_MailTpl> spTpl(0);
+        MS2Ptr<CSystemMailContent> spTpl(0);
         if (m_str50.SpanIncluding(L"0123456789") == m_str50)
         {
             int nTplId = _wtoi(m_str50);
-            spTpl = FUN_140851e50(nTplId);
+            spTpl = CSystemMailContent::GetMail(nTplId);
         }
         if (spTpl.get())
         {
             if (m_str30.IsEmpty())
-                m_str30 = spTpl->m_str38;
-            m_str48 = spTpl->m_str40;
-            m_str50 = spTpl->m_str48;
+                m_str30 = spTpl->m_strSender;
+            m_str48 = spTpl->m_strSubject;
+            m_str50 = spTpl->m_strContent;
             TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str30);
             TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str48);
             TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str50);

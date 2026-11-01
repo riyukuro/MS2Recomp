@@ -139,6 +139,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <algorithm>
 #include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 // ---- unit-local placeholders (names invented) -------------------------------------------------------------------
 
@@ -437,7 +438,6 @@ void FUN_141b070a0(CMsgBoxData* pBox, const char* szName, Scaleform::GFx::Value 
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);    // fmt format (two ints)
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& a);                  // fmt format (one int)
 
-int FUN_141658e60(MyPC* pPlayer);                                       // the player's gender (equip check)
 bool FUN_141b48950(MS2Ptr<CItem> spItem);                               // the item has a preview (fitting) model
 int FUN_1405267d0(CItem* pItem, int nGender);                           // CItem member: the item may be worn by the gender (the exe tests the int result)
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pFirst,
@@ -1222,7 +1222,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             Unequip(args);
         return 1;
     }
-    if (m_spPreview.get() != 0 && m_spPreview->FUN_140d3d580(szMethod, pArgs, nArgs) != 0)
+    if (m_spPreview.get() != 0 && m_spPreview->OnAvatarEvent(szMethod, pArgs, nArgs) != 0)
         return 1;
     return 0;
 }
@@ -1442,7 +1442,7 @@ int UIShopDialog::vfunc_o178_1(void* pAvatar)
     if (AvatarPC* pPc = FUN_140a535c0(static_cast<Unk_ShopAvatarView*>(pAvatar)->vfunc_24())) {
         bool bShow = true;
         if (m_spPreview.get() != 0) {
-            MS2Ptr<CItemData> spData = m_spPreview->FUN_140d3ce10();
+            MS2Ptr<CItemData> spData = m_spPreview->GetPreviewData();
             if ((CItemData*)spData != 0)
                 bShow = FUN_141b487f0(spData);
         }
@@ -1484,7 +1484,7 @@ void UIShopDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, voi
         return;
     m_spPreview->FUN_140d3d0d0(p1, p2, p3, p4);
     if (m_spEquip.get() != 0)
-        m_spEquip->FUN_140e2a670();
+        m_spEquip->UnEquipAll();
     std::vector<MS2Ptr<CItem> > items;
     m_spPreview->GetItems(items);
     for (unsigned __int64 i = 0; i < items.size(); i++)
@@ -1678,7 +1678,7 @@ void UIShopDialog::ReadProducts(CInPacket& packet)
         MS2Ptr<CNpcShopProductCli> spProduct(new CNpcShopProductCli);
         if (spProduct.get())
         {
-            spProduct->FUN_140db61a0(packet, 1);
+            spProduct->ReadPacket(packet, 1);
             spProduct->FUN_140db6db0(i);
             m_products[0].insert(std::pair<const int, MS2Ptr<CNpcShopProductBase> >(spProduct->FUN_140db5e70(), (CNpcShopProductCli*)spProduct));
         }
@@ -1781,7 +1781,7 @@ void UIShopDialog::ReadProductUpdate(CInPacket& packet)
     int nBuyCount = packet.ReadInt32();
     if (MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>(FindProduct(0, nSerial).get()))
     {
-        spProduct->FUN_140db6e30(nBuyCount);
+        spProduct->SetBuyItemCount(nBuyCount);
         UpdateProduct(spProduct);
     }
     Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_UPDATE] : nSerialID = {0}, nBuyCount = {1}", nSerial, nBuyCount);
@@ -1830,7 +1830,7 @@ void UIShopDialog::ReadRepurchaseAdd(CInPacket& packet)
         MS2Ptr<CNpcShopProductCli> spProduct(new CNpcShopProductCli);
         if (spProduct.get())
         {
-            spProduct->FUN_140db61a0(packet, 7);
+            spProduct->ReadPacket(packet, 7);
             spProduct->FUN_140db6db0((int)m_products[1].size());
             m_products[1].insert(std::pair<const int, MS2Ptr<CNpcShopProductBase> >(spProduct->FUN_140db5e70(), (CNpcShopProductCli*)spProduct));
             if (m_bRepurchaseEmpty)
@@ -2465,7 +2465,7 @@ void UIShopDialog::BuyProduct(int nSerial, unsigned nQuantity)
             FUN_140d73aa0(strError, 0, 0, CStringW(L""));
             return;
         }
-        if (!spProduct->FUN_140db8600())
+        if (!spProduct->CheckStarPointEvent())
             return;
         if (!spProduct->FUN_140db8580(1))
             return;
@@ -2628,7 +2628,7 @@ void UIShopDialog::PreviewNormalItem(int nSerial, int bForce)
             Unk_UserProxyItemData* pProxy = spItem->FUN_140527870();
             if (pProxy)
                 ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pProxy))->InitColorsFromPalette((class CItemData*)(spItem->FUN_140527840()));
-            ((class ItemPreviewMgr*)FUN_1409bb9e0())->FUN_140d40120(spItem, 1);
+            ((class ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(spItem, 1);
         }
     }
 }
@@ -2648,7 +2648,7 @@ void UIShopDialog::PreviewMeratItem(int nSerial)
             Unk_UserProxyItemData* pProxy = spPreview->FUN_140527870();
             if (pProxy)
                 ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pProxy))->InitColorsFromPalette((class CItemData*)(spPreview->FUN_140527840()));
-            ((class ItemPreviewMgr*)FUN_1409bb9e0())->FUN_140d40120(spPreview, 1);
+            ((class ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(spPreview, 1);
         }
     }
 }
@@ -2756,7 +2756,7 @@ void UIShopDialog::RefreshCategories()
         }
     }
     if (m_spPreview.get())
-        m_spPreview->FUN_140d3c3c0(items);
+        m_spPreview->InitWithItems(items);
     m_spShop->Invoke("visibleMainItem", items.size() > 0);
 }
 MS2_REPLACE_METHOD(0x141aff1c0, UIShopDialog, RefreshCategories, 1079, 0x3A679381);
@@ -2908,7 +2908,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
     if (data.FUN_1409c3860(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), pMyPC, 0x415) != 0) {
         CStringW strCount = FUN_140719630(FUN_141b04700(m_nGroup, spProduct.operator->()));
         CStringW strRemain;
-        if (0 < spProduct->FUN_140db6ef0()) {
+        if (0 < spProduct->GetLimitCount()) {
             if (0 < spProduct->GetRemainingCount()) {
                 int nRemain = spProduct->GetRemainingCount();
                 strRemain = FUN_14062b4f0(CStringW(L"s_shop_remain_count"), nRemain);
@@ -3458,7 +3458,7 @@ bool UIShopDialog::CanPreviewItem(MS2Ptr<CItem> spItem)
     MyPC* pMyPC = reinterpret_cast<Unk_ShopWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pMyPC == 0)
         return false;
-    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pMyPC)) == 0)
+    if (::FUN_1405267d0(spItem.operator->(), reinterpret_cast<PC*>(pMyPC)->FUN_141658e60()) == 0)
         return false;
     bool bPreview = FUN_141b48950(spItem);
     return bPreview;
@@ -3486,10 +3486,10 @@ void UIShopDialog::PreviewGachaItem(int nSerial)
         bool bShown = false;
         if (!FUN_141b487f0(spData)) {
             if (m_spEquip.get() != 0)
-                m_spEquip->FUN_140e2a670();
-            bShown = m_spPreview->FUN_140d3bc90(spItem) ? true : false;
+                m_spEquip->UnEquipAll();
+            bShown = m_spPreview->InitWithItem(spItem) ? true : false;
         } else {
-            bShown = m_spPreview->FUN_140d3f400(spItem);
+            bShown = m_spPreview->TryOnItem(spItem);
         }
         if (bShown == true)
             AddPreviewIcon(spItem);
@@ -3503,7 +3503,7 @@ void UIShopDialog::ShowMyEquip()
     if (m_spPreview.get())
         m_spPreview->FUN_140d3fa30();
     if (m_spEquip.get())
-        m_spEquip->FUN_140e2a670();
+        m_spEquip->UnEquipAll();
 }
 MS2_REPLACE_METHOD(0x141B04410, UIShopDialog, ShowMyEquip, 116, 0x200522A7);
 
@@ -3511,9 +3511,9 @@ MS2_REPLACE_METHOD(0x141B04410, UIShopDialog, ShowMyEquip, 116, 0x200522A7);
 void UIShopDialog::UnequipAll()
 {
     if (m_spPreview.get())
-        m_spPreview->FUN_140d3f9a0();
+        m_spPreview->ResetAvatarOutfit();
     if (m_spEquip.get())
-        m_spEquip->FUN_140e2a670();
+        m_spEquip->UnEquipAll();
 }
 MS2_REPLACE_METHOD(0x141B04490, UIShopDialog, UnequipAll, 116, 0x6A8548B1);
 

@@ -65,6 +65,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/commonfiles/itemrepackingscrolldata.h"   // C3: CItemRePackingScrollTable::Reload
+#include "uiinventorydialog.h"   // C3: UIInventoryDialog::FUN_141999e00
 
 // ---- unit-local views of exe objects ----
 
@@ -84,13 +86,6 @@ public:
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 // The repacking scroll's row: level range, kind (0 item, 1 pet), the allowed ranks and the limiting item types.
-class Unk_RpArray
-{
-public:
-    unsigned __int64 FUN_140186270();                           // the count
-    unsigned* FUN_140184510(unsigned __int64 nIndex);           // the element
-    char m_pad_00[0x20];
-};
 class Unk_RpRow : public CPtred
 {
 public:
@@ -99,13 +94,12 @@ public:
     unsigned short m_nLevelMin;                                 // +0x20
     unsigned short m_nLevelMax;                                 // +0x22
     char m_pad_24[4];
-    Unk_RpArray m_limits;                                       // +0x28
-    Unk_RpArray m_ranks;                                        // +0x48
+    ATL::CAtlArray<unsigned int> m_limits;                      // +0x28
+    ATL::CAtlArray<unsigned int> m_ranks;                       // +0x48
 };
 class Unk_RpTable
 {
 public:
-    void FUN_14061d530();                                       // refresh
     MS2Ptr<Unk_RpRow> FUN_14061d5b0(unsigned nId);              // the row of a scroll id
 };
 Unk_RpTable* FUN_140f64150();
@@ -116,8 +110,6 @@ struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // C
 extern CStringTable* GetStringTable();
 unsigned __int64 FUN_140718370(const CStringW& value);
 void FUN_140710590(COutPacket&);                                    // send
-class Unk_RpInvDlg { public: void FUN_141999e00(); };
-class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_RpInvDlg* FUN_1405344f0 (calls cast back)
 
 class CMsgBoxData : public CPtred
@@ -134,9 +126,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_141b71910(__int64 nValue);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
-CStringW FUN_140719dc0(const wchar_t* pszFormat, const unsigned short& nA);
-CStringW FUN_140c5ac00(const wchar_t* pszFormat, const unsigned short& nA, const unsigned short& nB);
-CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751b0(const CStringW& text, int nA);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
@@ -150,9 +139,7 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_14151f200();
-class Unk_RpWorld { public: void FUN_1416fb300(const CStringW& text); };
 void FUN_1412751b0(const CStringW& text, int nA);
 class Unk_RpIconTable { public: void FUN_141adc530(int nId); };
 
@@ -232,7 +219,7 @@ CString UIItemRePackingScrollDialog::GetTypeName()
 void UIItemRePackingScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
+    m_strSlot = StringFormat("{0}.slot", GetTypeName());
     FUN_140d42540(m_strSlot, m_nOwner, m_spItem);
     ItemScrollSlot* pSlot = FUN_140f62930(CString(m_strSlot));
     if (pSlot != 0)
@@ -256,12 +243,12 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     CStringW strLimit;
     CStringW strRanks;
     if (spRow->m_nLevelMin == spRow->m_nLevelMax)
-        strLevel = FUN_140719dc0(L"{0}", spRow->m_nLevelMin);
+        strLevel = StringFormat(L"{0}", spRow->m_nLevelMin);
     else
-        strLevel = FUN_140c5ac00(L"{0}~{1}", spRow->m_nLevelMin, spRow->m_nLevelMax);
-    for (unsigned __int64 i = 0; i < spRow->m_ranks.FUN_140186270(); i++)
+        strLevel = StringFormat(L"{0}~{1}", spRow->m_nLevelMin, spRow->m_nLevelMax);
+    for (unsigned __int64 i = 0; i < spRow->m_ranks.GetCount(); i++)
     {
-        unsigned nRank = *spRow->m_ranks.FUN_140184510(i);
+        unsigned nRank = spRow->m_ranks[i];
         CStringW strRank = FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank);
         strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
     }
@@ -271,8 +258,8 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     {
     case 0:
         strDesc = L"s_item_repacking_item_limit_desc";
-        for (unsigned __int64 i = 0; i < spRow->m_limits.FUN_140186270(); i++)
-            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, *spRow->m_limits.FUN_140184510(i)));
+        for (unsigned __int64 i = 0; i < spRow->m_limits.GetCount(); i++)
+            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, spRow->m_limits[i]));
         strLimit.TrimRight(L", ");
         break;
     case 1:
@@ -330,7 +317,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
 // @0x140f61e70
 int UIItemRePackingScrollDialog::vfunc_65()
 {
-    FUN_140f64150()->FUN_14061d530();
+    reinterpret_cast<CItemRePackingScrollTable*>(FUN_140f64150())->Reload();
     return UIDialog::vfunc_65();
 }
 
@@ -352,7 +339,7 @@ int UIItemRePackingScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         int nResult = pMsg->FUN_1422b8a10();
         CStringW strTag = pMsg->FUN_1422b8f40();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"repacking_ok"))
+        if (nResult == 0 && strTag == L"repacking_ok")
         {
             vfunc_67();
             return 1;
@@ -407,7 +394,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     if (!spItem)
         return;
     static_cast<CItem*>(spItem)->FUN_140524eb0(static_cast<CInputStream&>(packet));
-    Unk_RpInvDlg* pInven = reinterpret_cast<Unk_RpInvDlg*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
+    UIInventoryDialog* pInven = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInven != 0)
         pInven->FUN_141999e00();
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0x11, 0x967, this, CStringW(L"repacking_ok")))
@@ -544,7 +531,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         int nNeed = static_cast<CItem*>(spItem)->GetRepackConsumeCount();
         unsigned nScrollId = static_cast<CItem*>(spScroll)->FUN_1405276c0();
         CStringW strDesc = FUN_140f63810(0x966, nScrollId, nNeed);
-        reinterpret_cast<Unk_RpWorld*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb300(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strDesc);
         ASObj obj(2);
         obj.FUN_1407cbb20("itemName", CStringW(strName));
         obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->GetItemUid()));

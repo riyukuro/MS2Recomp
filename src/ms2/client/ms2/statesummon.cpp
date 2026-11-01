@@ -44,6 +44,8 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
+#include "ms2/client/ms2/uihudentity.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -93,16 +95,6 @@ int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x
 
 // The client settings / skill services.
 void* FUN_1409a8b10();                                                     // 0x1409a8b10 the client-settings service
-class Unk_PetClientSettings   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_PetOptFlags* FUN_140b123b0();
-};
-class CGameOption   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_CommunityStateA* FUN_14124ab20();
-};
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 void* FUN_140c8b450(void* pSvc);                                           // 0x140c8b450
 class Unk_SmPetSkills { public: MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nSkillId); };   // 0x140c892c0 (member)
@@ -127,7 +119,6 @@ struct Unk_SmPet
     MS2Ptr<Unk_PetRow> FUN_140b102b0();                                    // 0x140b102b0 CPet: the pet's row (by value)
     PCBase* FUN_140b10320();                                               // 0x140b10320 CPet: the owner
 };
-int FUN_140f48d40(void* pComp);                                            // 0x140f48d40 the component's flag
 
 // The client constants table and its Value<T> accessors.
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -260,7 +251,7 @@ void StateSummon::vfunc_4(StateData* pData)
         BOOL bPreload = TRUE;
         if (FUN_1417b8560() == 0)
         {
-            if (*reinterpret_cast<unsigned char*>(static_cast<char*>(((void*)((class Unk_PetClientSettings*)(void*)(FUN_1409a8b10()))->FUN_140b123b0())) + 0x12) != 0)
+            if (*reinterpret_cast<unsigned char*>(static_cast<char*>((void*)reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0()) + 0x12) != 0)
                 bPreload = FALSE;
         }
         if (bPreload)
@@ -618,7 +609,7 @@ void StateSummonIdle::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     if (m_n44 == 0)
     {
-        m_t48.FUN_140268840();
+        reinterpret_cast<Unk_IntervalTimer&>(m_t48).Init();
         m_n44 = 1;
     }
 }
@@ -699,7 +690,7 @@ void StateSummonIdle::EndOfSequence(NiActorManager* pkManager, unsigned int nSeq
         return;
 
     MS2Ptr<Unk_PCBaseComp_aa8> spComp = pPet->vfunc_85();
-    if ((spComp.get() ? true : false) && FUN_140f48d40(spComp.operator->()) == 0)
+    if ((spComp.get() ? true : false) && reinterpret_cast<UIHudEntity::Entity*>(spComp.operator->())->FUN_140f48d40() == 0)
     {
         if (m_n40 != 0)
             m_n10 = 1;

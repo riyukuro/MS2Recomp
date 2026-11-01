@@ -236,7 +236,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CSt
 int FUN_1401e0800(unsigned short nLevel);                   // the ability reset is open at that level
 
 // The box / potion handlers.
-int FUN_141658e60(PC* pPlayer);                             // the gender
 int FUN_141276180(const CString& strChannel, const CString& strArg);   // the notice log
 CMyCharacter* FUN_140931510();
 int SecondsToMs(int nSeconds);                              // seconds to ms
@@ -749,7 +748,7 @@ bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
     if (IsBoxNotAgainChecked(box))
     {
         TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n10Time = GetServerTime();
-        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
     if (spItem.get() != 0)
@@ -765,7 +764,7 @@ bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
     if (IsBoxNotAgainChecked(box))
     {
         TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n18Time = GetServerTime();
-        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
     if (spItem.get() != 0)
@@ -1645,7 +1644,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(FUN_14028dfa0(L"s_msg_item_open_item_box_with_key_no_key_count", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId), nHave, nNeed), 0, 0, L"");
         return 1;
     }
-    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pPlayer)) != 0)
+    if (::FUN_1405267d0(spItem.operator->(), pPlayer->FUN_141658e60()) != 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_item_open_item_box_with_key", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
@@ -1670,7 +1669,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d259d0
 int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pPlayer)) == 0)
+    if (::FUN_1405267d0(spItem.operator->(), pPlayer->FUN_141658e60()) == 0)
     {
         FUN_141276180(s_warningGender, "");
         FUN_140d73bc0(0x2d, 0, 0, L"");

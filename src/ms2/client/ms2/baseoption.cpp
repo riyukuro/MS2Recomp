@@ -10,26 +10,6 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 
-// ---- unit-local placeholders ----
-
-// The UI manager's reference to a dialog (16 bytes, object at +8; dtor 0x1403e5630).
-class Unk_BoUIRef
-{
-public:
-    ~Unk_BoUIRef();
-    UIObject* FUN_1403e8a70() const;                                // the object, or 0
-private:
-    void* unknown;
-    UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_BoUIRef, 0x10);
-// The UI manager singleton (0x1403ed2b0).
-class Unk_BoUIService
-{
-public:
-    Unk_BoUIRef FUN_141adcea0(int nId);
-};
-
 // @0x140a02ac0
 CBaseOption::CBaseOption(int nId, int nType)
 {
@@ -182,11 +162,11 @@ int CBaseOption::FUN_140a02e50() const
 // @0x140a02e60
 UIGameOptionDialog* FUN_140a02e60(int nDialogId)
 {
-    if (reinterpret_cast<Unk_BoUIService*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_BoUIRef ref = reinterpret_cast<Unk_BoUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nDialogId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIGameOptionDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nDialogId);
+        if (ref.get())
+            return dynamic_cast<UIGameOptionDialog*>(ref.operator UIObject*());
     }
     return 0;
 }

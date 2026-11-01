@@ -30,6 +30,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 
 // ---- header statics (the second copy of the sort names comes from a header between the two dialog statics) ----
 static CString s_strSortTypeNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -214,7 +215,7 @@ void UIChaosDPSDialog::vfunc_67()
 void UIChaosDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     CBattleRecordManager::GetInstance()->StartGroupIfInactive(m_nGroup);
     OnTextToggle();
     FUN_140e05950();
@@ -285,7 +286,7 @@ void UIChaosDPSDialog::vfunc_72()
     else {
         if (!m_30)
             return;
-        if (m_tick.FUN_140268870(100) == 0)
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100) == 0)
             return;
         FUN_140e05950();
     }

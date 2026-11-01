@@ -29,7 +29,7 @@
 // MS2-PIN: ?GcFmtBool@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_N@Z 0x14136f150
 // MS2-PIN: ?GcFmtSize@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_K@Z 0x1406c6bd0
 // MS2-PIN: ?GcFmtStr@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV12@@Z 0x1401e8510
-// MS2-PIN: ??0Unk_GcTime@@QEAA@HHHHHH@Z 0x1406c47d0
+// MS2-PIN: ??0CMsTime@@QEAA@HHHHHH@Z 0x1406c47d0
 // MS2-PIN: ??0Unk_G9Val@@QEAA@H@Z 0x140d02f80
 // MS2-PIN: ??0Unk_G9Val@@QEAA@HAEAVUnk_GcNode@@@Z 0x140d01be0
 // GcFmtId and GcFmtIntInt: the exe's copies are StringFormat<unsigned int> / <unsigned int, unsigned int> (make_type<unsigned
@@ -46,8 +46,30 @@ __declspec(noinline) CStringW GcFmtSize(const wchar_t* f, const size_t& a) { ret
 __declspec(noinline) CStringW GcFmtStr(const wchar_t* f, const CStringW& a) { return StringFormat(f, a); }
 
 #include "ms2/unnamed/unit_1413a9df0.h"
+class CFieldData { public: int GetContinentCode(); };   // C3: member views
+class Cube { public: int FUN_1408b4f20(); };
+struct Unk_NullableInt { int* GetValue(); bool m_bSet; int m_nValue; };
+class CAchieveManager { public: int HasCompletedOfType(Unk_NullableInt nType); };
+class CKeyTable { public: int GetQuickSlotSkillId(unsigned nSlot); };
+class CMeratMarketMan { public: __int64 FUN_140d56470(); };
+class UIPartyDialog { public: int FUN_141a75840(); };
+class UIGuideEvent { public: int GetLastTip(); };
+class CManufactureManager { public: int HasManufacture(); };
+struct Unk_ImNullableInt { bool HasValue() const; bool m_bSet; int m_nValue; };
+class CubeMapInformationService { public: class Cube* FindCubeByItemId(int nItemId); int HasCubeWithIconCode(int nCategory); int CountCubes(); };
+__int64 GetServerTime();
+int XmlGetAttr(class TiXmlElement*, char const*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, CMsTime&);
+int XmlQuery(class TiXmlElement*, char const*, bool&);
+class Unk_GcSmartRef { public: void* FUN_1413b4130() const; };
+class CGuideEntity : public CPtred {};   // C3: handle pointees
+class CFieldDataCli : public CPtred {};
+class Unk_WsB_Prop : public CPtred {};
+class CGuideManager { public: MS2Ptr<CGuideEntity> FindEntity(int nId); bool IsCleared(int nId); };
+#include "ms2/placeholder/citemdata.h"
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -89,10 +111,10 @@ CStringW CGuideConditionContinentCode::GetTypeName()
 // @0x1413a9fc0
 int CGuideConditionContinentCode::vfunc_3()
 {
-    Unk_G9MapInfo info = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (info.FUN_140965240(0))
+    MS2Ptr<CFieldDataCli> info = WorldService::GetInstance()->FUN_141bd30a0();
+    if (info.operator==(0))
         return 0;
-    return FUN_1413a5600(m_n20 == FUN_140375350(info.FUN_140885340()));
+    return FUN_1413a5600(m_n20 == reinterpret_cast<CFieldData*>(info.operator->())->GetContinentCode());
 }
 
 // @0x1413aa070
@@ -112,7 +134,7 @@ CStringW CGuideConditionAnyOne::GetTypeName()
 void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
@@ -156,7 +178,7 @@ CStringW CGuideConditionAllOf::GetTypeName()
 void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = pElem->FUN_140165cf0("condition"); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
+    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
@@ -207,7 +229,7 @@ void CGuideConditionAchieveExistTrophy::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413aa680
 int CGuideConditionAchieveExistTrophy::vfunc_3()
 {
-    return FUN_1413a55a0(FUN_140936740(FUN_1406c7600(), *reinterpret_cast<unsigned __int64*>(&m_type)));
+    return FUN_1413a55a0(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->HasCompletedOfType(*reinterpret_cast<Unk_NullableInt*>(&m_type)));
 }
 
 // @0x1413aa6c0
@@ -217,7 +239,7 @@ CStringW CGuideConditionAchieveExistTrophy::vfunc_7()
     if (Unk_GcIntIsNull(&m_type))
         str.Append(StringFormat(L"achieveType"));
     else
-        str.Append(StringFormat(L"achieveType({0})", *reinterpret_cast<Unk_GcAchieveType*>(FUN_1409393d0(&m_type))));
+        str.Append(StringFormat(L"achieveType({0})", *reinterpret_cast<Unk_GcAchieveType*>(reinterpret_cast<Unk_NullableInt*>(&m_type)->GetValue())));
     return str;
 }
 
@@ -245,9 +267,9 @@ void CGuideConditionGuideOpen::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413aa8f0
 int CGuideConditionGuideOpen::vfunc_3()
 {
-    Unk_G9GuideRef ref = FUN_1409331e0()->FUN_14138b990(m_nGuideId);
-    if (ref.FUN_1413b4130())
-        return FUN_1413a5600(ref.FUN_141398900()->m_n1c != 0);
+    MS2Ptr<CGuideEntity> ref = reinterpret_cast<CGuideManager*>(FUN_1409331e0())->FindEntity(m_nGuideId);
+    if (reinterpret_cast<Unk_GcSmartRef*>(&ref)->FUN_1413b4130())
+        return FUN_1413a5600(reinterpret_cast<Unk_G9GuideEntry*>(ref.operator->())->m_n1c != 0);
     return 0;
 }
 
@@ -289,7 +311,7 @@ void CGuideConditionGuideClear::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413aab60
 int CGuideConditionGuideClear::vfunc_3()
 {
-    return FUN_1413a5600(FUN_1409331e0()->FUN_14138caa0(m_nGuideId));
+    return FUN_1413a5600(reinterpret_cast<CGuideManager*>(FUN_1409331e0())->IsCleared(m_nGuideId));
 }
 
 // @0x1413aaba0
@@ -333,7 +355,7 @@ void CGuideConditionExistShortcut::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413aadb0
 int CGuideConditionExistShortcut::vfunc_3()
 {
-    int nSkill = FUN_14142dc50(FUN_1409331f0(), m_nSlotIndex);
+    int nSkill = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotSkillId(m_nSlotIndex);
     return FUN_1413a5600(nSkill == m_nSkillId);
 }
 
@@ -360,7 +382,7 @@ CStringW CGuideConditionUgcCollectMoney::GetTypeName()
 // @0x1413aaf80
 int CGuideConditionUgcCollectMoney::vfunc_3()
 {
-    return 0 < FUN_140d56470(FUN_140939a00());
+    return 0 < reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d56470();
 }
 
 // @0x1413aafc0
@@ -381,7 +403,7 @@ int CGuideConditionCanObserveMode::vfunc_3()
     void* pDialog = FUN_1413b1c60("PartyDialog");
     if (pDialog == 0)
         return 0;
-    return FUN_1413a55a0(FUN_141a75840(pDialog));
+    return FUN_1413a55a0(reinterpret_cast<UIPartyDialog*>(pDialog)->FUN_141a75840());
 }
 
 // @0x1413ab0e0
@@ -406,7 +428,7 @@ void CGuideConditionMyPlayerLevel::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413ab1d0
 int CGuideConditionMyPlayerLevel::vfunc_3()
 {
-    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return FUN_1413a5600(pPC->vfunc_78() >= m_n20);
@@ -453,7 +475,7 @@ void CGuideConditionPlaceUgcCube::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nItemId = 0;
-    FUN_1408731e0(pElem, "itemId", m_nItemId);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "itemId", m_nItemId);
     FUN_1413b1d00(pElem, "minCount", m_min);
     FUN_1413b1d00(pElem, "maxCount", m_max);
 }
@@ -461,13 +483,13 @@ void CGuideConditionPlaceUgcCube::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413ab490
 int CGuideConditionPlaceUgcCube::vfunc_3()
 {
-    if (m_nItemId != 0 && FUN_1409670e0()->FUN_1410b9850(m_nItemId) == 0)
+    if (m_nItemId != 0 && reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FindCubeByItemId(m_nItemId) == 0)
         return FUN_1413a55a0(0);
-    if (FUN_140d1a9d0(&m_min) || FUN_140d1a9d0(&m_max)) {
-        int nCount = FUN_1409670e0()->FUN_1410b9a50();
-        if (FUN_140d1a9d0(&m_min) && nCount < *FUN_1413989f0(&m_min))
+    if (reinterpret_cast<const Unk_ImNullableInt*>(&m_min)->HasValue() || reinterpret_cast<const Unk_ImNullableInt*>(&m_max)->HasValue()) {
+        int nCount = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->CountCubes();
+        if (reinterpret_cast<const Unk_ImNullableInt*>(&m_min)->HasValue() && nCount < *FUN_1413989f0(&m_min))
             return FUN_1413a55a0(0);
-        if (FUN_140d1a9d0(&m_max) && nCount > *FUN_1413989f0(&m_max))
+        if (reinterpret_cast<const Unk_ImNullableInt*>(&m_max)->HasValue() && nCount > *FUN_1413989f0(&m_max))
             return FUN_1413a55a0(0);
     }
     return FUN_1413a55a0(1);
@@ -478,9 +500,9 @@ CStringW CGuideConditionPlaceUgcCube::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
     str.Append(GcFmtId(L"itemID({0})", m_nItemId));
-    if (FUN_140d1a9d0(&m_min))
+    if (reinterpret_cast<const Unk_ImNullableInt*>(&m_min)->HasValue())
         str.Append(GcFmtMinMax(L", minCount({0})", *FUN_1413989f0(&m_min)));
-    if (FUN_140d1a9d0(&m_max))
+    if (reinterpret_cast<const Unk_ImNullableInt*>(&m_max)->HasValue())
         str.Append(GcFmtMinMax(L", maxCount({0})", *FUN_1413989f0(&m_max)));
     return str;
 }
@@ -511,12 +533,12 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
     if (Unk_GcVec3IsNull(&m_pos))
         return 0;
     Vector3 pos = m_pos.GetValue();
-    void* pCube = FUN_1409670e0()->FUN_1410b8ab0(pos);
+    void* pCube = reinterpret_cast<Unk_G9Home*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410b8ab0(pos);
     if (pCube == 0)
         return FUN_1413a55a0(0);
     if (Unk_GcBoolHasValue(&m_attachable)) {
-        Unk_G9ItemRef item = FUN_14053f870(FUN_1408b4f20(pCube));
-        bool bAttach = reinterpret_cast<Unk_G9ItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_nValue != 0;
+        MS2Ptr<CItemData> item = FUN_14053f870(reinterpret_cast<Cube*>(pCube)->FUN_1408b4f20());
+        bool bAttach = reinterpret_cast<Unk_G9ItemRec*>(item.operator->())->m_nValue != 0;
         if (bAttach != m_attachable.GetValue())
             return FUN_1413a55a0(0);
     }
@@ -552,13 +574,13 @@ void CGuideConditionPlaceUgcCubeByIconType::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nIconType = 0;
-    FUN_1408731e0(pElem, "iconType", m_nIconType);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "iconType", m_nIconType);
 }
 
 // @0x1413abc90
 int CGuideConditionPlaceUgcCubeByIconType::vfunc_3()
 {
-    if (FUN_1409670e0()->FUN_1410b9950(m_nIconType) == 0)
+    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->HasCubeWithIconCode(m_nIconType) == 0)
         return FUN_1413a55a0(0);
     return FUN_1413a55a0(1);
 }
@@ -587,24 +609,24 @@ CStringW CGuideConditionInteractObject::GetTypeName()
 void CGuideConditionInteractObject::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_1408731e0(pElem, "interactId", m_nInteractId);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "interactId", m_nInteractId);
     XmlGetAttr((class TiXmlElement*)(pElem), "distance", m_fDistance);
-    FUN_1408731e0(pElem, "state", m_nState);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "state", m_nState);
 }
 
 // @0x1413abec0
 int CGuideConditionInteractObject::vfunc_3()
 {
-    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(FUN_1403ed2d0()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).FUN_1409657e0());
+    CInteractObject* pObj = reinterpret_cast<CInteractObject*>(WorldService::GetInstance()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).operator Unk_WsB_Prop*());
     if (pObj == 0)
         return 0;
-    float fDist = pPC->vfunc_18().FUN_140965c40(pObj->FUN_1409673c0()).FUN_140967ac0();
+    float fDist = pPC->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
     if (fDist > m_fDistance)
         return FUN_1413a55a0(0);
-    if (FUN_1413b5600(pObj) != m_nState)
+    if (Unk_GcState28(reinterpret_cast<char*>(pObj)) != m_nState)
         return FUN_1413a55a0(0);
     return FUN_1413a55a0(1);
 }
@@ -634,7 +656,7 @@ void CGuideConditionLastClosedTextTip::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nEntityId = 0;
-    FUN_1408731e0(pElem, "entityId", m_nEntityId);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "entityId", m_nEntityId);
     if (m_nEntityId == 0)
         throw std::exception(FUN_141388650("lastClosedToolTip entityId == 0"));
 }
@@ -644,7 +666,7 @@ int CGuideConditionLastClosedTextTip::vfunc_3()
 {
     void* pDialog = FUN_14136f3e0(0x4e53);
     if (pDialog != 0)
-        return FUN_1413a5600(m_nEntityId == FUN_14195b950(pDialog));
+        return FUN_1413a5600(m_nEntityId == reinterpret_cast<UIGuideEvent*>(pDialog)->GetLastTip());
     return 0;
 }
 
@@ -675,9 +697,9 @@ void CGuideConditionConstructSlot::vfunc_2(Unk_140165cf0* pElem)
     m_nSlotIdx = 0;
     m_bIndoor = false;
     m_bOutdoor = false;
-    FUN_1408731e0(pElem, "slotIdx", m_nSlotIdx);
-    FUN_1408736d0(pElem, "isIndoor", m_bIndoor);
-    FUN_1408736d0(pElem, "isOutdoor", m_bOutdoor);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "slotIdx", m_nSlotIdx);
+    XmlQuery(reinterpret_cast<TiXmlElement*>(pElem), "isIndoor", m_bIndoor);
+    XmlQuery(reinterpret_cast<TiXmlElement*>(pElem), "isOutdoor", m_bOutdoor);
 }
 
 // @0x1413ac4f0
@@ -715,7 +737,7 @@ CStringW CGuideConditionTitle::GetTypeName()
 // @0x1413ac6a0
 int CGuideConditionTitle::vfunc_3()
 {
-    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
     return FUN_1413a5600(DAT_143ab3268.FUN_140186270() > 0);
@@ -724,7 +746,7 @@ int CGuideConditionTitle::vfunc_3()
 // @0x1413ac700
 void CGuideConditionTitle::vfunc_5()
 {
-    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
     size_t nCount = DAT_143ab3268.FUN_140186270();
@@ -747,35 +769,33 @@ CStringW CGuideConditionServerTime::GetTypeName()
 void CGuideConditionServerTime::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_140873600(pElem, "dateTime", m_time);
+    XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "dateTime", m_time);
 }
 
 // @0x1413ac890
 int CGuideConditionServerTime::vfunc_3()
 {
-    // the exe does not run the default constructor here (the epoch setter fills the whole object)
-    struct { void* m_p0; void* m_p1; } rawNow;
-    reinterpret_cast<Unk_GcTime&>(rawNow).FUN_1406c47a0(FUN_140869440());
-    return FUN_1413a5600(m_time.FUN_1406c4cc0(reinterpret_cast<Unk_GcTime&>(rawNow)));
+    CMsTime now(GetServerTime());
+    return FUN_1413a5600(m_time <= now);
 }
 
 // @0x1413ac8e0
 void CGuideConditionServerTime::vfunc_5()
 {
-    Unk_GcTime now(FUN_140869440());
-    m_time.FUN_1406c4930(Unk_GcTime(2015, 4, 21, 16, 0, 0));
+    CMsTime now(GetServerTime());
+    m_time = CMsTime(2015, 4, 21, 16, 0, 0);
     CStringW strNow = FUN_14083bdc0(now, true, CStringW(L"/"), CStringW(L":"));
     CStringW strTarget = FUN_14083bdc0(m_time, true, CStringW(L"/"), CStringW(L":"));
     FUN_1412751b0(GcFmtStr(L"curTime={0}", strNow), 0x14);
     FUN_1412751b0(GcFmtStr(L"targetTime={0}", strTarget), 0x14);
-    FUN_1412751b0(GcFmtStr(L"(passed)={0}", FUN_140719730(m_time.FUN_1406c4cc0(now))), 0x14);
+    FUN_1412751b0(GcFmtStr(L"(passed)={0}", FUN_140719730(m_time <= now)), 0x14);
 }
 
 // @0x1413acbe0
 CStringW CGuideConditionServerTime::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(GcFmtStr(L"dateTime({0})", FUN_14083bdc0(m_time.FUN_140282020(), true, CStringW(L"/"), CStringW(L":"))));
+    str.Append(GcFmtStr(L"dateTime({0})", FUN_14083bdc0(m_time.Get(), true, CStringW(L"/"), CStringW(L":"))));
     return str;
 }
 
@@ -794,7 +814,7 @@ CStringW CGuideConditionHasManufacture::GetTypeName()
 // @0x1413ace10
 int CGuideConditionHasManufacture::vfunc_3()
 {
-    return FUN_140d513c0(FUN_1409eed40());
+    return reinterpret_cast<CManufactureManager*>(FUN_1409eed40())->HasManufacture();
 }
 
 // @0x1413ace40

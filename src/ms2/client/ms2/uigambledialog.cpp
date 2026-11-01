@@ -14,6 +14,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/uitalkmanager.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -23,7 +25,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class ASDialog : public ASDisplayObject
 {
 public:
-    void FUN_1407cb9c0(const char* szName, int n);
     Scaleform::GFx::Value FUN_141935bc0(const char* szMethod, CString strBind, unsigned int nSlot, CStringW strName, CString strIcon, int nFlag);   // "bind"
 };
 
@@ -39,7 +40,6 @@ private:
 class Unk_GbReward
 {
 public:
-    void FUN_141b1dbd0();                                        // clear
     void* m_0; void* m_8; void* m_10;
     Unk_GbItems m_items;                                         // +0x18
 };
@@ -48,7 +48,6 @@ class Unk_GbTalk
 {
 public:
     Unk_GbReward* FUN_141082d60();
-    void FUN_141b20db0(int nSelect);                             // next page / select
 };
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
@@ -61,7 +60,7 @@ UITalkCinematic* FUN_140a7b2b0(int nId);
 void FUN_141415600(const CString& strBindID);                    // release the item bound to the name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 CStringW FUN_1402758a0(const wchar_t* szFormat, const CStringW& a, const unsigned& b);
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);          // money text by pay type
+CStringW FUN_1418fec00(int, __int64, bool);          // money text by pay type
 int FUN_1403bafd0(int id);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -150,7 +149,7 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "OnResult") == 0) {
-        ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        reinterpret_cast<UITalkManager*>(((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance()))->SendNpcTalkMode2(0);
         return 1;
     }
     else if (_stricmp(szMethod, "OnHideComplete") == 0) {
@@ -168,7 +167,7 @@ int UIGambleDialog::FUN_141935710()
         Unk_GbReward* pReward = ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082d60();
         if (pReward->m_items.FUN_140720ca0() <= 0)
             return 0;
-        pDlg->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());
+        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());
         for (unsigned i = 0; i < pReward->m_items.FUN_140720ca0(); i++) {
             MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
             if (spItem.IsNull())
@@ -181,14 +180,14 @@ int UIGambleDialog::FUN_141935710()
             int nFlag = 1;
             int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
             if (nPayType != 0x11) {
-                strName = FUN_1418fec00(nPayType, (unsigned)spItem->GetCount(), 0);
+                strName = FUN_1418fec00(nPayType, (unsigned)spItem->GetCount(), (bool)0);
                 if (!strName.IsEmpty())
                     nFlag = 0;
             }
             pDlg->FUN_141935bc0("bind", strBind, i + 1, strName, spItem->FUN_140528590(), nFlag);
             m_binds.Add(strBind);
         }
-        pReward->FUN_141b1dbd0();
+        reinterpret_cast<UITalkManager::CTalkRewardData*>(pReward)->FUN_141b1dbd0();
         return 1;
     }
     return 0;

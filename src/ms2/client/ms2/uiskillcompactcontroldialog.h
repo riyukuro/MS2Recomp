@@ -14,7 +14,7 @@
 class CMsgBoxData;
 class CSkillCompactControlConfig;
 class Unk_140acd6e0;                                    // a button child
-class Unk_SkillButtonBar;                               // the "m_buttonBar" tab bar
+class ASButtonBar;                               // the "m_buttonBar" tab bar
 
 // The key state of the hot key being edited (0x18 bytes).
 class Unk_ScHotKeyState
@@ -70,7 +70,7 @@ private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> > m_lstConfig;   // +0x178
     CStringW m_strTab;                                  // +0x1a8 the selected tab
-    MS2Ptr<Unk_SkillButtonBar> m_spButtonBar;           // +0x1b0 "m_buttonBar"
+    MS2Ptr<ASButtonBar> m_spButtonBar;           // +0x1b0 "m_buttonBar"
     MS2Ptr<Unk_140acd6e0> m_spAddButton;                // +0x1c0 "m_addButton"
     int m_bLoaded;                                      // +0x1d0
     Unk_ScHotKeyState m_cur;                            // +0x1d8

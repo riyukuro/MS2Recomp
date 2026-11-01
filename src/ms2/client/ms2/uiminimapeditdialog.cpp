@@ -109,7 +109,6 @@ class Unk_MeWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_MeMapInfo> FUN_141bd30a0();                          // the current map info
-    GameObject* FUN_141bd0fa0(egf::EntityID id);                    // the game object of an entity
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<GameObject> >* pOut, int (*pfnFilter)(GameObject*));   // collect the game objects
 };
 CUIService* FUN_1403ed2b0();
@@ -552,7 +551,7 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
     }
     for (POSITION pos = m_hidden.GetHeadPosition(); pos != NULL; m_hidden.GetNext(pos))
     {
-        GameObject* pObject = reinterpret_cast<Unk_MeWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(m_hidden.GetAt(pos));
+        GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(m_hidden.GetAt(pos)));
         if (pObject != NULL)
             pObject->vfunc_23(bShow);
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_hidden.GetAt(pos));

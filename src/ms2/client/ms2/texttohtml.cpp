@@ -115,17 +115,7 @@ struct Unk_ThItemRec
     Unk_ThName m_290;
     Unk_ThParams m_2b0;
 };
-class Unk_ThItemRef
-{
-public:
-    bool FUN_1401b5240(int n) const;
-    ~Unk_ThItemRef();                                           // 0x1401b50d0 (release)
-private:
-    void* m_0;
-    void* m_8;
-};
-MS2_CHECK_SIZE(Unk_ThItemRef, 0x10);
-Unk_ThItemRef FUN_14053f870(unsigned nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The local player (only the name getter, slot 77).
 class Unk_ThPc
@@ -355,14 +345,14 @@ CStringW FUN_14183e9c0(CStringW strText, int nIdx)
 void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
 {
     strIcon = DAT_143aef3b8;
-    Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (ref.FUN_1401b5240(0))
+    MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+    if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 0)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 0)
     {
-        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, CStringW(L""));
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, CStringW(L""));
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
     }
@@ -373,21 +363,21 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
 {
     nSize = 1;
     strIcon = DAT_143aef3b8;
-    Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (ref.FUN_1401b5240(0))
+    MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+    if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
     {
-        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, L"");
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
-        nSize = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d1f60(1, 0);
+        nSize = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 2)
     {
-        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(2, L"");
+        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
         nColor1 = nColor2;
     }
@@ -398,21 +388,21 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
 {
     nSize = 1;
     strIcon = DAT_143aef3b8;
-    Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (ref.FUN_1401b5240(0))
+    MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
+    if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_290.FUN_14034eee0(L"WeddingChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"WeddingChat"))
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
     {
-        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(0, L"");
+        CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
-        nSize = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d1f60(1, 0);
+        nSize = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 2)
     {
-        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(reinterpret_cast<const MS2Ptr<CItemData>&>(ref).operator->())->m_2b0.FUN_1408d21c0(2, L"");
+        const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
         nColor1 = nColor2;
     }

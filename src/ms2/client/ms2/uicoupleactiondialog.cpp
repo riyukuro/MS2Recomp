@@ -139,6 +139,7 @@
 #include <set>
 #include <vector>
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -150,18 +151,10 @@ public:
     CStringW FUN_1422e0b00();                               // the text
     void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // text changed callback
 };
-class ASUIComponent   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1422c7630(int);
-    int FUN_1422c76c0();
-};
 // "m_list": the page grid.
 class Unk_CoupleList : public ASDisplayObject
 {
 public:
-    int FUN_1422dccd0();                                    // the selected index
-    void FUN_1422dcca0(int n);                              // select an index
     MS2Ptr<ASDataProvider> FUN_1422dcd80();                 // the data provider
 };
 int FUN_140ad02c0(int nMin, int n);                         // max
@@ -637,25 +630,25 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
 {
     if (nKey == 0x79) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
-            int nIndex = spList->FUN_1422dccd0();
-            spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 4));
+            int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
-            int nIndex = spList->FUN_1422dccd0();
+            int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 4));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
-            int nIndex = spList->FUN_1422dccd0();
-            spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 1));
+            int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
         if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
-            int nIndex = spList->FUN_1422dccd0();
+            int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 1));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }
 }

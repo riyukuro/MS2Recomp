@@ -44,6 +44,7 @@
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -85,33 +86,8 @@ public:
 };
 
 // The cube service (the home rules).
-class Unk_SmCubeSvc
-{
-public:
-    bool FUN_1410c3600(int nRule);                          // the mode (1 design, 3 blueprint) is active
-    bool FUN_1410d5530();                                   // the design has changes
-};
-Unk_SmCubeSvc* FUN_1409670e0();
+CubeMapInformationService* FUN_1409670e0();
 
-// The dungeon room record.
-struct Unk_SmDgData
-{
-    char m_pad_00[0x140];
-    unsigned int m_140;                                     // +0x140
-};
-MS2_CHECK_OFFSET(Unk_SmDgData, m_140, 0x140);
-class Unk_SmDgRef
-{
-public:
-    ~Unk_SmDgRef();                                         // 0x14031c0f0 release
-    long long FUN_14031c160() const;
-    Unk_SmDgData* FUN_1403347d0() const;                    // operator->
-private:
-    void* m_0;
-    void* m_8;
-};
-MS2_CHECK_SIZE(Unk_SmDgRef, 0x10);
-class Unk_SmDgTable { public: Unk_SmDgRef FUN_1403206b0(int nId); };
 extern int DAT_143ab2884;                                   // the dungeon room id
 extern int DAT_143ab0248;                                   // client country
 
@@ -536,8 +512,8 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
         int nRoom = DAT_143ab2884;
         if (nRoom != 0)
         {
-            Unk_SmDgRef spRoom = reinterpret_cast<Unk_SmDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoom);
-            if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_140 > 0)
+            DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoom);
+            if (spRoom.get() != 0 && spRoom->m_defaultRevivalLimitCount > 0)
                 return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
         }
         return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());

@@ -52,7 +52,7 @@ public:
 };
 
             // CUIService
-class Unk_GcKeyboard { public: unsigned char FUN_14116d950(int nKey, bool a, int b); };
+class CInputKeyHandler { public: bool FUN_14116d950(int, bool, int); }; class Unk_GcKeyboard : public CInputKeyHandler {};
 void* FUN_14025e7c0();
 class Unk_GcKeyBinds
 {

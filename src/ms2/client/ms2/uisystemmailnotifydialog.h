@@ -8,6 +8,7 @@
 // Names: virtuals are Ghidra's vfunc_<slot>; FUN_<va> are non-virtual members, member names invented from use.
 #pragma once
 
+#include "ms2/placeholder/intervaltimer.h"
 #include <afx.h>
 
 #include "ms2/ms2layout.h"
@@ -22,14 +23,6 @@ class Unk_140acd6e0;
 struct Unk_SmReward;
 
 // 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870 re-arms).
-struct Unk_SmTick
-{
-    Unk_SmTick();                           // 0x140517b00
-    int FUN_140268870(int nInterval);       // true once the interval elapsed
-    unsigned m_nInterval;                   // +0
-    unsigned m_nLastTick;                   // +4
-};
-MS2_CHECK_SIZE(Unk_SmTick, 8);
 
 class UISystemMailNotifyDialog : public UIDialog
 {
@@ -59,8 +52,6 @@ public:
     void FUN_1412a62a0();                                       // 0x1412a62a0 the hide timer ran out
     void FUN_1412a6390();                                       // 0x1412a6390 refresh the countdown text
 
-    MS2Ptr<Unk_140acd6e0> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_140acd6e0>& out);   // 0x140bc6d10 bind a button child
-    MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);       // 0x140c57ce0 bind a clip child
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -77,7 +68,7 @@ private:
     MS2Ptr<Unk_140acd6e0> m_btnDetail;  // +0x1d0 "m_detail"
     MS2Ptr<Unk_140acd6e0> m_btnClose;   // +0x1e0 "m_close"
     MS2Ptr<Unk_140acd6e0> m_btnOnTime;  // +0x1f0 "m_onTimeEventButton"
-    Unk_SmTick m_tick;                  // +0x200
+    Unk_IntervalTimer m_tick;                  // +0x200
     unsigned m_nHideAt;                 // +0x208 server time the popup hides at
 };
 MS2_CHECK_SIZE(UISystemMailNotifyDialog, 0x210);

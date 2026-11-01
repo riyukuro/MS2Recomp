@@ -139,11 +139,10 @@ public:
 };
 
 // CItemUgc (item.h, which clashes with ugcdef.h): the UGC info of an inventory item.
-class Unk_MeratItemUgc : public CPtred
-{
+class CItemUgc : public CPtred { public: int FUN_1406321a0(void); int FUN_1406321d0(void); }; class Unk_MeratItemUgc : public CItemUgc {
 public:
-    int FUN_1406321a0();
-    int FUN_1406321d0();
+
+
 
     CUgcItemLook m_look;                                                    // +0x18
     CBlueprintItemData m_blueprint;                                         // +0x80

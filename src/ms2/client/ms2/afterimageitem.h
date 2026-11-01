@@ -25,7 +25,10 @@
 #include "ms2/client/ms2/ms2renderlistprocessor.h"
 
 // Screen rectangle (left, right, top, bottom); the same struct as in fielddatacli.h.
+#ifndef MS2_UNK_RECT4
+#define MS2_UNK_RECT4
 struct Unk_Rect4 { Unk_Rect4(float l, float r, float t, float b); float l, r, t, b; };   // ctor 0x14097eac0
+#endif
 
 class AfterImageItem;
 typedef MS2Ptr<AfterImageItem> AfterImageItemPtr;

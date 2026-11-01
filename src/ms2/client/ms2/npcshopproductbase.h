@@ -30,7 +30,7 @@ public:
     virtual int vfunc_1();                                          //  1 0x140db5f20
     virtual int vfunc_2();                                          //  2 0x140db5f40
 
-    CStringW FUN_140db5d20();                                       // the item's name ("" when there is no item)
+    CStringW GetItemName();                                       // the item's name ("" when there is no item)
     int GetItemId();                                            // the item id (0: no item)
     int FUN_140db5e70();                                            // the product serial id
     MS2Ptr<CItem> GetItem();                                  // a copy of the item handle
@@ -53,16 +53,16 @@ public:
     virtual int vfunc_1() { return m_bc; }                          //  1 0x140db8d00
     virtual int vfunc_2() { return m_c0; }                          //  2 0x140db8d40
 
-    void FUN_140db61a0(CInPacket& in, int nMode);                   // read the product (mode 1: list entry, 7: update)
+    void ReadPacket(CInPacket& in, int nMode);                   // read the product (mode 1: list entry, 7: update)
     void FUN_140db6db0(int nIndex);                                 // set the item index
-    void FUN_140db6e00(int nBuyCount);                              // m_58 = n, refresh the remainder
-    void FUN_140db6e30(unsigned nBuyCount);                         // split a total into packs of m_b8
+    void SetBuyCount(int nBuyCount);                              // m_58 = n, refresh the remainder
+    void SetBuyItemCount(unsigned nBuyCount);                         // split a total into packs of m_b8
     int GetRemainingCount();                            // remaining
-    int FUN_140db6eb0();                                            // remaining (items)
-    int FUN_140db6ef0();                            // limit
-    int FUN_140db6f10();                                            // limit (items)
+    int GetRemainingItemCount();                                            // remaining (items)
+    int GetLimitCount();                            // limit
+    int GetLimitItemCount();                                            // limit (items)
     int GetBuyCount();                            // bought
-    int FUN_140db6f70();                                            // bought (items)
+    int GetBuyItemCount();                                            // bought (items)
     int FUN_140db6fb0();
     int FUN_140db6fd0();
     CString FUN_140db6ff0();                                        // the price tag text
@@ -74,8 +74,8 @@ public:
     int FUN_140db8210();                                            // the most that can be bought at once
     int FUN_140db8400();                                            // the most the player can afford
     int FUN_140db8580(int nCount);                                  // pay nCount items; 1 when the payment can be made (exe: xor eax,eax / mov eax,1; callers test eax)
-    bool FUN_140db8600();                                           // the star point event is running
-    CString FUN_140db86d0();                                        // debug text
+    bool CheckStarPointEvent();                                           // the star point event is running
+    CString ToLogString();                                        // debug text
 
     int m_50, m_54, m_58, m_5c, m_60, m_64, m_68, m_6c;             // +0x50
     int m_70, m_74, m_78, m_7c, m_80, m_84, m_88, m_8c, m_90;       // +0x70

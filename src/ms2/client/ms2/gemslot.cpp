@@ -133,7 +133,7 @@ int GemSlot::vfunc_18(void* p)
                     if (nType == m_nGemType)
                     {
                         int nSlot = -1;
-                        MS2Ptr<CItem> spWorn = pActor->FUN_14165f460()->FUN_141270140(nType);
+                        MS2Ptr<CItem> spWorn = pActor->FUN_14165f460()->GetItemByGemType(nType);
                         if (spWorn.get() != 0)
                             nSlot = spWorn->FUN_140526b50();
                         FUN_141271960(spItem, nSlot, 0);

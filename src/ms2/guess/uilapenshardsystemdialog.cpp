@@ -74,7 +74,9 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140c6b180 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "ms2/unnamed/unit_140c5d230.h"
 
@@ -114,6 +116,7 @@ template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
 #include "ms2/commonfiles/itemlapensharddata.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 // return types of the getters this unit calls
 class Unk_InventoryListener;
@@ -187,21 +190,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 class Unk_McMapPtr;
 class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); Unk_McMapPtr FUN_141bd30a0(); };                   // the local player
 
-// The item bag control inside a section clip (as Unk_PetItemBag in tabcontentspetcompose.cpp).
-class Unk_LsBag : public ASMovieClip
-{
-public:
-    Unk_LsBag(const Scaleform::GFx::Value& v, int nMovieId);            // 0x1422cf330
-    void FUN_1422dcca0(unsigned nIndex);                                // select a slot (-1: none)
-    void FUN_1422dd1d0();                                               // refresh the registered bag
-#define LS_V(n) virtual void vfunc_##n();
-    LS_V(16) LS_V(17) LS_V(18) LS_V(19) LS_V(20) LS_V(21) LS_V(22) LS_V(23)
-#undef LS_V
-    virtual void vfunc_24(bool bVisible);                               // 24 (+0xc0) show
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_LsBag, 0x88);
 
 typedef MS2Ptr<CItem> ItemPtr;
 typedef LapenshardItemArray ItemArray;
@@ -370,10 +358,10 @@ void LapenshardItemSlotBagPanel::vfunc_3()
         return;
     vfunc_4();
     m_strBag = "LapenshardItemSlotBag";
-    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = m_ui->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         bag->Invoke("resetRenderer");
-        bag->FUN_1422dcca0(0xffffffff);
+        reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(0xffffffff);
         ItemArray items;
         FUN_140c60920(&items, 1, 1, 0, 0, 0, 0);
         BindBag(&m_strBag, &items, 1);
@@ -481,7 +469,7 @@ void LapenshardEquipSlotPanel::vfunc_3()
             ASObj obj(2);
             obj.FUN_1407cba60("bindID", pReg->vfunc_15(nIndex));
             obj.FUN_1409c0d20("slotIndex", i);
-            int bEquip = pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)i) ? 1 : 0;
+            int bEquip = pPlayer->GetLapenshardItemId((Unk_MyPCLapenSlot)i) ? 1 : 0;
             obj.FUN_1407cb9c0("isEquip", bEquip);
             slot->FUN_140acd1f0("setData", AScript(obj));
         }
@@ -631,7 +619,7 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nSlot = data.FUN_1422b8a10();
-            int bMounted = pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
+            int bMounted = pPlayer->GetLapenshardItemId((Unk_MyPCLapenSlot)nSlot);
             if (bMounted != 0)
             {
                 COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
@@ -900,6 +888,7 @@ class UIRewardNotify;
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 #ifdef __clang__
 // FUN_140c60920 passes the address of the temporary CStringW from vfunc_77 (an MSVC extension).
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
@@ -985,7 +974,7 @@ void UILapenshardShieldBar::vfunc_43()
         spEntity->vfunc_2(1, 0, nOffset);
         int nW = (int)spEntity->FUN_1422c10a0();
         int nH = (int)spEntity->FUN_1422c1110();
-        ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("alignmentWithHpBarOffsetY", nOffset, nX, nY, nW, nH);
+        ((AScript*)((MS2Ptr<ASObj>*)(&m_30))->operator->())->Invoke("alignmentWithHpBarOffsetY", nOffset, nX, nY, nW, nH);
     }
 }
 
@@ -1009,7 +998,7 @@ void UILapenshardShieldBar::vfunc_15()
         return;
     if (m_nPending != 0)
         FUN_140c5fbd0();
-    if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
+    if (m_bEnded == 0 && reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100) != 0)
     {
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
@@ -1199,10 +1188,10 @@ void LapenshardSourceItemSlotBagPanel::vfunc_3()
         return;
     vfunc_4();
     m_strBag = "LapenshardSourceItemSlotBag";
-    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_sourceItemBag"))
+    if (MS2Ptr<ASTileList> bag = m_ui->FUN_140accef0<ASTileList>("m_sourceItemBag"))
     {
         bag->Invoke("resetRenderer");
-        bag->FUN_1422dcca0(0xffffffff);
+        reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(0xffffffff);
         FUN_140c60920(&m_items, 0, 1, 1, 1, 0, 0);
         BindBag(&m_strBag, &m_items, 0);
         bag->FUN_1422dd1d0();
@@ -1302,10 +1291,10 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     if (spRec->m_nNeed <= 0)
         return;
     m_strBag = "LapenshardIngredientItemSlotBag";
-    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_ingredientItemBag"))
+    if (MS2Ptr<ASTileList> bag = m_ui->FUN_140accef0<ASTileList>("m_ingredientItemBag"))
     {
         bag->Invoke("resetRenderer");
-        bag->FUN_1422dcca0(0xffffffff);
+        reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(0xffffffff);
         FUN_140c60920(&m_items, 0, 0, 0, 0, spRec->m_nKind, spSource->GetItemUid());
         MS2Ptr<CItem> spCopy = spSource->Clone();
         if (spCopy)
@@ -1876,7 +1865,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode4()
     rec.m_nTotal = m_nTotal;
     if (rec.m_nUid == 0)
     {
-        rec.m_nSlot = vfunc_11()->FUN_14152f7c0(rec.m_nItemId);
+        rec.m_nSlot = vfunc_11()->FindLapenshardSlot(rec.m_nItemId);
         if (rec.m_nSlot == 0)
             return;
     }
@@ -1904,7 +1893,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode3(MS2Ptr<CItem> spItem)
     rec.m_nUid = spItem->GetItemUid();
     if (rec.m_nUid == 0)
     {
-        rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
+        rec.m_nSlot = pPlayer->FindLapenshardSlot(rec.m_nItemId);
         if (rec.m_nSlot == 0)
             return;
     }
@@ -2261,7 +2250,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode5()
     rec.m_n5c = m_n_c0;
     if (rec.m_nUid == 0)
     {
-        rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
+        rec.m_nSlot = pPlayer->FindLapenshardSlot(rec.m_nItemId);
         if (rec.m_nSlot == 0)
             return;
     }
@@ -2285,14 +2274,13 @@ private:
     unsigned char m_pad_90[0x150 - 0x90];
 };
 
-class Unk_LsSkillNames { public: CStringW FUN_141811980(int nKind, unsigned nId); };
 
 // @0x140c5fbd0
 void UILapenshardShieldBar::FUN_140c5fbd0()
 {
     m_bImpending = 0;
     m_bEnded = 0;
-    m_tick.FUN_140268840();
+    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     if (m_spBuff == 0)
         return;
     if (!m_strBind.IsEmpty())
@@ -2312,7 +2300,7 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
         if (!FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_140311670())
         {
             unsigned nSkillId = *FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_14018ee60().FUN_1403e8d90();
-            CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(4, nSkillId));
+            CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
             pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
         }
     }
@@ -2488,7 +2476,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strSource);
                     spSourceSlot->FUN_140acd1f0("setData", AScript(obj));
-                    strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+                    strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
@@ -2519,7 +2507,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strResult);
                     spResultSlot->FUN_140acd1f0("setData", AScript(obj));
-                    strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+                    strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
@@ -2611,7 +2599,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             if (pBag != 0)
                 FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
-        CStringW strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("successSlotBindID", strSuccess);
         obj.FUN_1407cbb20("successItemName", strName);
     }
@@ -2635,7 +2623,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             if (pBag != 0)
                 FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
-        CStringW strName = FUN_14183e9c0(reinterpret_cast<Unk_LsSkillNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("failSlotBindID", strFail);
         obj.FUN_1407cbb20("failItemName", strName);
     }

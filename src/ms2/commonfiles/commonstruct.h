@@ -37,14 +37,8 @@ public:
     int first,second,third,fourth;
 };
 MS2_CHECK_SIZE(Unk_CommonFourInts,0x10);
-// Non-virtual packet helpers pending the packet unit; no additional storage or slots.
+// View of COutPacket; no additional storage or slots.
 class Unk_CommonPacket : public COutPacket {
-public:
-    int FUN_14020b9f0() const;
-    unsigned short FUN_14020ba20() const;
-    int FUN_14020bc40() const;
-    void FUN_140710740(int,int,int);
-    void FUN_14020aa30(const Unk_CommonPacket&,int);
 };
 MS2_CHECK_SIZE(Unk_CommonPacket,0x38);
 class Unk_CommonNew {

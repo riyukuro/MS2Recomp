@@ -94,7 +94,6 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 void FUN_1409a1fc0(Unk_PiAnimSvc* pSvc, const egf::EntityID* pEntityId, const efd::utf8string* pAnim, float fSpeed, bool bFlag);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
-egf::Entity* FUN_1408a9280(const efd::SmartPointer<egf::Entity>* p);   // folded copy of operator Entity*
 
 // The model loader (singleton): loads a nif by path.
 class Unk_PiResourceMgr
@@ -113,7 +112,7 @@ class Unk_PiUiRoot
 public:
     int FUN_140ddcc90();
 };
-Unk_PiUiRoot* FUN_1409f7c90();
+class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 // The tutorial / achievement counter of the played instrument.
 class Unk_PiCounter : public CInstrumentManager
@@ -290,7 +289,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                     m_bB4 = true;
                     bool bShow = true;
                     FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bShow);
-                    if (m_nB0 != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+                    if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     {
                         bool bHide = false;
                         FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
@@ -316,7 +315,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                     m_spEffect->UpdateEffects();
                     m_spEffect->UpdateProperties();
                     m_spEffect->Update(0.0f, true);
-                    if (m_nB0 != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+                    if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                         static_cast<NiAVObject*>(m_spEffect)->SetAppCulled(1);
                 }
             }
@@ -414,9 +413,9 @@ void StatePlayInstrument::vfunc_3(double fTime)
         m_nB0 = m_pOwner->vfunc_25();
         if (!efd::ClassInfo::IsKindOf(m_pOwner ? m_pOwner->GetClassDesc() : 0, 0x6200044))
         {
-            if (((NiNode*)m_spEffect ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+            if (((NiNode*)m_spEffect ? true : false) && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                 m_spEffect->SetAppCulled(m_nB0 != 0 ? true : false);
-            if (((egf::Entity*)m_spEntity ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+            if (((egf::Entity*)m_spEntity ? true : false) && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
             {
                 bool bShow = m_nB0 != 0 ? false : true;
                 FUN_14098c6e0(m_spEntity.operator->(), 0xa0b6b179, &bShow);
@@ -690,7 +689,7 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     m_pOwner->FUN_14166dd20(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
     m_strLastAnim = strAnim;
     if (m_spEntity)
-        FUN_1409a1fc0(reinterpret_cast<Unk_PiAnimSvc*>(FUN_141b6f910()), FUN_1408b76f0(FUN_1408a9280(&m_spEntity)), &kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
+        FUN_1409a1fc0(reinterpret_cast<Unk_PiAnimSvc*>(FUN_141b6f910()), FUN_1408b76f0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()), &kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
 }
 
 // @0x140de0c00

@@ -215,11 +215,10 @@ class CDropItem;
 // The m_848 effect table streaming (FUN_141bd42f0): the count, then key / MS2Ptr pairs, each value a fresh object
 // (same templates as gameevent.cpp's TU-local copies).
 CInputStream& FUN_14070f480(CInputStream& in, unsigned& value);
-CInputStream& operator>>(CInputStream& in, GameObjectEffectNifCtx& ctx);         // 0x140474900
 template <class T> CInputStream& operator>>(CInputStream& in, MS2Ptr<T>& sp)
 {
     sp.AssignRaw(new T);
-    in >> *sp;
+    FUN_140474900(in, *sp);   // C3: in >> ctx (gameobjecteffectnifctx.h)
     return in;
 }
 template <class K, class V, class KTraits, class VTraits>
@@ -400,7 +399,7 @@ void Unk_WsInst2Real()
 
     // OnInit's update functors
     COptimizer* pOptimizer = 0;
-    TFunctor<void, EmptyParam> optimizerFunctor(pOptimizer, &COptimizer::FUN_14161bee0);
+    TFunctor<void, EmptyParam> optimizerFunctor(pOptimizer, &COptimizer::WriteSystemInfoToCrashLog);
     WorldService* pService = 0;
     TFunctor<void, EmptyParam> updateFunctor(pService, &WorldService::FUN_141bd7dd0);
 

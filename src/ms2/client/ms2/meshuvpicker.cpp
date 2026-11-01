@@ -91,14 +91,14 @@ CMeshUVPicker::~CMeshUVPicker()
 }
 
 // @0x14147e900
-int CMeshUVPicker::FUN_14147e900()
+int CMeshUVPicker::Init()
 {
     if (!CreateResources())
         return 0;
     CreatePropertyState();
     return 1;
 }
-MS2_REPLACE_METHOD(0x14147E900, CMeshUVPicker, FUN_14147e900, 50, 0xB8E8B77C);
+MS2_REPLACE_METHOD(0x14147E900, CMeshUVPicker, Init, 50, 0xB8E8B77C);
 
 // @0x14147e940
 bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
@@ -106,7 +106,7 @@ bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, f
 {
     if (!m_14)
         return false;
-    FUN_14147ec90(pMesh, pExtras, pCamera, fX, fY, true);
+    RenderPickPass(pMesh, pExtras, pCamera, fX, fY, true);
     Unk_UVTexel kTexel;
     FUN_14147fde0(2, &kTexel);
     *pU = kTexel.FUN_14135dd50(0);
@@ -119,13 +119,13 @@ bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, f
 MS2_REPLACE_METHOD(0x14147E940, CMeshUVPicker, PickUV, 259, 0x6D4483DA);
 
 // @0x14147ea50
-bool CMeshUVPicker::FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0,
+bool CMeshUVPicker::PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0,
                                   Unk_FcPoint3* pPos1, NiPoint2* pUV, float* pIndex,
                                   CAtlArray<NiRenderObject*>* pExtras)
 {
     if (!m_14)
         return false;
-    FUN_14147ec90(pMesh, pExtras, pCamera, fX, fY, false);
+    RenderPickPass(pMesh, pExtras, pCamera, fX, fY, false);
     Unk_UVTexel kTexel;
     FUN_14147fde0(0, &kTexel);
     *pPos0 = Unk_DummyVec3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
@@ -139,10 +139,10 @@ bool CMeshUVPicker::FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, floa
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x14147EA50, CMeshUVPicker, FUN_14147ea50, 568, 0x8684E60C);
+MS2_REPLACE_METHOD(0x14147EA50, CMeshUVPicker, PickUVAndPosition, 568, 0x8684E60C);
 
 // @0x14147ec90
-void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObject*>* pExtras, NiCamera* pCamera,
+void CMeshUVPicker::RenderPickPass(NiRenderObject* pMesh, CAtlArray<NiRenderObject*>* pExtras, NiCamera* pCamera,
                                   float fX, float fY, bool bSecond)
 {
     if (!m_14)
@@ -243,7 +243,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
     pCamera->Update(0.0f, true);
     pRenderer->SetBackgroundColor(kSavedColor);
 }
-MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, FUN_14147ec90, 2260, 0x30E905BA);
+MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, RenderPickPass, 2260, 0x30E905BA);
 
 // @0x14147f570
 bool CMeshUVPicker::CreateResources()
@@ -255,7 +255,7 @@ bool CMeshUVPicker::CreateResources()
 
     m_48 = ((class NiDX9Renderer*)(class NiDX9Renderer*)(pDX9))->GetD3DDevice();
     m_48->AddRef();
-    m_18 = FUN_1411d7c70(pDX9, FUN_14147fd10, this);
+    m_18 = FUN_1411d7c70(pDX9, OnRendererResetThunk, this);
 
     NiTexture::FormatPrefs kPrefs;
     kPrefs.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)12;
@@ -354,14 +354,14 @@ void CMeshUVPicker::ReleaseResources()
 MS2_REPLACE_METHOD(0x14147FBB0, CMeshUVPicker, ReleaseResources, 341, 0xFEA91836);
 
 // @0x14147fd10
-bool CMeshUVPicker::FUN_14147fd10(bool bBeforeReset, void* pPicker)
+bool CMeshUVPicker::OnRendererResetThunk(bool bBeforeReset, void* pPicker)
 {
     CMeshUVPicker* pThis = (CMeshUVPicker*)pPicker;
-    return pThis->FUN_14147fd50(bBeforeReset);
+    return pThis->OnRendererReset(bBeforeReset);
 }
 
 // @0x14147fd50
-bool CMeshUVPicker::FUN_14147fd50(bool bBeforeReset)
+bool CMeshUVPicker::OnRendererReset(bool bBeforeReset)
 {
     if (!bBeforeReset && m_14)
     {
@@ -373,7 +373,7 @@ bool CMeshUVPicker::FUN_14147fd50(bool bBeforeReset)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x14147FD50, CMeshUVPicker, FUN_14147fd50, 132, 0xF8961D27);
+MS2_REPLACE_METHOD(0x14147FD50, CMeshUVPicker, OnRendererReset, 132, 0xF8961D27);
 
 // @0x14147fde0
 bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)

@@ -97,18 +97,6 @@ struct Unk_FcUseInfo
 };
 void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
-// The UI manager: a UI object by dialog id, held in a counted reference (uses FUN_141adcea0 of the UI service).
-class Unk_NuUiRef
-{
-public:
-    ~Unk_NuUiRef();                                      // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* unknown;
-    UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_NuUiRef, 0x10);
-class Unk_NuUiMgr { public: Unk_NuUiRef FUN_141adcea0(int nId); };
 UICastingBar* FUN_140ac2270(int nId);
 
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
@@ -133,11 +121,11 @@ CFunctionCubeService* FUN_1409670b0();
 // @0x140ac2270
 UICastingBar* FUN_140ac2270(int nId)
 {
-    if (reinterpret_cast<Unk_NuUiMgr*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        Unk_NuUiRef ref = reinterpret_cast<Unk_NuUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UICastingBar*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
+        if (ref.get())
+            return dynamic_cast<UICastingBar*>(ref.operator UIObject*());
     }
     return 0;
 }

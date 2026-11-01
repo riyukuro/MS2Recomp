@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/cmainsystem.h"
 #include "hook/ms2hook.h"
 
 // Logger singleton: Log(category, level, format, args...) forwards to 0x1406530d0 with a packed fmt::ArgList.
@@ -96,7 +97,7 @@ DWORD GetTickCountMs2() { return GetTickCountMs(); }
 // @0x140869440
 __int64 GetServerTime() {
     if(Unk_ServerClock::GetInstance() == 0) return 0;
-    else return Unk_ServerClock::GetInstance()->FUN_141473640();
+    else return reinterpret_cast<CMainSystem*>(Unk_ServerClock::GetInstance())->GetServerTime();
 }
 // @0x140869470
 int DaysToSeconds(int days) { return days * 86400; }

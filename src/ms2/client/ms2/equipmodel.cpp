@@ -77,13 +77,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/equipment.h"  // C3: CEquipment::FUN_1411e9fa0 / FUN_1411ea430 / FUN_1411ea500
 #include "ms2/placeholder/effectquery.h"
+#include <NiMesh.h>
+#include "ms2/client/ms2/weaponattachtransformnode.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- exe data ----
-extern char DAT_143afa4d8;      // NiNode::ms_RTTI
-extern char DAT_143afbbb0;      // NiMesh::ms_RTTI
-extern char DAT_143af77a8;      // RTTI of the dummy attach node class
 extern float DAT_143ac3d08;     // the engine's frame step
 #define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
 // 0x143ad2348 is s_strWillUpdatePos (constructed in .text$di 0x1400e8b40); the data_bss_game blob of that name never is
@@ -91,83 +91,94 @@ extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tr
 extern char DAT_142ec05ba;      // ""
 
 // ---- out-of-unit callees ----
+void FUN_1401d3700(CString& s);
 // smart pointers (MS2Ptr<Owner> at +0x28, NiPointer at +0xf0 / +0x108 / the temporaries)
-void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void FUN_1405a85f0(void* sp);   void* FUN_1409849b0(void* sp);
-void* FUN_140884f30(void* dst, void* src);   void FUN_140d37c50(void* sp, int n);   bool FUN_140b02900(void* sp);
-void* FUN_14097eb60(void* out, void* p);   void* FUN_14097eba0(void* out, void* p);   void FUN_1409fabf0(void* sp, void* p);
-void* FUN_1409f7170(void* sp, void* p);   void FUN_1409f74b0(void* sp);   void FUN_1409f76f0(void* sp, void* p);
-void* FUN_1409475d0(void* sp);   void* FUN_1409475f0(void* sp);   bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409f7cb0(void* p);
-bool FUN_1409edd90(void* sp, int n);   bool FUN_1409a7f70(void* sp, void* p);   void* FUN_14098d0f0(void* sp);
-void* FUN_1405a8e70(void* sp);   void* FUN_14098d8d0(void* rtti, void* obj);
+void FUN_1405a85c0(void* sp); void FUN_1405a85f0(void* sp);
+void* FUN_140884f30(void* dst, void* src);
+void* FUN_14097eb60(void* out, void* p); void* FUN_14097eba0(void* out, void* p);
+void* FUN_1409f7170(void* sp, void* p); void FUN_1409f74b0(void* sp);
+
 // the owner wrapper (character / mannequin entity)
-void* FUN_1411dc7a0(void* owner, void* out);void FUN_1411dce60(void* owner, void* rec);void* FUN_1411de2e0(void* guard, void* model);   void FUN_140b02860(void* guard);
-void* FUN_1403ed2d0();class WorldService   // C3: member view for the former free stand-ins
+void* FUN_1411de2e0(void* guard, void* model); void FUN_140b02860(void* guard);
+void* FUN_1403ed2d0();class WorldService // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int);
+class Unk_WsC_GameObj* FUN_141bd1180(int);
+void* FUN_141bd0cc0();
 };
-   void* FUN_141bd0cc0(void* mgr);
-void* FUN_1403ed280();class CEffectService   // C3: member view for the former free stand-ins
+void* FUN_1403ed280();class CEffectService // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_1411a49c0(class Unk_EffectTarget&);
+unsigned int FUN_1411a49c0(class Unk_EffectTarget&);
 public:
-    void FUN_1411a6060(unsigned int);   // C3: was free FUN_1411a6060
+void FUN_1411a6060(unsigned int); // C3: was free FUN_1411a6060
 };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();   void* FUN_14123c460(void* ent, void* out);
 struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
-unsigned FUN_14123c580(void* ent);
+class GameObject   // C3: unit-local view (gameobject.h)
+{
+public:
+int FUN_14123c580();
+egf::EntityID FUN_14123c460();
+};
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+struct Unk_PCEquipSet* FUN_1416561a0();
+int FUN_141658e60();
+MS2Ptr<CEquipItem> FUN_141655c90(int);
 };
-   void FUN_1411e9fa0(void* p, unsigned a, const CString& s, unsigned b, unsigned c);
-void FUN_1411ea430(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void FUN_1411ea500(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void* FUN_141655c90(void* p, void* out, unsigned id);
-unsigned FUN_141658e60(void* ent);
+class AvatarPC;
+class MyPC;
+namespace efd {
+template <> PC* DynamicCast<PC, GameObject>(GameObject* p);
+template <> AvatarPC* DynamicCast<AvatarPC, GameObject>(GameObject* p);
+template <> MyPC* DynamicCast<MyPC, GameObject>(GameObject* p);
+}
+class CMainSystem { public: double FUN_141473280(); };   // C3: member view
+class CStateService { public: int FUN_1417e2610(); };    // C3: member view
+
 // the id holder returned by FUN_1411dc7a0 and its accessors
-void FUN_1401bfde0(void* p);   void FUN_1401bf970(void* out, void* p);   char FUN_1401b5240(void* p, int n);
+void FUN_1401bf970(void* out, void* p); char FUN_1401b5240(void* p, int n);
 char FUN_1401b50d0(void* p);   void* FUN_140203c60(void* p);   void* FUN_140203510(void* out, int n);
-void* FUN_1401c0180(void* p);   bool FUN_1401c0050(void* p, int n);
-unsigned FUN_140526b10(void* p);   unsigned __int64 FUN_140526ad0(void* p);class CItemData   // C3: member view for the former free stand-ins
+
+class CItemData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14053c620();
-    bool FUN_14053ce80();
-    bool FUN_14053cfd0();
-    bool FUN_14053d2b0();
-    bool FUN_14053d2f0();
-    bool FUN_14053d510();
-    bool FUN_14053e370();
+int FUN_14053c620();
+bool FUN_14053ce80();
+    bool HasSkinType();
+bool FUN_14053cfd0();
+bool FUN_14053d2b0();
+bool FUN_14053d2f0();
+bool FUN_14053d510();
+bool FUN_14053e370();
 };
-   char FUN_14053cf90(void* p);
-   void* FUN_14053ec70(void* p);
+void* FUN_14053ec70(void* p);
 class ItemModelHead   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_1405471b0();
+bool FUN_1405471b0();
 };
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14059a350();
+bool FUN_14059a350();
 };
-void FUN_140529f60(void* o, CString* out, unsigned a, unsigned b, unsigned c, int d);   void FUN_140529eb0(void* o, CString* out);
-void* FUN_14099eef0(void* p);   void* FUN_140a53610(void* p);   void* FUN_140a535c0(void* p);
-void* FUN_1412041d0(void* p);   void* FUN_141204220(void* p);   void* FUN_1409a8b10();   void* FUN_140c77560(void* p);
+
+void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* FUN_1409a8b10(); void* FUN_140c77560(void* p);
 class ModelGroup   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1405451a0() const;
+int FUN_1405451a0() const;
 };
-    int FUN_1405451c0(const CString& s);
+int FUN_1405451c0(CString& s);
 // strings / names
-void* FUN_1409989e0(void* out, const char* psz);   void FUN_140984450(void* out, const char* psz);   void FUN_1409845a0(void* fs);
-void* FUN_1409a8b90(void* obj);   const char* FUN_142087e50(void* name);   bool FUN_140998dc0(void* name, const char* psz);
-bool FUN_1401c0090(CString* a, CString* b);   void FUN_1401d3700(CString* s);
+void* FUN_1409989e0(void* out, const char* psz);
+
 char FUN_140184310(CString* a, void* psz);
-   void* FUN_1405eb3b0(void* list, void* pos);
+
 CString FUN_14016a5c0(const char* psz, int n);   CString FUN_140298360(const char* psz, const CString& s);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
@@ -176,26 +187,25 @@ class Unk_NodeQueue
 public:
     Unk_NodeQueue(NiAVObject* pRoot);                                    // 0x14098cb80
     ~Unk_NodeQueue();                                              // 0x14098cf00
-    void* FUN_14098e0d0(bool bChildren);                            // 0x14098e0d0 next object, NULL at the end
+    NiAVObject* Next(bool bChildren);                            // 0x14098e0d0 next object, NULL at the end
 private:
     void* m_a[6];
 };
 typedef Unk_NodeQueue Unk_MeshWalker;   // C3: was a local stand-in for Unk_NodeQueue
-   void* FUN_140a0b000(void* obj);
-void FUN_140aacb60(void* obj, void* xf);void* FUN_1411a3f30(void* p);   void FUN_1411a3e30(void* p);   void FUN_1411a4080(void* p);
-bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);   void* FUN_140998e90(void* p);
-void* FUN_1409f7900(void* p);   struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
 
-   void FUN_140a35c30(void* dst, void* src);
-void FUN_140a35bd0(void* dst, void* src);   void* FUN_140a33de0(void* a, void* out, void* b);void* FUN_140965c40(void* a, void* out, void* b);class Vector3   // C3: member view for the former free stand-ins
+void* FUN_1411a3f30(void* p); void FUN_1411a3e30(void* p); void FUN_1411a4080(void* p);
+bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);
+struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
+
+void* FUN_140965c40(void* a, void* out, void* b);class Vector3 // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_140968990();
+float FUN_140968990();
 };
 void* FUN_140194470(void* dst, const void* src);
-void* FUN_141d18b90(void* node, const NiFixedString& fs);   void* FUN_14208a860(unsigned cb, unsigned n);   void* FUN_140876480(void* out, int n);
+
 void* FUN_141068d50p(void* a, const char* psz);
-double FUN_141473280(void* clock);   void* FUN_14086d260();
+void* FUN_14086d260();
 // game
 void FUN_1411cf000(void* a);
 void* FUN_141658e60p(void* ent);
@@ -218,7 +228,6 @@ struct Unk_EmSlots56 : Unk_EmSlots48 { virtual void vfunc_48(); virtual void vfu
 // The owner's entity (FUN_141200820's result).
 struct Unk_EmEntity : Unk_EmSlots56
 {
-    egf::EntityID FUN_14123c460();
     virtual void vfunc_56(); virtual void vfunc_57();
     virtual int vfunc_58();         // 58 the effect object id
     virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64();
@@ -230,8 +239,7 @@ struct Unk_EmQuery
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
     virtual bool vfunc_5(unsigned nId, void** ppOut);
 };
-
-#define OWNER(self) FUN_1405a8ed0(&(self)->m_spOwner)
+#define OWNER(self) reinterpret_cast<MS2Ptr<CEquipItem>*>(&(self)->m_spOwner)->operator->()
 // The owner is the CEquipItem (m_spOwner is typed as an opaque holder; operator-> is 0x1405a8ed0).
 #define EQUIP(sp) reinterpret_cast<CEquipItem*>((sp).operator->())
 #define NODE(self) ((void*)&(self)->m_spNode)
@@ -337,8 +345,8 @@ struct Unk_HoldTarget
 };
 
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
-void* FUN_140aa6d30();   int FUN_1417e2610(void* p);   // CStateService singleton (64-bit pointer)
-void* FUN_141b76c30(void* p);   void* FUN_141d19760(void* p, unsigned n);
+void* FUN_140aa6d30();      // CStateService singleton (64-bit pointer)
+   
 
 // ---- static data (.text$di) ----
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CEquipModel);
@@ -397,8 +405,8 @@ CEquipModel::CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p
     m_pos54 = *(NiPoint3*)&DAT_143b01a60;
     m_pos60 = *(NiPoint3*)&DAT_143b01a60;
     m_pos6c = *(NiPoint3*)&DAT_143b01a60;
-    FUN_1409fabf0(&m_unk_f0, 0);
-    if (FUN_1405a8e70(&m_spOwner) ? true : false) {
+    (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&m_unk_f0) = (NiAVObject*)(void*)(0));
+    if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&m_spOwner)->operator CEquipItem*()) ? true : false) {
         if (((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0()) != 0)
             m_b110 = ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0())))->FUN_14053e370();
     }
@@ -407,8 +415,8 @@ CEquipModel::CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p
 // @0x1411ffcb0
 CEquipModel::~CEquipModel()
 {
-    FUN_140d37c50(&m_spOwner, 0);
-    FUN_1409fabf0(&m_unk_f0, 0);
+    (*reinterpret_cast<MS2Ptr<CPtred>*>(&m_spOwner) = 0);
+    (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&m_unk_f0) = (NiAVObject*)(void*)(0));
     FUN_141203db0(this);
     m_listC0.RemoveAll();
     m_unk_f8.clear();
@@ -421,8 +429,8 @@ void CEquipModel::vfunc_5()
     FUN_141203db0(this);
     MS2Ptr<CEquipModel> spKeep(this);    // keeps the model alive while the owner drops it
     ((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411ddf10((class CEquipModel*)(this));
-    FUN_140d37c50(&m_spOwner, 0);
-    FUN_1409fabf0(&m_unk_f0, 0);
+    (*reinterpret_cast<MS2Ptr<CPtred>*>(&m_spOwner) = 0);
+    (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&m_unk_f0) = (NiAVObject*)(void*)(0));
 }
 
 // @0x1411ffe70
@@ -548,9 +556,9 @@ void FUN_141200230(CEquipModel* self)
         return;
     CString kPoint("Point01");
     NiNodePtr spPoint = self->FUN_141201bd0(kPoint);
-    if (FUN_1409f77a0(&spPoint, 0))
+    if ((*reinterpret_cast<efd::SmartPointer<NiNode>*>(&spPoint) == (NiNode*)0))
         return;
-    FUN_141203660(self, 2, self->FUN_141203830(), FUN_1409475d0(&spPoint));
+    FUN_141203660(self, 2, self->FUN_141203830(), ((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(&spPoint)->operator NiNode*()));
 }
 
 // Hangs the "dummy" attach nodes described by the part's attach list on the parent of the attach node.
@@ -560,18 +568,18 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
     void* pEnt = FUN_141200820(self);
     if (pEnt == 0)
         return;
-    if (FUN_1409f77a0(NODE(self), 0) || FUN_140a0b000(FUN_1409475f0(NODE(self))) == 0)
+    if ((*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) == (NiNode*)0) || ((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent()) == 0)
         return;
-    NiAVObject* pDummy = (NiAVObject*)FUN_14098d8d0(&DAT_143af77a8, FUN_1409475d0(NODE(self)));
+    NiAVObject* pDummy = (NiAVObject*)((void*)NiObject::DynamicCast(&WeaponAttachTransformNode::ms_RTTI, (class NiObject const*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*()))));
     if (pDummy == 0)
         return;
     NiTransform kXf;
     kXf.MakeIdentity();
-    FUN_140aacb60(pDummy, &kXf);
+    ((class NiAVObject*)(void*)(pDummy))->SetLocalTransform(*reinterpret_cast<const NiTransform*>(&kXf));
     FUN_141205a40((Unk_AttachDummy*)pDummy, 0);
     FUN_141205a60((Unk_AttachDummy*)pDummy, 0);
     Unk_PartInfo* pInfo = (Unk_PartInfo*)FUN_141200ab0(self);
-    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[FUN_141658e60(pEnt)];
+    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[(unsigned)((class PC*)(void*)(pEnt))->FUN_141658e60()];
     std::vector<Unk_PartAttach>::iterator itCur;
     for (itCur = kList.begin(); itCur != kList.end(); ++itCur) {
         Unk_PartAttach* e = itCur.operator->();
@@ -579,7 +587,7 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
         if (bOther)
             continue;
         if (e->m_strMask.GetLength() > 0
-            && *(NiFixedString*)FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))) != (const char*)e->m_strMask)
+            && *(NiFixedString*)((void*)&((class NiObjectNET*)(void*)(((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent())))->GetName()) != (const char*)e->m_strMask)
             continue;
         efd::Matrix3 kMat;
         efd::Point3 kRot = *(const efd::Point3*)e->m_afRot * 3.1415927f / 180.0f;
@@ -588,20 +596,20 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
         Unk_NiPt3 kPos(e->m_afPos);
         FUN_141207fd0((Unk_AttachDummy*)pDummy, *(NiPoint3*)&kPos);
         if (e->m_bFollow) {
-            void* pRoot = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409f7cb0(FUN_1412008e0(self)));
+            void* pRoot = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(((void*)((class NiActorManager*)(void*)(FUN_1412008e0(self)))->GetNIFRoot()))));
             FUN_141207f40((Unk_AttachDummy*)pDummy, pRoot);
             FUN_141205a60((Unk_AttachDummy*)pDummy, e->m_bFollow);
             FUN_141205a40((Unk_AttachDummy*)pDummy, e->m_bFlag);
             FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().FUN_1411a3f30(), e->m_fScale);
         }
-        pDummy->Update((float)FUN_141473280(FUN_14086d260()), true);
+        pDummy->Update((float)((class CMainSystem*)FUN_14086d260())->FUN_141473280(), true);
     }
 }
 
 // @0x141200820
 void* FUN_141200820(CEquipModel* self)
 {
-    return FUN_14099eef0(FUN_141200850(self));
+    return efd::DynamicCast<PC, GameObject>((GameObject*)(FUN_141200850(self)));
 }
 
 // @0x141200850
@@ -616,13 +624,13 @@ void* FUN_1412008e0(CEquipModel* self)
     void* pEnt = FUN_141200850(self);
     if (pEnt == 0)
         return 0;
-    return reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((Unk_EmEntity*)pEnt)->FUN_14123c460());
+    return reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
 }
 
 // @0x141200940
 MS2Ptr<CItem> CEquipModel::FUN_141200940()
 {
-    if (FUN_140b02900(&m_spOwner))
+    if ((!*reinterpret_cast<MS2Ptr<CEquipItem>*>(&m_spOwner)))
         return MS2Ptr<CItem>(0);
     return EQUIP(m_spOwner)->GetItem();
 }
@@ -672,7 +680,7 @@ void FUN_141200b30(CEquipModel* self)
 {
     void* p = FUN_1412008e0(self);
     if (p != 0) {
-        NiAVObject* pRoot = (NiAVObject*)FUN_1409f7cb0(p);
+        NiAVObject* pRoot = (NiAVObject*)((void*)((class NiActorManager*)(void*)(p))->GetNIFRoot());
         if (pRoot != 0) {
             pRoot->UpdateProperties();
             pRoot->UpdateEffects();
@@ -713,15 +721,15 @@ void FUN_141200ca0(CEquipModel* self)
         self->vfunc_13();
     else
         self->vfunc_12();
-    if (FUN_1405a8e70(&self->m_spOwner) ? true : false) {
+    if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner)->operator CEquipItem*()) ? true : false) {
         if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()) != 0) {
             if (((class ItemModelHead*)(void*)(FUN_14053ec70(((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()))))->FUN_1405471b0()) {
-                FUN_1411dce60(OWNER(self), &s_strWillUpdatePos);
+                ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dce60(s_strWillUpdatePos);
                 ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dd280();
             }
             void* pEnt = FUN_141200820(self);
             if (pEnt != 0) {
-                FUN_1411ea430(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), self->m_spOwner);
+                ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411ea430(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
                 FUN_141202bd0(self);
             }
         }
@@ -734,25 +742,25 @@ void FUN_141200ca0(CEquipModel* self)
 // @0x141200e30
 void FUN_141200e30(CEquipModel* self, int bClear)
 {
-    NiNode* pRoot = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, self->vfunc_14());
+    NiNode* pRoot = (NiNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(self->vfunc_14())));
     if (pRoot == 0)
         return;
     EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
-        if (FUN_1409a7f70(&sp, pRoot)) {
-            NiNode* pParent = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0b000(FUN_14098d0f0(&sp)));
+        if ((*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp) == (NiAVObject*)(void*)(pRoot))) {
+            NiNode* pParent = (NiNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator->())))->GetParent()))));
             if (pParent != 0)
-                pParent->DetachChild((NiAVObject*)FUN_1409849b0(&sp));
+                pParent->DetachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*()));
         } else {
-            pRoot->AttachChild((NiAVObject*)FUN_1409849b0(&sp), true);
+            pRoot->AttachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*()), true);
         }
     }
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
-            FUN_1411e9fa0(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), ((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+            ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
                           ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
-        FUN_1411ea500(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), self->m_spOwner);
+        ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411ea500(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
     }
     if (bClear != 0)
         self->m_unk_f8.clear();
@@ -765,38 +773,38 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
 {
     CString kMesh;
     CString kKey(kName);
-    FUN_1401d3700(&kKey);
+    FUN_1401d3700(*(&kKey));
     EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
-        Unk_MeshWalker kWalk((NiAVObject*)(FUN_1409849b0(&sp)));
+        Unk_MeshWalker kWalk((NiAVObject*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*())));
         void* pObj;
-        while ((pObj = kWalk.FUN_14098e0d0(true)) != 0) {
-            void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj);
+        while ((pObj = kWalk.Next(true)) != 0) {
+            void* pMesh = ((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(pObj)));
             if (pMesh == 0)
                 continue;
-            kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
-            FUN_1401d3700(&kMesh);
-            if (FUN_1401c0090(&kMesh, &kKey)) {
+            kMesh = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(pMesh))->GetName()))->operator const char*();
+            FUN_1401d3700(*(&kMesh));
+            if ((*(&kMesh) == *(&kKey))) {
                 ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
             } else {
                 kMesh = kMesh.Mid(0, kKey.GetLength());
-                if (FUN_1401c0090(&kMesh, &kKey))
+                if ((*(&kMesh) == *(&kKey)))
                     ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
             }
         }
     }
     Unk_MeshWalker kWalk2((NiAVObject*)(self->vfunc_14()));
     void* pObj2;
-    while ((pObj2 = kWalk2.FUN_14098e0d0(true)) != 0) {
-        void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj2);
+    while ((pObj2 = kWalk2.Next(true)) != 0) {
+        void* pMesh = ((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(pObj2)));
         if (pMesh == 0)
             continue;
-        kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
-        FUN_1401d3700(&kMesh);
-        if (FUN_1401c0090(&kMesh, &kKey)) {
+        kMesh = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(pMesh))->GetName()))->operator const char*();
+        FUN_1401d3700(*(&kMesh));
+        if ((*(&kMesh) == *(&kKey))) {
             ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
         } else {
             kMesh = kMesh.Mid(0, kKey.GetLength());
-            if (FUN_1401c0090(&kMesh, &kKey))
+            if ((*(&kMesh) == *(&kKey)))
                 ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
         }
     }
@@ -848,16 +856,16 @@ efd::utf8string CEquipModel::FUN_141201780()
 {
     void* pEnt = FUN_141200850(this);
     if (pEnt != 0) {
-        if (FUN_140a53610(pEnt) != 0) {
+        if (efd::DynamicCast<MyPC, GameObject>((GameObject*)(pEnt)) != 0) {
             return efd::utf8string("MS2EquipItem");
         }
         if (FUN_1412041d0(pEnt) != 0) {
             return efd::utf8string("MS2MannequinEquipItem");
         }
-        if (FUN_140a535c0(pEnt) != 0) {
+        if (efd::DynamicCast<AvatarPC, GameObject>((GameObject*)(pEnt)) != 0) {
             return efd::utf8string("MS2MannequinEquipItem");
         }
-        if (FUN_14099eef0(pEnt) != 0) {
+        if (efd::DynamicCast<PC, GameObject>((GameObject*)(pEnt)) != 0) {
             if (*((bool*)FUN_140c77560(FUN_1409a8b10()) + 0x11)) {
                 return efd::utf8string("MS2EquipItem");
             }
@@ -872,7 +880,7 @@ void* FUN_1412018c0(CEquipModel* self)
 {
     if (self->m_unk_f8.size() == 0)
         return 0;
-    return FUN_1409849b0((void*)&*self->m_unk_f8.begin());
+    return ((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>((void*)&*self->m_unk_f8.begin())->operator NiAVObject*());
 }
 
 // Finds the attached scene object whose name is kName (or which contains an object of that name).
@@ -880,12 +888,12 @@ void* FUN_1412018c0(CEquipModel* self)
 NiAVObjectPtr CEquipModel::FUN_141201920(CString kName)
 {
     EM_FOR_EACH(NiAVObjectPtr sp, m_unk_f8) {
-        if (FUN_140998dc0(FUN_1409a8b90(FUN_14098d0f0(&sp)), kName))
+        if ((*(const NiFixedString*)(((void*)&((class NiObjectNET*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator->())))->GetName())) == (const char*)kName))
             return sp;
     }
     EM_FOR_EACH(NiAVObjectPtr sp, m_unk_f8) {
-        NiAVObjectPtr spFound(((NiAVObject*)FUN_14098d0f0(&sp))->GetObjectByName((const char*)kName));
-        if (FUN_1409849b0(&spFound) != 0)
+        NiAVObjectPtr spFound(((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator->()))->GetObjectByName((const char*)kName));
+        if (((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&spFound)->operator NiAVObject*()) != 0)
             return spFound;
     }
     return NiAVObjectPtr(0);
@@ -894,7 +902,7 @@ NiAVObjectPtr CEquipModel::FUN_141201920(CString kName)
 // @0x141201bd0
 NiNodePtr CEquipModel::FUN_141201bd0(const CString& kName)
 {
-    return NiNodePtr((NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_141201920(kName).operator NiAVObject*()));
+    return NiNodePtr((NiNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141201920(kName).operator NiAVObject*()))));
 }
 
 // @0x141201c90
@@ -936,23 +944,23 @@ void FUN_141201d50(CEquipModel* self, CString kName)
     if (kName == &DAT_142ec05ba)
         kName = self->FUN_1412029d0();
     CString kCur;
-    if (FUN_140a0b000(FUN_1409475f0(NODE(self))) != 0)
-        kCur = FUN_142087e50(FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))));
+    if (((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent()) != 0)
+        kCur = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent())))->GetName()))->operator const char*();
     if (kCur == kName)
         return;
     void* pRoot = FUN_1412008e0(self);
     if (pRoot == 0)
         return;
-    NiNode* pNode = (NiNode*)FUN_1409f7cb0(pRoot);
+    NiNode* pNode = (NiNode*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pNode == 0)
         return;
-    NiNode* pTarget = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pNode->GetObjectByName((const char*)kName));
+    NiNode* pTarget = (NiNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pNode->GetObjectByName((const char*)kName))));
     if (pTarget == 0)
         return;
     pTarget->AttachChild(self->m_spNode, true);
-    CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+    CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((GameObject*)pEnt)->FUN_14123c460()).c_str());
     FUN_141200390(self, kModel);
-    NiAVObject* pAV = (NiAVObject*)FUN_1409f7cb0(pRoot);
+    NiAVObject* pAV = (NiAVObject*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pAV != 0) {
         pAV->UpdateProperties();
         pAV->UpdateEffects();
@@ -964,7 +972,7 @@ void FUN_1412021a0(CEquipModel* self, NiTransform* pOut)
 {
     void* p = FUN_1412018c0(self);
     if (p != 0)
-        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(p))->GetLocalTransform()));
+        (*reinterpret_cast<NiTransform*>(pOut) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(p))->GetLocalTransform())));
 }
 
 // @0x1412021f0
@@ -972,7 +980,7 @@ void FUN_1412021f0(CEquipModel* self, NiTransform* pOut)
 {
     void* p = FUN_1412018c0(self);
     if (p != 0)
-        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(p))->GetWorldTransform()));
+        (*reinterpret_cast<NiTransform*>(pOut) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(p))->GetWorldTransform())));
 }
 
 // @0x141202240
@@ -980,7 +988,7 @@ void FUN_141202240(CEquipModel* self, void* pXf)
 {
     void* p = FUN_1412018c0(self);
     if (p != 0)
-        FUN_140aacb60(p, pXf);
+        ((class NiAVObject*)(void*)(p))->SetLocalTransform(*reinterpret_cast<const NiTransform*>(pXf));
 }
 
 // Local transform of the first mesh among the entity's "<part><suffix>" attach points.
@@ -990,20 +998,20 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
     void* pRoot = FUN_1412008e0(self);
     if (pRoot == 0)
         return;
-    NiNode* pNode = (NiNode*)FUN_1409f7cb0(pRoot);
+    NiNode* pNode = (NiNode*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pNode == 0)
         return;
     const CString& kPart = self->FUN_1412029d0();
     void* pos = ((void*)((ATL::CAtlList<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&s_meshSuffixes))->GetHeadPosition());
     while (pos != 0) {
         CString kFull;
-        kFull.Format("%s%s", (const char*)kPart, (const char*)*(CString*)FUN_1405eb3b0(&s_meshSuffixes, &pos));
+        kFull.Format("%s%s", (const char*)kPart, (const char*)s_meshSuffixes.GetNext(*(POSITION*)&pos));
         NiAVObjectPtr sp(pNode->GetObjectByName((const char*)kFull));
-        if (FUN_1409a7f70(&sp, 0))
+        if ((*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp) == (NiAVObject*)(void*)(0)))
             continue;
-        if (FUN_14098d8d0(&DAT_143afbbb0, FUN_1409849b0(&sp)) == 0)
+        if (((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*())))) == 0)
             continue;
-        FUN_140a35c30(pOut, ((void*)&((class NiAVObject*)(void*)(FUN_14098d0f0(&sp)))->GetLocalTransform()));
+        (*reinterpret_cast<NiTransform*>(pOut) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator->())))->GetLocalTransform())));
         return;
     }
 }
@@ -1019,27 +1027,27 @@ void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLoca
 // @0x1412024f0
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
 {
-    alignas(8) char kId[32];
-    unsigned nId = FUN_140526b10(FUN_1401c0180(FUN_1411dc7a0(OWNER(self), kId)));
-    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(nId));
-    FUN_1401bfde0(kId);
+    void* pEnt;
+    {
+        MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(self)))->GetItem();
+        unsigned nId = ((class CItem*)(void*)(kId.operator->()))->FUN_140526b10();
+        pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(nId));
+    }
     if (pEnt == 0)
         return;
     alignas(8) char kEntId[24];
     void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(*reinterpret_cast<const egf::EntityID*>(FUN_14123c460(pEnt, kEntId)));
-    if (pActor == 0 || FUN_1409f7cb0(pActor) == 0)
+    if (pActor == 0 || ((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()) == 0)
         return;
-    alignas(8) char fs[8];
     void* pObj;
     {
         CString kPart = self->FUN_1412029d0();
-        FUN_140984450(fs, kPart);
-        pObj = ((NiAVObject*)FUN_1409f7cb0(pActor))->GetObjectByName(*(const NiFixedString*)fs);
-        FUN_1409845a0(fs);
+        NiFixedString fs(kPart);
+        pObj = ((NiAVObject*)((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()))->GetObjectByName(fs);
     }
     if (pObj == 0)
         return;
-    void* pAttach = FUN_14098d8d0(&DAT_143afa4d8, pObj);
+    void* pAttach = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pObj)));
     if (pAttach == 0)
         return;
     void* pRoot = FUN_1412018c0(self);
@@ -1047,16 +1055,15 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
         return;
     NiTransform kXf;
     if (pRot == 0)
-        FUN_140a35c30(&kXf, ((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform()));
+        (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
     else
-        FUN_140a35c30(&kXf, pRot);
+        (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(pRot));
     FUN_140194470(pTrans, &kXf.m_Translate);
     alignas(8) char kWorld[0x34];
     memcpy(kWorld, ((void*)&((class NiAVObject*)(void*)(pAttach))->GetWorldTransform()), 0x34);
-    if (FUN_140a0b000(pRoot) != 0)
-        FUN_140a35c30(kWorld, ((void*)&((class NiAVObject*)(void*)(FUN_140a0b000(pRoot)))->GetWorldTransform()));
-    alignas(8) char kTmp[0x38];
-    FUN_140a35bd0(&kXf, FUN_140a33de0(kWorld, kTmp, ((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
+    if (((void*)((class NiAVObject*)(void*)(pRoot))->GetParent()) != 0)
+        (*reinterpret_cast<NiTransform*>(kWorld) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(((void*)((class NiAVObject*)(void*)(pRoot))->GetParent())))->GetWorldTransform())));
+    kXf = *reinterpret_cast<NiTransform*>(kWorld) * ((class NiAVObject*)(void*)(pRoot))->GetLocalTransform();
     FUN_140194470(pPos, &kXf.m_Translate);
     alignas(8) char kDelta[16], kLen[20];
     FUN_140194470(pLocal, FUN_140965c40(pPos, kDelta, kLen));
@@ -1112,7 +1119,7 @@ CString CEquipModel::FUN_1412029d0()
 unsigned FUN_141202b70(CEquipModel* self)
 {
     const CString& kName = self->FUN_1412029d0();
-    return FUN_1405451c0(kName);
+    return FUN_1405451c0(const_cast<CString&>(kName));
 }
 
 // (Re)applies the primary and secondary effect slots from the owner's template record.
@@ -1171,9 +1178,9 @@ bool FUN_141202e30(CEquipModel* self, int nSlot)
 // @0x141202ea0
 void FUN_141202ea0(CEquipModel* self, CString* pName)
 {
-    if (FUN_1409475d0(NODE(self)) != 0)
+    if (((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*()) != 0)
         return;
-    if (FUN_1409edd90(&self->m_spOwner, 0) != 0)
+    if ((*reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner) == (CEquipItem*)0) != 0)
         return;
     if (self->m_unk_20 == 0)
         return;
@@ -1183,46 +1190,40 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
     void* pRoot = FUN_1412008e0(self);
     if (pRoot == 0)
         return;
-    NiNode* pModel = (NiNode*)FUN_1409f7cb0(pRoot);
+    NiNode* pModel = (NiNode*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pModel == 0)
         return;
     NiNode* pHost;
     {
         NiFixedString fs(*pName);
-        pHost = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pModel->GetObjectByName(fs));
+        pHost = (NiNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pModel->GetObjectByName(fs))));
     }
     if (pHost == 0)
         return;
     int nType = ((class CItem*)(void*)(kId.operator->()))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
         CString kTag = FUN_140298360("Equip_Attach_Transform", FUN_14016a5c0(*pName, 0));
-        alignas(8) char kPool[8];
-        unsigned* pCat = (unsigned*)FUN_140876480(kPool, 0);
-        void* pMem = FUN_14208a860(0x130, *pCat);
-        void* pNewTmp = pMem ? FUN_141d19760(pMem, 0) : 0;
+        void* pNewTmp = new (efd::MemHint((efd::MemHint::Bits)0)) NiNode(0);
         void* pNew = pNewTmp;
         {
             NiFixedString fs2(kTag);
-            FUN_141d18b90(pNew, fs2);
+            ((class NiObjectNET*)(void*)(pNew))->SetName(fs2);
         }
         pHost->AttachChild((NiAVObject*)pNew, false);
-        FUN_1409f76f0(NODE(self), pNew);
+        (*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) = (NiNode*)(void*)(pNew));
     } else {
         CString kNode((nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH");
-        alignas(8) char kPool[8];
-        unsigned* pCat = (unsigned*)FUN_140876480(kPool, 0);
-        void* pMem = FUN_14208a860(0x188, *pCat);
-        void* pNewTmp = pMem ? FUN_141b76c30(pMem) : 0;
+        void* pNewTmp = new (efd::MemHint((efd::MemHint::Bits)0)) WeaponAttachTransformNode;
         void* pNew = pNewTmp;
         {
             NiFixedString fs2(kNode);
-            FUN_141d18b90(pNew, fs2);
+            ((class NiObjectNET*)(void*)(pNew))->SetName(fs2);
         }
         pHost->AttachChild((NiAVObject*)pNew, false);
-        FUN_1409f76f0(NODE(self), pNew);
+        (*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) = (NiNode*)(void*)(pNew));
         void* pEnt = FUN_141200820(self);
         if (pEnt != 0) {
-            CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+            CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((GameObject*)pEnt)->FUN_14123c460()).c_str());
             FUN_141200390(self, kModel);
         }
     }
@@ -1232,14 +1233,14 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
 // @0x1412033e0
 int FUN_1412033e0(CEquipModel* self)
 {
-    if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000d)
+    if (((class CStateService*)FUN_140aa6d30())->FUN_1417e2610() == 0x620000d)
         return 1;
-    if (FUN_1417e2610(FUN_140aa6d30()) == 0x6200018)
+    if (((class CStateService*)FUN_140aa6d30())->FUN_1417e2610() == 0x6200018)
         return 1;
-    void* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
+    void* pLocal = ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd0cc0();
     if (pLocal == 0)
         return 0;
-    return FUN_140526ad0(EQUIP(self->m_spOwner)->GetItem().operator->()) == FUN_14123c580(pLocal);
+    return EQUIP(self->m_spOwner)->GetItem()->FUN_140526ad0() == (unsigned)((GameObject*)pLocal)->FUN_14123c580();
 }
 
 // Releases every effect bound to a slot and empties the map.
@@ -1263,7 +1264,7 @@ void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bW
         return;
     void* pNode = 0;
     if (bWorld == 0)
-        pNode = FUN_1409475d0(NODE(self));
+        pNode = ((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*());
     FUN_141203660(self, nSlot, CString(kName), pNode);
 }
 
@@ -1285,9 +1286,9 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
     }
     NoticeMessage kReq;
     kReq.m_strName = kName;
-    FUN_1409fabf0(&kReq.m_spNode, pNode);
+    (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&kReq.m_spNode) = (NiAVObject*)(void*)(pNode));
     kReq.m_nObject = ((Unk_EmEntity*)pEnt)->vfunc_58();
-    kReq.SetActor(FUN_14123c580(pEnt));
+    kReq.SetActor(((GameObject*)pEnt)->FUN_14123c580());
     unsigned nHandle = ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a49c0(*(class Unk_EffectTarget*)(&kReq));
     if (nHandle > 0)
         self->m_map78.SetAt((Unk_EquipEffectSlot&)nSlot, nHandle);
@@ -1299,66 +1300,36 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
 CString CEquipModel::FUN_141203830()
 {
     CEquipModel* self = this;
-    if (FUN_1409edd90(&self->m_spOwner, 0) != 0)
+    if ((*reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner) == (CEquipItem*)0) != 0)
         return CString("");
-    alignas(8) char kId[16];
-    FUN_1411dc7a0(OWNER(self), kId);
-    if (FUN_1401c0050(kId, 0) != 0) {
-        CString kEmpty("");
-        FUN_1401bfde0(kId);
-        return kEmpty;
-    }
+    MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(self)))->GetItem();
+    if (kId == (CItem*)0)
+        return CString("");
     Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0());
-    if (pTpl == 0) {
-        CString kEmpty("");
-        FUN_1401bfde0(kId);
-        return kEmpty;
-    }
-    if (!((class CItemData*)(void*)(pTpl))->FUN_14053d2f0()) {
-        CString kEmpty("");
-        FUN_1401bfde0(kId);
-        return kEmpty;
-    }
-    if (FUN_14053cf90(pTpl) != 0) {
+    if (pTpl == 0)
+        return CString("");
+    if (!((class CItemData*)(void*)(pTpl))->FUN_14053d2f0())
+        return CString("");
+    if (((class CItemData*)(void*)(pTpl))->HasSkinType()) {
         void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc8c0());
         if (pParent != 0) {
-            alignas(8) char spPart[16];
-            FUN_141655c90(pParent, spPart, ((class CItem*)(void*)(FUN_1401c0180(kId)))->FUN_140527a20());
-            if (FUN_1405a8e70(spPart) != 0) {
-                alignas(8) char kId2[16];
-                FUN_1411dc7a0(FUN_1405a8ed0(spPart), kId2);
-                char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(FUN_1405a8ed0(spPart)))->FUN_1411dc7f0());
-                if (FUN_1401c0050(kId2, 0) != 0 || pTpl2 == 0 || !((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0()) {
-                    FUN_1401bfde0(kId2);
-                    FUN_1405a85f0(spPart);
-                    FUN_1401bfde0(kId);
+            MS2Ptr<CEquipItem> spPart = ((class PC*)pParent)->FUN_141655c90(((class CItem*)(void*)(kId.operator->()))->FUN_140527a20());
+            if (spPart.operator CEquipItem*() != 0) {
+                MS2Ptr<CItem> kId2 = spPart->GetItem();
+                char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(spPart.operator->()))->FUN_1411dc7f0());
+                if (kId2 == (CItem*)0 || pTpl2 == 0 || !((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
                     return CString("");
-                }
                 if (pTpl->m_nLevel >= 100) {
-                    unsigned nA = ((class CItem*)(void*)(FUN_1401c0180(kId2)))->FUN_140527270();
-                    unsigned nB = ((class CItem*)(void*)(FUN_1401c0180(kId2)))->FUN_140526fc0();
+                    unsigned nA = ((class CItem*)(void*)(kId2.operator->()))->FUN_140527270();
+                    unsigned nB = ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0();
                     unsigned nC = ((class CItemData*)(void*)(pTpl))->FUN_14053c620();
-                    CString kOut;
-                    FUN_140529f60(FUN_1401c0180(kId2), &kOut, nC, nB, nA, pTpl->m_nLevel);
-                    FUN_1401bfde0(kId2);
-                    FUN_1405a85f0(spPart);
-                    FUN_1401bfde0(kId);
-                    return kOut;
+                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(nC, nB, nA, pTpl->m_nLevel);
                 }
-                CString kOut;
-                FUN_140529eb0(FUN_1401c0180(kId2), &kOut);
-                FUN_1401bfde0(kId2);
-                FUN_1405a85f0(spPart);
-                FUN_1401bfde0(kId);
-                return kOut;
+                return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529eb0();
             }
-            FUN_1405a85f0(spPart);
         }
     }
-    CString kOut;
-    FUN_140529eb0(FUN_1401c0180(kId), &kOut);
-    FUN_1401bfde0(kId);
-    return kOut;
+    return ((class CItem*)(void*)(kId.operator->()))->FUN_140529eb0();
 }
 
 // Whether effects may be created for pEnt: not for the owner's entity classes flagged off.
@@ -1383,12 +1354,12 @@ bool FUN_141203cf0(CEquipModel* self, void* pEnt)
 // @0x141203db0
 void FUN_141203db0(CEquipModel* self)
 {
-    if (FUN_1409475d0(NODE(self)) != 0) {
-        NiNode* pParent = (NiNode*)FUN_140a0b000(FUN_1409475f0(NODE(self)));
+    if (((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*()) != 0) {
+        NiNode* pParent = (NiNode*)((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent());
         if (pParent != 0) {
-            pParent->DetachChild((NiAVObject*)FUN_1409475d0(NODE(self)));
+            pParent->DetachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*()));
         }
-        FUN_1409f76f0(NODE(self), 0);
+        (*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) = (NiNode*)(void*)(0));
     }
 }
 
@@ -1397,18 +1368,18 @@ void FUN_141203db0(CEquipModel* self)
 void FUN_141203e60(CEquipModel* self)
 {
     EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
-        if (FUN_1409a7f70(&sp, 0))
+        if ((*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp) == (NiAVObject*)(void*)(0)))
             continue;
-        NiNode* pParent = (NiNode*)FUN_140a0b000(FUN_14098d0f0(&sp));
+        NiNode* pParent = (NiNode*)((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator->())))->GetParent());
         if (pParent != 0)
-            pParent->DetachChild((NiAVObject*)FUN_1409849b0(&sp));
+            pParent->DetachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*()));
     }
     self->m_unk_f8.clear();
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
-            FUN_1411e9fa0(((void*)((class PC*)(void*)(pEnt))->FUN_1416561a0()), ((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+            ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
                           ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     }
 }
@@ -1468,9 +1439,9 @@ efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
     void* pAssetData = FUN_140998e80((char*)pEntry + 0x10);
     if (!pAssetData)
         return efd::utf8string::NullString();
-    if (!FUN_140998e90((char*)pEntry + 8))
+    if (!((void*)reinterpret_cast<efd::SmartPointer<NiActorManager>*>((char*)pEntry + 8)->operator NiActorManager*()))
         return efd::utf8string::NullString();
-    unsigned nSeq = ((class NiActorManager*)(void*)(FUN_1409f7900((char*)pEntry + 8)))->GetTargetAnimation();
+    unsigned nSeq = ((class NiActorManager*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiActorManager>*>((char*)pEntry + 8)->operator->())))->GetTargetAnimation();
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
         return efd::utf8string::NullString();
     else

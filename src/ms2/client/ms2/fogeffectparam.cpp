@@ -32,10 +32,9 @@ public:
     ((unsigned int)((((0xff) & 0xff) << 24) | (((r) & 0xff) << 16) | (((g) & 0xff) << 8) | ((b) & 0xff)))
 
 // Game TinyXML element: FirstChildElement.
-class Unk_140165cf0
-{
+class Unk_140165cf0 : public Unk_XmlNode {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
+
 };
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).

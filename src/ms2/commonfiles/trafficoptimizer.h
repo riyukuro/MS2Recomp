@@ -21,7 +21,6 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5();
     virtual Unk_TOList* vfunc_6();
-    int FUN_14166c930();
 };
 class Unk_TOField { public: bool FUN_140375270(); };
 template <class T> class Unk_TOPtr {
@@ -35,7 +34,6 @@ private:
 class Unk_TOSession;
 Unk_TOPtr<Unk_TOField> FUN_140374140(unsigned id);
 Unk_TOSession* FUN_1403ed2d0();
-unsigned FUN_141bd3060(Unk_TOSession*);
 
 class CTrafficOptimizer : public TSingleton<CTrafficOptimizer> {
 public:

@@ -131,6 +131,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/skilldatatablecli.h"   // C3: SkillDataTableCli::FUN_140aafef0
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include <algorithm>
 #include <utility>
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
@@ -138,14 +140,14 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was 
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
-{
+{ public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 : public Unk_XmlNode { };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -154,15 +156,7 @@ bool FUN_14028f710(Unk_140165cf0*);
 int FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short*);
 int FUN_1408731e0(Unk_140165cf0*, const char*, int*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-// An effect record (shared MS2Ptr<> glue with the other adventure-level skill records): CPtred + 0x18 bytes, kind at +0x30.
-class Unk_ALSkillAttr : public CPtred
-{
-public:
-    char m_pad_18[0x18];
-    int m_nKind;
-};
-MS2_CHECK_OFFSET(Unk_ALSkillAttr, m_nKind, 0x30);
-class Unk_ALSkillTable { public: MS2Ptr<Unk_ALSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
+class Unk_ALSkillTable;   // TSingleton<SkillDataTableCli>::GetInstance's result
 
 extern bool DAT_143aac290;    // set once the table loaded
 extern void* DAT_143aac278;   // the CAdventureLevelTable singleton
@@ -544,8 +538,8 @@ void CAdventureLevelTableHelper::FindCurrent()
     for (std::vector<unsigned>::iterator it = ids.begin(); it != ids.end(); ++it)
     {
         const CAdventureLevelAbility* pAbility = GetTable()->GetAbility(*it);
-        MS2Ptr<Unk_ALSkillAttr> spAttr = GetEffectMgr()->FUN_140aafef0(pAbility->m_nEffectId, 1);
-        if (spAttr->m_nKind != 3)
+        MS2Ptr<AdditionalLevelData> spAttr = reinterpret_cast<SkillDataTableCli*>(GetEffectMgr())->FUN_140aafef0(pAbility->m_nEffectId, 1);
+        if (spAttr->m_nEventBuffType != 3)
             continue;
         m_pCurrent = const_cast<CAdventureLevelAbility*>(pAbility);
         break;

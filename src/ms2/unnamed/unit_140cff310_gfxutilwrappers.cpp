@@ -54,7 +54,6 @@ public:
 class Unk_GpCheck : public ASButton
 {
 public:
-    unsigned char FUN_1422ce0e0();                      // is checked
 };
 
 // A title text (the wrapper class of 0x140c45e20).
@@ -180,7 +179,6 @@ void FUN_1422e4a50(Unk_WcTitle* p, const CStringW& str);
 void FUN_1422c1fe0(ASMovieClip* p, unsigned int n);
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
-unsigned char FUN_1422ce0e0(Unk_GpCheck* p);
 int FUN_1422c1340(ASMovieClip* p);
 
 
@@ -435,7 +433,7 @@ void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned 
     MS2Ptr<Unk_GpCheck> spChild = node.FUN_140d01ce0(strName);
     if (spChild == 0)
         return;
-    *pOut = FUN_1422ce0e0(spChild.operator->());
+    *pOut = spChild->FUN_1422ce0e0();
 }
 
 // @0x140d00a70

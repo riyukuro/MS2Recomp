@@ -47,6 +47,7 @@
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList::FindEnabledByEventBuffType
 
 // The names of the shop sort orders (the initializer of this unit's .text$di).
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -63,15 +64,11 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-CString FUN_140b62550(int n);                                // number -> text
+CString FUN_140b62550(unsigned int n);                       // number -> text
 
 extern Vector3 DAT_143b01a60;                       // the zero point
 extern Vector3 DAT_143a08cf8;                       // the up vector
-extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
-class AdditionalCli : public CPtred
-{
-};
 class Unk_FishPacket : public CPtred
 {
 };
@@ -87,10 +84,8 @@ public:
     virtual void vfunc_126();
     virtual void vfunc_127(CItem* pItem, int n);             // MS2: slot 127 (0x3f8) puts the item into the hand
     virtual void vfunc_128(CItem* pItem, int n);             // MS2: slot 128 (0x400) takes it out again
-    PCGemEquip* FUN_14165f460();                             // the worn gems
     Unk_FsSpeed* FUN_141671920();                            // the move speeds (pcbase.h: float*)
     Vector3 FUN_14123c360();                                 // m_pos98 (gameobject.h: NiPoint3)
-    void FUN_14166d970(const efd::Point3& kDir);             // turn to a direction (pcbase.h: by value)
     efd::Point3 FUN_141674b60(Vector3 kDir);                 // local dir -> world dir (pcbase.h)
 };
 
@@ -144,11 +139,6 @@ public:
 };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
-class Unk_FsWorld
-{
-public:
-    int FUN_141bd1a10(GameObject* pObject);
-};
 
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
@@ -158,14 +148,11 @@ class Unk_PCBaseMoveTarget { public: };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 UICastingBar* FUN_140ac2270(int nId);
 __int64 FUN_14028d0e0();                                     // the current time
-PCBase* FUN_140974230(PCBase* pPC);                          // the player of an actor
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
-class Unk_PCBaseBuffs { public: MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList (FUN_1416749a0)
 efd::Point3 FUN_140a0b080(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC);
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
 Unk_FsCell FUN_1408a1430(Vector3 k);                 // the grid cell of a point
 int FUN_1408a03c0(Unk_FsCell kCell);                         // the cell as a key
-void FUN_140ae1160(egf::Entity* pEntity, unsigned nProp, unsigned short* pValue);   // GetProperty(short)
 
 // Plays an animation on the owner at the owner's speed (spelled out in every branch: the name is a block-local string).
 #define MS2_FS_PLAY(pszAnim)                                                                                  \
@@ -296,7 +283,7 @@ void StateFishing::vfunc_5(int n)
 void StateFishing::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    PCBase* pPC = FUN_140974230(m_pOwner);
+    PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner);
     if (pPC != 0)
     {
         int nRod = FUN_140ddb620();
@@ -360,7 +347,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
                 PCBase* pGuide = reinterpret_cast<PC*>(pMy)->FUN_1416625e0();
                 if (pGuide != 0)
                     pGuide->FUN_14166cc40(0x7a);
-                bool bLeave = FsFishMgr()->FUN_140ce0cb0() || pMy->FUN_1416749a0()->FUN_14096fd30(1);
+                bool bLeave = FsFishMgr()->FUN_140ce0cb0() || reinterpret_cast<AdditionalCliList*>(pMy->FUN_1416749a0())->FindEnabledByEventBuffType(1);
                 if (bLeave)
                     FsFishMgr()->SendFishingMode9();
             }
@@ -479,7 +466,7 @@ int StateFishing::FUN_140ddb620()
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        MS2Ptr<CGemBase> spGem = static_cast<Unk_FsPC*>(pPC)->FUN_14165f460()->FUN_141270740(8);
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(reinterpret_cast<PC*>(pPC)->FUN_14165f460())->FUN_141270740(8);
         if (spGem.get() != 0)
         {
             MS2Ptr<CGemFishing> spFishing(dynamic_cast<CGemFishing*>(spGem.operator->()));
@@ -535,7 +522,7 @@ void StateFishing::FUN_140ddb740(int nRod)
     }
     if (spRod->m_strChair.GetLength() > 0)
     {
-        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
+        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
             NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot();
@@ -566,7 +553,7 @@ void StateFishing::FUN_140ddb740(int nRod)
     {
         Unk_EffectQuery kQuery;
         kQuery.m_strName = spRod->m_strChairEffect;
-        kQuery.m_nObject = reinterpret_cast<Unk_FsWorld*>(WorldService::GetInstance())->FUN_141bd1a10(m_pOwner);
+        kQuery.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         kQuery.SetActor(m_pOwner->FUN_14123c580());
         m_nEffect = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
     }
@@ -691,7 +678,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
         if (kRay.m_hitEntity != 0)
         {
             unsigned short nType = 0;
-            FUN_140ae1160(static_cast<egf::Entity*>(kRay.m_hitEntity), 0xada5c5d2, &nType);
+            static_cast<egf::Entity*>(kRay.m_hitEntity)->GetPropertyValue<unsigned short>(0xada5c5d2, nType);
             if (nType != 8)
                 return 0;
             Unk_FsCell kCellB = FUN_140ddc3c0(MS2_FS_HIT + efd::Point3(0.0f, 0.0f, 55.0f));

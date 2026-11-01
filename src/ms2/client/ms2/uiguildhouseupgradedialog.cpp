@@ -37,6 +37,7 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
@@ -56,9 +57,6 @@ public:
 class Unk_LdItemBag : public ASMovieClip
 {
 public:
-    void FUN_1422dce60(const ParamsDelegate& cb, void* pUser);  // click callback
-    int FUN_1422dccd0();                                        // selected index
-    void FUN_1422dcca0(int nIndex);                             // select
 };
 // The upgrade button.
 class Unk_140acd6e0 : public ASButton
@@ -123,7 +121,7 @@ void UIGuildHouseUpgradeDialog::OnLoadComplete()
     if (FUN_140e3b650<Unk_MentorTab>("m_tab", m_tab).get())
         m_tab->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
     if (FUN_140e3b6e0<Unk_LdItemBag>("m_themeList", m_themeList).get())
-        m_themeList->FUN_1422dce60(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
+        reinterpret_cast<ASCoreList*>(m_themeList.operator->())->FUN_1422dce60(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
     if (FUN_140bc6d10<Unk_140acd6e0>("m_upgradeButton", m_upgradeButton).get())
         m_upgradeButton->FUN_1422ce240(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abf0), 0);
     FUN_140e3a770();
@@ -142,7 +140,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
     if (m_30 == 0)
         return;
     int nLevel = m_tab->FUN_1422e3210() + 1;
-    int nTheme = m_themeList->FUN_1422dccd0() + 1;
+    int nTheme = reinterpret_cast<ASCoreList*>(m_themeList.operator->())->GetSelectedIndex() + 1;
     Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
     if (house == 0)
         return;
@@ -224,7 +222,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
         m_themes[list[i].first].push_back(list[i].second);
     static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
     m_tab->FUN_1422e31e0(TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() - 1);
-    m_themeList->FUN_1422dcca0(TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030() - 1);
+    reinterpret_cast<ASCoreList*>(m_themeList.operator->())->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030() - 1);
 }
 
 // @0x140e3a910
@@ -263,7 +261,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
     if (m_30 == 0)
         return;
     int nLevel = m_tab->FUN_1422e3210() + 1;
-    int nTheme = m_themeList->FUN_1422dccd0() + 1;
+    int nTheme = reinterpret_cast<ASCoreList*>(m_themeList.operator->())->GetSelectedIndex() + 1;
     int nGuildLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90();
     if (nLevel < nGuildLevel)
         return;

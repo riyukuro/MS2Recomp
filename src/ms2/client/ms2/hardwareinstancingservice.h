@@ -144,7 +144,7 @@ public:
     NiNode* GetInstancedNode(egf::Entity* pEntity);
     int FUN_1413d6890(egf::Entity* pEntity);                       // is the entity excluded
     int FUN_1413d68d0(egf::Entity* pEntity);
-    bool FUN_1413d6920();
+    bool AllExcludedVisited();
     void FUN_1413d69b0(const egf::EntityID& id);
     void FUN_1413d6ab0(bool bShow);
     static bool FUN_1413d6b60(egf::Entity* pEntity);                       // can the entity be instanced

@@ -189,7 +189,7 @@ class GameEventCashAttendCli : public GameEventCashAttend { public:
     CStringW GetDesc();                   // description (tooltip)
     MS2Ptr<Unk_CadDay> FUN_140ce3fc0(unsigned nDay);
     CMsTime GetBeginTime();                    // begin
-    CMsTime FUN_140ce4090();                    // end
+    CMsTime GetEndTime();                    // end
 };
 
 // The event button (attendgift: Unk_140acd6e0).
@@ -357,7 +357,7 @@ void UICashAttendDialog::OnLoadComplete()
     ResolveSelectedEvent();
     FUN_141925ec0("m_closeButton");
     FUN_141925fa0("m_dragBar");
-    do { m_30->FUN_140bbe640("m_usePointButton",m_usePointButton);
+    do { m_30->FUN_140bbe640<ASButton>("m_usePointButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_usePointButton));
     if(m_usePointButton==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(136),__FUNCTION__)); } while(0);
     do { m_30->FUN_140bc7340("m_giftLists",m_giftList);
     if(m_giftList==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(137),__FUNCTION__)); } while(0);
@@ -511,7 +511,7 @@ void UICashAttendDialog::FUN_140bc4980()
     m_giftList->FUN_1422dcf40(m_selected->GetGroupCount());
     CStringW strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",
         FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
-        FUN_14083bdc0(m_selected->FUN_140ce4090(),true,L"/",L":"));
+        FUN_14083bdc0(m_selected->GetEndTime(),true,L"/",L":"));
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
 }
 

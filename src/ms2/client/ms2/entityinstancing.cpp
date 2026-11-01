@@ -192,9 +192,11 @@
 #include <NiCloningProcess.h>
 #include <ecr/RenderService.h>
 #include "hook/ms2hook.h"
+class NiNode;
+namespace egf { class Entity; }
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
-NiAVObject* FUN_1413fa030(egf::Entity*);
+NiNode * FUN_1413fa030(egf::Entity *);  // C3: the definition's signature
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 ecr::RenderService* FUN_1413f9890();
 class WorldService   // C3: member view for the former free stand-ins

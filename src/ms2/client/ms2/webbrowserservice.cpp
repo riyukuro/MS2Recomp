@@ -185,7 +185,7 @@ void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const cha
         // the client goes through operator COffscreenWebBrowser*() (0x141b81550) and CefRefPtr<CefClient>(T*)
         CefBrowserHost::CreateBrowser(windowInfo, (COffscreenWebBrowser*)browser, (const char*)strUrl, settings, NULL);
         CefRefPtr<CefBrowser> cefBrowser = NULL;
-        browser->FUN_1416119d0(cefBrowser);
+        browser->AttachBrowser(cefBrowser);
         m_aBrowsers[nIndex] = browser;
     } else {
         browser->FUN_1416124e0(pszUnk, nUnk);

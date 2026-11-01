@@ -207,10 +207,10 @@ public:
 
     int FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PCBase* pOwner,
         MS2Ptr<Unk_SkillMagicInfo> spInfo);                 // init (the info is by value: the callee destroys it)
-    void FUN_1410a6520();                                   // release the control
+    void ReleaseGuide();                                   // release the control
     int FUN_1410a65f0(int nSkill);                          // true when the target is out of range
     bool IsReleased();                                   // +0xdd0 released
-    efd::Point3 FUN_1410a6750();                            // 12 bytes at +0xdb8
+    efd::Point3 GetOriginPosition();                            // 12 bytes at +0xdb8
     float FUN_1410a6790();                                  // +0xdc8 (0 once released)
     float FUN_1410a67d0();                                  // +0xdcc
     long long FUN_1410a67f0();

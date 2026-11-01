@@ -56,6 +56,8 @@
 #include <NiPhysXProp.h>
 #include <NiPhysXActorDesc.h>
 #include <NiPhysXD6JointDesc.h>
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/placeholder/propertycache.h"
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 #pragma pop_macro("max")
 #pragma pop_macro("min")
@@ -105,14 +107,14 @@ void FUN_141202ea0(CEquipModel* self, CString* s);
 void FUN_141202280(class CEquipModel*, class NiTransform*);   // C3: was FUN_141202280
 bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409475f0(void* sp);   void* FUN_1409475d0(void* sp);
 void* FUN_1409478e0(void* p);
-int FUN_141422110(void* a, void* b, void* c);
+unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);
 float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
-   void FUN_141167840(void* o, const CString& s, float f);
+   void FUN_141167840(NiAVObject* o, const CString& s, float f);
 bool FUN_140534e50(void* p);   unsigned FUN_1405258b0(void* p);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140599fd0(unsigned int);
+    int GetCurrentRgbComponent(unsigned int);
 };
 void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f000
 void* FUN_141b6dea0(void* out, unsigned v);   void* FUN_1414424f0(void* in, void* out, float f);   void FUN_140a0a3a0(void* out, void* in);
@@ -121,7 +123,6 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-   int FUN_1411e99a0(void* a, unsigned b, const CString& c, unsigned d, int e);
 void* FUN_1409f7cb0(void* p);   void* FUN_14098d8d0(void* tbl, void* key);   void* FUN_14098d0f0(void* sp);
 int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_140a0b300(void* o, bool b);
@@ -130,20 +131,19 @@ class Unk_NodeQueue   // the scene graph walk (applyeffect.cpp)
 public:
     Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
     ~Unk_NodeQueue();                                     // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bEnterChildren);
+    NiAVObject* Next(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void FUN_1402bd040(float* p);
 void FUN_1411dde50(void* owner, void* self);
-void FUN_141422b30(void* a, void* b, void* c, void* d, float f);
+void FUN_141422b30(struct Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
 void FUN_1409f76f0(void* p, void* node);   void FUN_1409fabf0(void* p, void* v);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 void FUN_140194470(void* dst, const void* src);
 bool FUN_140a33ff0(const NiPoint3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
-void FUN_1409457c0(egf::Entity* e, unsigned id, const float& v);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* v);
 void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
@@ -164,14 +164,15 @@ void* FUN_1411f91c0();   void FUN_141419f50(void* reg, void* model);   void FUN_
 bool FUN_1413e9750(const efd::AssetID& a, const efd::AssetID& b);
 class CPhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-   bool FUN_141689a10(CPhysXHelper* h, egf::Entity* e);
+class NxGroupsMask;
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14168a540(int);
     void FUN_14168a570();
+    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
+    bool FUN_141689a10(egf::Entity* pEntity);
 };
-void FUN_141689ec0(CPhysXHelper* h, egf::Entity* e, int n, void* params, int m);
 class CPonyTailPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
@@ -192,13 +193,9 @@ size_t FUN_14028b4c0(void* v);   CString* FUN_140fe01a0(void* v, unsigned __int6
 bool FUN_14028d470(float a, float b);
 void FUN_14120a440(void* p, void* v);
 void FUN_141205320(void* s);   void FUN_141205530(void* s);
-void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
-bool FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
 void* FUN_141c43700(void* a, int b, unsigned c, int d);
 void FUN_141c435b0(void* a, int b, unsigned c, void* pName);   // RegisterCallback(type, seq, const NiFixedString&)
 bool FUN_140d821f0(void* p);
-char FUN_140de0b00(void* pChar, char c);
-void* FUN_14208ae50(void* pStr, void* pOut, size_t n);
 
 // Unit-local runtime-type helpers (the exe emits them as out-of-line functions next to the model code).
 class Unk_KfmTyped
@@ -253,8 +250,7 @@ struct Unk_KfmAssetIDAccess
         void* pUrn = (void*)&p->GetURN();
         size_t nLen = ((efd::utf8string*)(void*)(pUrn))->length();
         if (nLen != 0) {
-            char t[16];
-            if (FUN_140de0b00(FUN_14208ae50(pUrn, t, nLen - 1), ':') != 0)
+            if (((const efd::utf8string*)(void*)(pUrn))->operator[](nLen - 1) == ':')
                 ((efd::utf8string*)(void*)(pUrn))->clear();
         }
     }
@@ -285,8 +281,6 @@ void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
 #define V1(R, o, off, T, a) (((R(*)(void*, T))VSLOT(o, off))(o, a))
 
 #define CFG ((Unk_KfmConfig*)m_unk_20)
-#define F8(self) ((void*)((char*)(self) + 0xf8))
-#define PAIR_BEGIN(self, it, end) FUN_141209360(F8(self), end); FUN_141209190(F8(self), it)
 
 // ---- static data (.text$di) ----
 #ifdef __clang__
@@ -346,7 +340,7 @@ int CKfmModel::vfunc_4(CString strPath)
     FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bFlag);
     if (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()) != 0)
         return 1;
-    FUN_141440a70();
+    ApplyAnimNames();
     if (FUN_1411cf2d0(reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()), m_spEntity.operator egf::Entity*(), 0) != 0)
         ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->AddModel(this);
     return 1;
@@ -454,7 +448,7 @@ int CKfmModel::vfunc_8() { return 1; }
 // @0x14143e1b0
 int CKfmModel::vfunc_9()
 {
-    if (!FUN_141689a10(((class CPhysXHelper*)FUN_1409f7ca0()), m_spEntity.operator egf::Entity*()))
+    if (!((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(m_spEntity.operator egf::Entity*()))
         return m_nState;
     return m_nState != 0 && m_bPhysicsLoaded != 0;
 }
@@ -468,15 +462,15 @@ void CKfmModel::vfunc_10()
     if (((class CItemData*)(void*)(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7f0()))->FUN_14053cfd0()) {
         {
             CString s("HR:0");
-            FUN_141167840(vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
         }
         {
             CString s("HR0:0");
-            FUN_141167840(vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
         }
         {
             CString s("HR1:1");
-            FUN_141167840(vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 1));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 1));
         }
     }
 }
@@ -500,21 +494,18 @@ void CKfmModel::vfunc_11()
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
-        Unk_KfmColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->FUN_140599fd0(i));
+        Unk_KfmColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
         if (i == 1) {
-            NiColor kScaled(FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->FUN_140599fd0(0)).FUN_1414424f0(1.3f));
+            NiColor kScaled(FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0)).FUN_1414424f0(1.3f));
             kColor = kScaled;
         }
         void* pRoot = vfunc_14();
         if (pRoot != 0)
             FUN_141b6f000((class NiAVObject*)(pRoot), i, *(struct Unk_Colc const*)(&kColor));
-        struct Unk_SetIt { void* p; };
-        void* pRange = F8(this);
-        Unk_SetIt itEnd;
-        FUN_141209360(pRange, &itEnd);
-        Unk_SetIt it;
-        for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-            NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+        std::set<NiAVObjectPtr>& rRange = m_unk_f8;
+        std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+        for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+            NiAVObjectPtr sp(*it);
             if (sp.operator NiAVObject*() != 0)
                 FUN_141b6f000((class NiAVObject*)(sp.operator NiAVObject*()), i, *(struct Unk_Colc const*)(&kColor));
         }
@@ -539,16 +530,13 @@ void CKfmModel::vfunc_12()
     if (m_spNode.operator==((NiNode*)0) != 0)
         return;
     std::set<NiAVObjectPtr> kSet;
-    if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &kSet) != 0) {
-        struct Unk_SetIt { void* p; };
-        void* pRange = &kSet;
-        Unk_SetIt itEnd;
-        FUN_141209360(pRange, &itEnd);
-        Unk_SetIt it;
-        for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-            NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+    if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet) != 0) {
+        std::set<NiAVObjectPtr>& rRange = kSet;
+        std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+        for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+            NiAVObjectPtr sp(*it);
             if (sp.operator NiAVObject*() != 0) {
-                if (FUN_141440f20()) {
+                if (IsDefaultScale()) {
                     NiNode* pParent = (NiNode*)m_spNode.operator->();
                     pParent->AttachChild((NiAVObject*)sp.operator NiAVObject*(), true);
                 }
@@ -575,7 +563,7 @@ void CKfmModel::vfunc_13()
     MS2Ptr<CItem> spItem = ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem();
     if (spItem.operator!() != 0)
         return;
-    int nResult = FUN_1411e99a0(((void*)((class PC*)(void*)(pActor))->FUN_1416561a0()), spItem->FUN_140527a20(),
+    int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->FUN_1416561a0())->FUN_1411e99a0(spItem->FUN_140527a20(),
                                 ((CEquipModel*)this)->FUN_1412029d0(), spItem->FUN_1405258b0(),
                                 ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     if (nResult != 0) {
@@ -587,14 +575,11 @@ void CKfmModel::vfunc_13()
         if (pTarget == 0)
             return;
         std::set<NiAVObjectPtr> kSet;
-        if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &kSet) != 0) {
-            struct Unk_SetIt { void* p; };
-            void* pRange = &kSet;
-            Unk_SetIt itEnd;
-            FUN_141209360(pRange, &itEnd);
-            Unk_SetIt it;
-            for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-                NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+        if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet) != 0) {
+            std::set<NiAVObjectPtr>& rRange = kSet;
+            std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+            for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+                NiAVObjectPtr sp(*it);
                 sp.operator->()->SetLocalTransform(kXf * sp.operator->()->GetLocalTransform());
                 pTarget->AttachChild((NiAVObject*)sp.operator NiAVObject*(), true);
                 m_unk_f8.insert(sp);
@@ -618,13 +603,10 @@ int CKfmModel::vfunc_15()
     void* pRoot = vfunc_14();
     if (pRoot != 0 && FUN_141422f30((class NiAVObject*)(pRoot)) != 0)
         return 1;
-    struct Unk_SetIt { void* p; };
-    void* pRange = F8(this);
-    Unk_SetIt itEnd;
-    FUN_141209360(pRange, &itEnd);
-    Unk_SetIt it;
-    for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-        NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+    std::set<NiAVObjectPtr>& rRange = m_unk_f8;
+    std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+    for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+        NiAVObjectPtr sp(*it);
         if (sp.operator NiAVObject*() != 0 && FUN_141422f30((class NiAVObject*)(sp.operator NiAVObject*())) != 0)
             return 1;
     }
@@ -649,16 +631,13 @@ void CKfmModel::vfunc_17()
     CEquipModel::vfunc_17();
     bool bVisible = (m_nState != 0 && vfunc_20() != 0) ? true : false;
     bool bHide = (bVisible == 0);
-    struct Unk_SetIt { void* p; };
-    void* pRange = F8(this);
-    Unk_SetIt itEnd;
-    FUN_141209360(pRange, &itEnd);
-    Unk_SetIt it;
-    for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-        NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+    std::set<NiAVObjectPtr>& rRange = m_unk_f8;
+    std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+    for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+        NiAVObjectPtr sp(*it);
         Unk_AeSceneIter kIter((NiAVObject*)((NiAVObject*)sp.operator NiAVObject*()));
         NiAVObject* pObject;
-        while ((pObject = kIter.FUN_14098e0d0(true)) != 0) {
+        while ((pObject = kIter.Next(true)) != 0) {
             void* pMesh = NiObject::DynamicCast(&NiMesh::ms_RTTI, pObject);
             if (pMesh != 0)
                 ((NiAVObject*)pMesh)->SetAppCulled(bHide);
@@ -666,7 +645,7 @@ void CKfmModel::vfunc_17()
     }
     Unk_AeSceneIter kIter((NiAVObject*)((NiAVObject*)vfunc_14()));
     NiAVObject* pObject;
-    while ((pObject = kIter.FUN_14098e0d0(true)) != 0) {
+    while ((pObject = kIter.Next(true)) != 0) {
         void* pMesh = NiObject::DynamicCast(&NiMesh::ms_RTTI, pObject);
         if (pMesh != 0)
             ((NiAVObject*)pMesh)->SetAppCulled(bHide);
@@ -721,7 +700,7 @@ void CKfmModel::vfunc_22(float f)
 {
     m_fScale44 = f;
     if (m_spEntity.operator egf::Entity*() != 0)
-        FUN_1409457c0(m_spEntity.operator->(), 0x2d7cad2d, m_fScale44);
+        reinterpret_cast<Unk_CachedEntity*>(m_spEntity.operator->())->SetPropertyValue<float>(0x2d7cad2d, m_fScale44);
     FUN_14143f3d0();
 }
 
@@ -766,8 +745,8 @@ void CKfmModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
     reinterpret_cast<Unk_KfmModelSlots*>(this)->vfunc_26(*(NiPoint3*)pRotDeg);
     vfunc_22(fScale);
     std::set<NiAVObjectPtr> kSet;
-    FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &kSet);
-    FUN_141422b30(this, &kSet, (void*)&efd::Point3::ZERO, (void*)&efd::Point3::ZERO, 1.0f);
+    FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet);
+    FUN_141422b30((struct Unk_PickTarget*)this, kSet, *(const struct Vector3*)&efd::Point3::ZERO, *(const struct Vector3*)&efd::Point3::ZERO, 1.0f);
 }
 
 // @0x14143fc70
@@ -812,7 +791,7 @@ void CKfmModel::vfunc_31()
         return;
     NxGroupsMask kMask;
     kMask.bits0 = 0; kMask.bits1 = 0; kMask.bits2 = 0; kMask.bits3 = 0;
-    FUN_141689ec0(((class CPhysXHelper*)FUN_1409f7ca0()), TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()), 0, &kMask, 0);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()), 0, &kMask, 0);
     if (CFG->m_bPhysics != 0)
         CPonyTailPhysXHelper::UpdateModelPhysXValues((struct Unk_PickTarget*)(this), (void const*)((char*)m_unk_20 + 0xb8));
 }
@@ -847,7 +826,7 @@ NiActorManager* CKfmModel::FUN_1414400d0()
 }
 
 // @0x141440110
-void CKfmModel::FUN_141440110(const CString& strBone, float f)
+void CKfmModel::SetPonyTailDamping(const CString& strBone, float f)
 {
     for (unsigned int i = 0; i < 4; ++i) {
         Unk_KfmPonyTail* p = &CFG->m_aPonyTail[i];
@@ -858,7 +837,7 @@ void CKfmModel::FUN_141440110(const CString& strBone, float f)
 }
 
 // @0x1414401b0
-void CKfmModel::FUN_1414401b0(const CString& strBone, float x, float y, float z)
+void CKfmModel::SetPonyTailOffset(const CString& strBone, float x, float y, float z)
 {
     for (unsigned int i = 0; i < 4; ++i) {
         Unk_KfmPonyTail* p = &CFG->m_aPonyTail[i];
@@ -872,7 +851,7 @@ void CKfmModel::FUN_1414401b0(const CString& strBone, float x, float y, float z)
 }
 
 // @0x141440270
-void CKfmModel::FUN_141440270(unsigned int nSeq)
+void CKfmModel::PlaySequence(unsigned int nSeq)
 {
     bool bEmpty = FUN_140de8ea0(FUN_141b6f910()->GetAnimationNameFromId(FUN_14143ff70(), nSeq), efd::utf8string::NullString());
     if (bEmpty)
@@ -947,7 +926,7 @@ void CKfmModel::CreateEntity()
     void* pDummy = &nScratch;
     m_spEntity.operator=(
         ((Unk_KfmEntWorld*)FUN_1409670f0())->FUN_1411cec80(FUN_141201780(), FUN_142132a40(pDummy), true));
-    TSingleton<CItemService>::GetInstance()->FUN_141419f50(this);
+    TSingleton<CItemService>::GetInstance()->RegisterModel(this);
 }
 
 // @0x1414409f0
@@ -955,13 +934,13 @@ void CKfmModel::DestroyEntity()
 {
     if (m_spEntity.operator==((egf::Entity*)0))
         return;
-    TSingleton<CItemService>::GetInstance()->FUN_14141a000(this);
+    TSingleton<CItemService>::GetInstance()->UnregisterModel(this);
     CMainSystem::DestroyEntity(m_spEntity.operator egf::Entity*());
     m_spEntity.operator=((egf::Entity*)0);
 }
 
 // @0x141440a70
-void CKfmModel::FUN_141440a70()
+void CKfmModel::ApplyAnimNames()
 {
     std::vector<CString>& kNames = CFG->m_arrAnimNames;
     for (unsigned int i = 0; i < kNames.size(); ++i) {
@@ -982,17 +961,14 @@ void CKfmModel::FUN_141440bc0()
             efd::Point3 kPos = ((efd::Point3*)((char*)pData + 0x60))[CFG->m_nIndex];
             efd::Point3 kRot = ((efd::Point3*)((char*)pData + 0x78))[CFG->m_nIndex];
             std::set<NiAVObjectPtr> kSet;
-            FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &kSet);
+            FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet);
             efd::Matrix3 kMat;
             kMat.FromEulerAnglesXYZ((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                 (kRot.z * 3.1415927f) / 180.0f);
-            struct Unk_SetIt { void* p; };
-            void* pRange = &kSet;
-            Unk_SetIt itEnd;
-            FUN_141209360(pRange, &itEnd);
-            Unk_SetIt it;
-            for (FUN_141209190(pRange, &it); FUN_140b029f0(&it, &itEnd); FUN_140b02a80(&it)) {
-                NiAVObjectPtr sp(*(NiAVObjectPtr*)FUN_140b02a60(&it));
+            std::set<NiAVObjectPtr>& rRange = kSet;
+            std::set<NiAVObjectPtr>::iterator itEnd = rRange.end();
+            for (std::set<NiAVObjectPtr>::iterator it = rRange.begin(); it != itEnd; ++it) {
+                NiAVObjectPtr sp(*it);
                 sp->SetTranslate(kPos);
                 sp->SetRotate(kMat);
                 sp->SetScale(fScale);
@@ -1003,7 +979,7 @@ void CKfmModel::FUN_141440bc0()
 }
 
 // @0x141440f20
-bool CKfmModel::FUN_141440f20()
+bool CKfmModel::IsDefaultScale()
 {
     if (m_unk_20 == 0)
         return false;
@@ -1013,7 +989,7 @@ bool CKfmModel::FUN_141440f20()
 // @0x141440f60
 void CKfmModel::FUN_141440f60()
 {
-    if (FUN_141440f20())
+    if (IsDefaultScale())
         return;
     if (m_spNode.operator NiNode*() == 0)
         return;
@@ -1093,43 +1069,29 @@ void CKfmModel::FUN_14143f3d0()
     }
 }
 
-// ---- egf::Entity keyed-property write with change tracking (exe-specific inline; first used by FUN_141440a70) ----
+// ---- egf::Entity keyed-property write with change tracking (exe-specific inline; first used by ApplyAnimNames) ----
 struct Unk_KfmEntityAccess : egf::Entity
 {
     using egf::Entity::GetPropertyValueUnsafe;
     using egf::Entity::SetPropertyValueUnsafe;
 };
-unsigned FUN_1408a2000();
-void* FUN_1413f83e0(void* tbl, void* itOut, unsigned* pId);   void* FUN_1413f7220(void* tbl, void* out);
-bool FUN_1413e9590(void* a, void* b);   void* FUN_1413e9c00(void* it);
-void* FUN_1413f8680(void* tbl, void* out, const efd::utf8string* kKey);   void* FUN_1413f7400(void* tbl, void* out);
-bool FUN_1413e96d0(void* a, void* b);   void* FUN_1413e9a80(void* tbl, unsigned* pId);
-void* FUN_1413e9b80(void* tbl, const efd::utf8string* kKey);   void* FUN_140947490(void* out, unsigned id, void* p, unsigned nType);
 
 
 // @0x1414410b0
 void FUN_1414410b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, void* pVal)
 {
-    struct Unk_Rec { void* p[3]; };
-    struct Unk_It { void* p; };
-    if (*(bool*)((char*)e + 0xc8)) {
-        Unk_It itOuter;
-        Unk_It kEnd;
-        FUN_1413f83e0((char*)e + 0xe0, &itOuter, &id);
-        if (FUN_1413e9590(&itOuter, FUN_1413f7220((char*)e + 0xe0, &kEnd)) != 0) {
+    if (((Unk_CachedEntity*)e)->m_bCaching) {
+        efd::map<unsigned, efd::map<efd::utf8string, Unk_PropertyCacheEntry> >::iterator itOuter = ((Unk_CachedEntity*)e)->m_mapKeyedCache.find(id);
+        if (itOuter == ((Unk_CachedEntity*)e)->m_mapKeyedCache.end()) {
             efd::utf8string kTmp;
-            ((Unk_KfmEntityAccess*)e)->GetPropertyValueUnsafe(id, *kKey, &kTmp, FUN_1408a2000());
-            Unk_Rec rec;
-            *(Unk_Rec*)FUN_1413e9b80(FUN_1413e9a80((char*)e + 0xe0, &id), kKey) = *(Unk_Rec*)FUN_140947490(&rec, id, new efd::utf8string(kTmp), FUN_1408a2000());
+            ((Unk_KfmEntityAccess*)e)->GetPropertyValueUnsafe(id, *kKey, &kTmp, efd::GetClassIDFromType<efd::utf8string>());
+            ((Unk_CachedEntity*)e)->m_mapKeyedCache[id][*kKey] = Unk_PropertyCacheEntry(id, new efd::utf8string(kTmp), efd::GetClassIDFromType<efd::utf8string>());
         } else {
-            Unk_It itInner;
-            Unk_It kEnd2;
-            FUN_1413f8680((char*)FUN_1413e9c00(&itOuter) + 8, &itInner, kKey);
-            if (FUN_1413e96d0(&itInner, FUN_1413f7400((char*)FUN_1413e9c00(&itOuter) + 8, &kEnd2)) != 0) {
+            efd::map<efd::utf8string, Unk_PropertyCacheEntry>::iterator itInner = itOuter->second.find(*kKey);
+            if (itInner == itOuter->second.end()) {
                 efd::utf8string kTmp;
-                ((Unk_KfmEntityAccess*)e)->GetPropertyValueUnsafe(id, *kKey, &kTmp, FUN_1408a2000());
-                Unk_Rec rec;
-                *(Unk_Rec*)FUN_1413e9b80((char*)FUN_1413e9c00(&itOuter) + 8, kKey) = *(Unk_Rec*)FUN_140947490(&rec, id, new efd::utf8string(kTmp), FUN_1408a2000());
+                ((Unk_KfmEntityAccess*)e)->GetPropertyValueUnsafe(id, *kKey, &kTmp, efd::GetClassIDFromType<efd::utf8string>());
+                itOuter->second[*kKey] = Unk_PropertyCacheEntry(id, new efd::utf8string(kTmp), efd::GetClassIDFromType<efd::utf8string>());
             }
         }
     }
@@ -1139,7 +1101,7 @@ void FUN_1414410b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, voi
 void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd::utf8string* pVal)
 {
     FUN_1414410b0(e, id, kKey, pVal);
-    ((Unk_KfmEntityAccess*)e)->SetPropertyValueUnsafe(id, *kKey, pVal, FUN_1408a2000());
+    ((Unk_KfmEntityAccess*)e)->SetPropertyValueUnsafe(id, *kKey, pVal, efd::GetClassIDFromType<efd::utf8string>());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2290-0x142cb2320 .text$yd

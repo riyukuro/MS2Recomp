@@ -52,8 +52,8 @@ int FUN_141421230(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<PCInfo> 
         return 0;
     if (!reinterpret_cast<CItemData*>(spFirst->FUN_140527840())->FUN_14053d510())
         return 0;
-    MS2Ptr<CItem> spHead = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(4));
-    MS2Ptr<CItem> spBody = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(5));
+    MS2Ptr<CItem> spHead = spPc->GetEquipItemSet1(static_cast<Unk_InventoryEquipSlot>(4));
+    MS2Ptr<CItem> spBody = spPc->GetEquipItemSet1(static_cast<Unk_InventoryEquipSlot>(5));
     if ((spHead.get() ? true : false) && (spBody.get() ? true : false))
     {
         if (!reinterpret_cast<CItemData*>(spHead->FUN_140527840())->FUN_14053d510())

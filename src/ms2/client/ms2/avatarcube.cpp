@@ -58,11 +58,6 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_1410280d0(int nKind, CString strName);
 
 // The avatar-attend manager (singleton behind FUN_1403ed2d0): the avatar object registered under an id.
-class Unk_AttendAvatarMgr
-{
-public:
-    void* FUN_141bd1180(unsigned int nId);
-};
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(AvatarCube);
 
@@ -148,7 +143,7 @@ unsigned int FUN_1409f2cd0()
 {
     for (unsigned int nId = 0x410; nId < 0x41a; nId++)
     {
-        if (((class Unk_AttendAvatarMgr*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
+        if (WorldService::GetInstance()->FUN_141bd1180(nId) == 0)
             return nId;
     }
     return 0;

@@ -57,7 +57,8 @@ public:
 };
 #define TD_ROOT static_cast<Unk_TdRoot*>(m_30.operator->())
 
-class Unk_TdEquipSet { public: float FUN_1411e1110(int nStat); };
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -416,7 +417,7 @@ void UITradeDialogEx::FUN_141b284b0()
             __int64 nMax = FUN_14087d0f0();
             int nMaxChars = FUN_1409404f0(nMax).GetLength();
             static_cast<ASTextField*>(m_spMyInputText.operator->())->SetMaxChars(nMaxChars);
-            m_spMyInputText->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b29330), 0, 0);
+            reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b29330), 0, 0);
         }
     }
     m_spTargetInput = TD_ROOT->FUN_140bbe880<ASTextInput>("m_targetInputMeso");
@@ -483,7 +484,7 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
         PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
-        fReduce = reinterpret_cast<Unk_TdEquipSet*>(pPlayer->FUN_1416561a0())->FUN_1411e1110(0x40);
+        fReduce = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0x40);
         if (((class PC*)(class PC*)(pPlayer))->FUN_141662de0() != 0)
             bVip = 1;
     }

@@ -14,12 +14,12 @@ public:
     virtual void vfunc_43();
     // @0x140e65860
     virtual int vfunc_48() { return 0x4f70; }
-    void FUN_140e641d0(int mode, int time);
+    void Show(int mode, int time);
     void FUN_140e64270();
     void FUN_140e64590(int time);
-    void FUN_140e646e0();
-    void FUN_140e647c0(int event, struct Unk_CoupleEvent* data);
-    void FUN_140e648d0();
+    void Hide();
+    void OnCoupleEvent(int event, struct Unk_CoupleEvent* data);
+    void UpdatePosition();
     void FUN_140e64a10(int dance);
     void SendPlayArcade(int dance);
     void FUN_140e64c00();

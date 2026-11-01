@@ -25,7 +25,9 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiadventureleveldialog.cpp"
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiadventureleveldialog.h"
 
@@ -48,6 +50,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
@@ -88,17 +91,7 @@ void FUN_141415600(const CString& strBindID);                           // relea
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 
-// A skill record (club / ability icon): CPtred + 0xa8 bytes of data; FUN_1401756c0 copies the icon path.
-class Unk_ALSkillAttr : public CPtred
-{
-public:
-    CString FUN_1401756c0();
-    char m_pad_18[0xa8];
-    CString m_c0;
-};
-MS2_CHECK_OFFSET(Unk_ALSkillAttr, m_c0, 0xc0);
-extern template class MS2Ptr<Unk_ALSkillAttr>;
-class Unk_ALSkillTable { public: MS2Ptr<Unk_ALSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
+extern template class MS2Ptr<AdditionalLevelData>;
 
 // An ability of the adventure level (a skill per character level step).
 class Unk_ALAbility
@@ -216,22 +209,8 @@ CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_ALList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                           // clear
-    void FUN_1422dd230(const ASObj& row);                           // append a row
-};
 
-template <> bool MS2Ptr<Unk_ALList>::operator==(Unk_ALList* p) const;      // COMDAT 0x140ba4ee0 of this unit
+template <> inline bool MS2Ptr<ASTileList>::operator==(ASTileList* p) const;      // COMDAT 0x140ba4ee0 (inline: uiblackmarketpagemeso and uidungeonroomdialog instantiate it too)
 
 // The reward-claim packets (op, id): written into packet 0xac.
 class Unk_ALClaimLevel
@@ -348,9 +327,9 @@ void UIAdventureLevelDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
     if (pAbility->m_0 == 0)
         return;
     unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-    MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
+    MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
     if (spAttr == NULL) {
-        spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
+        spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
         if (spAttr == NULL)
             return;
     }
@@ -453,7 +432,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_abilityList");
+    MS2Ptr<ASTileList> spList = FUN_140ba4b70("m_abilityList");
     if (spList == NULL)
         return;
     spList->Invoke("resetRenderer");
@@ -463,9 +442,9 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
         unsigned int* pId = it.FUN_1401957b0();
         Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(*pId);
         unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
-        MS2Ptr<Unk_ALSkillAttr> spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, nStep);
+        MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
         if (spAttr == NULL) {
-            spAttr = reinterpret_cast<Unk_ALSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(pAbility->m_0, 1);
+            spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
             if (spAttr == NULL)
                 continue;
         }
@@ -477,7 +456,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
         ASObj obj(2);
         obj.FUN_1409c0d20("id", pAbility->m_0);
         obj.FUN_1407cbbe0("isLock", bLock);
-        obj.FUN_1407cba60("imgPath", spAttr->FUN_1401756c0());
+        obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
         obj.FUN_1409c4a30("abilityStatus", pAbility->FUN_140195a20(pPlayer->vfunc_141()));
         if (bLock)
             obj.FUN_1409c0d20("level", pAbility->m_8);
@@ -496,7 +475,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_missionList");
+    MS2Ptr<ASTileList> spList = FUN_140ba4b70("m_missionList");
     if (spList == NULL)
         return;
     spList->Invoke("resetRenderer");
@@ -666,11 +645,11 @@ float FUN_140ba4b50(Unk_ALConstU32* p)
 }
 
 // @0x140ba4b70
-MS2Ptr<Unk_ALList> UIAdventureLevelDialog::FUN_140ba4b70(const CString& strName)
+MS2Ptr<ASTileList> UIAdventureLevelDialog::FUN_140ba4b70(const CString& strName)
 {
     if (m_30 == NULL)
-        return MS2Ptr<Unk_ALList>(0);
-    return m_30->FUN_140accef0<Unk_ALList>(strName);
+        return MS2Ptr<ASTileList>(0);
+    return m_30->FUN_140accef0<ASTileList>(strName);
 }
 
 // @0x140ba4c00
@@ -693,7 +672,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const AScript
 }
 
 // @0x140ba4ee0
-template <> bool MS2Ptr<Unk_ALList>::operator==(Unk_ALList* p) const
+template <> inline bool MS2Ptr<ASTileList>::operator==(ASTileList* p) const
 {
     return m_p == p;
 }

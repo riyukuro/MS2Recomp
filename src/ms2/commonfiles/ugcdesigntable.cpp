@@ -55,11 +55,10 @@ bool CUGCDesignTable::s_bInit;
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-class Unk_140165cf0
-{
+class Unk_140165cf0 : public Unk_XmlNode {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);      // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);      // NextSiblingElement
+
+
 };
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0

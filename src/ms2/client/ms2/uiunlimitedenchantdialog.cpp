@@ -32,6 +32,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/equipitem.h"  // C3
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -60,14 +61,12 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dcca0(int nIndex);                                  // select an entry (-1: none)
-    void FUN_1422dd1d0();                                            // clear
 };
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
-class Unk_BackUpItem : public CPtred { public: MS2Ptr<CItem> FUN_1411dc7a0(); };
+class Unk_BackUpItem : public CEquipItem { };
 class Unk_PCItems { public: };
 bool FUN_140b02900(const MS2Ptr<Unk_BackUpItem>& sp);                  // IsNull
 bool FUN_140534e50(const MS2Ptr<CItem>& sp);                           // IsNull
@@ -82,7 +81,6 @@ public:
 };
 
 // The enchant limit table (one of the CItem checks of the itemenchantlimittable unit).
-class Unk_UeLimitTable { public: int FUN_14058e3a0(CItem* pItem); };
 
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
@@ -105,7 +103,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                  // strin
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
-CStringW FUN_1419021b0(int nHave, int nNeed);                    // "have/need"
+CStringW FUN_1419021b0(unsigned int, unsigned int);                    // "have/need"
 CStringW FUN_1409404f0(__int64 nValue);                          // money text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void* FUN_140967100();
@@ -119,6 +117,7 @@ extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 template <> MS2Ptr<Unk_UeBag>::MS2Ptr(int nNull);                    // 0x140acd430
@@ -258,8 +257,8 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
             FUN_140d432d0(&m_binder, nFlags);
             FUN_140d432f0(&m_binder, 8);
             ASObj data(2);
-            data.FUN_1407cba60("targetBinding", m_binder.FUN_140d43790(spTarget.get()));
-            data.FUN_1407cba60("resultBinding", m_binder.FUN_140d43790(spResult.get()));
+            data.FUN_1407cba60("targetBinding", m_binder.BindItem(spTarget.get()));
+            data.FUN_1407cba60("resultBinding", m_binder.BindItem(spResult.get()));
             data.FUN_1407cbb20("targetItemName", spTarget->FUN_140527b10());
             data.FUN_1407cbb20("resultItemName", spResult->FUN_140527b10());
             __int64 nFee = 0;
@@ -275,7 +274,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
                 {
                     ASObj entry(2);
-                    entry.FUN_1407cba60("binding", m_binder.FUN_140d43790(pIngredient));
+                    entry.FUN_1407cba60("binding", m_binder.BindItem(pIngredient));
                     entry.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nCount));
                     list.FUN_1422bbf00(entry);
                 }
@@ -356,7 +355,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             MS2Ptr<Unk_BackUpItem> spEquip = equips.GetAt(pos);
             if (FUN_140b02900(spEquip))
                 continue;
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+            MS2Ptr<CItem> spItem = reinterpret_cast<MS2Ptr<CEquipItem>&>(spEquip)->GetItem();
             if (FUN_140534e50(spItem))
                 continue;
             if (FUN_140fb7870(MS2Ptr<CItem>(spItem)) != 0)
@@ -368,8 +367,8 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
         FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x535, 8);
         if (MS2Ptr<Unk_UeBag> spBag = FUN_140ba4b70("m_itemBag"))
         {
-            spBag->FUN_1422dcca0(-1);
-            spBag->FUN_1422dd1d0();
+            reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);
+            reinterpret_cast<MS2Ptr<ASCoreList>&>(spBag)->FUN_1422dd1d0();
             spBag->FUN_1407cba60("bagId", GetTypeName());
             spBag->vfunc_24(true);
         }
@@ -432,10 +431,10 @@ void UIUnlimitedEnchantDialog::FUN_140fb7690(__int64 nUid)
     if (MS2Ptr<Unk_UeBag> spBag = FUN_140ba4b70("m_itemBag"))
     {
         spBag->Invoke("update");
-        spBag->FUN_1422dcca0(-1);
+        reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);
         spBag->vfunc_24(true);
         if (nSelected != 0xffffffff)
-            spBag->FUN_1422dcca0(nSelected);
+            reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(nSelected);
     }
 }
 
@@ -451,7 +450,7 @@ Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> 
     int nLevel = spItem->FUN_140527270();
     if (nLevel == 0)
     {
-        if (reinterpret_cast<Unk_UeLimitTable*>(TSingleton<CItemEnchantLimitTable>::GetInstance())->FUN_14058e3a0(spItem.get()) == 0)
+        if (reinterpret_cast<CItemEnchantLimitTable*>(TSingleton<CItemEnchantLimitTable>::GetInstance())->IsMaxGrade(spItem.get()) == 0)
             return UNLIMITED_ENCHANT_INVALID_ITEM;
     }
     if (nLevel == spData->GetUnlimitedEnchantMaxGrade())

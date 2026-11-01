@@ -44,20 +44,20 @@ CNPSMan::CNPSMan()
 // @0x140db8e30
 CNPSMan::~CNPSMan()
 {
-    FUN_140db8f30();
+    ShowSurvey();
 }
 
 // @0x140db8eb0
-void CNPSMan::FUN_140db8eb0()
+void CNPSMan::ArmSurvey()
 {
     m_bArmed = true;
     m_strSurveyUrl = FUN_140d86260()->vfunc_75();
 }
 
 // @0x140db8f30
-void CNPSMan::FUN_140db8f30()
+void CNPSMan::ShowSurvey()
 {
-    if (!FUN_140db9110())
+    if (!HasPlayerHandle())
         return;
     if (!IsArmed())
         return;
@@ -98,7 +98,7 @@ void CNPSMan::FUN_140db90e0(CStringW& strText)
 }
 
 // @0x140db9110
-bool CNPSMan::FUN_140db9110()
+bool CNPSMan::HasPlayerHandle()
 {
     if (m_hPlayer == 0)
         return false;

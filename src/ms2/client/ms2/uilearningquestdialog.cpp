@@ -97,7 +97,7 @@ struct Unk_LqOptions { char m_pad_00[0x50]; unsigned char m_50; unsigned char* F
 bool FUN_140930b70();
 UIStatusEventDispatcher* FUN_140aa6d40();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-int FUN_14074bd10(int nQuestId);                                            // sort key (a short)
+unsigned short FUN_14074bd10(int);  // C3: the definition's signature
 class Unk_140acd6e0 : public ASMovieClip { public:
 };
 class Unk_LqRoot : public AScript { public:
@@ -237,7 +237,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         for (__int64 i = 0; (size_t)i < spQuest->m_rewards.size(); ++i)
         {
             const CQuestData::QuestRewardItem& item = spQuest->m_rewards[i];
-            CString strBound = m_1a8.FUN_140d43310(item.m_itemId, item.m_count, item.m_job);
+            CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
             rewardAccept.FUN_1407cba60((const char*)FUN_1401d9af0("reward{0}", &i), strBound);
         }
         FUN_140ea3570(spQuest->m_complete, rewardComplete);
@@ -555,7 +555,7 @@ void UILearningQuestDialog::FUN_140ea3570(const CQuestData::CompleteReward& rRew
     for (__int64 i = 0; (size_t)i < rReward.m_choiceRewards.GetCount(); ++i)
     {
         const CQuestData::QuestRewardItem& item = rReward.m_choiceRewards[i];
-        CString strBound = m_1a8.FUN_140d43310(item.m_itemId, item.m_count, item.m_job);
+        CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
         rOut.FUN_1407cba60((const char*)FUN_1401d9af0("reward{0}", &i), strBound);
     }
 }

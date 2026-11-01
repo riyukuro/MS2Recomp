@@ -19,7 +19,7 @@ public:
     virtual bool AlwaysUpdate() const;                          // 0x140dca080
 
     void FUN_140dc9e40(Unk_RrPoint3* pRotation);                // set the euler offset (degrees), rebuild the matrix
-    void FUN_140dc9fb0(const Unk_RrPoint3* pValue);             // set the raw point at +0x50
+    void SetAxis(const Unk_RrPoint3* pValue);             // set the raw point at +0x50
 
 private:
     MS2_LAYOUT_FRIEND;

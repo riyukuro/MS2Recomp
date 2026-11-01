@@ -28,6 +28,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uigamemenudialog.h"
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/astilelist.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -46,9 +49,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                       // clear
-    void FUN_1422dd230(const ASObj& row);                       // append a row
-    void FUN_1422cf4f0(int n);
 };
 template <> MS2Ptr<Unk_VdList> UISwfEntity::GetChild<Unk_VdList>(const CString&);    // 0x140ba4b70
 
@@ -69,7 +69,6 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-class Unk_VdGameMenu { public: void FUN_141938ae0(int nType, int n); };
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
 CVIPTable* FUN_140fb9980();                                     // CVIPTable::GetInstance (defined below)
@@ -252,7 +251,7 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
         for (unsigned i = 0; i < nCount; i++)
             m_claimedIds.AddTail(packet.ReadInt32());
         FUN_140fb9150();
-        Unk_VdGameMenu* pMenu = ((class Unk_VdGameMenu*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pMenu = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
             pMenu->FUN_141938ae0(0x4f1b, 0);
     } else if (nMode == 2) {
@@ -319,8 +318,8 @@ void UIVIPDialog::FUN_140fb9150()
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");
-    spList->FUN_1422dd1d0();
-    spList->FUN_1422cf4f0(0);
+    reinterpret_cast<MS2Ptr<ASCoreList>&>(spList)->FUN_1422dd1d0();
+    reinterpret_cast<MS2Ptr<ASTileList>&>(spList)->FUN_1422cf4f0(0);
     ATL::CAtlArray<CVIPBenefitItemPtr> items;
     FUN_140fb9980()->GetBenefitItems(items);
     for (unsigned i = 0; i < items.GetCount(); i++) {
@@ -350,7 +349,7 @@ void UIVIPDialog::FUN_140fb9150()
             row.FUN_1407cb9c0("itemConditionLock", 1);
         int bDisable = FUN_140fb9720(spBenefit->m_nId) == 0;
         row.FUN_1407cb9c0("disableButton", bDisable);
-        spList->FUN_1422dd230(row);
+        reinterpret_cast<MS2Ptr<ASCoreList>&>(spList)->AddItem(row);
     }
     spList->vfunc_24(true);
 }

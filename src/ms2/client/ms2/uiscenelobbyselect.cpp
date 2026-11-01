@@ -39,48 +39,32 @@ static CString s_stun5 = "stun";
 #include "ms2/client/ms2/uicharacterlistdialog.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
+#include "ms2/client/ms2/cameramode.h"
+#include "ms2/placeholder/uiheadupdisplay.h"
+#include "ms2/client/ms2/uiserverlistdialog.h"   // C3 type identity: UIServerListDialog
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
-class Unk_LsUIMgr                                       // the UI service (FUN_1403ed2b0)
-{
-public:
-    void FUN_141adbe00(float f, int n);
-    void FUN_141adbcd0(int n);
-    void FUN_141adbf00();
-    void FUN_141add6e0(int nUiId);
-    void FUN_141ada6f0(int nSceneId);
-    void FUN_141add040(int nUiId);
-    void FUN_141adad20(int nSceneId);
-    void FUN_141adbb40();
-    void FUN_141adba40();
-};
-class Unk_LsWorld { public: void* FUN_141bd0cc0(); };
 class Unk_LsLogin : public CInputKeyHandler
 {
 public:
-    bool FUN_14116dd30(int a, int b, int c);
 };
 class Unk_LsPlayerState { public: int m_pad0; int m_pad4; int m_8; };
-class Unk_LsCamArg { public: Unk_LsCamArg(); int m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };
-MS2_CHECK_SIZE(Unk_LsCamArg, 0x28);
-class Unk_LsCamera
+class CameraMgr
 {
 public:
     int FUN_140a18070();
-    void FUN_140aec8a0(int n);
-    bool FUN_140aeb590(Unk_LsCamArg& arg);
-    void FUN_140aed720(Unk_LsCamArg& arg);
+    void FUN_140aec8a0(bool bKeep);
+    bool GetSavedSetting(Unk_CameraSetting& kSetting);
+    void FUN_140aed720(const Unk_CameraSetting& kSetting);
     void FUN_140aed750(int a, int b);
 };
-class Unk_LsWindow { public: static int FUN_141b712e0(); };
-class Unk_LsTutorial : public CPtred { public: int FUN_141986d30(); };
 class Unk_LsCharSelect : public UICharacterListDialog
 {
 };
 class Unk_LsSceneId;
-class Unk_LsServerDlg : public UIDialog { public: void FUN_141ad2ef0(); };
+using Unk_LsServerDlg = UIServerListDialog;   // C3 type identity: Unk_LsServerDlg stood in for UIServerListDialog
 class Unk_LsDevice
 {
 public:
@@ -151,17 +135,19 @@ public:
 class Unk_LsBgScript { public: Scaleform::GFx::Value FUN_140e262c0(const char* a, const char* b); };
 typedef UIMsg Unk_LsUIMsg;
 
-Unk_LsUIMgr* FUN_1403ed2b0();
-Unk_LsWorld* FUN_1403ed2d0();
+CUIService* FUN_1403ed2b0();
+class WorldService { public: void* FUN_141bd0cc0(); int FUN_141bcfbd0(); };   // C3: worldservice.h would add the efd ID statics
+WorldService* FUN_1403ed2d0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
-Unk_LsCamera* FUN_1409478c0();
+CameraMgr* FUN_1409478c0();
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 CBuddyManager* FUN_14097a780();
 CBlockManager* FUN_140a6a830();
 HomeBlockManager* FUN_1414a5830();
 Unk_LsCharSelect* FUN_140b72de0(int nUiId);
-Unk_LsTutorial* FUN_140b624b0(int nUiId);
+UIHeadUpDisplay* FUN_140b624b0(int nUiId);
+int FUN_141b712e0();
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 int FUN_141acdeb0();
@@ -174,7 +160,6 @@ public:
     int GetPrevSubSceneId();
 };
 int FUN_140e85580(class Unk_SmPlayerState*);   // C3: was FUN_140e85580
-int FUN_141bcfbd0(Unk_LsWorld* pWorld);
 CStringW TakeScreenshotJpg(int a, int b);
 void FUN_140930150(int n);
 void FUN_14151f460(int n);
@@ -226,9 +211,9 @@ void UISceneLobby::vfunc_48(int n)
     FUN_140a6a830()->ClearBlocks();
     FUN_1414a5830()->FUN_140a47940();
     {
-        MS2Ptr<Unk_LsTutorial> spTutorial(FUN_140b624b0(0x4e32));
+        MS2Ptr<UIHeadUpDisplay> spTutorial(FUN_140b624b0(0x4e32));
         if (spTutorial.get() != 0) {
-            if (spTutorial->FUN_141986d30() == 0) FUN_1403ed2b0()->FUN_141add040(0x4e32);
+            if (spTutorial->FUN_141986d30() == 0) FUN_1403ed2b0()->FUN_141add040((eUIClassID)0x4e32);
         }
     }
     FUN_1422e7950();
@@ -258,8 +243,8 @@ int UISceneLobby::vfunc_13()
         if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0)) {
             if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x16, 1, 0)) {
                 if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x38, 1, 0)) {
-                    if (((class Unk_LsWindow*)FUN_140aadf80()) != 0) {
-                        FUN_141b91b20(((class Unk_LsWindow*)FUN_140aadf80())->FUN_141b712e0() == 1);
+                    if (FUN_140aadf80() != 0) {
+                        FUN_141b91b20((FUN_140aadf80(), FUN_141b712e0()) == 1);
                     }
                     return 1;
                 }
@@ -328,8 +313,8 @@ void UISceneLobbyCreate::OnLoadComplete()
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
         if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e26) != 0) {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
+            (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4e26)));
+            (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef2)));
         }
     }
 }
@@ -351,8 +336,8 @@ void UISceneLobbyCreate::vfunc_49(int n)
     reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ef2);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
-        Unk_LsCamArg arg;
-        if (FUN_1409478c0()->FUN_140aeb590(arg)) {
+        Unk_CameraSetting arg;
+        if (FUN_1409478c0()->GetSavedSetting(arg)) {
             FUN_1409478c0()->FUN_140aed720(arg);
             FUN_1409478c0()->FUN_140aed750(4, 1);
         }
@@ -366,8 +351,8 @@ void UISceneLobbyCreate::vfunc_12()
 {
     UISwfEntity::vfunc_12();
     if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e26) != 0) {
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e26)));
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef2)));
+        (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4e26)));
+        (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef2)));
     }
 }
 MS2_REPLACE_METHOD(0x141ACE1B0, UISceneLobbyCreate, vfunc_12, 82, 0xF8577C97);
@@ -407,8 +392,8 @@ void UISceneLobbySelect::vfunc_49(int n)
     FUN_14151f460(1);
     FUN_1409478c0()->FUN_140aec8a0(0);
     if (FUN_1409478c0()->FUN_140a18070() != 0) {
-        Unk_LsCamArg arg;
-        if (FUN_1409478c0()->FUN_140aeb590(arg)) {
+        Unk_CameraSetting arg;
+        if (FUN_1409478c0()->GetSavedSetting(arg)) {
             FUN_1409478c0()->FUN_140aed720(arg);
             FUN_1409478c0()->FUN_140aed750(4, 1);
         }
@@ -445,10 +430,10 @@ void UISceneLobbySelect::OnLoadInit()
         MS2_ASSERT_AT(71, 0);
     } else {
         if (((class GFxSceneService*)(class Unk_LsSceneId*)(((Unk_LsSceneId*)CUserMail::FUN_1408e57f0())))->GetPrevSubSceneId() == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef1)));
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eea)));
+            (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef1)));
+            (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4eea)));
         } else {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef1)));
+            (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef1)));
         }
     }
 }
@@ -527,7 +512,7 @@ MS2_REPLACE_METHOD(0x141ACE840, UISceneLobbyServer, vfunc_49, 105, 0xF2D63327);
 void UISceneLobbyServer::OnLoadInit()
 {
     UISceneEntity::OnLoadInit();
-    if (FUN_141bcfbd0(FUN_1403ed2d0()) != 0) (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef0)));
+    if (FUN_1403ed2d0()->FUN_141bcfbd0() != 0) (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef0)));
 }
 MS2_REPLACE_METHOD(0x141ACE8B0, UISceneLobbyServer, OnLoadInit, 59, 0x9081FF50);
 
@@ -543,14 +528,14 @@ MS2_REPLACE_METHOD(0x141ACE900, UISceneLobbyServer, vfunc_60, 101, 0x9A873225);
 // @0x141ace970
 void UISceneLobbyServer::vfunc_55()
 {
-    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ef0)));
+    (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef0)));
 }
 MS2_REPLACE_METHOD(0x141ACE970, UISceneLobbyServer, vfunc_55, 32, 0x8489FABA);
 
 // @0x141ace9a0
 void UISceneLobbyServer::vfunc_64()
 {
-    Unk_LsServerDlg* pDlg = ((class Unk_LsServerDlg*)FUN_14136f520(0x4ef0));
+    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FUN_14136f520(0x4ef0));
     if (pDlg != 0) pDlg->FUN_141ad2ef0();
 }
 MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
@@ -558,7 +543,7 @@ MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
 // @0x141ace9e0
 void UISceneLobbyServer::FUN_141ace9e0()
 {
-    Unk_LsServerDlg* pDlg = ((class Unk_LsServerDlg*)FUN_140c300a0(0x4ef0));
+    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FUN_140c300a0(0x4ef0));
     if (pDlg != 0) {
         Unk_LsUIMsg msg;
         msg.AddString("OnReset");

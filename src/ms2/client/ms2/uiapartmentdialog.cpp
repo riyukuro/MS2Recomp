@@ -50,7 +50,6 @@ class Unk_AptWorld
 {
 public:
     Unk_AptPlayer* FUN_141bd0cc0();                             // the local player
-    unsigned FUN_141bd3060();                                   // the current map id
 };
 
 class Unk_AptUIMgr
@@ -59,7 +58,7 @@ public:
     void FUN_141adc530(int nUiId);                              // close
 };
 
-class Unk_AptContractDialog { public: void FUN_141ab4000(int nGroup, unsigned nMapId); };
+class UIRealEstateDialog { public: void FUN_141ab4000(int, int); }; class Unk_AptContractDialog : public UIRealEstateDialog {};
 Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
 
 UIUGCEventDispatcher* FUN_140bc09f0();
@@ -209,7 +208,7 @@ void UIApartmentDialog::FUN_1418b6840(int nA, int nMapId, int nGroup)
     m_nA = nA;
     m_nMapId = nMapId;
     m_nGroup = nGroup;
-    FUN_1408a0d30(m_nGroup, m_group, reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060());
+    FUN_1408a0d30(m_nGroup, m_group, WorldService::GetInstance()->FUN_141bd3060());
 }
 
 // @0x1418b68c0
@@ -290,14 +289,14 @@ void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Par
         return;
     Unk_AptContractDialog* pDialog = FUN_140961690(0x4e76);
     if (pDialog != 0)
-        pDialog->FUN_141ab4000(m_nGroup, reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060());
+        pDialog->FUN_141ab4000(m_nGroup, WorldService::GetInstance()->FUN_141bd3060());
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 
 // @0x1418b6de0
 CStringW UIApartmentDialog::FUN_1418b6de0()
 {
-    unsigned nMapId = reinterpret_cast<Unk_AptWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, nMapId) != 0)
         return FUN_140979570(nMapId);

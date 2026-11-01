@@ -66,7 +66,7 @@ CMorphingAnimation::~CMorphingAnimation()
 // @0x141487ac0
 void CMorphingAnimation::vfunc_1()
 {
-    FUN_141487bf0(0);
+    SetFrame(0);
 }
 MS2_REPLACE_METHOD(0x141487ac0, CMorphingAnimation, vfunc_1, 26, 0xF2C5C3DF);
 
@@ -76,7 +76,7 @@ void CMorphingAnimation::vfunc_2()
 {
     if (!m_bRunning)
         return;
-    FUN_141487c50(0.0f);
+    SetWeight(0.0f);
     m_bRunning = false;
 }
 MS2_REPLACE_METHOD(0x141487ae0, CMorphingAnimation, vfunc_2, 51, 0x438D66E1);
@@ -91,7 +91,7 @@ bool CMorphingAnimation::vfunc_3(int nTime)
         if ((unsigned int)m_nFrame >= m_pData->m_weights.GetCount())
             vfunc_2();
         else
-            FUN_141487bf0((unsigned int)m_nFrame);
+            SetFrame((unsigned int)m_nFrame);
     }
     return m_bRunning;
 }
@@ -109,17 +109,17 @@ MS2_REPLACE_METHOD(0x141487bc0, CMorphingAnimation, vfunc_4, 27, 0x1B43C364);
 
 
 // @0x141487bf0
-void CMorphingAnimation::FUN_141487bf0(size_t nFrame)
+void CMorphingAnimation::SetFrame(size_t nFrame)
 {
     if (m_pData->m_weights.GetCount() <= 0)
         return;
-    FUN_141487c50(m_pData->m_weights[nFrame]);
+    SetWeight(m_pData->m_weights[nFrame]);
 }
-MS2_REPLACE_METHOD(0x141487bf0, CMorphingAnimation, FUN_141487bf0, 87, 0xF591E8A1);
+MS2_REPLACE_METHOD(0x141487bf0, CMorphingAnimation, SetFrame, 87, 0xF591E8A1);
 
 
 // @0x141487c50
-void CMorphingAnimation::FUN_141487c50(float fWeight)
+void CMorphingAnimation::SetWeight(float fWeight)
 {
     if (m_pData->m_weights.GetCount() <= 0)
         return;
@@ -142,7 +142,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
             pCtrl->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), fWeight, us);
     }
 }
-MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, FUN_141487c50, 295, 0x516868E3);
+MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, SetWeight, 295, 0x516868E3);
 
 
 // @0x141487d80

@@ -232,7 +232,7 @@ COutPacket::COutPacket(int nType, int nUnk)
 // @0x140710590
 void FUN_140710590(COutPacket& packet)
 {
-    if (FUN_140714f90() != 0) FUN_140714f90()->FUN_14153a020(packet);
+    if (FUN_140714f90() != 0) FUN_140714f90()->SendPacket(packet);
 }
 // @0x1407105c0
 bool FUN_1407105c0(COutPacket* packet, int key, int delay)

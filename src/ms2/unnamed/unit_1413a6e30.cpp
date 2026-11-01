@@ -41,10 +41,10 @@ public:
     virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4();
     virtual void Unk_Slot5(); virtual void Unk_Slot6();
     virtual int vfunc_7();                                  // 0x141404070 state is the second one
-    int FUN_1413fdd80();
-    int FUN_1413fde40();
+    int HasRequiredMastery();
+    int CheckItemRequirement();
     int FUN_1413fdfc0();
-    int FUN_1413fe220();
+    int HasAnyRequiredItem();
 };
 
 // The world manager (FUN_1403ed2d0).
@@ -270,11 +270,11 @@ int CGuideConditionInteractable::vfunc_3()
         return FUN_1413a55a0(0);
     if (pObject->FUN_1413fdfc0() == 0)
         return FUN_1413a55a0(0);
-    if (pObject->FUN_1413fde40() == 0)
+    if (pObject->CheckItemRequirement() == 0)
         return FUN_1413a55a0(0);
-    if (pObject->FUN_1413fe220() == 0)
+    if (pObject->HasAnyRequiredItem() == 0)
         return FUN_1413a55a0(0);
-    if (pObject->FUN_1413fdd80() == 0)
+    if (pObject->HasRequiredMastery() == 0)
         return FUN_1413a55a0(0);
     return FUN_1413a55a0(1);
 }

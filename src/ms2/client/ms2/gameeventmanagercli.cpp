@@ -563,7 +563,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_nKeyBind = 400016;
         pDef->m_nUiId = 0x4ec1;
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193b630);
-        pDef->m_hasNew.Bind(CMeratMarketMan::GetInstance(), reinterpret_cast<int (CMeratMarketMan::*)()>(&CMeratMarketMan::FUN_140d5b6b0));
+        pDef->m_hasNew.Bind(CMeratMarketMan::GetInstance(), reinterpret_cast<int (CMeratMarketMan::*)()>(&CMeratMarketMan::HasBuyableAdProduct));
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {

@@ -30,6 +30,14 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/cquestmanagercommon.h"  // C3: CQuestManagerCommon (the quest-state calls)
+#include "ms2/placeholder/uitalkmanager.h"  // C3: UITalkManager (the Unk_CinTalk calls)
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/commonfiles/luautil.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/commonfiles/npcdata.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
@@ -46,65 +54,15 @@ class Unk_CinNpc : public PCBase
 public:
     virtual void vfunc_124(); virtual void vfunc_125(); virtual void vfunc_126(); virtual void vfunc_127();
     virtual int vfunc_128();
-    CStringW FUN_141093310();                                   // npc name
 };
-class CNpc   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_141092fa0();
-};
-
-// The affinity record of the npc (found through FUN_141093800).
-class Unk_CinAffinity { public: char m_pad_00[0x54]; int m_54; };   // the exe reads +0x54 (0x14107d760: add rax, 0x54)
-MS2_CHECK_OFFSET(Unk_CinAffinity, m_54, 0x54);
-class Unk_CinAffinityPtr
-{
-public:
-    Unk_CinAffinityPtr(const Unk_CinAffinityPtr&);
-    ~Unk_CinAffinityPtr();                                      // 0x14067e620
-    Unk_CinAffinity* FUN_1409ee260() const;                     // get
-    Unk_CinAffinity* FUN_14067e8c0() const;                     // operator->
-private:
-    void* m_0; Unk_CinAffinity* m_p;
-};
-struct Unk_CinNpcView { Unk_CinAffinityPtr FUN_141093800(); };   // npc member (this=rcx, hidden return=rdx)
 
 // The reward block of the open talk (inside the talk manager).
-class Unk_CinRewardItems
-{
-public:
-    size_t FUN_140720ca0() const;                               // GetCount
-    MS2Ptr<CItem>& FUN_140a69ee0(size_t i);                     // checked GetAt
-private:
-    void* m_data; size_t m_count; size_t m_max; size_t m_grow;
-};
-class Unk_CinReward
-{
-public:
-    void FUN_141b1dbd0();                                       // clear
-    void* m_0; void* m_8; void* m_10;
-    Unk_CinRewardItems m_items;                                 // +0x18
-    __int64 m_meso;                                             // +0x38
-    __int64 m_exp;                                              // +0x40
-    int m_mood;                                                 // +0x48
-    int m_affinityExp;                                          // +0x4c
-    int m_affinityBonus;                                        // +0x50
-    int m_54;
-};
+class Unk_CinReward : public UITalkManager::CTalkRewardData { };
 
 // The talk manager (FUN_140967100): the state of the open dialogue.
 class Unk_CinTalk
 {
 public:
-    void FUN_141b1feb0();                                       // end the talk
-    void FUN_141b20db0(int nSelect);                            // next page / select
-    void FUN_141b20210();
-    int FUN_141b213c0();
-    int FUN_141b212f0();                                        // npc id
-    int FUN_141b212c0();                                        // npc id (packets)
-    Unk_CinNpc* FUN_141b21350();                                // npc actor
-    int FUN_141b21860();                                        // quest count
-    int FUN_141b21810(int i);                                   // quest id
     Unk_CinReward* FUN_141082d60() { return &m_reward; }        // @0x141082d60
     unsigned char FUN_141082ec0() { return m_flags; }           // @0x141082ec0
 public:
@@ -134,49 +92,29 @@ UITalkCinematic* FUN_140a7b2b0(int nId);
 class Unk_CinNameFilter : public CReservedWordTable
 {
 public:
-    void FUN_1416fb400(CStringW& name, Unk_CinNpc* npc);
 };
 
 // The key name table and settings.
 CKeyTable* FUN_1409331f0();
-class Unk_CinSettings { public: };
-unsigned char* FUN_140a58500(Unk_CinSettings*);
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);
 
 // Local player, world and ui manager.
-class Unk_CinMapData { public: };
-class Unk_CinMapPtr
-{
-public:
-    ~Unk_CinMapPtr();                                           // 0x1408850f0
-    Unk_CinMapData* FUN_140885340() const;
-private:
-    void* m_0; Unk_CinMapData* m_p;
-};
 class Unk_CinWorld
 {
 public:
     MyPC* FUN_141bd0cc0();                                      // local player
-    Unk_CinMapPtr FUN_141bd30a0();                              // current map
 };
 class UIJobChangeDialog : public UIObject { public: public:
     int FUN_1419dc530();   // C3: was free FUN_1419dc530
 };
-class Unk_CinUiManager
-{
-public:
-    int FUN_141adc9e0(int nId);                                 // is open
-};
 int FUN_14151f6e0();
 void FUN_14151f200();
 void FUN_14151f460(int);
-int FUN_141661aa0(MyPC*);                                       // level
+class PC { public: int FUN_141654700(); __int64 FUN_141656ad0(); int FUN_141661aa0(); };   // C3: unit-local view (fittingdollpc.h);                                       // level
 int FUN_141529620(MyPC*);
-__int64 FUN_141656ad0(MyPC*);
-int FUN_141654700(MyPC*);                                       // job code
-class Unk_CinPriceTable { public: int FUN_140675730(short nJob, int nLevel, int nMap); };
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 extern __int64 DAT_143ab2898;
-class Unk_CinBgm { public: void FUN_1422b9fd0(int nId); };
+class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
 class Unk_CinSvc : public CubeMapInformationService { public: void vfunc_1(); };
 class Unk_CinSvcPtr
@@ -195,7 +133,7 @@ int FUN_1408a0890(int, int, int*);
 
 // Quest helpers.
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-class Unk_CinQuestState { public: int FUN_140745630(int nQuestId); int FUN_140745590(int nQuestId); };
+class Unk_CinQuestState { };
 class Unk_CinQuestGlobal { public: void* m_0; void* m_8; Unk_CinQuestState m_state; };
 void* FUN_140764020();   // C3: was FUN_140764020
 int FUN_14074b050(CQuestData*);
@@ -218,8 +156,6 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_1416e4df0(int nQuestId);
 int FUN_1416e6100(int nQuestId, int);
 void FUN_141275260(int, int, int);
@@ -228,54 +164,25 @@ int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket&);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 void FUN_1401fdad0(unsigned char*, class COutputStream&);   // C3: was FUN_1401fdad0
-void FUN_140d73bc0(int, int, IMessageListener*, CStringW);
+void FUN_140d73bc0(int, int, void*, CStringW);
 
 class CMsgBoxData : public CPtred
 {
 public:
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
-    int FUN_141a02e90(int, unsigned) const;
-    bool FUN_141a02e10(int, unsigned) const;
-    void FUN_140534050(int);
-    void FUN_140f73320(bool);
+    unsigned int FUN_141a02e90(int, unsigned int) const;
+    bool FUN_141a02e10(int, bool) const;
+    template<class T> void Append(T);
     unsigned char m_pad[0x2a0 - 0x18];
 };
 MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
+void FUN_140f73320(CMsgBoxData*, bool);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 
-// Talk scripts (FUN_140856c50(npc id, 0)).
-class Unk_CinScriptContent { public: virtual void vfunc_0(); virtual int vfunc_1(); };
-struct Unk_CinScriptContentPtr
-{
-    Unk_CinScriptContent* FUN_14078f3d0() const;                // operator->
-    void* m_0; void* m_p;
-};
-class Unk_CinScriptContentArray
-{
-public:
-    size_t FUN_14078fae0() const;                               // GetCount
-    const Unk_CinScriptContentPtr& FUN_14078f350(size_t i) const;   // GetAt
-private:
-    void* m_pData; size_t m_nSize;
-};
-class Unk_CinTalkScript
-{
-public:
-    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
-    void* m_40; void* m_48; void* m_50; void* m_58; void* m_60;
-    Unk_CinScriptContentArray m_contents;                       // +0x68
-};
-MS2_CHECK_OFFSET(Unk_CinTalkScript, m_contents, 0x68);
-struct Unk_CinTalkScriptPtr
-{
-    ~Unk_CinTalkScriptPtr();                                    // 0x14078f140
-    Unk_CinTalkScript* FUN_14078f3a0() const;                   // get
-    Unk_CinTalkScript* FUN_14085a610() const;                   // operator->
-    void* m_0; void* m_p;
-};
-Unk_CinTalkScriptPtr FUN_140856c50(int nNpcId, int n);
-CCinematicContent* FUN_14085a540(const Unk_CinScriptContentPtr&);   // cast to the cinematic content
+// Talk scripts (FUN_140856c50(npc id, 0)). ctalkscript.h is a view: its page list is this array.
+Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int n);
+typedef ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> > Unk_CinContentArray;
 
 // ---- the icon entry and its array ----
 // @0x1410824b0
@@ -308,7 +215,6 @@ Unk_CinIconArray::~Unk_CinIconArray() throw()
         free(m_pData);
     }
 }
-__declspec(noreturn) void FUN_140159b70(long hr);                // AtlThrow
 // @0x141083080
 void FUN_141083080(void* pDst, void* pSrc, size_t n)
 {
@@ -351,7 +257,7 @@ size_t Unk_CinIconArray::Add(const Unk_CinIcon& e)
     if (iElement >= m_nMaxSize) {
         bool bOk = GrowBuffer(iElement + 1);
         if (!bOk)
-            FUN_140159b70(0x8007000e);
+            ATL::AtlThrowImpl(0x8007000e);
     }
     new (m_pData + iElement) Unk_CinIcon(e);
     m_nSize++;
@@ -363,7 +269,7 @@ size_t Unk_CinIconArray::GetCount() const { return m_nSize; }
 Unk_CinIcon& Unk_CinIconArray::GetAt(size_t i) const
 {
     if (i >= m_nSize)
-        FUN_140159b70(0x80070057);
+        ATL::AtlThrowImpl(0x80070057);
     return m_pData[i];
 }
 
@@ -387,7 +293,7 @@ int CCinematicComponent::vfunc_2(int nMsg)
         m_nStarted = 1;
     }
     if (nMsg == 1) {
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
         return 1;
     }
     else if (nMsg == 0x79)
@@ -406,7 +312,7 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         CStringW name(m_spContent->m_name);
-        int nNpcId = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
+        int nNpcId = ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
         CStringW text;
         if (m_spContent->m_speakerNpc != 0) {
             text = FUN_1401aa6a0(m_spContent->m_speakerNpc);
@@ -415,10 +321,10 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
         } else if (m_spContent->m_otherNpcTalk != 0) {
             text = FUN_1401aa6a0(m_spContent->m_otherNpcTalk);
         } else {
-            Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
+            Unk_CinNpc* pNpc = (Unk_CinNpc*)((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
             if (pNpc != 0 && pNpc->vfunc_128() != 0) {
                 reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(name, pNpc);
-                text = pNpc->FUN_141093310();
+                text = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
             } else {
                 text = FUN_1401aa6a0(nNpcId);
             }
@@ -466,47 +372,47 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
         ASObj reward(2);
         reward.FUN_1407cbb20("title", GetStringCommon(0x94b));
         Unk_CinReward* pReward = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082d60();
-        if (pReward->m_exp != 0) {
+        if (pReward->m_nMerat != 0) {
             bAny = 1;
-            reward.FUN_1407cbb20("exp", FUN_1409404f0(pReward->m_exp));
+            reward.FUN_1407cbb20("exp", FUN_1409404f0(pReward->m_nMerat));
         }
-        if (pReward->m_meso != 0) {
+        if (pReward->m_nMeso != 0) {
             bAny = 1;
-            reward.FUN_1407cbb20("meso", FUN_1409404f0(pReward->m_meso));
+            reward.FUN_1407cbb20("meso", FUN_1409404f0(pReward->m_nMeso));
         }
-        if (pReward->m_mood != 0) {
+        if (pReward->m_nExp != 0) {
             reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW mood(L"");
-            if (pReward->m_mood > 0) {
-                mood = BlockFormat<int>(0x7c4, pReward->m_mood);
-            } else if (pReward->m_mood < 0) {
-                int nAbs = abs(pReward->m_mood);
-                mood = BlockFormat<int>(0x7c5, nAbs);
+            if (pReward->m_nExp > 0) {
+                mood = FormatStringId<int>(0x7c4, pReward->m_nExp);
+            } else if (pReward->m_nExp < 0) {
+                int nAbs = abs(pReward->m_nExp);
+                mood = FormatStringId<int>(0x7c5, nAbs);
             }
             reward.FUN_1407cbb20("mood", CStringW(mood));
         }
-        if (pReward->m_affinityExp != 0) {
+        if (pReward->m_nAffinity != 0) {
             reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW affinity(L"");
-            Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
+            Unk_CinNpc* pNpc = (Unk_CinNpc*)((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
             if (pNpc != 0) {
-                Unk_CinAffinity* pAffinity = reinterpret_cast<Unk_CinNpcView*>(pNpc)->FUN_141093800().FUN_1409ee260();
+                CMaid* pAffinity = reinterpret_cast<CNpc*>(pNpc)->FUN_141093800().get();
                 if (pAffinity != 0) {
-                    if (pReward->m_affinityBonus != 0) {
-                        affinity = StringFormat<CStringW, CStringW>(L"{0} {1}", BlockFormat<int>(0x7c2, pReward->m_affinityExp),
-                                                 BlockFormat<int>(0x7c3, reinterpret_cast<Unk_CinNpcView*>(pNpc)->FUN_141093800().FUN_14067e8c0()->m_54));
+                    if (pReward->m_nJackpot != 0) {
+                        affinity = StringFormat<CStringW, CStringW>(L"{0} {1}", FormatStringId<int>(0x7c2, pReward->m_nAffinity),
+                                                 FormatStringId<int>(0x7c3, reinterpret_cast<CNpc*>(pNpc)->FUN_141093800().operator->()->m_nOrder));
                     } else {
-                        affinity = BlockFormat<int>(0x7c2, pReward->m_affinityExp);
+                        affinity = FormatStringId<int>(0x7c2, pReward->m_nAffinity);
                     }
                 }
             }
             reward.FUN_1407cbb20("affinityExp", CStringW(affinity));
         }
-        for (size_t i = 0; i < pReward->m_items.FUN_140720ca0(); i++) {
+        for (size_t i = 0; i < pReward->m_items.GetCount(); i++) {
             bAny = 1;
-            MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
+            MS2Ptr<CItem> spItem = pReward->m_items[i];
             CString key;
             key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i + 1);
             FUN_141415450(key, spItem, 0, 0x11, 0x800);
@@ -526,9 +432,9 @@ CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
 {
     CStringW text = GetStringCommon(nStringId);
     reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(text);
-    CStringW keyConfirm = FUN_1409331f0()->FUN_14142d220(1);
-    CStringW keyNext = FUN_1409331f0()->FUN_14142d220(0x39);
-    int nVariant = *FUN_140a58500(reinterpret_cast<Unk_CinSettings*>(TSingleton<CGameOption>::GetInstance())) != 0 ? 2 : 0;
+    CStringW keyConfirm = FUN_1409331f0()->GetKeyName(1);
+    CStringW keyNext = FUN_1409331f0()->GetKeyName(0x39);
+    int nVariant = *reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0 ? 2 : 0;
     if (nVariant == 2)
         text.Replace(keyConfirm, FUN_1409331f0()->FUN_14142d760(0x49409, nVariant));
     text.Replace(keyNext, FUN_1409331f0()->FUN_14142d760(0x493e2, nVariant));
@@ -549,7 +455,7 @@ int CNextCinematicComponent::vfunc_2(int nMsg)
         FUN_141276180(s_nextKey, "");
         if (m_nReward != 0)
             FUN_141276180(s_getItem, "");
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         return 1;
     }
     return 0;
@@ -577,10 +483,10 @@ int CCloseCinematicComponent::vfunc_2(int nMsg)
     if (nMsg == 0x493e2) {
         if (m_nReward != 0)
             FUN_141276180(s_getItem, "");
-        if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0)
-            ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20210();
+        if (((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0)
+            ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20210();
         else
-            ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+            ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         return 1;
     }
     return 0;
@@ -622,7 +528,7 @@ void CDistractorCinematicComponent::vfunc_6(const Unk_CinIconArray& icons, ASObj
     for (size_t i = 0; i < icons.GetCount(); i++) {
         ASObj item(2);
         CStringW text(icons.GetAt(i).m_text);
-        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(text, ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350());
+        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(text, (Unk_CinNpc*)((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21350());
         reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(text);
         item.FUN_1407cba60("iconClass", CString(icons.GetAt(i).m_icon));
         item.FUN_1407cbb20("text", CStringW(text));
@@ -642,18 +548,18 @@ int CQuestAcceptCinematicComponent::vfunc_2(int nMsg)
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
     if (nMsg == 0x493e2) {
-        if (((class Unk_CinQuestGlobal*)FUN_140764020())->m_state.FUN_140745630(m_spContent->m_questId) != 0)
+        if (((CQuestManagerCommon*)&((class Unk_CinQuestGlobal*)FUN_140764020())->m_state)->IsQuestActive(m_spContent->m_questId) != 0)
             return 1;
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_require.m_unrequireGroup.GetCount() > 0) {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_alliance_quest_unreq_group_warn"), 0, L"");
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CQuestAcceptCinematicComponent::FUN_14107ec40));
-            spBox->FUN_140534050(m_spContent->m_questId);
-            spBox->FUN_140f73320(m_spContent->m_redirect != 0);
+            spBox->Append<unsigned>(m_spContent->m_questId);
+            FUN_140f73320(spBox.operator->(), m_spContent->m_redirect != 0);
             FUN_140d73c60(spBox);
             return 1;
         }
-        FUN_14107ecc0(m_spContent->m_questId, m_spContent->m_redirect != 0);
+        SendQuestAccept(m_spContent->m_questId, m_spContent->m_redirect != 0);
         return 1;
     }
     return 0;
@@ -670,25 +576,25 @@ void CQuestAcceptCinematicComponent::vfunc_5(ASObj& obj)
 bool CQuestAcceptCinematicComponent::FUN_14107ec40(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0) {
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
         return true;
     }
     {
         int nQuestId = data.FUN_141a02e90(0, 0);
         bool bRedirect = data.FUN_141a02e10(1, 0);
-        FUN_14107ecc0(nQuestId, bRedirect);
+        SendQuestAccept(nQuestId, bRedirect);
     }
     return true;
 }
 // @0x14107ecc0
-void CQuestAcceptCinematicComponent::FUN_14107ecc0(int nQuestId, bool bRedirect)
+void CQuestAcceptCinematicComponent::SendQuestAccept(int nQuestId, bool bRedirect)
 {
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
         pkt.Encode1(2);
         pkt.Encode4(nQuestId);
-        pkt.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+        pkt.Encode4(((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
         FUN_140710590(pkt);
     }
     if (bRedirect && FUN_14074b840(nQuestId) != 0) {
@@ -699,7 +605,7 @@ void CQuestAcceptCinematicComponent::FUN_14107ecc0(int nQuestId, bool bRedirect)
         FUN_140710590(pkt);
         return;
     }
-    ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+    ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
 }
 
 // ---- CQuestProgressCinematicComponent ----
@@ -720,7 +626,7 @@ int CQuestProgressCinematicComponent::vfunc_2(int nMsg)
             pkt.Encode4(m_spContent->m_questId);
             FUN_140710590(pkt);
         }
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         return 1;
     }
     return 0;
@@ -743,13 +649,13 @@ int CQuestCompleteCinematicComponent::vfunc_2(int nMsg)
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
         if (!spQuest)
             return 1;
-        if (((class Unk_CinQuestGlobal*)FUN_140764020())->m_state.FUN_140745590(m_spContent->m_questId) != 0)
+        if (((CQuestManagerCommon*)&((class Unk_CinQuestGlobal*)FUN_140764020())->m_state)->FUN_140745590(m_spContent->m_questId) != 0)
             return 1;
         int nChoice = 0;
         COutPacket pktComplete(static_cast<int>(SendOp::Quest), 0);
         pktComplete.Encode1(4);
         pktComplete.Encode4(nQuestId);
-        pktComplete.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+        pktComplete.Encode4(((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
         pktComplete.Encode4(nChoice);
         FUN_140710590(pktComplete);
         if (m_spContent->m_redirect != 0 && FUN_14074b950(nQuestId) != 0) {
@@ -760,7 +666,7 @@ int CQuestCompleteCinematicComponent::vfunc_2(int nMsg)
             FUN_140710590(pktNext);
             return 1;
         }
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         return 1;
     }
     return 0;
@@ -803,7 +709,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
     ATL::CAtlArray<CQuestData::QuestRewardItem> items;
     for (size_t i = 0; i < spQuest->m_complete.m_choiceRewards.GetCount(); i++) {
         CQuestData::QuestRewardItem& item = spQuest->m_complete.m_choiceRewards[i];
-        if (item.m_itemId != 0 && FUN_140748050(&item, FUN_141654700(pc)) != 0)
+        if (item.m_itemId != 0 && FUN_140748050(&item, ((PC*)pc)->FUN_141654700()) != 0)
             items.Add(spQuest->m_complete.m_choiceRewards[i]);
     }
     int nSpecial = FUN_140761c60(m_spContent->m_questId, 1);
@@ -825,7 +731,7 @@ CSelectableDistractorCinematicComponent::CSelectableDistractorCinematicComponent
 // @0x14107f7f0
 CSelectableDistractorCinematicComponent::~CSelectableDistractorCinematicComponent() {}
 // @0x14107f820
-void CSelectableDistractorCinematicComponent::vfunc_1(int nSelect) { ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(nSelect); }
+void CSelectableDistractorCinematicComponent::vfunc_1(int nSelect) { ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(nSelect); }
 // @0x141082e60
 int CSelectableDistractorCinematicComponent::vfunc_3() { return 9; }
 // @0x14107f850
@@ -834,12 +740,12 @@ void CSelectableDistractorCinematicComponent::vfunc_5(ASObj& obj)
     CCinematicComponent::vfunc_5(obj);
     int bAnyScript = 0;
     Unk_CinIconArray icons;
-    if (m_spContent->m_distractors.FUN_14078f390() != 0) {
-        for (size_t i = 0; i < m_spContent->m_distractors.FUN_14078f3b0()->m_texts.FUN_14078fad0(); i++) {
+    if (m_spContent->m_distractors.get() != 0) {
+        for (size_t i = 0; i < m_spContent->m_distractors->m_choices.GetCount(); i++) {
             Unk_CinIcon icon;
             icon.m_icon = "talk_icon_distractor";
-            icon.m_text = m_spContent->m_distractors.FUN_14078f3b0()->m_texts.FUN_14078f310(i).m_text;
-            bAnyScript = bAnyScript | (m_spContent->m_distractors.FUN_14078f3b0()->m_texts.FUN_14078f310(i).m_script.GetLength() > 0);
+            icon.m_text = m_spContent->m_distractors->m_choices.GetAt(i).m_text;
+            bAnyScript = bAnyScript | (m_spContent->m_distractors->m_choices.GetAt(i).m_goto.GetLength() > 0);
             icons.Add(icon);
         }
     }
@@ -860,7 +766,7 @@ void CCustomSelectableDistractorCinematicComponent::vfunc_1(int nSelect)
 {
     COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
     pkt.Encode1(0xb);
-    pkt.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+    pkt.Encode4(((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
     pkt.Encode4(nSelect);
     FUN_140710590(pkt);
 }
@@ -885,16 +791,16 @@ CSelectableTalkCinematicComponent::CSelectableTalkCinematicComponent(UITalkCinem
 // @0x14107fcc0
 CSelectableTalkCinematicComponent::~CSelectableTalkCinematicComponent() {}
 // @0x14107fcf0
-void CSelectableTalkCinematicComponent::vfunc_1(int nSelect) { ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(nSelect); }
+void CSelectableTalkCinematicComponent::vfunc_1(int nSelect) { ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(nSelect); }
 // @0x141082e70
 int CSelectableTalkCinematicComponent::vfunc_3() { return 5; }
 
 // ---- helpers used by the talk components ----
-class Unk_CinNpcData : public CPtred { public: int FUN_1406cd020(); };          // npc table row: npc type
+class Unk_CinNpcData : public CNpcData { };          // npc table row: npc type
 // @0x141081a50
 int FUN_141081a50(MS2Ptr<Unk_CinNpcData> spNpc, int bFlag)
 {
-    int nType = spNpc->FUN_1406cd020();
+    int nType = spNpc->GetKind();
     switch (nType) {
     case 0x1e:
         return 1;
@@ -960,7 +866,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
-    Unk_CinNpc* pNpc = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
+    Unk_CinNpc* pNpc = (Unk_CinNpc*)((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21350();
     if (pNpc == 0)
         return;
     {
@@ -968,15 +874,15 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
             int nFlags = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082ec0();
             Unk_CinIconArray icons;
             if ((nFlags & 0x20) != 0) {
-                Unk_CinTalkScriptPtr spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->FUN_141092fa0(), 0);
-                if (bool(spScript.FUN_14078f3a0() != 0)) {
-                    if (spScript.FUN_14085a610()->m_contents.FUN_14078fae0() > 0) {
-                        Unk_CinScriptContent* pEntry = spScript.FUN_14085a610()->m_contents.FUN_14078f350(0).FUN_14078f3d0();
+                Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->FUN_141092fa0(), 0);
+                if (bool(spScript.get() != 0)) {
+                    if (reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents).GetCount() > 0) {
+                        CScriptContent* pEntry = reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents)[0].operator->();
                         if (pEntry->vfunc_1() == 0) {
-                            CCinematicContent* pContent = FUN_14085a540(spScript.FUN_14085a610()->m_contents.FUN_14078f350(0));
-                            if (pContent != 0 && bool(pContent->m_distractors.FUN_14078f390() != 0)) {
-                                for (size_t i = 0; i < pContent->m_distractors.FUN_14078f3b0()->m_texts.FUN_14078fad0(); i++) {
-                                    CCinematicDistractor* pText = &pContent->m_distractors.FUN_14078f3b0()->m_texts.FUN_14078f310(i);
+                            CCinematicContent* pContent = (CCinematicContent*)reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents)[0].get();
+                            if (pContent != 0 && bool(pContent->m_distractors.get() != 0)) {
+                                for (size_t i = 0; i < pContent->m_distractors->m_choices.GetCount(); i++) {
+                                    Unk_ScriptChoice* pText = &pContent->m_distractors->m_choices.GetAt(i);
                                     Unk_CinIcon icon;
                                     icon.m_icon = "talk_icon_distractor";
                                     icon.m_text = pText->m_text;
@@ -989,9 +895,9 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
             }
             if ((nFlags & 4) != 0) {
                 Unk_CinTalk* pTalk = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance());
-                for (size_t j = 0; j < (size_t)(__int64)pTalk->FUN_141b21860(); j++) {
+                for (size_t j = 0; j < (size_t)(__int64)(int)((UITalkManager*)pTalk)->FUN_141b21860(); j++) {
                     Unk_CinIcon icon;
-                    int nQuestId = pTalk->FUN_141b21810((unsigned)j);
+                    int nQuestId = ((UITalkManager*)pTalk)->FUN_141b21810((unsigned)j);
                     int nState = FUN_1416e6100(nQuestId, 1);
                     if (nState == 0x5dc)
                         nState = 0x5d9;
@@ -1053,7 +959,7 @@ void FUN_1410819f0(const CString& key)
 // @0x141081ff0
 UIJobChangeDialog* FUN_141081ff0(int nId)
 {
-    if (reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance()) != 0) {
+    if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (spObj.get() != 0)
             return dynamic_cast<UIJobChangeDialog*>(spObj.operator->());
@@ -1074,7 +980,7 @@ CChangeJobComponent::~CChangeJobComponent()
 int CChangeJobComponent::vfunc_2(int nMsg)
 {
     if (nMsg == 1) {
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7c);
     } else if (nMsg == 0x493e2) {
         int nResult = 0;
@@ -1082,7 +988,7 @@ int CChangeJobComponent::vfunc_2(int nMsg)
         if (pDlg != 0)
             nResult = ((class UIJobChangeDialog*)(pDlg))->FUN_1419dc530();
         if (FUN_14151f6e0() != 0)
-            FUN_140d73bc0(nResult != 0 ? 0x75 : 0x7cb, 1, this, L"");
+            FUN_140d73bc0(nResult != 0 ? 0x75 : 0x7cb, 1, static_cast<IMessageListener*>(this), L"");
     }
     return 1;
 }
@@ -1097,12 +1003,12 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             int nButton = pMsg->FUN_1422b8a10();
             if (nButton == 0) {
                 Unk_CinNpcId npc;
-                npc.m_n = ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0();
+                npc.m_n = ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0();
                 COutPacket pkt(static_cast<int>(SendOp::Job), 0);
                 pkt.Encode1(2);
                 FUN_1401fdad0((unsigned char*)(&npc.m_n), *(class COutputStream*)&static_cast<class COutPacket&>(pkt));
                 FUN_140710590(pkt);
-                ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b1feb0();
+                ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7c);
             }
         }
@@ -1132,12 +1038,12 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
     Unk_CinSvcPtr spSvc(((class Unk_CinSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     reinterpret_cast<Unk_CinSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410ccc00(FUN_141529620(pc), 0, 0);
     if (nMsg == 0x493e2) {
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         int nOut = 0;
         if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), FUN_141529620(pc), &nOut) == 0)
             return 0;
         Unk_CinSvcPtr spSvc2(((class Unk_CinSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-        if (reinterpret_cast<Unk_CinSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc2).operator->())->FUN_1410c8030(FUN_141529620(pc), 0) == FUN_141656ad0(pc)) {
+        if (reinterpret_cast<Unk_CinSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc2).operator->())->FUN_1410c8030(FUN_141529620(pc), 0) == ((PC*)pc)->FUN_141656ad0()) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);
             pkt.Encode4(FUN_141529620(pc));
@@ -1182,20 +1088,20 @@ int CPaneltyResolveCinematicComponent::vfunc_2(int nMsg)
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        if (FUN_141661aa0(pc) != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class Unk_CinPriceTable*)FUN_1401c0db0())->FUN_140675730((short)pc->vfunc_78(), FUN_141661aa0(pc), ((class CFieldData*)(class Unk_CinMapData*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()))->FUN_1403754f0());
+        if (((PC*)pc)->FUN_141661aa0() != 0) {
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
                 COutPacket pkt(static_cast<int>(SendOp::ResolvePenalty), 0);
-                pkt.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+                pkt.Encode4(((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
                 FUN_140710590(pkt);
                 FUN_141276180(s_deadPanelty, "");
             }
         } else {
             FUN_141275260(0x79, 1, 1);
         }
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
     }
     return 1;
 }
@@ -1223,8 +1129,8 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        if (FUN_141661aa0(pc) != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class Unk_CinPriceTable*)FUN_1401c0db0())->FUN_140675730((short)pc->vfunc_78(), FUN_141661aa0(pc), ((class CFieldData*)(class Unk_CinMapData*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()))->FUN_1403754f0());
+        if (((PC*)pc)->FUN_141661aa0() != 0) {
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
@@ -1235,7 +1141,7 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
         } else {
             FUN_141275260(0x79, 1, 1);
         }
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20210();
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20210();
     }
     return 1;
 }
@@ -1262,10 +1168,10 @@ int CTakeBoatCinematicComponent::vfunc_2(int nMsg)
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        ((Unk_CinBgm*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
         COutPacket pkt(static_cast<int>(SendOp::TakeBoat), 0);
-        pkt.Encode4(((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+        pkt.Encode4(((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
         FUN_140710590(pkt);
     }
     return 1;
@@ -1297,7 +1203,7 @@ int CSellUGCMapCinematicComponent::vfunc_2(int nMsg)
             FUN_141275260(0x6bf, 1, 1);
         else
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e82)));
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
     }
     return 1;
 }
@@ -1319,11 +1225,11 @@ CRouletteCinematicComponent::~CRouletteCinematicComponent() {}
 int CRouletteCinematicComponent::vfunc_2(int nMsg)
 {
     if (nMsg == 0x493e2 && m_nSent == 0) {
-        if (reinterpret_cast<Unk_CinUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adc9e0(0x4e6d) != 0) {
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc9e0((eUIClassID)0x4e6d) != 0) {
             COutPacket pkt(static_cast<int>(SendOp::BonusGame), 0);
             pkt.Encode1(2);
             FUN_140710590(pkt);
-            ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->FUN_141b20db0(0);
+            ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode2(0);
             m_nSent = 1;
         }
     }

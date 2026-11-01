@@ -72,7 +72,7 @@ void CSceneStateMove::OnUpdate(double fTime)
     if (m_bConnecting == 0)
     {
         m_bConnecting = 1;
-        FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
         m_timer.FUN_140868750(10000);
         CStringW addr = FUN_14016a730(DAT_143ab2a48, 0);
         FUN_141740b00(0x2dd, 1, 1, addr, &DAT_143ab2848);

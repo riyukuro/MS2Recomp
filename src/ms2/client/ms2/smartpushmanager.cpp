@@ -29,25 +29,10 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// A counted handle on a UI object (the UI manager hands it out by id); the object is at +8.
-class Unk_SpUIRef
-{
-public:
-    ~Unk_SpUIRef();                                             // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;                            // the object (null if the UI is not open)
-private:
-    void* unknown;
-    UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_SpUIRef, 0x10);
 
-class Unk_SpUIMgr
-{
-public:
-    Unk_SpUIRef FUN_141adcea0(int nUiId);                       // find a UI by type id
-};
 
-CSmartPush* FUN_1401f7f50(CStringW strClass);                   // class factory: new object by registered name
+class ClassObject;
+ClassObject*FUN_1401f7f50(CStringW);                   // class factory: new object by registered name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // The "do not disturb" option block (+0x14: suppress every push).
@@ -56,16 +41,15 @@ struct Unk_SpOptionData
     char m_pad_00[0x14];
     bool m_bSuppress;                                           // +0x14
 };
-class Unk_SpOptions { public: Unk_SpOptionData* FUN_140b123b0(); };
 
 // @0x140dd88c0
 static UISmartPush* FindStripUI(int nUiId)
 {
-    if (reinterpret_cast<Unk_SpUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        Unk_SpUIRef ref = reinterpret_cast<Unk_SpUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISmartPush*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
+        if (ref.get() != 0)
+            return dynamic_cast<UISmartPush*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -92,7 +76,7 @@ void CSmartPushManager::FUN_140dd82b0()
     {
         const CSmartPushTable::DataPtr data(static_cast<const CSmartPushTable::DataPtr&>(rows[i]));
         CStringW strClass = StringFormat(L"CSmartPush{0}", data->m_strContent);
-        PushPtr push(FUN_1401f7f50(strClass));
+        PushPtr push(reinterpret_cast<CSmartPush *>(FUN_1401f7f50(strClass)));
         if (push)
         {
             push->m_nId = data->m_nId;
@@ -116,7 +100,7 @@ void CSmartPushManager::FUN_140dd8440()
     {
         const PushPtr push(static_cast<const PushPtr&>(m_pushes.GetValueAt(pos)));
         int nWanted = push->vfunc_6();
-        if (reinterpret_cast<Unk_SpOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bSuppress)
+        if (reinterpret_cast<Unk_SpOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bSuppress)
             nWanted = 0;
         if (push->m_nState != nWanted)
         {

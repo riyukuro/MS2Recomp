@@ -17,6 +17,7 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
 extern const char* g_szCefMessageOpenUI;                // 0x1439f7eb8 "open_ui"
 extern const char* g_szCefMessageOpenWeb;               // 0x1439f7ec0 "open_web"
@@ -53,7 +54,6 @@ class CGuildInfo   // C3: member view for the former free stand-ins
 public:
     __int64 FUN_1404ccbd0();
 };
-int FUN_141654700(PCBase* pPC);                         // PC member: the job
 CStringW& FUN_141656be0(PCBase* pPC);                   // PC member: the guild name
 int FUN_140408410(const ATL::CAtlArray<int>& array, const int& nValue);     // index of nValue, -1 if absent
 class CBigDataLogSystem;
@@ -159,7 +159,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     retval->SetValue("sn", CefV8Value::CreateString(csAccount), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("name", CefV8Value::CreateString(csName), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("level", CefV8Value::CreateInt((unsigned short)pPC->vfunc_78()), V8_PROPERTY_ATTRIBUTE_READONLY);
-    retval->SetValue("job", CefV8Value::CreateInt(FUN_141654700(pPC)), V8_PROPERTY_ATTRIBUTE_READONLY);
+    retval->SetValue("job", CefV8Value::CreateInt(reinterpret_cast<PC*>(pPC)->FUN_141654700()), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("world", CefV8Value::CreateInt(DAT_143ab2830), V8_PROPERTY_ATTRIBUTE_READONLY);
     if (((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6160() != 0) {
         CStringA strGuild;

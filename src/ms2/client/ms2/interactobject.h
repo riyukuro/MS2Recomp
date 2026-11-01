@@ -87,19 +87,19 @@ public:
     Unk_EntRef GetEnt();                                 // copy of the entity handle
     egf::EntityID FUN_1413fd8e0();                              // id of the entity (0 when unbound)
     unsigned __int64 FUN_1413fd960();                           // 64-bit id of the entity (0 when unbound)
-    void FUN_1413fda50();                                       // (re)create the state effect
-    void FUN_1413fdc50();                                       // destroy the state effect
-    void FUN_1413fdca0(unsigned char bVisible);                 // show / hide the entity's actor
-    int FUN_1413fdd80();                                        // the player has enough of the required item count
-    int FUN_1413fde40();                                        // the player carries the required item
+    void ShowStateEffect();                                       // (re)create the state effect
+    void ClearStateEffect();                                       // destroy the state effect
+    void SetVisible(unsigned char bVisible);                 // show / hide the entity's actor
+    int HasRequiredMastery();                                        // the player has enough of the required item count
+    int CheckItemRequirement();                                        // the player carries the required item
     int FUN_1413fdfc0();                                        // the use condition (quest mask) is met
-    int FUN_1413fe040();                                        // the player meets the extra requirement
-    int FUN_1413fe120();                                        // the player's guild-less requirement is met
-    int FUN_1413fe220();                                        // the player owns one of the required items
-    void FUN_1413fe500();                                       // refresh the effect after a state change
-    QuestMask* FUN_1413fe8a0();                                 // quest mask of the current state
-    void FUN_1413fe910();                                       // register with the highlight manager
-    void FUN_1413fe9a0(int nDelay);                             // unregister (now, or after nDelay ms)
+    int CheckHomePrivilege();                                        // the player meets the extra requirement
+    int CheckArenaTeam();                                        // the player's guild-less requirement is met
+    int HasAnyRequiredItem();                                        // the player owns one of the required items
+    void UpdateStateEffect();                                       // refresh the effect after a state change
+    QuestMask* GetStateQuestMask();                                 // quest mask of the current state
+    void EnableHighlight();                                       // register with the highlight manager
+    void DisableDynamicUpdate(int nDelay);                             // unregister (now, or after nDelay ms)
 
     Unk_EntRef m_ent;                                           // +0x18 the map entity
     CString m_strName;                                          // +0x20 name of the entity's template
@@ -143,7 +143,7 @@ public:
     void FUN_1413ff5f0();                                       // release the box actor
     void FUN_1413ff690(const CString& strAsset);                // show the asset on the entity (model / sound)
     void FUN_1413ff800(int nCollision);                         // box actor on / off
-    void FUN_1413ff840();                                       // play the use asset of the row
+    void PlayReactAni();                                       // play the use asset of the row
     void FUN_1413ff8a0();                                       // play the second asset
 
     NxActor* m_pActor;                                          // +0xb0 the box actor
@@ -201,11 +201,11 @@ public:
     virtual int vfunc_5();                                      // 0x141403fb0
 
     void FUN_141400800(const CStringW& strGuild);               // cache the data of one guild / character
-    void FUN_141401380(Unk_IoRankPtr spRank);     // take the data from a ranking entry
+    void ApplyRankEntry(Unk_IoRankPtr spRank);     // take the data from a ranking entry
     void FUN_1414017b0(const CString& strFile);                 // load the image file into the entity
-    CStringW FUN_141402060();                                   // caption of the image
+    CStringW GetDisplayName();                                   // caption of the image
     int FUN_1414021c0();                                        // rank number of the image
-    int FUN_1414022a0();                                        // trophy count of the image
+    int GetDisplayScore();                                        // trophy count of the image
     static UINT GetURLFromIndirectURL(LPVOID pParam);           // 0x141401920 worker thread
     static UINT GetURLFromGameRanking(LPVOID pParam);           // 0x141401c20 worker thread
 
@@ -263,7 +263,7 @@ public:
     virtual void vfunc_10();                                    // 0x141402dd0
 
     int FUN_141402e60();                                        // the poster id of the row
-    void FUN_141402eb0(unsigned char bShow);                    // fetch and show the poster
+    void UpdatePoster(unsigned char bShow);                    // fetch and show the poster
     void FUN_141403180(CStringW strFile);                       // load the poster file into the entity
 };
 MS2_CHECK_SIZE(CInteractGuildPosterObject, 0xb0);

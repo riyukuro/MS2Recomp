@@ -29,6 +29,8 @@
 #include "ms2/placeholder/cquestnavigator.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/cnpc.h"
+#include <NiAVObject.h>
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 using namespace QuestNavigation;
@@ -38,7 +40,6 @@ class MyPC : public PCBase {};                                  // the local pla
 class Unk_SSGNpc : public PCBase
 {
 public:
-    int FUN_141092fa0();                                        // the npc id
 };
 class CLiftableObject : public CPtred
 {
@@ -54,7 +55,6 @@ class Unk_SSGWorld : public WorldService
 public:
     MS2Ptr<CPortal> FUN_141bc2800(int nId);                     // a field object by id
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // find one by name
-    Unk_SSGNpc* FUN_141bd1320(int nId);
     MS2Ptr<Unk_SSGNamedObj> FUN_141bc5a20(CString strName);     // a named field object
     MyPC* FUN_141bd0cc0();                                      // the local player actor
 };
@@ -63,7 +63,6 @@ class Unk_QgNavi : public CQuestNavigator
 };
 extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
-class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 class Unk_QgUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -85,7 +84,6 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_5e0;               // +0x5e0 the marker's screen y offset
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-const Vector3& FUN_140947900(void* pNode);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
@@ -151,7 +149,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     if (m_18 == 0)
         return;
     Vector3 pt;
-    if (reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(vfunc_7(), pt))
+    if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vfunc_7())), reinterpret_cast<NiPoint3&>(pt)))
     {
         pt.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40()));
         pt.y += vfunc_8();
@@ -246,7 +244,7 @@ float PcHudNavigationEntity::vfunc_8()
 NpcNavigationEntity::NpcNavigationEntity(efd::SmartPointer<Unk_SSGNpc> spNpc)
 {
     m_30 = spNpc.operator->()->FUN_14123c580();
-    m_34 = spNpc.operator->()->FUN_141092fa0();
+    m_34 = reinterpret_cast<CNpc*>(spNpc.operator->())->FUN_141092fa0();
 }
 
 // @0x140e78d80
@@ -273,7 +271,7 @@ int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_1c == 2)
         return 0;
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
     if (!pNpc)
         return 0;
     if (pNpc->FUN_14166ce30())
@@ -286,7 +284,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_20.find(m_34) == pContext->m_20.end())
         return 0;
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
     if (!pNpc)
         return 0;
     if (pNpc->FUN_14166ce30())
@@ -297,12 +295,12 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79010
 Vector3 NpcNavigationEntity::vfunc_7()
 {
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_30);
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
     if (pNpc)
     {
         NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
         if (pNode)
-            return FUN_140947900(pNode);
+            return reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(pNode)->GetWorldTranslate());
         return reinterpret_cast<Unk_QnPosView*>(pNpc)->vfunc_18();
     }
     return DAT_143b01a60;

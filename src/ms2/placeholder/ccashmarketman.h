@@ -26,6 +26,7 @@ public:
     virtual ~CCashMarketMan();                              // 0x140b05f20
 
     ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& FUN_140b05c00() { return m_aInv; }   // 0x140b05c00
+    ATL::CAtlArray<MS2Ptr<CCashSaleProduct> >& FUN_14103d2c0();   // 0x14103d2c0 m_aSale (defined in uicashshopdialog.cpp)
     bool GetFlag() const;                                   // 0x140b06000 m_bFlag
     void OnCash(CInPacket& packet);                  // packet 0x6a dispatcher by the sub code
     void SendCashMode0();                                   // send 0x6a/0

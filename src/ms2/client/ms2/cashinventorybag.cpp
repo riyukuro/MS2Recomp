@@ -62,6 +62,9 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/tmarketbilldataparam.h"   // C3: MS2Ptr<TMarketBillDataParam> of UIMarketBillDialog::GetParam
+#include "ms2/commonfiles/meratmarketbasketinfo.h"   // C3: CMeratMarketProduct / CMeratMarketPremiumProduct::HasLimit
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<CStringW>
 #include <sstream>
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
@@ -92,36 +95,25 @@ public:
 };
 
 // The market bill dialog (id 0x4f17) and the handle it gives of its owner.
-class Unk_CashBillOwner { public: int m_pad[7]; int m_nId; };
-class Unk_CashBillRef
-{
-public:
-    ~Unk_CashBillRef();                                 // 0x140a8e150
-    bool FUN_140a8e270(int n);
-    Unk_CashBillOwner* FUN_140a8e380();
-private:
-    void* m_pad[2];
-};
 class UIMarketBillDialog : public UIDialog
 {
 public:
-    Unk_CashBillRef FUN_140ea8da0();
+    MS2Ptr<TMarketBillDataParam> GetParam();
 };
 
 // UI service: handle to a registered UI object.
 class Unk_CashUIManager { public: };
 
 // Item data of an item id (only the item class test is used).
-class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
-MS2Ptr<Unk_CashItemData> FUN_14053f870(int nItemId);
-class CItemData   // C3: member view for the former free stand-ins
+class CItemData : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
     bool HasStringTag(int);
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void* FUN_140298f80(void* p);
-void FUN_1418fe1c0(void* p);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
+struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
+void FUN_1418fe1c0(const CString& str);
 
 // The limit rows of the two market buy limit tables.
 class Unk_CashLimitRowA : public CPtred
@@ -148,7 +140,6 @@ void FUN_141275460(int, int, int, const fmt::ArgList&);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 int FUN_141276180(const CString&, const CString&);
 CStringW GetStringCommon(int nId);                        // string table text by id
 void FUN_140710590(COutPacket& packet);                 // send the packet
@@ -591,15 +582,15 @@ int CCashMarketMan::FUN_140b06ed0(int nProductId)
 // @0x140b06f90
 bool CCashMarketMan::FUN_140b06f90(MS2Ptr<Unk_CashLimitRowA> sp)
 {
-    if (sp == 0 || sp->FUN_1406a4370() == 0)
+    if (sp == 0 || reinterpret_cast<CMeratMarketProduct*>(sp.operator->())->HasLimit() == 0)
         return false;
-    return FUN_140b06ed0(sp->FUN_1406a4640()) >= sp->m_nLimit;
+    return FUN_140b06ed0(reinterpret_cast<CMeratMarketProduct*>(sp.operator->())->GetItemId()) >= sp->m_nLimit;
 }
 
 // @0x140b07060
 bool CCashMarketMan::FUN_140b07060(MS2Ptr<Unk_CashLimitRowB> sp)
 {
-    if (sp == 0 || sp->FUN_1406a09c0() == 0)
+    if (sp == 0 || reinterpret_cast<CMeratMarketPremiumProduct*>(sp.operator->())->HasLimit() == 0)
         return false;
     return FUN_140b06ed0(sp->m_nProductId) >= sp->m_nLimit;
 }
@@ -750,7 +741,7 @@ void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
         MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0));
         if (spBox.get() != 0)
         {
-            spBox->SetMsg(FUN_14052bd00(0xa63, strArg));
+            spBox->SetMsg(FormatStringId(0xa63, strArg));
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CCashMarketMan::FUN_140b08fe0));
             FUN_140d73c60(spBox);
         }
@@ -925,11 +916,11 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
         if (spProd.get() != 0)
         {
             int nItemId = spProd->m_data.m_n28;
-            MS2Ptr<Unk_CashItemData> spData = FUN_14053f870(nItemId);
+            MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
             if (spData.get() != 0)
             {
-                if (((class CItemData*)(class Unk_CashItemData*)(spData.operator->()))->HasStringTag(0x13))
-                    FUN_1418fe1c0(FUN_140298f80((char*)((void*)FUN_1401d3200()) + 0xdaa0));
+                if (spData->HasStringTag(0x13))
+                    FUN_1418fe1c0(reinterpret_cast<Unk_StringOptionEntry*>((char*)((void*)FUN_1401d3200()) + 0xdaa0)->FUN_140298f80());
             }
         }
     }
@@ -975,10 +966,10 @@ bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
     UIMarketBillDialog* pBill = FUN_140b09580(0x4f17);
     if (pBill == 0)
         return true;
-    Unk_CashBillRef ref = pBill->FUN_140ea8da0();
-    if (ref.FUN_140a8e270(0))
+    MS2Ptr<TMarketBillDataParam> ref = pBill->GetParam();
+    if (ref == 0)
         return true;
-    if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
+    if (ref->m_nDialogId == 0x4ebc)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f17);
     return true;
 }

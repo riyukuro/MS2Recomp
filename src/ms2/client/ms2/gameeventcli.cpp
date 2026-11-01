@@ -500,7 +500,7 @@ int GameEventAttendGiftCli::GetUsablePoints()
 }
 
 // @0x140ce3710
-MS2Ptr<ItemGift> GameEventAttendGiftCli::FUN_140ce3710(unsigned nDay)
+MS2Ptr<ItemGift> GameEventAttendGiftCli::GetGiftByDay(unsigned nDay)
 {
     if (nDay >= FUN_140ce3660())
         return MS2Ptr<ItemGift>(0);
@@ -508,7 +508,7 @@ MS2Ptr<ItemGift> GameEventAttendGiftCli::FUN_140ce3710(unsigned nDay)
 }
 
 // @0x140ce37a0
-CStringW GameEventAttendGiftCli::FUN_140ce37a0()
+CStringW GameEventAttendGiftCli::GetTitleWithPoints()
 {
     int nCount;
     if (!m_b125 && (nCount = GetUsablePoints(), 0 < nCount))
@@ -678,7 +678,7 @@ AttendGiftDataGroupPtr GameEventCashAttendCli::GetDayGroup(unsigned nDay)
 CMsTime GameEventCashAttendCli::GetBeginTime() { return m_28; }
 
 // @0x140ce4090
-CMsTime GameEventCashAttendCli::FUN_140ce4090() { return m_38; }
+CMsTime GameEventCashAttendCli::GetEndTime() { return m_38; }
 
 // ---- GameEventTrafficOptimizerCli ------------------------------------------------------------------------------------
 
@@ -785,8 +785,8 @@ void GameEventMeratMarketNoticeCli::OnStart()
     Unk_CliMeratDlg* pDlg = ((class Unk_CliMeratDlg*)FUN_140bfed50(0x4ec1));
     if (pDlg) {
         const CStringW* pStr = &m_d0;
-        CMeratMarketMan::GetInstance()->FUN_140d59990(*pStr);
-        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->FUN_140d599d0());
+        CMeratMarketMan::GetInstance()->SetMarketNotice(*pStr);
+        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->GetMarketNotice());
     }
 }
 
@@ -798,9 +798,9 @@ void GameEventMeratMarketNoticeCli::vfunc_6()
     if (pDlg) {
         {
             CStringW strEmpty(L"");
-            CMeratMarketMan::GetInstance()->FUN_140d59990(strEmpty);
+            CMeratMarketMan::GetInstance()->SetMarketNotice(strEmpty);
         }
-        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->FUN_140d599d0());
+        pDlg->FUN_14130c5b0(CMeratMarketMan::GetInstance()->GetMarketNotice());
     }
 }
 

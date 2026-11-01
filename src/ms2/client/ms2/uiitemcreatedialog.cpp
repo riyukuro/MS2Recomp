@@ -43,6 +43,7 @@
 #include "ms2/placeholder/asevent.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/astextinput.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/cccreateitempacket.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
@@ -97,15 +98,10 @@ public:
 class Unk_IcCombo : public Unk_IcControl
 {
 public:
-    int FUN_1422df6c0();                                    // the selected row
-    MS2Ptr<Unk_IcDataProvider> FUN_1422df770();             // the data provider
     void FUN_1419b9990(const CString& strName, int& nOut);  // a member of the selected row
 };
 class Unk_IcInput : public Unk_IcControl
 {
-public:
-    void FUN_1422e0ab0(const CStringW& strText);            // set the text
-    void FUN_1422c1fe0(unsigned int bEnabled);              // enable / disable
 };
 class Unk_IcCheck : public ASCheckBox
 {
@@ -130,10 +126,9 @@ public:
     void Clear();
     TiXmlNode* LinkEndChild(TiXmlNode* pChild);
 };
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);   // save
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);   // set an int attribute
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, float fValue);      // set a float attribute
-void FUN_140874050(void* pElement, const char* szName, const CString& str);   // set a string attribute
+void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const CStringA& value);   // set a string attribute
 
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item row (NULL: no such item)
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
@@ -146,7 +141,7 @@ void FUN_140841420(CStringW& str);                          // lower case
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
 void FUN_14083d890(CStringW strText);                       // copy to the clipboard
 void FUN_1412751b0(const CStringW& strText, int nType);     // system notice
-CStringW FUN_14082f000(int nStat);                          // text of a stat
+CStringW GetStatCommonText(unsigned nStat);                          // text of a stat
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);    // narrow a string
 CString FUN_14016a5c0(const char* sz, int nCodePage);       // copy a string
@@ -509,8 +504,8 @@ void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if ((CItemData*)item) {
         if (MS2Ptr<Unk_IcInput> input = FUN_140e35bd0("m_periodInput")) {
-            input->FUN_1422e0ab0(L"0");
-            input->FUN_1422c1fe0(1);
+            reinterpret_cast<ASTextInput*>(input.operator->())->FUN_1422e0ab0(L"0");
+            reinterpret_cast<ASTextInput*>(input.operator->())->FUN_1422c1fe0(1);
         }
     }
 }
@@ -994,7 +989,7 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
     float fMinimum = FUN_1419b6940(nGroup, nStat);
     float fMaximum = FUN_1419b6a90(nGroup, nStat);
     TiXmlElement* pRate = new TiXmlElement("rate");
-    FUN_140874050(pRate, "name", FUN_14016a600(FUN_14082f000(nStat), 0));
+    XmlSetAttr(pRate, "name", FUN_14016a600(GetStatCommonText(nStat), 0));
     XmlSetAttr(pRate, "minimum", (float)fMinimum);
     XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
@@ -1020,7 +1015,7 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
     int nMinimum = (int)FUN_1419b6d40(nGroup, nStat);
     int nMaximum = (int)FUN_1419b6e80(nGroup, nStat);
     TiXmlElement* pValue = new TiXmlElement("value");
-    FUN_140874050(pValue, "name", FUN_14016a600(FUN_14082f000(nStat), 0));
+    XmlSetAttr(pValue, "name", FUN_14016a600(GetStatCommonText(nStat), 0));
     XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
     XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcValueCounts counts(10);
@@ -1045,7 +1040,7 @@ TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
     float fMinimum = FUN_1419b7120(nGroup, nSpecial);
     float fMaximum = FUN_1419b7270(nGroup, nSpecial);
     TiXmlElement* pRate = new TiXmlElement("rate");
-    FUN_140874050(pRate, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
+    XmlSetAttr(pRate, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
     XmlSetAttr(pRate, "minimum", (float)fMinimum);
     XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
@@ -1070,7 +1065,7 @@ TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
     unsigned nMinimum = (unsigned)FUN_1419b7520(nGroup, nSpecial);
     unsigned nMaximum = (unsigned)FUN_1419b7670(nGroup, nSpecial);
     TiXmlElement* pValue = new TiXmlElement("value");
-    FUN_140874050(pValue, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
+    XmlSetAttr(pValue, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
     XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
     XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcRateCounts counts(10);
@@ -1128,8 +1123,8 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
         int nRank = debug->m_nRank;
         TiXmlElement* pItem = new TiXmlElement("item");
         XmlSetAttr(pItem, "id", (unsigned)nItemId);
-        FUN_140874050(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, nItemId), 0));
-        FUN_140874050(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(nRank), 0));
+        XmlSetAttr(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, nItemId), 0));
+        XmlSetAttr(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(nRank), 0));
         for (unsigned nGroup = 0; nGroup < 3; ++nGroup) {
             int nG = nGroup;
             TiXmlElement* pGroup = new TiXmlElement(strGroups[nGroup]);
@@ -1159,7 +1154,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
     strDir.Format("%s%s", (const char*)FUN_14016a5c0(CommonResource::GetInstance()->m_strResourcePath, 0), "../Debug/");
     if (!efd::File::DirectoryExists(strDir))
         _mkdir(strDir);
-    FUN_1408710c0(&m_doc, FUN_140cc2a00("../Debug/", m_strFile));
+    m_doc.SaveFile(FUN_140cc2a00("../Debug/", m_strFile));
 }
 MS2_REPLACE_METHOD(0x1419b8810, Unk_ItemOptionSimulator, FUN_1419b8810, 2061, 0x9B8A55DF);
 
@@ -1209,15 +1204,15 @@ void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& 
 // @0x1419b9990
 void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
 {
-    int nSelected = FUN_1422df6c0();
+    int nSelected = reinterpret_cast<ASDropdownMenu*>(this)->GetSelectedIndex();
     if (nSelected < 0)
         return;
-    MS2Ptr<Unk_IcDataProvider> provider = FUN_1422df770();
+    MS2Ptr<ASDataProvider> provider = reinterpret_cast<ASDropdownMenu*>(this)->GetDataProvider();
     if (provider == 0)
         return;
     if ((unsigned)nSelected >= provider->GetLength())
         return;
-    provider->FUN_1419b9900(nSelected, strName, nOut);
+    reinterpret_cast<Unk_IcDataProvider*>(provider.operator->())->FUN_1419b9900(nSelected, strName, nOut);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbed80-0x142cbeec0 .text$yd

@@ -172,7 +172,6 @@ void FUN_1401d3700(CString& str);                                       // lower
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
-int FUN_141658e60(GameObject* pActor);                                  // gender of the player (0 male, 1 female)
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
 class Unk_SpOptions { public: int FUN_141260470(); };
 class Unk_SpConfig { public: Unk_SpOptions* FUN_1411b1f30(); };
@@ -641,7 +640,7 @@ int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventV
     CheckInit();
     if (nEventId != 0 && pActor != 0)
     {
-        int nGender = FUN_141658e60(pActor);
+        int nGender = reinterpret_cast<PC*>(pActor)->FUN_141658e60();
         int nJob = reinterpret_cast<PC*>(pActor)->FUN_141654700();
         int bCaster = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pActor ? 1 : 0;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];

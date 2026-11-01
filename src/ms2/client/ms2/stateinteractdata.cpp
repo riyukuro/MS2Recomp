@@ -134,7 +134,6 @@ class Unk_SiWorld : public WorldService
 public:
     MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);                  // an interact object by name
-    Unk_SiNpc* FUN_141bd1320(int nActorId);                                         // an actor by object id
 };
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
@@ -456,7 +455,7 @@ void StateInteraction::SendInteractObjectMode11()
     {
         CInteractMeshObject* pMesh = dynamic_cast<CInteractMeshObject*>(m_aObjects[i].get());
         if (pMesh)
-            pMesh->FUN_1413ff840();
+            pMesh->PlayReactAni();
     }
 }
 
@@ -600,7 +599,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     if (m_spNpc.get())
     {
         nNpc = m_spNpc->m_nNpc;
-        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_spNpc->m_nNpc);
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_spNpc->m_nNpc));
         if (pNpc)
         {
             MS2Ptr<CNpcData> spNpcData = MS2Ptr<CNpcData>(pNpc->GetNpcData());
@@ -646,7 +645,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
         return;
     if (m_spNpc.get())
     {
-        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd1320(m_spNpc->m_nNpc);
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_spNpc->m_nNpc));
         if (pNpc)
         {
             if (m_n48 != 0)

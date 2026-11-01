@@ -29,7 +29,6 @@ class Unk_PiCheck : public CPtred
 {
 public:
     Unk_PiCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ce4b0
-    bool FUN_1422ce0e0();
 private:
     char m_pad[0x88 - sizeof(CPtred)];
 };
@@ -156,7 +155,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
         {
-            if (agree->FUN_1422ce0e0())
+            if (reinterpret_cast<ASButton*>(agree.operator->())->FUN_1422ce0e0())
                 m_state.m_bAgree = true;
         }
     }
@@ -164,7 +163,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
         if (deny.get() != 0)
         {
-            if (deny->FUN_1422ce0e0())
+            if (reinterpret_cast<ASButton*>(deny.operator->())->FUN_1422ce0e0())
                 m_state.m_bAgree = false;
         }
     }

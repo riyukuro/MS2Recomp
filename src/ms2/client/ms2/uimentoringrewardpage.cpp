@@ -147,7 +147,7 @@ void ASMentoringRewardPage::Refresh(){
  const size_t count=3;std::vector<unsigned> values;((class Unk_MentorRewards*)FUN_1406c7610())->GetAttendRewardCoins(values);if(values.size()!=count)return;
  FUN_140cfee80((*m_script).FUN_1422bb890(),"m_benefitDesc",LocalizedMentorFormat(L"s_mentoring_reward_coin_desc",values[0],values[1],values[2]));
  bool available=FUN_140c70240()->FUN_140b71610();int level=FUN_140c70240()->FUN_140b715c0();unsigned index=FUN_140324070(level,0,2);
- m_coin->FUN_1422c4c80(FUN_140b62550(values[index]));m_button->FUN_1422c1fe0((unsigned)available);
+ m_coin->FUN_1422c4c80(FUN_140b62550(values[index]));m_button->FUN_1422c1fe0((int)available);
  m_effect1->vfunc_4(available);m_effect2->vfunc_4(available);m_effect3->vfunc_4(available);
 }
 MS2_REPLACE_METHOD(0x140E62CC0, ASMentoringRewardPage, Refresh, 822, 0x5E175E0C);

@@ -21,17 +21,12 @@ class UIIntroMovie : public UIVideoContents
 {
 };
 
-class Unk_SmUIMgr                                       // the UI service (FUN_1403ed2b0)
-{
-public:
-    void FUN_141adbe00(float f, int n);
-    void FUN_141adc530(int nUiId);
-};
 class Unk_SmWorld;                                      // FUN_1403ed2d0
 class Unk_SmHost;                                       // FUN_14025e7a0
 class Unk_SmPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1409331f0 (m_8 +8)
 class Unk_SmLogin;                                      // FUN_14025e7c0
 
+class Unk_SmUIMgr;
 Unk_SmUIMgr* FUN_1403ed2b0();
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -88,7 +83,7 @@ void UISceneModeSelect::vfunc_48(int n)
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
-    FUN_1403ed2b0()->FUN_141adbe00(1.0f, 0);
+    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adbe00(1.0f, 0);
     FUN_1422e7950();
 }
 

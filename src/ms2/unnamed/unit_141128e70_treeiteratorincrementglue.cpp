@@ -8,11 +8,10 @@
 //   * B (47x, 0x1d): the plain `++` wrapper: call the matching C entry on the iterator and return its address.
 //   * C (25x, 0x8f): the tree `_Inc` step. `if ((*p)->_Right->_Isnil)`: climb - node = node->_Parent while that
 //     parent is not the nil header and node is still its right child, then park on the parent; otherwise
-//     node = the per-type _Min helper (FUN_1411488c0 + 0x30 * index) of the right child.
+//     node = the per-type _Tree_val::_Min of the right child.
 //   * D (2x, 0x1f): a list-node step: node += 8, iterator returned.
 // The iterator is a single node pointer; a node is {left, parent, right, colour, isnil} and the nil flag is the
-// signed byte at +0x19 (the exe loads it with movsx, so it is a char, not a bool). All names invented from shape;
-// the four external callees (FUN_1408853c0, FUN_140965a60, FUN_14063ef60) live outside this unit.
+// signed byte at +0x19 (the exe loads it with movsx, so it is a char, not a bool). All names invented from shape.
 // MS2-UNIT: unit_141128e70
 // MS2-RANGE: 0x141128e70-0x14112ab60 .text$mn
 #define MS2_THIS_FILE ""
@@ -20,6 +19,9 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/ugcmappackageinfo.h"
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"
+#include "ms2/unnamed/payloadptr_1401f9eb0.h"
 
 typedef __int64 i64;
 typedef unsigned __int64 u64;
@@ -38,36 +40,36 @@ struct Unk_TreeIter { Unk_TreeNode* m_pNode; };
 // The list-node view the two D entries step over (one 8-byte link per element).
 struct Unk_ListNode { void* m_pNext; };
 
-// ---- the per-type _Min helpers and the four callees outside this unit ----
-Unk_TreeNode* FUN_1411488c0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_1411488f0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148920(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148950(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148980(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_1411489b0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_1411489e0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148a10(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148a40(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148a70(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148aa0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148ad0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148b00(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148b30(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148b60(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148b90(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148bc0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148bf0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148c20(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148c50(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148c80(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148cb0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148ce0(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148d10(Unk_TreeNode* pNode);
-Unk_TreeNode* FUN_141148d40(Unk_TreeNode* pNode);
+// ---- the trees whose _Min helpers and const_iterator ++ this unit reaches ----
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, long> > > Unk_Tv_14063ef60;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<Cube> > > > Unk_Tv_1408853c0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned __int64 const, Unk_PayloadPtr<CubeOwner> > > > Unk_Tv_140965a60;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_CMISMarkRec> > > Unk_Tv_1411488c0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_Int3> > > Unk_Tv_1411488f0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_CMISCell> > > Unk_Tv_141148920;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, efd::SmartPointer<egf::Entity> > > > Unk_Tv_141148950;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<FittingDollData> > > > Unk_Tv_141148980;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<SalesInfo> > > > Unk_Tv_1411489b0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<SetItemEffectInfo> > > > Unk_Tv_1411489e0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<Cube> > > > Unk_Tv_141148a10;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, MS2Ptr<UICubeUGCHead> > > > Unk_Tv_141148a40;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, std::map<unsigned int, std::set<int, std::less<int>, std::allocator<int> >, std::less<unsigned int>, std::allocator<std::pair<unsigned int const, std::set<int, std::less<int>, std::allocator<int> > > > > > > > Unk_Tv_141148a70;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, std::map<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube> > > > > > > Unk_Tv_141148aa0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, efd::set<int, std::less<int> > > > > Unk_Tv_141148ad0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, efd::vector<efd::SmartPointer<egf::Entity> > > > > Unk_Tv_141148b00;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, egf::EntityID> > > Unk_Tv_141148b30;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_CMISCubeTimer> > > Unk_Tv_141148b60;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned int const, std::set<int, std::less<int>, std::allocator<int> > > > > Unk_Tv_141148b90;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<std::pair<int, int> const, MS2Ptr<SaleStateData> > > > Unk_Tv_141148bc0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > > const, int> > > Unk_Tv_141148bf0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<egf::EntityID const, MS2Ptr<Cube> > > > Unk_Tv_141148c20;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<egf::EntityID const, Unk_CMISPropPtr> > > Unk_Tv_141148c50;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_CMISKindA> > > Unk_Tv_141148c80;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<Unk_CMISKindA const, int> > > Unk_Tv_141148cb0;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int, int> > > Unk_Tv_141148ce0;
+typedef std::_Tree_val<std::_Tree_simple_types<MS2Ptr<AutomaticCreateCubeInfo> > > Unk_Tv_141148d10;
+typedef std::_Tree_val<std::_Tree_simple_types<MS2Ptr<CFunctionCubeObject> > > Unk_Tv_141148d40;
 
-void* FUN_1408853c0(Unk_TreeIter* pIter);
-void* FUN_140965a60(Unk_TreeIter* pIter);
-void* FUN_14063ef60(Unk_TreeIter* pIter);
 
 // ---- forward declarations of this unit's 102 entries ----
 
@@ -534,7 +536,7 @@ void* FUN_1411297f0(Unk_TreeIter* pIter)
 void* FUN_141129810(Unk_TreeIter* pIter, Unk_TreeIter* pRet, int)
 {
     Unk_TreeIter kOld = *pIter;
-    FUN_1408853c0(pIter);
+    ++*reinterpret_cast<std::_Tree_const_iterator<Unk_Tv_1408853c0>*>(pIter);
     *pRet = kOld;
     return pRet;
 }
@@ -543,7 +545,7 @@ void* FUN_141129810(Unk_TreeIter* pIter, Unk_TreeIter* pRet, int)
 void* FUN_141129860(Unk_TreeIter* pIter, Unk_TreeIter* pRet, int)
 {
     Unk_TreeIter kOld = *pIter;
-    FUN_140965a60(pIter);
+    ++*reinterpret_cast<std::_Tree_const_iterator<Unk_Tv_140965a60>*>(pIter);
     *pRet = kOld;
     return pRet;
 }
@@ -599,7 +601,7 @@ void* FUN_1411299e0(Unk_TreeIter* pIter)
 // @0x141129a00
 void* FUN_141129a00(Unk_TreeIter* pIter)
 {
-    FUN_14063ef60(pIter);
+    ++*reinterpret_cast<std::_Tree_const_iterator<Unk_Tv_14063ef60>*>(pIter);
     return pIter;
 }
 
@@ -755,7 +757,7 @@ void* FUN_141129cd0(Unk_TreeIter* pIter)
 // @0x141129cf0
 void* FUN_141129cf0(Unk_TreeIter* pIter)
 {
-    FUN_140965a60(pIter);
+    ++*reinterpret_cast<std::_Tree_const_iterator<Unk_Tv_140965a60>*>(pIter);
     return pIter;
 }
 
@@ -769,7 +771,7 @@ void* FUN_141129d10(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_1411488c0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_1411488c0::_Min(reinterpret_cast<Unk_Tv_1411488c0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -784,7 +786,7 @@ void* FUN_141129da0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_1411488f0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_1411488f0::_Min(reinterpret_cast<Unk_Tv_1411488f0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -799,7 +801,7 @@ void* FUN_141129e30(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148920(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148920::_Min(reinterpret_cast<Unk_Tv_141148920::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -814,7 +816,7 @@ void* FUN_141129ec0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148950(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148950::_Min(reinterpret_cast<Unk_Tv_141148950::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -829,7 +831,7 @@ void* FUN_141129f50(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148980(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148980::_Min(reinterpret_cast<Unk_Tv_141148980::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -844,7 +846,7 @@ void* FUN_141129fe0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_1411489b0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_1411489b0::_Min(reinterpret_cast<Unk_Tv_1411489b0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -859,7 +861,7 @@ void* FUN_14112a070(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_1411489e0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_1411489e0::_Min(reinterpret_cast<Unk_Tv_1411489e0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -874,7 +876,7 @@ void* FUN_14112a100(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148a10(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148a10::_Min(reinterpret_cast<Unk_Tv_141148a10::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -889,7 +891,7 @@ void* FUN_14112a190(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148a40(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148a40::_Min(reinterpret_cast<Unk_Tv_141148a40::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -904,7 +906,7 @@ void* FUN_14112a220(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148a70(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148a70::_Min(reinterpret_cast<Unk_Tv_141148a70::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -919,7 +921,7 @@ void* FUN_14112a2b0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148aa0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148aa0::_Min(reinterpret_cast<Unk_Tv_141148aa0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -934,7 +936,7 @@ void* FUN_14112a340(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148ad0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148ad0::_Min(reinterpret_cast<Unk_Tv_141148ad0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -949,7 +951,7 @@ void* FUN_14112a3d0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148b00(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148b00::_Min(reinterpret_cast<Unk_Tv_141148b00::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -964,7 +966,7 @@ void* FUN_14112a460(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148b30(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148b30::_Min(reinterpret_cast<Unk_Tv_141148b30::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -979,7 +981,7 @@ void* FUN_14112a4f0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148b60(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148b60::_Min(reinterpret_cast<Unk_Tv_141148b60::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -994,7 +996,7 @@ void* FUN_14112a580(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148b90(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148b90::_Min(reinterpret_cast<Unk_Tv_141148b90::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1009,7 +1011,7 @@ void* FUN_14112a610(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148bc0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148bc0::_Min(reinterpret_cast<Unk_Tv_141148bc0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1024,7 +1026,7 @@ void* FUN_14112a6a0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148bf0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148bf0::_Min(reinterpret_cast<Unk_Tv_141148bf0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1039,7 +1041,7 @@ void* FUN_14112a730(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148c20(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148c20::_Min(reinterpret_cast<Unk_Tv_141148c20::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1054,7 +1056,7 @@ void* FUN_14112a7c0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148c50(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148c50::_Min(reinterpret_cast<Unk_Tv_141148c50::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1069,7 +1071,7 @@ void* FUN_14112a850(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148c80(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148c80::_Min(reinterpret_cast<Unk_Tv_141148c80::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1084,7 +1086,7 @@ void* FUN_14112a8e0(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148cb0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148cb0::_Min(reinterpret_cast<Unk_Tv_141148cb0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1099,7 +1101,7 @@ void* FUN_14112a970(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148ce0(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148ce0::_Min(reinterpret_cast<Unk_Tv_141148ce0::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1114,7 +1116,7 @@ void* FUN_14112aa00(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148d10(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148d10::_Min(reinterpret_cast<Unk_Tv_141148d10::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }
@@ -1129,7 +1131,7 @@ void* FUN_14112aa90(Unk_TreeIter* pIter)
             pIter->m_pNode = pNode;
         pIter->m_pNode = pNode;
     } else {
-        pIter->m_pNode = FUN_141148d40(pIter->m_pNode->m_pRight);
+        pIter->m_pNode = reinterpret_cast<Unk_TreeNode*>(Unk_Tv_141148d40::_Min(reinterpret_cast<Unk_Tv_141148d40::_Nodeptr>(pIter->m_pNode->m_pRight)));
     }
     return pIter;
 }

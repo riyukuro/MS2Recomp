@@ -57,7 +57,7 @@ MS2_REPLACE_METHOD(0x141B26730, UITimerDialog, GetTypeName, 61, 0x9C98EE2E);
 void UITimerDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100) == 0)
+    if (m_tick.Check(100) == 0)
         return;
     int nMin = 0;
     int nSec = 0;

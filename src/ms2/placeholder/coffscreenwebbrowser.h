@@ -24,7 +24,7 @@ public:
     COffscreenWebBrowser();                         // 0x1416113e0 (edx = 1: the virtual-base "most derived" flag)
     virtual ~COffscreenWebBrowser();                // 0x141611770
 
-    void FUN_1416119d0(const CefRefPtr<CefBrowser>& browser);  // attach: after CefBrowserHost::CreateBrowser (with null)
+    void AttachBrowser(const CefRefPtr<CefBrowser>& browser);  // attach: after CefBrowserHost::CreateBrowser (with null)
     void Close();                           // close the browser
     void StopLoad();                           // stop loading
     void SetFocus(bool bShow);                 // focus / unfocus

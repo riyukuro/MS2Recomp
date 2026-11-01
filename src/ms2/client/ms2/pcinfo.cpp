@@ -136,7 +136,7 @@ MS2Ptr<CItem> PCInfo::GetEquipItemSet0(Unk_InventoryEquipSlot nSlot)
 }
 
 // @0x140dba790
-MS2Ptr<CItem> PCInfo::FUN_140dba790(Unk_InventoryEquipSlot nSlot)
+MS2Ptr<CItem> PCInfo::GetEquipItemSet1(Unk_InventoryEquipSlot nSlot)
 {
     MS2Ptr<CItem> spItem(0);
     m_mapEquip1.Lookup(nSlot, spItem);
@@ -144,7 +144,7 @@ MS2Ptr<CItem> PCInfo::FUN_140dba790(Unk_InventoryEquipSlot nSlot)
 }
 
 // @0x140dba820
-MS2Ptr<CItem> PCInfo::FUN_140dba820(Unk_InventoryEquipSlot nSlot)
+MS2Ptr<CItem> PCInfo::GetEquipItemSet2(Unk_InventoryEquipSlot nSlot)
 {
     MS2Ptr<CItem> spItem(0);
     m_mapEquip2.Lookup(nSlot, spItem);
@@ -157,14 +157,14 @@ MS2Ptr<CItem> PCInfo::GetEquipItemByKind(int nKind, Unk_InventoryEquipSlot nSlot
     if (nKind == 0)
         return GetEquipItemSet0(nSlot);
     else if (nKind == 1)
-        return FUN_140dba790(nSlot);
+        return GetEquipItemSet1(nSlot);
     else if (nKind == 2)
-        return FUN_140dba820(nSlot);
+        return GetEquipItemSet2(nSlot);
     return MS2Ptr<CItem>(0);
 }
 
 // @0x140dba990
-void PCInfo::FUN_140dba990(ATL::CAtlArray<MS2Ptr<CItem> >& aItems)
+void PCInfo::CollectEquipSet0Items(ATL::CAtlArray<MS2Ptr<CItem> >& aItems)
 {
     for (POSITION pos = m_mapEquip0.GetStartPosition(); pos; m_mapEquip0.GetNext(pos))
         aItems.Add(m_mapEquip0.GetValueAt(pos));

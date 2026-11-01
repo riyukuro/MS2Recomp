@@ -47,7 +47,7 @@
 
 // ---- out-of-unit callees ----
 // The post-processing service: the materials of the post-process modes and the mode of every scene root.
-class Unk_RLPPostProcessSvc
+class PostProcessingService
 {
 public:
     void FUN_1416aa330();                                   // creates the post-process mode materials
@@ -102,7 +102,7 @@ DecoEditService* BrushService();
 // ---- file-scope statics (.text$di) -------------------------------------------------------------------------------------
 // This range also holds the initializers of the neighbouring processor TUs (their RTTI objects and the header statics every
 // one of them carries: the condition table, the skill/stun labels, a condition map, a null handle).
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_BuddyHandle (ctor 0x1401cd100)
 
 #ifndef MS2_HOOK_DLL   // the exe's own RTTI objects are the registered ones
 // @0x1400f8ee0
@@ -135,7 +135,7 @@ static CString s_strStun4("stun");
 MS2RenderListProcessor::MS2RenderListProcessor()
     : m_spMaterial(0)
 {
-    ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa330();
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa330();
     m_spMaterial = 0;
     m_ppkSortedAlpha = 0;
     m_pkAlphaObjects = 0;
@@ -510,8 +510,8 @@ void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2Sa
     if (!pkEntry->IsActive())
         return;
 
-    std::map<NiNodePtr, int>::const_iterator it = ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
-    if (it == ((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
+    std::map<NiNodePtr, int>::const_iterator it = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
+    if (it == ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
         return;
 
     int iMode = it->second;
@@ -529,7 +529,7 @@ void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2Sa
         else
         {
             SaveMaterial(kSaved, pkObject);
-            pkObject->ApplyAndSetActiveMaterial(((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_aspMaterial[iMode]);
+            pkObject->ApplyAndSetActiveMaterial(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_aspMaterial[iMode]);
         }
     }
 }
@@ -538,7 +538,7 @@ MS2_REPLACE_METHOD(0x1414DD570, MS2RenderListProcessor, ApplyEffectMaterial, 702
 // @0x1414dd840
 void MS2RenderListProcessor::RestoreMaterials(MS2SavedMaterialMap& kSaved)
 {
-    if (((class Unk_RLPPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.size() == 0)
+    if (((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.size() == 0)
         return;
 
     NiTMapIterator pos = kSaved.GetFirstPos();

@@ -49,14 +49,18 @@ struct Unk_CamEffectRef
 Unk_CamEffectRef FUN_1417f5820(CVibrateCameraEffect* pEffect);
 
 // Camera manager (singleton 0x1409478c0).
-class Unk_CameraManager
+class CameraMgr
 {
 public:
     int FUN_140aed0f0();                                        // camera effects enabled
     int FUN_140a18070();                                        // camera ready
+};
+class Unk_CameraManager
+{
+public:
     void FUN_140af0de0(const Unk_CamEffectRef& kRef);                 // queue the camera effect (consumes pRef)
 };
-Unk_CameraManager* FUN_1409478c0();
+CameraMgr* FUN_1409478c0();
 
 // Feature switches (commonfiles\featuremanager.cpp) and game options (gamepad vibration flag).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -65,18 +69,14 @@ struct Unk_PadOption
     char m_unk_00[2];
     bool m_bVibration;              // +0x02
 };
-class Unk_GameOption
-{
-public:
-    Unk_PadOption* FUN_140a58500();
-};
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 MS2InputService* FUN_140a58540();
 
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // A float table value of the client configuration (FUN_1401d3200).
 class Unk_VibrateScale
 {
 public:
-    const float& FUN_140298f40();
 };
 class Unk_ClientConfig
 {
@@ -160,12 +160,12 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
             CVibrateCameraEffect* pCamera = new CVibrateCameraEffect(pEffect->m_dStartTime,
                 pEffect->m_dStartTime + pEffect->m_fDuration, pParam->m_fFreq, pParam->m_fAmp, pParam->m_fDamping,
                 pEffect->m_dStartTime + pParam->m_fDampingTime, 1);
-            FUN_1409478c0()->FUN_140af0de0(FUN_1417f5820(pCamera));
+            ((Unk_CameraManager*)FUN_1409478c0())->FUN_140af0de0(FUN_1417f5820(pCamera));
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
-            if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
-                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
+            if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
+                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->FUN_140298f40()));
         }
         return pEffect;
     }
@@ -184,12 +184,12 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     {
         CVibrateCameraEffect* pCamera = new CVibrateCameraEffect(m_dStartTime, m_dStartTime + m_fDuration,
             pVibrate->m_fFreq, pVibrate->m_fAmp, pVibrate->m_fDamping, m_dStartTime + pVibrate->m_fDampingTime, 1);
-        FUN_1409478c0()->FUN_140af0de0(FUN_1417f5820(pCamera));
+        ((Unk_CameraManager*)FUN_1409478c0())->FUN_140af0de0(FUN_1417f5820(pCamera));
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
-        if (reinterpret_cast<Unk_GameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bVibration && 0.0f < m_fDuration)
-            FUN_140a58540()->StartRumbleFor(m_fDuration * ((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0.FUN_140298f40());
+        if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
+            FUN_140a58540()->StartRumbleFor(m_fDuration * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->FUN_140298f40()));
     }
     return true;
 }

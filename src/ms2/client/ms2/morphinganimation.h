@@ -47,8 +47,8 @@ public:
     virtual bool vfunc_3(int nTime);                    // 0x141487b20
     virtual int vfunc_4();                             // 0x141487bc0
 
-    void FUN_141487bf0(size_t nFrame);                  // push the weight of frame nFrame
-    void FUN_141487c50(float fWeight);                  // push fWeight into every interpolator of the morph controller
+    void SetFrame(size_t nFrame);                  // push the weight of frame nFrame
+    void SetWeight(float fWeight);                  // push fWeight into every interpolator of the morph controller
     NiAVObject* FindNode(const CString& strNodeName);   // find the render object of the owner's model by name
 
     CMorphingAnimationData* m_pData;                    // +0x20

@@ -37,7 +37,9 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetcompose.cpp"
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "tabcontentspetcompose.h"
 
@@ -89,7 +91,7 @@ static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FU
 #endif
 
 // ---- unit-local placeholders (the names of the classes shared with tabcontentspetevolution.cpp must stay identical:
-// the Unk_PetButton / Unk_PetItemBag members it instantiates are the ones this unit calls) ----
+// the Unk_PetButton / ASTileList members it instantiates are the ones this unit calls) ----
 
 // A Scaleform value seen through its "is this an object" test (the exe calls one shared function on it).
 class Unk_PetValueView { public: bool FUN_1409b4d40() const; };
@@ -105,20 +107,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_PetButton, 0x88);
 
-// The item bag control inside a section clip.
-class Unk_PetItemBag : public ASMovieClip
-{
-public:
-    Unk_PetItemBag(const Scaleform::GFx::Value& v, int nMovieId);       // 0x1422cf330
-#define PB_V(n) virtual void vfunc_##n();
-    PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
-#undef PB_V
-    virtual void vfunc_24(bool bRefresh);                              // 24 (+0xc0) refresh
-    void FUN_1407cba60(const char* szName, CString str);                // set the bag id
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetItemBag, 0x88);
 
 // A record of the equip data table; the int at +0x18 is zero for plain items.
 class Unk_PetRow : public CPtred
@@ -252,7 +240,7 @@ typedef TabContentsPetCompose::IdCount IdCount;
 // ---- glue: AS child control binding (the specializations and the Value helpers are COMDATs of the evolution unit) ----
 
 template <> MS2Ptr<Unk_PetButton> AScript::FUN_140acce30<Unk_PetButton>(const CString& strName);       // 0x140acce30
-template <> MS2Ptr<Unk_PetItemBag> AScript::FUN_140accef0<Unk_PetItemBag>(const CString& strName);     // 0x140accef0
+template <> MS2Ptr<ASTileList> AScript::FUN_140accef0<ASTileList>(const CString& strName);     // 0x140accef0
 template <> MS2Ptr<ASUIComponent> AScript::FUN_140accfb0<ASUIComponent>(const CString& strName);        // 0x140accfb0
 
 // @0x140cb6990
@@ -323,7 +311,7 @@ void PetComposePetCard::vfunc_4()
     MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>("m_petCard");
     if (card == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = card->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140cb47d0(ids);
@@ -370,7 +358,7 @@ void PetComposePetIngredient::vfunc_4()
     MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_petIngredient");
     if (ingredient == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = ingredient->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4830(items);
@@ -466,7 +454,7 @@ void PetComposePetEnchant::vfunc_4()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    if (MS2Ptr<Unk_PetItemBag> bag = ench->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = ench->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4860(items);

@@ -30,6 +30,7 @@
 // MS2-PIN: ?CallDestructors@?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VCItem@@@@_K@Z 0x140df5f10
 // MS2-PIN: ?Hash@?$CDefaultHashTraits@H@ATL@@SAKAEBH@Z 0x140df6cc0
 #include "ms2/placeholder/ms2stdafx.h"
+#define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ugccubepalette.cpp"    // assumed (npcdata.h pulls in ms2recover.h)
 
 #include <algorithm>
 #include <vector>
@@ -126,18 +127,8 @@ public:
 
 // Names of the npc / strings tables.
 
-struct Unk_NpcData { char m_pad[0x90]; CString m_strName; };
-class Unk_NpcDataPtr
-{
-public:
-    ~Unk_NpcDataPtr() { FUN_14035e5b0(); }
-    Unk_NpcData* FUN_140729ad0();                               // is set
-    Unk_NpcData* FUN_14035eb90();                       // operator->
-    void FUN_14035e5b0();                               // release
-    void* m_pad;
-    void* m_p;
-};
-Unk_NpcDataPtr FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 struct Unk_NpcRef { __int64 m_n00; int m_nNpcId; };
 class Unk_NpcRefPtr
@@ -335,9 +326,9 @@ CStringW UGCCube::FUN_140def880()                                               
         Unk_NpcRefPtr spNpc = reinterpret_cast<Unk_NpcSvc*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(itemData->FUN_14053dd30());
         if (spNpc.get() != 0)
         {
-            Unk_NpcDataPtr spData = FUN_1406cd330(spNpc.FUN_1406810e0()->m_nNpcId);
-            if (spData.FUN_140729ad0())
-                return FUN_14016a730(spData.FUN_14035eb90()->m_strName, 0);
+            MS2Ptr<CNpcData> spData = FUN_1406cd330(spNpc.FUN_1406810e0()->m_nNpcId);
+            if (spData.get())
+                return FUN_14016a730(spData->m_strPortrait, 0);
         }
     }
     if (itemData.get() != 0)

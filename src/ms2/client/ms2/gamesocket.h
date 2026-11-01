@@ -40,7 +40,7 @@ public:
     operator SOCKET() const { return m_socket; }
     void CloseSocket();
     bool operator==(const CSocketBase& o) const { return m_socket==o.m_socket; }
-    void FUN_14126c5c0(int); void FUN_14126c610(int); void SetNonBlocking(int); void FUN_14126c7d0(int); void SetSendBufferSize(int); void CreateSocket(int,int,int);
+    void FUN_14126c5c0(int); void SetNoDelay(int); void SetNonBlocking(int); void SetRecvBufferSize(int); void SetSendBufferSize(int); void CreateSocket(int,int,int);
 protected: SOCKET m_socket;
 };
 MS2_CHECK_SIZE(CSocketBase,8);
@@ -48,8 +48,8 @@ struct Unk_SocketAddress : sockaddr_in {
     Unk_SocketAddress(const char*,int);
     ~Unk_SocketAddress() {}
     operator const sockaddr*() const { return reinterpret_cast<const sockaddr*>(this); }
-    void FUN_14126ce80(int,unsigned long);
-    void FUN_14126ced0(unsigned short,unsigned long);
+    void SetPortAndAddress(int,unsigned long);
+    void InitSockAddr(unsigned short,unsigned long);
 };
 MS2_CHECK_SIZE(Unk_SocketAddress,16);
 struct Unk_SocketOptions {
@@ -65,10 +65,10 @@ public:
     virtual int vfunc_3(char*,int);
     virtual int vfunc_4(const char*,int);
     void FUN_1412694d0(int,CSocketThread*);
-    void Close(); void FUN_141269990();
-    int FUN_141269820(const sockaddr*,int);
-    int FUN_141269890(const sockaddr* p) { return FUN_141269820(p,16); }
-    int FUN_14126c3d0(const char*,int,int);
+    void Close(); void RemoveFromWorker();
+    int Connect(const sockaddr*,int);
+    int FUN_141269890(const sockaddr* p) { return Connect(p,16); }
+    int Send(const char*,int,int);
     ISocketCallBack* FUN_14126a3c0() { return m_callback; }
     void FUN_14126c5a0(ISocketCallBack* p) { m_callback=p; }
 private:
@@ -83,8 +83,8 @@ public:
     CSocketThread(); virtual ~CSocketThread();
     unsigned int vfunc_1(void*,Unk_140659080&) override;
     void FUN_1412696b0(); int FUN_141269b30(HANDLE); void ProcessCommands();
-    void FUN_14126a000(CSimpleSocket*,int);
-    HANDLE FUN_14126b1c0(CSimpleSocket*); int FUN_14126b250(CSimpleSocket*);
+    void HandleSocketError(CSimpleSocket*,int);
+    HANDLE AddSocket(CSimpleSocket*); int RemoveSocket(CSimpleSocket*);
     ATL::CAtlArray<HANDLE> m_events;
     CLockCriticalSection m_lock;
     ATL::CAtlList<Unk_SocketCommand> m_commands;

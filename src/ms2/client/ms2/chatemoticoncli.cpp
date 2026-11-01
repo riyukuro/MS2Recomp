@@ -110,17 +110,7 @@ class Unk_EmoTable { public: Unk_EmoDataPtr FUN_1401e7120(int nEmoticonId); };
 
 // The item row (the pack item) and its handle.
 class Unk_EmoItemData : public CItemData { };
-class Unk_EmoItemPtr
-{
-public:
-    ~Unk_EmoItemPtr();                                              // 0x1401b50d0
-    bool FUN_1402ffd90() const;
-private:
-    void* m_pad;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_EmoItemPtr, 0x10);
-Unk_EmoItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 __int64 GetServerTime();                                            // server time
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -247,8 +237,8 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
             pDlg->FUN_140bd26c0(nId);
         pDlg->FUN_140bd2620();
     }
-    Unk_EmoItemPtr item = FUN_14053f870(nItemId);
-    if (item.FUN_1402ffd90())
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+    if (item.IsNull())
     {
         MS2_ASSERT_AT(0x91, 0);
         return;
@@ -256,7 +246,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
     UIChatDialog* pChat = ((class UIChatDialog*)FUN_140938cd0(0x4e5d));
     if (pChat != 0)
     {
-        CStringW strName = FUN_14016a730((const char*)reinterpret_cast<Unk_EmoItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconPath(), 0);
+        CStringW strName = FUN_14016a730((const char*)reinterpret_cast<Unk_EmoItemData*>(item.operator->())->GetIconPath(), 0);
         CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_add_notify_message",
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);

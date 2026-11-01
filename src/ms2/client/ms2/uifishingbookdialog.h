@@ -12,7 +12,6 @@
 typedef ATL::CAtlArray<int> FbIdArray;
 
 struct Unk_FbListRef;
-struct Unk_FbTextRef;
 
 class UIFishingBookDialog : public UIDialog
 {
@@ -45,7 +44,6 @@ public:
     int FUN_140f437d0(int nFishId);                             // 0x140f437d0 best record
 
     Unk_FbListRef FUN_140ba4b70(const CString& strName);        // list control child
-    Unk_FbTextRef FUN_140bb4cf0(const CString& strName);        // text field child
 
 private:
     MS2_LAYOUT_FRIEND;

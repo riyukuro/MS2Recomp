@@ -22,16 +22,17 @@ extern const Vector3 g_143a08ce8;   // NiPoint3::UNIT_X
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143abb090;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
-class Unk_BuffContainer
+class Unk_BuffContainer;
+// C3: the movement controller (Unk_PCMove, unit_141682f80) behind FUN_14166d240
+class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nBuffId);
+    bool FUN_141682fe0(int nKey);
 };
 
-class Unk_LocalPlayer
-{
+class PCBase { public: void * FUN_14166d240(void); }; class Unk_LocalPlayer : public PCBase {
 public:
-    Unk_BuffContainer* FUN_14166d240();             // +0x6d8
+
 };
 
 // The camera option row held by the game context (+0x154 rotation).
@@ -48,7 +49,6 @@ class Unk_CameraOptionPtr
 {
 public:
     ~Unk_CameraOptionPtr() { FUN_140885ab0(); }     // 0x1408850f0 (another obj)
-    Unk_CameraOption* FUN_1409657a0() const;        // get
     Unk_CameraOption* FUN_140885340() const;        // operator->
     void FUN_140885ab0();                           // release
 
@@ -341,9 +341,9 @@ void CHomeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     Unk_LocalPlayer* pPlayer = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
-    if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
+    if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
-    else if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300009))
+    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
     reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d90(ptMove);
 }
@@ -353,7 +353,7 @@ MS2_REPLACE_METHOD(0x140B65E70, CHomeCameraMode, vfunc_9, 208, 0x69A99AEA);
 void CHomeCameraMode::vfunc_33()
 {
     Unk_CameraOptionPtr spOption = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (spOption.FUN_1409657a0())
+    if (reinterpret_cast<Unk_CameraOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()))
     {
         float fRotation = spOption.FUN_140885340()->m_154;
         if (reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0())

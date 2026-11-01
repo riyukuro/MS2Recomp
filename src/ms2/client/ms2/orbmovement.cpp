@@ -75,13 +75,13 @@ NiTransform COrbMovement::vfunc_2(double dTime, const NiTransform& kTarget)
     else
     {
         float fDelta = (float)dTime;
-        FUN_1416256f0(fLength * m_fRate * fDelta, m_kTransform, kTarget, m_kTransform);
+        LerpTransformClamped(fLength * m_fRate * fDelta, m_kTransform, kTarget, m_kTransform);
     }
     return m_kTransform;
 }
 
 // @0x1416256f0
-void INodeMovement::FUN_1416256f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut)
+void INodeMovement::LerpTransformClamped(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut)
 {
     if (fT <= 0.0f)
     {

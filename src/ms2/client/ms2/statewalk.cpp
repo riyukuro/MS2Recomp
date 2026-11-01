@@ -57,14 +57,7 @@ void* FUN_1409a8b10();
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
-class Unk_WkBuff
-{
-public:
-    bool FUN_141683100(int nKey);
-    bool FUN_141682fe0(int nKey);
-    bool FUN_141683200(int nKey);
-};
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); bool FUN_141683200(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_WkOwnerSlots
@@ -228,8 +221,8 @@ void StateWalk::vfunc_8(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
         return;
     }
-    Unk_WkBuff* pBuff = (Unk_WkBuff*)m_pOwner->FUN_14166d240();
-    Vector3 kDir = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
+    Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
+    Vector3 kDir = pBuff->FUN_141683900();
     reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
     if (m_pOwner->FUN_141676b70() != 0)
     {
@@ -241,8 +234,8 @@ void StateWalk::vfunc_8(double fTime)
     }
     else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd6))
     {
-        int nY = abs(FUN_140a58540()->FUN_140d8c450());
-        int nX = abs(FUN_140a58540()->FUN_140d8c4d0());
+        int nY = abs(FUN_140a58540()->GetLeftStickYPercent());
+        int nX = abs(FUN_140a58540()->GetLeftStickXPercent());
         int nStick = *FUN_1404eb7e0(&nX, &nY);
         if (nStick > 0)
         {

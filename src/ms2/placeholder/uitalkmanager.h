@@ -21,14 +21,8 @@ class UITalkCinematic;
 class Unk_TcNpc;
 
 // An int array (the exe's CAtlArray<void*> shape: ctor/dtor are the plain ATL ones); the accessors are out of line.
-class Unk_TalkIdList : public ATL::CAtlArray<void*>
+class Unk_TalkIdList : public ATL::CAtlArray<unsigned>
 {
-public:
-    unsigned __int64 FUN_140186270();                           // GetCount
-    unsigned& FUN_140184510(unsigned __int64 nIndex);           // GetAt
-    unsigned& FUN_1401c0c80(__int64 nIndex);                    // GetAt (checked)
-    void FUN_1401855a0(unsigned nId);                           // Add
-    void FUN_1402c2830();                                       // RemoveAll
 };
 MS2_CHECK_SIZE(Unk_TalkIdList, 0x20);
 
@@ -48,11 +42,6 @@ MS2_CHECK_SIZE(Unk_TalkIdState, 0x28);
 // The reward items of the talk. The dtor 0x1408f2340 is ~CAtlArray<MS2Ptr<CItem>>, which releases the items.
 class Unk_TalkItemList : public ATL::CAtlArray<MS2Ptr<CItem> >
 {
-public:
-    unsigned __int64 FUN_140720ca0();                           // GetCount
-    MS2Ptr<CItem>& FUN_140a69ee0(unsigned __int64 nIndex);      // GetAt
-    void FUN_140720b80(const MS2Ptr<CItem>& spItem);            // Add
-    void FUN_1408f3a80();                                       // RemoveAll
 };
 MS2_CHECK_SIZE(Unk_TalkItemList, 0x20);
 

@@ -181,7 +181,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 
 class Unk_CapWorld { public: void FUN_141bc7d40(const egf::EntityID& kId); void FUN_141bc7fe0(const egf::EntityID& kId); void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(egf::EntityID kId); };    // WorldService
 Unk_CapWorld* FUN_1403ed2d0();
-class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::EntityID& kId); void FUN_14161d070(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
+class COptimizer { public: int FUN_1409f7ea0(); void AddSuppressor(const egf::EntityID& kId); void FUN_14161d070(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_CsoSpawnMgr { public: Unk_PCBaseFxLib* FUN_1411bf1e0(); };
 Unk_CsoSpawnMgr* FUN_140a50010();
@@ -229,6 +229,7 @@ class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned 
 struct Unk_WsC_NpcAnim;
 // The world service: the spawn animation of a spawn id (worldservice.h).
 class WorldService { public: int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); public:
+    class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1290(int);   // C3: was free FUN_141bd1290
 };
 // The green / blue of the hit colour boost (npc.cpp data; the red is the npc's DamagedColorScale).
@@ -334,7 +335,6 @@ typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_Nod
 class Unk_Svc764020;
 void* FUN_140764020();
 class Unk_PCBaseCompEmoView : public Unk_PCBaseComp_a88 { public: void FUN_14192f910(); };     // UIEmoticon::Entity refresh
-class Unk_CscWorld { public: PCBase* FUN_141bd1200(int nObjectId); };
 const efd::Point3& FUN_140947900(void* pAVObject);                  // world translate of the node
 // The object vfunc_26 places at the actor every frame (as in gameobject.cpp).
 class Unk_GoAttachment
@@ -601,7 +601,7 @@ int CNpc::vfunc_10()
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
         FUN_1403ed2d0()->FUN_141bc7ec0(FUN_14123c460());
-        ((class COptimizer*)FUN_1409f7c90())->FUN_14161d010(FUN_14123c460());
+        ((class COptimizer*)FUN_1409f7c90())->AddSuppressor(FUN_14123c460());
         if ((m_spNpcData->m_nClass == 3 || m_spNpcData->m_nClass == 4) && vfunc_116() == 0)
             ((class COptimizer*)FUN_1409f7c90())->FUN_14109ac50(0);
     }
@@ -1371,7 +1371,7 @@ void CNpc::FUN_141093eb0()
 {
     if (m_nF20 == 0)
         return;
-    PCBase* pOwner = reinterpret_cast<Unk_CscWorld*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20);
+    PCBase* pOwner = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20));
     if (pOwner != NULL) {
         efd::SmartPointer<NiAVObject> spNode = pOwner->FUN_141675930();
         if (spNode != 0) {
@@ -2307,7 +2307,7 @@ void CNpc::vfunc_50()
 void CNpc::vfunc_51(efd::Point3* pOffset)
 {
     if (m_nF20 != 0) {
-        PCBase* pTarget = reinterpret_cast<Unk_CscWorld*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20);
+        PCBase* pTarget = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20));
         if (pTarget != NULL) {
             *pOffset = static_cast<const efd::Point3&>(pTarget->vfunc_18()) - static_cast<const efd::Point3&>(vfunc_18());
             return;
@@ -2321,7 +2321,7 @@ void CNpc::vfunc_51(efd::Point3* pOffset)
         pOffset->x = (float)m_spNpcData->m_collision.m_nWidthOffset;
         pOffset->y = (float)m_spNpcData->m_collision.m_nDepthOffset;
         pOffset->z = (float)m_spNpcData->m_collision.m_nHeightOffset + m_unk_108;
-        float fYaw = FUN_14123ce70(FUN_14123cc20());
+        float fYaw = DirectionToNegYawRadians(GetForwardDirection());
         efd::Matrix3 kRot;
         kRot.MakeZRotation(fYaw + 3.1415927f);
         *pOffset = kRot * *pOffset;

@@ -12,6 +12,8 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "hook/ms2hook.h"
+#include <efd/RefCount.h>
+#include <efd/SmartPointer.h>
 #include "ms2/placeholder/gameeventmanagercli.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -411,8 +413,8 @@ public:
 extern char DAT_143ae0130; extern int DAT_143a01f90; extern int DAT_143a284b0; extern char* DAT_143afa980; extern int DAT_143ae2b48;
 struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
 void* FUN_1414a54f0_ctor(void* mem, void* self);
-void FUN_1409a8120(void*); void FUN_1409f2d50(void*); void FUN_1409f2d60(void*);void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
- void* FUN_141427740(void*);
+void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
+class NiMaterial; class NiTexture;
 class Unk_HashMap1 {
 public:
     void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
@@ -1938,7 +1940,7 @@ MS2_REPLACE(0x1414A5880, FUN_1414a5880, 8, 0x2543A217);
 Unk_SingletonObj* FUN_1414a5890() { return DAT_143b05988; }
 MS2_REPLACE(0x1414A5890, FUN_1414a5890, 8, 0xC6930D6B);
 // @0x1414a58a0
-void FUN_1414a58a0(char* pThis) { FUN_1409a8120(pThis + 0x10); }
+void FUN_1414a58a0(char* pThis) { reinterpret_cast<efd::SmartPointer<NiMaterial>*>(pThis + 0x10)->operator NiMaterial*(); }
 MS2_REPLACE(0x1414A58A0, FUN_1414a58a0, 31, 0x5650D8A9);
 // @0x1414a58c0
 CResultObj FUN_1414a58c0(int idx)
@@ -1949,28 +1951,28 @@ CResultObj FUN_1414a58c0(int idx)
 int FUN_1414a5910(char* pThis) { return *(int*)(pThis + 100); }
 MS2_REPLACE(0x1414A5910, FUN_1414a5910, 14, 0xB9C4E423);
 // @0x1414a5920
-void FUN_1414a5920(char* pThis) { FUN_1409f2d50(pThis + 0x20); }
+void FUN_1414a5920(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator efd::UInt32(); }
 MS2_REPLACE(0x1414A5920, FUN_1414a5920, 31, 0xF886CB09);
 // @0x1414a5940
-void FUN_1414a5940(char* pThis) { FUN_1409f2d50(pThis + 0x18); }
+void FUN_1414a5940(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator efd::UInt32(); }
 MS2_REPLACE(0x1414A5940, FUN_1414a5940, 31, 0x888D3262);
 // @0x1414a5960
-void FUN_1414a5960(char* pThis) { FUN_1409f2d50(pThis + 0x18); }
+void FUN_1414a5960(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator efd::UInt32(); }
 MS2_REPLACE(0x1414A5960, FUN_1414a5960, 31, 0x24583782);
 // @0x1414a5980
 void FUN_1414a5980(char* pThis) { FUN_140c8f690(*(class Unk_PPRes const*)(pThis + 0x28)); }
 MS2_REPLACE(0x1414A5980, FUN_1414a5980, 31, 0xEFCBF263);
 // @0x1414a59a0
-void* FUN_1414a59a0(char* pThis) { return FUN_141427740(pThis + 0x118); }
+void* FUN_1414a59a0(char* pThis) { return reinterpret_cast<efd::SmartPointer<NiTexture>*>(pThis + 0x118)->operator NiTexture*(); }
 MS2_REPLACE(0x1414A59A0, FUN_1414a59a0, 33, 0x0033409D);
 // @0x1414a59d0
-void FUN_1414a59d0(char* pThis) { FUN_1409f2d60(pThis + 0x20); }
+void FUN_1414a59d0(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator++(); }
 MS2_REPLACE(0x1414A59D0, FUN_1414a59d0, 31, 0x1941A24A);
 // @0x1414a59f0
-void FUN_1414a59f0(char* pThis) { FUN_1409f2d60(pThis + 0x18); }
+void FUN_1414a59f0(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator++(); }
 MS2_REPLACE(0x1414A59F0, FUN_1414a59f0, 31, 0x4A3FA102);
 // @0x1414a5a10
-void FUN_1414a5a10(char* pThis) { FUN_1409f2d60(pThis + 0x18); }
+void FUN_1414a5a10(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator++(); }
 MS2_REPLACE(0x1414A5A10, FUN_1414a5a10, 31, 0x09A43922);
 // @0x1414a5a30
 int Unk_MiscThis::FUN_1414a5a30() { return DAT_143ae2b48; }

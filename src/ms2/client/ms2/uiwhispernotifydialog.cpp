@@ -41,6 +41,7 @@
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/mstime.h"
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
@@ -89,26 +90,7 @@ struct Unk_WhisperItemData
 };
 MS2_CHECK_OFFSET(Unk_WhisperItemData, m_nMaxCount, 0x88);
 
-// The sender of a system whisper (the friend / party record).
-class Unk_WhisperSender : public CPtred
-{
-public:
-    unsigned char m_pad_18[0x78];
-    CString m_strImage;                                         // +0x90 the sender's profile image
-};
-MS2_CHECK_OFFSET(Unk_WhisperSender, m_strImage, 0x90);
-class Unk_WhisperSenderPtr
-{
-public:
-    Unk_WhisperSenderPtr();                                     // user-provided: hidden return pointer ABI
-    ~Unk_WhisperSenderPtr() { FUN_14035e5b0(); }
-    bool FUN_14035e9b0();                                       // is empty
-    Unk_WhisperSender* FUN_14035eb90();                         // operator->
-    void FUN_14035e5b0();                                       // release
-    void* m_unk_00;
-    Unk_WhisperSender* m_p;                                     // +0x08
-};
-Unk_WhisperSenderPtr FUN_1406cd330(int nId);
+MS2Ptr<CNpcData> FUN_1406cd330(int nId);                      // the sender's npc row
 
 
 
@@ -334,8 +316,8 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         return;
     CStringW strText = FUN_14052bd00(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
     TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
-    Unk_WhisperSenderPtr sender = FUN_1406cd330(pInfo->m_nId);
-    if (sender.FUN_14035e9b0())
+    MS2Ptr<CNpcData> sender = FUN_1406cd330(pInfo->m_nId);
+    if (!sender)
         return;
     CStringW strExtra(L"");
     if (nMode == 1 && nItemId != 0)
@@ -350,7 +332,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     if (nMode == 1)
         strText += strExtra;
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addSystemWhisper", FUN_140513200("{0}", pInfo->m_nId),
-                                                                      sender.FUN_14035eb90()->m_strImage, CStringW(strText));
+                                                                      sender->m_strPortrait, CStringW(strText));
     m_systemTimes.SetAt(pInfo->m_nId, GetTickCountMs2());
     // CMsTime, not CTime: the exe formats the hour/minute in the server time zone (ctor 0x1406c47a0,
     // GetMinute 0x1406c4f80, GetHour 0x1406c4f10).

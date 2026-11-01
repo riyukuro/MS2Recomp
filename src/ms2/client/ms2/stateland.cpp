@@ -65,12 +65,8 @@ const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The actor's buff set.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_LandBuff
-{
-public:
-    bool FUN_141682fe0(int nBuff);
-};
+#include <egmAnimation/AnimationService.h>
+class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
 // The owner seen through its vftable where gameobject.h declares slot 22 by reference: the exe passes the point by
 // value (the caller copies it into an argument temp).
 class Unk_LandOwnerSlots
@@ -85,7 +81,6 @@ public:
     virtual void vfunc_22(efd::Point3 kDir);                                // 22 0x14123c3a0
 };
 // The land sound service.
-class Unk_LandSound { public: void FUN_141377420(PCBase* pOwner, CString strKey); };
 
 // Cube craft selection of the owner (gates the "cube landing" animation).
 class Unk_LandCube : public Unk_PCCubeCraft { };
@@ -124,7 +119,7 @@ void StateLand::vfunc_4(StateData* pData)
             ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfb020(kRay.m_hitEntity);
     }
     m_pOwner->vfunc_93(true);
-    reinterpret_cast<Unk_LandSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())->FUN_141377420(m_pOwner, CString("land"));
+    reinterpret_cast<CGroundEffectDataManager*>(TSingleton<CGroundEffectDataManager>::GetInstance())->PlayEffects(m_pOwner, CString("land"));
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
         pMyPC->FUN_14152dbc0();
@@ -144,8 +139,8 @@ void StateLand::vfunc_3(double fTime)
 void StateLand::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    Unk_LandBuff* pBuff = (Unk_LandBuff*)m_pOwner->FUN_14166d240();
-    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
+    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
@@ -185,7 +180,7 @@ void StateLand::vfunc_9(double fTime)
         }
     }
     unsigned int nSeq = NiActorManager::INVALID_SEQUENCE_ID;
-    nSeq = FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), strAnim);
+    nSeq = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), strAnim);
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);

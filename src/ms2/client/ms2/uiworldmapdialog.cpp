@@ -1909,7 +1909,7 @@ void UIWorldMapDialog::FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     {
         pObj->FUN_1409c0e60("mypc", L"");
     }
-    CStringW strHouse = FormatStringId<CStringW>(0x70f, pPlayer->FUN_1415281c0());
+    CStringW strHouse = FormatStringId<CStringW>(0x70f, pPlayer->GetHomeAddress());
     CStringW strMyHouse = FUN_141b602a0(nHomeField) == spTile->m_34 ? CStringW(strHouse) : CStringW(L"");
     pObj->FUN_1407cbb20("myhouse", strMyHouse);
     bool bTown = spTile->m_20;

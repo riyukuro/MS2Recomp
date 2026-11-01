@@ -12,6 +12,7 @@
 #include "commonstruct.h"
 #include "ms2/placeholder/billboardinfo.h"
 #include "ms2/commonfiles/logstring.h"
+#include "ms2/commonfiles/os.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 static CString s_commonSortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -24,10 +25,6 @@ COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the de
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 COutputStream& FUN_14070fa60(COutputStream&,float);
 COutputStream& FUN_14070f820(COutputStream&,bool);
-CInputStream& FUN_14070f500(CInputStream&,__int64&);
-CInputStream& FUN_14070f480(CInputStream&,int&);
-CInputStream& FUN_14070f540(CInputStream&,float&);
-CInputStream& FUN_14070f300(CInputStream&,bool&);
 
 class Unk_CommonLog : public CLogString {
 public:
@@ -93,10 +90,12 @@ void Unk_CommonWireRecord::Write(COutputStream& out) {
 MS2_REPLACE_METHOD(0x14026D670, Unk_CommonWireRecord, Write, 157, 0x700F57C5);
 // @0x14026d720
 void Unk_CommonWireRecord::Read(CInputStream& in) {
-    FUN_14070f500(in,first); FUN_14070f500(in,second);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(first));
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(second));
     type=(unsigned short)in.ReadInt16();
-    FUN_14070f480(in,value); FUN_14070f540(in,extra);
-    FUN_14070f300(in,enabled); FUN_14070f300(in,flag);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned int&>(value));
+    reinterpret_cast<Unk_OSInput&>(in).Read9(extra);
+    reinterpret_cast<Unk_OSInput&>(in).Read0(enabled); reinterpret_cast<Unk_OSInput&>(in).Read0(flag);
 }
 MS2_REPLACE_METHOD(0x14026D720, Unk_CommonWireRecord, Read, 174, 0x0EFC825A);
 // @0x14026d7e0

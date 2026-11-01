@@ -55,6 +55,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/placeholder/gameeventuservaluemanager.h"
 #include "hook/ms2hook.h"
 
 // ---- statics of the unit's headers (the same set uiclosetdialog.cpp and its neighbours repeat) ----
@@ -79,12 +82,6 @@ public:
 };
 
 // The game event hub: handlers per user value type.
-class Unk_CigEventHub
-{
-public:
-    void FUN_140da5430(int nType, Delegate<void(GameEventVariable*)> handler);   // register
-    void FUN_140da5490(int nType, Delegate<void(GameEventVariable*)> handler);   // unregister
-};
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 
 // The condition panel clip: its "m_slot" item slot child (COMDAT of uibingoeventdialog.cpp).
@@ -97,7 +94,6 @@ public:
 // The worn equipment of the player (PC::FUN_1416561a0) and the worn gems (PC::FUN_14165f460).
 struct Unk_CigEquipSet : public Unk_PCEquipSet
 {
-    int FUN_1411e0c30(int nItemId);                                         // 1: an item with this id is worn
 };
 class Unk_MyPCEquip : public PCGemEquip {};
 
@@ -108,7 +104,6 @@ CStringW FUN_140b8e910(const CMsTime& time);                               // th
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);   // formatted string table text
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);                // send (rate limited)
 __int64 FUN_140718320(const CStringW& value);                              // _wtoi64
-void FUN_140429690(Unk_GameEventLockedValue<0x40>* pValue, std::vector<MS2Ptr<CollectItemGroupContext> >& contexts);   // CGameEventValueCollectItemGroup::GetAll
 extern Unk_Inventory g_143ab2a90;
 
 // @0x140be9030
@@ -159,7 +154,7 @@ void UICollectItemGroupEventDialog::OnLoadComplete()
     m_conditionItem->vfunc_4(false);
     RefreshEvents();
     SelectEvent(0);
-    ((class Unk_CigEventHub*)FUN_140933220())->FUN_140da5430(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
     ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140BE7130, UICollectItemGroupEventDialog, OnLoadComplete, 1413, 0xAF19A091);
@@ -176,7 +171,7 @@ void UICollectItemGroupEventDialog::vfunc_26()
     m_rewardPanel = 0;
     m_recieveItemButton = 0;
     ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
-    ((class Unk_CigEventHub*)FUN_140933220())->FUN_140da5490(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
 }
 MS2_REPLACE_METHOD(0x140BE76C0, UICollectItemGroupEventDialog, vfunc_26, 410, 0x0B19841C);
 
@@ -191,7 +186,7 @@ MS2_REPLACE_METHOD(0x140BE7860, UICollectItemGroupEventDialog, vfunc_67, 24, 0xE
 void UICollectItemGroupEventDialog::RefreshEvents()
 {
     m_contexts.clear();
-    FUN_140429690(CGameEventValueManager::GetInstance()->GetCollectItemGroup(), m_contexts);
+    reinterpret_cast<CGameEventValueCollectItemGroup*>(CGameEventValueManager::GetInstance()->GetCollectItemGroup())->GetAll(m_contexts);
     for (size_t i = 0; i < 3; ++i)
     {
         if (m_contexts.size() > i)
@@ -308,7 +303,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
             PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
             if (pPlayer != 0)
             {
-                if (static_cast<Unk_CigEquipSet*>(pPlayer->FUN_1416561a0())->FUN_1411e0c30(nItemId) == 1 || pPlayer->FUN_14165f460()->HasItemId(nItemId) == true)
+                if (reinterpret_cast<CEquipment*>(static_cast<Unk_CigEquipSet*>(pPlayer->FUN_1416561a0()))->FUN_1411e0c30(nItemId) == 1 || pPlayer->FUN_14165f460()->HasItemId(nItemId) == true)
                     bWorn = true;
             }
         }

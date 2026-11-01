@@ -73,10 +73,10 @@ public:
     virtual ~MeshInstancing();
     virtual void vfunc_1();
     void FUN_14147c010(egf::Entity*, unsigned, unsigned, NiTransform*, bool);
-    void FUN_14147c730(double);
-    void FUN_14147c830();
-    void FUN_14147c910(double);
-    void FUN_14147ca20(bool);
+    void UpdateIfVisible(double);
+    void RefreshRootAndSource();
+    void UpdateNodes(double);
+    void SetSourceVisible(bool);
     void FUN_14147caa0();
     void FUN_14147cbc0();
     void FUN_14147ccf0();
@@ -85,10 +85,10 @@ public:
     unsigned GetVisibleInstanceCount();
     int FUN_14147cf90(const Unk_MeshInstancingConfig&);
     int FUN_14147cfd0(const Unk_MeshInstancingConfig&);
-    int FUN_14147d010(egf::Entity*);
+    int HasClone(egf::Entity*);
     void FUN_14147d0c0(bool);
     void FUN_14147d180(bool);
-    NiNode* FUN_14147d200(egf::Entity*);
+    NiNode* GetClone(egf::Entity*);
     void FUN_14147d290();
     // Accessors emitted in ?\hardwareinstancingservice.cpp's COMDAT run (0x1413eb740-0x1413ed300).
     int FUN_140ad4bb0() const;                  // mode
@@ -101,7 +101,7 @@ public:
     bool FUN_1413ec890() const;                 // flag28
     void FUN_1413ed2f0();                       // dirty = true
     void FUN_1413ed300(int nCount);             // config.activeCount = nCount
-    efd::utf8string FUN_14147d2f0();            // the source entity's model name
+    efd::utf8string GetSourceName();            // the source entity's model name
     efd::SmartPointer<egf::Entity> source;
     egf::EntityID id10, id18;
     unsigned capacity;

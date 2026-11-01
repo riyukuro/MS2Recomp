@@ -202,7 +202,7 @@ static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
 int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
-int FUN_14081d260(const CStringA& strName);             // special option name -> id (0 when none)
+unsigned int FUN_14081d260(CStringA const&);             // special option name -> id (0 when none)
 const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
 bool IsStatKindOne(int nStat);
@@ -210,7 +210,8 @@ bool FUN_14081dc50(int nStat);
 int FUN_14081d830(int nStat);                           // the special stat is a special ability
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
+struct Unk_XmlElement;
+void FUN_14028f5d0(Unk_XmlElement*, char const*, std::vector<Unk_XmlElement*, std::allocator<Unk_XmlElement*>>&);
 extern "C" double (__cdecl* __imp_floor)(double);
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 CLogString* GetLogString();                            // the log
@@ -1386,7 +1387,7 @@ bool ItemOptionValueRandom::FUN_1405d2590(Unk_140165cf0* pElem)
         m_nStat = nStat;
         return true;
     }
-    int nSpecial = FUN_14081d260(strName);
+    int nSpecial = (int)(FUN_14081d260(strName));
     if (nSpecial != 0)
     {
         m_nSpecial = nSpecial;
@@ -1498,7 +1499,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
         return true;
     }
     std::vector<Unk_140165cf0*> arrChildren;
-    FUN_14028f5d0(pElem, "v", arrChildren);
+    FUN_14028f5d0(reinterpret_cast<Unk_XmlElement *>(pElem), "v", reinterpret_cast<std::vector<Unk_XmlElement *, std::allocator<Unk_XmlElement *>> &>(arrChildren));
     for (auto& pChild : arrChildren)
     {
         CString strName;
@@ -1516,7 +1517,7 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
                 m_vValues.push_back(spValue.get());
             continue;
         }
-        unsigned nSpecial = FUN_14081d260(strName);
+        unsigned nSpecial = (int)(FUN_14081d260(strName));
         if (nSpecial != 0)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
@@ -1591,7 +1592,7 @@ void ItemOptionConstant::FUN_1405d33e0(std::function<void(ItemOptionValue*)> fnV
 void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
 {
     std::vector<Unk_140165cf0*> arrChildren;
-    FUN_14028f5d0(pElem, "v", arrChildren);
+    FUN_14028f5d0(reinterpret_cast<Unk_XmlElement *>(pElem), "v", reinterpret_cast<std::vector<Unk_XmlElement *, std::allocator<Unk_XmlElement *>> &>(arrChildren));
     for (auto& pChild : arrChildren)
     {
         CString strName;
@@ -1607,7 +1608,7 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
             m_vValues.push_back(spValue.get());
             continue;
         }
-        unsigned nSpecial = FUN_14081d260(strName);
+        unsigned nSpecial = (int)(FUN_14081d260(strName));
         if (nSpecial != 0)
         {
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
@@ -1742,7 +1743,7 @@ bool ItemOptionRandom::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "pickCount", reinterpret_cast<unsigned int&>(m_nPickCount));
     XmlGetAttr((class TiXmlElement*)(pElem), "isRarePickOne", reinterpret_cast<bool&>(m_bRarePickOne));
     std::vector<Unk_140165cf0*> arrChildren;
-    FUN_14028f5d0(pElem, "v", arrChildren);
+    FUN_14028f5d0(reinterpret_cast<Unk_XmlElement *>(pElem), "v", reinterpret_cast<std::vector<Unk_XmlElement *, std::allocator<Unk_XmlElement *>> &>(arrChildren));
     for (auto& pChild : arrChildren)
     {
         MS2Ptr<ItemOptionValueRandom> spValue(new ItemOptionValueRandom);
@@ -2789,7 +2790,7 @@ BOOL ItemOptionRandomContext::FUN_1405db0b0(MS2Ptr<CItemOption> spOption, CStrin
         while (pos != NULL)
         {
             const CString& strOther = spNames->GetNext(pos);
-            int nSpecial = FUN_14081d260(strOther);
+            int nSpecial = (int)(FUN_14081d260(strOther));
             if (nSpecial != 0)
             {
                 if (spOption->GetSpecialOption(2, nSpecial).get() != 0)

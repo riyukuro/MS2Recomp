@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/commonfiles/commonstringtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -83,7 +84,6 @@ void FUN_1412751f0(const CStringW&, int, int);
 
 // The text filter (banned words) of the invited name.
 class Unk_TextFilter { public: };
-int FUN_140225210(Unk_TextFilter*, const CStringW& str, CStringW& strOut, int nMode);
 class Unk_TextFilterPtr {
 public:
     ~Unk_TextFilterPtr();                                        // 0x14025c670
@@ -478,7 +478,7 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
     if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0())
     {
         CStringW strBad;
-        if (FUN_140225210(pFilter, strName, strBad, 0) != 0)
+        if (reinterpret_cast<CBanTextChecker*>(pFilter)->FUN_140225210(strName, strBad, 0) != 0)
         {
             FUN_1412751f0(strBad, 1, 1);
             return;

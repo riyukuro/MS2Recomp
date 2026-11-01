@@ -1366,7 +1366,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b0 = 0;
-            CGameOption::GetInstance()->FUN_1412432d0();
+            CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
         FUN_141a12e40(0x10, strText, 1);
@@ -1387,7 +1387,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b1 = 0;
-            CGameOption::GetInstance()->FUN_1412432d0();
+            CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
         FUN_141a12e40(0xb, strText, 1);
@@ -1408,7 +1408,7 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
             MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b2 = 0;
-            CGameOption::GetInstance()->FUN_1412432d0();
+            CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
         FUN_141a12e40(0xc, strText, 1);
@@ -2655,7 +2655,6 @@ class Unk_MbGameOption
 {
 public:
     Unk_CommunityStateB* FUN_140ae6540();
-    Unk_MbBalloons* FUN_140b123b0();
 };
 
                // UITalkManager: a talk is running
@@ -3803,7 +3802,7 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
         return 0;
     if (pSpeaker == pMe && FUN_140967100()->GetTalking())
         return 1;
-    int bShow = reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->FUN_14125c820(nType);
+    int bShow = reinterpret_cast<Unk_MbBalloons*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->FUN_14125c820(nType);
     CStringW strBalloon;
     if (nType == 7 && bShow)
         strBalloon = GetStringCommon(0xaa7);
@@ -4718,7 +4717,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         if (m_pBrowser->m_linkedItems.Lookup(nUid, spItem))
         {
             if (ItemPreviewMgr::GetInstance()->IsHudOn())
-                ItemPreviewMgr::GetInstance()->FUN_140d40120(spItem, 0);
+                ItemPreviewMgr::GetInstance()->OpenPreview(spItem, 0);
         }
     }
     else if (strMethod == "getAchieve")

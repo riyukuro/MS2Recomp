@@ -20,8 +20,8 @@
 
 class CInPacket;
 class CMsgBoxData;
-class Unk_140acd6e0;
-class Unk_SkillButtonBar;
+class ASButton;
+class ASButtonBar;
 class UIMsg;
 class UISwfEntity;
 class AScript;
@@ -158,8 +158,8 @@ public:
     ATL::CAtlMap<int, int> m_slotOrder;                         // +0x210 skill id -> slot index
     int m_nMaxTabs;                                             // +0x258 1
     __int64 m_nTabId;                                           // +0x260 the server's selected tab
-    MS2Ptr<Unk_SkillButtonBar> m_spButtonBar;                   // +0x268 "m_buttonBar"
-    MS2Ptr<Unk_140acd6e0> m_spAddButton;                        // +0x278 "m_addButton"
+    MS2Ptr<ASButtonBar> m_spButtonBar;                   // +0x268 "m_buttonBar"
+    MS2Ptr<ASButton> m_spAddButton;                        // +0x278 "m_addButton"
     __int64 m_nShownTabId;                                      // +0x288 the tab the simulator belongs to
     int m_n290;                                                 // +0x290
     int m_nWaitServer;                                          // +0x294 a packet is on its way

@@ -29,7 +29,7 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14152a240(int);
+    void SendRequestHome(int);
 };
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 
@@ -85,7 +85,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             packet.WriteInt32(nConcept);
             FUN_140710590(packet);
         } else {
-            ((class MyPC*)(class Unk_UmPlayer*)(pPlayer))->FUN_14152a240(nConcept);
+            ((class MyPC*)(class Unk_UmPlayer*)(pPlayer))->SendRequestHome(nConcept);
         }
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f3f);
         return 1;

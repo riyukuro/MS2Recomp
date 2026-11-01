@@ -99,7 +99,7 @@ CChatEmoticonCli::~CChatEmoticonCli()
 CMyCharacter::CMyCharacter()
     : m_spRecord(new DungeonRecordManagerCli), m_spChatEmoticon(new CChatEmoticonCli)
 {
-    FUN_140d9f140();
+    ClearDungeonState();
 }
 
 // @0x140d9efd0
@@ -108,19 +108,19 @@ CMyCharacter::~CMyCharacter()
 }
 
 // @0x140d9f040
-void CMyCharacter::FUN_140d9f040()
+void CMyCharacter::RegisterPacketHandler()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
 }
 
 // @0x140d9f0c0
-void CMyCharacter::FUN_140d9f0c0()
+void CMyCharacter::UnregisterPacketHandler()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::FUN_140d9f200));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
 }
 
 // @0x140d9f140
-void CMyCharacter::FUN_140d9f140()
+void CMyCharacter::ClearDungeonState()
 {
     if (m_spRecord != 0)
         m_spRecord->Clear();
@@ -151,7 +151,7 @@ void CMyCharacter::FUN_140d9f1c0(CInPacket& packet)
 }
 
 // @0x140d9f200
-void CMyCharacter::FUN_140d9f200(CInPacket& packet)
+void CMyCharacter::OnTitlesPacket(CInPacket& packet)
 {
     m_titles.Decode(packet);
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDebugState));
@@ -164,7 +164,7 @@ MS2Ptr<DungeonRecordManagerCli> CMyCharacter::GetRecord()
 }
 
 // @0x140d9f310
-void CMyCharacter::FUN_140d9f310(__int64 nExpire)
+void CMyCharacter::SetExpireAndUpdateTimer(__int64 nExpire)
 {
     m_nExpire = nExpire;
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
@@ -242,7 +242,7 @@ CStringW CMyCharacter::FUN_140d9f600(int nIndex)
 }
 
 // @0x140d9f710
-void CMyCharacter::FUN_140d9f710(CInPacket& packet)
+void CMyCharacter::OnDungeonEnterStatePacket(CInPacket& packet)
 {
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)

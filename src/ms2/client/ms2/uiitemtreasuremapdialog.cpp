@@ -49,10 +49,6 @@ public:
     TM_V(16) TM_V(17) TM_V(18) TM_V(19) TM_V(20) TM_V(21) TM_V(22) TM_V(23)
 #undef TM_V
     virtual void vfunc_24(bool bRefresh);                                   // 24 (+0xc0) refresh
-    void FUN_1422dcca0(int nIndex);                                         // select an entry (-1: none)
-    int FUN_1422dccd0();                                                    // the selected entry
-    void FUN_1422dd1d0();                                                   // clear
-    void FUN_1422dce60(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int n);   // set the select handler
 private:
     unsigned char m_pad_80[8];
 };
@@ -85,6 +81,7 @@ extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 
 // ---- AScript::FUN_140c57d70 ----
 
@@ -152,7 +149,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
     FUN_140c55ea0();
     if (m_itemBag.get() != 0)
-        m_itemBag->FUN_1422dce60(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
+        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->FUN_1422dce60(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
@@ -239,7 +236,7 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
         return;
     if (m_nState != 0)
         return;
-    size_t nIndex = m_itemBag->FUN_1422dccd0();
+    size_t nIndex = reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->GetSelectedIndex();
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return;
     MS2Ptr<CItem> spItem = m_items.GetAt(nIndex);
@@ -318,8 +315,8 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
     FUN_14141f770(m_strBag, (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x415, 8);
     if (m_itemBag.get() != 0)
     {
-        m_itemBag->FUN_1422dcca0(-1);
-        m_itemBag->FUN_1422dd1d0();
+        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->SetSelectedIndex(-1);
+        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->FUN_1422dd1d0();
         m_itemBag->FUN_1407cba60("bagId", m_strBag);
         m_itemBag->vfunc_24(true);
     }

@@ -101,11 +101,9 @@ class Unk_UgcWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the player
-    Unk_UgcWearer* FUN_141bd1290(int nObjectId);            // a player by object id
     egf::Entity* FUN_141bd04d0(int nObjectId);              // an entity by object id
     Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > FUN_141bd0420(unsigned nModel);   // the entities of a model
     int FUN_141bd0dd0(efd::Point3& kA, efd::Point3& kB);
-    unsigned FUN_141bd3060();
 };
 
 // The game settings; FUN_14036d570 tests a content switch.
@@ -697,7 +695,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
         return;
     int nProperty = 0;
     spEntity->GetPropertyValue(0x819a96c0, nProperty);
-    unsigned nMapId = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
     int nBannerId = nProperty;
     Unk_BannerPtr spBanner = CFieldBannerData::GetBanner(nBannerId);
     if (spBanner == NULL)
@@ -2136,7 +2134,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
         return 0;
     if (pTexture == 0)
         return 0;
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(pItem->m_nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(pItem->m_nObjectId));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(pItem->m_nItemId);
@@ -2151,7 +2149,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
     if (spMeshes == 0)
         return 0;
-    spMeshes->FUN_141426810(pTexture);
+    spMeshes->SetTextureOnMeshes(pTexture);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141886a90, CUgcManager, FUN_141886a90, 552, 0xC1C155EB);
@@ -3344,7 +3342,7 @@ MS2_REPLACE_METHOD(0x14188c5b0, CUgcManager, FUN_14188c5b0, 309, 0xFE58047D);
 void CUgcManager::FUN_14188c6f0()
 {
     CRBMap<unsigned int, Unk_BannerPtr> banners(10);
-    CFieldBannerData::GetBannersOfField(reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd3060(), banners);
+    CFieldBannerData::GetBannersOfField(WorldService::GetInstance()->FUN_141bd3060(), banners);
     CRBMap<CString, std::vector<unsigned int> > urls(10);
     for (POSITION pos = banners.GetHeadPosition(); pos != 0; banners.GetNext(pos))
     {
@@ -3652,7 +3650,7 @@ void CUgcManager::FUN_14188e200(CInPacket& packet)
     }
     else
     {
-        Unk_UgcWearer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
+        Unk_UgcWearer* pPlayer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
         if (pPlayer == 0)
             return;
         CString strPath = FUN_141028be0(((class PCBase*)(class PCBase*)(pPlayer))->FUN_141656a80(), strUrl, 0, "");
@@ -3673,7 +3671,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
     proxy.Read(packet);
     CUgcItemLook look;
     look.Read(packet);
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
     if (pWearer == 0)
         return;
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -3707,7 +3705,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     CUgcItemLook look;
     look.Read(packet);
     __int64 itemUid = proxy.m_n20;
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd1290(nObjectId);
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
     if (pWearer == 0)
         return;
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());

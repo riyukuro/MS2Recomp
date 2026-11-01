@@ -167,14 +167,16 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
+#include <efd/Matrix3.h>
+#include <NiTexturingProperty.h>
+#include <NiAlphaProperty.h>
+#include <NiAVObject.h>
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-const Vector3& FUN_140947900(void* pNode);                  // world translate
 const Unk_NiMatrix3& FUN_1409478e0(void* pNode);                    // world rotate
-class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
@@ -187,12 +189,7 @@ extern Unk_ResourceMgr* DAT_143ab5bc8;
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_1409807b0(NiTexturingProperty* pProp, int n);
-void FUN_1409805c0(NiTexturingProperty* pProp, int n);
-void FUN_1409806e0(NiTexturingProperty* pProp, int n);
-void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
-void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_1415672e0(NiAVObject* pObj, int n);
+void FUN_1415672e0(NiAVObject*, bool);
 
 // The effect node (400 bytes) carries the effect-space point.
 class Unk_EffectNode : public NiNode
@@ -221,7 +218,7 @@ Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3&
     Vector3 kSide = kForward.FUN_140a00e10(kUp);
     Vector3 kEuler;
     Unk_NiMatrix3 kMatrix(kForward, kSide, kUp);
-    kMatrix.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
+    reinterpret_cast<efd::Matrix3*>(&kMatrix)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
     kEuler.x = (kEuler.x * 180.0f) / 3.1415927f;
     kEuler.y = (kEuler.y * 180.0f) / 3.1415927f;
     kEuler.z = (kEuler.z * 180.0f) / 3.1415927f;
@@ -232,7 +229,7 @@ Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3&
 // @0x140a0b1f0 rotation -> euler angles (degrees, negated)
 void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pkEuler)
 {
-    kRot.FUN_142085840(pkEuler->x, pkEuler->y, pkEuler->z);
+    reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(pkEuler->x, pkEuler->y, pkEuler->z);
     pkEuler->x = pkEuler->x * -57.295776f;
     pkEuler->y = pkEuler->y * -57.295776f;
     pkEuler->z = pkEuler->z * -57.295776f;
@@ -307,9 +304,9 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         return false;
 
     NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-    FUN_1409807b0(spTexture.operator->(), 0);
-    FUN_1409805c0(spTexture.operator->(), 1);
-    FUN_1409806e0(spTexture.operator->(), 0);
+    reinterpret_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
+    reinterpret_cast<NiTexturingProperty*>(spTexture.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)1);
+    reinterpret_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
     ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
     m_spTexProp = spTexture;
 
@@ -323,16 +320,16 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     switch (m_spParam->m_nAlphaMode)
     {
     case 0:
-        FUN_140980f60(spAlpha.operator->(), 6);
-        FUN_140980af0(spAlpha.operator->(), 0);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
         break;
     case 1:
-        FUN_140980f60(spAlpha.operator->(), 6);
-        FUN_140980af0(spAlpha.operator->(), 7);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetDestBlendMode((NiAlphaProperty::AlphaFunction)7);
         break;
     case 2:
-        FUN_140980f60(spAlpha.operator->(), 0);
-        FUN_140980af0(spAlpha.operator->(), 0);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)0);
+        reinterpret_cast<NiAlphaProperty*>(spAlpha.operator->())->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
         break;
     }
     ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spAlpha);
@@ -354,7 +351,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spZBuffer);
 
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), 0);
+    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
     static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
     if (FUN_14028d470(m_spParam->m_fStartDelay, 0.0f))
         vfunc_4();
@@ -382,7 +379,7 @@ void CBeamEffect::vfunc_4()
     }
     else
     {
-        static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
+        static_cast<NiNode*>(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
         ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
@@ -419,7 +416,7 @@ int CBeamEffect::vfunc_8(void* p)
         MS2_ASSERT_AT(0xaf, 0);
         return 0;
     }
-    *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+    *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
@@ -546,7 +543,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         BeamPointCurveInfo* pInfo = static_cast<BeamPointCurveInfo*>(spInfo.get());
         Unk_NiPoint3 kEulerNi(FUN_140a0b080(kEnd, kStart, DAT_143a08cf8));
         Unk_NiMatrix3 kRot;
-        kRot.FUN_142083d40((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
         Vector3 kMid = kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint));
         efd::vector<Vector3> kControl;

@@ -23,6 +23,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/reactordata.h"
+#include "ms2/client/ms2/reactor.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -56,19 +57,6 @@ MS2_CHECK_SIZE(Unk_ReactRef, 8);
 
 class Unk_ReactWorld { public: Unk_ReactRef FUN_141bc6eb0(const CString& strName); };
 
-// The time-limited behaviour table row of an actor (+0x5c the reach).
-class Unk_ReactRestart : public CPtred
-{
-public:
-    char m_pad_18[0x5c - 0x18];
-    float m_fReach;                                      // +0x5c
-};
-// An actor seen through its restart-table pointer (+0x160).
-class Unk_ReactActor : public PCBase
-{
-public:
-    MS2Ptr<Unk_ReactRestart> FUN_140966e50();            // copy of the pointer at +0x160
-};
 
 // The casting bar request (see statenurturing.cpp): duration, flags, speed and four texts.
 struct Unk_CastInfo
@@ -115,19 +103,6 @@ public:
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
-class CReactor   // C3: member view for the former free stand-ins
-{
-public:
-    void GetReactorInfo(struct Unk_ReactorInfo*);
-    void SendStateReact();
-};
-class Unk_ReactClips : public CPtred                                             // the animation table row of a reaction
-{
-public:
-    CString FUN_14076b060();                                       // the 0x9e animation
-    CString FUN_14076b110();                                       // the 0x9f animation
-};
-class Unk_ReactTable { public: MS2Ptr<Unk_ReactClips> FUN_14076bbd0(int nId); };
 
 // ---- StateReactData ----
 
@@ -267,7 +242,7 @@ void StateReact::vfunc_8(double fTime)
             }
             else
             {
-                float fReach = static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0())->FUN_140966e50().get() != 0 ? static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0())->FUN_140966e50()->m_fReach : 0.0f;
+                float fReach = reinterpret_cast<CReactor*>(kRef.FUN_1409658b0())->GetData().get() != 0 ? reinterpret_cast<CReactor*>(kRef.FUN_1409658b0())->GetData()->m_fReactDistance : 0.0f;
                 PCBase* pTarget = kRef.FUN_1409658b0();
                 if (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18()))).FUN_140967ac0() > fReach)
                 {
@@ -359,7 +334,7 @@ bool StateReact::FUN_140b8e030()
 {
     if (m_spData == 0)
         return false;
-    MS2Ptr<Unk_ReactClips> spClips = reinterpret_cast<Unk_ReactTable*>(TSingleton<CReactorDataTable>::GetInstance())->FUN_14076bbd0(m_spData->m_nId);
+    MS2Ptr<ReactorData> spClips = TSingleton<CReactorDataTable>::GetInstance()->GetReactorData(m_spData->m_nId);
     if (spClips.IsNull())
     {
         MS2_ASSERT_AT(0x6e, 0);
@@ -377,10 +352,10 @@ bool StateReact::FUN_140b8e030()
         switch (m_n10)
         {
         case 0x9e:
-            strAnim = spClips->FUN_14076b060();
+            strAnim = spClips->GetCreateAnimation();
             break;
         case 0x9f:
-            strAnim = spClips->FUN_14076b110();
+            strAnim = spClips->GetReactAnimation();
             break;
         }
         if (strAnim.GetLength() > 0)

@@ -25,14 +25,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
-{
+{ public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 : public Unk_XmlNode { };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -46,18 +46,14 @@ void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep)
 
 // The item record the table classifies (the same record FUN_14053f870 returns elsewhere).
 class Unk_BankItemSlot;
-class Unk_BankItem : public CPtred
+class CItemData : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14053c5c0();                // item type
-    int FUN_14053c5e0();                // item sub type
-};
-MS2Ptr<Unk_BankItem> FUN_14053f870(int nItemId);
-class CItemData   // C3: member view for the former free stand-ins
-{
-public:
+    int GetType();                      // item type
+    int GetSubtype();                   // item sub type
     class ItemModelData* FUN_14053eba0();
 };
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class ItemModelData   // C3: member view for the former free stand-ins
 {
 public:
@@ -202,12 +198,12 @@ int CBankTable::GetMaxId()
 int CBankTable::FindBankId(int nItemId)
 {
     CheckInit();
-    MS2Ptr<Unk_BankItem> item = FUN_14053f870(nItemId);
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
         return -1;
-    int nSlot = ((class ItemModelData*)(class Unk_BankItemSlot*)(((class Unk_BankItemSlot*)((class CItemData*)(class Unk_BankItem*)(item.get()))->FUN_14053eba0())))->FUN_14054b400();
-    int nType = item->FUN_14053c5c0();
-    int nSubType = item->FUN_14053c5e0();
+    int nSlot = item->FUN_14053eba0()->FUN_14054b400();
+    int nType = item->GetType();
+    int nSubType = item->GetSubtype();
     int nFound = -1;
     Unk_1401b4ec0 guard(m_lock, 1);
     for (POSITION pos = m_defines.GetHeadPosition(); pos; m_defines.GetNext(pos))

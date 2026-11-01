@@ -48,13 +48,13 @@ class Unk_KhCamera : public CInstrumentManager { };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 CKeyTable* FUN_1409331f0();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_KhState { public: unsigned char* FUN_140a58500(); };
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 MS2InputService* FUN_140a58540();                           // TSingleton<MS2InputService>::GetInstance
 void FUN_1412751b0(const CStringW& text, int nType);        // chat/system line
 
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-class Unk_KhSkinView { public: void FUN_141047900(); };
+class NiMaterialInstance { public: void ClearCachedShader(void); }; class Unk_KhSkinView : public NiMaterialInstance {};
 class NiRenderObject   // C3: member view for the former free stand-ins
 {
 public:
@@ -144,9 +144,9 @@ MS2_REPLACE_METHOD(0x14116D7A0, CInputKeyHandler, FUN_14116d7a0, 143, 0x00EC7853
 // @0x14116d840
 bool CInputKeyHandler::FUN_14116d840()
 {
-    if (FUN_140a58540()->FUN_140d8ad60(1))
+    if (FUN_140a58540()->WasKeyPressedGated(1))
         return true;
-    if (FUN_1409331f0()->FUN_14142c4b0(0x49409) != 0)
+    if (FUN_1409331f0()->IsActionKeyPressed(0x49409) != 0)
         return true;
     return false;
 }
@@ -155,13 +155,13 @@ MS2_REPLACE_METHOD(0x14116D840, CInputKeyHandler, FUN_14116d840, 71, 0x5C1438AB)
 // @0x14116d890
 bool CInputKeyHandler::FUN_14116d890(bool bAlt)
 {
-    if (FUN_140a58540()->FUN_140d8ad60(0x1c))
+    if (FUN_140a58540()->WasKeyPressedGated(0x1c))
         return true;
-    if (FUN_1409331f0()->FUN_14142c4b0(0x49408) != 0)
+    if (FUN_1409331f0()->IsActionKeyPressed(0x49408) != 0)
         return true;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
-        if (*reinterpret_cast<Unk_KhState*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500() != 0)
+        if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
         {
             if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
                 return false;
@@ -169,7 +169,7 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
     }
     if (bAlt != false)
     {
-        if (FUN_1409331f0()->FUN_14142c4b0(0x493e2) != 0)
+        if (FUN_1409331f0()->IsActionKeyPressed(0x493e2) != 0)
             return true;
     }
     return false;
@@ -183,7 +183,7 @@ bool CInputKeyHandler::FUN_14116d950(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8ac50(nKey, 0);
+    return FUN_140a58540()->IsKeyDownGated(nKey, 0);
 }
 MS2_REPLACE_METHOD(0x14116D950, CInputKeyHandler, FUN_14116d950, 94, 0x1516CB0C);
 
@@ -194,7 +194,7 @@ bool CInputKeyHandler::FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8ad60(nKey);
+    return FUN_140a58540()->WasKeyPressedGated(nKey);
 }
 MS2_REPLACE_METHOD(0x14116D9C0, CInputKeyHandler, FUN_14116d9c0, 91, 0xDA608B14);
 
@@ -205,7 +205,7 @@ bool CInputKeyHandler::FUN_14116da30(int nKey, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    return FUN_140a58540()->FUN_140d8af70(nKey);
+    return FUN_140a58540()->WasKeyReleasedGated(nKey);
 }
 MS2_REPLACE_METHOD(0x14116DA30, CInputKeyHandler, FUN_14116da30, 91, 0x411CF2AC);
 
@@ -270,7 +270,7 @@ bool CInputKeyHandler::FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143af7d40 == 0)
         return false;
-    if (FUN_1409331f0()->FUN_14142c270(nSetting) != 0)
+    if (FUN_1409331f0()->IsActionKeyDown(nSetting) != 0)
         return true;
     return false;
 }
@@ -285,7 +285,7 @@ bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143af7d40 == 0)
         return false;
-    if (FUN_1409331f0()->FUN_14142c4b0(nSetting) != 0)
+    if (FUN_1409331f0()->IsActionKeyPressed(nSetting) != 0)
         return true;
     return false;
 }
@@ -300,7 +300,7 @@ bool CInputKeyHandler::FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143af7d40 == 0)
         return false;
-    if (FUN_1409331f0()->FUN_14142c540(nSetting) != 0)
+    if (FUN_1409331f0()->IsActionKeyReleased(nSetting) != 0)
         return true;
     return false;
 }
@@ -378,6 +378,6 @@ bool FUN_14116e080(NiAVObject* pObject)
     pTexturing->SetShaderMap(1, 0);
     pTexturing->SetShaderMap(2, 0);
     pObject->UpdateProperties();
-    ((class Unk_KhSkinView*)((class NiRenderObject*)(class NiAVObject*)(pObject))->GetActiveMaterialInstance())->FUN_141047900();
+    ((class Unk_KhSkinView*)((class NiRenderObject*)(class NiAVObject*)(pObject))->GetActiveMaterialInstance())->ClearCachedShader();
     return true;
 }

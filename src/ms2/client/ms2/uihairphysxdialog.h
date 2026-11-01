@@ -22,26 +22,21 @@ class CItemData;
 class ItemCustom;
 class CEquipItem;
 class ASTextField;
+class UICameraEditDialog;
 class Unk_HpxRadio;         // a radio button child ("m_left", "m_position", "m_rotation")
-class Unk_HpxSlider;        // a slider child ("m_softSlider", "m_xSlider" ...)
-class Unk_HpxInput;         // a text input child ("m_transformX" ...)
-class Unk_HpxCombo;         // a combo box child ("m_joints")
+class Unk_HudSlider;        // a slider child ("m_softSlider", "m_xSlider" ...)
+class Unk_RankInput;         // a text input child ("m_transformX" ...)
+class Unk_IbDropdown;         // a combo box child ("m_joints")
 
 // The model facts behind CEquipModel+0x20 as this dialog reads them (CKfmModel names the same record Unk_KfmConfig):
 // +0x48 the row index of the item's hair pose, +0x58 the per-row <custom> nodes of the item model, +0xb8 the four
 // pony-tail joints.
 struct Unk_HpxModelConfig
 {
-    // The <custom> list (std::vector<MS2Ptr<ItemCustom>>; only operator[] is used).
-    struct CustomList
-    {
-        MS2Ptr<ItemCustom>& FUN_14059ce40(size_t nIndex);   // operator[]
-        void* m_p[3];
-    };
     char m_pad_00[0x48];
     int m_nIndex;                               // +0x48
     char m_pad_4c[0xc];
-    CustomList m_customs;                       // +0x58
+    std::vector<MS2Ptr<ItemCustom> > m_customs; // +0x58 the per-row <custom> nodes
     char m_pad_70[0x48];
     Unk_KfmPonyTail m_aJoints[4];               // +0xb8 name, soft, axis x/y/z
 };
@@ -53,9 +48,6 @@ MS2_CHECK_OFFSET(Unk_HpxModelConfig, m_aJoints, 0xb8);
 class Unk_HpxModel : public CKfmModel
 {
 public:
-    MS2Ptr<CEquipItem> FUN_141200a40() const;          // the equip item the model shows
-    Unk_HpxModelConfig* FUN_141200ab0() const;          // m_unk_20
-    void FUN_141202240(const NiTransform& kXform);      // set the model transform
 };
 
 class UIHairPhysxDialog : public UIDialog, public IItemCustomizeEventListener
@@ -106,9 +98,6 @@ public:
     void FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg);            // rotate the model
     void FUN_141985210(Unk_HpxModel* pModel, const NiTransform& kXform);    // apply a whole transform
 
-    MS2Ptr<Unk_HpxInput> FUN_140e35bd0(const CString& strName);        // GetChild<input>
-    MS2Ptr<Unk_HpxSlider> FUN_140faff90(const CString& strName);       // GetChild<slider>
-    MS2Ptr<Unk_HpxCombo> FUN_140c28560(const CString& strName);        // GetChild<combo>
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -118,7 +107,7 @@ private:
     ATL::CRBMap<CString, NiPoint4> m_228;               // +0x228 right joints
     NiTransform m_258[2];                               // +0x258 (unused)
     MS2Ptr<Customize> m_2c0;                            // +0x2c0 the customize controller
-    Unk_BSCamera* m_2d0;                                // +0x2d0 the camera (UI 0x4ef2's object)
+    UICameraEditDialog* m_2d0;                           // +0x2d0 the camera (UI 0x4ef2's object)
     MS2Ptr<CItemData> m_2d8;                            // +0x2d8 (unused)
 };
 MS2_CHECK_SIZE(UIHairPhysxDialog, 0x2e8);

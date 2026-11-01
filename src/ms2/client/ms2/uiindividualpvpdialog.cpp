@@ -53,6 +53,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/individualarenadata.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/client/ms2/additionalclilist.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -68,9 +69,6 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422c2a70(const ParamsDelegate& cb, void* pUser);  // click callback (event form)
-    void FUN_1407cbb20(const char* szName, CStringW strText);   // set a string member
-    void FUN_1409c0e60(const char* szName, const wchar_t* szText);
 };
 
 // A row of Table/individualarena.xml.
@@ -95,11 +93,8 @@ class Unk_ArenaTable { public: MS2Ptr<Unk_ArenaData> FUN_14051a980(int nArena); 
 class Unk_PvpMgr : public CPVPManager
 {
 public:
-    int FUN_1412818a0();                                        // the state: 0 idle, 1 registered, 2 ready
-    int FUN_1412818d0();                                        // the registered arena
 };
 
-class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int nOwner, int nStacks); };
 
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
@@ -164,7 +159,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     m_spName = GetChild<ASTextField>("m_arenaName");
     m_spDetail = GetChild<ASTextField>("m_arenaDetail");
     m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
-    m_spUnregister->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), 0);
+    reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_spUnregister)->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), 0);
     m_spJoin->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4b0), 0);
     m_arenas.clear();
     for (int i = 1; i < 4; i++)
@@ -174,7 +169,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
         if (spArena.get())
         {
             m_arenas[i] = spArena;
-            m_arenas[i]->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb7e0), FUN_140bb9630(i));
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_arenas[i])->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb7e0), FUN_140bb9630(i));
         }
     }
     std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();
@@ -185,7 +180,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
         if (spData == 0)
             return;
         it->second->FUN_1422cdfb0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
-        it->second->FUN_1407cbb20("label2", GetStringCommon(0x425));
+        reinterpret_cast<MS2Ptr<AScript>&>(it->second)->FUN_1407cbb20("label2", GetStringCommon(0x425));
     }
     if (m_arenas.empty())
         return;
@@ -203,7 +198,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     }
     FUN_1412cb240();
     m_arenas[2]->FUN_1422c1fe0(0);
-    m_arenas[2]->FUN_1409c0e60("label2", L"\xac1c\xd3b8 \xc911\xc785\xb2c8\xb2e4.");  // "개편 중입니다." (under renovation)
+    reinterpret_cast<MS2Ptr<ASObj>&>(m_arenas[2])->FUN_1409c0e60("label2", L"\xac1c\xd3b8 \xc911\xc785\xb2c8\xb2e4.");  // "개편 중입니다." (under renovation)
 }
 
 // @0x1412cab00
@@ -243,8 +238,8 @@ void UIIndividualPvPDialog::FUN_1412cacc0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
-    int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
+    int nState = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->State();
+    int nArena = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->Selection();
     FUN_1412cbf20();
     if (nArena != m_nSelected)
     {
@@ -314,7 +309,7 @@ void UIIndividualPvPDialog::FUN_1412cb240()
             strText = GetStringCommon(0x425);
         else if (nMinutes > nMax)
             strText = GetStringCommon(0x427);
-        m_arenas[count.first]->FUN_1407cbb20("label2", strText);
+        reinterpret_cast<MS2Ptr<AScript>&>(m_arenas[count.first])->FUN_1407cbb20("label2", strText);
     }
 }
 
@@ -327,7 +322,7 @@ void UIIndividualPvPDialog::FUN_1412cb4b0(const Scaleform::GFx::FunctionHandler:
 // @0x1412cb4e0
 void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
+    int nState = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->State();
     if (nState != 0)
     {
         FUN_140d73aa0(GetStringCommon(0x428), 0, 0, L"");
@@ -336,7 +331,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
     PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (pPC->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
+    if (reinterpret_cast<AdditionalCliList*>(pPC->FUN_1416749a0())->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
     {
         FUN_140d73aa0(GetStringCommon(0x429), 0, 0, L"");
         return;
@@ -359,7 +354,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
 // @0x1412cb770
 void UIIndividualPvPDialog::SendPVPMode10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
+    int nState = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->State();
     if (nState != 1)
         return;
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
@@ -388,8 +383,8 @@ void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nState = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818a0();
-    int nArena = reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1412818d0();
+    int nState = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->State();
+    int nArena = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->Selection();
     if (nArena >= 4)
         return;
     std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();

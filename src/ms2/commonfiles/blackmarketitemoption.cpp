@@ -145,11 +145,11 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
-Unk_BmLanguage FUN_140651920(CString strCode);                                 // language code -> enum
+int FUN_140651920(CStringA);                                 // language code -> enum
 __int64 GetServerTime();                                            // server time
 __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId); // random roll
 int FindStatByName(const CStringA& strName);                        // stat name -> id (-1 when none)
-int FUN_14081d260(const CStringA& strName);                         // special option name -> id
+unsigned int FUN_14081d260(CStringA const&);                         // special option name -> id
 CStringW FUN_140630e10(int nId);                                    // special option text
 CStringW FUN_14082f000(int nId);                                    // stat text
 unsigned FUN_140630d00(Unk_ItemEnchantData* pEnchant);
@@ -159,7 +159,6 @@ void FUN_140159b70(long hr);                                        // AtlThrow
 class Unk_BmPriceMgr : public CLua
 {
 public:
-    long long FUN_140674f30(long long nPrice, int nRarity, unsigned nGroup, unsigned nEnchant);
     void FUN_1406752e0(long long);
 };
 class CGameRule   // C3: member view for the former free stand-ins
@@ -223,7 +222,7 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
     int nRarity = pItem->FUN_140526bd0();
     unsigned nGroup = data->m_nGroup;
     unsigned nEnchant = FUN_140630d00(pItem->FUN_1405278a0());
-    long long nResult = FUN_1401c0db0()->FUN_140674f30(nPrice, nRarity, nGroup, nEnchant);
+    long long nResult = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcBlackMarketBuyFeeCost(nPrice, nRarity, nGroup, nEnchant);
     return nResult;
 }
 
@@ -409,7 +408,7 @@ unsigned int LoadItemNames()
     for (size_t i = 0; i < languages.GetCount(); i++)
     {
         CString strLanguage(languages[i]);
-        Unk_BmLanguage nLanguage = FUN_140651920(strLanguage);
+        Unk_BmLanguage nLanguage = (Unk_BmLanguage)(FUN_140651920(strLanguage));
         CString strPath;
         strPath.Format("%s%s/%s/%s", "./Data/Xml/", "String", (const char*)strLanguage, "itemName.xml");
         Unk_BmNameMapPtr names(0);

@@ -41,6 +41,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/uiservice.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // ---- enum formatter customization ---------------------------------------------------------------------------------------------
@@ -93,17 +94,7 @@ template CStringW StringFormat<Unk_GcItemType, int, int>(const wchar_t*, const U
 
 // ---- the dialog finders and the dialog value lookup ---------------------------------------------------------------------------
 // The UI manager hands out a reference object (refcount block + object); the finders downcast the held object.
-class Unk_GcUIRef
-{
-public:
-    ~Unk_GcUIRef();                                         // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;                        // the held object, 0 = none
-    void* m_pRc; UIObject* m_pObj;
-};
-MS2_CHECK_SIZE(Unk_GcUIRef, 0x10);
 void* FUN_1403ed2b0();                                      // the UI manager
-struct Unk_GcUiMgrId { Unk_GcUIRef FUN_141adcea0(int nUIId); };
-struct Unk_GcUiMgrName { Unk_GcUIRef FUN_141adcf50(const CString& strName); };
 
 // A GFx value for a dialog tree node (0x20 bytes; the destructor is 0x140614800).
 class Unk_GcNode
@@ -137,9 +128,9 @@ void* FUN_1413b1b20(unsigned nUIId)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIChatEmoticonDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUIId);
+        if (ref.get())
+            return dynamic_cast<UIChatEmoticonDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -149,9 +140,9 @@ void* FUN_1413b1bc0(unsigned nUIId)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIItemEnchantDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUIId);
+        if (ref.get())
+            return dynamic_cast<UIItemEnchantDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -161,9 +152,9 @@ void* FUN_1413b1c60(const CStringA& strName)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrName*>(FUN_1403ed2b0())->FUN_141adcf50(strName);
-        if (ref.FUN_1403e8a70())
-            return dynamic_cast<UIPartyDialog*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObjectByName(strName);
+        if (ref.get())
+            return dynamic_cast<UIPartyDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -171,7 +162,6 @@ void* FUN_1413b1c60(const CStringA& strName)
 // ---- the XML attribute readers --------------------------------------------------------------------------------------------------
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 void FUN_1413747d0(unsigned char*);   // C3: was FUN_1413747d0

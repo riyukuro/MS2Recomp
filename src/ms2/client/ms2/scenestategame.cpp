@@ -966,7 +966,7 @@ HomeBlockManager* FUN_1414a5830();
 
 UIStatusEventDispatcher* FUN_140aa6d40();
 void FUN_140930150(int n);
-class Unk_PCCubeCraft { public: void FUN_1410aa5c0(CubeItemInfo* pInfo); void SetMode(int n); void FUN_1410aa380(bool b); void FUN_1410aa590(); };
+class Unk_PCCubeCraft { public: void SetCurrentItem(CubeItemInfo* pInfo); void SetMode(int n); void SetGuideVisible(bool b); void FUN_1410aa590(); };
 
 void FUN_1403d7440(CInputStream& stream, CAtlArray<unsigned int>& arr);   // read a u32 array
 class Unk_SSGMsgBoxFlags { public: void FUN_1417e25a0(int nClassId); };
@@ -1354,12 +1354,12 @@ void CSceneStateGame::OnEnter(int nPrevState)
     m_f20 = ((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     TSingleton<CBigDataLogSystem>::GetInstance()->SetEnable(true);
-    ((class CNPSMan*)(void*)(((void*)TSingleton<CNPSMan>::GetInstance())))->FUN_140db8eb0();
+    ((class CNPSMan*)(void*)(((void*)TSingleton<CNPSMan>::GetInstance())))->ArmSurvey();
     m_bReconnecting = false;
     m_nRetry = 0;
     m_reconnectTimer.FUN_1408687f0();
     ((CUIService*)(Unk_SSGUIMgr*)(FUN_1403ed2b0()))->FUN_141add040((eUIClassID)(0x4e32));
-    ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->FUN_140d9f040();
+    ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->RegisterPacketHandler();
 }
 MS2_REPLACE_METHOD(0x14170beb0, CSceneStateGame, OnEnter, 270, 0x562E95A4);
 
@@ -1368,7 +1368,7 @@ void CSceneStateGame::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
     ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->Reset();
-    ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->FUN_140d9f0c0();
+    ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->UnregisterPacketHandler();
     ((class GameEventManagerCli*)(void*)(((void*)TSingleton<GameEventManagerCli>::GetInstance())))->Clear();
     ((class TermTagManagerCli*)(void*)(((void*)TSingleton<TermTagManagerCli>::GetInstance())))->Clear();
     FUN_14052d220()->FUN_1418894d0();
@@ -1393,7 +1393,7 @@ void CSceneStateGame::OnUpdate(double fTime)
             {
                 if (FUN_140714f90()->FUN_1415384e0() == 0)
                 {
-                    FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+                    FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
                     m_nRetry = m_nRetry + 1;
                     CStringW text = FUN_14062b4f0(CStringW(L"s_reconnect_to_server"), m_nRetry);
                     void* loading = ((void*)FUN_141540270(0x3ed));
@@ -2078,7 +2078,7 @@ void CSceneStateGame::vfunc_4(int)
         m_bReconnecting = true;
         m_nRetry = 0;
         m_reconnectTimer.FUN_140868750(10000);
-        FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
     }
 }
 
@@ -2181,7 +2181,7 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
     __int64 nGuildId = packet.ReadInt64();
     CStringW strGuildName = packet.ReadUnicodeString();
     reinterpret_cast<Unk_SSGGuildMgr*>(TSingleton<CGuildManager>::GetInstance())->SetTargetGuild(nGuildId, strGuildName);
-    reinterpret_cast<Unk_SSGGuildMgr*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413bcd10();
+    reinterpret_cast<Unk_SSGGuildMgr*>(TSingleton<CGuildManager>::GetInstance())->NotifyGuildNoticeIfChanged();
     CString str1 = packet.ReadUnicodeStringA();
     CString str2 = packet.ReadUnicodeStringA();
     CString str3 = packet.ReadUnicodeStringA();
@@ -2309,7 +2309,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3160(nE);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3120(nD);
-            ((CubeMapInformationService*)(spService).operator->())->FUN_1410cb8b0(true);
+            ((CubeMapInformationService*)(spService).operator->())->SetTimerEnabled(true);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c31a0(nOwner);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3220(strName);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c32b0(strDesc);
@@ -2355,7 +2355,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3160(nE);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3120(nD);
-            ((CubeMapInformationService*)(spService).operator->())->FUN_1410cb8b0(false);
+            ((CubeMapInformationService*)(spService).operator->())->SetTimerEnabled(false);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c31a0(nOwner);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3220(strName);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c32b0(strDesc);
@@ -2429,7 +2429,7 @@ void CSceneStateGame::FUN_14170fc70(CInPacket& packet)
     int nResult = packet.ReadUInt8();
     if (nResult == 0)
     {
-        ((class Unk_SSG931510*)FUN_140931510())->FUN_140d9f710(packet);
+        ((class Unk_SSG931510*)FUN_140931510())->OnDungeonEnterStatePacket(packet);
     }
     else if (nResult == 2)
     {
@@ -4106,7 +4106,7 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
         }
         UIMasteryDialog* pMastery = FUN_140faf160(0x4f1e);
         if (pMastery != 0)
-            pMastery->FUN_140eb5260(nType);
+            pMastery->SetPendingSub(nType);
     }
     else if (nMode == 3)
     {
@@ -4815,7 +4815,7 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
             }
         }
         else
-            FUN_140714f90()->FUN_141538bb0(strName, 4);
+            FUN_140714f90()->SendRecallUserText(strName, 4);
     }
     else if (nMode == 5)
     {
@@ -5718,7 +5718,7 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
         {
             Unk_PCBaseSkillLevel* pLevel = spRecord->FUN_14175a8b0();
             if (pLevel->m_n10c != 3 && pLevel->m_n10c != 4 && pLevel->m_n10c != 2 && pLevel->m_n110 <= 1)
-                FUN_1410a7630()->FUN_14146c4b0(nCasterUid, nCastUid);
+                FUN_1410a7630()->DestroyModel(nCasterUid, nCastUid);
         }
     }
 }
@@ -5946,7 +5946,7 @@ void CSceneStateGame::FUN_1417235a0(CInPacket& packet)
     {
         Unk_PCCubeCraft* pCraft = pPC->GetCubeCraft();
         if (pCraft != 0)
-            pCraft->FUN_1410aa5c0(&info);
+            pCraft->SetCurrentItem(&info);
     }
 }
 MS2_REPLACE_METHOD(0x1417235a0, CSceneStateGame, FUN_1417235a0, 202, 0x35B1E1B2);
@@ -6613,7 +6613,7 @@ void CSceneStateGame::FUN_141731b20(CInPacket& packet)
         {
         case 1:
             DAT_143ab284b = 1;
-            FUN_140714f90()->FUN_1415388a0();
+            FUN_140714f90()->SendRequestQuitAndDisconnect();
             reinterpret_cast<Unk_SSGMsgBoxFlags*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0x6200009);
             FUN_140d73bc0(0x27, 0, 0, DAT_143ae79f0);
             break;
@@ -7269,7 +7269,7 @@ void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
     {
         if (FUN_1410a7630() == 0)
             return;
-        FUN_1410a7630()->FUN_14146c4b0(nTagId, 0);
+        FUN_1410a7630()->DestroyModel(nTagId, 0);
     }
 }
 MS2_REPLACE_METHOD(0x14171e9a0, CSceneStateGame, FUN_14171e9a0, 1232, 0x81595E1A);
@@ -8513,7 +8513,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
                 if (spCube->notice == 0)
                     spCube->notice = new NoticeCubeInfo;
                 spCube->notice->Set(strText, nType);
-                ((class Unk_SSG9670e0*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c92e0(nCubeId);
+                ((class Unk_SSG9670e0*)Unk_AkoHouseSvc::GetInstance())->RemoveFunctionCubeObject(nCubeId);
             }
         }
         break;
@@ -8894,7 +8894,7 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
     {
     case 0:
     {
-        pPC->FUN_14152f9e0();
+        pPC->ClearLapenshards();
         unsigned int nCount = packet.ReadInt32();
         for (unsigned int i = 0; i < nCount; ++i)
         {
@@ -9409,7 +9409,7 @@ void CSceneStateGame::FUN_141728c20(CInPacket& packet)
         CStringW strText(kNotice.m_strText);
         if (nFlags == 0x40)
         {
-            FUN_140714f90()->FUN_1415388a0();
+            FUN_140714f90()->SendRequestQuitAndDisconnect();
             reinterpret_cast<Unk_SSGMsgBoxFlags*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0x6200009);
             FUN_140d73aa0(strText, 0, 0, L"");
         }
@@ -10052,7 +10052,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         {
             Unk_PCCubeCraft* pCraft = pPC->GetCubeCraft();
             if (pCraft != 0)
-                pCraft->FUN_1410aa5c0(&info);
+                pCraft->SetCurrentItem(&info);
         }
     }
         break;
@@ -10133,7 +10133,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->GetActiveCubeCraft();
                 if (pCraft != 0)
-                    pCraft->FUN_1410aa380(false);
+                    pCraft->SetGuideVisible(false);
                 FUN_141276180(DAT_143ae79b8, "");
             }
             int nA = packet.ReadInt32();
@@ -10193,7 +10193,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->GetActiveCubeCraft();
                 if (pCraft != 0)
-                    pCraft->FUN_1410aa380(true);
+                    pCraft->SetGuideVisible(true);
                 FUN_141276180(DAT_143ae79c8, "");
             }
             Unk_Int3 kPos = FUN_1408a0400(nPacked);
@@ -10258,7 +10258,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->GetActiveCubeCraft();
                 if (pCraft != 0)
-                    pCraft->FUN_1410aa380(false);
+                    pCraft->SetGuideVisible(false);
                 FUN_141276180(DAT_143ae79b8, "");
             }
             int nPacked = packet.ReadInt32();
@@ -10381,7 +10381,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
                     reinterpret_cast<Unk_SSGCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a46860()->FUN_141262650();
                 }
                 if (pMyPC->HasNoHome() != 0 && pMyPC->FUN_1416595d0() != 0)
-                    pMyPC->FUN_141530200();
+                    pMyPC->SendCraftModeOff();
                 if (reinterpret_cast<Unk_SSGTaxiTable*>(TSingleton<CTaxiManager>::GetInstance())->FUN_14085f730(DAT_143ab2870))
                     FUN_141739450(nResult != 0 ? false : true);
             }
@@ -11068,7 +11068,7 @@ void CSceneStateGame::OnLoadCubes(CInPacket& packet)
             FUN_1408a10e0(*pOwners, nGroup, nBlock, strName, nOwnerId);
             Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
             if (spOwner.get() != 0)
-                ((CubeMapInformationService*)(spService).operator->())->FUN_1410ce3f0(spOwner);
+                ((CubeMapInformationService*)(spService).operator->())->AddOwner(spOwner);
         }
     }
         break;
@@ -11168,7 +11168,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
             PC* pPC = ((PC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1290(nObjId));
             if (pPC != 0)
             {
-                ((PCGemEquip*)(Unk_MyPCEquip*)(pPC->FUN_14165f460()))->FUN_141270bf0(spItem);
+                ((PCGemEquip*)(Unk_MyPCEquip*)(pPC->FUN_14165f460()))->EquipItem(spItem);
                 pPC->FUN_14166ccb0()->vfunc_29(reinterpret_cast<MS2Ptr<Unk_StateArg29>&>(spItem));
             }
             bool bMine = efd::ClassInfo::IsKindOf(pPC != NULL ? pPC->GetClassDesc() : NULL, 0x6200004);
@@ -11191,7 +11191,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
         PC* pPC = ((PC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1290(nObjId));
         if (pPC != 0)
         {
-            MS2Ptr<CItem> spItem = pPC->FUN_14165f460()->FUN_141270ab0(nSlot);
+            MS2Ptr<CItem> spItem = pPC->FUN_14165f460()->RemoveByGemType(nSlot);
             if (spItem.get() != 0)
             {
                 pPC->FUN_14166ccb0()->vfunc_30(reinterpret_cast<MS2Ptr<Unk_StateArg29>&>(spItem));
@@ -11415,10 +11415,10 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     spPC->FUN_1416561c0()->FUN_140c860b0(kCooldownBuf, nObjId);
     CZlibPacket kEquip;
     CByteBuffer& kEquipBuf = kEquip.FUN_14083b6b0(static_cast<CInputStream&>(packet));
-    spPC->FUN_14165f460()->FUN_14126fea0(kEquipBuf, nObjId);
+    spPC->FUN_14165f460()->ReadFromStream(kEquipBuf, nObjId);
     MS2Ptr<CGemBase> spGem = spPC->FUN_14165f460()->FUN_141270740(1);
     if (spGem.get())
-        spGem->vfunc_6(spPC.get(), spPC->FUN_14165f460()->FUN_141270140(1));
+        spGem->vfunc_6(spPC.get(), spPC->FUN_14165f460()->GetItemByGemType(1));
 
     ((AdditionalCliList*)(Unk_PCBaseBuffs*)(spPC->FUN_1416749a0()))->FUN_140970ff0(packet);
     ((JobSystemCli*)(Unk_SSGSkillBook*)(((class Unk_SSGSkillBook*)((class PC*)(class PC*)(spPC.operator->()))->FUN_1416546d0())))->Refresh();
@@ -11438,7 +11438,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     if (pMyPC)
     {
         ((class Unk_SSG535320*)FUN_140535320())->SetSummonUid(proxy.FUN_1408f1330());
-        ((class Unk_SSG931510*)FUN_140931510())->FUN_140d9f310(proxy.m_50);
+        ((class Unk_SSG931510*)FUN_140931510())->SetExpireAndUpdateTimer(proxy.m_50);
         pMyPC->FUN_141699a20();
         pMyPC->FUN_1416561a0()->FUN_1411ea7c0();
         pMyPC->vfunc_88();
@@ -11920,7 +11920,7 @@ void FUN_14121b840(int nId);                                // FittingDollPC: pa
 class CLiftableObject   // C3: member view (real class not in this TU)
 {
 public:
-    void FUN_1414478b0(bool);
+    void SetLiftEnabled(bool);
     void FUN_141447aa0(bool);
     void SetState(int);
     void SetKind(int);
@@ -12115,7 +12115,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
                 spObj->FUN_1414477f0(strA, strB);
                 spObj->FUN_141447850(strC, strD);
                 ((CLiftableObject*)(spObj).operator->())->SetKind(nState);
-                ((CLiftableObject*)(spObj).operator->())->FUN_1414478b0(bEnable);
+                ((CLiftableObject*)(spObj).operator->())->SetLiftEnabled(bEnable);
                 ((CLiftableObject*)(spObj).operator->())->FUN_141447aa0(bFlag);
                 ((CLiftableObject*)(spObj).operator->())->SetState(nKind);
             }
@@ -12153,7 +12153,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
         if (spObj.get() != 0)
         {
             ((CLiftableObject*)(spObj).operator->())->SetKind(nState);
-            ((CLiftableObject*)(spObj).operator->())->FUN_1414478b0(bEnable);
+            ((CLiftableObject*)(spObj).operator->())->SetLiftEnabled(bEnable);
             ((CLiftableObject*)(spObj).operator->())->SetState(nKind);
         }
     }
@@ -12492,7 +12492,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
         MyPC* pMyPC = FUN_1409613d0(pOwner);
         if (pMyPC != 0 && pMyPC->GetActiveCubeCraft() != 0)
         {
-            pMyPC->FUN_141530200();
+            pMyPC->SendCraftModeOff();
             FUN_141275260(0xbb2, 1, 1);
         }
     }
@@ -12519,7 +12519,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
             return;
         if (pSkill->FUN_14123c580() != nGuideId)
             return;
-        pSkill->FUN_1410a6520();
+        pSkill->ReleaseGuide();
     }
 }
 MS2_REPLACE_METHOD(0x14172C170, CSceneStateGame, FUN_14172c170, 3949, 0x6D5C85AE);

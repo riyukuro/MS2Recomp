@@ -51,9 +51,9 @@ Unk_QmGroupTable* FUN_140d738f0();
 class CQuestManager;
 void* FUN_140764020();   // C3: was FUN_140764020
 
-class Unk_QmGameEvent {
+class StampEventContext { public: int GetStampFlag(int); }; class Unk_QmGameEvent : public StampEventContext {
 public:
-    int FUN_1403fd5a0(int questId);
+
     char m_pad_00[0xa0];
     CStringW m_tag;                             // +0xa0
 };
@@ -214,7 +214,7 @@ void CEventMission::Complete(CInPacket& packet)
     if (m_78 == 2) {
         Unk_QmGameEventRef ref = reinterpret_cast<Unk_QmGameEventMgr*>(FUN_1401c0d90())->FUN_14047ca40(DAT_143ab2fc0);
         if (ref.IsNull()) return;
-        int n = ref.Get()->FUN_1403fd5a0(FUN_140bfc580());
+        int n = ref.Get()->GetStampFlag(FUN_140bfc580());
         if (n == -1) return;
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify != 0) {

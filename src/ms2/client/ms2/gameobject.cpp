@@ -46,18 +46,17 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/alphacomponent.h"
+#include "ms2/client/ms2/bgtransparencymgr.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/propertycache.h"
+#include "ms2/placeholder/clientconstants.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local views of exe objects ----
 
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
-class Unk_GoCfgValue
-{
-public:
-    float FUN_1402bac70();
-    const float& FUN_140298f40();
-    char m_pad[0x58];
-};
+typedef Common::Constants::Value<float> Unk_GoCfgValue;
 struct Unk_GoConfig
 {
     char m_pad[0xa58];
@@ -102,13 +101,10 @@ class Unk_GoUpdateList
 {
 public:
     // @0x14123ee80
-    static Unk_GoUpdateList* FUN_14123ee80() { return ms_pInstance; }
-    void FUN_140a0d130(GameObject* pObject);
-    void FUN_140a0d190(GameObject* pObject);
-    static Unk_GoUpdateList* ms_pInstance;
+    static BGTransparencyMgr* FUN_14123ee80() { return TSingleton<BGTransparencyMgr>::s_instance; }
 };
 
-class Unk_GoModeSvc { public: int FUN_1409f7ea0(); };
+class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_FsOptimizer   // C3: member view for the former free stand-ins
 {
@@ -126,11 +122,6 @@ egmAnimation::AnimationService* FUN_141b6f910();
 
 // The camera manager and its PvP mode.
 class Unk_GoCamMode : public CPVPCameraMode { };
-class Unk_GoCamera : public CameraMgr
-{
-public:
-    Unk_GoCamMode* FUN_140af2520();
-};
 struct Unk_GoCamEvent
 {
     char m_pad[0x28];
@@ -160,23 +151,7 @@ efd::Point3 FUN_141b6e150(const Unk_GoFloat3* p);
 float FUN_140966f00(NiPoint3 a, efd::Point3 b);
 
 // Scene picking (FUN_1413f98f0).
-struct Unk_GoPickHit { efd::Point3* FUN_140ad4bd0(); };
-class Unk_GoPickVec
-{
-public:
-    unsigned int FUN_140a17ea0();
-    Unk_GoPickHit* FUN_140a17d70(unsigned int nIndex);
-};
-class Unk_GoPickList { public: Unk_GoPickVec* FUN_140a17e00(); };
-class Unk_GoPickListPtr
-{
-public:
-    Unk_GoPickListPtr(Unk_GoPickList* p);   // 0x140a152b0
-    ~Unk_GoPickListPtr();                   // 0x140a16120
-    Unk_GoPickList* FUN_140a16c00() const;
-    Unk_GoPickList* FUN_140a16c30() const;
-    Unk_GoPickList* m_p;                    // a one-pointer intrusive smart pointer
-};
+struct Unk_McPickHit { Vector3* FUN_140ad4bd0(); };
 class Unk_GoPicker
 {
 public:
@@ -184,7 +159,7 @@ public:
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual Unk_GoPickList* vfunc_16(const efd::Point3& kOrigin, const efd::Point3& kDir, NiAVObject* pRoot,
+    virtual ecr::PickService::PickRecord* vfunc_16(const efd::Point3& kOrigin, const efd::Point3& kDir, NiAVObject* pRoot,
         bool b, bool b2, bool b3);
 };
 void* FUN_1413f98f0();   // C3: was FUN_1413f98f0
@@ -193,18 +168,19 @@ void* FUN_1413f98f0();   // C3: was FUN_1413f98f0
 class CObjectShadow : public NiRefObject
 {
 public:
-    void FUN_14160fe10(bool b);
-    void FUN_14160fe70(bool b);
     void FUN_14160feb0(int n, const NiPoint3& kPos, const efd::Point3& kUp, float f, bool b);
 };
 
 // Scene graph walk (same iterator as cubecraft_1.cpp).
+void FUN_14160fe10(CObjectShadow* self, bool v);
+void FUN_14160fe70(CObjectShadow* self, bool v);
+
 class Unk_NodeQueue
 {
 public:
     Unk_NodeQueue(NiAVObject* pRoot);
     ~Unk_NodeQueue();
-    NiAVObject* FUN_14098e0d0(bool bDescend);
+    NiAVObject* Next(bool bDescend);
 private:
     ATL::CAtlList<NiAVObject*> m_kPending;
 };
@@ -213,10 +189,7 @@ MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
 extern NiFixedString DAT_143ae50b0;     // extra data key (alpha blending)
 
 // entity helpers
-void FUN_1414737d0(egf::Entity* pEntity);
-void FUN_140a38a50(egf::Entity* pEntity, unsigned int nProp, const efd::Point3& kValue);
-void FUN_1409457c0(egf::Entity* pEntity, unsigned int nProp, const float& fValue);
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned int nProp, const bool& bValue);
+void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned int nProp, const bool& bValue);
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned int nProp, efd::AssetID* pValue);
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
@@ -242,11 +215,11 @@ GameObject::GameObject()
 {
     m_spAnimMgr.AssignRaw(new CAnimationManager(this));
     m_pUnk130 = new CMeshUpdateGate;
-    float fRate = ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateRate.FUN_1402bac70();
+    float fRate = ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateRate.Read();
     if (fRate <= 0.0f)
         fRate = 60.0f;
     ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pUnk130))->FUN_14108c240(1.0f / fRate);
-    m_pUnk130->FUN_14123ef30(((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_1402bac70());
+    m_pUnk130->FUN_14123ef30(((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.Read());
 }
 
 // Deleting helper of the mesh update gate (its destructor is FUN_14176f390).
@@ -278,8 +251,8 @@ void GameObject::vfunc_9(void* p)
 {
     FUN_14123c430(p);
     FUN_14123bc20(FUN_14123bbd0());
-    FUN_14123e350();
-    FUN_14123e3a0();
+    SyncPositionProperty();
+    SyncRotationProperty();
     FUN_14123c280(m_fScaleAC);
     vfunc_23(m_unk_b0);
 }
@@ -322,13 +295,13 @@ void GameObject::vfunc_14()
 {
     if (m_bUnk10C)
     {
-        Unk_GoUpdateList::FUN_14123ee80()->FUN_140a0d190(this);
+        Unk_GoUpdateList::FUN_14123ee80()->RemoveObject(this);
         m_bUnk10C = false;
     }
     m_spAnimMgr->FUN_14099e7d0(this);
     if (m_unk_80)
     {
-        FUN_1414737d0(GO_ENTITY());
+        CMainSystem::DestroyEntity(GO_ENTITY());
         m_unk_80 = 0;
     }
     m_kEntityID = egf::kENTITY_INVALID;
@@ -444,7 +417,7 @@ void GameObject::vfunc_19(efd::Point3 kPos)
         if (!Unk_IsFinite(kPos))
             return;
         m_pos28 = kPos;
-        FUN_14123e350();
+        SyncPositionProperty();
     }
 }
 MS2_REPLACE_METHOD(0x14123c150, GameObject, vfunc_19, 99, 0xF1D17081);
@@ -464,7 +437,7 @@ void GameObject::vfunc_21(efd::Point3 kDir)
         if (!Unk_IsFinite(kDir))
             return;
         m_pos34 = kDir;
-        FUN_14123e3a0();
+        SyncRotationProperty();
     }
 }
 MS2_REPLACE_METHOD(0x14123c1f0, GameObject, vfunc_21, 99, 0x27605541);
@@ -481,7 +454,7 @@ void GameObject::FUN_14123c280(float f)
 {
     m_fScaleA4 = f;
     if (m_unk_80)
-        FUN_1409457c0(GO_ENTITY(), 0x2d7cad2d, m_fScaleA4);
+        reinterpret_cast<Unk_CachedEntity*>(GO_ENTITY())->SetPropertyValue<float>(0x2d7cad2d, m_fScaleA4);
 }
 MS2_REPLACE_METHOD(0x14123c280, GameObject, FUN_14123c280, 90, 0xCE9E2EE6);
 
@@ -544,7 +517,7 @@ MS2_REPLACE_METHOD(0x14123c430, GameObject, FUN_14123c430, 28, 0xF376627F);
 // @0x14123c460
 egf::EntityID GameObject::FUN_14123c460()
 {
-    if (((class Unk_GoModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
+    if (((Unk_AvModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID;
     return m_unk_80 != 0 ? GO_ENTITY()->GetEntityID() : egf::kENTITY_INVALID;
 }
@@ -552,7 +525,7 @@ egf::EntityID GameObject::FUN_14123c460()
 // @0x14123c500
 unsigned __int64 GameObject::FUN_14123c500()
 {
-    if (((class Unk_GoModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
+    if (((Unk_AvModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID.GetValue();
     return m_unk_80 != 0 ? ((egf::Entity*)(void*)(GO_ENTITY()))->GetEntityIDValue() : egf::kENTITY_INVALID.GetValue();
 }
@@ -579,11 +552,11 @@ void GameObject::vfunc_23(int n)
     {
         if (m_unk_40 != 0 && n == 0)
         {
-            if (((class Unk_FsOptimizer*)(class Unk_GoModeSvc*)(((class Unk_GoModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+            if (((class Unk_FsOptimizer*)(Unk_AvModeSvc*)(((Unk_AvModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
                 return;
         }
         bool bHide = n == 0 ? true : false;
-        FUN_14098c6e0(GO_ENTITY(), 0xa0b6b179, bHide);
+        FUN_14098c6e0(reinterpret_cast<Unk_CachedEntity*>(GO_ENTITY()), 0xa0b6b179, bHide);
     }
 }
 MS2_REPLACE_METHOD(0x14123c5c0, GameObject, vfunc_23, 140, 0x130E38CD);
@@ -596,18 +569,18 @@ int GameObject::FUN_14123c660()
 MS2_REPLACE_METHOD(0x14123c660, GameObject, FUN_14123c660, 17, 0x1F8D7963);
 
 // @0x14123c680
-void GameObject::FUN_14123c680(bool b)
+void GameObject::SetKeepVisibleForBGTransparency(bool b)
 {
     if (m_bUnk10C != b)
     {
         m_bUnk10C = b;
         if (b)
-            Unk_GoUpdateList::FUN_14123ee80()->FUN_140a0d130(this);
+            Unk_GoUpdateList::FUN_14123ee80()->AddObject(this);
         else
-            Unk_GoUpdateList::FUN_14123ee80()->FUN_140a0d190(this);
+            Unk_GoUpdateList::FUN_14123ee80()->RemoveObject(this);
     }
 }
-MS2_REPLACE_METHOD(0x14123c680, GameObject, FUN_14123c680, 102, 0x86FCEE12);
+MS2_REPLACE_METHOD(0x14123c680, GameObject, SetKeepVisibleForBGTransparency, 102, 0x86FCEE12);
 
 // @0x14123c6f0
 MS2Ptr<CAnimationManager> GameObject::GetAnimMgr()
@@ -681,7 +654,7 @@ MS2_REPLACE_METHOD(0x14123c9f0, GameObject, vfunc_30, 173, 0xE3707CF8);
 void GameObject::vfunc_31(bool b)
 {
     if (m_spShadow)
-        m_spShadow->FUN_14160fe10(b);
+        FUN_14160fe10(m_spShadow.operator->(), b);
 }
 MS2_REPLACE_METHOD(0x14123cad0, GameObject, vfunc_31, 70, 0x1DC06002);
 
@@ -689,7 +662,7 @@ MS2_REPLACE_METHOD(0x14123cad0, GameObject, vfunc_31, 70, 0x1DC06002);
 void GameObject::FUN_14123cb20(bool b)
 {
     if (m_spShadow)
-        m_spShadow->FUN_14160fe70(b == 0);
+        FUN_14160fe70(m_spShadow.operator->(), b == 0);
 }
 MS2_REPLACE_METHOD(0x14123cb20, GameObject, FUN_14123cb20, 91, 0xF9AE430E);
 
@@ -702,11 +675,11 @@ void GameObject::vfunc_32(bool b)
 MS2_REPLACE_METHOD(0x14123cb90, GameObject, vfunc_32, 129, 0x9697C5E7);
 
 // @0x14123cc20
-efd::Point3 GameObject::FUN_14123cc20()
+efd::Point3 GameObject::GetForwardDirection()
 {
     return RotationToDirection(vfunc_20());
 }
-MS2_REPLACE_METHOD(0x14123cc20, GameObject, FUN_14123cc20, 85, 0xE0517171);
+MS2_REPLACE_METHOD(0x14123cc20, GameObject, GetForwardDirection, 85, 0xE0517171);
 
 // @0x14123cc80
 efd::Point3 GameObject::RotationToDirection(NiPoint3 kRot)
@@ -737,13 +710,13 @@ float GameObject::DirectionToYawDegrees(efd::Point3 kDir)
 }
 
 // @0x14123ce70
-float GameObject::FUN_14123ce70(efd::Point3 kDir)
+float GameObject::DirectionToNegYawRadians(efd::Point3 kDir)
 {
     return -(DirectionToYawDegrees(kDir) * 3.1415927f / 180.0f);
 }
 
 // @0x14123cec0
-unsigned __int64 GameObject::FUN_14123cec0()
+unsigned __int64 GameObject::GenerateSerialId()
 {
     static unsigned int s_nSerial;
     unsigned __int64 nHigh = (unsigned int)m_unk_70;
@@ -754,13 +727,13 @@ unsigned __int64 GameObject::FUN_14123cec0()
 // @0x14123cf10
 void GameObject::vfunc_33(void* a, void* b)
 {
-    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0xd)
     {
         int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nTarget);
-            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+            Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(a)->m_nTarget);
         }
@@ -771,13 +744,13 @@ MS2_REPLACE_METHOD(0x14123cf10, GameObject, vfunc_33, 142, 0x65BBC4C2);
 // @0x14123cfb0
 void GameObject::vfunc_34(void* p)
 {
-    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0xd)
     {
         int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
-            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+            Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
         }
@@ -788,13 +761,13 @@ MS2_REPLACE_METHOD(0x14123cfb0, GameObject, vfunc_34, 137, 0x1D49A21A);
 // @0x14123d040
 void GameObject::vfunc_35(void* p)
 {
-    if (reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 0xd && GO_CAMEVENT(p)->m_nOwner != 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0xd && GO_CAMEVENT(p)->m_nOwner != 0)
     {
         int nOwner = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nOwner);
         if (nOwner == 1)
         {
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
-            Unk_GoCamMode* pMode = reinterpret_cast<Unk_GoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520();
+            Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
             if (nTarget)
                 pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
         }
@@ -846,18 +819,18 @@ NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, 
     if (pRoot == 0)
         return static_cast<const NiPoint3&>(kPos);
     efd::Point3 kStart = kPos + -kDir * fDistance;
-    Unk_GoPickListPtr spList(pPicker->vfunc_16(kStart, kDir, pRoot, true, false, false));
-    if (spList.FUN_140a16c00() == 0)
+    efd::SmartPointer<ecr::PickService::PickRecord> spList(pPicker->vfunc_16(kStart, kDir, pRoot, true, false, false));
+    if ((ecr::PickService::PickRecord*)spList == 0)
         return static_cast<const NiPoint3&>(kPos);
-    Unk_GoPickVec* pHits = spList.FUN_140a16c30()->FUN_140a17e00();
-    if (pHits->FUN_140a17ea0() == 0)
+    const NiPick::Results* pHits = spList->GetPickResult();
+    if (pHits->GetSize() == 0)
         return static_cast<const NiPoint3&>(kPos);
-    NiPoint3 kBest = static_cast<const NiPoint3&>(*pHits->FUN_140a17d70(0)->FUN_140ad4bd0());
+    NiPoint3 kBest = static_cast<const NiPoint3&>(*reinterpret_cast<efd::Point3*>(reinterpret_cast<Unk_McPickHit*>(pHits->GetAt(0))->FUN_140ad4bd0()));
     float fMin = FLT_MAX;
-    for (unsigned int i = 0; i < pHits->FUN_140a17ea0(); i++)
+    for (unsigned int i = 0; i < pHits->GetSize(); i++)
     {
-        Unk_GoPickHit* pHit = pHits->FUN_140a17d70(i);
-        efd::Point3* pPt = pHit->FUN_140ad4bd0();
+        Unk_McPickHit* pHit = reinterpret_cast<Unk_McPickHit*>(pHits->GetAt(i));
+        efd::Point3* pPt = reinterpret_cast<efd::Point3*>(pHit->FUN_140ad4bd0());
         if ((kStart - *pPt).Length() > fDistance)
             continue;
         float fDist = (kPos - *pPt).Length();
@@ -1117,7 +1090,7 @@ void GameObject::FUN_14123e020(NiAVObject* pNode)
 {
     AlphaShellComposite::MarkScene(pNode, false);
     Unk_CubeSceneIterator iterator((NiAVObject*)(pNode));
-    while (NiAVObject* pObject = iterator.FUN_14098e0d0(true))
+    while (NiAVObject* pObject = iterator.Next(true))
     {
         if (FUN_1409943d0(pObject))
         {
@@ -1146,7 +1119,7 @@ MS2_REPLACE_METHOD(0x14123e1a0, GameObject, vfunc_53, 113, 0x1AAE6014);
 // @0x14123e220
 void GameObject::vfunc_54(float f)
 {
-    if (m_unk_40 != 0 && ((class Unk_FsOptimizer*)(class Unk_GoModeSvc*)(((class Unk_GoModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+    if (m_unk_40 != 0 && ((class Unk_FsOptimizer*)(Unk_AvModeSvc*)(((Unk_AvModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
     {
         vfunc_56(f);
         return;
@@ -1162,7 +1135,7 @@ void GameObject::vfunc_54(float f)
         fDuration = FUN_14123ee40();
         break;
     case 2:
-        fDuration = FUN_14123ee40() - ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.FUN_140298f40();
+        fDuration = FUN_14123ee40() - reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration)->FUN_140298f40());
         break;
     default:
         MS2_ASSERT_AT(0x180, FALSE);
@@ -1172,20 +1145,20 @@ void GameObject::vfunc_54(float f)
 MS2_REPLACE_METHOD(0x14123e220, GameObject, vfunc_54, 289, 0x2B63C729);
 
 // @0x14123e350
-void GameObject::FUN_14123e350()
+void GameObject::SyncPositionProperty()
 {
     if (m_unk_80)
-        FUN_140a38a50(GO_ENTITY(), 0xfd95ca52, m_pos28);
+        GO_ENTITY()->SetPropertyValue<efd::Point3>(0xfd95ca52, m_pos28);
 }
-MS2_REPLACE_METHOD(0x14123e350, GameObject, FUN_14123e350, 63, 0xC3F81B0A);
+MS2_REPLACE_METHOD(0x14123e350, GameObject, SyncPositionProperty, 63, 0xC3F81B0A);
 
 // @0x14123e3a0
-void GameObject::FUN_14123e3a0()
+void GameObject::SyncRotationProperty()
 {
     if (m_unk_80)
-        FUN_140a38a50(GO_ENTITY(), 0x68c7c29d, m_pos34);
+        GO_ENTITY()->SetPropertyValue<efd::Point3>(0x68c7c29d, m_pos34);
 }
-MS2_REPLACE_METHOD(0x14123e3a0, GameObject, FUN_14123e3a0, 63, 0x23D8992C);
+MS2_REPLACE_METHOD(0x14123e3a0, GameObject, SyncRotationProperty, 63, 0x23D8992C);
 
 // @0x14123e3f0
 bool GameObject::vfunc_56(float f)

@@ -54,6 +54,7 @@
 #include <algorithm>
 #include <vector>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // Out-of-line instantiations (questmanager_2.cpp pattern): the exe calls these rather than inlining them.
 template<> Unk_PayloadPtr<CQuest>::~Unk_PayloadPtr();
@@ -184,12 +185,10 @@ public:
 class Unk_BattleRoomPtr {
 public:
     ~Unk_BattleRoomPtr(); bool operator==(Unk_BattleRoom*) const; Unk_BattleRoom* operator->() const;
-    bool FUN_140e36ca0() const;                                             // is null
 private:
     void* pad; Unk_BattleRoom* p;
 };
 MS2_CHECK_SIZE(Unk_BattleRoomPtr, 16);
-class Unk_BattleRoomMgr { public: Unk_BattleRoomPtr FUN_1403206b0(int); };
 class Unk_RewardMission { public: void FUN_140c9ce80(Unk_RewardEntryList& out); Unk_BattleRoomPtr FUN_140c9d070(); };
 class Unk_RewardMissionPtr {
 public:
@@ -244,7 +243,7 @@ int Unk_ClubBuffTypeOf(int n);
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ac00(int);
+    bool IsMatchSearching(int);
 };
 void FUN_1422bce40(Scaleform::GFx::Value* pOut, const AScript& a);
 void FUN_1422bce70(Scaleform::GFx::Value* pOut, const char* sz);
@@ -531,7 +530,7 @@ void UIQuestGuideDialog::vfunc_15()
         FUN_141aaba00();
     }
     if (m_navigation.get() ? true : false) {
-        if (m_navigationTick.FUN_140268870(0xf0))
+        if (reinterpret_cast<Unk_IntervalTimer&>(m_navigationTick).Check(0xf0))
             m_navigation->InvokeSelf();
     }
 }
@@ -997,10 +996,10 @@ void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
         MS2Ptr<CQuestData> spData = pQuest->GetData();
         if (!spData)
             return;
-        Unk_BattleRoomPtr spRoom = reinterpret_cast<Unk_BattleRoomMgr*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(spData->m_30c.m_roomId);
-        if (spRoom.FUN_140e36ca0())
+        DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(spData->m_30c.m_roomId);
+        if (!spRoom)
             return;
-        buttons.FUN_1422bbf70(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ac00(Unk_ClubBuffTypeOf(spRoom->m_1c)) ? "partyFindCancel" : "partyFind");
+        buttons.FUN_1422bbf70(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->IsMatchSearching(Unk_ClubBuffTypeOf(spRoom->m_groupType)) ? "partyFindCancel" : "partyFind");
     }
     obj.FUN_1409eb1d0("gotoButton", buttons);
 }

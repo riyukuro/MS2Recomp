@@ -118,12 +118,7 @@ public:
 };
 
 // The tab strip data: an AS array of rows built by FUN_1418fff20 (ctor and dtor are the shared trivial ASArray subclass bodies).
-class Unk_IssTabArray : public ASArray
-{
-public:
-    Unk_IssTabArray(int nType);                                 // 0x1422deec0
-    virtual ~Unk_IssTabArray();                                 // 0x1422df070
-};
+
 
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -179,7 +174,7 @@ void UIItemSocketSystemDialog::OnLoadComplete()
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10f))
             tabs.push_back(std::pair<int, CStringW>(4, L"gemstone_swap"));
         int nSelected = 0;
-        Unk_IssTabArray array(2);
+        ASDataProvider array(2);
         {
             CStringW strLabel(L"$s_itemsocketsystem_tab_");
             CStringW strTip(L"$s_itemsocketsystem_tab_tooltip_");

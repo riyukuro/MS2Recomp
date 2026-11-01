@@ -49,6 +49,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/gameobject.h"
+#include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, GameObject>)
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/filepreload_1.h"
 class Unk_140165cf0;
@@ -135,11 +136,9 @@ public:
     static class WorldService* GetInstance();
 };
 void FUN_141bd2db0(void* pMgr, Unk_ShList& kList, int (*pfnFilter)(void*));    // collects the objects accepted by the filter
-int FUN_141658e60(GameObject* pPlayer);                                 // gender of the player (0 male, 1 female)
 void FUN_1401d3700(CString& kStr);                                      // lower-cases in place
 bool FUN_141c43800(NiActorManager* pMgr, Unk_KFStream* pStream);       // NiActorManager::ReloadKFFile for a stream
 int FUN_1403b0860(char* pcBuffer, const char* pcFormat, ...);           // sprintf
-void* FUN_14099eef0(void* pObj);                                        // object -> player (0 if it is not one)
 bool FUN_1414f1760(ecr::SceneGraphService* pSvc, efd::utf8string kID); // MS2SceneGraphService::RemoveUnusedCacheAssetData
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 int FUN_1401859c0(void* pLog, int nA, int nB, const wchar_t* pwcMsg);   // assertion report
@@ -185,7 +184,7 @@ public:
 // @0x1414a9c80
 static int FUN_1414a9c80(void* pObj)
 {
-    void* pPlayer = FUN_14099eef0(pObj);
+    void* pPlayer = efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj));
     return pPlayer != 0 ? 1 : 0;
 }
 
@@ -269,7 +268,7 @@ void MS2AnimationService::ReloadFemaleKF()
     Unk_ShList kList(10);
     FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-    if (pPlayer != 0 && FUN_141658e60(pPlayer) == 1)
+    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 1)
     {
         NiFilename kFilename(pPlayer->FUN_14123bbd0());
         CString kName(kFilename.GetFilename());
@@ -312,7 +311,7 @@ void MS2AnimationService::ReloadMaleKF()
     Unk_ShList kList(10);
     FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-    if (pPlayer != 0 && FUN_141658e60(pPlayer) == 0)
+    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 0)
     {
         NiFilename kFilename(pPlayer->FUN_14123bbd0());
         CString kName(kFilename.GetFilename());

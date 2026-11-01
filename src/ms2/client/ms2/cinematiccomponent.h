@@ -114,7 +114,7 @@ public:
     virtual int vfunc_3();                                      // 0x141082e00
     virtual void vfunc_5(ASObj& obj);                           // 0x14107ebd0
     bool FUN_14107ec40(int nButton, const class CMsgBoxData& data);   // alliance warning box result
-    void FUN_14107ecc0(int nQuestId, bool bRedirect);           // send the accept request
+    void SendQuestAccept(int nQuestId, bool bRedirect);           // send the accept request
 };
 
 class CQuestProgressCinematicComponent : public CCloseCinematicComponent

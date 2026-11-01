@@ -42,6 +42,17 @@ def say(*a, **k):
     sys.stdout.flush()
 
 
+def unbindable(text, syms):
+    """names a failed MSVC link left unresolved with no row in any table of ms2sym.obj; FUN_<va> externals are auto-bound"""
+    names = set(re.findall(r'unresolved external symbol (?:"[^"]*" \()?([^\s()"]+)', text))
+    have = set()
+    for p in (syms, os.path.join(R, "progress", "symbols-manual.tsv"), os.path.join(R, "progress", "symbols-engine.tsv")):
+        if os.path.isfile(p):
+            with open(p, errors="replace") as f:
+                have.update(line.split("\t", 1)[0] for line in f)
+    return sorted(n for n in names if n not in have and "FUN_1" not in n)
+
+
 def run(cmd, env=None, log=None):
     """run cmd with inherited stdio (or its output into `log`), `nice`d on POSIX; returns the exit code"""
     if not NT:
@@ -142,6 +153,8 @@ def gate(agent, srcs, units, py, clang, dll, func, verbose):
         import shutil
         shutil.copyfile(os.path.join(R, "progress", "symbols.tsv"), syms)
 
+    unbound = []
+
     def build(d, toolchain, msvc):
         cenv = dict(env)
         venv = os.path.join(R, ".venv", "Scripts" if NT else "bin")
@@ -171,8 +184,20 @@ def gate(agent, srcs, units, py, clang, dll, func, verbose):
                 with open(log) as lf:
                     say(lf.read(), end="")
                 return False
-        if run(ninja + ["-C", d, "-j2"], env=cenv) == 0:
+        nlog = d + ".ninja-out.log"
+        open(nlog, "w").close()
+        r = run(ninja + ["-C", d, "-j2"], env=cenv, log=nlog)
+        with open(nlog, errors="backslashreplace") as lf:
+            out = lf.read()
+        say(out, end="")
+        if r == 0:
             return True
+        # a name with no row in any table (a rename no merge has applied yet) fails the full link too, 18 min later on a heavy slot
+        unbound.extend(unbindable(out, syms))
+        if unbound:
+            say("== link failed on %d name(s) with no symbol table row, so the full table can't bind them: not retrying\n   %s"
+                % (len(unbound), " ".join(unbound[:8])))
+            return False
         # a pruned ms2sym.obj only binds what the unit's objects reference; a failing link is re-run with the full table so that
         # references from library members (CRT/MFC) resolve exactly like the shared build before the check is called failed
         say("== link failed with the pruned symbol table: retrying with the full one")

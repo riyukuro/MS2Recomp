@@ -16,7 +16,6 @@
 #include "ms2/placeholder/ascript.h"
 
 class ASUIComponent;
-class Unk_TpsButton;
 namespace MessengerData { class PanelSetting; }
 
 class UITalkPanelSettingDialog : public UIDialog
@@ -40,7 +39,6 @@ public:
     int FUN_141b23a40(const CStringW& strName);                         // the chat window accepts the tab name
     void FUN_141b23ab0(MessengerData::PanelSetting* pSetting);          // movie -> PanelSetting
     void FUN_141b24ee0(MessengerData::PanelSetting* pSetting);          // PanelSetting -> movie
-    MS2Ptr<Unk_TpsButton> FUN_140bb4b10(const CString& strName);         // 0x140bb4b10 bind a button child
 
 private:
     MS2Ptr<ASUIComponent> m_spRoot;                                     // +0x178 the "m_settingMenu" clip (0x10 bytes)

@@ -32,6 +32,8 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/commonfiles/luautil.h"  // C3: CLua::CalcRevivalMerat/CalcRevivalMeso
+#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -58,7 +60,6 @@ public:
     ~Unk_RevFieldRef();                                 // 0x1408850f0 release
     bool FUN_1408851f0() const;
     bool FUN_140965240(int n) const;                    // == n
-    long long FUN_1409657a0() const;
     Unk_RevFieldData* FUN_140885340() const;            // operator->
     void FUN_140a57040();                               // add a reference
 private:
@@ -68,130 +69,21 @@ private:
 MS2_CHECK_SIZE(Unk_RevFieldRef, 0x10);
 Unk_RevFieldRef FUN_140a55460(int nFieldId);
 
-// The dungeon room record (members read here).
-struct Unk_RevDgData
-{
-    char m_pad_00[0x109];
-    unsigned char m_109;                                     // +0x109
-    unsigned char m_10a;                                // +0x10a
-    char m_pad_10b[0x140 - 0x10b];
-    int m_140;                                          // +0x140
-};
-MS2_CHECK_OFFSET(Unk_RevDgData, m_140, 0x140);
-
-class Unk_RevDgRef
-{
-public:
-    ~Unk_RevDgRef();                                    // 0x14031c0f0 release
-    bool FUN_140334010(int n) const;                    // == n
-    long long FUN_14031c160() const;
-    Unk_RevDgData* FUN_1403347d0() const;               // operator->
-private:
-    void* m_0;
-    void* m_8;
-};
-MS2_CHECK_SIZE(Unk_RevDgRef, 0x10);
-class Unk_RevDgTable { public: Unk_RevDgRef FUN_1403206b0(int nId); };
-
 // The player's equip / stat holder.
-class Unk_RevStats { public: float FUN_1411e1110(int nStat); };
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 // The player's buff / ability list.
 class Unk_RevAbility : public AdditionalCliList
 {
 public:
-    int FUN_140970020(unsigned nId, int nSub, int a3, int a4);
-    int FUN_140970d90(unsigned nId, int nSub);
 };
 // The player's state holder.
 class Unk_RevState { public: int FUN_140639340(); };
 
 // The local player (slot 78 of the vftable returns the job id).
-class Unk_RevPC
+class Unk_RevPC : public PC   // C3: the real PC (fittingdollpc.h) for the job id, level and busy calls
 {
 public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24();
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual void vfunc_27();
-    virtual void vfunc_28();
-    virtual void vfunc_29();
-    virtual void vfunc_30();
-    virtual void vfunc_31();
-    virtual void vfunc_32();
-    virtual void vfunc_33();
-    virtual void vfunc_34();
-    virtual void vfunc_35();
-    virtual void vfunc_36();
-    virtual void vfunc_37();
-    virtual void vfunc_38();
-    virtual void vfunc_39();
-    virtual void vfunc_40();
-    virtual void vfunc_41();
-    virtual void vfunc_42();
-    virtual void vfunc_43();
-    virtual void vfunc_44();
-    virtual void vfunc_45();
-    virtual void vfunc_46();
-    virtual void vfunc_47();
-    virtual void vfunc_48();
-    virtual void vfunc_49();
-    virtual void vfunc_50();
-    virtual void vfunc_51();
-    virtual void vfunc_52();
-    virtual void vfunc_53();
-    virtual void vfunc_54();
-    virtual void vfunc_55();
-    virtual void vfunc_56();
-    virtual void vfunc_57();
-    virtual void vfunc_58();
-    virtual void vfunc_59();
-    virtual void vfunc_60();
-    virtual void vfunc_61();
-    virtual void vfunc_62();
-    virtual void vfunc_63();
-    virtual void vfunc_64();
-    virtual void vfunc_65();
-    virtual void vfunc_66();
-    virtual void vfunc_67();
-    virtual void vfunc_68();
-    virtual void vfunc_69();
-    virtual void vfunc_70();
-    virtual void vfunc_71();
-    virtual void vfunc_72();
-    virtual void vfunc_73();
-    virtual void vfunc_74();
-    virtual void vfunc_75();
-    virtual void vfunc_76();
-    virtual void vfunc_77();
-    virtual short vfunc_78();                           // 78: the job id
-    int FUN_14166ce30();
     Unk_RevState* FUN_1416546d0();
-    int FUN_141661970();
-    int FUN_141658f30();                                // level
     unsigned int FUN_141528160();
     Unk_RevAbility* FUN_1416749a0();
 };
@@ -225,12 +117,7 @@ MS2_CHECK_OFFSET(Unk_RevConsts, m_cfe0, 0xcfe0);
 float* FUN_140298f40(Unk_RevFloatVal* p);
 int* FUN_1402056b0(Unk_RevIntVal* p);
 
-class Unk_RevJob
-{
-public:
-    int FUN_140676830(short nJob, int nFlag);
-    int FUN_1406771e0(short nJob, int nA, int nB);
-};
+class Unk_RevJob;
 Unk_RevJob* FUN_1401c0db0();
 CGameRule* FUN_1401c0d90();
 CFeatureManager* FUN_140166410();
@@ -310,8 +197,6 @@ extern __int64 DAT_143ab2898;                           // the free revival limi
 class Unk_RevCheck : public ASButton
 {
 public:
-    int FUN_1422c2030();
-    bool FUN_1422ce0e0();
 };
 
 // The movie root: the data calls.
@@ -319,7 +204,6 @@ class Unk_RevMovie : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nKind);
-    Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int nButton, CStringW strLabel);
 };
 // The game entity clip (slot 13 = goto label, slot 25 = resize).
 class Unk_RevEntity : public ASGameEntity
@@ -345,7 +229,6 @@ public:
     virtual void vfunc_23();
     virtual void vfunc_24();
     virtual void vfunc_25();
-    Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int nButton, CStringW strLabel);
 };
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
@@ -506,7 +389,7 @@ int UIRevivalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 void UIRevivalDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_1a8.FUN_140268870(1000) != 0)
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_1a8).Check(1000) != 0)
         FUN_141abcc50();
 }
 
@@ -551,7 +434,7 @@ void UIRevivalDialog::FUN_141abae20()
     {
         CStringW strMsg;
         Unk_RevFieldRef spField = reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-        if (pPc->FUN_1416546d0()->FUN_140639340() == 1 || ((spField.FUN_1409657a0() ? true : false) && spField.FUN_140885340()->m_60 == 0))
+        if (pPc->FUN_1416546d0()->FUN_140639340() == 1 || ((reinterpret_cast<long long>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spField).get()) ? true : false) && spField.FUN_140885340()->m_60 == 0))
         {
             strMsg = GetStringCommon(0x27c);
         }
@@ -579,7 +462,7 @@ void UIRevivalDialog::FUN_141abae20()
                 strMsg = GetStringCommonByKey(L"s_msg_die_none");
             }
         }
-        if (spField.FUN_1409657a0() ? true : false)
+        if (reinterpret_cast<long long>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spField).get()) ? true : false)
         {
             Unk_RevFieldData* pData = spField.FUN_140885340();
             if (pData->m_38 != reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd3060())
@@ -731,9 +614,9 @@ void UIRevivalDialog::FUN_141abc080()
     }
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
-        __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(), 0);
-        float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42)
-            ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42);
+        __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(), 0);
+        float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
+            ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
         nCost = FUN_140632990(nCost, 1.0f - fRate);
         nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
@@ -801,10 +684,10 @@ int UIRevivalDialog::FUN_141abc7f0()
             int nRoom = DAT_143ab2884;
             if (nRoom == 0)
                 break;
-            Unk_RevDgRef spRoom = reinterpret_cast<Unk_RevDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoom);
-            if (spRoom.FUN_140334010(0) != 0)
+            DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoom);
+            if (spRoom == 0)
                 break;
-            if (spRoom.FUN_1403347d0()->m_109 == 0)
+            if (spRoom->m_limitMesoRevival == 0)
                 break;
             nResult = 0;
         } while (0);
@@ -819,8 +702,8 @@ bool UIRevivalDialog::FUN_141abc930()
         return false;
     if (DAT_143ab2884 != 0)
     {
-        Unk_RevDgRef spRoom = reinterpret_cast<Unk_RevDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(DAT_143ab2884);
-        if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_10a != 0)
+        DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(DAT_143ab2884);
+        if (spRoom.get() != 0 && spRoom->m_limitMeratRevival != 0)
             return false;
     }
     return true;
@@ -907,10 +790,10 @@ void UIRevivalDialog::FUN_141abccb0()
     Unk_RevPC* pPc = ((Unk_RevPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(),
-        pPc->FUN_1416749a0()->FUN_140970d90(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0));
-    float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42)
-        ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0x42);
+    __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(),
+        pPc->FUN_1416749a0()->GetOverlapCount(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0));
+    float fRate = *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
+        ? *FUN_140298f40(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0) : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
@@ -944,9 +827,9 @@ void UIRevivalDialog::FUN_141abd290()
         return;
     int nA = pPc->FUN_141528160();
     int nB = FUN_1401c0d90()->FUN_140477d10(pPc->FUN_141658f30());
-    __int64 nCost = FUN_1401c0db0()->FUN_1406771e0(pPc->vfunc_78(), nA, nB);
-    float fRate = reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 < reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0xa4)
-        ? reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 : reinterpret_cast<Unk_RevStats*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e1110(0xa4);
+    __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
+    float fRate = reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4)
+        ? reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (FUN_140374410(reinterpret_cast<Unk_RevWorld*>(WorldService::GetInstance())->FUN_141bd3060()) != 0)
@@ -1003,10 +886,10 @@ CStringW UIRevivalDialog::FUN_141abd790()
     int nRoom = DAT_143ab2884;
     if (nRoom == 0)
         return strLabel;
-    Unk_RevDgRef spRoom = reinterpret_cast<Unk_RevDgTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_1403206b0(nRoom);
-    if (spRoom.FUN_140334010(0) != 0)
+    DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoom);
+    if (spRoom == 0)
         return strLabel;
-    unsigned int nExit = spRoom.FUN_1403347d0()->m_140;
+    unsigned int nExit = spRoom->m_defaultRevivalLimitCount;
     if (nExit == 0)
         return strLabel;
     int nLeft = nExit - DAT_143ab2950 < 0 ? 0 : nExit - DAT_143ab2950;

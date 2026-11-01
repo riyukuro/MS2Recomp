@@ -35,6 +35,7 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 // constants and a condition table, with no registration into exe registries.
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/ms2.h"
 class Unk_1401cd100 {
 public:
     Unk_1401cd100(void*);
@@ -110,7 +111,6 @@ class Unk_GameContext   // C3: member view for the former free stand-ins
 public:
     class efd::ServiceManager* FUN_140af8310();
 };
-NxUserAllocator* FUN_141489fd0(Unk_PhysXApp* pApp);
 egfPhysX::SceneService* FUN_1411d14f0(efd::ServiceManager* pServices);
 class MS2SceneService   // C3: member view for the former free stand-ins
 {
@@ -136,7 +136,9 @@ bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
 float FUN_140a38cd0(float f);
 extern char DAT_143b059e8;
-efd::ISystemService* FUN_1401cd040(char*);
+struct Unk_EntityAppFramework;
+class Unk_Service6100017;
+Unk_Service6100017*FUN_1401cd040(Unk_EntityAppFramework*);
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
 class WorldService   // C3: static member view for the former free stand-ins
 {
@@ -163,7 +165,7 @@ CPhysXHelper::CPhysXHelper()
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     Unk_PhysXApp* pApp = FUN_14168ab00(pServices);
-    m_pControllerMgr = NxCreateControllerManager(FUN_141489fd0(pApp));
+    m_pControllerMgr = NxCreateControllerManager(reinterpret_cast<NxUserAllocator*>(reinterpret_cast<MS2*>(pApp)->GetPhysXAllocator()));
     m_pLock = ((class Unk_PhysXLockOwner*)efdPhysX::PhysXSDKManager::GetManager());
     for (int i = 0; i < 2; i++)
         m_apScene[i] = 0;
@@ -369,7 +371,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     pEntity->GetPropertyValue(0x38141815, bCube);
     if (bCube)
     {
-        efd::SmartPointer<efd::ISystemService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework *>(&DAT_143b059e8))));
         NxActor* pActor = FUN_1410c5420(spService.operator->(), pEntity->GetEntityID());
         if (pActor != 0)
         {

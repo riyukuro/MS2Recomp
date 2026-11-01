@@ -160,6 +160,7 @@ static CString s_stun("stun");
 #include "ms2/commonfiles/rideonaction.h"
 #include "uibanner.h"
 #include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/placeholder/mstime.h"
 #include "inventory.h"
 #include "questmanager_2.h"
@@ -172,9 +173,16 @@ static CString s_stun("stun");
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/placeholder/cguidemanager.h"
+#include "cubemapinformationservice_3.h"   // C3: the cube map service (cast at the call)
+#include "liftableobject.h"   // C3: the lifts (cast at the call)
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/commonfiles/masterytable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cnpc.h"   // C3: the npc calls (cast at the call)
+#include "npcdatacli.h"
+#include "portal.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/commonfiles/pvpinfo.h"
 
 #include <atlcoll.h>
 #include <vector>
@@ -191,9 +199,6 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wi
 class Unk_AkoPortal : public CPtred
 {
 public:
-    CStringW FUN_14169c3b0();                               // the portal's name
-    int FUN_14169d280();                                    // moves to another field
-    Vector3 FUN_14169d2f0();                        // the portal's position
     egf::EntityID m_entityId;                               // +0x18 id of the egf entity
     char m_pad_20[0x14c - 0x20];
     int m_nFieldId;                                         // +0x14c the target field
@@ -230,7 +235,8 @@ public:
     CStringW FUN_1410d5d80(int nError);                     // the text of a house error code
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
 extern Vector3 DAT_143b01a60;                       // the zero point                // the game framework
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 
@@ -261,25 +267,19 @@ class Unk_AkoHouseSvc
 {
 public:
     static Unk_AkoHouseSvc* GetInstance() { return static_cast<Unk_AkoHouseSvc*>(DAT_143ab3908); }
-    std::map<unsigned __int64, Unk_CubeOwnerPtr>* FUN_1410d3380();  // the house owners by account (less<unsigned __int64> 0x14044a540)
-    __int64 FUN_1410c3180();                                // the owner account of the current house
-    bool FUN_1410c35c0();                                   // the player is in a house
-    bool FUN_1410cb920(int nCooldown);                      // the move cooldown is over
 };
 
 // The guide manager (global 0x143ab3330).
 class Unk_AkoGuide : public CGuideManager
 {
-public:
-    void FUN_14138bf00(int nGuide, int nA, int nB);         // a guide event
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 extern int DAT_143ab288c;                                   // the id of the last portal used
 extern __int64 DAT_143ab2820;                               // the account id
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);   // highlight an entity
-void FUN_140d73aa0(CStringW strText, int nType, int nArg, CStringW strArg);   // a system notice text
-void FUN_140d73bc0(int nStringId, int nType, IMessageListener* pListener, CStringW strArg);   // a system notice
+void FUN_140d73aa0(CStringW strText, int nType, void* pArg, CStringW strArg);   // a system notice text
+void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strArg);   // a system notice
 int FUN_1408a0890(int, int, int*);   // C3: was FUN_1408a0890
 void FUN_140dff580(int nTarget, int nPortalId);             // the shop portal (type 0x10)
 
@@ -292,32 +292,14 @@ public:
     void FUN_1418b16f0();                                   // refresh from the current action
 };
 
-class Unk_AkoUIRef
-{
-public:
-    ~Unk_AkoUIRef();                                        // 0x1403e5630
-    UIObject* FUN_1403e8a70() const;
-private:
-    void* m_unk_00;
-    UIObject* m_p;
-};
-MS2_CHECK_SIZE(Unk_AkoUIRef, 0x10);
-class Unk_AkoUIMgr
-{
-public:
-    Unk_AkoUIRef FUN_141adcea0(int nUiId);                  // the ui by id
-    int FUN_141adc890(int nUiId);                           // is shown
-    void FUN_141adc530(int nUiId);                          // close
-};
-
 // The UI by id, cast to its class (a template: one COMDAT per class in first-use order, see the pins at the top).
 template <class T> T* Unk_GetUI(int nUiId)
 {
-    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        Unk_AkoUIRef ref = reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<T*>(((MS2Ptr<UIObject>*)(&(ref)))->operator UIObject*());
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
+        if (ref.get() != 0)
+            return dynamic_cast<T*>(ref.operator UIObject*());
     }
     return 0;
 }
@@ -326,7 +308,7 @@ class UIDungeonRoomDialog : public UIDialog
 {
 public:
     bool FUN_1412b8f00(int nPortalId);                      // the room list has the portal
-    void FUN_1412b8ff0(int nArg);
+    bool FUN_1412b8ff0(int nArg);
     void FUN_1412b90d0(int nMode);
     void FUN_1412b90f0(int nPortalId);                      // select the portal's rooms
 };
@@ -371,15 +353,6 @@ public:
     egf::Entity* FUN_141bd0220(Vector3 pos, float maxDist);
     egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
 };
-// The npc table row; only the talk script name is read here.
-class Unk_AkoNpcData : public CPtred
-{
-public:
-    unsigned char m_unk_18[0x448];
-    CString m_strTalkScript;                                // +0x460
-    int FUN_1406cd020();                                    // has a talk
-};
-MS2_CHECK_OFFSET(Unk_AkoNpcData, m_strTalkScript, 0x460);
 // A world game object as WorldService returns it (an npc here); only the slots used here are named.
 class Unk_WsC_GameObj
 {
@@ -403,13 +376,6 @@ public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual Vector3 vfunc_18();                     // 18: the position
-    CStringW FUN_141093310();                               // the npc name
-    int FUN_14166ce30();                                    // dead (1)
-    MS2Ptr<Unk_AkoNpcData> FUN_141093270();                 // the npc data
-    int FUN_14123c580();                                    // the object id
-    int FUN_14123c660();                                    // hidden
-    int FUN_141092fa0();                                    // the npc id
-    bool FUN_1416642a0();                                   // the pc is already being held (PC member)
     // @0x140967120
     bool FUN_140967120() { return m_bTalkable; }
 
@@ -427,8 +393,6 @@ class Unk_AkoCutscene
 public:
     static Unk_AkoCutscene* GetInstance()
     { return reinterpret_cast<Unk_AkoCutscene*>(TSingleton<UITalkManager>::s_instance); }
-    int FUN_141b21220();                                    // a cutscene is playing
-    int FUN_141b211d0();                                    // npc talk is enabled
 };
 int FUN_141276980();                                        // npc talk is allowed
 
@@ -442,27 +406,14 @@ public:
     Unk_WsC_GameObj* FUN_141bd0fa0(egf::EntityID id);       // the game object of an entity
     MS2Ptr<Unk_AkoPortal> FUN_141bc2800(int nPortalId);     // the portal by id
 };
-// The quest manager (FUN_140764020); the quest state at +0x10.
-class Unk_AkoQuestState { public: int FUN_140745590(int nQuestId); };   // the quest is complete
-class Unk_AkoQuestGlobal
-{
-public:
-    void FUN_1416d12d0(int nNpcId, Unk_QmNpcQuestState* pState, int nMode);   // the npc's quest state
-    int FUN_1416cebf0(int nNpcId);                          // the npc has a quest talk
-    std::pair<int, __int64> FUN_1416d1e90();                // the user the quest asks to find (quest id, character id)
-    void* m_0;
-    void* m_8;
-    Unk_AkoQuestState m_state;
-};
+// The quest manager (FUN_140764020).
 void* FUN_140764020();   // C3: was FUN_140764020
 int FUN_140855d10(int nNpcId);                              // the npc has an event talk
 Unk_Int3 FUN_1408a1430(Vector3 pt);                 // the cube cell of a world position
-// MyPC's npc in front with its true return type (mypc.h spells it PCBase*).
+// MyPC seen as the local player.
 class Unk_AkoPlayerView : public MyPC
 {
 public:
-    Unk_WsC_GameObj* FUN_141529640();                       // the npc the player faces
-    int FUN_1415279d0(Unk_WsC_GameObj* pTarget);            // the pc may be held (MyPC member)
 };
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
@@ -471,10 +422,9 @@ CStringW GetStringCommonByKey(const CStringW& strKey);             // a string b
 bool FUN_140b7f400(MyPC* pPlayer);                          // the player can join a micro game
 class Unk_PCBaseComp_ac8 : public CPtred                    // PCBase slot 87 (UIBanner::Entity)
 {
-public:
-    int FUN_140ba8700();                                    // the banner type
 };
-int FUN_141274b10(Unk_WsC_GameObj* pObj);                   // object list filter: player characters
+class Unk_ExpActor;
+int FUN_141274b10(Unk_ExpActor* pObj);                       // object list filter: player characters
 // The local player as efd::DynamicCast sees it (class id 0x06200004; mypc.h's MyPC has no CLASS_ID).
 class Unk_AkoMyPC : public MyPC
 {
@@ -498,9 +448,8 @@ unsigned short FUN_140966f80(const Unk_AkoReqItemList& list);
 class Unk_MData : public CMasteryTable
 {
 };
-extern Unk_MData* DAT_143ab02e0;
 // @0x1409670c0
-inline Unk_MData* FUN_1409670c0() { return DAT_143ab02e0; }
+inline Unk_MData* FUN_1409670c0() { return reinterpret_cast<Unk_MData*>(TSingleton<CMasteryTable>::s_instance); }
 void FUN_141275260(int nStringId, int nA, int nB);          // a center notice by string id
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 // fmt center notices with one / two arguments (the originals are templates over the argument types).
@@ -535,7 +484,6 @@ void* FUN_140967100()
 int FUN_140b60d90(egf::Entity* pEntity);
 float FUN_140966f00(Vector3 a, Vector3 b);  // the distance of two points
 int FUN_1408a1360(Vector3 a, Vector3 b);   // the points are on the same level
-int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);   // read a string property (0 = ok)
 int FUN_1408a03c0(Unk_Int3 pt);                             // the packed key of a cube cell                    // the banner id of a ugc banner entity
 
 // @0x140960c30 an action caption: the string with the argument, cut at '-' when the argument is empty
@@ -590,7 +538,7 @@ extern Unk_AkoTaxiList DAT_143ab3078;
 extern Unk_AkoTaxiList DAT_143ab3098;
 extern int DAT_143ab2870;                                   // the current map id
 // The player's movement controller (PCBase +0x6d8; PCBase::FUN_14166d240 hands it out as void*).
-class Unk_AkoPCMove
+class Unk_PCMove
 {
 public:
     bool FUN_141683ef0();                                   // the player stands still on the ground
@@ -877,7 +825,7 @@ int TaxiStationAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return 0;
     if (pPlayer->FUN_14166c930() == 0x25)
         return 0;
@@ -921,7 +869,7 @@ void TaxiStationAction::vfunc_2()
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e42)));
     if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
         pDialog->FUN_141b5af80(1);
-    ((class Unk_AkoGuide*)FUN_1409331e0())->FUN_14138bf00(0x11, 0, 0);
+    ((class Unk_AkoGuide*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x11, 0, 0);
 }
 MS2_REPLACE_METHOD(0x14095BEF0, TaxiStationAction, vfunc_2, 144, 0x65EC98D4);
 // @0x14095bfb0
@@ -956,7 +904,7 @@ PortalAction::~PortalAction()
 // @0x140955990
 void PortalAction::vfunc_3()
 {
-    if (reinterpret_cast<Unk_AkoUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ebd))
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4ebd))
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ebd);
 }
 MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
@@ -1032,10 +980,10 @@ void PortalAction::vfunc_2()
     if (m_spPortal->m_nOwnerId)
     {
         Vector3 ptFront;
-        spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, 1);
+        ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellInFrontOfActor(pPlayer, 0.0f, &ptFront, 1);
         Vector3 ptCell;
-        spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
-        Cube* pCell = spCubeMap->FUN_1410b8ab0(ptCell);
+        ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(ptFront, &ptCell);
+        Cube* pCell = ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCubeAtPoint(ptCell);
         if (m_spPortal->m_nType == 0xb)
         {
             pPlayer->SendRequestMoveFieldMode2(0, 0, 0, m_spPortal->m_nOwnerId, L"");
@@ -1059,8 +1007,8 @@ int PortalAction::vfunc_4()
     m_spEntity->GetPropertyValue(0x1b8b1161, nKind);
     if (nKind == 1)
     {
-        if (Unk_AkoHouseSvc::GetInstance()->FUN_1410c3180() == DAT_143ab2820
-            && !Unk_AkoHouseSvc::GetInstance()->FUN_1410cb920(5000))
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == DAT_143ab2820
+            && !reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->HasTimerExpired(5000))
             return 1;
         vfunc_2();
         return 0;
@@ -1090,7 +1038,7 @@ CStringW PortalAction::vfunc_6()
     int nMapId = 0;
     if (m_spPortal->m_nOwnerId)
     {
-        std::map<unsigned __int64, Unk_CubeOwnerPtr>* pOwners = Unk_AkoHouseSvc::GetInstance()->FUN_1410d3380();
+        std::map<unsigned __int64, Unk_CubeOwnerPtr>* pOwners = reinterpret_cast<std::map<unsigned __int64, Unk_CubeOwnerPtr>*>(reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d3380());
         if (pOwners->find(m_spPortal->m_nOwnerId) != pOwners->end())
         {
             Unk_CubeOwnerPtr spOwner = (*pOwners)[m_spPortal->m_nOwnerId];
@@ -1130,7 +1078,7 @@ Unk_AkoTarget PortalAction::vfunc_12()
 {
     if (m_spPortal == 0)
         return Unk_AkoTarget();
-    Vector3 pos = m_spPortal->FUN_14169d2f0();
+    Vector3 pos = reinterpret_cast<CPortal*>(m_spPortal.operator->())->FUN_14169d2f0();
     if (m_spPortal->m_nType == 5)
         pos.z += 75.0f;
     return Unk_AkoTarget(pos);
@@ -1141,7 +1089,7 @@ int PortalAction::FUN_140956110()
 {
     if (m_spPortal == 0)
         return 0;
-    return m_spPortal->FUN_14169d280();
+    return reinterpret_cast<CPortal*>(m_spPortal.operator->())->FUN_14169d280();
 }
 MS2_REPLACE_METHOD(0x140956110, PortalAction, FUN_140956110, 69, 0x8E8EC06C);
 // @0x140956160
@@ -1210,7 +1158,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
     if ((spCurrent.get() ? true : false) && (spField.get() ? true : false) && spField->FUN_1403754f0() && !spCurrent->GetPkMode()
         && spField->GetPkMode())
     {
-        FUN_140d73bc0(0x971, 1, pPlayer, StringFormat(L"moveportal,{0},{1}", nTarget, nPortalId));
+        FUN_140d73bc0(0x971, 1, static_cast<IMessageListener*>(pPlayer), StringFormat(L"moveportal,{0},{1}", nTarget, nPortalId));
         return;
     }
     if (spField == 0 && nTarget != 0)
@@ -1219,7 +1167,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         return;
     }
     if ((spField.get() ? true : false) && spField->m_nRequireQuest != 0
-        && ((class Unk_AkoQuestGlobal*)FUN_140764020())->m_state.FUN_140745590(spField->m_nRequireQuest) == 0)
+        && ((CQuestManager*)FUN_140764020())->FUN_140745590(spField->m_nRequireQuest) == 0)
     {
         FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
         return;
@@ -1231,8 +1179,8 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         CStringW strDefault = L"";
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PortalAction::FUN_140956be0));
         spBox->FUN_141a01d30(5, strDefault, 6, 0, 0);
-        spBox->FUN_140534050(nTarget);
-        spBox->FUN_140534050(nPortalId);
+        spBox->Append<unsigned>(nTarget);
+        spBox->Append<unsigned>(nPortalId);
         FUN_140d73c60(spBox);
     }
     else
@@ -1312,7 +1260,7 @@ MS2_REPLACE_METHOD(0x140956AA0, PortalAction, RequestMoveFromCube, 309, 0xFE6AA6
 // @0x140956e40
 CStringW PortalAction::FUN_140956e40()
 {
-    return m_spPortal->FUN_14169c3b0();
+    return reinterpret_cast<CPortal*>(m_spPortal.operator->())->FUN_14169c3b0();
 }
 MS2_REPLACE_METHOD(0x140956E40, PortalAction, FUN_140956e40, 73, 0x911E15E5);
 
@@ -1336,7 +1284,7 @@ void BuyCubeAction::vfunc_2()
     if (!pPlayer)
         return;
     efd::SmartPointer<Unk_Service6100017> spHouse = FUN_1401cd040(&DAT_143b059e8);
-    int nError = spHouse->FUN_1410c8580(m_n18);
+    int nError = ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410c8580(m_n18);
     if (nError == 0)
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
@@ -1391,10 +1339,10 @@ int LiftCubeAction::vfunc_1()
     Unk_WsB_Lift* pOld = WorldService::GetInstance()->FUN_141bc5a20(m_str18).get();
     Unk_WsB_Lift* pLift = FUN_140957890();
     if (pOld && pOld != pLift)
-        pOld->FUN_141447d50(0);
+        ((CLiftableObject*)(pOld))->FUN_141447d50(0);
     if (pLift)
-        pLift->FUN_141447d50(1);
-    m_str18 = pLift ? pLift->FUN_1414472a0() : CString("");
+        ((CLiftableObject*)(pLift))->FUN_141447d50(1);
+    m_str18 = pLift ? ((CLiftableObject*)(pLift))->GetName() : CString("");
     return pLift != 0;
 }
 MS2_REPLACE_METHOD(0x1409572C0, LiftCubeAction, vfunc_1, 637, 0x43810EFB);
@@ -1411,10 +1359,10 @@ void LiftCubeAction::vfunc_2()
         return;
     if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
         return;
-    pLift->FUN_141447d50(0);
+    ((CLiftableObject*)(pLift))->FUN_141447d50(0);
     COutPacket packet(static_cast<int>(SendOp::Liftable));
     packet.Encode1(1);
-    packet.COutPacket::WriteString(pLift->FUN_1414472a0());
+    packet.COutPacket::WriteString(((CLiftableObject*)(pLift))->GetName());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140957550, LiftCubeAction, vfunc_2, 452, 0x3B43636C);
@@ -1432,13 +1380,13 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
     Vector3 pos = pPlayer->FUN_1416767d0();
     MS2_FOR_EACH(Unk_WsB_LiftPtr spLift, aLifts)
     {
-        if (spLift->FUN_141447340() == 0)
+        if (((CLiftableObject*)(spLift.operator->()))->CanLift() == 0)
             continue;
-        Vector3 ptLift = spLift->FUN_141447c80();
+        Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->FUN_141447c80();
         Unk_Int3 cell = FUN_1408a1430(ptLift);
         Vector3 diff = ptLift.FUN_140965c40(pos);
         float fDist = diff.FUN_140968990();
-        if (fDist > spLift->FUN_141447ac0())
+        if (fDist > ((CLiftableObject*)(spLift.operator->()))->GetRange())
             continue;
         return spLift.get();
     }
@@ -1454,7 +1402,7 @@ CStringW LiftCubeAction::vfunc_6()
     Unk_WsB_Lift* pLift = WorldService::GetInstance()->FUN_141bc5a20(m_str18);
     if (!pLift)
         return L"";
-    return FUN_140960c30(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pLift->FUN_141447cc0()));
+    return FUN_140960c30(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((CLiftableObject*)(pLift))->FUN_141447cc0()));
 }
 MS2_REPLACE_METHOD(0x140957740, LiftCubeAction, vfunc_6, 315, 0x1C11A665);
 
@@ -1476,34 +1424,34 @@ int TalkAction::vfunc_1()
         return 0;
     if (((class Unk_AkoGuide*)FUN_1409331e0())->IsRestricted(2))
         return 0;
-    if (!Unk_AkoCutscene::GetInstance()->FUN_141b211d0())
+    if (!reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b211d0())
         return 0;
     if (pPlayer->FUN_14166c930() == 8 || pPlayer->FUN_14166c930() == 9)
         return 0;
     m_n18 = 0;
     m_nNpcId = 0;
     m_strName = "";
-    Unk_WsC_GameObj* pNpc = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141529640();
+    Unk_WsC_GameObj* pNpc = reinterpret_cast<Unk_WsC_GameObj*>(reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FindTalkableNpc());
     if (pNpc)
     {
-        if (pNpc->FUN_14123c660())
+        if (reinterpret_cast<GameObject*>(pNpc)->FUN_14123c660())
             return 0;
         int bTalk = 0;
         Unk_QmNpcQuestState state;
-        ((class Unk_AkoQuestGlobal*)FUN_140764020())->FUN_1416d12d0(pNpc->FUN_141092fa0(), &state, 1);
+        ((CQuestManager*)FUN_140764020())->FUN_1416d12d0(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0(), &state, 1);
         if (state.m_icon != 0xb)
             bTalk = 1;
-        if (pNpc->FUN_141093270()->FUN_1406cd020() != 0)
+        if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->GetKind() != 0)
             bTalk = 1;
-        if (FUN_140855d10(pNpc->FUN_141092fa0()))
+        if (FUN_140855d10(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0()))
             bTalk = 1;
-        if (((class Unk_AkoQuestGlobal*)FUN_140764020())->FUN_1416cebf0(pNpc->FUN_141092fa0()))
+        if (((CQuestManager*)FUN_140764020())->HasTalkScriptForNpc(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0()))
             bTalk = 1;
         if (bTalk)
         {
-            m_n18 = pNpc->FUN_141092fa0();
-            m_nNpcId = pNpc->FUN_14123c580();
-            m_strName = pNpc->FUN_141093310();
+            m_n18 = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
+            m_nNpcId = reinterpret_cast<GameObject*>(pNpc)->FUN_14123c580();
+            m_strName = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
             return 1;
         }
     }
@@ -1521,7 +1469,7 @@ void TalkAction::vfunc_2()
         return;
     if (pPlayer->FUN_14166c930() == 0x16)
         return;
-    if (Unk_AkoCutscene::GetInstance()->FUN_141b21220() != 0)
+    if (reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->GetTalking() != 0)
         return;
     if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
         return;
@@ -1565,13 +1513,13 @@ int InteractAction::vfunc_1()
     {
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
             pTooltip->FUN_1412c45a0();
-        pOld->FUN_1413fdca0(0);
+        pOld->SetVisible(0);
     }
     if (pObject && vfunc_13(pObject) == 0)
         return 0;
     if (pObject)
     {
-        pObject->FUN_1413fdca0(1);
+        pObject->SetVisible(1);
         m_strObjectId = pObject->GetName();
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
             pTooltip->FUN_1412c4050(m_strObjectId);
@@ -1592,9 +1540,9 @@ CInteractObject* InteractAction::FUN_140958e70()
     CInteractObject* pObject = reinterpret_cast<Unk_AkoWsPointView*>(WorldService::GetInstance())->FUN_141bc6090(pos, 1);
     if (!pObject)
         return 0;
-    if (pObject->FUN_1413fe040() == 0)
+    if (pObject->CheckHomePrivilege() == 0)
         return 0;
-    if (pObject->FUN_1413fe120() == 0)
+    if (pObject->CheckArenaTeam() == 0)
         return 0;
     if (pObject->FUN_1413fdfc0() == 0)
         return 0;
@@ -1644,12 +1592,12 @@ void InteractAction::vfunc_2()
     MS2Ptr<CInteractObjectData> spData = pObject->GetRow();
     if (spData.IsNull())
         return;
-    if (pObject->FUN_1413fde40() == 0)
+    if (pObject->CheckItemRequirement() == 0)
     {
         Unk_AkoMessage(0x7c9, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spData->m_item.m_nCode));
         return;
     }
-    if (pObject->FUN_1413fe220() == 0)
+    if (pObject->HasAnyRequiredItem() == 0)
     {
         if (spData->m_aReqItem.m_aItem.size() == 1)
             FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_interact_err_additional_effect",
@@ -1661,12 +1609,12 @@ void InteractAction::vfunc_2()
             FUN_1412751f0(GetStringCommonByKey(L"s_interact_err_additional_effect_multi"), 1, 1);
         return;
     }
-    if (spData->m_room.m_nPartyPortal != 0 && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())   // <room> "partyPortal": needs a party
+    if (spData->m_room.m_nPartyPortal != 0 && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())   // <room> "partyPortal": needs a party
     {
         FUN_141275260(0x893, 1, 1);
         return;
     }
-    if (pObject->FUN_1413fdd80() == 0)
+    if (pObject->HasRequiredMastery() == 0)
     {
         CStringW strMastery = FUN_1409670c0()->TypeName(spData->m_mastery.m_eType);
         CStringW strGrade = FUN_1409670c0()->GradeName(spData->m_mastery.m_eType, spData->m_mastery.m_nValue);
@@ -1747,10 +1695,10 @@ void InteractNpcAction::vfunc_2()
         return;
     if (pPlayer->FUN_141527160(0x1a) == 0)
         return;
-    if (m_pNpc->FUN_141093270()->m_strTalkScript.GetLength() > 0)
+    if (reinterpret_cast<CNpc*>(m_pNpc)->GetNpcData()->m_interact.m_strFunction.GetLength() > 0)
     {
         MS2Ptr<StateInteractNpcData> spData = new StateInteractNpcData();
-        spData->m_nNpc = m_pNpc->FUN_14123c580();
+        spData->m_nNpc = reinterpret_cast<GameObject*>(m_pNpc)->FUN_14123c580();
         static_cast<PCBase*>(pPlayer)->vfunc_59(0x1a, spData, 0, 0);   // PC/MyPC re-declare slot 59 as a new virtual
     }
     else
@@ -1768,16 +1716,16 @@ Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
     if (!pNpc)
     {
         int nKind = 1;
-        bool bRide = (pPlayer->FUN_140967420() ? true : false) && pPlayer->FUN_140967420()->FUN_140743550();
+        bool bRide = (pPlayer->FUN_140967420() ? true : false) && reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->HasPoint();
         if (bRide)
-            nKind = pPlayer->FUN_140967420()->FUN_140743710();
+            nKind = reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint();
         pNpc = WorldService::GetInstance()->FUN_141bd2170(nKind, FUN_1401d3200()->InteractionDistance.Read(), 1, 0);
     }
     if (!pNpc)
         return 0;
-    if (pNpc->FUN_14166ce30() == 1)
+    if (reinterpret_cast<PCBase*>(pNpc)->FUN_14166ce30() == 1)
         return 0;
-    if (pNpc->FUN_141093270()->m_strTalkScript.GetLength() < 1)
+    if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->m_interact.m_strFunction.GetLength() < 1)
         return 0;
     if (!pNpc->FUN_140967120())
         return 0;
@@ -1789,7 +1737,7 @@ CStringW InteractNpcAction::vfunc_6()
 {
     if (m_pNpc == 0)
         return L"";
-    return FUN_140960c30(0x634, m_pNpc->FUN_141093310());
+    return FUN_140960c30(0x634, reinterpret_cast<CNpc*>(m_pNpc)->FUN_141093310());
 }
 MS2_REPLACE_METHOD(0x140959240, InteractNpcAction, vfunc_6, 145, 0xD2B6814B);
 // @0x140959630
@@ -1830,7 +1778,7 @@ void ViewCubeMapProfileAction::vfunc_2()
     if (m_nMapId == 0)
         return;
     efd::SmartPointer<Unk_Service6100017> spHouse = FUN_1401cd040(&DAT_143b059e8);
-    spHouse->FUN_1410ccc00(m_nMapId, 1, FUN_1401d3200()->DurationForBoundaryDisplay.Read());
+    ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410ccc00(m_nMapId, 1, FUN_1401d3200()->DurationForBoundaryDisplay.Read());
 }
 MS2_REPLACE_METHOD(0x140959720, ViewCubeMapProfileAction, vfunc_2, 135, 0xF03EB00E);
 // @0x1409597d0
@@ -2039,7 +1987,7 @@ void PullObjectWeaponAction::vfunc_2()
     if (m_spCube)
     {
         efd::utf8string strOwner;
-        int nResult = FUN_1408a2060(m_spCube->entity, 0xe52a2848, &strOwner);
+        int nResult = m_spCube->entity->GetPropertyValue(0xe52a2848, strOwner);
         if (nResult == 0 || !strOwner.empty())
         {
             if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
@@ -2082,10 +2030,10 @@ int PutDownLiftableAction::vfunc_1()
         return 1;
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
     Vector3 ptFront;
-    spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, 1);
+    ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellInFrontOfActor(pPlayer, 0.0f, &ptFront, 1);
     Vector3 ptCell;
-    spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
-    if (spCubeMap->FUN_1410b7e80(ptCell))
+    ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(ptFront, &ptCell);
+    if (((CubeMapInformationService*)(spCubeMap.operator->()))->HasCubeAtPoint(ptCell))
         return 0;
     std::vector<Unk_AkoLiftTargetPtr> aTargets;
     WorldService::GetInstance()->FUN_141bc5980(&aTargets);
@@ -2093,7 +2041,7 @@ int PutDownLiftableAction::vfunc_1()
     {
         Unk_AkoLiftTargetPtr spTarget = aTargets[i];
         Vector3 ptTargetCell = DAT_143b01a60;
-        spCubeMap->FUN_1410b7a20(spTarget->FUN_1409673f0(), &ptTargetCell);
+        ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(spTarget->FUN_1409673f0(), &ptTargetCell);
         if (ptCell.FUN_140552690(ptTargetCell))
             return 1;
     }
@@ -2170,12 +2118,12 @@ void FunctionCubeAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FUN_141230c00(CString(m_str18));
+    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(CString(m_str18));
     if (spObject == 0)
         return;
-    if (Unk_AkoHouseSvc::GetInstance()->FUN_1410c35c0())
+    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
     {
-        if (Unk_AkoHouseSvc::GetInstance()->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
         {
             if (spObject->FUN_1409674f0() == 1)
             {
@@ -2195,7 +2143,7 @@ MS2_REPLACE_METHOD(0x14095B280, FunctionCubeAction, vfunc_2, 483, 0x595BD151);
 // @0x14095b490
 CStringW FunctionCubeAction::vfunc_6()
 {
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FUN_141230c00(m_str18);
+    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(m_str18);
     if (spObject.get())
         return spObject->vfunc_6();
     return L"";
@@ -2204,7 +2152,7 @@ MS2_REPLACE_METHOD(0x14095B490, FunctionCubeAction, vfunc_6, 247, 0xF1723E7B);
 // @0x14095b590
 CStringW FunctionCubeAction::vfunc_8()
 {
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FUN_141230c00(m_str18);
+    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(m_str18);
     if (spObject.get())
         return spObject->vfunc_7();
     return ActionKeyObject::vfunc_8();
@@ -2260,7 +2208,7 @@ void FittingDollAction::vfunc_2()
 {
     efd::SmartPointer<Unk_Service6100017> spHouse = FUN_1401cd040(&DAT_143b059e8);
     egf::EntityID id = spHouse->FUN_1410cb1b0();
-    if (spHouse->FUN_1410c35c0())
+    if (((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410c35c0())
     {
         FUN_141275260(99, 1, 1);
         return;
@@ -2312,7 +2260,7 @@ int HoldAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return 0;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return 0;
@@ -2333,9 +2281,9 @@ int HoldAction::vfunc_1()
     Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd1320(nTargetId);
     if (pNpc != 0)
     {
-        if (m_nNpcId != pNpc->FUN_141092fa0())
+        if (m_nNpcId != reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0())
         {
-            m_nNpcId = pNpc->FUN_141092fa0();
+            m_nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
             m_n18 = 1;
         }
     }
@@ -2358,7 +2306,7 @@ void HoldAction::vfunc_2()
         return;
     if (pPlayer->FUN_14166ce30() != 0)
         return;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return;
@@ -2416,7 +2364,7 @@ int HoldPCAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return 0;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return 0;
@@ -2433,13 +2381,13 @@ int HoldPCAction::vfunc_1()
     {
         if (pPlayer->FUN_14166c930() == 0x20)
             return 0;
-        if (pPlayer->FUN_14166c930() != 0x20 && reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_1415279d0(pTarget) == 0)
+        if (pPlayer->FUN_14166c930() != 0x20 && reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_1415279d0(reinterpret_cast<PCBase*>(pTarget)) == 0)
             return 0;
         if (pPlayer->FUN_14166c930() == 0x2f)
             return 0;
-        if (pTarget->FUN_1416642a0())
+        if (reinterpret_cast<PC*>(pTarget)->FUN_1416642a0())
             return 0;
-        m_n18 = pTarget->FUN_14123c580();
+        m_n18 = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
     }
     else
     {
@@ -2457,7 +2405,7 @@ void HoldPCAction::vfunc_2()
         return;
     if (pPlayer->FUN_14166ce30() != 0)
         return;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return;
@@ -2499,7 +2447,7 @@ int ReleasePCAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return 0;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return 0;
@@ -2518,7 +2466,7 @@ int ReleasePCAction::vfunc_1()
             return 0;
         if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14152e060() != nTargetId)
             return 0;
-        m_n18 = pTarget->FUN_14123c580();
+        m_n18 = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
     }
     else
     {
@@ -2536,7 +2484,7 @@ void ReleasePCAction::vfunc_2()
         return;
     if (pPlayer->FUN_14166ce30() != 0)
         return;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return;
     if (pPlayer->FUN_14166c930() == 0x2b)
         return;
@@ -2586,7 +2534,7 @@ int GatheringAction::vfunc_1()
         float fDist = pPlayer->vfunc_18().FUN_140965c40(spObject->GetPos()).FUN_140967ac0();
         int bInRange = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get() && vfunc_13(spObject);
         if (spObject->FUN_140967150() != bInRange)
-            spObject->FUN_1413fdca0(bInRange != 0);
+            spObject->SetVisible(bInRange != 0);
         if (bInRange)
         {
             m_objects.Add(spObject);
@@ -2837,7 +2785,7 @@ CStringW NurturingCubeAction::vfunc_6()
         return L"";
     if (m_n30 != 0)
         return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_gift"));
-    if (Unk_AkoHouseSvc::GetInstance()->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
+    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
         return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_eat"));
     return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_play"));
 }
@@ -2875,7 +2823,7 @@ int BannerAction::vfunc_1()
     MS2Ptr<Unk_PCBaseComp_ac8> spBanner = pTarget->vfunc_87();
     if (spBanner == 0)
         return 0;
-    m_n18 = spBanner->FUN_140ba8700();
+    m_n18 = reinterpret_cast<UIBanner::Entity*>(spBanner.operator->())->FUN_140ba8700();
     return 1;
 }
 MS2_REPLACE_METHOD(0x14095EB80, BannerAction, vfunc_1, 223, 0xBBBA823D);
@@ -2919,7 +2867,7 @@ PCBase* BannerAction::FUN_14095edf0()
         return 0;
     NiPoint3 ptMine = pPlayer->vfunc_18();
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > objects(10);
-    WorldService::GetInstance()->FUN_141bd2db0(&objects, FUN_141274b10);
+    WorldService::GetInstance()->FUN_141bd2db0(&objects, (int (*)(Unk_WsC_GameObj*))FUN_141274b10);
     float fMaxDist = static_cast<float>(*static_cast<Client::Constants*>(FUN_1401d3200())->MicroGameMaxDistance.Get());
     float fMaxUp = 50.0f;
     float fMaxDown = 50.0f;
@@ -3119,7 +3067,7 @@ int QuestUserFindAction::vfunc_1()
     Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(pWorld->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    std::pair<int, __int64> user = ((class Unk_AkoQuestGlobal*)FUN_140764020())->FUN_1416d1e90();
+    std::pair<unsigned, __int64> user = ((CQuestManager*)FUN_140764020())->FUN_1416d1e90();
     int nQuestId = user.first;
     __int64 nCharId = user.second;
     Unk_WsC_GameObj* pTarget = pWorld->FUN_141bd1530(nCharId);
@@ -3175,26 +3123,6 @@ template <> bool MS2Ptr<TreeWateringContext>::operator==(TreeWateringContext* p)
 template <> TreeWateringContext* MS2Ptr<TreeWateringContext>::operator->() const;
 // The attend table (global 0x143ab2fc0): the day's counters by row id and event id (the table template of
 // uilongtermattendgiftdialog.cpp; key (row, id), map at +0x18, entry text at +0x20, expiry at +0x28).
-struct Unk_AttendKey
-{
-    Unk_AttendKey(int nRow, int nId);                       // 0x14041eee0
-    int m_nRow;
-    int m_nId;
-};
-class Unk_AttendValue;
-class Unk_AttendIter                                        // 24 bytes; ctor 0x140420170, dtor 0x140420290
-{
-public:
-    Unk_AttendIter();
-    ~Unk_AttendIter();
-    Unk_AttendValue* FUN_140420460();                       // the entry
-private:
-    void* m_pad_00;
-    void* m_pad_08;
-    void* m_pad_10;
-};
-MS2_CHECK_SIZE(Unk_AttendIter, 0x18);
-class Unk_AttendMap { public: bool FUN_140420bb0(const Unk_AttendKey& key, Unk_AttendIter& it); };
 int FUN_1407181a0(const CStringW& strValue);                // _wtoi
 __int64 GetServerTime();                                    // the server time
 class Unk_AttendValue
@@ -3214,13 +3142,8 @@ class Unk_AttendTable
 {
 public:
     int FUN_1409617d0(int nRow, unsigned nEventId, const int& nDefault);
-private:
-    void* m_pad_00;
-    void* m_pad_08;
-    void* m_pad_10;
-    Unk_AttendMap m_map;                                    // +0x18
 };
-extern Unk_AttendTable g_attendTable;
+extern GameEventUserValue DAT_143ab2fc0;
 
 // @0x140961970 the value while it has not expired, else the default
 inline int Unk_AttendValue::FUN_140961970(const int& nDefault) const
@@ -3234,10 +3157,10 @@ inline int Unk_AttendValue::FUN_140961970(const int& nDefault) const
 // @0x1409617d0
 inline int Unk_AttendTable::FUN_1409617d0(int nRow, unsigned nEventId, const int& nDefault)
 {
-    Unk_AttendKey key(nRow, nEventId);
-    Unk_AttendIter it;
-    if (m_map.FUN_140420bb0(key, it))
-        return it.FUN_140420460()->FUN_140961970(nDefault);
+    GameEventVariable::Key key(nRow, nEventId);
+    MS2Ptr<GameEventVariable> it;
+    if (reinterpret_cast<GameEventUserValue*>(this)->m_variables.Lookup(key, it))
+        return reinterpret_cast<Unk_AttendValue*>(it.operator->())->FUN_140961970(nDefault);
     return nDefault;
 }
 
@@ -3255,7 +3178,7 @@ int TreeWateringAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166ce30() != 0)
         return 0;
-    if (!static_cast<Unk_AkoPCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
+    if (!static_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141683ef0())
         return 0;
     int nState = pPlayer->FUN_14166c930();
     if (nState == 0x3e || nState == 0x1e)
@@ -3272,9 +3195,9 @@ int TreeWateringAction::vfunc_1()
     if (fDist < 400.0f)
     {
         int nDefaultWater = 0;
-        m_n18 = g_attendTable.FUN_1409617d0(0x777, spContext->m_nEventId, nDefaultWater);
+        m_n18 = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x777, spContext->m_nEventId, nDefaultWater);
         int nDefaultBonus = 0;
-        m_n1c = g_attendTable.FUN_1409617d0(0x778, spContext->m_nEventId, nDefaultBonus);
+        m_n1c = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x778, spContext->m_nEventId, nDefaultBonus);
         if (m_n18 < spContext->m_nDailyLimit)
         {
             MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);

@@ -18,7 +18,7 @@ public:UITimerDialog();
 private:MS2_LAYOUT_FRIEND;
  int m_nEffectRunning;          // +0x188 effect request is live
  unsigned int m_nEffect;        // +0x18c the effect id (0 = none)
- Unk_TimerTick m_tick;          // +0x190 100ms tick
+ Unk_IntervalTimer m_tick;          // +0x190 100ms tick
  unsigned int m_nMin;           // +0x198 last shown minutes
  unsigned int m_nSec;           // +0x19c last shown seconds
  bool m_bReset;                 // +0x1a0 the next update must reset the swf clock

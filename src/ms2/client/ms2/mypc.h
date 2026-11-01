@@ -156,7 +156,7 @@ public:
     // non-virtual members used by other units (placeholder mypc.h)
     void FUN_14152a4a0(PCBase* pTarget);                    // observe pTarget
     void FUN_14152a960();                                   // stop observing
-    void FUN_14152a360(PCBase* pTarget);                     // point the construction guide camera at pTarget
+    void FocusConstructionGuideCamera(PCBase* pTarget);                     // point the construction guide camera at pTarget
     void FUN_14152a700(PCBase* pTarget);                     // fly the camera to the construction guide pTarget
     void FUN_14152a640(int nTeam);                          // observe a guild team
     void FUN_14152a2f0(int n);
@@ -180,10 +180,10 @@ public:
     int FUN_141527ed0();
     int FUN_141527f60();
     int GetHomeMapId(int* pMapId);
-    int FUN_141528020(efd::Point3& kPos);
+    int GetHomePosition(efd::Point3& kPos);
     int FUN_141528140();
     int FUN_141528160();
-    CStringW FUN_1415281c0();
+    CStringW GetHomeAddress();
     CStringW GetHomeName();
     int FUN_141528970();                                    // open the item remake option talk
     int FUN_1415283c0(int nKind);                           // enter the home convenience state
@@ -193,7 +193,7 @@ public:
     int FUN_141529620();
     int FUN_141529ae0(int nMapId, int nA, int nB, __int64 nC);   // check the portal lock, then stop
     void SendRequestMoveFieldMode3();
-    void FUN_14152a240(int nId);
+    void SendRequestHome(int nId);
     void FUN_14152a2b0(int n);
     void FUN_14152a2d0(int n);
     void FUN_14152a310(MS2Ptr<Unk_PCBaseComp_b18> sp);
@@ -211,30 +211,30 @@ public:
     void FUN_14152ba80(MS2Ptr<CItem> spItem);               // use a mount item
     bool FUN_141526730(int bAuto, unsigned* pSlot);         // pick the quick slot to cast
     int FUN_141527b50(PCBase* pOther);                       // nothing blocks the flat line to pOther
-    unsigned short FUN_141528b80(int nSkillId);             // the learned level of nSkillId (1 when not learned)
+    unsigned short GetSkillLevel(int nSkillId);             // the learned level of nSkillId (1 when not learned)
     int FUN_14152e970(int nId);                             // the free skill points of nId
     bool FUN_14152e7f0();                                   // a worn item still counts (not expired)
     size_t FUN_14152eb20();
     size_t FUN_14152eb50();
-    void FUN_14152eb80();
-    int FUN_14152ebd0();
+    void ResetDailyRecords();
+    int IsDailyRecordStale();
     void FUN_14152ec40(__int64 n);
     void FUN_14152ec80(__int64 n);
     void FUN_14152ed60(const struct Unk_MyPCGameBegin* pData);   // the mark lists from the field entry data
-    void FUN_14152ee60(CInPacket& packet);                  // the mark lists from a packet
+    void ReadDailyRecords(CInPacket& packet);                  // the mark lists from a packet
     class CItem* FUN_14152efa0(__int64 nItemUid, __int64* pOwner);   // an item of the house owner on this account's plot
     void FUN_14152f140(__int64 nOwnerId);                   // return the locked items of a plot PC
     void FUN_14152f3c0();                                   // the same for every plot PC
     int FUN_14152feb0(int nMode, bool bPalette);            // request the cube build mode (packet 0x36)
     int SendRequestRideMode1(class RideOffAction* pAction);        // get off the ride
-    void FUN_141530200();                                   // leave the cube build mode
+    void SendCraftModeOff();                                   // leave the cube build mode
     class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft controller in the cube craft mode
     int FUN_141529a50(int nNpcId);                          // talk to the npc (0: the nearest talkable one)
     PCBase* FindTalkableNpc();
     void SendFunctionCube();
     void FUN_14152dbc0();
     void FUN_14152e0c0();
-    void FUN_14152e170(int nMode, int nArg);
+    void SendStateChange(int nMode, int nArg);
     int FUN_14152ea50();
     void FUN_1415294f0(int nObjectId, __int64 nExp);                                // the nearest talkable npc
     void SendRequestMoveFieldMode4();                                   // request the house design mode (packet 0x6c 4)
@@ -267,17 +267,17 @@ public:
     int FUN_14152f860(unsigned int nKey);
     void FUN_141530700(int n);
     void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
-    void FUN_14152f9e0();                                   // begin bulk update
-    void FUN_14152f530(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
-    void FUN_14152f620(Unk_MyPCLapenSlot nSlot);            // unequip nSlot
-    unsigned FUN_14152f770(Unk_MyPCLapenSlot nSlot);        // the item in nSlot
-    Unk_MyPCLapenSlot FUN_14152f7c0(unsigned nItemId);      // the slot of nItemId
+    void ClearLapenshards();                                   // begin bulk update
+    void EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
+    void UnequipLapenshard(Unk_MyPCLapenSlot nSlot);            // unequip nSlot
+    unsigned GetLapenshardItemId(Unk_MyPCLapenSlot nSlot);        // the item in nSlot
+    Unk_MyPCLapenSlot FindLapenshardSlot(unsigned nItemId);      // the slot of nItemId
     int FUN_14152f8b0(unsigned nItemId);                    // an item of the same group is equipped
     void FUN_14152f960(ATL::CAtlArray<unsigned int>& aOut); // the equipped item ids
     void FUN_14152fa20();                                   // end bulk update
     void SendNametag();                                   // poll the channel once a second
-    unsigned short FUN_14152fce0(unsigned nGroup);          // the highest grade equipped in nGroup
-    Unk_MyPCLapenSlot FUN_14152fd50(unsigned nItemId);      // the slot to equip nItemId into
+    unsigned short GetLapenshardSkillLevel(unsigned nGroup);          // the highest grade equipped in nGroup
+    Unk_MyPCLapenSlot FindLapenSlotForItem(unsigned nItemId);      // the slot to equip nItemId into
     void SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd);   // password portal move
     void SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd);   // portal move
     int FUN_1415271e0(PCBase* pActor, struct Unk_MyPCSkillUse* pSkill);   // can the skill be used on pActor

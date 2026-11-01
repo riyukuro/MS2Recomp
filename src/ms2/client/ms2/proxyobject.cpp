@@ -46,7 +46,7 @@ public:
 };
 void FUN_141bbb7f0(WorldService* pWorld, GameObject* pObject, int bImmediate);                    // unregister an object
 
-NiAVObject* FUN_141b6efc0(void* pEntity);                           // the scene root of an entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567330(NiAVObject* pRoot, bool bShadow);
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProperty, bool* pbValue);   // write a bool property
@@ -127,7 +127,7 @@ CProxyObject::~CProxyObject()
 // @0x1416c2d10
 int CProxyObject::vfunc_11()
 {
-    NiAVObject* pRoot = FUN_141b6efc0(m_unk_80);
+    NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_unk_80));
     if (pRoot != 0)
     {
         FUN_141567760(pRoot);

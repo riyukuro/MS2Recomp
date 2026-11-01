@@ -64,7 +64,7 @@ CLoadingDialog::~CLoadingDialog()
 }
 
 // @0x140d4a530
-bool CLoadingDialog::FUN_140d4a530(const char* pszName, HINSTANCE hInst)
+bool CLoadingDialog::Open(const char* pszName, HINSTANCE hInst)
 {
     m_hInst = hInst;
     m_strClass = FUN_140188f50(pszName, 0);

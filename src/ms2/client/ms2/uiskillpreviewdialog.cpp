@@ -9,173 +9,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
-
-// Unit-local declarations for unrecovered avatar, camera and skill-data helpers.
-struct Unk_SkillPreviewVector
-{
-    Unk_SkillPreviewVector();
-    float x, y, z;
-    Unk_SkillPreviewVector& operator+=(const Unk_SkillPreviewVector&);
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewVector, 12);
-struct Unk_SkillPreviewCameraData
-{
-    Unk_SkillPreviewCameraData();
-    void FUN_141b48530();
-    Unk_SkillPreviewVector eye, target;
-    float f18, f1c, f20;
-    int n24, n28, n2c;
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewCameraData, 0x30);
-class Unk_SkillPreviewActor
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual Unk_SkillPreviewVector vfunc_18();
-};
-class Unk_SkillPreviewCamera
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13(const Unk_SkillPreviewCameraData&);
-};
-class Unk_SkillPreviewCameraPtr
-{
-public:
-    ~Unk_SkillPreviewCameraPtr();
-    Unk_SkillPreviewCamera* operator->() const;
-private:
-    Unk_SkillPreviewCamera* m_p;
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewCameraPtr, 8);
-class Unk_SkillPreviewAvatar
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1(IUIAvatarEventListener*);
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual Unk_SkillPreviewActor* vfunc_24();
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual int vfunc_27(const char*, const Scaleform::GFx::Value*, unsigned int);
-    virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
-    void FUN_1418ba340(int);
-    int FUN_1418b9b80();
-    void FUN_1418bce80(int);
-    void FUN_1418bcf60(int, unsigned short);
-    Unk_SkillPreviewCameraPtr FUN_1418b9bc0();
-};
-class UIAvatarPC : public Unk_SkillPreviewAvatar
-{
-public:
-    UIAvatarPC(void*, bool);
-private:
-    void* m_8;
-    void* m_10;
-    void* m_18;
-    void* m_20;
-    void* m_28;
-    void* m_30;
-    void* m_38;
-    void* m_40;
-    void* m_48;
-    void* m_50;
-    void* m_58;
-    void* m_60;
-    void* m_68;
-    void* m_70;
-    void* m_78;
-    void* m_80;
-    void* m_88;
-    void* m_90;
-    void* m_98;
-    void* m_a0;
-    void* m_a8;
-    void* m_b0;
-    void* m_b8;
-    void* m_c0;
-    void* m_c8;
-    void* m_d0;
-    void* m_d8;
-    void* m_e0;
-    void* m_e8;
-};
-MS2_CHECK_SIZE(UIAvatarPC, 0xf0);
-class Unk_SkillPreviewAScript
-{
-public:
-    Unk_SkillPreviewAScript(int);
-    ~Unk_SkillPreviewAScript();
-    Scaleform::GFx::Value& FUN_1422bb870();
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18;
-    void* m_20; void* m_28; void* m_30; void* m_38;
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewAScript, 0x40);
-class Unk_SkillPreviewSkill : public SkillData
-{
-};
-class Unk_SkillPreviewSkillPtr
-{
-public:
-    ~Unk_SkillPreviewSkillPtr();
-    bool IsNull() const;
-    Unk_SkillPreviewSkill* operator->() const;
-private:
-    void* m_0;
-    Unk_SkillPreviewSkill* m_p;
-};
-MS2_CHECK_SIZE(Unk_SkillPreviewSkillPtr, 0x10);
+#include "ms2/client/ms2/uiavatarbase.h"
+#include "ms2/client/ms2/uimodelview.h"
+#include "ms2/client/ms2/gameobject.h"
 
 // @0x140e93690
 UISkillPreviewDialog::UISkillPreviewDialog() : m_skill(0), m_level(0) {}
@@ -198,7 +34,7 @@ MS2_REPLACE_METHOD(0x140E93800, UISkillPreviewDialog, vfunc_26, 34, 0x7AF3593D);
 // @0x140e93830
 void UISkillPreviewDialog::vfunc_67()
 {
-    m_avatar.Reset(0);
+    m_avatar = 0;
     UIDialog::vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140E93830, UISkillPreviewDialog, vfunc_67, 45, 0x89DA258E);
@@ -240,18 +76,18 @@ void UISkillPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void*
     if (m_avatar == 0) return;
     if (!p2.get() || !p3) return;
     m_avatar->FUN_1418ba340(1);
-    Unk_SkillPreviewActor* actor = m_avatar->vfunc_24();
+    GameObject* actor = m_avatar->vfunc_24();
     if (!actor) return;
     m_avatar->vfunc_28(p1, p2, p3, p4);
     FUN_140e93e70(m_skill, m_level);
-    Unk_SkillPreviewCameraData data;
+    Unk_ModelViewCamera data;
     data.FUN_141b48530();
-    data.f1c = 1000.0f;
-    data.n2c = 2;
-    data.n28 = 5;
-    data.target += actor->vfunc_18();
-    data.eye += data.target;
-    m_avatar->FUN_1418b9bc0()->vfunc_13(data);
+    data.m_fMinDistance = 1000.0f;
+    data.m_nStepsDone = 2;
+    data.m_nSteps = 5;
+    data.m_kTarget += actor->vfunc_18();
+    data.m_kPosition += data.m_kTarget;
+    m_avatar->GetView()->vfunc_13(data);
 }
 MS2_REPLACE_METHOD(0x140E939F0, UISkillPreviewDialog, vfunc_25, 721, 0x173AD909);
 
@@ -277,7 +113,7 @@ int UISkillPreviewDialog::vfunc_o178_1(void* avatar)
 {
     if (!avatar) return 0;
     LoadRenderTarget();
-    Unk_SkillPreviewAScript data(2);
+    AScript data(2);
     m_30->Invoke("initData", data.FUN_1422bb870());
     return 1;
 }
@@ -298,10 +134,10 @@ void UISkillPreviewDialog::FUN_140e93e70(int skill, unsigned short level)
     if (!m_avatar) return;
     m_skill = skill;
     m_level = level;
-    if (!m_avatar->FUN_1418b9b80()) return;
+    if (!m_avatar->IsLoaded()) return;
     MS2Ptr<SkillData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(skill);
     if (data.IsNull()) { MS2_ASSERT_AT(162, 0); return; }
-    if (reinterpret_cast<Unk_SkillPreviewSkill*>(data.operator->())->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
+    if (data->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
     else m_avatar->FUN_1418bcf60(skill, level);
     m_skill = 0;
     m_level = 0;
@@ -314,9 +150,9 @@ void UISkillPreviewDialog::FUN_140e93ff0()
     if (m_avatar.get()) return;
     WorldService* player = WorldService::GetInstance();
     if (!player) { MS2_ASSERT_AT(188, 0); return; }
-    void* actor = player->FUN_141bd0cc0();
+    PC* actor = reinterpret_cast<PC*>(player->FUN_141bd0cc0());
     if (!actor) { MS2_ASSERT_AT(195, 0); return; }
-    m_avatar = new UIAvatarPC(actor, true);
+    m_avatar.AssignRaw(new UIAvatarPC(actor, true));
     m_avatar->vfunc_1(this);
 }
 MS2_REPLACE_METHOD(0x140E93FF0, UISkillPreviewDialog, FUN_140e93ff0, 342, 0x09033A99);

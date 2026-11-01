@@ -41,7 +41,7 @@ class CTalkScript : public CPtred, public CValidData<CTalkScript>
 public:
     CTalkScript(CInPacket& in);                             // 0x140854fa0
     virtual ~CTalkScript();                                 // 0x140855050
-    bool FUN_140855520();                                   // Is88 (m_88)
+    bool Is88() const;                                      // 0x140855520
 
     int m_id;                                               // +0x20
     int m_npcId;                                            // +0x24

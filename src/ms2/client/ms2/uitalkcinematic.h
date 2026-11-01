@@ -17,29 +17,18 @@
 #include "ms2/placeholder/cinematiccontent.h"
 
 class CCinematicComponent;
+#include "ms2/placeholder/intervaltimer.h"
+
 class CItem;
 class Unk_TalkItemList;
 
 // The 8-byte millisecond poll timer of the next-key repeat (ctor 0x140517b00, test 0x140268870, reset 0x140268840).
-class Unk_TalkRepeatTimer
-{
-public:
-    Unk_TalkRepeatTimer();                                      // 0x140517b00
-    int FUN_140268870(unsigned nInterval);                      // true once the interval elapsed
-    void FUN_140268840();                                       // restart
-private:
-    unsigned m_nTick; unsigned m_nExtra;
-};
 
 // The loaded reward image names (the accessors are out of line). The dtor 0x1401641d0 is ~CAtlArray<CString>, which
 // destroys the names.
 class Unk_TalkImageList : public ATL::CAtlArray<CString>
 {
 public:
-    unsigned __int64 FUN_1401662c0();                               // GetCount
-    CString& FUN_140164930(unsigned __int64 nIndex);                // GetAt
-    void FUN_140165270(const CString& strImage);                    // Add
-    void FUN_1402c2890();                                           // RemoveAll
 };
 MS2_CHECK_SIZE(Unk_TalkImageList, 0x20);
 
@@ -93,7 +82,7 @@ private:
     MS2Ptr<CCinematicContent> m_spContent;                          // +0xa0 the current page
     MS2Ptr<CCinematicComponent> m_spComponent;                      // +0xb0 its component
     unsigned m_nKeyGroup;                                           // +0xc0 key group of the talk (0x620001d)
-    Unk_TalkRepeatTimer m_nextKeyTimer;                             // +0xc4
+    Unk_IntervalTimer m_nextKeyTimer;                               // +0xc4
 };
 MS2_CHECK_SIZE(UITalkCinematic, 0xd0);
 MS2_CHECK_OFFSET(UITalkCinematic, m_images, 0x80);

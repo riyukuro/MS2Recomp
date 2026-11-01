@@ -31,9 +31,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The hall tables: package -> hall -> string id of the hall name (day / night).
-class Unk_WhHall : public CPtred { public: int FUN_140906e40(bool bNight); };
-class Unk_WhPackage : public CPtred { public: MS2Ptr<Unk_WhHall> FUN_140907110(int nHallId); };
-class Unk_WhTable { public: MS2Ptr<Unk_WhPackage> FUN_140908b80(int nPackageId); };
+class Unk_WhTable { public: MS2Ptr<WeddingPackage> FUN_140908b80(int nPackageId); };
 
 // The own character: its wedding hall tickets and the "enter the wedding" request.
 
@@ -139,10 +137,10 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     __int64 nNow = GetServerTime();
     for (; it != itEnd; ++it) {
         WeddingHallTicket& ticket = it->second;
-        MS2Ptr<Unk_WhPackage> pPackage = reinterpret_cast<Unk_WhTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<WeddingPackage> pPackage = reinterpret_cast<Unk_WhTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(ticket.m_nPackageId);
         if (pPackage == 0)
             continue;
-        MS2Ptr<Unk_WhHall> pHall = pPackage->FUN_140907110(ticket.m_nHallId);
+        MS2Ptr<WeddingHallData> pHall = pPackage->FUN_140907110(ticket.m_nHallId);
         if (pHall == 0)
             continue;
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);

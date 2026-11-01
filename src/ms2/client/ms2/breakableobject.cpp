@@ -56,7 +56,7 @@ extern int DAT_143ae2960;                   // shadow quality (forced)
 
 // ---- exe functions outside this unit ----
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-efd::ServiceManager* FUN_1413f9850();                               // the framework's service manager
+Unk_ServiceManager * FUN_1413f9850(void);  // C3: the definition's signature
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // attach the entity's scene graph
 void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // detach it
@@ -67,15 +67,14 @@ void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb)
 CString FUN_140188f50(const char* pszText, unsigned int nCodePage); // UTF-8 -> CString
 void FUN_1401d3700(CString& str);                                   // normalise an object name
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-int FUN_14028d260(float fSeconds);                                  // seconds -> milliseconds
+__int64 FUN_14028d260(float);  // C3: the definition's signature
 float FUN_14028d280(unsigned int nTicks);                           // milliseconds -> seconds
 void FUN_14098ab60(NiAVObject* pRoot, ATL::CAtlArray<NiPoint2>& aKeys, egf::EntityID idOwner);   // alpha animation
 
 // AnimationService (egmAnimation) as the MS2 code calls it: play a sequence by name.
-class Unk_BoAnimService
-{
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(class egf::EntityID const &, class efd::utf8string const &, float, bool); }; class Unk_BoAnimService : public Unk_AnimSvc {
 public:
-    bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& strSeq, float fBlend, bool bLoop);
+
 };
 egmAnimation::AnimationService* FUN_141b6f910();
 // CEffectService as this unit calls it: the entity id by value (effectservice.h declares it const&; same callee bytes)
@@ -384,14 +383,14 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
     {
         if (m_nPhase == 0)
         {
-            m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473410(nNow);
+            m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->GetServerTickAt(nNow);
             m_nPhaseStart = nNow;
         }
-        unsigned int nTime = m_nPhaseTime + (nNow - m_nPhaseStart) + FUN_14028d260(m_fMoveDelay) + m_nSyncB;
-        unsigned int nWait0 = FUN_14028d260(m_afWait[0]);
-        unsigned int nGo = nWait0 + FUN_14028d260(m_fMoveTime);
-        unsigned int nWait1 = nGo + FUN_14028d260(m_afWait[1]);
-        unsigned int nBack = nWait1 + FUN_14028d260(m_fMoveTime);
+        unsigned int nTime = m_nPhaseTime + (nNow - m_nPhaseStart) + (int)FUN_14028d260(m_fMoveDelay) + m_nSyncB;
+        unsigned int nWait0 = (int)FUN_14028d260(m_afWait[0]);
+        unsigned int nGo = nWait0 + (int)FUN_14028d260(m_fMoveTime);
+        unsigned int nWait1 = nGo + (int)FUN_14028d260(m_afWait[1]);
+        unsigned int nBack = nWait1 + (int)FUN_14028d260(m_fMoveTime);
         unsigned int nCycle = nBack;
         if (m_nMoveMode == 1)
             nCycle = nWait1;
@@ -414,7 +413,7 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
         }
         else if (nPos > nGo && nPos <= nWait1)
         {
-            nPos = FUN_14028d260(m_fMoveTime);
+            nPos = (int)FUN_14028d260(m_fMoveTime);
             if (m_nMoveMode == 2)
                 FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
             if (m_nPhase != 3)
@@ -725,7 +724,7 @@ MS2_REPLACE_METHOD(0x140ae0660, CBreakableObject, GetPtSize, 0, 0);
 // @0x140ae06a0
 void CBreakableObject::FUN_140ae06a0(int nPhase, int nNow)
 {
-    m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473410(nNow);
+    m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->GetServerTickAt(nNow);
     m_nPhaseStart = nNow;
     m_nPhase = nPhase;
 }

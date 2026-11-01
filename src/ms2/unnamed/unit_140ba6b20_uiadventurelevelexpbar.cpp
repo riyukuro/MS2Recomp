@@ -58,7 +58,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
-class Unk_AdvCfg { public: Unk_AdvCfgData* FUN_140b123b0(); };
 GFxManager* FUN_14025e7a0();
 int FUN_1412755a0();
 int FUN_1418dd0c0();                                                // height of the exp bar
@@ -228,7 +227,7 @@ void UIAdventureLevelExpBar::OnLoadComplete()
     else
     {
         FUN_140ba6cf0(0);
-        FUN_140ba7080(reinterpret_cast<Unk_AdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140b123b0()->m_bShowPoint);
+        FUN_140ba7080(reinterpret_cast<Unk_AdvCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowPoint);
         TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
         FUN_140ba7130();
     }

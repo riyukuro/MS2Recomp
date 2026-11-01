@@ -2,11 +2,9 @@
 #pragma once
 #include "uigalleryeventdialog.h" // UIQuestEventListener declaration owned by this recovery agent
 #include <atlcoll.h>
-class Unk_QuestDebugList;
-class Unk_QuestDebugData;
+#include "ms2/placeholder/questdata.h"
+#include "ms2/placeholder/ascorelist.h"
 class Unk_QuestDebugCheck;
-class Unk_QuestDebugInput;
-class Unk_QuestDebugText;
 class Unk_QuestDebugDesc;
 template<class T> class Unk_QuestDebugPtr
 {
@@ -33,7 +31,6 @@ private:
     void* m_0;
     T* m_p;
 };
-MS2_CHECK_SIZE(Unk_QuestDebugPtr<Unk_QuestDebugList>, 0x10);
 class UIQuestDebugDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -56,12 +53,9 @@ public:
     CStringW FUN_141a966a0(unsigned int);
     int FUN_141a96870(int);
     int FUN_141a96960(int, CStringW&, CStringW&, const CStringW&);
-    int FUN_141a96c30(int, Unk_QuestDebugPtr<Unk_QuestDebugData>);
+    int FUN_141a96c30(int, MS2Ptr<CQuestData>);
     // Unrecovered child-binding helpers; this is the original UISwfEntity subobject.
     Unk_QuestDebugPtr<Unk_QuestDebugCheck> FUN_140e52670(const CString&);
-    Unk_QuestDebugPtr<Unk_QuestDebugInput> FUN_140e35bd0(const CString&);
-    Unk_QuestDebugPtr<Unk_QuestDebugList> FUN_140c02900(const CString&);
-    Unk_QuestDebugPtr<Unk_QuestDebugText> FUN_140bb4cf0(const CString&);
     Unk_QuestDebugPtr<Unk_QuestDebugDesc> FUN_140c26f60(const CString&);
     virtual int vfunc_48() { return 20043; }
 private:
@@ -69,7 +63,7 @@ private:
     int m_chapter;
     int m_refresh;
     ATL::CAtlArray<unsigned int> m_ids;
-    Unk_QuestDebugPtr<Unk_QuestDebugList> m_quests;
+    MS2Ptr<ASScrollingList> m_quests;
 };
 MS2_CHECK_SIZE(UIQuestDebugDialog, 0x1b8);
 MS2_CHECK_OFFSET(UIQuestDebugDialog, m_chapter, 0x180);

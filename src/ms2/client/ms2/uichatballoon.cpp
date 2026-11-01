@@ -32,6 +32,14 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
+#include "ms2/placeholder/ascorelist.h"  // C3: ASDropdownMenu (was Unk_CbCtl's members)
+#include "ms2/placeholder/gfxservice.h"  // C3: GFxSceneService::GetSubSceneId / FUN_1422b9ea0
+#include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/commonfiles/itemgem.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/placeholder/mypc.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 #ifndef MS2_HOOK_DLL   // s_confirmCommend: the exe's object at 0x143af1c18, which other units reach as DAT_143af1c18 (the hook DLL binds it)
@@ -43,7 +51,8 @@ extern CStringW DAT_143af1bc8;                                      // the game 
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 struct Unk_CbCfgFloat { char m_pad[0x58]; };
-struct Unk_CbCfgInt { int FUN_14025a620(); char m_pad[0x58]; };
+struct Unk_CbCfgInt { char m_pad[0x58]; };
+int FUN_14025a620(class Unk_ConstVal*);
 struct Unk_CbCfg
 {
     char m_pad_0000[0x270];
@@ -53,93 +62,26 @@ struct Unk_CbCfg
 };
 struct Unk_CbCfg2 { char m_pad[0x90]; CString m_90; };
 Unk_CbCfg2* FUN_1401d31f0();                                        // the default profile image name
-class Unk_CbUIScale { public: int FUN_1422b0f10(); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // ui scale service (C3: the Unk_CbUIScale (calls cast back))
-float FUN_1422afec0(Unk_CbUIScale* pScale, int nLayer);             // scale of a layer
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // efd::Point3::operator*=
 class Unk_CbEntity : public ASGameEntity
 {
 public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
-    Scaleform::GFx::Value& FUN_1422bb870();
 };
 bool FUN_140930110(int nActorId);
 
 // The actor: the pc / npc / pet views and their data handles.
-struct Unk_CbNpcInfo { char m_pad[0x90]; CString m_90; };
-class Unk_CbNpcDataPtr
-{
-public:
-    ~Unk_CbNpcDataPtr() { FUN_1406d5390(); }
-    void FUN_1406d5390();                                           // release
-    void* m_pad_00;
-    void* m_p;
-};
-// MS2-PIN: ??0Unk_CbInfoPtr@@QEAA@AEBVUnk_CbNpcDataPtr@@@Z 0x1406cf850
-class Unk_CbInfoPtr                                                 // the converted handle (16 bytes)
-{
-public:
-    Unk_CbInfoPtr(const Unk_CbNpcDataPtr& src);                     // 0x1406cf850 construct from the npc data handle
-    ~Unk_CbInfoPtr() { FUN_14035e5b0(); }
-    Unk_CbNpcInfo* FUN_140729ad0();                                 // get
-    Unk_CbNpcInfo* FUN_14035eb90();                                 // operator->
-    void FUN_14035e5b0();                                           // release
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_CbPetPtr
-{
-public:
-    ~Unk_CbPetPtr() { FUN_1406d5390(); }
-    void FUN_1406d5390();
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_CbTmp24
-{
-public:
-    ~Unk_CbTmp24() { FUN_1405a8650(); }
-    void FUN_1405a8650();                                           // release
-    bool FUN_1412722d0(int n);
-    void* m_a; void* m_b; void* m_c;
-};
-class Unk_CbObj { public: Unk_CbTmp24 FUN_141270740(int n); };
-class Unk_CbPet { public: Unk_CbNpcDataPtr FUN_140a4f1b0(); };
+class Unk_CbPet { public: MS2Ptr<NpcDataCli> FUN_140a4f1b0(); };
 Unk_CbPet* FUN_1418fc490(PCBase* pActor);                           // the actor as a pet (queries class id 0x6200080)
-class Unk_CbNpc : public PCBase
-{
-public:
-    Unk_CbNpcDataPtr FUN_141093270();
-};
-class Unk_CbActor : public PCBase
-{
-public:
-    int FUN_14166ce30();                                            // is dead
-    float FUN_141670500();                                          // vertical offset
-};
-class Unk_CbPC : public Unk_CbActor
-{
-public:
-    Unk_CbObj* FUN_14165f460();
-    CString FUN_1416612e0();                                        // profile image name of the player
-};
-void* FUN_14096e160(PCBase* pActor);                                // the actor as a monster
-__int64 FUN_141656a80(PCBase* pPc);                                 // player account id
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                 // FormatStringId(id) without arguments
 struct Unk_CbFlags { bool m_0; bool m_1; };
-class Unk_CbFlagHolder { public: Unk_CbFlags* FUN_14124ab20(); unsigned char* FUN_140e09150(); };
 CameraMgr* FUN_1409478c0();
-void* FUN_1408e57f0();
-int FUN_1422b9e00(void*);
-int FUN_1422b9ea0(void*);
 class Unk_CbUIMgr : public CUIService
 {
 public:
     void FUN_141adc530(int nUiId);
 };
-bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 
 
 // The list control helpers (item rank drop down) and the dialogs polled by FUN_1418fcb70.
@@ -153,11 +95,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-    void FUN_1422dfc10();                                           // clear
-    unsigned int FUN_1422dfb90();                                   // item count
-    void FUN_1422dfc70(ASObj& obj);                                 // add an item
-    void FUN_1422df5f0(unsigned int n);
-    void FUN_1422df690(int n);
 };
 class Unk_CbList                                                    // a 16 byte smart pointer to the list control, passed by value
 {
@@ -169,32 +106,9 @@ public:
     void* m_pad_00;
     void* m_p;
 };
-// MS2-PIN: ??0Unk_CbItemPtr@@QEAA@H@Z 0x14053f870
-struct Unk_CbItemData : public CItemData { };
-class Unk_CbItemPtr
-{
-public:
-    Unk_CbItemPtr(int nItemId);                                     // 0x14053f870 construct from the item id
-    ~Unk_CbItemPtr() { FUN_1401b50d0(); }
-    bool FUN_1401b5240(int n);
-    void FUN_1401b50d0();
-    void* m_pad_00;
-    void* m_p;
-};
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 UICutSceneMovie* FUN_14138fd50(int nUiId);
 UIGuideEvent* FUN_14136f3e0(int nUiId);
-class Unk_CbPtr                                                     // a 16 byte smart pointer passed by value
-{
-public:
-    Unk_CbPtr(int n);                                               // 0x140203510 construct (null)
-    Unk_CbPtr(const Unk_CbPtr& o);                                  // copy (out of line)
-    ~Unk_CbPtr() { FUN_1401bfde0(); }
-    void FUN_1401bfde0();                                           // release
-    void* m_pad_00;
-    void* m_p;
-};
-// MS2-PIN: ??0Unk_CbPtr@@QEAA@H@Z 0x140203510
-class Unk_CbSvc2 : public CFishingManager { public: void FUN_140cdadb0(Unk_CbPtr tag); };
 int FUN_141274ff0();
 int FUN_141275080();
 void FUN_141274f50();
@@ -208,7 +122,7 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 UIChatBalloon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
     : TimerEntity(nLayer, clip, nActorId), m_a0(0), m_a8(""), m_b0(L"")
 {
-    m_64 = reinterpret_cast<Unk_CbCfg*>(FUN_1401d3200())->m_8a0.FUN_14025a620();
+    m_64 = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&reinterpret_cast<Unk_CbCfg*>(FUN_1401d3200())->m_8a0));
     m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_CbCfg*>(FUN_1401d3200())->m_270)->Read();
 }
 
@@ -251,16 +165,16 @@ void UIChatBalloon::Entity::vfunc_5()
         return;
     if (m_38.get() != 0)
     {
-        Unk_CbPC* pPc = reinterpret_cast<Unk_CbPC*>(efd::DynamicCast<PC, PCBase>(pActor));
+        PC* pPc = (efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
-            if (pPc->FUN_14165f460()->FUN_141270740(3).FUN_1412722d0(0))
+            if (((PCGemEquip*)pPc->FUN_14165f460())->FUN_141270740(3) == 0)
                 m_a8.Empty();
         ASObj obj(m_18);
         obj.FUN_1407cbb20("text", m_b0);
         obj.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
-        obj.FUN_1407cbbe0("bNpc", FUN_14087ddc0(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
+        obj.FUN_1407cbbe0("bNpc", efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
         const char* szSkin;
-        if (((Unk_CbActor*)pActor)->FUN_14166ce30() != 0)
+        if (pActor->FUN_14166ce30() != 0)
             szSkin = "dead";
         else
             szSkin = (const char*)m_a8;
@@ -274,7 +188,7 @@ void UIChatBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get() != 0)
     {
-        FUN_140ad0c10(pPos, FUN_1422afec0(reinterpret_cast<Unk_CbUIScale*>(FUN_14025e7a0()), m_18));
+        FUN_140ad0c10(pPos, FUN_14025e7a0()->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
         m_38->FUN_1422c00f0(pPos->x - 110.0f, pPos->y - 90.0f);
     }
@@ -290,9 +204,9 @@ void UIChatBalloon::Entity::vfunc_7()
 // @0x1418fb5e0
 int UIChatBalloon::Entity::vfunc_8(int n)
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
     {
-        if (FUN_1422b9ea0(FUN_1408e57f0()) == 0)
+        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9ea0() == 0)
             return 1;
     }
     PCBase* pActor = FUN_140f49330();
@@ -300,7 +214,7 @@ int UIChatBalloon::Entity::vfunc_8(int n)
         return 1;
     if (FUN_1418fbbf0() == 0)
         return 1;
-    return TimerEntity::vfunc_8(((Unk_CbActor*)pActor)->FUN_14166ce30());
+    return TimerEntity::vfunc_8(pActor->FUN_14166ce30());
 }
 
 // @0x1418fb670
@@ -309,7 +223,7 @@ float UIChatBalloon::Entity::vfunc_9()
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 0.0f;
-    return ((Unk_CbActor*)pActor)->FUN_141670500();
+    return pActor->FUN_141670500();
 }
 
 // @0x1418fb6b0
@@ -339,9 +253,9 @@ void UIChatBalloon::Entity::FUN_1418fb730(const CStringW& strText)
 // @0x1418fb790
 __int64 UIChatBalloon::Entity::FUN_1418fb790()
 {
-    Unk_CbPC* pPc = reinterpret_cast<Unk_CbPC*>(efd::DynamicCast<PC, PCBase>(FUN_140f49330()));
+    PC* pPc = (efd::DynamicCast<PC, PCBase>(FUN_140f49330()));
     if (pPc != 0)
-        return FUN_141656a80(pPc);
+        return pPc->FUN_141656a80();
     return 0;
 }
 
@@ -353,31 +267,31 @@ CString UIChatBalloon::Entity::FUN_1418fb7e0()
         return CString("");
     CString strUnused1;
     CString strUnused2;
-    Unk_CbNpc* pNpc = reinterpret_cast<Unk_CbNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor));
+    CNpc* pNpc = efd::DynamicCast<CNpc, PCBase>(pActor);
     if (pNpc != 0)
     {
-        Unk_CbInfoPtr info(pNpc->FUN_141093270());
-        if (info.FUN_140729ad0() != 0)
+        MS2Ptr<CNpcData> info(pNpc->GetNpcData());
+        if (info.get() != 0)
         {
-            CString str(info.FUN_14035eb90()->m_90);
+            CString str(info->m_strPortrait);
             if (str.GetLength() != 0)
                 return str;
         }
     }
     else
     {
-        Unk_CbPC* pPc = reinterpret_cast<Unk_CbPC*>(efd::DynamicCast<PC, PCBase>(pActor));
+        PC* pPc = (efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
-            return FUN_141028be0(FUN_141656a80(pPc), pPc->FUN_1416612e0(), 1, CString(""));
+            return FUN_141028be0(pPc->FUN_141656a80(), pPc->FUN_1416612e0(), 1, CString(""));
         else
         {
             Unk_CbPet* pPet = FUN_1418fc490(pActor);
             if (pPet != 0)
             {
-                Unk_CbInfoPtr info(pPet->FUN_140a4f1b0());
-                if (info.FUN_140729ad0() != 0)
+                MS2Ptr<CNpcData> info(pPet->FUN_140a4f1b0());
+                if (info.get() != 0)
                 {
-                    CString str(info.FUN_14035eb90()->m_90);
+                    CString str(info->m_strPortrait);
                     if (str.GetLength() != 0)
                         return str;
                 }
@@ -393,16 +307,16 @@ int UIChatBalloon::Entity::FUN_1418fbbf0()
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 0;
-    void* pMonster = FUN_14096e160(pActor);
+    void* pMonster = efd::DynamicCast<MyPC, PCBase>(pActor);
     if (pMonster != 0)
     {
-        return reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_14124ab20()->m_0;
+        return reinterpret_cast<Unk_CbFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_14124ab20())->m_0;
     }
     else
     {
-        Unk_CbPC* pPc = reinterpret_cast<Unk_CbPC*>(efd::DynamicCast<PC, PCBase>(pActor));
+        PC* pPc = (efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
-            return reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_14124ab20()->m_1;
+            return reinterpret_cast<Unk_CbFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_14124ab20())->m_1;
     }
     return 1;
 }
@@ -581,17 +495,17 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
 {
     if (list.FUN_140bc03e0(0))
         return;
-    list.FUN_140bc0530()->FUN_1422dfc10();
-    Unk_CbItemPtr item(nItemId);
-    if (item.FUN_1401b5240(0))
+    ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc10();
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+    if (item == 0)
         return;
     int nSel = 0;
-    if (reinterpret_cast<Unk_CbItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetRank() != 0)
+    if (item->GetRank() != 0)
     {
         ASObj row(2);
-        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(reinterpret_cast<Unk_CbItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetRank()));
-        row.FUN_1409adc90("itemRank", reinterpret_cast<Unk_CbItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetRank());
-        list.FUN_140bc0530()->FUN_1422dfc70(row);
+        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(item->GetRank()));
+        row.FUN_1409adc90("itemRank", item->GetRank());
+        ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc70(row);
         nSel = 0;
     }
     else
@@ -603,20 +517,20 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank));
             row.FUN_1407cb9c0("itemRank", i);
             if (nRank == nSelRank)
-                nSel = list.FUN_140bc0530()->FUN_1422dfb90();
-            list.FUN_140bc0530()->FUN_1422dfc70(row);
+                nSel = ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfb90();
+            ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc70(row);
         }
     }
-    unsigned int nCount = list.FUN_140bc0530()->FUN_1422dfb90();
-    list.FUN_140bc0530()->FUN_1422df5f0(nCount > 1 ? nCount : 1);
-    list.FUN_140bc0530()->FUN_1422df690(nSel);
+    unsigned int nCount = ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfb90();
+    ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422df5f0(nCount > 1 ? nCount : 1);
+    ((ASDropdownMenu*)list.FUN_140bc0530())->SetSelectedIndex(nSel);
     list.FUN_140bc0530()->vfunc_24(true);
 }
 
 // @0x1418fcb70
 int FUN_1418fcb70()
 {
-    if (reinterpret_cast<Unk_CbUIScale*>(FUN_14025e7a0())->FUN_1422b0f10() != 0)
+    if (FUN_14025e7a0()->FUN_1422b0f10() != 0)
         return 1;
     UICutSceneMovie* pA = FUN_14138fd50(0x4e7e);
     if (pA != 0 && pA->FUN_1419102c0() != 0)
@@ -628,15 +542,15 @@ int FUN_1418fcb70()
         return 0;
     if (FUN_141274ff0() != 0)
     {
-        if (*reinterpret_cast<Unk_CbFlagHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150() == 0)
+        if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150()) == 0)
             return 0;
         FUN_141274f50();
     }
     else
     {
-        if (reinterpret_cast<Unk_CbSvc2*>(TSingleton<CFishingManager>::GetInstance())->FUN_140954150() != 0)
+        if (TSingleton<CFishingManager>::GetInstance()->FUN_140954150() != 0)
         {
-            reinterpret_cast<Unk_CbSvc2*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdadb0(0);
+            TSingleton<CFishingManager>::GetInstance()->ToggleFishing(0);
             return 1;
         }
         if (FUN_141275080() == 0)

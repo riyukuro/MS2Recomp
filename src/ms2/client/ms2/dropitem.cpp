@@ -19,6 +19,8 @@
 #include <NxPhysics.h>
 #include <NiTransform.h>
 #include <NiTexturingProperty.h>
+#include <NiMesh.h>                         // C3: NiMesh::ms_RTTI
+#include <egmAnimation/AnimationService.h>  // C3: AnimationService::GetActorManager
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/effectparam.h"
@@ -88,8 +90,6 @@ MS2_CHECK_SIZE(CObjectShadow, 0x58);
 // The notice and guide managers.
 class Unk_DropGuideMgr : public CGuideManager
 {
-public:
-    void FUN_14138bf00(int nGuide, int nItemId, int nA);
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_141275260(int nSound, int a, int b);
@@ -97,7 +97,7 @@ int FUN_141276180(const CString& strKey, const CString& strArg);   // system not
 void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center notice
 
 // The ui dialogs a pickup notifies.
-UIDamageText* FUN_140b624b0(int nUiId);
+template <class T> T* Unk_DmgFindUI(int nId);
 class Unk_DropBagDlg { public: void FUN_141abfa10(MS2Ptr<CItem> spItem); };
 class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
@@ -111,27 +111,15 @@ public:
 };
 void FUN_141545250(egf::EntityID kId, int b);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CString FUN_140540050(const char* szFormat, const CString& strArg); // StringFormat<CString>
 bool FUN_14053f8c0(unsigned nItemId);                               // the item id is meso
 bool FUN_14053f900(unsigned nItemId);                               // the item id is a special item
 void FUN_1401d3700(CString& str);
-extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
-extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-class Unk_DropPickTick                                              // 8-byte throttle (static of FUN_141190900)
-{
-public:
-    Unk_DropPickTick();                                             // 0x140517b00
-    int FUN_140268870(int nMs);                                     // 1 when nMs have passed since the last 1
-private:
-    __int64 m_tick;
-};
 
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
 class Unk_WsB_Prop : public CInteractObject { };
 class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 the placement box
                       // the item kind
-class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 class Unk_AvSeqCtl   // C3: member view for the former free stand-ins
@@ -141,7 +129,7 @@ public:
 };
 GameObject* FUN_14096e160(Unk_WsC_GameObj* pObj);                   // the object behind a world pointer
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
+struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 extern Unk_Inventory g_143ab2a90;
 int FUN_140768010(int, int);   // C3: was FUN_140768010
@@ -166,6 +154,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);                                      // 0x140a53190
     void* m_storage[14];
 };
 static CString s_strWarningBag("system_notice_error_warningBag");   // @0x1400e74c0
@@ -247,7 +236,7 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
 {
     m_nOwnerObjId = nOwnerObjId;
     m_nAmount = nAmount;
-    if (!FUN_1411905a0())
+    if (!IsPickupAllowedForLocalPlayer())
         return 0;
     m_spItem.AssignRaw(new CItem());
     if (!m_spItem->FUN_140523c40(nItemId, nRarity, 0))
@@ -263,7 +252,7 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
         m_spEffect = CItemDataTable::GetInstance()->GetItemDropEffect(0x55d4a81, nAmount);
         if (m_spEffect == 0)
             return 0;
-        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
+        FUN_14123bb80(StringFormat<CString>("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
     }
     else if (FUN_14053f900(nItemId))
     {
@@ -276,9 +265,9 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
             MS2_ASSERT_AT(0xb1, 0);
             return 0;
         }
-        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
+        FUN_14123bb80(StringFormat<CString>("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
         if (nItemId == 0x55d4a89 || nItemId == 0x55d4a8a)
-            FUN_141191240();
+            LoadSpepBallConstants();
     }
     else if (FUN_14118ffb0())
     {
@@ -286,7 +275,7 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
         if (m_spEffect == 0)
             return 0;
         CString strNif = CItemDataTable::GetInstance()->GetGradePetNif((ItemGradeKey)nRarity);
-        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", strNif));
+        FUN_14123bb80(StringFormat<CString>("urn:gamebryo-scenegraph:{0}", strNif));
     }
     else
     {
@@ -294,7 +283,7 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
         if (m_spEffect == 0)
             return 0;
         CString strNif = CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)nRarity);
-        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", strNif));
+        FUN_14123bb80(StringFormat<CString>("urn:gamebryo-scenegraph:{0}", strNif));
     }
     return 1;
 }
@@ -307,7 +296,7 @@ int CDropItem::FUN_14118d1c0(int nObjectId, int nItemId, int nAmount, int nRarit
 }
 
 // @0x14118d230
-int CDropItem::FUN_14118d230(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners)
+int CDropItem::InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners)
 {
     if (pOwners)
         m_owners.FUN_1407b7090(pOwners);
@@ -398,9 +387,9 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
 {
     if (NiAVObject* pIcon = pRoot->GetObjectByName("Item_Icon:0"))
     {
-        if (NiObject::IsExactKindOf(reinterpret_cast<const NiRTTI*>(&DAT_143afbbb0), (class NiObject const*)(pIcon)))
+        if (NiObject::IsExactKindOf(&NiMesh::ms_RTTI, (class NiObject const*)(pIcon)))
         {
-            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(NiObject::DynamicCast(reinterpret_cast<const NiRTTI*>(&DAT_143afa4f0), (class NiObject const*)(pIcon->GetProperty(8))));
+            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pIcon->GetProperty(8))));
             if (pTexturing)
             {
                 NiTexturingProperty::Map* pMap = ((class NiTexturingProperty*)(pTexturing))->GetBaseMap();
@@ -482,9 +471,9 @@ void CDropItem::FUN_14118d9a0(int nState)
             if (m_n298 != 0)
             {
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-                ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapDropItemEffect);
+                ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTrapDropItemEffect)->FUN_140298f80();
                 ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-                ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+                kTarget.SetActor(FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
                 m_nFadeTime = GetTickCountMs2() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
                 vfunc_23(1);
@@ -518,7 +507,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         }
         else if (pNpcObj && FUN_14118ff60())
         {
-            Unk_WsC_GameObj* pOwnerPc = WorldService::GetInstance()->FUN_141bd1530(FUN_1411910e0());
+            Unk_WsC_GameObj* pOwnerPc = WorldService::GetInstance()->FUN_141bd1530(GetFirstOwner());
             Unk_GoAttachment* pAttach = pNpcObj->vfunc_26();
             if (pAttach && (static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData()->m_collision.m_strShape == "box") && pOwnerPc)
             {
@@ -693,15 +682,15 @@ void CDropItem::FUN_14118d9a0(int nState)
     {
         NiPoint3 kPos = vfunc_18();
         m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
-        if (reinterpret_cast<Unk_DropAnimSvc*>(FUN_141b6f910())->FUN_140999440(FUN_14123c460()))
-            ((class Unk_AvSeqCtl*)(class NiActorManager*)(reinterpret_cast<Unk_DropAnimSvc*>(FUN_141b6f910())->FUN_140999440(FUN_14123c460())))->FUN_1409fae00(true);
+        if (FUN_141b6f910()->GetActorManager(FUN_14123c460()))
+            ((class Unk_AvSeqCtl*)(class NiActorManager*)(FUN_141b6f910()->GetActorManager(FUN_14123c460())))->FUN_1409fae00(true);
         if (IsMeso())
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
             if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
             {
-                UIDamageText* pDlg = FUN_140b624b0(0x4e32);
+                UIDamageText* pDlg = Unk_DmgFindUI<UIDamageText>(0x4e32);
                 if (pDlg)
                     pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
             }
@@ -712,12 +701,12 @@ void CDropItem::FUN_14118d9a0(int nState)
             const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
             if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
             {
-                UIDamageText* pDlg = FUN_140b624b0(0x4e32);
+                UIDamageText* pDlg = Unk_DmgFindUI<UIDamageText>(0x4e32);
                 if (pDlg)
                     pDlg->FUN_141913060(pOwner, m_spItem->GetCount(), m_spItem->FUN_140528590());
             }
         }
-        m_pfnState = &CDropItem::FUN_1411920b0;
+        m_pfnState = &CDropItem::UpdatePickUpHoverState;
     }
     else if (nState == 4)
     {
@@ -752,7 +741,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         m_posGrow = reinterpret_cast<Vector3&>(kPos);
         m_pfnState = &CDropItem::FUN_1411923a0;
     }
-    if (!FUN_1411905a0())
+    if (!IsPickupAllowedForLocalPlayer())
     {
         static float s_fAlpha = Client::Constants::GetInstance()->DefaultDropItemAlpha.Read();
         vfunc_42(s_fAlpha, false);
@@ -784,19 +773,19 @@ int CDropItem::FUN_14118ffb0()
 }
 
 // @0x141190030
-int CDropItem::FUN_141190030()
+int CDropItem::IsOwnedByLocalPlayer()
 {
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer)
     {
         unsigned __int64 nUid = static_cast<PCBase*>(pPlayer)->FUN_141656a80();
-        return FUN_141190080(nUid);
+        return IsOwner(nUid);
     }
     return 0;
 }
 
 // @0x141190080
-int CDropItem::FUN_141190080(unsigned __int64 nUid)
+int CDropItem::IsOwner(unsigned __int64 nUid)
 {
     if (m_owners.FUN_1407b72d0(nUid, 0))
         return 1;
@@ -819,7 +808,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
         return 0;
     if (m_nState && nA)
         return 0;
-    if (!FUN_141191060())
+    if (!HasPickupDelayElapsed())
         return 0;
     if (GetTickCountMs2() < m_nFadeTime)
         return 0;
@@ -842,7 +831,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
             bAllowed = 1;
         else if (m_nOwnerType == 0 || m_nOwnerType == 1)
         {
-            if (FUN_141190030() == 1)
+            if (IsOwnedByLocalPlayer() == 1)
                 bAllowed = 1;
         }
         if (!bAllowed)
@@ -874,7 +863,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
         return 0;
     if (m_nState && nA)
         return 0;
-    if (!FUN_141191060())
+    if (!HasPickupDelayElapsed())
         return 0;
     if (GetTickCountMs2() < m_nFadeTime)
         return 0;
@@ -899,7 +888,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
             bAllowed = 1;
         else if (m_nOwnerType == 0 || m_nOwnerType == 1)
         {
-            if (FUN_141190030() == 1)
+            if (IsOwnedByLocalPlayer() == 1)
                 bAllowed = 1;
         }
         if (!bAllowed)
@@ -909,7 +898,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
 }
 
 // @0x1411905a0
-int CDropItem::FUN_1411905a0()
+int CDropItem::IsPickupAllowedForLocalPlayer()
 {
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -919,7 +908,7 @@ int CDropItem::FUN_1411905a0()
         bAllowed = 1;
     else if (m_nOwnerType == 0 || m_nOwnerType == 1)
     {
-        if (FUN_141190030() == 1)
+        if (IsOwnedByLocalPlayer() == 1)
             bAllowed = 1;
     }
     if (bAllowed == 0)
@@ -989,8 +978,8 @@ void CDropItem::FUN_141190900(int nPickerId)
         BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x13);
         if (spBlock.get())
         {
-            static Unk_DropPickTick s_kNoticeTick;
-            if (reinterpret_cast<Unk_IntervalTimer&>(s_kNoticeTick).Check(5000) == 1)
+            static Unk_IntervalTimer s_kNoticeTick;
+            if (s_kNoticeTick.Check(5000) == 1)
             {
                 CStringW strNotice = FUN_1401ca400(spBlock, 0x20);
                 FUN_1412751b0(strNotice, 0x14);
@@ -1047,7 +1036,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
             }
         }
         if (m_spItem->FUN_140528980())
-            ((class Unk_DropGuideMgr*)FUN_1409331e0())->FUN_14138bf00(0xc, m_spItem->FUN_1405276c0(), 0);
+            ((class Unk_DropGuideMgr*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0xc, m_spItem->FUN_1405276c0(), 0);
     }
     if (m_nState == 6)
     {
@@ -1070,7 +1059,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
 void CDropItem::FUN_141191030() { m_nTick = GetTickCountMs2(); }
 
 // @0x141191060
-bool CDropItem::FUN_141191060()
+bool CDropItem::HasPickupDelayElapsed()
 {
     unsigned int nNow = GetTickCountMs2();
     if (m_nTick + 1000 > nNow)
@@ -1085,7 +1074,7 @@ int CDropItem::GetOwnerObjId() { return m_nOwnerObjId; }
 int CDropItem::GetDropKind() { return m_nDropKind; }
 
 // @0x1411910e0
-unsigned __int64 CDropItem::FUN_1411910e0()
+unsigned __int64 CDropItem::GetFirstOwner()
 {
     if (!m_owners.FUN_1408f32a0())
         return 0;
@@ -1119,7 +1108,7 @@ void CDropItem::FUN_1411911f0()
 
 // The pet-ball (SPEP) drops use their own settings.
 // @0x141191240
-void CDropItem::FUN_141191240()
+void CDropItem::LoadSpepBallConstants()
 {
     m_f218 = Client::Constants::GetInstance()->DropSPEPBallTargetZPos.Read();
     m_f21c = Client::Constants::GetInstance()->DropSPEPBallMaxLength.Read();
@@ -1281,7 +1270,7 @@ void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
 
 // State 3: hovers over the owner for the rotate time.
 // @0x1411920b0
-void CDropItem::FUN_1411920b0(double fTime, GameObject* pTarget)
+void CDropItem::UpdatePickUpHoverState(double fTime, GameObject* pTarget)
 {
     m_fElapsed += (float)fTime;
     if (m_fElapsed > m_f22c)
